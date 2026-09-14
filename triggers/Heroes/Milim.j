@@ -75,13 +75,6 @@ library MilimSpells uses GearSystems
 //---------------F ability-----------------------------------------------------
         integer MilimF_ID = 'A01V'
         real MilimF_Aoe = 650 // aoe where passive works
-        real MilimF_Chance12 = 10 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_Chance25 = 15 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_Chance35 = 20 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_CD12 = 20 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_CD25 = 18 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_CD35 = 16 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_SkillSuccessfulAtkBonusAdd = 10 // add % dodge chance when Milim hit enemy by his spell
 //---------------G ability-----------------------------------------------------
         integer MilimG_ID = 'A01U'
         integer MilimG_Stat_ID1 = 'A08I'
