@@ -1,0 +1,1427 @@
+{
+  "format": 1,
+  "providers": {
+    "AllyHeroAbilityUI": [
+      "WOS_Start/ShowCD.j"
+    ],
+    "TooltipBuilder": [
+      "WOS_Start/TooltipBuilder.j"
+    ],
+    "AAUniversalTooltips": [
+      "WOS_Start/UniversalTooltips.j"
+    ],
+    "WosCareerStats": [
+      "WOS_Start/UI_CAREER.j"
+    ],
+    "HeroUnitPanelStats": [
+      "WOS_Start/DefaultArmorChangeStable_Copy.j"
+    ],
+    "WOS2BotCodec": [
+      "WOS_Start/Save2.j"
+    ],
+    "AAINIT": [
+      "WOS_Start/SaveLoad.j"
+    ],
+    "LocalMp3Player": [
+      "WOS_Start/MusicPlayer.j"
+    ],
+    "WosScoreboard": [
+      "WOS_Start/Scoreboard.j"
+    ],
+    "CustomImageChat": [
+      "WOS_Start/ChatCommand.j"
+    ],
+    "heroicon": [
+      "WOS_Start/WoS_Hero_Icons_Init.j"
+    ],
+    "RoundSpells": [
+      "Round_End/RoundEnd.j"
+    ],
+    "TasAbilityChargeBox": [
+      "Systems/TasBox.j"
+    ],
+    "AAADest": [
+      "Systems/DecorDestroy_and_Erza_Debuff.j"
+    ],
+    "GearSystems": [
+      "Systems/Systems1.j"
+    ],
+    "GearSystems2": [
+      "Systems/Systems2.j"
+    ],
+    "ItemsSpells": [
+      "Items/Items.j"
+    ],
+    "TojiSpells": [
+      "Heroes/Toji.j"
+    ],
+    "RaidenSpells": [
+      "Heroes/Raiden.j"
+    ],
+    "FrierenSpells": [
+      "Heroes/Frieren.j"
+    ],
+    "AinzSpells": [
+      "Heroes/Ainz.j"
+    ],
+    "LaxusSpells": [
+      "Heroes/Laxus.j"
+    ],
+    "BrandishSpells": [
+      "Heroes/Brandish.j"
+    ],
+    "PatriotSpells": [
+      "Heroes/Patriot.j"
+    ],
+    "AstaSpells": [
+      "Heroes/Asta.j"
+    ],
+    "GojoSpells": [
+      "Heroes/Gojo.j"
+    ],
+    "BambiettaSpells": [
+      "Heroes/Bambietta.j"
+    ],
+    "KiritoSpells": [
+      "Heroes/Kirito.j"
+    ],
+    "AlucardSpells": [
+      "Heroes/Alucard.j"
+    ],
+    "StarrkSpells": [
+      "Heroes/Starrk.j"
+    ],
+    "TakeshiSpells": [
+      "Heroes/Takeshi.j"
+    ],
+    "BarraganSpells": [
+      "Heroes/Barragan.j"
+    ],
+    "MahoragaSpells": [
+      "Heroes/Mahoraga.j"
+    ],
+    "HarribelSpells": [
+      "Heroes/Harribel.j"
+    ],
+    "TsunaSpells": [
+      "Heroes/Tsuna.j"
+    ],
+    "RimuruSpells": [
+      "Heroes/Rimuru.j"
+    ],
+    "DarkShikiSpells": [
+      "Heroes/DarkShiki.j"
+    ],
+    "BazzBSpells": [
+      "Heroes/BazzB.j"
+    ],
+    "NeuvilletteSpells": [
+      "Heroes/Neuvillette.j"
+    ],
+    "OkarunSpells": [
+      "Heroes/Okarun.j"
+    ],
+    "AkainuSpells": [
+      "Heroes/Akainu.j"
+    ],
+    "InoriSpells": [
+      "Heroes/Inori.j"
+    ],
+    "KenjakuSpells": [
+      "Heroes/Kenjaku.j"
+    ],
+    "AlterSaberSpells": [
+      "Heroes/AlterSaber.j"
+    ],
+    "NatsuSpells": [
+      "Heroes/Natsu.j"
+    ],
+    "KyorakuSpells": [
+      "Heroes/Kyoraku.j"
+    ],
+    "TomiokaSpells": [
+      "Heroes/Tomioka.j"
+    ],
+    "ErzaQSpells": [
+      "Erza/ErzaQ.j"
+    ],
+    "ErzaWSpells": [
+      "Erza/ErzaW.j"
+    ],
+    "ErzaESpells": [
+      "Erza/ErzaE.j"
+    ],
+    "ErzaRSpells": [
+      "Erza/ErzaR.j"
+    ],
+    "ErzaTSpells": [
+      "Erza/ErzaT.j"
+    ],
+    "ErzaG1Spells": [
+      "Erza/ErzaG2_Nakagami.j"
+    ],
+    "ErzaG2Spells": [
+      "Erza/ErzaG2_Fairy.j"
+    ],
+    "ErzaBase": [
+      "Erza/ErzaBase.j"
+    ]
+  },
+  "files": [
+    {
+      "order": 0,
+      "path": "Map_Header.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 1,
+      "path": "WOS_Start/ShowCD.j",
+      "provides": [
+        "AllyHeroAbilityUI"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "path": "WOS_Start/TooltipBuilder.j",
+      "provides": [
+        "TooltipBuilder"
+      ],
+      "dependencies": []
+    },
+    {
+      "order": 3,
+      "path": "WOS_Start/UniversalTooltips.j",
+      "provides": [
+        "AAUniversalTooltips"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "TooltipBuilder",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/TooltipBuilder.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "path": "WOS_Start/UI_CAREER.j",
+      "provides": [
+        "WosCareerStats"
+      ],
+      "dependencies": [
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/SaveLoad.j"
+          ]
+        },
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/WoS_Hero_Icons_Init.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
+      "provides": [
+        "HeroUnitPanelStats"
+      ],
+      "dependencies": [
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/WoS_Hero_Icons_Init.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "path": "WOS_Start/Save2.j",
+      "provides": [
+        "WOS2BotCodec"
+      ],
+      "dependencies": []
+    },
+    {
+      "order": 7,
+      "path": "WOS_Start/SaveLoad.j",
+      "provides": [
+        "AAINIT"
+      ],
+      "dependencies": [
+        {
+          "name": "WOS2BotCodec",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/Save2.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "path": "WOS_Start/MusicPlayer.j",
+      "provides": [
+        "LocalMp3Player"
+      ],
+      "dependencies": []
+    },
+    {
+      "order": 9,
+      "path": "WOS_Start/Scoreboard.j",
+      "provides": [
+        "WosScoreboard"
+      ],
+      "dependencies": [
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/WoS_Hero_Icons_Init.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "path": "WOS_Start/ChatCommand.j",
+      "provides": [
+        "CustomImageChat"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "path": "WOS_Start/Player_Pick_Mode.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 12,
+      "path": "WOS_Start/WoS_Shop_Init.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 13,
+      "path": "WOS_Start/WoS_Pick_Init.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 14,
+      "path": "WOS_Start/Starts.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 15,
+      "path": "WOS_Start/BuildsForChars.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 16,
+      "path": "WOS_Start/TestUnit.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 17,
+      "path": "WOS_Start/WoS_Hero_Icons_Init.j",
+      "provides": [
+        "heroicon"
+      ],
+      "dependencies": [
+        {
+          "name": "LocalMp3Player",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/MusicPlayer.j"
+          ]
+        },
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/SaveLoad.j"
+          ]
+        },
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 18,
+      "path": "WOS_Start/Leave.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 19,
+      "path": "Round_End/RoundEnd.j",
+      "provides": [
+        "RoundSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 20,
+      "path": "Systems/CastAItems.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 21,
+      "path": "Systems/TasBox.j",
+      "provides": [
+        "TasAbilityChargeBox"
+      ],
+      "dependencies": [
+        {
+          "name": "FrameLoader",
+          "optional": true,
+          "keyword": "requires",
+          "resolved_paths": []
+        }
+      ]
+    },
+    {
+      "order": 22,
+      "path": "Systems/CastCheck.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 23,
+      "path": "Systems/ClickEvent.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 24,
+      "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
+      "provides": [
+        "AAADest"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 25,
+      "path": "Systems/Systems1.j",
+      "provides": [
+        "GearSystems"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems2",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems2.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 26,
+      "path": "Systems/Systems2.j",
+      "provides": [
+        "GearSystems2"
+      ],
+      "dependencies": [
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/TasBox.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 27,
+      "path": "Systems/DmgSys.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 28,
+      "path": "Systems/AtkCancel.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 29,
+      "path": "Systems/MouseMove.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 30,
+      "path": "Systems/Death.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 31,
+      "path": "Systems/silence.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 32,
+      "path": "Systems/LvlUpCheck.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 33,
+      "path": "Systems/LvlSelf.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 34,
+      "path": "Systems/MagRes.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 35,
+      "path": "Systems/PhysRes.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 36,
+      "path": "Systems/slow.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 37,
+      "path": "Systems/NeviSound.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 38,
+      "path": "Systems/Evol1.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 39,
+      "path": "Systems/Evol2.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 40,
+      "path": "Systems/sukuna_spawn.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 41,
+      "path": "Systems/ESC.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 42,
+      "path": "Systems/Killme.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 43,
+      "path": "Systems/AnimCheck.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 44,
+      "path": "Systems/hpset.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 45,
+      "path": "Systems/mpset.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 46,
+      "path": "Systems/ArrowLeft.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 47,
+      "path": "Systems/ArrowUp.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 48,
+      "path": "Systems/ArrowDown.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 49,
+      "path": "Systems/ArrowRight.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 50,
+      "path": "Systems/CastingCheck.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 51,
+      "path": "Systems/ButtonPressed.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 52,
+      "path": "Systems/ButtonPressed_ESC.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 53,
+      "path": "Systems/ButtonUnPressed_ESC.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 54,
+      "path": "Systems/EnterBase.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 55,
+      "path": "Systems/EnterRegion.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 56,
+      "path": "Systems/LeavesBase.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 57,
+      "path": "Systems/LeavesRegion.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 58,
+      "path": "Systems/ItemCupOfTea.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 59,
+      "path": "Systems/ItemEnter.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 60,
+      "path": "Systems/ItemLeave.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 61,
+      "path": "Items/Items.j",
+      "provides": [
+        "ItemsSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 62,
+      "path": "Heroes/Toji.j",
+      "provides": [
+        "TojiSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 63,
+      "path": "Heroes/Raiden.j",
+      "provides": [
+        "RaidenSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 64,
+      "path": "Heroes/Frieren.j",
+      "provides": [
+        "FrierenSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 65,
+      "path": "Heroes/Ainz.j",
+      "provides": [
+        "AinzSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 66,
+      "path": "Heroes/Laxus.j",
+      "provides": [
+        "LaxusSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "NatsuSpells",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Heroes/Natsu.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 67,
+      "path": "Heroes/Brandish.j",
+      "provides": [
+        "BrandishSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 68,
+      "path": "Heroes/Patriot.j",
+      "provides": [
+        "PatriotSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 69,
+      "path": "Heroes/Asta.j",
+      "provides": [
+        "AstaSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 70,
+      "path": "Heroes/Gojo.j",
+      "provides": [
+        "GojoSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 71,
+      "path": "Heroes/Bambietta.j",
+      "provides": [
+        "BambiettaSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 72,
+      "path": "Heroes/Kirito.j",
+      "provides": [
+        "KiritoSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 73,
+      "path": "Heroes/Alucard.j",
+      "provides": [
+        "AlucardSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 74,
+      "path": "Heroes/Starrk.j",
+      "provides": [
+        "StarrkSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 75,
+      "path": "Heroes/Takeshi.j",
+      "provides": [
+        "TakeshiSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 76,
+      "path": "Heroes/Barragan.j",
+      "provides": [
+        "BarraganSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 77,
+      "path": "Heroes/Mahoraga.j",
+      "provides": [
+        "MahoragaSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 78,
+      "path": "Heroes/Harribel.j",
+      "provides": [
+        "HarribelSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 79,
+      "path": "Heroes/Tsuna.j",
+      "provides": [
+        "TsunaSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 80,
+      "path": "Heroes/Rimuru.j",
+      "provides": [
+        "RimuruSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 81,
+      "path": "Heroes/DarkShiki.j",
+      "provides": [
+        "DarkShikiSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 82,
+      "path": "Heroes/BazzB.j",
+      "provides": [
+        "BazzBSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 83,
+      "path": "Heroes/Neuvillette.j",
+      "provides": [
+        "NeuvilletteSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 84,
+      "path": "Heroes/Okarun.j",
+      "provides": [
+        "OkarunSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 85,
+      "path": "Heroes/Akainu.j",
+      "provides": [
+        "AkainuSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 86,
+      "path": "Heroes/Inori.j",
+      "provides": [
+        "InoriSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 87,
+      "path": "Heroes/Kenjaku.j",
+      "provides": [
+        "KenjakuSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 88,
+      "path": "Heroes/AlterSaber.j",
+      "provides": [
+        "AlterSaberSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 89,
+      "path": "Heroes/Natsu.j",
+      "provides": [
+        "NatsuSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 90,
+      "path": "Heroes/Kyoraku.j",
+      "provides": [
+        "KyorakuSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 91,
+      "path": "Heroes/Tomioka.j",
+      "provides": [
+        "TomiokaSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 92,
+      "path": "Erza/ErzaQ.j",
+      "provides": [
+        "ErzaQSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Erza/ErzaT.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 93,
+      "path": "Erza/ErzaW.j",
+      "provides": [
+        "ErzaWSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Erza/ErzaT.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 94,
+      "path": "Erza/ErzaE.j",
+      "provides": [
+        "ErzaESpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Erza/ErzaT.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 95,
+      "path": "Erza/ErzaR.j",
+      "provides": [
+        "ErzaRSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 96,
+      "path": "Erza/ErzaT.j",
+      "provides": [
+        "ErzaTSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 97,
+      "path": "Erza/ErzaG2_Nakagami.j",
+      "provides": [
+        "ErzaG1Spells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 98,
+      "path": "Erza/ErzaG2_Fairy.j",
+      "provides": [
+        "ErzaG2Spells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 99,
+      "path": "Erza/ErzaBase.j",
+      "provides": [
+        "ErzaBase"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "ErzaQSpells",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Erza/ErzaQ.j"
+          ]
+        }
+      ]
+    }
+  ],
+  "unresolved_required": [],
+  "unresolved_optional": [
+    {
+      "source": "Systems/TasBox.j",
+      "dependency": "FrameLoader"
+    }
+  ]
+}

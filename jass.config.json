@@ -1,0 +1,27 @@
+{
+    "includes": [
+        "**/*.j",
+        "**/*.jass"
+    ],
+
+    "parsing": {
+        "enableTextMacro": true,
+        "enablePreprocessor": true,
+        "enableLuaBlocks": true,
+        "strictMode": false
+    },
+
+    "standardLibraries": {
+        "common.j": "./libs/common.j",
+        "blizzard.j": "./libs/blizzard.j"
+    },
+
+    "diagnostics": {
+        "enable": true,
+        "checkTypes": true,
+        "checkUndefined": true,
+        "checkUnused": false,
+        "checkArrayBounds": true,
+        "checkHandleLeaks": false
+    }
+}

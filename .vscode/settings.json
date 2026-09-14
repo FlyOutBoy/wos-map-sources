@@ -1,0 +1,16 @@
+{
+    "jass.apiVersion": "off",
+
+    "jass.compiler.commonJ": "${workspaceFolder}/libs/common.j",
+    "jass.compiler.blizzardJ": "${workspaceFolder}/libs/blizzard.j",
+
+    "jass.compiler.checkCommonJ": "${workspaceFolder}/libs/common.j",
+    "jass.compiler.checkBlizzardJ": "${workspaceFolder}/libs/blizzard.j",
+
+    "wosJassHighlight.systemFiles": [
+        "triggers/Systems/Systems1.j",
+        "triggers/Systems/Systems2.j"
+    ],
+
+    "wosJassHighlight.color": "#4EC950"
+}

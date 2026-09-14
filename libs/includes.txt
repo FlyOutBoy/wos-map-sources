@@ -1,0 +1,1599 @@
+function DamageBlock takes unit c, unit td, real dmg,integer typedmg, boolean test returns real
+if IsItemInInventory(td,'I00B') >0 then 
+if test == false then
+call HPS(td,dmg*0.125,10)
+endif
+set dmg = dmg * 0.875
+endif
+if typedmg == 1 then 
+if GetUnitTypeId(td) == Natsu_ID and GetUnitCurrentOrder(td)== OrderId("creepheal") then 
+set dmg = dmg * 0.75
+endif
+if IsItemInInventory(td,'I00K') >0 then
+set dmg = dmg * 0.85
+endif
+if IsItemInInventory(td,'I00L') >0 then
+set dmg = dmg * 0.8
+endif
+if GetUnitAbilityLevel(td,'A019') >0 then
+set dmg = dmg * 0.85
+endif
+endif
+if dmg>=400  and IsItemInInventory(td,'I00M') >0 and BlzGetUnitAbilityCooldownRemaining(td,'A01W')==0 then
+set dmg = 0
+if test == false then
+call BlzStartUnitAbilityCooldown(td,'A01W',25)
+endif
+endif
+if GetUnitTypeId(td) == Tomioka_ID and LoadInteger(hs, GetHandleId(GetOwningPlayer(td)), StringHash("tomioka f invul")) == 1 then
+set dmg = 0
+if test == false then
+call SaveInteger(hs, GetHandleId(td), StringHash("tomioka f dmg act"), 1)
+endif
+endif
+return dmg
+endfunction
+function GroupPushEff takes unit c, real x, real y, real aoe, real push_distance, real push_duration, real a, boolean all,integer k returns nothing
+        local group g = CreateGroup()
+        local unit u
+        local boolean b = true
+        call GroupEnumUnitsInRange( g , x , y , aoe , Condition(function NoDecor_Filter))
+        loop
+            set u = FirstOfGroup( g )
+            exitwhen u == null
+            if all == false then
+                set b = IsUnitEnemy( u , GetOwningPlayer( c ))
+            endif
+            if SpellBool( u ) and b then
+            call ErzaPassive(c, u, k)
+                if a == -2 then
+                    call MUE(u, push_distance, push_duration, GAngle2(u, x, y))
+                elseif a == -1 then
+                    call MUE(u, push_distance, push_duration, GAngle3(x, y, u))
+                else
+                    call MUE(u, push_distance, push_duration, a)
+                endif
+            endif
+            call GroupRemoveUnit( g , u )
+        endloop
+        call DestroyGroup(g)
+        set u = null
+        set g = null
+    endfunction
+    function GroupDmgEff takes unit c, real x, real y, real aoe, real dmg, integer k returns nothing
+        local group g = CreateGroup()
+        local unit u
+        call GroupEnumUnitsInRange( g , x , y , aoe , Condition(function NoDecor_Filter))
+        loop
+            set u = FirstOfGroup( g )
+            exitwhen u == null
+            if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                call dmgmag(c, u, dmg)
+                call ErzaPassive(c, u, k)
+            endif
+            call GroupRemoveUnit( g , u )
+        endloop
+        call DestroyGroup(g)
+        set u = null
+        set g = null
+    endfunction
+function GetPhysRes takes unit c returns real
+local real def = 1-(1/(1.0 + armor_resist * BlzGetUnitArmor(c)))
+local real result = 0
+local real check = 0
+set check = 1-DamageBlock(null,c,1.00,2,true)
+set result = def+check * 100
+ return result
+endfunction
+function GetAS takes unit c returns real
+ return BlzGetUnitWeaponRealField(c,UNIT_WEAPON_RF_ATTACK_BASE_COOLDOWN,0)+GetHeroAgi(c,true)*agi_as
+endfunction
+
+     function BuffUnit01 takes unit c, unit u, integer id,string s, integer level returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local unit d = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(d, id)
+            call SetUnitAbilityLevel(d, id, level)
+            call SetUnitFacing(d, GAngle(d, u) * bj_RADTODEG)
+            call IssueTargetOrder(d, s, u)
+      call MyRemoveUnit(d,0.2)
+      set d = null
+    endfunction
+function GetStr takes unit c returns integer
+local integer i
+local integer id = GetPlayerId(GetOwningPlayer(c))
+if c != Hero[id] then 
+set i = GetHeroStr(Hero[id],true)
+else
+set i = GetHeroStr(c,true)
+endif
+return i
+endfunction 
+function GetAgi takes unit c returns integer
+local integer i
+local integer id = GetPlayerId(GetOwningPlayer(c))
+if c != Hero[id] then 
+set i = GetHeroAgi(Hero[id],true)
+else
+set i = GetHeroAgi(c,true)
+endif
+return i
+endfunction 
+function GetInt takes unit c returns integer
+local integer i
+local integer id = GetPlayerId(GetOwningPlayer(c))
+if c != Hero[id] then 
+set i = GetHeroInt(Hero[id],true)
+else
+set i = GetHeroInt(c,true)
+endif
+return i
+endfunction 
+function AttackCheck takes unit c, unit td, real dmg returns nothing
+local real x = GetUnitX(td)
+local real y = GetUnitY(td)
+local real a
+local integer i
+if LoadInteger(hs,GetHandleId(c),StringHash("raiden t")) > 0 then 
+set a = GetRandomReal(0,359)
+call EUTU2(EffectSpawn("war3mapimported\\wos_ld2209 (199).mdl", x, y, a, 0.85, 2.5, 90), 0.36, 90, td)
+call EUTU2(EffectSpawn("war3mapimported\\wos_BY_Wood_Effect_Order_DanGe_Stf_DaJi_1_3Purple.mdl", x, y, a, 1.25, 2.15, 135), 0.36, 135, td)
+set i = GetRandomInt(1,3)
+call SetMpCurrent(c,RaidenT_AddManaPerHit/100 *GetUnitState(c,UNIT_STATE_MAX_MANA))
+call StopSound(gg_snd_Hero_Raiden_T_Atk1,false,false)
+call StopSound(gg_snd_Hero_Raiden_T_Atk2,false,false)
+call StopSound(gg_snd_Hero_Raiden_T_Atk3,false,false)
+if i == 1 then 
+call StartSound(gg_snd_Hero_Raiden_T_Atk1)
+elseif i == 2 then 
+call StartSound(gg_snd_Hero_Raiden_T_Atk2)
+elseif i == 3 then 
+call StartSound(gg_snd_Hero_Raiden_T_Atk3)
+endif
+endif 
+endfunction
+function GetMagRes takes unit c returns real
+local real result = 0
+local real check = 0
+set check = 1-DamageBlock(null,c,1.00,1,true)
+set result = (check) * 100
+ return result
+endfunction
+function SpellBoolCaster takes unit c returns boolean
+        return GetWidgetLife(c) > 0.405
+    endfunction
+function GetAllStat takes unit c, boolean b returns integer
+local integer s1 = GetHeroStr(c,b)
+local integer s2 = GetHeroAgi(c,b)
+local integer s3 = GetHeroInt(c,b)
+local integer result = s1+s2+s3
+return result
+endfunction
+    function BlinkEff takes unit c returns nothing
+call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 1, 1.8, GetUnitFlyHeight(c)))
+endfunction
+function BlinkEff2 takes unit c returns nothing
+call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_blackblink.mdx", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 2, 1.35, GetUnitFlyHeight(c), 0, 0, 0, 255))
+endfunction
+function IsItemInInventory takes unit u, integer it returns integer
+        local integer i = 0
+        local item ti
+        local integer count = 0
+        loop
+            set ti = UnitItemInSlot(u, i)
+            exitwhen i > 5
+            if GetItemTypeId(ti) == it
+                count = count + 1
+            endif
+            set i = i + 1
+        endloop
+        set ti = null
+        return count
+    endfunction
+function DecreaseArmorUnit takes unit c, unit u, integer level returns nothing // min 0.1 , max 3.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], 'A01H')
+        endif
+        if level < 1 then
+            set level = 1
+        elseif level > 30 then
+            set level = 30
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], 'A01H') == 0 then
+                call UnitAddAbility(DummyPlayer[i], 'A01H')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A01H', level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "faeriefire", u)
+        endif
+    endfunction
+function IsItemInInventory3 takes unit u, integer it1 returns integer
+        local integer i = 0
+        local item ti
+        local integer count = 0
+        local integer count2 = 0
+        local integer gold = 0
+        loop
+            set ti = UnitItemInSlot(u, i)
+            exitwhen i > 5 or count != 0
+            if GetItemTypeId(ti) == it1  then
+                set count = i
+            endif
+            set i = i + 1
+        endloop
+        set ti = null
+        return count
+    endfunction
+function GetAttack takes unit c returns real
+local real base = BlzGetUnitBaseDamage(c,0)
+if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 1 then
+set base = base + GetHeroStr(c,true)
+            elseif BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 3 then
+set base = base + GetHeroAgi(c,true)
+            elseif BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+set base = base + GetHeroInt(c,true)
+endif
+return base 
+endfunction
+function AddSpellLevel takes unit c, integer id, integer lvl, boolean b returns nothing
+if b == true then 
+call SetUnitAbilityLevel(c,id,GetUnitAbilityLevel(c,id)+lvl)
+else
+call SetUnitAbilityLevel(c,id,GetUnitAbilityLevel(c,id)-lvl)
+endif
+endfunction
+function CreateTT_perm takes real x,real y ,real z ,real size, string s returns nothing
+set bj_lastCreatedTextTag = CreateTextTag()
+   // call SetTextTagLifespan(bj_lastCreatedTextTag, 0.9) // через 0.5 сек удалится
+   // call SetTextTagFadepoint(bj_lastCreatedTextTag, 0.45) // когда начнет плавно исчезать
+    call SetTextTagPos(bj_lastCreatedTextTag, x,y, z) // позиция (например на юните)
+    call SetTextTagText(bj_lastCreatedTextTag, s, size/100) // сам текст и размер
+    call SetTextTagPermanent(bj_lastCreatedTextTag, true) // делаем непостоянным
+    call SetTextTagVisibility(bj_lastCreatedTextTag,true)
+endfunction
+function IsItemInInventory4 takes unit u, integer it1, integer it2, integer it3 returns integer
+        local integer i = 0
+        local item ti
+        local integer count = 0
+        local integer count2 = 0
+        loop
+            set ti = UnitItemInSlot(u, i)
+            exitwhen i > 5
+            if GetItemTypeId(ti) == it1 or GetItemTypeId(ti) == it2 or GetItemTypeId(ti) == it3 then
+                set count = count + 1
+                if count > 1 then
+                    if count2 == 0 then
+                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000Нельзя иметь больше одного типа такого предмета!|r")
+                        set count2 = count2 + 1
+                    endif
+                    call UnitRemoveItem(u, ti)
+                    set count = count - 1
+                endif
+            endif
+            set i = i + 1
+        endloop
+        set ti = null
+        return count
+    endfunction
+function MyRemoveLevelAbility takes unit c, real r, integer id returns nothing
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("spell and " + I2S(id))) == 0 then
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("spell and " + I2S(id)), 1)
+            call KS.SetAbilityLevel_Start(c, r, id, GetUnitAbilityLevel(c, id), true)
+        endif
+    endfunction
+function AddHpRegen takes unit c, real r, boolean b returns nothing
+if b == true then 
+call BlzSetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE,BlzGetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE)+r)
+else
+call BlzSetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE,BlzGetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE)-r)
+endif
+endfunction
+function AddMpRegen takes unit c, real r, boolean b returns nothing
+if b == true then 
+call BlzSetUnitRealField(c,UNIT_RF_MANA_REGENERATION,BlzGetUnitRealField(c,UNIT_RF_MANA_REGENERATION)+r)
+else
+call BlzSetUnitRealField(c,UNIT_RF_MANA_REGENERATION,BlzGetUnitRealField(c,UNIT_RF_MANA_REGENERATION)-r)
+endif
+endfunction
+function GetMpRegen takes unit c returns real
+ return BlzGetUnitRealField(c,UNIT_RF_MANA_REGENERATION)
+endfunction
+function GetHpRegen takes unit c returns real
+ return BlzGetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE)
+endfunction
+function SplitName takes string s returns string
+    local integer i = 0
+    local integer len = StringLength(s)
+    local integer visual = 0
+    local string c
+    loop
+        exitwhen i >= len
+        // пробуем взять 2 байта
+        if i + 2 <= len then
+            set c = SubString(s, i, i + 2)
+            if IsRussianLetter(c) then
+                set visual = visual + 1
+                set i = i + 2
+            else
+                set visual = visual + 1
+                set i = i + 1
+            endif
+        else
+            set visual = visual + 1
+            set i = i + 1
+        endif
+        if visual == LetterCheck then
+            return SubString(s, 0, i) + "|n" + SubString(s, i, len)
+        endif
+    endloop
+    return s
+endfunction
+function SplitNameCheck takes string s returns boolean
+    return GetVisualLength(s) > LetterCheck
+endfunction
+function MakeSoundLocal takes string s, player p returns nothing
+        local sound snd
+        set s = s + ".mp3"
+        set snd = CreateSound(s, false, false, false, 0, 0, "DefaultEAXON")
+        call SetSoundVolume( snd, 0 )
+        if GetLocalPlayer() == p then 
+        call SetSoundVolume( snd, 127 )
+        endif 
+        call StartSound(snd)
+        call KillSoundWhenDone(snd)
+        set snd = null
+    endfunction
+function VisionTimed takes player p, real x, real y, real vision, real time returns nothing
+        local fogmodifier fm = CreateFogModifierRadius(p, FOG_OF_WAR_VISIBLE, x, y, vision, true, false)
+        call FogModifierStart(fm)
+        call MyRemoveFog(fm, time)
+        set fm = null
+    endfunction
+function PlayersMsg takes string s, real r returns nothing
+    local integer i = 0
+    loop
+    exitwhen i == bj_MAX_PLAYER_SLOTS
+    call DisplayTimedTextToPlayer(Player(i),0,0,r,s)
+    set i = i + 1
+    endloop
+    endfunction
+ function GroupPush takes unit c, real x,real y,real aoe,real push_distance,real push_duration,real a, boolean all returns nothing
+    local group g = CreateGroup()
+    local unit u 
+    call GroupEnumUnitsInRange( g , x , y , aoe , Condition(function NoDecor_Filter))
+                                loop
+                                    set u = FirstOfGroup( g )
+                                    exitwhen u == null 
+                                    if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    if a == -2 then 
+                                    call MUE(u,push_distance,push_duration,GAngle2(u,x,y))
+                                    elseif a == -1 then 
+                                    call MUE(u,push_distance,push_duration,GAngle3(x,y,u))
+                                    else
+                                    call MUE(u,push_distance,push_duration,a)
+                                    endif
+                                    endif
+                                    call GroupRemoveUnit( g , u )
+                                endloop
+                                call DestroyGroup(g)
+                                set u = null
+                                set g = null
+    endfunction
+function BuffUnitMS takes unit c, unit u, real speed returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = SpeedToLevel(speed)
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], 'A00D')
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], 'A00D') == 0 then
+                call UnitAddAbility(DummyPlayer[i], 'A00D')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A00D', level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "bloodlust", u)
+        endif
+    endfunction
+function LearnHeroSpells takes unit c returns nothing
+local integer id = GetUnitTypeId(c)
+local integer i = 0
+local integer q = 0
+local integer w = 0
+local integer e = 0
+local integer r = 0
+local integer t = 0
+if id == Raiden_ID then
+set q = RaidenQ_ID
+set w = RaidenW_ID
+set e = RaidenE_ID
+set r = RaidenR_ID
+set t = RaidenT_ID
+endif
+loop
+exitwhen i == 5  
+if GetUnitAbilityLevel(c,q)>0 and GetUnitAbilityLevel(c,q)<5 then
+call SelectHeroSkill(c, q)
+endif  
+if GetUnitAbilityLevel(c,w)>0 and GetUnitAbilityLevel(c,w)<5 then
+call SelectHeroSkill(c, w)
+endif  
+if GetUnitAbilityLevel(c,e)>0 and GetUnitAbilityLevel(c,e)<5 then
+call SelectHeroSkill(c, e)
+endif  
+if GetUnitAbilityLevel(c,r)>0 and GetUnitAbilityLevel(c,r)<5 then
+call SelectHeroSkill(c, r)
+endif  
+if GetUnitAbilityLevel(c,t)>0 and GetUnitAbilityLevel(c,t)<5 then
+call SelectHeroSkill(c, t)
+endif
+set i = i + 1
+endloop
+endfunction
+function GetPlayerTakenPhys takes player p returns integer 
+    local integer id = GetPlayerId(p)
+    local real dmg1 = PlayerDamageTakenMag[id]
+    local real dmg2 = PlayerDamageTakenPhys[id]
+    local real dmg = dmg1+dmg2
+    local integer result = R2I((dmg2/dmg)*100)    
+    return result
+    endfunction
+    function GetPlayerTakenMag takes player p returns integer 
+    local integer id = GetPlayerId(p)
+    local real dmg1 = PlayerDamageTakenMag[id]
+    local real dmg2 = PlayerDamageTakenPhys[id]
+    local real dmg = dmg1+dmg2
+    local integer result = R2I((dmg1/dmg)*100)    
+    return result
+    endfunction
+function GroupDmg takes unit c, real x,real y,real aoe,real dmg  returns nothing
+    local group g = CreateGroup()
+    local unit u 
+    call GroupEnumUnitsInRange( g , x , y , aoe , Condition(function NoDecor_Filter))
+                                loop
+                                    set u = FirstOfGroup( g )
+                                    exitwhen u == null 
+                                    if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call dmgmag(c,u,dmg)   
+                                    endif
+                                    call GroupRemoveUnit( g , u )
+                                endloop
+                                call DestroyGroup(g)
+                                set u = null
+                                set g = null
+    endfunction
+function GetPlayerColorString takes player p returns string
+    local integer id = GetPlayerId(p)
+
+    if id == 0 then
+        return "|c00FF0303" // Красный
+    elseif id == 1 then
+        return "|c000042FF" // Синий
+    elseif id == 2 then
+        return "|c001CE6B9" // Бирюзовый
+    elseif id == 3 then
+        return "|c0054007F" // Фиолетовый
+    elseif id == 4 then
+        return "|c00FFFC01" // Желтый
+    elseif id == 5 then
+        return "|c00FF8401" // Оранжевый
+    elseif id == 6 then
+        return "|c0020C000" // Зеленый
+    elseif id == 7 then
+        return "|c00E55BB0" // Розовый
+    elseif id == 8 then
+        return "|c00959697" // Серый
+    elseif id == 9 then
+        return "|c007EBFF1" // Светло-синий
+    elseif id == 10 then
+        return "|c00106246" // Темно-зеленый
+    elseif id == 11 then
+        return "|c004E2A04" // Коричневый
+    endif
+
+    return "|c00FFFFFF" // дефолт белый
+endfunction
+function dmgmag takes unit c, unit td , real dmg returns nothing
+    call UnitDamageTarget(c, td, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_MAGIC, null)
+    endfunction
+ function IntegerCd takes unit c, string s, real cd returns boolean
+    local boolean b = false
+    if LoadInteger(hs,GetHandleId(c),StringHash(s)) == 0 then
+    set b = true
+    call SaveInteger(hs,GetHandleId(c),StringHash(s),1)
+    call MyFlush(GetHandleId(c),StringHash(s),0,cd)
+    endif
+    return b
+    endfunction
+function EffectSpawnScale takes string name, real x, real y, real facing, real timescale, real scale, real height, real time,real scale1,real scale2 returns effect
+        local effect e = AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        call MyRemoveEff(e, time)
+        call ScaleEffDummy(e,time,scale1,scale2)
+        return e
+    endfunction
+function DecorRemove takes unit c, real x, real y, real aoe,real dmg returns nothing
+    local integer i = GetPlayerId(GetOwningPlayer(c))
+        if (aoe > 0) then
+    set decordmg = dmg
+    set decorunit = c
+        set dummyrect = Rect(x - aoe, y - aoe, x + aoe, y + aoe)
+            call EnumDestructablesInRect(dummyrect, null, function decordestroy)
+            call RemoveRect(dummyrect)
+            set dummyrect = null
+        endif
+    endfunction
+function EffectSpawn3_2 takes string name, real x, real y, real facing, real timescale, real scale, real height, real roll returns effect
+        local effect e = AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        call BlzSetSpecialEffectRoll(e, roll * bj_DEGTORAD)
+        return e
+    endfunction
+    function dmgphys takes unit c, unit td , real dmg returns nothing
+call UnitDamageTarget(c,td,dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, null)
+    endfunction
+    function dmgatk takes unit c, unit td , real dmg returns nothing
+call UnitDamageTarget(c,td,dmg, true, false, ATTACK_TYPE_MELEE, DAMAGE_TYPE_NORMAL, null)
+    endfunction
+function AddGold takes player p, integer gold, boolean b returns nothing
+    if b then 
+     call SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)+gold)
+     else
+     call SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)-gold)
+     endif
+    endfunction 
+    function GetGold takes player p returns integer
+    return GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
+    endfunction 
+    function SpellBool takes unit c returns boolean // enemy unit check before damage
+        return GetWidgetLife(c) > 0.405 and GetUnitAbilityLevel(c,'Avul') == 0 
+    endfunction
+function FrameEnable takes framehandle f,boolean b returns nothing
+    call BlzFrameSetEnable(f,b)
+    call BlzFrameSetVisible(f,b)
+    endfunction
+     function GetEffX takes effect eff returns real
+        return BlzGetLocalSpecialEffectX(eff)
+    endfunction
+function MissHp takes unit c, real r returns real
+        return (((1 - (GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE))) * r) * GetUnitState(c, UNIT_STATE_MAX_LIFE))
+    endfunction
+ function ColorLightning takes lightning c, real r, real red, real green, real blue, real rmax, boolean b returns nothing
+        call KS.ColorLightning_Start(c, r, red, green, blue, rmax, b)
+    endfunction
+function EUTU4 takes effect e, real r, real f, effect e2 returns nothing
+        call KS.MoveEffectToUnit_Start(e, r, f, null, 0, 1,e2)
+    endfunction
+function EUTU2_3 takes effect e, real r, real f, unit t returns nothing
+        call DestroyEffect(e)
+        call KS.MoveEffectToUnit_Start(e, r, f, t, 0, 0, null)
+    endfunction
+function ReduceCooldown takes unit u, integer abilId, real amount returns nothing
+    local real cd = BlzGetUnitAbilityCooldownRemaining(u, abilId) - amount
+    if cd < 0.00 then
+        set cd = 0.00
+    endif
+    call BlzStartUnitAbilityCooldown(u, abilId, cd)
+endfunction
+function RootUnit takes unit c, unit u, real time returns nothing // min 0.5 , max 5.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = R2I(time / 0.5)
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], 'APPP')
+        endif
+        if level < 1 then
+            set level = 1
+        elseif level > 30 then
+            set level = 30
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], 'APPP') == 0 then
+                call UnitAddAbility(DummyPlayer[i], 'APPP')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'APPP', level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "entanglingroots", u)
+        endif
+    endfunction
+function UnitSpawn0 takes player p,integer id, real x, real y, real facing, real timescale, real scale, real height returns unit
+        local unit u = CreateUnit(p,id, x, y,facing)
+        call SetUnitTimeScale(u,timescale)
+        call SetFly(u, height)
+        call SetScale(u, scale)
+        return u
+    endfunction
+    function UnitSpawn takes player p,integer id, real x, real y, real facing, real timescale, real scale, real height, real timeexpire returns unit
+        local unit u = CreateUnit(p,id, x, y,facing)
+        call SetUnitTimeScale(u,timescale)
+        call SetFly(u, height)
+        call SetScale(u, scale)
+        call MyRemoveUnit(u,timeexpire)
+        return u
+    endfunction
+    function UnitSpawnColor takes player p,integer id, real x, real y, real facing, real timescale, real scale, real height, real timeexpire,integer red,integer green, integer blue, integer alpha returns unit
+        local unit u = CreateUnit(p,id, x, y,facing)
+        call SetUnitTimeScale(u,timescale)
+        call SetFly(u, height)
+        call SetScale(u, scale)
+        call MyRemoveUnit(u,timeexpire)
+        call SetUnitVertexColor(u,red,green,blue,alpha)
+        return u
+    endfunction    
+   function UnitSpawn2 takes player p,integer id, real x, real y, real facing, real timescale, real scale, real height,real timedelay, real timeexpire,integer red,integer green, integer blue, integer alpha returns unit
+        local unit u = CreateUnit(p,id, x, y,facing)
+        call SetUnitTimeScale(u,timescale)
+        call SetFly(u, height)
+        call SetScale(u, scale)
+        call SetUnitVertexColor(u,red,green,blue,alpha)
+        call ColorDummy3(u,timedelay,red,green,blue,timeexpire)
+        return u
+    endfunction
+function StartSpellUnit takes unit c returns nothing
+    call IssueImmediateOrder(c,"stop")
+    call SetUnitTimeScale(c,1)
+    call UnitAddAbility(c, 'Avul')
+    call PauseUnit(c, true)
+    endfunction
+    function StartSpellUnit2 takes unit c returns nothing
+    call IssueImmediateOrder(c,"stop")
+    call SetUnitTimeScale(c,1)
+    call PauseUnit(c, true)
+    endfunction
+    function StopSpellUnit takes unit c returns nothing
+    call IssueImmediateOrder(c,"stop")
+    call SetUnitTimeScale(c,1)
+    call UnitRemoveAbility(c, 'Avul')
+    call PauseUnit(c, false)
+    endfunction
+    function StopSpellUnit2 takes unit c returns nothing
+    call IssueImmediateOrder(c,"stop")
+    call SetUnitTimeScale(c,1)
+    call PauseUnit(c, false)
+    endfunction
+function ErzaStacks takes unit c, unit u, integer level returns nothing 
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], ErzaR_StackAbilityId)
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], ErzaR_StackAbilityId) == 0 then
+                call UnitAddAbility(DummyPlayer[i], ErzaR_StackAbilityId)
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], ErzaR_StackAbilityId, level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "innerfire", u)
+        endif
+    endfunction
+function HealMpTT takes unit c,unit td, real r, real start_height returns nothing
+    local real random1 = 80
+    local real scale = 0.018
+    local integer k = 0
+    local real x = GetUnitX(td)
+    local real y = GetUnitY(td)
+    local real random2 = GetRandomReal(0, 359) * bj_DEGTORAD
+    local texttag t
+    local boolean b = false 
+    if GetUnitState(td, UNIT_STATE_LIFE) + r < GetUnitState(td, UNIT_STATE_MAX_LIFE) then 
+    set b = true
+    elseif (GetUnitState(td, UNIT_STATE_MAX_LIFE)-GetUnitState(td, UNIT_STATE_LIFE))>1 then
+    set b = true
+    endif
+    if b then 
+    set t = CreateTextTag()
+    call SetTextTagLifespan(t, 0.9) // через 0.5 сек удалится
+    call SetTextTagFadepoint(t, 0.45) // когда начнет плавно исчезать
+    call SetTextTagPos(t, x , y, start_height) // позиция (например на юните)
+    call SetTextTagText(t,"|c004272FF+" + I2S(R2I(r)), scale) // сам текст и размер
+    call SetTextTagPermanent(t, false) // делаем непостоянным
+    call SetTextTagVelocity(t, 0, 0.1)
+    call SetTextTagVisibility(t,false)
+    /*loop
+    exitwhen k >10 
+    if IsUnitVisible(c,Player(k)) then 
+    if GetLocalPlayer() == Player(k) then 
+    call SetTextTagVisibility(t,true)
+    endif
+    endif
+    set k = k + 1
+    endloop
+    */
+    if GetLocalPlayer() == GetOwningPlayer(c) or GetLocalPlayer() == GetOwningPlayer(td) then 
+    call SetTextTagVisibility(t,true)
+    endif
+    endif
+    set t = null
+    endfunction
+function EMUE takes effect e, real dist, real rmax, real a returns nothing
+        call KS.EMUE_Start(e, dist, rmax, a, 0)
+    endfunction
+function EffVision takes effect e, unit c returns nothing
+     local integer k = 0
+     loop
+     exitwhen k == bj_MAX_PLAYER_SLOTS
+     if IsUnitVisible(c,Player(k)) then 
+    if GetLocalPlayer() == Player(k) then 
+    call BlzSetSpecialEffectAlpha(e,255)
+    endif
+     else
+    if GetLocalPlayer() == Player(k) then 
+    call BlzSetSpecialEffectAlpha(e,0)
+    endif 
+     endif
+     set k = k + 1
+     endloop
+    endfunction
+function HPS takes unit c,unit td, real heal, real max returns nothing
+        call KS.HPS_Start(c,td, 0, heal, max)
+    endfunction
+    function MPS takes unit c, real heal, real max returns nothing
+        call Post_KS.HPS_Start(c, 1, heal, max)
+    endfunction
+    function GetEffY takes effect eff returns real
+        return BlzGetLocalSpecialEffectY(eff)
+    endfunction
+    function Parabola takes real h, real d, real x returns real
+        return (4 * h / d) * (d - x) * (x / d)
+    endfunction
+function DebugUnit2 takes unit c returns nothing
+        if IsUnitPaused(c) == false then
+            call PauseUnit(c, true)
+        endif
+    endfunction
+function SetMouseX takes player p, real x returns nothing
+local integer i = GetPlayerId(p)
+set MouseX[i] = x
+endfunction
+function SetMouseY takes player p ,real y returns nothing
+local integer i = GetPlayerId(p)
+set MouseY[i] = y
+endfunction
+function HealTT takes unit c,unit td, real r, real start_height returns nothing
+    local real random1 = 80
+    local real scale = 0.018
+    local integer k = 0
+    local real x = GetUnitX(c)
+    local real y = GetUnitY(c)
+    local real random2 = GetRandomReal(0, 359) * bj_DEGTORAD
+    local texttag t
+    local boolean b = false 
+    if GetUnitState(c, UNIT_STATE_LIFE) + r < GetUnitState(c, UNIT_STATE_MAX_LIFE) then 
+    set b = true
+    elseif (GetUnitState(c, UNIT_STATE_MAX_LIFE)-GetUnitState(c, UNIT_STATE_LIFE))>1 then
+    set b = true
+    endif
+    if b then 
+    set t = CreateTextTag()
+    call SetTextTagLifespan(t, 0.9) // через 0.5 сек удалится
+    call SetTextTagFadepoint(t, 0.45) // когда начнет плавно исчезать
+    call SetTextTagPos(t, x , y, start_height) // позиция (например на юните)
+    call SetTextTagText(t,"|c002EFE01+" + I2S(R2I(r)), scale) // сам текст и размер
+    call SetTextTagPermanent(t, false) // делаем непостоянным
+    call SetTextTagVelocity(t, 0, 0.1)
+    call SetTextTagVisibility(t,false)
+    /*loop
+    exitwhen k >10 
+    if IsUnitVisible(c,Player(k)) then 
+    if GetLocalPlayer() == Player(k) then 
+    call SetTextTagVisibility(t,true)
+    endif
+    endif
+    set k = k + 1
+    endloop
+    */
+    if GetLocalPlayer() == GetOwningPlayer(c) or GetLocalPlayer() == GetOwningPlayer(td) then 
+    call SetTextTagVisibility(t,true)
+    endif
+    endif
+    set t = null
+    endfunction
+function ScaleDummy takes unit c, real r, real scale1, real scale2 returns nothing
+        call KS.ScaleDummy_Start(c, 0, scale1, scale2, r)
+    endfunction
+    function ScaleDummy2 takes unit c, real prepare, real r, real scale1, real scale2 returns nothing
+        call KS.ScaleDummy_Start(c, prepare, scale1, scale2, r)
+    endfunction   
+ function ScaleEffDummy takes effect e, real r, real scale1, real scale2 returns nothing
+        call KS.ScaleEffDummy_Start(e, 0, scale1, scale2, r)
+    endfunction
+    function ScaleEffDummy2 takes effect e, real prepare, real r, real scale1, real scale2 returns nothing
+        call KS.ScaleEffDummy_Start(e, prepare, scale1, scale2, r)
+    endfunction
+function IsAllyExist takes player p returns boolean 
+local boolean b = false
+local integer id = GetPlayerId(p)
+local integer k = 0
+set k = 0
+loop
+exitwhen k>10
+if IsPlayerAlly(Player(k),p) and Player(k) != p and IsPlaying(Player(k)) then 
+set b = true 
+endif
+set k = k + 1
+endloop
+return b 
+endfunction
+function IsPlaying2 takes player p returns boolean 
+return GetPlayerSlotState( p ) == PLAYER_SLOT_STATE_PLAYING 
+endfunction
+function IsPlaying3 takes player p returns boolean 
+return Hero[GetPlayerId(p)] != null 
+endfunction
+function DebugUnit takes unit c returns nothing
+    if GetUnitAbilityLevel(c,'Avul') == 0 then 
+    call UnitAddAbility(c,'Avul')
+    endif
+    if IsUnitPaused(c) == false then 
+    call PauseUnit(c,true)
+    endif
+    endfunction
+function ErzaPassive takes unit c, unit u, integer level returns nothing // min 0.5 , max 5.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], 'APP1')
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], 'APP1') == 0 then
+                call UnitAddAbility(DummyPlayer[i], 'APP1')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'APP1', level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "curse", u)
+        endif
+    endfunction
+ function EUTU2_2 takes effect e, real r, real f, unit t returns nothing
+        call KS.MoveEffectToUnit_Start(e, r, f, t, 0,0)
+    endfunction
+function EUTU2 takes effect e, real r, real f, unit t returns nothing
+        call KS.MoveEffectToUnit_Start(e, r, f, t,0)
+    endfunction
+    function EUTU3 takes effect e, real r, real f, unit t,integer ability_id returns nothing
+        call KS.MoveEffectToUnit_Start(e, r, f, t,ability_id)
+    endfunction
+function IsPlaying takes player p returns boolean 
+return GetPlayerSlotState( p ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( p ) == MAP_CONTROL_USER 
+endfunction
+ function MoveUnit2 takes unit c, real sr, real a returns nothing
+        call SetUnitPosition(c,GetUnitX(c) + sr * Cos(a),GetUnitY(c) + sr * Sin(a))
+    endfunction
+  function DoomUnit takes unit c, unit u, real time returns nothing // min 0.1 , max 3.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = R2I(time * 10 )
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer[i], 'A1QY')
+        endif
+        if level < 1 then
+            set level = 1
+        elseif level > 30 then
+            set level = 30
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer[i], 'A1QY') == 0 then
+                call UnitAddAbility(DummyPlayer[i], 'A1QY')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A1QY', level)
+            call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "doom", u)
+        endif
+    endfunction
+    function MoveEff2 takes effect e, real sr, real a returns nothing
+            call BlzSetSpecialEffectPosition(e, GetEffX(e) + sr * Cos(a), GetEffY(e) + sr * Sin(a), BlzGetLocalSpecialEffectZ(e))
+       endfunction
+     function MyRemoveFog takes fogmodifier fg, real r returns nothing
+        call KS.MyRemoveFogModifier_Start(fg, r)
+    endfunction
+function SetUnitRange takes unit u, real newRange returns nothing
+        call BlzSetUnitWeaponRealField(u,UNIT_WEAPON_RF_ATTACK_RANGE,1,newRange-BlzGetUnitWeaponRealField(u,UNIT_WEAPON_RF_ATTACK_RANGE,0)+BlzGetUnitWeaponRealField(u,UNIT_WEAPON_RF_ATTACK_RANGE,1))
+endfunction
+ 
+// Setting small AoE range for a unit also sets its attack cooldown and the range at index 1...
+// Why ? I don't know. Here's a fix.
+// Must test with the other types of AoE and indexes
+function SetUnitAoESmall takes unit u, integer index, real newAoE returns nothing
+    local real r=BlzGetUnitAttackCooldown(u,index)
+    local real r2=BlzGetUnitWeaponRealField(u,UNIT_WEAPON_RF_ATTACK_RANGE,0)
+    call BlzSetUnitWeaponRealField(u,UNIT_WEAPON_RF_ATTACK_AREA_OF_EFFECT_SMALL_DAMAGE,index,newAoE)
+    call BlzSetUnitAttackCooldown(u,r,index)
+    call SetUnitRange(u,r2)
+endfunction
+ function EffectSpawnColor3 takes string name,real x,real y,real facing,real timescale,real scale,real height,real pitch,integer red,integer green,integer blue,integer alpha returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)        
+        call BlzSetSpecialEffectPitch(e,pitch*bj_DEGTORAD)
+        call BlzSetSpecialEffectColor(e, red, green, blue)
+        call BlzSetSpecialEffectAlpha(e, alpha)
+        return e
+    endfunction
+function GetMainStatAgi takes unit c returns boolean
+    local boolean b = false
+    local integer value = 0
+    if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 3 then // agi
+        set b = true
+    endif
+    if LoadInteger(hs, GetHandleId(c), StringHash("rimuru evol 2")) == 1 then
+        set b = true
+    endif
+    return b
+endfunction
+function GetMainStatStr takes unit c returns boolean
+    local boolean b = false
+    local integer value = 0
+    if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 1 then //str
+        set b = true
+    endif
+   return b
+endfunction
+function GetMainStatInt takes unit c returns boolean
+    local boolean b = false
+    local integer value = 0
+    if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then // int
+        set b = true
+    endif
+    return b
+endfunction
+ function OkarunEggCdReal takes unit c, real cd returns real
+     local real r = cd
+    if  IsItemInInventory(c,'I011')>0 and  BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+             set r =  cd*(1-OkarunEggReduceCD/100)
+            else
+           set r =  cd
+            endif
+            return r
+    endfunction
+ function MyAddMana takes unit c, real mana, real r returns nothing
+        call KS_Base.MyAddMana_Start(c,mana,r)
+    endfunction
+function FixAura takes unit c returns nothing
+local integer i = GetPlayerId(GetOwningPlayer(c))
+local integer id = 0
+local integer k = 0
+if AttachDonat1[i] != null or AttachDonat2[i] != null or AttachDonat3[i] != null then 
+if AttachDonat1[i] != null then 
+set k = 1 
+elseif AttachDonat2[i] != null then
+set k = 2 
+elseif AttachDonat3[i] != null then
+set k = 3
+elseif AttachDonat4[i] != null then
+set k = 4
+endif
+call DestroyEffect(AttachDonat1[i])
+call DestroyEffect(AttachDonat2[i])
+call DestroyEffect(AttachDonat3[i])
+call DestroyEffect(AttachDonat4[i])
+set AttachDonat1[i] = null
+set AttachDonat2[i] = null
+set AttachDonat3[i] = null
+set AttachDonat4[i] = null
+if k == 1 then 
+if VIPCheckLvl2(FramePlayerFirstName[i]) or VIPCheckLvl3(FramePlayerFirstName[i]) then
+set id = LoadInteger(hs,GetHandleId(Player(i)),StringHash("donat up"))-1
+if id == 0 then 
+set AttachDonat1[i] = AddSpecialEffectTarget("war3mapimported\\wos_scghmx (6).mdx",Hero[i],"origin")
+elseif id == 1 then 
+set AttachDonat1[i] = AddSpecialEffectTarget("war3mapimported\\wos_scghmx (9).mdx",Hero[i],"origin")
+endif
+elseif VIPCheckLvl1(FramePlayerFirstName[i]) then
+set AttachDonat1[i] = AddSpecialEffectTarget("war3mapImported\\wos_scghmx (9).mdl",Hero[i],"origin")
+endif
+elseif k == 2 then 
+if VIPCheckLvl3(FramePlayerFirstName[i]) then
+set id = LoadInteger(hs,GetHandleId(Player(i)),StringHash("donat left"))-1
+if id == 0 then 
+set AttachDonat2[i] = AddSpecialEffectTarget("war3mapimported\\wos_qpanda_putong_san01.mdx",Hero[i],"origin")
+elseif id == 1 then 
+set AttachDonat2[i] = AddSpecialEffectTarget("war3mapimported\\wos_qpanda_putong_san02.mdx",Hero[i],"origin")
+elseif id == 2 then 
+set AttachDonat3[i] = AddSpecialEffectTarget("war3mapimported\\wos_qpanda_putong_san03.mdx",Hero[i],"origin")
+elseif id == 3 then 
+set AttachDonat2[i] = AddSpecialEffectTarget("war3mapimported\\wos_qpanda_putong_san04.mdx",Hero[i],"origin")
+endif
+elseif VIPCheckLvl2(FramePlayerFirstName[i])  then
+set AttachDonat2[i] = AddSpecialEffectTarget("war3mapImported\\wos_scghmx (6).mdl",Hero[i],"origin")
+endif
+elseif k == 3 then 
+set AttachDonat3[i] = AddSpecialEffectTarget("war3mapImported\\wos_ncow_sfx_sharingan3tomoe.mdx",Hero[i],"origin")
+elseif k == 4 then 
+set AttachDonat4[i] = AddSpecialEffectTarget("war3mapImported\\wos_raidensymbol.mdx",Hero[i],"origin")
+endif
+endif
+endfunction
+  function IsItemInInventory42 takes unit u, integer it1, integer it2, integer it3 returns integer
+        local integer i = 0
+        local item ti
+        local integer count = 0
+        local integer count2 = 0
+        local integer gold = 0
+        loop
+            set ti = UnitItemInSlot(u, i)
+            exitwhen i > 5
+            if GetItemTypeId(ti) == it1 or GetItemTypeId(ti) == it2 or GetItemTypeId(ti) == it3 then
+                set count = count + 1
+                if count > 1 then
+                    if count2 == 0 then
+                        call DisplayTimedTextToPlayer(GetOwningPlayer(u), 0, 0, 3, "|c00F20000You cant own more than 1 item of same type!|r")
+                        set count2 = count2 + 1
+                    endif
+                    set gold = GetItemValue(GetItemTypeId(ti))
+                    call AddGold(GetOwningPlayer(u),gold,true)
+                    call UnitRemoveItem(u, ti)
+                    call RemoveItem(ti)
+                    set count = count - 1
+                endif
+            endif
+            set i = i + 1
+        endloop
+        set ti = null
+        return count
+        endfunction
+  function CheckCoordsInRect takes rect rec, real x, real y returns boolean
+        local real c1 = GetRectMinX(rec)
+        local real c2 = GetRectMaxX(rec)
+        local real c3 = GetRectMinY(rec)
+        local real c4 = GetRectMaxY(rec)
+        return (c1 <= x) and (x <= c2) and (c3 <= y) and (y <= c4)
+    endfunction
+    function SR0 takes real x1, real y1, real x2, real y2 returns real //Square root, distance between coords
+        return SquareRoot((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+    endfunction
+function MyFlushBuff takes integer id, integer childid, integer value,  unit c, integer buff_id returns nothing
+        call KS_Base.MyFlushI_Start(id, childid, value, 0,c,buff_id)
+    endfunction
+function NextSound takes string s, real r returns nothing
+        call KS.NextSound_Start(s, r)
+    endfunction
+    function SR2 takes unit c, unit td returns real //Square root, distance between units
+        local real x1 = GetUnitX(c)
+        local real y1 = GetUnitY(c)
+        local real x2 = GetUnitX(td)
+        local real y2 = GetUnitY(td)
+        return SquareRoot((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+    endfunction
+  function MyFlush takes integer id, integer childid, integer value, real r returns nothing
+        call KS_Base.MyFlushI_Start(id, childid, value, r)
+    endfunction
+function MyItemStacks takes unit c, integer item_id, integer stack_amount, real r ,boolean add_or_remove returns nothing
+        call KS.MyAddStacks_Start(c, item_id, stack_amount, r,add_or_remove)
+    endfunction
+    function MyFlushReal takes integer id, integer childid, integer value, real r returns nothing
+        call KS_Base.MyFlushR_Start(id, childid, value, r)
+    endfunction
+ function SetMpCurrent takes unit c, real r returns nothing
+    call SetUnitState(c,UNIT_STATE_MANA,GetUnitState(c,UNIT_STATE_MANA)+r)
+    endfunction
+function MyFrame takes unit c,real rmax, string icon_path, boolean pauseunitcount,integer numberframe returns nothing
+        call KS.MyBuffTime_Start(c,0,rmax,icon_path,pauseunitcount,-1,1,0,numberframe)
+    endfunction
+function SetHpCurrent2 takes unit c,unit td, real r returns nothing
+    local integer i = GetPlayerId(GetOwningPlayer(c))
+    if GetUnitState(c, UNIT_STATE_LIFE) + r < GetUnitState(c, UNIT_STATE_MAX_LIFE) then 
+    set PlayerHeal[i] = PlayerHeal[i]+ R2I(r)
+    else
+    set PlayerHeal[i] = PlayerHeal[i]+ R2I(GetUnitState(c, UNIT_STATE_MAX_LIFE)-GetUnitState(c, UNIT_STATE_LIFE))
+    endif
+    call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) + r)
+    endfunction
+    function SilenceUnit takes unit c, unit u, real time returns nothing // min 0.1 , max 3.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = R2I(time / 0.5)
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i])<1 then 
+         set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        call UnitAddAbility(DummyPlayer[i],'A1P2')
+        endif
+    if level < 1 then
+        set level = 1
+    elseif level > 10 then
+        set level = 10
+    endif    
+        if level > 0 then 
+            if GetUnitAbilityLevel(DummyPlayer[i],'A1P2') == 0 then
+            call UnitAddAbility(DummyPlayer[i],'A1P2')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A1P2', level)
+            call SetUnitFacing(DummyPlayer[i],GAngle(DummyPlayer[i],u)*bj_RADTODEG)
+            call IssuePointOrder(DummyPlayer[i], "silence", GetUnitX(u),GetUnitY(u))
+        endif
+    endfunction 
+function MyFrameBuff2 takes unit c,integer buff_id,real rmax, string icon_path, boolean pauseunitcount, integer player_id returns nothing
+        call KS.MyBuffTime_Start(c,buff_id,rmax,icon_path,pauseunitcount,player_id)
+    endfunction  
+    function StunUnit takes unit c, unit u, real time returns nothing // min 0.5 , max 5.0 sec
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = R2I(time * 10 )
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i])<1 then 
+         set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        call UnitAddAbility(DummyPlayer[i],'A1OA')
+        endif
+    if level < 1 then
+        set level = 1
+    elseif level > 30 then
+        set level = 30
+    endif    
+        if level > 0 then 
+            if GetUnitAbilityLevel(DummyPlayer[i],'A1OA') == 0 then
+            call UnitAddAbility(DummyPlayer[i],'A1OA')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A1OA', level)
+            call SetUnitFacing(DummyPlayer[i],GAngle(DummyPlayer[i],u)*bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "thunderbolt", u)
+        endif
+    endfunction   
+    function GetSlowAbilityLevel takes integer slowPercent, integer duration returns integer
+    local integer baseIndex = (slowPercent - 10) / 10
+    local integer levelGroupStart = baseIndex * 3 + 1
+    local integer durationOffset = duration - 2
+    return levelGroupStart + durationOffset
+endfunction
+function EffectSpawn4 takes string name, real x, real y, real facing, real timescale, real scale, real height, real roll returns effect
+        local effect e = AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectHeight(e,BlzGetLocalSpecialEffectZ(e)+height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        call BlzSetSpecialEffectRoll(e, roll * bj_DEGTORAD)
+        return e
+    endfunction
+    function SlowUnit takes unit c, unit u,integer percent,integer time returns nothing // percent - from 10 to 80( all percentage,example 10,20,30,40,50,60,70,80), time choose prefered time 2,3,4 sec only
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer level = GetSlowAbilityLevel(percent,time)
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i])<1 then 
+         set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        call UnitAddAbility(DummyPlayer[i],'A1OT')
+        endif
+    if level < 1 then
+        set level = 1
+    elseif level > 24 then
+        set level = 24
+    endif    
+        if level > 0 then 
+            if GetUnitAbilityLevel(DummyPlayer[i],'A1OT') == 0 then
+            call UnitAddAbility(DummyPlayer[i],'A1OT')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer[i], 'A1OT', level)
+            call SetUnitFacing(DummyPlayer[i],GAngle(DummyPlayer[i],u)*bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer[i], "slow", u)
+        endif
+    endfunction   
+function MyFlush2 takes unit c, integer childid, integer value, real r,boolean countinpause returns nothing
+        call KS_Base.MyFlushI_Start(c, childid, value, r,countinpause)
+    endfunction
+  function MyRemoveAbility takes unit c, real r, integer id, integer add_or_delete returns nothing
+        call KS.RemoveAbility_Start(c, r, id, add_or_delete)
+    endfunction
+    function CurseUnit takes unit c, unit u, integer level returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i])<1 then 
+         set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        call UnitAddAbility(DummyPlayer[i],'A1OB')
+        endif
+        if level > 0 then 
+            if GetUnitAbilityLevel(DummyPlayer[i],'A1OB') == 0 then
+            call UnitAddAbility(DummyPlayer[i],'A1OB')
+            endif
+        call SetUnitAbilityLevel(DummyPlayer[i], 'A1OB', level)
+            call SetUnitFacing(DummyPlayer[i],GAngle(DummyPlayer[i],u)*bj_RADTODEG)
+        call IssueTargetOrder(DummyPlayer[i], "cripple", u)
+        endif
+    endfunction
+    function BuffUnit1 takes unit c, unit u, integer level returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i])<1 then 
+         set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        call UnitAddAbility(DummyPlayer[i],'A1P1')
+        endif
+        if level > 0 then 
+            if GetUnitAbilityLevel(DummyPlayer[i],'A1P1') == 0 then
+            call UnitAddAbility(DummyPlayer[i],'A1P1')
+            endif
+        call SetUnitAbilityLevel(DummyPlayer[i], 'A1P1', level)
+            call SetUnitFacing(DummyPlayer[i],GAngle(DummyPlayer[i],u)*bj_RADTODEG)
+        call IssueTargetOrder(DummyPlayer[i], "innerfire", u)
+        endif
+    endfunction
+ function NextDmg takes unit c, unit td, real dmg, integer typedmg, real rmax returns nothing
+        call KS.NextDmg_Start(c, td, dmg, typedmg, rmax)
+    endfunction
+function MyEffBuff takes unit c,integer buff_id, effect e returns nothing
+        call KS.MyBuffEff_Start(c,buff_id,e)
+    endfunction
+function SwapAbilityBuff takes unit c,  integer id_new , integer id_old, integer buff_id returns nothing
+        call KS.SpellTimer_Timer_Start(c, 0, id_new, id_old,buff_id)
+    endfunction
+function LustSin takes unit c, unit td, real dmg returns real 
+local integer check = 0
+if dmg >= 200 and GetUnitAbilityLevel(c,'A07O')>0 and BlzGetUnitAbilityCooldownRemaining(c,'A07O')==0 then 
+        set dmg = dmg * 0.5 
+        call BlzStartUnitAbilityCooldown(c,'A07O',15)
+        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_firefly-rq-sfx-5.mdl",td,"chest"))
+        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_0706Red.mdl",td,"chest"))
+        set check = 1
+        endif
+        if check == 0 then 
+        set dmg = 0 
+        endif
+        return dmg
+endfunction
+function DebuffClear takes unit c returns nothing
+call UnitRemoveAbility(c,'BEer')
+                    call UnitRemoveAbility(c,'Bslo')
+                    call UnitRemoveAbility(c,'B002')
+                    call UnitRemoveAbility(c,'B003')
+                    call UnitRemoveAbility(c,'B00F')
+                    call UnitRemoveAbility(c,'B00S')                    
+                    call UnitRemoveAbility(c,'B00R')
+                    call UnitRemoveAbility(c,'B00K')
+                    call UnitRemoveAbility(c,'B00B')
+                    call UnitRemoveAbility(c,'B006')
+                    call UnitRemoveAbility(c,'B00T')
+                    call UnitRemoveAbility(c,'B008')
+                    call UnitRemoveAbility(c,'B00E')
+                    call UnitRemoveAbility(c,'B00D')
+                    call UnitRemoveAbility(c,'B00K')
+                    call UnitRemoveAbility(c,'B00A')
+                    call UnitRemoveAbility(c,'B00H')
+                    call UnitRemoveAbility(c,'B009')
+                    call UnitRemoveAbility(c,'B007')
+                    call UnitRemoveBuffsEx(c,false,true,true,true,true,true,true)
+endfunction
+function MouseOn takes player p returns nothing
+local integer i = GetPlayerId(p)
+call EnableTrigger(MouseTrig[i])
+endfunction
+function MouseOff takes player p returns nothing
+local integer i = GetPlayerId(p)
+call DisableTrigger(MouseTrig[i])
+endfunction
+function GetMouseX takes player p returns real
+local integer i = GetPlayerId(p)
+return MouseX[i]
+endfunction
+function GetMouseY takes player p returns real
+local integer i = GetPlayerId(p)
+return MouseY[i]
+endfunction
+    function SR3 takes unit c, real x2, real y2 returns real //Square root, distance between unit and coords
+        local real x1 = GetUnitX(c)
+        local real y1 = GetUnitY(c)
+        return SquareRoot((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+    endfunction
+function GetLevelPas3Check takes unit c returns integer
+local integer k
+local integer lvl = GetHeroLevel(c)
+if lvl >= 35 then 
+set k = 3
+elseif lvl >= 25 then 
+set k = 2
+elseif lvl >= 12 then 
+set k = 1
+endif
+return k
+endfunction
+function CurseUnit2 takes unit c, unit u, integer level returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer3[i] == null or GetWidgetLife(DummyPlayer3[i]) < 1 then
+            set DummyPlayer3[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer3[i], 'A1OB')
+        endif
+        if LoadInteger(hs,GetHandleId(u),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(u),StringHash("erza g2 type")) == 1 then
+        set level = 0
+        endif
+        if LoadInteger(hs,GetHandleId(u),StringHash("naofumi shield")) == 1 then 
+        set level = 0
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer3[i], 'A07L') == 0 then
+                call UnitAddAbility(DummyPlayer3[i], 'A07L')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer3[i], 'A07L', level)
+            call SetUnitFacing(DummyPlayer3[i], GAngle(DummyPlayer3[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer3[i], "curse", u)
+        endif
+    endfunction
+    function SR5 takes effect c, real x2, real y2 returns real //Square root, distance between unit and coords
+        local real x1 = GetEffX(c)
+        local real y1 = GetEffY(c)
+        return SquareRoot((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+    endfunction
+function BlockRegen takes unit c, real rmax, real blockheal returns nothing
+        call KS.BlockHpRegen_Start(c, rmax,blockheal)
+    endfunction
+function MUTU2 takes unit c, real r, real f, unit t returns nothing
+        call KS.MoveUnitToUnit_Start(c, r, f, t,0)
+    endfunction
+function BuffUnit2 takes unit c, unit u, integer level returns nothing
+        local integer i = GetPlayerId(GetOwningPlayer(c))
+        if DummyPlayer3[i] == null or GetWidgetLife(DummyPlayer3[i]) < 1 then
+            set DummyPlayer3[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            call UnitAddAbility(DummyPlayer3[i], 'A07D')
+        endif
+        if level > 0 then
+            if GetUnitAbilityLevel(DummyPlayer3[i], 'A07D') == 0 then
+                call UnitAddAbility(DummyPlayer3[i], 'A07D')
+            endif
+            call SetUnitAbilityLevel(DummyPlayer3[i], 'A07D', level)
+            call SetUnitFacing(DummyPlayer3[i], GAngle(DummyPlayer3[i], u) * bj_RADTODEG)
+            call IssueTargetOrder(DummyPlayer3[i], "innerfire", u)
+        endif
+    endfunction
+    function MUTU3 takes unit c, real r, real f, unit t returns nothing
+        call KS.MoveUnitToUnit_Start(c, r, f, t,1)
+    endfunction
+    function GAngle takes unit c, unit d returns real //Angle between units in radians
+        return Atan2(GetUnitY(d) - GetUnitY(c), GetUnitX(d) - GetUnitX(c))
+    endfunction
+    function GAngle2 takes unit c, real x, real y returns real //Angle between unit and coords in radians
+        return Atan2(y - GetUnitY(c), x - GetUnitX(c))
+    endfunction
+    function GAngle3 takes real x, real y, unit c returns real //Angle between coords and unit in radians
+        return Atan2( GetUnitY(c) - y, GetUnitX(c) - x)
+    endfunction
+    function GAngle4 takes real x, real y, real x2, real y2 returns real //Angle between coords in radians
+        return Atan2( y2 - y, x2 - x)
+    endfunction
+    function GAngle5 takes effect eff, real x, real y returns real //Angle between eff and coords in radians
+        return Atan2(y - BlzGetLocalSpecialEffectY(eff), x - BlzGetLocalSpecialEffectX(eff))
+    endfunction
+   function MyFrameBuff takes unit c,integer buff_id,real rmax, string icon_path, boolean pauseunitcount returns nothing
+        call KS.MyBuffTime_Start(c,buff_id,rmax,icon_path,pauseunitcount)
+    endfunction
+    function spelldmg takes unit c , unit td, real dmg returns nothing
+    call UnitDamageTarget(c,td,dmg,false,false,ATTACK_TYPE_NORMAL,DAMAGE_TYPE_UNIVERSAL,null)
+    endfunction
+     function PathableCheck takes real x , real y returns boolean
+    return IsTerrainPathable(x,y, PATHING_TYPE_FLYABILITY) == false 
+    endfunction
+     function PathableCheck2 takes real x , real y returns boolean
+    return true
+    endfunction
+    function MoveUnit takes unit c, real sr, real a returns nothing
+        if PathableCheck(GetUnitX(c) + sr * Cos(a), GetUnitY(c) + sr * Sin(a)) then
+            call SetUnitX(c, GetUnitX(c) + sr * Cos(a))
+            call SetUnitY(c, GetUnitY(c) + sr * Sin(a))
+        endif
+    endfunction
+function PlayerMsg takes string s, real r returns nothing
+local integer i = 0
+loop
+exitwhen i == 10 
+call DisplayTimedTextToPlayer(Player(i),0,0,r,s)
+set i = i + 1
+endloop
+endfunction
+function PosUnit takes unit c, real x, real y returns nothing
+        local integer k = 0
+        local integer k2 = 0
+        local real a = GAngle2(c,x,y)
+        local real sr = SR3(c,x,y)
+        if sr< 300 then 
+        set k2 = 5 
+        elseif sr>= 300 and sr < 800 then 
+        set k2 = 10
+        else
+        set k2 = 20
+        endif
+        set sr = sr/ k2
+        loop
+        exitwhen k == k2
+        if PathableCheck3(GetUnitX(c) + sr * Cos(a), GetUnitY(c) + sr * Sin(a)) then
+            call SetUnitX(c, GetUnitX(c) + sr * Cos(a))
+            call SetUnitY(c, GetUnitY(c) + sr * Sin(a))
+        endif
+        set k = k + 1
+        endloop
+    endfunction
+    function MoveEff takes effect e, real sr, real a returns nothing
+        if PathableCheck(GetEffX(e) + sr * Cos(a), GetEffY(e) + sr * Sin(a)) then
+            call BlzSetSpecialEffectPosition(e, GetEffX(e) + sr * Cos(a), GetEffY(e) + sr * Sin(a), BlzGetLocalSpecialEffectZ(e))
+        endif
+    endfunction
+    function MakeSound takes string s returns nothing
+        local sound snd
+        set s = s + ".mp3"
+        set snd = CreateSound(s, false, false, false, 0, 0, "DefaultEAXON")
+        call SetSoundVolume( snd, 127 )
+        call StartSound(snd)
+        call KillSoundWhenDone(snd)
+        set snd = null
+    endfunction
+    function NoDecor_Filter takes nothing returns boolean
+        return GetWidgetLife(GetFilterUnit()) > 0.405 and IsUnitType(GetFilterUnit(), UNIT_TYPE_STRUCTURE) == false and GetUnitAbilityLevel(GetFilterUnit(), 'Avul') == 0
+    endfunction
+    function SetFly takes unit c, real fly returns nothing
+    if GetUnitAbilityLevel(c,'Arav') == 0 then 
+        call UnitAddAbility(c, 'Arav')
+        call SetUnitFlyHeight(c, fly, 0)
+        call UnitRemoveAbility(c, 'Arav')
+        else
+        call SetUnitFlyHeight(c, fly, 0)
+        endif
+    endfunction
+function GetMainStatValue takes unit c, boolean b returns integer
+            local integer value = 0
+            if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 1 then
+            set value = GetHeroStr(c,b)
+            elseif BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 3 then
+            set value = GetHeroAgi(c,b)
+            elseif BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+            set value = GetHeroInt(c,b)
+            endif
+            return value 
+endfunction
+function MyRemoveUnit takes unit c, real r returns nothing
+        call KS.MyRemoveUnit_Start(c, r, 0, -1, -1, "")
+    endfunction
+    function AnimDummy takes unit c, real r, real r2 returns nothing
+        call KS.MyRemoveUnit_Start(c, r, 1, r2, -1, "")
+    endfunction
+    function SetAnim takes unit c, real r, string s returns nothing
+        call KS.MyRemoveUnit_Start(c, r, 3, -1, -1, s)
+    endfunction
+    function SetAnimIndex takes unit c, real r, integer i returns nothing
+        call KS.MyRemoveUnit_Start(c, r, 2, -1, i, "")
+    endfunction    
+     function MyRemoveEff takes effect c, real r returns nothing
+        call KS.MyRemoveEff_Start(c, r, 0, -1, -1, "")
+    endfunction
+function MyRemoveDest takes destructable ds, real r returns nothing
+        call KS.MyRemoveDest_Start(ds, r, 0, -1, -1, "")
+    endfunction
+    function AnimDummyEff takes effect c, real r, real r2 returns nothing
+        call KS.MyRemoveEff_Start(c, r, 1, r2, -1, "")
+    endfunction
+    function SetAnimEffBirth takes effect c, real r returns nothing
+        call KS.MyRemoveEff_Start(c, r, 2, -1, -1, "")
+    endfunction
+    function SetAnimEffDeath takes effect c, real r returns nothing
+        call KS.MyRemoveEff_Start(c, r, 3, -1, 0, "")
+    endfunction    
+    function DmgPTime takes unit c, unit td, real dmg, real rmax, real period, integer typedmg returns nothing
+        call KS.DmgPTime_Start(c, td, dmg, rmax, period, typedmg)
+    endfunction
+    function HeightSet takes unit c, real time, real fly returns nothing
+        call KS.HeightSet_Start(c, time, fly, 0)
+    endfunction
+    function HeightSet2 takes unit c, real time, real fly, real wait returns nothing
+        call KS.HeightSet_Start(c, time, fly, wait)
+    endfunction
+function MyAnimDest takes destructable ds, real r returns nothing
+        call KS.MyRemoveDest_Start(ds, r, 1, -1, -1, "")
+    endfunction
+    function MUE takes unit c, real dist, real rmax, real a returns nothing
+        call KS.MUE_Start(c, dist, rmax, a, 0)
+    endfunction
+    function MUE2 takes unit c, real dist, real rmax, real a returns nothing
+        call KS.MUE_Start(c, dist, rmax, a, 1)
+    endfunction
+    function MUE3 takes unit c, real dist, real rmax, real a returns nothing
+        call KS.MUE_Start(c, dist, rmax, a, 2)
+    endfunction
+    function ColorDummy4 takes unit c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorDummy_Start(c, preare_time, red, green, blue, 255, rmax, false, false)
+    endfunction
+function EHeightSet takes effect c, real time, real fly returns nothing
+        call KS.EHeightSet_Start(c, time, fly, 0)
+    endfunction
+    function EHeightSet2 takes effect c, real time, real fly, real wait returns nothing
+        call KS.EHeightSet_Start(c, time, fly, wait)
+    endfunction
+    function ColorDummy3 takes unit c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorDummy_Start(c, preare_time, red, green, blue, 255, rmax, true, true)
+    endfunction
+    function ColorDummy32 takes unit c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorDummy_Start(c, preare_time, red, green, blue, 255, rmax, false, true)
+    endfunction
+    function ColorDummy2 takes unit c, real preare_time, integer red, integer green, integer blue, integer alpha, real rmax returns nothing
+        call KS.ColorDummy_Start(c, preare_time, red, green, blue, alpha, rmax, true, true)
+    endfunction
+    function ColorEffDummy4 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorEffDummy_Start(c, preare_time, red, green, blue, 255, rmax, false, false)
+    endfunction
+    function ColorEffDummy3 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorEffDummy_Start(c, preare_time, red, green, blue, 255, rmax, true, true)
+    endfunction
+    function ColorEffDummy32 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call KS.ColorEffDummy_Start(c, preare_time, red, green, blue, 255, rmax, false, true)
+    endfunction
+function FakeCD_Start takes unit NewC,integer NewAbi,real NewCD, integer New_Sh, integer New_Value returns nothing
+        call KS.FakeCD_Start(NewC,NewRmax,NewAbi,NewCD,New_Sh,New_Value)
+    endfunction
+    function ColorEffDummy2 takes effect c, real preare_time, integer red, integer green, integer blue, integer alpha, real rmax returns nothing
+        call KS.ColorEffDummy_Start(c, preare_time, red, green, blue, alpha, rmax, true, true)
+    endfunction
+    function GetScale takes unit c returns real
+    return BlzGetUnitRealField(c,UNIT_RF_SCALING_VALUE)
+    endfunction
+    function SetScale takes unit c, real scale returns nothing
+    if scale != 0 then 
+    call SetUnitScale(c,scale,scale,scale)
+    endif
+    endfunction
+      function EffectSpawn2 takes string name,real x,real y,real facing,real timescale,real scale,real height,real time returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)        
+        call MyRemoveEff(e,time) 
+        return e
+    endfunction
+    function EffectSpawnTarget takes string name,unit c,string attach,real facing,real timescale,real scale,real height,real time returns effect
+        local effect e= AddSpecialEffectTarget(name, c,attach)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        //call BlzSetSpecialEffectZ(e, height)
+        //call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)        
+        call MyRemoveEff(e,time) 
+        return e
+    endfunction
+ function OkarunEggCd takes unit c, integer id, real cd returns nothing 
+    if  IsItemInInventory(c,'I011')>0 and  BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+             call BlzStartUnitAbilityCooldown(c, id, cd*(1-OkarunEggReduceCD/100))
+            else
+             call BlzStartUnitAbilityCooldown(c, id, cd)
+            endif
+    endfunction
+     function EffectSpawn3 takes string name,real x,real y,real facing,real timescale,real scale,real height,real pitch returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)        
+        call BlzSetSpecialEffectPitch(e,pitch*bj_DEGTORAD)
+        return e
+    endfunction
+    function EffectSpawnColor2 takes string name,real x,real y,real facing,real timescale,real scale,real height,real time,integer red,integer green,integer blue,integer alpha returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        call BlzSetSpecialEffectColor(e, red, green, blue)
+        call BlzSetSpecialEffectAlpha(e, alpha)
+        call MyRemoveEff(e,time) 
+        return e
+    endfunction
+    function EffectSpawn takes string name,real x,real y,real facing,real timescale,real scale,real height returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        return e
+    endfunction   
+    function EffectSpawnColor takes string name,real x,real y,real facing,real timescale,real scale,real height,integer red,integer green,integer blue,integer alpha returns effect
+        local effect e= AddSpecialEffect(name, x, y)
+        call BlzSetSpecialEffectTimeScale(e, timescale)
+        call BlzSetSpecialEffectZ(e, height)
+        call BlzSetSpecialEffectScale(e, scale)
+        call BlzSetSpecialEffectYaw(e, facing * bj_DEGTORAD)
+        call BlzSetSpecialEffectColor(e, red, green, blue)
+        call BlzSetSpecialEffectAlpha(e, alpha)
+        return e
+    endfunction
+    function SwapAbility takes unit c, real r, integer id_new ,integer id_old returns nothing
+        call KS.SpellTimer_Timer_Start(c, r, id_new, id_old)
+    endfunction
+    function SetHpCurrent takes unit c, real r returns nothing
+    call SetUnitState(c,UNIT_STATE_LIFE,GetUnitState(c,UNIT_STATE_LIFE)+r)
+    endfunction
+function ColorDummy2_2 takes unit c, real preare_time, integer red, integer green, integer blue, integer alpha, real rmax returns nothing
+        call KS.ColorDummy_Start(c, preare_time, red, green, blue, alpha, rmax, false, false)
+    endfunction
+function ColorEffDummy2_2 takes effect c, real preare_time, integer red, integer green, integer blue, integer alpha, real rmax returns nothing
+        call KS.ColorEffDummy_Start(c, preare_time, red, green, blue, alpha, rmax, false, false)
+    endfunction

@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+
+    "tasks": [
+        {
+            "label": "WOS: Compile all JASS/vJASS (auto dependencies)",
+
+            "type": "shell",
+
+            "command": "powershell.exe",
+
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\compile-vjass.ps1",
+                "-SourceRoot",
+                "${workspaceFolder}\\triggers"
+            ],
+
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+
+            "problemMatcher": []
+        }
+    ]
+}

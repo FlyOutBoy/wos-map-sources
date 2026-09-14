@@ -1,0 +1,5 @@
+/.build
+/.def
+/.vscode/build/
+**/__pycache__/
+*.pyc
