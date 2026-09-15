@@ -196,9 +196,28 @@ def load_config(config_path: Path) -> tuple[Path, Path, Path, Path, Path]:
         path = Path(config.get(key, default))
         return (path if path.is_absolute() else base / path).resolve()
 
+    if "build_config" in config:
+        build_path = resolve("build_config", ".vscode/wos-build.json")
+        try:
+            build_config = json.loads(build_path.read_text(encoding="utf-8-sig"))
+        except FileNotFoundError as exc:
+            raise raw.FormatError(
+                f"local build config not found: {build_path}; create it and set mainMap for this PC"
+            ) from exc
+        except (OSError, json.JSONDecodeError) as exc:
+            raise raw.FormatError(f"cannot read local build config {build_path}: {exc}") from exc
+        map_key = config.get("map_key", "mainMap")
+        map_value = build_config.get(map_key)
+        if not isinstance(map_value, str) or not map_value.strip():
+            raise raw.FormatError(f"{build_path}: missing non-empty {map_key}")
+        map_path = Path(map_value)
+        map_dir = (map_path if map_path.is_absolute() else build_path.parent / map_path).resolve()
+    else:
+        map_dir = resolve("map_directory", "")
+
     common_j = resolve("common_j", "libs/common.j")
     return (
-        resolve("map_directory", ""),
+        map_dir,
         resolve("json_directory", "object-data"),
         resolve("raw_json_directory", ".object-data-raw"),
         resolve("backup_directory", "object-data-backups"),

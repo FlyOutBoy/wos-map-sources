@@ -547,9 +547,30 @@ def load_config(config_path: Path) -> tuple[Path, Path, Path]:
     except json.JSONDecodeError as exc:
         raise FormatError(f"invalid JSON in {config_path}: {exc}") from exc
     base = config_path.parent.resolve()
-    map_dir = Path(config.get("map_directory", ""))
-    if not map_dir.is_absolute():
-        map_dir = base / map_dir
+    if "build_config" in config:
+        build_path = Path(config.get("build_config", ".vscode/wos-build.json"))
+        if not build_path.is_absolute():
+            build_path = base / build_path
+        build_path = build_path.resolve()
+        try:
+            build_config = json.loads(build_path.read_text(encoding="utf-8-sig"))
+        except FileNotFoundError as exc:
+            raise FormatError(
+                f"local build config not found: {build_path}; create it and set mainMap for this PC"
+            ) from exc
+        except (OSError, json.JSONDecodeError) as exc:
+            raise FormatError(f"cannot read local build config {build_path}: {exc}") from exc
+        map_key = config.get("map_key", "mainMap")
+        map_value = build_config.get(map_key)
+        if not isinstance(map_value, str) or not map_value.strip():
+            raise FormatError(f"{build_path}: missing non-empty {map_key}")
+        map_dir = Path(map_value)
+        if not map_dir.is_absolute():
+            map_dir = build_path.parent / map_dir
+    else:
+        map_dir = Path(config.get("map_directory", ""))
+        if not map_dir.is_absolute():
+            map_dir = base / map_dir
     json_dir = Path(config.get("json_directory", "object-data"))
     if not json_dir.is_absolute():
         json_dir = base / json_dir

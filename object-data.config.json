@@ -1,5 +1,6 @@
 {
-  "map_directory": "C:\\Users\\Gear\\Desktop\\Новая папка (17)\\Anime_WOS2_0.31c6.w3x",
+  "build_config": ".vscode/wos-build.json",
+  "map_key": "mainMap",
   "json_directory": "object-data",
   "raw_json_directory": ".object-data-raw",
   "common_j": "libs/common.j",
