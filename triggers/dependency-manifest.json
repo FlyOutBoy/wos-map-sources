@@ -143,28 +143,28 @@
       "Heroes/Tomioka.j"
     ],
     "ErzaQSpells": [
-      "Erza/ErzaQ.j"
+      "Heroes/Erza/ErzaQ.j"
     ],
     "ErzaWSpells": [
-      "Erza/ErzaW.j"
+      "Heroes/Erza/ErzaW.j"
     ],
     "ErzaESpells": [
-      "Erza/ErzaE.j"
+      "Heroes/Erza/ErzaE.j"
     ],
     "ErzaRSpells": [
-      "Erza/ErzaR.j"
+      "Heroes/Erza/ErzaR.j"
     ],
     "ErzaTSpells": [
-      "Erza/ErzaT.j"
+      "Heroes/Erza/ErzaT.j"
     ],
     "ErzaG1Spells": [
-      "Erza/ErzaG2_Nakagami.j"
+      "Heroes/Erza/ErzaG2_Nakagami.j"
     ],
     "ErzaG2Spells": [
-      "Erza/ErzaG2_Fairy.j"
+      "Heroes/Erza/ErzaG2_Fairy.j"
     ],
     "ErzaBase": [
-      "Erza/ErzaBase.j"
+      "Heroes/Erza/ErzaBase.j"
     ]
   },
   "files": [
@@ -1250,7 +1250,7 @@
     },
     {
       "order": 92,
-      "path": "Erza/ErzaQ.j",
+      "path": "Heroes/Erza/ErzaQ.j",
       "provides": [
         "ErzaQSpells"
       ],
@@ -1268,14 +1268,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
       "order": 93,
-      "path": "Erza/ErzaW.j",
+      "path": "Heroes/Erza/ErzaW.j",
       "provides": [
         "ErzaWSpells"
       ],
@@ -1293,14 +1293,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
       "order": 94,
-      "path": "Erza/ErzaE.j",
+      "path": "Heroes/Erza/ErzaE.j",
       "provides": [
         "ErzaESpells"
       ],
@@ -1318,14 +1318,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
       "order": 95,
-      "path": "Erza/ErzaR.j",
+      "path": "Heroes/Erza/ErzaR.j",
       "provides": [
         "ErzaRSpells"
       ],
@@ -1342,7 +1342,7 @@
     },
     {
       "order": 96,
-      "path": "Erza/ErzaT.j",
+      "path": "Heroes/Erza/ErzaT.j",
       "provides": [
         "ErzaTSpells"
       ],
@@ -1359,7 +1359,7 @@
     },
     {
       "order": 97,
-      "path": "Erza/ErzaG2_Nakagami.j",
+      "path": "Heroes/Erza/ErzaG2_Nakagami.j",
       "provides": [
         "ErzaG1Spells"
       ],
@@ -1376,7 +1376,7 @@
     },
     {
       "order": 98,
-      "path": "Erza/ErzaG2_Fairy.j",
+      "path": "Heroes/Erza/ErzaG2_Fairy.j",
       "provides": [
         "ErzaG2Spells"
       ],
@@ -1393,7 +1393,7 @@
     },
     {
       "order": 99,
-      "path": "Erza/ErzaBase.j",
+      "path": "Heroes/Erza/ErzaBase.j",
       "provides": [
         "ErzaBase"
       ],
@@ -1411,7 +1411,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaQ.j"
+            "Heroes/Erza/ErzaQ.j"
           ]
         }
       ]

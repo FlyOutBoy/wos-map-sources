@@ -3054,7 +3054,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaQ.j",
+      "path": "Heroes/Erza/ErzaQ.j",
       "source_bytes": 34725,
       "sha256": "f3c36cf6506a1311dd8caed5d7216f57581f2a0b335775283c0251d28ec3bef5",
       "declarations": {
@@ -3099,7 +3099,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaW.j",
+      "path": "Heroes/Erza/ErzaW.j",
       "source_bytes": 35006,
       "sha256": "1678cdbb0444df9e0a3a2ba12212dae82c337d033f0bff743adee1cb71d9450d",
       "declarations": {
@@ -3143,7 +3143,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaE.j",
+      "path": "Heroes/Erza/ErzaE.j",
       "source_bytes": 40774,
       "sha256": "64892158e08ad565fe669d4e80f1cbb56c1bceb2742ad6bf27df3bab28170bd2",
       "declarations": {
@@ -3187,7 +3187,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaR.j",
+      "path": "Heroes/Erza/ErzaR.j",
       "source_bytes": 89854,
       "sha256": "78a6d1cf3cfb409fcea2ec037a0a795eba54c530943b49b1ad597ee4a75856d5",
       "declarations": {
@@ -3228,7 +3228,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaT.j",
+      "path": "Heroes/Erza/ErzaT.j",
       "source_bytes": 98967,
       "sha256": "2ffb8a4f85d4470f587a33fd7f6e8a21b9a6bf311ae34af0421a7247291476f6",
       "declarations": {
@@ -3270,7 +3270,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaG2_Nakagami.j",
+      "path": "Heroes/Erza/ErzaG2_Nakagami.j",
       "source_bytes": 45984,
       "sha256": "66ec7d2f2064d368f6f48115b379ff2cf707b4539fa972e56c3f25f1c205033f",
       "declarations": {
@@ -3310,7 +3310,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaG2_Fairy.j",
+      "path": "Heroes/Erza/ErzaG2_Fairy.j",
       "source_bytes": 37137,
       "sha256": "b8b5d8955ec5c0bba51b89d8d42f5d5a35c1c767a678aa3e0109bc2c29ca1384",
       "declarations": {
@@ -3349,7 +3349,7 @@
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Erza/ErzaBase.j",
+      "path": "Heroes/Erza/ErzaBase.j",
       "source_bytes": 32040,
       "sha256": "8aa487807cdd1671d09e66fba6f05b71f3308491b52ca4f6113c55ac20d42ac8",
       "declarations": {

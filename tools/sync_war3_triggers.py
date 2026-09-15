@@ -142,9 +142,20 @@ def world_editor_source(path: Path) -> bytes:
 
 
 def expected_path(item: dict, objects_by_id: dict[int, dict]) -> str:
-    parent = objects_by_id.get(item["parent_id"])
-    category = parent["name"] if parent and parent["object_type"] == fmt.OBJECT_CATEGORY else "Uncategorized"
-    return (Path(fmt.safe_name(category, "Uncategorized")) / f"{fmt.safe_name(item['name'], 'Trigger')}.j").as_posix()
+    categories = []
+    parent_id = item["parent_id"]
+    visited = set()
+    while parent_id and parent_id not in visited:
+        visited.add(parent_id)
+        parent = objects_by_id.get(parent_id)
+        if not parent or parent["object_type"] != fmt.OBJECT_CATEGORY:
+            break
+        categories.append(fmt.safe_name(parent["name"], "Uncategorized"))
+        parent_id = parent["parent_id"]
+    categories.reverse()
+    if not categories:
+        categories.append("Uncategorized")
+    return (Path(*categories) / f"{fmt.safe_name(item['name'], 'Trigger')}.j").as_posix()
 
 
 def manifest_paths(trigger_dir: Path) -> dict[int, str]:
@@ -173,6 +184,8 @@ def find_source_path(item: dict, objects_by_id: dict[int, dict], trigger_dir: Pa
 
 def next_id(wtg: dict, type_name: str, prefix: int) -> int:
     info = wtg["type_info"][type_name]
+    if info["deleted_ids"]:
+        return (prefix << 24) | info["deleted_ids"].pop(0)
     low = info["total"]
     used = {item["object_id"] & 0xFFFFFF for item in wtg["objects"] if item["object_id"] >> 24 == prefix}
     while low in used:
@@ -181,9 +194,11 @@ def next_id(wtg: dict, type_name: str, prefix: int) -> int:
     return (prefix << 24) | low
 
 
-def ensure_category(wtg: dict, name: str) -> int:
+def ensure_category(wtg: dict, name: str, parent_id: int) -> int:
     for item in wtg["objects"]:
-        if item["object_type"] == fmt.OBJECT_CATEGORY and item["name"].casefold() == name.casefold():
+        if (item["object_type"] == fmt.OBJECT_CATEGORY
+                and item["parent_id"] == parent_id
+                and item["name"].casefold() == name.casefold()):
             return item["object_id"]
     object_id = next_id(wtg, "category", 2)
     wtg["objects"].append({
@@ -192,7 +207,7 @@ def ensure_category(wtg: dict, name: str) -> int:
         "name": name,
         "is_category": True,
         "is_expandable": True,
-        "parent_id": 0,
+        "parent_id": parent_id,
     })
     print(f"ADD     category {name}")
     return object_id
@@ -237,9 +252,11 @@ def prepare(config_path: Path, trigger_dir: Path) -> tuple[Path, dict, dict, int
         if relative.casefold() in used:
             continue
         parts = Path(relative).parts
-        category_name = parts[0] if len(parts) > 1 else "Uncategorized"
         trigger_name = Path(relative).stem.replace("_", " ")
-        parent_id = ensure_category(wtg, category_name.replace("_", " "))
+        category_parts = parts[:-1] or ("Uncategorized",)
+        parent_id = 0
+        for category_name in category_parts:
+            parent_id = ensure_category(wtg, category_name.replace("_", " "), parent_id)
         object_id = next_id(wtg, "trigger", 3)
         wtg["objects"].append({
             "object_type": fmt.OBJECT_TRIGGER,

@@ -11,8 +11,7 @@
     "testMapsDir": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes",
     "testBaseSource": "test_map\\map_source\\TestBase.vj",
     "testHeroSourceDirs": [
-        "triggers\\Heroes",
-        "triggers\\Erza"
+        "triggers\\Heroes"
     ],
     "sharedSources": [
         "triggers\\WOS_Start\\TooltipBuilder.j",

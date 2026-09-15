@@ -99,11 +99,11 @@ Regenerate with `python tools/extract_war3_triggers.py` from the project root.
 | 089 | Heroes | Natsu | [Heroes/Natsu.j](Heroes/Natsu.j) | NatsuSpells | GearSystems |
 | 090 | Heroes | Kyoraku | [Heroes/Kyoraku.j](Heroes/Kyoraku.j) | KyorakuSpells | GearSystems |
 | 091 | Heroes | Tomioka | [Heroes/Tomioka.j](Heroes/Tomioka.j) | TomiokaSpells | GearSystems |
-| 092 | Erza | ErzaQ | [Erza/ErzaQ.j](Erza/ErzaQ.j) | ErzaQSpells | GearSystems, ErzaTSpells |
-| 093 | Erza | ErzaW | [Erza/ErzaW.j](Erza/ErzaW.j) | ErzaWSpells | GearSystems, ErzaTSpells |
-| 094 | Erza | ErzaE | [Erza/ErzaE.j](Erza/ErzaE.j) | ErzaESpells | GearSystems, ErzaTSpells |
-| 095 | Erza | ErzaR | [Erza/ErzaR.j](Erza/ErzaR.j) | ErzaRSpells | GearSystems |
-| 096 | Erza | ErzaT | [Erza/ErzaT.j](Erza/ErzaT.j) | ErzaTSpells | GearSystems |
-| 097 | Erza | ErzaG2 Nakagami | [Erza/ErzaG2_Nakagami.j](Erza/ErzaG2_Nakagami.j) | ErzaG1Spells | GearSystems |
-| 098 | Erza | ErzaG2 Fairy | [Erza/ErzaG2_Fairy.j](Erza/ErzaG2_Fairy.j) | ErzaG2Spells | GearSystems |
-| 099 | Erza | ErzaBase | [Erza/ErzaBase.j](Erza/ErzaBase.j) | ErzaBase | GearSystems, ErzaQSpells |
+| 092 | Erza | ErzaQ | [Heroes/Erza/ErzaQ.j](Heroes/Erza/ErzaQ.j) | ErzaQSpells | GearSystems, ErzaTSpells |
+| 093 | Erza | ErzaW | [Heroes/Erza/ErzaW.j](Heroes/Erza/ErzaW.j) | ErzaWSpells | GearSystems, ErzaTSpells |
+| 094 | Erza | ErzaE | [Heroes/Erza/ErzaE.j](Heroes/Erza/ErzaE.j) | ErzaESpells | GearSystems, ErzaTSpells |
+| 095 | Erza | ErzaR | [Heroes/Erza/ErzaR.j](Heroes/Erza/ErzaR.j) | ErzaRSpells | GearSystems |
+| 096 | Erza | ErzaT | [Heroes/Erza/ErzaT.j](Heroes/Erza/ErzaT.j) | ErzaTSpells | GearSystems |
+| 097 | Erza | ErzaG2 Nakagami | [Heroes/Erza/ErzaG2_Nakagami.j](Heroes/Erza/ErzaG2_Nakagami.j) | ErzaG1Spells | GearSystems |
+| 098 | Erza | ErzaG2 Fairy | [Heroes/Erza/ErzaG2_Fairy.j](Heroes/Erza/ErzaG2_Fairy.j) | ErzaG2Spells | GearSystems |
+| 099 | Erza | ErzaBase | [Heroes/Erza/ErzaBase.j](Heroes/Erza/ErzaBase.j) | ErzaBase | GearSystems, ErzaQSpells |
