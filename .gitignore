@@ -3,5 +3,6 @@
 **/backups/*.w3x
 /.def
 /.vscode/build/
+/.vscode/wos-build.json
 **/__pycache__/
 *.pyc

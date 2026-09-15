@@ -230,7 +230,10 @@ function Assert-TestLibraryDependencies {
 }
 
 try {
-    Require-File -Path $configPath -Name "Build configuration"
+    if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
+        $examplePath = Join-Path $PSScriptRoot "wos-build.example.json"
+        throw "Local build configuration not found: $configPath. Copy $examplePath to $configPath and set your Warcraft III, JassHelper and map paths."
+    }
     $config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
 
     $gameExe = Resolve-WorkspacePath ([string]$config.gameExe)
