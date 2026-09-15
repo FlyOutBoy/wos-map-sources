@@ -9,7 +9,18 @@ param(
 $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $PSScriptRoot
-$JassHelper = "E:\WAR3REF\Warcraft III\_retail_\x86_64\JassHelper\jasshelper.exe"
+$ConfigPath = Join-Path $PSScriptRoot "wos-build.json"
+$ExampleConfigPath = Join-Path $PSScriptRoot "wos-build.example.json"
+if (!(Test-Path -LiteralPath $ConfigPath -PathType Leaf)) {
+    throw "Local build configuration not found: $ConfigPath. Copy $ExampleConfigPath to $ConfigPath and set your paths."
+}
+$Config = Get-Content -LiteralPath $ConfigPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$ConfiguredJassHelper = [Environment]::ExpandEnvironmentVariables([string]$Config.jassHelper)
+if ([System.IO.Path]::IsPathRooted($ConfiguredJassHelper)) {
+    $JassHelper = [System.IO.Path]::GetFullPath($ConfiguredJassHelper)
+} else {
+    $JassHelper = [System.IO.Path]::GetFullPath((Join-Path $Root $ConfiguredJassHelper))
+}
 $Common = Join-Path $Root "libs\common.j"
 $Blizzard = Join-Path $Root "libs\Blizzard.j"
 $MapScript = Join-Path $Root "war3map.j"
