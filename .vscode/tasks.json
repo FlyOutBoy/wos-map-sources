@@ -7,7 +7,7 @@
             "type": "process",
             "command": "python",
             "args": [
-                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "${workspaceFolder}\\tools\\sync_war3_project.py",
                 "--config",
                 "${workspaceFolder}\\object-data.config.json",
                 "export"
@@ -20,7 +20,7 @@
             "type": "process",
             "command": "python",
             "args": [
-                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "${workspaceFolder}\\tools\\sync_war3_project.py",
                 "--config",
                 "${workspaceFolder}\\object-data.config.json",
                 "check"
@@ -29,14 +29,14 @@
             "problemMatcher": []
         },
         {
-            "label": "WOS Objects: 3. Save JSON into map folder",
+            "label": "WOS Objects: 3. Save JSON and J into map folder",
             "type": "process",
             "command": "python",
             "args": [
-                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "${workspaceFolder}\\tools\\sync_war3_project.py",
                 "--config",
                 "${workspaceFolder}\\object-data.config.json",
-                "import"
+                "save"
             ],
             "presentation": { "reveal": "always", "panel": "shared", "clear": true },
             "problemMatcher": []

@@ -7,3 +7,4 @@
 **/__pycache__/
 *.pyc
 object-data-backups/
+backups/trigger-sync/
