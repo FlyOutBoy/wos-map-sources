@@ -1,0 +1,57 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3map.w3q",
+  "source_sha256": "4225528cc599e79596e9d5c01488232d8b7090a60a62e6b4ef684e02c6c2180b",
+  "kind": "upgrades",
+  "record_mode": "level",
+  "format_version": 3,
+  "original_objects": [],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "Rhac",
+        "hex": "52686163"
+      },
+      "new_id": {
+        "text": "R000",
+        "hex": "52303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Rhme",
+        "hex": "52686D65"
+      },
+      "new_id": {
+        "text": "R001",
+        "hex": "52303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Rhar",
+        "hex": "52686172"
+      },
+      "new_id": {
+        "text": "R002",
+        "hex": "52303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    }
+  ]
+}

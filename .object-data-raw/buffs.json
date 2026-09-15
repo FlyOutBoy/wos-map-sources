@@ -1,0 +1,3439 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3map.w3h",
+  "source_sha256": "c0810711df86b78871b0dc9a9ee8c1f5c5f679dfe5d089da42cfcc4d38c29890",
+  "kind": "buffs",
+  "record_mode": "simple",
+  "format_version": 3,
+  "original_objects": [
+    {
+      "old_id": {
+        "text": "Bslo",
+        "hex": "42736C6F"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BPSE",
+        "hex": "42505345"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNsi",
+        "hex": "424E7369"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BOmi",
+        "hex": "424F6D69"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEer",
+        "hex": "42456572"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    }
+  ],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B000",
+        "hex": "42303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B001",
+        "hex": "42303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B002",
+        "hex": "42303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B003",
+        "hex": "42303033"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B004",
+        "hex": "42303034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B006",
+        "hex": "42303036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B007",
+        "hex": "42303037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B008",
+        "hex": "42303038"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B009",
+        "hex": "42303039"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00A",
+        "hex": "42303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00B",
+        "hex": "42303042"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00C",
+        "hex": "42303043"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00D",
+        "hex": "42303044"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00E",
+        "hex": "42303045"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00F",
+        "hex": "42303046"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00G",
+        "hex": "42303047"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00H",
+        "hex": "42303048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00I",
+        "hex": "42303049"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00J",
+        "hex": "4230304A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00K",
+        "hex": "4230304B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00L",
+        "hex": "4230304C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00M",
+        "hex": "4230304D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00N",
+        "hex": "4230304E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00O",
+        "hex": "4230304F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00P",
+        "hex": "42303050"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00Q",
+        "hex": "42303051"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00R",
+        "hex": "42303052"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00S",
+        "hex": "42303053"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00T",
+        "hex": "42303054"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B005",
+        "hex": "42303035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00U",
+        "hex": "42303055"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "6"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00V",
+        "hex": "42303056"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00W",
+        "hex": "42303057"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00X",
+        "hex": "42303058"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00Y",
+        "hex": "42303059"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B00Z",
+        "hex": "4230305A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B010",
+        "hex": "42303130"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B011",
+        "hex": "42303131"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B012",
+        "hex": "42303132"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "nightelf",
+            "_original_value": "nightelf",
+            "_encoding": "utf-8",
+            "_raw_base64": "bmlnaHRlbGY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B013",
+        "hex": "42303133"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B014",
+        "hex": "42303134"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B015",
+        "hex": "42303135"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B016",
+        "hex": "42303136"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B017",
+        "hex": "42303137"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B018",
+        "hex": "42303138"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B019",
+        "hex": "42303139"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01A",
+        "hex": "42303141"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01B",
+        "hex": "42303142"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01C",
+        "hex": "42303143"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01D",
+        "hex": "42303144"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01E",
+        "hex": "42303145"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01F",
+        "hex": "42303146"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01G",
+        "hex": "42303147"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01H",
+        "hex": "42303148"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01I",
+        "hex": "42303149"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01J",
+        "hex": "4230314A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01K",
+        "hex": "4230314B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01L",
+        "hex": "4230314C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01M",
+        "hex": "4230314D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01N",
+        "hex": "4230314E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01O",
+        "hex": "4230314F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01P",
+        "hex": "42303150"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01Q",
+        "hex": "42303151"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01R",
+        "hex": "42303152"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01S",
+        "hex": "42303153"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "1 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01T",
+        "hex": "42303154"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "2 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01U",
+        "hex": "42303155"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "3 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01V",
+        "hex": "42303156"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "4 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01W",
+        "hex": "42303157"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "5 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01X",
+        "hex": "42303158"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01Y",
+        "hex": "42303159"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B01Z",
+        "hex": "4230315A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B020",
+        "hex": "42303230"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B021",
+        "hex": "42303231"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B022",
+        "hex": "42303232"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B023",
+        "hex": "42303233"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B024",
+        "hex": "42303234"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B025",
+        "hex": "42303235"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B026",
+        "hex": "42303236"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B027",
+        "hex": "42303237"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B028",
+        "hex": "42303238"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B029",
+        "hex": "42303239"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02A",
+        "hex": "42303241"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02B",
+        "hex": "42303242"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02C",
+        "hex": "42303243"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02D",
+        "hex": "42303244"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02E",
+        "hex": "42303245"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "6 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02F",
+        "hex": "42303246"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "7 Hell Blaze"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02G",
+        "hex": "42303247"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02H",
+        "hex": "42303248"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz T"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02I",
+        "hex": "42303249"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F0"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02J",
+        "hex": "4230324A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02K",
+        "hex": "4230324B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02L",
+        "hex": "4230324C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02M",
+        "hex": "4230324D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02N",
+        "hex": "4230324E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02O",
+        "hex": "4230324F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz F6"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02P",
+        "hex": "42303250"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ainz W"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02Q",
+        "hex": "42303251"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02R",
+        "hex": "42303252"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02S",
+        "hex": "42303253"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02T",
+        "hex": "42303254"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02U",
+        "hex": "42303255"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frieren F"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02V",
+        "hex": "42303256"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frieren G1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02W",
+        "hex": "42303257"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frieren G2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02X",
+        "hex": "42303258"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frieren G3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02Y",
+        "hex": "42303259"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B02Z",
+        "hex": "4230325A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji W"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B030",
+        "hex": "42303330"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji T"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B031",
+        "hex": "42303331"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji G1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B032",
+        "hex": "42303332"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji G2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B033",
+        "hex": "42303333"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji G3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B034",
+        "hex": "42303334"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji G4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B035",
+        "hex": "42303335"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji G5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B036",
+        "hex": "42303336"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji E"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B037",
+        "hex": "42303337"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "frac",
+            "hex": "66726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Toji R"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B038",
+        "hex": "42303338"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    }
+  ]
+}

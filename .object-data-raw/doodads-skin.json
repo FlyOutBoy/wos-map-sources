@@ -1,0 +1,793 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3mapSkin.w3d",
+  "source_sha256": "5e5b1e8df4095e30a65a1066dd655cb1afee60c94ef05d6cdb8f8ad0b00af9f9",
+  "kind": "doodads",
+  "record_mode": "variation",
+  "format_version": 3,
+  "original_objects": [
+    {
+      "old_id": {
+        "text": "YOtf",
+        "hex": "594F7466"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    }
+  ],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "LOlp",
+        "hex": "4C4F6C70"
+      },
+      "new_id": {
+        "text": "D001",
+        "hex": "44303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Блок1 - (1.00 size)"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D006",
+        "hex": "44303036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Трава_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00D",
+        "hex": "44303044"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Магазин_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D000",
+        "hex": "44303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Золото_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D003",
+        "hex": "44303033"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Золото_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D004",
+        "hex": "44303034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D005",
+        "hex": "44303035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D007",
+        "hex": "44303037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D008",
+        "hex": "44303038"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_4"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D009",
+        "hex": "44303039"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_5"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00A",
+        "hex": "44303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Скала_6"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00E",
+        "hex": "44303045"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Магазин_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00F",
+        "hex": "44303046"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Маяк_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00G",
+        "hex": "44303047"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Поле_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00H",
+        "hex": "44303048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Трава_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00N",
+        "hex": "4430304E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Могила_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00O",
+        "hex": "4430304F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Дом_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00R",
+        "hex": "44303052"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Камень_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00S",
+        "hex": "44303053"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Камень_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00T",
+        "hex": "44303054"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Камень_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00U",
+        "hex": "44303055"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00V",
+        "hex": "44303056"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00W",
+        "hex": "44303057"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00X",
+        "hex": "44303058"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_4"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00Y",
+        "hex": "44303059"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_5"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00Z",
+        "hex": "4430305A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_6"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D013",
+        "hex": "44303133"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Гидрант_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D016",
+        "hex": "44303136"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Стена_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D017",
+        "hex": "44303137"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Стена_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D018",
+        "hex": "44303138"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_7"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01B",
+        "hex": "44303142"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_8"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01C",
+        "hex": "44303143"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_9"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01D",
+        "hex": "44303144"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Руины_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01E",
+        "hex": "44303145"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Руины_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01F",
+        "hex": "44303146"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Фэнтези_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01G",
+        "hex": "44303147"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Фэнтези_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01H",
+        "hex": "44303148"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Фэнтези_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01I",
+        "hex": "44303149"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Стена_3"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01J",
+        "hex": "4430314A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_10"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01K",
+        "hex": "4430314B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_11"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01L",
+        "hex": "4430314C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_12"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01M",
+        "hex": "4430314D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Здание_13"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01N",
+        "hex": "4430314E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Арена_1"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01O",
+        "hex": "4430314F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Руины_3"
+    },
+    {
+      "old_id": {
+        "text": "LOlp",
+        "hex": "4C4F6C70"
+      },
+      "new_id": {
+        "text": "D01P",
+        "hex": "44303150"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Блок2 - (2.00 size)"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D01Q",
+        "hex": "44303151"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Метро_1"
+    },
+    {
+      "old_id": {
+        "text": "NWsd",
+        "hex": "4E577364"
+      },
+      "new_id": {
+        "text": "D01T",
+        "hex": "44303154"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D002",
+        "hex": "44303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Квадрат Красный"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00B",
+        "hex": "44303042"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Квадрат Зеленый"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00C",
+        "hex": "44303043"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Метро_2"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00I",
+        "hex": "44303049"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Стрелка Ускорения"
+    }
+  ]
+}
