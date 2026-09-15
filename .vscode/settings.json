@@ -7,6 +7,9 @@
     "jass.compiler.checkCommonJ": "${workspaceFolder}/libs/common.j",
     "jass.compiler.checkBlizzardJ": "${workspaceFolder}/libs/blizzard.j",
 
+    "editor.parameterHints.enabled": true,
+    "editor.parameterHints.cycle": true,
+
     "wosJassHighlight.systemFiles": [
         "triggers/Systems/Systems1.j",
         "triggers/Systems/Systems2.j"

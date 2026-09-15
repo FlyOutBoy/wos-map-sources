@@ -1,0 +1,23 @@
+{
+    "gameExe": "E:\\WAR3REF\\Warcraft III\\_retail_\\x86_64\\Warcraft III.exe",
+    "battleNetExe": "C:\\Program Files (x86)\\Battle.net\\Battle.net Launcher.exe",
+    "startBattleNetIfNeeded": true,
+    "battleNetWaitSeconds": 6,
+    "jassHelper": "E:\\WAR3REF\\Warcraft III\\_retail_\\x86_64\\JassHelper\\jasshelper.exe",
+    "commonJ": "libs\\common.j",
+    "blizzardJ": "libs\\Blizzard.j",
+    "buildDir": "_build",
+    "testHero": "Milim",
+    "testMapsDir": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Heroes",
+    "testBaseSource": "test_map\\map_source\\TestBase.vj",
+    "testHeroSourceDirs": [
+        "triggers\\Heroes",
+        "triggers\\Erza"
+    ],
+    "sharedSources": [
+        "triggers\\WOS_Start\\TooltipBuilder.j",
+        "triggers\\WOS_Start\\UniversalTooltips.j"
+    ],
+    "mainMap": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.31c6.w3x",
+    "mainSource": "map_source\\Main.vj"
+}

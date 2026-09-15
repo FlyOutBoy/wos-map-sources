@@ -1,4 +1,6 @@
 /.build
+/_build/
+**/backups/*.w3x
 /.def
 /.vscode/build/
 **/__pycache__/

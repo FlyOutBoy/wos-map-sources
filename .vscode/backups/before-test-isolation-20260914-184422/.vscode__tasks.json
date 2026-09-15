@@ -51,7 +51,7 @@
             ],
 
             "presentation": {
-                "reveal": "always",
+                "reveal": "silent",
                 "panel": "shared",
                 "clear": true
             },

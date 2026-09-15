@@ -1,0 +1,21 @@
+{
+    "gameExe": "E:\\WAR3REF\\Warcraft III\\_retail_\\x86_64\\Warcraft III.exe",
+    "jassHelper": "E:\\WAR3REF\\Warcraft III\\_retail_\\x86_64\\JassHelper\\jasshelper.exe",
+    "commonJ": "libs\\common.j",
+    "blizzardJ": "libs\\Blizzard.j",
+    "buildDir": "_build",
+    "mainProfile": "Main",
+    "testProfile": "Milim",
+    "profiles": {
+        "Main": {
+            "map": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.31c6.w3x",
+            "source": "maps\\Main\\map_source\\Main.vj",
+            "output": "WoS_Test.w3x"
+        },
+        "Milim": {
+            "map": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Heroes\\Milim.w3x",
+            "source": "map_source\\Milim.vj",
+            "output": "Milim_Test.w3x"
+        }
+    }
+}

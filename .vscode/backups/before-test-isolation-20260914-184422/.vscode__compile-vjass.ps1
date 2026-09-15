@@ -197,13 +197,13 @@ else {
 
 # Discover every project JASS source. Generated output, Warcraft API stubs, and the
 # compiled map script are excluded; no dependency filename list is maintained here.
-$CandidateFiles = Get-ChildItem -LiteralPath $Root -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
+$CandidateFiles = Get-ChildItem -LiteralPath $Root -Recurse -File | Where-Object {
     $_.Extension -in @('.j', '.jass')
 } | ForEach-Object {
     $_.FullName
 } | Where-Object {
     $Relative = Get-RelativeProjectPath $_
-    $Relative -notmatch '^(?i)(libs|\.vscode|\.git|\.build|_build)[\\/]' -and
+    $Relative -notmatch '^(?i)(libs|\.vscode|\.git)[\\/]' -and
     $Relative -notmatch '^(?i)war3map\.j$'
 }
 

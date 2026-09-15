@@ -1,0 +1,999 @@
+// Main.vj - complete MAIN map source based on Anime_WOS2_0.31c6.w3x
+// World Editor initialization comes from the original c6 war3map.j.
+// Current external files under triggers are the source of truth.
+
+//! import "..\triggers\Map_Header.j"
+//! import "..\triggers\Systems\TasBox.j"
+//! import "..\triggers\Systems\Systems2.j"
+//! import "..\triggers\Systems\Systems1.j"
+//! import "..\triggers\WOS_Start\ShowCD.j"
+//! import "..\triggers\WOS_Start\TooltipBuilder.j"
+//! import "..\triggers\WOS_Start\UniversalTooltips.j"
+//! import "..\triggers\WOS_Start\Save2.j"
+//! import "..\triggers\WOS_Start\SaveLoad.j"
+//! import "..\triggers\WOS_Start\MusicPlayer.j"
+//! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
+//! import "..\triggers\WOS_Start\UI_CAREER.j"
+//! import "..\triggers\WOS_Start\DefaultArmorChangeStable_Copy.j"
+//! import "..\triggers\WOS_Start\Scoreboard.j"
+//! import "..\triggers\WOS_Start\ChatCommand.j"
+//! import "..\triggers\WOS_Start\Player_Pick_Mode.j"
+//! import "..\triggers\WOS_Start\WoS_Shop_Init.j"
+//! import "..\triggers\WOS_Start\WoS_Pick_Init.j"
+//! import "..\triggers\WOS_Start\Starts.j"
+//! import "..\triggers\WOS_Start\BuildsForChars.j"
+//! import "..\triggers\WOS_Start\TestUnit.j"
+//! import "..\triggers\WOS_Start\Leave.j"
+//! import "..\triggers\Round_End\RoundEnd.j"
+//! import "..\triggers\Systems\CastAItems.j"
+//! import "..\triggers\Systems\CastCheck.j"
+//! import "..\triggers\Systems\ClickEvent.j"
+//! import "..\triggers\Systems\DecorDestroy_and_Erza_Debuff.j"
+//! import "..\triggers\Systems\DmgSys.j"
+//! import "..\triggers\Systems\AtkCancel.j"
+//! import "..\triggers\Systems\MouseMove.j"
+//! import "..\triggers\Systems\Death.j"
+//! import "..\triggers\Systems\silence.j"
+//! import "..\triggers\Systems\LvlUpCheck.j"
+//! import "..\triggers\Systems\LvlSelf.j"
+//! import "..\triggers\Systems\MagRes.j"
+//! import "..\triggers\Systems\PhysRes.j"
+//! import "..\triggers\Systems\slow.j"
+//! import "..\triggers\Systems\NeviSound.j"
+//! import "..\triggers\Systems\Evol1.j"
+//! import "..\triggers\Systems\Evol2.j"
+//! import "..\triggers\Systems\sukuna_spawn.j"
+//! import "..\triggers\Systems\ESC.j"
+//! import "..\triggers\Systems\Killme.j"
+//! import "..\triggers\Systems\AnimCheck.j"
+//! import "..\triggers\Systems\hpset.j"
+//! import "..\triggers\Systems\mpset.j"
+//! import "..\triggers\Systems\ArrowLeft.j"
+//! import "..\triggers\Systems\ArrowUp.j"
+//! import "..\triggers\Systems\ArrowDown.j"
+//! import "..\triggers\Systems\ArrowRight.j"
+//! import "..\triggers\Systems\CastingCheck.j"
+//! import "..\triggers\Systems\ButtonPressed.j"
+//! import "..\triggers\Systems\ButtonPressed_ESC.j"
+//! import "..\triggers\Systems\ButtonUnPressed_ESC.j"
+//! import "..\triggers\Systems\EnterBase.j"
+//! import "..\triggers\Systems\EnterRegion.j"
+//! import "..\triggers\Systems\LeavesBase.j"
+//! import "..\triggers\Systems\LeavesRegion.j"
+//! import "..\triggers\Systems\ItemCupOfTea.j"
+//! import "..\triggers\Systems\ItemEnter.j"
+//! import "..\triggers\Systems\ItemLeave.j"
+//! import "..\triggers\Items\Items.j"
+//! import "..\triggers\Heroes\Toji.j"
+//! import "..\triggers\Heroes\Raiden.j"
+//! import "..\triggers\Heroes\Frieren.j"
+//! import "..\triggers\Heroes\Ainz.j"
+//! import "..\triggers\Heroes\Natsu.j"
+//! import "..\triggers\Heroes\Laxus.j"
+//! import "..\triggers\Heroes\Brandish.j"
+//! import "..\triggers\Heroes\Patriot.j"
+//! import "..\triggers\Heroes\Asta.j"
+//! import "..\triggers\Heroes\Gojo.j"
+//! import "..\triggers\Heroes\Bambietta.j"
+//! import "..\triggers\Heroes\Kirito.j"
+//! import "..\triggers\Heroes\Alucard.j"
+//! import "..\triggers\Heroes\Starrk.j"
+//! import "..\triggers\Heroes\Takeshi.j"
+//! import "..\triggers\Heroes\Barragan.j"
+//! import "..\triggers\Heroes\Mahoraga.j"
+//! import "..\triggers\Heroes\Harribel.j"
+//! import "..\triggers\Heroes\Tsuna.j"
+//! import "..\triggers\Heroes\Rimuru.j"
+//! import "..\triggers\Heroes\DarkShiki.j"
+//! import "..\triggers\Heroes\BazzB.j"
+//! import "..\triggers\Heroes\Neuvillette.j"
+//! import "..\triggers\Heroes\Okarun.j"
+//! import "..\triggers\Heroes\Akainu.j"
+//! import "..\triggers\Heroes\Inori.j"
+//! import "..\triggers\Heroes\Kenjaku.j"
+//! import "..\triggers\Heroes\AlterSaber.j"
+//! import "..\triggers\Heroes\Kyoraku.j"
+//! import "..\triggers\Heroes\Tomioka.j"
+//! import "..\triggers\Erza\ErzaT.j"
+//! import "..\triggers\Erza\ErzaQ.j"
+//! import "..\triggers\Erza\ErzaW.j"
+//! import "..\triggers\Erza\ErzaE.j"
+//! import "..\triggers\Erza\ErzaR.j"
+//! import "..\triggers\Erza\ErzaG2_Nakagami.j"
+//! import "..\triggers\Erza\ErzaG2_Fairy.j"
+//! import "..\triggers\Erza\ErzaBase.j"
+//! import "..\triggers\Heroes\Milim.j"
+
+globals
+    // World Editor generated handles from c6
+rect gg_rct_Caster= null
+rect gg_rct_Base= null
+rect gg_rct_Test= null
+rect gg_rct_Pick= null
+rect gg_rct_Shop= null
+rect gg_rct_Arena= null
+rect gg_rct_Spawn1= null
+rect gg_rct_Spawn2= null
+rect gg_rct_Spawn3= null
+rect gg_rct_Spawn4= null
+rect gg_rct_Go= null
+rect gg_rct_Go2= null
+rect gg_rct_Metro= null
+rect gg_rct_SpeedTop1= null
+rect gg_rct_SpeedRight1= null
+rect gg_rct_SpeedLeft1= null
+rect gg_rct_SpeedTop2= null
+rect gg_rct_SpeedBottom1= null
+rect gg_rct_SpeedLeft2= null
+rect gg_rct_SpeedRight2= null
+rect gg_rct_SpeedBottom2= null
+rect gg_rct_Chest= null
+rect gg_rct_Evergreen= null
+rect gg_rct_TrainLeftUp= null
+rect gg_rct_TrainLeftBottom= null
+rect gg_rct_TrainRightUp= null
+rect gg_rct_TrainRightBottom= null
+rect gg_rct_LL= null
+rect gg_rct_Cage= null
+rect gg_rct_TestMode= null
+rect gg_rct_TestMode2= null
+sound gg_snd_GoblinMerchantWhat1= null
+sound gg_snd_GoblinMerchantWhat2= null
+sound gg_snd_GoblinMerchantWhat3= null
+sound gg_snd_AlchemistTransmuteDeath1= null
+sound gg_snd_ReceiveGold= null
+sound gg_snd_Error= null
+sound gg_snd_Hero_Raiden_W_1= null
+sound gg_snd_Hero_Raiden_T_Atk1= null
+sound gg_snd_Hero_Raiden_T_Atk2= null
+sound gg_snd_Hero_Raiden_T_Atk3= null
+sound gg_snd_wos_shopenter= null
+sound gg_snd_SadTrombone= null
+sound gg_snd_Loose= null
+sound gg_snd_Win= null
+sound gg_snd_Hero_Natsu_G= null
+sound gg_snd_Hero_Natsu_GQ0= null
+sound gg_snd_Round_Sukuna= null
+sound gg_snd_Hero_Erza6_G1= null
+sound gg_snd_Hero_Erza7_G2= null
+sound gg_snd_Hero_Kyoraku_T6= null
+sound gg_snd_Hero_Kyoraku_T14= null
+sound gg_snd_Hero_Inori_W_2= null
+sound gg_snd_Hero_Inori_R= null
+sound gg_snd_Hero_Kyoraku_T14__2= null
+sound gg_snd_UpkeepRing= null
+sound gg_snd_Swap= null
+sound gg_snd_TornadoLoop= null
+sound gg_snd_BattleNetTick= null
+sound gg_snd_Hero_Laxus_T= null
+sound gg_snd_Hero_Ainz_F= null
+trigger gg_trg_Loan= null
+trigger gg_trg_Loan_Copy= null
+trigger gg_trg_ShowTextCD= null
+trigger gg_trg_ShowCD= null
+trigger gg_trg_TooltipBuilder= null
+trigger gg_trg_UniversalTooltips= null
+trigger gg_trg_UI_CAREER= null
+trigger gg_trg_DefaultArmorChange= null
+trigger gg_trg_DefaultArmorChangeStable_Copy= null
+trigger gg_trg_Save2= null
+trigger gg_trg_SaveLoad= null
+trigger gg_trg_MusicPlayer= null
+trigger gg_trg_Scoreboard= null
+trigger gg_trg_ChatCommand= null
+trigger gg_trg_Player_Pick_Mode= null
+trigger gg_trg_WoS_Shop_Init= null
+trigger gg_trg_WoS_Pick_Init= null
+trigger gg_trg_WoS_Pick_Init_Copy_2= null
+trigger gg_trg_WoS_Pick_Init_Copy= null
+trigger gg_trg_Starts= null
+trigger gg_trg_Starts_Copy= null
+trigger gg_trg_BuildsForChars= null
+trigger gg_trg_WoS_Shop_Init_Copy_2= null
+trigger gg_trg_TestUnit= null
+trigger gg_trg_TestUnit_Copy= null
+trigger gg_trg_WoS_Hero_Icons_Init= null
+trigger gg_trg_WoS_Hero_Icons_Init_Copy_2= null
+trigger gg_trg_Untitled_Trigger_001= null
+trigger gg_trg_WoS_Hero_Icons_Init_Copy= null
+trigger gg_trg_Leave= null
+trigger gg_trg_RoundEnd= null
+trigger gg_trg_CastAItems= null
+trigger gg_trg_TasBox= null
+trigger gg_trg_CastCheck= null
+trigger gg_trg_CastCheck_Copy= null
+trigger gg_trg_ClickEvent= null
+trigger gg_trg_DecorDestroy_and_Erza_Debuff= null
+trigger gg_trg_Systems1= null
+trigger gg_trg_Systems2= null
+trigger gg_trg_Systems_Copy_2= null
+trigger gg_trg_Systems_Copy= null
+trigger gg_trg_DmgSys= null
+trigger gg_trg_AtkCancel= null
+trigger gg_trg_MouseMove= null
+trigger gg_trg_Death= null
+trigger gg_trg_silence= null
+trigger gg_trg_LvlUpCheck= null
+trigger gg_trg_LvlSelf= null
+trigger gg_trg_MagRes= null
+trigger gg_trg_PhysRes= null
+trigger gg_trg_slow= null
+trigger gg_trg_NeviSound= null
+trigger gg_trg_Evol1= null
+trigger gg_trg_Evol2= null
+trigger gg_trg_sukuna_spawn= null
+trigger gg_trg_ESC= null
+trigger gg_trg_AllyDie= null
+trigger gg_trg_Killme= null
+trigger gg_trg_AnimCheck= null
+trigger gg_trg_hpset= null
+trigger gg_trg_mpset= null
+trigger gg_trg_ArrowLeft= null
+trigger gg_trg_ArrowUp= null
+trigger gg_trg_ArrowDown= null
+trigger gg_trg_ArrowRight= null
+trigger gg_trg_CastingCheck= null
+trigger gg_trg_ButtonPressed= null
+trigger gg_trg_ButtonPressed_ESC= null
+trigger gg_trg_ButtonUnPressed_ESC= null
+trigger gg_trg_EnterBase= null
+trigger gg_trg_EnterRegion= null
+trigger gg_trg_LeavesBase= null
+trigger gg_trg_LeavesRegion= null
+trigger gg_trg_ItemCupOfTea= null
+trigger gg_trg_ItemEnter= null
+trigger gg_trg_ItemLeave= null
+trigger gg_trg_Items= null
+trigger gg_trg_Toji= null
+trigger gg_trg_Toji_____________________u= null
+trigger gg_trg_Raiden= null
+trigger gg_trg_Frieren= null
+trigger gg_trg_Ainz= null
+trigger gg_trg_Ainz_____________________u= null
+trigger gg_trg_Laxus= null
+trigger gg_trg_Laxus_____________________u= null
+trigger gg_trg_Brandish= null
+trigger gg_trg_Patriot= null
+trigger gg_trg_Asta= null
+trigger gg_trg_Gojo= null
+trigger gg_trg_Bambietta= null
+trigger gg_trg_Bambietta_____________________u= null
+trigger gg_trg_Kirito= null
+trigger gg_trg_Alucard= null
+trigger gg_trg_Starrk= null
+trigger gg_trg_Starrk_Copy= null
+trigger gg_trg_Takeshi= null
+trigger gg_trg_Barragan= null
+trigger gg_trg_Mahoraga= null
+trigger gg_trg_Harribel= null
+trigger gg_trg_Tsuna_Copy= null
+trigger gg_trg_Tsuna= null
+trigger gg_trg_Tsuna_Copy_2= null
+trigger gg_trg_Rimuru= null
+trigger gg_trg_DarkShiki= null
+trigger gg_trg_BazzB= null
+trigger gg_trg_Neuvillette= null
+trigger gg_trg_Okarun= null
+trigger gg_trg_Akainu= null
+trigger gg_trg_Inori= null
+trigger gg_trg_Kenjaku= null
+trigger gg_trg_AlterSaber= null
+trigger gg_trg_Natsu= null
+trigger gg_trg_Kyoraku= null
+trigger gg_trg_Tomioka= null
+trigger gg_trg_ErzaQ= null
+trigger gg_trg_ErzaW= null
+trigger gg_trg_ErzaE= null
+trigger gg_trg_ErzaR= null
+trigger gg_trg_ErzaT= null
+trigger gg_trg_ErzaG2_Nakagami= null
+trigger gg_trg_ErzaG2_Fairy= null
+trigger gg_trg_ErzaBase= null
+endglobals
+
+//   Warcraft III map script
+//   Generated by the Warcraft III World Editor
+//   Map Author: ThunderGear
+// 
+//===========================================================================
+
+//***************************************************************************
+//*
+//*  Global Variables
+//*
+//***************************************************************************
+
+
+function InitGlobals takes nothing returns nothing
+endfunction
+
+//***************************************************************************
+//*
+//*  Custom Script Code
+//*
+//***************************************************************************
+
+//***************************************************************************
+//*
+//*  Sound Assets
+//*
+//***************************************************************************
+
+function InitSounds takes nothing returns nothing
+    set gg_snd_GoblinMerchantWhat1=CreateSound("Sound/Buildings/Other/Merchant/GoblinMerchantWhat1.flac", false, true, true, 0, 0, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_GoblinMerchantWhat1, "MerchantWhat")
+    call SetSoundDuration(gg_snd_GoblinMerchantWhat1, 1310)
+    call SetSoundVolume(gg_snd_GoblinMerchantWhat1, 90)
+    set gg_snd_GoblinMerchantWhat2=CreateSound("Sound/Buildings/Other/Merchant/GoblinMerchantWhat2.flac", false, true, true, 0, 0, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_GoblinMerchantWhat2, "MerchantWhat")
+    call SetSoundDuration(gg_snd_GoblinMerchantWhat2, 2297)
+    call SetSoundVolume(gg_snd_GoblinMerchantWhat2, 90)
+    set gg_snd_GoblinMerchantWhat3=CreateSound("Sound/Buildings/Other/Merchant/GoblinMerchantWhat3.flac", false, true, true, 0, 0, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_GoblinMerchantWhat3, "MerchantWhat")
+    call SetSoundDuration(gg_snd_GoblinMerchantWhat3, 2665)
+    call SetSoundVolume(gg_snd_GoblinMerchantWhat3, 90)
+    set gg_snd_AlchemistTransmuteDeath1=CreateSound("Abilities/Spells/Other/Transmute/AlchemistTransmuteDeath1.flac", false, false, true, 1, 1, "CombatSoundsEAX")
+    call SetSoundParamsFromLabel(gg_snd_AlchemistTransmuteDeath1, "TransmuteMissileImpact")
+    call SetSoundDuration(gg_snd_AlchemistTransmuteDeath1, 1600)
+    call SetSoundVolume(gg_snd_AlchemistTransmuteDeath1, 127)
+    set gg_snd_ReceiveGold=CreateSound("Abilities/Spells/Items/ResourceItems/ReceiveGold.flac", false, false, true, 1, 1, "SpellsEAX")
+    call SetSoundParamsFromLabel(gg_snd_ReceiveGold, "ReceiveGold")
+    call SetSoundDuration(gg_snd_ReceiveGold, 589)
+    call SetSoundVolume(gg_snd_ReceiveGold, 127)
+    set gg_snd_Error=CreateSound("Sound/Interface/Error.flac", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_Error, "ErrorMessage")
+    call SetSoundDuration(gg_snd_Error, 614)
+    call SetSoundVolume(gg_snd_Error, 127)
+    set gg_snd_Hero_Raiden_W_1=CreateSound("war3mapImported/Hero_Raiden_W_1.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Raiden_W_1, 1728)
+    call SetSoundChannel(gg_snd_Hero_Raiden_W_1, 0)
+    call SetSoundVolume(gg_snd_Hero_Raiden_W_1, 127)
+    call SetSoundPitch(gg_snd_Hero_Raiden_W_1, 1.0)
+    set gg_snd_Hero_Raiden_T_Atk1=CreateSound("war3mapImported/Hero_Raiden_T_Atk1.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk1, 1200)
+    call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk1, 0)
+    call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk1, 127)
+    call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk1, 1.0)
+    set gg_snd_Hero_Raiden_T_Atk2=CreateSound("war3mapImported/Hero_Raiden_T_Atk2.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk2, 1680)
+    call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk2, 0)
+    call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk2, 127)
+    call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk2, 1.0)
+    set gg_snd_Hero_Raiden_T_Atk3=CreateSound("war3mapImported/Hero_Raiden_T_Atk3.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk3, 1008)
+    call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk3, 0)
+    call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk3, 127)
+    call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk3, 1.0)
+    set gg_snd_wos_shopenter=CreateSound("war3mapImported/wos_shopenter.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_wos_shopenter, 2424)
+    call SetSoundChannel(gg_snd_wos_shopenter, 0)
+    call SetSoundVolume(gg_snd_wos_shopenter, 127)
+    call SetSoundPitch(gg_snd_wos_shopenter, 1.0)
+    set gg_snd_SadTrombone=CreateSound("Shop/SadTrombone.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_SadTrombone, 3264)
+    call SetSoundChannel(gg_snd_SadTrombone, 0)
+    call SetSoundVolume(gg_snd_SadTrombone, 127)
+    call SetSoundPitch(gg_snd_SadTrombone, 1.0)
+    set gg_snd_Loose=CreateSound("Game/Loose.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Loose, 60504)
+    call SetSoundChannel(gg_snd_Loose, 0)
+    call SetSoundVolume(gg_snd_Loose, 127)
+    call SetSoundPitch(gg_snd_Loose, 1.0)
+    set gg_snd_Win=CreateSound("Game/Win.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Win, 66144)
+    call SetSoundChannel(gg_snd_Win, 0)
+    call SetSoundVolume(gg_snd_Win, 127)
+    call SetSoundPitch(gg_snd_Win, 1.0)
+    set gg_snd_Hero_Natsu_G=CreateSound("war3mapImported/Hero_Natsu_G.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Natsu_G, 3672)
+    call SetSoundChannel(gg_snd_Hero_Natsu_G, 0)
+    call SetSoundVolume(gg_snd_Hero_Natsu_G, 127)
+    call SetSoundPitch(gg_snd_Hero_Natsu_G, 1.0)
+    set gg_snd_Hero_Natsu_GQ0=CreateSound("war3mapImported/Hero_Natsu_GQ0.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Natsu_GQ0, 2832)
+    call SetSoundChannel(gg_snd_Hero_Natsu_GQ0, 0)
+    call SetSoundVolume(gg_snd_Hero_Natsu_GQ0, 127)
+    call SetSoundPitch(gg_snd_Hero_Natsu_GQ0, 1.0)
+    set gg_snd_Round_Sukuna=CreateSound("war3mapImported/Round_Sukuna.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Round_Sukuna, 58512)
+    call SetSoundChannel(gg_snd_Round_Sukuna, 0)
+    call SetSoundVolume(gg_snd_Round_Sukuna, 127)
+    call SetSoundPitch(gg_snd_Round_Sukuna, 1.0)
+    set gg_snd_Hero_Erza6_G1=CreateSound("war3mapImported/Hero_Erza6_G1.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Erza6_G1, 1896)
+    call SetSoundChannel(gg_snd_Hero_Erza6_G1, 0)
+    call SetSoundVolume(gg_snd_Hero_Erza6_G1, 127)
+    call SetSoundPitch(gg_snd_Hero_Erza6_G1, 1.0)
+    set gg_snd_Hero_Erza7_G2=CreateSound("war3mapImported/Hero_Erza7_G2.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Erza7_G2, 2016)
+    call SetSoundChannel(gg_snd_Hero_Erza7_G2, 0)
+    call SetSoundVolume(gg_snd_Hero_Erza7_G2, 127)
+    call SetSoundPitch(gg_snd_Hero_Erza7_G2, 1.0)
+    set gg_snd_Hero_Kyoraku_T6=CreateSound("war3mapImported/Hero_Kyoraku_T6.mp3", false, false, false, 1, 1, "SpellsEAX")
+    call SetSoundDuration(gg_snd_Hero_Kyoraku_T6, 8832)
+    call SetSoundChannel(gg_snd_Hero_Kyoraku_T6, 0)
+    call SetSoundVolume(gg_snd_Hero_Kyoraku_T6, 127)
+    call SetSoundPitch(gg_snd_Hero_Kyoraku_T6, 1.0)
+    set gg_snd_Hero_Kyoraku_T14=CreateSound("war3mapImported/Hero_Kyoraku_T14.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Kyoraku_T14, 24288)
+    call SetSoundChannel(gg_snd_Hero_Kyoraku_T14, 0)
+    call SetSoundVolume(gg_snd_Hero_Kyoraku_T14, 127)
+    call SetSoundPitch(gg_snd_Hero_Kyoraku_T14, 1.0)
+    set gg_snd_Hero_Inori_W_2=CreateSound("war3mapImported/Hero_Inori_W 2.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Inori_W_2, 7416)
+    call SetSoundChannel(gg_snd_Hero_Inori_W_2, 0)
+    call SetSoundVolume(gg_snd_Hero_Inori_W_2, 127)
+    call SetSoundPitch(gg_snd_Hero_Inori_W_2, 1.0)
+    set gg_snd_Hero_Inori_R=CreateSound("war3mapImported/Hero_Inori_R.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Inori_R, 21792)
+    call SetSoundChannel(gg_snd_Hero_Inori_R, 0)
+    call SetSoundVolume(gg_snd_Hero_Inori_R, 127)
+    call SetSoundPitch(gg_snd_Hero_Inori_R, 1.0)
+    set gg_snd_Hero_Kyoraku_T14__2=CreateSound("war3mapImported/Hero_Kyoraku_T14 _2.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Kyoraku_T14__2, 19200)
+    call SetSoundChannel(gg_snd_Hero_Kyoraku_T14__2, 0)
+    call SetSoundVolume(gg_snd_Hero_Kyoraku_T14__2, 127)
+    call SetSoundPitch(gg_snd_Hero_Kyoraku_T14__2, 1.0)
+    set gg_snd_UpkeepRing=CreateSound("Sound/Interface/UpkeepRing.flac", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_UpkeepRing, "UpkeepLevel")
+    call SetSoundDuration(gg_snd_UpkeepRing, 1578)
+    call SetSoundVolume(gg_snd_UpkeepRing, 80)
+    set gg_snd_Swap=CreateSound("Sound/Interface/ArrangedTeamInvitation.flac", false, false, false, 1, 1, "SpellsEAX")
+    call SetSoundParamsFromLabel(gg_snd_Swap, "ArrangedTeamInvitation")
+    call SetSoundDuration(gg_snd_Swap, 2914)
+    call SetSoundVolume(gg_snd_Swap, 48)
+    set gg_snd_TornadoLoop=CreateSound("Abilities/Spells/Other/Tornado/TornadoLoop.flac", false, true, true, 1, 1, "SpellsEAX")
+    call SetSoundParamsFromLabel(gg_snd_TornadoLoop, "TornadoLoop")
+    call SetSoundDuration(gg_snd_TornadoLoop, 3407)
+    call SetSoundVolume(gg_snd_TornadoLoop, 127)
+    set gg_snd_BattleNetTick=CreateSound("Sound/Interface/BattleNetTick.flac", false, false, false, 1, 1, "DefaultEAXON")
+    call SetSoundParamsFromLabel(gg_snd_BattleNetTick, "ChatroomTimerTick")
+    call SetSoundDuration(gg_snd_BattleNetTick, 476)
+    call SetSoundChannel(gg_snd_BattleNetTick, 0)
+    call SetSoundVolume(gg_snd_BattleNetTick, 127)
+    set gg_snd_Hero_Laxus_T=CreateSound("war3mapImported/Hero_Laxus_T.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Laxus_T, 4824)
+    call SetSoundChannel(gg_snd_Hero_Laxus_T, 0)
+    call SetSoundVolume(gg_snd_Hero_Laxus_T, 127)
+    call SetSoundPitch(gg_snd_Hero_Laxus_T, 1.0)
+    set gg_snd_Hero_Ainz_F=CreateSound("war3mapImported/Hero_Ainz_F.mp3", false, false, false, 0, 0, "DefaultEAXON")
+    call SetSoundDuration(gg_snd_Hero_Ainz_F, 9432)
+    call SetSoundChannel(gg_snd_Hero_Ainz_F, 0)
+    call SetSoundVolume(gg_snd_Hero_Ainz_F, 127)
+    call SetSoundPitch(gg_snd_Hero_Ainz_F, 1.0)
+endfunction
+
+//***************************************************************************
+//*
+//*  Regions
+//*
+//***************************************************************************
+
+function CreateRegions takes nothing returns nothing
+    local weathereffect we
+
+    set gg_rct_Caster=Rect(17632.0, - 5408.0, 17792.0, - 5216.0)
+    set gg_rct_Base=Rect(14272.0, 14304.0, 16448.0, 16448.0)
+    set gg_rct_Test=Rect(17376.0, - 5664.0, 18048.0, - 4864.0)
+    set gg_rct_Pick=Rect(15264.0, 15584.0, 15456.0, 15776.0)
+    set gg_rct_Shop=Rect(15712.0, 15712.0, 16352.0, 16352.0)
+    set gg_rct_Arena=Rect(- 4096.0, 6656.0, 7168.0, 16384.0)
+    set gg_rct_Spawn1=Rect(- 3872.0, 15840.0, - 3552.0, 16160.0)
+    set gg_rct_Spawn2=Rect(6592.0, 15744.0, 6912.0, 16064.0)
+    set gg_rct_Spawn3=Rect(6208.0, 7296.0, 6528.0, 7616.0)
+    set gg_rct_Spawn4=Rect(- 3072.0, 7008.0, - 2752.0, 7328.0)
+    set gg_rct_Go=Rect(14240.0, 14944.0, 15008.0, 15744.0)
+    set gg_rct_Go2=Rect(14304.0, 15008.0, 14944.0, 15680.0)
+    set gg_rct_Metro=Rect(- 4640.0, 10272.0, 7520.0, 11296.0)
+    set gg_rct_SpeedTop1=Rect(- 3456.0, 8096.0, - 3200.0, 8576.0)
+    set gg_rct_SpeedRight1=Rect(- 2432.0, 6880.0, - 1920.0, 7168.0)
+    set gg_rct_SpeedLeft1=Rect(5088.0, 7008.0, 5536.0, 7200.0)
+    set gg_rct_SpeedTop2=Rect(6432.0, 8032.0, 6624.0, 8480.0)
+    set gg_rct_SpeedBottom1=Rect(6240.0, 13504.0, 6432.0, 13952.0)
+    set gg_rct_SpeedLeft2=Rect(4192.0, 15744.0, 4640.0, 15936.0)
+    set gg_rct_SpeedRight2=Rect(- 1760.0, 15584.0, - 1280.0, 15776.0)
+    set gg_rct_SpeedBottom2=Rect(- 3552.0, 14048.0, - 3360.0, 14496.0)
+    set gg_rct_Chest=Rect(14368.0, 15872.0, 14848.0, 16288.0)
+    set gg_rct_Evergreen=Rect(15744.0, 14208.0, 16000.0, 14496.0)
+    set gg_rct_TrainLeftUp=Rect(- 3968.0, 10816.0, - 3616.0, 11072.0)
+    set gg_rct_TrainLeftBottom=Rect(- 3968.0, 10400.0, - 3616.0, 10656.0)
+    set gg_rct_TrainRightUp=Rect(6720.0, 10816.0, 7072.0, 11072.0)
+    set gg_rct_TrainRightBottom=Rect(6720.0, 10400.0, 7072.0, 10656.0)
+    set gg_rct_LL=Rect(- 2912.0, 7872.0, - 2592.0, 8160.0)
+    set gg_rct_Cage=Rect(- 5760.0, - 5664.0, - 5120.0, - 5024.0)
+    set gg_rct_TestMode=Rect(13184.0, 15680.0, 13440.0, 16000.0)
+    set gg_rct_TestMode2=Rect(16544.0, 15712.0, 16800.0, 16032.0)
+endfunction
+
+//***************************************************************************
+//*
+//*  Custom Script Code
+//*
+//***************************************************************************
+//***************************************************************************
+//*
+//*  Triggers
+//*
+//***************************************************************************
+
+//===========================================================================
+function InitCustomTriggers takes nothing returns nothing
+    //Function not found: call InitTrig_TooltipBuilder()
+    //Function not found: call InitTrig_UniversalTooltips()
+    //Function not found: call InitTrig_UI_CAREER()
+    //Function not found: call InitTrig_DefaultArmorChangeStable_Copy()
+    //Function not found: call InitTrig_Save2()
+    //Function not found: call InitTrig_SaveLoad()
+    //Function not found: call InitTrig_MusicPlayer()
+    //Function not found: call InitTrig_Scoreboard()
+    //Function not found: call InitTrig_ChatCommand()
+    //Function not found: call InitTrig_Player_Pick_Mode()
+    call InitTrig_WoS_Shop_Init()
+    //Function not found: call InitTrig_WoS_Pick_Init()
+    call InitTrig_Starts()
+    call InitTrig_BuildsForChars()
+    call InitTrig_TestUnit()
+    //Function not found: call InitTrig_WoS_Hero_Icons_Init()
+    call InitTrig_Leave()
+    //Function not found: call InitTrig_RoundEnd()
+    //Function not found: call InitTrig_CastAItems()
+    //Function not found: call InitTrig_TasBox()
+    call InitTrig_CastCheck()
+    call InitTrig_ClickEvent()
+    //Function not found: call InitTrig_DecorDestroy_and_Erza_Debuff()
+    //Function not found: call InitTrig_Systems1()
+    //Function not found: call InitTrig_Systems2()
+    call InitTrig_DmgSys()
+    call InitTrig_AtkCancel()
+    call InitTrig_MouseMove()
+    call InitTrig_Death()
+    call InitTrig_silence()
+    call InitTrig_LvlUpCheck()
+    call InitTrig_LvlSelf()
+    call InitTrig_MagRes()
+    call InitTrig_PhysRes()
+    call InitTrig_slow()
+    call InitTrig_NeviSound()
+    call InitTrig_Evol1()
+    call InitTrig_Evol2()
+    call InitTrig_sukuna_spawn()
+    call InitTrig_ESC()
+    call InitTrig_Killme()
+    call InitTrig_AnimCheck()
+    call InitTrig_hpset()
+    call InitTrig_mpset()
+    call InitTrig_ArrowLeft()
+    call InitTrig_ArrowUp()
+    call InitTrig_ArrowDown()
+    call InitTrig_ArrowRight()
+    call InitTrig_CastingCheck()
+    call InitTrig_ButtonPressed()
+    call InitTrig_ButtonPressed_ESC()
+    call InitTrig_ButtonUnPressed_ESC()
+    call InitTrig_EnterBase()
+    call InitTrig_EnterRegion()
+    call InitTrig_LeavesBase()
+    call InitTrig_LeavesRegion()
+    call InitTrig_ItemCupOfTea()
+    call InitTrig_ItemEnter()
+    call InitTrig_ItemLeave()
+    //Function not found: call InitTrig_Items()
+    //Function not found: call InitTrig_Toji()
+    //Function not found: call InitTrig_Raiden()
+    //Function not found: call InitTrig_Frieren()
+    //Function not found: call InitTrig_Ainz()
+    //Function not found: call InitTrig_Laxus()
+    //Function not found: call InitTrig_Brandish()
+    //Function not found: call InitTrig_Patriot()
+    //Function not found: call InitTrig_Asta()
+    //Function not found: call InitTrig_Gojo()
+    //Function not found: call InitTrig_Bambietta()
+    //Function not found: call InitTrig_Kirito()
+    //Function not found: call InitTrig_Alucard()
+    //Function not found: call InitTrig_Starrk()
+    //Function not found: call InitTrig_Takeshi()
+    //Function not found: call InitTrig_Barragan()
+    //Function not found: call InitTrig_Mahoraga()
+    //Function not found: call InitTrig_Harribel()
+    //Function not found: call InitTrig_Tsuna()
+    //Function not found: call InitTrig_Rimuru()
+    //Function not found: call InitTrig_DarkShiki()
+    //Function not found: call InitTrig_BazzB()
+    //Function not found: call InitTrig_Neuvillette()
+    //Function not found: call InitTrig_Okarun()
+    //Function not found: call InitTrig_Akainu()
+    //Function not found: call InitTrig_Inori()
+    //Function not found: call InitTrig_Kenjaku()
+    //Function not found: call InitTrig_AlterSaber()
+    //Function not found: call InitTrig_Natsu()
+    //Function not found: call InitTrig_Kyoraku()
+    //Function not found: call InitTrig_Tomioka()
+    //Function not found: call InitTrig_ErzaQ()
+    //Function not found: call InitTrig_ErzaW()
+    //Function not found: call InitTrig_ErzaE()
+    //Function not found: call InitTrig_ErzaR()
+    //Function not found: call InitTrig_ErzaT()
+    //Function not found: call InitTrig_ErzaG2_Nakagami()
+    //Function not found: call InitTrig_ErzaG2_Fairy()
+    //Function not found: call InitTrig_ErzaBase()
+endfunction
+
+//===========================================================================
+function RunInitializationTriggers takes nothing returns nothing
+    call ConditionalTriggerExecute(gg_trg_Systems1)
+    call ConditionalTriggerExecute(gg_trg_Systems2)
+endfunction
+
+//***************************************************************************
+//*
+//*  Players
+//*
+//***************************************************************************
+
+function InitCustomPlayerSlots takes nothing returns nothing
+
+    // Player 0
+    call SetPlayerStartLocation(Player(0), 0)
+    call ForcePlayerStartLocation(Player(0), 0)
+    call SetPlayerColor(Player(0), ConvertPlayerColor(0))
+    call SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(0), false)
+    call SetPlayerController(Player(0), MAP_CONTROL_USER)
+
+    // Player 1
+    call SetPlayerStartLocation(Player(1), 1)
+    call ForcePlayerStartLocation(Player(1), 1)
+    call SetPlayerColor(Player(1), ConvertPlayerColor(1))
+    call SetPlayerRacePreference(Player(1), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(1), false)
+    call SetPlayerController(Player(1), MAP_CONTROL_USER)
+
+    // Player 2
+    call SetPlayerStartLocation(Player(2), 2)
+    call ForcePlayerStartLocation(Player(2), 2)
+    call SetPlayerColor(Player(2), ConvertPlayerColor(2))
+    call SetPlayerRacePreference(Player(2), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(2), false)
+    call SetPlayerController(Player(2), MAP_CONTROL_USER)
+
+    // Player 3
+    call SetPlayerStartLocation(Player(3), 3)
+    call ForcePlayerStartLocation(Player(3), 3)
+    call SetPlayerColor(Player(3), ConvertPlayerColor(3))
+    call SetPlayerRacePreference(Player(3), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(3), false)
+    call SetPlayerController(Player(3), MAP_CONTROL_USER)
+
+    // Player 4
+    call SetPlayerStartLocation(Player(4), 4)
+    call ForcePlayerStartLocation(Player(4), 4)
+    call SetPlayerColor(Player(4), ConvertPlayerColor(4))
+    call SetPlayerRacePreference(Player(4), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(4), false)
+    call SetPlayerController(Player(4), MAP_CONTROL_USER)
+
+    // Player 5
+    call SetPlayerStartLocation(Player(5), 5)
+    call ForcePlayerStartLocation(Player(5), 5)
+    call SetPlayerColor(Player(5), ConvertPlayerColor(5))
+    call SetPlayerRacePreference(Player(5), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(5), false)
+    call SetPlayerController(Player(5), MAP_CONTROL_USER)
+
+    // Player 6
+    call SetPlayerStartLocation(Player(6), 6)
+    call ForcePlayerStartLocation(Player(6), 6)
+    call SetPlayerColor(Player(6), ConvertPlayerColor(6))
+    call SetPlayerRacePreference(Player(6), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(6), false)
+    call SetPlayerController(Player(6), MAP_CONTROL_USER)
+
+    // Player 7
+    call SetPlayerStartLocation(Player(7), 7)
+    call ForcePlayerStartLocation(Player(7), 7)
+    call SetPlayerColor(Player(7), ConvertPlayerColor(7))
+    call SetPlayerRacePreference(Player(7), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(7), false)
+    call SetPlayerController(Player(7), MAP_CONTROL_USER)
+
+    // Player 8
+    call SetPlayerStartLocation(Player(8), 8)
+    call ForcePlayerStartLocation(Player(8), 8)
+    call SetPlayerColor(Player(8), ConvertPlayerColor(8))
+    call SetPlayerRacePreference(Player(8), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(8), false)
+    call SetPlayerController(Player(8), MAP_CONTROL_USER)
+
+    // Player 9
+    call SetPlayerStartLocation(Player(9), 9)
+    call ForcePlayerStartLocation(Player(9), 9)
+    call SetPlayerColor(Player(9), ConvertPlayerColor(9))
+    call SetPlayerRacePreference(Player(9), RACE_PREF_HUMAN)
+    call SetPlayerRaceSelectable(Player(9), false)
+    call SetPlayerController(Player(9), MAP_CONTROL_USER)
+
+endfunction
+
+function InitCustomTeams takes nothing returns nothing
+    // Force: TRIGSTR_457
+    call SetPlayerTeam(Player(0), 0)
+    call SetPlayerState(Player(0), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(1), 0)
+    call SetPlayerState(Player(1), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(2), 0)
+    call SetPlayerState(Player(2), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(3), 0)
+    call SetPlayerState(Player(3), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(4), 0)
+    call SetPlayerState(Player(4), PLAYER_STATE_ALLIED_VICTORY, 1)
+
+    //   Allied
+    call SetPlayerAllianceStateAllyBJ(Player(0), Player(1), true)
+    call SetPlayerAllianceStateAllyBJ(Player(0), Player(2), true)
+    call SetPlayerAllianceStateAllyBJ(Player(0), Player(3), true)
+    call SetPlayerAllianceStateAllyBJ(Player(0), Player(4), true)
+    call SetPlayerAllianceStateAllyBJ(Player(1), Player(0), true)
+    call SetPlayerAllianceStateAllyBJ(Player(1), Player(2), true)
+    call SetPlayerAllianceStateAllyBJ(Player(1), Player(3), true)
+    call SetPlayerAllianceStateAllyBJ(Player(1), Player(4), true)
+    call SetPlayerAllianceStateAllyBJ(Player(2), Player(0), true)
+    call SetPlayerAllianceStateAllyBJ(Player(2), Player(1), true)
+    call SetPlayerAllianceStateAllyBJ(Player(2), Player(3), true)
+    call SetPlayerAllianceStateAllyBJ(Player(2), Player(4), true)
+    call SetPlayerAllianceStateAllyBJ(Player(3), Player(0), true)
+    call SetPlayerAllianceStateAllyBJ(Player(3), Player(1), true)
+    call SetPlayerAllianceStateAllyBJ(Player(3), Player(2), true)
+    call SetPlayerAllianceStateAllyBJ(Player(3), Player(4), true)
+    call SetPlayerAllianceStateAllyBJ(Player(4), Player(0), true)
+    call SetPlayerAllianceStateAllyBJ(Player(4), Player(1), true)
+    call SetPlayerAllianceStateAllyBJ(Player(4), Player(2), true)
+    call SetPlayerAllianceStateAllyBJ(Player(4), Player(3), true)
+
+    //   Shared Vision
+    call SetPlayerAllianceStateVisionBJ(Player(0), Player(1), true)
+    call SetPlayerAllianceStateVisionBJ(Player(0), Player(2), true)
+    call SetPlayerAllianceStateVisionBJ(Player(0), Player(3), true)
+    call SetPlayerAllianceStateVisionBJ(Player(0), Player(4), true)
+    call SetPlayerAllianceStateVisionBJ(Player(1), Player(0), true)
+    call SetPlayerAllianceStateVisionBJ(Player(1), Player(2), true)
+    call SetPlayerAllianceStateVisionBJ(Player(1), Player(3), true)
+    call SetPlayerAllianceStateVisionBJ(Player(1), Player(4), true)
+    call SetPlayerAllianceStateVisionBJ(Player(2), Player(0), true)
+    call SetPlayerAllianceStateVisionBJ(Player(2), Player(1), true)
+    call SetPlayerAllianceStateVisionBJ(Player(2), Player(3), true)
+    call SetPlayerAllianceStateVisionBJ(Player(2), Player(4), true)
+    call SetPlayerAllianceStateVisionBJ(Player(3), Player(0), true)
+    call SetPlayerAllianceStateVisionBJ(Player(3), Player(1), true)
+    call SetPlayerAllianceStateVisionBJ(Player(3), Player(2), true)
+    call SetPlayerAllianceStateVisionBJ(Player(3), Player(4), true)
+    call SetPlayerAllianceStateVisionBJ(Player(4), Player(0), true)
+    call SetPlayerAllianceStateVisionBJ(Player(4), Player(1), true)
+    call SetPlayerAllianceStateVisionBJ(Player(4), Player(2), true)
+    call SetPlayerAllianceStateVisionBJ(Player(4), Player(3), true)
+
+    // Force: TRIGSTR_458
+    call SetPlayerTeam(Player(5), 1)
+    call SetPlayerState(Player(5), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(6), 1)
+    call SetPlayerState(Player(6), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(7), 1)
+    call SetPlayerState(Player(7), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(8), 1)
+    call SetPlayerState(Player(8), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(9), 1)
+    call SetPlayerState(Player(9), PLAYER_STATE_ALLIED_VICTORY, 1)
+
+    //   Allied
+    call SetPlayerAllianceStateAllyBJ(Player(5), Player(6), true)
+    call SetPlayerAllianceStateAllyBJ(Player(5), Player(7), true)
+    call SetPlayerAllianceStateAllyBJ(Player(5), Player(8), true)
+    call SetPlayerAllianceStateAllyBJ(Player(5), Player(9), true)
+    call SetPlayerAllianceStateAllyBJ(Player(6), Player(5), true)
+    call SetPlayerAllianceStateAllyBJ(Player(6), Player(7), true)
+    call SetPlayerAllianceStateAllyBJ(Player(6), Player(8), true)
+    call SetPlayerAllianceStateAllyBJ(Player(6), Player(9), true)
+    call SetPlayerAllianceStateAllyBJ(Player(7), Player(5), true)
+    call SetPlayerAllianceStateAllyBJ(Player(7), Player(6), true)
+    call SetPlayerAllianceStateAllyBJ(Player(7), Player(8), true)
+    call SetPlayerAllianceStateAllyBJ(Player(7), Player(9), true)
+    call SetPlayerAllianceStateAllyBJ(Player(8), Player(5), true)
+    call SetPlayerAllianceStateAllyBJ(Player(8), Player(6), true)
+    call SetPlayerAllianceStateAllyBJ(Player(8), Player(7), true)
+    call SetPlayerAllianceStateAllyBJ(Player(8), Player(9), true)
+    call SetPlayerAllianceStateAllyBJ(Player(9), Player(5), true)
+    call SetPlayerAllianceStateAllyBJ(Player(9), Player(6), true)
+    call SetPlayerAllianceStateAllyBJ(Player(9), Player(7), true)
+    call SetPlayerAllianceStateAllyBJ(Player(9), Player(8), true)
+
+    //   Shared Vision
+    call SetPlayerAllianceStateVisionBJ(Player(5), Player(6), true)
+    call SetPlayerAllianceStateVisionBJ(Player(5), Player(7), true)
+    call SetPlayerAllianceStateVisionBJ(Player(5), Player(8), true)
+    call SetPlayerAllianceStateVisionBJ(Player(5), Player(9), true)
+    call SetPlayerAllianceStateVisionBJ(Player(6), Player(5), true)
+    call SetPlayerAllianceStateVisionBJ(Player(6), Player(7), true)
+    call SetPlayerAllianceStateVisionBJ(Player(6), Player(8), true)
+    call SetPlayerAllianceStateVisionBJ(Player(6), Player(9), true)
+    call SetPlayerAllianceStateVisionBJ(Player(7), Player(5), true)
+    call SetPlayerAllianceStateVisionBJ(Player(7), Player(6), true)
+    call SetPlayerAllianceStateVisionBJ(Player(7), Player(8), true)
+    call SetPlayerAllianceStateVisionBJ(Player(7), Player(9), true)
+    call SetPlayerAllianceStateVisionBJ(Player(8), Player(5), true)
+    call SetPlayerAllianceStateVisionBJ(Player(8), Player(6), true)
+    call SetPlayerAllianceStateVisionBJ(Player(8), Player(7), true)
+    call SetPlayerAllianceStateVisionBJ(Player(8), Player(9), true)
+    call SetPlayerAllianceStateVisionBJ(Player(9), Player(5), true)
+    call SetPlayerAllianceStateVisionBJ(Player(9), Player(6), true)
+    call SetPlayerAllianceStateVisionBJ(Player(9), Player(7), true)
+    call SetPlayerAllianceStateVisionBJ(Player(9), Player(8), true)
+
+endfunction
+
+function InitAllyPriorities takes nothing returns nothing
+
+    call SetStartLocPrioCount(0, 9)
+    call SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 3, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 4, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(1, 9)
+    call SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 1, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 2, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 3, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 4, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(2, 9)
+    call SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 2, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 3, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 4, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(3, 9)
+    call SetStartLocPrio(3, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 3, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 4, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(4, 9)
+    call SetStartLocPrio(4, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 4, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(5, 9)
+    call SetStartLocPrio(5, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 5, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(6, 9)
+    call SetStartLocPrio(6, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 6, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(7, 9)
+    call SetStartLocPrio(7, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 7, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(8, 9)
+    call SetStartLocPrio(8, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 8, 9, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(9, 9)
+    call SetStartLocPrio(9, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 8, 8, MAP_LOC_PRIO_HIGH)
+endfunction
+
+//***************************************************************************
+//*
+//*  Main Initialization
+//*
+//***************************************************************************
+
+//===========================================================================
+function main takes nothing returns nothing
+    call SetCameraBounds(- 6144.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 18432.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 18432.0 - GetCameraMargin(CAMERA_MARGIN_TOP), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 18432.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 18432.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
+    call SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
+    call SetTerrainFogEx(0, 40000.0, 40000.0, 0.000, 0.000, 0.000, 0.000)
+    call NewSoundEnvironment("Default")
+    call SetAmbientDaySound("LordaeronSummerDay")
+    call SetAmbientNightSound("LordaeronSummerNight")
+    call SetMapMusic("Music", true, 0)
+    call InitSounds()
+    call CreateRegions()
+    call InitBlizzard()
+
+
+    call InitGlobals()
+    call InitCustomTriggers()
+    call RunInitializationTriggers()
+
+endfunction
+
+//***************************************************************************
+//*
+//*  Map Configuration
+//*
+//***************************************************************************
+
+function config takes nothing returns nothing
+    call SetMapName("TRIGSTR_003")
+    call SetMapDescription("TRIGSTR_208")
+    call SetPlayers(10)
+    call SetTeams(10)
+    call SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
+
+    call DefineStartLocation(0, 18368.0, - 6016.0)
+    call DefineStartLocation(1, 18368.0, - 6016.0)
+    call DefineStartLocation(2, 18368.0, - 6016.0)
+    call DefineStartLocation(3, 18368.0, - 6016.0)
+    call DefineStartLocation(4, 18368.0, - 6016.0)
+    call DefineStartLocation(5, 18368.0, - 6016.0)
+    call DefineStartLocation(6, 18368.0, - 6016.0)
+    call DefineStartLocation(7, 18368.0, - 6016.0)
+    call DefineStartLocation(8, 18368.0, - 6016.0)
+    call DefineStartLocation(9, 18368.0, - 6016.0)
+
+    // Player setup
+    call InitCustomPlayerSlots()
+    call InitCustomTeams()
+    call InitAllyPriorities()
+endfunction
