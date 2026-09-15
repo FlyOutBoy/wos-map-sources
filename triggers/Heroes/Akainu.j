@@ -10,7 +10,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
 //---------------Q ability (Hellhound Dash)------------------------------------
         integer AkainuQ_ID = 'A06V'
         real AkainuQ_DamageAgiBase = 1.00
-        real AkainuQ_DamageAgiStep = 1.00
+        real AkainuQ_DamageAgiStep = 1.001
         real AkainuQ_Damage2StaticBase = 175.00
         real AkainuQ_Damage2StaticStep = 0.00
         real AkainuQ_DamageAoe = 110.00
