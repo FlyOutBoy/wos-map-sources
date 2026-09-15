@@ -6,3 +6,5 @@
 /.vscode/wos-build.json
 **/__pycache__/
 *.pyc
+object-data-backups/
+.object-data-raw/

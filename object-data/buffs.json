@@ -1,0 +1,1122 @@
+{
+  "B000": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Speed Increase",
+    "extended_tooltip": "Unit have increased movespeed",
+    "icon": "Pick\\ArrowSpeed.blp",
+    "target_art": "war3mapImported\\wos_SpeedBuff7.mdx"
+  },
+  "B001": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Witch Sin",
+    "extended_tooltip": "Unit gain additional 10 allstat and 15% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_WitchSin.blp",
+    "target_art": ""
+  },
+  "B002": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Kansho and Bakuya",
+    "extended_tooltip": "",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Kansho_Bakuya.blp",
+    "target_art": "Abilities\\Spells\\Undead\\Cripple\\CrippleTarget.mdl",
+    "target_attachment_point_1": "chest"
+  },
+  "B003": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Kazekage Hat",
+    "extended_tooltip": "",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_KazekageHut.blp",
+    "target_art": "Abilities\\Spells\\Other\\HowlOfTerror\\HowlTarget.mdl",
+    "target_attachment_point_1": "chest"
+  },
+  "B004": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Knight of Ruin",
+    "extended_tooltip": "Next damage will be blocked and counterattacked.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_E.blp",
+    "target_art": "war3mapImported\\wos_raiden_tx_yln_hit8_1.mdx",
+    "race": "orc"
+  },
+  "B005": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Naofumi Shield",
+    "extended_tooltip": "Unit immune to debuffs and reduce taken dmg",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_NaofumiShield.blp",
+    "target_art": "war3mapImported\\wos_mei-torb.mdl"
+  },
+  "B006": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Fire Stack",
+    "extended_tooltip": "take damage every second",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_fire.blp",
+    "target_art": "war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2",
+    "race": "nightelf",
+    "target_attachment_point_1": "chest"
+  },
+  "B007": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Water Stack",
+    "extended_tooltip": "unit slowed",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_Water.blp",
+    "target_art": "war3mapimported\\wos_laz (167).mdx",
+    "race": "nightelf",
+    "target_attachment_point_1": "chest"
+  },
+  "B008": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Lightning Stack",
+    "extended_tooltip": "unit will be stuned and loose mana",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_lightning.blp",
+    "target_art": "",
+    "race": "nightelf",
+    "target_attachment_point_1": "chest"
+  },
+  "B009": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wape Stack",
+    "extended_tooltip": "unit take additional physical damage by 9%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_Wape.blp",
+    "target_art": "war3mapImported\\wos_steam.mdx",
+    "race": "nightelf"
+  },
+  "B00A": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Overload  Stack",
+    "extended_tooltip": "unit stuned",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_overload.blp",
+    "target_art": "",
+    "race": "nightelf"
+  },
+  "B00B": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Electrized Stack",
+    "extended_tooltip": "unit take damage over time",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_electrized.blp",
+    "target_art": "war3mapimported\\wos_laz (167).mdx",
+    "race": "nightelf",
+    "target_attachment_point_1": "chest"
+  },
+  "B00C": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Nakagami Verdict",
+    "extended_tooltip": "+40% mag resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Erza6_R.blp",
+    "target_art": "war3mapimported\\wos_[ake] 54.mdl",
+    "race": "orc"
+  },
+  "B00D": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Nakagami Verdict",
+    "extended_tooltip": "you will be silenced after use any ability",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Erza6_R.blp",
+    "target_art": "",
+    "editor_suffix": "Enemy",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B00E": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Nakagami Starlight",
+    "extended_tooltip": "you deal 35% less magic damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Erza6_T.blp",
+    "target_art": "war3mapImported\\wos_file00002534.mdl",
+    "editor_suffix": "Enemy",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B00F": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Kurikara Flame",
+    "extended_tooltip": "Unit burns",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Kurikara.blp",
+    "target_art": ""
+  },
+  "B00G": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Daruma San Ga Koronda",
+    "extended_tooltip": "Next damage will be blocked and counterattacked.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_R.blp",
+    "target_art": "war3mapImported\\wos_2B2506950AC33FAB.mdx",
+    "race": "orc"
+  },
+  "B00H": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Play Participant",
+    "extended_tooltip": "This unit affected by Kyoten Kyokotsu Karamatsu Shinju",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T0.blp",
+    "target_art": "war3mapimported\\wos_yelshadowbuff3.mdx",
+    "race": "orc"
+  },
+  "B00I": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Instability",
+    "extended_tooltip": "Gain Additional physical and magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B00J": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Song of Salvation",
+    "extended_tooltip": "Immune to debuffs",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
+    "target_art": "war3mapimported\\wos_a (207).mdx",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B00K": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Apocalypse Virus",
+    "extended_tooltip": "unit gain less heal and mana regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T.blp",
+    "target_art": "",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B00L": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Turbo Speed",
+    "extended_tooltip": "Okarun have max movement speed.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Okarun_T.blp",
+    "target_art": "war3mapImported\\wos_aurafbred.mdx",
+    "editor_suffix": "Okarun",
+    "race": "orc"
+  },
+  "B00M": {
+    "name": "1",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 3 armor and 4% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00N": {
+    "name": "2",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 6 armor and 8% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00O": {
+    "name": "3",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 9 armor and 12% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00P": {
+    "name": "4",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 12 armor and 16% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00Q": {
+    "name": "5",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 15 armor and 20% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00R": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "True Zangetsu",
+    "extended_tooltip": "Magic Resistance decreased by 14%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_True_Zangetsu.blp",
+    "target_art": "Abilities\\Spells\\Other\\HowlOfTerror\\HowlTarget.mdl",
+    "target_attachment_point_1": "chest"
+  },
+  "B00S": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Nichirin Sword Whip",
+    "extended_tooltip": "Phys resistance decreased by 14%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Nichirin_Sword_Whip.blp",
+    "target_art": "Abilities\\Spells\\Undead\\Cripple\\CrippleTarget.mdl",
+    "target_attachment_point_1": "chest"
+  },
+  "B00T": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Frozen Heart",
+    "extended_tooltip": "slowed by 25%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Frozen_Heart.blp",
+    "target_art": ""
+  },
+  "B00U": {
+    "name": "6",
+    "base_id": "BHds",
+    "tooltip": "Black Clover",
+    "extended_tooltip": "Unit gain 18 armor and 24% magic resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
+    "target_art": "war3mapImported\\wos_sparkleaura.mdx",
+    "editor_suffix": "Black Clover"
+  },
+  "B00V": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Zero Point Breakthrough: First Edition",
+    "extended_tooltip": "each atk root enemy for 1 sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_W.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B00W": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Mantello di Vongola Primo",
+    "extended_tooltip": "blocks all incoming damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_TG.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B00X": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Utsushi Ame",
+    "extended_tooltip": "Next damage will be blocked if range condition works.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_Q3.blp",
+    "target_art": "",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B00Y": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Gofuu Juuu",
+    "extended_tooltip": "This unit cant deal damage to Yamamoto Takeshi",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_E2.blp",
+    "target_art": "war3mapImported\\wos_Bubbles3.mdx",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B00Z": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Aggregate Art: Jiunoka",
+    "extended_tooltip": "This unit deal additional damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_T.blp",
+    "target_art": "",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B010": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Samidare",
+    "extended_tooltip": "Next attack will be blocked if range condition works.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_W2.blp",
+    "target_art": "",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B011": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Bankai Target",
+    "extended_tooltip": "THIS UNIT UNDER BANKAI EFFECT",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T.blp",
+    "target_art": "war3mapImported\\wos_title_cundang.mdx",
+    "race": "orc"
+  },
+  "B012": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Water Slow",
+    "extended_tooltip": "unit slowed",
+    "icon": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNElem_Water.blp",
+    "target_art": "war3mapimported\\wos_laz (167).mdx",
+    "race": "nightelf",
+    "target_attachment_point_1": "chest"
+  },
+  "B013": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Holy Grail",
+    "extended_tooltip": "+15 hp/sec\n+4 mp/sec\n+20% MS",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Holy_Grail.blp",
+    "target_art": ""
+  },
+  "B014": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Great Sage Control",
+    "extended_tooltip": "Block next incoming attacks",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru2_Q.blp",
+    "target_art": "war3mapImported\\wos_greatsagecirc.mdx",
+    "race": "orc"
+  },
+  "B015": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Raphael Control",
+    "extended_tooltip": "Block next incoming attacks",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+    "target_art": "war3mapImported\\wos_a (613x).mdx",
+    "race": "orc"
+  },
+  "B016": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Uriel Protect",
+    "extended_tooltip": "Block incoming damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_W.blp",
+    "target_art": "war3mapImported\\wos_longskill_buff_67.mdx",
+    "race": "orc"
+  },
+  "B017": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Uriel Cage",
+    "extended_tooltip": "Unit Trapped here",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_W.blp",
+    "target_art": "war3mapImported\\wos_longskill_buff_67_2.mdx",
+    "race": "orc"
+  },
+  "B018": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "|cffffcc00Sacrifice|r",
+    "extended_tooltip": "When unit take damage Harribel get stronger",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_G.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B019": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Aging",
+    "extended_tooltip": "MS- 28%, AS-14%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_G.blp",
+    "target_art": "",
+    "editor_suffix": "4",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B01A": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Aging",
+    "extended_tooltip": "MS- 14%, AS-7%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_G.blp",
+    "target_art": "",
+    "editor_suffix": "2",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B01B": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Aging",
+    "extended_tooltip": "MS- 7%, AS-3.5%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_G.blp",
+    "target_art": "",
+    "editor_suffix": "1",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B01C": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Aging",
+    "extended_tooltip": "MS- 21%, AS-10.5%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_G.blp",
+    "target_art": "",
+    "editor_suffix": "3",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B01D": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Soul Drain",
+    "extended_tooltip": "Unit deal 25% less damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_W.blp",
+    "target_art": "war3mapImported\\wos_blood-rou-wu.MDX",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B01E": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Cromwell Approval",
+    "extended_tooltip": "Unit deal 25% damage to Alucard, also he take 20% more damage from him and alucard have 40% lifesteal on this target.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_T.blp",
+    "target_art": "war3mapImported\\wos_[By XeSHTeG]Alucard Circle.mdx",
+    "race": "orc"
+  },
+  "B01F": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Cromwell Approval(Lesser)",
+    "extended_tooltip": "Unit deal 30% less damage to Alucard, also he take 10% more damage from him, and alucard have 20% lifesteal on this target.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_RT.blp",
+    "target_art": "war3mapImported\\wos_[By XeSHTeG]Alucard Circle.mdx",
+    "race": "orc"
+  },
+  "B01G": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 3% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff1.mdx",
+    "editor_suffix": "1",
+    "race": "orc"
+  },
+  "B01H": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 6% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff2.mdx",
+    "editor_suffix": "2",
+    "race": "orc"
+  },
+  "B01I": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 9% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff3.mdx",
+    "editor_suffix": "3",
+    "race": "orc"
+  },
+  "B01J": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 12% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff4.mdx",
+    "editor_suffix": "4",
+    "race": "orc"
+  },
+  "B01K": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 15% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff5.mdx",
+    "editor_suffix": "5",
+    "race": "orc"
+  },
+  "B01L": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 18% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff6.mdx",
+    "editor_suffix": "6",
+    "race": "orc"
+  },
+  "B01M": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation",
+    "extended_tooltip": "Unit deal 21% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff7.mdx",
+    "editor_suffix": "7",
+    "race": "orc"
+  },
+  "B01N": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Absolute Adaptation (Complete)",
+    "extended_tooltip": "Unit deal 20% less damage to Mahoraga",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_T.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff8.mdx",
+    "editor_suffix": "8",
+    "race": "orc"
+  },
+  "B01O": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Divine Rush",
+    "extended_tooltip": "Next attack will trigger combination",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "",
+    "editor_suffix": "1",
+    "race": "orc"
+  },
+  "B01P": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Dark Holy Grail",
+    "extended_tooltip": "+25 hp/sec\n+6 mp/sec\n+25% MS",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_DarkGrail.blp",
+    "target_art": ""
+  },
+  "B01Q": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Dark Holy Grail",
+    "extended_tooltip": "active heal reduced by 30%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_DarkGrail.blp",
+    "target_art": "",
+    "editor_suffix": "ENEMY"
+  },
+  "B01R": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wrath Sin",
+    "extended_tooltip": "Unit Pierce  shields by 75%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_WrathSin.blp",
+    "target_art": "war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_ZiRed.mdl"
+  },
+  "B01S": {
+    "name": "1 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-7% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B01T": {
+    "name": "2 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-14% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B01U": {
+    "name": "3 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-21% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B01V": {
+    "name": "4 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-28% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B01W": {
+    "name": "5 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-35% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B01X": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain armor  and hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "Def",
+    "race": "orc"
+  },
+  "B01Y": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain additional physical spell damage and decrease hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "1 atk",
+    "race": "orc"
+  },
+  "B01Z": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Shield Up",
+    "extended_tooltip": "Unit Gain Less Damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_F.blp",
+    "target_art": "war3mapImported\\wos_patriotf",
+    "editor_suffix": "big",
+    "race": "orc"
+  },
+  "B020": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Shield Up",
+    "extended_tooltip": "Unit Gain Less Damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_F.blp",
+    "target_art": "war3mapImported\\wos_patriotf",
+    "editor_suffix": "less",
+    "race": "orc"
+  },
+  "B021": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain additional physical spell damage and decrease hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "2 atk",
+    "race": "orc"
+  },
+  "B022": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain additional physical spell damage and decrease hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "3 atk",
+    "race": "orc"
+  },
+  "B023": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain additional physical spell damage and decrease hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "4 atk",
+    "race": "orc"
+  },
+  "B024": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sarkaz Sorcery",
+    "extended_tooltip": "Unit Gain additional physical spell damage and decrease hp regen",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "editor_suffix": "5 atk",
+    "race": "orc"
+  },
+  "B025": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wound Reduction",
+    "extended_tooltip": "Unit take less dmg and restore hp",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_E.blp",
+    "target_art": "war3mapImported\\wos_Mdx_Aura_29_brand",
+    "editor_suffix": "1",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B026": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wound Reduction",
+    "extended_tooltip": "Unit take less dmg and restore hp",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_E.blp",
+    "target_art": "war3mapImported\\wos_Mdx_Aura_29_brand",
+    "editor_suffix": "2",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B027": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wound Reduction",
+    "extended_tooltip": "Unit take less dmg and restore hp",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_E.blp",
+    "target_art": "war3mapImported\\wos_Mdx_Aura_29_brand",
+    "editor_suffix": "3",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B028": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wound Reduction",
+    "extended_tooltip": "Unit take less dmg and restore hp",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_E.blp",
+    "target_art": "war3mapImported\\wos_Mdx_Aura_29_brand",
+    "editor_suffix": "4",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B029": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Wound Reduction",
+    "extended_tooltip": "Unit take less dmg and restore hp",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_E.blp",
+    "target_art": "war3mapImported\\wos_Mdx_Aura_29_brand",
+    "editor_suffix": "5",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B02A": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Command T Ally",
+    "extended_tooltip": "Unit deal increased damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_F.blp",
+    "target_art": "war3mapImported\\wos_brandi_green_increase.mdx",
+    "editor_suffix": "1",
+    "race": "orc"
+  },
+  "B02B": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Command T Enemy",
+    "extended_tooltip": "Unit deal less damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_F.blp",
+    "target_art": "war3mapImported\\wos_brandi_red_decrease.mdx",
+    "editor_suffix": "1",
+    "race": "orc"
+  },
+  "B02C": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Command T Expansion",
+    "extended_tooltip": "Brandish take less damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Brandish_T.blp",
+    "target_art": "",
+    "editor_suffix": "1",
+    "race": "orc"
+  },
+  "B02D": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Guts Armor",
+    "extended_tooltip": "Next Dealt damage from this unit deal additional damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_GutsArmor.blp",
+    "target_art": "Abilities\\Spells\\Human\\SunderingBlades\\SunderingBlades.mdl",
+    "target_attachment_point_1": "head"
+  },
+  "B02E": {
+    "name": "6 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-42% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B02F": {
+    "name": "7 Hell Blaze",
+    "base_id": "BHds",
+    "tooltip": "Hell Blaze",
+    "extended_tooltip": "-49% active healing",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
+    "target_art": "war3mapimported\\wos_a (155).mdl"
+  },
+  "B02G": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Susanoo Shield",
+    "extended_tooltip": "Unit immune to damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_YataMirror.blp",
+    "target_art": "war3mapImported\\wos_Susano [Itachi Bone]",
+    "editor_suffix": "Susanoo Shield"
+  },
+  "B02H": {
+    "name": "Ainz T",
+    "base_id": "BHds",
+    "tooltip": "Goal All Life Is Death",
+    "extended_tooltip": "unit magic and physical resistance reduced by 30%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_T.blp",
+    "target_art": "war3mapImported\\wos_AinzTDebuff.mdx",
+    "race": "orc"
+  },
+  "B02I": {
+    "name": "Ainz F0",
+    "base_id": "BHds",
+    "tooltip": "Body of Effulgent Beryl",
+    "extended_tooltip": "next incoming damage ignored",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B02J": {
+    "name": "Ainz F1",
+    "base_id": "BHds",
+    "tooltip": "Fly",
+    "extended_tooltip": "Unit Movespeed increased by 20%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_ade (blue).mdx",
+    "race": "orc"
+  },
+  "B02K": {
+    "name": "Ainz F2",
+    "base_id": "BHds",
+    "tooltip": "Bless of Magic Caster",
+    "extended_tooltip": "Unit Movespeed increased by 20%\nMagical Damage increased by 8%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_fuxuan-21.mdx",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B02L": {
+    "name": "Ainz F3",
+    "base_id": "BHds",
+    "tooltip": "Infinity Wall",
+    "extended_tooltip": "Unit Movespeed increased by 20%\nMagical Damage increased by 8%\nReduce 8% of taken damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_shieldfullpoten",
+    "race": "orc"
+  },
+  "B02M": {
+    "name": "Ainz F4",
+    "base_id": "BHds",
+    "tooltip": "Magic Ward, Holy",
+    "extended_tooltip": "Unit Movespeed increased by 20%\nMagical Damage increased by 8%\nReduce 8% of taken damage\nIncrease taken active heal by 10%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_cxbfjsym",
+    "race": "orc"
+  },
+  "B02N": {
+    "name": "Ainz F5",
+    "base_id": "BHds",
+    "tooltip": "Life Essence",
+    "extended_tooltip": "Unit Movespeed increased by 20%\nMagical Damage increased by 8%\nReduce 8% of taken damage\nIncrease taken active heal by 10%\n+15 hp/sec",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_lifeessense.mdx",
+    "race": "orc"
+  },
+  "B02O": {
+    "name": "Ainz F6",
+    "base_id": "BHds",
+    "tooltip": "Greater Full Potential",
+    "extended_tooltip": "Unit Movespeed increased by 20%\nMagical Damage increased by 8%\nReduce 8% of taken damage\nIncrease taken active heal by 10%\n+15 hp/sec\n+15 allstats",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F1.blp",
+    "target_art": "war3mapImported\\wos_tx_caihongbz2",
+    "race": "orc"
+  },
+  "B02P": {
+    "name": "Ainz W",
+    "base_id": "BHds",
+    "tooltip": "Undead Knight Protect",
+    "extended_tooltip": "Reduce next incoming damage and trigger counterattack",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_W.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B02Q": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Chogurt",
+    "extended_tooltip": "+7.5% resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Chogurt.blp",
+    "target_art": ""
+  },
+  "B02R": {
+    "name": "1",
+    "base_id": "BHds",
+    "tooltip": "Hirashin Mark",
+    "extended_tooltip": "if someone use hiraishin on you, it will reduce cd of item active ability by 50%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Hiraishin.blp",
+    "target_art": "war3mapImported\\wos_kunaimark.mdx",
+    "editor_suffix": "Hirashin Mark",
+    "target_attachment_point_1": "head"
+  },
+  "B02S": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Divine Impulse",
+    "extended_tooltip": "Unit gain additional movespeed and attack speed",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_G.blp",
+    "target_art": "war3mapimported\\wos_lightningatchraiden.mdx",
+    "editor_suffix": "big",
+    "race": "orc",
+    "target_attachment_point_1": "chest"
+  },
+  "B02T": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Mera Mera no Mi",
+    "extended_tooltip": "unit take damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MeraMera.blp",
+    "target_art": ""
+  },
+  "B02U": {
+    "name": "Frieren F",
+    "base_id": "BHds",
+    "tooltip": "Mana strike",
+    "extended_tooltip": "Unit gain damage after debuff ends.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_F2.blp",
+    "target_art": "war3mapImported\\wos_arcaneorb.mdx",
+    "race": "orc"
+  },
+  "B02V": {
+    "name": "Frieren G1",
+    "base_id": "BHds",
+    "tooltip": "Simple Barrier",
+    "extended_tooltip": "Block next incoming damage and dissapear.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G.blp",
+    "target_art": "war3mapImported\\wos_barrier_frir1.mdx",
+    "race": "orc"
+  },
+  "B02W": {
+    "name": "Frieren G2",
+    "base_id": "BHds",
+    "tooltip": "Barrier",
+    "extended_tooltip": "Block incoming damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G2.blp",
+    "target_art": "war3mapImported\\wos_firefly-shieldaura.mdx",
+    "race": "orc"
+  },
+  "B02X": {
+    "name": "Frieren G3",
+    "base_id": "BHds",
+    "tooltip": "Greater Barrier",
+    "extended_tooltip": "Block incoming damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G3.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B02Y": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Chogurt Evolved",
+    "extended_tooltip": "+12.5% resistance",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Chogurt_Evolved.blp",
+    "target_art": ""
+  },
+  "B02Z": {
+    "name": "Toji W",
+    "base_id": "BHds",
+    "tooltip": "Chain Cage",
+    "extended_tooltip": "Unit trapped in toji chains and cant go far away from him",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_W.blp",
+    "target_art": "war3mapImported\\wos_Chains_Buff_noglow.mdx",
+    "race": "orc"
+  },
+  "B030": {
+    "name": "Toji T",
+    "base_id": "BHds",
+    "tooltip": "Shield Crush",
+    "extended_tooltip": "Effectivness of shields of this unit 0%",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_T.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B031": {
+    "name": "Toji G1",
+    "base_id": "BHds",
+    "tooltip": "Killer Mark1",
+    "extended_tooltip": "Unit take 4% more dmg from Toji Abilities",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_1.mdx",
+    "race": "orc"
+  },
+  "B032": {
+    "name": "Toji G2",
+    "base_id": "BHds",
+    "tooltip": "Killer Mark2",
+    "extended_tooltip": "Unit take 8% more dmg from Toji Abilities",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_2.mdx",
+    "race": "orc"
+  },
+  "B033": {
+    "name": "Toji G3",
+    "base_id": "BHds",
+    "tooltip": "Killer Mark3",
+    "extended_tooltip": "Unit take 12% more dmg from Toji Abilities",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_3.mdx",
+    "race": "orc"
+  },
+  "B034": {
+    "name": "Toji G4",
+    "base_id": "BHds",
+    "tooltip": "Killer Mark4",
+    "extended_tooltip": "Unit take 16% more dmg from Toji Abilities",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_4.mdx",
+    "race": "orc"
+  },
+  "B035": {
+    "name": "Toji G5",
+    "base_id": "BHds",
+    "tooltip": "Killer Mark5",
+    "extended_tooltip": "Unit take 20% more dmg from Toji Abilities",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_5.mdx",
+    "race": "orc"
+  },
+  "B036": {
+    "name": "Toji E",
+    "base_id": "BHds",
+    "tooltip": "Quick Move",
+    "extended_tooltip": "Next Toji Ability will deal more damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_E.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B037": {
+    "name": "Toji R",
+    "base_id": "BHds",
+    "tooltip": "Silent Step",
+    "extended_tooltip": "Toji Invisible",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_R.blp",
+    "target_art": "",
+    "race": "orc"
+  },
+  "B038": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sesshou Sakura",
+    "extended_tooltip": "Unit revealed",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_SakuraSesshou.blp",
+    "target_art": ""
+  },
+  "BEer": {
+    "name": "",
+    "base_id": "BEer",
+    "target_art": ""
+  },
+  "BNsi": {
+    "name": "",
+    "base_id": "BNsi",
+    "target_art": "war3mapImported\\wos_SilenceTarget.MDX"
+  },
+  "BOmi": {
+    "name": "",
+    "base_id": "BOmi",
+    "special_art": "war3mapImported\\wos_blackblink.mdx"
+  },
+  "BPSE": {
+    "name": "",
+    "base_id": "BPSE",
+    "target_art": "war3mapImported\\wos_BY_Wood_Eff_Sel_Fat_XuanYun_1_2.mdl"
+  },
+  "Bslo": {
+    "name": "",
+    "base_id": "Bslo",
+    "target_art": "war3mapImported\\wos_gamebaby_mdx_lingzifengbao_001.mdx",
+    "target_attachment_point_1": "origin"
+  }
+}

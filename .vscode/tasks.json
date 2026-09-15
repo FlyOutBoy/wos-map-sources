@@ -3,6 +3,58 @@
 
     "tasks": [
         {
+            "label": "WOS Objects: 1. Export map to editable JSON",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "--config",
+                "${workspaceFolder}\\object-data.config.json",
+                "export"
+            ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "WOS Objects: 2. Validate editable JSON",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "--config",
+                "${workspaceFolder}\\object-data.config.json",
+                "check"
+            ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "WOS Objects: 3. Save JSON into map folder",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\war3_object_workspace.py",
+                "--config",
+                "${workspaceFolder}\\object-data.config.json",
+                "import"
+            ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "WOS Objects: Prove lossless binary round-trip",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\war3_object_data.py",
+                "--config",
+                "${workspaceFolder}\\object-data.config.json",
+                "roundtrip"
+            ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
             "label": "WOS: Compile all JASS/vJASS (auto dependencies)",
 
             "type": "process",
