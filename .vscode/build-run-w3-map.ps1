@@ -316,6 +316,12 @@ try {
             Write-Host $source -ForegroundColor Red
             exit 1
         }
+
+        $triggerSettingsApplier = Join-Path $PSScriptRoot "apply-trigger-settings.ps1"
+        Require-File -Path $triggerSettingsApplier -Name "Trigger settings applier"
+        & $triggerSettingsApplier `
+            -TriggerDirectory (Join-Path $workspaceRoot "triggers") `
+            -MainSource $source
     }
 
     Write-Host "Selected profile: $profileName"

@@ -12,6 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $lines = [System.IO.File]::ReadAllLines($War3MapJ, $utf8)
+$mapName = Split-Path -Leaf (Split-Path -Parent ([System.IO.Path]::GetFullPath($War3MapJ)))
 
 function Find-Line([string]$Pattern, [int]$Start = 0) {
     for ($i = $Start; $i -lt $lines.Length; $i++) {
@@ -59,14 +60,14 @@ if ($imports.Count -eq 0) {
 }
 
 $outputLines = New-Object System.Collections.Generic.List[string]
-$outputLines.Add('// Main.vj - complete MAIN map source based on Anime_WOS2_0.31c6.w3x')
-$outputLines.Add('// World Editor initialization comes from the original c6 war3map.j.')
+$outputLines.Add("// Main.vj - complete MAIN map source based on $mapName")
+$outputLines.Add("// World Editor initialization comes from $mapName/war3map.j.")
 $outputLines.Add('// Current external files under triggers are the source of truth.')
 $outputLines.Add('')
 $outputLines.AddRange([string[]]$imports)
 $outputLines.Add('')
 $outputLines.Add('globals')
-$outputLines.Add('    // World Editor generated handles from c6')
+$outputLines.Add("    // World Editor generated handles from $mapName")
 $outputLines.AddRange([string[]]$generatedGlobals)
 $outputLines.Add('endglobals')
 $outputLines.Add('')

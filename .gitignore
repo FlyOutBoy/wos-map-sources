@@ -8,3 +8,4 @@
 *.pyc
 object-data-backups/
 backups/trigger-sync/
+backups/source-import/

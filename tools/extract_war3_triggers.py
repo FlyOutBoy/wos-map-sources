@@ -425,6 +425,20 @@ def extract(wtg_path: Path, wct_path: Path, output: Path) -> dict:
         encoding="utf-8",
         newline="\n",
     )
+    trigger_settings = {
+        "format": 1,
+        "description": "true = enabled and imported; false = disabled and excluded from Main.vj",
+        "triggers": {
+            item["path"]: bool(item["enabled"])
+            for item in manifest_sources
+            if item["wct_index"] != "map_header"
+        },
+    }
+    (output / "trigger-settings.json").write_text(
+        json.dumps(trigger_settings, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     write_dependency_manifest(output, manifest)
     write_index(output, manifest)
     return manifest
