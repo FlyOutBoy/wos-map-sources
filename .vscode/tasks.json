@@ -70,6 +70,19 @@
             "problemMatcher": []
         },
         {
+            "label": "WOS Imports: Fix dotted filenames and all references",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\fix_war3_import_paths.py",
+                "--config",
+                "${workspaceFolder}\\object-data.config.json",
+                "--interactive"
+            ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true, "focus": true },
+            "problemMatcher": []
+        },
+        {
             "label": "WOS Sources: Import triggers and code from unpacked map",
             "type": "process",
             "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",

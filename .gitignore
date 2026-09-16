@@ -9,6 +9,7 @@
 object-data-backups/
 backups/trigger-sync/
 backups/source-import/
+backups/import-path-fix/
 # Персональные конфиги сборки в корне
 /wos-build.json
 wos-build.json

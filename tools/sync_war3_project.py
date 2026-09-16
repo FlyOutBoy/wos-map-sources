@@ -4,12 +4,31 @@
 from __future__ import annotations
 
 import argparse
+import os
+import subprocess
 import sys
 from pathlib import Path
 
 import war3_object_data as raw
 import war3_object_workspace as objects
 import sync_war3_triggers as triggers
+
+
+def world_editor_running() -> bool:
+    if os.name != "nt":
+        return False
+    try:
+        result = subprocess.run(
+            ["tasklist", "/FI", "IMAGENAME eq World Editor.exe", "/FO", "CSV", "/NH"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except OSError:
+        return False
+    return '"World Editor.exe"' in result.stdout
 
 
 def main() -> int:
@@ -26,6 +45,11 @@ def main() -> int:
             objects.check_workspace(map_dir, output_dir, raw_dir)
             triggers.check(config, Path("triggers").resolve())
         else:
+            if world_editor_running():
+                raise ValueError(
+                    "World Editor is running. Close the map WITHOUT saving, then run task 3 again; "
+                    "World Editor does not reload externally changed WTG/WCT files and can overwrite them."
+                )
             objects.import_workspace(map_dir, output_dir, raw_dir, backup_dir, common_j, False)
             triggers.push(config, Path("triggers").resolve(), Path("backups/trigger-sync").resolve())
         return 0

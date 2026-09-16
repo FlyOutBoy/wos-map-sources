@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import struct
@@ -194,16 +195,33 @@ def find_source_path(
     item: dict, objects_by_id: dict[int, dict], trigger_dir: Path,
     known: dict[int, str], available_files: list[str],
 ) -> str | None:
-    candidates = [known.get(item["object_id"]), expected_path(item, objects_by_id)]
+    expected = expected_path(item, objects_by_id)
+    remembered = known.get(item["object_id"])
+    # The WTG object id is not a permanent source identity. A newer map version can
+    # reuse an old id for another trigger, so always trust the current WTG name and
+    # category first. The manifest is only a move hint when its filename still
+    # matches the current trigger name.
+    candidates = [expected]
+    if remembered and Path(remembered).name.casefold() == Path(expected).name.casefold():
+        candidates.append(remembered)
+    elif remembered:
+        print(
+            f"STALE   manifest id 0x{item['object_id']:08X}: "
+            f"{remembered} does not match WTG trigger {expected}"
+        )
     for relative in candidates:
         if relative and (trigger_dir / Path(relative)).is_file():
             return Path(relative).as_posix()
-    expected_names = {Path(relative).name.casefold() for relative in candidates if relative}
-    expected_names.add(f"{fmt.safe_name(item['name'], 'Trigger')}.j".casefold())
+    expected_names = {Path(expected).name.casefold()}
     moved = [relative for relative in available_files if Path(relative).name.casefold() in expected_names]
     if len(moved) == 1:
-        print(f"MOVE    {candidates[0] or candidates[1]} -> {moved[0]}")
+        print(f"MOVE    {expected} -> {moved[0]}")
         return moved[0]
+    if len(moved) > 1:
+        raise ValueError(
+            f"ambiguous J source for WTG trigger {item['name']!r}: "
+            + ", ".join(moved)
+        )
     return None
 
 
@@ -254,7 +272,9 @@ def candidate_files(trigger_dir: Path) -> list[str]:
     )
 
 
-def prepare(config_path: Path, trigger_dir: Path) -> tuple[Path, dict, dict, int, int, list[tuple[str, str]]]:
+def prepare(
+    config_path: Path, trigger_dir: Path,
+) -> tuple[Path, dict, dict, int, int, list[tuple[str, str]], list[str]]:
     map_dir = load_map(config_path)
     wtg_path, wct_path = map_dir / "war3map.wtg", map_dir / "war3map.wct"
     wtg = fmt.parse_wtg(wtg_path)
@@ -267,12 +287,21 @@ def prepare(config_path: Path, trigger_dir: Path) -> tuple[Path, dict, dict, int
     configured_enabled = enabled_settings(trigger_dir)
     available_files = candidate_files(trigger_dir)
     settings_moves: list[tuple[str, str]] = []
+    source_paths: list[str] = []
     used = set()
     differences = 0
     for index, item in enumerate(source_objects):
-        old_candidates = [known.get(item["object_id"]), expected_path(item, objects_by_id)]
+        old_candidates = [expected_path(item, objects_by_id), known.get(item["object_id"])]
         relative = find_source_path(item, objects_by_id, trigger_dir, known, available_files)
         if relative is None:
+            expected = expected_path(item, objects_by_id)
+            if item["enabled"]:
+                raise ValueError(
+                    f"enabled WTG trigger {item['name']!r} has no matching J source; "
+                    f"expected {trigger_dir / Path(expected)}"
+                )
+            print(f"SKIP    disabled WTG trigger without J source: {expected}")
+            source_paths.append(expected)
             continue
         setting_key = Path(relative).as_posix().casefold()
         setting_candidates = [setting_key] + [
@@ -292,10 +321,17 @@ def prepare(config_path: Path, trigger_dir: Path) -> tuple[Path, dict, dict, int
         if item["parent_id"] != new_parent:
             print(f"CATEGORY {item['name']} -> {Path(relative).parent.as_posix()}")
             item["parent_id"] = new_parent
-        used.add(relative.casefold())
+        source_key = relative.casefold()
+        if source_key in used:
+            raise ValueError(
+                f"J source {relative} was matched to more than one WTG trigger; "
+                "trigger names or manifest ids are ambiguous"
+            )
+        used.add(source_key)
         source = world_editor_source(trigger_dir / Path(relative))
         differences += source != wct["sources"][index]
         wct["sources"][index] = source
+        source_paths.append(relative)
     header = trigger_dir / "Map_Header.j"
     if header.is_file():
         source = world_editor_source(header)
@@ -328,10 +364,108 @@ def prepare(config_path: Path, trigger_dir: Path) -> tuple[Path, dict, dict, int
             "function_count": 0,
         })
         wct["sources"].append(world_editor_source(trigger_dir / Path(relative)))
+        source_paths.append(relative)
         used.add(relative.casefold())
         added += 1
         print(f"ADD     {relative} -> WTG trigger 0x{object_id:08X}")
-    return map_dir, wtg, wct, differences, added, settings_moves
+    return map_dir, wtg, wct, differences, added, settings_moves, source_paths
+
+
+def write_sync_metadata(
+    map_dir: Path, trigger_dir: Path, wtg: dict, wct: dict, source_paths: list[str],
+) -> None:
+    source_objects = [
+        item for item in wtg["objects"]
+        if item["object_type"] in (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT)
+    ]
+    if len(source_objects) != len(wct["sources"]) or len(source_objects) != len(source_paths):
+        raise ValueError("cannot refresh trigger manifest: source mapping count mismatch")
+    objects_by_id = {item["object_id"]: item for item in wtg["objects"]}
+    header_meta = fmt.source_metadata(wct["header_source"])
+    sources = [{
+        "order": 0,
+        "wct_index": "map_header",
+        "object_order": 0,
+        "object_id": "0x00000000",
+        "object_type": "map_header",
+        "category": "Map Header",
+        "trigger_name": "Map Header",
+        "enabled": True,
+        "run_on_map_init": True,
+        "path": "Map_Header.j",
+        "source_bytes": len(wct["header_source"]),
+        "sha256": hashlib.sha256(wct["header_source"]).hexdigest(),
+        **header_meta,
+    }]
+    for index, (item, source, relative) in enumerate(
+        zip(source_objects, wct["sources"], source_paths), start=1
+    ):
+        parent = objects_by_id.get(item["parent_id"])
+        category = (
+            parent["name"]
+            if parent and parent["object_type"] == fmt.OBJECT_CATEGORY
+            else "Uncategorized"
+        )
+        sources.append({
+            "order": index,
+            "wct_index": index - 1,
+            "object_order": item["object_order"],
+            "object_id": f"0x{item['object_id'] & 0xFFFFFFFF:08X}",
+            "object_type": "script" if item["object_type"] == fmt.OBJECT_SCRIPT else "trigger",
+            "category": category,
+            "category_id": f"0x{item['parent_id'] & 0xFFFFFFFF:08X}",
+            "trigger_name": item["name"],
+            "comment": item["comment"],
+            "enabled": item["enabled"],
+            "initially_off": item["initially_off"],
+            "run_on_map_init": item["run_on_map_init"],
+            "path": Path(relative).as_posix(),
+            "source_bytes": len(source),
+            "sha256": hashlib.sha256(source).hexdigest(),
+            **fmt.source_metadata(source),
+        })
+    manifest = {
+        "format": 1,
+        "source_files": {
+            "wtg": str(map_dir / "war3map.wtg"),
+            "wct": str(map_dir / "war3map.wct"),
+        },
+        "wtg": {
+            "magic_number": wtg["magic_number"],
+            "format_version": wtg["format_version"],
+            "trigger_definition_version": wtg["trigger_definition_version"],
+            "object_count": len(wtg["objects"]),
+            "custom_text_object_count": len(source_objects),
+        },
+        "wct": {
+            "magic_number": wct["magic_number"],
+            "format_version": wct["format_version"],
+            "header_comment": wct["header_comment"],
+            "source_count": len(wct["sources"]),
+        },
+        "sources": sources,
+    }
+    (trigger_dir / "trigger-manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    settings = {
+        "format": 1,
+        "description": "true = enabled and imported; false = disabled and excluded from Main.vj",
+        "triggers": {
+            item["path"]: bool(item["enabled"])
+            for item in sources
+            if item["wct_index"] != "map_header"
+        },
+    }
+    (trigger_dir / "trigger-settings.json").write_text(
+        json.dumps(settings, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    fmt.write_dependency_manifest(trigger_dir, manifest)
+    fmt.write_index(trigger_dir, manifest)
 
 
 def migrate_enabled_settings(trigger_dir: Path, moves: list[tuple[str, str]]) -> None:
@@ -371,7 +505,9 @@ def validate_counts(wtg: dict, wct: dict) -> None:
 
 
 def check(config_path: Path, trigger_dir: Path) -> None:
-    map_dir, wtg, wct, differences, added, settings_moves = prepare(config_path, trigger_dir)
+    map_dir, wtg, wct, differences, added, settings_moves, source_paths = prepare(
+        config_path, trigger_dir
+    )
     validate_counts(wtg, wct)
     migrate_enabled_settings(trigger_dir, settings_moves)
     print(f"CHECK OK: {len(wct['sources'])} WTG triggers; {differences} source differences; {added} new J files")
@@ -379,7 +515,9 @@ def check(config_path: Path, trigger_dir: Path) -> None:
 
 
 def push(config_path: Path, trigger_dir: Path, backup_root: Path) -> None:
-    map_dir, wtg, wct, differences, added, settings_moves = prepare(config_path, trigger_dir)
+    map_dir, wtg, wct, differences, added, settings_moves, source_paths = prepare(
+        config_path, trigger_dir
+    )
     validate_counts(wtg, wct)
     encoded_wtg, encoded_wct = encode_wtg(wtg), encode_wct(wct)
     # Parse the generated bytes through temporary files before touching the map.
@@ -403,6 +541,7 @@ def push(config_path: Path, trigger_dir: Path, backup_root: Path) -> None:
     (map_dir / "war3map.wtg").write_bytes(encoded_wtg)
     (map_dir / "war3map.wct").write_bytes(encoded_wct)
     migrate_enabled_settings(trigger_dir, settings_moves)
+    write_sync_metadata(map_dir, trigger_dir, wtg, wct, source_paths)
     print(f"PUSH OK: {len(wct['sources'])} J triggers written; {added} WTG entries added; {differences} updated")
     print(f"BACKUP: {backup}")
 
