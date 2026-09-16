@@ -8,3 +8,19 @@
 *.pyc
 object-data-backups/
 backups/trigger-sync/
+# Персональные конфиги сборки в корне
+/wos-build.json
+wos-build.json
+
+# Личные настройки VS Code
+.vscode/settings.json
+
+# Временные карты, логи и тестовые стенды
+*.w3x
+*.w3m
+logs/
+test_map/
+
+# Файлы локальных бэкапов
+*.bak
+*.tmp
