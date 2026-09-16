@@ -162,7 +162,7 @@ library MilimSpells uses GearSystems
                                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                             set check = 1
                                             call MyRemoveEff(AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand right"),0.18)
-                        call SetUnitTimeScale(c,1.5)
+                                            call SetUnitTimeScale(c,1.5)
                                             set td = u
                                             set r = 0
                                             call SetUnitPosition(td, GetUnitX(c) + 110 * Cos(a), GetUnitY(c) + 110 * Sin(a))
@@ -195,9 +195,9 @@ library MilimSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", x, y, GetRandomReal(0, 359), 1, 2.5, 125))
                             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_tx-ha_nitu.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2, 2.45, 2, 255, 255, 255, 255))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\senji-wind-impact-2.mdx", x+190*Cos(a), y+190*Sin(a), a*bj_RADTODEG, 2, 1.15, 85))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\senji-wind-impact-2.mdx", x+290*Cos(a), y+290*Sin(a), a*bj_RADTODEG, 1.9, 1.35, 85))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\senji-wind-impact-2.mdx", x+390*Cos(a), y+390*Sin(a), a*bj_RADTODEG, 1.8, 1.55, 85))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_senji-wind-impact-2.mdx", x+190*Cos(a), y+190*Sin(a), a*bj_RADTODEG, 2, 1.15, 85))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_senji-wind-impact-2.mdx", x+290*Cos(a), y+290*Sin(a), a*bj_RADTODEG, 1.9, 1.35, 85))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_senji-wind-impact-2.mdx", x+390*Cos(a), y+390*Sin(a), a*bj_RADTODEG, 1.8, 1.55, 85))
                         call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1, 0.8, 0, 1)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 2.5, 2, 80))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x + 25 * Cos(a), y + 25 * Sin(a) , a * bj_RADTODEG, 1, 2.25, 125))
@@ -268,7 +268,7 @@ library MilimSpells uses GearSystems
             set dmg = dmg + MilimQ_Damage2StaticBase + ( MilimQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , MilimQ_ID) - 1 ) )
             set rmax = 2.1
             set e = AddSpecialEffectTarget("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdx", c, "hand right")
-            set e2 = AddSpecialEffectTarget("war3mapImported\\file00001662.mdl", c, "hand right")
+            set e2 = AddSpecialEffectTarget("war3mapImported\\wos_file00001662.mdl", c, "hand right")
             set e3 = AddSpecialEffectTarget("war3mapimported\\wos_SlidingDustWithRocks.mdx", c, "origin")
                 call SetUnitAnimationByIndex(c, 7)
                 call SetUnitTimeScale(c,1.5)
@@ -335,7 +335,7 @@ private struct MilimWKS
                     endif
                     if delayElapsed == 0.03 then 
                     
-        set e = EffectSpawn("war3mapImported\\tx-liuying03_pink3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2.7, 0.4, 150+EFFECT_Z_OFFSET)
+        set e = EffectSpawn("war3mapImported\\wos_tx-liuying03_pink3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2.7, 0.4, 150+EFFECT_Z_OFFSET)
         call BlzSetSpecialEffectPitch(e, -180.00 * bj_DEGTORAD)
         call BlzSetSpecialEffectYaw(e, a)
       //  set delayElapsed = 999
@@ -359,7 +359,7 @@ private struct MilimWKS
                     if r == JUMP_DURATION/2 then 
                     call DestroyEffect(e)
                     set e = null
-        set e = EffectSpawn("war3mapImported\\tx-liuying03_pink3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 0.5, f+ EFFECT_Z_OFFSET)
+        set e = EffectSpawn("war3mapImported\\wos_tx-liuying03_pink3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 0.5, f+ EFFECT_Z_OFFSET)
                     endif
                     // Ïëàâíûé pitch îò -180 ãðàäóñîâ äî 0.
                     set effectProgress = progress //* progress * (3.00 - 2.00 * progress)
@@ -484,7 +484,7 @@ private struct MilimWKS
         // Ôèêñèðóåì óãîë ñïîñîáíîñòè îò êàñòåðà ê òî÷êå íàæàòèÿ.
         set a = Atan2(y - startY, x - startX)
         call SetUnitTimeScale(c, 0.5)
-        set e2 = AddSpecialEffectTarget("war3mapImported\\file00001662.mdl", c, "hand right")
+        set e2 = AddSpecialEffectTarget("war3mapImported\\wos_file00001662.mdl", c, "hand right")
         call SetUnitAnimationByIndex(c, 8)
         call MakeSound("war3mapimported\\Hero_Milim_W 1")
 

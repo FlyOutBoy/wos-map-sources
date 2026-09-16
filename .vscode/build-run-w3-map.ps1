@@ -358,10 +358,27 @@ try {
 
     Write-Host "BUILD OK" -ForegroundColor Green
     Ensure-BattleNetSession -Config $config
-    Write-Host "Launching Warcraft III..." -ForegroundColor Cyan
+
+    $useEditorLaunch = $true
+    if ($null -ne $config.useEditorLaunch) {
+        $useEditorLaunch = [bool]$config.useEditorLaunch
+    }
+
+    if ($useEditorLaunch) {
+        $gameArguments = @("-launch", "-editor", "-loadfile", "`"$builtMap`"")
+        $effectiveCommand = "`"$gameExe`" -launch -editor -loadfile `"$builtMap`""
+    } else {
+        $gameArguments = @("-launch", "-loadfile", "`"$builtMap`"")
+        $effectiveCommand = "`"$gameExe`" -launch -loadfile `"$builtMap`""
+    }
+
+    Write-Host ""
+    Write-Host "Launching Warcraft III:" -ForegroundColor Cyan
+    Write-Host $effectiveCommand -ForegroundColor DarkGray
+    Write-Host ""
     Start-Process `
         -FilePath $gameExe `
-        -ArgumentList @("-launch", "-uid", "w3", "-loadfile", "`"$builtMap`"") `
+        -ArgumentList $gameArguments `
         -WorkingDirectory (Split-Path -Parent $gameExe)
     Write-Host "WARCRAFT STARTED" -ForegroundColor Green
 } catch {

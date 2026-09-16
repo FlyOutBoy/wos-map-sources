@@ -3,6 +3,7 @@
     "battleNetExe": "C:\\Program Files (x86)\\Battle.net\\Battle.net Launcher.exe",
     "startBattleNetIfNeeded": true,
     "battleNetWaitSeconds": 6,
+    "useEditorLaunch": true,
     "jassHelper": "C:\\Path\\To\\JassHelper\\jasshelper.exe",
     "commonJ": "libs\\common.j",
     "blizzardJ": "libs\\Blizzard.j",
