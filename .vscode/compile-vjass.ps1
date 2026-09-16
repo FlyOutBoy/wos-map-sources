@@ -187,6 +187,26 @@ if ([string]::IsNullOrWhiteSpace($ActiveFile) -and [string]::IsNullOrWhiteSpace(
     throw 'Specify either -ActiveFile or -SourceRoot'
 }
 
+# Keep VS Code compilation consistent with World Editor trigger state.
+# Only entries explicitly set to false are excluded; new/unlisted J files stay enabled.
+$DisabledTriggerPaths = @{}
+$TriggerSettingsPath = Join-Path $Root 'triggers\trigger-settings.json'
+if (Test-Path -LiteralPath $TriggerSettingsPath -PathType Leaf) {
+    $TriggerSettingsDocument = Get-Content -LiteralPath $TriggerSettingsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($null -eq $TriggerSettingsDocument.triggers) {
+        throw "Invalid trigger settings (missing 'triggers'): $TriggerSettingsPath"
+    }
+    foreach ($Property in $TriggerSettingsDocument.triggers.PSObject.Properties) {
+        if ($Property.Value -isnot [bool]) {
+            throw "Invalid trigger setting for '$($Property.Name)': expected true or false"
+        }
+        if (!$Property.Value) {
+            $ConfiguredPath = Join-Path (Join-Path $Root 'triggers') ([string]$Property.Name).Replace('/', '\')
+            $DisabledTriggerPaths[(Get-FullPath $ConfiguredPath)] = $true
+        }
+    }
+}
+
 $ActiveFullPath = $null
 $SourceRootFullPath = $null
 if (![string]::IsNullOrWhiteSpace($SourceRoot)) {
@@ -215,7 +235,8 @@ $CandidateFiles = Get-ChildItem -LiteralPath $Root -Recurse -File -ErrorAction S
 } | Where-Object {
     $Relative = Get-RelativeProjectPath $_
     $Relative -notmatch '^(?i)(libs|\.vscode|\.git|\.build|_build)[\\/]' -and
-    $Relative -notmatch '^(?i)war3map\.j$'
+    $Relative -notmatch '^(?i)war3map\.j$' -and
+    !$DisabledTriggerPaths.ContainsKey((Get-FullPath $_))
 }
 
 if (($null -ne $ActiveFullPath) -and ($CandidateFiles -notcontains $ActiveFullPath)) {
@@ -310,6 +331,9 @@ Write-Host ""
 Write-Host "WOS vJASS compile (automatic dependencies)" -ForegroundColor Cyan
 Write-Host "Source tree: $TargetDescription"
 Write-Host "Resolved sources: $($ResolvedFiles.Count)"
+if ($DisabledTriggerPaths.Count -gt 0) {
+    Write-Host "Disabled triggers excluded: $($DisabledTriggerPaths.Count)" -ForegroundColor DarkGray
+}
 Write-Host ""
 
 if ($ResolveOnly) {

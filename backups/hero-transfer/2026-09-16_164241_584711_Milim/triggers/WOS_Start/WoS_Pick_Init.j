@@ -800,10 +800,6 @@ function RandomPick takes player p returns nothing
         elseif k2 == Hero_ID5[12] then
             call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick1", p)
             set FRAME_PlayerPickString[pid] = "Frieren"
-        // HERO TRANSFER: Milim / RandomPick
-        elseif k2 == Hero_ID5[13] then
-            set FRAME_PlayerPickString[pid] = "Milim"
-            call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick1", p)
         endif
         call MakeSoundLocal("Pick\\PickPick2",p)
         set PickedOnce[pid] = PickedOnce[pid] + 1
@@ -1334,14 +1330,6 @@ endif
                     endif
                 
                 
-                // HERO TRANSFER: Milim / OnClick details
-                elseif GetHeroId(PlayerFrameCurrentPage_ID[pid], k3) == Milim_ID then
-                    set s = "Milim"
-                    set b = 2
-                    set s_name = "Milim"
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetText(FRAME_PlayerPickDifficultText, "|c00FFFC01Difficulty: " + "|c0028E800Easy|r")
-                    endif
                 endif
                 set PlayerFrameCurrent_ID[pid] = GetHeroId(PlayerFrameCurrentPage_ID[pid], k3)
                 set d = GetHeroDummy(PlayerFrameCurrentPage_ID[pid], k3)
@@ -1813,19 +1801,6 @@ endif
                 call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick5", p)
             endif
         
-        // HERO TRANSFER: Milim / OnClick sounds
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[13] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick5", p)
-            endif
         endif
     endif
     if clicked == FRAME_Pick[3] then
@@ -1957,10 +1932,6 @@ endif
         elseif id == Hero_ID5[12] then
             set FRAME_PlayerPickString[pid] = "Frieren"
             call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick2", p)
-        // HERO TRANSFER: Milim / OnClick confirm
-        elseif id == Hero_ID5[13] then
-            set FRAME_PlayerPickString[pid] = "Milim"
-            call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick2", p)
         endif
        // set Hero_ID0[0] = 12
        // call BlzFrameSetTexture(FRAME_ICON2[0], "ReplaceableTextures\\CommandButtons\\BTNCancel", 0, false) 
@@ -2590,25 +2561,6 @@ function GuideRefreshAbilityTooltip takes nothing returns nothing
                 set id = FrierenF_ID
             elseif hoverSlot == 6 then
                 set id = FrierenG_ID
-            endif
-        // HERO TRANSFER: Milim / GuideRefreshAbilityTooltip
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[13] then
-            set i = 13
-            set d = Hero_ID5_Dummy[i]
-            if hoverSlot == 0 then
-                set id = MilimQ_ID
-            elseif hoverSlot == 1 then
-                set id = MilimW_ID
-            elseif hoverSlot == 2 then
-                set id = MilimE_ID
-            elseif hoverSlot == 3 then
-                set id = MilimR_ID
-            elseif hoverSlot == 4 then
-                set id = MilimT_ID
-            elseif hoverSlot == 5 then
-                set id = MilimF_ID
-            elseif hoverSlot == 6 then
-                set id = MilimG_ID
             endif
         endif
         if id != 0 then
@@ -3385,7 +3337,7 @@ endif
                     call BlzFrameSetTexture(FRAME_ICON_Pick[3], "Pick\\PickButton_Pick_Random", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
-                    if (FramePlayerFirstName[i] == "C130" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID5[13]) then
+                    if (FramePlayerFirstName[i] == "Zesu" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID4[3]) then
                         call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif
@@ -3590,9 +3542,6 @@ endif
                         endif
                         if GetUnitTypeId(Hero[i]) == Takeshi_ID then
                             call TakeshiGOff_Start(Hero[i])
-                        endif
-                        if GetUnitTypeId(Hero[i]) == Milim_ID or GetUnitTypeId(Hero[i]) == Milim2_ID then
-                            call MilimGOff_Start(Hero[i])
                         endif
                         call SaveReal(hs, GetHandleId(Hero[i]), StringHash("zero kai dmg"), 0)
                         if GetUnitTypeId(Hero[i]) == Inori_ID then
@@ -3828,9 +3777,6 @@ endloop
                         endif
                         if GetUnitTypeId(Hero[i]) == Takeshi_ID then
                             call TakeshiGOff_Start(Hero[i])
-                        endif
-                        if GetUnitTypeId(Hero[i]) == Milim_ID or GetUnitTypeId(Hero[i]) == Milim2_ID then
-                            call MilimGOff_Start(Hero[i])
                         endif
                         call SaveReal(hs, GetHandleId(Hero[i]), StringHash("zero kai dmg"), 0)
                         call AddGold(Player(i), reward, true)

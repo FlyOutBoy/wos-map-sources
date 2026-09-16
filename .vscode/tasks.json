@@ -112,6 +112,23 @@
             "problemMatcher": []
         },
         {
+            "label": "Hero Transfer",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\hero_transfer.py",
+                "--hero-file",
+                "${file}"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true,
+                "focus": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "WOS: Compile all JASS/vJASS (auto dependencies)",
 
             "type": "process",

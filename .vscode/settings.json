@@ -9,6 +9,8 @@
 
     "editor.parameterHints.enabled": true,
     "editor.parameterHints.cycle": true,
+    "editor.hover.enabled": "on",
+    "editor.suggest.showFunctions": true,
 
     "wosJassHighlight.systemFiles": [
         "triggers/Systems/Systems1.j",

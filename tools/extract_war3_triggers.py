@@ -222,6 +222,22 @@ def safe_name(value: str, fallback: str) -> str:
     return value or fallback
 
 
+def category_directory(parent_id: int, object_by_id: dict[int, dict]) -> Path:
+    """Return the complete WTG category chain instead of flattening its leaf."""
+    parts = []
+    visited = set()
+    while parent_id and parent_id not in visited:
+        visited.add(parent_id)
+        category = object_by_id.get(parent_id)
+        if not category or category["object_type"] != OBJECT_CATEGORY:
+            break
+        fallback = f"Category_{parent_id & 0xFFFFFFFF:08X}"
+        parts.append(safe_name(category["name"], fallback))
+        parent_id = category["parent_id"]
+    parts.reverse()
+    return Path(*parts) if parts else Path("Uncategorized")
+
+
 def source_metadata(source: bytes) -> dict:
     text = source.decode("utf-8")
     masked = re.sub(r"(?s)/\*.*?\*/", "", text)
@@ -342,8 +358,6 @@ def extract(wtg_path: Path, wct_path: Path, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
 
     object_by_id = {item["object_id"]: item for item in wtg["objects"]}
-    category_numbers = {}
-    next_category_number = 1
     manifest_sources = []
 
     header_relative = "Map_Header.j"
@@ -370,11 +384,7 @@ def extract(wtg_path: Path, wct_path: Path, output: Path) -> dict:
     for index, (item, source) in enumerate(zip(source_objects, wct["sources"]), start=1):
         parent = object_by_id.get(item["parent_id"])
         category_name = parent["name"] if parent and parent["object_type"] == OBJECT_CATEGORY else "Uncategorized"
-        if item["parent_id"] not in category_numbers:
-            category_numbers[item["parent_id"]] = next_category_number
-            next_category_number += 1
-        category_number = category_numbers[item["parent_id"]]
-        category_dir = safe_name(category_name, f"Category_{category_number}")
+        category_dir = category_directory(item["parent_id"], object_by_id)
         file_name = f"{safe_name(item['name'], f'Trigger_{index}')}.j"
         relative = (Path(category_dir) / file_name).as_posix()
         target = output / relative

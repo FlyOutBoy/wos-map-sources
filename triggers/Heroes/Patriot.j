@@ -1541,7 +1541,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         call VisionTimed(GetOwningPlayer(c), x, y, aoe * 2.0, 2.0)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0, 359), 1.0, 3.0, 145.0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0, 359), 1.0, 3.0, 0.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
 
                         set k = 0
                         loop

@@ -468,7 +468,7 @@ library KenjakuSpells uses GearSystems
                                 loop
                                     exitwhen k > 4
                                     set rr5 = GetRandomReal(0, 359)
-                                    call DestroyEffect(EffectSpawnColor3("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x + 200 * Cos(a), y + 200 * Sin(a), rr5, GetRandomReal(0.5, 1), 0.4 + k * 0.065, 260 - k * 20, -15, 255, 255, 255, 90))
+                                    call DestroyEffect(EffectSpawnColor3("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x + 200 * Cos(a), y + 200 * Sin(a), rr5, GetRandomReal(0.5, 1), 0.4 + k * 0.065, 260 - k * 20, -15, 255, 255, 255, 90))
                                     set k = k + 1
                                 endloop
                                 call MakeSound("war3mapImported\\Hero_Kenjaku_W 4")

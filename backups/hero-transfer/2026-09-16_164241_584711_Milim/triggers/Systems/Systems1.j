@@ -307,8 +307,6 @@ function InitHeroShopRegistry takes nothing returns nothing
     call RegisterShopHero(Laxus_ID,    3, 3)  // shop 27    
     call RegisterShopHero(Ainz_ID,    6, 11)  // shop 28      
     call RegisterShopHero(Frieren_ID,    6, 12)  // shop 29
-    // HERO TRANSFER: Milim / InitHeroShopRegistry
-    call RegisterShopHero(Milim_ID, 6, 13)  // shop 30
 endfunction
 
 function SetHeroId takes integer page, integer slot, integer heroId returns nothing
@@ -597,13 +595,6 @@ call SetPlayerAbilityAvailable(GetOwningPlayer(c),w,true)
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),e,true) 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),r,true) 
 endif
-// HERO TRANSFER: Milim / LearnHeroSpells
-elseif id == Milim_ID then
-set q = MilimQ_ID
-set w = MilimW_ID
-set e = MilimE_ID
-set r = MilimR_ID
-set t = MilimT_ID
 endif
 loop
 exitwhen i == 5  
@@ -867,9 +858,6 @@ set result = result + 2
 endif
 if AinzF_HasHpRegenBuff(c) then //erza w armor hp regen
 set result = result + 15
-endif
-if GetUnitAbilityLevel(c,MilimT_HpRegenAbi)>0 then // holy grail item
-set result = result + MilimT_HpRegenAbi_Amount
 endif
 if GetUnitAbilityLevel(c,'B01P')>0 then // holy grail item
 set result = result + DarkHolyGrail_HpRegen
@@ -1481,15 +1469,6 @@ if id == Akainu_ID then
     set ItemsPage0_ID[i2+3] = 'I00Y' // angel blessing
     set ItemsPage0_ID[i2+4] = 'I019' // kurikara
     set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
-endif
-// HERO TRANSFER: Milim / RecommenedItems
-if id == Milim_ID then
-    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
-    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
-    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
-    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
-    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
-    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
 set ItemsFrameCurrentPage_ID[i] = 0
 set ItemsCraftPlayerDebug_ID[i] = -1
@@ -2262,9 +2241,6 @@ function ApplyGearSystemFullShields takes unit c, unit td, real dmg, real trigge
     if LoadInteger(hs, ownerHid, KEY_TOMIOKA_F_INVUL) == 1 then
         set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         call SaveInteger(hs, GetHandleId(td), KEY_TOMIOKA_F_DMG_ACT, 1)
-    endif
-     if LoadInteger(hs, ownerHid, StringHash("invul")) == 1 then
-        set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
 
     // B02G: все типы урона.

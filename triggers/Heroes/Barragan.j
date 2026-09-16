@@ -668,7 +668,7 @@ library BarraganSpells uses GearSystems
                     endif
                     if r == rmax then
                         call VisionTimed(GetOwningPlayer(c), x, y, 1400, 1.25)
-                        call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x, y, GetRandomReal(0, 359), 1.0, 1.1, 125, 255, 255, 255, 65))
+                        call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, GetRandomReal(0, 359), 1.0, 1.1, 125, 255, 255, 255, 65))
                         set k = 0
                         loop
                             exitwhen k > 6

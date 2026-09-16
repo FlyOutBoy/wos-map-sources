@@ -372,16 +372,6 @@ if Laxus_ID == id then
     call UnitAddAbility(c,NeuvilletteF_ID)
     call UnitMakeAbilityPermanent(c,true,NeuvilletteF_ID)
     endif
-    // HERO TRANSFER: Milim / LvlUpCheck
-    if Milim_ID == id and GetUnitAbilityLevel(c,MilimG_ID) == 0 then
-    call UnitAddAbility(c,MilimF_ID)
-    call UnitMakeAbilityPermanent(c,true,MilimF_ID)
-    call UnitAddAbility(c,MilimG_ID)
-    call UnitMakeAbilityPermanent(c,true,MilimG_ID)
-    endif
-    if Milim_ID == id and GetHeroLevel(c) >= 12 then
-    call MilimG_Start(c)
-    endif
     set c = null
 endfunction
 

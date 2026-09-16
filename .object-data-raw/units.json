@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "05d89f99f2efc7cdc1a2432ec4b1b46ba7d9b4c3b2ff5b204106bc0fe42f8fd3",
+  "source_sha256": "61fd72d28614133606bd0b68a962f9f6c937790aba039990a9fcbce8396ea1d4",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -43240,6 +43240,1166 @@
         }
       ],
       "display_name": "Toji"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H02K",
+        "hex": "4830324B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uhab",
+            "hex": "75686162"
+          },
+          "field_name": "Hero abilities / Способности героя",
+          "type": "string",
+          "data": {
+            "value": "A0HG,A0HH,A0HJ,A0HK,A0HL",
+            "_original_value": "A0HG,A0HH,A0HJ,A0HK,A0HL",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIRyxBMEhILEEwSEosQTBISyxBMEhM"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1c",
+            "hex": "75613163"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustp",
+            "hex": "75737470"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.0,
+            "_original_value": 2.0,
+            "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagi",
+            "hex": "75616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 25
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uint",
+            "hex": "75696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 15
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustr",
+            "hex": "75737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpr",
+            "hex": "756D7072"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upra",
+            "hex": "75707261"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "AGI",
+            "_original_value": "AGI",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUdJ"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucs1",
+            "hex": "75637331"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "MetalMediumSlice",
+            "_original_value": "MetalMediumSlice",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWV0YWxNZWRpdW1TbGljZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvr",
+            "hex": "756D7672"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq2",
+            "hex": "75727132"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq1",
+            "hex": "75727131"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urqc",
+            "hex": "75727163"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvs",
+            "hex": "756D7673"
+          },
+          "field_name": "Movement speed / Скорость движения",
+          "type": "int",
+          "data": {
+            "value": 280
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpi",
+            "hex": "756D7069"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 9999
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpm",
+            "hex": "756D706D"
+          },
+          "field_name": "Maximum mana / Максимум маны",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucbs",
+            "hex": "75636273"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucpt",
+            "hex": "75637074"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulum",
+            "hex": "756C756D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upoi",
+            "hex": "75706F69"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upri",
+            "hex": "75707269"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ugor",
+            "hex": "75676F72"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulur",
+            "hex": "756C7572"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urtm",
+            "hex": "7572746D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1g",
+            "hex": "75613167"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "debris,ground,item,structure,ward",
+            "_original_value": "debris,ground,item,structure,ward",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZGVicmlzLGdyb3VuZCxpdGVtLHN0cnVjdHVyZSx3YXJk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uinp",
+            "hex": "75696E70"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.600000023841858,
+            "_original_value": 1.600000023841858,
+            "_raw_hex": "CDCCCC3F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usid",
+            "hex": "75736964"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usin",
+            "hex": "7573696E"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "udef",
+            "hex": "75646566"
+          },
+          "field_name": "Base armor / Базовая броня",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ufle",
+            "hex": "75666C65"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urb1",
+            "hex": "75726231"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1000.0,
+            "_original_value": 1000.0,
+            "_raw_hex": "00007A44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhpm",
+            "hex": "7568706D"
+          },
+          "field_name": "Maximum hit points / Максимум здоровья",
+          "type": "int",
+          "data": {
+            "value": 250
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1b",
+            "hex": "75613162"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagp",
+            "hex": "75616770"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.0,
+            "_original_value": 2.0,
+            "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uabi",
+            "hex": "75616269"
+          },
+          "field_name": "Normal abilities / Обычные способности",
+          "type": "string",
+          "data": {
+            "value": "A0HT,AInv",
+            "_original_value": "A0HT,AInv",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVCxBSW52"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Milim Nava"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H02L",
+        "hex": "4830324C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uhab",
+            "hex": "75686162"
+          },
+          "field_name": "Hero abilities / Способности героя",
+          "type": "string",
+          "data": {
+            "value": "A0HG,A0HH,A0HJ,A0HK,A0HL",
+            "_original_value": "A0HG,A0HH,A0HJ,A0HK,A0HL",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIRyxBMEhILEEwSEosQTBISyxBMEhM"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1c",
+            "hex": "75613163"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustp",
+            "hex": "75737470"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.0,
+            "_original_value": 2.0,
+            "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagi",
+            "hex": "75616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 25
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uint",
+            "hex": "75696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 15
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustr",
+            "hex": "75737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpr",
+            "hex": "756D7072"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upra",
+            "hex": "75707261"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "AGI",
+            "_original_value": "AGI",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUdJ"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucs1",
+            "hex": "75637331"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "MetalMediumSlice",
+            "_original_value": "MetalMediumSlice",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWV0YWxNZWRpdW1TbGljZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvr",
+            "hex": "756D7672"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq2",
+            "hex": "75727132"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq1",
+            "hex": "75727131"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urqc",
+            "hex": "75727163"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvs",
+            "hex": "756D7673"
+          },
+          "field_name": "Movement speed / Скорость движения",
+          "type": "int",
+          "data": {
+            "value": 280
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpi",
+            "hex": "756D7069"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 9999
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpm",
+            "hex": "756D706D"
+          },
+          "field_name": "Maximum mana / Максимум маны",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucbs",
+            "hex": "75636273"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucpt",
+            "hex": "75637074"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulum",
+            "hex": "756C756D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upoi",
+            "hex": "75706F69"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upri",
+            "hex": "75707269"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ugor",
+            "hex": "75676F72"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulur",
+            "hex": "756C7572"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urtm",
+            "hex": "7572746D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1g",
+            "hex": "75613167"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "debris,ground,item,structure,ward",
+            "_original_value": "debris,ground,item,structure,ward",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZGVicmlzLGdyb3VuZCxpdGVtLHN0cnVjdHVyZSx3YXJk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uinp",
+            "hex": "75696E70"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.600000023841858,
+            "_original_value": 1.600000023841858,
+            "_raw_hex": "CDCCCC3F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usid",
+            "hex": "75736964"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usin",
+            "hex": "7573696E"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "udef",
+            "hex": "75646566"
+          },
+          "field_name": "Base armor / Базовая броня",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ufle",
+            "hex": "75666C65"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urb1",
+            "hex": "75726231"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1000.0,
+            "_original_value": 1000.0,
+            "_raw_hex": "00007A44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhpm",
+            "hex": "7568706D"
+          },
+          "field_name": "Maximum hit points / Максимум здоровья",
+          "type": "int",
+          "data": {
+            "value": 250
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1b",
+            "hex": "75613162"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagp",
+            "hex": "75616770"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.0,
+            "_original_value": 2.0,
+            "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uabi",
+            "hex": "75616269"
+          },
+          "field_name": "Normal abilities / Обычные способности",
+          "type": "string",
+          "data": {
+            "value": "A0HT,AInv",
+            "_original_value": "A0HT,AInv",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVCxBSW52"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Milim Nava"
     }
   ]
 }

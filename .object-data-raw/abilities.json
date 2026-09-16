@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "3a3b9c283c7f7dcc5d5354bf6c58f8cbf9a285c4818ea95fe147d5a4dd3c9361",
+  "source_sha256": "2bcf3dc7b1d31e1aacbc91d691955214a1d33e249b567f89b543249ced91abf1",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -426525,6 +426525,7035 @@
         }
       ],
       "display_name": "mp test"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HG",
+        "hex": "41304847"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 5
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "absorb",
+            "_original_value": "absorb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWJzb3Ji"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "absorb",
+            "_original_value": "absorb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWJzb3Ji"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "absorb",
+            "_original_value": "absorb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWJzb3Ji"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "absorb",
+            "_original_value": "absorb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWJzb3Ji"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "absorb",
+            "_original_value": "absorb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWJzb3Ji"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 70
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 80
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 90
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 100
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 4
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 60
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim Q"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HH",
+        "hex": "41304848"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 5
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "acidbomb",
+            "_original_value": "acidbomb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNpZGJvbWI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "acidbomb",
+            "_original_value": "acidbomb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNpZGJvbWI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "acidbomb",
+            "_original_value": "acidbomb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNpZGJvbWI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "acidbomb",
+            "_original_value": "acidbomb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNpZGJvbWI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "acidbomb",
+            "_original_value": "acidbomb",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNpZGJvbWI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 70
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 80
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 90
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 100
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 4
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 60
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim W"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HI",
+        "hex": "41304849"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 5
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "acolyteharvest",
+            "_original_value": "acolyteharvest",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNvbHl0ZWhhcnZlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "acolyteharvest",
+            "_original_value": "acolyteharvest",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNvbHl0ZWhhcnZlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "acolyteharvest",
+            "_original_value": "acolyteharvest",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNvbHl0ZWhhcnZlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "acolyteharvest",
+            "_original_value": "acolyteharvest",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNvbHl0ZWhhcnZlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "acolyteharvest",
+            "_original_value": "acolyteharvest",
+            "_encoding": "utf-8",
+            "_raw_base64": "YWNvbHl0ZWhhcnZlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 70
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 80
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 90
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 100
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 4
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 60
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim W2"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HJ",
+        "hex": "4130484A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 5
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "avengerform",
+            "_original_value": "avengerform",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXZlbmdlcmZvcm0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "avengerform",
+            "_original_value": "avengerform",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXZlbmdlcmZvcm0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "avengerform",
+            "_original_value": "avengerform",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXZlbmdlcmZvcm0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "avengerform",
+            "_original_value": "avengerform",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXZlbmdlcmZvcm0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "avengerform",
+            "_original_value": "avengerform",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXZlbmdlcmZvcm0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1500.0,
+            "_original_value": 1500.0,
+            "_raw_hex": "0080BB44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1600.0,
+            "_original_value": 1600.0,
+            "_raw_hex": "0000C844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1700.0,
+            "_original_value": 1700.0,
+            "_raw_hex": "0080D444"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1800.0,
+            "_original_value": 1800.0,
+            "_raw_hex": "0000E144"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 110
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 120
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 130
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 140
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 26.0,
+            "_original_value": 26.0,
+            "_raw_hex": "0000D041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 24.0,
+            "_original_value": 24.0,
+            "_raw_hex": "0000C041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 23.0,
+            "_original_value": 23.0,
+            "_raw_hex": "0000B841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 22.0,
+            "_original_value": 22.0,
+            "_raw_hex": "0000B041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 4
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 100
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arlv",
+            "hex": "61726C76"
+          },
+          "field_name": "Required level / Требуемый уровень",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 6
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim E"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HK",
+        "hex": "4130484B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 5
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "thunderbolt",
+            "_original_value": "thunderbolt",
+            "_encoding": "utf-8",
+            "_raw_base64": "dGh1bmRlcmJvbHQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "thunderbolt",
+            "_original_value": "thunderbolt",
+            "_encoding": "utf-8",
+            "_raw_base64": "dGh1bmRlcmJvbHQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "thunderbolt",
+            "_original_value": "thunderbolt",
+            "_encoding": "utf-8",
+            "_raw_base64": "dGh1bmRlcmJvbHQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "thunderbolt",
+            "_original_value": "thunderbolt",
+            "_encoding": "utf-8",
+            "_raw_base64": "dGh1bmRlcmJvbHQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "thunderbolt",
+            "_original_value": "thunderbolt",
+            "_encoding": "utf-8",
+            "_raw_base64": "dGh1bmRlcmJvbHQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 110
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 120
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 130
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 140
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 25.0,
+            "_original_value": 25.0,
+            "_raw_hex": "0000C841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 4
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arlv",
+            "hex": "61726C76"
+          },
+          "field_name": "Required level / Требуемый уровень",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 10
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1500.0,
+            "_original_value": 1500.0,
+            "_raw_hex": "0080BB44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1600.0,
+            "_original_value": 1600.0,
+            "_raw_hex": "0000C844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 100
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1700.0,
+            "_original_value": 1700.0,
+            "_raw_hex": "0080D444"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim R"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HL",
+        "hex": "4130484C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "autodispelon",
+            "_original_value": "autodispelon",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXV0b2Rpc3BlbG9u"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 650.0,
+            "_original_value": 650.0,
+            "_raw_hex": "00802244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1200.0,
+            "_original_value": 1200.0,
+            "_raw_hex": "00009644"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1500.0,
+            "_original_value": 1500.0,
+            "_raw_hex": "0080BB44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 140
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 155
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 170
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 185
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 45.0,
+            "_original_value": 45.0,
+            "_raw_hex": "00003442"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 29.0,
+            "_original_value": 29.0,
+            "_raw_hex": "0000E841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 28.0,
+            "_original_value": 28.0,
+            "_raw_hex": "0000E041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 27.0,
+            "_original_value": 27.0,
+            "_raw_hex": "0000D841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 26.0,
+            "_original_value": 26.0,
+            "_raw_hex": "0000D041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 225
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arlv",
+            "hex": "61726C76"
+          },
+          "field_name": "Required level / Требуемый уровень",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 25
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim T"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HM",
+        "hex": "4130484D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "alev",
+            "hex": "616C6576"
+          },
+          "field_name": "Levels / Число уровней",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aord",
+            "hex": "616F7264"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl4",
+            "hex": "4E636C34"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 4,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 6,
+          "data": {
+            "value": "autoharvestgold",
+            "_original_value": "autoharvestgold",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXV0b2hhcnZlc3Rnb2xk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl6",
+            "hex": "4E636C36"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 6,
+          "data": {
+            "value": "AImove",
+            "_original_value": "AImove",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUltb3Zl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl5",
+            "hex": "4E636C35"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 5,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl1",
+            "hex": "4E636C31"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl2",
+            "hex": "4E636C32"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 2,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ncl3",
+            "hex": "4E636C33"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 3,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 2700.0,
+            "_original_value": 2700.0,
+            "_raw_hex": "00C02845"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 1200.0,
+            "_original_value": 1200.0,
+            "_raw_hex": "00009644"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 1300.0,
+            "_original_value": 1300.0,
+            "_raw_hex": "0080A244"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 1500.0,
+            "_original_value": 1500.0,
+            "_raw_hex": "0080BB44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 140
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 155
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 170
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 185
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 60.0,
+            "_original_value": 60.0,
+            "_raw_hex": "00007042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": 29.0,
+            "_original_value": 29.0,
+            "_raw_hex": "0000E841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": 28.0,
+            "_original_value": 28.0,
+            "_raw_hex": "0000E041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": 27.0,
+            "_original_value": 27.0,
+            "_raw_hex": "0000D841"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": 26.0,
+            "_original_value": 26.0,
+            "_raw_hex": "0000D041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "alsk",
+            "hex": "616C736B"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 3
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "amcs",
+            "hex": "616D6373"
+          },
+          "field_name": "Mana cost / Затраты маны",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 225
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atar",
+            "hex": "61746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "enemies,vulnerable",
+            "_original_value": "enemies,vulnerable",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arlv",
+            "hex": "61726C76"
+          },
+          "field_name": "Required level / Требуемый уровень",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 25
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aare",
+            "hex": "61617265"
+          },
+          "field_name": "Area of effect / Область действия",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 500.0,
+            "_original_value": 500.0,
+            "_raw_hex": "0000FA43"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim T2"
+    },
+    {
+      "old_id": {
+        "text": "Agyb",
+        "hex": "41677962"
+      },
+      "new_id": {
+        "text": "A0HN",
+        "hex": "4130484E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "areq",
+            "hex": "61726571"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aher",
+            "hex": "61686572"
+          },
+          "field_name": "Hero ability / Способность героя",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim F"
+    },
+    {
+      "old_id": {
+        "text": "Agyb",
+        "hex": "41677962"
+      },
+      "new_id": {
+        "text": "A0HO",
+        "hex": "4130484F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "areq",
+            "hex": "61726571"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "h002",
+            "_original_value": "h002",
+            "_encoding": "utf-8",
+            "_raw_base64": "aDAwMg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aher",
+            "hex": "61686572"
+          },
+          "field_name": "Hero ability / Способность героя",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Another Anime Milim G"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A0HP",
+        "hex": "41304850"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero Milim ALST + 7"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A0HQ",
+        "hex": "41304851"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero Milim ALST + 7"
+    },
+    {
+      "old_id": {
+        "text": "AIx1",
+        "hex": "41497831"
+      },
+      "new_id": {
+        "text": "A0HR",
+        "hex": "41304852"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Iint",
+            "hex": "49696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 2,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Istr",
+            "hex": "49737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 3,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Iagi",
+            "hex": "49616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 7
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero Milim ALST + 7"
+    },
+    {
+      "old_id": {
+        "text": "Arel",
+        "hex": "4172656C"
+      },
+      "new_id": {
+        "text": "A0HS",
+        "hex": "41304853"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "Ihpr",
+            "hex": "49687072"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 30
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ihpr",
+            "hex": "49687072"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 2,
+          "data_pointer": 1,
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ihpr",
+            "hex": "49687072"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 3,
+          "data_pointer": 1,
+          "data": {
+            "value": 25
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ihpr",
+            "hex": "49687072"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 4,
+          "data_pointer": 1,
+          "data": {
+            "value": 30
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ihpr",
+            "hex": "49687072"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 5,
+          "data_pointer": 1,
+          "data": {
+            "value": 35
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hero Milim T Hela"
+    },
+    {
+      "old_id": {
+        "text": "Agyv",
+        "hex": "41677976"
+      },
+      "new_id": {
+        "text": "A0HT",
+        "hex": "41304854"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aran",
+            "hex": "6172616E"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Milim TRUE SIGHT"
     }
   ]
 }

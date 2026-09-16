@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "39ee7d36961647f6de60a119beb8c35957dc0c6eb78e6fbf6906a12800e83db2",
+  "source_sha256": "5bdded8be76df9a3ea3ba5c3a26fdb4a972e35275eb15e2f4d1f0ae5f99337ba",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -2506,10 +2506,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4875",
-            "_original_value": "TRIGSTR_4875",
+            "value": "TRIGSTR_4922",
+            "_original_value": "TRIGSTR_4922",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODc1",
+            "_raw_base64": "VFJJR1NUUl80OTIy",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -2638,10 +2638,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6015",
-            "_original_value": "TRIGSTR_6015",
+            "value": "TRIGSTR_8103",
+            "_original_value": "TRIGSTR_8103",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MDE1",
+            "_raw_base64": "VFJJR1NUUl84MTAz",
             "resolved_value": "2",
             "_original_resolved_value": "2"
           },
@@ -2770,10 +2770,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5982",
-            "_original_value": "TRIGSTR_5982",
+            "value": "TRIGSTR_6016",
+            "_original_value": "TRIGSTR_6016",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTgy",
+            "_raw_base64": "VFJJR1NUUl82MDE2",
             "resolved_value": "3",
             "_original_resolved_value": "3"
           },
@@ -5208,10 +5208,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7191",
-            "_original_value": "TRIGSTR_7191",
+            "value": "TRIGSTR_8110",
+            "_original_value": "TRIGSTR_8110",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTkx",
+            "_raw_base64": "VFJJR1NUUl84MTEw",
             "resolved_value": "2",
             "_original_resolved_value": "2"
           },
@@ -5338,10 +5338,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4922",
-            "_original_value": "TRIGSTR_4922",
+            "value": "TRIGSTR_4938",
+            "_original_value": "TRIGSTR_4938",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTIy",
+            "_raw_base64": "VFJJR1NUUl80OTM4",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -5468,10 +5468,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6016",
-            "_original_value": "TRIGSTR_6016",
+            "value": "TRIGSTR_7192",
+            "_original_value": "TRIGSTR_7192",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MDE2",
+            "_raw_base64": "VFJJR1NUUl83MTky",
             "resolved_value": "3",
             "_original_resolved_value": "3"
           },
@@ -5874,10 +5874,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4938",
-            "_original_value": "TRIGSTR_4938",
+            "value": "TRIGSTR_4941",
+            "_original_value": "TRIGSTR_4941",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTM4",
+            "_raw_base64": "VFJJR1NUUl80OTQx",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -6098,10 +6098,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7192",
-            "_original_value": "TRIGSTR_7192",
+            "value": "TRIGSTR_8111",
+            "_original_value": "TRIGSTR_8111",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTky",
+            "_raw_base64": "VFJJR1NUUl84MTEx",
             "resolved_value": "3",
             "_original_resolved_value": "3"
           },
@@ -6770,10 +6770,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4941",
-            "_original_value": "TRIGSTR_4941",
+            "value": "TRIGSTR_4965",
+            "_original_value": "TRIGSTR_4965",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTQx",
+            "_raw_base64": "VFJJR1NUUl80OTY1",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -8634,10 +8634,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4965",
-            "_original_value": "TRIGSTR_4965",
+            "value": "TRIGSTR_5974",
+            "_original_value": "TRIGSTR_5974",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTY1",
+            "_raw_base64": "VFJJR1NUUl81OTc0",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -9284,10 +9284,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5974",
-            "_original_value": "TRIGSTR_5974",
+            "value": "TRIGSTR_6014",
+            "_original_value": "TRIGSTR_6014",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTc0",
+            "_raw_base64": "VFJJR1NUUl82MDE0",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -9396,10 +9396,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6014",
-            "_original_value": "TRIGSTR_6014",
+            "value": "TRIGSTR_6698",
+            "_original_value": "TRIGSTR_6698",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MDE0",
+            "_raw_base64": "VFJJR1NUUl82Njk4",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -9508,10 +9508,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6698",
-            "_original_value": "TRIGSTR_6698",
+            "value": "TRIGSTR_6791",
+            "_original_value": "TRIGSTR_6791",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Njk4",
+            "_raw_base64": "VFJJR1NUUl82Nzkx",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },
@@ -11204,10 +11204,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6791",
-            "_original_value": "TRIGSTR_6791",
+            "value": "TRIGSTR_8114",
+            "_original_value": "TRIGSTR_8114",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Nzkx",
+            "_raw_base64": "VFJJR1NUUl84MTE0",
             "resolved_value": "1",
             "_original_resolved_value": "1"
           },

@@ -1167,6 +1167,31 @@ if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
     endif
     endif
     
+     if GetUnitTypeId(c) == Milim_ID then 
+    if id == MilimQ_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimQ_Start(c,x,y)
+    elseif id == MilimW_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimW_Start(c,x,y)
+    elseif id == MilimW2_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimW2_Start(c)
+    elseif id == MilimE_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimE_Start(c,x,y)
+    elseif id == MilimR_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimR_Start(c,x,y)
+    elseif id == MilimT_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimT_Start(c)
+    elseif id == MilimT2_ID then // Barragan T2 Ability
+    set check = 1
+    call MilimT2_Start(c,x,y)
+    endif
+    endif
+    
     
     
     if GetUnitTypeId(c) == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then 

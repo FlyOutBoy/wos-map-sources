@@ -1475,7 +1475,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         call DecorRemove(c, x, y, aoe * 1.75, 50)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0, 359), 1, 3, 145))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0, 359), 1, 3, 0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x, y, 1, 1, 1, 100))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1, 1, 1, 100))
                         set k = 0
                         loop
                             exitwhen k > 4

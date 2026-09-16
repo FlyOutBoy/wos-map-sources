@@ -579,6 +579,9 @@ endif
     if dmg != dmg_base then
         call BlzSetEventDamage(dmg)
     endif
+    if (targetId == Milim_ID or targetId == Milim2_ID) and targetIsHero and not targetIsIllusion and dmg > 0 then
+        call MilimGAddDmg(td, dmg)
+    endif
     if not I02H_ReflectActive and dmg > 1.0 and c != null and c != td and HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range then
 call I02HReflect(c,td,dmg,typedmg)
 endif

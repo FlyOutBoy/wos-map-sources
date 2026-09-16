@@ -1851,6 +1851,24 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         // --- РЕГИСТРАЦИЯ НАБОРА СПОСОБНОСТЕЙ ГЕРОЯ ---
         set form = HeroData.create(Toji_ID, 0, TojiQ_ID, TojiW_ID, TojiE_ID, TojiR_ID, TojiT_ID, TojiF_ID, TojiG_ID, TojiQ2_ID, TojiQ3_ID, TojiW2_ID)
         call form.addExtra(TojiG2_ID, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+        // ===========================================================================
+        // 32. Милим Нава (Milim_ID) -> Ловкость (2)
+        // ===========================================================================
+        // --- БАЗОВЫЕ СПОСОБНОСТИ ---
+        call SpellData.create(MilimQ_ID, 5, 1, 2, MilimQ_DamageAgiBase, MilimQ_DamageAgiStep, MilimQ_Damage2StaticBase, MilimQ_Damage2StaticStep, T_Prop("Dash Range", MilimQ_Range) + T_Rad(MilimQ_DamageAoe2) + T_Push(MilimQ_PushRange) + T_Dur("Knockback Duration", MilimQ_PushDuration), T_Bonus("True Form (T)", "+Agility x 1 damage"))
+        call SpellData.create(MilimW_ID, 5, 1, 2, MilimW_DamageAgiBase, MilimW_DamageAgiStep, MilimW_Damage2StaticBase, MilimW_Damage2StaticStep, T_Rad(MilimW_DamageAoe) + T_Push(MilimW_PushRange) + T_Dur("Knockback Duration", MilimW_PushTime) + T_Dur("W2 Window", MilimW_TimetoSwapAbi), T_Bonus("Ability Lv. 5", "Unlocks Drago Fear (W2) after landing") + T_Bonus("True Form (T)", "+Agility x 1 damage"))
+        call SpellData.createSimple(MilimE_ID, 5, 2, 2, MilimE_DamageAgiBase, MilimE_DamageAgiStep, T_Rad(MilimE_DamageAoe) + T_PropS("Travel Range", "<L:" + FormatInt(MilimE_RangeBase) + "/" + FormatInt(MilimE_RangeBase+MilimE_RangeStep) + "/" + FormatInt(MilimE_RangeBase+MilimE_RangeStep*2) + "/" + FormatInt(MilimE_RangeBase+MilimE_RangeStep*3) + "/" + FormatInt(MilimE_RangeBase+MilimE_RangeStep*4) + ">"), T_Bonus("True Form (T)", "+Agility x 1 damage"))
+        call SpellData.createSimple(MilimR_ID, 5, 2, 2, MilimR_DamageAgiBase, MilimR_DamageAgiStep, T_Rad(MilimR_DamageAoe) + T_Prop("Carry Radius", MilimR_CarryAoe) + T_Slow(I2R(MilimR_Slow), I2R(MilimR_SlowDuration)), T_Bonus("Projectile", "Enemies caught by the travelling star are carried toward its destination") + T_Bonus("True Form (T)", "+Agility x 1 damage"))
+        call SpellData.createUtility(MilimT_ID, 1, T_Dur("Duration", MilimT_Duration) + T_Prop("Bonus Max HP", I2R(MilimT_MaxHpBonus)) + T_Prop("HP Regen", MilimT_HpRegenAbi_Amount), T_Bonus("True Form", "Adds Agility x 1 damage to Q/W/W2/E/R and unlocks Drago Nova (T2)"))
+        call SpellData.createUtility(MilimF_ID, 1, T_PropS("Detection", "Reveals invisible units around Milim") + T_PropS("Detection Radius", "1400"), "")
+        call SpellData.createUtility(MilimG_ID, 1, T_PropS("Mana Restore", "5% of damage taken") + T_PropS("Damage Thresholds", FormatInt(MilimG_DamagetoStats1) + "/" + FormatInt(MilimG_DamagetoStats2) + "/" + FormatInt(MilimG_DamagetoStats3)), T_Bonus("Lv. 12 / 25 / 35", "At each threshold gains +7 / +14 / +21 All Stats until the end of the round"))
+
+        // --- ДОПОЛНИТЕЛЬНЫЕ И СВЯЗАННЫЕ СПОСОБНОСТИ ---
+        call SpellData.createSimple(MilimW2_ID, 5, 2, 3, MilimW2_DamageAgiBase, MilimW2_DamageAgiStep, T_Rad(MilimW2_DamageAoe) + T_Slow(I2R(MilimW2_Slow), I2R(MilimW2_SlowDuration)) + T_Prop("Pull Distance", MilimW2_TightRange) + T_Dur("Pull Duration", MilimW2_TightDuration), T_Bonus("Drago Fear", "Pulls nearby enemies toward Milim") + T_Bonus("True Form (T)", "+Agility x 1 bonus damage"))
+        call SpellData.createSimple(MilimT2_ID, 1, 2, 2, MilimT2_DamageAgiBase, 0.0, T_Rad(MilimT2_DamageAoe) + T_Cast(MilimT2_ChargeTime) + T_Dur("Beam Duration", MilimT2_BeamDuration) + T_Prop("Beam Range", MilimT2_BeamRange) + T_Prop("Damage Ticks", I2R(MilimT2_DamageTicks)) + T_Slow(I2R(MilimT2_Slow), I2R(MilimT2_SlowDuration)), T_Bonus("Drago Nova", "Fires a steerable stardust beam; RMB changes its direction during the beam"))
+
+        set form = HeroData.create(Milim_ID, 0, MilimQ_ID, MilimW_ID, MilimE_ID, MilimR_ID, MilimT_ID, MilimF_ID, MilimG_ID, MilimW2_ID, MilimT2_ID, 0)
         
         call DestroyTimer(t)
     endfunction

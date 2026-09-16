@@ -1,25 +1,30 @@
 {
     "includes": [
-        "**/*.j",
-        "**/*.jass"
+        "triggers/**/*.j",
+        "libs/common.j",
+        "libs/Blizzard.j",
+        ".vscode/build/wos_map_globals.j"
     ],
-
+    "excludes": [
+        "backups/**",
+        ".vscode/backups/**",
+        ".vscode/build/**"
+    ],
     "parsing": {
         "enableTextMacro": true,
         "enablePreprocessor": true,
         "enableLuaBlocks": true,
         "strictMode": false
     },
-
     "standardLibraries": {
         "common.j": "./libs/common.j",
-        "blizzard.j": "./libs/blizzard.j"
+        "blizzard.j": "./libs/Blizzard.j",
+        "war3map.j": "./.vscode/build/wos_map_globals.j"
     },
-
     "diagnostics": {
         "enable": true,
         "checkTypes": true,
-        "checkUndefined": true,
+        "checkUndefined": false,
         "checkUnused": false,
         "checkArrayBounds": true,
         "checkHandleLeaks": false

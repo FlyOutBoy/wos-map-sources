@@ -326,13 +326,13 @@ library HarribelSpells uses GearSystems
                         endif
                         if r2 > 0.09 then
                             set r2 = 0
-                            call DestroyEffect(EffectSpawnColor("war3mapImported\\Gear_dustwave222.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 0.75, 2.3, 0, 255, 255, 55, 65))
+                            call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_dustwave222.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 0.75, 2.3, 0, 255, 255, 55, 65))
                         else
                             set r2 = r2 + 0.03
                         endif
                         if r3 > 0.2 then
                             set r3 = 0
-                            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\Gear_eff (24).mdx", c, "weapon"))
+                            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_eff (24).mdx", c, "weapon"))
                         else
                             set r3 = r3 + 0.03
                         endif
@@ -1077,8 +1077,8 @@ library HarribelSpells uses GearSystems
             call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),1)
             set MouseX[GetPlayerId(GetOwningPlayer(c))]=x
             set MouseY[GetPlayerId(GetOwningPlayer(c))]=y
-            set e = EffectSpawn("war3mapImported\\Gear_mr.war3_sxxq3.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 4, 0)
-            set e2 = AddSpecialEffectTarget("war3mapImported\\Gear_papsnaz (971)24.mdx", c, "weapon")
+            set e = EffectSpawn("war3mapImported\\wos_mr_war3_sxxq3.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 4, 0)
+            set e2 = AddSpecialEffectTarget("war3mapImported\\wos_papsnaz (971)24.mdx", c, "weapon")
             if MUI_HarribelR2 == 0 then
                 call TimerStart( t_HarribelR2, 0.02, true, function thistype.Loop_HarribelR2)
             endif

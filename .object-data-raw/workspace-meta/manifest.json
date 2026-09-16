@@ -4,12 +4,12 @@
     {
       "category": "abilities",
       "file": "abilities.json",
-      "objects": 637
+      "objects": 651
     },
     {
       "category": "units",
       "file": "units.json",
-      "objects": 95
+      "objects": 97
     },
     {
       "category": "items",

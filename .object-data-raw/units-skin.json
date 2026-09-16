@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "be669dfde3e8ce0b7adcd7c1b972212d3553c8e2aceede760da402ecbe051c2d",
+  "source_sha256": "f0a1a328086123435e0b995de0d510c57aaf6d35f82ca7b3c713615f2b0b714f",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -24536,6 +24536,602 @@
         }
       ],
       "display_name": "Toji"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H02K",
+        "hex": "4830324B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "Model / Модель",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Milim.mdl",
+            "_original_value": "war3mapImported\\wos_Milim.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19NaWxpbS5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX0ljb24uYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ussi",
+            "hex": "75737369"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX0ljb24uYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1555",
+            "_original_value": "TRIGSTR_1555",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xNTU1",
+            "resolved_value": "Milim Nava",
+            "_original_resolved_value": "Milim Nava"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upro",
+            "hex": "7570726F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_4130",
+            "_original_value": "TRIGSTR_4130",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTMw",
+            "resolved_value": "Destroyer",
+            "_original_resolved_value": "Destroyer"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upru",
+            "hex": "75707275"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uawt",
+            "hex": "75617774"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_4133",
+            "_original_value": "TRIGSTR_4133",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTMz",
+            "resolved_value": "Milim Nava",
+            "_original_resolved_value": "Milim Nava"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utpr",
+            "hex": "75747072"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhas",
+            "hex": "75686173"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uspa",
+            "hex": "75737061"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ussc",
+            "hex": "75737363"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 3.0,
+            "_original_value": 3.0,
+            "_raw_hex": "00004040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Milim Nava"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H02L",
+        "hex": "4830324C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "Model / Модель",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Milim2.mdl",
+            "_original_value": "war3mapImported\\wos_Milim2.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19NaWxpbTIubWRs"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX1QuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ussi",
+            "hex": "75737369"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX1QuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8100",
+            "_original_value": "TRIGSTR_8100",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTAw",
+            "resolved_value": "Milim Nava",
+            "_original_resolved_value": "Milim Nava"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upro",
+            "hex": "7570726F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8101",
+            "_original_value": "TRIGSTR_8101",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTAx",
+            "resolved_value": "Destroyer",
+            "_original_resolved_value": "Destroyer"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upru",
+            "hex": "75707275"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uawt",
+            "hex": "75617774"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8102",
+            "_original_value": "TRIGSTR_8102",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTAy",
+            "resolved_value": "Milim Nava",
+            "_original_resolved_value": "Milim Nava"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utpr",
+            "hex": "75747072"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhas",
+            "hex": "75686173"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uspa",
+            "hex": "75737061"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ussc",
+            "hex": "75737363"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 3.0,
+            "_original_value": 3.0,
+            "_raw_hex": "00004040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "unsf",
+            "hex": "756E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_792",
+            "_original_value": "TRIGSTR_792",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83OTI=",
+            "resolved_value": "2",
+            "_original_resolved_value": "2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Milim Nava"
     }
   ]
 }

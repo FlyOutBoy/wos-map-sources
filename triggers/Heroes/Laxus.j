@@ -1034,7 +1034,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             else
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 145.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 0.0))
-                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
+                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.25, 2.5, 255.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedBoom.mdx", x, y, 1.0, 1.25, 2.5, 110.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_SlamRed.mdl", x, y, 1.0, 1.0, 4.0, 1.0))
@@ -1478,7 +1478,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedMissile.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0, 1.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 145.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 0.0))
-                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0.5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
+                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.25, 2.5, 255.0))
                             call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 5.0, 175.0, 45, 0, 0, 255))
                         endif

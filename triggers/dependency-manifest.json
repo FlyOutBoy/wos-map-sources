@@ -21,7 +21,6 @@
       "WOS_Start/UI_CAREER.j"
     ],
     "HeroUnitPanelStats": [
-      "WOS_Start/DefaultArmorChange.j",
       "WOS_Start/DefaultArmorChangeStable_Copy.j"
     ],
     "WOS2BotCodec": [
@@ -40,10 +39,7 @@
       "WOS_Start/ChatCommand.j"
     ],
     "heroicon": [
-      "WOS_Start/WoS_Hero_Icons_Init.j",
-      "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-      "WOS_Start/Untitled_Trigger_001.j",
-      "WOS_Start/WoS_Hero_Icons_Init_Copy.j"
+      "WOS_Start/WoS_Hero_Icons_Init.j"
     ],
     "RoundSpells": [
       "Round_End/RoundEnd.j"
@@ -55,9 +51,7 @@
       "Systems/DecorDestroy_and_Erza_Debuff.j"
     ],
     "GearSystems": [
-      "Systems/Systems1.j",
-      "Systems/Systems_Copy_2.j",
-      "Systems/Systems_Copy.j"
+      "Systems/Systems1.j"
     ],
     "GearSystems2": [
       "Systems/Systems2.j"
@@ -93,8 +87,7 @@
       "Heroes/Gojo.j"
     ],
     "BambiettaSpells": [
-      "Heroes/Bambietta.j",
-      "Heroes/Bambietta_Копировать.j"
+      "Heroes/Bambietta.j"
     ],
     "KiritoSpells": [
       "Heroes/Kirito.j"
@@ -103,8 +96,7 @@
       "Heroes/Alucard.j"
     ],
     "StarrkSpells": [
-      "Heroes/Starrk.j",
-      "Heroes/Starrk_Copy.j"
+      "Heroes/Starrk.j"
     ],
     "TakeshiSpells": [
       "Heroes/Takeshi.j"
@@ -119,9 +111,7 @@
       "Heroes/Harribel.j"
     ],
     "TsunaSpells": [
-      "Heroes/Tsuna_Copy.j",
-      "Heroes/Tsuna.j",
-      "Heroes/Tsuna_Copy_2.j"
+      "Heroes/Tsuna.j"
     ],
     "RimuruSpells": [
       "Heroes/Rimuru.j"
@@ -160,28 +150,31 @@
       "Heroes/Tomioka.j"
     ],
     "ErzaQSpells": [
-      "Erza/ErzaQ.j"
+      "Heroes/Erza/ErzaQ.j"
     ],
     "ErzaWSpells": [
-      "Erza/ErzaW.j"
+      "Heroes/Erza/ErzaW.j"
     ],
     "ErzaESpells": [
-      "Erza/ErzaE.j"
+      "Heroes/Erza/ErzaE.j"
     ],
     "ErzaRSpells": [
-      "Erza/ErzaR.j"
+      "Heroes/Erza/ErzaR.j"
     ],
     "ErzaTSpells": [
-      "Erza/ErzaT.j"
+      "Heroes/Erza/ErzaT.j"
     ],
     "ErzaG1Spells": [
-      "Erza/ErzaG2_Nakagami.j"
+      "Heroes/Erza/ErzaG2_Nakagami.j"
     ],
     "ErzaG2Spells": [
-      "Erza/ErzaG2_Fairy.j"
+      "Heroes/Erza/ErzaG2_Fairy.j"
     ],
     "ErzaBase": [
-      "Erza/ErzaBase.j"
+      "Heroes/Erza/ErzaBase.j"
+    ],
+    "MilimSpells": [
+      "Heroes/Milim.j"
     ]
   },
   "files": [
@@ -219,9 +212,7 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -246,9 +237,7 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
@@ -273,9 +262,7 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -308,36 +295,13 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "WOS_Start/WoS_Hero_Icons_Init.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-            "WOS_Start/Untitled_Trigger_001.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy.j"
+            "WOS_Start/WoS_Hero_Icons_Init.j"
           ]
         }
       ]
     },
     {
       "order": 8,
-      "path": "WOS_Start/DefaultArmorChange.j",
-      "provides": [
-        "HeroUnitPanelStats"
-      ],
-      "dependencies": [
-        {
-          "name": "heroicon",
-          "optional": false,
-          "keyword": "requires",
-          "resolved_paths": [
-            "WOS_Start/WoS_Hero_Icons_Init.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-            "WOS_Start/Untitled_Trigger_001.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 9,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
       "provides": [
         "HeroUnitPanelStats"
@@ -348,16 +312,13 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "WOS_Start/WoS_Hero_Icons_Init.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-            "WOS_Start/Untitled_Trigger_001.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy.j"
+            "WOS_Start/WoS_Hero_Icons_Init.j"
           ]
         }
       ]
     },
     {
-      "order": 10,
+      "order": 9,
       "path": "WOS_Start/Save2.j",
       "provides": [
         "WOS2BotCodec"
@@ -365,7 +326,7 @@
       "dependencies": []
     },
     {
-      "order": 11,
+      "order": 10,
       "path": "WOS_Start/SaveLoad.j",
       "provides": [
         "AAINIT"
@@ -382,7 +343,7 @@
       ]
     },
     {
-      "order": 12,
+      "order": 11,
       "path": "WOS_Start/MusicPlayer.j",
       "provides": [
         "LocalMp3Player"
@@ -390,7 +351,7 @@
       "dependencies": []
     },
     {
-      "order": 13,
+      "order": 12,
       "path": "WOS_Start/Scoreboard.j",
       "provides": [
         "WosScoreboard"
@@ -401,16 +362,13 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "WOS_Start/WoS_Hero_Icons_Init.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-            "WOS_Start/Untitled_Trigger_001.j",
-            "WOS_Start/WoS_Hero_Icons_Init_Copy.j"
+            "WOS_Start/WoS_Hero_Icons_Init.j"
           ]
         }
       ]
     },
     {
-      "order": 14,
+      "order": 13,
       "path": "WOS_Start/ChatCommand.j",
       "provides": [
         "CustomImageChat"
@@ -421,81 +379,49 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 15,
+      "order": 14,
       "path": "WOS_Start/Player_Pick_Mode.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 16,
+      "order": 15,
       "path": "WOS_Start/WoS_Shop_Init.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 17,
+      "order": 16,
       "path": "WOS_Start/WoS_Pick_Init.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 18,
-      "path": "WOS_Start/WoS_Pick_Init_Copy_2.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 19,
-      "path": "WOS_Start/WoS_Pick_Init_Copy.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 20,
+      "order": 17,
       "path": "WOS_Start/Starts.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 21,
-      "path": "WOS_Start/Starts_Copy.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 22,
+      "order": 18,
       "path": "WOS_Start/BuildsForChars.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 23,
-      "path": "WOS_Start/WoS_Shop_Init_Copy_2.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 24,
+      "order": 19,
       "path": "WOS_Start/TestUnit.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 25,
-      "path": "WOS_Start/TestUnit_Copy.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 26,
+      "order": 20,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
       "provides": [
         "heroicon"
@@ -522,63 +448,19 @@
           "optional": false,
           "keyword": "requires",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 27,
-      "path": "WOS_Start/WoS_Hero_Icons_Init_Copy_2.j",
-      "provides": [
-        "heroicon"
-      ],
-      "dependencies": [
-        {
-          "name": "LocalMp3Player",
-          "optional": false,
-          "keyword": "requires",
-          "resolved_paths": [
-            "WOS_Start/MusicPlayer.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 28,
-      "path": "WOS_Start/Untitled_Trigger_001.j",
-      "provides": [
-        "heroicon"
-      ],
-      "dependencies": [
-        {
-          "name": "LocalMp3Player",
-          "optional": false,
-          "keyword": "requires",
-          "resolved_paths": [
-            "WOS_Start/MusicPlayer.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 29,
-      "path": "WOS_Start/WoS_Hero_Icons_Init_Copy.j",
-      "provides": [
-        "heroicon"
-      ],
-      "dependencies": []
-    },
-    {
-      "order": 30,
+      "order": 21,
       "path": "WOS_Start/Leave.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 31,
+      "order": 22,
       "path": "Round_End/RoundEnd.j",
       "provides": [
         "RoundSpells"
@@ -589,21 +471,19 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 32,
+      "order": 23,
       "path": "Systems/CastAItems.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 33,
+      "order": 24,
       "path": "Systems/TasBox.j",
       "provides": [
         "TasAbilityChargeBox"
@@ -618,25 +498,19 @@
       ]
     },
     {
-      "order": 34,
+      "order": 25,
       "path": "Systems/CastCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 35,
-      "path": "Systems/CastCheck_Copy.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 36,
+      "order": 26,
       "path": "Systems/ClickEvent.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 37,
+      "order": 27,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
       "provides": [
         "AAADest"
@@ -647,15 +521,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 38,
+      "order": 28,
       "path": "Systems/Systems1.j",
       "provides": [
         "GearSystems"
@@ -672,7 +544,7 @@
       ]
     },
     {
-      "order": 39,
+      "order": 29,
       "path": "Systems/Systems2.j",
       "provides": [
         "GearSystems2"
@@ -689,233 +561,211 @@
       ]
     },
     {
-      "order": 40,
-      "path": "Systems/Systems_Copy_2.j",
-      "provides": [
-        "GearSystems"
-      ],
-      "dependencies": []
-    },
-    {
-      "order": 41,
-      "path": "Systems/Systems_Copy.j",
-      "provides": [
-        "GearSystems"
-      ],
-      "dependencies": []
-    },
-    {
-      "order": 42,
+      "order": 30,
       "path": "Systems/DmgSys.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 43,
+      "order": 31,
       "path": "Systems/AtkCancel.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 44,
+      "order": 32,
       "path": "Systems/MouseMove.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 45,
+      "order": 33,
       "path": "Systems/Death.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 46,
+      "order": 34,
       "path": "Systems/silence.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 47,
+      "order": 35,
       "path": "Systems/LvlUpCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 48,
+      "order": 36,
       "path": "Systems/LvlSelf.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 49,
+      "order": 37,
       "path": "Systems/MagRes.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 50,
+      "order": 38,
       "path": "Systems/PhysRes.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 51,
+      "order": 39,
       "path": "Systems/slow.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 52,
+      "order": 40,
       "path": "Systems/NeviSound.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 53,
+      "order": 41,
       "path": "Systems/Evol1.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 54,
+      "order": 42,
       "path": "Systems/Evol2.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 55,
+      "order": 43,
       "path": "Systems/sukuna_spawn.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 56,
+      "order": 44,
       "path": "Systems/ESC.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 57,
-      "path": "Systems/AllyDie.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
-      "order": 58,
+      "order": 45,
       "path": "Systems/Killme.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 59,
+      "order": 46,
       "path": "Systems/AnimCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 60,
+      "order": 47,
       "path": "Systems/hpset.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 61,
+      "order": 48,
       "path": "Systems/mpset.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 62,
+      "order": 49,
       "path": "Systems/ArrowLeft.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 63,
+      "order": 50,
       "path": "Systems/ArrowUp.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 64,
+      "order": 51,
       "path": "Systems/ArrowDown.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 65,
+      "order": 52,
       "path": "Systems/ArrowRight.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 66,
+      "order": 53,
       "path": "Systems/CastingCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 67,
+      "order": 54,
       "path": "Systems/ButtonPressed.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 68,
+      "order": 55,
       "path": "Systems/ButtonPressed_ESC.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 69,
+      "order": 56,
       "path": "Systems/ButtonUnPressed_ESC.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 70,
+      "order": 57,
       "path": "Systems/EnterBase.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 71,
+      "order": 58,
       "path": "Systems/EnterRegion.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 72,
+      "order": 59,
       "path": "Systems/LeavesBase.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 73,
+      "order": 60,
       "path": "Systems/LeavesRegion.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 74,
+      "order": 61,
       "path": "Systems/ItemCupOfTea.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 75,
+      "order": 62,
       "path": "Systems/ItemEnter.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 76,
+      "order": 63,
       "path": "Systems/ItemLeave.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 77,
+      "order": 64,
       "path": "Items/Items.j",
       "provides": [
         "ItemsSpells"
@@ -926,15 +776,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 78,
+      "order": 65,
       "path": "Heroes/Toji.j",
       "provides": [
         "TojiSpells"
@@ -945,15 +793,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 79,
+      "order": 66,
       "path": "Heroes/Raiden.j",
       "provides": [
         "RaidenSpells"
@@ -964,15 +810,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 80,
+      "order": 67,
       "path": "Heroes/Frieren.j",
       "provides": [
         "FrierenSpells"
@@ -983,15 +827,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 81,
+      "order": 68,
       "path": "Heroes/Ainz.j",
       "provides": [
         "AinzSpells"
@@ -1002,15 +844,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 82,
+      "order": 69,
       "path": "Heroes/Laxus.j",
       "provides": [
         "LaxusSpells"
@@ -1021,9 +861,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -1037,7 +875,7 @@
       ]
     },
     {
-      "order": 83,
+      "order": 70,
       "path": "Heroes/Brandish.j",
       "provides": [
         "BrandishSpells"
@@ -1048,15 +886,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 84,
+      "order": 71,
       "path": "Heroes/Patriot.j",
       "provides": [
         "PatriotSpells"
@@ -1067,15 +903,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 85,
+      "order": 72,
       "path": "Heroes/Asta.j",
       "provides": [
         "AstaSpells"
@@ -1086,15 +920,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 86,
+      "order": 73,
       "path": "Heroes/Gojo.j",
       "provides": [
         "GojoSpells"
@@ -1105,15 +937,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 87,
+      "order": 74,
       "path": "Heroes/Bambietta.j",
       "provides": [
         "BambiettaSpells"
@@ -1124,34 +954,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 88,
-      "path": "Heroes/Bambietta_Копировать.j",
-      "provides": [
-        "BambiettaSpells"
-      ],
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses",
-          "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 89,
+      "order": 75,
       "path": "Heroes/Kirito.j",
       "provides": [
         "KiritoSpells"
@@ -1162,15 +971,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 90,
+      "order": 76,
       "path": "Heroes/Alucard.j",
       "provides": [
         "AlucardSpells"
@@ -1181,15 +988,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 91,
+      "order": 77,
       "path": "Heroes/Starrk.j",
       "provides": [
         "StarrkSpells"
@@ -1200,34 +1005,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 92,
-      "path": "Heroes/Starrk_Copy.j",
-      "provides": [
-        "StarrkSpells"
-      ],
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses",
-          "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 93,
+      "order": 78,
       "path": "Heroes/Takeshi.j",
       "provides": [
         "TakeshiSpells"
@@ -1238,15 +1022,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 94,
+      "order": 79,
       "path": "Heroes/Barragan.j",
       "provides": [
         "BarraganSpells"
@@ -1257,15 +1039,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 95,
+      "order": 80,
       "path": "Heroes/Mahoraga.j",
       "provides": [
         "MahoragaSpells"
@@ -1276,15 +1056,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 96,
+      "order": 81,
       "path": "Heroes/Harribel.j",
       "provides": [
         "HarribelSpells"
@@ -1295,34 +1073,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 97,
-      "path": "Heroes/Tsuna_Copy.j",
-      "provides": [
-        "TsunaSpells"
-      ],
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses",
-          "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 98,
+      "order": 82,
       "path": "Heroes/Tsuna.j",
       "provides": [
         "TsunaSpells"
@@ -1333,34 +1090,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 99,
-      "path": "Heroes/Tsuna_Copy_2.j",
-      "provides": [
-        "TsunaSpells"
-      ],
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses",
-          "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
-          ]
-        }
-      ]
-    },
-    {
-      "order": 100,
+      "order": 83,
       "path": "Heroes/Rimuru.j",
       "provides": [
         "RimuruSpells"
@@ -1371,15 +1107,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 101,
+      "order": 84,
       "path": "Heroes/DarkShiki.j",
       "provides": [
         "DarkShikiSpells"
@@ -1390,15 +1124,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 102,
+      "order": 85,
       "path": "Heroes/BazzB.j",
       "provides": [
         "BazzBSpells"
@@ -1409,15 +1141,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 103,
+      "order": 86,
       "path": "Heroes/Neuvillette.j",
       "provides": [
         "NeuvilletteSpells"
@@ -1428,15 +1158,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 104,
+      "order": 87,
       "path": "Heroes/Okarun.j",
       "provides": [
         "OkarunSpells"
@@ -1447,15 +1175,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 105,
+      "order": 88,
       "path": "Heroes/Akainu.j",
       "provides": [
         "AkainuSpells"
@@ -1466,15 +1192,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 106,
+      "order": 89,
       "path": "Heroes/Inori.j",
       "provides": [
         "InoriSpells"
@@ -1485,15 +1209,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 107,
+      "order": 90,
       "path": "Heroes/Kenjaku.j",
       "provides": [
         "KenjakuSpells"
@@ -1504,15 +1226,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 108,
+      "order": 91,
       "path": "Heroes/AlterSaber.j",
       "provides": [
         "AlterSaberSpells"
@@ -1523,15 +1243,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 109,
+      "order": 92,
       "path": "Heroes/Natsu.j",
       "provides": [
         "NatsuSpells"
@@ -1542,15 +1260,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 110,
+      "order": 93,
       "path": "Heroes/Kyoraku.j",
       "provides": [
         "KyorakuSpells"
@@ -1561,15 +1277,13 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 111,
+      "order": 94,
       "path": "Heroes/Tomioka.j",
       "provides": [
         "TomiokaSpells"
@@ -1580,16 +1294,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 112,
-      "path": "Erza/ErzaQ.j",
+      "order": 95,
+      "path": "Heroes/Erza/ErzaQ.j",
       "provides": [
         "ErzaQSpells"
       ],
@@ -1599,9 +1311,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -1609,14 +1319,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
-      "order": 113,
-      "path": "Erza/ErzaW.j",
+      "order": 96,
+      "path": "Heroes/Erza/ErzaW.j",
       "provides": [
         "ErzaWSpells"
       ],
@@ -1626,9 +1336,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -1636,14 +1344,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
-      "order": 114,
-      "path": "Erza/ErzaE.j",
+      "order": 97,
+      "path": "Heroes/Erza/ErzaE.j",
       "provides": [
         "ErzaESpells"
       ],
@@ -1653,9 +1361,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -1663,14 +1369,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaT.j"
+            "Heroes/Erza/ErzaT.j"
           ]
         }
       ]
     },
     {
-      "order": 115,
-      "path": "Erza/ErzaR.j",
+      "order": 98,
+      "path": "Heroes/Erza/ErzaR.j",
       "provides": [
         "ErzaRSpells"
       ],
@@ -1680,16 +1386,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 116,
-      "path": "Erza/ErzaT.j",
+      "order": 99,
+      "path": "Heroes/Erza/ErzaT.j",
       "provides": [
         "ErzaTSpells"
       ],
@@ -1699,16 +1403,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 117,
-      "path": "Erza/ErzaG2_Nakagami.j",
+      "order": 100,
+      "path": "Heroes/Erza/ErzaG2_Nakagami.j",
       "provides": [
         "ErzaG1Spells"
       ],
@@ -1718,16 +1420,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 118,
-      "path": "Erza/ErzaG2_Fairy.j",
+      "order": 101,
+      "path": "Heroes/Erza/ErzaG2_Fairy.j",
       "provides": [
         "ErzaG2Spells"
       ],
@@ -1737,16 +1437,14 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         }
       ]
     },
     {
-      "order": 119,
-      "path": "Erza/ErzaBase.j",
+      "order": 102,
+      "path": "Heroes/Erza/ErzaBase.j",
       "provides": [
         "ErzaBase"
       ],
@@ -1756,9 +1454,7 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Systems/Systems1.j",
-            "Systems/Systems_Copy_2.j",
-            "Systems/Systems_Copy.j"
+            "Systems/Systems1.j"
           ]
         },
         {
@@ -1766,7 +1462,24 @@
           "optional": false,
           "keyword": "uses",
           "resolved_paths": [
-            "Erza/ErzaQ.j"
+            "Heroes/Erza/ErzaQ.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 103,
+      "path": "Heroes/Milim.j",
+      "provides": [
+        "MilimSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
           ]
         }
       ]

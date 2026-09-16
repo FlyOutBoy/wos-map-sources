@@ -1,97 +1,88 @@
+// @ignore-file-errors
+// VS Code jass.jass 1.9.21 incorrectly reports valid vJASS `local thistype this`
+// declarations as keyword conflicts. JassHelper remains the source of truth.
 library MilimSpells uses GearSystems
     globals
 //--------------------------------------Milim--------------------------------------------------------------
-        integer Milim_ID = 'H00A'
-        integer Milim2_ID = 'H00H'
+        integer Milim_ID = 'H02K'
+        integer Milim2_ID = 'H02L'
 //---------------Q ability-----------------------------------------------------
-        integer MilimQ_ID = 'A000'
-        real MilimQ_DamageAgiBase = 2 // base number x Agi damage for 1 level
+        integer MilimQ_ID = 'A0HG'
+        real MilimQ_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real MilimQ_DamageAgiStep = 1 // additional number x Agi damage for each next level
-        real MilimQ_Damage2StaticBase = 50 // base static damage for 1 level
-        real MilimQ_Damage2StaticStep = 25 // additional static damage for each next level
+        real MilimQ_Damage2StaticBase = 175 // base static damage for 1 level
+        real MilimQ_Damage2StaticStep = 0 // additional static damage for each next level
         real MilimQ_DamageAoe = 155
         real MilimQ_DamageAoe2 = 350
         real MilimQ_Range = 1255
         real MilimQ_PushRange = 450 // slow time 2, 3, 4 sec only
         real MilimQ_PushDuration = 0.3 // slow time 2, 3, 4 sec only
 //---------------W ability-----------------------------------------------------
-        integer MilimW_ID = 'A001'
-        integer MilimW2_ID = 'A00S'
-        real MilimW_DamageAgiBase = 0.5 // base number x Agi damage for 1 level
-        real MilimW_DamageAgiStep = 0.25 // additional number x Agi damage for each next level
-        real MilimW_Damage2StaticBase = 25 // base static damage for 1 level
-        real MilimW_Damage2StaticStep = 25 // additional static damage for each next level
-        real MilimW2_DamageAgiBase = 2 // base number x Agi damage for 1 level
+        integer MilimW_ID = 'A0HH'
+        integer MilimW2_ID = 'A0HI'
+        real MilimW_DamageAgiBase = 1 // base number x Agi damage for 1 level
+        real MilimW_DamageAgiStep = 1 // additional number x Agi damage for each next level
+        real MilimW_Damage2StaticBase = 150 // base static damage for 1 level
+        real MilimW_Damage2StaticStep = 0 // additional static damage for each next level
+        real MilimW2_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real MilimW2_DamageAgiStep = 1 // additional number x Agi damage for each next level
-        real MilimW2_Damage2StaticBase = 100 // base static damage for 1 level
-        real MilimW2_Damage2StaticStep = 25 // additional static damage for each next level
+        real MilimW2_Damage2StaticBase = 150 // base static damage for 1 level
+        real MilimW2_Damage2StaticStep = 0 // additional static damage for each next level
         real MilimW_TimetoSwapAbi = 2
         real MilimW_DamageAoe = 600
         real MilimW_PushRange = 300
         real MilimW_PushTime = 0.24
         real MilimW2_DamageAoe = 900
-        integer MilimW2_Slow = 50
+        integer MilimW2_Slow = 40
         integer MilimW2_SlowDuration = 2
         real MilimW2_TightRange = 50
         real MilimW2_TightDuration = 0.15
 //---------------E ability-----------------------------------------------------
-        integer MilimE_ID = 'A002'
-        real MilimE_DamageAgiBase = 3 // base number x Agi damage for 1 level
+        integer MilimE_ID = 'A0HJ'
+        real MilimE_DamageAgiBase = 2 // base number x Agi damage for 1 level
         real MilimE_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real MilimE_RangeBase = 1200.00
         real MilimE_RangeStep = 100.00
-        real MilimE_DamageAoe = 235
-        real MilimE_DamageAoeFinal = 520
+        real MilimE_DamageAoe = 275
 //---------------R ability-----------------------------------------------------
-        integer MilimR_ID = 'A003'
-        real MilimR_DamageAgiBase = 5 // base number x Agi damage for 1 level
+        integer MilimR_ID = 'A0HK'
+        real MilimR_DamageAgiBase = 4 // base number x Agi damage for 1 level
         real MilimR_DamageAgiStep = 1 // additional number x Agi damage for each next level
-        integer MilimR_Slow = 65
+        integer MilimR_Slow = 45
         real MilimR_DamageAoe = 700.00
         integer MilimR_SlowDuration = 2
+        real MilimR_CarryAoe = 180.00
+        real MilimR_CarryScanPeriod = 0.06
+        real MilimR_VisionPeriod = 0.15
 //---------------T ability-----------------------------------------------------
-        integer MilimT_ID = 'A004' //
-        real MilimT_DamageAgiBase = 18 // overall for all 3 sec
-        real MilimT_DamageAoe = 465 
-        integer MilimT_Slow = 50 // Caused slow %
-        integer MilimT_SlowDuration = 2 // slow time 2, 3, 4 sec only
-        real MilimT_Root = 0 
+        integer MilimT_ID = 'A0HL' //
         real MilimT_Duration = 20
-        real MilimT_SilenceDuration = 1 // 
+        integer MilimT_MaxHpBonus = 1500
+        real MilimT_HpRegenAbi_Amount = 30
+        integer MilimT_HpRegenAbi = 'A0HS'
 //---------------T2 ability-----------------------------------------------------
-        integer MilimT2_ID = 'A015' //
-        real MilimT2_DamageAgiBase = 17 // overall
+        integer MilimT2_ID = 'A0HM' //
+        real MilimT2_DamageAgiBase = 10 // overall
         real MilimT2_DamageAoe = 500 // 
-        real MilimT2_Root = 0
-        integer MilimT2_Slow = 80 // Caused slow %
-        integer MilimT2_SlowDuration = 3 // slow time 2, 3, 4 sec only
-        real MilimT2_SilenceDuration = 0.5 // 
+        integer MilimT2_Slow = 40 // Caused slow %
+        integer MilimT2_SlowDuration = 2 // slow time 2, 3, 4 sec only
         real MilimT2_ChargeTime = 2.00
     real MilimT2_BeamDuration = 1.50
     real MilimT2_BeamRange = 2700.00
     real MilimT2_BeamScanStep = 300.00
-    real MilimT2_DamagePeriod = 0.15
+    real MilimT2_DamagePeriod = 0.18
     integer MilimT2_DamageTicks = 6
 //---------------F ability-----------------------------------------------------
-        integer MilimF_ID = 'A01V'
-        real MilimF_Aoe = 650 // aoe where passive works
-        real MilimF_CD12 = 20 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_CD25 = 18 // % to dodge damage if enemy in MilimFAoe around him
-        real MilimF_CD35 = 16 // % to dodge damage if enemy in MilimFAoe around him
+        integer MilimF_ID = 'A0HN'
+        
 //---------------G ability-----------------------------------------------------
-        integer MilimG_ID = 'A01U'
-        integer MilimG_Stat_ID1 = 'A08I'
-        integer MilimG_Stat_ID2 = 'A08K'
-        integer MilimG_Stat_ID3 = 'A08J'
-        real MilimG_Duration = 3 
-        real MilimG_StatsRemoveSec = 10 //after X sec remove stats after ability end
-        real MilimG_DamagetoMana = 20 //% damage converted to mana
-        real MilimG_DamagetoStats1 = 1250 //when absorbdamage
-        real MilimG_DamagetoF_Chance1 = 10 //how much chance add first damage counter
-        real MilimG_DamagetoStats2 = 2500 //when absorbdamage
-        real MilimG_DamagetoF_Chance2 = 10 //how much chance add second damage counter
-        real MilimG_DamagetoStats3 = 3750 //when absorbdamage
-        real MilimG_DamagetoF_Chance3 = 10 //how much chance add third damage counter
+        integer MilimG_ID = 'A0HO'
+        integer MilimG_Stat_ID1 = 'A0HP'
+        integer MilimG_Stat_ID2 = 'A0HR'
+        integer MilimG_Stat_ID3 = 'A0HQ'
+        real MilimG_DamagetoStats1 = 4000 //when absorbdamage
+        real MilimG_DamagetoStats2 = 8000 //when absorbdamage
+        real MilimG_DamagetoStats3 = 12000 //when absorbdamage
     endglobals
        
     private struct MilimQKS
@@ -531,7 +522,7 @@ endstruct
                     set r = r + 0.05
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
-                    call DebugUnit(c)
+                    call DebugUnit2(c)
                     if r == 1.2 and check == 0 then
                         call SetUnitTimeScale(c, 0)
                     endif
@@ -539,9 +530,9 @@ endstruct
                     call BlzSetSpecialEffectPosition(e2,x,y,0)
                     call BlzSetSpecialEffectPosition(e3,x,y,0)
                     if r == 0.6 then 
-                    set e = EffectSpawn("war3mapImported\\file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
-                set e2 = EffectSpawn("war3mapImported\\file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
-                set e3 = EffectSpawn("war3mapImported\\file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                    set e = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                set e2 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                set e3 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
                 call MakeSound("war3mapimported\\Hero_Milim_W2 2")
                 elseif r == 0.75 then
                 call EffectSpawn2("war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 9, 70, 2)
@@ -593,7 +584,8 @@ endstruct
                     call ColorEffDummy3(e,0,255,255,255,0.3)
                     call ColorEffDummy3(e2,0,255,255,255,0.3)
                     call ColorEffDummy3(e3,0,255,255,255,0.3)
-                    call StopSpellUnit(c)
+                    call StopSpellUnit2(c)
+                call SaveInteger(hs,GetHandleId(c),StringHash("invul"),0)
                     call DestroyGroup(g)
                     if g2 != null then
                         call DestroyGroup(g2)
@@ -629,7 +621,7 @@ endstruct
             call PauseUnit(c, true)
             set a = GetUnitFacing(c) * bj_DEGTORAD
             set g = CreateGroup()
-            set rmax =3
+            set rmax =1.5
                 set check = 0
                 set aoe = MilimW2_DamageAoe
                 set dmg = GetHeroInt(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
@@ -638,7 +630,8 @@ endstruct
                 call SetUnitAnimationByIndex(c, 9)
                 call MakeSound("war3mapimported\\Hero_Milim_W2 1")
                 //call MakeSound("war3mapimported\\Hero_Barragan_R2")
-                
+                call StartSpellUnit2(c)
+                call SaveInteger(hs,GetHandleId(c),StringHash("invul"),1)
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 2000, rmax)
             if MUI_MilimW2 == 0 then
                 call TimerStart( t_MilimW2, 0.05, true, function thistype.Loop_MilimW2 )
@@ -694,7 +687,7 @@ endstruct
                     endif
                     if r3 > 0.12 then 
                     set r3= 0
-                        call DestroyEffect(EffectSpawn("war3mapImported\\13684996917731847118.mdl", GetUnitX(c)+50*Cos(a), GetUnitY(c)+50*Cos(a), GetRandomReal(0, 359), GetRandomReal(1.5,2), 1.55, GetUnitFlyHeight(c)+GetRandomReal(50,155)))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_13684996917731847118.mdl", GetUnitX(c)+50*Cos(a), GetUnitY(c)+50*Cos(a), GetRandomReal(0, 359), GetRandomReal(1.5,2), 1.55, GetUnitFlyHeight(c)+GetRandomReal(50,155)))
                     else
                     set r3 = r3 + 0.03 
                     endif
@@ -712,7 +705,7 @@ endstruct
                         set fly = 550
                         set fly2 =7
                         set fly3 = 31*0.75
-            set e = EffectSpawn3("war3mapImported\\file00005542.mdl", GetUnitX(c)+(450)*Cos(a), GetUnitY(c)+(450)*Sin(a),a*bj_RADTODEG,1,scale,fly,-60)
+            set e = EffectSpawn3("war3mapImported\\wos_file00005542.mdl", GetUnitX(c)+(450)*Cos(a), GetUnitY(c)+(450)*Sin(a),a*bj_RADTODEG,1,scale,fly,-60)
             call BlzPlaySpecialEffect(e,ANIM_TYPE_STAND)
             set r9 = -50
                     endif
@@ -749,8 +742,8 @@ endstruct
                         set y = y1+r5*Sin(a)
                         if r2>0.06 then 
                         set r2 = 0
-                        call VisionTimed(GetOwningPlayer(c), x, y , aoe, 1)
-                        call DestroyEffect(EffectSpawn("war3mapImported\\13684996917731847118.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(1.5,2), 5.25, GetRandomReal(240,365)))
+                        call VisionTimed(GetOwningPlayer(c), x, y, aoe * 2.00, 1.00)
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_13684996917731847118.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(1.5,2), 5.25, GetRandomReal(240,365)))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_NewDirtEXNofireNoDust.mdl", x, y, GetRandomReal(0, 359), 1, 1.5, 0))
                         call DecorRemove(c, x, y , aoe, 40)
                         call GroupClear(g)
@@ -849,6 +842,8 @@ private struct MilimRProjectileKS
     effect e3
     group g
     group g2
+    group g3
+    group g4
     real startX
     real startY
     real targetX
@@ -861,6 +856,8 @@ private struct MilimRProjectileKS
     real fly
     real dmg
     real r
+    real r2
+    real visionTick
     real rmax
     integer check
     boolean showExplosionFx
@@ -873,6 +870,8 @@ private struct MilimRProjectileKS
         local real ellipseOffset
         local real oldX
         local real oldY
+        local real moveDistance
+        local real moveAngle
         local real x 
         local real y
         local integer sharedGroupId
@@ -903,7 +902,50 @@ private struct MilimRProjectileKS
                 call BlzSetSpecialEffectYaw(e, Atan2(currentY - oldY, currentX - oldX))
                 call BlzSetSpecialEffectPosition(e2, currentX, currentY, fly)
                 call BlzSetSpecialEffectYaw(e2, Atan2(currentY - oldY, currentX - oldX))
+                set moveDistance = SquareRoot((currentX - oldX) * (currentX - oldX) + (currentY - oldY) * (currentY - oldY))
+                set moveAngle = Atan2(currentY - oldY, currentX - oldX)
 
+                if r2 >= MilimR_CarryScanPeriod then
+                    set r2 = 0.00
+                    call GroupEnumUnitsInRange(g, currentX, currentY, MilimR_CarryAoe, NoDecor_Cond)
+                    loop
+                        set u = FirstOfGroup(g)
+                        exitwhen u == null
+                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g4) then
+                            call GroupAddUnit(g3, u)
+                            call GroupAddUnit(g4, u)
+                        endif
+                        call GroupRemoveUnit(g, u)
+                    endloop
+                else
+                    set r2 = r2 + 0.03
+                endif
+
+                call GroupClear(g)
+                loop
+                    set u = FirstOfGroup(g3)
+                    exitwhen u == null
+                    call GroupRemoveUnit(g3, u)
+                    if SpellBool(u) then
+                        call MoveUnit(u, moveDistance, moveAngle)
+                        call GroupAddUnit(g, u)
+                    else
+                        call GroupRemoveUnit(g4, u)
+                    endif
+                endloop
+                loop
+                    set u = FirstOfGroup(g)
+                    exitwhen u == null
+                    call GroupRemoveUnit(g, u)
+                    call GroupAddUnit(g3, u)
+                endloop
+
+                if visionTick >= MilimR_VisionPeriod then
+                    set visionTick = 0.00
+                    call VisionTimed(GetOwningPlayer(c), currentX, currentY, MilimR_DamageAoe * 2.00, MilimR_VisionPeriod * 2.00)
+                else
+                    set visionTick = visionTick + 0.03
+                endif
                 if r >= rmax then
                     call BlzSetSpecialEffectScale(e,0.001)
                     call DestroyEffect(e)
@@ -914,7 +956,7 @@ private struct MilimRProjectileKS
                     set currentY = targetY
 
                     // ÇÀÒÛ×ÊÀ: ýôôåêò â òî÷êå ïðèçåìëåíèÿ ñíàðÿäà.
-                    set e3 = EffectSpawn("war3mapImported\\file00000417.mdl", targetX, targetY, GetRandomReal(0, 359), 1.00, GetRandomReal(1.8,3.25), GetRandomReal(125,400))
+                    set e3 = EffectSpawn("war3mapImported\\wos_file00000417.mdl", targetX, targetY, GetRandomReal(0, 359), 1.00, GetRandomReal(1.8,3.25), GetRandomReal(125,400))
                     set check = 1
                     set r = 0.00
                 endif
@@ -932,7 +974,7 @@ private struct MilimRProjectileKS
                     // Âèçóàëüíûé âçðûâ ñîçäàþò òîëüêî ïðîñòðàíñòâåííî ðàçíåñ¸ííûå ñíàðÿäû.
                     // Ïðîâåðêà óðîíà íèæå âûïîëíÿåòñÿ ó âñåõ ñíàðÿäîâ áåç èñêëþ÷åíèÿ.
                     if showExplosionFx then
-                        call DestroyEffect(EffectSpawn("war3mapimported\\by_wood_eff_sel_elp_qiuxingbaozha.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(1, 1.35), GetRandomReal(4.00, 6.50), 0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_by_wood_eff_sel_elp_qiuxingbaozha.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(1, 1.35), GetRandomReal(4.00, 6.50), 0))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_afb (2080).mdl", x, y, a * bj_RADTODEG, 0.85, 1.9, 1))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 0, 0.5, 2.94, GetRandomReal(200, 450)))
                     endif
@@ -956,13 +998,17 @@ private struct MilimRProjectileKS
                     if remainingProjectiles <= 0 then
                         call FlushChildHashtable(hs, sharedGroupId)
                         call DestroyGroup(g2)
+                        call DestroyGroup(g4)
                     else
                         call SaveInteger(hs, sharedGroupId, StringHash("MilimR projectiles left"), remainingProjectiles)
                     endif
 
                     call DestroyGroup(g)
+                    call DestroyGroup(g3)
                     set g = null
                     set g2 = null
+                    set g3 = null
+                    set g4 = null
                     set e = null
                     set e2 = null
                     set e3 = null
@@ -983,7 +1029,7 @@ private struct MilimRProjectileKS
         endloop
     endmethod
 
-    public static method MilimRProjectile_Start takes unit NewC, real NewStartX, real NewStartY, real NewTargetX, real NewTargetY, real NewArcSide, real NewArcSize, real NewFly, real NewDuration, real NewDamage, group NewDamagedGroup, boolean NewShowExplosionFx returns nothing
+    public static method MilimRProjectile_Start takes unit NewC, real NewStartX, real NewStartY, real NewTargetX, real NewTargetY, real NewArcSide, real NewArcSize, real NewFly, real NewDuration, real NewDamage, group NewDamagedGroup, group NewPushedGroup, boolean NewShowExplosionFx returns nothing
         local thistype this = thistype.create()
 
         set MUI_MilimRProjectile = MUI_MilimRProjectile + 1
@@ -1000,16 +1046,20 @@ private struct MilimRProjectileKS
         set arcSize = NewArcSize
         set fly = NewFly
         set r = 0.00
+        set r2 = 0.00
+        set visionTick = 0.00
         set rmax = NewDuration
         set dmg = NewDamage
         set check = 0
         set g = CreateGroup()
         set g2 = NewDamagedGroup
+        set g3 = CreateGroup()
+        set g4 = NewPushedGroup
         set showExplosionFx = NewShowExplosionFx
 
         // ÇÀÒÛ×ÊÀ: ìîäåëü ëåòÿùåãî ñíàðÿäà. war3mapImported\.mdl
         set e = EffectSpawn("war3mapImported\\wos_summon3missle_blue2.mdl", startX, startY, (a + arcSide * 90.00 * bj_DEGTORAD) * bj_RADTODEG, 1.00, 0.5, fly)
-        set e2 = EffectSpawn("war3mapImported\\file00004263.mdl", startX, startY, (a + arcSide * 90.00 * bj_DEGTORAD) * bj_RADTODEG, 1.00, 2.75, fly)
+        set e2 = EffectSpawn("war3mapImported\\wos_file00004263.mdl", startX, startY, (a + arcSide * 90.00 * bj_DEGTORAD) * bj_RADTODEG, 1.00, 2.75, fly)
 
         if MUI_MilimRProjectile == 0 then
             call TimerStart(t_MilimRProjectile, 0.03, true, function thistype.Loop_MilimRProjectile)
@@ -1019,10 +1069,10 @@ endstruct
 
 // Îñíîâíàÿ ñòðóêòóðà: êàñò, íåóÿçâèìîñòü, ïàóçà è âûïóñê âñåõ ñíàðÿäîâ.
 private struct MilimRKS
-    private static constant integer MISSILE_COUNT = 10
+    private static constant integer MISSILE_COUNT = 12
     private static constant real CAST_DELAY = 1.50
-    private static constant real MISSILE_RELEASE_WINDOW = 1.02
-    private static constant real MISSILE_MIN_FLIGHT_TIME = 0.21
+    private static constant real MISSILE_RELEASE_WINDOW = 0.75
+    private static constant real MISSILE_MIN_FLIGHT_TIME = 0.15
     private static constant real RECT_WIDTH = 1200.00
     private static constant real RECT_DEPTH = 650.00
     private static constant real ARC_MIN = 220.00
@@ -1037,6 +1087,7 @@ private struct MilimRKS
     effect e2
     effect e3
     group g
+    group g2
     real x
     real y
     real a
@@ -1068,7 +1119,7 @@ private struct MilimRKS
                 set r = r + 0.03
                 call DebugUnit(c)
                 if r == 0.3 then                 
-        set e = EffectSpawnScale("war3mapImported\\file00000739.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), a * bj_RADTODEG, 1.00, 1, 100.00,0.75,1,3.45)
+        set e = EffectSpawnScale("war3mapImported\\wos_file00000739.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), a * bj_RADTODEG, 1.00, 1.5, 100.00,0.75,1,3.45)
         call BlzSetSpecialEffectAlpha(e,150)
         set e2 = EffectSpawnScale("war3mapImported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdl", GetUnitX(c)+90*Cos(a), GetUnitY(c)+90*Sin(a), a * bj_RADTODEG, 1.00, 1, 100.00,0.75,1,2.5)
         set e3 = EffectSpawnScale("war3mapImported\\wos_xtyball2.mdx", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), a * bj_RADTODEG, 1.00, 1, 0.00,0.75,1,1.85)
@@ -1112,9 +1163,9 @@ private struct MilimRKS
                     set flightTime = MISSILE_MIN_FLIGHT_TIME + MISSILE_RELEASE_WINDOW - releaseOffset
 
                     // ÇÀÒÛ×ÊÀ: êîðîòêèé ýôôåêò ïðè âûïóñêå êàæäîãî ñíàðÿäà.
-                    call DestroyEffect(EffectSpawn("war3mapImported\\effect lvse-magic-shousuo blue.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), GetRandomReal(0, 359), 1.00, 2.00, 120.00))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_effect lvse-magic-shousuo blue.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), GetRandomReal(0, 359), 1.00, 2.00, 120.00))
                     call SaveInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left"), LoadInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left")) + 1)
-                    call MilimRProjectileKS.MilimRProjectile_Start(c, GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), targetX, targetY, arcSide, GetRandomReal(ARC_MIN, ARC_MAX), GetUnitFlyHeight(c) + GetRandomReal(110.00, 230.00), flightTime, dmg, g, createExplosionFx)
+                    call MilimRProjectileKS.MilimRProjectile_Start(c, GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), targetX, targetY, arcSide, GetRandomReal(ARC_MIN, ARC_MAX), GetUnitFlyHeight(c) + GetRandomReal(110.00, 230.00), flightTime, dmg, g, g2, createExplosionFx)
                     set launched = launched + 1
                 endif
             else
@@ -1127,11 +1178,13 @@ private struct MilimRKS
                 if LoadInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left")) <= 0 then
                     call FlushChildHashtable(hs, GetHandleId(g))
                     call DestroyGroup(g)
+                    call DestroyGroup(g2)
                 endif
                 set e = null
                 set e2 = null
                 set e3 = null
                 set g = null
+                set g2 = null
                 set c = null
 
                 set m_MilimR[i] = m_MilimR[MUI_MilimR]
@@ -1163,6 +1216,7 @@ private struct MilimRKS
         set dmg = GetHeroAgi(c, true) * (MilimR_DamageAgiBase + MilimR_DamageAgiStep * (GetUnitAbilityLevel(c, MilimR_ID) - 1))
 
         set g = CreateGroup()
+        set g2 = CreateGroup()
         call SaveInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left"), 0)
 
         call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MilimR_ID)), 0)
@@ -1204,6 +1258,7 @@ private struct MilimTKS
         private static method Loop_MilimT takes nothing returns nothing
             local integer this
             local integer i = 0
+            local real hp
             loop
                 exitwhen i > MUI_MilimT
                 set this = m_MilimT[i]
@@ -1290,6 +1345,10 @@ private struct MilimTKS
                         set y = GetUnitY(c)
                     endif
                 else
+                    set hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
+                    call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - MilimT_MaxHpBonus)
+                    call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
+                    call UnitRemoveAbility(c, MilimT_HpRegenAbi)
                     call BlzSetUnitSkin(c, Milim_ID)
                     //call FixAura(c)
                     call BlzSetAbilityIcon(Milim_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp")
@@ -1321,9 +1380,14 @@ private struct MilimTKS
         endmethod
         public static method MilimT_Start takes unit NewC returns nothing
             local thistype this = thistype.create( )
+            local real hp
             set MUI_MilimT = MUI_MilimT + 1
             set m_MilimT[ MUI_MilimT] = this
             set c = NewC
+            set hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
+            call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) + MilimT_MaxHpBonus)
+            call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
+            call UnitAddAbility(c, MilimT_HpRegenAbi)
             set x = GetUnitX(c)
             set y = GetUnitY(c)
             call StartSpellUnit2(c)
@@ -1408,7 +1472,7 @@ private struct MilimT2KS
                 call DebugUnit(c)
                     if r3>0.22 then 
                     set r3 = 0
-                    call DestroyEffect(EffectSpawnColor("war3mapImported\\13684996917731847118.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), GetRandomReal(0, 359), 1.50, 2.00, 255.00,255,255,255,165))
+                    call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_13684996917731847118.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), GetRandomReal(0, 359), 1.50, 2.00, 255.00,255,255,255,165))
                     else
                     set r3 = r3 + 0.03
                     endif
@@ -1457,7 +1521,7 @@ private struct MilimT2KS
                     // Keep the additional R-style charge effects in front of Milim
                     // while she turns towards the mouse cursor.
                     if r == 0.30 then
-                        set castFrontFx = EffectSpawnScale("war3mapImported\\file00000739.mdl", GetUnitX(c)+90.00*Cos(a), GetUnitY(c)+90.00*Sin(a), a*bj_RADTODEG, 1.00, 1, 100.00, 0.75, 1, 3.45)
+                        set castFrontFx = EffectSpawnScale("war3mapImported\\wos_file00000739.mdl", GetUnitX(c)+90.00*Cos(a), GetUnitY(c)+90.00*Sin(a), a*bj_RADTODEG, 1.00, 1, 100.00, 0.75, 1, 3.45)
                         call BlzSetSpecialEffectAlpha(castFrontFx, 150)
                         set castFrontGlowFx = EffectSpawnScale("war3mapImported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdl", GetUnitX(c)+90.00*Cos(a), GetUnitY(c)+90.00*Sin(a), a*bj_RADTODEG, 1.00, 1, 100.00, 0.75, 1, 2.50)
                         set castFrontBallFx = EffectSpawnScale("war3mapImported\\wos_xtyball2.mdx", GetUnitX(c)+90.00*Cos(a), GetUnitY(c)+90.00*Sin(a), a*bj_RADTODEG, 1.00, 1, 0.00, 0.75, 1, 1.85)
@@ -1496,10 +1560,13 @@ private struct MilimT2KS
                         set castFrontFx = null
                         set castFrontGlowFx = null
                         set castFrontBallFx = null
-                        call ColorEffDummy3(EffectSpawn3("war3mapImported\\file00005542_21.mdl",x+2800*Cos(a),y+2800*Sin(a),a*bj_RADTODEG,1.00,2.7,110.00,-90),MilimT2_BeamDuration,255,255,255,0.25)
+                        call ColorEffDummy3(EffectSpawn3("war3mapImported\\wos_file00005542_21.mdl",x+2800*Cos(a),y+2800*Sin(a),a*bj_RADTODEG,1.00,2.7,110.00,-90),MilimT2_BeamDuration,255,255,255,0.25)
                         call SetUnitAnimationByIndex(c, 15)
                         call SetUnitTimeScale(c, 1.00)
                         call MakeSound("war3mapimported\\Hero_Milim_TT4")
+                        call VisionTimed(GetOwningPlayer(c),x+800*Cos(a),y+800*Sin(a),1200,4)
+                        call VisionTimed(GetOwningPlayer(c),x+1600*Cos(a),y+1600*Sin(a),1200,4)
+                        call VisionTimed(GetOwningPlayer(c),x+2400*Cos(a),y+2400*Sin(a),1200,4)
 
                         // Beam parameters copied from Starrk Q (k2 == 1).
                         // Every spawned segment is removed only after the damage phase ends.
@@ -1527,6 +1594,7 @@ private struct MilimT2KS
 
                         set x1 = x + (150.00 + beamFxMove) * Cos(a)
                         set y1 = y + (150.00 + beamFxMove) * Sin(a)
+                       
                         call ColorEffDummy3(EffectSpawnColor("war3mapimported\\wos_ulqashar.mdx", x1, y1, a * bj_RADTODEG, 1.00, beamFxScale, 180.00 + r * 80.00, 25, 125, 255, 65),beamEffectLife,25,125,255,0.3)
                       //  call EffectSpawnColor2("war3mapimported\\wos_ulqashar.mdx", x1, y1, a * bj_RADTODEG, 1.00, beamFxScale * 0.70, 180.00 + r * 80.00, beamEffectLife, 225, 225, 225, 205)
                         set beamFxScale = beamFxScale + 0.005
@@ -1575,23 +1643,18 @@ private struct MilimT2KS
                     if r2 + 0.001 >= MilimT2_DamagePeriod then
                         set r2 = 0.00
                         call GroupClear(g3)
-
                         loop
                             set u = FirstOfGroup(g2)
                             exitwhen u == null
                             call GroupRemoveUnit(g2, u)
                             set damageCount = LoadInteger(hs, GetHandleId(g2), GetHandleId(u))
-
+    
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 if damageCount < MilimT2_DamageTicks then
                                     call dmgmag(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
 
-                                    if damageCount == 0 then
-                                        call RootUnit(c, u, MilimT2_Root)
-                                    endif
                                     call SlowUnit(c, u, MilimT2_Slow, MilimT2_SlowDuration)
-                                    call SilenceUnit(c, u, MilimT2_SilenceDuration)
 
                                     set damageCount = damageCount + 1
                                     call SaveInteger(hs, GetHandleId(g2), GetHandleId(u), damageCount)
@@ -1700,12 +1763,152 @@ private struct MilimT2KS
         call MakeSound("war3mapimported\\Hero_Milim_T2 1")
         call SetUnitAnimationByIndex(c, 7)
 
-        set e = EffectSpawnColor("war3mapImported\\Gear_mr.war3_sxxq3.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.50, 7.00, 0.00,255,1,1,255)
-        set e2 = AddSpecialEffectTarget("war3mapImported\\ly-r-sg.mdx", c, "chest")
+        set e = EffectSpawnColor("war3mapImported\\wos_mr_war3_sxxq3.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.50, 7.00, 0.00,255,1,1,255)
+        set e2 = AddSpecialEffectTarget("war3mapImported\\wos_ly-r-sg.mdx", c, "chest")
         set e4 = EffectSpawn("war3mapImported\\wos_4xpinkpillar_3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.50, 4.50, 255.00)
 
         if MUI_MilimT2 == 0 then
             call TimerStart(t_MilimT2, 0.03, true, function thistype.Loop_MilimT2)
+        endif
+    endmethod
+endstruct
+
+private struct MilimGKS
+    private static framehandle array frame1
+    private static framehandle array frame2
+    private static framehandle array frame3
+    private static framehandle array frame4
+    private static framehandle array frame5
+    private static framehandle array frame6
+
+    private static method GetMaxDamage takes unit c returns real
+        if GetHeroLevel(c) >= 35 then
+            return MilimG_DamagetoStats3
+        elseif GetHeroLevel(c) >= 25 then
+            return MilimG_DamagetoStats2
+        endif
+        return MilimG_DamagetoStats1
+    endmethod
+
+    private static method UpdateFrame takes unit c returns nothing
+        local integer pid = GetPlayerId(GetOwningPlayer(c))
+        local real maxDamage = thistype.GetMaxDamage(c)
+        local real damage = LoadReal(hs, GetHandleId(c), StringHash("milim g dmg"))
+
+        if damage > maxDamage then
+            set damage = maxDamage
+            call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), damage)
+        endif
+        if frame1[pid] != null then
+            call BlzFrameSetMinMaxValue(frame3[pid], 0.00, maxDamage)
+            call BlzFrameSetValue(frame3[pid], damage)
+            call BlzFrameSetText(frame6[pid], "|c00FFFF00" + I2S(R2I(damage)) + "/" + I2S(R2I(maxDamage)) + "|r")
+        endif
+    endmethod
+
+    public static method Start takes unit c returns nothing
+        local integer pid
+        local real tmpY = 0.0375
+        local real maxDamage
+
+        if c == null or GetHeroLevel(c) < 12 then
+            return
+        endif
+
+        set pid = GetPlayerId(GetOwningPlayer(c))
+        set maxDamage = thistype.GetMaxDamage(c)
+        if frame1[pid] == null then
+            set frame1[pid] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+            call BlzFrameSetAbsPoint(frame1[pid], FRAMEPOINT_CENTER, 0.055, 0.18 + tmpY)
+            call BlzFrameSetSize(frame1[pid], 0.135, 0.035)
+            call BlzFrameSetTexture(frame1[pid], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+            call BlzFrameSetVisible(frame1[pid], false)
+
+            set frame2[pid] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1[pid], 0, 0)
+            call BlzFrameSetAbsPoint(frame2[pid], FRAMEPOINT_CENTER, 0.07, 0.185 + tmpY)
+            call BlzFrameSetSize(frame2[pid], 0.1, 0.019)
+
+            set frame3[pid] = BlzCreateFrameByType("STATUSBAR", "", frame1[pid], "", 0)
+            call BlzFrameSetSize(frame3[pid], 0.1, 0.035)
+            call BlzFrameSetScale(frame3[pid], 0.5)
+            call BlzFrameSetModel(frame3[pid], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+            call BlzFrameSetAbsPoint(frame3[pid], FRAMEPOINT_CENTER, 0.05, 0.175 + tmpY)
+            call BlzFrameSetMinMaxValue(frame3[pid], 0.00, maxDamage+10)
+            call BlzFrameSetValue(frame3[pid], 0.00)
+
+            set frame4[pid] = BlzCreateFrameByType("BACKDROP", "SS", frame1[pid], "", 0)
+            call BlzFrameSetAbsPoint(frame4[pid], FRAMEPOINT_CENTER, 0.005, 0.18 + tmpY)
+            call BlzFrameSetSize(frame4[pid], 0.03, 0.03)
+            call BlzFrameSetTexture(frame4[pid], "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_G.blp", 0, false)
+
+            set frame5[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1[pid], "", 0)
+            call BlzFrameSetAbsPoint(frame5[pid], FRAMEPOINT_CENTER, 0.07, 0.185 + tmpY)
+            call BlzFrameSetText(frame5[pid], "|c00FFFF00Damage received:|r")
+            call BlzFrameSetScale(frame5[pid], 0.9)
+
+            set frame6[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1[pid], "", 0)
+            call BlzFrameSetAbsPoint(frame6[pid], FRAMEPOINT_CENTER, 0.07, 0.17 + tmpY)
+            call BlzFrameSetScale(frame6[pid], 0.9)
+        endif
+
+        if GetLocalPlayer() == GetOwningPlayer(c) then
+            call BlzFrameSetVisible(frame1[pid], true)
+        endif
+        call thistype.UpdateFrame(c)
+    endmethod
+
+    public static method AddDamage takes unit c, real amount returns nothing
+        local real oldDamage
+        local real newDamage
+        local real maxDamage
+
+        if c == null or amount <= 0.00 or GetHeroLevel(c) < 12 then
+            return
+        endif
+
+        set oldDamage = LoadReal(hs, GetHandleId(c), StringHash("milim g dmg"))
+        set maxDamage = thistype.GetMaxDamage(c)
+        set newDamage = oldDamage + amount
+        if newDamage > maxDamage then
+            set newDamage = maxDamage
+        endif
+        call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), newDamage)
+
+        if oldDamage < MilimG_DamagetoStats1 and newDamage >= MilimG_DamagetoStats1 then
+            if GetUnitAbilityLevel(c, MilimG_Stat_ID1) == 0 then
+                call UnitAddAbility(c, MilimG_Stat_ID1)
+                call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID1)
+            endif
+            call MakeSound("war3mapimported\\Hero_Milim_G1")
+        endif
+        if GetHeroLevel(c) >= 25 and oldDamage < MilimG_DamagetoStats2 and newDamage >= MilimG_DamagetoStats2 then
+            if GetUnitAbilityLevel(c, MilimG_Stat_ID2) == 0 then
+                call UnitAddAbility(c, MilimG_Stat_ID2)
+                call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID2)
+            endif
+            call MakeSound("war3mapimported\\Hero_Milim_G2")
+        endif
+        if GetHeroLevel(c) >= 35 and oldDamage < MilimG_DamagetoStats3 and newDamage >= MilimG_DamagetoStats3 then
+            if GetUnitAbilityLevel(c, MilimG_Stat_ID3) == 0 then
+                call UnitAddAbility(c, MilimG_Stat_ID3)
+                call UnitMakeAbilityPermanent(c, true, MilimG_Stat_ID3)
+            endif
+            call MakeSound("war3mapimported\\Hero_Milim_G3")
+        endif
+
+        call thistype.Start(c)
+    endmethod
+
+    public static method Reset takes unit c returns nothing
+        if c == null then
+            return
+        endif
+        call UnitRemoveAbility(c, MilimG_Stat_ID1)
+        call UnitRemoveAbility(c, MilimG_Stat_ID2)
+        call UnitRemoveAbility(c, MilimG_Stat_ID3)
+        call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), 0.00)
+        if GetHeroLevel(c) >= 12 then
+            call thistype.Start(c)
         endif
     endmethod
 endstruct
@@ -1730,24 +1933,7 @@ endstruct
     
      */ 
      
-    function MilimDodge takes unit c, unit td returns nothing
-        local real cd = 0
-        local real time = 0.15
-        local real push = 250
-        call EUTU2(EffectSpawn("war3mapImported\\wos_az_wsy_gather3.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 2, 90), time, 90, c)
-        call MakeSound("war3mapimported\\Hero_Milim_F")
-        if GetHeroLevel(c) >= 35 then
-            set cd = MilimF_CD35
-        elseif GetHeroLevel(c) >= 25 then
-            set cd = MilimF_CD25
-        else
-            set cd = MilimF_CD12
-        endif
-        if IsUnitPaused(c) == false then
-            call MUE(c, push, time, GAngle(c, td) + GetRandomReal( -30, 30) * bj_DEGTORAD)
-        endif
-        call FakeCD_Start(c, MilimF_ID, cd, 0, 0)
-    endfunction
+    
     function MilimQ_Start takes unit c, real x, real y returns nothing
         call MilimQKS.MilimQ_Start( c, x, y )
     endfunction
@@ -1772,7 +1958,14 @@ endfunction
     function MilimF_Start takes unit c returns nothing
     endfunction
     function MilimG_Start takes unit c returns nothing
-    //    call MilimGKS.MilimG_Start( c )
+        call MilimGKS.Start(c)
+    endfunction
+    function MilimGAddDmg takes unit c, real amount returns nothing
+    call SetMpCurrent(c,amount*0.05)
+        call MilimGKS.AddDamage(c, amount)
+    endfunction
+    function MilimGOff_Start takes unit c returns nothing
+        call MilimGKS.Reset(c)
     endfunction
    
 endlibrary

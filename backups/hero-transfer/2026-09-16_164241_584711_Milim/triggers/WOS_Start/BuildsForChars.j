@@ -376,19 +376,6 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID5_Dummy[n], FrierenT_ID)
     call UnitAddAbility(Hero_ID5_Dummy[n], FrierenF_ID)
     call UnitAddAbility(Hero_ID5_Dummy[n], FrierenG_ID)
-    // HERO TRANSFER: Milim / BuildsForChars
-    set n = 13
-    set MaxHeroes = MaxHeroes + 1
-    set Hero_ID5[n] = Milim_ID // Milim
-    set Hero_ID5_Dummy[n] = CreateUnit(Player(12), Hero_ID5[n], GetRectCenterX(gg_rct_Test), GetRectCenterY(gg_rct_Test), 0)
-    call ShowUnit(Hero_ID5_Dummy[n], false)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimQ_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimW_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimE_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimR_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimT_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimF_ID)
-    call UnitAddAbility(Hero_ID5_Dummy[n], MilimG_ID)
 //==============================
 
 endfunction
