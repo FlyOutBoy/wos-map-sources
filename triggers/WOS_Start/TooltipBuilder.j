@@ -196,8 +196,4 @@ library TooltipBuilder
         endmethod
     endstruct
 
-
-
-    
-
 endlibrary

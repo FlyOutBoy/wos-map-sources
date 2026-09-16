@@ -2,11 +2,11 @@
 // World Editor initialization comes from the original c6 war3map.j.
 // Current external files under triggers are the source of truth.
 
+// BEGIN AUTO TRIGGER IMPORTS
 //! import "..\triggers\Map_Header.j"
 //! import "..\triggers\Systems\TasBox.j"
 //! import "..\triggers\Systems\Systems2.j"
 //! import "..\triggers\Systems\Systems1.j"
-//! import "..\triggers\WOS_Start\ShowCD.j"
 //! import "..\triggers\WOS_Start\TooltipBuilder.j"
 //! import "..\triggers\WOS_Start\UniversalTooltips.j"
 //! import "..\triggers\WOS_Start\Save2.j"
@@ -94,15 +94,16 @@
 //! import "..\triggers\Heroes\AlterSaber.j"
 //! import "..\triggers\Heroes\Kyoraku.j"
 //! import "..\triggers\Heroes\Tomioka.j"
-//! import "..\triggers\Heroes\Erza\ErzaT.j"
-//! import "..\triggers\Heroes\Erza\ErzaQ.j"
-//! import "..\triggers\Heroes\Erza\ErzaW.j"
-//! import "..\triggers\Heroes\Erza\ErzaE.j"
-//! import "..\triggers\Heroes\Erza\ErzaR.j"
-//! import "..\triggers\Heroes\Erza\ErzaG2_Nakagami.j"
-//! import "..\triggers\Heroes\Erza\ErzaG2_Fairy.j"
-//! import "..\triggers\Heroes\Erza\ErzaBase.j"
+//! import "..\triggers\Erza\ErzaQ.j"
+//! import "..\triggers\Erza\ErzaW.j"
+//! import "..\triggers\Erza\ErzaE.j"
+//! import "..\triggers\Erza\ErzaR.j"
+//! import "..\triggers\Erza\ErzaT.j"
+//! import "..\triggers\Erza\ErzaG2_Nakagami.j"
+//! import "..\triggers\Erza\ErzaG2_Fairy.j"
+//! import "..\triggers\Erza\ErzaBase.j"
 //! import "..\triggers\Heroes\Milim.j"
+// END AUTO TRIGGER IMPORTS
 
 globals
     // World Editor generated handles from c6

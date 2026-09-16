@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "a75dccea77dea0c934ba7a3e37bd39ba61d59d820d95170afd9ce642f06f455f",
+  "source_sha256": "d9ce37016e6bfb9442ac81bcecfda0ec716e52f59348ed0d6553c687d614513f",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -2452,10 +2452,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "Raiden summon a lightning strike to point that stun enemy, apply lightning debuff.\n",
-            "_original_value": "Raiden summon a lightning strike to point that stun enemy, apply lightning debuff.\n",
+            "value": "TRIGSTR_294",
+            "_original_value": "TRIGSTR_294",
             "_encoding": "utf-8",
-            "_raw_base64": "UmFpZGVuIHN1bW1vbiBhIGxpZ2h0bmluZyBzdHJpa2UgdG8gcG9pbnQgdGhhdCBzdHVuIGVuZW15LCBhcHBseSBsaWdodG5pbmcgZGVidWZmLgo="
+            "_raw_base64": "VFJJR1NUUl8yOTQ=",
+            "resolved_value": "Raiden summon a lightning strike to point that stun enemy, apply lightning debuff.\n",
+            "_original_resolved_value": "Raiden summon a lightning strike to point that stun enemy, apply lightning debuff.\n"
           },
           "sanity_check": {
             "text": "",
@@ -2560,10 +2562,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "All-Preserver [|cffffcc00Level 1|r]",
-            "_original_value": "All-Preserver [|cffffcc00Level 1|r]",
+            "value": "TRIGSTR_1537",
+            "_original_value": "TRIGSTR_1537",
             "_encoding": "utf-8",
-            "_raw_base64": "QWxsLVByZXNlcnZlciBbfGNmZmZmY2MwMExldmVsIDF8cl0="
+            "_raw_base64": "VFJJR1NUUl8xNTM3",
+            "resolved_value": "All-Preserver [|cffffcc00Level 1|r]",
+            "_original_resolved_value": "All-Preserver [|cffffcc00Level 1|r]"
           },
           "sanity_check": {
             "text": "",
