@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "d0eb33193506a8950fc64b40fc0cfd39aa7f0e5b2bfb0502f681fb5f5a16d2d5",
+  "source_sha256": "13647f015f51c43d5f922fd3c8bdbe369b1e4b27a762e443826f56dfff1e40d2",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -273234,12 +273234,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_4301",
-            "_original_value": "TRIGSTR_4301",
+            "value": "TRIGSTR_8109",
+            "_original_value": "TRIGSTR_8109",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzAx",
-            "resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
-            "_original_resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n"
+            "_raw_base64": "VFJJR1NUUl84MTA5",
+            "resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n",
+            "_original_resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n"
           },
           "sanity_check": {
             "text": "",
@@ -273904,12 +273904,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_6828",
-            "_original_value": "TRIGSTR_6828",
+            "value": "TRIGSTR_8115",
+            "_original_value": "TRIGSTR_8115",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82ODI4",
-            "resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
-            "_original_resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n"
+            "_raw_base64": "VFJJR1NUUl84MTE1",
+            "resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n",
+            "_original_resolved_value": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n"
           },
           "sanity_check": {
             "text": "",
@@ -274574,12 +274574,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_7361",
-            "_original_value": "TRIGSTR_7361",
+            "value": "TRIGSTR_8116",
+            "_original_value": "TRIGSTR_8116",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MzYx",
-            "resolved_value": "Milim pull enemies toward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
-            "_original_resolved_value": "Milim pull enemies toward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n"
+            "_raw_base64": "VFJJR1NUUl84MTE2",
+            "resolved_value": "Milim pull enemies toward.\n",
+            "_original_resolved_value": "Milim pull enemies toward.\n"
           },
           "sanity_check": {
             "text": "",
@@ -275227,12 +275227,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_7742",
-            "_original_value": "TRIGSTR_7742",
+            "value": "TRIGSTR_8126",
+            "_original_value": "TRIGSTR_8126",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzQy",
-            "resolved_value": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
-            "_original_resolved_value": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n"
+            "_raw_base64": "VFJJR1NUUl84MTI2",
+            "resolved_value": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n",
+            "_original_resolved_value": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n"
           },
           "sanity_check": {
             "text": "",
@@ -275880,12 +275880,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_7862",
-            "_original_value": "TRIGSTR_7862",
+            "value": "TRIGSTR_8127",
+            "_original_value": "TRIGSTR_8127",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODYy",
-            "resolved_value": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n|c00FFFC01[True Form]|r Additional damage 1* agi.",
-            "_original_resolved_value": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n|c00FFFC01[True Form]|r Additional damage 1* agi."
+            "_raw_base64": "VFJJR1NUUl84MTI3",
+            "resolved_value": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n",
+            "_original_resolved_value": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n"
           },
           "sanity_check": {
             "text": "",
@@ -277566,181 +277566,6 @@
         "hex": "41677962"
       },
       "new_id": {
-        "text": "A0HN",
-        "hex": "4130484E"
-      },
-      "v3_unknown": [
-        0
-      ],
-      "modifications": [
-        {
-          "field": {
-            "text": "aart",
-            "hex": "61617274"
-          },
-          "field_name": "Icon / Иконка",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_F.blp",
-            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_F.blp",
-            "_encoding": "utf-8",
-            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX0YuYmxw"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "anam",
-            "hex": "616E616D"
-          },
-          "field_name": "Name / Имя",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8077",
-            "_original_value": "TRIGSTR_8077",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MDc3",
-            "resolved_value": "Another Anime Milim F",
-            "_original_resolved_value": "Another Anime Milim F"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "atp1",
-            "hex": "61747031"
-          },
-          "field_name": "Tooltip / Подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8078",
-            "_original_value": "TRIGSTR_8078",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MDc4",
-            "resolved_value": "|cffffcc00Drago Eye|r",
-            "_original_resolved_value": "|cffffcc00Drago Eye|r"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8087",
-            "_original_value": "TRIGSTR_8087",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MDg3",
-            "resolved_value": "Milim can see invisible units around in 1400 aoe",
-            "_original_resolved_value": "Milim can see invisible units around in 1400 aoe"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "abpy",
-            "hex": "61627079"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arpx",
-            "hex": "61727078"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arpy",
-            "hex": "61727079"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "auu1",
-            "hex": "61757531"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_9413",
-            "_original_value": "TRIGSTR_9413",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85NDEz",
-            "resolved_value": "GDE OPISANIE",
-            "_original_resolved_value": "GDE OPISANIE"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        }
-      ],
-      "display_name": "Another Anime Milim F"
-    },
-    {
-      "old_id": {
-        "text": "Agyb",
-        "hex": "41677962"
-      },
-      "new_id": {
         "text": "A0HO",
         "hex": "4130484F"
       },
@@ -277895,10 +277720,10 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9414",
-            "_original_value": "TRIGSTR_9414",
+            "value": "TRIGSTR_9413",
+            "_original_value": "TRIGSTR_9413",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85NDE0",
+            "_raw_base64": "VFJJR1NUUl85NDEz",
             "resolved_value": "GDE OPISANIE",
             "_original_resolved_value": "GDE OPISANIE"
           },
@@ -278130,12 +277955,12 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8109",
-            "_original_value": "TRIGSTR_8109",
+            "value": "TRIGSTR_8125",
+            "_original_value": "TRIGSTR_8125",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MTA5",
-            "resolved_value": "Hero Milim T Hela",
-            "_original_resolved_value": "Hero Milim T Hela"
+            "_raw_base64": "VFJJR1NUUl84MTI1",
+            "resolved_value": "Hero Milim T Heal",
+            "_original_resolved_value": "Hero Milim T Heal"
           },
           "sanity_check": {
             "text": "",
@@ -278143,7 +277968,7 @@
           }
         }
       ],
-      "display_name": "Hero Milim T Hela"
+      "display_name": "Hero Milim T Heal"
     },
     {
       "old_id": {
@@ -278151,8 +277976,8 @@
         "hex": "41677976"
       },
       "new_id": {
-        "text": "A0HT",
-        "hex": "41304854"
+        "text": "A0HN",
+        "hex": "4130484E"
       },
       "v3_unknown": [
         0
@@ -278168,12 +277993,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8115",
-            "_original_value": "TRIGSTR_8115",
+            "value": "TRIGSTR_8078",
+            "_original_value": "TRIGSTR_8078",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MTE1",
-            "resolved_value": "Milim TRUE SIGHT",
-            "_original_resolved_value": "Milim TRUE SIGHT"
+            "_raw_base64": "VFJJR1NUUl84MDc4",
+            "resolved_value": "|cffffcc00Drago Eye|r",
+            "_original_resolved_value": "|cffffcc00Drago Eye|r"
           },
           "sanity_check": {
             "text": "",
@@ -278190,12 +278015,122 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8116",
-            "_original_value": "TRIGSTR_8116",
+            "value": "TRIGSTR_8077",
+            "_original_value": "TRIGSTR_8077",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MTE2",
-            "resolved_value": "Milim TRUE SIGHT",
-            "_original_resolved_value": "Milim TRUE SIGHT"
+            "_raw_base64": "VFJJR1NUUl84MDc3",
+            "resolved_value": "Another Anime Milim F",
+            "_original_resolved_value": "Another Anime Milim F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01pbGltX0YuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8087",
+            "_original_value": "TRIGSTR_8087",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MDg3",
+            "resolved_value": "Milim can see invisible units around in 1400 aoe",
+            "_original_resolved_value": "Milim can see invisible units around in 1400 aoe"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpx",
+            "hex": "61627078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpy",
+            "hex": "61727079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
           },
           "sanity_check": {
             "text": "",
@@ -278203,7 +278138,7 @@
           }
         }
       ],
-      "display_name": "Milim TRUE SIGHT"
+      "display_name": "Another Anime Milim F"
     }
   ]
 }

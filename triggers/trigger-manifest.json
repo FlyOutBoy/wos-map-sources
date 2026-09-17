@@ -380,8 +380,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 60748,
-      "sha256": "a9452df5672d896b7d04968b53f5e0dbac4ed5c46b4152e2ab11f2b8aa8900c1",
+      "source_bytes": 60747,
+      "sha256": "5d1c59e040418128f5e7c6d39a0a75d64e364d34e13cc1f20ab8a9082eeda86f",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -498,8 +498,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 111163,
-      "sha256": "489a7b705ef4b8ad0402e0c0116db20cd904619f8929978f7a35b1e3dc2afc40",
+      "source_bytes": 111162,
+      "sha256": "79499b23b826581298012135e80400488e308834b9d4694e5f179845e91df534",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -549,7 +549,7 @@
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
       "source_bytes": 18128,
-      "sha256": "abe74c74d43c4d9b9ff7bd90f2c69ef2c78533a90dc2710b6f3a2194a5b227af",
+      "sha256": "5c5f8f29974cfbc0b728d769dcd9605e6a8e45321fb16fe8351e9d95fe1dad2d",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -784,8 +784,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastCheck.j",
-      "source_bytes": 38509,
-      "sha256": "51715a29558a6db5c56c1bcbbc3d2723f71fa35fd9f904ef9645a0bd2a684d0e",
+      "source_bytes": 38546,
+      "sha256": "d9d6abb86714fb567006b425d77711f138f7bcabfb5d50eba52f6bd849a43970",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -869,8 +869,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 137162,
-      "sha256": "c3e099c2a33d814eb5d3eb966e166918e5697344eeea774882d9a033d9857200",
+      "source_bytes": 137163,
+      "sha256": "1ce2967c53af1bf999931acb9b0ae5853df31c7f304ffd609bf8f2674577f2a1",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -3480,8 +3480,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Milim.j",
-      "source_bytes": 95526,
-      "sha256": "e5c46b761268e2ef9f78d1cedf9ea40b0d6681c020dc3404ecc046c4c86bd4a8",
+      "source_bytes": 96750,
+      "sha256": "c98b1e2ffe1c9203fc388f15a8ed4262a3a9566cb5f43709e764e040bcbb3be5",
       "declarations": {
         "libraries": [
           "MilimSpells"

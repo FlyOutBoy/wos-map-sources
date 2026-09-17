@@ -13,7 +13,7 @@ if GetHeroLevel(c)<35 then
 set b = false
 endif
 endif
-if id == TomiokaW_ID or id == AlterSaberQ_ID or id == Erza1W_ID or id == Erza1Q_ID or id == Erza2E_ID or id == Erza2R_ID or id == KyorakuQ_ID  or id == InoriF_ID then 
+if id == TomiokaW_ID or id == AlterSaberQ_ID or id == Erza1W_ID or id == Erza1Q_ID or id == Erza2E_ID or id == Erza2R_ID or id == KyorakuQ_ID or id == InoriF_ID or id == MilimQ_ID or id == MilimW_ID then 
  set b = false
 endif
 if id == TsunaQ_ID or id == TsunaQ2_ID or id == TakeshiQ_ID or id == TakeshiE_ID or id == TakeshiGQ_ID  or id == DarkShikiQ_ID or id == KiritoQ_ID or id == KiritoF_ID or id == KiritoR2_ID  then 

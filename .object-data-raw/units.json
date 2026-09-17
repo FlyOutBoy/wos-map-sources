@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "61fd72d28614133606bd0b68a962f9f6c937790aba039990a9fcbce8396ea1d4",
+  "source_sha256": "470a8e898986a309faf41122dc0e675f3f2ccc76a584663caaa8cb0f9e61ae2e",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -43799,24 +43799,6 @@
             "text": "",
             "hex": "00000000"
           }
-        },
-        {
-          "field": {
-            "text": "uabi",
-            "hex": "75616269"
-          },
-          "field_name": "Normal abilities / Обычные способности",
-          "type": "string",
-          "data": {
-            "value": "A0HT,AInv",
-            "_original_value": "A0HT,AInv",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTBIVCxBSW52"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
         }
       ],
       "display_name": "Milim Nava"
@@ -44374,24 +44356,6 @@
             "value": 2.0,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "uabi",
-            "hex": "75616269"
-          },
-          "field_name": "Normal abilities / Обычные способности",
-          "type": "string",
-          "data": {
-            "value": "A0HT,AInv",
-            "_original_value": "A0HT,AInv",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTBIVCxBSW52"
           },
           "sanity_check": {
             "text": "",

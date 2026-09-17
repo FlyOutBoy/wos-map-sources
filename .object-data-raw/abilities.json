@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "2bcf3dc7b1d31e1aacbc91d691955214a1d33e249b567f89b543249ced91abf1",
+  "source_sha256": "0413cd070cbbe813e37f4e63a7ace7d7e56246f18d0795fbe81482418eb0990b",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -433078,79 +433078,6 @@
         "hex": "41677962"
       },
       "new_id": {
-        "text": "A0HN",
-        "hex": "4130484E"
-      },
-      "v3_unknown": [
-        0
-      ],
-      "modifications": [
-        {
-          "field": {
-            "text": "areq",
-            "hex": "61726571"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "",
-            "_original_value": "",
-            "_encoding": "utf-8",
-            "_raw_base64": ""
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aher",
-            "hex": "61686572"
-          },
-          "field_name": "Hero ability / Способность героя",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arac",
-            "hex": "61726163"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "orc",
-            "_original_value": "orc",
-            "_encoding": "utf-8",
-            "_raw_base64": "b3Jj"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        }
-      ],
-      "display_name": "Another Anime Milim F"
-    },
-    {
-      "old_id": {
-        "text": "Agyb",
-        "hex": "41677962"
-      },
-      "new_id": {
         "text": "A0HO",
         "hex": "4130484F"
       },
@@ -433442,7 +433369,7 @@
           "level": 1,
           "data_pointer": 1,
           "data": {
-            "value": 30
+            "value": 20
           },
           "sanity_check": {
             "text": "",
@@ -433518,7 +433445,7 @@
           }
         }
       ],
-      "display_name": "Hero Milim T Hela"
+      "display_name": "Hero Milim T Heal"
     },
     {
       "old_id": {
@@ -433526,8 +433453,8 @@
         "hex": "41677976"
       },
       "new_id": {
-        "text": "A0HT",
-        "hex": "41304854"
+        "text": "A0HN",
+        "hex": "4130484E"
       },
       "v3_unknown": [
         0
@@ -433551,9 +433478,46 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "aher",
+            "hex": "61686572"
+          },
+          "field_name": "Hero ability / Способность героя",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
-      "display_name": "Milim TRUE SIGHT"
+      "display_name": "Another Anime Milim F"
     }
   ]
 }

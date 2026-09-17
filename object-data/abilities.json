@@ -26839,7 +26839,7 @@
     "tooltip level 3": "Milim Punch [|cffffcc00Level 3|r]",
     "tooltip level 4": "Milim Punch [|cffffcc00Level 4|r]",
     "tooltip level 5": "Milim Punch [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
+    "extended_tooltip level 1": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n",
     "extended_tooltip level 2": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 3 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 3": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 4 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 4": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 5 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
@@ -26906,7 +26906,7 @@
     "tooltip level 3": "Drago Dive [|cffffcc00Level 3|r]",
     "tooltip level 4": "Drago Dive [|cffffcc00Level 4|r]",
     "tooltip level 5": "Drago Dive [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
+    "extended_tooltip level 1": "Milim dashes forward and punch first enemy and deal damage around of it and push forward.\n",
     "extended_tooltip level 2": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 3 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 3": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 4 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 4": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 5 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
@@ -26972,7 +26972,7 @@
     "tooltip level 3": "Drago Fear [|cffffcc00Level 3|r]",
     "tooltip level 4": "Drago Fear [|cffffcc00Level 4|r]",
     "tooltip level 5": "Drago Fear [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Milim pull enemies toward.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
+    "extended_tooltip level 1": "Milim pull enemies toward.\n",
     "extended_tooltip level 2": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 3 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 3": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 4 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
     "extended_tooltip level 4": "Saber moves forward and slice first catched enemy or at the end of dash.\n|c00FFFC01[Grail Ascension R]|r now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy. Additional damage 2* atk.\n\n|cffff0000Damage: 5 *Agi + 175|r\n|cffffff00Cooldown: 20 |r\n",
@@ -27030,7 +27030,7 @@
     "tooltip level 3": "Drago Slash [|cffffcc00Level 3|r]",
     "tooltip level 4": "Drago Slash [|cffffcc00Level 4|r]",
     "tooltip level 5": "Drago Slash [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n|c00FFFC01[True Form]|r Additional damage 1* agi.\n",
+    "extended_tooltip level 1": "Milim sends forth a slash, dealing damage in a line, dealing damage to enemies hit.\n",
     "extended_tooltip level 2": "Creates 4 copies running in 4 directions. If it hits enemy, it deals dmg and marks them for 5 seconds to grant vision. RMB Kirito  save position and after E2 usage rapidly dash to nearest copy location, dealing dmg around.Max dash range 3000\n\n|cffff0000Damage(Illusion/Dash): 3.5 *Agi |r\n|cffffff00Cooldown: 25|r\n",
     "extended_tooltip level 3": "Creates 4 copies running in 4 directions. If it hits enemy, it deals dmg and marks them for 5 seconds to grant vision. RMB Kirito  save position and after E2 usage rapidly dash to nearest copy location, dealing dmg around.Max dash range 3000\n\n|cffff0000Damage(Illusion/Dash): 4 *Agi |r\n|cffffff00Cooldown: 24|r\n",
     "extended_tooltip level 4": "Creates 4 copies running in 4 directions. If it hits enemy, it deals dmg and marks them for 5 seconds to grant vision. RMB Kirito  save position and after E2 usage rapidly dash to nearest copy location, dealing dmg around.Max dash range 3000\n\n|cffff0000Damage(Illusion/Dash): 4.5 *Agi |r\n|cffffff00Cooldown: 23|r\n",
@@ -27098,7 +27098,7 @@
     "tooltip level 3": "Drago Buster [|cffffcc00Level 3|r]",
     "tooltip level 4": "Drago Buster [|cffffcc00Level 4|r]",
     "tooltip level 5": "Drago Buster [|cffffcc00Level 5|r]",
-    "extended_tooltip level 1": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n|c00FFFC01[True Form]|r Additional damage 1* agi.",
+    "extended_tooltip level 1": "Milim sends forth a burst of stars towards the target area, exploding and dealing damage in a horizontal line and slowing enemies hit. If the spell encounters any enemies before reaching the end point, it pulls the enemies towards the end point\n",
     "extended_tooltip level 2": "Mahoraga rapidly regenerates health over time.\n[|c00FFFC0135 lvl improvement|r]: remove debuffs for duration time.\n\n|cffffff00HP restore: 6 *Agi |r\n|cffffff00Duration: 3 |r\n|cffffff00Cooldown: 29|r\n",
     "extended_tooltip level 3": "Mahoraga rapidly regenerates health over time.\n[|c00FFFC0135 lvl improvement|r]: remove debuffs for duration time.\n\n|cffffff00HP restore: 7 *Agi |r\n|cffffff00Duration: 3 |r\n|cffffff00Cooldown: 28 |r\n",
     "extended_tooltip level 4": "Mahoraga rapidly regenerates health over time.\n[|c00FFFC0135 lvl improvement|r]: remove debuffs for duration time.\n\n|cffffff00HP restore: 8 *Agi |r\n|cffffff00Duration: 3 |r\n|cffffff00Cooldown: 27 |r\n",
@@ -27274,7 +27274,8 @@
   },
   "A0HN": {
     "name": "Another Anime Milim F",
-    "base_id": "Agyb",
+    "base_id": "Agyv",
+    "cast_range level 1": 1400.0,
     "tooltip level 1": "|cffffcc00Drago Eye|r",
     "extended_tooltip level 1": "Milim can see invisible units around in 1400 aoe",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_F.blp",
@@ -27301,14 +27302,8 @@
     "base_id": "AIx1"
   },
   "A0HS": {
-    "name": "Hero Milim T Hela",
+    "name": "Hero Milim T Heal",
     "base_id": "Arel"
-  },
-  "A0HT": {
-    "name": "Milim TRUE SIGHT",
-    "base_id": "Agyv",
-    "cast_range level 1": 1400.0,
-    "tooltip level 1": "Milim TRUE SIGHT"
   },
   "A1OA": {
     "name": "",

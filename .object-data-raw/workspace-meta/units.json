@@ -49279,19 +49279,6 @@
           "variation": null,
           "data_pointer": null
         },
-        "normal_abilities": {
-          "source": {
-            "file": "war3map.w3u",
-            "group": "custom_objects",
-            "object_index": 93,
-            "modification_index": 34
-          },
-          "field_id": "uabi",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
         "attack_1_cooldown": {
           "source": {
             "file": "war3map.w3u",
@@ -49922,19 +49909,6 @@
             "modification_index": 0
           },
           "field_id": "umdl",
-          "type": "string",
-          "level": null,
-          "variation": null,
-          "data_pointer": null
-        },
-        "normal_abilities": {
-          "source": {
-            "file": "war3map.w3u",
-            "group": "custom_objects",
-            "object_index": 94,
-            "modification_index": 34
-          },
-          "field_id": "uabi",
           "type": "string",
           "level": null,
           "variation": null,

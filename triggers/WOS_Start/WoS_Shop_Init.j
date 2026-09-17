@@ -2527,6 +2527,6 @@ endfunction
 
 function InitTrig_WoS_Shop_Init takes nothing returns nothing
     set gg_trg_WoS_Shop_Init = CreateTrigger()
-    call TriggerRegisterTimerEvent(gg_trg_WoS_Shop_Init, 10, false)
+    call TriggerRegisterTimerEvent(gg_trg_WoS_Shop_Init, 6, false)
     call TriggerAddAction( gg_trg_WoS_Shop_Init, function CreateItemUI )
 endfunction

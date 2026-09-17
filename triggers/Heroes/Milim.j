@@ -57,9 +57,10 @@ library MilimSpells uses GearSystems
 //---------------T ability-----------------------------------------------------
         integer MilimT_ID = 'A0HL' //
         real MilimT_Duration = 20
-        integer MilimT_MaxHpBonus = 1500
-        real MilimT_HpRegenAbi_Amount = 30
+        integer MilimT_MaxHpBonus = 1000
+        real MilimT_HpRegenAbi_Amount = 20
         integer MilimT_HpRegenAbi = 'A0HS'
+        real MilimT_DmgAdd = 1.00 // per abi dmg from morph
 //---------------T2 ability-----------------------------------------------------
         integer MilimT2_ID = 'A0HM' //
         real MilimT2_DamageAgiBase = 10 // overall
@@ -257,6 +258,9 @@ library MilimSpells uses GearSystems
             set aoe = MilimQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( MilimQ_DamageAgiBase + ( MilimQ_DamageAgiStep * ( GetUnitAbilityLevel( c , MilimQ_ID) - 1 ) ) )
             set dmg = dmg + MilimQ_Damage2StaticBase + ( MilimQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , MilimQ_ID) - 1 ) )
+            if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+                set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
+            endif
             set rmax = 2.1
             set e = AddSpecialEffectTarget("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdx", c, "hand right")
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_file00001662.mdl", c, "hand right")
@@ -344,8 +348,7 @@ private struct MilimWKS
                     set currentY = startY + (y - startY) * progress
                     set f = Parabola(JUMP_HEIGHT, JUMP_DURATION, r)
 
-                    call SetUnitX(c, currentX)
-                    call SetUnitY(c, currentY)
+                    call PosUnit(c, currentX, currentY)
                     call SetFly(c, f)
                     if r == JUMP_DURATION/2 then 
                     call DestroyEffect(e)
@@ -360,14 +363,16 @@ private struct MilimWKS
                     if progress <= 0.50 then
                      //   call BlzSetSpecialEffectPitch(e, (-180.00) * bj_DEGTORAD)
                        // call BJDebugMsg("1")
-                        call BlzSetSpecialEffectPosition(e, currentX, currentY, f + EFFECT_Z_OFFSET)
+                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), f + EFFECT_Z_OFFSET)
                     else
                        // call BJDebugMsg("2")
-                        call BlzSetSpecialEffectPosition(e, currentX, currentY, f - EFFECT_Z_OFFSET)
+                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), f - EFFECT_Z_OFFSET)
                     endif
 
                     if r >= JUMP_DURATION then
                         // Ãàðàíòèðóåì òî÷íîå ïðèçåìëåíèå â òî÷êó íàæàòèÿ.
+                        set x = GetUnitX(c)
+                        set y = GetUnitY(c)
                         call PosUnit(c, x, y)
                         call SetFly(c, 0.00)
                      //   call BlzSetSpecialEffectPitch(e, 0.00)
@@ -469,7 +474,9 @@ private struct MilimWKS
         set aoe = MilimW_DamageAoe
         set dmg = GetHeroAgi(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
         set dmg = dmg + MilimW2_Damage2StaticBase + (MilimW2_Damage2StaticStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1))
-
+        if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+           set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
+        endif
         call StartSpellUnit2(c)
         set g = CreateGroup()
         // Ôèêñèðóåì óãîë ñïîñîáíîñòè îò êàñòåðà ê òî÷êå íàæàòèÿ.
@@ -529,17 +536,17 @@ endstruct
                     call BlzSetSpecialEffectPosition(e,x,y,0)
                     call BlzSetSpecialEffectPosition(e2,x,y,0)
                     call BlzSetSpecialEffectPosition(e3,x,y,0)
-                    if r == 0.6 then 
+                    if r == 0.45 then 
                     set e = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
                 set e2 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
                 set e3 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
                 call MakeSound("war3mapimported\\Hero_Milim_W2 2")
-                elseif r == 0.75 then
+                elseif r == 0.5 then
                 call EffectSpawn2("war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 9, 70, 2)
                 call EffectSpawn2("war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 9, 70, 2)
                 call EffectSpawn2("war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 9, 70, 2)
                     endif
-                    if r> 0.66 then 
+                    if r>= 0.5 then 
                     if r2 >= 0.21 then
                         set r2 = 0.05
                         call DecorRemove(c, x, y, aoe + 200, 35)
@@ -628,6 +635,9 @@ endstruct
                 set dmg = dmg / 4
                 call SetUnitTimeScale(c, 0.85)
                 call SetUnitAnimationByIndex(c, 9)
+                if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+                    set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
+                endif
                 call MakeSound("war3mapimported\\Hero_Milim_W2 1")
                 //call MakeSound("war3mapimported\\Hero_Barragan_R2")
                 call StartSpellUnit2(c)
@@ -695,7 +705,7 @@ endstruct
                         call MakeSound("war3mapimported\\Hero_Milim_E2")
                         //call StopSpellUnit2(c)
                         set r5 = 300
-                        set r4 = 2100+r5
+                        set r4 = r4+r5
                         set r9 = r4-r5
                         set check = 0
                         set move = r9/20
@@ -724,7 +734,7 @@ endstruct
                         call BlzSetSpecialEffectPitch(e,r9*bj_DEGTORAD)
                         set scale = scale + r7
                         call BlzSetSpecialEffectScale(e, scale)
-                        call MoveEff(e, r8+(check*(3*0.75)), a)
+                        call MoveEff2(e, r8+(check*(3*0.75)), a)
                         if check  < 9 then 
                         set fly = fly - (fly2+check*5)
                         else
@@ -792,6 +802,7 @@ endstruct
         endmethod
         public static method MilimE_Start takes unit NewC, real NewX, real NewY returns nothing
             local thistype this = thistype.create( )
+            local real mm = 0
             set MUI_MilimE = MUI_MilimE + 1
             set m_MilimE[ MUI_MilimE] = this
             set c = NewC
@@ -803,19 +814,29 @@ endstruct
             set r2 = 0
             set move = 80
             set r5 = 0
-            
+            set a = GAngle2( c , x , y ) // Angle Between points
             set r4 = MilimE_RangeBase + (MilimE_RangeStep*(GetUnitAbilityLevel(c,MilimE_ID)-1))
+            
             call StartSpellUnit2(c)
             call BlinkEff(c)
+            set mm = SR3(c,x,y)
+            if mm < 700 then 
+                call PosUnit(c,x1-(700-mm)*Cos(a),y1-(700-mm)*Sin(a))
+            endif
+            set x1 = GetUnitX(c)
+            set y1 = GetUnitY(c)
             call SetFly(c,700)
             set scale = 0.5
             set r5 = 600
             set g = CreateGroup()
             set g2 = CreateGroup()
             set u = null
-            set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = MilimE_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( MilimE_DamageAgiBase + ( MilimE_DamageAgiStep * ( GetUnitAbilityLevel( c , MilimE_ID) - 1 ) ) )
+            if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+                set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)
+            endif
+            
             set rmax = 1.11
             call SetUnitAnimationByIndex(c,7)
             call SetUnitTimeScale(c, 0.95)
@@ -956,16 +977,16 @@ private struct MilimRProjectileKS
                     set currentY = targetY
 
                     // ÇÀÒÛ×ÊÀ: ýôôåêò â òî÷êå ïðèçåìëåíèÿ ñíàðÿäà.
-                    set e3 = EffectSpawn("war3mapImported\\wos_file00000417.mdl", targetX, targetY, GetRandomReal(0, 359), 1.00, GetRandomReal(1.8,3.25), GetRandomReal(125,400))
+                    set e3 = EffectSpawn("war3mapImported\\wos_file00000417.mdl", targetX, targetY, GetRandomReal(0, 359), 2.25, GetRandomReal(1.8,3.25), GetRandomReal(125,400))
                     set check = 1
                     set r = 0.00
                 endif
             else
                 set r = r + 0.03
-                if r == 0.15 and IntegerCd(c,"cd exp",2) then 
+                if r == 0.06 and IntegerCd(c,"cd exp",2) then 
                 call MakeSound("war3mapimported\\Hero_Milim_R 4")
                 endif
-                if r >= 0.30 then
+                if r >= 0.15 then
                     call DestroyEffect(e3)
                     set e3 = null
                     set x = targetX
@@ -1071,8 +1092,8 @@ endstruct
 private struct MilimRKS
     private static constant integer MISSILE_COUNT = 12
     private static constant real CAST_DELAY = 1.50
-    private static constant real MISSILE_RELEASE_WINDOW = 0.75
-    private static constant real MISSILE_MIN_FLIGHT_TIME = 0.15
+    private static constant real MISSILE_RELEASE_WINDOW = 0.5
+    private static constant real MISSILE_MIN_FLIGHT_TIME = 0.12
     private static constant real RECT_WIDTH = 1200.00
     private static constant real RECT_DEPTH = 650.00
     private static constant real ARC_MIN = 220.00
@@ -1214,7 +1235,9 @@ private struct MilimRKS
 
         // Ëþáîé þíèò ïîëó÷àåò ýòîò ïîëíûé óðîí òîëüêî îò ïåðâîãî ïîïàâøåãî ñíàðÿäà.
         set dmg = GetHeroAgi(c, true) * (MilimR_DamageAgiBase + MilimR_DamageAgiStep * (GetUnitAbilityLevel(c, MilimR_ID) - 1))
-
+        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+            set dmg = dmg + MilimT_DmgAdd * GetHeroAgi(c, true) 
+        endif
         set g = CreateGroup()
         set g2 = CreateGroup()
         call SaveInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left"), 0)

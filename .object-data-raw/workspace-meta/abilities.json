@@ -328368,6 +328368,82 @@
       }
     },
     "A0HN": {
+      "base_id": "Agyv",
+      "name_source": {
+        "file": "war3mapSkin.w3a",
+        "group": "custom_objects",
+        "object_index": 646,
+        "modification_index": 1
+      },
+      "fields": {
+        "cast_range level 1": {
+          "source": {
+            "file": "war3map.w3a",
+            "group": "custom_objects",
+            "object_index": 646,
+            "modification_index": 0
+          },
+          "field_id": "aran",
+          "type": "unreal",
+          "level": 1,
+          "variation": null,
+          "data_pointer": 0
+        },
+        "tooltip level 1": {
+          "source": {
+            "file": "war3mapSkin.w3a",
+            "group": "custom_objects",
+            "object_index": 646,
+            "modification_index": 0
+          },
+          "field_id": "atp1",
+          "type": "string",
+          "level": 1,
+          "variation": null,
+          "data_pointer": 0
+        },
+        "extended_tooltip level 1": {
+          "source": {
+            "file": "war3mapSkin.w3a",
+            "group": "custom_objects",
+            "object_index": 646,
+            "modification_index": 3
+          },
+          "field_id": "aub1",
+          "type": "string",
+          "level": 1,
+          "variation": null,
+          "data_pointer": 0
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3a",
+            "group": "custom_objects",
+            "object_index": 646,
+            "modification_index": 2
+          },
+          "field_id": "aart",
+          "type": "string",
+          "level": 0,
+          "variation": null,
+          "data_pointer": 0
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3a",
+            "group": "custom_objects",
+            "object_index": 646,
+            "modification_index": 2
+          },
+          "field_id": "arac",
+          "type": "string",
+          "level": 0,
+          "variation": null,
+          "data_pointer": 0
+        }
+      }
+    },
+    "A0HO": {
       "base_id": "Agyb",
       "name_source": {
         "file": "war3mapSkin.w3a",
@@ -328430,75 +328506,12 @@
         }
       }
     },
-    "A0HO": {
-      "base_id": "Agyb",
-      "name_source": {
-        "file": "war3mapSkin.w3a",
-        "group": "custom_objects",
-        "object_index": 642,
-        "modification_index": 1
-      },
-      "fields": {
-        "tooltip level 1": {
-          "source": {
-            "file": "war3mapSkin.w3a",
-            "group": "custom_objects",
-            "object_index": 642,
-            "modification_index": 2
-          },
-          "field_id": "atp1",
-          "type": "string",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        },
-        "extended_tooltip level 1": {
-          "source": {
-            "file": "war3mapSkin.w3a",
-            "group": "custom_objects",
-            "object_index": 642,
-            "modification_index": 3
-          },
-          "field_id": "aub1",
-          "type": "string",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        },
-        "icon": {
-          "source": {
-            "file": "war3mapSkin.w3a",
-            "group": "custom_objects",
-            "object_index": 642,
-            "modification_index": 0
-          },
-          "field_id": "aart",
-          "type": "string",
-          "level": 0,
-          "variation": null,
-          "data_pointer": 0
-        },
-        "race": {
-          "source": {
-            "file": "war3map.w3a",
-            "group": "custom_objects",
-            "object_index": 642,
-            "modification_index": 2
-          },
-          "field_id": "arac",
-          "type": "string",
-          "level": 0,
-          "variation": null,
-          "data_pointer": 0
-        }
-      }
-    },
     "A0HP": {
       "base_id": "AIx1",
       "name_source": {
         "file": "war3mapSkin.w3a",
         "group": "custom_objects",
-        "object_index": 643,
+        "object_index": 642,
         "modification_index": 0
       },
       "fields": {}
@@ -328508,7 +328521,7 @@
       "name_source": {
         "file": "war3mapSkin.w3a",
         "group": "custom_objects",
-        "object_index": 644,
+        "object_index": 643,
         "modification_index": 0
       },
       "fields": {}
@@ -328518,7 +328531,7 @@
       "name_source": {
         "file": "war3mapSkin.w3a",
         "group": "custom_objects",
-        "object_index": 645,
+        "object_index": 644,
         "modification_index": 0
       },
       "fields": {}
@@ -328528,47 +328541,10 @@
       "name_source": {
         "file": "war3mapSkin.w3a",
         "group": "custom_objects",
-        "object_index": 646,
+        "object_index": 645,
         "modification_index": 0
       },
       "fields": {}
-    },
-    "A0HT": {
-      "base_id": "Agyv",
-      "name_source": {
-        "file": "war3mapSkin.w3a",
-        "group": "custom_objects",
-        "object_index": 647,
-        "modification_index": 1
-      },
-      "fields": {
-        "cast_range level 1": {
-          "source": {
-            "file": "war3map.w3a",
-            "group": "custom_objects",
-            "object_index": 647,
-            "modification_index": 0
-          },
-          "field_id": "aran",
-          "type": "unreal",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        },
-        "tooltip level 1": {
-          "source": {
-            "file": "war3mapSkin.w3a",
-            "group": "custom_objects",
-            "object_index": 647,
-            "modification_index": 0
-          },
-          "field_id": "atp1",
-          "type": "string",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        }
-      }
     },
     "A1OA": {
       "base_id": "AHtb",

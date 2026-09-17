@@ -402,6 +402,6 @@ endfunction
 //===========================================================================
 function InitTrig_Starts takes nothing returns nothing
     set gg_trg_Starts = CreateTrigger(  )
-    call TriggerRegisterTimerEvent(gg_trg_Starts, 15, false)
+    call TriggerRegisterTimerEvent(gg_trg_Starts, 10, false)
     call TriggerAddAction( gg_trg_Starts, function InitTrig_ModeDialog )
 endfunction

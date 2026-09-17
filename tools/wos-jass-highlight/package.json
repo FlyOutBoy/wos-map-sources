@@ -1,0 +1,43 @@
+{
+    "name": "wos-jass-highlight",
+    "displayName": "WOS JASS Highlight",
+    "description": "Always highlights WOS system functions and provides hover, completion, signatures and definitions",
+    "version": "0.0.1",
+    "publisher": "wos-local",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./extension.js",
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "wosJassHighlight.refresh",
+                "title": "WOS JASS: Refresh system functions"
+            }
+        ],
+        "configuration": {
+            "title": "WOS JASS Highlight",
+            "properties": {
+                "wosJassHighlight.systemFiles": {
+                    "type": "array",
+                    "default": [
+                        "triggers/Systems/Systems1.j",
+                        "triggers/Systems/Systems2.j"
+                    ],
+                    "description": "JASS files whose function and method declarations are always highlighted."
+                },
+                "wosJassHighlight.color": {
+                    "type": "string",
+                    "default": "#4EC950",
+                    "description": "Color used for WOS system functions."
+                }
+            }
+        }
+    }
+}

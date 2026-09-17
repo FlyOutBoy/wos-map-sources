@@ -196,9 +196,9 @@ globals
     private integer lmpScanTrack = 1
     // Три файла за короткий тик: весь диапазон завершается примерно за 0,5 с,
     // но не складывает все 30 синхронных чтений в один зависший кадр.
-    private constant integer LMP_SCAN_BATCH = 3
-    private constant real LMP_SCAN_INTERVAL = 0.1
-    private constant real LMP_SCAN_DELAY = 0.5
+    private constant integer LMP_SCAN_BATCH = 1
+    private constant real LMP_SCAN_INTERVAL = 0.07
+    private constant real LMP_SCAN_DELAY = 2
 endglobals
 
 //===========================================================================
