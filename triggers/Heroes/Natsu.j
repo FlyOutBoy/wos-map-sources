@@ -354,7 +354,9 @@ library NatsuSpells uses GearSystems
             set move = 60
             set g = CreateGroup()
             set g2 = CreateGroup()
+            set fly = 0
             set fly = 130
+
             set scale = 0.25
             call SetUnitAnimationByIndex( c , 17)
             set r3 = 1
