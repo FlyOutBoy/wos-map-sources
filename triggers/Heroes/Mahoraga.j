@@ -82,7 +82,7 @@ library MahoragaSpells uses GearSystems
         real MahoragaT_DamageTreshold = 50 
 //---------------G ability-----------------------------------------------------
         integer MahoragaG_ID = 'A0CN'
-        real MahoragaG_DamageAgiBase = 8 // base number x Agi damage for 1 level
+        real MahoragaG_DamageAgiBase = 9 // base number x Agi damage for 1 level
 //---------------F ability-----------------------------------------------------
         integer MahoragaF_ID = 'A0CM'
         real MahoragaF_DamageAgiBase = 5 // agi number of damage

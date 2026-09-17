@@ -44,7 +44,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         integer AkainuE_ID = 'A06X'
         real AkainuE_DamageAgiBase = 2.00
         real AkainuE_DamageAgiStep = 1.00
-        real AkainuE_DamageAoe = 575.00
+        real AkainuE_DamageAoe = 400.00
         real AkainuE_Move = 75.00
         real AkainuE_MaxDuration = 2.40
         real AkainuE_CastTime = 0.60

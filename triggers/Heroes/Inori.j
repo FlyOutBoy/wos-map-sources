@@ -25,7 +25,7 @@ library InoriSpells uses GearSystems
         integer InoriQ2_ID = 'A067'
         real InoriEQ_DamageIntBase = 1 // base number x Int damage for 1 level
         real InoriEQ_DamageIntStep = 1 // additional number x Int damage for each next level
-        real InoriEQ_Damage2StaticBase = 175 // base static damage for 1 level
+        real InoriEQ_Damage2StaticBase = 125 // base static damage for 1 level
         real InoriEQ_Damage2StaticStep = 0 // additional static damage for each next level
         real InoriEQ_DamageAoe = 185 // Crystal aoe
         real InoriEQ_Range = 1300
@@ -44,7 +44,7 @@ library InoriSpells uses GearSystems
         unit array InoriW_Dummy[10]
         real InoriW_DamageIntBase = 1 // base number x Int damage for 1 level
         real InoriW_DamageIntStep = 1 // additional number x Int damage for each next level
-        real InoriW_DamageStaticBase = 150 // base static damage for 1 level per second
+        real InoriW_DamageStaticBase = 125 // base static damage for 1 level per second
         real InoriW_DamageStaticStep = 0 // additional static damage for each next level per second
         real InoriW_HealBaseStatic = 75 // base static damage for 1 level per second
         real InoriW_HealStaticStep = 0 // additional static damage for each next le per secondvel
@@ -55,7 +55,7 @@ library InoriSpells uses GearSystems
         integer InoriW2_ID = 'A069'
         real InoriEW_DamageIntBase = 1 // base number x Int damage for 1 level
         real InoriEW_DamageIntStep = 1 // additional number x Int damage for each next level
-        real InoriEW_DamageStaticBase = 150 // base static damage for 1 level per second
+        real InoriEW_DamageStaticBase = 125 // base static damage for 1 level per second
         real InoriEW_DamageStaticStep = 0 // additional static damage for each next level per second
         real InoriEW_Stun = 1
 //---------------W3 ability-----------------------------------------------------

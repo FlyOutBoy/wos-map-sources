@@ -15,12 +15,12 @@ library AAADest uses GearSystems
         integer ErzaWater_Slow3 = 30 // percantage 30 = 30% slow
         integer ErzaWater_Slow4 = 30 // percantage 30 = 30% slow
         integer ErzaWater_Slow5 = 40 // percantage 30 = 30% slow
-        real ErzaWater_DamageBase = 100// static damage each sec
-        real ErzaFire_DamageBase = 40 // static damage each sec
-        real ErzaWape_Damage = 1.5 // x mainstat damage each one time
-        real ErzaOverload_Damage = 1.5 // x mainstat damage each one time
-        real ErzaElectrized_Damage = 0.4 // x mainstat damage each sec for buff duration time
-        real ErzaOverload_Stun = 1.25 // increased stun when water + fire
+        real ErzaWater_DamageBase = 75// static damage each sec
+        real ErzaFire_DamageBase = 30 // static damage each sec
+        real ErzaWape_Damage = 1 // x mainstat damage each one time
+        real ErzaOverload_Damage = 1 // x mainstat damage each one time
+        real ErzaElectrized_Damage = 0.3 // x mainstat damage each sec for buff duration time
+        real ErzaOverload_Stun = 1 // increased stun when water + fire
         real ErzaLightning_Stun = 0.6 // stun time after end of buff
         real ErzaLightning_ManaBurnBase = 120 // burn mana after end of buff
         real ErzaLightning_ManaBurnStep = 20 // burn mana after end of buff for each next armor lvl

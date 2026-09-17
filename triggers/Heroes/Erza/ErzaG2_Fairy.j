@@ -4,14 +4,14 @@ library ErzaG2Spells uses GearSystems
         real Erza7_PhysicalDmgResist = 30 // in %  , 30 = 30%
 //---------------Q ability-----------------------------------------------------
         integer Erza7Q_ID = 'A04F'
-        real Erza7Q_DamageAgiBase = 7 // base number x Agi damage for 1 level
+        real Erza7Q_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real Erza7Q_DamageAoe = 300
         real Erza7Q_Range = 1900
         real Erza7Q_PushRange = 500
         real Erza7Q_PushTime = 0.45
 //---------------W ability-----------------------------------------------------
         integer Erza7W_ID = 'A04G'
-        real Erza7W_DamageAgiBase = 8 // base number x Agi damage for 1 level
+        real Erza7W_DamageAgiBase = 7 // base number x Agi damage for 1 level
         real Erza7W_DamageAoe = 750 // dont make lower than 475
 //---------------E ability-----------------------------------------------------
         integer Erza7E_ID = 'A04H'
@@ -21,7 +21,7 @@ library ErzaG2Spells uses GearSystems
 //---------------R ability-----------------------------------------------------
         integer Erza7R_ID = 'A04I'
         integer Erza7R_MagRes_ID = 'A003'
-        real Erza7R_DamageAgiBase = 10 // base number x Agi damage per 1 second
+        real Erza7R_DamageAgiBase = 8 // base number x Agi damage per 1 second
         real Erza7R_Aoe = 650
         real Erza7R_PushRange = 250
         real Erza7R_PushTime = 0.3

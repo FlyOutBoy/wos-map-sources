@@ -56,7 +56,7 @@ library TakeshiSpells uses GearSystems
         integer TakeshiQ3_ID = 'A093'
         integer TakeshiQ3_Buff_ID = 'B00X'
         real TakeshiQ3_Range = 3500 // how long enemy will be pushed every second , push from cast point it meant , if enemy was in center it will be pushed for full rage, if in aoe edge it would be pushed for distance - aoe ( 800 - 600) = 200 range
-        real TakeshiQ3_DamageAgiBase = 5 // base number x Agi damage for 1 level
+        real TakeshiQ3_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real TakeshiQ3_Stun = 1
 //---------------W2 ability-----------------------------------------------------
         integer TakeshiW2_ID = 'A090'
@@ -120,8 +120,8 @@ library TakeshiSpells uses GearSystems
         real TakeshiGR_Stun = 0.5
 //---------------GF ability-----------------------------------------------------
         integer TakeshiGF_ID = 'A099'
-        real TakeshiGF_DamageAgiBase = 4 // base number x Agi damage for 1 level
-        real TakeshiGF_Root = 1.5
+        real TakeshiGF_DamageAgiBase = 3 // base number x Agi damage for 1 level
+        real TakeshiGF_Root = 1
 //--------------------------------------------------------------------------------        
     endglobals
     function TakeshiGAdd_Start takes unit c,real dmg returns nothing 
@@ -243,7 +243,7 @@ endfunction
                         set e2 = EffectSpawn("war3mapImported\\wos_water dash.mdl", GetUnitX(c) - 165 * Cos(a), GetUnitY(c) - 165 * Sin(a), a * bj_RADTODEG, 1, 1.65, 0)
                         set r5 = 0
                     endif
-                    if r > 0.45 then
+                    if r >= 0.45 then
                         if r2 > 0.03 then
                             set r2 = 0
                             call EffectSpawn2("war3mapImported\\wos_Bubbles2.mdx", x1 , y1, GetRandomReal(0, 359), 1, 6, GetRandomReal(50, 150), 0.21)
@@ -375,7 +375,7 @@ endfunction
                 set this = m_TakeshiQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.1
-                    if r == 0.4 then
+                    if r == 0.2 then
                         if GetHeroLevel(c) >= 12 then
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiQ3_ID, true)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiQ2_ID, false)
@@ -975,7 +975,7 @@ endfunction
             call StartSpellUnit2(c)
             set move = (SR3(c, x, y) - 125) / 9
             set r5 = 0.45
-            set rmax = 0.21+r5
+            set rmax = 0.15+r5
             set g = CreateGroup()
             set scale = 5.75
             set u = null
@@ -2118,7 +2118,6 @@ endfunction
                 if r == 0.45 then
                     call MakeSound("war3mapimported\\Hero_Takeshi_GW3")
                     call SetUnitAnimationByIndex(c,17)
-                    call StopSpellUnit(c)
                     call StartSpellUnit2(c)
                 endif
                 if r > 0.51 then
@@ -2168,7 +2167,7 @@ endfunction
         set move = 120
         set r5 = 0
         set TakeshiGW_Unit = null
-        call StartSpellUnit(c)
+        call StartSpellUnit2(c)
         set a = GAngle2( c , x , y ) // Angle Between points
         set dmg = GetHeroAgi( c , true) * TakeshiGW_DamageAgiBase
         if GetUnitAbilityLevel(c, TakeshiT_Buff_ID) > 0 then

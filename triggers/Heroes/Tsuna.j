@@ -120,8 +120,8 @@ library TsunaSpells uses GearSystems
         integer TsunaT_ID = 'A087'
         integer TsunaT2_ID = 'A088'                  // Абилка-свап для досрочного запуска
         real TsunaT_DamageAgiBase = 12.0
-        real TsunaT_Duration = 3.0
-        integer TsunaT_Ticks = 12                    // Количество тиков урона
+        real TsunaT_Duration = 2.0
+        integer TsunaT_Ticks = 8                    // Количество тиков урона
         real TsunaT_DamageAoe = 465.0
         integer TsunaT_Slow = 70
         integer TsunaT_SlowDuration = 2
@@ -1713,7 +1713,7 @@ library TsunaSpells uses GearSystems
                             set check = 1
                             set check3 = 0
                             set r = 0
-                            set rmax = 3.1
+                            set rmax = TsunaT_Duration + 0.15
                             set r2 = 0
                             if k3 == 1 then
                                 set aoe = aoe + 45 * TsunaT_Size

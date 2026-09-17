@@ -56,8 +56,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer FrierenR_ID = 'A0GQ' 
         integer FrierenR_SpellID = 'A0GS' // Жезл иллюзий
         integer FrierenTR_unitid = 'h02I'
-        real FrierenR_CloneDamageMultiplier1 = 50 // %
-        real FrierenR_CloneDamageMultiplier2 = 75 // %
+        real FrierenR_CloneDamageMultiplier1 = 40 // %
+        real FrierenR_CloneDamageMultiplier2 = 60 // %
         real FrierenTR_DamageIntBase = 4 // base number x Str damage for 1 level
         real FrierenTR_DamageAoe = 550
         real FrierenTR_Stun = 0.5
@@ -73,8 +73,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real FrierenT_Stun = 1
 //---------------T2 ability-----------------------------------------------------
         integer FrierenT2_ID = 'A0GT'
-        real FrierenT2_DamageIntBase = 9 // base number x Str damage for 1 level
-        real FrierenT2_DamageAoe = 700
+        real FrierenT2_DamageIntBase = 8 // base number x Str damage for 1 level
+        real FrierenT2_DamageAoe = 600
         integer FrierenT2_Slow = 60
         integer FrierenT2_SlowDuration = 1
 //---------------G ability-----------------------------------------------------
@@ -90,7 +90,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer FrierenTF_ID = 'A0GV'
         integer FrierenTF_BuffID = 'B02U'
         integer FrierenTF_SpellID = 'A0GI'
-        real FrierenTF_RememberDamage = 30 // 30% of dealt damage from frieren saves to next explode
+        real FrierenTF_RememberDamage = 50 // 30% of dealt damage from frieren saves to next explode
         real FrierenTF_PierceShield = 15 // 30% of dealt damage from frieren saves to next explode
 //------------------------------------------------------------------------------
     endglobals
@@ -1208,7 +1208,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set rmax = 3
             set aoe = FrierenW2_DamageAoe
             set k = 0
-            set move = 20
+            set move = 30
             set g = CreateGroup()
             set g2 = CreateGroup()
             set u = null

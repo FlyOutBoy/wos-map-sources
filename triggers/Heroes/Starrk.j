@@ -74,14 +74,14 @@ library StarrkSpells uses GearSystems
         real StarrkR2_DamageAgiBase = 3 // base number x Int damage per 1 second
         real StarrkR2_DamageAgiStep = 0.4 // additional number x Int damage for each next level per second
         real StarrkR2_DamageAoe = 475
-        integer StarrkR2_Slow = 50 // in % , 50 = 50%
+        integer StarrkR2_Slow = 25 // in % , 50 = 50%
         integer StarrkR2_SlowDuration = 1 // in seconds, from 2 to 4
-        real StarrkR2_Stun = 0.1
+        real StarrkR2_Stun = 0
         real StarrkR2_InvulPerLvlAdd = 0.2
         real StarrkR2_AbilityDurationBase = 1.5 // base duration, 1.3 - prepare time
         real StarrkR2_AbilityDurationStep = 0.8 // additional duration per each next lvl, at 5 lvl 1.85 * 4 additional time
         real StarrkR2_StunAppearTime = 2.01 // time after start of ability ( prepare time included) stun will also be applied to enemies, should be divided by 0.03
-        real StarrkR2_PushToRange = 600 // spell will be push enemy if they are closer than this amount
+        real StarrkR2_PushToRange = 0 // spell will be push enemy if they are closer than this amount
 //---------------T ability-----------------------------------------------------
         integer StarrkT_ID = 'A0BL'
         integer StarrkF_ID = 'A0F2'
@@ -90,7 +90,8 @@ library StarrkSpells uses GearSystems
         real StarrkT_DamageAgiBase = 0.85 // 1 x Agility damage per wolf, default wolf
         real StarrkTR_DamageAgiBase = 0.8 
         real StarrkT_DamageAgiBase2 = 1 // TT damage per wolf
-        real StarrkT_DamageAoe = 600
+        real StarrkT_DamageAoe = 550
+        real StarrkTT_DamageAoe = 600 // TT target perimeter radius; wolves split this circle evenly
         real StarrkT_SearchAoe = 1800
         real StarrkT_Duration = 10 + 1.6// 1.6 - delay, 15 - real wolfs time, add this time to morph duration
         real StarrkT_Stun = 0 // wolves do not stun
@@ -466,7 +467,7 @@ library StarrkSpells uses GearSystems
                                 set r3 = SR3(dd[0], x, y) / 15
                                 set r4 = SR3(dd[1], x, y) / 15
                                 set check = 1
-                                set rmax = 15 * 0.03
+                                set rmax = 0.45
                                 set r = 0
                             endif
                         elseif check == 1 then
@@ -608,7 +609,7 @@ library StarrkSpells uses GearSystems
                 endif
             else
                 set k2 = 2
-                set rmax = 0.6
+                set rmax = 0.45
                 call SaveInteger(hs, GetHandleId(c), StringHash("starrk t action"), 1)
                 call MakeSound("war3mapimported\\Hero_Starrk_TQ")
             endif
@@ -773,11 +774,11 @@ library StarrkSpells uses GearSystems
                             call SetUnitAnimationByIndex(c, 14)
                             call SetUnitTimeScale(c, 0.15)
                         endif
-                        if r == 0.69 then
+                        if r == 0.51 then
                             call MakeSound("war3mapimported\\Hero_Starrk_EW2")
                             call MUE(c, 900, 0.27, GAngle(c, td))
                         endif
-                        if r == 0.81 then
+                        if r == 0.75 then
                             call AddSpecialEffectTarget("war3mapimported\\wos_bloodex-special-23.mdl", td, "chest")
                             call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
                             call SetUnitAnimation(td, "death")
@@ -1513,10 +1514,10 @@ library StarrkSpells uses GearSystems
                         call SetUnitTimeScale(c, 0)
                     endif
                     if r == 0.03 then
-                        call MakeSound("war3mapimported\\Hero_Starrk_R2")
+                        call MakeSound("war3mapimported\\Hero_Starrk_R2_3")
                     endif
                     if r == StarrkR2_StunAppearTime + 1.32 and GetHeroLevel(c) >= 35 then
-                        call MakeSound("war3mapimported\\Hero_Starrk_R3")
+                        //call MakeSound("war3mapimported\\Hero_Starrk_R3")
                         set k3 = 1
                     endif
                     if r > 0. and r < 0.15 then
@@ -1579,7 +1580,7 @@ library StarrkSpells uses GearSystems
                             set check2 = check2 + 1
                            // call BJDebugMsg(I2S(check2))
                             loop
-                                exitwhen k == 8
+                                exitwhen k == 7
                                 call GroupClear( g )
                                 call DecorRemove(c, GetUnitX(c) + (300 * k) * Cos(a) , GetUnitY(c) + (300 * k) * Sin(a) , aoe, 50)
                                 call GroupEnumUnitsInRange( g , GetUnitX(c) + (300 * k) * Cos(a) , GetUnitY(c) + (300 * k) * Sin(a) , aoe , NoDecor_Cond)
@@ -1591,7 +1592,7 @@ library StarrkSpells uses GearSystems
                                         if r >= StarrkR2_StunAppearTime and GetHeroLevel(c) >= 35 then
                                             call StunUnit(c, u, StarrkR2_Stun)
                                         endif
-                                        call MUE(u, 60, 0.3, a)
+                                        //call MUE(u, 60, 0.3, a)
                                         call SlowUnit(c, u, StarrkR2_Slow, StarrkR2_SlowDuration)
                                         call GroupAddUnit( g2 , u )
                                     endif
@@ -2247,8 +2248,10 @@ endloop
                                 exitwhen k2 >= k
                                 set td = FirstOfGroup(g3)
                                 if td != null then
-                                    set kek1 = GetRandomReal(400, 850)
-                                    set kek2 = GetRandomReal(0, 359) * bj_DEGTORAD
+                                    // Deterministic TT formation: every participating wolf
+                                    // gets one evenly spaced point on the configured perimeter.
+                                    set kek1 = StarrkTT_DamageAoe
+                                    set kek2 = a + (360.0 / I2R(k)) * I2R(k2) * bj_DEGTORAD
                                     call GroupRemoveUnit(g2, td)
                                     call StarrkT2_Start(c, td, null, null, x + kek1 * Cos(kek2), y + kek1 * Sin(kek2), g, k, 0)
                                     call GroupRemoveUnit(g3, td)
@@ -2388,7 +2391,11 @@ endloop
             call MakeSound("war3mapimported\\Hero_Starrk_TT1")
             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 1)
             set rmax = 8
-            call VisionTimed(GetOwningPlayer(c), x, y, 1600, 3)
+            if check == 0 then
+                call VisionTimed(GetOwningPlayer(c), x, y, StarrkTT_DamageAoe + StarrkT_DamageAoe, 3)
+            else
+                call VisionTimed(GetOwningPlayer(c), x, y, 1600, 3)
+            endif
             if MUI_StarrkT3 == 0 then
                 call TimerStart( t_StarrkT3, 0.05, true, function thistype.Loop_StarrkT3)
             endif
@@ -2544,7 +2551,3 @@ endloop
     endfunction
     
 endlibrary
-
-
-//Code indented using The_Witcher's Script language Aligner
-//Download the newest version and report bugs at www.hiveworkshop.com

@@ -79,7 +79,7 @@ library KenjakuSpells uses GearSystems
         real KenjakuE2_SummonMSBase = 522
         real KenjakuE2_SummonMSStep = 0
         real KenjakuE2_CD_WhenOtherSpiritUse = 2
-        real KenjakuE2_DamageIntBase = 3 // base number x Int damage for 1 level
+        real KenjakuE2_DamageIntBase = 2 // base number x Int damage for 1 level
         real KenjakuE2_DamageIntStep = 1 // additional number x Int damage for each next level
         real KenjakuE2_Damage2StaticBase = 0 // base static damage for 1 level
         real KenjakuE2_Damage2StaticStep = 0 // additional static damage for each next level
@@ -1196,7 +1196,7 @@ library KenjakuSpells uses GearSystems
                 set this = m_KenjakuR2[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = RoundReal(r + 0.03, 3)
-                    call DebugUnit(c)
+                    call DebugUnit2(c)
                     set r = RoundReal(r, 3)
                     if r == 0.3 then
                         if check < 6 then
@@ -1268,7 +1268,7 @@ library KenjakuSpells uses GearSystems
                     call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))+k2)
                     endif
                     call DestroyEffect(e)
-                    call StopSpellUnit(c)
+                    call StopSpellUnit2(c)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     set c = null
@@ -1303,7 +1303,7 @@ library KenjakuSpells uses GearSystems
             set dmg = GetHeroInt( c , true) * ( KenjakuR2_DamageIntBase + ( KenjakuR2_DamageIntStep * ( GetUnitAbilityLevel( c , KenjakuR2_ID) - 1 ) ) )
             set aoe = KenjakuR2_DamageAoe
             call SetUnitFacing(c, a * bj_RADTODEG)
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
             call SetUnitTimeScale(c, 1.25)
             set check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
             if GetHeroLevel(c) >= 35 then

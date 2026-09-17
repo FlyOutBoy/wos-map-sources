@@ -51,7 +51,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         integer PatriotW_Buff25_ID = 'B024'
         real PatriotW_DamageAgiBase = 1.0
         real PatriotW_DamageAgiStep = 0.0
-        real PatriotW_Damage2StaticBase = 40.0
+        real PatriotW_Damage2StaticBase = 30.0
         real PatriotW_Damage2StaticStep = 0.0
         real PatriotW_HealAgiBase = 0.5
         real PatriotW_HealAgiStep = 0.0
@@ -75,7 +75,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         real PatriotE_DmgBonusStep = 1.0
         real PatriotE_DmgReductBase = 1.0
         real PatriotE_DmgReductStep = 1.0
-        real PatriotEE_Duration = 7.0
+        real PatriotEE_Duration = 5.0
         real PatriotE_CDReductBase = 2.0
         real PatriotE_CDReductStep = 0.5
         real PatriotE_CDReductR = 2.0
@@ -103,29 +103,21 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         // --------------------------------------------------------------------------
         integer PatriotT_ID = 'A0EB'
         integer PatriotT2_ID = 'A0EC'
-        real PatriotT_Duration = 4.0
+        real PatriotT_Duration = 5.0
         real PatriotT_DamageAgiBase = 3.5
         real PatriotT_DamageAoe = 800.0
+        real PatriotT_EdgeInset = 150.0
         real PatriotT_CastTime = 0.97
         boolean PatriotT_IsInvul = false
         real PatriotT_DecorDamage = 50.0
 
         real PatriotT2_DamageAgiBase = 10.0
-        real PatriotT2_DamageAoe = 600.0
+        real PatriotT2_DamageAoe = 750.0
         real PatriotT2_Range = 4000.0
         real PatriotT2_CastTime = 1.50
         real PatriotT2_Duration = 0.90
         boolean PatriotT2_IsInvul = true
         real PatriotT2_DecorDamage = 100.0
-
-        // --------------------------------------------------------------------------
-        // G Ability (Veteran Wendigo - Passive Strike)
-        // --------------------------------------------------------------------------
-        integer PatriotG_ID = 'A0EF'
-        real PatriotG_DamageAgiBase = 1.0
-        real PatriotG_CD_Atk = 0.25
-        real PatriotG_CD_Def = 2.0
-        integer PatriotG_Lvl_CD = 12
 
         // --------------------------------------------------------------------------
         // F & F2 Abilities (Shield Rush / Vanguard Advance)
@@ -140,6 +132,15 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         real PatriotF_Duration = 4.0
         boolean PatriotF_IsInvul = false
         real PatriotF_DecorDamage = 10.0
+
+        // --------------------------------------------------------------------------
+        // G Ability (Veteran Wendigo - Passive Strike)
+        // --------------------------------------------------------------------------
+        integer PatriotG_ID = 'A0EF'
+        real PatriotG_DamageAgiBase = 1.0
+        real PatriotG_CD_Atk = 0.25
+        real PatriotG_CD_Def = 2.0
+        integer PatriotG_Lvl_CD = 12
     endglobals
 
     // ===========================================================================
@@ -266,7 +267,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     function PatriotPas takes unit c, unit td returns nothing
         local real x
         local real y
-        if c == null or td == null or GetWidgetLife(td) <= 0.405 then
+        if (c == null or td == null) or (GetWidgetLife(td) <= 0.405) or (BlzGetUnitAbilityCooldownRemaining(c,PatriotG_ID)>0.1) then
             return
         endif
         set x = GetUnitX(td)
@@ -275,9 +276,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_Satsu-WWSFX-1.mdx", x, y, 0.0, 1.25, 2.0, 75.0), 0.76, 75.0, td)
         call NextDmg(c, td, PatriotG_DamageAgiBase * GetHeroAgi(c, true), 0, 0.10)
         if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
-            call FakeCD_Start(c, PatriotG_ID, PatriotG_CD_Atk, 0, 0)
+            call BlzStartUnitAbilityCooldown(c,PatriotG_ID,PatriotG_CD_Atk)
         else
-            call FakeCD_Start(c, PatriotG_ID, PatriotG_CD_Def, 0, 0)
+            call BlzStartUnitAbilityCooldown(c,PatriotG_ID,PatriotG_CD_Def)
         endif
     endfunction
 
@@ -299,6 +300,493 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
 
     // ===========================================================================
     // Abilities MUI Implementation
+    // ===========================================================================
+    private struct PatriotSpells_Q
+        private static integer array m_PatriotQ
+        private static integer MUI_PatriotQ = -1
+
+        unit c
+        unit td
+        real x
+        real y
+        real r2
+        integer k2
+        integer k3
+        real r5
+        real r6
+        real r7
+        real r4
+        group g
+        group g2
+        real dmg
+        integer check3
+        integer check4
+        real aoe
+        real move
+        real r
+        effect e
+        effect e3
+        real a
+        real rmax
+
+        public static method Loop_PatriotQ takes nothing returns nothing
+            local integer i = 0
+            local thistype this
+            local unit u = null
+            local real x1
+            local real y1
+            local real x2
+            local real y2
+            local real x3
+            local real y3
+            local real arenaAngle
+            local boolean remove
+
+            loop
+                exitwhen i > MUI_PatriotQ
+                set this = m_PatriotQ[i]
+                set remove = false
+
+                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
+                    set remove = true
+                else
+                    set r = RoundReal(r + 0.03, 3)
+                    if r < PatriotQ_CastTime then
+                        call DebugUnit2(c)
+                    endif
+
+                    if r == PatriotQ_CastTime then
+                        call MakeSound("war3mapimported\\Hero_Patriot_Q2")
+                        set e = EffectSpawn4("war3mapImported\\wos_PatriotsSpear.mdx", GetUnitX(c) + 150.0 * Cos(a), GetUnitY(c) + 150.0 * Sin(a), a * bj_RADTODEG, 0.65, 1.0, 155.0, -20.0)
+                        set e3 = EffectSpawn("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdl", GetUnitX(c) + 250.0 * Cos(a), GetUnitY(c) + 250.0 * Sin(a), a * bj_RADTODEG, 0.65, 1.0, 135.0)
+                        call MoveEff(e3, 10.0, a)
+                        set k3 = 0
+                        call StopSpellUnit2(c)
+                    endif
+
+                    if r >= PatriotQ_CastTime+0.12 then
+                        if k3 == 0 then
+                            call MoveEff(e, move, a)
+                            call MoveEff(e3, move, a)
+                        endif
+
+                        set x = GetEffX(e)
+                        set y = GetEffY(e)
+                        if move > 80.0 then
+                            set move = move - 1.25
+                        endif
+
+                        if r2 > 0.03 then
+                            set r2 = 0.0
+                            call DecorRemove(c, x, y, aoe, PatriotQ_DecorDamage)
+                            call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
+                            call ColorEffDummy3(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_YeYe_Wid_KuoSan_1.mdx", x, y, a * bj_RADTODEG, 1.25, 2.65, 180.0, 0, 0, 0, 255), 0.0, 0, 0, 0, 0.21)
+                        else
+                            set r2 = r2 + 0.03
+                        endif
+
+                        set r5 = r5 + move
+                        set x1 = LoadReal(hs, GetHandleId(c), StringHash("w x"))
+                        set y1 = LoadReal(hs, GetHandleId(c), StringHash("w y"))
+                        set x2 = LoadReal(hs, GetHandleId(c), StringHash("r x"))
+                        set y2 = LoadReal(hs, GetHandleId(c), StringHash("r y"))
+                        set x3 = LoadReal(hs, GetHandleId(c), StringHash("t x"))
+                        set y3 = LoadReal(hs, GetHandleId(c), StringHash("t y"))
+
+                        if r5 >= r6 then
+                            set r = 9999.0
+                        endif
+
+                        if x1 != 0.0 and SR5(e, x1, y1) < 150.0 then
+                            set r = 9999.0
+                            set k3 = 1
+                            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 1)
+                            call BlzSetSpecialEffectPosition(e, x1, y1, 25.0)
+                        endif
+
+                        if x2 != 0.0 and SR5(e, x2, y2) < 275.0 then
+                            set k3 = 1
+                            set r = 9999.0
+                            call SaveInteger(hs, GetHandleId(c), StringHash("r act"), 1)
+                            call BlzSetSpecialEffectPosition(e, x2, y2, 25.0)
+                        endif
+
+                        if x3 != 0.0 or y3 != 0.0 then
+                            set r4 = SR5(e, x3, y3)
+                            if check3 == 0 then
+                                set r7 = r4
+                                set check3 = 1
+                            else
+                                // The T arena is one-way for the Q spear: an outward
+                                // crossing stops at the inner edge, while an inward
+                                // crossing remains free to carry enemies into it.
+                                if r7 <= PatriotT_DamageAoe - PatriotT_EdgeInset and r4 > PatriotT_DamageAoe - PatriotT_EdgeInset then
+                                    set k3 = 1
+                                    call SaveInteger(hs, GetHandleId(c), StringHash("t act"), 1)
+                                    set arenaAngle = Atan2(y - y3, x - x3)
+                                    set x = x3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Cos(arenaAngle)
+                                    set y = y3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Sin(arenaAngle)
+                                    call BlzSetSpecialEffectPosition(e, x, y, 25.0)
+                                endif
+                                set r7 = r4
+                            endif
+                        endif
+
+                        call GroupClear(g)
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
+                        loop
+                            set u = FirstOfGroup(g)
+                            exitwhen u == null
+                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                set k2 = k2 + 1
+                                if k2 == 1 then
+                                    call MakeSound("war3mapImported\\Hero_Kirito_Q2")
+                                endif
+                                if not IsUnitInGroup(u, g2) then
+                                    call dmgphys(c, u, dmg)
+                                    if GetHeroLevel(c) >= 35 then
+                                        call PatriotPas(c, u)
+                                    endif
+                                    call GroupAddUnit(g2, u)
+                                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_FSAeff (198)1.mdl", u, "chest"))
+                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                                endif
+                                if td == null then
+                                    set td = u
+                                endif
+                                if check4 == 0 then
+                                    call SlowUnit(c, u, PatriotQ_SlowPercent, PatriotQ_SlowDuration)
+                                endif
+                                if td != null and SpellBool(td) then
+                                    set x1 = x + move * Cos(a)
+                                    set y1 = y + move * Sin(a)
+                                    // A carried target that has entered T may not be
+                                    // pushed back through its wall. Keep it near the
+                                    // edge instead of dragging it toward the center.
+                                    if (x3 != 0.0 or y3 != 0.0) and SR3(td, x3, y3) <= PatriotT_DamageAoe then
+                                        set r4 = SquareRoot((x1 - x3) * (x1 - x3) + (y1 - y3) * (y1 - y3))
+                                        if r4 > PatriotT_DamageAoe - PatriotT_EdgeInset then
+                                            set r4 = Atan2(y1 - y3, x1 - x3)
+                                            set x1 = x3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Cos(r4)
+                                            set y1 = y3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Sin(r4)
+                                        endif
+                                    endif
+                                    call PosUnit(td, x1, y1)
+                                endif
+                            endif
+                            call GroupRemoveUnit(g, u)
+                        endloop
+                    endif
+                endif
+
+                if remove then
+                    set x = GetEffX(e)
+                    set y = GetEffY(e)
+                    call DecorRemove(c, x, y, aoe, PatriotQ_DecorExpDamage)
+                    call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
+                    call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1.0, 1.8, 0.0, 1.0)
+                    call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1.0, 2.2, 0.0, 1.0)
+                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", x, y, GetRandomReal(0, 359), 1.0, 1.5, 0.0))
+                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", x, y, GetRandomReal(0, 359), 1.0, 2.0, 0.0))
+                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", x, y, GetRandomReal(0, 359), 1.0, 2.25, 0.0))
+                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_YeYe_Eat_DiBanZhaKai2.mdx", x, y, GetRandomReal(0, 359), 1.5, 1.35, 0.0))
+                    call MakeSound("war3mapimported\\Hero_Patriot_Q3")
+                    call DecorRemove(c, x, y, PatriotQ_DamageAoe2, PatriotQ_DecorExpDamage)
+
+                    call GroupClear(g)
+                    call GroupEnumUnitsInRange(g, x, y, PatriotQ_DamageAoe2, NoDecor_Cond)
+                    loop
+                        set u = FirstOfGroup(g)
+                        exitwhen u == null
+                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                            call GroupAddUnit(g2, u)
+                            call dmgphys(c, u, dmg)
+                            if GetHeroLevel(c) >= 35 then
+                                call PatriotPas(c, u)
+                            endif
+                            if k3 == 1 then
+                                call StunUnit(c, u, PatriotQ_StunDuration)
+                            endif
+                            if check4 == 0 then
+                                call SlowUnit(c, u, PatriotQ_SlowPercent, PatriotQ_SlowDuration)
+                            endif
+                            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                        endif
+                        call GroupRemoveUnit(g, u)
+                    endloop
+
+                    call MyRemoveEff(e3, 0.15)
+                    call BlzSetSpecialEffectPitch(e, -295.0 * bj_DEGTORAD)
+                    if k3 == 0 then
+                        call MoveEff(e, 100.0, a)
+                    endif
+                    call BlzSetSpecialEffectScale(e, 1.25)
+                    call BlzSetSpecialEffectHeight(e, 25.0)
+                    call ColorEffDummy3(e, 1.0, 255, 255, 255, 0.30)
+                    call BlzSetSpecialEffectTimeScale(e, 1.15)
+
+                    if g != null then
+                        call DestroyGroup(g)
+                    endif
+                    if g2 != null then
+                        call DestroyGroup(g2)
+                    endif
+                    set g = null
+                    set g2 = null
+                    set td = null
+                    set c = null
+                    set e = null
+                    set e3 = null
+                    set m_PatriotQ[i] = m_PatriotQ[MUI_PatriotQ]
+                    set MUI_PatriotQ = MUI_PatriotQ - 1
+                    call deallocate(this)
+                    set i = i - 1
+                    if MUI_PatriotQ == -1 then
+                        call PatriotTimer03Release()
+                    endif
+                endif
+                set i = i + 1
+            endloop
+            set u = null
+        endmethod
+
+        public static method PatriotQ_Start takes unit NewC, real NewX, real NewY returns nothing
+            local thistype this = thistype.create()
+            local integer level = GetUnitAbilityLevel(NewC, PatriotQ_ID)
+            if level < 1 then
+                set level = 1
+            endif
+
+            set MUI_PatriotQ = MUI_PatriotQ + 1
+            set m_PatriotQ[MUI_PatriotQ] = this
+            set c = NewC
+            set x = NewX
+            set y = NewY
+            set td = null
+            set r = 0.0
+            set r5 = 0.0
+            set k3 = 0
+            set k2 = 0
+            set r6 = PatriotQ_RangeBase + (PatriotQ_RangeStep * (level - 1))
+            set r2 = 1.0
+            set check3 = 0
+            set r7 = 0.0
+            set g = CreateGroup()
+            set g2 = CreateGroup()
+            set check4 = 0
+            set a = GAngle2(c, x, y)
+            set rmax = 2.10
+            set move = 100.0
+            set aoe = PatriotQ_DamageAoe
+            set dmg = GetHeroAgi(c, true) * (PatriotQ_DamageAgiBase + (PatriotQ_DamageAgiStep * (level - 1)))
+            set dmg = dmg + PatriotQ_Damage2StaticBase + (PatriotQ_Damage2StaticStep * (level - 1))
+
+            call StartSpellUnit2(c)
+            call SetUnitFacing(c, a * bj_RADTODEG)
+            call Patriot_RestoreOrder(c, 9)
+
+            if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+                set check4 = 1
+                set dmg = dmg + GetHeroAgi(c, true) * PatriotQ_RuinationAgiBonus
+            endif
+
+            call SetUnitTimeScale(c, 2.31)
+            if GetRandomInt(1, 2) == 1 then
+                call MakeSound("war3mapimported\\Hero_Patriot_Q")
+            else
+                call MakeSound("war3mapimported\\Hero_Patriot_Q4")
+            endif
+
+            if MUI_PatriotQ == 0 then
+                call PatriotTimer03Acquire()
+            endif
+        endmethod
+    endstruct
+
+    private struct PatriotSpells_W
+        private static integer array m_PatriotW
+        private static integer MUI_PatriotW = -1
+
+        unit c
+        real x
+        real y
+        real r2
+        integer k2
+        integer k3
+        real scale
+        group g
+        real dmg
+        real dmg2
+        real aoe
+        real r
+        effect e
+        real a
+        real rmax
+
+        public static method Loop_PatriotW takes nothing returns nothing
+            local integer i = 0
+            local thistype this
+            local unit u
+            local boolean remove
+
+            loop
+                exitwhen i > MUI_PatriotW
+                set this = m_PatriotW[i]
+                set remove = false
+
+                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax or LoadInteger(hs, GetHandleId(c), StringHash("w act")) != 0 or k3 >= k2 then
+                    set remove = true
+                else
+                    set r = RoundReal(r + 0.03, 3)
+                    if r == PatriotW_CastTime then
+                        call MakeSound("war3mapImported\\Hero_Patriot_W4")
+                        call GroupClear(g)
+                        call SaveReal(hs, GetHandleId(c), StringHash("w x"), x)
+                        call SaveReal(hs, GetHandleId(c), StringHash("w y"), y)
+                        set e = EffectSpawn("war3mapImported\\wos_[tx][z]baofengshuijing4.mdl", x, y, 1.0, 1.0, 1.0, 0.0)
+                        call BlzSetSpecialEffectAlpha(e, 0)
+                        call ColorEffDummy4(e, 0.0, 255, 255, 255, 0.30)
+                    endif
+
+                    if r >= PatriotW_CastTime then
+                        if r2 > 0.95 then
+                            set k3 = k3 + 1
+                            call GroupClear(g)
+                            call DecorRemove(c, x, y, aoe, PatriotW_DecorDamage)
+                            call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
+                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1.0, 3.25 * scale, 200.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.15, 3.0 * scale, 125.0))
+                            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.25, 4.15 * scale, 125.0, 0.0))
+
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
+                            loop
+                                set u = FirstOfGroup(g)
+                                exitwhen u == null
+                                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call dmgmag(c, u, dmg)
+                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                                endif
+                                if IsUnitAlly(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+                                        call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID) + 5)
+                                    else
+                                        call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID))
+                                    endif
+                                    call SetHpCurrent2(c, u, dmg2)
+                                endif
+                                call GroupRemoveUnit(g, u)
+                            endloop
+                            set r2 = 0.0
+                        else
+                            set r2 = r2 + 0.03
+                        endif
+                    endif
+                endif
+
+                if remove then
+                    if r >= PatriotW_CastTime then
+                        call ColorEffDummy3(e, 0.0, 255, 255, 255, 0.30)
+                    endif
+
+                    if LoadInteger(hs, GetHandleId(c), StringHash("w act")) == 1 then
+                        call MakeSound("war3mapImported\\Hero_Patriot_W3")
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.0, 6.35 * scale, 1.0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1.0, 1.65 * scale, 1.0))
+                        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.25, 4.85 * scale, 125.0, 0.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_ZarakiWCrack1.mdl", x, y, GetRandomReal(0, 359), 1.25, 2.0 * scale, 5.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1.0, 3.25 * scale, 200.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-RSFX-4.mdl", x, y, a * bj_RADTODEG + 90.0, 0.5, 3.0 * scale, 1.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_yz-leimitx13.mdl", x, y, a * bj_RADTODEG + 90.0, 2.5, 5.0 * scale, 1.0))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90.0, 2.5, 4.0 * scale, 1.0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.15, 2.475 * scale, 125.0))
+
+                        call GroupClear(g)
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
+                        loop
+                            set u = FirstOfGroup(g)
+                            exitwhen u == null
+                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                if k2 - k3 <= 1 then
+                                    call dmgmag(c, u, dmg)
+                                else
+                                    call dmgmag(c, u, dmg * (k2 - k3))
+                                endif
+                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                            endif
+                            call GroupRemoveUnit(g, u)
+                        endloop
+                    endif
+
+                    call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
+                    call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
+                    call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
+
+                    if g != null then
+                        call DestroyGroup(g)
+                    endif
+                    set e = null
+                    set g = null
+                    set c = null
+                    set u = null
+                    set m_PatriotW[i] = m_PatriotW[MUI_PatriotW]
+                    set MUI_PatriotW = MUI_PatriotW - 1
+                    call deallocate(this)
+                    set i = i - 1
+                    if MUI_PatriotW == -1 then
+                        call PatriotTimer03Release()
+                    endif
+                endif
+                set i = i + 1
+            endloop
+            set u = null
+        endmethod
+
+        public static method PatriotW_Start takes unit NewC, real NewX, real NewY returns nothing
+            local thistype this = thistype.create()
+            local integer level = GetUnitAbilityLevel(NewC, PatriotW_ID)
+            if level < 1 then
+                set level = 1
+            endif
+
+            set MUI_PatriotW = MUI_PatriotW + 1
+            set m_PatriotW[MUI_PatriotW] = this
+            set c = NewC
+            set r = 0.0
+            set x = NewX
+            set y = NewY
+            set r2 = 10.0
+            set g = CreateGroup()
+            call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
+            call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
+            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
+            if GetHeroLevel(c) >= 35 then
+            set PatriotW_CastTime = 0.03
+            endif
+            set aoe = PatriotW_DamageAoe
+            set a = GAngle2(c, x, y)
+            call MakeSound("war3mapImported\\Hero_Patriot_W")
+            set k2 = PatriotW_DurationBase + (PatriotW_DurationStep * (level - 1))
+            set dmg = GetHeroAgi(c, true) * (PatriotW_DamageAgiBase + (PatriotW_DamageAgiStep * (level - 1)))
+            set dmg = dmg + PatriotW_Damage2StaticBase + (PatriotW_Damage2StaticStep * (level - 1))
+            set dmg2 = GetHeroAgi(c, true) * (PatriotW_HealAgiBase + (PatriotW_HealAgiStep * (level - 1)))
+            set dmg2 = dmg2 + PatriotW_Heal2StaticBase + (PatriotW_Heal2StaticStep * (level - 1))
+            set rmax = 15.0
+            set k3 = 0
+            set scale = aoe / 800.0
+
+            call SetUnitFacing(c, a * bj_RADTODEG)
+            call Patriot_RestoreOrder(c, 3)
+            call SetUnitTimeScale(c, 1.0)
+            call VisionTimed(GetOwningPlayer(c), x, y, 750.0, 6.0)
+
+            if MUI_PatriotW == 0 then
+                call PatriotTimer03Acquire()
+            endif
+        endmethod
+    endstruct
+
+    // ===========================================================================
+    // Master Timer Loop
     // ===========================================================================
     private struct PatriotSpells_E
         private static integer array m_PatriotE
@@ -474,447 +962,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1.0, 3.0, 145.0))
 
             if MUI_PatriotE == 0 then
-                call PatriotTimer03Acquire()
-            endif
-        endmethod
-    endstruct
-
-    private struct PatriotSpells_F
-        private static integer array m_PatriotF
-        private static integer MUI_PatriotF = -1
-
-        unit c
-        real x
-        real y
-        real x1
-        real y1
-        real r2
-        real scale2
-        real r3
-        group g
-        real aoe
-        real move
-        real r
-        real a
-        real rmax
-
-        public static method Loop_PatriotF takes nothing returns nothing
-            local integer i = 0
-            local thistype this
-            local unit u
-            local boolean remove
-
-            loop
-                exitwhen i > MUI_PatriotF
-                set this = m_PatriotF[i]
-                set remove = false
-
-                if c == null or GetUnitTypeId(c) == 0 or r >= rmax or not SpellBool(c) or LoadInteger(hs, GetHandleId(c), StringHash("stop r")) != 0 then
-                    set remove = true
-                else
-                    set r = RoundReal(r + 0.03, 3)
-                    call DebugUnit2(c)
-
-                    if r == 0.60 then
-                        call SetUnitTimeScale(c, 0.0)
-                    endif
-
-                    set x = GetMouseX(GetOwningPlayer(c))
-                    set y = GetMouseY(GetOwningPlayer(c))
-                    set a = GAngle4(x1, y1, x, y)
-                    if SR0(x1, y1, x, y) > scale2 then
-                        set x = x1 + scale2 * Cos(a)
-                        set y = y1 + scale2 * Sin(a)
-                    endif
-
-                    if SR3(c, x, y) > move then
-                        call MoveUnit(c, move, GAngle2(c, x, y))
-                        call SetUnitFacing(c, GAngle2(c, x, y) * bj_RADTODEG)
-                    else
-                        call PosUnit(c, x, y)
-                    endif
-
-                    set x = GetUnitX(c)
-                    set y = GetUnitY(c)
-
-                    if r3 > 0.21 then
-                        set r3 = 0.0
-                        call DecorRemove(c, x, y, aoe, PatriotF_DecorDamage)
-                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun2.mdl", x + 250.0 * Cos(a), y + 250.0 * Sin(a), a * bj_RADTODEG, 0.95, 3.25, 50.0, 255, 255, 255, 190))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_krk (1971).mdl", x, y, GetRandomReal(0, 359), 0.90, 1.0, 1.0))
-                    else
-                        set r3 = r3 + 0.03
-                    endif
-
-                    if GetHeroLevel(c) >= 25 then
-                        call DebuffClear(c)
-                    endif
-
-                    if r2 > 0.12 then
-                        set r2 = 0.0
-                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
-                        loop
-                            set u = FirstOfGroup(g)
-                            exitwhen u == null
-                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and SR2(c, u) < 250.0 then
-                                call MUE(u, 250.0, 0.30, a)
-                            endif
-                            if GetHeroLevel(c) >= 35 then
-                                if IsUnitAlly(u, GetOwningPlayer(c)) and SpellBool(u) and GetUnitAbilityLevel(u, PatriotF_Buff1_ID) == 0 and GetUnitAbilityLevel(u, PatriotF_Buff2_ID) == 0 then
-                                    if c == u then
-                                        call BuffUnit1(c, u, 13)
-                                    else
-                                        call BuffUnit1(c, u, 14)
-                                    endif
-                                endif
-                            else
-                                call BuffUnit1(c, c, 13)
-                            endif
-                            call GroupRemoveUnit(g, u)
-                        endloop
-                    else
-                        set r2 = r2 + 0.03
-                    endif
-                endif
-
-                if remove then
-                    if c != null and GetUnitTypeId(c) != 0 then
-                        call StopSpellUnit2(c)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("stop r"), 0)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 0)
-                        call SetUnitTimeScale(c, 1.0)
-                        call MouseOff(GetOwningPlayer(c))
-                    endif
-                    if g != null then
-                        call DestroyGroup(g)
-                    endif
-                    set g = null
-                    set c = null
-                    set u = null
-                    set m_PatriotF[i] = m_PatriotF[MUI_PatriotF]
-                    set MUI_PatriotF = MUI_PatriotF - 1
-                    call deallocate(this)
-                    set i = i - 1
-                    if MUI_PatriotF == -1 then
-                        call PatriotTimer03Release()
-                    endif
-                endif
-                set i = i + 1
-            endloop
-            set u = null
-        endmethod
-
-        public static method PatriotF_Start takes unit NewC returns nothing
-            local thistype this = thistype.create()
-            set MUI_PatriotF = MUI_PatriotF + 1
-            set m_PatriotF[MUI_PatriotF] = this
-            set c = NewC
-            set r = 0.0
-            set a = GetUnitFacing(c) * bj_DEGTORAD
-            set x = GetUnitX(c) + 10.0 * Cos(a)
-            set y = GetUnitY(c) + 10.0 * Sin(a)
-            set r2 = 10.0
-            set r3 = 10.0
-            set move = 6.0
-            set rmax = PatriotF_Duration
-            set g = CreateGroup()
-            set aoe = PatriotF_AoE
-
-            call StartSpellUnit2(c)
-            set x1 = GetUnitX(c)
-            set y1 = GetUnitY(c)
-            call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 1)
-            call MouseOn(GetOwningPlayer(c))
-            set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
-            set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
-            set scale2 = PatriotT2_Range
-
-            call MakeSound("war3mapImported\\Hero_Patriot_F")
-            call SetUnitAnimationByIndex(c, 2)
-            call SetUnitTimeScale(c, 2.0)
-
-            if MUI_PatriotF == 0 then
-                call PatriotTimer03Acquire()
-            endif
-        endmethod
-    endstruct
-
-    private struct PatriotSpells_Q
-        private static integer array m_PatriotQ
-        private static integer MUI_PatriotQ = -1
-
-        unit c
-        unit td
-        real x
-        real y
-        real r2
-        integer k2
-        integer k3
-        real r5
-        real r6
-        real r7
-        real r4
-        group g
-        group g2
-        real dmg
-        integer check3
-        integer check4
-        real aoe
-        real move
-        real r
-        effect e
-        effect e3
-        real a
-        real rmax
-
-        public static method Loop_PatriotQ takes nothing returns nothing
-            local integer i = 0
-            local thistype this
-            local unit u = null
-            local real x1
-            local real y1
-            local real x2
-            local real y2
-            local real x3
-            local real y3
-            local boolean remove
-
-            loop
-                exitwhen i > MUI_PatriotQ
-                set this = m_PatriotQ[i]
-                set remove = false
-
-                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
-                    set remove = true
-                else
-                    set r = RoundReal(r + 0.03, 3)
-                    if r < PatriotQ_CastTime then
-                        call DebugUnit2(c)
-                    endif
-
-                    if r == PatriotQ_CastTime then
-                        call MakeSound("war3mapimported\\Hero_Patriot_Q2")
-                        set e = EffectSpawn4("war3mapImported\\wos_PatriotsSpear.mdx", GetUnitX(c) + 150.0 * Cos(a), GetUnitY(c) + 150.0 * Sin(a), a * bj_RADTODEG, 0.65, 1.0, 155.0, -20.0)
-                        set e3 = EffectSpawn("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdl", GetUnitX(c) + 250.0 * Cos(a), GetUnitY(c) + 250.0 * Sin(a), a * bj_RADTODEG, 0.65, 1.0, 135.0)
-                        call MoveEff(e3, 10.0, a)
-                        set k3 = 0
-                        call StopSpellUnit2(c)
-                    endif
-
-                    if r >= PatriotQ_CastTime then
-                        if k3 == 0 then
-                            call MoveEff(e, move, a)
-                            call MoveEff(e3, move, a)
-                        endif
-
-                        set x = GetEffX(e)
-                        set y = GetEffY(e)
-                        if move > 80.0 then
-                            set move = move - 1.25
-                        endif
-
-                        if r2 > 0.03 then
-                            set r2 = 0.0
-                            call DecorRemove(c, x, y, aoe, PatriotQ_DecorDamage)
-                            call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
-                            call ColorEffDummy3(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_YeYe_Wid_KuoSan_1.mdx", x, y, a * bj_RADTODEG, 1.25, 2.65, 180.0, 0, 0, 0, 255), 0.0, 0, 0, 0, 0.21)
-                        else
-                            set r2 = r2 + 0.03
-                        endif
-
-                        set r5 = r5 + move
-                        set x1 = LoadReal(hs, GetHandleId(c), StringHash("w x"))
-                        set y1 = LoadReal(hs, GetHandleId(c), StringHash("w y"))
-                        set x2 = LoadReal(hs, GetHandleId(c), StringHash("r x"))
-                        set y2 = LoadReal(hs, GetHandleId(c), StringHash("r y"))
-                        set x3 = LoadReal(hs, GetHandleId(c), StringHash("t x"))
-                        set y3 = LoadReal(hs, GetHandleId(c), StringHash("t y"))
-
-                        if r5 >= r6 then
-                            set r = 9999.0
-                        endif
-
-                        if x1 != 0.0 and SR5(e, x1, y1) < 150.0 then
-                            set r = 9999.0
-                            set k3 = 1
-                            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 1)
-                            call BlzSetSpecialEffectPosition(e, x1, y1, 25.0)
-                        endif
-
-                        if x2 != 0.0 and SR5(e, x2, y2) < 275.0 then
-                            set k3 = 1
-                            set r = 9999.0
-                            call SaveInteger(hs, GetHandleId(c), StringHash("r act"), 1)
-                            call BlzSetSpecialEffectPosition(e, x2, y2, 25.0)
-                        endif
-
-                        if x3 != 0.0 then
-                            set r4 = SR5(e, x3, y3)
-                            if check3 == 0 then
-                                set r7 = r4
-                                set check3 = 1
-                            else
-                                if r7 <= PatriotT_DamageAoe and r4 > PatriotT_DamageAoe then
-                                    set k3 = 1
-                                    call SaveInteger(hs, GetHandleId(c), StringHash("t act"), 1)
-                                endif
-                                set r7 = r4
-                            endif
-                        endif
-
-                        call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
-                        loop
-                            set u = FirstOfGroup(g)
-                            exitwhen u == null
-                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                set k2 = k2 + 1
-                                if k2 == 1 then
-                                    call MakeSound("war3mapImported\\Hero_Kirito_Q2")
-                                endif
-                                if not IsUnitInGroup(u, g2) then
-                                    call dmgphys(c, u, dmg)
-                                    if GetHeroLevel(c) >= 35 then
-                                        call PatriotPas(c, u)
-                                    endif
-                                    call GroupAddUnit(g2, u)
-                                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_FSAeff (198)1.mdl", u, "chest"))
-                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                                endif
-                                if td == null then
-                                    set td = u
-                                endif
-                                if check4 == 0 then
-                                    call SlowUnit(c, u, PatriotQ_SlowPercent, PatriotQ_SlowDuration)
-                                endif
-                                if td != null then
-                                    call PosUnit(td, x + move * Cos(a), y + move * Sin(a))
-                                endif
-                            endif
-                            call GroupRemoveUnit(g, u)
-                        endloop
-                    endif
-                endif
-
-                if remove then
-                    set x = GetEffX(e)
-                    set y = GetEffY(e)
-                    call DecorRemove(c, x, y, aoe, PatriotQ_DecorExpDamage)
-                    call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
-                    call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1.0, 1.8, 0.0, 1.0)
-                    call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1.0, 2.2, 0.0, 1.0)
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", x, y, GetRandomReal(0, 359), 1.0, 1.5, 0.0))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", x, y, GetRandomReal(0, 359), 1.0, 2.0, 0.0))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", x, y, GetRandomReal(0, 359), 1.0, 2.25, 0.0))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_YeYe_Eat_DiBanZhaKai2.mdx", x, y, GetRandomReal(0, 359), 1.5, 1.35, 0.0))
-                    call MakeSound("war3mapimported\\Hero_Patriot_Q3")
-                    call DecorRemove(c, x, y, PatriotQ_DamageAoe2, PatriotQ_DecorExpDamage)
-
-                    call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x, y, PatriotQ_DamageAoe2, NoDecor_Cond)
-                    loop
-                        set u = FirstOfGroup(g)
-                        exitwhen u == null
-                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
-                            call GroupAddUnit(g2, u)
-                            call dmgphys(c, u, dmg)
-                            if GetHeroLevel(c) >= 35 then
-                                call PatriotPas(c, u)
-                            endif
-                            if k3 == 1 then
-                                call StunUnit(c, u, PatriotQ_StunDuration)
-                            endif
-                            if check4 == 0 then
-                                call SlowUnit(c, u, PatriotQ_SlowPercent, PatriotQ_SlowDuration)
-                            endif
-                            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                        endif
-                        call GroupRemoveUnit(g, u)
-                    endloop
-
-                    call MyRemoveEff(e3, 0.15)
-                    call BlzSetSpecialEffectPitch(e, -295.0 * bj_DEGTORAD)
-                    if k3 == 0 then
-                        call MoveEff(e, 100.0, a)
-                    endif
-                    call BlzSetSpecialEffectScale(e, 1.25)
-                    call BlzSetSpecialEffectHeight(e, 25.0)
-                    call ColorEffDummy3(e, 1.0, 255, 255, 255, 0.30)
-                    call BlzSetSpecialEffectTimeScale(e, 1.15)
-
-                    if g != null then
-                        call DestroyGroup(g)
-                    endif
-                    if g2 != null then
-                        call DestroyGroup(g2)
-                    endif
-                    set g = null
-                    set g2 = null
-                    set td = null
-                    set c = null
-                    set e = null
-                    set e3 = null
-                    set m_PatriotQ[i] = m_PatriotQ[MUI_PatriotQ]
-                    set MUI_PatriotQ = MUI_PatriotQ - 1
-                    call deallocate(this)
-                    set i = i - 1
-                    if MUI_PatriotQ == -1 then
-                        call PatriotTimer03Release()
-                    endif
-                endif
-                set i = i + 1
-            endloop
-            set u = null
-        endmethod
-
-        public static method PatriotQ_Start takes unit NewC, real NewX, real NewY returns nothing
-            local thistype this = thistype.create()
-            local integer level = GetUnitAbilityLevel(NewC, PatriotQ_ID)
-            if level < 1 then
-                set level = 1
-            endif
-
-            set MUI_PatriotQ = MUI_PatriotQ + 1
-            set m_PatriotQ[MUI_PatriotQ] = this
-            set c = NewC
-            set x = NewX
-            set y = NewY
-            set td = null
-            set r = 0.0
-            set r5 = 0.0
-            set k3 = 0
-            set k2 = 0
-            set r6 = PatriotQ_RangeBase + (PatriotQ_RangeStep * (level - 1))
-            set r2 = 1.0
-            set check3 = 0
-            set r7 = 0.0
-            set g = CreateGroup()
-            set g2 = CreateGroup()
-            set check4 = 0
-            set a = GAngle2(c, x, y)
-            set rmax = 2.10
-            set move = 100.0
-            set aoe = PatriotQ_DamageAoe
-            set dmg = GetHeroAgi(c, true) * (PatriotQ_DamageAgiBase + (PatriotQ_DamageAgiStep * (level - 1)))
-            set dmg = dmg + PatriotQ_Damage2StaticBase + (PatriotQ_Damage2StaticStep * (level - 1))
-
-            call StartSpellUnit2(c)
-            call SetUnitFacing(c, a * bj_RADTODEG)
-            call Patriot_RestoreOrder(c, 9)
-
-            if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
-                set check4 = 1
-                set dmg = dmg + GetHeroAgi(c, true) * PatriotQ_RuinationAgiBonus
-            endif
-
-            call SetUnitTimeScale(c, 2.31)
-            if GetRandomInt(1, 2) == 1 then
-                call MakeSound("war3mapimported\\Hero_Patriot_Q")
-            else
-                call MakeSound("war3mapimported\\Hero_Patriot_Q4")
-            endif
-
-            if MUI_PatriotQ == 0 then
                 call PatriotTimer03Acquire()
             endif
         endmethod
@@ -1223,6 +1270,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             local unit u
             local real x1
             local real y1
+            local real distance
             local boolean remove
 
             loop
@@ -1265,7 +1313,8 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                    if SR3(u, x, y) > aoe - 350.0 and SR3(u, x, y) < aoe then
+                                    set distance = SR3(u, x, y)
+                                    if distance > aoe - 350.0 and distance < aoe then
                                         if check2 == 0 then
                                             if GetHeroLevel(c) >= 35 then
                                                 call NextDmg(c, u, GetAttack(c), 2, 0.36)
@@ -1273,7 +1322,12 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                             call dmgphys(c, u, dmg)
                                         endif
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                                        call MUE(u, 165.0, 0.06, GAngle2(u, x, y))
+                                        // Soft boundary: normal movement/knockback is
+                                        // returned quickly to the inner rim. A blink
+                                        // beyond the enumeration radius is untouched.
+                                        if distance > aoe - PatriotT_EdgeInset then
+                                            call MoveUnit3(u, distance - (aoe - PatriotT_EdgeInset), GAngle2(u, x, y))
+                                        endif
                                         set k = k + 1
                                     endif
                                 endif
@@ -1328,7 +1382,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             local real y1
             local real x2
             local real y2
-
             set MUI_PatriotT = MUI_PatriotT + 1
             set m_PatriotT[MUI_PatriotT] = this
             set c = NewC
@@ -1650,7 +1703,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call MouseOn(GetOwningPlayer(c))
             set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
             set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
-            set scale = 6.0
+            set scale = 6.0*1.2
             set scale2 = PatriotT2_Range
             set r5 = 0.30
             set rmax = 5.0
@@ -1668,143 +1721,130 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzSetSpecialEffectAlpha(e3, 255)
             endif
-
+            
             if MUI_PatriotT2 == 0 then
                 call PatriotTimer03Acquire()
             endif
         endmethod
     endstruct
 
-    private struct PatriotSpells_W
-        private static integer array m_PatriotW
-        private static integer MUI_PatriotW = -1
+    private struct PatriotSpells_F
+        private static integer array m_PatriotF
+        private static integer MUI_PatriotF = -1
 
         unit c
         real x
         real y
+        real x1
+        real y1
         real r2
-        integer k2
-        integer k3
-        real scale
+        real scale2
+        real r3
         group g
-        real dmg
-        real dmg2
         real aoe
+        real move
         real r
-        effect e
         real a
         real rmax
 
-        public static method Loop_PatriotW takes nothing returns nothing
+        public static method Loop_PatriotF takes nothing returns nothing
             local integer i = 0
             local thistype this
             local unit u
             local boolean remove
 
             loop
-                exitwhen i > MUI_PatriotW
-                set this = m_PatriotW[i]
+                exitwhen i > MUI_PatriotF
+                set this = m_PatriotF[i]
                 set remove = false
 
-                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax or LoadInteger(hs, GetHandleId(c), StringHash("w act")) != 0 or k3 >= k2 then
+                if c == null or GetUnitTypeId(c) == 0 or r >= rmax or not SpellBool(c) or LoadInteger(hs, GetHandleId(c), StringHash("stop r")) != 0 then
                     set remove = true
                 else
                     set r = RoundReal(r + 0.03, 3)
-                    if r == PatriotW_CastTime then
-                        call MakeSound("war3mapImported\\Hero_Patriot_W4")
-                        call GroupClear(g)
-                        call SaveReal(hs, GetHandleId(c), StringHash("w x"), x)
-                        call SaveReal(hs, GetHandleId(c), StringHash("w y"), y)
-                        set e = EffectSpawn("war3mapImported\\wos_[tx][z]baofengshuijing4.mdl", x, y, 1.0, 1.0, 1.0, 0.0)
-                        call BlzSetSpecialEffectAlpha(e, 0)
-                        call ColorEffDummy4(e, 0.0, 255, 255, 255, 0.30)
+                    call DebugUnit2(c)
+
+                    if r == 0.60 then
+                        call SetUnitTimeScale(c, 0.0)
                     endif
 
-                    if r >= PatriotW_CastTime then
-                        if r2 > 0.95 then
-                            set k3 = k3 + 1
-                            call GroupClear(g)
-                            call DecorRemove(c, x, y, aoe, PatriotW_DecorDamage)
-                            call VisionTimed(GetOwningPlayer(c), x, y, 1000.0, 2.0)
-                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1.0, 3.25 * scale, 200.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.15, 3.0 * scale, 125.0))
-                            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.25, 4.15 * scale, 125.0, 0.0))
-
-                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
-                            loop
-                                set u = FirstOfGroup(g)
-                                exitwhen u == null
-                                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                    call dmgmag(c, u, dmg)
-                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                                endif
-                                if IsUnitAlly(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                    if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
-                                        call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID) + 5)
-                                    else
-                                        call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID))
-                                    endif
-                                    call SetHpCurrent2(c, u, dmg2)
-                                endif
-                                call GroupRemoveUnit(g, u)
-                            endloop
-                            set r2 = 0.0
-                        else
-                            set r2 = r2 + 0.03
-                        endif
-                    endif
-                endif
-
-                if remove then
-                    if r >= PatriotW_CastTime then
-                        call ColorEffDummy3(e, 0.0, 255, 255, 255, 0.30)
+                    set x = GetMouseX(GetOwningPlayer(c))
+                    set y = GetMouseY(GetOwningPlayer(c))
+                    set a = GAngle4(x1, y1, x, y)
+                    if SR0(x1, y1, x, y) > scale2 then
+                        set x = x1 + scale2 * Cos(a)
+                        set y = y1 + scale2 * Sin(a)
                     endif
 
-                    if LoadInteger(hs, GetHandleId(c), StringHash("w act")) == 1 then
-                        call MakeSound("war3mapImported\\Hero_Patriot_W3")
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.0, 6.35 * scale, 1.0))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1.0, 1.65 * scale, 1.0))
-                        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.25, 4.85 * scale, 125.0, 0.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_ZarakiWCrack1.mdl", x, y, GetRandomReal(0, 359), 1.25, 2.0 * scale, 5.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1.0, 3.25 * scale, 200.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-RSFX-4.mdl", x, y, a * bj_RADTODEG + 90.0, 0.5, 3.0 * scale, 1.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_yz-leimitx13.mdl", x, y, a * bj_RADTODEG + 90.0, 2.5, 5.0 * scale, 1.0))
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90.0, 2.5, 4.0 * scale, 1.0))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.15, 2.475 * scale, 125.0))
+                    if SR3(c, x, y) > move then
+                        call MoveUnit(c, move, GAngle2(c, x, y))
+                        call SetUnitFacing(c, GAngle2(c, x, y) * bj_RADTODEG)
+                    else
+                        call PosUnit(c, x, y)
+                    endif
 
-                        call GroupClear(g)
+                    set x = GetUnitX(c)
+                    set y = GetUnitY(c)
+
+                    if r3 > 0.21 then
+                        set r3 = 0.0
+                        call DecorRemove(c, x, y, aoe, PatriotF_DecorDamage)
+                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun2.mdl", x + 250.0 * Cos(a), y + 250.0 * Sin(a), a * bj_RADTODEG, 0.95, 3.25, 50.0, 255, 255, 255, 190))
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_krk (1971).mdl", x, y, GetRandomReal(0, 359), 0.90, 1.0, 1.0))
+                    else
+                        set r3 = r3 + 0.03
+                    endif
+
+                    if GetHeroLevel(c) >= 25 then
+                        call DebuffClear(c)
+                    endif
+
+                    if r2 > 0.12 then
+                        set r2 = 0.0
                         call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
-                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                if k2 - k3 <= 1 then
-                                    call dmgmag(c, u, dmg)
-                                else
-                                    call dmgmag(c, u, dmg * (k2 - k3))
+                            if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and SR2(c, u) < 250.0 then
+                                call MUE(u, 250.0, 0.30, a)
+                            endif
+                            if GetHeroLevel(c) >= 35 then
+                                if IsUnitAlly(u, GetOwningPlayer(c)) and SpellBool(u) and GetUnitAbilityLevel(u, PatriotF_Buff1_ID) == 0 and GetUnitAbilityLevel(u, PatriotF_Buff2_ID) == 0 then
+                                    if c == u then
+                                        call BuffUnit1(c, u, 13)
+                                    else
+                                        call BuffUnit1(c, u, 14)
+                                    endif
                                 endif
-                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                            else
+                                call BuffUnit1(c, c, 13)
                             endif
                             call GroupRemoveUnit(g, u)
                         endloop
+                    else
+                        set r2 = r2 + 0.03
                     endif
+                endif
 
-                    call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
-
+                if remove then
+                    if c != null and GetUnitTypeId(c) != 0 then
+                        call StopSpellUnit2(c)
+                        call SaveInteger(hs, GetHandleId(c), StringHash("stop r"), 0)
+                        call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 0)
+                        call SetUnitTimeScale(c, 1.0)
+                        call MouseOff(GetOwningPlayer(c))
+                    endif
                     if g != null then
                         call DestroyGroup(g)
                     endif
-                    set e = null
                     set g = null
                     set c = null
                     set u = null
-                    set m_PatriotW[i] = m_PatriotW[MUI_PatriotW]
-                    set MUI_PatriotW = MUI_PatriotW - 1
+                    set m_PatriotF[i] = m_PatriotF[MUI_PatriotF]
+                    set MUI_PatriotF = MUI_PatriotF - 1
                     call deallocate(this)
                     set i = i - 1
-                    if MUI_PatriotW == -1 then
+                    if MUI_PatriotF == -1 then
                         call PatriotTimer03Release()
                     endif
                 endif
@@ -1813,59 +1853,49 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set u = null
         endmethod
 
-        public static method PatriotW_Start takes unit NewC, real NewX, real NewY returns nothing
+        public static method PatriotF_Start takes unit NewC returns nothing
             local thistype this = thistype.create()
-            local integer level = GetUnitAbilityLevel(NewC, PatriotW_ID)
-            if level < 1 then
-                set level = 1
-            endif
-
-            set MUI_PatriotW = MUI_PatriotW + 1
-            set m_PatriotW[MUI_PatriotW] = this
+            set MUI_PatriotF = MUI_PatriotF + 1
+            set m_PatriotF[MUI_PatriotF] = this
             set c = NewC
             set r = 0.0
-            set x = NewX
-            set y = NewY
+            set a = GetUnitFacing(c) * bj_DEGTORAD
+            set x = GetUnitX(c) + 10.0 * Cos(a)
+            set y = GetUnitY(c) + 10.0 * Sin(a)
             set r2 = 10.0
+            set r3 = 10.0
+            set move = 6.0
+            set rmax = PatriotF_Duration
             set g = CreateGroup()
-            call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
-            call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
+            set aoe = PatriotF_AoE
 
-            set aoe = PatriotW_DamageAoe
-            set a = GAngle2(c, x, y)
-            call MakeSound("war3mapImported\\Hero_Patriot_W")
-            set k2 = PatriotW_DurationBase + (PatriotW_DurationStep * (level - 1))
-            set dmg = GetHeroAgi(c, true) * (PatriotW_DamageAgiBase + (PatriotW_DamageAgiStep * (level - 1)))
-            set dmg = dmg + PatriotW_Damage2StaticBase + (PatriotW_Damage2StaticStep * (level - 1))
-            set dmg2 = GetHeroAgi(c, true) * (PatriotW_HealAgiBase + (PatriotW_HealAgiStep * (level - 1)))
-            set dmg2 = dmg2 + PatriotW_Heal2StaticBase + (PatriotW_Heal2StaticStep * (level - 1))
-            set rmax = 15.0
-            set k3 = 0
-            set scale = aoe / 800.0
+            call StartSpellUnit2(c)
+            set x1 = GetUnitX(c)
+            set y1 = GetUnitY(c)
+            call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 1)
+            call MouseOn(GetOwningPlayer(c))
+            set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
+            set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
+            set scale2 = PatriotT2_Range
 
-            call SetUnitFacing(c, a * bj_RADTODEG)
-            call Patriot_RestoreOrder(c, 3)
-            call SetUnitTimeScale(c, 1.0)
-            call VisionTimed(GetOwningPlayer(c), x, y, 750.0, 6.0)
+            call MakeSound("war3mapImported\\Hero_Patriot_F")
+            call SetUnitAnimationByIndex(c, 2)
+            call SetUnitTimeScale(c, 2.0)
 
-            if MUI_PatriotW == 0 then
+            if MUI_PatriotF == 0 then
                 call PatriotTimer03Acquire()
             endif
         endmethod
     endstruct
 
-    // ===========================================================================
-    // Master Timer Loop
-    // ===========================================================================
     private function PatriotTimer03Loop takes nothing returns nothing
-        call PatriotSpells_E.Loop_PatriotE()
-        call PatriotSpells_F.Loop_PatriotF()
         call PatriotSpells_Q.Loop_PatriotQ()
+        call PatriotSpells_W.Loop_PatriotW()
+        call PatriotSpells_E.Loop_PatriotE()
         call PatriotSpells_R.Loop_PatriotR()
         call PatriotSpells_T.Loop_PatriotT()
         call PatriotSpells_T2.Loop_PatriotT2()
-        call PatriotSpells_W.Loop_PatriotW()
+        call PatriotSpells_F.Loop_PatriotF()
     endfunction
 
     // ===========================================================================

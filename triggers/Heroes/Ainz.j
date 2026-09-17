@@ -10,14 +10,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------Q ability (Explosive Land Mine)-------------------------------
         integer AinzQ_ID = 'A0FH'
-        real AinzQ_DamageIntBase = 1.5
-        real AinzQ_DamageIntStep = 0.25
+        real AinzQ_DamageIntBase = 1.2
+        real AinzQ_DamageIntStep = 0.2
         real AinzQ_Damage2StaticBase = 100.0
         real AinzQ_Damage2StaticStep = 0.0
         real AinzQ_DamageAoe = 375.00
         real AinzQ_MineDuration = 40.00
-        real AinzQ_MineTriggerAoe = 300.00
-        real AinzQ_MineMinDistance = 300.00
+        real AinzQ_MineTriggerAoe = 375.00
+        real AinzQ_MineMinDistance = 375.00
         real AinzQ_MineChainAoe = 425.00
         boolean AinzQ_IsInvul = false
         real AinzQ_CastTime = 0.00
@@ -66,7 +66,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 //---------------W2 ability (Knight Charge / Protect)--------------------------
         integer AinzW2_ID = 'A0FL'
         integer AinzW_Buff_ID = 'B02P'
-        real AinzW2_DamageIntBase = 1.5
+        real AinzW2_DamageIntBase = 1
         real AinzW2_DamageIntStep = 0.25
         real AinzW2_Damage2StaticBase = 100.0
         real AinzW2_Damage2StaticStep = 0.0
@@ -112,7 +112,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         integer AinzE_PathBlockerId = 'YTfb'
         real AinzE_WallBlockerSpacing = 32.00
         real AinzE_WallHitDamageInt = 2.00
-        real AinzE_WallHitStun = 1.50
+        real AinzE_WallHitStun = 1.
         real AinzE_WallHitRadius = 96.00
         real AinzE_WallCheckStep = 16.00
         integer AinzE_Slow = 20
@@ -123,7 +123,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 //---------------E2 ability (Hold of Ribs - Lv. 5 Unlock)----------------------
         integer AinzE2_ID = 'A0FP'
         real AinzE2_DamageIntBase = 1.0
-        real AinzE2_DamageIntStep = 1.0
+        real AinzE2_DamageIntStep = 0.5
         real AinzE2_RootDuration = 2.00
         real AinzE2_DamagePeriod = 0.50
         integer AinzE2_RootBuff_ID = 'BEer'
@@ -145,14 +145,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         integer AinzTE_PulseCount = 4
         real AinzTE_Duration = 1.20
         real AinzTE_PullDuration = 0.18
-        real AinzTE_PullMaxRange = 150.00
+        real AinzTE_PullMaxRange = 120.00
         boolean AinzTE_IsInvul = false
         real AinzTE_CastTime = 0.00
         real AinzTE_DecorDamage = 50.0
 
 //---------------R ability (True Dark Lightning)-------------------------------
         integer AinzR_ID = 'A0FR'
-        real AinzR_DamageIntBase = 5.0
+        real AinzR_DamageIntBase = 4.0
         real AinzR_DamageIntStep = 1.0
         real AinzR_Damage2StaticBase = 0.0
         real AinzR_Damage2StaticStep = 0.0
@@ -162,7 +162,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         real AinzR_Stun = 1.0
         real AinzR_BonusAdd = 3.0
         real AinzR_BonusMax = 15.0
-        boolean AinzR_IsInvul = true
+        boolean AinzR_IsInvul = false
         real AinzR_CastTime = 0.81
         real AinzR_DecorDamage = 50.0
         integer AinzR_Debuff = 3
@@ -192,6 +192,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         boolean AinzT_IsInvul = false
         real AinzT_CastTime = 0.00
         real AinzT_DecorDamage = 100.0
+        real AinzT_ReduceCd = 7.5
 
 //---------------F ability (Dozen Layer Buffs)---------------------------------
         integer AinzF_ID = 'A0FU'
@@ -2043,10 +2044,10 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 call thistype.SetMode(c, true)
                             elseif r == 0.06 then
                                 call thistype.SetMode(c, true)
-                                call BlzStartUnitAbilityCooldown(c, AinzQ3_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzQ_ID) - 10)
-                                call BlzStartUnitAbilityCooldown(c, AinzW4_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzW_ID) - 10)
-                                call BlzStartUnitAbilityCooldown(c, AinzE3_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzE_ID) - 10)
-                                call BlzStartUnitAbilityCooldown(c, AinzR2_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzR_ID) - 10)
+                                call BlzStartUnitAbilityCooldown(c, AinzQ3_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzQ_ID) - AinzT_ReduceCd)
+                                call BlzStartUnitAbilityCooldown(c, AinzW4_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzW_ID) - AinzT_ReduceCd)
+                                call BlzStartUnitAbilityCooldown(c, AinzE3_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzE_ID) - AinzT_ReduceCd)
+                                call BlzStartUnitAbilityCooldown(c, AinzR2_ID, BlzGetUnitAbilityCooldownRemaining(c, AinzR_ID) - AinzT_ReduceCd)
                             endif
                             call thistype.SetMode(c, true)
                             if r2 > 0.96 and r < 11.5 then
@@ -2272,7 +2273,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             local integer this
             local integer i = 0
             local unit u
-            local unit td2
+            local unit td2 = null 
             local real x1
             local real y1
             local real rr1
@@ -2293,6 +2294,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     if r >= AinzTQ_CastTime then
                         set r = 0
                         call DestroyEffect(e2)
+                        call StopSpellUnit2(c)
                         set e2 = null
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -2494,7 +2496,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             if NewC == null then
                 return
             endif
-
             set p2 = GetOwningPlayer(NewC)
             set td2 = null
             if NewTd != null then
@@ -2543,6 +2544,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 set MUI_AinzTQ = MUI_AinzTQ + 1
                 set m_AinzTQ[MUI_AinzTQ] = this
                 set c = NewC
+            
+                call StartSpellUnit2(c)
                 set td = startTd
                 set p = p2
                 set x = GetUnitX(c)
@@ -2736,7 +2739,12 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     set r2 = RoundReal(r2 + 0.03, 3)
                     set r3 = RoundReal(r3 + 0.03, 3)
                     set r4 = RoundReal(r4 + 0.03, 3)
-
+                    if r< 0.45 then 
+                        call DebugUnit2(c)
+                    endif
+                    if r == 0.45 then 
+                        call StopSpellUnit2(c)
+                    endif
                     if r2 >= AinzTE_PulsePeriod then
                         set r2 = 0.00
                         set k = k + 1
@@ -2777,6 +2785,9 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endloop
                     endif
                 else
+                    if r< 0.45 then 
+                        call StopSpellUnit2(c)
+                    endif
                     call DestroyGroup(g)
                     set g = null
                     set c = null
@@ -2822,6 +2833,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             if lvl < 1 then
                 set lvl = 1
             endif
+            call StartSpellUnit2(c)
             set r4 = 10
             set dmg = GetHeroInt(c, true) * (AinzTE_DamageIntBase + AinzTE_DamageIntStep * (lvl - 1))
             set dmg = dmg / 5.0

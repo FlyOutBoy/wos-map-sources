@@ -52,7 +52,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         real BrandishW_DamageAoe = 575.0
         real BrandishW_RootDuration = 1.00
         real BrandishW_DelayBase = 1.30
-        real BrandishW_DelayStep = 0.10
+        real BrandishW_DelayStep = 0.15
         boolean BrandishW_IsInvul = false
         real BrandishW_CastTime = 0.00
         real BrandishW_DecorDamage = 40.0
@@ -91,7 +91,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         real BrandishT_DamageIntBase = 10.0
         real BrandishT_DamageIntBase2 = 1.0
         real BrandishT_DamageAoe = 1250.0
-        real BrandishT_Stun = 0.50
+        real BrandishT_Stun = 1
         real BrandishT_ScaleIncrease = 500.0
         real BrandishT_CastTime = 1.20
         real BrandishT_Duration = 0.30
@@ -953,6 +953,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                     call dmgphys(c, u, dmg2)
+                                    call StunUnit(c,u,BrandishT_Stun)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
                                 call GroupRemoveUnit(g, u)

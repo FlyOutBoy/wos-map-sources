@@ -13,8 +13,8 @@ library NatsuSpells uses GearSystems
         real NatsuQ_Damage2StaticStep = 0 // additional static damage for each next level
         real NatsuQ_DamageAoe = 375
         real NatsuQ_Range = 1300 // base breath
-        real NatsuQ_Range2 = 2500
-        real NatsuQ_Range3 = 5000
+        real NatsuQ_Range2 = 2400
+        real NatsuQ_Range3 = 4800
 //---------------W ability-----------------------------------------------------
         integer NatsuW_ID = 'A00F'
         real NatsuW_DamageAgiBase = 1 // base number x Agi damage for 1 level
@@ -34,7 +34,7 @@ library NatsuSpells uses GearSystems
         real NatsuGE_DamageAgiBonus = 1 // additional number x Agi damage for raienryuu mode
         real NatsuE_DamageAoe = 700
         integer NatsuE_Slow = 40
-        integer NatsuE_Duration = 1
+        integer NatsuE_Duration = 2
 //---------------R ability-----------------------------------------------------
         integer NatsuR_ID = 'A00H'
         real NatsuR_Stun = 1

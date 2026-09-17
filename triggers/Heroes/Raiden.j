@@ -60,8 +60,8 @@ library RaidenSpells uses GearSystems
         real RaidenW_Duration = 8.00
         real RaidenW_AtkCd = 0.10
         real RaidenTW_DamageAgiBase = 0.20
-        real RaidenTW_DamageAgiStep = 0.15
-        real RaidenTTW_DamageAgiBonus = 0.20
+        real RaidenTW_DamageAgiStep = 0.1
+        real RaidenTTW_DamageAgiBonus = 0.10
         real RaidenTW_DamageAoe = 400.0
         real RaidenTW_DamageAoeCheck = 700.0
         real RaidenTTW_DamageAoeCheck = 1000.0
@@ -94,7 +94,7 @@ library RaidenSpells uses GearSystems
         real RaidenE_PushDuration = 0.39
         real RaidenTE_DamageAoe = 650.0
         integer RaidenE_Slow = 40
-        integer RaidenE_Duration = 4
+        integer RaidenE_Duration = 1
         real RaidenE_CastTime = 0.51
         boolean RaidenE_IsInvul = true
         real RaidenE_DecorDamage = 25.0

@@ -34,7 +34,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
         integer NeuvilletteE_ID = 'A07T'
         real NeuvilletteE_DamageIntBase = 4.0
         real NeuvilletteE_DamageIntStep = 1.0
-        real NeuvilletteE_DamageAoeBase = 850.0
+        real NeuvilletteE_DamageAoeBase = 800.0
         real NeuvilletteE_DamageAoeStep = 50.0
         real NeuvilletteE_Duration = 5.0
         real NeuvilletteE_DamageInterval = 0.45

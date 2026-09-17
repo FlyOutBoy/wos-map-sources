@@ -126,33 +126,33 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         integer RimuruE4_ID = 'A0AC'
         integer RimuruE5_ID = 'A0AE'
         real RimuruE345_CD_SWAP = 10 // how long min cd for swap
-        real RimuruE3_DamageIntBase = 8 // base number x Int damage for 1 level
-        real RimuruE3_DamageAoe = 1000
+        real RimuruE3_DamageIntBase = 6 // base number x Int damage for 1 level
+        real RimuruE3_DamageAoe = 900
         real RimuruE3_Duration = 6
-        real RimuruE4_DamageIntBase = 7 // base number x Int damage for 1 level
+        real RimuruE4_DamageIntBase = 5 // base number x Int damage for 1 level
         real RimuruE4_DamageAoe = 450
         real RimuruE4_Range = 1800
-        real RimuruE5_DamageIntBase = 7 // base number x Int damage for 1 level
-        real RimuruE5_DamageAoe = 650
-        real RimuruE5_Stun = 1
-        integer RimuruE3_SlowPercent = 30
+        real RimuruE5_DamageIntBase = 5 // base number x Int damage for 1 level
+        real RimuruE5_DamageAoe = 550
+        real RimuruE5_Stun = 0.5
+        integer RimuruE3_SlowPercent = 20
         integer RimuruE3_SlowTime = 1
 //---------------T ability-----------------------------------------------------
         integer RimuruT_ID = 'A09Z'
-        real RimuruT_DamageIntBase = 11 // base number x Int damage per 1 second
+        real RimuruT_DamageIntBase = 10 // base number x Int damage per 1 second
         real RimuruT_DamageIntStep = 0 // additional number x Int damage for each next level per second
-        real RimuruT_DamageAoe = 200
+        real RimuruT_DamageAoe = 225
         real RimuruT_Stun = 0 // from 0.1 to 3
 //---------------R2 ability-----------------------------------------------------
         integer RimuruR2_ID = 'A0A6'
         real RimuruR2_DamageIntBase = 4 // base number x Int damage per 1 second
         real RimuruR2_DamageIntStep = 1 // additional number x Int damage for each next level per second
         real RimuruR2_DamageAoe = 800
-        integer RimuruR2_Slow = 60 // from 0.1 to 3
+        integer RimuruR2_Slow = 40 // from 0.1 to 3
         integer RimuruR2_SlowDuration = 2 // from 0.1 to 3
 //---------------R3 ability-----------------------------------------------------
         integer RimuruR3_ID = 'A0AF'
-        real RimuruR3_DamageIntBase = 9 // base number x Int damage per 1 second
+        real RimuruR3_DamageIntBase = 8 // base number x Int damage per 1 second
         real RimuruR3_DamageAoe = 360
         real RimuruR3_Stun = 1 // from 0.1 to 3
 //---------------T ability-----------------------------------------------------
@@ -170,9 +170,9 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         real RimuruT2_DamageIntBase = 12 // base number x Int damage for 1 level
 //---------------T3 ability-----------------------------------------------------
         integer RimuruT3_ID = 'A0AG'
-        real RimuruT3_DamageAoe = 1200 // explosion dealt damage area
-        real RimuruT3_Stun = 0.1 //cause when deal dps
-        real RimuruT3_DamageIntBase = 3.5 // base number x Int damage for 1 level
+        real RimuruT3_DamageAoe = 1000 // explosion dealt damage area
+        real RimuruT3_Stun = 0 //cause when deal dps
+        real RimuruT3_DamageIntBase = 3 // base number x Int damage for 1 level
         real RimuruT3_ChildMinDistance = 200
         real RimuruT3_TargetSearchRange = 650
         real RimuruT3_ImpactMinDistance = 100
@@ -3307,6 +3307,14 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set ang = GetRandomReal(0, 359) * bj_DEGTORAD
                                 set candidateX = .ls_x1[.k] + radius * Cos(ang)
                                 set candidateY = .ls_y1[.k] + radius * Sin(ang)
+                                // Keep every branch point inside the configured damage area.
+                                set deltaX = candidateX - x
+                                set deltaY = candidateY - y
+                                set currentDistance = SquareRoot(deltaX * deltaX + deltaY * deltaY)
+                                if currentDistance > aoe then
+                                    set candidateX = x + deltaX * aoe / currentDistance
+                                    set candidateY = y + deltaY * aoe / currentDistance
+                                endif
                                 set positionOk = true
                                 set j = 0
                                 loop
@@ -3328,6 +3336,13 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                     set radius = 500 + 40 * (.k + attempt)
                                     set candidateX = .ls_x1[.k] + radius * Cos(ang)
                                     set candidateY = .ls_y1[.k] + radius * Sin(ang)
+                                    set deltaX = candidateX - x
+                                    set deltaY = candidateY - y
+                                    set currentDistance = SquareRoot(deltaX * deltaX + deltaY * deltaY)
+                                    if currentDistance > aoe then
+                                        set candidateX = x + deltaX * aoe / currentDistance
+                                        set candidateY = y + deltaY * aoe / currentDistance
+                                    endif
                                     set positionOk = true
                                     set j = 0
                                     loop
@@ -3467,7 +3482,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                     loop
                                         set u = FirstOfGroup(g)
                                         exitwhen u == null
-                                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and SR3(u, x, y) <= aoe then
                                             set currentDistance = SR3(u, .ls_x2[k], .ls_y2[k])
                                             if currentDistance < bestDistance then
                                                 set bestDistance = currentDistance
@@ -3488,6 +3503,14 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                             set radius = GetRandomReal(100, 320)
                                             set candidateX = .ls_x2[k] + radius * Cos(ang)
                                             set candidateY = .ls_y2[k] + radius * Sin(ang)
+                                        endif
+                                        // Clamp the visible impact point to the same AoE used for damage.
+                                        set deltaX = candidateX - x
+                                        set deltaY = candidateY - y
+                                        set currentDistance = SquareRoot(deltaX * deltaX + deltaY * deltaY)
+                                        if currentDistance > aoe then
+                                            set candidateX = x + deltaX * aoe / currentDistance
+                                            set candidateY = y + deltaY * aoe / currentDistance
                                         endif
                                         set positionOk = true
                                         set j = 0
@@ -3510,6 +3533,13 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                             set radius = 400 + 40 * (k + attempt)
                                             set candidateX = .ls_x2[k] + radius * Cos(ang)
                                             set candidateY = .ls_y2[k] + radius * Sin(ang)
+                                            set deltaX = candidateX - x
+                                            set deltaY = candidateY - y
+                                            set currentDistance = SquareRoot(deltaX * deltaX + deltaY * deltaY)
+                                            if currentDistance > aoe then
+                                                set candidateX = x + deltaX * aoe / currentDistance
+                                                set candidateY = y + deltaY * aoe / currentDistance
+                                            endif
                                             set positionOk = true
                                             set j = 0
                                             loop
@@ -3579,7 +3609,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 loop
                                     set u = FirstOfGroup(g2)
                                     exitwhen u == null
-                                    if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and SR3(u, x, y) <= aoe then
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, RimuruT3_Stun)
                                         set k4 = 0
@@ -3736,7 +3766,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         endmethod
 
     endstruct
-
+    
     private function RimuruTimer03Loop takes nothing returns nothing
         call RimuruQ_KS.Loop_RimuruQ()
         call RimuruW_KS.Loop_RimuruW()

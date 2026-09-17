@@ -5,12 +5,12 @@ library ErzaG1Spells uses GearSystems
         real Erza6_ArmorDuration = 30 // how long both armor live
 //---------------Q ability-----------------------------------------------------
         integer Erza6Q_ID = 'A04A'
-        real Erza6Q_DamageAgiBase = 7 // base number x Agi damage for 1 level
+        real Erza6Q_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real Erza6Q_DamageAoe = 330
         real Erza6Q_Range = 1500
 //---------------W ability-----------------------------------------------------
         integer Erza6W_ID = 'A04B'
-        real Erza6W_DamageAgiBase = 8 // base number x Agi damage for 1 level
+        real Erza6W_DamageAgiBase = 7 // base number x Agi damage for 1 level
         real Erza6W_DamageAoe = 750 // dont make lower than 475
 //---------------E ability-----------------------------------------------------
         integer Erza6E_ID = 'A04C'

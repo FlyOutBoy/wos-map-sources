@@ -71,7 +71,7 @@ library HarribelSpells uses GearSystems
 //---------------T ability-----------------------------------------------------
         integer HarribelT_ID = 'A0AR'
         real HarribelT_DamageAgiBase = 10 // base number x Agi damage
-        real HarribelT_DamageAoe = 1000
+        real HarribelT_DamageAoe = 1100
         real HarribelT_Stun = 0
 
     endglobals

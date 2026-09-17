@@ -25,7 +25,7 @@
     {
       "json": "abilities.json",
       "binary": "war3map.w3a",
-      "sha256": "0413cd070cbbe813e37f4e63a7ace7d7e56246f18d0795fbe81482418eb0990b"
+      "sha256": "e0162f513e8271a8f01e17ecfb53ad78d40a9fde6e9d7654dd69072e1d507f8d"
     },
     {
       "json": "buffs.json",
@@ -60,7 +60,7 @@
     {
       "json": "abilities-skin.json",
       "binary": "war3mapSkin.w3a",
-      "sha256": "13647f015f51c43d5f922fd3c8bdbe369b1e4b27a762e443826f56dfff1e40d2"
+      "sha256": "8394c3d0708f07cb06660548164469ed576dca7783b3a515a066ff82cd4c1b8a"
     },
     {
       "json": "buffs-skin.json",

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "0413cd070cbbe813e37f4e63a7ace7d7e56246f18d0795fbe81482418eb0990b",
+  "source_sha256": "e0162f513e8271a8f01e17ecfb53ad78d40a9fde6e9d7654dd69072e1d507f8d",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -128856,9 +128856,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 150.0,
-            "_original_value": 150.0,
-            "_raw_hex": "00001643"
+            "value": 125.0,
+            "_original_value": 125.0,
+            "_raw_hex": "0000FA42"
           },
           "sanity_check": {
             "text": "",
@@ -194298,9 +194298,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1000.0,
-            "_original_value": 1000.0,
-            "_raw_hex": "00007A44"
+            "value": 800.0,
+            "_original_value": 800.0,
+            "_raw_hex": "00004844"
           },
           "sanity_check": {
             "text": "",
@@ -194317,9 +194317,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 1050.0,
-            "_original_value": 1050.0,
-            "_raw_hex": "00408344"
+            "value": 850.0,
+            "_original_value": 850.0,
+            "_raw_hex": "00805444"
           },
           "sanity_check": {
             "text": "",
@@ -194336,9 +194336,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 1100.0,
-            "_original_value": 1100.0,
-            "_raw_hex": "00808944"
+            "value": 900.0,
+            "_original_value": 900.0,
+            "_raw_hex": "00006144"
           },
           "sanity_check": {
             "text": "",
@@ -194355,9 +194355,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 1150.0,
-            "_original_value": 1150.0,
-            "_raw_hex": "00C08F44"
+            "value": 950.0,
+            "_original_value": 950.0,
+            "_raw_hex": "00806D44"
           },
           "sanity_check": {
             "text": "",
@@ -194374,9 +194374,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 1200.0,
-            "_original_value": 1200.0,
-            "_raw_hex": "00009644"
+            "value": 1000.0,
+            "_original_value": 1000.0,
+            "_raw_hex": "00007A44"
           },
           "sanity_check": {
             "text": "",
@@ -203343,9 +203343,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 45.0,
-            "_original_value": 45.0,
-            "_raw_hex": "00003442"
+            "value": 40.0,
+            "_original_value": 40.0,
+            "_raw_hex": "00002042"
           },
           "sanity_check": {
             "text": "",
@@ -210806,9 +210806,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 45.0,
-            "_original_value": 45.0,
-            "_raw_hex": "00003442"
+            "value": 40.0,
+            "_original_value": 40.0,
+            "_raw_hex": "00002042"
           },
           "sanity_check": {
             "text": "",
@@ -259114,9 +259114,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 750.0,
-            "_original_value": 750.0,
-            "_raw_hex": "00803B44"
+            "value": 550.0,
+            "_original_value": 550.0,
+            "_raw_hex": "00800944"
           },
           "sanity_check": {
             "text": "",
@@ -260101,9 +260101,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1000.0,
-            "_original_value": 1000.0,
-            "_raw_hex": "00007A44"
+            "value": 900.0,
+            "_original_value": 900.0,
+            "_raw_hex": "00006144"
           },
           "sanity_check": {
             "text": "",
@@ -261651,9 +261651,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 2100.0,
-            "_original_value": 2100.0,
-            "_raw_hex": "00400345"
+            "value": 1800.0,
+            "_original_value": 1800.0,
+            "_raw_hex": "0000E144"
           },
           "sanity_check": {
             "text": "",
@@ -262000,9 +262000,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1200.0,
-            "_original_value": 1200.0,
-            "_raw_hex": "00009644"
+            "value": 1000.0,
+            "_original_value": 1000.0,
+            "_raw_hex": "00007A44"
           },
           "sanity_check": {
             "text": "",
@@ -288637,9 +288637,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 15.0,
-            "_original_value": 15.0,
-            "_raw_hex": "00007041"
+            "value": 14.0,
+            "_original_value": 14.0,
+            "_raw_hex": "00006041"
           },
           "sanity_check": {
             "text": "",
@@ -288656,9 +288656,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 15.0,
-            "_original_value": 15.0,
-            "_raw_hex": "00007041"
+            "value": 13.0,
+            "_original_value": 13.0,
+            "_raw_hex": "00005041"
           },
           "sanity_check": {
             "text": "",
@@ -288675,9 +288675,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 15.0,
-            "_original_value": 15.0,
-            "_raw_hex": "00007041"
+            "value": 12.0,
+            "_original_value": 12.0,
+            "_raw_hex": "00004041"
           },
           "sanity_check": {
             "text": "",
@@ -288694,9 +288694,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 15.0,
-            "_original_value": 15.0,
-            "_raw_hex": "00007041"
+            "value": 11.0,
+            "_original_value": 11.0,
+            "_raw_hex": "00003041"
           },
           "sanity_check": {
             "text": "",
@@ -346416,9 +346416,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 700.0,
-            "_original_value": 700.0,
-            "_raw_hex": "00002F44"
+            "value": 750.0,
+            "_original_value": 750.0,
+            "_raw_hex": "00803B44"
           },
           "sanity_check": {
             "text": "",
@@ -347237,79 +347237,6 @@
         }
       ],
       "display_name": "Gacha Patriot F"
-    },
-    {
-      "old_id": {
-        "text": "Agyb",
-        "hex": "41677962"
-      },
-      "new_id": {
-        "text": "A0EF",
-        "hex": "41304546"
-      },
-      "v3_unknown": [
-        0
-      ],
-      "modifications": [
-        {
-          "field": {
-            "text": "areq",
-            "hex": "61726571"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "",
-            "_original_value": "",
-            "_encoding": "utf-8",
-            "_raw_base64": ""
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aher",
-            "hex": "61686572"
-          },
-          "field_name": "Hero ability / Способность героя",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arac",
-            "hex": "61726163"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "orc",
-            "_original_value": "orc",
-            "_encoding": "utf-8",
-            "_raw_base64": "b3Jj"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        }
-      ],
-      "display_name": "Gacha Patriot G"
     },
     {
       "old_id": {
@@ -350891,9 +350818,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
-            "_original_value": 20.0,
-            "_raw_hex": "0000A041"
+            "value": 19.0,
+            "_original_value": 19.0,
+            "_raw_hex": "00009841"
           },
           "sanity_check": {
             "text": "",
@@ -350910,9 +350837,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
-            "_original_value": 20.0,
-            "_raw_hex": "0000A041"
+            "value": 18.0,
+            "_original_value": 18.0,
+            "_raw_hex": "00009041"
           },
           "sanity_check": {
             "text": "",
@@ -350929,9 +350856,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
-            "_original_value": 20.0,
-            "_raw_hex": "0000A041"
+            "value": 17.0,
+            "_original_value": 17.0,
+            "_raw_hex": "00008841"
           },
           "sanity_check": {
             "text": "",
@@ -350948,9 +350875,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 20.0,
-            "_original_value": 20.0,
-            "_raw_hex": "0000A041"
+            "value": 16.0,
+            "_original_value": 16.0,
+            "_raw_hex": "00008041"
           },
           "sanity_check": {
             "text": "",
@@ -403414,9 +403341,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
-            "_original_value": 25.0,
-            "_raw_hex": "0000C841"
+            "value": 24.0,
+            "_original_value": 24.0,
+            "_raw_hex": "0000C041"
           },
           "sanity_check": {
             "text": "",
@@ -403433,9 +403360,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
-            "_original_value": 25.0,
-            "_raw_hex": "0000C841"
+            "value": 23.0,
+            "_original_value": 23.0,
+            "_raw_hex": "0000B841"
           },
           "sanity_check": {
             "text": "",
@@ -403452,9 +403379,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
-            "_original_value": 25.0,
-            "_raw_hex": "0000C841"
+            "value": 22.0,
+            "_original_value": 22.0,
+            "_raw_hex": "0000B041"
           },
           "sanity_check": {
             "text": "",
@@ -403471,9 +403398,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
-            "_original_value": 25.0,
-            "_raw_hex": "0000C841"
+            "value": 21.0,
+            "_original_value": 21.0,
+            "_raw_hex": "0000A841"
           },
           "sanity_check": {
             "text": "",
@@ -409916,9 +409843,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 50.0,
-            "_original_value": 50.0,
-            "_raw_hex": "00004842"
+            "value": 45.0,
+            "_original_value": 45.0,
+            "_raw_hex": "00003442"
           },
           "sanity_check": {
             "text": "",
@@ -410793,9 +410720,9 @@
           "level": 1,
           "data_pointer": 2,
           "data": {
-            "value": 3.0,
-            "_original_value": 3.0,
-            "_raw_hex": "00004040"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -410812,9 +410739,9 @@
           "level": 2,
           "data_pointer": 2,
           "data": {
-            "value": 3.0,
-            "_original_value": 3.0,
-            "_raw_hex": "00004040"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -410831,9 +410758,9 @@
           "level": 3,
           "data_pointer": 2,
           "data": {
-            "value": 3.0,
-            "_original_value": 3.0,
-            "_raw_hex": "00004040"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -410850,9 +410777,9 @@
           "level": 4,
           "data_pointer": 2,
           "data": {
-            "value": 3.0,
-            "_original_value": 3.0,
-            "_raw_hex": "00004040"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -410869,9 +410796,9 @@
           "level": 5,
           "data_pointer": 2,
           "data": {
-            "value": 3.0,
-            "_original_value": 3.0,
-            "_raw_hex": "00004040"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -412760,9 +412687,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 25.0,
-            "_original_value": 25.0,
-            "_raw_hex": "0000C841"
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
           },
           "sanity_check": {
             "text": "",
@@ -418771,9 +418698,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 1.25,
+            "_original_value": 1.25,
+            "_raw_hex": "0000A03F"
           },
           "sanity_check": {
             "text": "",
@@ -418790,9 +418717,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 1.25,
+            "_original_value": 1.25,
+            "_raw_hex": "0000A03F"
           },
           "sanity_check": {
             "text": "",
@@ -418809,9 +418736,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 1.25,
+            "_original_value": 1.25,
+            "_raw_hex": "0000A03F"
           },
           "sanity_check": {
             "text": "",
@@ -418828,9 +418755,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 1.25,
+            "_original_value": 1.25,
+            "_raw_hex": "0000A03F"
           },
           "sanity_check": {
             "text": "",
@@ -418847,9 +418774,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 1.25,
+            "_original_value": 1.25,
+            "_raw_hex": "0000A03F"
           },
           "sanity_check": {
             "text": "",
@@ -422443,9 +422370,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1.5,
-            "_original_value": 1.5,
-            "_raw_hex": "0000C03F"
+            "value": 2.5,
+            "_original_value": 2.5,
+            "_raw_hex": "00002040"
           },
           "sanity_check": {
             "text": "",
@@ -425675,9 +425602,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 10.0,
-            "_original_value": 10.0,
-            "_raw_hex": "00002041"
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
           },
           "sanity_check": {
             "text": "",
@@ -425694,9 +425621,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 10.0,
-            "_original_value": 10.0,
-            "_raw_hex": "00002041"
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
           },
           "sanity_check": {
             "text": "",
@@ -433518,6 +433445,116 @@
         }
       ],
       "display_name": "Another Anime Milim F"
+    },
+    {
+      "old_id": {
+        "text": "AOre",
+        "hex": "414F7265"
+      },
+      "new_id": {
+        "text": "A0EF",
+        "hex": "41304546"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "acdn",
+            "hex": "6163646E"
+          },
+          "field_name": "Cooldown / Перезарядка",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acas",
+            "hex": "61636173"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeff",
+            "hex": "61656666"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "Ore1",
+            "hex": "4F726531"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arlv",
+            "hex": "61726C76"
+          },
+          "field_name": "Required level / Требуемый уровень",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Gacha Patriot G"
     }
   ]
 }

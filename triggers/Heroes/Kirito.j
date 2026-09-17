@@ -37,7 +37,7 @@ library KiritoSpells uses GearSystems
         real KiritoE_AoeClickAroundClone = 250
         real KiritoE_CloneMoveRangeStep = 120
         real KiritoE_MaxMoveRange = 3000
-        real KiritoE_CloneMoveDuration = 0.42 // how much clone would run from kirito position , duration must be divisible by 0.03 seconds
+        real KiritoE_CloneMoveDuration = 0.3 // how much clone would run from kirito position , duration must be divisible by 0.03 seconds
         integer KiritoE_DummyId = 'h024'
         integer KiritoE_DummyId2 = 'h025'
         real KiritoE_PickCloneAoe = 450 // in which aoe around dummy rmb would activate tp
@@ -67,7 +67,7 @@ library KiritoSpells uses GearSystems
 //---------------G ability-----------------------------------------------------
         integer KiritoG_ID = 'A0DB'
         integer KiritoG2_ID = 'A0E3'
-        real KiritoG_Heal = 0.9 // x agi
+        real KiritoG_Heal = 1 // x agi
         real KiritoG_Time = 5.00 // every 5 sec heal
 //---------------F ability-----------------------------------------------------
         integer KiritoF_ID = 'A0DA'

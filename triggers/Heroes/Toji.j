@@ -92,8 +92,8 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 
 //---------------W2 ability (Chain Whip / Yank)--------------------------------
         integer TojiW2_ID = 'A0H2'
-        real TojiW2_CenterPullRange = 600.0
-        real TojiW2_SidePullRange = 550.0
+        real TojiW2_CenterPullRange = 700.0
+        real TojiW2_SidePullRange = 650.0
         real TojiW2_SideInwardRange = 250.0
         real TojiW2_PullDuration = 0.15
         real TojiW2_SideClickDeadzone = 250.0
@@ -126,15 +126,15 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 //---------------R ability (Fly Head Swarm)------------------------------------
         integer TojiR_ID = 'A0H4'
         real TojiR_Aoe = 1000.0
-        real TojiR_DurationBase = 5.0
+        real TojiR_DurationBase = 4.0
         real TojiR_DurationStep = 1.0
         real TojiR_DamageInterval = 1
         real TojiR_DamageAgiBase = 0.40
-        real TojiR_DamageAgiStep = 0.15
+        real TojiR_DamageAgiStep = 0.1
         real TojiR_DamageStaticBase = 0.0
         real TojiR_DamageStaticStep = 0.0
-        integer TojiR_SlowPercent = 40
-        integer TojiR_SlowDuration = 4
+        integer TojiR_SlowPercent = 30
+        integer TojiR_SlowDuration = 2
         integer TojiR_InvisAbility_ID = 'Apiv'
         integer TojiR_InvisAbility2_ID = 'Apiv'
         integer TojiR_InvisBuff_ID = 'BOwk'
@@ -161,12 +161,12 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 //---------------G ability (Cursed Tool Revolver)------------------------------
         integer TojiG_ID = 'A0H7'
         integer TojiG2_ID = 'A0H8'
-        real TojiG_DamageAgiBase = 4.00
+        real TojiG_DamageAgiBase = 3.00
         real TojiG_DamageAgiStep = 0.0
         real TojiG_DamageStaticBase = 0.0
         real TojiG_DamageStaticStep = 0.0
         real TojiG_DamageAoe = 150.00
-        real TojiG_StunTime = 0.50
+        real TojiG_StunTime = 0.0
         real TojiG_Period = 0.05
         real TojiG_MaxFlightTime = 2.00
         real TojiG_ProjectileMove = 150.00

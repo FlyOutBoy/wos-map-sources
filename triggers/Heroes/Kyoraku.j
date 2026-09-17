@@ -45,7 +45,7 @@ library KyorakuSpells uses GearSystems
 //---------------.e ability-----------------------------------------------------
         integer KyorakuE_ID = 'A052'
         integer KyorakuE2_ID = 'A058'
-        real KyorakuE_DamageAgiBase = 3 // base number x Agi damage for 1 level
+        real KyorakuE_DamageAgiBase = 2 // base number x Agi damage for 1 level
         real KyorakuE_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real KyorakuE_Damage2StaticBase = 00 // base static damage for 1 level
         real KyorakuE_Damage2StaticStep = 0 // additional static damage for each next level
@@ -53,7 +53,7 @@ library KyorakuSpells uses GearSystems
         real KyorakuE_DurationBase =1.5
         real KyorakuE_DurationStep = 0 // add time per next level
 //---------------WE ability-----------------------------------------------------
-        real KyorakuE2_DamageAgiBase = 3 // base number x Agi damage for 1 level
+        real KyorakuE2_DamageAgiBase = 2 // base number x Agi damage for 1 level
         real KyorakuE2_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real KyorakuE2_Damage2StaticBase = 0 // base static damage for 1 level
         real KyorakuE2_Damage2StaticStep = 0 // additional static damage for each next level
@@ -82,7 +82,7 @@ library KyorakuSpells uses GearSystems
         integer KyorakuT_BankaiBuff = 'B00H'
         boolean BankaiActive = false
         real KyorakuT_Dan1_MinHp = 15 // hp cant go lower than this amount
-        real KyorakuT_Dan1_Reverse = 0.8 // 1 = 100% reverse, 0.8 = 80%
+        real KyorakuT_Dan1_Reverse = 0.5 // 1 = 100% reverse, 0.8 = 80%
         real KyorakuT_Dan2_KyorakuSelfHealEnter = 5 // % of max hp that kyoraku will restore for each main enemy hero that attacked someone while 1 - st dan, for example 3 heroes deal damage while 1 - st dan, when second activated kyoraku will restore instantly 3x10% = 30% of max hp
         real KyorakuT_Dan2_DamageAgi = 1 // base number x Agi damage per second
         real KyorakuT_Dan3_ManaBurn = 1.75 //% of max mana per second loose everyone
@@ -527,7 +527,7 @@ endfunction
             set .g2 = CreateGroup()
             set .k2 = GetPlayerId(GetOwningPlayer(.c))
             
-            if GetHeroLevel(c)>= 35 then 
+            if false then 
                     call StartSpellUnit(.c)
                     else
                     call StartSpellUnit2(.c)
@@ -1423,6 +1423,7 @@ endfunction
             local real rand2 = 0
             local real rand3 = 0
             local real rand4 = 0
+            local real rr2
             local real xxx 
             local real yyy
             local real preparetime = 9.99
@@ -1678,15 +1679,16 @@ endfunction
                             call SetHpCurrent2(c,c, GetUnitState(.c, UNIT_STATE_MAX_LIFE) * (.k3 * (KyorakuT_Dan2_KyorakuSelfHealEnter / 100)))
                         endif
                     elseif .check == 2 then
-                        call BlzFrameSetValue(frame_KyorBankai3[k2], 9 - (.r + 0.03))
-                        if 9 - .r >= 0 then
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(9 - .r, 0, 2) + "|r")
+                    set rr2 = 6.99
+                        call BlzFrameSetValue(frame_KyorBankai3[k2], rr2 - (.r + 0.03))
+                        if rr2 - .r >= 0 then
+                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(rr2 - .r, 0, 2) + "|r")
                         endif
                         if LoadInteger(hs, GetHandleId(.c), StringHash("instant skip")) == 1 then 
                         call SaveInteger(hs, GetHandleId(.c), StringHash("instant skip"),0)
-                        set r = 9
+                        set r = rr2
                         endif
-                        if .r == 9 then
+                        if .r == rr2 then
                             set .r = 0
                             set .check = 3
                             call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T3", 0, false)

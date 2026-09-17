@@ -79,7 +79,7 @@ library BarraganSpells uses GearSystems
         real BarraganT_AtkDmg = 1.5 // base number x STR damage
         real BarraganT2_DamageIntBase = 10 // base number x STR damage
         real BarraganT2_Damage2StaticBase = 0 // base static damage
-        real BarraganT2_DamageAoe = 400
+        real BarraganT2_DamageAoe = 300
         real BarraganT2_Range = 2500
         real BarraganT2_StunDuration = 2 // from 0.1 to 3.0
 //---------------G ability-----------------------------------------------------

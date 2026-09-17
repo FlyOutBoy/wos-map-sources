@@ -32,7 +32,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         boolean BambiettaTE_IsInvul  = false
         boolean BambiettaR_IsInvul   = true
         boolean BambiettaTR_IsInvul  = true
-        boolean BambiettaT_IsInvul   = true
+        boolean BambiettaT_IsInvul   = false
         boolean BambiettaT2_IsInvul  = true
 
 //---------------Q ability (Burst Shell)----------------------------------------
@@ -134,7 +134,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         integer BambiettaT2_ID = 'A0DK'
         real BambiettaT_ReduceCD = 10.0
         real BambiettaT_Duration = 20.0
-        real BambiettaT_CastTime = 1.50
+        real BambiettaT_CastTime = 0.90
         real BambiettaT_DecorDamage = 40.0
 
 //---------------TT ability (Rain of Carnage)----------------------------------
@@ -481,7 +481,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set dmg = dmg + BambiettaQ_Damage2StaticBase + (BambiettaQ_Damage2StaticStep * (GetUnitAbilityLevel(c, BambiettaQ_ID) - 1))
             set rmax = 2.9
             set e = EffectSpawnScale("war3mapimported\\wos_3yifu_2red.mdx", GetUnitX(c) + 90 * Cos(a), GetUnitY(c) + 90 * Sin(a), a * bj_RADTODEG, 0.3, 1, 150, 0.12, 0.01, 1.5)
-            set r7 = BambiettaTQ_RangeBase + (BambiettaTQ_RangeStep * (GetUnitAbilityLevel(c, BambiettaQ_ID) - 1)) + GetRandomReal(-250, 250)
+            set r7 = BambiettaTQ_RangeBase + (BambiettaTQ_RangeStep * (GetUnitAbilityLevel(c, BambiettaQ_ID) - 1)) + GetRandomReal(-150, 150)
             if MUI_BambiettaTQ2 == 0 then
                 call BambiettaTimer03Acquire()
             endif
@@ -1929,6 +1929,11 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 else
                     if check == 0 then
                         call PauseUnit(c, false)
+                        if BambiettaT_IsInvul then
+                                call StopSpellUnit(c)
+                            else
+                                call StopSpellUnit2(c)
+                            endif
                     endif
                     if e != null then
                         call DestroyEffect(e)

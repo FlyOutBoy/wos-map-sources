@@ -133,6 +133,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         integer AstaT2_ID = 'A0DV'
         real AstaT_Duration = 20.0
         real AstaT_CastTime = 0.00
+        real AstaT_TR_reduceCD = 15
         boolean AstaT_IsInvul = false
         real AstaT_DecorDamage = 50.0
 
@@ -1681,16 +1682,22 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             call SetUnitTimeScale(c, 0.5)
             call UnitRemoveAbility(c, AstaSword_ID)
             call UnitAddAbility(c, AstaSword2_ID)
-            if GetHeroLevel(c) >= 35 then
+            if GetHeroLevel(c) >= 25 then
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaT2_ID, true)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaT_ID, false)
                 call UnitAddAbility(c, AstaT2_ID)
             endif
+            call UnitAddAbility(c, AstaR2_ID)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaR2_ID, true)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaR_ID, false)
+                                    call BlzStartUnitAbilityCooldown(c,AstaR2_ID,BlzGetUnitAbilityCooldownRemaining(c, AstaR_ID))
+                                if GetHeroLevel(c) >= 35 then
+                                call ReduceCooldown(c,AstaR2_ID,AstaT_TR_reduceCD)
+                                endif
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_krk (1971).mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 1.25, 1))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 3, 145))
-            call UnitAddAbility(c, AstaR2_ID)
+            
+
             call MakeSound("war3mapImported\\Hero_Asta_T")
             call MakeSound("war3mapImported\\Hero_Asta_T2")
             call AAUniversalTooltips_SetUnitForm(c, 1)

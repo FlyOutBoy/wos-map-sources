@@ -141,15 +141,15 @@ if Laxus_ID == id then
     endif
     if GetHeroLevel(c)>= 8 and LoadInteger(hs,GetHandleId(c),StringHash("pas start3"))==0 then 
     call SaveInteger(hs,GetHandleId(c),StringHash("pas start3"),1)
-    call SpellStacksSetMax(c, 4, true)
+    call SpellStacksSetMax(c, 3, true)
     endif
     if GetHeroLevel(c)>= 11 and LoadInteger(hs,GetHandleId(c),StringHash("pas start4"))==0 then 
     call SaveInteger(hs,GetHandleId(c),StringHash("pas start4"),1)
-    call SpellStacksSetMax(c, 5, true)
+    call SpellStacksSetMax(c, 4, true)
     endif
     if GetHeroLevel(c)>= 14 and LoadInteger(hs,GetHandleId(c),StringHash("pas start5"))==0 then 
     call SaveInteger(hs,GetHandleId(c),StringHash("pas start5"),1)
-    call SpellStacksSetMax(c, 6, true)
+    call SpellStacksSetMax(c, 4, true)
     endif
     if GetUnitAbilityLevel(c,AinzG_ID) == 0 then 
     call UnitAddAbility(c,AinzF_ID)

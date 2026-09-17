@@ -4,15 +4,15 @@ library ErzaTSpells uses GearSystems
 //---------------Q ability-----------------------------------------------------
         integer Erza5Q_ID = 'A03N'
         real Erza5Q_DamageAgiBase = 6 // base number x Agi damage for 1 level
-        real Erza5Q_DamageAoe = 375
+        real Erza5Q_DamageAoe = 300
 //---------------W ability-----------------------------------------------------
         integer Erza5W_ID = 'A03O'
-        real Erza5W_DamageAgiBase = 7 // base number x Agi damage for 1 level
-        real Erza5W_Range = 1700 // when increase range also increase damageaoe for half of added amount, example if increase range by 200, increase aoe by 100
+        real Erza5W_DamageAgiBase = 6 // base number x Agi damage for 1 level
+        real Erza5W_Range = 1600 // when increase range also increase damageaoe for half of added amount, example if increase range by 200, increase aoe by 100
         real Erza5W_DamageAoe = 650 // dont make lower than 475
 //---------------E ability-----------------------------------------------------
         integer Erza5E_ID = 'A03P'
-        real Erza5E_DamageAgiBase = 7 // base number x Agi damage for 1 level
+        real Erza5E_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real Erza5E_DamageAoe = 555
 //---------------R ability-----------------------------------------------------
         integer Erza5R_ID = 'A03Q'
@@ -21,12 +21,12 @@ library ErzaTSpells uses GearSystems
         integer Erza5R_Dummy = 'h00N'
 //---------------T ability-----------------------------------------------------
         integer Erza5T_ID = 'A03R'
-        real Erza5T_DamageAgiBase = 10 // base number x Agi damage for 1 level
-        real Erza5T_Stun = 0.5 // from 0.1 to 3
+        real Erza5T_DamageAgiBase = 8 // base number x Agi damage for 1 level
+        real Erza5T_Stun = 0 // from 0.1 to 3
         real Erza5T_DamageAoe = 250 
 //---------------F ability-----------------------------------------------------
         integer Erza5F_ID = 'A03S'
-        real Erza5F_DamageAgiBase = 4 // base number x Agi damage for 1 level
+        real Erza5F_DamageAgiBase = 3 // base number x Agi damage for 1 level
         real Erza5F_DamageAoe = 600
 //---------------Elemental absorb-----------------------------------------------------        
         real Erza5ElementAbsorb_Duration = 15 // in seconds , buff duration time

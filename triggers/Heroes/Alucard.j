@@ -51,8 +51,8 @@ library AlucardSpells uses GearSystems
         real AlucardW_SelfHealAgiStep = 0.25 //x agi
         real AlucardRW_DamageAgiBase = 5 // base number x Str damage for 1 level
         real AlucardRW_DamageAgiStep = 1 // additional number x Str damage for each next level
-        real AlucardRW_Duration = 2.5 // in seconds, 3 = 3 sec, also can be 3.5..... 4.1 ...... 5.. and any other number, but not lower than 0.5
-        real AlucardRW_Speed = 1100 // how fast for a second alucard can move in blood pool state
+        real AlucardRW_Duration = 2 // in seconds, 3 = 3 sec, also can be 3.5..... 4.1 ...... 5.. and any other number, but not lower than 0.5
+        real AlucardRW_Speed = 1600 // how fast for a second alucard can move in blood pool state
         real AlucardRW_DamageAoe = 725 // blood pool aoe        
 //---------------E ability-----------------------------------------------------
         integer AlucardE_ID = 'A0C4'
@@ -77,7 +77,7 @@ library AlucardSpells uses GearSystems
         integer AlucardT2_ID = 'A0C7'
         integer AlucardT_Buff_ID = 'B01E'
         integer AlucardT2_Buff_ID = 'B01F'
-        real AlucardT2_DamageAgiBase = 10 // base number x Str 
+        real AlucardT2_DamageAgiBase = 9 // base number x Str 
         real AlucardT2_DamageAoe = 675 // base aoe
         real AlucardT2_DamageAoeStep = 300 // increase aoe each time (8 times)
         real AlucardT2_Range = 1800
@@ -1704,7 +1704,7 @@ library AlucardSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.05
                     set r = S2R( R2SW( r , 0, 3 ) )
-                    call DebugUnit(c)
+                    call DebugUnit2(c)
                     if r < 2.05 then
                         call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) - r6)
                     endif
@@ -1763,7 +1763,8 @@ library AlucardSpells uses GearSystems
                         set aoe = aoe + AlucardT2_DamageAoeStep
                     endif
                 else
-                    call StopSpellUnit(c)
+                    call StopSpellUnit2(c)
+                    call SaveInteger(hs,GetHandleId(c),StringHash("invul"),0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     set c = null
@@ -1796,7 +1797,8 @@ library AlucardSpells uses GearSystems
             set rmax = 2.5
             set r6 = (GetUnitState(c, UNIT_STATE_LIFE) * ((AlucardT2_HpCost / 100))) / 40
             set aoe = AlucardT2_DamageAoe
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
+            call SaveInteger(hs,GetHandleId(c),StringHash("invul"),1)
             set a = GetUnitFacing(c) * bj_DEGTORAD
             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_red and black pool.mdl", GetUnitX(c), GetUnitY(c), 1, 1.5, 0.95, 1), 1, 255, 255, 255, 0.5)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZK-SM_XL8.mdl", GetUnitX(c), GetUnitY(c), 1, 0.75, 2, 90))

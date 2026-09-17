@@ -34,7 +34,7 @@ library TomiokaSpells uses GearSystems
         real TomiokaE_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real TomiokaE_DamageAgiStep = 0 // additional number x Agi damage for each next level
         real TomiokaE_DamageAoe = 675
-        integer TomiokaE_AtkCountBase = 3
+        integer TomiokaE_AtkCountBase = 2
         integer TomiokaE_AtkCountStep = 1
 //---------------R ability-----------------------------------------------------
         integer TomiokaR_ID = 'A024'

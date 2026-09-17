@@ -26,15 +26,15 @@ library ErzaRSpells uses GearSystems
         integer Erza4E_StackDuration = 5 // from 1 to N sec, example 1..2...3...4...5... only integer
 //---------------R ability-----------------------------------------------------
         integer Erza4R_ID = 'A03K'
-        real Erza4R_DamageAgiBase = 4 // base number x Agi damage per 1 second
+        real Erza4R_DamageAgiBase = 3 // base number x Agi damage per 1 second
         real Erza4R_DamageAgiStep = 1 // additional number x Agi damage for each next level per second
         real Erza4R_DamageAoe = 600
         real Erza4R_Stun = 1 // from 0.1 to 3
 //---------------T ability-----------------------------------------------------
         integer Erza4T_ID = 'A03L'
-        real Erza4T_DamageAgiBase = 10 // base number x Agi damage for 1 level
+        real Erza4T_DamageAgiBase = 8 // base number x Agi damage for 1 level
         real Erza4T_DamageAoe = 450
-        real Erza4T_Stun = 0.5
+        real Erza4T_Stun = 0
         real Erza4TT_Duration = 15 // in seconds , buff duration time
         real Erza4TT_AdditionalAgiDmgPerAtk = 1 // from 0 to N , 0.1...0.5, 2....100...
 //---------------F ability-----------------------------------------------------

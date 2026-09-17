@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "13647f015f51c43d5f922fd3c8bdbe369b1e4b27a762e443826f56dfff1e40d2",
+  "source_sha256": "8394c3d0708f07cb06660548164469ed576dca7783b3a515a066ff82cd4c1b8a",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -214472,12 +214472,12 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8291",
-            "_original_value": "TRIGSTR_8291",
+            "value": "TRIGSTR_6828",
+            "_original_value": "TRIGSTR_6828",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mjkx",
-            "resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second ability to make aoe slash forward.\n",
-            "_original_resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second ability to make aoe slash forward.\n"
+            "_raw_base64": "VFJJR1NUUl82ODI4",
+            "resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second R ability to make aoe slash forward.\n",
+            "_original_resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second R ability to make aoe slash forward.\n"
           },
           "sanity_check": {
             "text": "",
@@ -214538,12 +214538,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8292",
-            "_original_value": "TRIGSTR_8292",
+            "value": "TRIGSTR_7361",
+            "_original_value": "TRIGSTR_7361",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mjky",
-            "resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second ability to make aoe slash forward.\n",
-            "_original_resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second ability to make aoe slash forward.\n"
+            "_raw_base64": "VFJJR1NUUl83MzYx",
+            "resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second R ability to make aoe slash forward.\n",
+            "_original_resolved_value": "Asta enlarges his sword, empowering his other abilities. Get new R with separate cd, get +200 atk.\n[|c00FFFC0135 lvl improvement|r] after cast you gain second R ability to make aoe slash forward.\n"
           },
           "sanity_check": {
             "text": "",
@@ -226293,198 +226293,6 @@
         }
       ],
       "display_name": "Gacha Patriot F"
-    },
-    {
-      "old_id": {
-        "text": "Agyb",
-        "hex": "41677962"
-      },
-      "new_id": {
-        "text": "A0EF",
-        "hex": "41304546"
-      },
-      "v3_unknown": [
-        0
-      ],
-      "modifications": [
-        {
-          "field": {
-            "text": "aart",
-            "hex": "61617274"
-          },
-          "field_name": "Icon / Иконка",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
-            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
-            "_encoding": "utf-8",
-            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1BhdHJpb3RfRy5ibHA="
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "anam",
-            "hex": "616E616D"
-          },
-          "field_name": "Name / Имя",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_4717",
-            "_original_value": "TRIGSTR_4717",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NzE3",
-            "resolved_value": "Gacha Patriot G",
-            "_original_resolved_value": "Gacha Patriot G"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "atp1",
-            "hex": "61747031"
-          },
-          "field_name": "Tooltip / Подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_4718",
-            "_original_value": "TRIGSTR_4718",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NzE4",
-            "resolved_value": "Last Wendigo",
-            "_original_resolved_value": "Last Wendigo"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8265",
-            "_original_value": "TRIGSTR_8265",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MjY1",
-            "resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n",
-            "_original_resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "abpy",
-            "hex": "61627079"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arpx",
-            "hex": "61727078"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 2
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arpy",
-            "hex": "61727079"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "auu1",
-            "hex": "61757531"
-          },
-          "field_name": "",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8266",
-            "_original_value": "TRIGSTR_8266",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MjY2",
-            "resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n",
-            "_original_resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "abpx",
-            "hex": "61627078"
-          },
-          "field_name": "",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 2
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        }
-      ],
-      "display_name": "Gacha Patriot G"
     },
     {
       "old_id": {
@@ -278139,6 +277947,260 @@
         }
       ],
       "display_name": "Another Anime Milim F"
+    },
+    {
+      "old_id": {
+        "text": "AOre",
+        "hex": "414F7265"
+      },
+      "new_id": {
+        "text": "A0EF",
+        "hex": "41304546"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_4718",
+            "_original_value": "TRIGSTR_4718",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzE4",
+            "resolved_value": "Last Wendigo",
+            "_original_resolved_value": "Last Wendigo"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_4301",
+            "_original_value": "TRIGSTR_4301",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MzAx",
+            "resolved_value": "Last Wendigo",
+            "_original_resolved_value": "Last Wendigo"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8265",
+            "_original_value": "TRIGSTR_8265",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MjY1",
+            "resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n",
+            "_original_resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8266",
+            "_original_value": "TRIGSTR_8266",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MjY2",
+            "resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n",
+            "_original_resolved_value": "Each atk deal additional damage.\n[|c00FFFC0135 lvl improvement|r]: Q R T, T2 trigger passive when hit.\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_4717",
+            "_original_value": "TRIGSTR_4717",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzE3",
+            "resolved_value": "Gacha Patriot G",
+            "_original_resolved_value": "Gacha Patriot G"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1BhdHJpb3RfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1BhdHJpb3RfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpx",
+            "hex": "61627078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpy",
+            "hex": "61727079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Gacha Patriot G"
     }
   ]
 }

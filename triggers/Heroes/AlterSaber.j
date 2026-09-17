@@ -69,7 +69,7 @@ library AlterSaberSpells uses GearSystems
 //---------------T ability-----------------------------------------------------
         integer AlterSaberT_ID = 'A02B'
         real AlterSaberT_DamageAgiBase = 10 // base number x Agi damage
-        real AlterSaberT_DamageAoe = 535 // damage area
+        real AlterSaberT_DamageAoe = 480 // damage area
         real AlterSaberT_Range = 4000
 //---------------F ability-----------------------------------------------------
         integer AlterSaberF_ID = 'A02C'

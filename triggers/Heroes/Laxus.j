@@ -107,7 +107,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         real LaxusR_Damage2StaticBase = 0.0
         real LaxusR_Damage2StaticStep = 0.0
         real LaxusR_DamageAoe = 275.0
-        real LaxusR_DamageAoe2 = 600.0
+        real LaxusR_DamageAoe2 = 500.0
         boolean LaxusR_IsInvul = false
         real LaxusR_CastTime = 0.75
         real LaxusR_MaxDuration = 2.40
@@ -1329,6 +1329,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         public static method Loop_LaxusR takes nothing returns nothing
             local thistype this
             local real x1
+            local real scale = 0.8
             local real y1
             local real rr1
             local real rr2
@@ -1468,19 +1469,19 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call DecorRemove(c, x, y, LaxusR_DamageAoe2, LaxusR_ExplosionDecorDamage)
                         call BlzSetSpecialEffectTimeScale(e3, 5.0)
                         if check2 == 0 then
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0.0, 359.0), 0.75, 0.80, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[DoFT]EF501Item.mdl", x, y, GetRandomReal(0.0, 359.0), 0.85, 4.50, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ljq_jn_lsfgxs02.mdl", x, y, GetRandomReal(0.0, 359.0), 4.0, 0.85, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_File00229.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0.0, 359.0), 0.75, 0.80*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[DoFT]EF501Item.mdl", x, y, GetRandomReal(0.0, 359.0), 0.85, 4.50*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ljq_jn_lsfgxs02.mdl", x, y, GetRandomReal(0.0, 359.0), 4.0, 0.85*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_File00229.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0*scale, 1.0))
                         else
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)red.mdl", x, y, GetRandomReal(0.0, 359.0), 0.75, 0.80, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ljq_jn_lsfgxs02_red.mdl", x, y, GetRandomReal(0.0, 359.0), 4.0, 0.85, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedMissile.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0, 1.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 145.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0, 0.0))
-                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1.0, 1.0, 1.0, 100.0))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.25, 2.5, 255.0))
-                            call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 5.0, 175.0, 45, 0, 0, 255))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)red.mdl", x, y, GetRandomReal(0.0, 359.0), 0.75, 0.80*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ljq_jn_lsfgxs02_red.mdl", x, y, GetRandomReal(0.0, 359.0), 4.0, 0.85*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedMissile.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0*scale, 1.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)3small.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0*scale, 145.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack2.mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 3.0*scale, 0.0))
+                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_DanGe_Wav_Kuosan_1_3_0_5s.mdx", x, y, 1.0, 1.0, 1.0*scale, 100.0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25.0 * Cos(a), y + 25.0 * Sin(a), 1.0, 1.25, 2.5*scale, 255.0))
+                            call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 5.0*scale, 175.0, 45, 0, 0, 255))
                         endif
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, LaxusR_DamageAoe2, Condition(function NoDecor_Filter))

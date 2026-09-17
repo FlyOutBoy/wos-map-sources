@@ -42,12 +42,12 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
 
 //---------------E ability (Burner Finger 3 - Lava Eruption)-------------------
         integer BazzBE_ID = 'A08O'
-        real BazzBE_DamageAgiBase = 3.00
+        real BazzBE_DamageAgiBase = 2.00
         real BazzBE_DamageAgiStep = 1.00
-        real BazzBE_DamageAoe = 750.00
+        real BazzBE_DamageAoe = 600.00
         real BazzBE_PushDuration = 0.42
         real BazzBE_PushRange = 500.00
-        real BazzBE_CastTime = 0.35
+        real BazzBE_CastTime = 0.25
         boolean BazzBE_IsInvul = true
         real BazzBE_DecorDamage = 50.00
 
@@ -178,7 +178,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         if r >= BazzBQ_CastTime then
                             call StopSpellUnit2(c)
                             set check = 1
-                            set move = 350.0
+                            set move = 300.0
                             set r5 = 0.0
                             call MakeSound("war3mapimported\\Hero_BazzB_Q2")
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_file00000491.mdl", GetUnitX(c) + 115.0 * Cos(a), GetUnitY(c) + 115.0 * Sin(a), a * bj_RADTODEG, 0.5, 1.65 * 0.835, 0.0))
@@ -554,6 +554,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
             local thistype this
             local unit u
             local boolean remove
+            local real scale2 
 
             loop
                 exitwhen i > MUI_BazzBE
@@ -566,7 +567,8 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                     set r = RoundReal(r + 0.05, 3)
                     call DebugUnit(c)
                     if r == 0.15 or r == 0.20 or r == 0.25 or r >= rmax then
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_DaYanJieYanDi_2.mdx", x, y, GetRandomReal(0.0, 359.0), 0.95, scale, 50.0))
+                        set scale2 = aoe/750
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_DaYanJieYanDi_2.mdx", x, y, GetRandomReal(0.0, 359.0), 0.95, scale*scale2, 50.0))
                         set scale = scale + 0.85
                     endif
 
