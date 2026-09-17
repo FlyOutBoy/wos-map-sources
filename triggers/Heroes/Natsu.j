@@ -340,6 +340,7 @@ library NatsuSpells uses GearSystems
         endmethod
         public static method NatsuQ_Start takes unit NewC, real NewX, real NewY returns nothing
             local thistype this = thistype.create( )
+            local integer kkk = 0
             set MUI_NatsuQ = MUI_NatsuQ + 1
             set m_NatsuQ[ MUI_NatsuQ] = this
             set c = NewC
