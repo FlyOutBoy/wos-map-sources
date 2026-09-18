@@ -200,7 +200,7 @@ library HarribelSpells uses GearSystems
                         call DestroyEffect(e2)
                         call DecorRemove(c,x,y,aoe+100,25)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", x, y, GetRandomReal(0, 359), 1.2, 1.2, 0))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_5731-sl_8bc718f-F1.5.mdl", x, y, GetRandomReal(0, 359), 1, 1, 0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_5731-sl_8bc718f-F1_5.mdl", x, y, GetRandomReal(0, 359), 1, 1, 0))
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, HarribelQ_DamageAoeFinal, NoDecor_Cond)
                         loop

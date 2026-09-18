@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "03ff2415c64b02c977c2d4a13559eb0d58269e585e1980b69058e3a95976a8f0",
+  "source_sha256": "822bc0bedd3a49bfb40bd4f8b5ee2720b8389e2c37c8287af554f0ed562adbef",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -3328,10 +3328,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06O,A075,A07X",
-            "_original_value": "A06O,A075,A07X",
+            "value": "A06O,A074,A07X",
+            "_original_value": "A06O,A074,A07X",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA2TyxBMDc1LEEwN1g="
+            "_raw_base64": "QTA2TyxBMDc0LEEwN1g="
           },
           "sanity_check": {
             "text": "",
@@ -3394,10 +3394,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
             "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "_raw_base64": "UHVyY2hhc2FibGU="
           },
           "sanity_check": {
             "text": "",
@@ -5208,10 +5208,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09L,A00M",
-            "_original_value": "A09L,A00M",
+            "value": "A09L,A00X,A075",
+            "_original_value": "A09L,A00X,A075",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA5TCxBMDBN"
+            "_raw_base64": "QTA5TCxBMDBYLEEwNzU="
           },
           "sanity_check": {
             "text": "",
@@ -5390,10 +5390,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09M,A00M",
-            "_original_value": "A09M,A00M",
+            "value": "A09M,A00X,A075",
+            "_original_value": "A09M,A00X,A075",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA5TSxBMDBN"
+            "_raw_base64": "QTA5TSxBMDBYLEEwNzU="
           },
           "sanity_check": {
             "text": "",
@@ -5408,10 +5408,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
+            "value": "Campaign",
+            "_original_value": "Campaign",
             "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "_raw_base64": "Q2FtcGFpZ24="
           },
           "sanity_check": {
             "text": "",
@@ -7932,10 +7932,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
             "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "_raw_base64": "UHVyY2hhc2FibGU="
           },
           "sanity_check": {
             "text": "",
@@ -10939,10 +10939,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00W,A00X",
-            "_original_value": "A00W,A00X",
+            "value": "A00W,A00M",
+            "_original_value": "A00W,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAwVyxBMDBY"
+            "_raw_base64": "QTAwVyxBMDBN"
           },
           "sanity_check": {
             "text": "",
@@ -11281,6 +11281,538 @@
         }
       ],
       "display_name": "Sakura Sesshou"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03X",
+        "hex": "49303358"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0HT,A00M",
+            "_original_value": "A0HT,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVCxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon Sword Lostvayne"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03Y",
+        "hex": "49303359"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 6000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Murasame"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03Z",
+        "hex": "4930335A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0HU",
+            "_original_value": "A0HU",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1250
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Charged",
+            "_original_value": "Charged",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2hhcmdlZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Katana"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I040",
+        "hex": "49303430"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0HV,A00M",
+            "_original_value": "A0HV,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVixBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 6000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Philosopher's Stone"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I041",
+        "hex": "49303431"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0HW,A00M",
+            "_original_value": "A0HW,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIVyxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon-Dweller Sword"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I042",
+        "hex": "49303432"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0HY,A07Y",
+            "_original_value": "A0HY,A07Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBIWSxBMDdZ"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
+            "_encoding": "utf-8",
+            "_raw_base64": "UHVyY2hhc2FibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0FA",
+            "_original_value": "A0FA",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBGQQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shiki Knife Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I043",
+        "hex": "49303433"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A01W,A00W,A07Q",
+            "_original_value": "A01W,A00W,A07Q",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAxVyxBMDBXLEEwN1E="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ACtb",
+            "_original_value": "ACtb",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUN0Yg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "istr",
+            "hex": "69737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "isst",
+            "hex": "69737374"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 600
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Cup of Tea Evolved"
     }
   ]
 }

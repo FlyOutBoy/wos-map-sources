@@ -73,8 +73,8 @@ library AlterSaberSpells uses GearSystems
         real AlterSaberT_Range = 4000
 //---------------F ability-----------------------------------------------------
         integer AlterSaberF_ID = 'A02C'
-        real AlterSaberF_DamageFromCurrentManaBase = 9 // additional damage per atk from current saber mana
-        real AlterSaberF_DamageFromCurrentManaMorph = 13.5 // additional damage per atk from current saber mana
+        real AlterSaberF_DamageFromCurrentManaBase = 5 // additional damage per atk from current saber mana
+        real AlterSaberF_DamageFromCurrentManaMorph = 10 // additional damage per atk from current saber mana
 //---------------G ability-----------------------------------------------------
         integer AlterSaberG_ID = 'A02F'
         real AlterSaberG_DamageAgiBase = 1 // base number x Agi damage for 1 level

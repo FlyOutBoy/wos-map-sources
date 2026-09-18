@@ -306,7 +306,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
         if check > 0 then
             call BlzSetUnitSkin(c, ErzaUnitSkin_ID)
             call FixAura(c)
-            call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_[dz.spell]002_blue5.mdl", c, "origin"))
+            call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_[dz_spell]002_blue5.mdl", c, "origin"))
         endif
     endfunction
     function ErzaQ_Start takes unit c returns nothing

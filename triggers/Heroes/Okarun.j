@@ -625,6 +625,51 @@ library OkarunSpells uses GearSystems
         endmethod
     endstruct
 
+    private struct OkarunTBuff_KS
+        private static timer t_OkarunTBuff = CreateTimer()
+        private static integer array m_OkarunTBuff
+        private static integer MUI_OkarunTBuff = -1
+        unit c
+        real r
+
+        private static method Loop_OkarunTBuff takes nothing returns nothing
+            local integer this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_OkarunTBuff
+                set this = m_OkarunTBuff[i]
+                set r = r + 0.03
+                if r < OkarunT_Buff_Duration and GetUnitTypeId(c) != 0 then
+                    if GetUnitAbilityLevel(c, OkarunT_Buff_ID) == 0 then
+                        call BuffUnit1(c, c, 3)
+                    endif
+                else
+                    call UnitRemoveAbility(c, OkarunT_Buff_ID)
+                    set c = null
+                    set m_OkarunTBuff[i] = m_OkarunTBuff[MUI_OkarunTBuff]
+                    set MUI_OkarunTBuff = MUI_OkarunTBuff - 1
+                    if MUI_OkarunTBuff == -1 then
+                        call PauseTimer(t_OkarunTBuff)
+                    endif
+                    call deallocate(this)
+                    set i = i - 1
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        public static method OkarunTBuff_Start takes unit NewC returns nothing
+            local thistype this = thistype.create()
+            set MUI_OkarunTBuff = MUI_OkarunTBuff + 1
+            set m_OkarunTBuff[MUI_OkarunTBuff] = this
+            set c = NewC
+            set r = 0
+            if MUI_OkarunTBuff == 0 then
+                call TimerStart(t_OkarunTBuff, 0.03, true, function thistype.Loop_OkarunTBuff)
+            endif
+        endmethod
+    endstruct
+
     private struct OkarunT_KS
         private static timer t_OkarunT = CreateTimer( )
         private static integer array m_OkarunT
@@ -674,6 +719,7 @@ library OkarunSpells uses GearSystems
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
                         call BuffUnit1(c, c, 3)
+                        call OkarunTBuff_KS.OkarunTBuff_Start(c)
                         if GetHeroLevel(c) >= 35 then
                 set r5 = OkarunF_MaxSpeed3
             elseif GetHeroLevel(c) >= 25 then
@@ -684,7 +730,7 @@ library OkarunSpells uses GearSystems
                 set r5 = OkarunF_MaxSpeed0
             endif
             call SaveReal(hs, GetHandleId(c), StringHash("current speed"), r5*OkarunT_bonusspeed)
-                        call MyFrameBuff(c, OkarunT_Buff_ID, OkarunT_Buff_Duration, "BTNHero_Okarun_T",false)
+                        call MyFrame(c,OkarunT_Buff_Duration,"BTNHero_Okarun_T",false,0)
                         call MakeSound("war3mapimported\\Hero_Okarun_T3")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_az2_az_laser3-x.mdl" , x , y, 1, 1, 2.5, 111))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_saberalterqc.mdl" , x , y, 1, 2, 4, 1))

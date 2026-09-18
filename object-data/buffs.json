@@ -1093,6 +1093,22 @@
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_SakuraSesshou.blp",
     "target_art": ""
   },
+  "B039": {
+    "name": "Demon Dweller Magic",
+    "base_id": "BHds",
+    "tooltip": "Demon-Dweller Sword",
+    "extended_tooltip": "Unit Gain 30% more magical damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+    "target_art": "war3mapImported\\wos_purpaura.mdx"
+  },
+  "B03A": {
+    "name": "Demon Dweller Physical",
+    "base_id": "BHds",
+    "tooltip": "Demon-Dweller Sword",
+    "extended_tooltip": "Unit Gain 30% more physical damage",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+    "target_art": "war3mapImported\\wos_purpaura.mdx"
+  },
   "BEer": {
     "name": "",
     "base_id": "BEer",

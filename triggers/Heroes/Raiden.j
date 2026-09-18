@@ -146,7 +146,7 @@ library RaidenSpells uses GearSystems
         // G Ability
         // --------------------------------------------------------------------------
         integer RaidenG_ID = 'A0GD'
-        real RaidenG_AgiDMG = 1.50
+        real RaidenG_AgiDMG = 1
         integer RaidenG_CountAtkToTrigger = 3
 
         // --------------------------------------------------------------------------

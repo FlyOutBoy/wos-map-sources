@@ -4,7 +4,7 @@
     {
       "category": "abilities",
       "file": "abilities.json",
-      "objects": 650
+      "objects": 657
     },
     {
       "category": "units",
@@ -14,12 +14,12 @@
     {
       "category": "items",
       "file": "items.json",
-      "objects": 141
+      "objects": 148
     },
     {
       "category": "buffs",
       "file": "buffs.json",
-      "objects": 122
+      "objects": 124
     },
     {
       "category": "upgrades",

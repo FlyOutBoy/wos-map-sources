@@ -1440,6 +1440,7 @@ endstruct
         real r3
         real dmg
         real rmax
+        string s
         integer k
         unit td
         unit c
@@ -1460,7 +1461,13 @@ endstruct
                 elseif k == 1 then
                     call dmgmag(c, td, dmg)
                 else
+                    if s == "murasume" then 
+                    set MurasameTrigger = true
+                    endif
                     call dmgatk(c, td, dmg)
+                    if s == "murasume" then 
+                    set MurasameTrigger = false
+                    endif
                 endif
             endif
         else
@@ -1481,7 +1488,7 @@ endmethod
 // use r = current tick count, rmax = total tick count (integer)
 // r3 stays as period accumulator
 
-public static method DmgPTime_Start takes unit NewC, unit NewTd, real NewDmg, real NewDuration, real NewPeriod, integer NewTD returns nothing
+public static method DmgPTime_Start takes unit NewC, unit NewTd, real NewDmg, real NewDuration, real NewPeriod, integer NewTD, string NewS returns nothing
     local thistype this = thistype.create()
     local integer totalTicks
     set MUI_5 = MUI_5 + 1
@@ -1492,6 +1499,7 @@ public static method DmgPTime_Start takes unit NewC, unit NewTd, real NewDmg, re
     set r3 = 0       // period accumulator
     set r2 = NewPeriod
     set k = NewTD
+    set s = NewS
     if r2 <= 0 then
         set r2 = 0.05
     endif
@@ -4433,7 +4441,10 @@ endfunction
         call KS_RemoveEffect.MyRemoveEff_Start(c, r, 3, -1, 0, "")
     endfunction
     function DmgPTime takes unit c, unit td, real dmg, real rmax, real period, integer typedmg returns nothing
-        call KS_DamageOverTime.DmgPTime_Start(c, td, dmg, rmax, period, typedmg)
+        call KS_DamageOverTime.DmgPTime_Start(c, td, dmg, rmax, period, typedmg,"")
+    endfunction
+    function DmgPTime2 takes unit c, unit td, real dmg, real rmax, real period, integer typedmg, string s returns nothing
+        call KS_DamageOverTime.DmgPTime_Start(c, td, dmg, rmax, period, typedmg,s)
     endfunction
     function HeightSet takes unit c, real time, real fly returns nothing
         call KS_UnitHeight.HeightSet_Start(c, time, fly, 0)

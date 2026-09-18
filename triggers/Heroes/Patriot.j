@@ -103,7 +103,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         // --------------------------------------------------------------------------
         integer PatriotT_ID = 'A0EB'
         integer PatriotT2_ID = 'A0EC'
-        real PatriotT_Duration = 5.0
+        real PatriotT_Duration = 4.0
         real PatriotT_DamageAgiBase = 3.5
         real PatriotT_DamageAoe = 800.0
         real PatriotT_EdgeInset = 150.0

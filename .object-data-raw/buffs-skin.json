@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "5bdded8be76df9a3ea3ba5c3a26fdb4a972e35275eb15e2f4d1f0ae5f99337ba",
+  "source_sha256": "af3d4d7d3f4a284532ed5aeeac5dad9bc51530f2a22991abf816000611f80ecb",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -13098,6 +13098,230 @@
         }
       ],
       "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B039",
+        "hex": "42303339"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8482",
+            "_original_value": "TRIGSTR_8482",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDgy",
+            "resolved_value": "Demon-Dweller Sword",
+            "_original_resolved_value": "Demon-Dweller Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8485",
+            "_original_value": "TRIGSTR_8485",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDg1",
+            "resolved_value": "Unit Gain 30% more magical damage",
+            "_original_resolved_value": "Unit Gain 30% more magical damage"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_purpaura.mdx",
+            "_original_value": "war3mapImported\\wos_purpaura.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19wdXJwYXVyYS5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlbW9uRHdlbGxlclN3b3JkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8486",
+            "_original_value": "TRIGSTR_8486",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDg2",
+            "resolved_value": "Demon Dweller Magic",
+            "_original_resolved_value": "Demon Dweller Magic"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon Dweller Magic"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03A",
+        "hex": "42303341"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8487",
+            "_original_value": "TRIGSTR_8487",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDg3",
+            "resolved_value": "Demon-Dweller Sword",
+            "_original_resolved_value": "Demon-Dweller Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8488",
+            "_original_value": "TRIGSTR_8488",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDg4",
+            "resolved_value": "Unit Gain 30% more physical damage",
+            "_original_resolved_value": "Unit Gain 30% more physical damage"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_purpaura.mdx",
+            "_original_value": "war3mapImported\\wos_purpaura.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19wdXJwYXVyYS5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlbW9uRHdlbGxlclN3b3JkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8489",
+            "_original_value": "TRIGSTR_8489",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDg5",
+            "resolved_value": "Demon Dweller Physical",
+            "_original_resolved_value": "Demon Dweller Physical"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon Dweller Physical"
     }
   ]
 }

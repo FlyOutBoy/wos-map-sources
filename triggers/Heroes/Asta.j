@@ -27,7 +27,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         real AstaQ_DamageAoe = 350.0
         real AstaQ_DamageAoe2 = 450.0
         real AstaQ_RangeBase = 1400.0
-        real AstaQ_RangeStep = 0.0
+        real AstaQ_RangeStep = 125.0
         real AstaQ_TimeSwap = 4.0
         real AstaTQ_AoeBonus = 35.0 // %
         real AstaTQ_DmgBonus = 1.0  // x Agi
@@ -45,8 +45,8 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         real AstaQ2_Damage2StaticStep = 0.0
         real AstaQ2_DamageAoe = 350.0
         real AstaQ2_DamageAoe2 = 450.0
-        real AstaQ2_RangeBase = 1450.0
-        real AstaQ2_RangeStep = 0.0
+        real AstaQ2_RangeBase = 1350.0
+        real AstaQ2_RangeStep = 120.0
         real AstaQ2_CastTime = 0.60
         real AstaQ2_Duration = 1.65
         boolean AstaQ2_IsInvul = false

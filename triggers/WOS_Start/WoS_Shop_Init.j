@@ -500,33 +500,48 @@ function ShopGetSectionPageCount takes integer page returns integer
 endfunction
 
 function SortShopPageByPrice takes integer page returns nothing
+    local integer read = 0
+    local integer count = 0
     local integer left = 0
     local integer right
+    local integer itemId
     local integer leftId
     local integer rightId
     local integer leftValue
     local integer rightValue
+
+    // Compact sparse category definitions first. Without this pass, categories
+    // that use slots 0 and 14+ keep empty holes and can render stale item frames.
     loop
-        exitwhen left >= SHOP_CATEGORY_MAX_ITEMS - 1
-        set leftId = ShopGetPageItem(page, left)
-        if leftId != 0 then
-            set leftValue = GetItemValue(leftId)
-            set right = left + 1
-            loop
-                exitwhen right >= SHOP_CATEGORY_MAX_ITEMS
-                set rightId = ShopGetPageItem(page, right)
-                if rightId != 0 then
-                    set rightValue = GetItemValue(rightId)
-                    if rightValue < leftValue then
-                        call ShopSetPageItem(page, left, rightId)
-                        call ShopSetPageItem(page, right, leftId)
-                        set leftId = rightId
-                        set leftValue = rightValue
-                    endif
-                endif
-                set right = right + 1
-            endloop
+        exitwhen read >= SHOP_CATEGORY_MAX_ITEMS
+        set itemId = ShopGetPageItem(page, read)
+        if itemId != 0 then
+            if read != count then
+                call ShopSetPageItem(page, count, itemId)
+                call ShopSetPageItem(page, read, 0)
+            endif
+            set count = count + 1
         endif
+        set read = read + 1
+    endloop
+
+    loop
+        exitwhen left >= count - 1
+        set leftId = ShopGetPageItem(page, left)
+        set leftValue = GetItemValue(leftId)
+        set right = left + 1
+        loop
+            exitwhen right >= count
+            set rightId = ShopGetPageItem(page, right)
+            set rightValue = GetItemValue(rightId)
+            if rightValue < leftValue then
+                call ShopSetPageItem(page, left, rightId)
+                call ShopSetPageItem(page, right, leftId)
+                set leftId = rightId
+                set leftValue = rightValue
+            endif
+            set right = right + 1
+        endloop
         set left = left + 1
     endloop
 endfunction
@@ -577,6 +592,7 @@ function MyItemsIdInit takes nothing returns nothing
     set ItemsPage1_ID[29] = 'I00E' 
     set ItemsPage1_ID[30] = 'I00O' 
     set ItemsPage1_ID[31] = 'I01N' 
+    set ItemsPage1_ID[32] = 'I03Z'
 
     set ItemsPage2_ID[0] = 'I005' 
     set ItemsPage2_ID[14] = 'I02L' 
@@ -589,21 +605,22 @@ function MyItemsIdInit takes nothing returns nothing
     set ItemsPage3_ID[14] = 'I01I' 
     set ItemsPage3_ID[15] = 'I00T' 
     set ItemsPage3_ID[16] = 'I010' 
-    set ItemsPage3_ID[17] = 'I01U' 
+    set ItemsPage3_ID[17] = 'I015'
     set ItemsPage3_ID[18] = 'I016' 
     set ItemsPage3_ID[19] = 'I024' 
+    set ItemsPage3_ID[21] = 'I042'
 
     set ItemsPage4_ID[0] = 'I03H' 
     set ItemsPage4_ID[14] = 'I00H' 
     set ItemsPage4_ID[15] = 'I01B' 
     set ItemsPage4_ID[16] = 'I01C' 
-    set ItemsPage4_ID[17] = 'I01S' 
-    set ItemsPage4_ID[18] = 'I015' 
+    set ItemsPage4_ID[17] = 'I01U'
+    set ItemsPage4_ID[18] = 'I01S'
     set ItemsPage4_ID[19] = 'I011' 
 
 set k = 0
 loop
-    exitwhen k == 35
+    exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
     set itemList[k]=0
     set k = k + 1
 endloop
@@ -639,18 +656,21 @@ set k = 0
     set itemList[28] = 'I03U' 
     set itemList[29] = 'I03V' 
     set itemList[30] = 'I03W' 
+    set itemList[31] = 'I03X'
+    set itemList[32] = 'I03Y'
+    set itemList[33] = 'I040'
+    set itemList[34] = 'I041'
+    set itemList[35] = 'I043'
     set k = 0
 loop
-    exitwhen k == 35
-    if itemList[k] != 0 then
+    exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
     set ItemsPage5_ID[k] = itemList[k]
-    endif
     set k = k + 1
 endloop
 
 set k = 0
 loop
-    exitwhen k == 35
+    exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
     set itemList[k]=0
     set k = k + 1
 endloop
@@ -666,10 +686,8 @@ set itemList[19] = 'I013'
 set itemList[20] = 'I02N' 
 set k = 0
 loop
-    exitwhen k == 35
-    if itemList[k] != 0 then
+    exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
     set ItemsPage6_ID[k] = itemList[k]
-    endif
     set k = k + 1
 endloop
 
@@ -1044,6 +1062,12 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I03U', "I017")
     call RegisterCraft('I03V', "I00U")
     call RegisterCraft('I03W', "I035")
+    call RegisterCraft('I03X', "I02P I01J")
+    call RegisterCraft('I03Y', "I02P I03Z")
+    call RegisterCraft('I040', "I02O")
+    call RegisterCraft('I041', "I03F")
+    call RegisterCraft('I042', "I02P")
+    call RegisterCraft('I043', "I00M")
 endfunction
 
 function SetPlayerCraftSlot takes integer pid, integer slot, integer itemId returns nothing

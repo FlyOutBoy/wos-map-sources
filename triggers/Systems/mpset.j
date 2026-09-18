@@ -7,11 +7,7 @@ function mpsetActions takes nothing returns nothing
     if r <= 1 then 
     set r = 1
     endif
-    if TestUnit != null then 
-    call SetUnitState(TestUnit,UNIT_STATE_MANA,r)
-    else
-    call SetUnitState(Hero[i],UNIT_STATE_MANA,r)
-    endif
+    call SetUnitState(GetSelectedHeroForPlayer(GetTriggerPlayer()),UNIT_STATE_MANA,r)
     endif
     set u = null
     set r = 0

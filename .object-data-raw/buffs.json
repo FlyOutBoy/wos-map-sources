@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "c0810711df86b78871b0dc9a9ee8c1f5c5f679dfe5d089da42cfcc4d38c29890",
+  "source_sha256": "48360204769a4c7b8b0e205d4e0562ed74b97de5ac3dd9e525726b70b7247893",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3434,6 +3434,36 @@
       ],
       "modifications": [],
       "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B039",
+        "hex": "42303339"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Demon Dweller Magic"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03A",
+        "hex": "42303341"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Demon Dweller Physical"
     }
   ]
 }

@@ -3583,10 +3583,14 @@ endif
                         endif
                     endif
                     if Hero[i] != null and Leave[i] == 0 then
+                        if TestMode == false then 
                         if IsInTeam1(i) then
                             call SetUnitPosition(Hero[i], x1, y1)
                         else
                             call SetUnitPosition(Hero[i], x2, y2)
+                        endif
+                        else
+                            call SetUnitPosition(Hero[i], x1, y1)
                         endif
                         if GetUnitTypeId(Hero[i]) == Takeshi_ID then
                             call TakeshiGOff_Start(Hero[i])

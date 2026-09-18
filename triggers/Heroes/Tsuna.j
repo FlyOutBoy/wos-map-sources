@@ -1322,7 +1322,7 @@ library TsunaSpells uses GearSystems
                             call SlowUnit(c, td, TsunaR_Slow, TsunaR_SlowDuration)
                             set rmax = TsunaR_Duration
                             set r5 = 0
-                            set e3 = EffectSpawn("war3mapImported\\wos_buff.red_89_1_0.mdl", x, y, a * bj_RADTODEG, 2, 3.25, 8)
+                            set e3 = EffectSpawn("war3mapImported\\wos_buff_red_89_1_0.mdl", x, y, a * bj_RADTODEG, 2, 3.25, 8)
                             set e4 = EffectSpawn("war3mapImported\\wos_hakkestart.mdl", x, y, a * bj_RADTODEG, 1, 1, 4)
                             call AnimDummyEff(e4, 0.25, 0)
                             set a = a + 180 * bj_DEGTORAD
@@ -1455,7 +1455,7 @@ library TsunaSpells uses GearSystems
                             set r = 0
                             set rmax = TsunaR2_Duration
                             set r5 = 0
-                            set e3 = EffectSpawn("war3mapImported\\wos_buff.red_89_1_0.mdl", x, y, a * bj_RADTODEG, 2, 6.5, 8)
+                            set e3 = EffectSpawn("war3mapImported\\wos_buff_red_89_1_0.mdl", x, y, a * bj_RADTODEG, 2, 6.5, 8)
                             set e4 = EffectSpawn("war3mapImported\\wos_hakkestart.mdl", x, y, a * bj_RADTODEG, 1, 2, 4)
                             call AnimDummyEff(e4, 0.25, 0)
                             set a = a + 180 * bj_DEGTORAD

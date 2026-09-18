@@ -527,7 +527,7 @@ library KiritoSpells uses GearSystems
                     call SaveReal(hs,GetHandleId(c),StringHash("e y"),GetMouseY(GetOwningPlayer(c)))
                     if r == r5 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_afb_satomirentaro_kuding_clear.mdl", x, y, 0, 0.5, 3, 15))
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", x, y, 0, 1.5, 2, 5))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", x, y, 0, 1.5, 2, 5))
                        // call StopSpellUnit2(c)
                         set k = 0
                         loop
@@ -645,7 +645,7 @@ library KiritoSpells uses GearSystems
                     loop
                         exitwhen k > 3
                         call ColorDummy3(dd[k], 0, 255, 255, 255, 0.4)
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), 0, 1.5, 1, 0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), 0, 1.5, 1, 0))
                         call SaveUnitHandle(hs, GetHandleId(c), StringHash("dummy" + I2S(k)), null)
                         set dd[k] = null
                         set k = k + 1
@@ -852,8 +852,8 @@ library KiritoSpells uses GearSystems
             call AddSpellLevel(c,'A01C',10,true)
             set e = AddSpecialEffectTarget("war3mapImported\\wos_aurapartblue.mdx", c, "origin")
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_JN_22blue.mdx", c, "chest")
-            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", x, y, 0, 1.25, 2, 0))
-            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", x, y, 0, 1.25, 1.5, 0))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", x, y, 0, 1.25, 2, 0))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", x, y, 0, 1.25, 1.5, 0))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.1, 1, 3))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.1, 2, 3))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.1, 3, 3))
@@ -1143,10 +1143,10 @@ library KiritoSpells uses GearSystems
                         if r == 0.3 then
                             set r = 0
                             set check = 1
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
                             call PosUnit(c, x - 150 * Cos(a), y - 150 * Sin(a))
                             call SetUnitFacing(c, GAngle(c, td) * bj_RADTODEG)
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
                             call SetUnitTimeScale(c, 0.9)
                         endif
                     elseif check == 1 then
@@ -1299,9 +1299,9 @@ library KiritoSpells uses GearSystems
                         endif
                         if r == 1.02 then
                             call MakeSound("war3mapImported\\Hero_Kirito_T7")
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
                             call PosUnit(c, x - 150 * Cos(a), y - 150 * Sin(a))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 1.35, 1, 0))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Xuanfeng_whitewind.mdl", x - 60 * Cos(a), y - 60 * Sin(a), a * bj_RADTODEG, 0.5, 2.5, 125))
                         endif
                         if r == 1.02 then // final strike end
@@ -1544,14 +1544,14 @@ endfunction
         local real a = GAngle(c,td)
         local real x = GetUnitX(td)-110*Cos(a)
         local real y = GetUnitY(td)-110*Sin(a)        
-        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 2, 1.5, 0))
+        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 2, 1.5, 0))
         call PosUnit(c,x,y)
         call SetUnitAnimation(c,"attack")
         call dmgatk(c,td,dmg)
         if IntegerCd(c,"cd atk ss",4) then 
         call MakeSound("war3mapimported\\Hero_Kirito_T5")
         endif
-        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 2, 1.5, 0))
+        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", GetUnitX(c), GetUnitY(c), 0, 2, 1.5, 0))
     endfunction
     function KiritoR_Attack takes unit c, unit td, real adddmg returns nothing
         local real x = GetUnitX(td)
@@ -1606,8 +1606,8 @@ endfunction
         call PosUnit(c,x,y)
         call PosUnit(td,x2,y2)
         call MakeSound("war3mapImported\\Hero_Kirito_F")
-        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", x, y, 0, 1.5, 1.5, 0))
-        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz.spell]002_blue5.mdl", x2, y2, 0, 1.5, 1.5, 0))
+        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", x, y, 0, 1.5, 1.5, 0))
+        call DestroyEffect(EffectSpawn("war3mapImported\\wos_[dz_spell]002_blue5.mdl", x2, y2, 0, 1.5, 1.5, 0))
     endfunction
 endlibrary
 

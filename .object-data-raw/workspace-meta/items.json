@@ -16632,6 +16632,837 @@
           "data_pointer": null
         }
       }
+    },
+    "I03X": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 141,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 141,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I03Y": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 142,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 142,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I03Z": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 143,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 2
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 3
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "classification": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 2
+          },
+          "field_id": "icla",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 143,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I040": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 144,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 144,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I041": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 145,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 145,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I042": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 146,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "actively_used": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 4
+          },
+          "field_id": "iusa",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "classification": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 2
+          },
+          "field_id": "icla",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 3
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 1
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 146,
+            "modification_index": 0
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "I043": {
+      "base_id": "rde1",
+      "name_source": {
+        "file": "war3mapSkin.w3t",
+        "group": "custom_objects",
+        "object_index": 147,
+        "modification_index": 0
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 1
+          },
+          "field_id": "utip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 3
+          },
+          "field_id": "utub",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 2
+          },
+          "field_id": "iico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "cooldown_group": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 2
+          },
+          "field_id": "icid",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "description": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 4
+          },
+          "field_id": "ides",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_isst": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 4
+          },
+          "field_id": "isst",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_istr": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 3
+          },
+          "field_id": "istr",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uhot": {
+          "source": {
+            "file": "war3mapSkin.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 5
+          },
+          "field_id": "uhot",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "abilities": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 0
+          },
+          "field_id": "iabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "gold_cost": {
+          "source": {
+            "file": "war3map.w3t",
+            "group": "custom_objects",
+            "object_index": 147,
+            "modification_index": 1
+          },
+          "field_id": "igol",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
     }
   }
 }

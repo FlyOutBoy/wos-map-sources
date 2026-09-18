@@ -498,8 +498,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 111162,
-      "sha256": "79499b23b826581298012135e80400488e308834b9d4694e5f179845e91df534",
+      "source_bytes": 112062,
+      "sha256": "edc2baadc9bfde9f0eac195cfe51481f0f88fbf8fd21f7d2fae64c82978080a2",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -523,8 +523,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 217601,
-      "sha256": "c56179c0d944104422ffdb72639c302702523eaaec2f43839b9cb232648da3a0",
+      "source_bytes": 217781,
+      "sha256": "ec53e7610a35f585ea58b988a1053f95e6cc9a21c02e4e7204aeb4d7300ed07f",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -721,13 +721,13 @@
       "category": "Systems",
       "category_id": "0x0200000B",
       "trigger_name": "CastAItems",
-      "comment": "real FairyTailEmblem_CD = 18\r\n        real FairyTailEmblem_ManaRestoreStatic = 250\r\n        real FairyTailEmblem_ManaRestorePercent = 18 // of max mana",
+      "comment": "//----------------------Urahara Set----------------------------------------------\r\n        real UraharaSet_Range = 900 // traveled for 1 sec  \r\n//----------------------Incursio----------------------------------------------\r\n        real Incursio_Range = 900 // traveled for 1 sec  ",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastAItems.j",
-      "source_bytes": 12048,
-      "sha256": "cc2e4f4b5f3cc567411e5b1a3d08c9abe5a0ac7af64a5748eaf9052acaf9bbbd",
+      "source_bytes": 12155,
+      "sha256": "304b0956ba2de23591152d7a938fda355235f2823ba9bf23cfa986a7924df95e",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -869,8 +869,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 137163,
-      "sha256": "1ce2967c53af1bf999931acb9b0ae5853df31c7f304ffd609bf8f2674577f2a1",
+      "source_bytes": 138849,
+      "sha256": "f9dd7cfb303a9825927bcd8108e2e8b62e731716e6ccfd7b96d782cd65469952",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -902,8 +902,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems2.j",
-      "source_bytes": 196615,
-      "sha256": "915be60a18bc03d7aad2ebe8cf64ebf15bde7fcfe47df12b94db4f89f53640e1",
+      "source_bytes": 197133,
+      "sha256": "a9d42a8682f9fb6dd3ac0686134d4183853c9acb41ddf082fafad36f970a6bab",
       "declarations": {
         "libraries": [
           "GearSystems2"
@@ -970,8 +970,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 37235,
-      "sha256": "dc8a3e3f20e35528b8ab5e7db69b24bfa42cac8e8f4d1bbb6da8407d2d2c3076",
+      "source_bytes": 39517,
+      "sha256": "5db59a6d34d2a408e3a8c39834a7c72c5ccc0f214c78380a3838df6448d63cbd",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1395,8 +1395,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/hpset.j",
-      "source_bytes": 961,
-      "sha256": "be4b6987cc5362517ff130dd4a34de350f6462969727015c5acb608f9cb2b387",
+      "source_bytes": 895,
+      "sha256": "0b433647b169c1374c1b155ccb1d27882322e3636df8797036bee86ebf7359e5",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1420,8 +1420,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/mpset.j",
-      "source_bytes": 961,
-      "sha256": "347f1397dc8980aafcc6516bb0ce1d0b05fe69ba198003f31e3dd20d16b54a6a",
+      "source_bytes": 895,
+      "sha256": "4bd287c02ab6eef089cdedd46fe22e68af49a30aebe16d09afe8da8f1185557a",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1745,8 +1745,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemCupOfTea.j",
-      "source_bytes": 959,
-      "sha256": "d6ff3227ccddf29ccf60da84ff10f5d11e1365a522c69b5b3c4cb8cfd71378d1",
+      "source_bytes": 1208,
+      "sha256": "ba97633de2c326897d816d487664553ec97562ec8857f52376791ab566e0c897",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1770,8 +1770,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemEnter.j",
-      "source_bytes": 6021,
-      "sha256": "20a5ef088cdffd0642137037b86ec00ad4320274a0bd1db35e201a80da879494",
+      "source_bytes": 6037,
+      "sha256": "e9e98875f3440948a1a01036d750db4222f915a585f017e55f84e47a4f52f179",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1795,8 +1795,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemLeave.j",
-      "source_bytes": 3948,
-      "sha256": "3d9cde339d399d68a83a22a181ea3c34e17d10b1a23483d6fe1c6baa130527be",
+      "source_bytes": 3964,
+      "sha256": "9299e9cb8bed1a7d8bdfec2f7f682ddb04340f95bfcc389b23cf015de9aea6a9",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1815,13 +1815,13 @@
       "category": "Items",
       "category_id": "0x02000006",
       "trigger_name": "Items",
-      "comment": "-----------------Hokage_Hat_Evolved----------------------------------------------\r\n        integer HokageHatEvolved_ID = 'A0GX'\r\n        real HokageHatEvolved_RootTime = 2// how long root\r\n        real HokageHat_Manaburn = 250// how long root\r\n        real HokageHat_AoEBegin = 200// how long root\r\n        real HokageHat_AoE = 550// how long root\r\n        real HokageHat_ExpandTime = 0.99// how long root\r\n        real HokageHat_Time = 5// how long root\r\n\r\n\r\n  function HokageHatEvolved_Start takes unit c, real x, real y returns nothing\r\n        call ItemsSpells_HokageHatEvolved.HokageHatEvolved_Start( c, x, y )\r\n    endfunction",
+      "comment": " real ShikiKnifeEvolved_DmgBase = 80\r\n        real ShikiKnifeEvolved_DmgAgi = 1\r\n        real ShikiKnifeEvolved_CD = 4\r\n        real ShikiKnifeEvolved_RangeCheck = 650\r\n        real ShikiKnifeEvolved_Range = 1700\r\n        real ShikiKnifeEvolved_Aoe = 225",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 98186,
-      "sha256": "7d98c32316816426dd42e3a598216d7f7db5f996f2672d88e2ea8d919a033154",
+      "source_bytes": 103852,
+      "sha256": "463f10fc2056537912270d56dbac2d2dcd954a21bcbc383fafd9ed3b851ad9b0",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -1843,7 +1843,8 @@
           "ItemsSpells_RedFlower",
           "ItemsSpells_TuskBarrel",
           "ItemsSpells_TurboNeko",
-          "ItemsSpells_TsuchikageHatEvolve"
+          "ItemsSpells_TsuchikageHatEvolve",
+          "ItemsSpells_ShikiKnifeEvolved"
         ],
         "modules": [],
         "textmacros": []
@@ -1912,8 +1913,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Raiden.j",
-      "source_bytes": 121801,
-      "sha256": "57ad3ccce4d72c3f687ffa4b8ff038de8294700893b89bd6fd923b40e93d5960",
+      "source_bytes": 121798,
+      "sha256": "6b5f5d2dab2a5182babfb842d9be9b356402c19e2cf6847a3c79a6ac6e43aae0",
       "declarations": {
         "libraries": [
           "RaidenSpells"
@@ -1956,7 +1957,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Frieren.j",
       "source_bytes": 120318,
-      "sha256": "c3253059feb6eb71b0ff6aaeed09bfd7f185085d94841032f6024898ef814206",
+      "sha256": "0a655add6956e5b573897a16e6e22b62df85d8941b3949cf84ec5a68ac61028d",
       "declarations": {
         "libraries": [
           "FrierenSpells"
@@ -2140,7 +2141,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
       "source_bytes": 97196,
-      "sha256": "e114ce8ca39045c5fa242db8c8a2f8ec6ebbf51d5d7fc97d01184487cadb33b2",
+      "sha256": "b0e66ba3c38aa3bba0dae298f4cb4afb7beaef55175ecec3af494d883e90844b",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -2262,7 +2263,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Bambietta.j",
       "source_bytes": 110607,
-      "sha256": "0a5e1cdcadf2a52214748328228aa7fd8dbe6a24898b2c73e43dd252c8176778",
+      "sha256": "56d8c0ce904d6ff65d18fb0cacb904f5f09307e0555a1d0640aa00f8f424e789",
       "declarations": {
         "libraries": [
           "BambiettaSpells"
@@ -2301,7 +2302,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Kirito.j",
       "source_bytes": 82891,
-      "sha256": "bf35e577267954775fc4c6614745b95d0043aec66c0e86990982257412149eca",
+      "sha256": "ecddd25588b6f556b466ca657601cca2d056906c698edfae8b505670b8007f3f",
       "declarations": {
         "libraries": [
           "KiritoSpells"
@@ -2540,7 +2541,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Harribel.j",
       "source_bytes": 77131,
-      "sha256": "f0142817a2950737d63ee4e1b1d7de287ec83c2ed75d0a5802c5dc278a012cb5",
+      "sha256": "89b7f116bfcd040715f2396b6e498d647dbc56f55be0171311bb6b0b4bcf4ef6",
       "declarations": {
         "libraries": [
           "HarribelSpells"
@@ -2580,7 +2581,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Tsuna.j",
       "source_bytes": 165336,
-      "sha256": "e8dacf24d7f5674b55517fb4b923ca99fba7778fa4dd1d07604de56e25a6ccaa",
+      "sha256": "0492fd85caa1ddd862ec81fbeaa6ea9bf84748a66a7b6586aa1d31e4358463d8",
       "declarations": {
         "libraries": [
           "TsunaSpells"
@@ -2803,8 +2804,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Okarun.j",
-      "source_bytes": 59033,
-      "sha256": "d888e29919a99f0a748b5b41c92f0b7ce7f8a5a8ff79eafb4f2a98709dab4064",
+      "source_bytes": 60878,
+      "sha256": "300e2ddf641d73ac7c740f2b6e775d098386f7c0f780c422836bf028170af532",
       "declarations": {
         "libraries": [
           "OkarunSpells"
@@ -2815,6 +2816,7 @@
           "OkarunW_KS",
           "OkarunE_KS",
           "OkarunR_KS",
+          "OkarunTBuff_KS",
           "OkarunT_KS",
           "OkarunF_KS"
         ],
@@ -2974,8 +2976,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/AlterSaber.j",
-      "source_bytes": 89510,
-      "sha256": "d45df89d3b76fb7219c1cd157ae5c3bad6a3ecfcf91a0859f744ee1779bb8e78",
+      "source_bytes": 89508,
+      "sha256": "d96a157ba866494707d25b9104e42adb9a2522050076f619ae91c232e3550e33",
       "declarations": {
         "libraries": [
           "AlterSaberSpells"
@@ -3443,7 +3445,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaBase.j",
       "source_bytes": 32040,
-      "sha256": "8aa487807cdd1671d09e66fba6f05b71f3308491b52ca4f6113c55ac20d42ac8",
+      "sha256": "dd2860b948d5c3047f3c174169d36abb334e3f7600e7100143b632f1e6546323",
       "declarations": {
         "libraries": [
           "ErzaBase"

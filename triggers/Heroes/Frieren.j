@@ -777,7 +777,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             call DecorRemove(c, x, y, 350, 20)
                             set r = 99999
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073.mdl", x , y , a * bj_RADTODEG, 1.35, 1, 1))
-                            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P.blast3.mdl", x , y , a * bj_RADTODEG, 2.85, 1.3, 1), 0.3, 255, 255, 255, 0.65)
+                            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3.mdl", x , y , a * bj_RADTODEG, 2.85, 1.3, 1), 0.3, 255, 255, 255, 0.65)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl" , x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 3.475, 125))
                             set k = 0
                             loop

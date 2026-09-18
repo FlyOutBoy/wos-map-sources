@@ -87,6 +87,9 @@ call HPS(c,c,(GetUnitState(c, UNIT_STATE_MAX_LIFE) * (AngelBlessing_Heal/100)),3
 //call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) + (GetUnitState(c, UNIT_STATE_MAX_LIFE) * 0.15))
 call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_jntx-guangzhuyellow.mdl",c,"origin"),3)
 endif
+if id == 'A0HY' then 
+call ShikiKnifeEvolved_Start(c,x,y)
+endif
 if id == NaofumiShield_ID then 
 call Naofumi_Start(c)
 endif 
@@ -238,7 +241,7 @@ endif
 endif
  if id == 'A00Y' then 
  call ImmuneToPushDebuff(c)
- call MUE(c,625,0.175,GetUnitFacing(c)*bj_DEGTORAD)
+ call MUE(c,Incursio_Range ,0.175,GetUnitFacing(c)*bj_DEGTORAD)
  call BuffUnitMS(c,c,0.2)
  elseif id == FunnyBarrel_ID then 
  call FunnyBarrel_Start(c,x,y)
@@ -253,8 +256,8 @@ endif
   
  endif 
  if id == 'A01B' then
- if SR3(c,x,y) > 800 then 
- set sr = 800
+ if SR3(c,x,y) > UraharaSet_Range  then 
+ set sr = UraharaSet_Range 
  else
  set sr = SR3(c,x,y)
  endif

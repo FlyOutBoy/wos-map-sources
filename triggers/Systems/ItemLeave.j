@@ -95,7 +95,7 @@ function Trig_ItemLeave_Actions takes nothing returns nothing
         set r = BlzGetUnitAbilityCooldownRemaining(c, getdebugcditem_abi_id(id))
         call SaveReal(hs, GetHandleId(c), StringHash(I2S(id)), r)
     endif
-    if id == 'I00M' then
+    if id == 'I00M' or id == 'I043' then
         call UnitRemoveAbility(c, 'A07Q')
     endif
     if id == 'I00T' then

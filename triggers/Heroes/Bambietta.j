@@ -423,7 +423,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         set y = GetEffY(e)
                         call BlzSetSpecialEffectTimeScale(e, 1)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073red.mdl", x, y, a * bj_RADTODEG, 1.35, 1, 1))
-                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P.blast3red.mdl", x, y, a * bj_RADTODEG, 2.15, 1.1, 1), 0.3, 255, 25, 25, 0.65)
+                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3red.mdl", x, y, a * bj_RADTODEG, 2.15, 1.1, 1), 0.3, 255, 25, 25, 0.65)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
                         call DecorRemove(c, x, y, aoe2, BambiettaTQ_ExplosionDecorDamage)
                         call VisionTimed(GetOwningPlayer(c), x, y, 1000, 1.5)
@@ -666,7 +666,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         set y = GetEffY(e)
                         call BlzSetSpecialEffectTimeScale(e, 1)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073.mdl", x, y, a * bj_RADTODEG, 1.35, 1, 1))
-                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P.blast3.mdl", x, y, a * bj_RADTODEG, 2.15, 1.1, 1), 0.3, 255, 255, 255, 0.65)
+                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3.mdl", x, y, a * bj_RADTODEG, 2.15, 1.1, 1), 0.3, 255, 255, 255, 0.65)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
                         call DecorRemove(c, x, y, aoe2, BambiettaW_ExplosionDecorDamage)
                         call VisionTimed(GetOwningPlayer(c), x, y, 900, 2)
@@ -2320,12 +2320,12 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endif
         if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) == 0 then
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073.mdl", x, y, a * bj_RADTODEG, 1.35, 1, 1))
-            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P.blast3.mdl", x, y, a * bj_RADTODEG, 2.15, 1, 1), 0.15, 255, 255, 255, 0.45)
+            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3.mdl", x, y, a * bj_RADTODEG, 2.15, 1, 1), 0.15, 255, 255, 255, 0.45)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
         else
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073red.mdl", x, y, a * bj_RADTODEG, 1.35, 1, 1))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
-            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P.blast3red.mdl", x, y, a * bj_RADTODEG, 2.15, 1, 1), 0.15, 255, 255, 255, 0.45)
+            call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3red.mdl", x, y, a * bj_RADTODEG, 2.15, 1, 1), 0.15, 255, 255, 255, 0.45)
         endif
         call VisionTimed(GetOwningPlayer(c), x, y, 700, 1.5)
         call DecorRemove(c, x, y, aoe, BambiettaG_DecorDamage)

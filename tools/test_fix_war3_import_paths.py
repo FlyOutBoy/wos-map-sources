@@ -83,6 +83,53 @@ class ImportPathFixTests(unittest.TestCase):
             report = json.loads(json_log.read_text(encoding="utf-8"))
             self.assertEqual(1, report["renamed_import_count"])
 
+    def test_repairs_residual_mdl_code_and_blp_path_inside_mdx(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            workspace = Path(temporary) / "workspace"
+            map_dir = Path(temporary) / "Map.w3x"
+            imports = map_dir / "war3mapImported"
+            triggers = workspace / "triggers"
+            imports.mkdir(parents=True)
+            triggers.mkdir(parents=True)
+
+            registered = [
+                "war3mapImported\\Effect_V1.mdx",
+                "war3mapImported\\Texture_V1.blp",
+                "war3mapImported\\Carrier.mdx",
+            ]
+            imp = struct.pack("<II", 1, len(registered))
+            for value in registered:
+                imp += b"\x0d" + value.encode("utf-8") + b"\0"
+            (map_dir / "war3map.imp").write_bytes(imp)
+            (imports / "Effect_V1.mdx").write_bytes(b"MDLX")
+            (imports / "Texture_V1.blp").write_bytes(b"BLP1")
+            carrier = imports / "Carrier.mdx"
+            carrier.write_bytes(
+                b"MDLX prefix war3mapImported\\Texture.V1.blp\0"
+                b"UI\\Glues\\ocean_h.01.blp\0 suffix"
+            )
+            source = triggers / "Example.j"
+            source.write_text(
+                'call AddSpecialEffect("war3mapImported\\\\Effect.V1.mdl", 0, 0)\n',
+                encoding="utf-8",
+            )
+
+            plan = fixer.build_rename_plan(map_dir, workspace)
+            mappings = {(item["old_name"], item["new_name"]) for item in plan}
+            self.assertIn(("Effect.V1.mdl", "Effect_V1.mdl"), mappings)
+            self.assertIn(("Texture.V1.blp", "Texture_V1.blp"), mappings)
+
+            changed, references = fixer.scan_references(map_dir, workspace, plan)
+            fixer.apply_changes(map_dir, workspace, plan, changed, references)
+
+            self.assertIn("Effect_V1.mdl", source.read_text(encoding="utf-8"))
+            model_data = carrier.read_bytes()
+            self.assertIn(b"Texture_V1.blp", model_data)
+            self.assertIn(b"ocean_h.01.blp", model_data)
+            self.assertNotIn(b"Texture.V1.blp", model_data)
+            self.assertTrue((imports / "Effect_V1.mdx").is_file())
+            self.assertTrue((imports / "Texture_V1.blp").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,6 +10,15 @@ function ItemCupOfTeaActions takes nothing returns nothing
     endif
     call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')),r)
     endif
+    if IsItemInInventory(Hero[i],'I043') > 0 then 
+    if r< 200 then 
+    set r = 200
+    endif
+    if r> 9999 then 
+    set r = 9999
+    endif
+    call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')),r)
+    endif
     set r = 0
 endfunction
 //===========================================================================

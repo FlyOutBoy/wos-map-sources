@@ -3200,7 +3200,7 @@ function PreloadTransformSkins takes nothing returns nothing
     call TransformPreloadUnit('H01Y')
 
     // Common effects created/recreated by transforms and FixAura.
-    call Preload("war3mapimported\\wos_[dz.spell]002_blue5.mdl")
+    call Preload("war3mapimported\\wos_[dz_spell]002_blue5.mdl")
     call Preload("war3mapimported\\wos_dustwave222.mdx")
     call Preload("war3mapimported\\wos_by_wood_effect_order_dange_yueyun_2withoutblue2.mdx")
 

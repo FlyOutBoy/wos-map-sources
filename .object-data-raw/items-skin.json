@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "2bf76f3f45bffd9c2ad2f38c14383a0defb606f5fac76d6b32c9d94776f608c5",
+  "source_sha256": "7a260fd882e1053e8f254bcc573bf2703010759420c7a7e3681a1b462b5c9ab9",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -3933,12 +3933,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_332",
-            "_original_value": "TRIGSTR_332",
+            "value": "TRIGSTR_8321",
+            "_original_value": "TRIGSTR_8321",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMzI=",
-            "resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n",
-            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84MzIx",
+            "resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 4.5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n",
+            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 4.5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -3953,12 +3953,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_417",
-            "_original_value": "TRIGSTR_417",
+            "value": "TRIGSTR_8322",
+            "_original_value": "TRIGSTR_8322",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTc=",
-            "resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n",
-            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84MzIy",
+            "resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 4.5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n",
+            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more magic enemy will burn and take 4.5% of yor max mana as magic dmg every second (you cant apply new buff before old one expired).\nDuration: 5 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -5067,12 +5067,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7807",
-            "_original_value": "TRIGSTR_7807",
+            "value": "TRIGSTR_7742",
+            "_original_value": "TRIGSTR_7742",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODA3",
-            "resolved_value": "+10 int\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x int damage cause lightning debuff.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x int damage cause lightning debuff.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl83NzQy",
+            "resolved_value": "+10 agi\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x agi damage cause lightning debuff.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 agi\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x agi damage cause lightning debuff.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -5087,12 +5087,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7811",
-            "_original_value": "TRIGSTR_7811",
+            "value": "TRIGSTR_7862",
+            "_original_value": "TRIGSTR_7862",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODEx",
-            "resolved_value": "+10 int\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x int damage cause lightning debuff.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x int damage cause lightning debuff.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl83ODYy",
+            "resolved_value": "+10 agi\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x agi damage cause lightning debuff.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 agi\n+10 allstats\nActive: Create a lightning strike at point with small delay, 5.5x agi damage cause lightning debuff.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -5577,12 +5577,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7768",
-            "_original_value": "TRIGSTR_7768",
+            "value": "TRIGSTR_8323",
+            "_original_value": "TRIGSTR_8323",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY4",
-            "resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2.25x main stat physical dmg.\nCooldown: 2.5 sec.\n",
-            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2.25x main stat physical dmg.\nCooldown: 2.5 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84MzIz",
+            "resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2x main stat physical dmg.\nCooldown: 3 sec.\n",
+            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2x main stat physical dmg.\nCooldown: 3 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -5597,12 +5597,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7773",
-            "_original_value": "TRIGSTR_7773",
+            "value": "TRIGSTR_8324",
+            "_original_value": "TRIGSTR_8324",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzcz",
-            "resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2.25x main stat physical dmg.\nCooldown: 2.5 sec.\n",
-            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2.25x main stat physical dmg.\nCooldown: 2.5 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84MzI0",
+            "resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2x main stat physical dmg.\nCooldown: 3 sec.\n",
+            "_original_resolved_value": "+20 allstats\nPassive: When deal 200 or more physical dmg will create a earth hand in air, that will punch enemy after small delay deal 2x main stat physical dmg.\nCooldown: 3 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -7833,12 +7833,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7817",
-            "_original_value": "TRIGSTR_7817",
+            "value": "TRIGSTR_8128",
+            "_original_value": "TRIGSTR_8128",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE3",
-            "resolved_value": "+15 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl84MTI4",
+            "resolved_value": "+10 int\n+10 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -7853,12 +7853,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7822",
-            "_original_value": "TRIGSTR_7822",
+            "value": "TRIGSTR_8129",
+            "_original_value": "TRIGSTR_8129",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODIy",
-            "resolved_value": "+15 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl84MTI5",
+            "resolved_value": "+10 int\n+10 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Create a water tornado that pushes enemy away and apply water debuff and deal 5.5x int.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -8079,12 +8079,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7827",
-            "_original_value": "TRIGSTR_7827",
+            "value": "TRIGSTR_8150",
+            "_original_value": "TRIGSTR_8150",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODI3",
-            "resolved_value": "+15 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x agi magical dmg.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x agi magical dmg.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl84MTUw",
+            "resolved_value": "+10 int\n+10 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x int magical dmg.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x int magical dmg.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -8099,12 +8099,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7832",
-            "_original_value": "TRIGSTR_7832",
+            "value": "TRIGSTR_8157",
+            "_original_value": "TRIGSTR_8157",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODMy",
-            "resolved_value": "+15 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x agi magical dmg.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x agi magical dmg.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl84MTU3",
+            "resolved_value": "+10 int\n+10 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x int magical dmg.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 int\n+10 allstats\nActive: Attack enemy with 2 lightning missiles, cause lightning debuff and deal 5.5x int magical dmg.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -9213,12 +9213,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3018",
-            "_original_value": "TRIGSTR_3018",
+            "value": "TRIGSTR_8392",
+            "_original_value": "TRIGSTR_8392",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDE4",
-            "resolved_value": "+15 allstats\nPassive: When deal  dmg you will deal additional 0.65x main stat physical dmg.\nCooldown: 1 sec.\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal  dmg you will deal additional 0.65x main stat physical dmg.\nCooldown: 1 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84Mzky",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n"
           },
           "sanity_check": {
             "text": "",
@@ -9233,12 +9233,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3019",
-            "_original_value": "TRIGSTR_3019",
+            "value": "TRIGSTR_8393",
+            "_original_value": "TRIGSTR_8393",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDE5",
-            "resolved_value": "+15 allstats\nPassive: When deal  dmg you will deal additional 0.65x main stat physical dmg.\nCooldown: 1 sec.\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal  dmg you will deal additional 0.65x main stat physical dmg.\nCooldown: 1 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84Mzkz",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n"
           },
           "sanity_check": {
             "text": "",
@@ -16713,12 +16713,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2579",
-            "_original_value": "TRIGSTR_2579",
+            "value": "TRIGSTR_8158",
+            "_original_value": "TRIGSTR_8158",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNTc5",
-            "resolved_value": "+30 allstats",
-            "_original_resolved_value": "+30 allstats"
+            "_raw_base64": "VFJJR1NUUl84MTU4",
+            "resolved_value": "+35 allstats",
+            "_original_resolved_value": "+35 allstats"
           },
           "sanity_check": {
             "text": "",
@@ -16733,12 +16733,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4516",
-            "_original_value": "TRIGSTR_4516",
+            "value": "TRIGSTR_8159",
+            "_original_value": "TRIGSTR_8159",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NTE2",
-            "resolved_value": "+30 allstats",
-            "_original_resolved_value": "+30 allstats"
+            "_raw_base64": "VFJJR1NUUl84MTU5",
+            "resolved_value": "+35 allstats",
+            "_original_resolved_value": "+35 allstats"
           },
           "sanity_check": {
             "text": "",
@@ -17143,6 +17143,894 @@
         }
       ],
       "display_name": "Sakura Sesshou"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03X",
+        "hex": "49303358"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8160",
+            "_original_value": "TRIGSTR_8160",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTYw",
+            "resolved_value": "Demon Sword Lostvayne",
+            "_original_resolved_value": "Demon Sword Lostvayne"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8166",
+            "_original_value": "TRIGSTR_8166",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTY2",
+            "resolved_value": "Demon Sword Lostvayne",
+            "_original_resolved_value": "Demon Sword Lostvayne"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_SwordLostvayne.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_SwordLostvayne.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1N3b3JkTG9zdHZheW5lLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8310",
+            "_original_value": "TRIGSTR_8310",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzEw",
+            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8317",
+            "_original_value": "TRIGSTR_8317",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzE3",
+            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon Sword Lostvayne"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03Y",
+        "hex": "49303359"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8284",
+            "_original_value": "TRIGSTR_8284",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjg0",
+            "resolved_value": "Murasame",
+            "_original_resolved_value": "Murasame"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8291",
+            "_original_value": "TRIGSTR_8291",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjkx",
+            "resolved_value": "Murasame",
+            "_original_resolved_value": "Murasame"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX011cmFzYW1lLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8318",
+            "_original_value": "TRIGSTR_8318",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzE4",
+            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8320",
+            "_original_value": "TRIGSTR_8320",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzIw",
+            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Murasame"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I03Z",
+        "hex": "4930335A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8294",
+            "_original_value": "TRIGSTR_8294",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjk0",
+            "resolved_value": "Katana",
+            "_original_resolved_value": "Katana"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8305",
+            "_original_value": "TRIGSTR_8305",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzA1",
+            "resolved_value": "Katana",
+            "_original_resolved_value": "Katana"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8306",
+            "_original_value": "TRIGSTR_8306",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzA2",
+            "resolved_value": "+40 atk",
+            "_original_resolved_value": "+40 atk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNitem_Katana.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNitem_Katana.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5pdGVtX0thdGFuYS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8307",
+            "_original_value": "TRIGSTR_8307",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzA3",
+            "resolved_value": "+40 atk",
+            "_original_resolved_value": "+40 atk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Katana"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I040",
+        "hex": "49303430"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8325",
+            "_original_value": "TRIGSTR_8325",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzI1",
+            "resolved_value": "Philosopher's Stone",
+            "_original_resolved_value": "Philosopher's Stone"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8326",
+            "_original_value": "TRIGSTR_8326",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzI2",
+            "resolved_value": "Philosopher's Stone",
+            "_original_resolved_value": "Philosopher's Stone"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhilosopherStone.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhilosopherStone.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1BoaWxvc29waGVyU3RvbmUuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8399",
+            "_original_value": "TRIGSTR_8399",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzk5",
+            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8400",
+            "_original_value": "TRIGSTR_8400",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDAw",
+            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Philosopher's Stone"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I041",
+        "hex": "49303431"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8401",
+            "_original_value": "TRIGSTR_8401",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDAx",
+            "resolved_value": "Demon-Dweller Sword",
+            "_original_resolved_value": "Demon-Dweller Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8402",
+            "_original_value": "TRIGSTR_8402",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDAy",
+            "resolved_value": "Demon-Dweller Sword",
+            "_original_resolved_value": "Demon-Dweller Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlbW9uRHdlbGxlclN3b3JkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8490",
+            "_original_value": "TRIGSTR_8490",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDkw",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8491",
+            "_original_value": "TRIGSTR_8491",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDkx",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon-Dweller Sword"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I042",
+        "hex": "49303432"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8492",
+            "_original_value": "TRIGSTR_8492",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDky",
+            "resolved_value": "Shiki Knife Evolved",
+            "_original_resolved_value": "Shiki Knife Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8496",
+            "_original_value": "TRIGSTR_8496",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDk2",
+            "resolved_value": "Shiki Knife Evolved",
+            "_original_resolved_value": "Shiki Knife Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShikiKnifeEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShikiKnifeEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1NoaWtpS25pZmVFdm9sdmVkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8532",
+            "_original_value": "TRIGSTR_8532",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTMy",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8533",
+            "_original_value": "TRIGSTR_8533",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTMz",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shiki Knife Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I043",
+        "hex": "49303433"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8538",
+            "_original_value": "TRIGSTR_8538",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTM4",
+            "resolved_value": "Cup of Tea Evolved",
+            "_original_resolved_value": "Cup of Tea Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8539",
+            "_original_value": "TRIGSTR_8539",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTM5",
+            "resolved_value": "Cup of Tea Evolved",
+            "_original_resolved_value": "Cup of Tea Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_AizenTeaEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_AizenTeaEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0FpemVuVGVhRXZvbHZlZC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8562",
+            "_original_value": "TRIGSTR_8562",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTYy",
+            "resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
+            "_original_resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8563",
+            "_original_value": "TRIGSTR_8563",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTYz",
+            "resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
+            "_original_resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Cup of Tea Evolved"
     }
   ]
 }

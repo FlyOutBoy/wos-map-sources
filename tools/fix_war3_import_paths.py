@@ -10,6 +10,7 @@ import os
 import re
 import shutil
 import struct
+import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime
@@ -36,8 +37,15 @@ PROJECT_SCAN_FILES = (
 SKIP_DIRECTORY_NAMES = {
     ".git", "_build", ".build", "backups", "object-data-backups", "__pycache__", "logs",
 }
-FIXABLE_EXTENSIONS = {".blp", ".mdx"}
+FIXABLE_EXTENSIONS = {".blp", ".mdx", ".mdl"}
 TEXT_LINE_EXTENSIONS = {".fdf", ".ini", ".j", ".json", ".md", ".toc", ".txt", ".vj", ".wts"}
+MAP_REFERENCE_EXTENSIONS = TEXT_LINE_EXTENSIONS | {
+    ".imp", ".lua", ".mdl", ".mdx", ".slk", ".w3a", ".w3b", ".w3d",
+    ".w3h", ".w3q", ".w3t", ".w3u", ".wct", ".wtg",
+}
+DOTTED_ASSET_NAME = re.compile(
+    rb"(?i)([A-Za-z0-9_\-\[\]()]+(?:\.[A-Za-z0-9_\-\[\]()]+)+\.(?:blp|mdx|mdl))"
+)
 
 
 def read_c_string(data: bytes, offset: int) -> tuple[bytes, int]:
@@ -123,14 +131,35 @@ def load_default_map(config_path: Path) -> tuple[Path, Path]:
     return workspace, map_dir.resolve()
 
 
-def build_rename_plan(map_dir: Path) -> list[dict[str, object]]:
+def build_rename_plan(map_dir: Path, workspace: Path | None = None) -> list[dict[str, object]]:
     imp_path = map_dir / "war3map.imp"
     if not imp_path.is_file():
         raise FixError(f"war3map.imp not found: {imp_path}")
     plan: list[dict[str, object]] = []
     target_keys: dict[str, Path] = {}
     seen_sources: set[Path] = set()
-    for import_path in parse_imp(imp_path):
+    planned_names: set[str] = set()
+    import_paths = parse_imp(imp_path)
+
+    def add_plan(
+        old_import: str, new_import: str, old_name: str, new_name: str,
+        source: Path, target: Path,
+    ) -> None:
+        key = old_name.casefold()
+        if key in planned_names:
+            return
+        planned_names.add(key)
+        plan.append({
+            "old_import": old_import,
+            "new_import": new_import,
+            "old_name": old_name,
+            "new_name": new_name,
+            "source": source.resolve(),
+            "target": target.resolve(),
+        })
+
+    # First source: paths registered in war3map.imp.
+    for import_path in import_paths:
         name = Path(import_path.replace("\\", "/")).name
         if Path(name).suffix.casefold() not in FIXABLE_EXTENSIONS:
             continue
@@ -156,14 +185,97 @@ def build_rename_plan(map_dir: Path) -> list[dict[str, object]]:
         import_parts = re.split(r"[\\/]", import_path)
         import_parts[-1] = new_name
         new_import = separator.join(import_parts)
-        plan.append({
-            "old_import": old_import,
-            "new_import": new_import,
-            "old_name": name,
-            "new_name": new_name,
-            "source": source,
-            "target": target,
-        })
+        add_plan(old_import, new_import, name, new_name, source, target)
+
+    # Second source: physical assets in war3mapImported, even if war3map.imp is stale
+    # or does not list the file. This is the folder the user sees in an unpacked map.
+    import_directories = [
+        path for path in map_dir.iterdir()
+        if path.is_dir() and path.name.casefold() == "war3mapimported"
+    ]
+    for directory in import_directories:
+        for source in iter_files(directory):
+            if source.suffix.casefold() not in FIXABLE_EXTENSIONS:
+                continue
+            name = source.name
+            new_name = fixed_filename(name)
+            if new_name == name:
+                continue
+            target = source.with_name(new_name)
+            target_key = str(target).casefold()
+            previous = target_keys.get(target_key)
+            if previous is not None and previous.resolve() != source.resolve():
+                raise FixError(f"two imports would use the same target filename: {target}")
+            target_keys[target_key] = source
+            if target.exists() and target.resolve() != source.resolve():
+                raise FixError(f"cannot rename import because the target already exists: {target}")
+            old_import = str(source.relative_to(map_dir)).replace("/", "\\")
+            new_import = str(target.relative_to(map_dir)).replace("/", "\\")
+            add_plan(old_import, new_import, name, new_name, source, target)
+
+    # Build a lookup of the names which really exist (or will exist after this run).
+    # It lets a later audit repair old references even when the physical files and
+    # war3map.imp were already renamed by a previous run.
+    available: dict[str, tuple[str, Path]] = {}
+    for import_path in import_paths:
+        source = resolve_import_file(map_dir, import_path)
+        if source is not None and source.suffix.casefold() in FIXABLE_EXTENSIONS:
+            available[source.name.casefold()] = (import_path, source)
+    for directory in import_directories:
+        for source in iter_files(directory):
+            if source.suffix.casefold() in FIXABLE_EXTENSIONS:
+                relative = str(source.relative_to(map_dir)).replace("/", "\\")
+                available[source.name.casefold()] = (relative, source.resolve())
+    for item in plan:
+        available[str(item["new_name"]).casefold()] = (
+            str(item["new_import"]), Path(item["target"]),
+        )
+
+    # Third source: residual paths in JASS, object data and inside MDX/MDL files.
+    # Model references commonly use .mdl while the imported physical file is .mdx,
+    # so both extensions are treated as aliases for lookup while preserving the
+    # extension used by the reference itself.
+    audit_files: set[Path] = set()
+    for path in iter_files(map_dir):
+        inside_imports = any(directory in path.parents for directory in import_directories)
+        if not inside_imports or path.suffix.casefold() in {".mdx", ".mdl"}:
+            audit_files.add(path.resolve())
+    if workspace is not None:
+        audit_files |= project_files(workspace)
+    residual_names: set[str] = set()
+    for path in audit_files:
+        try:
+            data = path.read_bytes()
+        except OSError as exc:
+            raise FixError(f"cannot audit reference candidate {path}: {exc}") from exc
+        for found in DOTTED_ASSET_NAME.finditer(data):
+            residual_names.add(found.group(1).decode("ascii"))
+
+    for old_name in sorted(residual_names, key=lambda value: (-len(value), value.casefold())):
+        if old_name.casefold() in planned_names:
+            continue
+        new_reference_name = fixed_filename(old_name)
+        if new_reference_name == old_name:
+            continue
+        lookup = available.get(new_reference_name.casefold())
+        if lookup is None and Path(new_reference_name).suffix.casefold() in {".mdx", ".mdl"}:
+            alternate = Path(new_reference_name).with_suffix(
+                ".mdx" if Path(new_reference_name).suffix.casefold() == ".mdl" else ".mdl"
+            ).name
+            lookup = available.get(alternate.casefold())
+        if lookup is None:
+            continue  # Built-in Warcraft asset or an unrelated dotted string.
+        registered_import, physical = lookup
+        separator = "\\" if "\\" in registered_import else "/"
+        parts = re.split(r"[\\/]", registered_import)
+        parts[-1] = new_reference_name
+        new_import = separator.join(parts)
+        parts[-1] = old_name
+        old_import = separator.join(parts)
+        add_plan(
+            old_import, new_import, old_name, new_reference_name,
+            physical, physical,
+        )
     return sorted(plan, key=lambda item: len(str(item["old_name"])), reverse=True)
 
 
@@ -208,7 +320,14 @@ def scan_references(
     map_dir: Path, workspace: Path, plan: list[dict[str, object]],
 ) -> tuple[dict[Path, bytes], dict[str, list[dict[str, object]]]]:
     patterns = replacement_patterns(plan)
-    files = {path.resolve() for path in iter_files(map_dir)} | project_files(workspace)
+    # BLP, audio and other payload assets cannot contain model-path references and
+    # can be hundreds of megabytes in aggregate. Scan reference-bearing map files
+    # plus every relevant editable project file instead.
+    files = {
+        path.resolve() for path in iter_files(map_dir)
+        if path.suffix.casefold() in MAP_REFERENCE_EXTENSIONS
+        or path.name.casefold() in {"war3map.j", "war3map.wct", "war3map.wtg", "war3map.imp"}
+    } | project_files(workspace)
     changed: dict[Path, bytes] = {}
     references: dict[str, list[dict[str, object]]] = defaultdict(list)
     map_prefix = str(map_dir).casefold() + os.sep
@@ -515,7 +634,11 @@ def print_report(
     )
     mode = "apply" if apply else "dry run"
     print(f"Map: {map_dir}")
-    print(f"Found {len(plan)} dotted import filename(s), {total_references} reference(s) ({mode}):")
+    physical_renames = sum(Path(item["source"]) != Path(item["target"]) for item in plan)
+    print(
+        f"Found {physical_renames} dotted physical import file(s), "
+        f"{len(plan)} import/reference mapping(s), {total_references} reference(s) ({mode}):"
+    )
     for item in plan:
         old_name = str(item["old_name"])
         found = references.get(old_name, [])
@@ -526,6 +649,23 @@ def print_report(
             if reference.get("lines"):
                 location = " lines " + ", ".join(str(value) for value in reference["lines"])
             print(f"      {reference['file']} ({reference['count']}){location}")
+
+
+def world_editor_running() -> bool:
+    if os.name != "nt":
+        return False
+    try:
+        result = subprocess.run(
+            ["tasklist", "/FI", "IMAGENAME eq World Editor.exe", "/FO", "CSV", "/NH"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except OSError:
+        return False
+    return '"World Editor.exe"' in result.stdout
 
 
 def parser() -> argparse.ArgumentParser:
@@ -544,9 +684,9 @@ def main() -> int:
         map_dir = (args.map_dir or configured_map).resolve()
         if not map_dir.is_dir():
             raise FixError(f"unpacked map directory not found: {map_dir}")
-        plan = build_rename_plan(map_dir)
+        plan = build_rename_plan(map_dir, workspace)
         if not plan:
-            print(f"IMPORT PATHS OK: no dotted import filenames need fixing in {map_dir}")
+            print(f"IMPORT PATHS OK: no dotted import filenames or residual references need fixing in {map_dir}")
             return 0
         changed, references = scan_references(map_dir, workspace, plan)
         refresh_object_data_hashes(map_dir, workspace, changed)
@@ -559,12 +699,17 @@ def main() -> int:
         if not should_apply:
             print("No files were changed.")
             return 0
+        if world_editor_running():
+            raise FixError(
+                "World Editor is running. Close the map WITHOUT saving, run this task again, "
+                "then reopen the map. World Editor caches imports/models and can overwrite the fixed files."
+            )
         backup = apply_changes(map_dir, workspace, plan, changed, references)
         text_log, json_log = write_report_logs(
             map_dir, workspace, plan, changed, references, backup
         )
         print("\nIMPORT PATH FIX OK")
-        print(f"Renamed imports: {len(plan)}")
+        print(f"Mappings fixed:  {len(plan)}")
         print(f"Updated files:   {len(changed)}")
         print(f"Backup:          {backup}")
         print(f"Report:          {text_log}")

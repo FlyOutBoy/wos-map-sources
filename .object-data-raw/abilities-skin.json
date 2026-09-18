@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "8394c3d0708f07cb06660548164469ed576dca7783b3a515a066ff82cd4c1b8a",
+  "source_sha256": "067e9662d98856a628020061525adb67207c27d4dd3b3d32c6aa2571a1f012bb",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -2242,10 +2242,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_T.blp",
-            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_T.blp",
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_R.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_R.blp",
             "_encoding": "utf-8",
-            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JhaWRlbl9ULmJscA=="
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JhaWRlbl9SLmJscA=="
           },
           "sanity_check": {
             "text": "",
@@ -277971,10 +277971,10 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_4718",
-            "_original_value": "TRIGSTR_4718",
+            "value": "TRIGSTR_4301",
+            "_original_value": "TRIGSTR_4301",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NzE4",
+            "_raw_base64": "VFJJR1NUUl80MzAx",
             "resolved_value": "Last Wendigo",
             "_original_resolved_value": "Last Wendigo"
           },
@@ -277993,10 +277993,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_4301",
-            "_original_value": "TRIGSTR_4301",
+            "value": "TRIGSTR_4718",
+            "_original_value": "TRIGSTR_4718",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzAx",
+            "_raw_base64": "VFJJR1NUUl80NzE4",
             "resolved_value": "Last Wendigo",
             "_original_resolved_value": "Last Wendigo"
           },
@@ -278201,6 +278201,2494 @@
         }
       ],
       "display_name": "Gacha Patriot G"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HT",
+        "hex": "41304854"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aani",
+            "hex": "61616E69"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "stand",
+            "_original_value": "stand",
+            "_encoding": "utf-8",
+            "_raw_base64": "c3RhbmQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acat",
+            "hex": "61636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acap",
+            "hex": "61636170"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "auar",
+            "hex": "61756172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atat",
+            "hex": "61746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ata0",
+            "hex": "61746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8188",
+            "_original_value": "TRIGSTR_8188",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTg4",
+            "resolved_value": "CD Lostvayne",
+            "_original_resolved_value": "CD Lostvayne"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8189",
+            "_original_value": "TRIGSTR_8189",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTg5",
+            "resolved_value": "Karyu no Koen (E)",
+            "_original_resolved_value": "Karyu no Koen (E)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8194",
+            "_original_value": "TRIGSTR_8194",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MTk0",
+            "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
+            "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arhk",
+            "hex": "6172686B"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8213",
+            "_original_value": "TRIGSTR_8213",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MjEz",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahky",
+            "hex": "61686B79"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8258",
+            "_original_value": "TRIGSTR_8258",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MjU4",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8259",
+            "_original_value": "TRIGSTR_8259",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MjU5",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8271",
+            "_original_value": "TRIGSTR_8271",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjcx",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8272",
+            "_original_value": "TRIGSTR_8272",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjcy",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8273",
+            "_original_value": "TRIGSTR_8273",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjcz",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8274",
+            "_original_value": "TRIGSTR_8274",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjc0",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8275",
+            "_original_value": "TRIGSTR_8275",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjc1",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8276",
+            "_original_value": "TRIGSTR_8276",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjc2",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8277",
+            "_original_value": "TRIGSTR_8277",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjc3",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8278",
+            "_original_value": "TRIGSTR_8278",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjc4",
+            "resolved_value": "A0HT",
+            "_original_resolved_value": "A0HT"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "CD Lostvayne"
+    },
+    {
+      "old_id": {
+        "text": "AItg",
+        "hex": "41497467"
+      },
+      "new_id": {
+        "text": "A0HU",
+        "hex": "41304855"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8308",
+            "_original_value": "TRIGSTR_8308",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzA4",
+            "resolved_value": "Item Atk ",
+            "_original_resolved_value": "Item Atk "
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8309",
+            "_original_value": "TRIGSTR_8309",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzA5",
+            "resolved_value": "+40",
+            "_original_resolved_value": "+40"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Item Atk "
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HV",
+        "hex": "41304856"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aani",
+            "hex": "61616E69"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "stand",
+            "_original_value": "stand",
+            "_encoding": "utf-8",
+            "_raw_base64": "c3RhbmQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acat",
+            "hex": "61636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acap",
+            "hex": "61636170"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "auar",
+            "hex": "61756172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atat",
+            "hex": "61746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ata0",
+            "hex": "61746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8329",
+            "_original_value": "TRIGSTR_8329",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzI5",
+            "resolved_value": "CD Philosopher Stone",
+            "_original_resolved_value": "CD Philosopher Stone"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8330",
+            "_original_value": "TRIGSTR_8330",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzMw",
+            "resolved_value": "Karyu no Koen (E)",
+            "_original_resolved_value": "Karyu no Koen (E)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8331",
+            "_original_value": "TRIGSTR_8331",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzMx",
+            "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
+            "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arhk",
+            "hex": "6172686B"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8332",
+            "_original_value": "TRIGSTR_8332",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzMy",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahky",
+            "hex": "61686B79"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8363",
+            "_original_value": "TRIGSTR_8363",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzYz",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8364",
+            "_original_value": "TRIGSTR_8364",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzY0",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8370",
+            "_original_value": "TRIGSTR_8370",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzcw",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8376",
+            "_original_value": "TRIGSTR_8376",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzc2",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8377",
+            "_original_value": "TRIGSTR_8377",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzc3",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8378",
+            "_original_value": "TRIGSTR_8378",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzc4",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8379",
+            "_original_value": "TRIGSTR_8379",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzc5",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8380",
+            "_original_value": "TRIGSTR_8380",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzgw",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8381",
+            "_original_value": "TRIGSTR_8381",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzgx",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8382",
+            "_original_value": "TRIGSTR_8382",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzgy",
+            "resolved_value": "A0HV",
+            "_original_resolved_value": "A0HV"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "CD Philosopher Stone"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HW",
+        "hex": "41304857"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aani",
+            "hex": "61616E69"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "stand",
+            "_original_value": "stand",
+            "_encoding": "utf-8",
+            "_raw_base64": "c3RhbmQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acat",
+            "hex": "61636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acap",
+            "hex": "61636170"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "auar",
+            "hex": "61756172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atat",
+            "hex": "61746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ata0",
+            "hex": "61746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8406",
+            "_original_value": "TRIGSTR_8406",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDA2",
+            "resolved_value": "CD Demon Dweller Sword",
+            "_original_resolved_value": "CD Demon Dweller Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8409",
+            "_original_value": "TRIGSTR_8409",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDA5",
+            "resolved_value": "Karyu no Koen (E)",
+            "_original_resolved_value": "Karyu no Koen (E)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8410",
+            "_original_value": "TRIGSTR_8410",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDEw",
+            "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
+            "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arhk",
+            "hex": "6172686B"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8411",
+            "_original_value": "TRIGSTR_8411",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDEx",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahky",
+            "hex": "61686B79"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8412",
+            "_original_value": "TRIGSTR_8412",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDEy",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8413",
+            "_original_value": "TRIGSTR_8413",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDEz",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8418",
+            "_original_value": "TRIGSTR_8418",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDE4",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8423",
+            "_original_value": "TRIGSTR_8423",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDIz",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8440",
+            "_original_value": "TRIGSTR_8440",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDQw",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8456",
+            "_original_value": "TRIGSTR_8456",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDU2",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8474",
+            "_original_value": "TRIGSTR_8474",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDc0",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8475",
+            "_original_value": "TRIGSTR_8475",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDc1",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8477",
+            "_original_value": "TRIGSTR_8477",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDc3",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8479",
+            "_original_value": "TRIGSTR_8479",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDc5",
+            "resolved_value": "A0HW",
+            "_original_resolved_value": "A0HW"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "CD Demon Dweller Sword"
+    },
+    {
+      "old_id": {
+        "text": "Ainf",
+        "hex": "41696E66"
+      },
+      "new_id": {
+        "text": "A0HX",
+        "hex": "41304858"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aefs",
+            "hex": "61656673"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8480",
+            "_original_value": "TRIGSTR_8480",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NDgw",
+            "resolved_value": "Demon Dwelle Sword",
+            "_original_resolved_value": "Demon Dwelle Sword"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlbW9uRHdlbGxlclN3b3JkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Demon Dwelle Sword"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0HY",
+        "hex": "41304859"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aani",
+            "hex": "61616E69"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "stand",
+            "_original_value": "stand",
+            "_encoding": "utf-8",
+            "_raw_base64": "c3RhbmQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acat",
+            "hex": "61636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acap",
+            "hex": "61636170"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "auar",
+            "hex": "61756172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atat",
+            "hex": "61746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ata0",
+            "hex": "61746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8500",
+            "_original_value": "TRIGSTR_8500",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTAw",
+            "resolved_value": "Item Shiki Knife Evolved",
+            "_original_resolved_value": "Item Shiki Knife Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8501",
+            "_original_value": "TRIGSTR_8501",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTAx",
+            "resolved_value": "Karyu no Koen (E)",
+            "_original_resolved_value": "Karyu no Koen (E)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8504",
+            "_original_value": "TRIGSTR_8504",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTA0",
+            "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
+            "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arhk",
+            "hex": "6172686B"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8505",
+            "_original_value": "TRIGSTR_8505",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTA1",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahky",
+            "hex": "61686B79"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8506",
+            "_original_value": "TRIGSTR_8506",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTA2",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8507",
+            "_original_value": "TRIGSTR_8507",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTA3",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8508",
+            "_original_value": "TRIGSTR_8508",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTA4",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8512",
+            "_original_value": "TRIGSTR_8512",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTEy",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8514",
+            "_original_value": "TRIGSTR_8514",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTE0",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8515",
+            "_original_value": "TRIGSTR_8515",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTE1",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8516",
+            "_original_value": "TRIGSTR_8516",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTE2",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8517",
+            "_original_value": "TRIGSTR_8517",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTE3",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8528",
+            "_original_value": "TRIGSTR_8528",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTI4",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8529",
+            "_original_value": "TRIGSTR_8529",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTI5",
+            "resolved_value": "A0HY",
+            "_original_resolved_value": "A0HY"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Item Shiki Knife Evolved"
+    },
+    {
+      "old_id": {
+        "text": "Apiv",
+        "hex": "41706976"
+      },
+      "new_id": {
+        "text": "A0HZ",
+        "hex": "4130485A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8559",
+            "_original_value": "TRIGSTR_8559",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTU5",
+            "resolved_value": "Evolved Cup of Tea",
+            "_original_resolved_value": "Evolved Cup of Tea"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Evolved Cup of Tea"
     }
   ]
 }

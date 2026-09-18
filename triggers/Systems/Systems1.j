@@ -2250,6 +2250,7 @@ function ApplyGearSystemFullShields takes unit c, unit td, real dmg, real trigge
     local player targetOwner = null
     local integer ownerHid = 0
     local integer itemSlot = -1
+    local effect e = null
 
     if test then
         return dmg
@@ -2288,8 +2289,32 @@ function ApplyGearSystemFullShields takes unit c, unit td, real dmg, real trigge
         call UnitRemoveAbility(td, 'A07Q')
         call MyRemoveAbility(td, CupOfTea_CD, 'A07Q', 0)
     endif
+    set itemSlot = IsItemInInventory3(td, 'I043')
+    if itemSlot >= 0 /*
+    */ and BlzGetUnitAbilityCooldownRemaining(td, 'A01W') == 0.0 /*
+    */ and dmg >= GetItemCharges(UnitItemInSlot(td, itemSlot)) then
+        set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_teaeff.mdl", td, "chest"))
+        call BlzStartUnitAbilityCooldown(td, 'A01W', CupOfTeaEvolved_CD)
+        call UnitRemoveAbility(td, 'A07Q')
+        call MyRemoveAbility(td, CupOfTea_CD, 'A07Q', 0)
+        call UnitAddAbility(td,'A0HZ')
+        call MakeSound("war3mapimported\\Item_CupofTeaEvolved")
+        set e = EffectSpawnColor("war3mapimported\\wos_effect pieces2.mdl", GetUnitX(td), GetUnitY(td), GetUnitFacing(td), 0, 0.01, 455, 255, 255, 255, 0)
+                        call AnimDummyEff(e, 0.25, 0.65)
+                        call ScaleEffDummy2(e, 0.35, 0.35, 0.01, 3.5)
+                        call ColorEffDummy4(e, 0.35, 255, 255, 255, 0.2)
+                        call ColorEffDummy3(e, 0.55, 255, 255, 255, 0.35)
+                        set e = null
+         call BlinkEff(td)
+          call BlinkEff2(td)
+        call PosUnit(td,GetUnitX(td)-375*Cos(GetUnitFacing(c)*bj_DEGTORAD),GetUnitY(td)-375*Sin(GetUnitFacing(c)*bj_DEGTORAD))
+        call MyRemoveAbility(td, 1.5, 'A0HZ', 1)
+        
+    endif
 
     set targetOwner = null
+    set e = null
     return dmg
 endfunction
 
@@ -2873,6 +2898,9 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
 
     // Р В¤Р С‘Р В·Р С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“РЎР‚Р С•Р Р… typedmg == 2
     if typedmg == 2 then
+    if GetUnitAbilityLevel(c, 'B03A') > 0 then
+            set dmg = dmg * (1.0 + 30 / 100.0)
+        endif
         if HasCachedItem(c, 'I010') > 0 and GetMainStatAgi(c) then
             set dmg = dmg * 1.1
         endif
@@ -2915,6 +2943,9 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
 
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“РЎР‚Р С•Р Р…
     if typedmg == 1 then
+    if GetUnitAbilityLevel(c, 'B039') > 0 then
+            set dmg = dmg * (1.0 + 30 / 100.0)
+        endif
         if HasCachedItem(c, 'I01C') > 0 and GetMainStatInt(c) then
             set dmg = dmg * 1.1
         endif
@@ -3224,7 +3255,7 @@ function PreloadTransformSkins takes nothing returns nothing
     call TransformPreloadUnit('H01Y')
 
     // Common effects created/recreated by transforms and FixAura.
-    call Preload("war3mapimported\\wos_[dz.spell]002_blue5.mdl")
+    call Preload("war3mapimported\\wos_[dz_spell]002_blue5.mdl")
     call Preload("war3mapimported\\wos_dustwave222.mdx")
     call Preload("war3mapimported\\wos_by_wood_effect_order_dange_yueyun_2withoutblue2.mdx")
 
