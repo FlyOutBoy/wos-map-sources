@@ -17,7 +17,7 @@ globals
     // BAN IMMUNITY: put the three protected hero rawcodes here.
     // Example: integer BanImmuneHero1 = 'H00A'
     // Leave a slot equal to 0 when it is not used.
-    integer BanImmuneHero1 = Toji_ID
+    integer BanImmuneHero1 = Milim_ID
     integer BanImmuneHero2 = 0
     integer BanImmuneHero3 = 0
     // =========================================================================

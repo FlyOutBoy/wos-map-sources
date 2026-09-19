@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "7a260fd882e1053e8f254bcc573bf2703010759420c7a7e3681a1b462b5c9ab9",
+  "source_sha256": "4d606b161f67bc5dcfeb53036074c9d547df67dc37a88a679cb42642ddf061fb",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -11883,12 +11883,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4120",
-            "_original_value": "TRIGSTR_4120",
+            "value": "TRIGSTR_2579",
+            "_original_value": "TRIGSTR_2579",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTIw",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 80+1x agi physical dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 80+1x agi physical dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl8yNTc5",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11903,12 +11903,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4121",
-            "_original_value": "TRIGSTR_4121",
+            "value": "TRIGSTR_3018",
+            "_original_value": "TRIGSTR_3018",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTIx",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 80+1x agi physical dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 80+1x agi physical dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl8zMDE4",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17223,12 +17223,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8310",
-            "_original_value": "TRIGSTR_8310",
+            "value": "TRIGSTR_3019",
+            "_original_value": "TRIGSTR_3019",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MzEw",
-            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec."
+            "_raw_base64": "VFJJR1NUUl8zMDE5",
+            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 1 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17243,12 +17243,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8317",
-            "_original_value": "TRIGSTR_8317",
+            "value": "TRIGSTR_4516",
+            "_original_value": "TRIGSTR_4516",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MzE3",
-            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 3 sec."
+            "_raw_base64": "VFJJR1NUUl80NTE2",
+            "resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 1 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks repeat after 0.5 sec, dealing the same attack damage.\nCooldown: 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17355,12 +17355,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8318",
-            "_original_value": "TRIGSTR_8318",
+            "value": "TRIGSTR_7768",
+            "_original_value": "TRIGSTR_7768",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MzE4",
-            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk"
+            "_raw_base64": "VFJJR1NUUl83NzY4",
+            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk"
           },
           "sanity_check": {
             "text": "",
@@ -17375,12 +17375,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8320",
-            "_original_value": "TRIGSTR_8320",
+            "value": "TRIGSTR_7773",
+            "_original_value": "TRIGSTR_7773",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MzIw",
-            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every 2-nd atk"
+            "_raw_base64": "VFJJR1NUUl83Nzcz",
+            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
+            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk"
           },
           "sanity_check": {
             "text": "",
@@ -17733,12 +17733,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8490",
-            "_original_value": "TRIGSTR_8490",
+            "value": "TRIGSTR_7807",
+            "_original_value": "TRIGSTR_7807",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDkw",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl83ODA3",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17753,12 +17753,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8491",
-            "_original_value": "TRIGSTR_8491",
+            "value": "TRIGSTR_7811",
+            "_original_value": "TRIGSTR_7811",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDkx",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl83ODEx",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17865,12 +17865,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8532",
-            "_original_value": "TRIGSTR_8532",
+            "value": "TRIGSTR_7817",
+            "_original_value": "TRIGSTR_7817",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTMy",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl83ODE3",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17885,12 +17885,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8533",
-            "_original_value": "TRIGSTR_8533",
+            "value": "TRIGSTR_7822",
+            "_original_value": "TRIGSTR_7822",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTMz",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal damage to an enemy within 650 range, deal an additional 100+1.25x agi physical dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl83ODIy",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17979,12 +17979,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8562",
-            "_original_value": "TRIGSTR_8562",
+            "value": "TRIGSTR_332",
+            "_original_value": "TRIGSTR_332",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTYy",
-            "resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
-            "_original_resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
+            "_raw_base64": "VFJJR1NUUl8zMzI=",
+            "resolved_value": "+15 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
           },
           "sanity_check": {
             "text": "",
@@ -17999,12 +17999,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8563",
-            "_original_value": "TRIGSTR_8563",
+            "value": "TRIGSTR_417",
+            "_original_value": "TRIGSTR_417",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTYz",
-            "resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
-            "_original_resolved_value": "+20 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
+            "_raw_base64": "VFJJR1NUUl80MTc=",
+            "resolved_value": "+15 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks next incoming dmg if it more than 1000 (by default) dmg, gain invisible for 1.5 sec and goes backward for 375.\nCooldown: 20 sec.\n|c00FFFC01You can write \"-cup N\" N - any number from 200 to 9999.|r"
           },
           "sanity_check": {
             "text": "",

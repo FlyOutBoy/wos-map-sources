@@ -241,7 +241,7 @@ endif
 endif
  if id == 'A00Y' then 
  call ImmuneToPushDebuff(c)
- call MUE(c,Incursio_Range ,0.175,GetUnitFacing(c)*bj_DEGTORAD)
+ call MUE(c,Incursio_Range ,0.3,GetUnitFacing(c)*bj_DEGTORAD)
  call BuffUnitMS(c,c,0.2)
  elseif id == FunnyBarrel_ID then 
  call FunnyBarrel_Start(c,x,y)

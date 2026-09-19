@@ -88,14 +88,14 @@ library ItemsSpells uses GearSystems
         real Earth_Power_DamageBase = 2 // how much damage dealt x agi
         real Earth_Power_CD = 3 // how much damage dealt x agi
         real Earth_Power_Time = 0.42 // max travel time
-        real Earth_Power_MinDmg = 300 // 5 = 5%, deal dmg each sec 5 
+        real Earth_Power_MinDmg = 200 // 5 = 5%, deal dmg each sec 5 
 //----------------------Guts_Armor----------------------------------------------
         integer GutsArmor_Buff_ID = 'B02D'
         real GutsArmor_DamageBase = 2.2 // how much damage dealt x str
         real GutsArmor_CD = 2 // how much damage dealt x agi
         real GutsArmor_DmgTreshold = 400 // max travel time
 //----------------------QuincyCross----------------------------------------------
-        real QuincyCross_DamageBase = 60 // how much damage static
+        real QuincyCross_DamageBase = 50 // how much damage static
         real QuincyCross_MaxDmg = 99999 // from which dmg amount it will work
         real QuincyCross_CD = 0 // how much damage dealt x main
         integer QuincyCross_MaxStacks = 0
@@ -139,12 +139,12 @@ library ItemsSpells uses GearSystems
         real ShikiKnife_CD = 4
         real ShikiKnife_RangeCheck = 650
 //----------------------Shiki Knife Evolved----------------------------------------------
-        real ShikiKnifeEvolved_DmgBase = 100
-        real ShikiKnifeEvolved_DmgAgi = 1.25
+        real ShikiKnifeEvolved_DmgBase = 160
+        real ShikiKnifeEvolved_DmgAgi = 1.75
         real ShikiKnifeEvolved_CD = 4
         real ShikiKnifeEvolved_RangeCheck = 650
-        real ShikiKnifeEvolved_Range = 1700
-        real ShikiKnifeEvolved_Aoe = 225
+        real ShikiKnifeEvolved_Range = 2100
+        real ShikiKnifeEvolved_Aoe = 200
 //----------------------Hungry Sin----------------------------------------------
         real HungrySin_hp = 25
         real HungrySin_mp = 10
@@ -231,7 +231,7 @@ library ItemsSpells uses GearSystems
         real PrisonRealmCD = 4 // 15 = 15% 
 //----------------------Kurikara----------------------------------------------
         real Kurikara_MaxManaDmg = 4.5 // 5 = 5%, deal dmg each sec 5 
-        real Kurikara_MinDmg = 300 // 5 = 5%, deal dmg each sec 5 
+        real Kurikara_MinDmg = 200 // 5 = 5%, deal dmg each sec 5 
 //---------------W ability-----------------------------------------------------
     endglobals
     function SacredGearBooster takes unit c, real dmg returns real 
@@ -2153,6 +2153,7 @@ library ItemsSpells uses GearSystems
         integer k3
         real r3
         group g
+        real r5
         unit u
         real dmg
         integer check
@@ -2177,7 +2178,10 @@ library ItemsSpells uses GearSystems
                       if k3 == 1 then 
                     call MoveEff(e2, move, a)
                     endif
-
+                    set r5 = r5 + move
+                    if r5>r3 then 
+                    set r = 999
+                    endif
                     set x = GetEffX(e)
                     set y = GetEffY(e)
                     call GroupClear(g)
@@ -2232,9 +2236,11 @@ library ItemsSpells uses GearSystems
             set a = GAngle2(c,x,y)
             set g = CreateGroup()
             set u = null
-            set rmax = 444 
+            set rmax = 4 
+            set r5 = 0
             set move = 90
-            set dmg = ShikiKnifeEvolved_DmgBase + GetHeroAgi(c,true)*ShikiKnifeEvolved_DmgAgi 
+            set dmg = ShikiKnifeEvolved_DmgBase + GetHeroAgi(c,true)*ShikiKnifeEvolved_DmgAgi
+            set dmg = dmg * 2 
             set dmg = SacredGearBooster(c,dmg)
             
             set aoe = ShikiKnifeEvolved_Aoe 

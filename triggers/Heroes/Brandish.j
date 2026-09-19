@@ -953,7 +953,6 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                     call dmgphys(c, u, dmg2)
-                                    call StunUnit(c,u,BrandishT_Stun)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
                                 call GroupRemoveUnit(g, u)

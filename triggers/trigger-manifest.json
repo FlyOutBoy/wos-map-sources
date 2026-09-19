@@ -523,8 +523,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 217781,
-      "sha256": "ec53e7610a35f585ea58b988a1053f95e6cc9a21c02e4e7204aeb4d7300ed07f",
+      "source_bytes": 217782,
+      "sha256": "e3548ea4ef124c832699c3e0a0c2588142fac55b3ec3afe772610e7d15bbcb6f",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -726,8 +726,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastAItems.j",
-      "source_bytes": 12155,
-      "sha256": "304b0956ba2de23591152d7a938fda355235f2823ba9bf23cfa986a7924df95e",
+      "source_bytes": 12153,
+      "sha256": "3454fb58b9fb686429c44bd9d4f68a8c55668c0a75a35213e00d4f2364b6cff3",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -970,8 +970,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 39517,
-      "sha256": "5db59a6d34d2a408e3a8c39834a7c72c5ccc0f214c78380a3838df6448d63cbd",
+      "source_bytes": 39575,
+      "sha256": "668758622a6495ccddc0461e0783c0ea6952bf1a17c4edade1fe0ba563f7140f",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1820,8 +1820,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 103852,
-      "sha256": "463f10fc2056537912270d56dbac2d2dcd954a21bcbc383fafd9ed3b851ad9b0",
+      "source_bytes": 104056,
+      "sha256": "2a2dd4afaedad0b95adf8cbd09fad217f4e8a1cdf56d85fbf761f3831b733227",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -2098,8 +2098,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Brandish.j",
-      "source_bytes": 58178,
-      "sha256": "3f9c7b33b4b1eabbf2e0522a8b9b5a46f1f6adb5cf7581b7c824dd48e7667326",
+      "source_bytes": 58107,
+      "sha256": "176d3b2f83db19ebb20b2eceacf4da6af0a6c3ed79d216cfd6cdacadf4343abe",
       "declarations": {
         "libraries": [
           "BrandishSpells"
@@ -2140,8 +2140,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
-      "source_bytes": 97196,
-      "sha256": "b0e66ba3c38aa3bba0dae298f4cb4afb7beaef55175ecec3af494d883e90844b",
+      "source_bytes": 97511,
+      "sha256": "dc17486f22aeb7dbbdb16210837fdcd252d29e10dffce1cd7b9fde15adc04171",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -3482,8 +3482,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Milim.j",
-      "source_bytes": 96751,
-      "sha256": "cb519d447dba839af1102a57f24a8812ed1d420c40a7cfec4a12913b35a8cff4",
+      "source_bytes": 96785,
+      "sha256": "c51014fea99e2f9d16bc76b515361ee04335f2e9d48e5ca5041d009a2682a88d",
       "declarations": {
         "libraries": [
           "MilimSpells"

@@ -138,7 +138,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         // --------------------------------------------------------------------------
         integer PatriotG_ID = 'A0EF'
         real PatriotG_DamageAgiBase = 1.0
-        real PatriotG_CD_Atk = 0.25
+        real PatriotG_CD_Atk = 0
         real PatriotG_CD_Def = 2.0
         integer PatriotG_Lvl_CD = 12
     endglobals
@@ -276,7 +276,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_Satsu-WWSFX-1.mdx", x, y, 0.0, 1.25, 2.0, 75.0), 0.76, 75.0, td)
         call NextDmg(c, td, PatriotG_DamageAgiBase * GetHeroAgi(c, true), 0, 0.10)
         if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+        if PatriotG_CD_Atk >0 then 
             call BlzStartUnitAbilityCooldown(c,PatriotG_ID,PatriotG_CD_Atk)
+            endif
         else
             call BlzStartUnitAbilityCooldown(c,PatriotG_ID,PatriotG_CD_Def)
         endif
@@ -1255,6 +1257,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         integer k
         integer k3
         real r3
+        real r4
         group g
         group g2
         real dmg
@@ -1299,10 +1302,16 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", x1, y1, GetRandomReal(0, 359), 1.0, 1.25, 0.0))
                                 set k = k + 1
                             endloop
-                            set check2 = 0
                             set r2 = 0.0
                         else
                             set r2 = r2 + 0.03
+                        endif
+                        if r4 > 0.45 then
+                          
+                            set check2 = 0
+                            set r4 = 0.0
+                        else
+                            set r4 = r2 + 0.03
                         endif
 
                         if r3 > 0.0 then
@@ -1390,6 +1399,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set r = 0.0
             set r2 = 10.0
             set r3 = 10.0
+            set r4 = 0
             set check2 = 0
             call SaveInteger(hs, GetHandleId(c), StringHash("T act"), 0)
             set aoe = PatriotT_DamageAoe

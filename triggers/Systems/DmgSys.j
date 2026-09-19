@@ -30,11 +30,11 @@ function AttackCheck takes unit c, unit td, real dmg returns real
     if HasCachedItem(c,'I03X') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 then
     call NextDmg(c,td,GetAttack(c),2,0.5)
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
-    call BlzStartUnitAbilityCooldown(c,'A0HT',3)
+    call BlzStartUnitAbilityCooldown(c,'A0HT',1)
     endif
     if MurasameTrigger == false and HasCachedItem(c,'I03Y') > 0 then
     set atk = LoadInteger(hs,GetHandleId(c),StringHash("atk"))
-    if atk>= 2  then
+    if true then//atk>= 2  then
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin"))
     call DmgPTime2(c,td,100+(GetAttack(c)*1.5),4,1,0,"murasume")
     set atk =0
@@ -72,7 +72,7 @@ function AttackCheck takes unit c, unit td, real dmg returns real
     if GetUnitAbilityLevel(c, MahoragaE2_Buff_ID) > 0 and sourceId == Mahoraga_ID then
         call MahoragaE2Act_Start(c, td)
     endif
-    if GetUnitAbilityLevel(c, PatriotG_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 then
+    if GetUnitAbilityLevel(c, PatriotG_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c,PatriotG_ID)==0 then
         call PatriotPas(c,td)
     endif
     if sourceId == Takeshi_ID and LoadInteger(hs, sourceHid, KEY_MODE_G) == 1 then
@@ -369,6 +369,10 @@ endif
     if GetUnitAbilityLevel(td, Erza3E_DamageImmune_ID) > 0 and not shieldPen then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
+        if not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
+       set dmg = dmg + QuincyCross_DamageBase
+       // call QuincyCross_Start(c, td)
+    endif
     if targetId == Mahoraga_ID and GetUnitAbilityLevel(td, MahoragaT_ID) > 0 then
         call MahoragaT_Start(td, c, dmg)
     endif    
@@ -396,7 +400,7 @@ endif
     set dmg = ApplyFullDamageShield(c, td, shieldInput, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
     endif
-      if dmg> 1 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
+      if dmg>= 1000 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
     call BlzStartUnitAbilityCooldown(c, 'A0HV', 5 )
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_blink_red.mdx",c,"chest"))
     call SetHpCurrent2(c,c,dmg*0.33)
@@ -407,7 +411,7 @@ endif
     else
     call BuffUnit01(c,c,'A0HX',"innerfire",1)
     endif
-    call BlzStartUnitAbilityCooldown(c, 'A0HW', 5 )
+    call BlzStartUnitAbilityCooldown(c, 'A0HW', 10 )
     endif
     if dmg> 1 and HasCachedItem(td,SusanooShield_Item_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0F7') == 0 and GetUnitAbilityLevel(td, 'A0F7') > 0 then
     set k = GetItemCharges(UnitItemInSlot(td, IsItemInInventory3(td, SusanooShield_Item_ID)))
@@ -490,10 +494,7 @@ endif
     endif
     
     if ItemProcDamageDepth == 0 then
-    if not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
-       set dmg = dmg + QuincyCross_DamageBase
-       // call QuincyCross_Start(c, td)
-    endif
+
 
     if dmg > 1 and GetUnitAbilityLevel(td, 'B008') > 0 and isEnemy and HasCachedItem(c, 'I02S') > 0 then
         call Tachikaze_Start(c, td)
@@ -554,14 +555,14 @@ endif
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Eff (134).mdl",td,"origin"))
     set dmg = dmg - 200
     endif
-    if isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
+    if typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0FA', ShikiKnife_CD )
-        call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
+        call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 2, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
-    if isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
+    if  typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0HY', ShikiKnifeEvolved_CD )
-        call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
+        call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 2, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
     if isEnemy and dmg >= RyijinJakka_MinDmg and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 and GetUnitAbilityLevel(c, 'A080') > 0 then

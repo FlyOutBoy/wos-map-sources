@@ -412,7 +412,7 @@ private struct MilimWKS
                             endif
                             call GroupRemoveUnit(g, u)
                         endloop
-                        if GetHeroLevel(c)>=25 then 
+                        if GetUnitAbilityLevel(c,MilimW_ID)>= 5 then 
                         call SwapAbility(c,MilimW_TimetoSwapAbi,MilimW2_ID,MilimW_ID)
                         call MyFrame(c,MilimW_TimetoSwapAbi,"BTNHero_Milim_W2",false,0)
                         
@@ -632,12 +632,13 @@ endstruct
                 set check = 0
                 set aoe = MilimW2_DamageAoe
                 set dmg = GetHeroInt(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
-                set dmg = dmg / 4
-                call SetUnitTimeScale(c, 0.85)
-                call SetUnitAnimationByIndex(c, 9)
                 if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
                     set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
                 endif
+                set dmg = dmg / 4
+                call SetUnitTimeScale(c, 0.85)
+                call SetUnitAnimationByIndex(c, 9)
+                
                 call MakeSound("war3mapimported\\Hero_Milim_W2 1")
                 //call MakeSound("war3mapimported\\Hero_Barragan_R2")
                 call StartSpellUnit2(c)
@@ -1091,7 +1092,7 @@ endstruct
 // Îñíîâíàÿ ñòðóêòóðà: êàñò, íåóÿçâèìîñòü, ïàóçà è âûïóñê âñåõ ñíàðÿäîâ.
 private struct MilimRKS
     private static constant integer MISSILE_COUNT = 12
-    private static constant real CAST_DELAY = 1.50
+    private static constant real CAST_DELAY = 1.0
     private static constant real MISSILE_RELEASE_WINDOW = 0.5
     private static constant real MISSILE_MIN_FLIGHT_TIME = 0.12
     private static constant real RECT_WIDTH = 1200.00

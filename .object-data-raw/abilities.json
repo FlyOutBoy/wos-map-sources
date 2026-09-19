@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "08ab2eca21bf9cdde6f9bb9e84a99f170fe5c5400aec6d8e92122cccb343fa83",
+  "source_sha256": "933b65c4ec888bb33d7e7a3c0e0ada467cf727882500032f52de780264546d24",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -427958,9 +427958,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1300.0,
-            "_original_value": 1300.0,
-            "_raw_hex": "0080A244"
+            "value": 1200.0,
+            "_original_value": 1200.0,
+            "_raw_hex": "00009644"
           },
           "sanity_check": {
             "text": "",
@@ -427977,9 +427977,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 1300.0,
-            "_original_value": 1300.0,
-            "_raw_hex": "0080A244"
+            "value": 1275.0,
+            "_original_value": 1275.0,
+            "_raw_hex": "00609F44"
           },
           "sanity_check": {
             "text": "",
@@ -427996,9 +427996,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 1300.0,
-            "_original_value": 1300.0,
-            "_raw_hex": "0080A244"
+            "value": 1350.0,
+            "_original_value": 1350.0,
+            "_raw_hex": "00C0A844"
           },
           "sanity_check": {
             "text": "",
@@ -428015,9 +428015,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 1300.0,
-            "_original_value": 1300.0,
-            "_raw_hex": "0080A244"
+            "value": 1425.0,
+            "_original_value": 1425.0,
+            "_raw_hex": "0020B244"
           },
           "sanity_check": {
             "text": "",
@@ -428034,9 +428034,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 1300.0,
-            "_original_value": 1300.0,
-            "_raw_hex": "0080A244"
+            "value": 1500.0,
+            "_original_value": 1500.0,
+            "_raw_hex": "0080BB44"
           },
           "sanity_check": {
             "text": "",
@@ -433442,36 +433442,20 @@
             "text": "",
             "hex": "00000000"
           }
-        }
-      ],
-      "display_name": "Another Anime Milim F"
-    },
-    {
-      "old_id": {
-        "text": "AOre",
-        "hex": "414F7265"
-      },
-      "new_id": {
-        "text": "A0EF",
-        "hex": "41304546"
-      },
-      "v3_unknown": [
-        0
-      ],
-      "modifications": [
+        },
         {
           "field": {
-            "text": "acdn",
-            "hex": "6163646E"
+            "text": "aare",
+            "hex": "61617265"
           },
-          "field_name": "Cooldown / Перезарядка",
+          "field_name": "Area of effect / Область действия",
           "type": "unreal",
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 0.0,
-            "_original_value": 0.0,
-            "_raw_hex": "00000000"
+            "value": 1400.0,
+            "_original_value": 1400.0,
+            "_raw_hex": "0000AF44"
           },
           "sanity_check": {
             "text": "",
@@ -433480,73 +433464,18 @@
         },
         {
           "field": {
-            "text": "acas",
-            "hex": "61636173"
-          },
-          "field_name": "",
-          "type": "unreal",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": 0.0,
-            "_original_value": 0.0,
-            "_raw_hex": "00000000"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aeff",
-            "hex": "61656666"
+            "text": "atar",
+            "hex": "61746172"
           },
           "field_name": "",
           "type": "string",
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "",
-            "_original_value": "",
+            "value": "invulnerable,vulnerable",
+            "_original_value": "invulnerable,vulnerable",
             "_encoding": "utf-8",
-            "_raw_base64": ""
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "Ore1",
-            "hex": "4F726531"
-          },
-          "field_name": "",
-          "type": "unreal",
-          "level": 1,
-          "data_pointer": 1,
-          "data": {
-            "value": 0.0,
-            "_original_value": 0.0,
-            "_raw_hex": "00000000"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "arlv",
-            "hex": "61726C76"
-          },
-          "field_name": "Required level / Требуемый уровень",
-          "type": "int",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": 1
+            "_raw_base64": "aW52dWxuZXJhYmxlLHZ1bG5lcmFibGU="
           },
           "sanity_check": {
             "text": "",
@@ -433554,7 +433483,7 @@
           }
         }
       ],
-      "display_name": "Gacha Patriot G"
+      "display_name": "Another Anime Milim F"
     },
     {
       "old_id": {
@@ -437357,9 +437286,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 1700.0,
-            "_original_value": 1700.0,
-            "_raw_hex": "0080D444"
+            "value": 2300.0,
+            "_original_value": 2300.0,
+            "_raw_hex": "00C00F45"
           },
           "sanity_check": {
             "text": "",
@@ -437520,9 +437449,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 8.0,
+            "_original_value": 8.0,
+            "_raw_hex": "00000041"
           },
           "sanity_check": {
             "text": "",
@@ -437735,6 +437664,115 @@
         }
       ],
       "display_name": "Evolved Cup of Tea"
+    },
+    {
+      "old_id": {
+        "text": "Aexh",
+        "hex": "41657868"
+      },
+      "new_id": {
+        "text": "A0EF",
+        "hex": "41304546"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "arac",
+            "hex": "61726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aher",
+            "hex": "61686572"
+          },
+          "field_name": "Hero ability / Способность героя",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "areq",
+            "hex": "61726571"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "adur",
+            "hex": "61647572"
+          },
+          "field_name": "Duration / Длительность",
+          "type": "unreal",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "exh1",
+            "hex": "65786831"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 1,
+          "data_pointer": 1,
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Gacha Patriot G"
     }
   ]
 }
