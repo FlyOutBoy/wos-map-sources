@@ -752,6 +752,7 @@ call UnitRemoveAbility(c,'B01W')*/
                     call UnitRemoveAbility(c,'B035')
                     call UnitRemoveAbility(c,TojiW_Debuff_ID)
                     call UnitRemoveAbility(c,'B02R')
+                    call UnitRemoveAbility(c,DeathNote_Buff_ID)
                     
                     call UnitRemoveAbility(c,'B01G')
                     call UnitRemoveAbility(c,'B00T')
@@ -970,6 +971,13 @@ endif
 if GetUnitAbilityLevel(c,'A0DX') > 0 then 
 set base = base + 200
 endif
+if GetUnitAbilityLevel(c,'A02P') > 0 then 
+set base = base + 100
+endif
+if GetUnitAbilityLevel(c,'A0HU') > 0 then 
+set base = base + 40
+endif
+
 return base 
 endfunction
 function AddHpRegen takes unit c, real r, boolean b returns nothing
@@ -2264,9 +2272,13 @@ function ApplyGearSystemFullShields takes unit c, unit td, real dmg, real trigge
         set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         call SaveInteger(hs, GetHandleId(td), KEY_TOMIOKA_F_DMG_ACT, 1)
     endif
-     if LoadInteger(hs, ownerHid, StringHash("invul")) == 1 then
-        set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
-    endif
+   if LoadInteger(hs, ownerHid, KEY_INVUL) == 1 then
+    set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+endif
+
+if LoadInteger(hs, ownerHid, KEY_SHIELD) == 1 then
+    set dmg = ApplyFullDamageShield(c, td, dmg, triggerDmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+endif
 
     // B02G: все типы урона.
     if GetUnitAbilityLevel(td, 'B02G') > 0 then
@@ -2898,8 +2910,8 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
 
     // Р В¤Р С‘Р В·Р С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“РЎР‚Р С•Р Р… typedmg == 2
     if typedmg == 2 then
-    if GetUnitAbilityLevel(c, 'B03A') > 0 then
-            set dmg = dmg * (1.0 + 30 / 100.0)
+    if GetUnitAbilityLevel(c, DemonDwellerSword_Phys_ID ) > 0 then
+            set dmg = dmg * (1.0 + (DemonDwellerSword_Bonus  / 100.0))
         endif
         if HasCachedItem(c, 'I010') > 0 and GetMainStatAgi(c) then
             set dmg = dmg * 1.1
@@ -2909,8 +2921,8 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
             set dmg = dmg * 1.1
         endif
 
-        if HasCachedItem(c, 'I00T') > 0 then
-            set dmg = dmg * 1.2
+        if HasCachedItem(c, RaikageHat_ID ) > 0 then
+            set dmg = dmg * (1+(RaikageHat_Bonus/100))
         endif
     endif
 
@@ -2943,8 +2955,8 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
 
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р С‘Р в„– РЎС“РЎР‚Р С•Р Р…
     if typedmg == 1 then
-    if GetUnitAbilityLevel(c, 'B039') > 0 then
-            set dmg = dmg * (1.0 + 30 / 100.0)
+    if GetUnitAbilityLevel(c, DemonDwellerSword_Mag_ID) > 0 then
+            set dmg = dmg * (1.0 + (DemonDwellerSword_Bonus  / 100.0))
         endif
         if HasCachedItem(c, 'I01C') > 0 and GetMainStatInt(c) then
             set dmg = dmg * 1.1
@@ -2952,8 +2964,8 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
         if AinzF_HasMagicDamageBuff (c) then
             set dmg = dmg * 1.08
         endif
-        if HasCachedItem(c, 'I01B') > 0 then
-            set dmg = dmg * 1.2
+        if HasCachedItem(c, ItachiSet_ID ) > 0 then
+            set dmg = dmg * (1+(ItachiSet_Bonus/100))
         endif
 
         if HasCachedItem(c, 'I010') > 0 then

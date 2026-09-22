@@ -661,6 +661,7 @@ set k = 0
     set itemList[33] = 'I040'
     set itemList[34] = 'I041'
     set itemList[35] = 'I043'
+    set itemList[36] = 'I044'
     set k = 0
 loop
     exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
@@ -1068,6 +1069,7 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I041', "I03F")
     call RegisterCraft('I042', "I02P")
     call RegisterCraft('I043', "I00M")
+    call RegisterCraft('I044', "I00G I022")
 endfunction
 
 function SetPlayerCraftSlot takes integer pid, integer slot, integer itemId returns nothing

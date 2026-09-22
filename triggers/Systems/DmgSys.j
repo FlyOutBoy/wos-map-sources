@@ -2,6 +2,7 @@ globals
 boolean I02H_ReflectActive = false
 boolean QuincyCrossDamageActive = false
 boolean MurasameTrigger = false
+boolean KurikaraTrigger = false
 endglobals
 function checkdmgsys takes nothing returns boolean
     return GetEventDamage() >= 1 and GetUnitAbilityLevel(GetTriggerUnit(), 'Avul') == 0
@@ -17,21 +18,14 @@ function AttackCheck takes unit c, unit td, real dmg returns real
     local integer sourceId = GetUnitTypeId(c)
     local integer sourceHid = GetHandleId(c)
     local integer sourceOwnerHid = GetHandleId(GetOwningPlayer(c))
-    
-      if sourceId == Starrk_ID and LoadInteger(hs, sourceOwnerHid, StringHash("morph e")) == 1 then
-        call StarrkE_Attack_Start(c, x, y)
-        set dmg = 0
-    endif
+      
+   
     if sourceId == Erza_ID and IsUnitPaused(c) == false and LoadInteger(hs, sourceHid, KEY_ERZA_G2_ACTIVE) > 0 and LoadInteger(hs, sourceHid, KEY_ERZA_G2_TYPE) == 1 and SR2(c, td) <= Erza6E_RangePassiveWork and BlzGetUnitAbilityCooldownRemaining(c, Erza6E_ID) == 0 then
         call Erza6E_Start(c, td)
         call BlzStartUnitAbilityCooldown(c, Erza6E_ID, BlzGetUnitAbilityCooldown(c, Erza6E_ID, GetUnitAbilityLevel(c, Erza6E_ID) - 1))
     endif
     if dmg> 0 then 
-    if HasCachedItem(c,'I03X') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 then
-    call NextDmg(c,td,GetAttack(c),2,0.5)
-    call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
-    call BlzStartUnitAbilityCooldown(c,'A0HT',1)
-    endif
+    
     if MurasameTrigger == false and HasCachedItem(c,'I03Y') > 0 then
     set atk = LoadInteger(hs,GetHandleId(c),StringHash("atk"))
     if true then//atk>= 2  then
@@ -168,6 +162,7 @@ function AttackCheck takes unit c, unit td, real dmg returns real
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_Satsu-WWSFX-1.mdx", x, y, a * bj_RADTODEG, 1.25, 2., 75), 0.76, 75, td)
     endif
     endif
+     
     call AlterSaberW_PasTrigger(c, td)
     return dmg
 endfunction
@@ -210,6 +205,7 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local integer k = 0
     local real x1
     local real y1
+    
     local real rand1 = 0
     local real targetX = GetUnitX(td)
     local real targetY = GetUnitY(td)
@@ -229,12 +225,22 @@ function Trig_DmgSys_Actions takes nothing returns nothing
         set typedmg = 1
     elseif BlzGetEventAttackType() == ATTACK_TYPE_NORMAL and BlzGetEventDamageType() == DAMAGE_TYPE_FIRE then
         set typedmg = 2
-    elseif BlzGetEventAttackType() == ATTACK_TYPE_HERO then
+    elseif BlzGetEventAttackType() == ATTACK_TYPE_HERO or BlzGetEventAttackType() == ATTACK_TYPE_MELEE then
         set typedmg = 0
     endif
         
     if BlzGetEventIsAttack() or typedmg == 0 then // for attacks only
+    if HasCachedItem(c,'I03X') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 then
+    call NextDmg(c,td,GetAttack(c),2,0.5)
+    call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
+    call BlzStartUnitAbilityCooldown(c,'A0HT',1)
+    endif
+    if BlzGetEventIsAttack() and sourceId == Starrk_ID and LoadInteger(hs, sourceOwnerHid, StringHash("morph e")) == 1 then
+        call StarrkE_Attack_Start(c, GetUnitX(td), GetUnitY(td))
+        set dmg = 0
+        else        
         set dmg = AttackCheck(c, td, dmg)
+    endif
     endif
     if isEnemy and sourceIsHero and LoadInteger(hs, targetHid, StringHash("naofumi shield")) == 0 then
         if typedmg == 0 or typedmg == 2 then
@@ -272,9 +278,7 @@ set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_
 call BlzStartUnitAbilityCooldown(td,Erza7E_ID,BlzGetUnitAbilityCooldown(td,Erza7E_ID,GetUnitAbilityLevel(td,Erza7E_ID)-1))
 endif
 endif
-    if LoadInteger(hs, targetHid, StringHash("invul")) == 1 then
-        set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
-    endif
+   
     if GetUnitAbilityLevel(td,AinzF_Buff0_ID)>0 and dmg >150  then //LoadInteger(hs, sourceHid, StringHash("brandish g ally")) > 0 then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         call UnitRemoveAbility(td,AinzF_Buff0_ID)
@@ -401,17 +405,17 @@ endif
     endif
     endif
       if dmg>= 1000 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
-    call BlzStartUnitAbilityCooldown(c, 'A0HV', 5 )
+    call BlzStartUnitAbilityCooldown(c, 'A0HV', 3 )
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_blink_red.mdx",c,"chest"))
     call SetHpCurrent2(c,c,dmg*0.33)
     endif
-    if dmg>= 500 and HasCachedItem(c,'I041') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HW') == 0 and GetUnitAbilityLevel(c, 'A0HW') > 0 then
+    if dmg>= DemonDwellerSword_MinDmg  and HasCachedItem(c,DemonDwellerSword_ID ) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DemonDwellerSword_Abi_CD_ID) == 0 and GetUnitAbilityLevel(c, DemonDwellerSword_Abi_CD_ID) > 0 then
     if typedmg == 1 then 
-    call BuffUnit01(c,c,'A0HX',"innerfire",2)
+    call BuffUnit01(c,c,DemonDwellerSword_Abi_ID ,"innerfire",2)
     else
-    call BuffUnit01(c,c,'A0HX',"innerfire",1)
+    call BuffUnit01(c,c,DemonDwellerSword_Abi_ID ,"innerfire",1)
     endif
-    call BlzStartUnitAbilityCooldown(c, 'A0HW', 10 )
+    call BlzStartUnitAbilityCooldown(c, DemonDwellerSword_Abi_CD_ID, DemonDwellerSword_CD  )
     endif
     if dmg> 1 and HasCachedItem(td,SusanooShield_Item_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0F7') == 0 and GetUnitAbilityLevel(td, 'A0F7') > 0 then
     set k = GetItemCharges(UnitItemInSlot(td, IsItemInInventory3(td, SusanooShield_Item_ID)))
@@ -492,7 +496,10 @@ endif
             call SetUnitState(td, UNIT_STATE_LIFE, GetUnitState(td, UNIT_STATE_MAX_LIFE) * (KyorakuT_Dan1_MinHp / 100))
         endif
     endif
-    
+    if IsUnitIllusion(c) == false and GetUnitAbilityLevel(td,DeathNote_Buff_ID)==0 and dmg>=DeathNote_MinDmg and typedmg == 1 and isEnemy and HasCachedItem(c, DeathNote_ID ) > 0  and BlzGetUnitAbilityCooldownRemaining(c, DeathNote_CD_ID ) == 0 and GetUnitAbilityLevel(c, DeathNote_CD_ID ) > 0 then
+        call BlzStartUnitAbilityCooldown(c, DeathNote_CD_ID , DeathNote_CD  )
+        call DeathNote_Start(c,td,dmg)
+    endif
     if ItemProcDamageDepth == 0 then
 
 
@@ -501,7 +508,7 @@ endif
     endif
 
     if typedmg == 1 then
-        if isEnemy and HasCachedItem(c, 'I00W') > 0 and dmg >= Kurikara_MinDmg then
+        if KurikaraTrigger == false and isEnemy and HasCachedItem(c, 'I00W') > 0 and dmg >= Kurikara_MinDmg then
             call KurikaraFlame(c, td)
         endif
     endif
@@ -557,12 +564,12 @@ endif
     endif
     if typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0FA', ShikiKnife_CD )
-        call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 2, 0.05)
+        call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
     if  typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0HY', ShikiKnifeEvolved_CD )
-        call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 2, 0.05)
+        call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
     if isEnemy and dmg >= RyijinJakka_MinDmg and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 and GetUnitAbilityLevel(c, 'A080') > 0 then

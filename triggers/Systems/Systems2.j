@@ -789,6 +789,17 @@ endfunction
     call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_MAGIC, DAMAGE_TYPE_NORMAL, null)
     endif
     endfunction
+    function dmgmag2 takes unit c, unit td , real dmg,string s returns nothing
+    if c != null and td != null and GetWidgetLife(td)>1 then 
+    if s == "kurikara" then 
+    set KurikaraTrigger = true 
+    endif
+    call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_MAGIC, DAMAGE_TYPE_NORMAL, null)
+    if s == "kurikara" then 
+    set KurikaraTrigger = false 
+    endif
+    endif
+    endfunction
     function dmgphys takes unit c, unit td , real dmg returns nothing
     if c != null and td != null and GetWidgetLife(td)>1 then 
     call UnitDamageTarget(c,td,dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)

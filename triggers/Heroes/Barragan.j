@@ -92,7 +92,7 @@ library BarraganSpells uses GearSystems
         real BarraganG_Damage2Static_25 = 40 // base static damage, damage that would be dealt for whole time
         real BarraganG_Damage2Static_35 = 50 // base static damage, damage that would be dealt for whole time
         real BarraganG_DamageDuration = 3 // duration in seconds of passive burning
-        real BarraganG_DamagePeriodic = 0.5 // set time to periodic damage per seconds, example: 0.5 - passive will dealt damage 6 times, if duration 3 and this 0.5 each second target take damage 2 times, if this 0.25 - 4 times and total damage times increase to 12
+        real BarraganG_DamagePeriodic = 1 // set time to periodic damage per seconds, example: 0.5 - passive will dealt damage 6 times, if duration 3 and this 0.5 each second target take damage 2 times, if this 0.25 - 4 times and total damage times increase to 12
         integer BarraganG_AbilityEnchantLevelGain = 35 // write here a number of level afther reaching that he would add a 1x stack of passive burning to his Q and W
 //----------------------------------------------------------------------------------------------------------------------------- 
     endglobals

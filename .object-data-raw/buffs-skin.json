@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "af3d4d7d3f4a284532ed5aeeac5dad9bc51530f2a22991abf816000611f80ecb",
+  "source_sha256": "b189eba848653fad4a5125f82e51126f57508b57cd38bed29c258ae7565e97a7",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -13322,6 +13322,156 @@
         }
       ],
       "display_name": "Demon Dweller Physical"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03B",
+        "hex": "42303342"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8565",
+            "_original_value": "TRIGSTR_8565",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTY1",
+            "resolved_value": "Death Note",
+            "_original_resolved_value": "Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8566",
+            "_original_value": "TRIGSTR_8566",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTY2",
+            "resolved_value": "Unit will take damage after time",
+            "_original_resolved_value": "Unit will take damage after time"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_HellCurse.mdx",
+            "_original_value": "war3mapImported\\wos_HellCurse.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19IZWxsQ3Vyc2UubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DeathNote.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DeathNote.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlYXRoTm90ZS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8569",
+            "_original_value": "TRIGSTR_8569",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTY5",
+            "resolved_value": "Death Note",
+            "_original_resolved_value": "Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8573",
+            "_original_value": "TRIGSTR_8573",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTcz",
+            "resolved_value": "1",
+            "_original_resolved_value": "1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "1"
     }
   ]
 }

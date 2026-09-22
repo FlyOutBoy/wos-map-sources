@@ -24,7 +24,7 @@ library AlterSaberSpells uses GearSystems
         real AlterSaberQ_DamageAoeCheck = 250 // check to trigger atks
         real AlterSaberQ_DamageAoe = 475
         real AlterSaberQ_DamageAoe2 = 275
-        integer AlterSaberQ_AtkCount = 4
+        integer AlterSaberQ_AtkCount = 3
         real AlterSaberQ_Range = 1200 // if no one catched and distance between cast point lower than this amount, hero will anyway run this amount
         real AlterSaberRQ_Range = 1300 // if no one catched and distance between cast point lower than this amount, hero will anyway run this amount
         real AlterSaberQ_PushRange = 350

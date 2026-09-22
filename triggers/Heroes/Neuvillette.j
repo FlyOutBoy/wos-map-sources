@@ -51,9 +51,9 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
         real NeuvilletteR_DamageAoe = 375.0
         real NeuvilletteR_PushRange = 120.0
         real NeuvilletteR_PushDuration = 0.30
-        real NeuvilletteR_CastTime = 0.60
-        real NeuvilletteR_Duration = 2.50
-        real NeuvilletteR_DamageInterval = 0.15
+        real NeuvilletteR_CastTime = 0.51
+        real NeuvilletteR_Duration = 1.50
+        real NeuvilletteR_DamageInterval = 0.24
         boolean NeuvilletteR_IsInvul = true
         real NeuvilletteR_DecorDamage = 100.0
 
@@ -780,7 +780,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             endif
 
             set dmg = GetHeroInt(c, true) * (NeuvilletteR_DamageIntBase + NeuvilletteR_DamageIntStep * (level - 1))
-            set dmg = dmg / 8.0
+            set dmg = dmg / 6.0
 
             if NeuvilletteR_IsInvul then
                 call StartSpellUnit(c)

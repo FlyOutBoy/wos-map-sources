@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "4d606b161f67bc5dcfeb53036074c9d547df67dc37a88a679cb42642ddf061fb",
+  "source_sha256": "449ab95e55ac8805184b8929a59e548fa470715522dc0cff728f5ff69bf57efd",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -1701,12 +1701,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3744",
-            "_original_value": "TRIGSTR_3744",
+            "value": "TRIGSTR_8607",
+            "_original_value": "TRIGSTR_8607",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNzQ0",
-            "resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 625 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 13 sec.",
-            "_original_resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 625 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 13 sec."
+            "_raw_base64": "VFJJR1NUUl84NjA3",
+            "resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 750 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 12 sec.",
+            "_original_resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 750 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 12 sec."
           },
           "sanity_check": {
             "text": "",
@@ -1739,12 +1739,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3843",
-            "_original_value": "TRIGSTR_3843",
+            "value": "TRIGSTR_8608",
+            "_original_value": "TRIGSTR_8608",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zODQz",
-            "resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 625 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 13 sec.",
-            "_original_resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 625 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 13 sec."
+            "_raw_base64": "VFJJR1NUUl84NjA4",
+            "resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 750 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 12 sec.",
+            "_original_resolved_value": "+100 ms\n+15 allstats\nActive: Push hero for 750 point and gain 20% movespeed.\nDuration: 3 sec.\nCooldown: 12 sec."
           },
           "sanity_check": {
             "text": "",
@@ -1965,12 +1965,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2401",
-            "_original_value": "TRIGSTR_2401",
+            "value": "TRIGSTR_8182",
+            "_original_value": "TRIGSTR_8182",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNDAx",
-            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 100 magic dmg and burns enemy 40 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 100 magic dmg and burns enemy 40 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl84MTgy",
+            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 175 magic dmg and burns enemy 30 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 175 magic dmg and burns enemy 30 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -1985,12 +1985,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2402",
-            "_original_value": "TRIGSTR_2402",
+            "value": "TRIGSTR_8183",
+            "_original_value": "TRIGSTR_8183",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNDAy",
-            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 100 magic dmg and burns enemy 40 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 100 magic dmg and burns enemy 40 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl84MTgz",
+            "resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 175 magic dmg and burns enemy 30 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+5 allstats\n+1 mp regen\nActive: Throw barrel to point that explodes and deal 175 magic dmg and burns enemy 30 dmg per sec.\nDuration 5 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -2931,12 +2931,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3015",
-            "_original_value": "TRIGSTR_3015",
+            "value": "TRIGSTR_8609",
+            "_original_value": "TRIGSTR_8609",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDE1",
-            "resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 800 range.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 800 range.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl84NjA5",
+            "resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 900 range.\nCooldown: 18 sec.",
+            "_original_resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 900 range.\nCooldown: 18 sec."
           },
           "sanity_check": {
             "text": "",
@@ -2951,12 +2951,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3016",
-            "_original_value": "TRIGSTR_3016",
+            "value": "TRIGSTR_8610",
+            "_original_value": "TRIGSTR_8610",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDE2",
-            "resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 800 range.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 800 range.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl84NjEw",
+            "resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 900 range.\nCooldown: 18 sec.",
+            "_original_resolved_value": "+15 allstats\n+70 ms\n+4 mp regen\nActive: Blink to 900 range.\nCooldown: 18 sec."
           },
           "sanity_check": {
             "text": "",
@@ -3573,12 +3573,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7397",
-            "_original_value": "TRIGSTR_7397",
+            "value": "TRIGSTR_8577",
+            "_original_value": "TRIGSTR_8577",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Mzk3",
-            "resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 20%.",
-            "_original_resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 20%."
+            "_raw_base64": "VFJJR1NUUl84NTc3",
+            "resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 17.5%.",
+            "_original_resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 17.5%."
           },
           "sanity_check": {
             "text": "",
@@ -3593,12 +3593,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7400",
-            "_original_value": "TRIGSTR_7400",
+            "value": "TRIGSTR_8578",
+            "_original_value": "TRIGSTR_8578",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDAw",
-            "resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 20%.",
-            "_original_resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 20%."
+            "_raw_base64": "VFJJR1NUUl84NTc4",
+            "resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 17.5%.",
+            "_original_resolved_value": "+10 str\n+20 agi\n+20 int\nPassive: Increase physical spell dmg for 17.5%."
           },
           "sanity_check": {
             "text": "",
@@ -5805,12 +5805,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7401",
-            "_original_value": "TRIGSTR_7401",
+            "value": "TRIGSTR_8584",
+            "_original_value": "TRIGSTR_8584",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDAx",
-            "resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 20%",
-            "_original_resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 20%"
+            "_raw_base64": "VFJJR1NUUl84NTg0",
+            "resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 17.5%",
+            "_original_resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 17.5%"
           },
           "sanity_check": {
             "text": "",
@@ -5843,12 +5843,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7402",
-            "_original_value": "TRIGSTR_7402",
+            "value": "TRIGSTR_8589",
+            "_original_value": "TRIGSTR_8589",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDAy",
-            "resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 20%",
-            "_original_resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 20%"
+            "_raw_base64": "VFJJR1NUUl84NTg5",
+            "resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 17.5%",
+            "_original_resolved_value": "+10 str\n+20 int\n+20 agi\nPassive: Increase magic spell dmg for 17.5%"
           },
           "sanity_check": {
             "text": "",
@@ -7191,12 +7191,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3981",
-            "_original_value": "TRIGSTR_3981",
+            "value": "TRIGSTR_418",
+            "_original_value": "TRIGSTR_418",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zOTgx",
-            "resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 35 sec.\nCooldown: 20 (10) sec.",
-            "_original_resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 35 sec.\nCooldown: 20 (10) sec."
+            "_raw_base64": "VFJJR1NUUl80MTg=",
+            "resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 25 sec.\nCooldown: 15 (7.5) sec.",
+            "_original_resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 25 sec.\nCooldown: 15 (7.5) sec."
           },
           "sanity_check": {
             "text": "",
@@ -7211,12 +7211,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3983",
-            "_original_value": "TRIGSTR_3983",
+            "value": "TRIGSTR_1993",
+            "_original_value": "TRIGSTR_1993",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zOTgz",
-            "resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 35 sec.\nCooldown: 20 (10) sec.",
-            "_original_resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 35 sec.\nCooldown: 20 (10) sec."
+            "_raw_base64": "VFJJR1NUUl8xOTkz",
+            "resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 25 sec.\nCooldown: 15 (7.5) sec.",
+            "_original_resolved_value": "+15 allstats\n+70 ms\n+10 hp regen\nActive: The hero instantly jumps behind the target (range: 1100).\nEnemy: Deals 100 + 1.25x main stat as atk dmg and places a mark. Recasting Hiraishin on a marked enemy reduces the cooldown by 50%.\nAlly: Restores 200 mp to both the ally and the caster and reduces the cooldown by 50%.\nMark duration 25 sec.\nCooldown: 15 (7.5) sec."
           },
           "sanity_check": {
             "text": "",
@@ -7587,12 +7587,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_418",
-            "_original_value": "TRIGSTR_418",
+            "value": "TRIGSTR_8592",
+            "_original_value": "TRIGSTR_8592",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTg=",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply fire debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply fire debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n"
+            "_raw_base64": "VFJJR1NUUl84NTky",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply fire debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply fire debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n"
           },
           "sanity_check": {
             "text": "",
@@ -7607,12 +7607,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1993",
-            "_original_value": "TRIGSTR_1993",
+            "value": "TRIGSTR_8593",
+            "_original_value": "TRIGSTR_8593",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTkz",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply fire debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply fire debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n"
+            "_raw_base64": "VFJJR1NUUl84NTkz",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply fire debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply fire debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n"
           },
           "sanity_check": {
             "text": "",
@@ -8193,12 +8193,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4160",
-            "_original_value": "TRIGSTR_4160",
+            "value": "TRIGSTR_8292",
+            "_original_value": "TRIGSTR_8292",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTYw",
-            "resolved_value": "+12 allstats\nActive: Push enemy away deal 100 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n",
-            "_original_resolved_value": "+12 allstats\nActive: Push enemy away deal 100 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84Mjky",
+            "resolved_value": "+12 allstats\nActive: Push enemy away deal 225 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n",
+            "_original_resolved_value": "+12 allstats\nActive: Push enemy away deal 225 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -8213,12 +8213,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4184",
-            "_original_value": "TRIGSTR_4184",
+            "value": "TRIGSTR_8293",
+            "_original_value": "TRIGSTR_8293",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MTg0",
-            "resolved_value": "+12 allstats\nActive: Push enemy away deal 100 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n",
-            "_original_resolved_value": "+12 allstats\nActive: Push enemy away deal 100 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n"
+            "_raw_base64": "VFJJR1NUUl84Mjkz",
+            "resolved_value": "+12 allstats\nActive: Push enemy away deal 225 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n",
+            "_original_resolved_value": "+12 allstats\nActive: Push enemy away deal 225 magic dmg +4x main stat and apply fire debuff, create 3 fire dummy in line.\nCooldown: 25 sec.\n"
           },
           "sanity_check": {
             "text": "",
@@ -8457,12 +8457,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1996",
-            "_original_value": "TRIGSTR_1996",
+            "value": "TRIGSTR_8594",
+            "_original_value": "TRIGSTR_8594",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTk2",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply water debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply water debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r"
+            "_raw_base64": "VFJJR1NUUl84NTk0",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply water debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply water debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r"
           },
           "sanity_check": {
             "text": "",
@@ -8477,12 +8477,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1997",
-            "_original_value": "TRIGSTR_1997",
+            "value": "TRIGSTR_8595",
+            "_original_value": "TRIGSTR_8595",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTk3",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply water debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply water debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r"
+            "_raw_base64": "VFJJR1NUUl84NTk1",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply water debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply water debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r"
           },
           "sanity_check": {
             "text": "",
@@ -8589,12 +8589,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1998",
-            "_original_value": "TRIGSTR_1998",
+            "value": "TRIGSTR_8596",
+            "_original_value": "TRIGSTR_8596",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTk4",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply lightning debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply lightning debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n"
+            "_raw_base64": "VFJJR1NUUl84NTk2",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply lightning debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply lightning debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n"
           },
           "sanity_check": {
             "text": "",
@@ -8609,12 +8609,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2014",
-            "_original_value": "TRIGSTR_2014",
+            "value": "TRIGSTR_8597",
+            "_original_value": "TRIGSTR_8597",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDE0",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply lightning debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 1.75x main stat dmg and apply lightning debuff. \nCooldown: 5 sec.\n|cffff0000Dont work with another same type of items.|r\n"
+            "_raw_base64": "VFJJR1NUUl84NTk3",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply lightning debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg to enemy 200 or more in his position it deal 2x main stat dmg and apply lightning debuff. \nCooldown: 7 sec.\n|cffff0000Dont work with another same type of items.|r\n"
           },
           "sanity_check": {
             "text": "",
@@ -9213,12 +9213,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8392",
-            "_original_value": "TRIGSTR_8392",
+            "value": "TRIGSTR_2401",
+            "_original_value": "TRIGSTR_2401",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mzky",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n"
+            "_raw_base64": "VFJJR1NUUl8yNDAx",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 40 dmg.\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 40 dmg.\n"
           },
           "sanity_check": {
             "text": "",
@@ -9233,12 +9233,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8393",
-            "_original_value": "TRIGSTR_8393",
+            "value": "TRIGSTR_2402",
+            "_original_value": "TRIGSTR_2402",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mzkz",
-            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n",
-            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 50 dmg.\n"
+            "_raw_base64": "VFJJR1NUUl8yNDAy",
+            "resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 40 dmg.\n",
+            "_original_resolved_value": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 40 dmg.\n"
           },
           "sanity_check": {
             "text": "",
@@ -11883,12 +11883,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2579",
-            "_original_value": "TRIGSTR_2579",
+            "value": "TRIGSTR_7879",
+            "_original_value": "TRIGSTR_7879",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNTc5",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl83ODc5",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11903,12 +11903,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3018",
-            "_original_value": "TRIGSTR_3018",
+            "value": "TRIGSTR_7885",
+            "_original_value": "TRIGSTR_7885",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDE4",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi atk dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl83ODg1",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17601,12 +17601,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8399",
-            "_original_value": "TRIGSTR_8399",
+            "value": "TRIGSTR_8310",
+            "_original_value": "TRIGSTR_8310",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mzk5",
-            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl84MzEw",
+            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 3 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 3 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17621,12 +17621,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8400",
-            "_original_value": "TRIGSTR_8400",
+            "value": "TRIGSTR_8317",
+            "_original_value": "TRIGSTR_8317",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDAw",
-            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl84MzE3",
+            "resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 3 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: When you deal 1000 or more damage, restore HP equal to 33% of the damage dealt.\nCooldown: 3 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17733,12 +17733,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7807",
-            "_original_value": "TRIGSTR_7807",
+            "value": "TRIGSTR_8590",
+            "_original_value": "TRIGSTR_8590",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODA3",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec."
+            "_raw_base64": "VFJJR1NUUl84NTkw",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 2 sec.\nCooldown: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 2 sec.\nCooldown: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17753,12 +17753,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7811",
-            "_original_value": "TRIGSTR_7811",
+            "value": "TRIGSTR_8591",
+            "_original_value": "TRIGSTR_8591",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODEx",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 10 sec."
+            "_raw_base64": "VFJJR1NUUl84NTkx",
+            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 2 sec.\nCooldown: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 2 sec.\nCooldown: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17865,12 +17865,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7817",
-            "_original_value": "TRIGSTR_7817",
+            "value": "TRIGSTR_8116",
+            "_original_value": "TRIGSTR_8116",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE3",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl84MTE2",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17885,12 +17885,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7822",
-            "_original_value": "TRIGSTR_7822",
+            "value": "TRIGSTR_8178",
+            "_original_value": "TRIGSTR_8178",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODIy",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect to enemy on hit +100.\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 160+1.75x agi atk dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl84MTc4",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18031,6 +18031,138 @@
         }
       ],
       "display_name": "Cup of Tea Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I044",
+        "hex": "49303434"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8318",
+            "_original_value": "TRIGSTR_8318",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzE4",
+            "resolved_value": "Death Note",
+            "_original_resolved_value": "Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8320",
+            "_original_value": "TRIGSTR_8320",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzIw",
+            "resolved_value": "Death Note",
+            "_original_resolved_value": "Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_DeathNote.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_DeathNote.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0RlYXRoTm90ZS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1996",
+            "_original_value": "TRIGSTR_1996",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTk2",
+            "resolved_value": "+20 allstats\nPassive: When you deal 800 or more magical damage, the target takes additional damage equal to 30% of that damage after 2 sec.(longered while enemy have iframe)\nCooldown : 7 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: When you deal 800 or more magical damage, the target takes additional damage equal to 30% of that damage after 2 sec.(longered while enemy have iframe)\nCooldown : 7 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1997",
+            "_original_value": "TRIGSTR_1997",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTk3",
+            "resolved_value": "+20 allstats\nPassive: When you deal 800 or more magical damage, the target takes additional damage equal to 30% of that damage after 2 sec.(longered while enemy have iframe)\nCooldown : 7 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: When you deal 800 or more magical damage, the target takes additional damage equal to 30% of that damage after 2 sec.(longered while enemy have iframe)\nCooldown : 7 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Death Note"
     }
   ]
 }

@@ -89,6 +89,7 @@ library AAADest uses GearSystems
         real y
         real r5
         integer id
+        integer id2
         integer k
         integer k2
         integer k3
@@ -375,7 +376,11 @@ library AAADest uses GearSystems
                                 endif
                                 call SaveInteger(hs,GetHandleId(c),StringHash("dmg stop mag"),1)
                                 call MyFlush(GetHandleId(c),StringHash("dmg stop mag"),0,0.06)
+                                if k2 == 9 then 
+                                call dmgmag2(c, td, dmg,"kurikara")
+                                else
                                 call dmgmag(c, td, dmg)
+                                endif
                             endif
                             if (k2 == 2 or k2 == 6 )  then
                                 if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
@@ -514,7 +519,6 @@ library AAADest uses GearSystems
                 endif
             elseif NewId == 9 then
                 set id = 'B00F'
-                
                 set dmg = GetUnitState(c,UNIT_STATE_MAX_MANA)*(Kurikara_MaxManaDmg/100)
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_tx_huoyan.mdl", td, "origin")
             endif

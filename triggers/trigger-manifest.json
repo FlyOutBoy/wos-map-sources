@@ -498,8 +498,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 112062,
-      "sha256": "edc2baadc9bfde9f0eac195cfe51481f0f88fbf8fd21f7d2fae64c82978080a2",
+      "source_bytes": 112138,
+      "sha256": "754c868523641f8c7898c474f109eba5cc9a0f4b4b20ce5fa417ee97e888d606",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -548,8 +548,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 18128,
-      "sha256": "5c5f8f29974cfbc0b728d769dcd9605e6a8e45321fb16fe8351e9d95fe1dad2d",
+      "source_bytes": 24263,
+      "sha256": "3d7a9c48a3b860a2d802b456eab3a7977f8117ac815f18074fe840881b208930",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -834,8 +834,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
-      "source_bytes": 58542,
-      "sha256": "a50100548c9909a166c45554d4043648a747c9d8e2f864c2ef294a9d1a6af01f",
+      "source_bytes": 58741,
+      "sha256": "e9d4fe89dd2d5c50726b4bef29ea8e0969804c782fc8042eeb289e351bfb82f0",
       "declarations": {
         "libraries": [
           "AAADest"
@@ -864,13 +864,13 @@
       "category": "Systems",
       "category_id": "0x0200000B",
       "trigger_name": "Systems1",
-      "comment": "   real str_hpregen = 0.2\r\n        real int_mpregen = 0.2    \r\n        real agi_as = 0.005 \r\n        real agi_ms = 1.00 \r\n        real agi_def = 0.1\r\n        real armor_resist = 0",
+      "comment": "//----------------------ItachiSet----------------------------------------------\r\n        integer ItachiSet_ID = 'I01B'        \r\n        real ItachiSet_Bonus = 17.5\r\n//----------------------RaikageHat----------------------------------------------\r\n        integer RaikageHat_ID = 'I00T'        \r\n        real RaikageHat_Bonus = 17.5\r\n//----------------------DemonDwellerSword----------------------------------------------\r\n        integer DemonDwellerSword_ID = 'I041'\n        integer DemonDwellerSword_Phys_ID = 'I00T'\n        integer DemonDwellerSword_Mag_ID = 'I00T'\r\n        real DemonDwellerSword_Bonus = 25\r\n        real DemonDwellerSword_MinDmg = 500\r\n        real DemonDwellerSword_CD = 10",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 138849,
-      "sha256": "f9dd7cfb303a9825927bcd8108e2e8b62e731716e6ccfd7b96d782cd65469952",
+      "source_bytes": 139343,
+      "sha256": "63c53e9903a191788a73f1e2a77f1f8c53cd9973c637698dcab211b8f4bbb5c2",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -902,8 +902,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems2.j",
-      "source_bytes": 197133,
-      "sha256": "a9d42a8682f9fb6dd3ac0686134d4183853c9acb41ddf082fafad36f970a6bab",
+      "source_bytes": 197550,
+      "sha256": "1489c789944c667d2c80b2edacac6fc56784a203374ade7a01854bcbf6abd576",
       "declarations": {
         "libraries": [
           "GearSystems2"
@@ -965,13 +965,13 @@
       "category": "Systems",
       "category_id": "0x0200000B",
       "trigger_name": "DmgSys",
-      "comment": "//----------------------Shiki Knife----------------------------------------------\r\n        real ShikiKnife_DmgBase = 150\n        real ShikiKnife_DmgAgi = 150\r\n        real ShikiKnife_CD = 3\n        real ShikiKnife_RangeCheck = 650",
+      "comment": "integer DemonDwellerSword_ID = 'I041'\n        integer DemonDwellerSword_Abi_ID = 'A0HX'\n        integer DemonDwellerSword_Phys_ID = 'B03A'\n        integer DemonDwellerSword_Mag_ID = 'B039'\r\n        real DemonDwellerSword_Bonus = 25\r\n        real DemonDwellerSword_MinDmg = 500\r\n        real DemonDwellerSword_CD = 10",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 39575,
-      "sha256": "668758622a6495ccddc0461e0783c0ea6952bf1a17c4edade1fe0ba563f7140f",
+      "source_bytes": 40181,
+      "sha256": "2f5a22ab89259c5b2943932fccf8306aecfb2c622bea612e9b962ed474ea6e32",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1770,8 +1770,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemEnter.j",
-      "source_bytes": 6037,
-      "sha256": "e9e98875f3440948a1a01036d750db4222f915a585f017e55f84e47a4f52f179",
+      "source_bytes": 6330,
+      "sha256": "2ea0ccb8732f35131c279d60a9940f2e4d3d9f5febb7630f1cbe43dcb4a8ae28",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1815,13 +1815,13 @@
       "category": "Items",
       "category_id": "0x02000006",
       "trigger_name": "Items",
-      "comment": " real ShikiKnifeEvolved_DmgBase = 80\r\n        real ShikiKnifeEvolved_DmgAgi = 1\r\n        real ShikiKnifeEvolved_CD = 4\r\n        real ShikiKnifeEvolved_RangeCheck = 650\r\n        real ShikiKnifeEvolved_Range = 1700\r\n        real ShikiKnifeEvolved_Aoe = 225",
+      "comment": "integer DeathNote_ID = 'A02G'\r\n        integer DeathNote_Abi_ID = 'A0I0'\r\n        integer DeathNote_Buff_ID = 'B03B'\r\n        real DeathNote_Damage = 30 // % of dealt dmg\r\n        real DeathNote_Time = 2.01 // max travel time",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 104056,
-      "sha256": "2a2dd4afaedad0b95adf8cbd09fad217f4e8a1cdf56d85fbf761f3831b733227",
+      "source_bytes": 109841,
+      "sha256": "0b9b8d4e9e91b48669f30eea400f70e74eeaf955aadc3fdc6671465db6be2666",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -1844,7 +1844,8 @@
           "ItemsSpells_TuskBarrel",
           "ItemsSpells_TurboNeko",
           "ItemsSpells_TsuchikageHatEvolve",
-          "ItemsSpells_ShikiKnifeEvolved"
+          "ItemsSpells_ShikiKnifeEvolved",
+          "ItemsSpells_DeathNote"
         ],
         "modules": [],
         "textmacros": []
@@ -2004,8 +2005,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Ainz.j",
-      "source_bytes": 165397,
-      "sha256": "9bf26ab192e269ff1988ea9b75a12465a5713bc1b6fbc3303b44108964776417",
+      "source_bytes": 165557,
+      "sha256": "bc2fc9269404ecf8a3b05e280f9e3458c6dcb4ba5ab9e4b95a60b70cd2ea89dd",
       "declarations": {
         "libraries": [
           "AinzSpells"
@@ -2141,7 +2142,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
       "source_bytes": 97511,
-      "sha256": "dc17486f22aeb7dbbdb16210837fdcd252d29e10dffce1cd7b9fde15adc04171",
+      "sha256": "a260751b5920ed6f802db7ac20b4c73902417141e693c08d30f19463b05907ba",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -2381,8 +2382,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Starrk.j",
-      "source_bytes": 145358,
-      "sha256": "7588ea1e8369ce045f1add0790f566fe899da85d3748739f5d7b195a1bcf6b78",
+      "source_bytes": 145459,
+      "sha256": "f7f113d2aadbf15f67d6d26883dfd49a686fbc9c45d17fbaf592a00e7270767b",
       "declarations": {
         "libraries": [
           "StarrkSpells"
@@ -2461,8 +2462,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Barragan.j",
-      "source_bytes": 91756,
-      "sha256": "2485a170541af25623cba994144193b79fd171aeb0463a68d46721b6011b32a3",
+      "source_bytes": 91754,
+      "sha256": "323a57a84ec154abcbed51aec08027f99c740b5ecec2899ffff3c92f9d2eaadf",
       "declarations": {
         "libraries": [
           "BarraganSpells"
@@ -2766,7 +2767,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Neuvillette.j",
       "source_bytes": 44107,
-      "sha256": "78d479c436ed85cef70de3997e11e41579f49ef43010da8a9ccd73048ab80488",
+      "sha256": "65ec4ca83270efdf111351e585a1a338af9d5ba1194847d4e8ab819dd0faac65",
       "declarations": {
         "libraries": [
           "NeuvilletteSpells"
@@ -2977,7 +2978,7 @@
       "run_on_map_init": false,
       "path": "Heroes/AlterSaber.j",
       "source_bytes": 89508,
-      "sha256": "d96a157ba866494707d25b9104e42adb9a2522050076f619ae91c232e3550e33",
+      "sha256": "4240f8d1a67ed77fa57d3a39f3ba7c66ffe06ea715b1d639bfbe05422206e2a1",
       "declarations": {
         "libraries": [
           "AlterSaberSpells"

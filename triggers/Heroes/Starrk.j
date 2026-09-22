@@ -1082,6 +1082,7 @@ library StarrkSpells uses GearSystems
                         call StopSpellUnit2(c)
                     endif
                     call RemoveUnit(d)
+                   // call UnitRemoveAbility(c,'A0I2')
                     call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, 0, 6)// 4 - mag, 5 - chaos, 6 - hero
                     call SetUnitRange(c, StarrkE_AttackRangeBase)
                     call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph e"), 0)
@@ -1143,6 +1144,7 @@ library StarrkSpells uses GearSystems
             set u = null
             set a = GetUnitFacing(c) * bj_DEGTORAD // Angle Between points
             set rmax = 1
+          //  call UnitAddAbility(c,'A0I2')
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800, rmax + 2)
             call SetUnitRange(c, StarrkE_AttackRange)
             call SetUnitTimeScale(c, 0.9)
@@ -1582,8 +1584,8 @@ library StarrkSpells uses GearSystems
                             loop
                                 exitwhen k == 7
                                 call GroupClear( g )
-                                call DecorRemove(c, GetUnitX(c) + (300 * k) * Cos(a) , GetUnitY(c) + (300 * k) * Sin(a) , aoe, 50)
-                                call GroupEnumUnitsInRange( g , GetUnitX(c) + (300 * k) * Cos(a) , GetUnitY(c) + (300 * k) * Sin(a) , aoe , NoDecor_Cond)
+                                call DecorRemove(c, GetUnitX(c) + (340 * k) * Cos(a) , GetUnitY(c) + (340 * k) * Sin(a) , aoe, 50)
+                                call GroupEnumUnitsInRange( g , GetUnitX(c) + (340 * k) * Cos(a) , GetUnitY(c) + (340 * k) * Sin(a) , aoe , NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null

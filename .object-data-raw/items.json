@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "324004c45094f4f0ed9ade2921a9a909e7d80a1b18e2ba10ce9410b2206eb8c7",
+  "source_sha256": "9a8d7f841a86dad079b080cfc6bd0bf549216b980fb22c40d28c9b668d05eac4",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -11813,6 +11813,73 @@
         }
       ],
       "display_name": "Cup of Tea Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I044",
+        "hex": "49303434"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A0I1,A00W",
+            "_original_value": "A0I1,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTBJMSxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A07O",
+            "_original_value": "A07O",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA3Tw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Death Note"
     }
   ]
 }

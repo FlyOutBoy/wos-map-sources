@@ -1109,6 +1109,16 @@
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
     "target_art": "war3mapImported\\wos_purpaura.mdx"
   },
+  "B03B": {
+    "name": "1",
+    "base_id": "BHds",
+    "tooltip": "Death Note",
+    "extended_tooltip": "Unit will take damage after time",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_DeathNote.blp",
+    "target_art": "war3mapImported\\wos_HellCurse.mdx",
+    "editor_suffix": "Death Note",
+    "target_attachment_point_1": "chest"
+  },
   "BEer": {
     "name": "",
     "base_id": "BEer",

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "0d6ce21737250f5e3c4db3c90ce24c79b5e449b9943869221bd7b1bd6003d244",
+  "source_sha256": "f9ac055db4f1d9ee719d782cc314878974918255ca2dbf84716bb98ee073a2be",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -27977,12 +27977,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_2981",
-            "_original_value": "TRIGSTR_2981",
+            "value": "TRIGSTR_1998",
+            "_original_value": "TRIGSTR_1998",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yOTgx",
-            "resolved_value": "Saber moves forward and slice first catched enemy or at the end of dash.\n[|c00FFFC01Grail Ascension R|r] now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy.\n",
-            "_original_resolved_value": "Saber moves forward and slice first catched enemy or at the end of dash.\n[|c00FFFC01Grail Ascension R|r] now Saber catch first enemy and make a 4 physical slashes that counted as attacks. Saber invulnerable while slicing enemy.\n"
+            "_raw_base64": "VFJJR1NUUl8xOTk4",
+            "resolved_value": "Saber moves forward and slice first catched enemy or at the end of dash.\n[|c00FFFC01Grail Ascension R|r] now Saber catch first enemy and make a 3 physical slashes that counted as attacks. Saber invulnerable while slicing enemy.\n",
+            "_original_resolved_value": "Saber moves forward and slice first catched enemy or at the end of dash.\n[|c00FFFC01Grail Ascension R|r] now Saber catch first enemy and make a 3 physical slashes that counted as attacks. Saber invulnerable while slicing enemy.\n"
           },
           "sanity_check": {
             "text": "",
@@ -248585,10 +248585,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8505",
-            "_original_value": "TRIGSTR_8505",
+            "value": "TRIGSTR_8490",
+            "_original_value": "TRIGSTR_8490",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTA1",
+            "_raw_base64": "VFJJR1NUUl84NDkw",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -251908,12 +251908,12 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_4234",
-            "_original_value": "TRIGSTR_4234",
+            "value": "TRIGSTR_8598",
+            "_original_value": "TRIGSTR_8598",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjM0",
-            "resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1000 gold above damage dealt is increased by 1%.\n",
-            "_original_resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1000 gold above damage dealt is increased by 1%.\n"
+            "_raw_base64": "VFJJR1NUUl84NTk4",
+            "resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1500 gold above damage dealt is increased by 1%.\n",
+            "_original_resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1500 gold above damage dealt is increased by 1%.\n"
           },
           "sanity_check": {
             "text": "",
@@ -251974,12 +251974,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_4235",
-            "_original_value": "TRIGSTR_4235",
+            "value": "TRIGSTR_8603",
+            "_original_value": "TRIGSTR_8603",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjM1",
-            "resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1000 gold above damage dealt is increased by 1%.\n",
-            "_original_resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1000 gold above damage dealt is increased by 1%.\n"
+            "_raw_base64": "VFJJR1NUUl84NjAz",
+            "resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1500 gold above damage dealt is increased by 1%.\n",
+            "_original_resolved_value": "Ainz charges hidden magic that will hit are around him and deal damage per second after 2.1 sec delay, Ainz shielded while casting. Can be cancelled by press S.\n[|cffffff00Treasury of Nazarick|r] if Ainz whole item cost more than 20000 gold, each 1500 gold above damage dealt is increased by 1%.\n"
           },
           "sanity_check": {
             "text": "",
@@ -252739,10 +252739,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8409",
-            "_original_value": "TRIGSTR_8409",
+            "value": "TRIGSTR_8404",
+            "_original_value": "TRIGSTR_8404",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDA5",
+            "_raw_base64": "VFJJR1NUUl84NDA0",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -252761,10 +252761,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8410",
-            "_original_value": "TRIGSTR_8410",
+            "value": "TRIGSTR_8405",
+            "_original_value": "TRIGSTR_8405",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDEw",
+            "_raw_base64": "VFJJR1NUUl84NDA1",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -252783,10 +252783,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8506",
-            "_original_value": "TRIGSTR_8506",
+            "value": "TRIGSTR_8491",
+            "_original_value": "TRIGSTR_8491",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTA2",
+            "_raw_base64": "VFJJR1NUUl84NDkx",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -252805,10 +252805,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8614",
-            "_original_value": "TRIGSTR_8614",
+            "value": "TRIGSTR_8505",
+            "_original_value": "TRIGSTR_8505",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE0",
+            "_raw_base64": "VFJJR1NUUl84NTA1",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -253317,10 +253317,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8425",
-            "_original_value": "TRIGSTR_8425",
+            "value": "TRIGSTR_8409",
+            "_original_value": "TRIGSTR_8409",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDI1",
+            "_raw_base64": "VFJJR1NUUl84NDA5",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -253339,10 +253339,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8426",
-            "_original_value": "TRIGSTR_8426",
+            "value": "TRIGSTR_8410",
+            "_original_value": "TRIGSTR_8410",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDI2",
+            "_raw_base64": "VFJJR1NUUl84NDEw",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -253361,10 +253361,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8615",
-            "_original_value": "TRIGSTR_8615",
+            "value": "TRIGSTR_8506",
+            "_original_value": "TRIGSTR_8506",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE1",
+            "_raw_base64": "VFJJR1NUUl84NTA2",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -253383,10 +253383,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8628",
-            "_original_value": "TRIGSTR_8628",
+            "value": "TRIGSTR_8614",
+            "_original_value": "TRIGSTR_8614",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjI4",
+            "_raw_base64": "VFJJR1NUUl84NjE0",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -254503,10 +254503,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8443",
-            "_original_value": "TRIGSTR_8443",
+            "value": "TRIGSTR_8425",
+            "_original_value": "TRIGSTR_8425",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDQz",
+            "_raw_base64": "VFJJR1NUUl84NDI1",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -254525,10 +254525,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8444",
-            "_original_value": "TRIGSTR_8444",
+            "value": "TRIGSTR_8426",
+            "_original_value": "TRIGSTR_8426",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDQ0",
+            "_raw_base64": "VFJJR1NUUl84NDI2",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -254547,10 +254547,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8629",
-            "_original_value": "TRIGSTR_8629",
+            "value": "TRIGSTR_8615",
+            "_original_value": "TRIGSTR_8615",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjI5",
+            "_raw_base64": "VFJJR1NUUl84NjE1",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -254569,10 +254569,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8861",
-            "_original_value": "TRIGSTR_8861",
+            "value": "TRIGSTR_8628",
+            "_original_value": "TRIGSTR_8628",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODYx",
+            "_raw_base64": "VFJJR1NUUl84NjI4",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -256153,10 +256153,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8462",
-            "_original_value": "TRIGSTR_8462",
+            "value": "TRIGSTR_8443",
+            "_original_value": "TRIGSTR_8443",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDYy",
+            "_raw_base64": "VFJJR1NUUl84NDQz",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -256175,10 +256175,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8463",
-            "_original_value": "TRIGSTR_8463",
+            "value": "TRIGSTR_8444",
+            "_original_value": "TRIGSTR_8444",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NDYz",
+            "_raw_base64": "VFJJR1NUUl84NDQ0",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -256197,10 +256197,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8862",
-            "_original_value": "TRIGSTR_8862",
+            "value": "TRIGSTR_8629",
+            "_original_value": "TRIGSTR_8629",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODYy",
+            "_raw_base64": "VFJJR1NUUl84NjI5",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -256219,10 +256219,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8994",
-            "_original_value": "TRIGSTR_8994",
+            "value": "TRIGSTR_8861",
+            "_original_value": "TRIGSTR_8861",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTk0",
+            "_raw_base64": "VFJJR1NUUl84ODYx",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -260631,10 +260631,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8995",
-            "_original_value": "TRIGSTR_8995",
+            "value": "TRIGSTR_8862",
+            "_original_value": "TRIGSTR_8862",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTk1",
+            "_raw_base64": "VFJJR1NUUl84ODYy",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -260653,10 +260653,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8996",
-            "_original_value": "TRIGSTR_8996",
+            "value": "TRIGSTR_8994",
+            "_original_value": "TRIGSTR_8994",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTk2",
+            "_raw_base64": "VFJJR1NUUl84OTk0",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -264732,10 +264732,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8501",
-            "_original_value": "TRIGSTR_8501",
+            "value": "TRIGSTR_8462",
+            "_original_value": "TRIGSTR_8462",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTAx",
+            "_raw_base64": "VFJJR1NUUl84NDYy",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -264754,10 +264754,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8504",
-            "_original_value": "TRIGSTR_8504",
+            "value": "TRIGSTR_8463",
+            "_original_value": "TRIGSTR_8463",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTA0",
+            "_raw_base64": "VFJJR1NUUl84NDYz",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -264776,10 +264776,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9060",
-            "_original_value": "TRIGSTR_9060",
+            "value": "TRIGSTR_8995",
+            "_original_value": "TRIGSTR_8995",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MDYw",
+            "_raw_base64": "VFJJR1NUUl84OTk1",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -264798,10 +264798,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9061",
-            "_original_value": "TRIGSTR_9061",
+            "value": "TRIGSTR_8996",
+            "_original_value": "TRIGSTR_8996",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MDYx",
+            "_raw_base64": "VFJJR1NUUl84OTk2",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -264840,10 +264840,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8507",
-            "_original_value": "TRIGSTR_8507",
+            "value": "TRIGSTR_8497",
+            "_original_value": "TRIGSTR_8497",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTA3",
+            "_raw_base64": "VFJJR1NUUl84NDk3",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
           },
@@ -264862,10 +264862,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8508",
-            "_original_value": "TRIGSTR_8508",
+            "value": "TRIGSTR_8498",
+            "_original_value": "TRIGSTR_8498",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NTA4",
+            "_raw_base64": "VFJJR1NUUl84NDk4",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
           },
@@ -268704,10 +268704,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9186",
-            "_original_value": "TRIGSTR_9186",
+            "value": "TRIGSTR_9060",
+            "_original_value": "TRIGSTR_9060",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MTg2",
+            "_raw_base64": "VFJJR1NUUl85MDYw",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -268726,10 +268726,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9187",
-            "_original_value": "TRIGSTR_9187",
+            "value": "TRIGSTR_9061",
+            "_original_value": "TRIGSTR_9061",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MTg3",
+            "_raw_base64": "VFJJR1NUUl85MDYx",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -274991,10 +274991,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9318",
-            "_original_value": "TRIGSTR_9318",
+            "value": "TRIGSTR_9186",
+            "_original_value": "TRIGSTR_9186",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzE4",
+            "_raw_base64": "VFJJR1NUUl85MTg2",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -275013,10 +275013,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9319",
-            "_original_value": "TRIGSTR_9319",
+            "value": "TRIGSTR_9187",
+            "_original_value": "TRIGSTR_9187",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzE5",
+            "_raw_base64": "VFJJR1NUUl85MTg3",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -278210,10 +278210,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8612",
-            "_original_value": "TRIGSTR_8612",
+            "value": "TRIGSTR_8501",
+            "_original_value": "TRIGSTR_8501",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjEy",
+            "_raw_base64": "VFJJR1NUUl84NTAx",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -278232,10 +278232,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8613",
-            "_original_value": "TRIGSTR_8613",
+            "value": "TRIGSTR_8504",
+            "_original_value": "TRIGSTR_8504",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjEz",
+            "_raw_base64": "VFJJR1NUUl84NTA0",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -278254,10 +278254,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9338",
-            "_original_value": "TRIGSTR_9338",
+            "value": "TRIGSTR_9318",
+            "_original_value": "TRIGSTR_9318",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzM4",
+            "_raw_base64": "VFJJR1NUUl85MzE4",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -278276,10 +278276,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9339",
-            "_original_value": "TRIGSTR_9339",
+            "value": "TRIGSTR_9319",
+            "_original_value": "TRIGSTR_9319",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzM5",
+            "_raw_base64": "VFJJR1NUUl85MzE5",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -278318,10 +278318,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8616",
-            "_original_value": "TRIGSTR_8616",
+            "value": "TRIGSTR_8507",
+            "_original_value": "TRIGSTR_8507",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE2",
+            "_raw_base64": "VFJJR1NUUl84NTA3",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
           },
@@ -278340,10 +278340,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8617",
-            "_original_value": "TRIGSTR_8617",
+            "value": "TRIGSTR_8508",
+            "_original_value": "TRIGSTR_8508",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE3",
+            "_raw_base64": "VFJJR1NUUl84NTA4",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
           },
@@ -278362,10 +278362,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8618",
-            "_original_value": "TRIGSTR_8618",
+            "value": "TRIGSTR_8532",
+            "_original_value": "TRIGSTR_8532",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE4",
+            "_raw_base64": "VFJJR1NUUl84NTMy",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
           },
@@ -278384,10 +278384,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8619",
-            "_original_value": "TRIGSTR_8619",
+            "value": "TRIGSTR_8533",
+            "_original_value": "TRIGSTR_8533",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjE5",
+            "_raw_base64": "VFJJR1NUUl84NTMz",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
           },
@@ -278426,10 +278426,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8620",
-            "_original_value": "TRIGSTR_8620",
+            "value": "TRIGSTR_8555",
+            "_original_value": "TRIGSTR_8555",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjIw",
+            "_raw_base64": "VFJJR1NUUl84NTU1",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
           },
@@ -278448,10 +278448,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8621",
-            "_original_value": "TRIGSTR_8621",
+            "value": "TRIGSTR_8558",
+            "_original_value": "TRIGSTR_8558",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjIx",
+            "_raw_base64": "VFJJR1NUUl84NTU4",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
           },
@@ -278470,10 +278470,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8622",
-            "_original_value": "TRIGSTR_8622",
+            "value": "TRIGSTR_8562",
+            "_original_value": "TRIGSTR_8562",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjIy",
+            "_raw_base64": "VFJJR1NUUl84NTYy",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
           },
@@ -278492,10 +278492,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8623",
-            "_original_value": "TRIGSTR_8623",
+            "value": "TRIGSTR_8563",
+            "_original_value": "TRIGSTR_8563",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjIz",
+            "_raw_base64": "VFJJR1NUUl84NTYz",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
           },
@@ -278848,10 +278848,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8626",
-            "_original_value": "TRIGSTR_8626",
+            "value": "TRIGSTR_8612",
+            "_original_value": "TRIGSTR_8612",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjI2",
+            "_raw_base64": "VFJJR1NUUl84NjEy",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -278870,10 +278870,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8627",
-            "_original_value": "TRIGSTR_8627",
+            "value": "TRIGSTR_8613",
+            "_original_value": "TRIGSTR_8613",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjI3",
+            "_raw_base64": "VFJJR1NUUl84NjEz",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -278892,10 +278892,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9358",
-            "_original_value": "TRIGSTR_9358",
+            "value": "TRIGSTR_9338",
+            "_original_value": "TRIGSTR_9338",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzU4",
+            "_raw_base64": "VFJJR1NUUl85MzM4",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -278914,10 +278914,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9359",
-            "_original_value": "TRIGSTR_9359",
+            "value": "TRIGSTR_9339",
+            "_original_value": "TRIGSTR_9339",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MzU5",
+            "_raw_base64": "VFJJR1NUUl85MzM5",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -278956,10 +278956,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8630",
-            "_original_value": "TRIGSTR_8630",
+            "value": "TRIGSTR_8616",
+            "_original_value": "TRIGSTR_8616",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjMw",
+            "_raw_base64": "VFJJR1NUUl84NjE2",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
           },
@@ -278978,10 +278978,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8631",
-            "_original_value": "TRIGSTR_8631",
+            "value": "TRIGSTR_8617",
+            "_original_value": "TRIGSTR_8617",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjMx",
+            "_raw_base64": "VFJJR1NUUl84NjE3",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
           },
@@ -279000,10 +279000,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8632",
-            "_original_value": "TRIGSTR_8632",
+            "value": "TRIGSTR_8618",
+            "_original_value": "TRIGSTR_8618",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjMy",
+            "_raw_base64": "VFJJR1NUUl84NjE4",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
           },
@@ -279022,10 +279022,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8633",
-            "_original_value": "TRIGSTR_8633",
+            "value": "TRIGSTR_8619",
+            "_original_value": "TRIGSTR_8619",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjMz",
+            "_raw_base64": "VFJJR1NUUl84NjE5",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
           },
@@ -279064,10 +279064,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8634",
-            "_original_value": "TRIGSTR_8634",
+            "value": "TRIGSTR_8620",
+            "_original_value": "TRIGSTR_8620",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjM0",
+            "_raw_base64": "VFJJR1NUUl84NjIw",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
           },
@@ -279086,10 +279086,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8635",
-            "_original_value": "TRIGSTR_8635",
+            "value": "TRIGSTR_8621",
+            "_original_value": "TRIGSTR_8621",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjM1",
+            "_raw_base64": "VFJJR1NUUl84NjIx",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
           },
@@ -279108,10 +279108,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8636",
-            "_original_value": "TRIGSTR_8636",
+            "value": "TRIGSTR_8622",
+            "_original_value": "TRIGSTR_8622",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjM2",
+            "_raw_base64": "VFJJR1NUUl84NjIy",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
           },
@@ -279130,10 +279130,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8637",
-            "_original_value": "TRIGSTR_8637",
+            "value": "TRIGSTR_8623",
+            "_original_value": "TRIGSTR_8623",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NjM3",
+            "_raw_base64": "VFJJR1NUUl84NjIz",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
           },
@@ -279426,10 +279426,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8859",
-            "_original_value": "TRIGSTR_8859",
+            "value": "TRIGSTR_8626",
+            "_original_value": "TRIGSTR_8626",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODU5",
+            "_raw_base64": "VFJJR1NUUl84NjI2",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -279448,10 +279448,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8860",
-            "_original_value": "TRIGSTR_8860",
+            "value": "TRIGSTR_8627",
+            "_original_value": "TRIGSTR_8627",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODYw",
+            "_raw_base64": "VFJJR1NUUl84NjI3",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -279470,10 +279470,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9795",
-            "_original_value": "TRIGSTR_9795",
+            "value": "TRIGSTR_9358",
+            "_original_value": "TRIGSTR_9358",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzk1",
+            "_raw_base64": "VFJJR1NUUl85MzU4",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -279492,10 +279492,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9796",
-            "_original_value": "TRIGSTR_9796",
+            "value": "TRIGSTR_9359",
+            "_original_value": "TRIGSTR_9359",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzk2",
+            "_raw_base64": "VFJJR1NUUl85MzU5",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -279534,10 +279534,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8863",
-            "_original_value": "TRIGSTR_8863",
+            "value": "TRIGSTR_8630",
+            "_original_value": "TRIGSTR_8630",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODYz",
+            "_raw_base64": "VFJJR1NUUl84NjMw",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
           },
@@ -279556,10 +279556,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8864",
-            "_original_value": "TRIGSTR_8864",
+            "value": "TRIGSTR_8631",
+            "_original_value": "TRIGSTR_8631",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY0",
+            "_raw_base64": "VFJJR1NUUl84NjMx",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
           },
@@ -279578,10 +279578,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8865",
-            "_original_value": "TRIGSTR_8865",
+            "value": "TRIGSTR_8632",
+            "_original_value": "TRIGSTR_8632",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY1",
+            "_raw_base64": "VFJJR1NUUl84NjMy",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
           },
@@ -279600,10 +279600,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8866",
-            "_original_value": "TRIGSTR_8866",
+            "value": "TRIGSTR_8633",
+            "_original_value": "TRIGSTR_8633",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY2",
+            "_raw_base64": "VFJJR1NUUl84NjMz",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
           },
@@ -279642,10 +279642,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8867",
-            "_original_value": "TRIGSTR_8867",
+            "value": "TRIGSTR_8634",
+            "_original_value": "TRIGSTR_8634",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY3",
+            "_raw_base64": "VFJJR1NUUl84NjM0",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
           },
@@ -279664,10 +279664,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8868",
-            "_original_value": "TRIGSTR_8868",
+            "value": "TRIGSTR_8635",
+            "_original_value": "TRIGSTR_8635",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY4",
+            "_raw_base64": "VFJJR1NUUl84NjM1",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
           },
@@ -279686,10 +279686,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8869",
-            "_original_value": "TRIGSTR_8869",
+            "value": "TRIGSTR_8636",
+            "_original_value": "TRIGSTR_8636",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODY5",
+            "_raw_base64": "VFJJR1NUUl84NjM2",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
           },
@@ -279708,10 +279708,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_8870",
-            "_original_value": "TRIGSTR_8870",
+            "value": "TRIGSTR_8637",
+            "_original_value": "TRIGSTR_8637",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84ODcw",
+            "_raw_base64": "VFJJR1NUUl84NjM3",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
           },
@@ -280082,10 +280082,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9793",
-            "_original_value": "TRIGSTR_9793",
+            "value": "TRIGSTR_8859",
+            "_original_value": "TRIGSTR_8859",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzkz",
+            "_raw_base64": "VFJJR1NUUl84ODU5",
             "resolved_value": "Karyu no Koen (E)",
             "_original_resolved_value": "Karyu no Koen (E)"
           },
@@ -280104,10 +280104,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9794",
-            "_original_value": "TRIGSTR_9794",
+            "value": "TRIGSTR_8860",
+            "_original_value": "TRIGSTR_8860",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzk0",
+            "_raw_base64": "VFJJR1NUUl84ODYw",
             "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
             "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
           },
@@ -280126,10 +280126,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9995",
-            "_original_value": "TRIGSTR_9995",
+            "value": "TRIGSTR_9795",
+            "_original_value": "TRIGSTR_9795",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85OTk1",
+            "_raw_base64": "VFJJR1NUUl85Nzk1",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -280148,10 +280148,10 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9996",
-            "_original_value": "TRIGSTR_9996",
+            "value": "TRIGSTR_9796",
+            "_original_value": "TRIGSTR_9796",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85OTk2",
+            "_raw_base64": "VFJJR1NUUl85Nzk2",
             "resolved_value": "E",
             "_original_resolved_value": "E"
           },
@@ -280190,10 +280190,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9798",
-            "_original_value": "TRIGSTR_9798",
+            "value": "TRIGSTR_8863",
+            "_original_value": "TRIGSTR_8863",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzk4",
+            "_raw_base64": "VFJJR1NUUl84ODYz",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
           },
@@ -280212,10 +280212,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9799",
-            "_original_value": "TRIGSTR_9799",
+            "value": "TRIGSTR_8864",
+            "_original_value": "TRIGSTR_8864",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85Nzk5",
+            "_raw_base64": "VFJJR1NUUl84ODY0",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
           },
@@ -280234,10 +280234,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9800",
-            "_original_value": "TRIGSTR_9800",
+            "value": "TRIGSTR_8865",
+            "_original_value": "TRIGSTR_8865",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODAw",
+            "_raw_base64": "VFJJR1NUUl84ODY1",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
           },
@@ -280256,10 +280256,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9801",
-            "_original_value": "TRIGSTR_9801",
+            "value": "TRIGSTR_8866",
+            "_original_value": "TRIGSTR_8866",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODAx",
+            "_raw_base64": "VFJJR1NUUl84ODY2",
             "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
             "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
           },
@@ -280298,10 +280298,10 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9803",
-            "_original_value": "TRIGSTR_9803",
+            "value": "TRIGSTR_8867",
+            "_original_value": "TRIGSTR_8867",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODAz",
+            "_raw_base64": "VFJJR1NUUl84ODY3",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
           },
@@ -280320,10 +280320,10 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9804",
-            "_original_value": "TRIGSTR_9804",
+            "value": "TRIGSTR_8868",
+            "_original_value": "TRIGSTR_8868",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODA0",
+            "_raw_base64": "VFJJR1NUUl84ODY4",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
           },
@@ -280342,10 +280342,10 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9805",
-            "_original_value": "TRIGSTR_9805",
+            "value": "TRIGSTR_8869",
+            "_original_value": "TRIGSTR_8869",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODA1",
+            "_raw_base64": "VFJJR1NUUl84ODY5",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
           },
@@ -280364,10 +280364,10 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_9806",
-            "_original_value": "TRIGSTR_9806",
+            "value": "TRIGSTR_8870",
+            "_original_value": "TRIGSTR_8870",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85ODA2",
+            "_raw_base64": "VFJJR1NUUl84ODcw",
             "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
             "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
           },
@@ -280689,6 +280689,660 @@
         }
       ],
       "display_name": "Gacha Patriot G"
+    },
+    {
+      "old_id": {
+        "text": "Acrs",
+        "hex": "41637273"
+      },
+      "new_id": {
+        "text": "A0I0",
+        "hex": "41304930"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8386",
+            "_original_value": "TRIGSTR_8386",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzg2",
+            "resolved_value": "Curse Death Note",
+            "_original_resolved_value": "Curse Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Curse Death Note"
+    },
+    {
+      "old_id": {
+        "text": "ANcl",
+        "hex": "414E636C"
+      },
+      "new_id": {
+        "text": "A0I1",
+        "hex": "41304931"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "aani",
+            "hex": "61616E69"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "stand",
+            "_original_value": "stand",
+            "_encoding": "utf-8",
+            "_raw_base64": "c3RhbmQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "abpy",
+            "hex": "61627079"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acat",
+            "hex": "61636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "acap",
+            "hex": "61636170"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aeat",
+            "hex": "61656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arar",
+            "hex": "61726172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "auar",
+            "hex": "61756172"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNGryphonAviary.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5HcnlwaG9uQXZpYXJ5LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atat",
+            "hex": "61746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ata0",
+            "hex": "61746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8391",
+            "_original_value": "TRIGSTR_8391",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzkx",
+            "resolved_value": "CD Death Note",
+            "_original_resolved_value": "CD Death Note"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aret",
+            "hex": "61726574"
+          },
+          "field_name": "Research tooltip / Подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9793",
+            "_original_value": "TRIGSTR_9793",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Nzkz",
+            "resolved_value": "Karyu no Koen (E)",
+            "_original_resolved_value": "Karyu no Koen (E)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arut",
+            "hex": "61727574"
+          },
+          "field_name": "Research extended tooltip / Полная подсказка изучения",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9794",
+            "_original_value": "TRIGSTR_9794",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Nzk0",
+            "resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n",
+            "_original_resolved_value": "Raiden fires electroslash to point and del damage to enemy and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 3/4/5/6/7 *Agi|r\n|cffffff00Cooldown: 28/26/24/22/20 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arhk",
+            "hex": "6172686B"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9995",
+            "_original_value": "TRIGSTR_9995",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTk1",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ahky",
+            "hex": "61686B79"
+          },
+          "field_name": "",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9996",
+            "_original_value": "TRIGSTR_9996",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTk2",
+            "resolved_value": "E",
+            "_original_resolved_value": "E"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9798",
+            "_original_value": "TRIGSTR_9798",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Nzk4",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 4 *Agi|r\n|cffffff00Cooldown: 27 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9799",
+            "_original_value": "TRIGSTR_9799",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Nzk5",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 5 *Agi|r\n|cffffff00Cooldown: 26 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9800",
+            "_original_value": "TRIGSTR_9800",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODAw",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 6 *Agi|r\n|cffffff00Cooldown: 25 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aub1",
+            "hex": "61756231"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9801",
+            "_original_value": "TRIGSTR_9801",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODAx",
+            "resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n",
+            "_original_resolved_value": "Natsu jumps to air and creates fire ball and fires it to point and cause 40% slow for 2 sec.\n\n|c004675FFDamage: 7 *Agi|r\n|cffffff00Cooldown: 24 |r\n"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 1,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 2,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9803",
+            "_original_value": "TRIGSTR_9803",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODAz",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 2|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 3,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9804",
+            "_original_value": "TRIGSTR_9804",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODA0",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 3|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 4,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9805",
+            "_original_value": "TRIGSTR_9805",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODA1",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 4|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "atp1",
+            "hex": "61747031"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "level": 5,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_9806",
+            "_original_value": "TRIGSTR_9806",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODA2",
+            "resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]",
+            "_original_resolved_value": "Karyu no Koen [|cffffcc00Level 5|r]"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "arpx",
+            "hex": "61727078"
+          },
+          "field_name": "",
+          "type": "int",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 2
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ansf",
+            "hex": "616E7366"
+          },
+          "field_name": "Editor suffix / Суффикс редактора",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8564",
+            "_original_value": "TRIGSTR_8564",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTY0",
+            "resolved_value": "A0I1",
+            "_original_resolved_value": "A0I1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "CD Death Note"
+    },
+    {
+      "old_id": {
+        "text": "AIsx",
+        "hex": "41497378"
+      },
+      "new_id": {
+        "text": "A0I2",
+        "hex": "41304932"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_2014",
+            "_original_value": "TRIGSTR_2014",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMDE0",
+            "resolved_value": "Starrk E - AS",
+            "_original_resolved_value": "Starrk E - AS"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Starrk E - AS"
     }
   ]
 }

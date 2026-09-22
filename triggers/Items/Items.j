@@ -8,6 +8,21 @@ library ItemsSpells uses GearSystems
         real Chogurt_MpRestoreStatic = 20
         real Chogurt_DmgReduct = 7.5
         real ChogurtEvolved_DmgReduct = 12.5
+//----------------------ItachiSet----------------------------------------------
+        integer ItachiSet_ID = 'I01B'        
+        real ItachiSet_Bonus = 17.5
+//----------------------RaikageHat----------------------------------------------
+        integer RaikageHat_ID = 'I00T'        
+        real RaikageHat_Bonus = 17.5
+//----------------------DemonDwellerSword----------------------------------------------
+        integer DemonDwellerSword_ID = 'I041'
+        integer DemonDwellerSword_Abi_ID = 'A0HX'
+        integer DemonDwellerSword_Abi_CD_ID = 'A0HW'
+        integer DemonDwellerSword_Phys_ID = 'B03A'
+        integer DemonDwellerSword_Mag_ID = 'B039'
+        real DemonDwellerSword_Bonus = 25
+        real DemonDwellerSword_MinDmg = 500
+        real DemonDwellerSword_CD = 10
 //----------------------RockleeWeights----------------------------------------------
         integer RockleeWeights_ID = 'A06Q'
         real RockleeWeights_Range = 1100 // how far wind move
@@ -23,7 +38,7 @@ library ItemsSpells uses GearSystems
 //----------------------MeraMera no mi----------------------------------------------
         real MeraMera_Aoe = 850       
         real MeraMera_Damage = 50     
-        real MeraMera_MaxDamage = 300   
+        real MeraMera_MaxDamage = 250   
         real MeraMera_MaxHpDamage = 1.5//% of max owner hp
         unit array MeraMeraDummy
 //----------------------Yata Mirror----------------------------------------------
@@ -44,7 +59,7 @@ library ItemsSpells uses GearSystems
 //----------------------Urahara Set----------------------------------------------
         real UraharaSet_Range = 900 // traveled for 1 sec  
 //----------------------Incursio----------------------------------------------
-        real Incursio_Range = 800 // traveled for 1 sec   
+        real Incursio_Range = 750 // traveled for 1 sec   
 //----------------------Funny_Barrel----------------------------------------------
         integer Raijin_Wrath_ID = 'A06O'
         real Raijin_Wrath_Damage = 5.5// how much damage dealt x mainstat
@@ -95,7 +110,7 @@ library ItemsSpells uses GearSystems
         real GutsArmor_CD = 2 // how much damage dealt x agi
         real GutsArmor_DmgTreshold = 400 // max travel time
 //----------------------QuincyCross----------------------------------------------
-        real QuincyCross_DamageBase = 50 // how much damage static
+        real QuincyCross_DamageBase = 40 // how much damage static
         real QuincyCross_MaxDmg = 99999 // from which dmg amount it will work
         real QuincyCross_CD = 0 // how much damage dealt x main
         integer QuincyCross_MaxStacks = 0
@@ -105,17 +120,17 @@ library ItemsSpells uses GearSystems
         real Tachikaze_DamageBase = 0.5 // how much damage dealt x main
         real Tachikaze_CD = 0.3 // how much damage dealt x main
 //----------------------RyijinJakka----------------------------------------------
-        real RyijinJakka_DamageBase = 1.75 // how much damage dealt x main
+        real RyijinJakka_DamageBase = 2 // how much damage dealt x main
         real RyijinJakka_MinDmg = 200 // from which dmg amount it will work
-        real RyijinJakka_CD = 5 // how much damage dealt x main
+        real RyijinJakka_CD = 7 // how much damage dealt x main
 //----------------------Nejibana----------------------------------------------
-        real Nejibana_DamageBase = 1.75 // how much damage dealt x main
+        real Nejibana_DamageBase = 2 // how much damage dealt x main
         real Nejibana_MinDmg = 200 // from which dmg amount it will work
-        real Nejibana_CD = 5 // how much damage dealt x main
+        real Nejibana_CD = 7 // how much damage dealt x main
 //----------------------Gonryomaru----------------------------------------------
-        real Gonryomaru_DamageBase = 1.75 // how much damage dealt x main
+        real Gonryomaru_DamageBase = 2 // how much damage dealt x main
         real Gonryomaru_MinDmg = 200 // from which dmg amount it will work
-        real Gonryomaru_CD = 5 // how much damage dealt x main
+        real Gonryomaru_CD = 7 // how much damage dealt x main
 //----------------------Gonryomaru----------------------------------------------
         real SogyoNoKotowari_CD = 4 // how much damage dealt x main
 //----------------------Cup of Tea----------------------------------------------
@@ -139,12 +154,13 @@ library ItemsSpells uses GearSystems
         real ShikiKnife_CD = 4
         real ShikiKnife_RangeCheck = 650
 //----------------------Shiki Knife Evolved----------------------------------------------
-        real ShikiKnifeEvolved_DmgBase = 160
-        real ShikiKnifeEvolved_DmgAgi = 1.75
+        real ShikiKnifeEvolved_DmgBase = 125
+        real ShikiKnifeEvolved_DmgAgi = 1.5
+        real ShikiKnifeEvolved_Multiplier = 1.5
         real ShikiKnifeEvolved_CD = 4
         real ShikiKnifeEvolved_RangeCheck = 650
         real ShikiKnifeEvolved_Range = 2100
-        real ShikiKnifeEvolved_Aoe = 200
+        real ShikiKnifeEvolved_Aoe = 150
 //----------------------Hungry Sin----------------------------------------------
         real HungrySin_hp = 25
         real HungrySin_mp = 10
@@ -166,16 +182,16 @@ library ItemsSpells uses GearSystems
         real WrathSin_IgnoreAmountAdd = 40 // ignore 90% of shield
 //----------------------Funny_Barrel----------------------------------------------
         integer FunnyBarrel_ID = 'A00Z'
-        real FunnyBarrel_Damage = 100.00// how much damage dealt
+        real FunnyBarrel_Damage = 175.00// how much damage dealt
         real FunnyBarrel_DamageLvlMultiplier = 0.00// how much damage dealt
         real FunnyBarrel_FireExist = 9 // how long fire after explosion lives
         real FunnyBarrel_Time = 1.02 // how fast barrel will land after cast
         real FunnyBarrel_Aoe = 375 // how fast barrel will land after cast  
 //----------------------Tusk_Barrel----------------------------------------------
         integer TuskBarrel_ID = 'A09N'
-        real TuskBarrel_Range = 1700
+        real TuskBarrel_Range = 1800
         real TuskBarrel_PushRange = 600
-        real TuskBarrel_Damage = 100.00// how much damage dealt
+        real TuskBarrel_Damage = 225.00// how much damage dealt
         real TuskBarrel_DamageStat = 4// how much damage dealt
         real TuskBarrel_DamageLvlMultiplier = 0.00// how much damage dealt
         real TuskBarrel_FireExist = 9 // how long fire after explosion lives
@@ -220,6 +236,15 @@ library ItemsSpells uses GearSystems
         real Nichirin_Decrease = 14   
 //----------------------TrueZangetsu----------------------------------------------
         real TrueZangetsu_Decrease = 14  
+//----------------------DeathNote----------------------------------------------
+        integer DeathNote_ID = 'I044'
+        integer DeathNote_CD_ID = 'A0I1'
+        integer DeathNote_Abi_ID = 'A0I0'
+        integer DeathNote_Buff_ID = 'B03B'
+        real DeathNote_Damage = 30 // % of dealt dmg
+        real DeathNote_CD = 7 // % of dealt dmg
+        real DeathNote_MinDmg = 800 // % of dealt dmg
+        real DeathNote_Time = 2.01 // max travel time
 //----------------------KazekageHat----------------------------------------------
         real KazekageHat_Decrease = 50
 //----------------------KanshoandBakuya----------------------------------------------
@@ -2190,7 +2215,7 @@ library ItemsSpells uses GearSystems
                         set u = FirstOfGroup( g )
                         exitwhen u == null or check >0
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
-                    call dmgphys(c, u, dmg)
+                    call dmgatk(c, u, dmg)
                     set check = 1
                     call BlzSetSpecialEffectPosition(e,GetUnitX(u),GetUnitY(u),200)
                     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", u, "origin"))
@@ -2240,7 +2265,7 @@ library ItemsSpells uses GearSystems
             set r5 = 0
             set move = 90
             set dmg = ShikiKnifeEvolved_DmgBase + GetHeroAgi(c,true)*ShikiKnifeEvolved_DmgAgi
-            set dmg = dmg * 2 
+            set dmg = dmg * ShikiKnifeEvolved_DmgAgi
             set dmg = SacredGearBooster(c,dmg)
             
             set aoe = ShikiKnifeEvolved_Aoe 
@@ -2266,8 +2291,114 @@ library ItemsSpells uses GearSystems
         endmethod
 
     endstruct
+private struct ItemsSpells_DeathNote
+        private static timer t_Item9 = CreateTimer()
+        private static integer array m_Item9
+        private static integer MUI_Item9 = -1
+        unit c
+        unit td
+        real x
+        real y
+        real r2
+        integer k3
+        real r3
+        real dmg
+        real r
+        effect e
+        effect e2
+        real a
+        real rmax
 
+        private static method Loop_DeathNote takes nothing returns nothing
+            local integer this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_Item9
+                set this = m_Item9[i]
+                if r< 0.06 then 
+                set r = r + 0.03
+                endif
+                if r> 0.03 then 
+                if SpellBoolCaster(td) and r <= rmax and GetUnitAbilityLevel(td,DeathNote_Buff_ID )>0 then
+                if GetUnitAbilityLevel(td,'Avul')==0 then 
+                set r = r + 0.03
+                endif 
+                    set a = GAngle5(e,GetUnitX(td),GetUnitY(td))
+                    set x = GetUnitX(td)
+                    set y = GetUnitY(td)
+                    call BlzSetSpecialEffectYaw(e,a)
+                    call BlzSetSpecialEffectPosition(e,x,y,0)
+                    if k3 == 1 then 
+                    call BlzSetSpecialEffectPosition(e2,x,y,100)
+                    endif
 
+                    else
+                    call ColorEffDummy3(e,0,255,255,255,0.5)
+                    if GetUnitAbilityLevel(td,DeathNote_Buff_ID )>0 then 
+                    call dmgmag(c, td, dmg)
+                    if k3 == 1 then 
+                    call DestroyEffect(e2)
+                    set x = GetUnitX(td)
+                    set y = GetUnitY(td)
+                    call BambiettaG2_Start(c,x,y)
+                    set k3 = 0
+                    endif
+                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 1.5, 1))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
+                    call UnitRemoveAbility(td,DeathNote_Buff_ID)
+                    endif
+                    set c = null
+                    set td = null
+                    set e = null
+                    set e2 = null
+                    set m_Item9[i] = m_Item9[ MUI_Item9]
+                    set MUI_Item9 = MUI_Item9 - 1
+                    if MUI_Item9 == -1 then
+                        call PauseTimer( t_Item9)
+                    endif
+                    call deallocate(this)
+                    set i = i - 1
+                endif
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        public static method DeathNote_Start takes unit NewC, unit NewTd, real NewDmg returns nothing
+            local thistype this = thistype.create( )
+            set MUI_Item9 = MUI_Item9 + 1
+            set m_Item9[ MUI_Item9] = this
+            set c = NewC
+            set td = NewTd            
+            set a = GAngle(c,td)
+            set rmax = DeathNote_Time  
+            set dmg = NewDmg
+            set r = 0
+            set r2 = 0
+            set r3 = 0
+            set k3 = 0
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            call BambiettaG_Start(c)
+            if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
+            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x, y, a * bj_RADTODEG, 1, 1, 100)
+            else
+            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2.mdx",x,y, a * bj_RADTODEG, 1, 1, 100)
+            endif
+            set k3 = 1
+            endif
+
+            set e = EffectSpawnScale("war3mapImported\\wos_.mdl", x,y, a * bj_RADTODEG, 0.43, 0.01, 0, 0.15, 0.01, 1.5)
+            if MUI_Item9 == 0 then
+                call TimerStart( t_Item9, 0.03, true, function thistype.Loop_DeathNote)
+            endif
+        endmethod
+
+    endstruct
+
+    function DeathNote_Start takes unit c, unit td, real dmg  returns nothing
+    call BuffUnit01(c,td,DeathNote_Abi_ID,"curse",1)
+        call ItemsSpells_DeathNote.DeathNote_Start( c, td, dmg*(DeathNote_Damage/100 ) )
+    endfunction  
     function ShikiKnifeEvolved_Start takes unit c, real x, real y returns nothing
         call ItemsSpells_ShikiKnifeEvolved.ShikiKnifeEvolved_Start( c, x, y )
     endfunction
@@ -2312,8 +2443,7 @@ library ItemsSpells uses GearSystems
     endfunction
     function EarthPower takes unit c, unit td returns nothing
         call ItemsSpells_EarthPower.EarthPower_Start( c, td )
-    endfunction  
-    
+    endfunction      
     function HokageHatEvolved_Start takes unit c, real x, real y returns nothing
         call ItemsSpells_HokageHatEvolved.HokageHatEvolved_Start( c, x, y )
     endfunction

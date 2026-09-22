@@ -17,6 +17,13 @@ globals
     timer CamSetupTimer = null
     framehandle main_frame 
     timer RegenTimer = null
+    timer FullShieldEffectTimer = null
+    effect array ShieldEff
+    unit array ShieldEffTarget
+    string FullShieldEffectModel = "war3mapimported\\wos_title_shielded.mdl"
+    effect array OutsideBaseInvulEff
+    unit array OutsideBaseInvulEffTarget
+    string OutsideBaseInvulEffectModel = "war3mapimported\\wos_title_invul.mdl"
 integer KEY_PHYS_RES
 integer KEY_MAG_RES
 integer KEY_PATRIOT_E
@@ -31,6 +38,16 @@ integer KEY_T_ARMOR_ACTIVE
 integer KEY_TOMIOKA_F_INVUL
 integer KEY_TOMIOKA_F_DMG_ACT
 integer KEY_ZERO_KAI
+integer KEY_INVUL
+integer KEY_SHIELD
+integer KEY_GOJO_E
+integer KEY_YAMAMOTO_FR
+integer KEY_PATRIOT_EE
+integer KEY_E_ARMOR_ACTIVE
+integer KEY_DMG_B_E
+integer KEY_MODE_DEF
+integer KEY_INSTINCT
+integer KEY_RIMURU_F
 integer KEY_RT
     integer KEY_DEF_T
     integer KEY_IMM_F
@@ -50,10 +67,156 @@ set KEY_T_ARMOR_ACTIVE      = StringHash("t armor active")
 set KEY_TOMIOKA_F_INVUL     = StringHash("tomioka f invul")
 set KEY_TOMIOKA_F_DMG_ACT   = StringHash("tomioka f dmg act")
 set KEY_ZERO_KAI            = StringHash("zero kai")
+set KEY_INVUL               = StringHash("invul")
+set KEY_SHIELD              = StringHash("shield")
+set KEY_GOJO_E              = StringHash("gojo e")
+set KEY_YAMAMOTO_FR         = StringHash("yamamoto fr")
+set KEY_PATRIOT_EE          = StringHash("patriot ee")
+set KEY_E_ARMOR_ACTIVE      = StringHash("e armor active")
+set KEY_DMG_B_E             = StringHash("dmg b e")
+set KEY_MODE_DEF            = StringHash("mode def")
+set KEY_INSTINCT            = StringHash("instinct")
+set KEY_RIMURU_F            = StringHash("rimuru f")
 set KEY_RT    = StringHash("rt")
 set KEY_DEF_T = StringHash("def t")
 set KEY_IMM_F = StringHash("imm f")
 endfunction 
+
+function HasFullShieldVisual takes unit u returns boolean
+    local integer unitHid
+    local integer playerHid
+    local integer unitId
+
+    if u == null or GetUnitTypeId(u) == 0 then
+        return false
+    endif
+
+    set unitHid = GetHandleId(u)
+    set playerHid = GetHandleId(GetOwningPlayer(u))
+    set unitId = GetUnitTypeId(u)
+
+    // Unit states are stored under the hero handle.
+    if LoadInteger(hs, unitHid, KEY_INVUL) == 1 or LoadInteger(hs, unitHid, KEY_SHIELD) == 1 then
+        return true
+    endif
+
+    // These two states are explicitly stored under the owning-player handle.
+    if LoadInteger(hs, playerHid, KEY_TOMIOKA_F_INVUL) == 1 then
+        return true
+    endif
+    if GetUnitAbilityLevel(u, 'B02G') > 0 or GetUnitAbilityLevel(u, TurboNeko_Invul_ID) > 0 then
+        return true
+    endif
+
+    // Full blocks represented by buffs/abilities on the damaged unit.
+    if GetUnitAbilityLevel(u, AinzF_Buff0_ID) > 0 /*
+    */ or GetUnitAbilityLevel(u, AlterSaberEBuff_ID) > 0 /*
+    */ or GetUnitAbilityLevel(u, KyorakuR_BuffId) > 0 /*
+    */ or GetUnitAbilityLevel(u, Erza3E_DamageImmune_ID) > 0 then
+        return true
+    endif
+
+    if LoadInteger(hs, unitHid, KEY_PATRIOT_EE) == 1 then
+        return true
+    endif
+
+    // Erza mana shield. It blocks while the channel/order and stored shield pool exist.
+    if GetUnitCurrentOrder(u) == OrderId("autoharvestlumber") /*
+    */ and LoadInteger(hs, unitHid, KEY_E_ARMOR_ACTIVE) == 1 /*
+    */ and LoadReal(hs, unitHid, KEY_DMG_B_E) > 0.0 then
+        return true
+    endif
+
+    if unitId == Gojo_ID and LoadInteger(hs, unitHid, KEY_GOJO_E) == 1 then
+        return true
+    endif
+
+    if unitId == Takeshi_ID then
+        if GetUnitAbilityLevel(u, TakeshiQ3_Buff_ID) > 0 /*
+        */ or LoadInteger(hs, playerHid, KEY_YAMAMOTO_FR) == 1 /*
+        */ or LoadInteger(hs, unitHid, KEY_DEF_T) == 1 then
+            return true
+        endif
+    endif
+
+    if unitId == Tsuna_ID then
+        if LoadInteger(hs, unitHid, KEY_MODE_DEF) == 1 then
+            return true
+        endif
+        if LoadReal(hs, unitHid, KEY_INSTINCT) > 0.0 /*
+        */ and BlzGetUnitAbilityCooldownRemaining(u, FakeAbi_ID) <= 0.0 then
+            return true
+        endif
+    endif
+
+    if unitId == Rimuru_ID then
+        if LoadInteger(hs, unitHid, KEY_RIMURU_F) == 1 /*
+        */ or GetUnitAbilityLevel(u, RimuruQ2_Buff_ID) > 0 /*
+        */ or GetUnitAbilityLevel(u, RimuruF3_Buff_ID) > 0 then
+            return true
+        endif
+    endif
+
+    // Cup of Tea is a full shield only while its shared cooldown is ready.
+    if BlzGetUnitAbilityCooldownRemaining(u, 'A01W') <= 0.0 then
+        return HasCachedItem(u, 'I00M') > 0 or HasCachedItem(u, 'I043') > 0
+    endif
+
+    return false
+endfunction
+
+function UpdateFullShieldEffects takes nothing returns nothing
+    local integer i = 0
+    local unit u
+
+    loop
+        exitwhen i == 10
+        set u = Hero[i]
+
+        // Hero[i] can be replaced; never leave the old effect attached to the old unit.
+        if ShieldEff[i] != null and ShieldEffTarget[i] != u then
+            call DestroyEffect(ShieldEff[i])
+            set ShieldEff[i] = null
+            set ShieldEffTarget[i] = null
+        endif
+
+        if u != null and HasFullShieldVisual(u) then
+            if ShieldEff[i] == null then
+                set ShieldEff[i] = AddSpecialEffectTarget(FullShieldEffectModel, u, "origin")
+                set ShieldEffTarget[i] = u
+            endif
+        elseif ShieldEff[i] != null then
+            call DestroyEffect(ShieldEff[i])
+            set ShieldEff[i] = null
+            set ShieldEffTarget[i] = null
+        endif
+
+        // Show a separate invulnerability effect only while Avul exists outside the base.
+        if OutsideBaseInvulEff[i] != null and OutsideBaseInvulEffTarget[i] != u then
+            call DestroyEffect(OutsideBaseInvulEff[i])
+            set OutsideBaseInvulEff[i] = null
+            set OutsideBaseInvulEffTarget[i] = null
+        endif
+
+        if u != null /*
+        */ and GetUnitAbilityLevel(u, 'Avul') > 0 /*
+        */ and not CheckCoordsInRect(gg_rct_Base, GetUnitX(u), GetUnitY(u)) then
+            if OutsideBaseInvulEff[i] == null then
+                set OutsideBaseInvulEff[i] = AddSpecialEffectTarget(OutsideBaseInvulEffectModel, u, "origin")
+                set OutsideBaseInvulEffTarget[i] = u
+            endif
+        elseif OutsideBaseInvulEff[i] != null then
+            call DestroyEffect(OutsideBaseInvulEff[i])
+            set OutsideBaseInvulEff[i] = null
+            set OutsideBaseInvulEffTarget[i] = null
+        endif
+
+        set i = i + 1
+    endloop
+
+    set u = null
+endfunction
+
 function TestComm takes nothing returns nothing 
 local real x 
 local real y 
@@ -395,6 +558,10 @@ endloop
      set NoDecor_Cond = Condition(function NoDecor_Filter)
      set DecorAliveCond = Condition(function DecorAlive_Filter)
      call CreateKeys()
+     call Preload(FullShieldEffectModel)
+     call Preload(OutsideBaseInvulEffectModel)
+     set FullShieldEffectTimer = CreateTimer()
+     call TimerStart(FullShieldEffectTimer, 0.10, true, function UpdateFullShieldEffects)
      call InitCloneVisualCleanup()
      call InitTransformVisualOptimization()
      set t = null

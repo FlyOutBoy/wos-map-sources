@@ -9148,6 +9148,95 @@
         }
       }
     },
+    "B03B": {
+      "base_id": "BHds",
+      "name_source": {
+        "file": "war3mapSkin.w3h",
+        "group": "custom_objects",
+        "object_index": 119,
+        "modification_index": 5
+      },
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_attachment_point_1": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 119,
+            "modification_index": 6
+          },
+          "field_id": "fta0",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
     "BEer": {
       "base_id": "BEer",
       "name_source": null,

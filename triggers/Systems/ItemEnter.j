@@ -192,7 +192,7 @@ endif
 if id == 'I00N'  then
 call AddSpellLevel(c,'A01C',4,true)
 endif
-if id == 'I00M' or id == 'I043' then 
+if id == 'I00M'  then 
 set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')))
     if k== 0 then 
     set k = 1000
@@ -201,6 +201,16 @@ set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')
     set k = 9999
     endif
     call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')),k)
+    endif
+    if id == 'I043' then 
+set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')))
+    if k== 0 then 
+    set k = 1000
+    endif
+    if k> 9999 then 
+    set k = 9999
+    endif
+    call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')),k)
     endif
 if i<10 and TestMode == false then 
 //call SetItemDroppable(ti,false)

@@ -3312,6 +3312,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     call BlzSetSpecialEffectTimeScale(e3,1.5)
                     call DestroyGroup(g)
                     call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
+                    call SaveInteger(hs,GetHandleId(c),StringHash("shield"),0)
                     call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),0)
                     set c = null
                     set e = null
@@ -3354,6 +3355,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set e = EffectSpawn("war3mapImported\\wos_gatmofazhen.mdl", GetUnitX(c), GetUnitY(c), 0, 1.5, 1, 0)
             call BlzSetSpecialEffectAlpha(e, 0)
             call ColorEffDummy4(e, 0, 255, 255, 255, 0.51)
+                    call SaveInteger(hs,GetHandleId(c),StringHash("shield"),1)
             call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),1)
             call BlzSetSpecialEffectScale(e, 2.25)
             call SetUnitAnimationByIndex(c, 13)

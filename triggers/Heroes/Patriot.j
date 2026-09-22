@@ -1197,7 +1197,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set r5 = 0.0
             set maxRange = PatriotR_RangeBase + (PatriotR_RangeStep * (level - 1))
             set r7 = maxRange
-            set move = 35.0
+            set move = 40.0
             set aoe = PatriotR_DamageAoe
             set g = CreateGroup()
             set g2 = CreateGroup()
@@ -1311,7 +1311,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                             set check2 = 0
                             set r4 = 0.0
                         else
-                            set r4 = r2 + 0.03
+                            set r4 = r4 + 0.03
                         endif
 
                         if r3 > 0.0 then
