@@ -373,7 +373,7 @@ function Regen takes nothing returns nothing
     
     loop
         exitwhen i == 10
-        if IsActivePlayerSlot(i) then 
+        if IsActivePlayerSlot(i) then
         set u = Hero[i]        
         if u != null and Leave[i] == 0 then
             set x = GetUnitX(u)
@@ -430,8 +430,8 @@ function CamSetup takes nothing returns nothing
     local real x
     local real y
     loop
-        exitwhen i == 10
-        if IsActivePlayerSlot(i) then
+        exitwhen i == 15
+        if IsActivePlayerSlot(i) or IsActiveObserverSlot(i) then
             set u = Hero[i]
             if u != null and Leave[i] == 0 and CondArena != 0 and not IsUnitType(u, UNIT_TYPE_DEAD) then
                 set x = GetUnitX(u)
@@ -521,16 +521,16 @@ call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Lightning + Water
   // call SetTextTagLifespan(ShopInfo, 1)
     call SetTextTagVelocity(ShopInfo, 0, 0)
 loop
-exitwhen i == 10
+exitwhen i == 15
 set CameraSetup[i] = BaseCam
 set Shop_Active[i] = false
 set PlayerShopBut[i] = "TAB"
 set Hero[i] = null
-  if GetPlayerSlotState( Player( i ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( i ) ) == MAP_CONTROL_USER and i<10 then
+  if IsActivePlayerSlot(i) then
 //call SaveSystem_PrintStats(Player(i))
 set PlayersAmount = PlayersAmount + 1
-endif
 call SetPlayerState(Player(i),PLAYER_STATE_RESOURCE_LUMBER,k2)
+endif
 call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[i], 0)
 call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_FARZ, 50000, 0)
 call PanCameraToTimedForPlayer(Player(i),GetRectCenterX(gg_rct_Base),GetRectCenterY(gg_rct_Base),0)

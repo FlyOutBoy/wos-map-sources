@@ -932,14 +932,42 @@ function DetermineCaptain2 takes nothing returns nothing
     endloop
 
     // 3) Р В РІР‚СћР РЋР С“Р В Р’В»Р В РЎвЂ Р В Р вЂ¦Р В Р’ВµР РЋР С“Р В РЎвЂќР В РЎвЂўР В Р’В»Р РЋР Р‰Р В РЎвЂќР В РЎвЂў Р В Р’В»Р В РЎвЂР В РўвЂР В Р’ВµР РЋР вЂљР В РЎвЂўР В Р вЂ  (Р В РЎвЂР В Р’В»Р В РЎвЂ Р В Р вЂ¦Р В РЎвЂР В РЎвЂќР РЋРІР‚С™Р В РЎвЂў Р В Р вЂ¦Р В Р’Вµ Р В РЎвЂ“Р В РЎвЂўР В Р’В»Р В РЎвЂўР РЋР С“Р В РЎвЂўР В Р вЂ Р В Р’В°Р В Р’В») Р Р†Р вЂљРІР‚Сњ Р РЋР вЂљР В Р’В°Р В Р вЂ¦Р В РўвЂР В РЎвЂўР В РЎВР В РЎвЂР В РЎВ
+    // Если второго реального игрока нет,
+// выбираем случайный игровой слот 0..9 кроме Captain1.
+if winnersCount <= 0 then
+    set i = 0
+    set winnersCount = 0
+
+    loop
+        exitwhen i == 10
+
+        if i != CaptainPid1 then
+            set DetCapWinners[winnersCount] = i
+            set winnersCount = winnersCount + 1
+        endif
+
+        set i = i + 1
+    endloop
+
+    // Теоретически невозможно при 10 слотах,
+    // но защита пусть будет.
     if winnersCount <= 0 then
         return
-    elseif winnersCount > 1 then
-        set roll = GetRandomInt(0, winnersCount - 1)
-        set chosen = DetCapWinners[roll]
-    else
-        set chosen = DetCapWinners[0]
     endif
+
+    set roll = GetRandomInt(0, winnersCount - 1)
+    set chosen = DetCapWinners[roll]
+
+elseif winnersCount > 1 then
+
+    set roll = GetRandomInt(0, winnersCount - 1)
+    set chosen = DetCapWinners[roll]
+
+else
+
+    set chosen = DetCapWinners[0]
+
+endif
         // === Р В РІР‚вЂќР В Р’В°Р В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІвЂљВ¬Р В РЎвЂР В Р’В»Р В РЎвЂ Р В Р вЂ Р РЋРІР‚в„–Р В Р’В±Р В РЎвЂўР РЋР вЂљ Р В РЎвЂќР В Р’В°Р В РЎвЂ”Р В РЎвЂР РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В Р’В° 2 ===
     set CaptainPid2 = chosen
     if SplitNameCheck(GetPlayerName(Player(chosen))) then

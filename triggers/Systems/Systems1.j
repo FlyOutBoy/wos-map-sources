@@ -157,8 +157,17 @@ function ConvertBTNtoDISBTN takes string path returns string
         endif
         return "ReplaceableTextures\\CommandButtonsDisabled\\DIS" + name
     endfunction
+function IsGamePlayerSlot takes integer pid returns boolean
+    return pid >= 0 and pid < 10
+endfunction
+function IsObserverSlot takes integer pid returns boolean
+    return pid >= 10 and pid <= 14
+endfunction
 function IsActivePlayerSlot takes integer pid returns boolean
-    return pid >= 0 and pid < 10 and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
+    return IsGamePlayerSlot(pid) and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
+endfunction
+function IsActiveObserverSlot takes integer pid returns boolean
+    return IsObserverSlot(pid) and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
 endfunction
 function GetStatusColorBySlot takes integer slot returns string
     if slot == 0 then
@@ -221,7 +230,7 @@ local integer id = GetPlayerId(p)
 local integer k = 0
 set k = 0
 loop
-exitwhen k>10
+ exitwhen k>=10
 if IsPlayerAlly(Player(k),p) and Player(k) != p and IsPlaying(Player(k)) then 
 set b = true 
 endif
@@ -1606,7 +1615,7 @@ endfunction
     function Init takes nothing returns nothing
         local integer i = 0
         loop
-            exitwhen i == 13
+            exitwhen i == 10
             set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A1OA')
             call UnitAddAbility(DummyPlayer[i], 'A1OT')
@@ -1675,16 +1684,16 @@ endfunction
     
     function GetItemValue takes integer i returns integer
     local item a
-    local integer g1 = GetPlayerState(Player(12), PLAYER_STATE_RESOURCE_GOLD)
+    local integer g1 = GetPlayerState(Player(bj_PLAYER_NEUTRAL_EXTRA), PLAYER_STATE_RESOURCE_GOLD)
     local integer g2 = 0
     local integer check = LoadInteger(hs, GetHandleId(Player(PLAYER_NEUTRAL_PASSIVE)), StringHash(I2S(i)))
     if i != 0 then
         if check == 0then
             set a = UnitAddItemByIdSwapped(i, pricesell)
             call UnitDropItemTarget(pricesell, a, priceshop)
-            set g2 = GetPlayerState(Player(12), PLAYER_STATE_RESOURCE_GOLD) - g1
+            set g2 = GetPlayerState(Player(bj_PLAYER_NEUTRAL_EXTRA), PLAYER_STATE_RESOURCE_GOLD) - g1
             call SaveInteger(hs, GetHandleId(Player(PLAYER_NEUTRAL_PASSIVE)), StringHash(I2S(i)), g2)
-            call SetPlayerState(Player(12), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(Player(12), PLAYER_STATE_RESOURCE_GOLD) - g2)
+            call SetPlayerState(Player(bj_PLAYER_NEUTRAL_EXTRA), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(Player(bj_PLAYER_NEUTRAL_EXTRA), PLAYER_STATE_RESOURCE_GOLD) - g2)
         else
             set g2 = check
         endif

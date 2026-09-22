@@ -737,11 +737,12 @@ endfunction
 
 private function WCS_OnHome takes nothing returns nothing
     local player viewer = null
-    local integer pid = GetPlayerId(viewer)
+    local integer pid = 0
     if GetLocalPlayer() != GetTriggerPlayer() then
         return
     endif
     set viewer = GetTriggerPlayer()
+set pid = GetPlayerId(viewer)
     call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         call WCS_SetPage(pid, 0)
@@ -752,13 +753,14 @@ endfunction
 
 private function WCS_OnHeroes takes nothing returns nothing
     local player viewer = null
-    local integer pid = GetPlayerId(viewer)
+    local integer pid = 0
     local integer heroId = 0
     local integer category
     if GetLocalPlayer() != GetTriggerPlayer() then
         return
     endif
     set viewer = GetTriggerPlayer()
+set pid = GetPlayerId(viewer)
     call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         if Hero[pid] != null then
@@ -970,12 +972,15 @@ private function WCS_CreateUI takes nothing returns nothing
     local integer pid = 0
     set WCS_OpenButton = WCS_CreateIconButton(gameUI, WCS_OPEN_X, WCS_OPEN_Y, WCS_OPEN_SIZE, 8200)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
+    call BlzFrameSetVisible(WCS_OpenButton, false)
     call BlzFrameSetLevel(WCS_OpenButton, 100)
     call BlzFrameSetLevel(WCS_OpenIcon, 101)
 
     set WCS_Main = BlzCreateFrame("ListBoxWar3", gameUI, 0, 8210)
     call BlzFrameSetAbsPoint(WCS_Main, FRAMEPOINT_CENTER, WCS_PANEL_X, WCS_PANEL_Y)
     call BlzFrameSetSize(WCS_Main, WCS_PANEL_WIDTH, WCS_PANEL_HEIGHT)
+    // КРИТИЧНО: панель изначально всегда скрыта.
+call BlzFrameSetVisible(WCS_Main, false)
     set WCS_Title = WCS_CreateText(WCS_Main, 0.445, 0.436, 0.160, 0.018, 0.76, TEXT_JUSTIFY_CENTER, "|cffffd36bWOS2 CAREER STATISTICS|r", 8211)
 
     set WCS_CloseButton = WCS_CreateIconButton(WCS_Main, 0.560, 0.438, 0.012, 8212)
@@ -1037,9 +1042,13 @@ private function WCS_CreateUI takes nothing returns nothing
     loop
         exitwhen pid >= WCS_PLAYER_COUNT
         if GetLocalPlayer() == Player(pid) then
-            call BlzFrameSetVisible(WCS_Main, false)
-            call BlzFrameSetVisible(WCS_HeroesPage, false)
-            call BlzFrameSetVisible(WCS_DetailPage, false)
+            if GetPlayerId(GetLocalPlayer()) < WCS_PLAYER_COUNT then
+    call BlzFrameSetVisible(WCS_OpenButton, true)
+else
+
+    call BlzFrameSetVisible(WCS_OpenButton, false)
+    call BlzFrameSetVisible(WCS_Main, false)
+endif
         endif
         set pid = pid + 1
     endloop

@@ -22,16 +22,16 @@ library StarrkSpells uses GearSystems
         real StarrkQ_Damage2StaticBase = 150 // base static damage for 1 level
         real StarrkQ_Damage2StaticStep = 0 // additional static damage for each next level
         real StarrkQ_DamageMorphIntImprove = 1 // how much damage stat increase in morph
-        real StarrkQ_DamageTIntImprove = 1 // morph + this amount will be added
+        real StarrkQ_DamageTIntImprove = 0.25 // morph + this amount will be added
         real StarrkQ_DamageAoe = 320
         real StarrkQ_RangeBase = 1300
         real StarrkQ_RangeStep = 100
-        real StarrkEQ_RangeBonus = 150 // Range in morph 2x cero strike, Range for TQ(wolfes point atk) regulate in object editor in spell cast range
+        real StarrkEQ_RangeBonus = 100 // Range in morph 2x cero strike, Range for TQ(wolfes point atk) regulate in object editor in spell cast range
         real StarrkEQ_AoeMultiplier = 1.5 // multuple base DamageAoe x times
         real StarrkEQ_PushDistance = 400
         real StarrkEQ_PushDuration = 0.42
         real StarrkTQ_Aoe = 525
-        real StarrkTQ_Stun = 0.2
+        real StarrkTQ_Stun = 0.0
 //---------------W ability-----------------------------------------------------
         integer StarrkW_ID = 'A0BI'
         real StarrkW_DamageAgiBase = 1 // base number x Int damage for 1 level
@@ -44,7 +44,7 @@ library StarrkSpells uses GearSystems
         real StarrkEW_DamageAoe = 100 // aoe dmg around target, same for TW
         integer StarrkEW_AttackCount = 4 // full amount of damage would be dealt for x times, TW dealt damage once
         real StarrkEW_DamageMorphIntImprove = 1 // how much damage stat increase in morph
-        real StarrkTW_DamageImprove = 1 //morph + this amount will be added
+        real StarrkTW_DamageImprove = 0.25 //morph + this amount will be added
 //---------------E ability-----------------------------------------------------
         integer StarrkE_ID = 'A0BJ'
         integer StarrkE2_ID = 'A0BQ'
@@ -91,7 +91,7 @@ library StarrkSpells uses GearSystems
         real StarrkTR_DamageAgiBase = 0.8 
         real StarrkT_DamageAgiBase2 = 1 // TT damage per wolf
         real StarrkT_DamageAoe = 550
-        real StarrkTT_DamageAoe = 600 // TT target perimeter radius; wolves split this circle evenly
+        real StarrkTT_DamageAoe = 500 // TT target perimeter radius; wolves split this circle evenly
         real StarrkT_SearchAoe = 1800
         real StarrkT_Duration = 10 + 1.6// 1.6 - delay, 15 - real wolfs time, add this time to morph duration
         real StarrkT_Stun = 0 // wolves do not stun
@@ -448,10 +448,10 @@ library StarrkSpells uses GearSystems
                             if r >= rmax then
                                 call SetUnitTimeScale( c , 1)
                                 call PauseUnit( c , false)
-                                set x1 = (GetUnitX( c )) + 250 * Cos( a + 75 * bj_DEGTORAD )
-                                set y1 = (GetUnitY( c )) + 250 * Sin( a + 75 * bj_DEGTORAD )
-                                set x2 = (GetUnitX( c )) + 250 * Cos( a - 75 * bj_DEGTORAD )
-                                set y2 = (GetUnitY( c )) + 250 * Sin( a - 75 * bj_DEGTORAD )
+                                set x1 = (GetUnitX( c )) + 125 * Cos( a + 75 * bj_DEGTORAD )
+                                set y1 = (GetUnitY( c )) + 125 * Sin( a + 75 * bj_DEGTORAD )
+                                set x2 = (GetUnitX( c )) + 125 * Cos( a - 75 * bj_DEGTORAD )
+                                set y2 = (GetUnitY( c )) + 125 * Sin( a - 75 * bj_DEGTORAD )
                                 set dd[0] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, x1, y1, a * bj_RADTODEG)
                                 call GroupAddUnit(g2, dd[0])
                                 call SetUnitVertexColor(dd[0], 255, 255, 255, 0)
@@ -1893,6 +1893,7 @@ library StarrkSpells uses GearSystems
             local real wolfy = 0
             local real kek1 = 0
             local real kek2 = 0
+            local real wolf_count = 16
             loop
                 exitwhen i > MUI_StarrkT
                 set this = m_StarrkT[i]
@@ -1909,7 +1910,7 @@ library StarrkSpells uses GearSystems
                     endif
                     set r = S2R( R2SW( r , 0, 3 ) )
                     if r > 0 and r < 1.2 then
-                        if r3 > 0.0 and check < 20 then
+                        if r3 > 0.0 and check < 16 then
                             set r3 = 0
                             set x1 = x - 225 * Cos(a)
                             set y1 = y - 225 * Sin(a)
@@ -1921,7 +1922,7 @@ library StarrkSpells uses GearSystems
                                 set wolfx = GetUnitX(c)
                                 set wolfy = GetUnitY(c)
                             endif
-                            if check < 20 then
+                            if check < wolf_count then
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call GroupAddUnit(g2, dd[check])
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
@@ -1936,7 +1937,7 @@ library StarrkSpells uses GearSystems
                                 set wolfx = GetUnitX(c)
                                 set wolfy = GetUnitY(c)
                             endif
-                            if check < 20 then
+                            if check < wolf_count then
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call GroupAddUnit(g2, dd[check])
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
@@ -1951,7 +1952,7 @@ library StarrkSpells uses GearSystems
                                 set wolfx = GetUnitX(c)
                                 set wolfy = GetUnitY(c)
                             endif
-                            if check < 20 then
+                            if check < wolf_count then
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)
@@ -1966,7 +1967,7 @@ library StarrkSpells uses GearSystems
                                 set wolfx = GetUnitX(c)
                                 set wolfy = GetUnitY(c)
                             endif
-                            if check < 20 then
+                            if check < wolf_count then
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)

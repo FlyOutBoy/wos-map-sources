@@ -14,12 +14,42 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
     local boolean isVIP
     local boolean isShopKey
 
+    set isShopKey = but == OSKEY_B or but == OSKEY_TAB or but == OSKEY_SPACE or but == OSKEY_I
+
+    // Spectators can open the shop as a catalogue, while every hero/gameplay
+    // hotkey remains disabled because they return before the normal handler.
+    if IsObserverSlot(id) then
+        if isShopKey and LoadInteger(hs, playerHandleId, StringHash("shop key guard")) == 0 then
+            call SaveInteger(hs, playerHandleId, StringHash("shop key guard"), 1)
+            call MyFlush(playerHandleId, StringHash("shop key guard"), 0, 0.15)
+            if Shop_Active[id] then
+                set Shop_Active[id] = false
+                if ShopUICreated and FRAME_ShopMAIN != null and GetLocalPlayer() == p then
+                    call BlzFrameSetVisible(FRAME_ShopMAIN, false)
+                endif
+            elseif END1 == 0 and ShopUICreated and FRAME_ShopMAIN != null then
+                set Shop_Active[id] = true
+                set ItemsCraftPlayerDebug_ID[id] = -1
+                call ReloadItemPage(ItemsFrameCurrentPage_ID[id], p)
+                call ShopUpdateCatalogueNavigation(id, p)
+                if GetLocalPlayer() == p then
+                    call BlzFrameSetVisible(FRAME_AutoBuyCheckbox, false)
+                    call BlzFrameSetVisible(FRAME_AutoBuyText, false)
+                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[6], false)
+                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[7], false)
+                    call BlzFrameSetVisible(FRAME_ShopMAIN, true)
+                endif
+            endif
+        endif
+        set hero = null
+        set p = null
+        return
+    endif
+
     if hero != null then
         set heroHandleId = GetHandleId(hero)
         set heroTypeId = GetUnitTypeId(hero)
         set isVIP = VIPCheckLvl2(FramePlayerFirstName[id]) or VIPCheckLvl3(FramePlayerFirstName[id])
-        set isShopKey = but == OSKEY_B or but == OSKEY_TAB or but == OSKEY_SPACE or but == OSKEY_I
-
         if but == OSKEY_R then
             if heroTypeId == Natsu_ID and LoadInteger(hs, heroHandleId, StringHash("natsu r")) == 1 and IntegerCd(hero, "cd r but", 0.06) then
                 call SaveInteger(hs, heroHandleId, StringHash("natsu r add"), 1)

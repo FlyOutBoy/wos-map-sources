@@ -560,7 +560,8 @@ function MyItemsIdInit takes nothing returns nothing
     local integer k = 0
     local real x = GetRectCenterX(gg_rct_Caster)
     local real y = GetRectCenterY(gg_rct_Caster)
-    local integer i2 = 12
+    // Price-probe units must never belong to a real lobby slot.
+    local integer i2 = bj_PLAYER_NEUTRAL_EXTRA
     local integer array itemList
     local integer g1 = GetPlayerState(Player(i2), PLAYER_STATE_RESOURCE_GOLD)
     local integer g2 = 0
@@ -1647,7 +1648,8 @@ function OnClickItem takes nothing returns nothing
         endif
     endif
 
-    if frameCode == 306 then
+    // Observer slots may inspect the selected item and its recipe, but cannot buy it.
+    if frameCode == 306 and not IsObserverSlot(pid) then
         set id = ItemsCurrentItem_ID[pid]
         if id != 0 then
             set iconPath = BlzGetAbilityIcon(id)
@@ -1690,7 +1692,8 @@ function OnClickItem takes nothing returns nothing
         endif
     endif
 
-    if frameCode == 307 and ItemsCurrentItemBag_ID[pid] != 0 and UnitItemInSlot(d, ItemsCurrentItemBag_ID[pid] - 1) != null then
+    // Inventory buttons are read-only for observers, so selling is impossible too.
+    if frameCode == 307 and not IsObserverSlot(pid) and ItemsCurrentItemBag_ID[pid] != 0 and UnitItemInSlot(d, ItemsCurrentItemBag_ID[pid] - 1) != null then
         set id = ItemsCurrentItem_ID[pid]
         set baseCost = GetItemValue(id)
         set value = GetItemValue(ItemsCurrentItem_ID_BACKUP[pid])
@@ -2206,7 +2209,7 @@ function CreateItemUI takes nothing returns nothing
     set i = 1
 
     loop
-        exitwhen i > 10
+        exitwhen i > 15
         set pid = i - 1
         set AutoBuyRecommendedIndex[pid] = 0
         set AutoBuyRecommendedUnitId[pid] = 0

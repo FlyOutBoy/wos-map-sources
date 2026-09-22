@@ -8,6 +8,7 @@ local integer id = GetPlayerId(p)
 local integer gold = GetGold(GetTriggerPlayer())
 local integer g = 0
 local string leaveName = FramePlayerFirstNameBase[id]
+if id<10 then 
 if Hero[id] != null then
 loop
 exitwhen i == 6 
@@ -62,6 +63,7 @@ call PlayersMsg(GetPlayerVisualColorString(p)+leaveName+"|r leaves|r",2)
 endif
 call MakeSound("WOS\\Leave")
 call SetPlayerName(Player(id),FramePlayerFirstNameBase[id])
+endif
 set p = null
 endfunction
 

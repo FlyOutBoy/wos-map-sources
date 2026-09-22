@@ -344,7 +344,7 @@ endfunction
 function RefreshAllPlayersHeroPage takes nothing returns nothing
     local integer i = 0
     loop
-        exitwhen i == 10
+        exitwhen i == 15
         if GetPlayerSlotState( Player( i ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( i ) ) == MAP_CONTROL_USER then
         call ReloadHeroPage(PlayerFrameCurrentPage_ID[i], Player(i))
         endif
@@ -375,7 +375,7 @@ function ReloadAfterPick takes player p returns nothing
     if result != -1 then
         set k2 = 0
         loop
-            exitwhen k2 == 10
+            exitwhen k2 == 15
             if PlayerFrameCurrentPage_ID[pid] == PlayerFrameCurrentPage_ID[k2] then
                 if GetLocalPlayer() == Player(k2) then
                     call BlzFrameSetTexture(FRAME_ICON2[result], "ReplaceableTextures\\CommandButtons\\BTNCancel", 0, false)
@@ -510,7 +510,7 @@ function TestUnit_OpenHeroPicker takes player p, integer mode returns nothing
     endif
 
     // Эти два слота используются как владельцы тестовых героев.
-    if pid == TestUnitPlayerId or pid == TestAllyUnitPlayerId then
+    if IsObserverSlot(pid) or pid == TestUnitPlayerId or pid == TestAllyUnitPlayerId then
         call DisplayTimedTextToPlayer(p, 0, 0, 3, "Players 2 and 7 are reserved for test heroes")
         return
     endif
@@ -595,6 +595,9 @@ function TestUnit_CreateSelectedHero takes player controller, integer heroId, in
     local real y = GetRectCenterY(gg_rct_Pick)
     local real facing = 0.0
 
+    if IsObserverSlot(GetPlayerId(controller)) then
+        return
+    endif
     if mode == TestUnitPickAlly then
         set ownerId = TestAllyUnitPlayerId
         set allied = true
@@ -674,6 +677,9 @@ function RandomPick takes player p returns nothing
     local real BaseX = GetRectCenterX(gg_rct_Pick)
     local real BaseY = GetRectCenterY(gg_rct_Pick)
     local boolean canShowSwap = IsAllyExist(p) or TestMode == true
+    if IsObserverSlot(pid) then
+        return
+    endif
     if Hero[pid] == null and GetPlayerSlotState( Player( pid ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( pid ) ) == MAP_CONTROL_USER then
         // Reservoir sampling: Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚ВР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В РІР‚в„–Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚Сћ Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂќР В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚Сћ Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р Р‹Р В Р РЏ.
         // MaxHeroes Р В Р’В Р РЋРІР‚В Р В Р Р‹Р В РІР‚С™Р В Р Р‹Р РЋРІР‚СљР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р В Р РЏ Р В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚СћР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В° k == 0 ... k == 26 Р В Р’В Р вЂ™Р’В±Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’Вµ Р В Р’В Р В РІР‚В¦Р В Р Р‹Р РЋРІР‚СљР В Р’В Р вЂ™Р’В¶Р В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“.
@@ -865,6 +871,9 @@ function Repick takes player p returns nothing
     local item it
     local integer slot = 0
     local integer id = GetUnitTypeId(Hero[pid])
+    if IsObserverSlot(pid) then
+        return
+    endif
     call BlzFrameSetEnable(FRAME_Repick[pid], false)
     call BlzFrameSetVisible(FRAME_Repick[pid], false)
     // Save and drop all items from hero
@@ -948,6 +957,13 @@ function OnClick takes nothing returns nothing
     local real BaseY
     local unit d = null
     local integer k = 0
+    // Observers may browse pages and hero information, but all gameplay actions
+    // in the picker are read-only for player slots 11-15.
+    if IsObserverSlot(pid) and (clicked == FRAME_Repick[pid] or clicked == FRAME_Swap[pid] or clicked == FRAME_Pick[2] or clicked == FRAME_Pick[3] or clicked == FRAME_Pick[4]) then
+        set clicked = null
+        set p = null
+        return
+    endif
     if clicked == FRAME_Repick[pid] then
         call Repick(p)
     endif
@@ -3209,9 +3225,9 @@ function EndBanPhase takes nothing returns nothing
     loop
         exitwhen i == 10
         call BlzFrameSetTexture(FRAME_PlayerPickBack[i], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
-        call ReloadHeroPage(PlayerFrameCurrentPage_ID[i], Player(i))
         set i = i + 1
     endloop
+    call RefreshAllPlayersHeroPage()
     call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
     call BlzFrameSetEnable(FRAME_Pick[4], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
@@ -3427,6 +3443,7 @@ endif
             endif
             set i = i + 1
         endloop
+        call RefreshAllPlayersHeroPage()
     endif
     return
 endif
@@ -3437,27 +3454,40 @@ endif
             else
                 call BlzFrameSetText(FRAME_TimerToStart, "|c00FFFF00Time Left: " + I2S(R2I(FRAME_RoundCountSecBasePrepare) - R2I(TimeMove) + PrePickTime) + "|r")
             endif
-            if CaptainMode == true and TimeMove <= FRAME_RoundCountSecBasePrepare + PrePickTime and RandomAllPlayers == 0 then
-                set i = 0
-                set i2 = 0
-                set i3 = 0
-                loop
-                    exitwhen i == 10
-                    if GetPlayerSlotState( Player( i ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( i ) ) == MAP_CONTROL_USER then
-                        set i3 = i3 + 1
-                        if Hero[i] != null then
-                            set i2 = i2 + 1
-                        endif
-                    endif
-                    set i = i + 1
-                endloop
-                set i = 0
-                if i2 == i3 then
-                    call CreatePlayerPickUI()
-                    set check2 = 1
-                    set TimeMove = FRAME_RoundCountSecBasePrepare + PrePickTime
-                endif
+            // Проверяем ВСЕХ реально играющих игроков 0..9.
+// Не зависит от CaptainMode.
+if TimeMove <= FRAME_RoundCountSecBasePrepare + PrePickTime and RandomAllPlayers == 0 then
+    set i = 0
+    set i2 = 0 // сколько уже выбрали героя
+    set i3 = 0 // сколько всего живых игровых слотов
+
+    loop
+        exitwhen i == 10
+
+        if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+            set i3 = i3 + 1
+
+            if Hero[i] != null then
+                set i2 = i2 + 1
             endif
+        endif
+
+        set i = i + 1
+    endloop
+
+    // Все реальные игроки выбрали героев.
+    if i3 > 0 and i2 == i3 then
+
+        // Это нужно только для Captain Mode.
+        if CaptainMode == true then
+            call CreatePlayerPickUI()
+            set check2 = 1
+        endif
+
+        // Мгновенно заканчиваем пик.
+        set TimeMove = FRAME_RoundCountSecBasePrepare + PrePickTime
+    endif
+endif
             if TimeMove == FRAME_RoundCountSecBasePrepare + PrePickTime and RandomAllPlayers == 0 then
                 set RandomAllPlayers = 1
                 set i = 0
@@ -3688,7 +3718,7 @@ endif
                 endif
                 if k1 == 0 and k2 == 0 then
                     set k = 1
-                    call PlayersMsg(GetPlayerColorString(Player(10)) + "Draw", 2)
+                    call PlayersMsg("|c00FFFFFFDraw|r", 2)
                     set Team2Round = Team2Round + 1
                     set Team1Round = Team1Round + 1
                     set k3 = 0
@@ -3952,11 +3982,14 @@ function initmapstart takes nothing returns nothing
     set initTimer = null
     loop
         exitwhen i == bj_MAX_PLAYERS
-        if GetPlayerSlotState( Player( i ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( i ) ) == MAP_CONTROL_USER then
+        if IsActivePlayerSlot(i) then
             set PlayerCountValue = PlayerCountValue + 1
             call AddGold(Player(i), 2500, true)
         endif
         call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_TARGET_DISTANCE, BaseCam, 0)
+        if IsActiveObserverSlot(i) then
+            call PanCameraToTimedForPlayer(Player(i), GetRectCenterX(gg_rct_Base), GetRectCenterY(gg_rct_Base), 0)
+        endif
         set i = i + 1
     endloop
    // call InitAllyCDTimer()
@@ -3988,6 +4021,15 @@ function initmapstart takes nothing returns nothing
     //call MyHeroIdInit()
     call InitTrig_UI()
     call CreateStatusHeroUI()
+    set i = 10
+    loop
+        exitwhen i >= 15
+        if IsActiveObserverSlot(i) then
+            set PlayerFrameCurrentPage_ID[i] = 1
+            call ReloadHeroPage(1, Player(i))
+        endif
+        set i = i + 1
+    endloop
     set IntroStart1 = CreateTimer()
     call TimerStart(IntroStart1, 1, true, function PrepareStart)
     //set Hero[6] =  CreateUnit(Player(6),'Hpal',GetRectCenterX(gg_rct_Arena),GetRectCenterY(gg_rct_Arena),1)
@@ -4005,8 +4047,10 @@ function RemoveHashTag takes string s returns string
     endloop
     return s
 endfunction
+
 function Map_Start takes nothing returns nothing
     local integer i = 0
+    local integer k = 0
     set PlayerColor[0] = "|cffff0303"
     set PlayerColor[1] = "|cff0042ff"
     set PlayerColor[2] = "|cff1be7ba"
@@ -4017,6 +4061,12 @@ function Map_Start takes nothing returns nothing
     set PlayerColor[7] = "|cffe45caf"
     set PlayerColor[8] = "|cff939596"
     set PlayerColor[9] = "|cff7ebff1"
+    if TestMode == true then 
+        call FogModifierStart(CreateFogModifierRect(Player(1), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
+        call FogModifierStart(CreateFogModifierRect(Player(6), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
+    endif    
+           
+                
     call TriggerAddAction(Frame_clickKyoraku, function KyorakuFrameClick)
     loop
         exitwhen i == bj_MAX_PLAYERS
@@ -4025,11 +4075,37 @@ function Map_Start takes nothing returns nothing
         call FogModifierStart(CreateFogModifierRect(Player(i), FOG_OF_WAR_VISIBLE, gg_rct_Base, true, false))
         call FogModifierStart(CreateFogModifierRect(Player(i), FOG_OF_WAR_VISIBLE, gg_rct_Cage, true, false))
         call FogModifierStart(CreateFogModifierRect(Player(i), FOG_OF_WAR_VISIBLE, gg_rct_Metro, true, false))
-        if i>9 then 
-        call FogModifierStart(CreateFogModifierRect(Player(i), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
+        if IsObserverSlot(i) then
+            // Dedicated observers always see the complete playable map.
+            call FogModifierStart(CreateFogModifierRect(Player(i), FOG_OF_WAR_VISIBLE, bj_mapInitialPlayableArea, true, false))
+            // They are deliberately outside both gameplay teams: no resource
+            // transfer, shared control, shared spells or alliance interaction.
+            set k = 0
+            loop
+                exitwhen k == 10
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_PASSIVE, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_PASSIVE, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_HELP_REQUEST, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_HELP_REQUEST, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_HELP_RESPONSE, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_HELP_RESPONSE, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_SHARED_XP, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_SHARED_XP, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_SHARED_SPELLS, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_SHARED_SPELLS, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_SHARED_VISION, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_SHARED_VISION, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_SHARED_CONTROL, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_SHARED_CONTROL, false)
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
+                call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
+                set k = k + 1
+            endloop
         endif
         set FramePlayerFirstNameBase[i] = GetPlayerName(Player(i))
-        call SaveSystem_SetIdentity(Player(i), FramePlayerFirstNameBase[i])
+        if IsGamePlayerSlot(i) then
+            call SaveSystem_SetIdentity(Player(i), FramePlayerFirstNameBase[i])
+        endif
 
         call SetPlayerName(Player(i), RemoveHashTag(GetPlayerName(Player(i))))
         set FramePlayerFirstName[i] = GetPlayerName(Player(i))
@@ -4071,6 +4147,8 @@ endif
 
     call SaveSystem_Init()
     call SaveSystem_RegisterChat()
+    
+    
     set PC_R[0] = 255
     set PC_G[0] = 0
     set PC_B[0] = 0

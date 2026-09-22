@@ -12,7 +12,18 @@ library AAINIT requires WOS2BotCodec
 // - the match export is built only from already synchronized current-match state;
 // - the old WOS2_v1/WOS2_v3/VIP files are never opened or overwritten.
 //==============================================================================
-
+private function IsGamePlayerSlot takes integer pid returns boolean
+    return pid >= 0 and pid < 10
+endfunction
+private function IsObserverSlot takes integer pid returns boolean
+    return pid >= 10 and pid <= 14
+endfunction
+private function IsActivePlayerSlot takes integer pid returns boolean
+    return IsGamePlayerSlot(pid) and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
+endfunction
+private function IsActiveObserverSlot takes integer pid returns boolean
+    return IsObserverSlot(pid) and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
+endfunction
 globals
     // The standard FileIO carrier. Saved files may touch only this visual
     // tooltip native; they never call a map function while Preloader runs.
@@ -493,6 +504,9 @@ function SaveSystem_LoadOwnCareerAtFinish takes nothing returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local string originalTooltip = BlzGetAbilityTooltip(SAVE_ABILITY, 0)
     local string buffer
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
     set ss_LocalOwnerPid = pid
     call SaveSystem_EnsureIdentity(pid)
     call SaveSystem_LocalResetProfile()
@@ -592,7 +606,7 @@ function SaveSystem_WriteOwnCareerAtFinish takes nothing returns nothing
     local integer checksum
     local integer record = 0
     local integer slot
-    if not ss_LocalResultPending then
+    if not IsGamePlayerSlot(pid) or not ss_LocalResultPending then
         return
     endif
 
@@ -654,7 +668,7 @@ function SaveSystem_LegacyFilePath takes integer pid returns string
 endfunction
 
 function SaveSystem_LoadLocalPlayer takes integer pid returns nothing
-    if pid < 0 or pid >= 16 or GetLocalPlayer() != Player(pid) or ss_LocalLoadFinished then
+    if not IsGamePlayerSlot(pid) or GetLocalPlayer() != Player(pid) or ss_LocalLoadFinished then
         return
     endif
     call SaveSystem_LoadOwnCareerAtFinish()
@@ -1265,6 +1279,9 @@ function SaveSystem_SetCurrentHero takes player whichPlayer, unit whichHero retu
         return
     endif
     set pid = GetPlayerId(whichPlayer)
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
     call SaveSystem_MatchEnsureParticipant(pid, ss_Identity[pid])
     if whichHero != null then
         set heroId = GetUnitTypeId(whichHero)
@@ -1312,6 +1329,9 @@ function SaveSystem_OnRoundEnd takes player whichPlayer, boolean isWin returns n
         return
     endif
     set pid = GetPlayerId(whichPlayer)
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
     if SaveSystem_IsMatchPid(pid) and ss_MatchParticipant[pid] and not ss_MatchLeft[pid] then
         set ss_MatchRoundsPlayed[pid] = ss_MatchRoundsPlayed[pid] + 1
         if isWin then
@@ -1339,6 +1359,9 @@ function SaveSystem_OnGameEndDetailed takes player whichPlayer, unit whichHero, 
         return
     endif
     set pid = GetPlayerId(whichPlayer)
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
     if SaveSystem_IsMatchPid(pid) and ss_MatchParticipant[pid] then
         if whichHero == null then
             set whichHero = ss_MatchHero[pid]
@@ -1855,7 +1878,7 @@ function SaveSystem_RegisterChat takes nothing returns nothing
     endif
     set ss_ChatTrigger = CreateTrigger()
     loop
-        exitwhen pid >= 16
+        exitwhen pid >= SAVE_BOT_MAX_PLAYERS
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-stats", true)
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-hstats", true)
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-istats", true)
@@ -1874,6 +1897,9 @@ function SaveSystem_SetIdentity takes player whichPlayer, string stableName retu
         return
     endif
     set pid = GetPlayerId(whichPlayer)
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
     if ss_Identity[pid] != "" and ss_IdentityKeyA[pid] != 0 and ss_IdentityKeyB[pid] != 0 then
         return
     endif
@@ -1897,7 +1923,7 @@ function SaveSystem_Init takes nothing returns nothing
     endif
     set ss_Initialized = true
     loop
-        exitwhen pid >= 16
+        exitwhen pid >= SAVE_BOT_MAX_PLAYERS
         if ss_Identity[pid] == "" then
             call SaveSystem_SetIdentity(Player(pid), GetPlayerName(Player(pid)))
         endif

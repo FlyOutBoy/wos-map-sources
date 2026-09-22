@@ -28,6 +28,7 @@ globals
     // При неполных командах высота дополнительно сжимается автоматически.
     //=======================================================================
     private constant integer WOS_STATS_PLAYER_COUNT = 10
+    private constant integer WOS_STATS_VIEWER_COUNT = 15
     private constant integer WOS_STATS_TEAM_SIZE = 5
     private constant integer WOS_STATS_ITEM_COUNT = 6
     private constant real WOS_STATS_UPDATE_PERIOD = 0.25
@@ -1307,7 +1308,7 @@ function WOS_STATS_ShowFinal takes nothing returns nothing
     set WOS_STATS_SHOW_INACTIVE_PLAYERS = true
 
     loop
-        exitwhen pid >= WOS_STATS_PLAYER_COUNT
+        exitwhen pid >= WOS_STATS_VIEWER_COUNT
         // Состояние записывается одинаково на всех клиентах.
         set WOS_STATS_IsOpen[pid] = true
         set WOS_STATS_IsExpanded[pid] = true
@@ -1349,14 +1350,18 @@ private function WOS_STATS_RestoreLegacyUI takes integer pid returns nothing
         call BlzFrameSetVisible(FRAME_StatusHeroMain4, WOS_STATS_OldCameraVisible[pid])
     endif
     if FRAME_StatsMain != null then
-        call BlzFrameSetVisible(FRAME_StatsMain, WOS_STATS_OldHeroStatsVisible[pid])
+        if IsObserverSlot(pid) then
+            call BlzFrameSetVisible(FRAME_StatsMain, false)
+        else
+            call BlzFrameSetVisible(FRAME_StatsMain, WOS_STATS_OldHeroStatsVisible[pid])
+        endif
     endif
 endfunction
 
 private function WOS_STATS_SetOpen takes player whichPlayer, boolean open returns nothing
     local integer pid = GetPlayerId(whichPlayer)
 
-    if pid < 0 or pid >= WOS_STATS_PLAYER_COUNT then
+    if pid < 0 or pid >= WOS_STATS_VIEWER_COUNT then
         return
     endif
     set WOS_STATS_IsOpen[pid] = open
@@ -1434,7 +1439,7 @@ private function WOS_STATS_Periodic takes nothing returns nothing
     local integer pid = 0
 
     loop
-        exitwhen pid >= WOS_STATS_PLAYER_COUNT
+        exitwhen pid >= WOS_STATS_VIEWER_COUNT
         if WOS_STATS_IsOpen[pid] and GetLocalPlayer() == Player(pid) then
             // Очищаем и новые сообщения локально на протяжении всего времени,
             // пока у этого игрока открыто финальное табло.
@@ -1655,7 +1660,7 @@ private function WOS_STATS_CreateUI takes nothing returns nothing
     set WOS_STATS_OpacityTrigger = CreateTrigger()
     set WOS_STATS_ExpandTrigger = CreateTrigger()
     loop
-        exitwhen pid >= WOS_STATS_PLAYER_COUNT
+        exitwhen pid >= WOS_STATS_VIEWER_COUNT
         call BlzTriggerRegisterPlayerKeyEvent(WOS_STATS_KeyTrigger, Player(pid), OSKEY_F2, 0, false)
         set pid = pid + 1
     endloop

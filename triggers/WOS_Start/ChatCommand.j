@@ -68,6 +68,7 @@ globals
     private trigger EmojiClickTrig = null
     private trigger EmojiSyncTrig = null
     private trigger EmojiTypedTrig = null
+    private trigger ObserverChatTrig = null
     private timer EmojiTimer = null
     private boolean EmojiPanelOpen = false
     private boolean array PlayerEmojiEnabled
@@ -237,7 +238,7 @@ private function ShiftFeedLeft takes nothing returns nothing
 endfunction
 
 private function AddEmojiPost takes player sender, integer emojiId returns nothing
-    if emojiId <= 0 or emojiId > ChatImageCommandCount or EmojiPath[emojiId] == "" then
+    if IsObserverSlot(GetPlayerId(sender)) or emojiId <= 0 or emojiId > ChatImageCommandCount or EmojiPath[emojiId] == "" then
         return
     endif
 
@@ -402,6 +403,9 @@ private function OnEmojiFrameClick takes nothing returns nothing
             exitwhen i > ChatImageCommandCount
 
             if clicked == EmojiButton[i] then
+                if IsObserverSlot(pid) then
+                    set i = ChatImageCommandCount + 1
+                else
                 if GetLocalPlayer() == p then
                     // Frame clicks are local; sync converts the click into one
                     // deterministic post received by every player.
@@ -412,6 +416,7 @@ private function OnEmojiFrameClick takes nothing returns nothing
                 endif
 
                 set i = ChatImageCommandCount + 1
+                endif
             else
                 set i = i + 1
             endif
@@ -425,6 +430,14 @@ private function OnEmojiFrameClick takes nothing returns nothing
 
     set clicked = null
     set p = null
+endfunction
+
+// Native chat has no cancel API. When an observer sends a line, remove the
+// rendered native text locally for the ten gameplay clients immediately.
+private function OnObserverNativeChat takes nothing returns nothing
+    if IsGamePlayerSlot(GetPlayerId(GetLocalPlayer())) then
+        call ClearTextMessages()
+    endif
 endfunction
 
 private function OnTypedEmoji takes nothing returns nothing
@@ -648,6 +661,7 @@ private function Init takes nothing returns nothing
     set EmojiClickTrig = CreateTrigger()
     set EmojiSyncTrig = CreateTrigger()
     set EmojiTypedTrig = CreateTrigger()
+    set ObserverChatTrig = CreateTrigger()
     set EmojiTimer = CreateTimer()
 
     call CreateEmojiFeed()
@@ -666,8 +680,16 @@ private function Init takes nothing returns nothing
         set i = i + 1
     endloop
 
+    set i = 10
+    loop
+        exitwhen i > 14
+        call TriggerRegisterPlayerChatEvent(ObserverChatTrig, Player(i), "", false)
+        set i = i + 1
+    endloop
+
     call TriggerAddAction(EmojiClickTrig, function OnEmojiFrameClick)
     call TriggerAddAction(EmojiSyncTrig, function OnEmojiSync)
+    call TriggerAddAction(ObserverChatTrig, function OnObserverNativeChat)
 
     if EMOJI_ENABLE_TYPED_COMMANDS then
         call TriggerAddAction(EmojiTypedTrig, function OnTypedEmoji)
@@ -675,8 +697,8 @@ private function Init takes nothing returns nothing
 
     call TimerStart(EmojiTimer, 0.05, true, function EmojiPeriodic)
 
-    // IMPORTANT: ORIGIN_FRAME_CHAT_MSG is intentionally never hidden.
-    // Native chat remains fully functional and is not duplicated.
+    // Native chat stays enabled for gameplay players. Observer messages are
+    // cleared locally for player slots 0-9 by OnObserverNativeChat.
 endfunction
 
 endlibrary

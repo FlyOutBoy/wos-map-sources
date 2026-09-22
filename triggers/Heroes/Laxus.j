@@ -895,10 +895,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                     endif
                 else
                     // Гарантированный сброс обратно на W при завершении или отмене W2
-                    if c != null and GetUnitAbilityLevel(c, LaxusW2_ID) > 0 then
-                        call SwapAbility(c, 3, LaxusW_ID, LaxusW2_ID)
-                        call MyFrame(c, 3, "BTNHero_Laxus_W", false, 0)
-                    endif
+                   //if c != null and GetUnitAbilityLevel(c, LaxusW2_ID) > 0 then
+                     //   call SwapAbility(c, 3, LaxusW_ID, LaxusW2_ID)
+                      //  call MyFrame(c, 3, "BTNHero_Laxus_W", false, 0)
+                    //endif
                     if e != null then
                         call DestroyEffect(e)
                     endif

@@ -19,6 +19,7 @@
     "WOS_Start/WoS_Shop_Init.j": true,
     "WOS_Start/WoS_Pick_Init.j": true,
     "WOS_Start/Starts.j": true,
+    "WOS_Start/INITSS.j": true,
     "WOS_Start/BuildsForChars.j": true,
     "WOS_Start/TestUnit.j": true,
     "WOS_Start/WoS_Hero_Icons_Init.j": true,

@@ -52,7 +52,7 @@ library AlucardSpells uses GearSystems
         real AlucardRW_DamageAgiBase = 5 // base number x Str damage for 1 level
         real AlucardRW_DamageAgiStep = 1 // additional number x Str damage for each next level
         real AlucardRW_Duration = 2 // in seconds, 3 = 3 sec, also can be 3.5..... 4.1 ...... 5.. and any other number, but not lower than 0.5
-        real AlucardRW_Speed = 1600 // how fast for a second alucard can move in blood pool state
+        real AlucardRW_Speed = 1000 // how fast for a second alucard can move in blood pool state
         real AlucardRW_DamageAoe = 725 // blood pool aoe        
 //---------------E ability-----------------------------------------------------
         integer AlucardE_ID = 'A0C4'

@@ -1468,12 +1468,26 @@ endstruct
                 set r3 = 0
                 set r = r + 1          // count ticks as integer
                 if k == 0 then
+                if s == "murasume" then 
+                    set MurasameTrigger = true
+                    if GetUnitAbilityLevel(td,'B005')>0 then 
+                    set r = 999 
+                    set dmg = 0
+                    endif
+                    endif
                     call dmgphys(c, td, dmg)
+                if s == "murasume" then 
+                    set MurasameTrigger = false
+                    endif
                 elseif k == 1 then
                     call dmgmag(c, td, dmg)
                 else
                     if s == "murasume" then 
                     set MurasameTrigger = true
+                    if GetUnitAbilityLevel(td,'B005')>0 then 
+                    set r = 999 
+                    set dmg = 0
+                    endif
                     endif
                     call dmgatk(c, td, dmg)
                     if s == "murasume" then 

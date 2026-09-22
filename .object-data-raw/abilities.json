@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "63203bc400655ff2c76e71fc3e2f5ed46c102bc33189d5a41a53928ed15712dd",
+  "source_sha256": "7d63cea0c31f7d1cbaee26f84313bfaf5aa2bce540f7341eb6fd5ed8e7e76103",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -55567,23 +55567,6 @@
             "_original_value": "enemies,vulnerable",
             "_encoding": "utf-8",
             "_raw_base64": "ZW5lbWllcyx2dWxuZXJhYmxl"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "amcs",
-            "hex": "616D6373"
-          },
-          "field_name": "Mana cost / Затраты маны",
-          "type": "int",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": 50
           },
           "sanity_check": {
             "text": "",
@@ -320691,23 +320674,6 @@
             "text": "",
             "hex": "00000000"
           }
-        },
-        {
-          "field": {
-            "text": "amcs",
-            "hex": "616D6373"
-          },
-          "field_name": "Mana cost / Затраты маны",
-          "type": "int",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": 50
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
         }
       ],
       "display_name": "Item Tsuchikage Set"
@@ -431749,9 +431715,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 45.0,
-            "_original_value": 45.0,
-            "_raw_hex": "00003442"
+            "value": 60.0,
+            "_original_value": 60.0,
+            "_raw_hex": "00007042"
           },
           "sanity_check": {
             "text": "",
@@ -432721,9 +432687,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 60.0,
-            "_original_value": 60.0,
-            "_raw_hex": "00007042"
+            "value": 50.0,
+            "_original_value": 50.0,
+            "_raw_hex": "00004842"
           },
           "sanity_check": {
             "text": "",

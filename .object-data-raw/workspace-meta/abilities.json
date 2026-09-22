@@ -28143,19 +28143,6 @@
         "modification_index": 10
       },
       "fields": {
-        "mana_cost level 1": {
-          "source": {
-            "file": "war3map.w3a",
-            "group": "custom_objects",
-            "object_index": 72,
-            "modification_index": 46
-          },
-          "field_id": "amcs",
-          "type": "int",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        },
         "mana_cost level 2": {
           "source": {
             "file": "war3map.w3a",
@@ -240407,19 +240394,6 @@
         "modification_index": 10
       },
       "fields": {
-        "mana_cost level 1": {
-          "source": {
-            "file": "war3map.w3a",
-            "group": "custom_objects",
-            "object_index": 486,
-            "modification_index": 46
-          },
-          "field_id": "amcs",
-          "type": "int",
-          "level": 1,
-          "variation": null,
-          "data_pointer": 0
-        },
         "mana_cost level 2": {
           "source": {
             "file": "war3map.w3a",

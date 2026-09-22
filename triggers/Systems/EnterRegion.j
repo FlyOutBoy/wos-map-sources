@@ -19,18 +19,25 @@ endfunction
 function Trig_EnterRegion_ActionsGO takes nothing returns nothing
 local player p = GetOwningPlayer(GetEnteringUnit())
 local integer id = GetPlayerId(p)
-local group g = CreateGroup()
+local group g = null
 local unit u = null
 local integer counter = 0
 local integer countercheck = 0
 local integer i = 0
+local integer unitPid = -1
+if not IsGamePlayerSlot(id) then
+set g = null
+set p = null
+return
+endif
+set g = CreateGroup()
 if END1 == 0 and (((CapPickPhase == 2 or CapPickPhase == 4) and CaptainMode == true) or CaptainMode == false) then 
 if IntegerCd(GetEnteringUnit(),"round instant start cd",5) then 
 call PlayersMsg(GetPlayerVisualColorString(p)+GetPlayerName(p)+"|r wants to start next round immediatly...",1)
 endif 
 loop
-exitwhen i == bj_MAX_PLAYER_SLOTS
-if GetPlayerSlotState( Player( i ) ) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController( Player( i ) ) == MAP_CONTROL_USER then
+exitwhen i == 10
+if IsActivePlayerSlot(i) then
 set countercheck = countercheck + 1
 endif
 set i = i + 1
@@ -39,7 +46,8 @@ call GroupEnumUnitsInRect(g,gg_rct_Go,null)
 loop
 set u = FirstOfGroup(g)
 exitwhen u == null 
-if IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)== false then 
+set unitPid = GetPlayerId(GetOwningPlayer(u))
+if IsActivePlayerSlot(unitPid) and u == Hero[unitPid] and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)== false then
 set counter = counter + 1
 endif
 call GroupRemoveUnit(g,u)

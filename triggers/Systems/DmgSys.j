@@ -291,7 +291,14 @@ endif
         call MakeSound("war3mapimported\\Hero_Ainz_F01")
         call MakeSound("war3mapimported\\Hero_Ainz_F02")
     endif
-    
+     if LoadInteger(hs, targetHid, KEY_INVUL) == 1 then
+    set dmg = ApplyFullDamageShield(c, td, dmg, 0.1, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+endif
+
+if LoadInteger(hs, targetHid, KEY_SHIELD) == 1 then
+    set dmg = ApplyFullDamageShield(c, td, dmg, 0.1, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+endif
+
     if isEnemy and GetUnitAbilityLevel(td, AlterSaberEBuff_ID) > 0 and not shieldPen then
         call UnitRemoveAbility(td, AlterSaberEBuff_ID)
         call AlterSaberE_Act_Start(td, c)

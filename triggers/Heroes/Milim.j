@@ -43,7 +43,7 @@ library MilimSpells uses GearSystems
         real MilimE_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real MilimE_RangeBase = 1200.00
         real MilimE_RangeStep = 100.00
-        real MilimE_DamageAoe = 275
+        real MilimE_DamageAoe = 345
 //---------------R ability-----------------------------------------------------
         integer MilimR_ID = 'A0HK'
         real MilimR_DamageAgiBase = 4 // base number x Agi damage for 1 level

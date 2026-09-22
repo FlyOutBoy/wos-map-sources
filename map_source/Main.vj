@@ -17,6 +17,7 @@
 //! import "..\triggers\WOS_Start\WoS_Shop_Init.j"
 //! import "..\triggers\WOS_Start\WoS_Pick_Init.j"
 //! import "..\triggers\WOS_Start\Starts.j"
+//! import "..\triggers\WOS_Start\INITSS.j"
 //! import "..\triggers\WOS_Start\BuildsForChars.j"
 //! import "..\triggers\WOS_Start\TestUnit.j"
 //! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
@@ -185,6 +186,7 @@ trigger gg_trg_Player_Pick_Mode= null
 trigger gg_trg_WoS_Shop_Init= null
 trigger gg_trg_WoS_Pick_Init= null
 trigger gg_trg_Starts= null
+trigger gg_trg_INITSS= null
 trigger gg_trg_BuildsForChars= null
 trigger gg_trg_TestUnit= null
 trigger gg_trg_WoS_Hero_Icons_Init= null
@@ -513,6 +515,7 @@ function InitCustomTriggers takes nothing returns nothing
     call InitTrig_WoS_Shop_Init()
     //Function not found: call InitTrig_WoS_Pick_Init()
     call InitTrig_Starts()
+    call InitTrig_INITSS()
     call InitTrig_BuildsForChars()
     call InitTrig_TestUnit()
     //Function not found: call InitTrig_WoS_Hero_Icons_Init()
@@ -709,7 +712,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call SetPlayerStartLocation(Player(10), 10)
     call ForcePlayerStartLocation(Player(10), 10)
     call SetPlayerColor(Player(10), ConvertPlayerColor(10))
-    call SetPlayerRacePreference(Player(10), RACE_PREF_UNDEAD)
+    call SetPlayerRacePreference(Player(10), RACE_PREF_HUMAN)
     call SetPlayerRaceSkin(Player(10), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(10), false)
     call SetPlayerController(Player(10), MAP_CONTROL_USER)
@@ -718,7 +721,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call SetPlayerStartLocation(Player(11), 11)
     call ForcePlayerStartLocation(Player(11), 11)
     call SetPlayerColor(Player(11), ConvertPlayerColor(11))
-    call SetPlayerRacePreference(Player(11), RACE_PREF_NIGHTELF)
+    call SetPlayerRacePreference(Player(11), RACE_PREF_HUMAN)
     call SetPlayerRaceSkin(Player(11), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(11), false)
     call SetPlayerController(Player(11), MAP_CONTROL_USER)
@@ -736,7 +739,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call SetPlayerStartLocation(Player(13), 13)
     call ForcePlayerStartLocation(Player(13), 13)
     call SetPlayerColor(Player(13), ConvertPlayerColor(13))
-    call SetPlayerRacePreference(Player(13), RACE_PREF_ORC)
+    call SetPlayerRacePreference(Player(13), RACE_PREF_HUMAN)
     call SetPlayerRaceSkin(Player(13), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(13), false)
     call SetPlayerController(Player(13), MAP_CONTROL_USER)
@@ -745,7 +748,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call SetPlayerStartLocation(Player(14), 14)
     call ForcePlayerStartLocation(Player(14), 14)
     call SetPlayerColor(Player(14), ConvertPlayerColor(14))
-    call SetPlayerRacePreference(Player(14), RACE_PREF_UNDEAD)
+    call SetPlayerRacePreference(Player(14), RACE_PREF_HUMAN)
     call SetPlayerRaceSkin(Player(14), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(14), false)
     call SetPlayerController(Player(14), MAP_CONTROL_USER)

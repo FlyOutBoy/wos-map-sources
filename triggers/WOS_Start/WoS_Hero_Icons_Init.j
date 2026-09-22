@@ -643,6 +643,7 @@ endfunction
         local integer i = 0
         local integer remaining
         local integer remainingStart
+        local integer viewerPid = GetPlayerId(GetLocalPlayer())
 
         // Некоторые варианты стандартного интерфейса повторно показывают часы после обновления UI.
         if FRAME_DefaultClock != null then
@@ -663,7 +664,13 @@ endfunction
 
         // Общие фреймы деталей нельзя обновлять по очереди для всех pid:
         // последний открывший панель игрок перезаписывал личный полученный урон.
-        call UpdateLocalStatusDetails(GetPlayerId(GetLocalPlayer()))
+        if IsObserverSlot(viewerPid) then
+            if FRAME_StatsMain != null then
+                call BlzFrameSetVisible(FRAME_StatsMain, false)
+            endif
+        else
+            call UpdateLocalStatusDetails(viewerPid)
+        endif
 
         if StatusLastTrainKill != TrainKill then
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[10], "|cffffff00Kills:" + I2S(TrainKill) + "|r")
@@ -775,6 +782,13 @@ endfunction
         local integer i = 0
         local player p = GetTriggerPlayer()
         local integer id = GetPlayerId(p)
+        if IsObserverSlot(id) then
+            if GetLocalPlayer() == p then
+                call BlzFrameSetVisible(FRAME_StatsMain, false)
+            endif
+            set p = null
+            return
+        endif
         if END1 != 0 then
     set p = null
     return
@@ -811,6 +825,13 @@ endif
         local real rr1
         local real rr2
         local integer check = LoadInteger(hs, GetHandleId(Player(id)), StringHash("stats left"))
+        if IsObserverSlot(id) then
+            if GetLocalPlayer() == p then
+                call BlzFrameSetVisible(FRAME_StatsMain, false)
+            endif
+            set p = null
+            return
+        endif
         //call HeroTooltip(p)
         if END1 != 0 then
     set p = null
@@ -869,6 +890,13 @@ endif
     function CheckBoxCheck takes nothing returns nothing
         local framehandle clicked = BlzGetTriggerFrame()
         local integer i = GetPlayerId(GetTriggerPlayer())
+        if IsObserverSlot(i) and clicked == FRAME_StatsCheckbox then
+            if GetLocalPlayer() == GetTriggerPlayer() then
+                call BlzFrameSetVisible(FRAME_StatsMain, false)
+            endif
+            set clicked = null
+            return
+        endif
         if clicked == FRAME_ShopButtonCheck then
             if BlzGetTriggerFrameEvent() == FRAMEEVENT_CHECKBOX_CHECKED then
                 set PlayerShopButton[i] = null

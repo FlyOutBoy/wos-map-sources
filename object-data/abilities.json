@@ -2393,7 +2393,6 @@
   "A01Z": {
     "name": "Item Tsuchikage Set",
     "base_id": "ANcl",
-    "mana_cost level 1": 50,
     "mana_cost level 2": 150,
     "mana_cost level 3": 150,
     "mana_cost level 4": 150,
@@ -20021,7 +20020,6 @@
   "A0DD": {
     "name": "Item Tsuchikage Set",
     "base_id": "ANcl",
-    "mana_cost level 1": 50,
     "mana_cost level 2": 150,
     "mana_cost level 3": 150,
     "mana_cost level 4": 150,
@@ -27147,7 +27145,7 @@
     "mana_cost level 3": 155,
     "mana_cost level 4": 170,
     "mana_cost level 5": 185,
-    "cooldown level 1": 45.0,
+    "cooldown level 1": 60.0,
     "cooldown level 2": 29.0,
     "cooldown level 3": 28.0,
     "cooldown level 4": 27.0,
@@ -27214,7 +27212,7 @@
     "mana_cost level 3": 155,
     "mana_cost level 4": 170,
     "mana_cost level 5": 185,
-    "cooldown level 1": 60.0,
+    "cooldown level 1": 50.0,
     "cooldown level 2": 29.0,
     "cooldown level 3": 28.0,
     "cooldown level 4": 27.0,
