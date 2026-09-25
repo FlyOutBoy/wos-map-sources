@@ -320,11 +320,7 @@ function ReloadHeroPage takes integer page, player p returns nothing
 
         if id != 0 and id != 12 then
             set isProposed = BanProposalHero[pid] == id or IsHeroIdBanProposed(id, pid)
-            if CaptainDraftMode then
-                set isImmuneLocked = CaptainDraftStage == 1 and CaptainDraft_IsBanImmune(id)
-            else
-                set isImmuneLocked = not TestMode and IsHeroBanImmune(id) and (not BanPhaseTriggered or BanPhaseActive)
-            endif
+            set isImmuneLocked = not TestMode and IsHeroBanImmune(id) and (not BanPhaseTriggered or BanPhaseActive)
             set isDraftLocked = CaptainDraftMode and CaptainDraft_HeroUsed(id)
             set iconPath = BlzGetAbilityIcon(id)
             if isProposed or isImmuneLocked or isDraftLocked then
@@ -751,7 +747,7 @@ function RandomPick takes player p returns nothing
     local integer pid = GetPlayerId(p)
     local real BaseX = GetRectCenterX(gg_rct_Pick)
     local real BaseY = GetRectCenterY(gg_rct_Pick)
-    local boolean canShowSwap = IsAllyExist(p) or TestMode == true or CaptainDraftPreRoundUnlimitedSwap
+    local boolean canShowSwap = IsAllyExist(p) or TestMode == true
     if IsObserverSlot(pid) then
         return
     endif
@@ -1022,7 +1018,7 @@ function OnClick takes nothing returns nothing
     local integer k3 = 0
     local player p = GetTriggerPlayer()
     local integer pid = GetPlayerId(p)
-    local boolean canShowSwap = IsAllyExist(p) or TestMode == true or CaptainDraftPreRoundUnlimitedSwap
+    local boolean canShowSwap = IsAllyExist(p) or TestMode == true
     local boolean testUnitPickHandled = false
     local integer number_hero
     local real x = 0.025
@@ -2888,7 +2884,6 @@ function CreateUI takes nothing returns nothing
         set PlayerFrameCurrentPage_ID[i] = 0 // Р РЋРЎвЂњР РЋР С“Р РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В Р’В°Р В Р вЂ Р В Р’В»Р В РЎвЂР В Р вЂ Р В Р’В°Р В Р’ВµР В РЎВ Р В Р вЂ Р РЋР С“Р В Р’ВµР РЋРІР‚В¦ Р В РЎвЂР В РЎвЂ“Р РЋР вЂљР В РЎвЂўР В РЎвЂќР В РЎвЂўР В Р вЂ  Р В Р вЂ¦Р В Р’В° 0 Р РЋР вЂљР В Р’В°Р В Р’В·Р В РўвЂР В Р’ВµР В Р’В» Р В РЎвЂ“Р В Р’ВµР РЋР вЂљР В РЎвЂўР В Р вЂ 
         set i = i + 1
     endloop
-
     set i = 0
     set k = 0
     loop
@@ -2998,11 +2993,13 @@ function CreateUI takes nothing returns nothing
     loop
         exitwhen i == 10
         set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetFrameByName("ConsoleUIBackdrop", 0), "ScoreScreenTabButtonTemplate", 0)
-        call BlzFrameSetSize(FRAME_Repick[i], 0.05, 0.05)
+        call BlzFrameSetSize(FRAME_Repick[i], 0.04, 0.04)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Repick[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
         call BlzFrameSetTexture(FRAME_RepickHover[i], "Pick\\RepickButton", 0, true)
         call BlzFrameSetAllPoints(FRAME_RepickHover[i], FRAME_Repick[i])
+        // -0.1085 only fits the widescreen extension of 16:9. Anchor to the
+        // real client edge so 16:10 and other aspect ratios keep it visible.
         call BlzFrameSetPoint(FRAME_Repick[i], FRAMEPOINT_LEFT, BlzGetFrameByName("ConsoleUIBackdrop", 0), FRAMEPOINT_LEFT, -0.035 -0.045, 0.13+0.07+0.29)
         set FRAME_RepickText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
         call BlzFrameSetTexture(FRAME_RepickText[i], "Pick\\RepickButtonText", 0, true)
@@ -3011,7 +3008,7 @@ function CreateUI takes nothing returns nothing
         call BlzFrameSetEnable(FRAME_Repick[i], false)
         call BlzFrameSetVisible(FRAME_Repick[i], false)
         set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetFrameByName("ConsoleUIBackdrop", 0), "ScoreScreenTabButtonTemplate", 0)
-        call BlzFrameSetSize(FRAME_Swap[i], 0.04, 0.04)
+        call BlzFrameSetSize(FRAME_Swap[i], 0.03, 0.03)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Swap[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)
         call BlzFrameSetTexture(FRAME_SwapHover[i], "Pick\\SwapButton", 0, true)
@@ -3499,9 +3496,6 @@ function PrepareStart takes nothing returns nothing
         call CaptainDraft_ApplyPending()
         set t = null
         return
-    endif
-    if CaptainDraftPreRoundUnlimitedSwap then
-        call CaptainDraft_RefreshPreRoundSwapButtons()
     endif
     if ((CapPickPhase == 2 or CapPickPhase == 4) and CaptainMode == true) or CaptainMode == false then
         if BanPhaseActive == false then
@@ -4201,70 +4195,6 @@ function RemoveHashTag takes string s returns string
     return s
 endfunction
 
-// Unique implementation name avoids colliding with an older INITSS trigger
-// that may still contain SetupObserverHpBarDiplomacy inside the map.
-function ApplyObserverHpBarDiplomacy takes nothing returns nothing
-    local integer observerPid = 10
-    local integer gamePid
-    local boolean teamOne
-
-    loop
-        exitwhen observerPid >= 15
-        set gamePid = 0
-        loop
-            exitwhen gamePid >= 10
-            set teamOne = gamePid < 5
-
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_PASSIVE, teamOne)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_PASSIVE, false)
-
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_HELP_REQUEST, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_HELP_REQUEST, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_HELP_RESPONSE, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_HELP_RESPONSE, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_XP, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_XP, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_SPELLS, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_SPELLS, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_CONTROL, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_CONTROL, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
-            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_VISION, false)
-            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_VISION, false)
-
-            set gamePid = gamePid + 1
-        endloop
-        set observerPid = observerPid + 1
-    endloop
-endfunction
-
-// Restore the two normal gameplay sides without touching dedicated observer
-// slots.  This is deliberately called before either Captain/Player Pick mode
-// can replace the sides with its drafted FullTeam arrays.
-function SetupDefaultGameplayDiplomacy takes nothing returns nothing
-    local integer pid = 0
-    local integer other = 0
-    local boolean sameTeam
-
-    loop
-        exitwhen pid >= 10
-        set other = 0
-        loop
-            exitwhen other >= 10
-            if pid != other then
-                set sameTeam = (pid < 5 and other < 5) or (pid >= 5 and other >= 5)
-                call SetPlayerAllianceStateBJ(Player(pid), Player(other), bj_ALLIANCE_UNALLIED)
-                if sameTeam then
-                    call SetPlayerAllianceStateBJ(Player(pid), Player(other), bj_ALLIANCE_ALLIED_VISION)
-                endif
-            endif
-            set other = other + 1
-        endloop
-        set pid = pid + 1
-    endloop
-endfunction
-
 function Map_Start takes nothing returns nothing
     local integer i = 0
     local integer k = 0
@@ -4300,7 +4230,9 @@ function Map_Start takes nothing returns nothing
             set k = 0
             loop
                 exitwhen k == 10
-                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_PASSIVE, false)
+                // i is an observer (10-14); k is a gameplay player (0-9).
+                // Team 1 gets allied green HP bars, team 2 gets enemy red bars.
+                call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_PASSIVE, k < 5)
                 call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_PASSIVE, false)
                 call SetPlayerAlliance(Player(i), Player(k), ALLIANCE_HELP_REQUEST, false)
                 call SetPlayerAlliance(Player(k), Player(i), ALLIANCE_HELP_REQUEST, false)
@@ -4342,13 +4274,6 @@ endif
         endif
         set i = i + 1
     endloop
-
-    // Map_Start resets observer diplomacy above. Reapply the asymmetric
-    // relation here so observers get green HP bars for team 1 and red HP
-    // bars for team 2 without shared vision, control, XP or spells.
-    call SetupDefaultGameplayDiplomacy()
-    call ApplyObserverHpBarDiplomacy()
-
     set i = 0
     loop
         exitwhen i == 10

@@ -8,14 +8,14 @@
     "magic_number": "0x80000004",
     "format_version": 7,
     "trigger_definition_version": 2,
-    "object_count": 117,
-    "custom_text_object_count": 104
+    "object_count": 118,
+    "custom_text_object_count": 105
   },
   "wct": {
     "magic_number": "0x80000004",
     "format_version": 1,
     "header_comment": "",
-    "source_count": 104
+    "source_count": 105
   },
   "sources": [
     {
@@ -142,12 +142,12 @@
       "category_id": "0x02000007",
       "trigger_name": "ShowCD",
       "comment": "",
-      "enabled": false,
+      "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 65866,
-      "sha256": "ad2c9521b65d92626024ae39b273b2a6fa3a8b6dc061ced185a063eb83ed0f88",
+      "source_bytes": 69769,
+      "sha256": "1f00d2c735b533b4484d40d396494e5011593f5a4a79bf26ada8b36aced40790",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -250,7 +250,7 @@
       "run_on_map_init": false,
       "path": "WOS_Start/UI_CAREER.j",
       "source_bytes": 47835,
-      "sha256": "397130df240c281ede5b72dbc727b08ede9b9acf3f76a4d7b02ef882bd80af62",
+      "sha256": "8646696a48365185fe66c1e12451c6dd91e0d0ef83034b512972e0fc2a5a2d94",
       "declarations": {
         "libraries": [
           "WosCareerStats"
@@ -381,7 +381,7 @@
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
       "source_bytes": 60747,
-      "sha256": "5d1c59e040418128f5e7c6d39a0a75d64e364d34e13cc1f20ab8a9082eeda86f",
+      "sha256": "b246ed8e7403e3f7fcbf9c3f033b594baa0e1485f959b9cd06a3cc7315cb1051",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -407,8 +407,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Scoreboard.j",
-      "source_bytes": 92272,
-      "sha256": "1a8dbef4faf6c1753691d39f3f5365a80075c877b7eb6a920dc50177be99c1f3",
+      "source_bytes": 92710,
+      "sha256": "30e2ca3205eeff7b8992dc90a39425a9df22c3a4c199320b641ce2a178794ce6",
       "declarations": {
         "libraries": [
           "WosScoreboard"
@@ -440,8 +440,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ChatCommand.j",
-      "source_bytes": 26710,
-      "sha256": "08a8c587be87f54ade16a53f3e243b96b3e1cd653084599d79381fe949dc9de7",
+      "source_bytes": 25952,
+      "sha256": "633a03a646fd17d43f92f6cf7bee30ed04334b88d520e74a65c249927bf54047",
       "declarations": {
         "libraries": [
           "CustomImageChat"
@@ -473,8 +473,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Player_Pick_Mode.j",
-      "source_bytes": 86195,
-      "sha256": "e32a34ba54663b601a2a3bf5e33a092fa7702c4385e6c2ecc676df1b887abe2e",
+      "source_bytes": 87543,
+      "sha256": "d32b8679b784807f879ab0035b2ab684cd06e63ec89339f137226a0bff85a5d6",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -488,18 +488,18 @@
       "order": 15,
       "wct_index": 14,
       "object_order": 16,
-      "object_id": "0x03000028",
+      "object_id": "0x03000074",
       "object_type": "trigger",
       "category": "WOS Start",
       "category_id": "0x02000007",
-      "trigger_name": "WoS Shop Init",
-      "comment": "trigger FrameClick2 = CreateTrigger()\r\n    trigger FrameGuideEnter2 = CreateTrigger()\r\n    trigger FrameGuideLeave2 = CreateTrigger()\r\n\r\nframehandle FRAME_AutoBuyCheckbox\r\n    framehandle FRAME_AutoBuyText\r\nFrameShopCheckbox",
+      "trigger_name": "Captain Draft",
+      "comment": "CaptainDraftSoundPicksStarts",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 112454,
-      "sha256": "c9cb0872d6f38797d19c7fb494ffad2fa7c663e5584020c591ad7f22ba8aa521",
+      "path": "WOS_Start/Captain_Draft.j",
+      "source_bytes": 57098,
+      "sha256": "0d0eeb5755bdebadc108262c409479eba74c72eb1a6162050df5d9aaaae13ba6",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -513,18 +513,18 @@
       "order": 16,
       "wct_index": 15,
       "object_order": 17,
-      "object_id": "0x03000046",
+      "object_id": "0x03000028",
       "object_type": "trigger",
       "category": "WOS Start",
       "category_id": "0x02000007",
-      "trigger_name": "WoS Pick Init",
-      "comment": "r_train  \r\n        // Show countdown, keep pick buttons disabled\r\n                    if timeLeft >= 1 then\r\n                        call BlzFrameSetText(FRAME_TimerToStart, \"|c00FFFF00Time to pick: \" + I2S(timeLeft) + \"|r\")\r\n                    endif\r\n        // Enable random button 1 sec before pick opens\r\n                    if timeLeft == 1 then\r\n                        set i = 0\r\n                        loop\r\n                            exitwhen i == 10\r\n                            if GetLocalPlayer() == Player(i) then\r\n                                call BlzFrameSetTexture(FRAME_ICON_Pick[3], \"Pick\\\\PickButton_Pick_Random\", 0, true)\r\n                                call BlzFrameSetEnable(FRAME_Pick[3], true)\r\n                // Enable manual pick for \"Zesu\" only if they have Rimuru selected\r\n                                if (FramePlayerFirstName[i] == \"Dizmus\" or FramePlayerFirstName[i] == \"ThunderGear\") and (PlayerFrameCurrent_ID[i] == Hero_ID4[13] ) then\r\n                                    call BlzFrameSetTexture(FRAME_ICON_Pick[2], \"Pick\\\\PickButton_Pick_Manual\", 0, true)\r\n                                    call BlzFrameSetEnable(FRAME_Pick[2], true)\r\n                                endif\r\n                            endif\r\n                            set i = i + 1\r\n                        endloop\r\n                    endif\r\n                endif\r\n                if TimeMove >= PrePickTime then\r\n                    set PickPhaseActive = true\r\n        // Enable pick (manual) and icon buttons for all players\r\n                    set i = 0\r\n                    loop\r\n                        exitwhen i == 10\r\n                        if GetLocalPlayer() == Player(i) then\r\n                            call BlzFrameSetEnable(FRAME_Pick[2], true) // manual pick button\r\n                            call BlzFrameSetTexture(FRAME_ICON_Pick[2], \"Pick\\\\PickButton_Pick_Manual\", 0, true)\r\n             ",
+      "trigger_name": "WoS Shop Init",
+      "comment": "trigger FrameClick2 = CreateTrigger()\r\n    trigger FrameGuideEnter2 = CreateTrigger()\r\n    trigger FrameGuideLeave2 = CreateTrigger()\r\n\r\nframehandle FRAME_AutoBuyCheckbox\r\n    framehandle FRAME_AutoBuyText\r\nFrameShopCheckbox",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 221225,
-      "sha256": "cdbf5986525e5bb8766f77a6c2f2da4b3b45b6aff378b2227878be7c44a32ea6",
+      "path": "WOS_Start/WoS_Shop_Init.j",
+      "source_bytes": 120544,
+      "sha256": "37a446cd7eed0528b5c077d09d54480865458aef14f68dbcb54755c6d32a7975",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -538,18 +538,18 @@
       "order": 17,
       "wct_index": 16,
       "object_order": 18,
-      "object_id": "0x03000024",
+      "object_id": "0x03000046",
       "object_type": "trigger",
       "category": "WOS Start",
       "category_id": "0x02000007",
-      "trigger_name": "Starts",
-      "comment": "    button udg_NormalButton\r\n    button udg_CaptainButton\r\n    boolean TestMode = false\r\n    boolean CaptainMode = false",
+      "trigger_name": "WoS Pick Init",
+      "comment": "call BlzFrameSetPoint(FRAME_Repick[i], FRAMEPOINT_LEFT, BlzGetFrameByName(\"ConsoleUIBackdrop\", 0), FRAMEPOINT_LEFT, -0.03, 0.13+0.12)\r\ncall BlzFrameSetPoint(FRAME_Swap[i], FRAMEPOINT_LEFT, BlzGetFrameByName(\"ConsoleUIBackdrop\", 0), FRAMEPOINT_LEFT, -0.03, 0.20+0.12)",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "WOS_Start/Starts.j",
-      "source_bytes": 24180,
-      "sha256": "dc5a058a466f04aacb70428d67da56bd96c51305ff7290d8407858dd9df62829",
+      "path": "WOS_Start/WoS_Pick_Init.j",
+      "source_bytes": 231389,
+      "sha256": "4b0419e5bf77dc5f05d5909bcb48d047bd108036804238bf430eebf07b436ca8",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -563,18 +563,18 @@
       "order": 18,
       "wct_index": 17,
       "object_order": 19,
-      "object_id": "0x03000076",
+      "object_id": "0x03000024",
       "object_type": "trigger",
       "category": "WOS Start",
       "category_id": "0x02000007",
-      "trigger_name": "INITSS",
-      "comment": "",
+      "trigger_name": "Starts",
+      "comment": "    button udg_NormalButton\r\n    button udg_CaptainButton\r\n    boolean TestMode = false\r\n    boolean CaptainMode = false",
       "enabled": true,
-      "initially_off": true,
+      "initially_off": false,
       "run_on_map_init": false,
-      "path": "WOS_Start/INITSS.j",
-      "source_bytes": 2356,
-      "sha256": "f694b7e07e7f91ff2148e10a509b7ff63ca98eeef8c0fa1f96a97d524a481b06",
+      "path": "WOS_Start/Starts.j",
+      "source_bytes": 25452,
+      "sha256": "0a6e1648ae3ca33ad677fa738f500a13a89a39e0cca73265ed2af4a3f0f3942b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -588,6 +588,31 @@
       "order": 19,
       "wct_index": 18,
       "object_order": 20,
+      "object_id": "0x03000076",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "INITSS",
+      "comment": "",
+      "enabled": true,
+      "initially_off": true,
+      "run_on_map_init": false,
+      "path": "WOS_Start/INITSS.j",
+      "source_bytes": 439,
+      "sha256": "838bd4bf1f14cc0dc04750660f35eb788dff00f2dc813e37fffb0a8277ae184e",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 20,
+      "wct_index": 19,
+      "object_order": 21,
       "object_id": "0x03000008",
       "object_type": "trigger",
       "category": "WOS Start",
@@ -610,9 +635,9 @@
       "dependencies": []
     },
     {
-      "order": 20,
-      "wct_index": 19,
-      "object_order": 21,
+      "order": 21,
+      "wct_index": 20,
+      "object_order": 22,
       "object_id": "0x0300002A",
       "object_type": "trigger",
       "category": "WOS Start",
@@ -635,9 +660,9 @@
       "dependencies": []
     },
     {
-      "order": 21,
-      "wct_index": 20,
-      "object_order": 22,
+      "order": 22,
+      "wct_index": 21,
+      "object_order": 23,
       "object_id": "0x03000022",
       "object_type": "trigger",
       "category": "WOS Start",
@@ -648,8 +673,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 85307,
-      "sha256": "9e4a5d2ec0511ba03252a45e1a71542bc2535ee19a33f7f74faab65f183c8667",
+      "source_bytes": 85956,
+      "sha256": "88f16161b2bae33d119fed55de239305bf03a8951535fe792edaaea743cb4be9",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -678,9 +703,9 @@
       ]
     },
     {
-      "order": 22,
-      "wct_index": 21,
-      "object_order": 23,
+      "order": 23,
+      "wct_index": 22,
+      "object_order": 24,
       "object_id": "0x03000053",
       "object_type": "trigger",
       "category": "WOS Start",
@@ -703,9 +728,9 @@
       "dependencies": []
     },
     {
-      "order": 23,
-      "wct_index": 22,
-      "object_order": 25,
+      "order": 24,
+      "wct_index": 23,
+      "object_order": 26,
       "object_id": "0x03000031",
       "object_type": "trigger",
       "category": "Round End",
@@ -738,9 +763,9 @@
       ]
     },
     {
-      "order": 24,
-      "wct_index": 23,
-      "object_order": 27,
+      "order": 25,
+      "wct_index": 24,
+      "object_order": 28,
       "object_id": "0x03000037",
       "object_type": "trigger",
       "category": "Systems",
@@ -763,9 +788,9 @@
       "dependencies": []
     },
     {
-      "order": 25,
-      "wct_index": 24,
-      "object_order": 28,
+      "order": 26,
+      "wct_index": 25,
+      "object_order": 29,
       "object_id": "0x0300006E",
       "object_type": "trigger",
       "category": "Systems",
@@ -796,9 +821,9 @@
       ]
     },
     {
-      "order": 26,
-      "wct_index": 25,
-      "object_order": 29,
+      "order": 27,
+      "wct_index": 26,
+      "object_order": 30,
       "object_id": "0x03000045",
       "object_type": "trigger",
       "category": "Systems",
@@ -821,9 +846,9 @@
       "dependencies": []
     },
     {
-      "order": 27,
-      "wct_index": 26,
-      "object_order": 30,
+      "order": 28,
+      "wct_index": 27,
+      "object_order": 31,
       "object_id": "0x0300004E",
       "object_type": "trigger",
       "category": "Systems",
@@ -846,9 +871,9 @@
       "dependencies": []
     },
     {
-      "order": 28,
-      "wct_index": 27,
-      "object_order": 31,
+      "order": 29,
+      "wct_index": 28,
+      "object_order": 32,
       "object_id": "0x0300004D",
       "object_type": "trigger",
       "category": "Systems",
@@ -859,8 +884,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
-      "source_bytes": 58741,
-      "sha256": "e9d4fe89dd2d5c50726b4bef29ea8e0969804c782fc8042eeb289e351bfb82f0",
+      "source_bytes": 55817,
+      "sha256": "5568806b7a1bb029a7b01c67deb2e024e92ab8b24396789980508190e1cc9a10",
       "declarations": {
         "libraries": [
           "AAADest"
@@ -881,9 +906,9 @@
       ]
     },
     {
-      "order": 29,
-      "wct_index": 28,
-      "object_order": 33,
+      "order": 30,
+      "wct_index": 29,
+      "object_order": 34,
       "object_id": "0x03000048",
       "object_type": "trigger",
       "category": "Systems",
@@ -894,8 +919,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 139881,
-      "sha256": "347628d15359e1bf1698d26a90ed5f80df2335e1970ba6d66ab1e528bb22d4ef",
+      "source_bytes": 139935,
+      "sha256": "d3e98e0cd5f5e9cb0f14998a738b95b3b689c7b186900fe6dd74743c5555a6a5",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -914,9 +939,9 @@
       ]
     },
     {
-      "order": 30,
-      "wct_index": 29,
-      "object_order": 34,
+      "order": 31,
+      "wct_index": 30,
+      "object_order": 35,
       "object_id": "0x0300006F",
       "object_type": "trigger",
       "category": "Systems",
@@ -982,9 +1007,9 @@
       ]
     },
     {
-      "order": 31,
-      "wct_index": 30,
-      "object_order": 36,
+      "order": 32,
+      "wct_index": 31,
+      "object_order": 37,
       "object_id": "0x0300004F",
       "object_type": "trigger",
       "category": "Systems",
@@ -995,8 +1020,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 40477,
-      "sha256": "3e251033516b98d751535d6c8343b419b14ed5f72f8b10671f0a8db99c357b10",
+      "source_bytes": 40186,
+      "sha256": "b74f3800c2084c0329a11b99c6118e8bec9f94e3ce28b4667c82528c9a5252cc",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1007,9 +1032,9 @@
       "dependencies": []
     },
     {
-      "order": 32,
-      "wct_index": 31,
-      "object_order": 37,
+      "order": 33,
+      "wct_index": 32,
+      "object_order": 38,
       "object_id": "0x03000055",
       "object_type": "trigger",
       "category": "Systems",
@@ -1032,9 +1057,9 @@
       "dependencies": []
     },
     {
-      "order": 33,
-      "wct_index": 32,
-      "object_order": 38,
+      "order": 34,
+      "wct_index": 33,
+      "object_order": 39,
       "object_id": "0x03000051",
       "object_type": "trigger",
       "category": "Systems",
@@ -1057,9 +1082,9 @@
       "dependencies": []
     },
     {
-      "order": 34,
-      "wct_index": 33,
-      "object_order": 39,
+      "order": 35,
+      "wct_index": 34,
+      "object_order": 40,
       "object_id": "0x03000029",
       "object_type": "trigger",
       "category": "Systems",
@@ -1082,9 +1107,9 @@
       "dependencies": []
     },
     {
-      "order": 35,
-      "wct_index": 34,
-      "object_order": 40,
+      "order": 36,
+      "wct_index": 35,
+      "object_order": 41,
       "object_id": "0x0300002F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1107,9 +1132,9 @@
       "dependencies": []
     },
     {
-      "order": 36,
-      "wct_index": 35,
-      "object_order": 41,
+      "order": 37,
+      "wct_index": 36,
+      "object_order": 42,
       "object_id": "0x0300004B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1132,9 +1157,9 @@
       "dependencies": []
     },
     {
-      "order": 37,
-      "wct_index": 36,
-      "object_order": 42,
+      "order": 38,
+      "wct_index": 37,
+      "object_order": 43,
       "object_id": "0x03000044",
       "object_type": "trigger",
       "category": "Systems",
@@ -1157,9 +1182,9 @@
       "dependencies": []
     },
     {
-      "order": 38,
-      "wct_index": 37,
-      "object_order": 43,
+      "order": 39,
+      "wct_index": 38,
+      "object_order": 44,
       "object_id": "0x03000020",
       "object_type": "trigger",
       "category": "Systems",
@@ -1182,9 +1207,9 @@
       "dependencies": []
     },
     {
-      "order": 39,
-      "wct_index": 38,
-      "object_order": 44,
+      "order": 40,
+      "wct_index": 39,
+      "object_order": 45,
       "object_id": "0x03000021",
       "object_type": "trigger",
       "category": "Systems",
@@ -1207,9 +1232,9 @@
       "dependencies": []
     },
     {
-      "order": 40,
-      "wct_index": 39,
-      "object_order": 45,
+      "order": 41,
+      "wct_index": 40,
+      "object_order": 46,
       "object_id": "0x0300003D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1232,9 +1257,9 @@
       "dependencies": []
     },
     {
-      "order": 41,
-      "wct_index": 40,
-      "object_order": 46,
+      "order": 42,
+      "wct_index": 41,
+      "object_order": 47,
       "object_id": "0x03000006",
       "object_type": "trigger",
       "category": "Systems",
@@ -1257,9 +1282,9 @@
       "dependencies": []
     },
     {
-      "order": 42,
-      "wct_index": 41,
-      "object_order": 47,
+      "order": 43,
+      "wct_index": 42,
+      "object_order": 48,
       "object_id": "0x03000011",
       "object_type": "trigger",
       "category": "Systems",
@@ -1282,9 +1307,9 @@
       "dependencies": []
     },
     {
-      "order": 43,
-      "wct_index": 42,
-      "object_order": 48,
+      "order": 44,
+      "wct_index": 43,
+      "object_order": 49,
       "object_id": "0x03000012",
       "object_type": "trigger",
       "category": "Systems",
@@ -1307,9 +1332,9 @@
       "dependencies": []
     },
     {
-      "order": 44,
-      "wct_index": 43,
-      "object_order": 49,
+      "order": 45,
+      "wct_index": 44,
+      "object_order": 50,
       "object_id": "0x03000030",
       "object_type": "trigger",
       "category": "Systems",
@@ -1332,9 +1357,9 @@
       "dependencies": []
     },
     {
-      "order": 45,
-      "wct_index": 44,
-      "object_order": 50,
+      "order": 46,
+      "wct_index": 45,
+      "object_order": 51,
       "object_id": "0x0300003F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1346,7 +1371,7 @@
       "run_on_map_init": false,
       "path": "Systems/ESC.j",
       "source_bytes": 1708,
-      "sha256": "88d8f56fca039b548a032682755fbf28e8abf32757d17e297df00f4fc9eea1f0",
+      "sha256": "b1f23bd588caa392d7fbe288999f5aa8d19a13eb56d09e067f8911b6d22406d3",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1357,9 +1382,9 @@
       "dependencies": []
     },
     {
-      "order": 46,
-      "wct_index": 45,
-      "object_order": 51,
+      "order": 47,
+      "wct_index": 46,
+      "object_order": 52,
       "object_id": "0x03000041",
       "object_type": "trigger",
       "category": "Systems",
@@ -1382,9 +1407,9 @@
       "dependencies": []
     },
     {
-      "order": 47,
-      "wct_index": 46,
-      "object_order": 52,
+      "order": 48,
+      "wct_index": 47,
+      "object_order": 53,
       "object_id": "0x03000043",
       "object_type": "trigger",
       "category": "Systems",
@@ -1407,9 +1432,9 @@
       "dependencies": []
     },
     {
-      "order": 48,
-      "wct_index": 47,
-      "object_order": 53,
+      "order": 49,
+      "wct_index": 48,
+      "object_order": 54,
       "object_id": "0x0300000D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1432,9 +1457,9 @@
       "dependencies": []
     },
     {
-      "order": 49,
-      "wct_index": 48,
-      "object_order": 54,
+      "order": 50,
+      "wct_index": 49,
+      "object_order": 55,
       "object_id": "0x03000014",
       "object_type": "trigger",
       "category": "Systems",
@@ -1457,9 +1482,9 @@
       "dependencies": []
     },
     {
-      "order": 50,
-      "wct_index": 49,
-      "object_order": 55,
+      "order": 51,
+      "wct_index": 50,
+      "object_order": 56,
       "object_id": "0x0300003E",
       "object_type": "trigger",
       "category": "Systems",
@@ -1482,9 +1507,9 @@
       "dependencies": []
     },
     {
-      "order": 51,
-      "wct_index": 50,
-      "object_order": 56,
+      "order": 52,
+      "wct_index": 51,
+      "object_order": 57,
       "object_id": "0x0300003B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1507,9 +1532,9 @@
       "dependencies": []
     },
     {
-      "order": 52,
-      "wct_index": 51,
-      "object_order": 57,
+      "order": 53,
+      "wct_index": 52,
+      "object_order": 58,
       "object_id": "0x03000001",
       "object_type": "trigger",
       "category": "Systems",
@@ -1532,9 +1557,9 @@
       "dependencies": []
     },
     {
-      "order": 53,
-      "wct_index": 52,
-      "object_order": 58,
+      "order": 54,
+      "wct_index": 53,
+      "object_order": 59,
       "object_id": "0x03000056",
       "object_type": "trigger",
       "category": "Systems",
@@ -1557,9 +1582,9 @@
       "dependencies": []
     },
     {
-      "order": 54,
-      "wct_index": 53,
-      "object_order": 60,
+      "order": 55,
+      "wct_index": 54,
+      "object_order": 61,
       "object_id": "0x0300002C",
       "object_type": "trigger",
       "category": "Systems",
@@ -1582,9 +1607,9 @@
       "dependencies": []
     },
     {
-      "order": 55,
-      "wct_index": 54,
-      "object_order": 62,
+      "order": 56,
+      "wct_index": 55,
+      "object_order": 63,
       "object_id": "0x03000054",
       "object_type": "trigger",
       "category": "Systems",
@@ -1607,9 +1632,9 @@
       "dependencies": []
     },
     {
-      "order": 56,
-      "wct_index": 55,
-      "object_order": 63,
+      "order": 57,
+      "wct_index": 56,
+      "object_order": 64,
       "object_id": "0x0300001F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1632,9 +1657,9 @@
       "dependencies": []
     },
     {
-      "order": 57,
-      "wct_index": 56,
-      "object_order": 64,
+      "order": 58,
+      "wct_index": 57,
+      "object_order": 65,
       "object_id": "0x03000016",
       "object_type": "trigger",
       "category": "Systems",
@@ -1657,9 +1682,9 @@
       "dependencies": []
     },
     {
-      "order": 58,
-      "wct_index": 57,
-      "object_order": 66,
+      "order": 59,
+      "wct_index": 58,
+      "object_order": 67,
       "object_id": "0x0300001C",
       "object_type": "trigger",
       "category": "Systems",
@@ -1682,9 +1707,9 @@
       "dependencies": []
     },
     {
-      "order": 59,
-      "wct_index": 58,
-      "object_order": 67,
+      "order": 60,
+      "wct_index": 59,
+      "object_order": 68,
       "object_id": "0x03000027",
       "object_type": "trigger",
       "category": "Systems",
@@ -1707,9 +1732,9 @@
       "dependencies": []
     },
     {
-      "order": 60,
-      "wct_index": 59,
-      "object_order": 68,
+      "order": 61,
+      "wct_index": 60,
+      "object_order": 69,
       "object_id": "0x0300001D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1732,9 +1757,9 @@
       "dependencies": []
     },
     {
-      "order": 61,
-      "wct_index": 60,
-      "object_order": 69,
+      "order": 62,
+      "wct_index": 61,
+      "object_order": 70,
       "object_id": "0x03000026",
       "object_type": "trigger",
       "category": "Systems",
@@ -1757,9 +1782,9 @@
       "dependencies": []
     },
     {
-      "order": 62,
-      "wct_index": 61,
-      "object_order": 71,
+      "order": 63,
+      "wct_index": 62,
+      "object_order": 72,
       "object_id": "0x03000007",
       "object_type": "trigger",
       "category": "Systems",
@@ -1782,9 +1807,9 @@
       "dependencies": []
     },
     {
-      "order": 63,
-      "wct_index": 62,
-      "object_order": 72,
+      "order": 64,
+      "wct_index": 63,
+      "object_order": 73,
       "object_id": "0x03000039",
       "object_type": "trigger",
       "category": "Systems",
@@ -1807,9 +1832,9 @@
       "dependencies": []
     },
     {
-      "order": 64,
-      "wct_index": 63,
-      "object_order": 73,
+      "order": 65,
+      "wct_index": 64,
+      "object_order": 74,
       "object_id": "0x03000038",
       "object_type": "trigger",
       "category": "Systems",
@@ -1832,9 +1857,9 @@
       "dependencies": []
     },
     {
-      "order": 65,
-      "wct_index": 64,
-      "object_order": 75,
+      "order": 66,
+      "wct_index": 65,
+      "object_order": 76,
       "object_id": "0x0300003A",
       "object_type": "trigger",
       "category": "Items",
@@ -1845,8 +1870,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 109841,
-      "sha256": "0b9b8d4e9e91b48669f30eea400f70e74eeaf955aadc3fdc6671465db6be2666",
+      "source_bytes": 109237,
+      "sha256": "46350c2d36bce280c971b3a3bbba34f228a44a31b8e492f05e15ee0c7f388014",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -1884,9 +1909,9 @@
       ]
     },
     {
-      "order": 66,
-      "wct_index": 65,
-      "object_order": 77,
+      "order": 67,
+      "wct_index": 66,
+      "object_order": 78,
       "object_id": "0x03000070",
       "object_type": "trigger",
       "category": "Heroes",
@@ -1926,9 +1951,9 @@
       ]
     },
     {
-      "order": 67,
-      "wct_index": 66,
-      "object_order": 78,
+      "order": 68,
+      "wct_index": 67,
+      "object_order": 79,
       "object_id": "0x0300001E",
       "object_type": "trigger",
       "category": "Heroes",
@@ -1969,9 +1994,9 @@
       ]
     },
     {
-      "order": 68,
-      "wct_index": 67,
-      "object_order": 79,
+      "order": 69,
+      "wct_index": 68,
+      "object_order": 80,
       "object_id": "0x0300006C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -1983,7 +2008,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Frieren.j",
       "source_bytes": 120318,
-      "sha256": "0a655add6956e5b573897a16e6e22b62df85d8941b3949cf84ec5a68ac61028d",
+      "sha256": "ab75179cb7fa3d2a1106ed0fa61d6c2a42ae3fd6d44bcc5ef4a6a690fd16e2ce",
       "declarations": {
         "libraries": [
           "FrierenSpells"
@@ -2017,9 +2042,9 @@
       ]
     },
     {
-      "order": 69,
-      "wct_index": 68,
-      "object_order": 80,
+      "order": 70,
+      "wct_index": 69,
+      "object_order": 81,
       "object_id": "0x03000066",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2063,9 +2088,9 @@
       ]
     },
     {
-      "order": 70,
-      "wct_index": 69,
-      "object_order": 81,
+      "order": 71,
+      "wct_index": 70,
+      "object_order": 82,
       "object_id": "0x03000040",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2076,8 +2101,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Laxus.j",
-      "source_bytes": 116417,
-      "sha256": "9bf0d674dd09aee9746b4bc8ad168c7db1e8a7b55515f127da89e51e1db6a3ee",
+      "source_bytes": 116355,
+      "sha256": "5b074a89beba9a93206a366a9afe7f0c388d85886e6dbb7fbed49b1624e29322",
       "declarations": {
         "libraries": [
           "LaxusSpells"
@@ -2111,9 +2136,9 @@
       ]
     },
     {
-      "order": 71,
-      "wct_index": 70,
-      "object_order": 82,
+      "order": 72,
+      "wct_index": 71,
+      "object_order": 83,
       "object_id": "0x03000060",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2153,9 +2178,9 @@
       ]
     },
     {
-      "order": 72,
-      "wct_index": 71,
-      "object_order": 83,
+      "order": 73,
+      "wct_index": 72,
+      "object_order": 84,
       "object_id": "0x0300005F",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2195,9 +2220,9 @@
       ]
     },
     {
-      "order": 73,
-      "wct_index": 72,
-      "object_order": 84,
+      "order": 74,
+      "wct_index": 73,
+      "object_order": 85,
       "object_id": "0x03000059",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2236,9 +2261,9 @@
       ]
     },
     {
-      "order": 74,
-      "wct_index": 73,
-      "object_order": 85,
+      "order": 75,
+      "wct_index": 74,
+      "object_order": 86,
       "object_id": "0x0300003C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2275,9 +2300,9 @@
       ]
     },
     {
-      "order": 75,
-      "wct_index": 74,
-      "object_order": 86,
+      "order": 76,
+      "wct_index": 75,
+      "object_order": 87,
       "object_id": "0x03000058",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2314,9 +2339,9 @@
       ]
     },
     {
-      "order": 76,
-      "wct_index": 75,
-      "object_order": 87,
+      "order": 77,
+      "wct_index": 76,
+      "object_order": 88,
       "object_id": "0x03000057",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2354,9 +2379,9 @@
       ]
     },
     {
-      "order": 77,
-      "wct_index": 76,
-      "object_order": 88,
+      "order": 78,
+      "wct_index": 77,
+      "object_order": 89,
       "object_id": "0x03000009",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2394,9 +2419,9 @@
       ]
     },
     {
-      "order": 78,
-      "wct_index": 77,
-      "object_order": 89,
+      "order": 79,
+      "wct_index": 78,
+      "object_order": 90,
       "object_id": "0x03000004",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2434,9 +2459,9 @@
       ]
     },
     {
-      "order": 79,
-      "wct_index": 78,
-      "object_order": 90,
+      "order": 80,
+      "wct_index": 79,
+      "object_order": 91,
       "object_id": "0x03000003",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2474,9 +2499,9 @@
       ]
     },
     {
-      "order": 80,
-      "wct_index": 79,
-      "object_order": 91,
+      "order": 81,
+      "wct_index": 80,
+      "object_order": 92,
       "object_id": "0x03000015",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2513,9 +2538,9 @@
       ]
     },
     {
-      "order": 81,
-      "wct_index": 80,
-      "object_order": 92,
+      "order": 82,
+      "wct_index": 81,
+      "object_order": 93,
       "object_id": "0x03000017",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2553,9 +2578,9 @@
       ]
     },
     {
-      "order": 82,
-      "wct_index": 81,
-      "object_order": 93,
+      "order": 83,
+      "wct_index": 82,
+      "object_order": 94,
       "object_id": "0x03000013",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2593,9 +2618,9 @@
       ]
     },
     {
-      "order": 83,
-      "wct_index": 82,
-      "object_order": 94,
+      "order": 84,
+      "wct_index": 83,
+      "object_order": 95,
       "object_id": "0x03000062",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2641,9 +2666,9 @@
       ]
     },
     {
-      "order": 84,
-      "wct_index": 83,
-      "object_order": 95,
+      "order": 85,
+      "wct_index": 84,
+      "object_order": 96,
       "object_id": "0x0300000E",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2697,9 +2722,9 @@
       ]
     },
     {
-      "order": 85,
-      "wct_index": 84,
-      "object_order": 96,
+      "order": 86,
+      "wct_index": 85,
+      "object_order": 97,
       "object_id": "0x0300000C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2739,9 +2764,9 @@
       ]
     },
     {
-      "order": 86,
-      "wct_index": 85,
-      "object_order": 97,
+      "order": 87,
+      "wct_index": 86,
+      "object_order": 98,
       "object_id": "0x0300000B",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2778,9 +2803,9 @@
       ]
     },
     {
-      "order": 87,
-      "wct_index": 86,
-      "object_order": 98,
+      "order": 88,
+      "wct_index": 87,
+      "object_order": 99,
       "object_id": "0x03000005",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2817,9 +2842,9 @@
       ]
     },
     {
-      "order": 88,
-      "wct_index": 87,
-      "object_order": 99,
+      "order": 89,
+      "wct_index": 88,
+      "object_order": 100,
       "object_id": "0x03000002",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2858,9 +2883,9 @@
       ]
     },
     {
-      "order": 89,
-      "wct_index": 88,
-      "object_order": 100,
+      "order": 90,
+      "wct_index": 89,
+      "object_order": 101,
       "object_id": "0x03000000",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2899,9 +2924,9 @@
       ]
     },
     {
-      "order": 90,
-      "wct_index": 89,
-      "object_order": 101,
+      "order": 91,
+      "wct_index": 90,
+      "object_order": 102,
       "object_id": "0x03000050",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2943,9 +2968,9 @@
       ]
     },
     {
-      "order": 91,
-      "wct_index": 90,
-      "object_order": 102,
+      "order": 92,
+      "wct_index": 91,
+      "object_order": 103,
       "object_id": "0x03000047",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2989,9 +3014,9 @@
       ]
     },
     {
-      "order": 92,
-      "wct_index": 91,
-      "object_order": 103,
+      "order": 93,
+      "wct_index": 92,
+      "object_order": 104,
       "object_id": "0x03000034",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3002,8 +3027,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/AlterSaber.j",
-      "source_bytes": 89508,
-      "sha256": "4240f8d1a67ed77fa57d3a39f3ba7c66ffe06ea715b1d639bfbe05422206e2a1",
+      "source_bytes": 89507,
+      "sha256": "9f094d9afab3ac26e8489b063bc195a97f58300ded4b9ea33c94c4561da5be3d",
       "declarations": {
         "libraries": [
           "AlterSaberSpells"
@@ -3032,9 +3057,9 @@
       ]
     },
     {
-      "order": 93,
-      "wct_index": 92,
-      "object_order": 104,
+      "order": 94,
+      "wct_index": 93,
+      "object_order": 105,
       "object_id": "0x03000042",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3045,8 +3070,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Natsu.j",
-      "source_bytes": 118451,
-      "sha256": "a7d6c70b172616c928806fdb6f8d70851c8d8e409b9971bd7ee873ec513414e2",
+      "source_bytes": 118662,
+      "sha256": "92514a58efd527f4c7e2eeec6276123361994da9e633f5d63ca67f0a00fe10f4",
       "declarations": {
         "libraries": [
           "NatsuSpells"
@@ -3076,9 +3101,9 @@
       ]
     },
     {
-      "order": 94,
-      "wct_index": 93,
-      "object_order": 105,
+      "order": 95,
+      "wct_index": 94,
+      "object_order": 106,
       "object_id": "0x0300004C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3121,9 +3146,9 @@
       ]
     },
     {
-      "order": 95,
-      "wct_index": 94,
-      "object_order": 106,
+      "order": 96,
+      "wct_index": 95,
+      "object_order": 107,
       "object_id": "0x03000033",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3162,9 +3187,9 @@
       ]
     },
     {
-      "order": 96,
-      "wct_index": 95,
-      "object_order": 108,
+      "order": 97,
+      "wct_index": 96,
+      "object_order": 109,
       "object_id": "0x0300002B",
       "object_type": "trigger",
       "category": "Erza",
@@ -3207,9 +3232,9 @@
       ]
     },
     {
-      "order": 97,
-      "wct_index": 96,
-      "object_order": 109,
+      "order": 98,
+      "wct_index": 97,
+      "object_order": 110,
       "object_id": "0x03000052",
       "object_type": "trigger",
       "category": "Erza",
@@ -3251,9 +3276,9 @@
       ]
     },
     {
-      "order": 98,
-      "wct_index": 97,
-      "object_order": 110,
+      "order": 99,
+      "wct_index": 98,
+      "object_order": 111,
       "object_id": "0x03000035",
       "object_type": "trigger",
       "category": "Erza",
@@ -3295,9 +3320,9 @@
       ]
     },
     {
-      "order": 99,
-      "wct_index": 98,
-      "object_order": 111,
+      "order": 100,
+      "wct_index": 99,
+      "object_order": 112,
       "object_id": "0x03000036",
       "object_type": "trigger",
       "category": "Erza",
@@ -3336,9 +3361,9 @@
       ]
     },
     {
-      "order": 100,
-      "wct_index": 99,
-      "object_order": 112,
+      "order": 101,
+      "wct_index": 100,
+      "object_order": 113,
       "object_id": "0x03000032",
       "object_type": "trigger",
       "category": "Erza",
@@ -3378,9 +3403,9 @@
       ]
     },
     {
-      "order": 101,
-      "wct_index": 100,
-      "object_order": 113,
+      "order": 102,
+      "wct_index": 101,
+      "object_order": 114,
       "object_id": "0x0300002E",
       "object_type": "trigger",
       "category": "Erza",
@@ -3418,9 +3443,9 @@
       ]
     },
     {
-      "order": 102,
-      "wct_index": 101,
-      "object_order": 114,
+      "order": 103,
+      "wct_index": 102,
+      "object_order": 115,
       "object_id": "0x03000025",
       "object_type": "trigger",
       "category": "Erza",
@@ -3457,9 +3482,9 @@
       ]
     },
     {
-      "order": 103,
-      "wct_index": 102,
-      "object_order": 115,
+      "order": 104,
+      "wct_index": 103,
+      "object_order": 116,
       "object_id": "0x03000023",
       "object_type": "trigger",
       "category": "Erza",
@@ -3495,9 +3520,9 @@
       ]
     },
     {
-      "order": 104,
-      "wct_index": 103,
-      "object_order": 116,
+      "order": 105,
+      "wct_index": 104,
+      "object_order": 117,
       "object_id": "0x0300007A",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3508,8 +3533,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Milim.j",
-      "source_bytes": 96785,
-      "sha256": "c0aa5c6d6bdaae356ff79f9e9df7446d7312eb3b4721a5ca8d7c0858a0926f1a",
+      "source_bytes": 97122,
+      "sha256": "62167c167aaca2e3fa62002dc1a983e719cc55fa7d5b1d507a22f3e342b8e98d",
       "declarations": {
         "libraries": [
           "MilimSpells"

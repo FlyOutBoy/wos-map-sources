@@ -3,8 +3,10 @@ globals
     button udg_TestButton
     button udg_NormalButton
     button udg_CaptainButton
+    button udg_CaptainDraftButton
     boolean TestMode = false
     boolean CaptainMode = false
+    boolean CaptainDraftMode = false
     integer PickedMode = 0
     real array poscamx 
     real array poscamy 
@@ -112,7 +114,7 @@ function HasFullShieldVisual takes unit u returns boolean
     if GetUnitAbilityLevel(u, AinzF_Buff0_ID) > 0 /*
     */ or GetUnitAbilityLevel(u, AlterSaberEBuff_ID) > 0 /*
     */ or GetUnitAbilityLevel(u, KyorakuR_BuffId) > 0 /*
-    */ or GetUnitAbilityLevel(u, Erza3E_DamageImmune_ID) > 0 then
+    */ or GetUnitAbilityLevel(u, Erza3E_DamageImmune_ID) > 0 or GetUnitAbilityLevel(u, Erza3E_DamageImmune_ID) > 0 or GetUnitAbilityLevel(u, FrierenG_BuffID1) > 0 or GetUnitAbilityLevel(u, FrierenG_BuffID2) > 0 or GetUnitAbilityLevel(u, FrierenG_BuffID3) > 0 then
         return true
     endif
 
@@ -143,10 +145,10 @@ function HasFullShieldVisual takes unit u returns boolean
         if LoadInteger(hs, unitHid, KEY_MODE_DEF) == 1 then
             return true
         endif
-        if LoadReal(hs, unitHid, KEY_INSTINCT) > 0.0 /*
+        /*if LoadReal(hs, unitHid, KEY_INSTINCT) > 0.0 /*
         */ and BlzGetUnitAbilityCooldownRemaining(u, FakeAbi_ID) <= 0.0 then
             return true
-        endif
+        endif*/
     endif
 
     if unitId == Rimuru_ID then
@@ -305,17 +307,33 @@ function OnModeButton takes nothing returns nothing
     if b == udg_TestButton then
         set PickedMode = 2
         set TestMode = true
+        set CaptainMode = false
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
         call TestComm()
         call PlayersMsg("Test Mode activated",1)
     elseif b == udg_NormalButton then
         call PlayersMsg("Normal Mode activated",1)
         set PickedMode = 1
         set TestMode = false
+        set CaptainMode = false
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
     elseif b == udg_CaptainButton then
         call PlayersMsg("Player Pick Mode activated",1)
         set PickedMode = 3
         set TestMode = false
         set CaptainMode = true
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
+    elseif b == udg_CaptainDraftButton then
+        call PlayersMsg("Captain Draft Mode activated",1)
+        set PickedMode = 4
+        set TestMode = false
+        set CaptainMode = false
+        set CaptainDraftMode = true
+        set CaptainDraftPreRoundUnlimitedSwap = true
+        call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundModeStart)
     endif
     if PlayersAmount <2 then
 call TimerStart(CreateTimer(),1,false,function MusicInit)
@@ -324,6 +342,9 @@ call TimerStart(CreateTimer(),1,false,function MusicInit)
     call Map_Start()
     call DialogDisplay(Player(0), udg_ModeDialog, false)
     call DialogDestroy(udg_ModeDialog)
+    if CaptainDraftMode then
+        call CaptainDraft_StartFirstSideVote()
+    endif
     set b = null
 endfunction
 function MeraMeraNoMi takes unit hero returns nothing
@@ -378,6 +399,9 @@ function Regen takes nothing returns nothing
         if u != null and Leave[i] == 0 then
             set x = GetUnitX(u)
             set y = GetUnitY(u)
+            if GetUnitTypeId(u) == Toji_ID then
+                call TojiStartZeroMana(u)
+            endif
         //    if GetUnitTypeId(u)== Toji_ID and GetHeroInt(u,true)>0 then 
         //call SetHeroInt(u,GetHeroInt(u,true)-GetHeroInt(u,true),true)
        // endif
@@ -545,6 +569,7 @@ endloop
     call DialogSetMessage(udg_ModeDialog, "Pick Game Mode")
     set udg_NormalButton = DialogAddButton(udg_ModeDialog, "Normal Mode", 0)
     set udg_CaptainButton = DialogAddButton(udg_ModeDialog, "Player Pick Mode", 0)
+    set udg_CaptainDraftButton = DialogAddButton(udg_ModeDialog, "Captain Draft Mode", 0)
     set udg_TestButton = DialogAddButton(udg_ModeDialog, "Test Mode", 0)
     call TriggerRegisterDialogEvent(t, udg_ModeDialog)
     call TriggerAddAction(t, function OnModeButton)

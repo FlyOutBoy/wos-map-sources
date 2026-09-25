@@ -753,6 +753,7 @@ call UnitRemoveAbility(c,'B01V')
 call UnitRemoveAbility(c,'B01W')*/
 
                     call UnitRemoveAbility(c,'B02Z')
+                    call UnitRemoveAbility(c,'B03C')
                     call UnitRemoveAbility(c,'B030')
                     call UnitRemoveAbility(c,'B031')
                     call UnitRemoveAbility(c,'B032')

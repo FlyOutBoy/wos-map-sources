@@ -68,7 +68,8 @@ globals
     integer array ItemsPage5_ID
     integer array ItemsPage6_ID
     integer array ItemsSearch_ID
-    integer array ItemsSearchAll_ID
+integer array ItemsSearchAll_ID
+integer array ItemsSearchAll_Index
     integer array ItemsCraft_ID
     integer array ItemsCraftLeft_ID
     integer array ItemsCraftBottom_ID
@@ -129,8 +130,39 @@ globals
     boolean ShopFirstRoundAutoBuyDone = false
     timer ShopInventoryTimer = null
     timer ShopAutoBuyTimer = null
+        // Search debounce
+    boolean array ShopSearchPending
+    integer array ShopSearchDebounceTicks
+    timer ShopSearchDebounceTimer = null
+
+    // Search index — строится один раз при инициализации
+    integer ShopSearchIndexCount = 0
+    integer array ShopSearchIndex_ID
+    string array ShopSearchIndexName
+
+    constant real SHOP_SEARCH_DEBOUNCE_PERIOD = 0.05
+    constant integer SHOP_SEARCH_DEBOUNCE_TICKS = 5
+        // Последний реально обработанный запрос
+    string array ShopSearchLastQuery
+
+    // Запрос, на котором получили 0 результатов.
+    // Пока новый текст является его продолжением — искать бессмысленно.
+    string array ShopSearchDeadQuery
 endglobals
 
+function ShopSearchStartsWith takes string text, string prefix returns boolean
+    local integer prefixLength = StringLength(prefix)
+
+    if prefixLength == 0 then
+        return true
+    endif
+
+    if StringLength(text) < prefixLength then
+        return false
+    endif
+
+    return SubString(text, 0, prefixLength) == prefix
+endfunction
 function RefreshItemCache2 takes unit u returns nothing
     local integer unitHid = GetHandleId(u)
     local integer slot = 0
@@ -302,116 +334,252 @@ function ShopSanitizeSearchQuery takes string query returns string
     return result
 endfunction
 
-function ShopNameMatchesSearch takes string itemName, string query returns boolean
-    local string source = StringCase(itemName, false)
-    local string loweredQuery = StringCase(query, false)
+
+
+
+function ShopNameMatchesSearchLower takes string source, string query returns boolean
     local string current
     local string token = ""
     local integer index = 0
-    local integer length = StringLength(loweredQuery)
+    local integer length = StringLength(query)
     local boolean hasToken = false
+
     loop
         exitwhen index > length
+
         if index == length then
             set current = " "
         else
-            set current = SubString(loweredQuery, index, index + 1)
+            set current = SubString(query, index, index + 1)
         endif
+
         if current == " " then
             if StringLength(token) > 0 then
                 set hasToken = true
+
                 if not ShopTextContains(source, token) then
                     return false
                 endif
+
                 set token = ""
             endif
         else
             set token = token + current
         endif
+
         set index = index + 1
     endloop
+
     return hasToken
 endfunction
 
-function ShopSearchAlreadyAdded takes integer pid, integer count, integer itemId returns boolean
-    local integer index = 0
+
+function ShopSearchIndexContains takes integer itemId returns boolean
+    local integer i = 0
+
     loop
-        exitwhen index >= count
-        if ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + index] == itemId then
+        exitwhen i >= ShopSearchIndexCount
+
+        if ShopSearchIndex_ID[i] == itemId then
             return true
         endif
-        set index = index + 1
+
+        set i = i + 1
     endloop
+
     return false
 endfunction
+
+
+// Вызывается ОДИН РАЗ при создании магазина.
+function ShopBuildSearchIndex takes nothing returns nothing
+    local integer page = 1
+    local integer slot
+    local integer itemId
+
+    local integer i
+    local integer position
+    local integer currentId
+    local integer currentPrice
+    local integer previousId
+    local string currentName
+
+    set ShopSearchIndexCount = 0
+
+    // Собираем уникальные предметы один раз.
+    loop
+        exitwhen page > 6
+
+        set slot = 0
+
+        loop
+            exitwhen slot >= SHOP_CATEGORY_MAX_ITEMS
+
+            set itemId = ShopGetStaticPageItem(page, slot)
+
+            if itemId != 0 and not ShopSearchIndexContains(itemId) then
+                set ShopSearchIndex_ID[ShopSearchIndexCount] = itemId
+
+                // Имя сразу сохраняем в lower-case.
+                // Во время поиска StringCase/GetObjectName больше не нужны.
+                set ShopSearchIndexName[ShopSearchIndexCount] = StringCase(GetObjectName(itemId), false)
+
+                set ShopSearchIndexCount = ShopSearchIndexCount + 1
+            endif
+
+            set slot = slot + 1
+        endloop
+
+        set page = page + 1
+    endloop
+
+    // Один раз сортируем индекс по цене.
+    // После этого любой отфильтрованный поиск уже автоматически
+    // будет отсортирован по цене.
+    set i = 1
+
+    loop
+        exitwhen i >= ShopSearchIndexCount
+
+        set currentId = ShopSearchIndex_ID[i]
+        set currentName = ShopSearchIndexName[i]
+        set currentPrice = GetItemValue(currentId)
+
+        set position = i - 1
+
+        loop
+            exitwhen position < 0
+
+            set previousId = ShopSearchIndex_ID[position]
+
+            exitwhen GetItemValue(previousId) <= currentPrice
+
+            set ShopSearchIndex_ID[position + 1] = previousId
+            set ShopSearchIndexName[position + 1] = ShopSearchIndexName[position]
+
+            set position = position - 1
+        endloop
+
+        set ShopSearchIndex_ID[position + 1] = currentId
+        set ShopSearchIndexName[position + 1] = currentName
+
+        set i = i + 1
+    endloop
+endfunction
+
 
 function ShopFillSearchVisiblePage takes integer pid returns nothing
     local integer slot = 0
     local integer resultIndex = ShopSearchPage[pid] * SHOP_SEARCH_PAGE_SIZE
+
     loop
         exitwhen slot >= SHOP_SEARCH_PAGE_SIZE
+
         if resultIndex < ShopSearchResultCount[pid] then
             set ItemsSearch_ID[pid * SHOP_SEARCH_PAGE_SIZE + slot] = ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + resultIndex]
         else
             set ItemsSearch_ID[pid * SHOP_SEARCH_PAGE_SIZE + slot] = 0
         endif
+
         set slot = slot + 1
         set resultIndex = resultIndex + 1
     endloop
 endfunction
 
-function ShopSortSearchResultsByPrice takes integer pid, integer count returns nothing
-    local integer index = 1
-    local integer position
-    local integer currentId
-    local integer currentPrice
-    local integer previousId
-    loop
-        exitwhen index >= count
-        set currentId = ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + index]
-        set currentPrice = GetItemValue(currentId)
-        set position = index - 1
-        loop
-            exitwhen position < 0
-            set previousId = ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + position]
-            exitwhen GetItemValue(previousId) <= currentPrice
-            set ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + position + 1] = previousId
-            set position = position - 1
-        endloop
-        set ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + position + 1] = currentId
-        set index = index + 1
-    endloop
-endfunction
 
 function ShopBuildSearchResults takes integer pid, string query returns nothing
-    local integer page = 1
-    local integer slot
-    local integer itemId
+    local integer baseIndex = pid * SHOP_SEARCH_MAX_RESULTS
+    local integer readIndex = 0
     local integer count = 0
-    loop
-        exitwhen count >= SHOP_SEARCH_MAX_RESULTS
-        set ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + count] = 0
-        set count = count + 1
-    endloop
-    set count = 0
-    loop
-        exitwhen page > 6 or count >= SHOP_SEARCH_MAX_RESULTS
-        set slot = 0
+    local integer oldCount = ShopSearchResultCount[pid]
+    local integer searchIndex = 0
+    local string loweredQuery = StringCase(query, false)
+    local boolean refinePrevious = false
+
+    // Такой запрос уже был обработан.
+    // Вообще ничего повторно не считаем.
+    if loweredQuery == ShopSearchLastQuery[pid] then
+        call ShopFillSearchVisiblePage(pid)
+        return
+    endif
+
+    // Если новый запрос является продолжением прошлого:
+    //
+    // "s"
+    // "sw"
+    // "swo"
+    // "swor"
+    //
+    // новых совпадений появиться НЕ может.
+    // Можно проверять только прошлые результаты.
+    if StringLength(ShopSearchLastQuery[pid]) > 0 and /*
+    */ ShopSearchStartsWith(loweredQuery, ShopSearchLastQuery[pid]) then
+        set refinePrevious = true
+    endif
+
+    if refinePrevious then
+
+        // Проверяем ТОЛЬКО результаты предыдущего поиска.
         loop
-            exitwhen slot >= SHOP_CATEGORY_MAX_ITEMS or count >= SHOP_SEARCH_MAX_RESULTS
-            set itemId = ShopGetStaticPageItem(page, slot)
-            if itemId != 0 and not ShopSearchAlreadyAdded(pid, count, itemId) and ShopNameMatchesSearch(GetObjectName(itemId), query) then
-                set ItemsSearchAll_ID[pid * SHOP_SEARCH_MAX_RESULTS + count] = itemId
+            exitwhen readIndex >= oldCount
+
+            set searchIndex = ItemsSearchAll_Index[baseIndex + readIndex]
+
+            if searchIndex >= 0 and searchIndex < ShopSearchIndexCount then
+
+                if ShopNameMatchesSearchLower(ShopSearchIndexName[searchIndex], loweredQuery) then
+
+                    // Сжимаем массив прямо на месте.
+                    set ItemsSearchAll_ID[baseIndex + count] = ShopSearchIndex_ID[searchIndex]
+                    set ItemsSearchAll_Index[baseIndex + count] = searchIndex
+
+                    set count = count + 1
+                endif
+
+            endif
+
+            set readIndex = readIndex + 1
+        endloop
+
+    else
+
+        // Запрос изменили не обычным дописыванием:
+        // например Backspace или изменение текста в середине.
+        //
+        // Только тогда снова идём по всему готовому индексу.
+        set searchIndex = 0
+
+        loop
+            exitwhen searchIndex >= ShopSearchIndexCount or /*
+            */ count >= SHOP_SEARCH_MAX_RESULTS
+
+            if ShopNameMatchesSearchLower(ShopSearchIndexName[searchIndex], loweredQuery) then
+
+                set ItemsSearchAll_ID[baseIndex + count] = ShopSearchIndex_ID[searchIndex]
+                set ItemsSearchAll_Index[baseIndex + count] = searchIndex
+
                 set count = count + 1
             endif
-            set slot = slot + 1
+
+            set searchIndex = searchIndex + 1
         endloop
-        set page = page + 1
-    endloop
+
+    endif
+
     set ShopSearchResultCount[pid] = count
-    call ShopSortSearchResultsByPrice(pid, count)
+    set ShopSearchLastQuery[pid] = loweredQuery
+
+    // Ноль результатов:
+    // запоминаем запрос, после которого продолжать поиск бессмысленно.
+    if count == 0 and StringLength(loweredQuery) > 0 then
+        set ShopSearchDeadQuery[pid] = loweredQuery
+    else
+        set ShopSearchDeadQuery[pid] = ""
+    endif
+
     call ShopFillSearchVisiblePage(pid)
 endfunction
+
 
 function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned, player p returns nothing
     local integer cacheIndex = GetPlayerId(p) * SHOP_SEARCH_PAGE_SIZE + slot
@@ -686,6 +854,7 @@ set itemList[17] = 'I00X'
 set itemList[18] = 'I00B' 
 set itemList[19] = 'I013' 
 set itemList[20] = 'I02N' 
+set itemList[21] = 'I045' 
 set k = 0
 loop
     exitwhen k >= SHOP_CATEGORY_MAX_ITEMS
@@ -1071,6 +1240,7 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I042', "I02P")
     call RegisterCraft('I043', "I00M")
     call RegisterCraft('I044', "I00G I022")
+    call RegisterCraft('I045', "I02K")
 endfunction
 
 function SetPlayerCraftSlot takes integer pid, integer slot, integer itemId returns nothing
@@ -1425,6 +1595,11 @@ endfunction
 
 function ShopDeactivateSearch takes player p, boolean clearText returns nothing
     local integer pid = GetPlayerId(p)
+
+    set ShopSearchPending[pid] = false
+    set ShopSearchDebounceTicks[pid] = 0
+    set ShopSearchLastQuery[pid] = ""
+    set ShopSearchDeadQuery[pid] = ""
     if ShopSearchActive[pid] then
         set ShopSearchActive[pid] = false
         set ItemsFrameCurrentPage_ID[pid] = ShopSearchReturnPage[pid]
@@ -1441,27 +1616,134 @@ function ShopDeactivateSearch takes player p, boolean clearText returns nothing
     set ShopSearchUpdating[pid] = false
 endfunction
 
-// ФИКС ПОИСКА (Отправляем текст через SyncData)
+function ShopApplySearch takes integer pid returns nothing
+    local player p = Player(pid)
+    local string query = ShopSearchQuery[pid]
+
+    if StringLength(query) == 0 then
+
+        call ShopDeactivateSearch(p, false)
+
+    else
+
+        // Запоминаем страницу, с которой игрок вошёл в поиск.
+        if not ShopSearchActive[pid] then
+            set ShopSearchReturnPage[pid] = ItemsFrameCurrentPage_ID[pid]
+            set ShopSearchActive[pid] = true
+        endif
+
+        // Только ЭТОТ pid переходит на страницу поиска.
+        set ItemsFrameCurrentPage_ID[pid] = SHOP_SEARCH_PAGE
+        set ShopSearchPage[pid] = 0
+
+        call ShopBuildSearchResults(pid, query)
+
+        // Функции внутри уже рисуют фреймы только для p.
+        call ReloadItemPage(SHOP_SEARCH_PAGE, p)
+        call ShopUpdateCatalogueNavigation(pid, p)
+
+    endif
+
+    set p = null
+endfunction
+function ShopSearchDebounceTick takes nothing returns nothing
+    local integer pid = 0
+
+    loop
+        exitwhen pid >= 16
+
+        if ShopSearchPending[pid] then
+
+            set ShopSearchDebounceTicks[pid] = ShopSearchDebounceTicks[pid] - 1
+
+            if ShopSearchDebounceTicks[pid] <= 0 then
+
+                set ShopSearchPending[pid] = false
+                set ShopSearchDebounceTicks[pid] = 0
+
+                call ShopApplySearch(pid)
+            endif
+
+        endif
+
+        set pid = pid + 1
+    endloop
+endfunction
+
 function ShopSearchOnTextChanged takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer pid = GetPlayerId(p)
     local string enteredText = BlzGetTriggerFrameText()
-    local string query = ShopSanitizeSearchQuery(enteredText)
-    
+    local string query
+    local string loweredQuery
+
+    // Событие вызвано нашим собственным BlzFrameSetText.
     if ShopSearchUpdating[pid] then
         set p = null
         return
     endif
+
+    set query = ShopSanitizeSearchQuery(enteredText)
+    set loweredQuery = StringCase(query, false)
+
+    // Исправляем запрещённые символы только локально
+    // у конкретного игрока.
     if enteredText != query then
+
         set ShopSearchUpdating[pid] = true
+
         if GetLocalPlayer() == p then
             call BlzFrameSetText(FRAME_ShopSearchEditBox, query)
             call BlzFrameSetFocus(FRAME_ShopSearchEditBox, true)
         endif
+
         set ShopSearchUpdating[pid] = false
     endif
-    
-    call BlzSendSyncData("WScS", query)
+
+    set ShopSearchQuery[pid] = query
+
+    // Полностью очистили строку поиска.
+    // Тут debounce не нужен — сразу выходим из поиска.
+    if StringLength(query) == 0 then
+
+        set ShopSearchPending[pid] = false
+        set ShopSearchDebounceTicks[pid] = 0
+        set ShopSearchLastQuery[pid] = ""
+        set ShopSearchDeadQuery[pid] = ""
+
+        call ShopApplySearch(pid)
+
+        set p = null
+        return
+    endif
+
+    // Например:
+    //
+    // "xyz" = 0 результатов.
+    //
+    // После этого:
+    // "xyza"
+    // "xyzab"
+    // "xyzabcdef"
+    //
+    // тоже гарантированно не могут ничего найти.
+    //
+    // Даже debounce НЕ запускаем.
+    if StringLength(ShopSearchDeadQuery[pid]) > 0 and /*
+    */ ShopSearchStartsWith(loweredQuery, ShopSearchDeadQuery[pid]) then
+
+        set ShopSearchPending[pid] = false
+        set ShopSearchDebounceTicks[pid] = 0
+
+        set p = null
+        return
+    endif
+
+    // Нормальный debounce.
+    // Каждая новая буква снова сбрасывает счётчик.
+    set ShopSearchPending[pid] = true
+    set ShopSearchDebounceTicks[pid] = SHOP_SEARCH_DEBOUNCE_TICKS
+
     set p = null
 endfunction
 
@@ -1553,7 +1835,13 @@ function OnClickItem takes nothing returns nothing
         return
     endif
 
-    if frameCode >= 100 and frameCode <= 106 then
+if frameCode >= 100 and frameCode <= 106 then
+
+    set ShopSearchPending[pid] = false
+    set ShopSearchDebounceTicks[pid] = 0
+    set ShopSearchLastQuery[pid] = ""
+    set ShopSearchDeadQuery[pid] = ""
+        
         if ShopSearchActive[pid] then
             set ShopSearchActive[pid] = false
             set ShopSearchQuery[pid] = ""
@@ -2132,18 +2420,29 @@ function ShopOpenCareerItem takes integer itemId, player p returns nothing
     call ShopUpdateCatalogueNavigation(pid, p)
     call ShopShowItemDescription(itemId, p)
     call CraftItemCheck(itemId, p, SHOP_SEARCH_PAGE)
-    if GetLocalPlayer() == p then
-        call BlzFrameSetText(FRAME_ShopSearchEditBox, ShopSearchQuery[pid])
-        call BlzFrameSetFocus(FRAME_ShopSearchEditBox, false)
-        if CondArena == 0 or TestMode then
-            call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[6], true)
-            call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[7], false)
-        endif
-        call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, true)
-        call BlzFrameSetTexture(FRAME_ShopItemBack[42], iconPath, 0, false)
-        call BlzFrameSetText(FRAME_ShopItemCost[42], costStr)
-        call BlzFrameSetVisible(FRAME_ShopMAIN, true)
+
+set ShopSearchPending[pid] = false
+set ShopSearchDebounceTicks[pid] = 0
+set ShopSearchLastQuery[pid] = ""
+set ShopSearchDeadQuery[pid] = ""
+set ShopSearchUpdating[pid] = true
+
+if GetLocalPlayer() == p then
+    call BlzFrameSetText(FRAME_ShopSearchEditBox, ShopSearchQuery[pid])
+    call BlzFrameSetFocus(FRAME_ShopSearchEditBox, false)
+
+    if CondArena == 0 or TestMode then
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[6], true)
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[7], false)
     endif
+
+    call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, true)
+    call BlzFrameSetTexture(FRAME_ShopItemBack[42], iconPath, 0, false)
+    call BlzFrameSetText(FRAME_ShopItemCost[42], costStr)
+    call BlzFrameSetVisible(FRAME_ShopMAIN, true)
+endif
+
+set ShopSearchUpdating[pid] = false
     set d = null
 endfunction
 
@@ -2156,30 +2455,21 @@ function SyncDataHandler takes nothing returns nothing
     local integer id = ItemsCurrentItem_ID[pid]
     
     if prefix == "WScO" then
+
         call ShopOpenCareerItem(val, p)
+
     elseif prefix == "WScU" then
+
         set ShopCraftUpgradeOffset[pid] = val
         call ShopSaveCraftScrollState(pid, id)
         call CraftItemCheck(id, p, ItemsFrameCurrentPage_ID[pid])
+
     elseif prefix == "WScC" then
+
         set ShopCraftComponentOffset[pid] = val
         call ShopSaveCraftScrollState(pid, id)
         call CraftItemCheck(id, p, ItemsFrameCurrentPage_ID[pid])
-    elseif prefix == "WScS" then
-        set ShopSearchQuery[pid] = data
-        if StringLength(data) == 0 then
-            call ShopDeactivateSearch(p, false)
-        else
-            if not ShopSearchActive[pid] then
-                set ShopSearchReturnPage[pid] = ItemsFrameCurrentPage_ID[pid]
-                set ShopSearchActive[pid] = true
-            endif
-            set ItemsFrameCurrentPage_ID[pid] = SHOP_SEARCH_PAGE
-            set ShopSearchPage[pid] = 0
-            call ShopBuildSearchResults(pid, data)
-            call ReloadItemPage(SHOP_SEARCH_PAGE, p)
-            call ShopUpdateCatalogueNavigation(pid, p)
-        endif
+
     endif
 endfunction
 
@@ -2200,9 +2490,8 @@ function CreateItemUI takes nothing returns nothing
     loop
         exitwhen i > 23
         call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScU", false)
-        call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScC", false)
-        call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScS", false)
-        call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScO", false)
+call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScC", false)
+call BlzTriggerRegisterPlayerSyncEvent(SyncTrigger, Player(i), "WScO", false)
         set i = i + 1
     endloop
     call TriggerAddAction(SyncTrigger, function SyncDataHandler)
@@ -2228,6 +2517,11 @@ function CreateItemUI takes nothing returns nothing
         set ShopSearchResultCount[pid] = 0
         set ShopSearchPage[pid] = 0
         set ShopSearchQuery[pid] = ""
+        set ShopSearchPending[pid] = false
+        set ShopSearchDebounceTicks[pid] = 0
+        set ShopSearchLastQuery[pid] = ""
+set ShopSearchDeadQuery[pid] = ""
+        
         set i2 = 0
         loop
             exitwhen i2 >= 7
@@ -2256,7 +2550,10 @@ function CreateItemUI takes nothing returns nothing
     set FrameCraftWheel = CreateTrigger()
     set FrameShopSearch = CreateTrigger()
     call MyItemsIdInit()
+    call ShopBuildSearchIndex()
     call InitCraftRecipes()
+    set ShopSearchDebounceTimer = CreateTimer()
+call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, function ShopSearchDebounceTick)
     set FRAME_ShopMAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopMAIN, FRAMEPOINT_CENTER, 0.42, 0.33)
     call BlzFrameSetSize(FRAME_ShopMAIN, 0.96, 0.36)

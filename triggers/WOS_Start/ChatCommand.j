@@ -68,7 +68,6 @@ globals
     private trigger EmojiClickTrig = null
     private trigger EmojiSyncTrig = null
     private trigger EmojiTypedTrig = null
-    private trigger ObserverChatTrig = null
     private timer EmojiTimer = null
     private boolean EmojiPanelOpen = false
     private boolean array PlayerEmojiEnabled
@@ -432,14 +431,6 @@ private function OnEmojiFrameClick takes nothing returns nothing
     set p = null
 endfunction
 
-// Native chat has no cancel API. When an observer sends a line, remove the
-// rendered native text locally for the ten gameplay clients immediately.
-private function OnObserverNativeChat takes nothing returns nothing
-    if IsGamePlayerSlot(GetPlayerId(GetLocalPlayer())) then
-        call ClearTextMessages()
-    endif
-endfunction
-
 private function OnTypedEmoji takes nothing returns nothing
     local string message = GetEventPlayerChatString()
     local integer i = 1
@@ -661,7 +652,6 @@ private function Init takes nothing returns nothing
     set EmojiClickTrig = CreateTrigger()
     set EmojiSyncTrig = CreateTrigger()
     set EmojiTypedTrig = CreateTrigger()
-    set ObserverChatTrig = CreateTrigger()
     set EmojiTimer = CreateTimer()
 
     call CreateEmojiFeed()
@@ -680,16 +670,8 @@ private function Init takes nothing returns nothing
         set i = i + 1
     endloop
 
-    set i = 10
-    loop
-        exitwhen i > 14
-        call TriggerRegisterPlayerChatEvent(ObserverChatTrig, Player(i), "", false)
-        set i = i + 1
-    endloop
-
     call TriggerAddAction(EmojiClickTrig, function OnEmojiFrameClick)
     call TriggerAddAction(EmojiSyncTrig, function OnEmojiSync)
-    call TriggerAddAction(ObserverChatTrig, function OnObserverNativeChat)
 
     if EMOJI_ENABLE_TYPED_COMMANDS then
         call TriggerAddAction(EmojiTypedTrig, function OnTypedEmoji)
@@ -697,8 +679,7 @@ private function Init takes nothing returns nothing
 
     call TimerStart(EmojiTimer, 0.05, true, function EmojiPeriodic)
 
-    // Native chat stays enabled for gameplay players. Observer messages are
-    // cleared locally for player slots 0-9 by OnObserverNativeChat.
+    // Native chat is never cleared or replaced by this emoji system.
 endfunction
 
 endlibrary

@@ -1,4 +1,16 @@
 Parse successful:     4443 lines: libs\common.j
 Parse successful:    11384 lines: libs\Blizzard.j
-Parse successful:   121169 lines: logs\currentmapscript.j
-Parse successful:   136996 lines: <total>
+logs\currentmapscript.j:112363: Undeclared function CaptainDraft_HeroUsed
+logs\currentmapscript.j:112546: Undeclared function CaptainDraft_CloseUI
+logs\currentmapscript.j:112557: Undeclared function CaptainDraft_HeroUsed
+logs\currentmapscript.j:113078: Undeclared function CaptainDraft_HideLegacyUI. Maybe you meant LeaderboardSortItemsBJ, LeaderboardSortItemsBJ or SetPlayerStartLocation
+logs\currentmapscript.j:113089: Undeclared function CaptainDraft_Confirm
+logs\currentmapscript.j:113096: Undeclared function CaptainDraft_Confirm
+logs\currentmapscript.j:113107: Undeclared function CaptainDraft_Claim
+logs\currentmapscript.j:113109: Undeclared function CaptainDraft_Finish
+logs\currentmapscript.j:115182: Undeclared function CaptainDraft_CreateUI
+logs\currentmapscript.j:115535: Undeclared function CaptainDraft_Tick
+logs\currentmapscript.j:115541: Undeclared function CaptainDraft_RefreshPreRoundSwapButtons
+logs\currentmapscript.j:116698: Undeclared function CaptainDraft_PlayConfiguredSound
+logs\currentmapscript.j failed with 12 errors
+Parse failed: 12 errors total

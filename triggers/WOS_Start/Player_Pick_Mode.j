@@ -204,6 +204,7 @@ endfunction
 function SetTeamAlliances takes nothing returns nothing
     local integer i = 0
     local integer j = 0
+    local boolean rebuildPickedTeams = false
         call MakeSound("Pick\\PickEnd")
     // Р В Р Р‹Р В Р вЂ¦Р В Р’В°Р РЋРІР‚РЋР В Р’В°Р В Р’В»Р В Р’В° Р РЋР С“Р В Р вЂ¦Р В РЎвЂР В РЎВР В Р’В°Р В Р’ВµР В РЎВ Р В Р вЂ Р РЋР С“Р В Р’Вµ Р РЋР С“Р В РЎвЂўР РЋР вЂ№Р В Р’В·Р РЋРІР‚в„– Р В РЎВР В Р’ВµР В Р’В¶Р В РўвЂР РЋРЎвЂњ Р В Р вЂ Р РЋР С“Р В Р’ВµР В РЎВР В РЎвЂ Р В РЎвЂР В РЎвЂ“Р РЋР вЂљР В РЎвЂўР В РЎвЂќР В Р’В°Р В РЎВР В РЎвЂ
     set i = 0
@@ -224,24 +225,48 @@ function SetTeamAlliances takes nothing returns nothing
     endloop
 
     // Р В Р Р‹Р РЋРІР‚С™Р РЋР вЂљР В РЎвЂўР В РЎвЂР В РЎВ Р В РЎвЂ”Р В РЎвЂўР В Р’В»Р В Р вЂ¦Р РЋРІР‚в„–Р В Р’Вµ Р РЋР С“Р В РЎвЂўР РЋР С“Р РЋРІР‚С™Р В Р’В°Р В Р вЂ Р РЋРІР‚в„– Р В РЎвЂќР В РЎвЂўР В РЎВР В Р’В°Р В Р вЂ¦Р В РўвЂ Р В Р вЂ Р В РЎвЂќР В Р’В»Р РЋР вЂ№Р РЋРІР‚РЋР В Р’В°Р РЋР РЏ Р В РЎвЂќР В Р’В°Р В РЎвЂ”Р В РЎвЂР РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В РЎвЂўР В Р вЂ 
-    set FullTeam1[0] = CaptainPid1
-    set FullTeam1Size = 1
-    set i = 0
-    loop
-        exitwhen i >= Team1Count
-        set FullTeam1[FullTeam1Size] = Team1Pick[i]
-        set FullTeam1Size = FullTeam1Size + 1
-        set i = i + 1
-    endloop
-    set FullTeam2[0] = CaptainPid2
-    set FullTeam2Size = 1
-    set i = 0
-    loop
-        exitwhen i >= Team2Count
-        set FullTeam2[FullTeam2Size] = Team2Pick[i]
-        set FullTeam2Size = FullTeam2Size + 1
-        set i = i + 1
-    endloop
+    // Player Pick builds Team1Pick/Team2Pick during the captain turns.  The
+    // Captain Draft, however, already fills FullTeam1/FullTeam2 directly
+    // (by the original lobby sides) before calling this function.  Rebuilding
+    // the arrays unconditionally used to throw away eight drafted players and
+    // left every non-captain slot unallied.
+    set rebuildPickedTeams = (Team1Count > 0 or Team2Count > 0) and CaptainPid1 >= 0 and CaptainPid1 < 10 and CaptainPid2 >= 0 and CaptainPid2 < 10
+    if rebuildPickedTeams then
+        set FullTeam1[0] = CaptainPid1
+        set FullTeam1Size = 1
+        set i = 0
+        loop
+            exitwhen i >= Team1Count or FullTeam1Size >= 10
+            if Team1Pick[i] >= 0 and Team1Pick[i] < 10 then
+                set FullTeam1[FullTeam1Size] = Team1Pick[i]
+                set FullTeam1Size = FullTeam1Size + 1
+            endif
+            set i = i + 1
+        endloop
+        set FullTeam2[0] = CaptainPid2
+        set FullTeam2Size = 1
+        set i = 0
+        loop
+            exitwhen i >= Team2Count or FullTeam2Size >= 10
+            if Team2Pick[i] >= 0 and Team2Pick[i] < 10 then
+                set FullTeam2[FullTeam2Size] = Team2Pick[i]
+                set FullTeam2Size = FullTeam2Size + 1
+            endif
+            set i = i + 1
+        endloop
+    elseif CaptainMode == false or FullTeam1Size <= 0 or FullTeam2Size <= 0 then
+        // Normal mode (or a partially initialized draft) keeps the map's
+        // standard sides: players 0..4 versus players 5..9.
+        set FullTeam1Size = 5
+        set FullTeam2Size = 5
+        set i = 0
+        loop
+            exitwhen i >= 5
+            set FullTeam1[i] = i
+            set FullTeam2[i] = i + 5
+            set i = i + 1
+        endloop
+    endif
 
     // Player-pick teams replace the original lobby layout for match export.
     // RearrangeTeamUI writes every final team slot immediately afterwards.
@@ -1324,4 +1349,3 @@ function IsInTeam1 takes integer pid returns boolean
     endloop
     return false
 endfunction
-

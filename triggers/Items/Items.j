@@ -8,6 +8,9 @@ library ItemsSpells uses GearSystems
         real Chogurt_MpRestoreStatic = 20
         real Chogurt_DmgReduct = 7.5
         real ChogurtEvolved_DmgReduct = 12.5
+//----------------------Murasame----------------------------------------------
+        real Murasame_DamageBase = 50.00
+        real Murasame_AttackDamage = 0.50
 //----------------------ItachiSet----------------------------------------------
         integer ItachiSet_ID = 'I01B'        
         real ItachiSet_Bonus = 17.5
@@ -55,7 +58,9 @@ library ItemsSpells uses GearSystems
         real RedFlower_Time = 1.8 // max travel time
         real RedFlower_Speed = 2100 // traveled for 1 sec     
 //----------------------Avalon----------------------------------------------
-        real Avalon_HpRestore = 20 // traveled for 1 sec   
+        real Avalon_HpRestore = 20 // traveled for 1 sec      
+//----------------------Avalon Evolved----------------------------------------------
+        real AvalonEvolved_HpRestore = 50 // traveled for 1 sec   
 //----------------------Urahara Set----------------------------------------------
         real UraharaSet_Range = 900 // traveled for 1 sec  
 //----------------------Incursio----------------------------------------------
@@ -151,13 +156,13 @@ library ItemsSpells uses GearSystems
 //----------------------Shiki Knife----------------------------------------------
         real ShikiKnife_DmgBase = 80
         real ShikiKnife_DmgAgi = 1
-        real ShikiKnife_CD = 4
+        real ShikiKnife_CD = 6
         real ShikiKnife_RangeCheck = 650
 //----------------------Shiki Knife Evolved----------------------------------------------
         real ShikiKnifeEvolved_DmgBase = 125
         real ShikiKnifeEvolved_DmgAgi = 1.5
         real ShikiKnifeEvolved_Multiplier = 1.5
-        real ShikiKnifeEvolved_CD = 4
+        real ShikiKnifeEvolved_CD = 6
         real ShikiKnifeEvolved_RangeCheck = 650
         real ShikiKnifeEvolved_Range = 2100
         real ShikiKnifeEvolved_Aoe = 150
@@ -2328,21 +2333,12 @@ private struct ItemsSpells_DeathNote
                     set y = GetUnitY(td)
                     call BlzSetSpecialEffectYaw(e,a)
                     call BlzSetSpecialEffectPosition(e,x,y,0)
-                    if k3 == 1 then 
-                    call BlzSetSpecialEffectPosition(e2,x,y,100)
-                    endif
-
+                    
                     else
                     call ColorEffDummy3(e,0,255,255,255,0.5)
                     if GetUnitAbilityLevel(td,DeathNote_Buff_ID )>0 then 
                     call dmgmag(c, td, dmg)
-                    if k3 == 1 then 
-                    call DestroyEffect(e2)
-                    set x = GetUnitX(td)
-                    set y = GetUnitY(td)
-                    call BambiettaG2_Start(c,x,y)
-                    set k3 = 0
-                    endif
+                   
                      call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 1.5, 1))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
                     call UnitRemoveAbility(td,DeathNote_Buff_ID)
@@ -2377,15 +2373,7 @@ private struct ItemsSpells_DeathNote
             set r2 = 0
             set r3 = 0
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
-            call BambiettaG_Start(c)
-            if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
-            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x, y, a * bj_RADTODEG, 1, 1, 100)
-            else
-            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2.mdx",x,y, a * bj_RADTODEG, 1, 1, 100)
-            endif
-            set k3 = 1
-            endif
+            
 
             set e = EffectSpawnScale("war3mapImported\\wos_.mdl", x,y, a * bj_RADTODEG, 0.43, 0.01, 0, 0.15, 0.01, 1.5)
             if MUI_Item9 == 0 then

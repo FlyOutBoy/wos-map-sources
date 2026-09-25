@@ -1119,6 +1119,14 @@
     "editor_suffix": "Death Note",
     "target_attachment_point_1": "chest"
   },
+  "B03C": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Murasame",
+    "extended_tooltip": "Unit bleeds",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+    "target_art": ""
+  },
   "BEer": {
     "name": "",
     "base_id": "BEer",

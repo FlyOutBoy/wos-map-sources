@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "f9ac055db4f1d9ee719d782cc314878974918255ca2dbf84716bb98ee073a2be",
+  "source_sha256": "7255b897a181c5f38752e097c91de41eb65da31a7cb60f5ee13bcbc3f36fe77f",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -281343,6 +281343,64 @@
         }
       ],
       "display_name": "Starrk E - AS"
+    },
+    {
+      "old_id": {
+        "text": "Acrs",
+        "hex": "41637273"
+      },
+      "new_id": {
+        "text": "A0I3",
+        "hex": "41304933"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "anam",
+            "hex": "616E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_8284",
+            "_original_value": "TRIGSTR_8284",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjg0",
+            "resolved_value": "Murasame",
+            "_original_resolved_value": "Murasame"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "aart",
+            "hex": "61617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "level": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX011cmFzYW1lLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Murasame"
     }
   ]
 }

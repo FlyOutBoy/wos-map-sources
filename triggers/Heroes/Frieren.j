@@ -2130,7 +2130,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = RoundReal(r + 0.03, 3)
                     set r2 = r2 + 0.03
-                    if r2 >= 0.30 then
+                    if r2 >= 0.03 then
                         set r2 = 0
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, aoe + 550, null)
@@ -2188,7 +2188,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set r2 = 1
             set g = CreateGroup()
             set u = null
-             call BuffUnit01(c, u, FrierenG_SpellID, "innerfire", 3)
+             call BuffUnit01(c, c, FrierenG_SpellID, "innerfire", 3)
             set rmax = FrierenG_Duration 
             set aoe = FrierenG_DamageAoe
             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 500, rmax + 1)

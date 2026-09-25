@@ -10,7 +10,7 @@
     {
       "json": "items.json",
       "binary": "war3map.w3t",
-      "sha256": "9a8d7f841a86dad079b080cfc6bd0bf549216b980fb22c40d28c9b668d05eac4"
+      "sha256": "a776836be8e4c0515e5140a0f11929eb7a4eddece1629d7cd550bfb79d634213"
     },
     {
       "json": "destructables.json",
@@ -25,12 +25,12 @@
     {
       "json": "abilities.json",
       "binary": "war3map.w3a",
-      "sha256": "7d63cea0c31f7d1cbaee26f84313bfaf5aa2bce540f7341eb6fd5ed8e7e76103"
+      "sha256": "4b1e7f58d4c1fe9e7c6781325ad3770ab2f0b3a97ed4eb236a3274439fbba0c3"
     },
     {
       "json": "buffs.json",
       "binary": "war3map.w3h",
-      "sha256": "e87cbf7373da292362b142c5ac0cbfb1cedf8e06f1a469e03091869ebac0f103"
+      "sha256": "327abbae5757a3c7d7b67b71aa8d47689afe4660a88e0609418c01df2ab3b9ff"
     },
     {
       "json": "upgrades.json",
@@ -45,7 +45,7 @@
     {
       "json": "items-skin.json",
       "binary": "war3mapSkin.w3t",
-      "sha256": "449ab95e55ac8805184b8929a59e548fa470715522dc0cff728f5ff69bf57efd"
+      "sha256": "504811f932f763caea11824fe4c2865f5a12f495ae914895fda6e78fa2c0d7bd"
     },
     {
       "json": "destructables-skin.json",
@@ -60,12 +60,12 @@
     {
       "json": "abilities-skin.json",
       "binary": "war3mapSkin.w3a",
-      "sha256": "f9ac055db4f1d9ee719d782cc314878974918255ca2dbf84716bb98ee073a2be"
+      "sha256": "7255b897a181c5f38752e097c91de41eb65da31a7cb60f5ee13bcbc3f36fe77f"
     },
     {
       "json": "buffs-skin.json",
       "binary": "war3mapSkin.w3h",
-      "sha256": "b189eba848653fad4a5125f82e51126f57508b57cd38bed29c258ae7565e97a7"
+      "sha256": "b4bae42cefd1cb0796339697c4c22c17866adedbca9f437fd7caea7fcb8dd805"
     },
     {
       "json": "upgrades-skin.json",

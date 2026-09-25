@@ -378,11 +378,24 @@ endloop
         if GetLocalPlayer() == p or GetLocalPlayer() == p2 then 
         call BlzFrameSetVisible(FRAME_SwapSprite[k],false)
         call BlzFrameSetVisible(FRAME_SwapSprite2[k],false)
-        call BlzFrameSetEnable(FRAME_Swap[k], false)
-        call BlzFrameSetVisible(FRAME_Swap[k], false)
+        if not CaptainDraftPreRoundUnlimitedSwap then
+            call BlzFrameSetEnable(FRAME_Swap[k], false)
+            call BlzFrameSetVisible(FRAME_Swap[k], false)
+        endif
         endif
         set k = k + 1
         endloop
+        // Captain Draft players may immediately start another swap request.
+        // Only each local player's own button is restored.
+        if CaptainDraftPreRoundUnlimitedSwap then
+            if GetLocalPlayer() == p then
+                call BlzFrameSetEnable(FRAME_Swap[pid], true)
+                call BlzFrameSetVisible(FRAME_Swap[pid], true)
+            elseif GetLocalPlayer() == p2 then
+                call BlzFrameSetEnable(FRAME_Swap[pid2], true)
+                call BlzFrameSetVisible(FRAME_Swap[pid2], true)
+            endif
+        endif
         // Р РЋР В±РЎР‚Р В°РЎРѓРЎвЂ№Р Р†Р В°Р ВµР С Р В·Р В°Р С—РЎР‚Р С•РЎРѓРЎвЂ№ Р С•Р В±Р СР ВµР Р…Р В°
         set SwapRequests[pid] = -1
         set SwapRequests[pid2] = -1

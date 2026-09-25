@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "9a8d7f841a86dad079b080cfc6bd0bf549216b980fb22c40d28c9b668d05eac4",
+  "source_sha256": "a776836be8e4c0515e5140a0f11929eb7a4eddece1629d7cd550bfb79d634213",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -2906,10 +2906,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00X,A073",
-            "_original_value": "A00X,A073",
+            "value": "A00M,A073",
+            "_original_value": "A00M,A073",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAwWCxBMDcz"
+            "_raw_base64": "QTAwTSxBMDcz"
           },
           "sanity_check": {
             "text": "",
@@ -3944,10 +3944,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00X,A071",
-            "_original_value": "A00X,A071",
+            "value": "A00M,A071",
+            "_original_value": "A00M,A071",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAwWCxBMDcx"
+            "_raw_base64": "QTAwTSxBMDcx"
           },
           "sanity_check": {
             "text": "",
@@ -6140,7 +6140,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -11370,10 +11370,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A00M",
-            "_original_value": "A00M",
+            "value": "A0HU,A00M",
+            "_original_value": "A0HU,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAwTQ=="
+            "_raw_base64": "QTBIVSxBMDBN"
           },
           "sanity_check": {
             "text": "",
@@ -11880,6 +11880,73 @@
         }
       ],
       "display_name": "Death Note"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I045",
+        "hex": "49303435"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A02H,A09R,A01Y",
+            "_original_value": "A02H,A09R,A01Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAySCxBMDlSLEEwMVk="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 6000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Charged",
+            "_original_value": "Charged",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2hhcmdlZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Avalon Evolved"
     }
   ]
 }

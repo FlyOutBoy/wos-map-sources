@@ -180,7 +180,6 @@ library MilimSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Milim_Q 2")
                         endif
                         if r == 0.3 then
-                            call dmgphys(c, td, dmg)
                             set x = GetUnitX(td)
                             set y = GetUnitY(td)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x , y , a * bj_RADTODEG, 0.5, 4.25, 125))
@@ -1455,7 +1454,6 @@ private struct MilimT2KS
     effect castFrontBallFx
     group g
     group g2
-    group g3
     real x
     real y
     real x1
@@ -1485,6 +1483,10 @@ private struct MilimT2KS
         local real maxTurn = AIM_TURN_SPEED * bj_DEGTORAD * 0.03
         local real turnLimit = AIM_TURN_LIMIT * bj_DEGTORAD
         local real beamEffectLife
+        local real damageMove
+        local real damageAoe
+        local real damageX
+        local real damageY
         local effect beamEffect
         local integer beamSegment
 
@@ -1647,17 +1649,6 @@ private struct MilimT2KS
                     set x1 = x + move * Cos(a)
                     set y1 = y + move * Sin(a)
                     call DecorRemove(c, x1, y1, MilimT2_DamageAoe, 100)
-                    call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x1, y1, MilimT2_DamageAoe, NoDecor_Cond)
-                    loop
-                        set u = FirstOfGroup(g)
-                        exitwhen u == null
-                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
-                            call GroupAddUnit(g2, u)
-                            call SaveInteger(hs, GetHandleId(g2), GetHandleId(u), 0)
-                        endif
-                        call GroupRemoveUnit(g, u)
-                    endloop
 
                     set move = move + MilimT2_BeamScanStep
                     if move > MilimT2_BeamRange then
@@ -1666,7 +1657,30 @@ private struct MilimT2KS
 
                     if r2 + 0.001 >= MilimT2_DamagePeriod then
                         set r2 = 0.00
-                        call GroupClear(g3)
+
+                        // Build the target list again for every damage tick. A unit
+                        // receives damage only while it is inside the current beam AOE.
+                        call GroupClear(g2)
+                        set damageMove = 0.00
+                        loop
+                            set damageAoe = MilimT2_DamageAoe * (AOE_START_FACTOR + (AOE_END_FACTOR - AOE_START_FACTOR) * damageMove / MilimT2_BeamRange)
+                            set damageX = x + damageMove * Cos(a)
+                            set damageY = y + damageMove * Sin(a)
+                            call GroupClear(g)
+                            call GroupEnumUnitsInRange(g, damageX, damageY, damageAoe, NoDecor_Cond)
+                            loop
+                                set u = FirstOfGroup(g)
+                                exitwhen u == null
+                                call GroupRemoveUnit(g, u)
+                                if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                    call GroupAddUnit(g2, u)
+                                endif
+                            endloop
+
+                            set damageMove = damageMove + MilimT2_BeamScanStep
+                            exitwhen damageMove > MilimT2_BeamRange
+                        endloop
+
                         loop
                             set u = FirstOfGroup(g2)
                             exitwhen u == null
@@ -1683,15 +1697,7 @@ private struct MilimT2KS
                                     set damageCount = damageCount + 1
                                     call SaveInteger(hs, GetHandleId(g2), GetHandleId(u), damageCount)
                                 endif
-                                call GroupAddUnit(g3, u)
                             endif
-                        endloop
-
-                        loop
-                            set u = FirstOfGroup(g3)
-                            exitwhen u == null
-                            call GroupRemoveUnit(g3, u)
-                            call GroupAddUnit(g2, u)
                         endloop
                     endif
 
@@ -1714,7 +1720,6 @@ private struct MilimT2KS
                 call FlushChildHashtable(hs, GetHandleId(g2))
                 call DestroyGroup(g)
                 call DestroyGroup(g2)
-                call DestroyGroup(g3)
                 call DestroyEffect(e)   
                 call DestroyEffect(e2)
                 call DestroyEffect(e4)
@@ -1723,7 +1728,6 @@ private struct MilimT2KS
                 call DestroyEffect(castFrontBallFx)
                 set g = null
                 set g2 = null
-                set g3 = null
                 set u = null
                 set e = null
                 set e2 = null
@@ -1774,7 +1778,6 @@ private struct MilimT2KS
         call SetFly(c,150)
         set g = CreateGroup()
         set g2 = CreateGroup()
-        set g3 = CreateGroup()
 
         call DebuffClear(c)
         call StartSpellUnit(c)

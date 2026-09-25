@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "449ab95e55ac8805184b8929a59e548fa470715522dc0cff728f5ff69bf57efd",
+  "source_sha256": "504811f932f763caea11824fe4c2865f5a12f495ae914895fda6e78fa2c0d7bd",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -4461,12 +4461,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4223",
-            "_original_value": "TRIGSTR_4223",
+            "value": "TRIGSTR_7817",
+            "_original_value": "TRIGSTR_7817",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjIz",
-            "resolved_value": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
-            "_original_resolved_value": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%."
+            "_raw_base64": "VFJJR1NUUl83ODE3",
+            "resolved_value": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
+            "_original_resolved_value": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%."
           },
           "sanity_check": {
             "text": "",
@@ -4481,12 +4481,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4224",
-            "_original_value": "TRIGSTR_4224",
+            "value": "TRIGSTR_7822",
+            "_original_value": "TRIGSTR_7822",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI0",
-            "resolved_value": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
-            "_original_resolved_value": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%."
+            "_raw_base64": "VFJJR1NUUl83ODIy",
+            "resolved_value": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
+            "_original_resolved_value": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%."
           },
           "sanity_check": {
             "text": "",
@@ -5919,12 +5919,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4250",
-            "_original_value": "TRIGSTR_4250",
+            "value": "TRIGSTR_8327",
+            "_original_value": "TRIGSTR_8327",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjUw",
-            "resolved_value": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
-            "_original_resolved_value": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%."
+            "_raw_base64": "VFJJR1NUUl84MzI3",
+            "resolved_value": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
+            "_original_resolved_value": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%."
           },
           "sanity_check": {
             "text": "",
@@ -5957,12 +5957,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4275",
-            "_original_value": "TRIGSTR_4275",
+            "value": "TRIGSTR_8328",
+            "_original_value": "TRIGSTR_8328",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80Mjc1",
-            "resolved_value": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
-            "_original_resolved_value": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%."
+            "_raw_base64": "VFJJR1NUUl84MzI4",
+            "resolved_value": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
+            "_original_resolved_value": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%."
           },
           "sanity_check": {
             "text": "",
@@ -11883,12 +11883,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7879",
-            "_original_value": "TRIGSTR_7879",
+            "value": "TRIGSTR_4160",
+            "_original_value": "TRIGSTR_4160",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODc5",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl80MTYw",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11903,12 +11903,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7885",
-            "_original_value": "TRIGSTR_7885",
+            "value": "TRIGSTR_4184",
+            "_original_value": "TRIGSTR_4184",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODg1",
-            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
-            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl80MTg0",
+            "resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec.",
+            "_original_resolved_value": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17297,10 +17297,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8284",
-            "_original_value": "TRIGSTR_8284",
+            "value": "TRIGSTR_3843",
+            "_original_value": "TRIGSTR_3843",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mjg0",
+            "_raw_base64": "VFJJR1NUUl8zODQz",
             "resolved_value": "Murasame",
             "_original_resolved_value": "Murasame"
           },
@@ -17317,10 +17317,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8291",
-            "_original_value": "TRIGSTR_8291",
+            "value": "TRIGSTR_3983",
+            "_original_value": "TRIGSTR_3983",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Mjkx",
+            "_raw_base64": "VFJJR1NUUl8zOTgz",
             "resolved_value": "Murasame",
             "_original_resolved_value": "Murasame"
           },
@@ -17355,12 +17355,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7768",
-            "_original_value": "TRIGSTR_7768",
+            "value": "TRIGSTR_7397",
+            "_original_value": "TRIGSTR_7397",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY4",
-            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk"
+            "_raw_base64": "VFJJR1NUUl83Mzk3",
+            "resolved_value": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff",
+            "_original_resolved_value": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff"
           },
           "sanity_check": {
             "text": "",
@@ -17375,12 +17375,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7773",
-            "_original_value": "TRIGSTR_7773",
+            "value": "TRIGSTR_7400",
+            "_original_value": "TRIGSTR_7400",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzcz",
-            "resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
-            "_original_resolved_value": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk"
+            "_raw_base64": "VFJJR1NUUl83NDAw",
+            "resolved_value": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff",
+            "_original_resolved_value": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff"
           },
           "sanity_check": {
             "text": "",
@@ -17865,12 +17865,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8116",
-            "_original_value": "TRIGSTR_8116",
+            "value": "TRIGSTR_4234",
+            "_original_value": "TRIGSTR_4234",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MTE2",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec."
+            "_raw_base64": "VFJJR1NUUl80MjM0",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17885,12 +17885,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8178",
-            "_original_value": "TRIGSTR_8178",
+            "value": "TRIGSTR_4235",
+            "_original_value": "TRIGSTR_4235",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MTc4",
-            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
-            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec."
+            "_raw_base64": "VFJJR1NUUl80MjM1",
+            "resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec.",
+            "_original_resolved_value": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18163,6 +18163,120 @@
         }
       ],
       "display_name": "Death Note"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I045",
+        "hex": "49303435"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_7401",
+            "_original_value": "TRIGSTR_7401",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDAx",
+            "resolved_value": "Avalon Evolved",
+            "_original_resolved_value": "Avalon Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_7402",
+            "_original_value": "TRIGSTR_7402",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDAy",
+            "resolved_value": "Avalon Evolved",
+            "_original_resolved_value": "Avalon Evolved"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8392",
+            "_original_value": "TRIGSTR_8392",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzky",
+            "resolved_value": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage.",
+            "_original_resolved_value": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNitem_AvalonEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNitem_AvalonEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5pdGVtX0F2YWxvbkV2b2x2ZWQuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8393",
+            "_original_value": "TRIGSTR_8393",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mzkz",
+            "resolved_value": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage.",
+            "_original_resolved_value": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Avalon Evolved"
     }
   ]
 }

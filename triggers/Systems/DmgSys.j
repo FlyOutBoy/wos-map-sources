@@ -26,18 +26,9 @@ function AttackCheck takes unit c, unit td, real dmg returns real
     endif
     if dmg> 0 then 
     
-    if MurasameTrigger == false and HasCachedItem(c,'I03Y') > 0 then
-    set atk = LoadInteger(hs,GetHandleId(c),StringHash("atk"))
-    if true then//atk>= 2  then
-    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin"))
-    call DmgPTime2(c,td,100+(GetAttack(c)*1.5),4,1,0,"murasume")
-    set atk =0
-    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
-    else
-    set atk = atk + 1
-    endif
-    call SaveInteger(hs,GetHandleId(c),StringHash("atk"),atk)
-    endif
+    if MurasameTrigger == false and HasCachedItem(c, 'I03Y') > 0 then
+    call Murasame_Start(c, td)
+endif
     if GetUnitTypeId(c) == AinzW_Unit_ID then 
     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
     endif
@@ -537,8 +528,12 @@ endif
 if LaxusPicked and targetIsHero and not targetIsIllusion and targetId != Laxus_ID and dmg >= LaxusF_DmgPorog then
     call LaxusFCheck_Start(td)
 endif
-    if dmg > 1 and isEnemy and HasCachedItem(td, 'I02K') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
+    
+    if dmg > 1 and isEnemy and HasCachedItem(td, 'I045') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
+        call SetHpCurrent2(td, td,AvalonEvolved_HpRestore)
+        elseif dmg > 1 and isEnemy and HasCachedItem(td, 'I02K') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
         call SetHpCurrent2(td, td,Avalon_HpRestore)
+    
     endif
     
     if isEnemy and dmg >= GutsArmor_DmgTreshold  and BlzGetUnitAbilityCooldownRemaining(td, 'A0F4') == 0 and GetUnitAbilityLevel(td, 'A0F4') > 0 then

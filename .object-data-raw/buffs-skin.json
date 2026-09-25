@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "b189eba848653fad4a5125f82e51126f57508b57cd38bed29c258ae7565e97a7",
+  "source_sha256": "b4bae42cefd1cb0796339697c4c22c17866adedbca9f437fd7caea7fcb8dd805",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -13472,6 +13472,98 @@
         }
       ],
       "display_name": "1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03C",
+        "hex": "42303343"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8291",
+            "_original_value": "TRIGSTR_8291",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Mjkx",
+            "resolved_value": "Murasame",
+            "_original_resolved_value": "Murasame"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3981",
+            "_original_value": "TRIGSTR_3981",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zOTgx",
+            "resolved_value": "Unit bleeds",
+            "_original_resolved_value": "Unit bleeds"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX011cmFzYW1lLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
     }
   ]
 }

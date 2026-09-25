@@ -11,16 +11,16 @@ function Trig_ESC_ACT takes nothing returns nothing
         set p = null
         return
     endif
-
+if GetLocalPlayer() == p then
+            call ClearTextMessages()
+        endif
     if TestMode == true then
         if GetUnitTypeId(selected) == Kenjaku_ID then
             set stacks = LoadInteger(hs, GetHandleId(selected), StringHash("Kenjaku Stacks"))
             call SaveInteger(hs, GetHandleId(selected), StringHash("Kenjaku Stacks"), stacks + 2)
         endif
 
-        if GetLocalPlayer() == p then
-            call ClearTextMessages()
-        endif
+        
 
         call ReviveHero(selected, GetUnitX(selected), GetUnitY(selected), false)
         call SetHpCurrent(selected, 9999999)

@@ -40,11 +40,11 @@ globals
     // All absolute frame coordinates and sizes are kept here. The main window
     // and its contents have been shifted 0.045 to the right.
     //===========================================================================
-    private constant real LMP_OPEN_X = 0.885
+    private constant real LMP_OPEN_X = 0.835
     private constant real LMP_OPEN_Y = 0.560
     private constant real LMP_OPEN_SIZE = 0.022
     // Кнопка ссылки расположена справа от кнопки музыки.
-    private constant real LMP_LINK_X = 0.855
+    private constant real LMP_LINK_X = 0.805
     private constant real LMP_LINK_Y = 0.560
     private constant real LMP_LINK_SIZE = 0.022
     private constant real LMP_LINK_EDIT_X = 0.525

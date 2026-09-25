@@ -776,6 +776,9 @@ library NatsuSpells uses GearSystems
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if r <= 3.45 then
                         if r == 0.3 then
+                        if GetUnitAbilityLevel(c,NatsuFR_ID)>0 then 
+            call BlzStartUnitAbilityCooldown(c,NatsuFR_ID,BlzGetUnitAbilityCooldownRemaining(c,NatsuR_ID))
+            endif
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 1.8, 0))
                             call PosUnit(c, x - 130 * Cos(a), y - 130 * Sin(a))
                             set e5 = EffectSpawn("war3mapImported\\wos_R_Button3.mdx", GetUnitX(c) - 100 * Cos(a + 25 * bj_DEGTORAD), GetUnitY(c) - 100 * Sin(a + 25 * bj_DEGTORAD), 270, 1.5, 1.5, 650)
@@ -987,6 +990,7 @@ library NatsuSpells uses GearSystems
             else
                 call MakeSound("war3mapimported\\Hero_Natsu_R")
             endif
+            
             call SaveInteger(hs, GetHandleId(c), StringHash("natsu r"), 1)
             call SaveInteger(hs, GetHandleId(c), StringHash("natsu r add"), 0)
             call SetUnitAnimationByIndex( c , 11)

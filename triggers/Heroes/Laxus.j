@@ -1021,7 +1021,6 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             if GetUnitAbilityLevel(c, LaxusW_ID) >= 5 then
                                 call SwapAbility(c, 3, LaxusW2_ID, LaxusW_ID)
                                 call MyFrame(c, 3, "BTNHero_Laxus_W2", false, 0)
-                                call LaxusW2_Revert.Start(c)
                             endif
 
                             set r = 99999.0

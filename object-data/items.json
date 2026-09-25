@@ -442,12 +442,12 @@
     "name": "Pochita",
     "base_id": "rde1",
     "tooltip": "Pochita",
-    "extended_tooltip": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
+    "extended_tooltip": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Pochita.blp",
     "classification": "Purchasable",
     "cooldown_group": "Abgm",
-    "description": "+15 agi\n+10 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
-    "abilities": "A00X,A073",
+    "description": "+15 agi\n+15 allstats\nPassive: Increase magical dmg for 10%, if hero main stat - agility then add physical dmg by 10%.",
+    "abilities": "A00M,A073",
     "gold_cost": 5000
   },
   "I011": {
@@ -595,13 +595,13 @@
     "name": "Gokon Tekko",
     "base_id": "rde1",
     "tooltip": "Gokon Tekko",
-    "extended_tooltip": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
+    "extended_tooltip": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_Gokon_Tekko.blp",
     "classification": "Campaign",
     "cooldown_group": "Abtl",
     "max_hit_points": 100,
-    "description": "+15 int\n+10 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
-    "abilities": "A00X,A071",
+    "description": "+15 int\n+15 allstats\nPassive: Increase physical dmg for 10%, if hero main stat - intelligence then also increase magical dmg by 10%.",
+    "abilities": "A00M,A071",
     "gold_cost": 5000
   },
   "I01D": {
@@ -932,7 +932,7 @@
     "description": "+15 allstats\nPassive: When deal dmg you increase dealt dmg by 40 dmg.\n",
     "field_uhot": "",
     "abilities": "A0BY,A07Y",
-    "gold_cost": 5000
+    "gold_cost": 7500
   },
   "I024": {
     "name": "Prison Realm (Active)",
@@ -1196,11 +1196,11 @@
     "name": "Shiki Knife",
     "base_id": "rde1",
     "tooltip": "Shiki Knife",
-    "extended_tooltip": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
+    "extended_tooltip": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ShikiKnife.blp",
     "classification": "Purchasable",
     "cooldown_group": "A0FA",
-    "description": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 4 sec.",
+    "description": "+15 agi\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 80+1x agi phys dmg.\nCooldown: 6 sec.",
     "abilities": "A0FA,A073",
     "gold_cost": 2500
   },
@@ -1739,12 +1739,12 @@
     "name": "Murasame",
     "base_id": "rde1",
     "tooltip": "Murasame",
-    "extended_tooltip": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
+    "extended_tooltip": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Murasame.blp",
     "cooldown_group": "A03T",
-    "description": "+15 allstats\nPassive: Attacks poison the target for 4 sec, dealing a total of 100+1.5x ATK damage every atk",
+    "description": "+40 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec , dealing a of 50+0.5x ATK damage ( not stacked) , every new atk reapply debuff",
     "field_uhot": "",
-    "abilities": "A00M",
+    "abilities": "A0HU,A00M",
     "gold_cost": 6000
   },
   "I03Z": {
@@ -1786,12 +1786,12 @@
     "name": "Shiki Knife Evolved",
     "base_id": "rde1",
     "tooltip": "Shiki Knife Evolved",
-    "extended_tooltip": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
+    "extended_tooltip": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ShikiKnifeEvolved.blp",
     "actively_used": 1,
     "classification": "Purchasable",
     "cooldown_group": "A0FA",
-    "description": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 4 sec.",
+    "description": "+15 allstat\nActive: Throw knife to trigger passive effect x1.5 to enemy on hit ,count as atk\nPassive: Whenever you deal phys damage to an enemy within 650 range, deal an additional 125+1.75x agi phys dmg.\nCooldown: Active - 8 sec, Passive - 6 sec.",
     "abilities": "A0HY,A07Y",
     "gold_cost": 5000
   },
@@ -1820,5 +1820,16 @@
     "field_uhot": "",
     "abilities": "A0I1,A00W",
     "gold_cost": 7500
+  },
+  "I045": {
+    "name": "Avalon Evolved",
+    "base_id": "rde1",
+    "tooltip": "Avalon Evolved",
+    "extended_tooltip": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_AvalonEvolved.blp",
+    "classification": "Charged",
+    "description": "+1250 hp\n+5% phys res\nPassive: Restore 50 hp everytime you take damage.",
+    "abilities": "A02H,A09R,A01Y",
+    "gold_cost": 6000
   }
 }

@@ -4,6 +4,7 @@
 
 // BEGIN AUTO TRIGGER IMPORTS
 //! import "..\triggers\Map_Header.j"
+//! import "..\triggers\WOS_Start\ShowCD.j"
 //! import "..\triggers\WOS_Start\TooltipBuilder.j"
 //! import "..\triggers\WOS_Start\UniversalTooltips.j"
 //! import "..\triggers\WOS_Start\UI_CAREER.j"
@@ -14,6 +15,7 @@
 //! import "..\triggers\WOS_Start\Scoreboard.j"
 //! import "..\triggers\WOS_Start\ChatCommand.j"
 //! import "..\triggers\WOS_Start\Player_Pick_Mode.j"
+//! import "..\triggers\WOS_Start\Captain_Draft.j"
 //! import "..\triggers\WOS_Start\WoS_Shop_Init.j"
 //! import "..\triggers\WOS_Start\WoS_Pick_Init.j"
 //! import "..\triggers\WOS_Start\Starts.j"
@@ -183,6 +185,7 @@ trigger gg_trg_MusicPlayer= null
 trigger gg_trg_Scoreboard= null
 trigger gg_trg_ChatCommand= null
 trigger gg_trg_Player_Pick_Mode= null
+trigger gg_trg_Captain_Draft= null
 trigger gg_trg_WoS_Shop_Init= null
 trigger gg_trg_WoS_Pick_Init= null
 trigger gg_trg_Starts= null
@@ -502,6 +505,7 @@ endfunction
 
 //===========================================================================
 function InitCustomTriggers takes nothing returns nothing
+    //Function not found: call InitTrig_ShowCD()
     //Function not found: call InitTrig_TooltipBuilder()
     //Function not found: call InitTrig_UniversalTooltips()
     //Function not found: call InitTrig_UI_CAREER()
@@ -512,6 +516,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_Scoreboard()
     //Function not found: call InitTrig_ChatCommand()
     //Function not found: call InitTrig_Player_Pick_Mode()
+    //Function not found: call InitTrig_Captain_Draft()
     call InitTrig_WoS_Shop_Init()
     //Function not found: call InitTrig_WoS_Pick_Init()
     call InitTrig_Starts()

@@ -126,6 +126,7 @@ globals
     private framehandle array WOS_STATS_TotalTakenHover
 
     private integer array WOS_STATS_LastHeroType
+    private boolean array WOS_STATS_LastHeroDead
     private integer array WOS_STATS_LastItemId
     private integer array WOS_STATS_LastRowPid
     private boolean array WOS_STATS_IsOpen
@@ -717,6 +718,7 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     local string heroTexture
     local string playerName
     local boolean playerLeft
+    local boolean heroDead
     local boolean expanded = WOS_STATS_IsExpanded[viewerPid]
     local boolean opaque = WOS_STATS_IsOpaque[viewerPid]
 
@@ -725,6 +727,8 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
         call BlzFrameSetVisible(WOS_STATS_RowContent[row], false)
         call WOS_STATS_ClearItems(row)
         set WOS_STATS_LastRowPid[row] = -1
+        set WOS_STATS_LastHeroType[row] = 0
+        set WOS_STATS_LastHeroDead[row] = false
         return
     endif
 
@@ -737,20 +741,23 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     call BlzFrameSetVisible(WOS_STATS_RowContent[row], true)
 
     if heroUnit == null then
-        if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != 0 then
+        if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != 0 or WOS_STATS_LastHeroDead[row] then
             call BlzFrameSetTexture(WOS_STATS_HeroIcon[row], WOS_STATS_TEX_EMPTY, 0, false)
         endif
         set WOS_STATS_LastHeroType[row] = 0
+        set WOS_STATS_LastHeroDead[row] = false
         call WOS_STATS_ClearItems(row)
     else
         set heroType = GetUnitTypeId(heroUnit)
+        set heroDead = IsUnitType(heroUnit, UNIT_TYPE_DEAD)
         set heroTexture = BlzGetAbilityIcon(heroType)
-        if IsUnitType(heroUnit, UNIT_TYPE_DEAD) then
+        if heroDead then
             set heroTexture = ConvertBTNtoDISBTN(heroTexture)
         endif
-        if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != heroType or IsUnitType(heroUnit, UNIT_TYPE_DEAD) then
+        if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != heroType or WOS_STATS_LastHeroDead[row] != heroDead then
             call BlzFrameSetTexture(WOS_STATS_HeroIcon[row], heroTexture, 0, false)
             set WOS_STATS_LastHeroType[row] = heroType
+            set WOS_STATS_LastHeroDead[row] = heroDead
         endif
     endif
 
@@ -1581,6 +1588,8 @@ private function WOS_STATS_CreateRows takes nothing returns nothing
         endloop
 
         set WOS_STATS_LastRowPid[row] = -1
+        set WOS_STATS_LastHeroType[row] = 0
+        set WOS_STATS_LastHeroDead[row] = false
         call BlzFrameSetVisible(WOS_STATS_RowBack[row], false)
         call BlzFrameSetVisible(WOS_STATS_RowContent[row], false)
         set row = row + 1

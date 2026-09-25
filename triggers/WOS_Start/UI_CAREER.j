@@ -17,7 +17,7 @@ globals
     private constant real WCS_PANEL_Y = 0.315
     private constant real WCS_PANEL_WIDTH = 0.350
     private constant real WCS_PANEL_HEIGHT = 0.265
-    private constant real WCS_OPEN_X = 0.825
+    private constant real WCS_OPEN_X = 0.775
     private constant real WCS_OPEN_Y = 0.560
     private constant real WCS_OPEN_SIZE = 0.022
 
