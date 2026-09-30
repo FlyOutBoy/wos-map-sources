@@ -421,6 +421,9 @@ function Regen takes nothing returns nothing
                     call UnitAddAbility(u, 'Avul')
                 endif
                 else
+                if GetUnitAbilityLevel(u,'B02F')>0 then 
+                call SetMpCurrent(u,-15)
+                endif
        if HasCachedItem(u,'I02G') > 0 then
         call MeraMeraNoMi(u)
        endif

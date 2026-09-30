@@ -254,6 +254,19 @@
     "field_dsnd": "",
     "field_dvis": 100.0
   },
+  "D00J": {
+    "name": "БИЛБОРД ТУРНИР",
+    "base_id": "YOsw",
+    "field_dcat": "O",
+    "field_ddes": 6.0,
+    "field_dfil": "war3mapImported\\wos_ggap1.mdl",
+    "field_dmis": 1.0,
+    "field_dptx": "",
+    "field_dsel": 100.0,
+    "field_dsmm": 0,
+    "field_dsnd": "",
+    "field_dvis": 100.0
+  },
   "D00N": {
     "name": "Могила_1",
     "base_id": "YOsw",

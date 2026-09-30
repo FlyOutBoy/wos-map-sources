@@ -72,7 +72,7 @@ globals
     private boolean EmojiPanelOpen = false
     private boolean array PlayerEmojiEnabled
 endglobals
-function CustomChat_SetPlayerAccessLevel takes player p, integer level returns nothing
+ function CustomChat_SetPlayerAccessLevel takes player p, integer level returns nothing
     set PlayerEmojiAccessLevel[GetPlayerId(p)] = level
 endfunction
 private function GetColoredPlayerName takes player p returns string
@@ -491,21 +491,38 @@ private function RegisterDefaultEmojis takes nothing returns nothing
     call CustomChat_RegisterCommand(13, "pominki", "war3mapImported\\Emoji_pominki.blp")
     call CustomChat_RegisterCommand(14, "ustal",   "war3mapImported\\Emoji_ustal.blp")
     call CustomChat_RegisterCommand(15, "what",    "war3mapImported\\Emoji_whaaat.blp")
+    call CustomChat_RegisterCommand(16, "aqua",    "war3mapImported\\Emoji_aqua.blp")
+    call CustomChat_RegisterCommand(17, "baka",    "war3mapImported\\Emoji_baka.blp")
+    call CustomChat_RegisterCommand(18, "ekk",    "war3mapImported\\Emoji_ekk.blp")
+    call CustomChat_RegisterCommand(19, "goku",    "war3mapImported\\Emoji_goku.blp")
+    call CustomChat_RegisterCommand(20, "hisoka",    "war3mapImported\\Emoji_hisoka.blp")
+    call CustomChat_RegisterCommand(21, "ichi",    "war3mapImported\\Emoji_ichi.blp")
+    call CustomChat_RegisterCommand(22, "itachi",    "war3mapImported\\Emoji_itachi.blp")
+    call CustomChat_RegisterCommand(23, "jojo",    "war3mapImported\\Emoji_jojo.blp")
+    call CustomChat_RegisterCommand(24, "makima",    "war3mapImported\\Emoji_makima.blp")
+    call CustomChat_RegisterCommand(25, "market",    "war3mapImported\\Emoji_market.blp")
+    call CustomChat_RegisterCommand(26, "paimon",    "war3mapImported\\Emoji_paimon.blp")
+    call CustomChat_RegisterCommand(27, "saske",    "war3mapImported\\Emoji_saske.blp")
+    call CustomChat_RegisterCommand(28, "sosal",    "war3mapImported\\Emoji_sosal.blp")
+    call CustomChat_RegisterCommand(29, "swap",    "war3mapImported\\Emoji_swap.blp")
+    call CustomChat_RegisterCommand(30, "thin",    "war3mapImported\\Emoji_thin.blp")
+    call CustomChat_RegisterCommand(31, "thinkass",    "war3mapImported\\Emoji_thinkass.blp")
 endfunction
 
 private function ConfigureEmojiAccess takes nothing returns nothing
     // =====================================================================
     // FREE PLAYER: 5 explicitly selected emojis.
     // Change the Count and IDs below. IDs refer to RegisterDefaultEmojis.
-    set EmojiAccessFreeCount = 5
+    set EmojiAccessFreeCount = 6
     set EmojiAccessFree[1] = 1   // kek
     set EmojiAccessFree[2] = 2   // sadge
     set EmojiAccessFree[3] = 3   // pog
     set EmojiAccessFree[4] = 6   // cry
     set EmojiAccessFree[5] = 15  // what
+    set EmojiAccessFree[6] = 19  // goku
 
     // VIP LEVEL 3 (HIGHEST): all 15 registered emojis.
-    set EmojiAccessVIP3Count = 15
+    set EmojiAccessVIP3Count = 31
     set EmojiAccessVIP3[1] = 1
     set EmojiAccessVIP3[2] = 2
     set EmojiAccessVIP3[3] = 3
@@ -521,9 +538,25 @@ private function ConfigureEmojiAccess takes nothing returns nothing
     set EmojiAccessVIP3[13] = 13
     set EmojiAccessVIP3[14] = 14
     set EmojiAccessVIP3[15] = 15
+    set EmojiAccessVIP3[16] = 16
+    set EmojiAccessVIP3[17] = 17
+    set EmojiAccessVIP3[18] = 18
+    set EmojiAccessVIP3[19] = 19
+    set EmojiAccessVIP3[20] = 20
+    set EmojiAccessVIP3[21] = 21
+    set EmojiAccessVIP3[22] = 22
+    set EmojiAccessVIP3[23] = 23
+    set EmojiAccessVIP3[24] = 24
+    set EmojiAccessVIP3[25] = 25
+    set EmojiAccessVIP3[26] = 26
+    set EmojiAccessVIP3[27] = 27
+    set EmojiAccessVIP3[28] = 28
+    set EmojiAccessVIP3[29] = 29
+    set EmojiAccessVIP3[30] = 30
+    set EmojiAccessVIP3[31] = 31
 
     // VIP LEVEL 2: 12 explicitly selected emojis.
-    set EmojiAccessVIP2Count = 12
+    set EmojiAccessVIP2Count = 21
     set EmojiAccessVIP2[1] = 1
     set EmojiAccessVIP2[2] = 2
     set EmojiAccessVIP2[3] = 3
@@ -536,9 +569,18 @@ private function ConfigureEmojiAccess takes nothing returns nothing
     set EmojiAccessVIP2[10] = 10
     set EmojiAccessVIP2[11] = 11
     set EmojiAccessVIP2[12] = 12
+    set EmojiAccessVIP2[13] = 13
+    set EmojiAccessVIP2[14] = 14
+    set EmojiAccessVIP2[15] = 15
+    set EmojiAccessVIP2[16] = 16
+    set EmojiAccessVIP2[17] = 17
+    set EmojiAccessVIP2[18] = 18
+    set EmojiAccessVIP2[19] = 19
+    set EmojiAccessVIP2[20] = 20
+    set EmojiAccessVIP2[21] = 21
 
     // VIP LEVEL 1 (LOWEST VIP): 9 explicitly selected emojis.
-    set EmojiAccessVIP1Count = 9
+    set EmojiAccessVIP1Count = 14
     set EmojiAccessVIP1[1] = 1
     set EmojiAccessVIP1[2] = 2
     set EmojiAccessVIP1[3] = 3
@@ -547,7 +589,12 @@ private function ConfigureEmojiAccess takes nothing returns nothing
     set EmojiAccessVIP1[6] = 6
     set EmojiAccessVIP1[7] = 7
     set EmojiAccessVIP1[8] = 10
-    set EmojiAccessVIP1[9] = 15
+    set EmojiAccessVIP1[9] = 11
+    set EmojiAccessVIP1[10] = 12
+    set EmojiAccessVIP1[11] = 13
+    set EmojiAccessVIP1[12] = 14
+    set EmojiAccessVIP1[13] = 15
+    set EmojiAccessVIP1[14] = 16
     // =====================================================================
 endfunction
 

@@ -112,6 +112,7 @@ globals
     integer array ss_MatchItemId
     integer array ss_MatchKills
     integer array ss_MatchDeaths
+    integer array ss_MatchTrainDeaths
     integer array ss_MatchDamagePhys
     integer array ss_MatchDamageMagic
     integer array ss_MatchHealing
@@ -1017,6 +1018,18 @@ function SaveSystem_BotExportSetTrainKills takes integer trainKills returns noth
     set ss_BotTrainKills = SaveSystem_BotNonNegative(trainKills)
 endfunction
 
+function SaveSystem_RecordTrainDeath takes unit whichHero returns nothing
+    local integer pid
+    if whichHero == null or not IsUnitType(whichHero, UNIT_TYPE_HERO) or IsUnitIllusion(whichHero) then
+        return
+    endif
+    set pid = GetPlayerId(GetOwningPlayer(whichHero))
+    if not IsGamePlayerSlot(pid) then
+        return
+    endif
+    set ss_MatchTrainDeaths[pid] = ss_MatchTrainDeaths[pid] + 1
+endfunction
+
 function SaveSystem_BotAddItemResult takes integer itemId, boolean isWin returns nothing
     local integer i = 0
     if itemId == 0 or SaveSystem_IsIgnoredItem(itemId) then
@@ -1102,6 +1115,7 @@ function SaveSystem_BotExportAddPlayer takes player whichPlayer, string stableNa
     set line = "STATS|n=" + I2S(index + 1) + "|pid=" + I2S(pid) + "|rounds_played=" + I2S(ss_MatchRoundsPlayed[pid])
     set line = line + "|round_wins=" + I2S(ss_MatchRoundWins[pid]) + "|round_losses=" + I2S(ss_MatchRoundLosses[pid])
     set line = line + "|kills=" + I2S(ss_MatchKills[pid]) + "|deaths=" + I2S(ss_MatchDeaths[pid])
+    set line = line + "|train_deaths=" + I2S(ss_MatchTrainDeaths[pid])
     set line = line + "|damage_phys=" + I2S(ss_MatchDamagePhys[pid]) + "|damage_magic=" + I2S(ss_MatchDamageMagic[pid])
     set line = line + "|damage_total=" + I2S(ss_MatchDamagePhys[pid] + ss_MatchDamageMagic[pid])
     set line = line + "|heal=" + I2S(ss_MatchHealing[pid]) + "|taken_phys=" + I2S(ss_MatchTakenPhys[pid])
@@ -1226,7 +1240,7 @@ function SaveSystem_BotExportWrite takes nothing returns nothing
         return
     endif
     call WOS2BotCodec_Begin(ss_BotMatchId)
-    set ss_BotSealedHeader = WOS2BotCodec_Header()
+    set ss_BotSealedHeader = WOS2BotCodec_Header() + "|map_version=" + SaveSystem_BotSafeText(MAP_VERSION)
     set ss_BotWritePhase = 0
     set ss_BotWritePlayerIndex = 0
     set ss_BotWritePlayerPart = 0

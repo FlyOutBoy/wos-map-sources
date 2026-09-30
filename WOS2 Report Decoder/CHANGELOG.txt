@@ -1,0 +1,12 @@
+WOS2 REPORT DECODER — ADMIN ONLY
+
+- Missing-header diagnostic reports can now use the match ID from their standard Warcraft III file name.
+- Added diagnostic fallback: reports with an invalid authentication tag are still decrypted to *_decoded_UNVERIFIED.txt for local inspection.
+- Unverified plaintext is clearly separated from reports accepted by the exact server validator.
+- Added drag-and-drop BAT launcher for Warcraft III WOS2 report files.
+- Uses the exact existing server decoder, key material and authentication checks.
+- Writes the accepted plaintext records to *_decoded.txt beside the input file.
+- Clearly reports whether the server would accept or reject the report.
+- No obfuscation or compression is used.
+- Decoded output now preserves the clear WOS2E map_version header.
+- train_kills and per-player train_deaths remain visible in the decoded output.

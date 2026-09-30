@@ -828,7 +828,7 @@
     "name": "7 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-49% active healing",
+    "extended_tooltip": "-49% active healing and burn 10 mana per sec",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },

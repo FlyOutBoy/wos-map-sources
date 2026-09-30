@@ -45,7 +45,7 @@ library TsunaSpells uses GearSystems
         real TsunaW_DamageAgiStep = 0.2              // Прирост урона атак за уровень
         real TsunaW_Damage2StaticBase = 50.0         // Базовый статик урона атак под W
         real TsunaW_Damage2StaticStep = 0.0          // Прирост статика атак за уровень
-        real TsunaW_BuffDuration = 8.0               // Длительность стойки / баффа W
+        real TsunaW_BuffDuration = 6.0               // Длительность стойки / баффа W
         real TsunaW_Root = 0.25                      // Рут от первого каста стойки
 
 //---------------W2 ability (Удар из стойки W)---------------------------------
@@ -1684,6 +1684,7 @@ library TsunaSpells uses GearSystems
                         endif
                         if r == TsunaT_OverchargeTime and GetHeroLevel(c) >= 35 then
                             set check2 = R2I(TsunaT_OverchargeDmgPct)
+                            
                             call BlzFrameSetText(frame0_pas4[k2], "|c00FF0303" + I2S(check2) + "%|r")
                             call MakeSound("war3mapimported\\Hero_Tsuna_T7")
                             call MakeSound("war3mapimported\\Hero_Tsuna_T")
@@ -1717,6 +1718,9 @@ library TsunaSpells uses GearSystems
                             set r2 = 0
                             if k3 == 1 then
                                 set aoe = aoe + 45 * TsunaT_Size
+                            endif
+                            if check2>= 120 then 
+                            call BlzStartUnitAbilityCooldown(c,TsunaT_ID,BlzGetUnitAbilityCooldownRemaining(c,TsunaT_ID)*(I2R(check2) / 100))
                             endif
                             set dmg = dmg * (I2R(check2) / 100)
                             call StartSpellUnit(c)

@@ -1,10 +1,10 @@
 globals
     // Captain Draft settings: edit only these values to tune the mode.
-    integer CaptainDraftPreTime = 10
-    integer CaptainDraftVoteTime = 10
-    integer CaptainDraftBanTime = 15
+    integer CaptainDraftPreTime = 20
+    integer CaptainDraftVoteTime = 15
+    integer CaptainDraftBanTime = 30
     integer CaptainDraftPickTime = 30
-    integer CaptainDraftClaimTime = 20
+    integer CaptainDraftClaimTime = 30
     integer CaptainDraftThinkTime = 60
     integer CaptainDraftBanTotal = 6
     integer CaptainDraftPickTotal = 10
@@ -1108,6 +1108,11 @@ function CaptainDraft_CreateHero takes integer pid, integer heroId returns nothi
     call SaveSystem_SetCurrentHero(Player(pid), u)
     call SelectUnitForPlayerSingle(u, Player(pid))
     set FRAME_PlayerPickString[pid] = GetObjectName(heroId)
+        if heroId == Hero_ID2[0] then
+            set NatsuPicked = true
+        elseif heroId == Hero_ID2[3] then
+            set LaxusPicked = true
+            endif
     if GetLocalPlayer() == Player(pid) then
         call BlzFrameSetVisible(FRAME_MAIN, false)
         call BlzFrameSetVisible(FRAME_StatusHeroMain, true)

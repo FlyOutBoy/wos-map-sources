@@ -82,11 +82,11 @@ library KyorakuSpells uses GearSystems
         integer KyorakuT_BankaiBuff = 'B00H'
         boolean BankaiActive = false
         real KyorakuT_Dan1_MinHp = 15 // hp cant go lower than this amount
-        real KyorakuT_Dan1_Reverse = 0.5 // 1 = 100% reverse, 0.8 = 80%
+        real KyorakuT_Dan1_Reverse = 0.7 // 1 = 100% reverse, 0.8 = 80%
         real KyorakuT_Dan2_KyorakuSelfHealEnter = 5 // % of max hp that kyoraku will restore for each main enemy hero that attacked someone while 1 - st dan, for example 3 heroes deal damage while 1 - st dan, when second activated kyoraku will restore instantly 3x10% = 30% of max hp
-        real KyorakuT_Dan2_DamageAgi = 1 // base number x Agi damage per second
+        real KyorakuT_Dan2_DamageAgi = 1.5 // base number x Agi damage per second
         real KyorakuT_Dan3_ManaBurn = 1.75 //% of max mana per second loose everyone
-        real KyorakuT_Dan3_Dmg = 1 //Agi per second
+        real KyorakuT_Dan3_Dmg = 1.5 //Agi per second
         real KyorakuT_DanFinal_Dmg = 10 //Agi
         real KyorakuT_DanFinal_BaseCd = 9 // after gain last dan first cd 15 sec before use
         real KyorakuT_DanFinal_Stun = 1.5 // from 0.1 to 0.3
@@ -1788,7 +1788,7 @@ endfunction
                                 if IsUnitIllusion(.u) == false and IsUnitType(.u, UNIT_TYPE_HERO) then
                                     set drain = (KyorakuT_Dan3_ManaBurn / 100) * GetUnitState(.u, UNIT_STATE_MAX_MANA)
                                     if c == u then 
-                                set drain = 0.75*drain
+                                set drain = 1*drain
                                 endif
                                 call SetUnitState(.u, UNIT_STATE_MANA, GetUnitState(.u, UNIT_STATE_MANA) - drain)
                                     set ok = 0.5
@@ -1796,7 +1796,7 @@ endfunction
                                         set ok = 1
                                     endif
                                      if IsUnitAlly(u,GetOwningPlayer(c)) then 
-                                     set ok = ok*0.5
+                                     set ok = ok*1
                                      endif
                                     call dmgmag(.c, .u, .dmg2*ok)
                                         
@@ -1851,7 +1851,7 @@ endfunction
                                 exitwhen .k > 10
                                 if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated")) > 0 and SR2(c,Hero[k])<= KyorakuT_DamageAoe then
                                     if IsUnitAlly(u,GetOwningPlayer(c)) then 
-                                     set ok = ok*0.5
+                                     set ok = ok*1
                                      else
                                       set ok = 1
                                     endif

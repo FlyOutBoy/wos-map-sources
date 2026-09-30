@@ -986,7 +986,7 @@ function OnClickFrameLink takes nothing returns nothing
         call BlzFrameSetText(FRAME_LINK,"discord.gg/wos2")
         endif
     endif
-     if clicked == FRAME_Chat1 or clicked == FRAME_Chat2 or clicked == FRAME_Chat3 or clicked == FRAME_Chat4 or clicked == FRAME_Chat5 or clicked == FRAME_Chat6 then 
+  /*   if clicked == FRAME_Chat1 or clicked == FRAME_Chat2 or clicked == FRAME_Chat3 or clicked == FRAME_Chat4 or clicked == FRAME_Chat5 or clicked == FRAME_Chat6 then 
      if clicked == FRAME_Chat1 then 
      call MyRemoveEff(AddSpecialEffectTarget("war3mapimported\\wos_emoji_11.mdx",Hero[pid],"origin"),3.5)
      elseif clicked == FRAME_Chat2 then 
@@ -1007,7 +1007,8 @@ function OnClickFrameLink takes nothing returns nothing
         call BlzFrameSetVisible(FRAME_Chat0,false)        
         endif
     endif
-    if clicked == FRAME_LINK4 then 
+   */
+   if clicked == FRAME_LINK4 then 
     if GetLocalPlayer() == p then
         call BlzFrameSetText(FRAME_LINK,"discord.gg/wos2")
         call BlzFrameSetVisible(FRAME_LINK,false)
@@ -1393,7 +1394,7 @@ endfunction
         set y = 0.0275
         set k = 210
         set r1 = y
-        set FRAME_Chat0 = BlzCreateFrameByType("BACKDROP", "MyIconButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+        /*set FRAME_Chat0 = BlzCreateFrameByType("BACKDROP", "MyIconButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
         call BlzFrameSetAbsPoint(FRAME_Chat0,FRAMEPOINT_CENTER, 0.37,0.31 )// - 0.03 * i)
         call BlzFrameSetSize(FRAME_Chat0, 0.3, 0.15)
         call BlzFrameSetTexture(FRAME_Chat0,"war3mapimported\\border1.blp",0,true)
@@ -1441,7 +1442,7 @@ endfunction
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_Chat4, FRAMEEVENT_CONTROL_CLICK)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_Chat5, FRAMEEVENT_CONTROL_CLICK)        
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_Chat6, FRAMEEVENT_CONTROL_CLICK)
-    call BlzFrameSetVisible(FRAME_Chat0,false)   
+    call BlzFrameSetVisible(FRAME_Chat0,false)   */
         //call BlzFrameSetTexture(FRAME_StatsMain, "UI\\Console\\ConsoleBackground.blp", 0, true)
          /* set FRAME_TEST = BlzCreateFrame("EscMenuControlBackdropTemplate", FRAME_TEST4, 0, 0)
         call BlzFrameSetAbsPoint(FRAME_TEST, FRAMEPOINT_CENTER, 0.07, 0.185)

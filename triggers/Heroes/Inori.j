@@ -8,14 +8,14 @@ library InoriSpells uses GearSystems
         real InoriF_PushRange = 550
 //---------------Q ability-----------------------------------------------------
         integer InoriQ_ID = 'A05Z'
-        real InoriQ_DamageIntBase = 1.5 // base number x Int damage for 1 level
+        real InoriQ_DamageIntBase = 1 // base number x Int damage for 1 level
         real InoriQ_DamageIntStep = 1 // additional number x Int damage for each next level
         real InoriQ_Damage2StaticBase = 175 // base static damage for 1 level
         real InoriQ_Damage2StaticStep = 0 // additional static damage for each next level
         real InoriQ_Range = 1400
         real InoriQ_RangeADD = 125
         real InoriQ_DamageAoe = 190
-        real InoriFQ_DamageIntBase = 2 // base number x Int damage for 1 level
+        real InoriFQ_DamageIntBase = 1 // base number x Int damage for 1 level
         real InoriFQ_DamageIntStep = 1 // additional number x Int damage for each next level
         real InoriFQ_Damage2StaticBase = 175 // base static damage for 1 level
         real InoriFQ_Damage2StaticStep = 0 // additional static damage for each next level
@@ -91,7 +91,7 @@ library InoriSpells uses GearSystems
         integer InoriER_ID = 'A06B'
         integer InoriR_BuffId = 'B00J'
         real InoriR_HealIntBase = 0.6 // base number x Int damage for 1 level .dmg per sec
-        real InoriR_HealIntStep = 0.1 // additional number x Int damage for each next level .dmg per sec
+        real InoriR_HealIntStep = 0.15 // additional number x Int damage for each next level .dmg per sec
         real InoriR_HealStaticBase = 0 // base number x Int damage for 1 level .dmg per sec
         real InoriR_HealStaticStep = 0 // additional number x Int damage for each next level .dmg per sec
         real InoriR_HealAoe = 1000
@@ -400,7 +400,7 @@ library InoriSpells uses GearSystems
             set r2 = 0
             set move = 0
             set r6 = 0
-            set r7 = InoriQ_Range + InoriQ_RangeADD*(GetUnitAbilityLevel(c,InoriQ_ID)-1) + (GetHeroInt(c, true)*2)
+            set r7 = InoriQ_Range + InoriQ_RangeADD*(GetUnitAbilityLevel(c,InoriQ_ID)-1) + (GetHeroInt(c, true)*1)
             set check2 = 0
             set check3 = 0
             set k2 = 0

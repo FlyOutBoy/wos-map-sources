@@ -258,6 +258,7 @@ library RoundSpells uses GearSystems
                         if SpellBool( u ) then
                         if GetUnitState(u,UNIT_STATE_LIFE)-dmg2<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                         call SetHpCurrent(u, -dmg2)
                         call soundcheck(u)
@@ -292,6 +293,7 @@ library RoundSpells uses GearSystems
                                         call GroupAddUnit(g2, u)
                         if GetUnitState(u,UNIT_STATE_LIFE)-dmg<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false  then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                                         call SetHpCurrent(u, -dmg)
                                         call soundcheck(u)
@@ -318,6 +320,7 @@ library RoundSpells uses GearSystems
                         if SpellBool( u ) then
                             if GetUnitState(u,UNIT_STATE_LIFE)-dmg2<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false  then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                             call SetHpCurrent(u, -dmg2)
                             call soundcheck(u)
@@ -354,6 +357,7 @@ library RoundSpells uses GearSystems
                                         call StunUnit(u, u, 1.5)
                                         if GetUnitState(u,UNIT_STATE_LIFE)-dmg<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                                         call SetHpCurrent(u, -dmg)
                                         call soundcheck(u)
@@ -388,6 +392,7 @@ library RoundSpells uses GearSystems
                         if SpellBool( u ) then
                         if GetUnitState(u,UNIT_STATE_LIFE)-dmg2<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false  then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                             call SetHpCurrent(u, -dmg2)
                             call soundcheck(u)
@@ -410,6 +415,7 @@ library RoundSpells uses GearSystems
                         if SpellBool( u ) then
                         if GetUnitState(u,UNIT_STATE_LIFE)-dmg2<=3 and IsUnitType(u,UNIT_TYPE_HERO) and IsUnitIllusion(u)==false  then 
                         set TrainKill = TrainKill + 1
+                        call SaveSystem_RecordTrainDeath(u)
                         endif
                             call SetHpCurrent(u, -dmg2)
                             call soundcheck(u)

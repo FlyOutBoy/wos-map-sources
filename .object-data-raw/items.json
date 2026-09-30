@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "a776836be8e4c0515e5140a0f11929eb7a4eddece1629d7cd550bfb79d634213",
+  "source_sha256": "262068e5c155ff0ff409cbded4f54f3ace863ef410ba527ccd4089cb8c5bbf18",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -1613,7 +1613,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 4500
+            "value": 5000
           },
           "sanity_check": {
             "text": "",
@@ -2026,10 +2026,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A02E,A020,A007",
-            "_original_value": "A02E,A020,A007",
+            "value": "A02E,A020",
+            "_original_value": "A02E,A020",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAyRSxBMDIwLEEwMDc="
+            "_raw_base64": "QTAyRSxBMDIw"
           },
           "sanity_check": {
             "text": "",
@@ -2642,10 +2642,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A04Q,A0CC,A04S,A04R",
-            "_original_value": "A04Q,A0CC,A04S,A04R",
+            "value": "A04Q,A0I6,A09R,A04R",
+            "_original_value": "A04Q,A0I6,A09R,A04R",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA0USxBMENDLEEwNFMsQTA0Ug=="
+            "_raw_base64": "QTA0USxBMEk2LEEwOVIsQTA0Ug=="
           },
           "sanity_check": {
             "text": "",
@@ -2660,7 +2660,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 4500
+            "value": 5000
           },
           "sanity_check": {
             "text": "",
@@ -3143,10 +3143,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A01Y,A04S,A016",
-            "_original_value": "A01Y,A04S,A016",
+            "value": "A04S,A016",
+            "_original_value": "A04S,A016",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAxWSxBMDRTLEEwMTY="
+            "_raw_base64": "QTA0UyxBMDE2"
           },
           "sanity_check": {
             "text": "",
@@ -3161,7 +3161,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 6000
+            "value": 6500
           },
           "sanity_check": {
             "text": "",
@@ -6122,10 +6122,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0BY,A07Y",
-            "_original_value": "A0BY,A07Y",
+            "value": "A0BY,A0I5",
+            "_original_value": "A0BY,A0I5",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBCWSxBMDdZ"
+            "_raw_base64": "QTBCWSxBMEk1"
           },
           "sanity_check": {
             "text": "",
@@ -11321,7 +11321,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 3750
           },
           "sanity_check": {
             "text": "",
@@ -11370,10 +11370,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HU,A00M",
-            "_original_value": "A0HU,A00M",
+            "value": "A0I4,A00M",
+            "_original_value": "A0I4,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBIVSxBMDBN"
+            "_raw_base64": "QTBJNCxBMDBN"
           },
           "sanity_check": {
             "text": "",
@@ -11920,7 +11920,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 6000
+            "value": 5000
           },
           "sanity_check": {
             "text": "",

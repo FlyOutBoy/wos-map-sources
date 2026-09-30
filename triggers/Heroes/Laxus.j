@@ -107,7 +107,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         real LaxusR_Damage2StaticBase = 0.0
         real LaxusR_Damage2StaticStep = 0.0
         real LaxusR_DamageAoe = 275.0
-        real LaxusR_DamageAoe2 = 500.0
+        real LaxusR_DamageAoe2 = 275.0
         boolean LaxusR_IsInvul = false
         real LaxusR_CastTime = 0.75
         real LaxusR_MaxDuration = 2.40
@@ -143,7 +143,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         real LaxusF_Stun = 0.50
         real LaxusF_AoeSearch = 1800.0
         real LaxusF_DmgPorog = 1000.0
-        boolean LaxusF_IsInvul = true
+        boolean LaxusF_IsInvul = false
         real LaxusF_CastTime = 0.45
         real LaxusF_HitDelay = 0.66
         real LaxusF_MaxDuration = 3.00

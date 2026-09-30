@@ -12,6 +12,9 @@ boolean BanSelectionLocked = false
 endglobals
 
 globals
+    constant string MAP_VERSION = "0.32g"
+endglobals
+globals
     integer MaxHeroBans = 4          // Р РЋР С“Р В РЎвЂќР В РЎвЂўР В Р’В»Р РЋР Р‰Р В РЎвЂќР В РЎвЂў Р В РЎвЂ“Р В Р’ВµР РЋР вЂљР В РЎвЂўР В Р’ВµР В Р вЂ  Р В Р’В±Р В Р’В°Р В Р вЂ¦Р В РЎвЂР РЋРІР‚С™Р РЋР С“Р РЋР РЏ Р В Р’В·Р В Р’В° Р В РЎвЂР В РЎвЂ“Р РЋР вЂљР РЋРЎвЂњ Р Р†Р вЂљРІР‚Сњ Р В РЎВР В Р’ВµР В Р вЂ¦Р РЋР РЏР В РІвЂћвЂ“ Р РЋРІР‚С™Р РЋРЎвЂњР РЋРІР‚С™
     // =========================================================================
     // BAN IMMUNITY: put the three protected hero rawcodes here.
@@ -4207,13 +4210,22 @@ function ApplyObserverHpBarDiplomacy takes nothing returns nothing
     local integer observerPid = 10
     local integer gamePid
     local boolean teamOne
+    local boolean pickedTeamsReady
+
+    // В обычной игре команды совпадают с исходными слотами. В Player Pick
+    // FullTeam1/FullTeam2 уже содержат фактически собранные составы.
+    set pickedTeamsReady = CaptainMode == true and FullTeam1Size > 0 and FullTeam2Size > 0
 
     loop
         exitwhen observerPid >= 15
         set gamePid = 0
         loop
             exitwhen gamePid >= 10
-            set teamOne = gamePid < 5
+            if pickedTeamsReady then
+                set teamOne = IsInTeam1(gamePid)
+            else
+                set teamOne = gamePid < 5
+            endif
 
             call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_PASSIVE, teamOne)
             call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_PASSIVE, false)
@@ -4368,7 +4380,7 @@ endif
     endloop
     call BlzChangeMinimapTerrainTex("war3mapImported\\war3mapMapTrue.blp")
 // 0 Red
-
+    call Emoji_Init()
     call SaveSystem_Init()
     call SaveSystem_RegisterChat()
     

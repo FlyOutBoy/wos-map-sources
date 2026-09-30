@@ -4,7 +4,7 @@
     {
       "category": "abilities",
       "file": "abilities.json",
-      "objects": 661
+      "objects": 664
     },
     {
       "category": "units",
@@ -34,7 +34,7 @@
     {
       "category": "doodads",
       "file": "doodads.json",
-      "objects": 52
+      "objects": 53
     }
   ]
 }

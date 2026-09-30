@@ -902,15 +902,21 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         endif
         
         set lvl = GetUnitAbilityLevel(hero, abilId)
-        if (lvl <= 0 or not HaveSavedInteger(HT_DATA, abilId, 0)) then
-            return
-        endif
-        
-        set formId = LoadInteger(HT_DATA, GetHandleId(hero), 8888)
-        set data = LoadInteger(HT_DATA, abilId, formId)
-        if data == 0 then
-            set data = LoadInteger(HT_DATA, abilId, 0)
-        endif
+if lvl <= 0 then
+    return
+endif
+
+set formId = LoadInteger(HT_DATA, GetHandleId(hero), 8888)
+
+set data = LoadInteger(HT_DATA, abilId, formId)
+
+if data == 0 then
+    set data = LoadInteger(HT_DATA, abilId, 0)
+endif
+
+if data == 0 then
+    return
+endif
         
         set ab = BlzGetUnitAbility(hero, abilId)
         
@@ -1492,18 +1498,23 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         call SpellData.createSimple(TsunaT_ID, 1, 2, 2, TsunaT_DamageAgiBase, 0.0, T_Rad(TsunaT_DamageAoe) + T_Cast(TsunaT_ChargeTimeFull) + T_DurationInvul(TsunaT_Duration) + T_Slow(I2R(TsunaT_Slow), I2R(TsunaT_SlowDuration)) + T_Prop("Strikes", I2R(TsunaT_Ticks)), T_Bonus("Lv. 35", "Overcharge after " + FormatReal(TsunaT_OverchargeTime) + " sec (" + FormatInt(TsunaT_OverchargeDmgPct) + "% Dmg)")).setDecor(T_Decor(TsunaT_DecorDamage))
         call SpellData.createUtility(TsunaF_ID, 1, T_Rad(TsunaF_Aoe) + "Dodge Chance: <L:" + FormatReal(TsunaF_Chance12) + "/" + FormatReal(TsunaF_Chance12) + "/" + FormatReal(TsunaF_Chance12) + "/" + FormatReal(TsunaF_Chance25) + "/" + FormatReal(TsunaF_Chance35) + ">%|nHit Bonus: +" + FormatReal(TsunaF_SkillSuccessfulAtkBonusAdd) + "% for " + FormatReal(TsunaF_StackDuration) + " sec|n" + T_Dur("Cooldown", TsunaF_CD12), T_Bonus("Lv. 25", FormatReal(TsunaF_Chance25) + "% Dodge, CD " + FormatReal(TsunaF_CD25) + "s") + T_Bonus("Lv. 35", FormatReal(TsunaF_Chance35) + "% Dodge, CD " + FormatReal(TsunaF_CD35) + "s"))
         call SpellData.createUtility(TsunaG_ID, 1, T_Duration(TsunaG_Duration) + "Converts " + FormatReal(TsunaG_DamagetoMana) + "% damage to MP|n" + T_Dur("Stats Duration", TsunaG_StatsRemoveSec), T_Bonus("Absorption", FormatInt(TsunaG_DamagetoStats1) + "/" + FormatInt(TsunaG_DamagetoStats2) + "/" + FormatInt(TsunaG_DamagetoStats3) + " damage unlocks stats") + T_Bonus("Lv. 35", "Max absorption unlocks Vongola Gear"))
-        // --- ФОРМА VONGOLA GEAR (Form 1) ---
-        call SpellData.createAlt(TsunaQ2_ID, 1, 5, 1, 2, TsunaQ2_DamageAgiBase, TsunaQ2_DamageAgiStep, TsunaQ2_DamageStaticBase, TsunaQ2_DamageStaticStep, T_RadExp(TsunaQ2_DamageAoe, TsunaQ2_ExplosionAoeFinal) + T_Invul(0.45) + T_Push(TsunaQ2_PushRange), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setSecondDamage(2, "Mag. Damage (Explosion):", 2, TsunaQ2_ExplosionAgiBase, 0.0, 0.0, 0.0).setDecor(T_DecorFlight(TsunaQ2_DecorDamage, TsunaQ2_MissileDecorDamage, TsunaQ2_ExplosionDecorDamage))
-        call SpellData.createAlt(TsunaW3_ID, 1, 5, 2, 2, TsunaW3_DamageAgiBase, 0.0, 0.0, 0.0, T_RadExp(TsunaW3_DamageAoe, TsunaW3_DamageAoeFinal) + T_Cast(TsunaW3_CastTime), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_DecorExp(TsunaW3_DecorDamage, TsunaW3_ExplosionDecorDamage))
-        call SpellData.createAlt(TsunaE2_ID, 1, 5, 2, 2, TsunaE2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaE2_DamageAoe) + T_Cast(TsunaE2_CastTime) + T_Stun(TsunaE2_StunDuration), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(TsunaE2_DecorDamage))
-        call SpellData.createAlt(TsunaR2_ID, 1, 5, 2, 2, TsunaR2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaR2_Aoe) + T_DurationInvul(TsunaR2_Duration) + T_Slow(I2R(TsunaR2_Slow), I2R(TsunaR2_SlowDuration)) + T_Push(TsunaR2_PullRange) + T_Prop("Strikes", I2R(TsunaR2_Ticks)), T_Bonus("Form", "|cffFF6600Vongola Gear|r"))
+        // --- ФОРМА VONGOLA GEAR: GQ/GW/GE/GR/GT ---
+        // GQ: рывок, полёт снаряда и отдельный магический урон финального взрыва.
+        call SpellData.createAlt(TsunaQ2_ID, 1, 5, 1, 2, TsunaQ2_DamageAgiBase, TsunaQ2_DamageAgiStep, TsunaQ2_DamageStaticBase, TsunaQ2_DamageStaticStep, T_RadExp(TsunaQ2_DamageAoe, TsunaQ2_ExplosionAoeFinal) + T_Prop("Dash Range", TsunaQ2_Range) + T_Prop("Projectile Range", TsunaQ2_MissileRange) + T_Prop("Flight Radius", TsunaQ2_ExplosionAoe) + T_Invul(0.45) + T_Push(TsunaQ2_PushRange), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setSecondDamage(2, "Mag. Damage (Explosion):", 2, TsunaQ2_ExplosionAgiBase, 0.0, 0.0, 0.0).setDecor(T_DecorFlight(TsunaQ2_DecorDamage, TsunaQ2_MissileDecorDamage, TsunaQ2_ExplosionDecorDamage))
+        // GW: две сферы летят к цели и наносят урон по пути и при взрыве.
+        call SpellData.createAlt(TsunaW3_ID, 1, 5, 2, 2, TsunaW3_DamageAgiBase, 0.0, 0.0, 0.0, T_RadExp(TsunaW3_DamageAoe, TsunaW3_DamageAoeFinal) + T_Prop("Projectiles", 2.0) + T_Prop("Projectile Range", TsunaW3_Range) + T_Cast(TsunaW3_CastTime), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_DecorExp(TsunaW3_DecorDamage, TsunaW3_ExplosionDecorDamage))
+        // GE: линейный луч с указанной длиной, шириной зоны и оглушением.
+        call SpellData.createAlt(TsunaE2_ID, 1, 5, 2, 2, TsunaE2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaE2_DamageAoe) + T_Prop("Beam Length", TsunaE2_Range) + T_Cast(TsunaE2_CastTime) + T_Stun(TsunaE2_StunDuration), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(TsunaE2_DecorDamage))
+        // GR: сближение с точкой, вращение вокруг неё и притягивание врагов.
+        call SpellData.createAlt(TsunaR2_ID, 1, 5, 2, 2, TsunaR2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaR2_Aoe) + T_Dur("Max Dash Time", TsunaR2_DashMaxDuration) + T_DurationInvul(TsunaR2_Duration) + T_Slow(I2R(TsunaR2_Slow), I2R(TsunaR2_SlowDuration)) + T_Push(TsunaR2_PullRange) + T_Dur("Pull Duration", TsunaR2_PullDuration) + T_Prop("Strikes", I2R(TsunaR2_Ticks)), T_Bonus("Form", "|cffFF6600Vongola Gear|r"))
+        // GT: заряжаемый луч с процентом эффектов формы и контролем цели.
         call SpellData.createAlt(TsunaT3_ID, 1, 1, 2, 2, TsunaT2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaT2_DamageAoe) + T_CastInvul(1.5) + T_DurationInvul(1.8) + T_Silence(TsunaT2_SilenceDuration) + T_Slow(I2R(TsunaT2_Slow), I2R(TsunaT2_SlowDuration)) + T_Prop("Strikes", 13), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(100.0))
         call SpellData.createUtility(TsunaG2_ID, 1, T_Duration(TsunaG2_Duration) + T_CastInvul(TsunaG2_CastTime) + "Reduces ongoing CDs by " + FormatReal(TsunaG2_ReduceCD) + " sec", T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_DecorAoe(TsunaG2_TransformDecorDamage, TsunaG2_TransformDecorAoe))
-        call SpellData.createUtility(TsunaG3_ID, 1, T_Rad(TsunaG3_DamageAoe) + T_Duration(TsunaG3_Duration) + T_Stun(TsunaG3_StunDuration) + "Ending barrier explodes and stuns nearby enemies", T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(TsunaG3_DecorDamage))
+        // G3: защитный купол; при завершении взрывается и оглушает врагов в радиусе.
+        call SpellData.createUtility(TsunaG3_ID, 1, T_Rad(TsunaG3_DamageAoe) + T_Dur("Barrier Duration", TsunaG3_Duration) + T_Stun(TsunaG3_StunDuration) + "Ending barrier explodes and stuns nearby enemies", T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(TsunaG3_DecorDamage))
         // Регистрация обеих форм
         set form = HeroData.create(Tsuna_ID, 0, TsunaQ_ID, TsunaW_ID, TsunaW2_ID, TsunaE_ID, TsunaR_ID, TsunaT_ID, TsunaF_ID, TsunaG_ID, TsunaG2_ID, 0)
         set form = HeroData.create(Tsuna_ID, 1, TsunaQ2_ID, TsunaW3_ID, TsunaE2_ID, TsunaR2_ID, TsunaT3_ID, TsunaF_ID, TsunaG3_ID, 0, 0, 0)
-        set form = HeroData.create(Tsuna2_ID, 1, TsunaQ2_ID, TsunaW3_ID, TsunaE2_ID, TsunaR2_ID, TsunaT3_ID, TsunaF_ID, TsunaG3_ID, 0, 0, 0)
         
         call DestroyTimer(t)
     endfunction
@@ -1600,7 +1611,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         // ===================================
         // 23. Инори (Inori_ID) -> Интеллект (3)
         // ===================================
-        call SpellData.create(InoriQ_ID, 5, 2, 3, InoriQ_DamageIntBase, InoriQ_DamageIntStep, InoriQ_Damage2StaticBase, InoriQ_Damage2StaticStep, T_Rad(InoriQ_DamageAoe) + "Range: <L:" + I2S(R2I(InoriQ_Range)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*2)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*3)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*4)) + "> + Intelligence x 2", "")
+        call SpellData.create(InoriQ_ID, 5, 2, 3, InoriQ_DamageIntBase, InoriQ_DamageIntStep, InoriQ_Damage2StaticBase, InoriQ_Damage2StaticStep, T_Rad(InoriQ_DamageAoe) + "Range: <L:" + I2S(R2I(InoriQ_Range)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*2)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*3)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*4)) + "> + Intelligence x 1", "")
         call SpellData.create(InoriW_ID, 5, 2, 3, InoriW_DamageIntBase, InoriW_DamageIntStep, InoriW_DamageStaticBase, InoriW_DamageStaticStep, "Enemy Target: Stuns for " + FormatReal(InoriW_Stun) + " sec|nAlly Target: Heals for Intelligence x <L:" + FormatReal(InoriW_HealBaseInt) + "/" + FormatReal(InoriW_HealBaseInt+InoriW_HealStepInt) + "/" + FormatReal(InoriW_HealBaseInt+InoriW_HealStepInt*2) + "/" + FormatReal(InoriW_HealBaseInt+InoriW_HealStepInt*3) + "/" + FormatReal(InoriW_HealBaseInt+InoriW_HealStepInt*4) + "> + 150 over 7.5 sec|nCooldown starts after healing ends", "")
         call SpellData.createUtility(InoriE_ID, 5, "Passive: Gains a stack when allies within " + I2S(R2I(InoriE_AoeSearch)) + " range take damage|nActive: Consumes stacks to upgrade basic abilities and gain HP Regeneration for " + FormatReal(InoriE_Duration) + " sec", "")
         call SpellData.createUtility(InoriR_ID, 5, T_Rad(InoriR_HealAoe) + "Heals allies in the area over time for Intelligence x <L:" + FormatReal(InoriR_HealIntBase) + "/" + FormatReal(InoriR_HealIntBase+InoriR_HealIntStep) + "/" + FormatReal(InoriR_HealIntBase+InoriR_HealIntStep*2) + "/" + FormatReal(InoriR_HealIntBase+InoriR_HealIntStep*3) + "/" + FormatReal(InoriR_HealIntBase+InoriR_HealIntStep*4) + "> + <L:" + FormatReal(InoriR_HealStaticBase) + "/" + FormatReal(InoriR_HealStaticBase+InoriR_HealStaticStep) + "/" + FormatReal(InoriR_HealStaticBase+InoriR_HealStaticStep*2) + "/" + FormatReal(InoriR_HealStaticBase+InoriR_HealStaticStep*3) + "/" + FormatReal(InoriR_HealStaticBase+InoriR_HealStaticStep*4) + "> per sec|nCooldown starts after healing ends", T_Bonus("Lv. 35", "+" + I2S(R2I(InoriR_HealAoeAdd)) + " Radius and +12 sec Duration. Casting abilities clears debuffs from allies in the radius"))

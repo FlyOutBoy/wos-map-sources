@@ -55,7 +55,7 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
                 call SaveInteger(hs, heroHandleId, StringHash("natsu r add"), 1)
             endif
 
-        elseif but == OSKEY_1 or but == OSKEY_2 or but == OSKEY_3 or but == OSKEY_4 or but == OSKEY_5 or but == OSKEY_6 then
+        /*elseif but == OSKEY_1 or but == OSKEY_2 or but == OSKEY_3 or but == OSKEY_4 or but == OSKEY_5 or but == OSKEY_6 then
             if  LoadInteger(hs, playerHandleId, StringHash("chat cd")) == 0 then
                 if but == OSKEY_1 then
                     call MyRemoveEff(AddSpecialEffectTarget("war3mapimported\\wos_emoji_11.mdx", hero, "origin"), 3.5)
@@ -72,7 +72,7 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
                 endif
                 call SaveInteger(hs, playerHandleId, StringHash("chat cd"), 1)
                 call MyFlush(playerHandleId, StringHash("chat cd"), 0, 3.25)
-            endif
+            endif*/
 
         elseif but == OSKEY_B then
             if TestMode then

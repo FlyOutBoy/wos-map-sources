@@ -10,7 +10,7 @@
     {
       "json": "items.json",
       "binary": "war3map.w3t",
-      "sha256": "a776836be8e4c0515e5140a0f11929eb7a4eddece1629d7cd550bfb79d634213"
+      "sha256": "262068e5c155ff0ff409cbded4f54f3ace863ef410ba527ccd4089cb8c5bbf18"
     },
     {
       "json": "destructables.json",
@@ -20,12 +20,12 @@
     {
       "json": "doodads.json",
       "binary": "war3map.w3d",
-      "sha256": "cd95ad1507f6976ce0e5317c07c83a7d9a67260ee7b509d6fb791895257a67a5"
+      "sha256": "14d9ac14c2de21ecd16a5c11d9f47c2760a03867d70e0ce88fc562debf8159b5"
     },
     {
       "json": "abilities.json",
       "binary": "war3map.w3a",
-      "sha256": "4b1e7f58d4c1fe9e7c6781325ad3770ab2f0b3a97ed4eb236a3274439fbba0c3"
+      "sha256": "be1475ff32f66742d371034b5e1787b47c91474caa3c3da97d56b55a7229a3bf"
     },
     {
       "json": "buffs.json",
@@ -45,7 +45,7 @@
     {
       "json": "items-skin.json",
       "binary": "war3mapSkin.w3t",
-      "sha256": "504811f932f763caea11824fe4c2865f5a12f495ae914895fda6e78fa2c0d7bd"
+      "sha256": "e944bbf021b6c1542b0a1ba01be73dc761f6469a0b1b10f6a64652de36308598"
     },
     {
       "json": "destructables-skin.json",
@@ -55,17 +55,17 @@
     {
       "json": "doodads-skin.json",
       "binary": "war3mapSkin.w3d",
-      "sha256": "5e5b1e8df4095e30a65a1066dd655cb1afee60c94ef05d6cdb8f8ad0b00af9f9"
+      "sha256": "663fefd0f3f0d5a551e4fff1986ab410cedf36fb2feb66ef4bc5813db806e868"
     },
     {
       "json": "abilities-skin.json",
       "binary": "war3mapSkin.w3a",
-      "sha256": "7255b897a181c5f38752e097c91de41eb65da31a7cb60f5ee13bcbc3f36fe77f"
+      "sha256": "c621c398183dbbfa961dd9a934f3506af9e14c2700a63d311f5a12b615397521"
     },
     {
       "json": "buffs-skin.json",
       "binary": "war3mapSkin.w3h",
-      "sha256": "b4bae42cefd1cb0796339697c4c22c17866adedbca9f437fd7caea7fcb8dd805"
+      "sha256": "77c5cfb73294a481f4a7aab742dd16f21142d8ec0065465c9f9a1f5da24bd51e"
     },
     {
       "json": "upgrades-skin.json",

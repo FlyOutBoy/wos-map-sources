@@ -1,0 +1,69 @@
+HEADER|version=1|match_id=21512520-59885158-56226465-39055149|algorithm=R87M2|map_version=0.32g
+ID|value=21512520-59885158-56226465-39055149|format=WOS2_BOT_V2|scope=MATCH
+MATCH|team1_rounds=9|team2_rounds=10|players=10|schema=2|teams_reorganized=1|train_kills=2
+PLAYER|n=1|pid=0|name=Sekai#21924|team=1|win=0|hero_id=1211117892|hero_name=Sawada Tsunayoshi|left=0|lobby_slot=0|team_slot=1|visual_slot=0
+STATS|n=1|pid=0|rounds_played=19|round_wins=9|round_losses=10|kills=10|deaths=14|train_deaths=0|damage_phys=23298|damage_magic=163679|damage_total=186977|heal=31762|taken_phys=69401|taken_magic=137737|taken_total=207138
+ITEMS|n=1|pid=0|slot1=1227894873|slot2=1227894863|slot3=1227895116|slot4=1227895106|slot5=1227895348|slot6=1227895861
+PLAYER|n=2|pid=1|name=Noone#23847|team=2|win=1|hero_id=1211117896|hero_name=Yamamoto Takeshi|left=0|lobby_slot=1|team_slot=1|visual_slot=5
+STATS|n=2|pid=1|rounds_played=19|round_wins=10|round_losses=9|kills=16|deaths=15|train_deaths=0|damage_phys=126626|damage_magic=68011|damage_total=194637|heal=10171|taken_phys=58567|taken_magic=133886|taken_total=192453
+ITEMS|n=2|pid=1|slot1=1227895093|slot2=1227895097|slot3=1227895348|slot4=1227894868|slot5=1227895113|slot6=1227895121
+PLAYER|n=3|pid=2|name=Sergeyh2#21341|team=2|win=1|hero_id=1211118146|hero_name=Brandish|left=0|lobby_slot=2|team_slot=4|visual_slot=8
+STATS|n=3|pid=2|rounds_played=19|round_wins=10|round_losses=9|kills=4|deaths=11|train_deaths=0|damage_phys=114139|damage_magic=909|damage_total=115048|heal=44410|taken_phys=42794|taken_magic=126078|taken_total=168872
+ITEMS|n=3|pid=2|slot1=1227894860|slot2=1227894861|slot3=1227895089|slot4=1227895097|slot5=1227895117|slot6=1227895362
+PLAYER|n=4|pid=3|name=ThottyMcThot#1428|team=1|win=0|hero_id=1211117634|hero_name=Artoria (Alter)|left=0|lobby_slot=3|team_slot=5|visual_slot=4
+STATS|n=4|pid=3|rounds_played=19|round_wins=9|round_losses=10|kills=15|deaths=11|train_deaths=1|damage_phys=151344|damage_magic=60622|damage_total=211966|heal=5083|taken_phys=56147|taken_magic=125537|taken_total=181684
+ITEMS|n=4|pid=3|slot1=1227895348|slot2=1227895858|slot3=1227895640|slot4=1227895641|slot5=1227895373|slot6=1227895113
+PLAYER|n=5|pid=4|name=Tocrow#2860|team=2|win=1|hero_id=1211118147|hero_name=Laxus Dreyar|left=0|lobby_slot=4|team_slot=5|visual_slot=9
+STATS|n=5|pid=4|rounds_played=19|round_wins=10|round_losses=9|kills=11|deaths=13|train_deaths=0|damage_phys=54660|damage_magic=128486|damage_total=183146|heal=9134|taken_phys=81395|taken_magic=151484|taken_total=232879
+ITEMS|n=5|pid=4|slot1=1227895372|slot2=1227894863|slot3=1227895374|slot4=1227894872|slot5=1227895859|slot6=1227895370
+PLAYER|n=6|pid=5|name=Dragonnpx4#1622|team=1|win=0|hero_id=1211117616|hero_name=Raiden Ei|left=0|lobby_slot=5|team_slot=3|visual_slot=2
+STATS|n=6|pid=5|rounds_played=19|round_wins=9|round_losses=10|kills=14|deaths=12|train_deaths=0|damage_phys=8509|damage_magic=228803|damage_total=237312|heal=4310|taken_phys=62919|taken_magic=116011|taken_total=178930
+ITEMS|n=6|pid=5|slot1=1227895365|slot2=1227894863|slot3=1227895348|slot4=1227895116|slot5=1227894871|slot6=1227895366
+PLAYER|n=7|pid=6|name=Vhixas#1818|team=2|win=1|hero_id=1211117912|hero_name=Starrk Coyote|left=1|lobby_slot=6|team_slot=2|visual_slot=6
+STATS|n=7|pid=6|rounds_played=18|round_wins=9|round_losses=9|kills=10|deaths=13|train_deaths=0|damage_phys=43960|damage_magic=198575|damage_total=242535|heal=27020|taken_phys=70362|taken_magic=136135|taken_total=206497
+ITEMS|n=7|pid=6|slot1=1227894866|slot2=1227894863|slot3=1227895113|slot4=1227895106|slot5=1227895348|slot6=1227895859
+PLAYER|n=8|pid=7|name=SuperVegeta#1472|team=1|win=0|hero_id=1211118155|hero_name=Milim Nava|left=1|lobby_slot=7|team_slot=4|visual_slot=3
+STATS|n=8|pid=7|rounds_played=18|round_wins=9|round_losses=9|kills=7|deaths=14|train_deaths=1|damage_phys=32956|damage_magic=85874|damage_total=118830|heal=4655|taken_phys=77620|taken_magic=152573|taken_total=230193
+ITEMS|n=8|pid=7|slot1=1227895859|slot2=1227895365|slot3=1227895636|slot4=1227895348|slot5=1227895088|slot6=1227895113
+PLAYER|n=9|pid=8|name=XaocAndTerin#2356|team=2|win=1|hero_id=1211117879|hero_name=Yuzuriha Inori|left=0|lobby_slot=8|team_slot=3|visual_slot=7
+STATS|n=9|pid=8|rounds_played=19|round_wins=10|round_losses=9|kills=19|deaths=11|train_deaths=0|damage_phys=4635|damage_magic=294486|damage_total=299121|heal=71552|taken_phys=58052|taken_magic=145719|taken_total=203771
+ITEMS|n=9|pid=8|slot1=1227894856|slot2=1227894863|slot3=1227895636|slot4=1227895116|slot5=1227895089|slot6=1227895106
+PLAYER|n=10|pid=9|name=MaSeTeR#2245|team=1|win=0|hero_id=1211117640|hero_name=Erza Scarlet|left=1|lobby_slot=9|team_slot=2|visual_slot=1
+STATS|n=10|pid=9|rounds_played=18|round_wins=9|round_losses=9|kills=17|deaths=11|train_deaths=0|damage_phys=95063|damage_magic=154324|damage_total=249387|heal=42027|taken_phys=77933|taken_magic=158609|taken_total=236542
+ITEMS|n=10|pid=9|slot1=1227895091|slot2=1227895113|slot3=1227895088|slot4=1227894871|slot5=1227894873|slot6=1227895347
+ITEM_RATE|item_id=1227894873|item_name=Angel's Blessing|games=2|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227894863|item_name=Urahara Set|games=5|wins=3|winrate_pct=60
+ITEM_RATE|item_id=1227895116|item_name=True Zangetsu|games=3|wins=1|winrate_pct=33
+ITEM_RATE|item_id=1227895106|item_name=Itachi Set|games=3|wins=2|winrate_pct=66
+ITEM_RATE|item_id=1227895348|item_name=Prison Realm (Active)|games=6|wins=2|winrate_pct=33
+ITEM_RATE|item_id=1227895861|item_name=Avalon Evolved|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895093|item_name=Raijins Wrath|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895097|item_name=Earth Power|games=2|wins=2|winrate_pct=100
+ITEM_RATE|item_id=1227894868|item_name=Raikage Hat|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895113|item_name=Sword of Dracule Mihawk|games=5|wins=2|winrate_pct=40
+ITEM_RATE|item_id=1227895121|item_name=Ryujin Jakka|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227894860|item_name=Witch Sin|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227894861|item_name=Cup of Tea|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895089|item_name=Okarun Egg|games=2|wins=2|winrate_pct=100
+ITEM_RATE|item_id=1227895117|item_name=Nichirin Sword Whip|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895362|item_name=Dark Holy Grail|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895858|item_name=Shiki Knife Evolved|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895640|item_name=Demon Sword Lostvayne|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895641|item_name=Murasame|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895373|item_name=Sacred Gear Booster|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895372|item_name=Rhitta|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895374|item_name=Susanoo Shield|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227894872|item_name=Emperor's Blue Armor|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895859|item_name=Cup of Tea Evolved|games=3|wins=2|winrate_pct=66
+ITEM_RATE|item_id=1227895370|item_name=Guts Armor|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895365|item_name=Wrath Sin|games=2|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227894871|item_name=Kurikara|games=2|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895366|item_name=Hell Blaze|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227894866|item_name=Kazekage Hat|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895636|item_name=Hogyoku|games=2|wins=1|winrate_pct=50
+ITEM_RATE|item_id=1227895088|item_name=Pochita|games=2|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227894856|item_name=Black Heart|games=1|wins=1|winrate_pct=100
+ITEM_RATE|item_id=1227895091|item_name=Black Clover|games=1|wins=0|winrate_pct=0
+ITEM_RATE|item_id=1227895347|item_name=Quincy Cross|games=1|wins=0|winrate_pct=0
+END|id=21512520-59885158-56226465-39055149
+INTEGRITY|verified=1|mode=WOS2_BOT_V2

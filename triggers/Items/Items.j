@@ -10,7 +10,7 @@ library ItemsSpells uses GearSystems
         real ChogurtEvolved_DmgReduct = 12.5
 //----------------------Murasame----------------------------------------------
         real Murasame_DamageBase = 50.00
-        real Murasame_AttackDamage = 0.50
+        real Murasame_AttackDamage = 0.60
 //----------------------ItachiSet----------------------------------------------
         integer ItachiSet_ID = 'I01B'        
         real ItachiSet_Bonus = 17.5
@@ -25,7 +25,7 @@ library ItemsSpells uses GearSystems
         integer DemonDwellerSword_Mag_ID = 'B039'
         real DemonDwellerSword_Bonus = 25
         real DemonDwellerSword_MinDmg = 500
-        real DemonDwellerSword_CD = 10
+        real DemonDwellerSword_CD = 5
 //----------------------RockleeWeights----------------------------------------------
         integer RockleeWeights_ID = 'A06Q'
         real RockleeWeights_Range = 1100 // how far wind move
@@ -35,18 +35,18 @@ library ItemsSpells uses GearSystems
 //----------------------RedCup----------------------------------------------
         integer RedCup_ID = 'A09L'
         real RedCup_Range = 1820 // how far wind move
-        real RedCup_Time = 0.81 //how long wind move
+        real RedCup_Time = 0.9 //how long wind move
         real RedCup_Aoe = 400 // how fast barrel will land after cast       
         real RedCup_Damage = 5.5// how much damage dealt x mainstat 
 //----------------------MeraMera no mi----------------------------------------------
         real MeraMera_Aoe = 850       
-        real MeraMera_Damage = 50     
+        real MeraMera_Damage = 25     
         real MeraMera_MaxDamage = 250   
-        real MeraMera_MaxHpDamage = 1.5//% of max owner hp
+        real MeraMera_MaxHpDamage = 1//% of max owner hp
         unit array MeraMeraDummy
 //----------------------Yata Mirror----------------------------------------------
         real YataMirror_Range = 1000       
-        real YataMirror_ReversedDmg = 30// %
+        real YataMirror_ReversedDmg = 35// %
 //----------------------FairyTailEmblem----------------------------------------------
         real FairyTailEmblem_CD = 18
         real FairyTailEmblem_ManaRestoreStatic = 250
@@ -54,9 +54,9 @@ library ItemsSpells uses GearSystems
         real FairyTailEmblem_HpRestoreStatic = 350 // of max mana
 //----------------------RedFlower----------------------------------------------
         integer RedFlower_ID = 'A09M'
-        real RedFlower_DamageBase = 5.5// how much damage dealt x agi
+        real RedFlower_DamageBase = 6// how much damage dealt x agi
         real RedFlower_Time = 1.8 // max travel time
-        real RedFlower_Speed = 2100 // traveled for 1 sec     
+        real RedFlower_Speed = 2400 // traveled for 1 sec     
 //----------------------Avalon----------------------------------------------
         real Avalon_HpRestore = 20 // traveled for 1 sec      
 //----------------------Avalon Evolved----------------------------------------------
@@ -101,9 +101,9 @@ library ItemsSpells uses GearSystems
         real HokageHatEvolved_Time = 4// how long root
 //----------------------Shark_Trail----------------------------------------------
         integer Shark_Trail_ID = 'A06P'
-        real Shark_Trail_DamageBase = 5.5// how much damage dealt x agi
+        real Shark_Trail_DamageBase = 6// how much damage dealt x agi
         real Shark_Trail_Time = 1.8 // max travel time
-        real Shark_Trail_Speed = 1500 // traveled for 1 sec   
+        real Shark_Trail_Speed = 1900 // traveled for 1 sec   
 //----------------------Earth_Power----------------------------------------------
         real Earth_Power_DamageBase = 2 // how much damage dealt x agi
         real Earth_Power_CD = 3 // how much damage dealt x agi
@@ -113,7 +113,7 @@ library ItemsSpells uses GearSystems
         integer GutsArmor_Buff_ID = 'B02D'
         real GutsArmor_DamageBase = 2.2 // how much damage dealt x str
         real GutsArmor_CD = 2 // how much damage dealt x agi
-        real GutsArmor_DmgTreshold = 400 // max travel time
+        real GutsArmor_DmgTreshold = 200 // max travel time
 //----------------------QuincyCross----------------------------------------------
         real QuincyCross_DamageBase = 40 // how much damage static
         real QuincyCross_MaxDmg = 99999 // from which dmg amount it will work
@@ -122,8 +122,8 @@ library ItemsSpells uses GearSystems
         integer QuincyCross_Item_ID = 'I023'
         boolean QuincyCross_ReduceEffects = true
 //----------------------Tachikaze----------------------------------------------
-        real Tachikaze_DamageBase = 0.5 // how much damage dealt x main
-        real Tachikaze_CD = 0.3 // how much damage dealt x main
+        real Tachikaze_DamageBase = 0.8 // how much damage dealt x main
+        real Tachikaze_CD = 0.95 // how much damage dealt x main
 //----------------------RyijinJakka----------------------------------------------
         real RyijinJakka_DamageBase = 2 // how much damage dealt x main
         real RyijinJakka_MinDmg = 200 // from which dmg amount it will work
@@ -179,12 +179,12 @@ library ItemsSpells uses GearSystems
 //----------------------Lust_Sin----------------------------------------------
         real LustSin_CD = 5
         real LustSin_MinDmg = 400 // from which dmg amount it will work
-        real LustSin_IgnoreAmount = 90 // ignore 90% of shield
+        real LustSin_IgnoreAmount = 100 // ignore 90% of shield
 //----------------------Envy_Sin----------------------------------------------
         real EnvySin_IgnoreAmount = 25 // ignore 90% of shield
 //----------------------Wrath_Sin----------------------------------------------
         real WrathSin_IgnoreAmount = 25 // ignore 90% of shield
-        real WrathSin_IgnoreAmountAdd = 40 // ignore 90% of shield
+        real WrathSin_IgnoreAmountAdd = 65 // ignore 90% of shield
 //----------------------Funny_Barrel----------------------------------------------
         integer FunnyBarrel_ID = 'A00Z'
         real FunnyBarrel_Damage = 175.00// how much damage dealt
@@ -236,7 +236,7 @@ library ItemsSpells uses GearSystems
         real FunnyPresent_PushTime = 0.51         
 //----------------------Naofumi_Shield----------------------------------------------
         integer NaofumiShield_ID = 'A02T'
-        real NaofumiShield_Duration = 4   
+        real NaofumiShield_Duration = 5   
 //----------------------Nichirin----------------------------------------------
         real Nichirin_Decrease = 14   
 //----------------------TrueZangetsu----------------------------------------------
@@ -247,7 +247,7 @@ library ItemsSpells uses GearSystems
         integer DeathNote_Abi_ID = 'A0I0'
         integer DeathNote_Buff_ID = 'B03B'
         real DeathNote_Damage = 30 // % of dealt dmg
-        real DeathNote_CD = 7 // % of dealt dmg
+        real DeathNote_CD = 5 // % of dealt dmg
         real DeathNote_MinDmg = 800 // % of dealt dmg
         real DeathNote_Time = 2.01 // max travel time
 //----------------------KazekageHat----------------------------------------------
@@ -255,7 +255,7 @@ library ItemsSpells uses GearSystems
 //----------------------KanshoandBakuya----------------------------------------------
         real KanshoandBakuya_Decrease = 50  
 //----------------------Okarun Egg----------------------------------------------
-        real OkarunEggReduceCD = 15 // 15 = 15%   
+        real OkarunEggReduceCD = 12.5 // 15 = 15%   
 //----------------------Prison Realm----------------------------------------------
         real PrisonRealmReduceCD = 25 // 15 = 15% 
         real PrisonRealmCD = 4 // 15 = 15% 
@@ -1496,7 +1496,7 @@ library ItemsSpells uses GearSystems
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u,g2)== false then
                         call MUE(u,((rmax-r)/0.03)*move,rmax-r,a)
                         call ErzaPassive(c,u,2)
-                        call dmgmag(c,u,dmg)
+                        call dmgphys(c,u,dmg)
                         if k3 == 1 then 
                     call DestroyEffect(e3)
                     set x = GetUnitX(u)

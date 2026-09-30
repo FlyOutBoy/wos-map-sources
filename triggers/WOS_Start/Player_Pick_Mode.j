@@ -73,7 +73,20 @@ endglobals
 function IsCaptainModeEligiblePlayer takes integer pid returns boolean
     return pid >= 0 and pid < 10 and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
 endfunction
-
+function IsInTeam1 takes integer pid returns boolean
+    local integer i = 0
+    if CaptainMode == false then
+        return pid < 5
+    endif
+    loop
+        exitwhen i >= FullTeam1Size
+        if FullTeam1[i] == pid then
+            return true
+        endif
+        set i = i + 1
+    endloop
+    return false
+endfunction
 // Капитаном может быть только активный пользователь, но в распределении команд
 // участвуют все десять игровых слотов. Пустой слот или компьютер считается
 // обычным вариантом выбора и позволяет капитану пропустить место в составе.
@@ -200,7 +213,50 @@ function RearrangeTeamUI takes nothing returns nothing
         set i = i + 1
     endloop
 endfunction
+ function ApplyObserverHpBarDiplomacy2 takes nothing returns nothing
+    local integer observerPid = 10
+    local integer gamePid
+    local boolean teamOne
+    local boolean pickedTeamsReady
 
+    // В обычной игре команды совпадают с исходными слотами. В Player Pick
+    // FullTeam1/FullTeam2 уже содержат фактически собранные составы.
+    set pickedTeamsReady = CaptainMode == true and FullTeam1Size > 0 and FullTeam2Size > 0
+
+    loop
+        exitwhen observerPid >= 15
+        set gamePid = 0
+        loop
+            exitwhen gamePid >= 10
+            if pickedTeamsReady then
+                set teamOne = IsInTeam1(gamePid)
+            else
+                set teamOne = gamePid < 5
+            endif
+
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_PASSIVE, teamOne)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_PASSIVE, false)
+
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_HELP_REQUEST, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_HELP_REQUEST, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_HELP_RESPONSE, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_HELP_RESPONSE, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_XP, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_XP, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_SPELLS, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_SPELLS, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_CONTROL, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_CONTROL, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
+            call SetPlayerAlliance(Player(observerPid), Player(gamePid), ALLIANCE_SHARED_VISION, false)
+            call SetPlayerAlliance(Player(gamePid), Player(observerPid), ALLIANCE_SHARED_VISION, false)
+
+            set gamePid = gamePid + 1
+        endloop
+        set observerPid = observerPid + 1
+    endloop
+endfunction
 function SetTeamAlliances takes nothing returns nothing
     local integer i = 0
     local integer j = 0
@@ -305,6 +361,9 @@ function SetTeamAlliances takes nothing returns nothing
     call BlzFrameSetVisible(Frame_Cap2_MAIN, false)
     set CapPickPhase = 4
     call RearrangeTeamUI() // Р Р†РІР‚В РЎвЂ™ Р В РўвЂР В РЎвЂўР В Р’В±Р В Р’В°Р В Р вЂ Р В РЎвЂР РЋРІР‚С™Р РЋР Р‰ Р РЋР С“Р РЋР вЂ№Р В РўвЂР В Р’В°
+    // После окончательной сборки составов обновляем отношения зрителей.
+    // До этого момента Player Pick ещё использует исходные слоты 0..4 и 5..9.
+    call ApplyObserverHpBarDiplomacy2()
     set i = 0
     loop
         exitwhen i == 10
@@ -1335,17 +1394,4 @@ function CreateCaptainUI takes nothing returns nothing
     call TimerStart(FrameCapTimer, 1, true, function CapPickTime)
 endfunction
 
-function IsInTeam1 takes integer pid returns boolean
-    local integer i = 0
-    if CaptainMode == false then
-        return pid < 5
-    endif
-    loop
-        exitwhen i >= FullTeam1Size
-        if FullTeam1[i] == pid then
-            return true
-        endif
-        set i = i + 1
-    endloop
-    return false
-endfunction
+

@@ -191,6 +191,8 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         endif
                     elseif check == 1 then
                         set r5 = r5 + move
+                        set x1 = x1 + move * Cos(a)
+                        set y1 = y1 + move * Sin(a)
                         call DecorRemove(c, x1, y1, aoe, BazzBQ_DecorDamage)
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x1, y1, aoe, Condition(function NoDecor_Filter))
@@ -204,8 +206,6 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                                 call GroupAddUnit(g2, u)
                             endif
                         endloop
-                        set x1 = x1 + move * Cos(a)
-                        set y1 = y1 + move * Sin(a)
 
                         if r2 >= 0.0 then
                             set r2 = 0.0
@@ -228,19 +228,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
 
                 if remove then
                     if check == 1 then
-                        call DecorRemove(c, x1, y1, aoe * 2.0, BazzBQ_DecorDamage)
-                        call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x1, y1, aoe * 2.0, Condition(function NoDecor_Filter))
-                        loop
-                            set u = FirstOfGroup(g)
-                            exitwhen u == null
-                            call GroupRemoveUnit(g, u)
-                            if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
-                                call dmgmag(c, u, dmg)
-                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
-                                call GroupAddUnit(g2, u)
-                            endif
-                        endloop
+                    
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2", x1, y1, 1.1, 1.0, 2.5, 90.0))
                     elseif c != null and GetUnitTypeId(c) != 0 then
                         call StopSpellUnit2(c)

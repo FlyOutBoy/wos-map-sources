@@ -33,7 +33,7 @@ library TomiokaSpells uses GearSystems
         integer TomiokaE_ID = 'A023'
         real TomiokaE_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real TomiokaE_DamageAgiStep = 0 // additional number x Agi damage for each next level
-        real TomiokaE_DamageAoe = 675
+        real TomiokaE_DamageAoe = 875
         integer TomiokaE_AtkCountBase = 2
         integer TomiokaE_AtkCountStep = 1
 //---------------R ability-----------------------------------------------------
@@ -44,7 +44,7 @@ library TomiokaSpells uses GearSystems
 //---------------T ability-----------------------------------------------------
         integer TomiokaT_ID = 'A025'
         real TomiokaT_DamageAgiBase = 10 // agi number of damage
-        real TomiokaT_DamageAoe = 400 // for both variants of e
+        real TomiokaT_DamageAoe = 100 // for both variants of e
 //---------------F ability-----------------------------------------------------
         integer TomiokaF_ID = 'A027'
         real TomiokaF_DamageAgiBase = 0.8 // agi number of damage

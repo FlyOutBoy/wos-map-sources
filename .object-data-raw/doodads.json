@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3d",
-  "source_sha256": "cd95ad1507f6976ce0e5317c07c83a7d9a67260ee7b509d6fb791895257a67a5",
+  "source_sha256": "14d9ac14c2de21ecd16a5c11d9f47c2760a03867d70e0ce88fc562debf8159b5",
   "kind": "doodads",
   "record_mode": "variation",
   "format_version": 3,
@@ -11327,6 +11327,217 @@
         }
       ],
       "display_name": "Стрелка Ускорения"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00J",
+        "hex": "4430304A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "dmis",
+            "hex": "646D6973"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dfil",
+            "hex": "6466696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "war3mapImported\\wos_ggap1.mdl",
+            "_original_value": "war3mapImported\\wos_ggap1.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19nZ2FwMS5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dptx",
+            "hex": "64707478"
+          },
+          "field_name": "",
+          "type": "string",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dnam",
+            "hex": "646E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "TRIGSTR_4120",
+            "_original_value": "TRIGSTR_4120",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTIw",
+            "resolved_value": "БИЛБОРД ТУРНИР",
+            "_original_resolved_value": "БИЛБОРД ТУРНИР"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dsmm",
+            "hex": "64736D6D"
+          },
+          "field_name": "",
+          "type": "int",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ddes",
+            "hex": "64646573"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 6.0,
+            "_original_value": 6.0,
+            "_raw_hex": "0000C040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dsnd",
+            "hex": "64736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dcat",
+            "hex": "64636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": "O",
+            "_original_value": "O",
+            "_encoding": "utf-8",
+            "_raw_base64": "Tw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dvis",
+            "hex": "64766973"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "dsel",
+            "hex": "6473656C"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "variation": 0,
+          "data_pointer": 0,
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "БИЛБОРД ТУРНИР"
     }
   ]
 }

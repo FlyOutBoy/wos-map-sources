@@ -707,14 +707,24 @@ function AddGold takes player p, integer gold, boolean b returns nothing
 function GetGold takes player p returns integer
 return GetPlayerState(p,PLAYER_STATE_RESOURCE_GOLD)
 endfunction 
+function VIPCheckTournamentLosers takes string s returns boolean 
+return s=="ThunderGear" or s=="jafar2700" or s=="Alphamale" or s=="Vhixas" or s=="Noone" or s=="noharder" or s=="komelko" or s=="kimimaru" or s=="N1rvanaFlame" or s=="Sekai" or s=="ForeverEasy" or s=="Wuru" or s=="SuperVegeta" or s=="soldiersPL" /*
+*/  or s=="Blacklight85" or s=="Tenbris"
+endfunction
+function VIPCheckTournamentTop1 takes string s returns boolean 
+return s=="ThunderGear" or s=="C130" or s=="Cruia" or s=="voteee" or s=="Kn0x0x1" or s=="DemetriusBR" 
+endfunction
+function VIPCheckTournamentTop2 takes string s returns boolean 
+return s=="ThunderGear" or s=="LavaShark" or s=="XaocAndTerin" or s=="Head" or s=="Sia" or s=="snyperlux" 
+endfunction
 function VIPCheckLvl1 takes string s returns boolean 
-return s == "ThunderGear"  
+return s == "ThunderGear" or VIPCheckTournamentLosers(s)
 endfunction
 function VIPCheckLvl2 takes string s returns boolean 
 return s == "ThunderGear" 
 endfunction
 function VIPCheckLvl3 takes string s returns boolean 
-return s == "ThunderGear" or s == "Zesu" or s == "Alphamalle" or s == "LuXun"  or s == "MaSeTeR" or s == "Uriska" or s == "DSPK" or s == "Bunny"  or s == "Knox0x1" or s == "Tiny" or s == "Hansel"  or s == "Soul"  
+return s == "ThunderGear" or s == "Zesu" or s == "Alphamalle" or s == "LuXun"  or s == "MaSeTeR" or s == "Uriska" or s == "DSPK" or s == "Bunny"  or s == "Knox0x1" or s == "Tiny" or s == "Hansel"  or s == "Soul" or VIPCheckTournamentTop1(s)  or VIPCheckTournamentTop2(s)
 endfunction
 function MouseOn takes player p returns nothing
 local integer i = GetPlayerId(p)
@@ -986,6 +996,9 @@ set base = base + 100
 endif
 if GetUnitAbilityLevel(c,'A0HU') > 0 then 
 set base = base + 40
+endif
+if GetUnitAbilityLevel(c,'A0I4') > 0 then 
+set base = base + 80
 endif
 
 return base 
@@ -2552,9 +2565,9 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
         // Для магического урона предметный резист войдёт в общий пул ниже.
         // Для физического урона старое поведение предмета сохраняется.
         if isMagic then
-            set itemMagRes = itemMagRes + 10.0
+            set itemMagRes = itemMagRes + 11.0
         else
-            set dmg = dmg * 0.90
+            set dmg = dmg * 0.89
         endif
     endif
 
@@ -2591,7 +2604,7 @@ endif
 
         // Р С’Р С”РЎвЂљР С‘Р Р†Р Р…Р С•Р Вµ РЎРѓР С•Р С—РЎР‚Р С•РЎвЂљР С‘Р Р†Р В»Р ВµР Р…Р С‘Р Вµ Blue Emperor
         if LoadInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES) == 1 then
-            set dmg = dmg * 0.75
+            set dmg = dmg * 0.8
         endif
 
         // Р С’Р С”РЎвЂљР С‘Р Р†Р В°РЎвЂ Р С‘РЎРЏ Blue Emperor
@@ -2600,7 +2613,7 @@ endif
         */ and HasCachedItem(td, 'I00X') > 0 /*
         */ and BlzGetUnitAbilityCooldownRemaining(td, 'A04Q') == 0.0 then
 
-            set dmg = dmg * 0.70
+            set dmg = dmg * 0.8
 
             call SaveInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES, 1)
             call MyFlush(targetHid, KEY_BLUE_EMPEROR_RES, 0, 5.0)
@@ -2674,6 +2687,9 @@ endif
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р В°РЎРЏ Р Р†Р ВµРЎвЂљР С”Р В°
     if isMagic then
         // Asta G
+        if HasCachedItem(td, 'I013') > 0 then
+        set dmg = dmg * 0.9
+        endif
         if targetId == Asta_ID and GetHeroLevel(td) >= 6 then
             set dmg = dmg * AstaG_MagRes(td)
         endif

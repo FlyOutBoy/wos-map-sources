@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "b4bae42cefd1cb0796339697c4c22c17866adedbca9f437fd7caea7fcb8dd805",
+  "source_sha256": "77c5cfb73294a481f4a7aab742dd16f21142d8ec0065465c9f9a1f5da24bd51e",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3606,10 +3606,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7172",
-            "_original_value": "TRIGSTR_7172",
+            "value": "TRIGSTR_8728",
+            "_original_value": "TRIGSTR_8728",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTcy",
+            "_raw_base64": "VFJJR1NUUl84NzI4",
             "resolved_value": "Zero Point Breakthrough: First Edition",
             "_original_resolved_value": "Zero Point Breakthrough: First Edition"
           },
@@ -9786,12 +9786,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4338",
-            "_original_value": "TRIGSTR_4338",
+            "value": "TRIGSTR_8723",
+            "_original_value": "TRIGSTR_8723",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzM4",
-            "resolved_value": "-49% active healing",
-            "_original_resolved_value": "-49% active healing"
+            "_raw_base64": "VFJJR1NUUl84NzIz",
+            "resolved_value": "-49% active healing and burn 10 mana per sec",
+            "_original_resolved_value": "-49% active healing and burn 10 mana per sec"
           },
           "sanity_check": {
             "text": "",

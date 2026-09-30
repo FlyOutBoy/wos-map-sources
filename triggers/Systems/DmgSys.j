@@ -402,10 +402,10 @@ endif
     set dmg = ApplyFullDamageShield(c, td, shieldInput, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
     endif
-      if dmg>= 1000 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
+      if dmg>= 600 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
     call BlzStartUnitAbilityCooldown(c, 'A0HV', 3 )
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_blink_red.mdx",c,"chest"))
-    call SetHpCurrent2(c,c,dmg*0.33)
+    call SetHpCurrent2(c,c,dmg*0.35)
     endif
     if dmg>= DemonDwellerSword_MinDmg  and HasCachedItem(c,DemonDwellerSword_ID ) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DemonDwellerSword_Abi_CD_ID) == 0 and GetUnitAbilityLevel(c, DemonDwellerSword_Abi_CD_ID) > 0 then
     if typedmg == 1 then 

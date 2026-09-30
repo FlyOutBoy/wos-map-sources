@@ -71,10 +71,10 @@ library StarrkSpells uses GearSystems
         real StarrkR_StunDuration = 0 // in seconds
         real StarrkR_TargetHeight = 600 // max height
         real StarrkR_DamageAoe = 250 // cero aoe damage at the end
-        real StarrkR2_DamageAgiBase = 3 // base number x Int damage per 1 second
-        real StarrkR2_DamageAgiStep = 0.4 // additional number x Int damage for each next level per second
+        real StarrkR2_DamageAgiBase = 2.7 // base number x Int damage per 1 second
+        real StarrkR2_DamageAgiStep = 0.3 // additional number x Int damage for each next level per second
         real StarrkR2_DamageAoe = 475
-        integer StarrkR2_Slow = 25 // in % , 50 = 50%
+        integer StarrkR2_Slow = 20 // in % , 50 = 50%
         integer StarrkR2_SlowDuration = 1 // in seconds, from 2 to 4
         real StarrkR2_Stun = 0
         real StarrkR2_InvulPerLvlAdd = 0.2
@@ -1666,7 +1666,7 @@ library StarrkSpells uses GearSystems
             set a = GAngle2( c , x, y ) // Angle Between points
             call MakeSound("war3mapimported\\Hero_Starrk_R1")
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800, 4)
-            set rmax =   2.5
+            set rmax =   3
             set r7 = StarrkR2_InvulPerLvlAdd* ( GetUnitAbilityLevel( c , StarrkR_ID) - 1 )
             set check2 = 0
             set e = AddSpecialEffectTarget("war3mapimported\\wos_aurapartblue.mdx", c, "origin")

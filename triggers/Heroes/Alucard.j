@@ -21,7 +21,7 @@ library AlucardSpells uses GearSystems
 //---------------Q ability-----------------------------------------------------
         integer AlucardQ_ID = 'A0C0'
         integer AlucardQ2_ID = 'A0C1'
-        real AlucardQ_DamageAgiBase = 1.5 // base number x Int damage for 1 level
+        real AlucardQ_DamageAgiBase = 1 // base number x Int damage for 1 level
         real AlucardQ_DamageAgiStep = 1 // additional number x Int damage for each next level
         real AlucardQ_Damage2StaticBase = 175 // base static damage for 1 level
         real AlucardQ_Damage2StaticStep = 0 // additional static damage for each next level
@@ -36,7 +36,7 @@ library AlucardSpells uses GearSystems
         real AlucardQ2_StunTime = 1 // in seconds , stun time
         real AlucardRQ_Range = 1600
         real AlucardRQ_HpToAddDamageCondition = 50 // in % , under which percentage of hp alucard will deal more damage
-        real AlucardRQ_AddDamageFromMissedHp = 10 // in % additional damage from enemy missed hp
+        real AlucardRQ_AddDamageFromMissedHp = 5 // in % additional damage from enemy missed hp
         real AlucardRQ_DamageAoe = 400 // wave aoe
 //---------------W ability-----------------------------------------------------
         integer AlucardW_ID = 'A0C2'

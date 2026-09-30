@@ -119,8 +119,12 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         if GetUnitTypeId(c) == Frieren_ID then
             set stacks = S2I(TasAbilityChargeBox_GetValue(c, FrierenF_ID))
             if stacks < 10 then
-                call TasAbilityChargeBox_SetValue(c, FrierenF_ID, I2S(stacks + 1))
-                call UpdateGIcon(stacks + 1)
+                set stacks = stacks + 1
+                call TasAbilityChargeBox_SetValue(c, FrierenF_ID, I2S(stacks))
+                call UpdateGIcon(stacks)
+                if stacks == 5 or stacks == 10 then
+                    call BlzEndUnitAbilityCooldown(c, FrierenG_ID)
+                endif
             endif
             return
         endif
@@ -132,8 +136,12 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             if GetUnitTypeId(f) == Frieren_ID and IsUnitAlly(f, GetOwningPlayer(c)) and GetWidgetLife(f) > 0.405 then
                 set stacks = S2I(TasAbilityChargeBox_GetValue(f, FrierenF_ID))
                 if stacks < 10 then
-                    call TasAbilityChargeBox_SetValue(f, FrierenF_ID, I2S(stacks + 1))
-                    call UpdateGIcon(stacks + 1)
+                    set stacks = stacks + 1
+                    call TasAbilityChargeBox_SetValue(f, FrierenF_ID, I2S(stacks))
+                    call UpdateGIcon(stacks)
+                    if stacks == 5 or stacks == 10 then
+                        call BlzEndUnitAbilityCooldown(f, FrierenG_ID)
+                    endif
                 endif
                 set f = null
                 return
@@ -982,7 +990,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", x, y, GetRandomReal(0, 359), 1, 1.1, 0), 0.3, 255, 255, 255, 0.3)
                         call StunUnit(c, td, FrierenW_Stun)
                     endif
-                    if GetHeroLevel(c)>=35 then 
+                    if GetHeroLevel(c)>=1 then 
                                 call ErzaPassive(c,td,3)
                                 endif
                     call DestroyEffect(e)
@@ -1148,7 +1156,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
                                 call dmgmag(c, u, dmg)
-                                if GetHeroLevel(c)>=35 then 
+                                if GetHeroLevel(c)>=1 then 
                                 call ErzaPassive(c,u,3)
                                 endif
                                 call GroupAddUnit(g2, u)

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3d",
-  "source_sha256": "5e5b1e8df4095e30a65a1066dd655cb1afee60c94ef05d6cdb8f8ad0b00af9f9",
+  "source_sha256": "663fefd0f3f0d5a551e4fff1986ab410cedf36fb2feb66ef4bc5813db806e868",
   "kind": "doodads",
   "record_mode": "variation",
   "format_version": 3,
@@ -788,6 +788,21 @@
       ],
       "modifications": [],
       "display_name": "Стрелка Ускорения"
+    },
+    {
+      "old_id": {
+        "text": "YOsw",
+        "hex": "594F7377"
+      },
+      "new_id": {
+        "text": "D00J",
+        "hex": "4430304A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "БИЛБОРД ТУРНИР"
     }
   ]
 }

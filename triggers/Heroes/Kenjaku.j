@@ -11,8 +11,8 @@ library KenjakuSpells uses GearSystems
         real KenjakuQ_HealStaticStep = 0 // additional number x Int damage for each next level
         real KenjakuQ_Duration = 3 // additional number x Int damage for each next level
         real KenjakuQ_HealPeriodic = 0.25 // additional number x Int damage for each next level
-        real KenjakuQ_ReduceQ3W3E3_CD = 5 // after usage reduce ongoin cd of active summunos spells by this time
-        real KenjakuQ_Reduce25lvlBonusQ3W3E3_CD = 4 // after usage reduce ongoin cd of active summunos spells by this time
+        real KenjakuQ_ReduceQ3W3E3_CD = 4 // after usage reduce ongoin cd of active summunos spells by this time
+        real KenjakuQ_Reduce25lvlBonusQ3W3E3_CD = 3 // after usage reduce ongoin cd of active summunos spells by this time
 //---------------Q2 ability-----------------------------------------------------
         integer KenjakuQ2_ID = 'A05N'
         integer KenjakuQ2_CostCurse = 2

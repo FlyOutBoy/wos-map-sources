@@ -30,7 +30,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         real AstaQ_RangeStep = 125.0
         real AstaQ_TimeSwap = 4.0
         real AstaTQ_AoeBonus = 35.0 // %
-        real AstaTQ_DmgBonus = 1.0  // x Agi
+        real AstaTQ_DmgBonus = 0.75  // x Agi
         real AstaQ_CastTime = 0.45
         real AstaQ_Duration = 1.65
         boolean AstaQ_IsInvul = false
@@ -68,7 +68,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         real AstaW_Stun = 0.0
         real AstaW_TimeSwap = 3.0
         real AstaW_Range = 1450.0
-        real AstaTW_DmgBonus = 1.0 // x Agi
+        real AstaTW_DmgBonus = 0.75 // x Agi
         real AstaW_CastTime = 0.30
         real AstaW_Duration = 1.70
         boolean AstaW_IsInvul = false
@@ -90,7 +90,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
 
 //---------------E ability (Black Spiral - Whirlwind Stance)--------------------
         integer AstaE_ID = 'A0DN'
-        real AstaE_DamageStatic = 50.0
+        real AstaE_DamageStatic = 75.0
         real AstaE_DamageAgiBase = 0.5
         real AstaE_DamageAgiStep = 0.3
         real AstaE_DamageAoe = 385.0
@@ -121,7 +121,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         integer AstaR2_ID = 'A0DU'
         real AstaR2_DamageAoe = 475.0
         real AstaR2_Silence = 1.0
-        real AstaR2_DamageAgiBase = 8.0
+        real AstaR2_DamageAgiBase = 7.75
         real AstaR2_DamageAgiStep = 0.0
         real AstaR2_CastTime = 1.20
         real AstaR2_Duration = 0.00
@@ -139,7 +139,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
 
 //---------------T2 ability (Black Meteorite - Cataclysm Slam)-----------------
         real AstaT2_Stun = 0.0
-        real AstaT2_DamageAgiBase = 10.0
+        real AstaT2_DamageAgiBase = 8.0
         real AstaT2_DamageAoe = 1000.0
         real AstaT2_CastTime = 1.20
         real AstaT2_Duration = 0.00
@@ -156,7 +156,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
 //---------------F ability (Anti-Magic Zone - Barrier Purge)-------------------
         integer AstaF_ID = 'A0DR'
         real AstaF_AoE = 1000.0
-        real AstaF_ManaSteal = 8.0 // % of max mana
+        real AstaF_ManaSteal = 10.0 // % of max mana
         real AstaF_Duration = 2.0
         real AstaF_CastTime = 0.00
         boolean AstaF_IsInvul = false

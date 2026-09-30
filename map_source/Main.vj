@@ -14,6 +14,7 @@
 //! import "..\triggers\WOS_Start\MusicPlayer.j"
 //! import "..\triggers\WOS_Start\Scoreboard.j"
 //! import "..\triggers\WOS_Start\ChatCommand.j"
+//! import "..\triggers\WOS_Start\EMOTES.j"
 //! import "..\triggers\WOS_Start\Player_Pick_Mode.j"
 //! import "..\triggers\WOS_Start\Captain_Draft.j"
 //! import "..\triggers\WOS_Start\WoS_Shop_Init.j"
@@ -276,6 +277,7 @@ trigger gg_trg_ErzaG2_Nakagami= null
 trigger gg_trg_ErzaG2_Fairy= null
 trigger gg_trg_ErzaBase= null
 trigger gg_trg_Milim= null
+trigger gg_trg_EMOTES= null
 endglobals
 
 //   Warcraft III map script
@@ -515,6 +517,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_MusicPlayer()
     //Function not found: call InitTrig_Scoreboard()
     //Function not found: call InitTrig_ChatCommand()
+    //Function not found: call InitTrig_EMOTES()
     //Function not found: call InitTrig_Player_Pick_Mode()
     //Function not found: call InitTrig_Captain_Draft()
     call InitTrig_WoS_Shop_Init()

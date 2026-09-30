@@ -30,8 +30,8 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         real AkainuW_DamageAgiStep = 1.00
         real AkainuW_Damage2StaticBase = 200.00
         real AkainuW_Damage2StaticStep = 0.00
-        real AkainuW_DamageAoe = 700.00
-        real AkainuW_DamageAoePunch = 525.00
+        real AkainuW_DamageAoe = 650.00
+        real AkainuW_DamageAoePunch = 400.00
         integer AkainuW_Slow = 20
         integer AkainuW_Duration = 1
         real AkainuW_MaxDuration = 2.10
@@ -44,7 +44,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         integer AkainuE_ID = 'A06X'
         real AkainuE_DamageAgiBase = 2.00
         real AkainuE_DamageAgiStep = 1.00
-        real AkainuE_DamageAoe = 400.00
+        real AkainuE_DamageAoe = 200.00
         real AkainuE_Move = 75.00
         real AkainuE_MaxDuration = 2.40
         real AkainuE_CastTime = 0.60
@@ -70,9 +70,9 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         integer AkainuT_Fists = 30
         real AkainuT_DamageAgiBase = 1.20
         real AkainuT_DamageAoe = 2000.00
-        real AkainuT_DamageAoePunch = 700.00
-        integer AkainuT_Slow = 50
-        integer AkainuT_Duration = 2
+        real AkainuT_DamageAoePunch = 425.00
+        integer AkainuT_Slow = 40
+        integer AkainuT_Duration = 1
         real AkainuT_MaxDuration = 25.00
         real AkainuT_CastTime = 1.80
         boolean AkainuT_IsInvul = true

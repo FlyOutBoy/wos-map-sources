@@ -2538,6 +2538,134 @@
         }
       }
     },
+    "D00J": {
+      "base_id": "YOsw",
+      "name_source": {
+        "file": "war3map.w3d",
+        "group": "custom_objects",
+        "object_index": 51,
+        "modification_index": 3
+      },
+      "fields": {
+        "field_dcat": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 7
+          },
+          "field_id": "dcat",
+          "type": "string",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_ddes": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 5
+          },
+          "field_id": "ddes",
+          "type": "unreal",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dfil": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 1
+          },
+          "field_id": "dfil",
+          "type": "string",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dmis": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 0
+          },
+          "field_id": "dmis",
+          "type": "unreal",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dptx": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 2
+          },
+          "field_id": "dptx",
+          "type": "string",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dsel": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 9
+          },
+          "field_id": "dsel",
+          "type": "unreal",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dsmm": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 4
+          },
+          "field_id": "dsmm",
+          "type": "int",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dsnd": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 6
+          },
+          "field_id": "dsnd",
+          "type": "string",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        },
+        "field_dvis": {
+          "source": {
+            "file": "war3map.w3d",
+            "group": "custom_objects",
+            "object_index": 51,
+            "modification_index": 8
+          },
+          "field_id": "dvis",
+          "type": "unreal",
+          "level": null,
+          "variation": 0,
+          "data_pointer": 0
+        }
+      }
+    },
     "D00N": {
       "base_id": "YOsw",
       "name_source": {

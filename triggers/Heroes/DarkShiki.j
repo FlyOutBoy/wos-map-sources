@@ -6,8 +6,8 @@ library DarkShikiSpells uses GearSystems
         integer DarkShiki_Clone_ID = 'h01L' // dummmy id used for post clone effect
         real DarkShikiG_Damage = 1 // 1x agi for each cause stack
         real DarkShikiG_Damage35BonusAdd = 0.5 // add bonus to prev damage
-        real DarkShikiG_StackFinalDamage = 4 // when trigger next passive after 3 - th stack , cause this amount of damage and remove stacks
-        real DarkShikiG_StackFinalDamage35BonusAdd = 2 // add bonus to prev damage
+        real DarkShikiG_StackFinalDamage = 5 // when trigger next passive after 3 - th stack , cause this amount of damage and remove stacks
+        real DarkShikiG_StackFinalDamage35BonusAdd = 3 // add bonus to prev damage
         real DarkShikiG_StackFinalSilenceDuration = 2 // from 0.1 to 3.0 , final big damage will cause stun for this time
         real DarkShikiG_Time = 5 // in seconds
         real DarkShikiG_Time35BonusAdd = 2 // in seconds
