@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3a",
-  "source_sha256": "be1475ff32f66742d371034b5e1787b47c91474caa3c3da97d56b55a7229a3bf",
+  "source_sha256": "c8f5d3d25df603af010fe699ca896628e29d2d9fd6fe9e2fa5aac9631787bed4",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -181554,9 +181554,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -181573,9 +181573,9 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182063,9 +182063,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182082,9 +182082,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182101,9 +182101,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182120,9 +182120,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182139,9 +182139,9 @@
           "level": 2,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182158,9 +182158,9 @@
           "level": 3,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182177,9 +182177,9 @@
           "level": 4,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182196,9 +182196,9 @@
           "level": 5,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182332,9 +182332,9 @@
           "level": 6,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",
@@ -182371,9 +182371,9 @@
           "level": 6,
           "data_pointer": 0,
           "data": {
-            "value": 4.0,
-            "_original_value": 4.0,
-            "_raw_hex": "00008040"
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
           },
           "sanity_check": {
             "text": "",

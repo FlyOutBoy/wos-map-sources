@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "e944bbf021b6c1542b0a1ba01be73dc761f6469a0b1b10f6a64652de36308598",
+  "source_sha256": "968cf0f47c6786d689ef8cafbad85871f6f279807eba75413e31b0a70c7d722c",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -4065,12 +4065,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8740",
-            "_original_value": "TRIGSTR_8740",
+            "value": "TRIGSTR_1620",
+            "_original_value": "TRIGSTR_1620",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzQw",
-            "resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 5 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 5 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl8xNjIw",
+            "resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 4 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 4 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -4085,12 +4085,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8741",
-            "_original_value": "TRIGSTR_8741",
+            "value": "TRIGSTR_1622",
+            "_original_value": "TRIGSTR_1622",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzQx",
-            "resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 5 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 5 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl8xNjIy",
+            "resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 4 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+20% phys resistance\n+750 hp\n+300 mp\nPassive: When take physical dmg over 200 you activate \"Emperor's Patience\" that reduces physical dmg taken by 20%.\nDuration: 4 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -4821,12 +4821,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8742",
-            "_original_value": "TRIGSTR_8742",
+            "value": "TRIGSTR_075",
+            "_original_value": "TRIGSTR_075",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzQy",
-            "resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 4 sec.",
-            "_original_resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 4 sec."
+            "_raw_base64": "VFJJR1NUUl8wNzU=",
+            "resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 1.5 sec.",
+            "_original_resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 1.5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -4841,12 +4841,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8744",
-            "_original_value": "TRIGSTR_8744",
+            "value": "TRIGSTR_877",
+            "_original_value": "TRIGSTR_877",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzQ0",
-            "resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 4 sec.",
-            "_original_resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 4 sec."
+            "_raw_base64": "VFJJR1NUUl84Nzc=",
+            "resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 1.5 sec.",
+            "_original_resolved_value": "+1000 hp \n+10% phys resistance\n+10% magical resistance\nPassive: Each time you take damage from ability gain buff.\nEach stack grants +4% mag resistance and +3% phys resistance.\nStacks up to 6 times.\nDuration: 1.5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11259,12 +11259,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4318",
-            "_original_value": "TRIGSTR_4318",
+            "value": "TRIGSTR_984",
+            "_original_value": "TRIGSTR_984",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzE4",
-            "resolved_value": "+750 hp\nPassive: Restore 20 hp everytime you take damage.",
-            "_original_resolved_value": "+750 hp\nPassive: Restore 20 hp everytime you take damage."
+            "_raw_base64": "VFJJR1NUUl85ODQ=",
+            "resolved_value": "+500 hp\nPassive: Restore 20 hp everytime you take damage.",
+            "_original_resolved_value": "+500 hp\nPassive: Restore 20 hp everytime you take damage."
           },
           "sanity_check": {
             "text": "",
@@ -11297,12 +11297,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4319",
-            "_original_value": "TRIGSTR_4319",
+            "value": "TRIGSTR_1058",
+            "_original_value": "TRIGSTR_1058",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzE5",
-            "resolved_value": "+750 hp\nPassive: Restore 20 hp everytime you take damage.",
-            "_original_resolved_value": "+750 hp\nPassive: Restore 20 hp everytime you take damage."
+            "_raw_base64": "VFJJR1NUUl8xMDU4",
+            "resolved_value": "+500 hp\nPassive: Restore 20 hp everytime you take damage.",
+            "_original_resolved_value": "+500 hp\nPassive: Restore 20 hp everytime you take damage."
           },
           "sanity_check": {
             "text": "",

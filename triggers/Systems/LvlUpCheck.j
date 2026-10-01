@@ -40,7 +40,7 @@ if (CheckAllow1(GetTriggerUnit()) or CheckAllow2(GetTriggerUnit()) ) and LoadInt
     set level_id[i] = k
     // Формула: старт 20 HP на 1-м уровне, шаг +7.227 HP за каждый следующий уровень
    if k >= 3 then
-    call BlzSetUnitMaxHP(GetTriggerUnit(), BlzGetUnitMaxHP(GetTriggerUnit()) + R2I(85.0 + (6 * (k - 1)) * k2))
+    call BlzSetUnitMaxHP(GetTriggerUnit(), BlzGetUnitMaxHP(GetTriggerUnit()) + R2I(75.0 + (5 * (k - 1)) * k2))
 endif
   //  call BlzSetUnitMaxHP(GetTriggerUnit(), BlzGetUnitMaxHP(GetTriggerUnit()) + R2I((150.0 - 3.0 * (k - 1)) * k2))
   //  call BlzSetUnitMaxMana(GetTriggerUnit(), BlzGetUnitMaxMana(GetTriggerUnit()) + 5 * k2)

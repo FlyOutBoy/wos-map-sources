@@ -11,7 +11,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 //---------------Q ability (Explosive Land Mine)-------------------------------
         integer AinzQ_ID = 'A0FH'
         real AinzQ_DamageIntBase = 1.2
-        real AinzQ_DamageIntStep = 0.2
+        real AinzQ_DamageIntStep = 0.25
         real AinzQ_Damage2StaticBase = 100.0
         real AinzQ_Damage2StaticStep = 0.0
         real AinzQ_DamageAoe = 375.00

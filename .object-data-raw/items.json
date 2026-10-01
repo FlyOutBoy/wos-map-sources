@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "262068e5c155ff0ff409cbded4f54f3ace863ef410ba527ccd4089cb8c5bbf18",
+  "source_sha256": "2854157f8b80cb6727ffdcffb3791af6f991a957d18a502f5ade123282407de0",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -7465,10 +7465,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09R",
-            "_original_value": "A09R",
+            "value": "A01Y",
+            "_original_value": "A01Y",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA5Ug=="
+            "_raw_base64": "QTAxWQ=="
           },
           "sanity_check": {
             "text": "",

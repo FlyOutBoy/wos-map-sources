@@ -185,6 +185,7 @@ trigger gg_trg_SaveLoad= null
 trigger gg_trg_MusicPlayer= null
 trigger gg_trg_Scoreboard= null
 trigger gg_trg_ChatCommand= null
+trigger gg_trg_EMOTES= null
 trigger gg_trg_Player_Pick_Mode= null
 trigger gg_trg_Captain_Draft= null
 trigger gg_trg_WoS_Shop_Init= null
@@ -277,7 +278,6 @@ trigger gg_trg_ErzaG2_Nakagami= null
 trigger gg_trg_ErzaG2_Fairy= null
 trigger gg_trg_ErzaBase= null
 trigger gg_trg_Milim= null
-trigger gg_trg_EMOTES= null
 endglobals
 
 //   Warcraft III map script

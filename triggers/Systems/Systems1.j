@@ -2424,7 +2424,7 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
 
     // Р С›Р В±РЎвЂ°Р С‘Р Вµ РЎРѓР С•Р С—РЎР‚Р С•РЎвЂљР С‘Р Р†Р В»Р ВµР Р…Р С‘РЎРЏ Р С•РЎвЂљ Р В±Р В°РЎвЂћРЎвЂћР С•Р Р†
     if GetUnitAbilityLevel(td, 'B02C') > 0 then
-        set dmg = dmg * 0.60
+        set dmg = dmg * 0.70
     endif
     if GetUnitAbilityLevel(td, RimuruW3_Buff_ID ) > 0 then
         set dmg = dmg * 0.5 
@@ -2616,8 +2616,8 @@ endif
             set dmg = dmg * 0.8
 
             call SaveInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES, 1)
-            call MyFlush(targetHid, KEY_BLUE_EMPEROR_RES, 0, 5.0)
-            call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_sacred guard blue.mdl", td, "chest"), 5.0)
+            call MyFlush(targetHid, KEY_BLUE_EMPEROR_RES, 0, 4.0)
+            call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_sacred guard blue.mdl", td, "chest"), 4.0)
             call BlzStartUnitAbilityCooldown(td, 'A04Q', 25.0)
         endif
 
