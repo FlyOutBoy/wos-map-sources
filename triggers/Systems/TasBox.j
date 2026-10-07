@@ -14,7 +14,9 @@ library TasAbilityChargeBox requires optional FrameLoader
       public constant boolean REFORGED = false // have nativ SkinManagerGetLocalPath
       public unit array Unit
       public real UpdateIntervale = 0.2
-      public hashtable Hash
+      public hashtable Hash = InitHashtable()
+      private timer UpdateTimer = null
+      private boolean Initialized = false
       public string TocPath ="war3mapImported/TasAbilityChargeBox.toc" // no TocPath or TocPath = "" create it without fdf
       public framehandle array FrameBox
       public framehandle array FrameText
@@ -51,8 +53,27 @@ library TasAbilityChargeBox requires optional FrameLoader
       call FlushChildHashtable(Hash, GetHandleId(u))
    endfunction
 
+   // Remove one counter without clearing other abilities/items on the unit.
+   public function ClearValue takes unit u, integer spellCode returns nothing
+      local integer unitId = GetHandleId(u)
+      local integer count = LoadInteger(Hash, unitId, 0)
+      local integer i = 1
+      loop
+         exitwhen i > count
+         if LoadInteger(Hash, unitId, i) == spellCode then
+            call SaveInteger(Hash, unitId, i, LoadInteger(Hash, unitId, count))
+            call RemoveSavedInteger(Hash, unitId, count)
+            call SaveInteger(Hash, unitId, 0, count - 1)
+            call RemoveSavedString(Hash, unitId, spellCode)
+            return
+         endif
+         set i = i + 1
+      endloop
+   endfunction
+
    public function Update takes nothing returns nothing
-      local integer unitId = GetHandleId(Unit[GetPlayerId(GetLocalPlayer())])
+      local unit display = Unit[GetPlayerId(GetLocalPlayer())]
+      local integer unitId = GetHandleId(display)
       local integer i = 0
       local integer pos
       local integer spellCode
@@ -69,12 +90,13 @@ library TasAbilityChargeBox requires optional FrameLoader
          exitwhen i <= 0
          set spellCode = LoadInteger(Hash, unitId, i)
          set pos = BlzGetAbilityPosX(spellCode)+ BlzGetAbilityPosY(spellCode)*4
-         if pos >= 0 and i <= 11 then
+         if pos >= 0 and pos <= 11 and GetUnitAbilityLevel(display, spellCode) > 0 then
             call BlzFrameSetVisible(FrameBox[pos], true)
             call BlzFrameSetText(FrameText[pos],  LoadStr(Hash, unitId, spellCode))
          endif
          set i = i - 1
       endloop
+      set display = null
    endfunction
 
    private function Create takes nothing returns nothing
@@ -129,7 +151,12 @@ library TasAbilityChargeBox requires optional FrameLoader
 
    public function Init takes nothing returns nothing
       local trigger trig
-      call TimerStart(CreateTimer(), UpdateIntervale, true, function Update)
+      if Initialized then
+         return
+      endif
+      set Initialized = true
+      set UpdateTimer = CreateTimer()
+      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
       call Create()
       static if LIBRARY_FrameLoader then
          call FrameLoaderAdd(function Create)
@@ -137,6 +164,6 @@ library TasAbilityChargeBox requires optional FrameLoader
       set trig = CreateTrigger()
       call TriggerAddAction(trig, function Select)
       call TriggerRegisterAnyUnitEventBJ(trig, EVENT_PLAYER_UNIT_SELECTED)
-      set Hash = InitHashtable()
+      set trig = null
    endfunction
 endlibrary

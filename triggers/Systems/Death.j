@@ -12,6 +12,9 @@ function Trig_Death_Actions takes nothing returns nothing
     local integer k = 0
     local integer k2 = 0
     local boolean death = true 
+    static if LIBRARY_CrocodileSpells then
+        call Crocodile_Death(td)
+    endif
     if IsUnitType(td, UNIT_TYPE_HERO) == true  and IsUnitIllusion(td)== false then 
     
     if IsUnitEnemy(td,GetOwningPlayer(c)) then 

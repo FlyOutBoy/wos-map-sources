@@ -13,6 +13,8 @@ globals
     integer PlayersAmount = 0
 endglobals
 globals
+integer KEY_INVUL
+integer KEY_SHIELD
 integer KEY_PHYS_RES
 integer KEY_MAG_RES
 integer KEY_PATRIOT_E
@@ -32,6 +34,8 @@ integer KEY_RT
     integer KEY_IMM_F
 endglobals
 function CreateKeys takes nothing returns nothing 
+set KEY_INVUL = StringHash("invul")
+set KEY_SHIELD = StringHash("shield")
 set KEY_PHYS_RES         = StringHash("phys res")
 set KEY_MAG_RES          = StringHash("mag res")
 set KEY_PATRIOT_E        = StringHash("patriot e")

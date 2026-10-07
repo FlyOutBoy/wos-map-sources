@@ -986,11 +986,11 @@ library TsunaSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
                     if r < TsunaE_CastTime then
-                        call DebugUnit2(c)
+                       // call DebugUnit2(c)
                     endif
                     if r == TsunaE_CastTime then
                         call MakeSound("war3mapimported\\Hero_Tsuna_E2")
-                        call StopSpellUnit2(c)
+                        call StopSpellUnit2_2(c)
                         call DestroyEffect(e)
                         set scale = 1.15
                         set e = EffectSpawn("war3mapImported\\wos_summon3missle.mdl", GetUnitX(c) + 110 * Cos(a), GetUnitY(c) + 110 * Sin(a), a * bj_RADTODEG, 1, scale, 100)
@@ -1024,7 +1024,7 @@ library TsunaSpells uses GearSystems
                     endif
                 else
                     if r < TsunaE_CastTime then
-                        call StopSpellUnit2(c)
+                        call StopSpellUnit2_2(c)
                     else
                         set x = GetEffX(e)
                         set y = GetEffY(e)
@@ -1082,7 +1082,7 @@ library TsunaSpells uses GearSystems
             set move = TsunaE_Speed
             set r5 = 0
             set r4 = TsunaE_RangeBase + (TsunaE_RangeAdd*(GetUnitAbilityLevel(c,TsunaE_ID)-1))
-            call StartSpellUnit2(c)
+            call StartSpellUnit2_2(c)
             set g = CreateGroup()
             set u = null
             set a = GAngle2( c , x , y )

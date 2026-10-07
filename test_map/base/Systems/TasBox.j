@@ -1,4 +1,4 @@
-library TasAbilityChargeBox initializer Init requires optional FrameLoader
+library TasAbilityChargeBox requires optional FrameLoader
    
 //Adds a custom ChargeBox over Command Buttons to display a xx Text
 //requires loading a fdf/toc containing "TasAbilityChargeBox"
@@ -14,12 +14,13 @@ library TasAbilityChargeBox initializer Init requires optional FrameLoader
       public constant boolean REFORGED = false // have nativ SkinManagerGetLocalPath
       public unit array Unit
       public real UpdateIntervale = 0.2
-      public hashtable Hash
+      public hashtable Hash = InitHashtable()
+      private timer UpdateTimer = null
+      private boolean Initialized = false
       public string TocPath ="war3mapImported/TasAbilityChargeBox.toc" // no TocPath or TocPath = "" create it without fdf
       public framehandle array FrameBox
       public framehandle array FrameText
       public framehandle array FrameIcon
-      private boolean Initialized = false
    endglobals
    
    public function GetUnitSpellCodeKey takes integer unitId, integer spellCode returns integer
@@ -52,8 +53,27 @@ library TasAbilityChargeBox initializer Init requires optional FrameLoader
       call FlushChildHashtable(Hash, GetHandleId(u))
    endfunction
 
+   // Remove one counter without clearing other abilities/items on the unit.
+   public function ClearValue takes unit u, integer spellCode returns nothing
+      local integer unitId = GetHandleId(u)
+      local integer count = LoadInteger(Hash, unitId, 0)
+      local integer i = 1
+      loop
+         exitwhen i > count
+         if LoadInteger(Hash, unitId, i) == spellCode then
+            call SaveInteger(Hash, unitId, i, LoadInteger(Hash, unitId, count))
+            call RemoveSavedInteger(Hash, unitId, count)
+            call SaveInteger(Hash, unitId, 0, count - 1)
+            call RemoveSavedString(Hash, unitId, spellCode)
+            return
+         endif
+         set i = i + 1
+      endloop
+   endfunction
+
    public function Update takes nothing returns nothing
-      local integer unitId = GetHandleId(Unit[GetPlayerId(GetLocalPlayer())])
+      local unit display = Unit[GetPlayerId(GetLocalPlayer())]
+      local integer unitId = GetHandleId(display)
       local integer i = 0
       local integer pos
       local integer spellCode
@@ -70,18 +90,18 @@ library TasAbilityChargeBox initializer Init requires optional FrameLoader
          exitwhen i <= 0
          set spellCode = LoadInteger(Hash, unitId, i)
          set pos = BlzGetAbilityPosX(spellCode)+ BlzGetAbilityPosY(spellCode)*4
-         if pos >= 0 and pos <= 11 then
+         if pos >= 0 and pos <= 11 and GetUnitAbilityLevel(display, spellCode) > 0 then
             call BlzFrameSetVisible(FrameBox[pos], true)
             call BlzFrameSetText(FrameText[pos],  LoadStr(Hash, unitId, spellCode))
          endif
          set i = i - 1
       endloop
+      set display = null
    endfunction
 
    private function Create takes nothing returns nothing
       local framehandle commandButton
       local integer i = 0
-      local integer context
       local string font = "Fonts/FRIZQT__.TTF"
       if TocPath == null or TocPath == "" or not BlzLoadTOCFile(TocPath) then
          static if REFORGED then
@@ -89,13 +109,12 @@ library TasAbilityChargeBox initializer Init requires optional FrameLoader
          endif
          loop
             exitwhen i > 11
-            set context = 100 + i
             set commandButton = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)          
-            set FrameBox[i] = BlzCreateSimpleFrame("SimpleInfoPanelIconDamage", commandButton, context)
-            set FrameIcon[i] = BlzGetFrameByName("InfoPanelIconBackdrop", context)
-            set FrameText[i] = BlzGetFrameByName("InfoPanelIconValue", context)
-            call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLevel", context), "")
-            call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLabel", context), "")
+            set FrameBox[i] = BlzCreateSimpleFrame("SimpleInfoPanelIconDamage", commandButton, 21)
+            set FrameIcon[i] = BlzGetFrameByName("InfoPanelIconBackdrop", 21)
+            set FrameText[i] = BlzGetFrameByName("InfoPanelIconValue", 21)
+            call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLevel", 21), "")
+            call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLabel", 21), "")
 
             call BlzFrameClearAllPoints(FrameIcon[i])
             call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.003, -0.003)
@@ -136,9 +155,9 @@ library TasAbilityChargeBox initializer Init requires optional FrameLoader
          return
       endif
       set Initialized = true
-      set Hash = InitHashtable()
+      set UpdateTimer = CreateTimer()
+      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
       call Create()
-      call TimerStart(CreateTimer(), UpdateIntervale, true, function Update)
       static if LIBRARY_FrameLoader then
          call FrameLoaderAdd(function Create)
       endif

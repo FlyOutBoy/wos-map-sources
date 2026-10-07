@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"jass.apiVersion": "off",
+		"wosJassHighlight.systemFiles": [
+			"triggers/Systems/Systems1.j",
+			"triggers/Systems/Systems2.j"
+		],
+		"wosJassHighlight.color": "#4EC950"
+	}
+}

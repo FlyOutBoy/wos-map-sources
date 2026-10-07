@@ -83,6 +83,18 @@ local integer check = 0
 if id == 'I00C' then
 call AddHpRegen(c,5,true) 
 endif
+if id == 'I03I' then
+call AddHpRegen(c,10,true) 
+endif
+if id == 'I03J' then
+call AddHpRegen(c,15,true) 
+endif
+if id == 'I03O' then
+call AddHpRegen(c,20,true) 
+endif
+if id == 'I03P' then
+call AddHpRegen(c,25,true) 
+endif
 if debugcditem(id) then 
 set r = LoadReal(hs,GetHandleId(c),StringHash(I2S(id)))
 set k = getdebugcditem_abi_id(id)
@@ -105,17 +117,18 @@ if id == 'I026' then
 call AddMpRegen(c,2,true) 
 endif
 if id == 'I028' then
-call AddMpRegen(c,5,true)
-call AddHpRegen(c,7,true) 
+call AddMpRegen(c,4,true)
+call AddHpRegen(c,5,true) 
 endif
 if id == 'I00H' then
-call AddHpRegen(c,5,true) 
+//call AddHpRegen(c,5,true) 
 endif
 if id == 'I01I' then
-call AddHpRegen(c,5,true) 
 endif
 if id == 'I01B' then
-call AddMpRegen(c,5,true) 
+endif
+if id == 'I011' then
+call AddHpRegen(c,20,true) 
 endif
 if id == 'I020' then
 call AddHpRegen(c,15,true) 
@@ -123,23 +136,39 @@ endif
 if id == 'I021' then
 //call AddMpRegen(c,4,true) 
 endif
+if id == 'I024' then
+call AddHpRegen(c,20,true) 
+endif
+if id == 'I025' then
+call AddHpRegen(c,20,true) 
+endif
 if id == 'I00D' then
 call AddMpRegen(c,2,true) 
+endif
+if id == 'I03K' then
+call AddMpRegen(c,4,true) 
+endif
+if id == 'I03L' then
+call AddMpRegen(c,6,true) 
+endif
+if id == 'I03M' then
+call AddMpRegen(c,8,true) 
+endif
+if id == 'I03N' then
+call AddMpRegen(c,10,true) 
 endif
 if id == 'I00O' then
 call AddMpRegen(c,4,true) 
 call AddSpellLevel(c,'A01C',7,true)
     endif
     if id == 'I01N' then
-call AddMpRegen(c,4,true)
+call AddHpRegen(c,10,true)
 call AddSpellLevel(c,'A01C',7,true)
     endif
     if id == 'I00G' then
     call AddMpRegen(c,1,true) 
     endif
 if id == 'I00T' then
-call AddMpRegen(c,4,true) 
-call AddSpellLevel(c,'A01C',4,true)
 endif
 if id == 'I00E' then 
 call AddSpellLevel(c,'A01C',10,true)
@@ -152,13 +181,18 @@ call AddMpRegen(c,4,true)
 endif
 if id == 'I017' then
 call AddMpRegen(c,4,true)
-call AddHpRegen(c,10,true) 
-call AddSpellLevel(c,'A01C',7,true)
+call AddHpRegen(c,5,true) 
+call AddSpellLevel(c,'A01C',2,true)
+endif
+if id == 'I03U' then
+call AddMpRegen(c,6,true)
+call AddHpRegen(c,15,true) 
+call AddSpellLevel(c,'A01C',3,true)
 endif
 if id == 'I00N'  then
 call AddSpellLevel(c,'A01C',4,true)
 endif
-if id == 'I00M' then 
+if id == 'I00M'  then 
 set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')))
     if k== 0 then 
     set k = 1000
@@ -167,6 +201,16 @@ set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')
     set k = 9999
     endif
     call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')),k)
+    endif
+    if id == 'I043' then 
+set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')))
+    if k== 0 then 
+    set k = 1000
+    endif
+    if k> 9999 then 
+    set k = 9999
+    endif
+    call SetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')),k)
     endif
 if i<10 and TestMode == false then 
 //call SetItemDroppable(ti,false)
@@ -179,10 +223,18 @@ endif
         call SetItemPosition(ti,GetUnitX(c),GetUnitY(c))
     endif
     if check == 0 then 
+// Учёт статистики использует уже существующий ItemEnter-триггер.
+// Вызов идёт после проверки владельца: отклонённый чужой предмет не считается.
+//call SaveSystem_OnItemAcquired(c, ti)
 call IsItemInInventory4(c,id)
 call IsItemInInventory42(c,'I01Q','I01Y','I01X')
 call IsItemInInventory42(c,'I024','I025','ZZZZ')
-call IsItemInInventory42(c,'I00E','I00O','ZZZZ')
+call IsItemInInventory42(c,'I00E','I00O','I01N')
+call IsItemInInventory42(c,'I00J','I01M','ZZZZ')
+call IsItemInInventory42(c,'I00R','I01L','ZZZZ')
+call IsItemInInventory42(c,'I02T','I03F','I03E')
+
+ call AddAinzItemGoldCost(c, ti)
 endif
 call RefreshItemCache(c)
 set ti = null

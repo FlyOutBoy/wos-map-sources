@@ -36,34 +36,34 @@ Regenerate with `python tools/extract_war3_triggers.py` from the project root.
 | 026 | Systems | CastAItems | [Systems/CastAItems.j](Systems/CastAItems.j) | — | — |
 | 027 | Systems | TasBox | [Systems/TasBox.j](Systems/TasBox.j) | TasAbilityChargeBox | optional FrameLoader |
 | 028 | Systems | CastCheck | [Systems/CastCheck.j](Systems/CastCheck.j) | — | — |
-| 029 | Systems | ClickEvent | [Systems/ClickEvent.j](Systems/ClickEvent.j) | — | — |
-| 030 | Systems | DecorDestroy and Erza Debuff | [Systems/DecorDestroy_and_Erza_Debuff.j](Systems/DecorDestroy_and_Erza_Debuff.j) | AAADest | GearSystems |
-| 031 | Systems | Systems1 | [Systems/Systems1.j](Systems/Systems1.j) | GearSystems | GearSystems2 |
-| 032 | Systems | Systems2 | [Systems/Systems2.j](Systems/Systems2.j) | GearSystems2 | TasAbilityChargeBox |
-| 033 | Systems | DmgSys | [Systems/DmgSys.j](Systems/DmgSys.j) | — | — |
-| 034 | Systems | AtkCancel | [Systems/AtkCancel.j](Systems/AtkCancel.j) | — | — |
-| 035 | Systems | MouseMove | [Systems/MouseMove.j](Systems/MouseMove.j) | — | — |
-| 036 | Systems | Death | [Systems/Death.j](Systems/Death.j) | — | — |
-| 037 | Systems | silence | [Systems/silence.j](Systems/silence.j) | — | — |
-| 038 | Systems | LvlUpCheck | [Systems/LvlUpCheck.j](Systems/LvlUpCheck.j) | — | — |
-| 039 | Systems | LvlSelf | [Systems/LvlSelf.j](Systems/LvlSelf.j) | — | — |
-| 040 | Systems | MagRes | [Systems/MagRes.j](Systems/MagRes.j) | — | — |
-| 041 | Systems | PhysRes | [Systems/PhysRes.j](Systems/PhysRes.j) | — | — |
-| 042 | Systems | slow | [Systems/slow.j](Systems/slow.j) | — | — |
-| 043 | Systems | NeviSound | [Systems/NeviSound.j](Systems/NeviSound.j) | — | — |
-| 044 | Systems | Evol1 | [Systems/Evol1.j](Systems/Evol1.j) | — | — |
-| 045 | Systems | Evol2 | [Systems/Evol2.j](Systems/Evol2.j) | — | — |
-| 046 | Systems | sukuna spawn | [Systems/sukuna_spawn.j](Systems/sukuna_spawn.j) | — | — |
-| 047 | Systems | ESC | [Systems/ESC.j](Systems/ESC.j) | — | — |
-| 048 | Systems | Killme | [Systems/Killme.j](Systems/Killme.j) | — | — |
-| 049 | Systems | AnimCheck | [Systems/AnimCheck.j](Systems/AnimCheck.j) | — | — |
-| 050 | Systems | hpset | [Systems/hpset.j](Systems/hpset.j) | — | — |
-| 051 | Systems | mpset | [Systems/mpset.j](Systems/mpset.j) | — | — |
-| 052 | Systems | ArrowLeft | [Systems/ArrowLeft.j](Systems/ArrowLeft.j) | — | — |
-| 053 | Systems | ArrowUp | [Systems/ArrowUp.j](Systems/ArrowUp.j) | — | — |
-| 054 | Systems | ArrowDown | [Systems/ArrowDown.j](Systems/ArrowDown.j) | — | — |
-| 055 | Systems | ArrowRight | [Systems/ArrowRight.j](Systems/ArrowRight.j) | — | — |
-| 056 | Systems | CastingCheck | [Systems/CastingCheck.j](Systems/CastingCheck.j) | — | — |
+| 029 | Systems | CastingCheck | [Systems/CastingCheck.j](Systems/CastingCheck.j) | — | — |
+| 030 | Systems | ClickEvent | [Systems/ClickEvent.j](Systems/ClickEvent.j) | — | — |
+| 031 | Systems | DecorDestroy and Erza Debuff | [Systems/DecorDestroy_and_Erza_Debuff.j](Systems/DecorDestroy_and_Erza_Debuff.j) | AAADest | GearSystems |
+| 032 | Systems | Systems1 | [Systems/Systems1.j](Systems/Systems1.j) | GearSystems | GearSystems2 |
+| 033 | Systems | Systems2 | [Systems/Systems2.j](Systems/Systems2.j) | GearSystems2 | TasAbilityChargeBox |
+| 034 | Systems | DmgSys | [Systems/DmgSys.j](Systems/DmgSys.j) | — | — |
+| 035 | Systems | AtkCancel | [Systems/AtkCancel.j](Systems/AtkCancel.j) | — | — |
+| 036 | Systems | MouseMove | [Systems/MouseMove.j](Systems/MouseMove.j) | — | — |
+| 037 | Systems | Death | [Systems/Death.j](Systems/Death.j) | — | — |
+| 038 | Systems | silence | [Systems/silence.j](Systems/silence.j) | — | — |
+| 039 | Systems | LvlUpCheck | [Systems/LvlUpCheck.j](Systems/LvlUpCheck.j) | — | — |
+| 040 | Systems | LvlSelf | [Systems/LvlSelf.j](Systems/LvlSelf.j) | — | — |
+| 041 | Systems | MagRes | [Systems/MagRes.j](Systems/MagRes.j) | — | — |
+| 042 | Systems | PhysRes | [Systems/PhysRes.j](Systems/PhysRes.j) | — | — |
+| 043 | Systems | slow | [Systems/slow.j](Systems/slow.j) | — | — |
+| 044 | Systems | NeviSound | [Systems/NeviSound.j](Systems/NeviSound.j) | — | — |
+| 045 | Systems | Evol1 | [Systems/Evol1.j](Systems/Evol1.j) | — | — |
+| 046 | Systems | Evol2 | [Systems/Evol2.j](Systems/Evol2.j) | — | — |
+| 047 | Systems | sukuna spawn | [Systems/sukuna_spawn.j](Systems/sukuna_spawn.j) | — | — |
+| 048 | Systems | ESC | [Systems/ESC.j](Systems/ESC.j) | — | — |
+| 049 | Systems | Killme | [Systems/Killme.j](Systems/Killme.j) | — | — |
+| 050 | Systems | AnimCheck | [Systems/AnimCheck.j](Systems/AnimCheck.j) | — | — |
+| 051 | Systems | hpset | [Systems/hpset.j](Systems/hpset.j) | — | — |
+| 052 | Systems | mpset | [Systems/mpset.j](Systems/mpset.j) | — | — |
+| 053 | Systems | ArrowLeft | [Systems/ArrowLeft.j](Systems/ArrowLeft.j) | — | — |
+| 054 | Systems | ArrowUp | [Systems/ArrowUp.j](Systems/ArrowUp.j) | — | — |
+| 055 | Systems | ArrowDown | [Systems/ArrowDown.j](Systems/ArrowDown.j) | — | — |
+| 056 | Systems | ArrowRight | [Systems/ArrowRight.j](Systems/ArrowRight.j) | — | — |
 | 057 | Systems | ButtonPressed | [Systems/ButtonPressed.j](Systems/ButtonPressed.j) | — | — |
 | 058 | Systems | ButtonPressed ESC | [Systems/ButtonPressed_ESC.j](Systems/ButtonPressed_ESC.j) | — | — |
 | 059 | Systems | ButtonUnPressed_ESC | [Systems/ButtonUnPressed_ESC.j](Systems/ButtonUnPressed_ESC.j) | — | — |
@@ -114,3 +114,4 @@ Regenerate with `python tools/extract_war3_triggers.py` from the project root.
 | 104 | Erza | ErzaG2 Fairy | [Heroes/Erza/ErzaG2_Fairy.j](Heroes/Erza/ErzaG2_Fairy.j) | ErzaG2Spells | GearSystems |
 | 105 | Erza | ErzaBase | [Heroes/Erza/ErzaBase.j](Heroes/Erza/ErzaBase.j) | ErzaBase | GearSystems, ErzaQSpells |
 | 106 | Heroes | Milim | [Heroes/Milim.j](Heroes/Milim.j) | MilimSpells | GearSystems |
+| 107 | Heroes | Crocodile | [Heroes/Crocodile.j](Heroes/Crocodile.j) | CrocodileSpells | GearSystems, TasAbilityChargeBox |

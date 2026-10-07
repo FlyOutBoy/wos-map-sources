@@ -1,7 +1,102 @@
 {
     "version": "2.0.0",
-
     "tasks": [
+        {
+            "label": "TEST: Получить из карты код и данные",
+            "detail": "Читает сохранённый Heroes/<testHero>.w3x. J героя обновляется в test_map/heroes/<testHero>.j.",
+            "type": "process",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\import-test-map.ps1",
+                "-Mode",
+                "All"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "TEST: Получить из карты только код",
+            "detail": "Читает сохранённый Heroes/<testHero>.w3x. J героя обновляется в test_map/heroes/<testHero>.j; MAIN не изменяется.",
+            "type": "process",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\import-test-map.ps1",
+                "-Mode",
+                "Code"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "TEST: Получить из карты только данные",
+            "type": "process",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\import-test-map.ps1",
+                "-Mode",
+                "Data"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "TEST: 1. Подготовить карту и JSON выбранного героя",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\sync_war3_project.py",
+                "--config",
+                "${workspaceFolder}\\object-data.test.config.json",
+                "export"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "TEST: 2. Проверить, сохранить и собрать выбранную карту",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\sync_war3_project.py",
+                "--config",
+                "${workspaceFolder}\\object-data.test.config.json",
+                "check-save"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
         {
             "label": "WOS Objects: 1. Export map to editable JSON",
             "type": "process",
@@ -12,7 +107,11 @@
                 "${workspaceFolder}\\object-data.config.json",
                 "export"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -25,7 +124,11 @@
                 "${workspaceFolder}\\object-data.config.json",
                 "check"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -38,7 +141,11 @@
                 "${workspaceFolder}\\object-data.config.json",
                 "save"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -51,7 +158,11 @@
                 "${workspaceFolder}\\object-data.config.json",
                 "roundtrip"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -66,7 +177,11 @@
                 "-File",
                 "${workspaceFolder}\\.vscode\\import-object-data-from-map.ps1"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -79,7 +194,12 @@
                 "${workspaceFolder}\\object-data.config.json",
                 "--interactive"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true, "focus": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true,
+                "focus": true
+            },
             "problemMatcher": []
         },
         {
@@ -94,7 +214,11 @@
                 "-File",
                 "${workspaceFolder}\\.vscode\\import-triggers-and-code-from-map.ps1"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
@@ -108,11 +232,16 @@
                 "-File",
                 "${workspaceFolder}\\.vscode\\apply-trigger-settings.ps1"
             ],
-            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
             "problemMatcher": []
         },
         {
             "label": "Hero Transfer",
+            "detail": "Копирует выбранный J героя (включая test_map/heroes) в MAIN triggers/Heroes и регистрирует его. Затем WOS Objects: 3 сохраняет код в основную карту.",
             "type": "process",
             "command": "python",
             "args": [
@@ -130,11 +259,8 @@
         },
         {
             "label": "WOS: Compile all JASS/vJASS (auto dependencies)",
-
             "type": "process",
-
             "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-
             "args": [
                 "-NoProfile",
                 "-ExecutionPolicy",
@@ -144,28 +270,21 @@
                 "-SourceRoot",
                 "${workspaceFolder}\\triggers"
             ],
-
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
                 "clear": true
             },
-
             "problemMatcher": []
         },
-
         {
             "label": "WOS: Copy current JASS for World Editor",
-
             "type": "process",
-
             "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-
             "args": [
                 "-NoProfile",
                 "-ExecutionPolicy",
@@ -175,23 +294,17 @@
                 "-ActiveFile",
                 "${file}"
             ],
-
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
                 "clear": true
             },
-
             "problemMatcher": []
         },
-
         {
-            "label": "WOS: BUILD + RUN TEST MAP",
-
+            "label": "TEST: 3. Собрать и запустить выбранную карту",
             "type": "process",
-
             "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-
             "args": [
                 "-NoProfile",
                 "-ExecutionPolicy",
@@ -201,23 +314,17 @@
                 "-Target",
                 "Test"
             ],
-
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
                 "clear": true
             },
-
             "problemMatcher": []
         },
-
         {
             "label": "WOS: BUILD + RUN MAIN MAP",
-
             "type": "process",
-
             "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-
             "args": [
                 "-NoProfile",
                 "-ExecutionPolicy",
@@ -227,13 +334,11 @@
                 "-Target",
                 "Main"
             ],
-
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
                 "clear": true
             },
-
             "problemMatcher": []
         }
     ]

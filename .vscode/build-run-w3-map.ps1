@@ -2,7 +2,9 @@
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet("Test", "Main")]
-    [string]$Target
+    [string]$Target,
+    [switch]$PrepareOnly,
+    [switch]$NoLaunch
 )
 
 $ErrorActionPreference = "Stop"
@@ -73,7 +75,11 @@ function Copy-MapToAvailableBuildSlot {
         }
 
         try {
-            Copy-Item -LiteralPath $OriginalMap -Destination $candidate -Force
+            if (Test-Path -LiteralPath $OriginalMap -PathType Container) {
+                & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Pack -Map $candidate -Directory $OriginalMap -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') | Out-Host
+            } else {
+                Copy-Item -LiteralPath $OriginalMap -Destination $candidate -Force
+            }
             return $candidate
         } catch {
             $lastCopyError = $_.Exception.Message
@@ -125,116 +131,13 @@ function Ensure-BattleNetSession {
     }
 }
 
-function Get-SourceFiles {
-    param([Parameter(Mandatory = $true)][string[]]$ConfiguredPaths)
-
-    $excludedDirectories = @("backups", "backup", "archive", "_build", ".vscode", ".git")
-    $files = @()
-    foreach ($configuredPath in $ConfiguredPaths) {
-        $path = Resolve-WorkspacePath $configuredPath
-        if (Test-Path -LiteralPath $path -PathType Leaf) {
-            if ([System.IO.Path]::GetExtension($path) -ieq ".j") {
-                $files += Get-Item -LiteralPath $path
-            }
-            continue
-        }
-        if (-not (Test-Path -LiteralPath $path -PathType Container)) {
-            throw "TEST DEPENDENCY MISSING: $path"
-        }
-
-        $files += Get-ChildItem -LiteralPath $path -Recurse -File -Filter "*.j" |
-            Where-Object {
-                $relative = $_.FullName.Substring($path.Length).TrimStart("\")
-                -not (($relative -split '[\\/]') | Where-Object { $_ -in $excludedDirectories })
-            }
-    }
-
-    return @($files | Sort-Object FullName -Unique)
-}
-
-function Get-SelectedHeroSources {
-    param(
-        [Parameter(Mandatory = $true)][string]$Hero,
-        [Parameter(Mandatory = $true)][string[]]$SourceDirectories
-    )
-
-    $matches = @()
-    foreach ($configuredDirectory in $SourceDirectories) {
-        $directory = Resolve-WorkspacePath $configuredDirectory
-        if (-not (Test-Path -LiteralPath $directory -PathType Container)) {
-            throw "TEST DEPENDENCY MISSING: $directory"
-        }
-
-        $singleFile = Join-Path $directory "$Hero.j"
-        if (Test-Path -LiteralPath $singleFile -PathType Leaf) {
-            $matches += Get-Item -LiteralPath $singleFile
-        }
-
-        $heroDirectory = Join-Path $directory $Hero
-        if (Test-Path -LiteralPath $heroDirectory -PathType Container) {
-            $matches += Get-SourceFiles @($heroDirectory)
-        }
-
-        if ((Split-Path -Leaf $directory) -ieq $Hero) {
-            $matches += Get-SourceFiles @($directory)
-        }
-    }
-
-    return @($matches | Sort-Object FullName -Unique)
-}
-
-function Get-WorkspaceImport {
-    param([Parameter(Mandatory = $true)][string]$SourcePath)
-
-    $workspacePrefix = $workspaceRoot.TrimEnd("\") + "\"
-    if (-not $SourcePath.StartsWith($workspacePrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
-        throw "TEST DEPENDENCY MISSING: source must be inside workspace: $SourcePath"
-    }
-
-    $relative = $SourcePath.Substring($workspacePrefix.Length).Replace("\", "/")
-    return "//! import `"../$relative`""
-}
-
-function Assert-TestLibraryDependencies {
-    param([Parameter(Mandatory = $true)][System.IO.FileInfo[]]$SourceFiles)
-
-    $providers = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::OrdinalIgnoreCase)
-    $required = New-Object 'System.Collections.Generic.List[string]'
-
-    foreach ($sourceFile in $SourceFiles) {
-        $text = [string](Get-Content -LiteralPath $sourceFile.FullName -Raw -Encoding UTF8)
-        foreach ($match in [regex]::Matches($text, '(?im)^\s*(?:library|scope)\s+([A-Za-z_][A-Za-z0-9_]*)\b([^\r\n]*)')) {
-            [void]$providers.Add($match.Groups[1].Value)
-            $tail = ($match.Groups[2].Value -replace '//.*$', '')
-            $dependencyMatch = [regex]::Match($tail, '(?i)\b(?:requires|uses|needs)\b\s+(.+?)(?=\binitializer\b|$)')
-            if (-not $dependencyMatch.Success) {
-                continue
-            }
-            foreach ($dependency in ($dependencyMatch.Groups[1].Value -split ',')) {
-                $name = $dependency.Trim()
-                if ($name -match '(?i)^optional\s+(.+)$') {
-                    continue
-                }
-                if ($name -match '^([A-Za-z_][A-Za-z0-9_]*)$') {
-                    $required.Add($Matches[1])
-                }
-            }
-        }
-    }
-
-    foreach ($dependency in ($required | Sort-Object -Unique)) {
-        if (-not $providers.Contains($dependency)) {
-            throw "TEST DEPENDENCY MISSING: $dependency"
-        }
-    }
-}
-
 try {
     if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
         $examplePath = Join-Path $PSScriptRoot "wos-build.example.json"
         throw "Local build configuration not found: $configPath. Copy $examplePath to $configPath and set your Warcraft III, JassHelper and map paths."
     }
     $config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($Target -eq 'Test') { $config = & (Join-Path $PSScriptRoot 'ensure-test-profile.ps1') }
 
     $gameExe = Resolve-WorkspacePath ([string]$config.gameExe)
     $jassHelper = Resolve-WorkspacePath ([string]$config.jassHelper)
@@ -242,8 +145,8 @@ try {
     $blizzardJ = Resolve-WorkspacePath ([string]$config.blizzardJ)
     $buildDir = Resolve-WorkspacePath ([string]$config.buildDir)
 
-    Require-File -Path $gameExe -Name "Warcraft III executable"
-    Require-File -Path $jassHelper -Name "JassHelper executable"
+    if (-not $PrepareOnly -and -not $NoLaunch) { Require-File -Path $gameExe -Name "Warcraft III executable" }
+    if (-not $PrepareOnly) { Require-File -Path $jassHelper -Name "JassHelper executable" }
     Require-File -Path $commonJ -Name "common.j"
     Require-File -Path $blizzardJ -Name "Blizzard.j"
     New-Item -ItemType Directory -Path $buildDir -Force | Out-Null
@@ -254,63 +157,22 @@ try {
             throw "Invalid testHero in: $configPath"
         }
 
-        $testMapsDir = Resolve-WorkspacePath ([string]$config.testMapsDir)
-        $testBaseSource = Resolve-WorkspacePath ([string]$config.testBaseSource)
-        $originalMap = [System.IO.Path]::GetFullPath((Join-Path $testMapsDir "$testHero.w3x"))
+        $originalMap = if ($config.testMap) {
+            Resolve-WorkspacePath ([string]$config.testMap)
+        } else {
+            Join-Path (Resolve-WorkspacePath ([string]$config.testMapsDir)) "$testHero.w3x"
+        }
         $outputName = "${testHero}_Test.w3x"
-        $source = Join-Path $buildDir "TestCurrent.vj"
-
         Require-File -Path $originalMap -Name "Original TEST map"
-        Require-File -Path $testBaseSource -Name "TEST base source"
-
-        $heroDirectories = @($config.testHeroSourceDirs | ForEach-Object { [string]$_ })
-        $selectedHeroSources = @(Get-SelectedHeroSources -Hero $testHero -SourceDirectories $heroDirectories)
-        if ($selectedHeroSources.Count -eq 0) {
-            throw "TEST DEPENDENCY MISSING: hero source '$testHero'"
-        }
-
-        $heroSources = @(Get-SourceFiles -ConfiguredPaths $heroDirectories)
-        $sharedConfigured = @($config.sharedSources | ForEach-Object { [string]$_ })
-        $sharedSources = if ($sharedConfigured.Count) { @(Get-SourceFiles -ConfiguredPaths $sharedConfigured) } else { @() }
-        $dynamicSources = @($heroSources + $sharedSources | Sort-Object FullName -Unique)
-
-        $selectedPaths = @($selectedHeroSources | ForEach-Object { $_.FullName })
-        $activeImports = @(
-            "// Active hero: $testHero"
-            $selectedHeroSources | ForEach-Object { Get-WorkspaceImport $_.FullName }
-            "// Other explicitly allowed TEST hero dependencies"
-            $dynamicSources | Where-Object { $_.FullName -notin $selectedPaths } | ForEach-Object { Get-WorkspaceImport $_.FullName }
-        ) -join "`r`n"
-
-        $baseText = [System.IO.File]::ReadAllText($testBaseSource)
-        $marker = "// __ACTIVE_HERO_SOURCE__"
-        $firstMarker = $baseText.IndexOf($marker, [System.StringComparison]::Ordinal)
-        $lastMarker = $baseText.LastIndexOf($marker, [System.StringComparison]::Ordinal)
-        if ($firstMarker -lt 0 -or $firstMarker -ne $lastMarker) {
-            throw "TEST base must contain exactly one active hero marker: $marker"
-        }
-        [System.IO.File]::WriteAllText($source, $baseText.Replace($marker, $activeImports), [System.Text.UTF8Encoding]::new($false))
-
-        $importedFiles = @()
-        $generatedText = [System.IO.File]::ReadAllText($source)
-        foreach ($match in [regex]::Matches($generatedText, '(?im)^\s*//!\s*import\s+"([^"]+)"')) {
-            $importedPath = [System.IO.Path]::GetFullPath((Join-Path $buildDir $match.Groups[1].Value))
-            Require-File -Path $importedPath -Name "TEST imported source"
-            $importedFiles += Get-Item -LiteralPath $importedPath
-        }
-        Assert-TestLibraryDependencies -SourceFiles @($importedFiles | Sort-Object FullName -Unique)
-
+        $source = & (Join-Path $PSScriptRoot 'prepare-test-map.ps1') -OutputDirectory $buildDir
         $profileName = "TEST / $testHero"
-        Write-Host "Selected hero source:" -ForegroundColor DarkGray
-        $selectedHeroSources | ForEach-Object { Write-Host "  $($_.FullName)" -ForegroundColor DarkGray }
-        Write-Host "Allowed hero dependency files: $($heroSources.Count)" -ForegroundColor DarkGray
     } else {
         $profileName = "MAIN"
         $originalMap = Resolve-WorkspacePath ([string]$config.mainMap)
         $source = Resolve-WorkspacePath ([string]$config.mainSource)
         $outputName = "WoS_Test.w3x"
 
-        Require-File -Path $originalMap -Name "Original MAIN map"
+        if (-not (Test-Path -LiteralPath $originalMap)) { throw "Original MAIN map not found: $originalMap" }
         if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
             Write-Host "MAIN SOURCE NOT CREATED:" -ForegroundColor Red
             Write-Host $source -ForegroundColor Red
@@ -329,7 +191,12 @@ try {
     Write-Host "Source mapscript: $source"
 
     Require-File -Path $source -Name "Profile mapscript"
-    Require-File -Path $originalMap -Name "Original map"
+    if (-not (Test-Path -LiteralPath $originalMap)) { throw "Original map not found: $originalMap" }
+
+    if ($PrepareOnly) {
+        Write-Host "BUILD PREPARATION OK (no compiler or game launch)" -ForegroundColor Green
+        exit 0
+    }
 
     $builtMap = Copy-MapToAvailableBuildSlot `
         -OriginalMap $originalMap `
@@ -337,6 +204,24 @@ try {
         -OutputName $outputName
     Write-Host "Built map:        $builtMap"
 
+    if ($Target -eq 'Test') {
+        $unpacked = Resolve-WorkspacePath ([string]$config.testMapDirectory)
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Update -Map $builtMap -Directory $unpacked -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+        # Materialize the same resolved source set into the copied map's editor
+        # payload. Never save into the input map or the original unpacked folder.
+        $editorStage = Join-Path $buildDir 'test-editor-triggers'
+        New-Item -ItemType Directory -Path $editorStage -Force | Out-Null
+        foreach ($name in @('war3map.wtg', 'war3map.wct')) {
+            Copy-Item -LiteralPath (Join-Path $unpacked $name) -Destination (Join-Path $editorStage $name) -Force
+        }
+        $editorBuildConfig = Join-Path $buildDir 'test-editor-build.json'
+        $editorSyncConfig = Join-Path $buildDir 'test-editor-sync.json'
+        [IO.File]::WriteAllText($editorBuildConfig, (@{ testMapDirectory = $editorStage } | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
+        [IO.File]::WriteAllText($editorSyncConfig, (@{ build_config = $editorBuildConfig; map_key = 'testMapDirectory'; allow_stale_wtg_counts = $true } | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
+        & python (Join-Path $workspaceRoot 'tools/sync_war3_triggers.py') push --config $editorSyncConfig --triggers (Join-Path $buildDir 'test-sources') --backups (Join-Path $buildDir 'test-editor-backups')
+        if ($LASTEXITCODE -ne 0) { throw 'TEST editor trigger synchronization failed' }
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Update -Map $builtMap -Directory $editorStage -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+    }
     $sourceDirectory = Split-Path -Parent $source
     $jassHelperArguments = @(
         "`"$commonJ`"",
@@ -363,19 +248,47 @@ try {
     }
 
     Write-Host "BUILD OK" -ForegroundColor Green
+    if ($Target -eq 'Main' -and (Test-Path -LiteralPath $originalMap -PathType Container)) {
+        if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {
+            throw "Close World Editor before updating MAIN's compiled script. Compiled copy: $builtMap"
+        }
+        $scriptStage = Join-Path $buildDir 'main-compiled-script'
+        New-Item -ItemType Directory -Path $scriptStage -Force | Out-Null
+        $scriptNames = Join-Path $buildDir 'main-compiled-script-names.json'
+        [IO.File]::WriteAllText($scriptNames, '["war3map.j"]', [Text.UTF8Encoding]::new($false))
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $builtMap -Directory $scriptStage -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') -NamesFile $scriptNames | Out-Host
+        $compiledScript = Join-Path $scriptStage 'war3map.j'
+        Require-File -Path $compiledScript -Name 'Compiled MAIN mapscript'
+        $scriptBackup = Join-Path $workspaceRoot ('backups/main-map-build/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
+        New-Item -ItemType Directory -Path $scriptBackup -Force | Out-Null
+        $mapScript = Join-Path $originalMap 'war3map.j'
+        if (Test-Path -LiteralPath $mapScript -PathType Leaf) { Copy-Item -LiteralPath $mapScript -Destination (Join-Path $scriptBackup 'war3map.j') }
+        Copy-Item -LiteralPath $compiledScript -Destination $mapScript -Force
+        Write-Host "MAIN scenario compiled script updated: $mapScript"
+        Write-Host "Previous script backup: $scriptBackup"
+    }
+    if ($Target -eq 'Test') {
+        if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {
+            throw "Close World Editor before updating the selected Heroes map. Compiled copy: $builtMap"
+        }
+        $backupDirectory = Join-Path $workspaceRoot "backups/test-maps/$testHero"
+        New-Item -ItemType Directory -Path $backupDirectory -Force | Out-Null
+        $backupMap = Join-Path $backupDirectory ((Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '.w3x')
+        Copy-Item -LiteralPath $originalMap -Destination $backupMap
+        Copy-Item -LiteralPath $builtMap -Destination $originalMap -Force
+        Write-Host "Heroes map updated: $originalMap"
+    }
+    if ($NoLaunch) { Write-Host "Game launch skipped."; exit 0 }
     Ensure-BattleNetSession -Config $config
 
-    $useEditorLaunch = $true
-    if ($null -ne $config.useEditorLaunch) {
-        $useEditorLaunch = [bool]$config.useEditorLaunch
-    }
-
-    if ($useEditorLaunch) {
-        $gameArguments = @("-launch", "-editor", "-loadfile", "`"$builtMap`"")
-        $effectiveCommand = "`"$gameExe`" -launch -editor -loadfile `"$builtMap`""
-    } else {
-        $gameArguments = @("-launch", "-loadfile", "`"$builtMap`"")
-        $effectiveCommand = "`"$gameExe`" -launch -loadfile `"$builtMap`""
+    . (Join-Path $PSScriptRoot 'warcraft-launch.ps1')
+    $launchMap = if ($Target -eq 'Test') { $originalMap } else { $builtMap }
+    $editorLog = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Warcraft III/Logs/War3Log.txt'
+    $gameArguments = @(Get-WarcraftLaunchArguments -Config $config -Map $launchMap -EditorLog $editorLog)
+    $effectiveCommand = '"' + $gameExe + '" ' + ($gameArguments -join ' ')
+    $gameWorkingDirectory = Split-Path -Parent $gameExe
+    if ((Split-Path -Leaf $gameWorkingDirectory) -in @('x86_64','x86')) {
+        $gameWorkingDirectory = Split-Path -Parent $gameWorkingDirectory
     }
 
     Write-Host ""
@@ -385,7 +298,7 @@ try {
     Start-Process `
         -FilePath $gameExe `
         -ArgumentList $gameArguments `
-        -WorkingDirectory (Split-Path -Parent $gameExe)
+        -WorkingDirectory $gameWorkingDirectory
     Write-Host "WARCRAFT STARTED" -ForegroundColor Green
 } catch {
     Write-Host "BUILD FAILED" -ForegroundColor Red

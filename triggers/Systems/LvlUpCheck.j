@@ -17,6 +17,10 @@ local integer k2 = 0
 local unit c = GetTriggerUnit()
 local integer id = GetUnitTypeId(c)
 local real hp = GetUnitState(GetTriggerUnit(),UNIT_STATE_LIFE)/GetUnitState(GetTriggerUnit(),UNIT_STATE_MAX_LIFE)
+    // HERO TRANSFER: Crocodile / LvlUpCheck
+    if Crocodile_ID == id then
+        call Crocodile_InitializeHero(c)
+    endif
 if (CheckAllow1(GetTriggerUnit()) or CheckAllow2(GetTriggerUnit()) ) and LoadInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),StringHash("cast allow"))== 0 and IsUnitIllusion(GetTriggerUnit())== false then 
     call SaveInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),StringHash("cast allow"),1)
     call TriggerRegisterPlayerUnitEvent(gg_trg_CastCheck, GetOwningPlayer(GetTriggerUnit()), EVENT_PLAYER_UNIT_SPELL_EFFECT, null)

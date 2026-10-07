@@ -272,12 +272,72 @@ def candidate_files(trigger_dir: Path) -> list[str]:
     )
 
 
+def order_test_editor_payload(wtg: dict, wct: dict, source_paths: list[str]) -> list[str]:
+    """Keep WCT aligned with the editor's depth-first category traversal.
+
+    Appending a trigger belonging to an earlier category at the end of WTG
+    appears correct to a flat reader, but the editor traverses its category
+    tree when assigning WCT text. Reorder both files together before packing.
+    """
+    source_types = (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT)
+    source_objects = [o for o in wtg["objects"] if o["object_type"] in source_types]
+    if not (len(source_objects) == len(wct["sources"]) == len(source_paths)):
+        raise ValueError("cannot order mismatched WTG/WCT payload")
+    payload = {o["object_id"]: (s, p) for o, s, p in
+               zip(source_objects, wct["sources"], source_paths)}
+    children: dict[int, list[dict]] = {}
+    for item in wtg["objects"]:
+        children.setdefault(item.get("parent_id", 0), []).append(item)
+    ordered, visited = [], set()
+
+    def visit(item: dict) -> None:
+        identity = item["object_id"]
+        if identity in visited:
+            raise ValueError("duplicate or cyclic WTG object hierarchy")
+        visited.add(identity)
+        ordered.append(item)
+        if item["object_type"] == fmt.OBJECT_CATEGORY:
+            for child in children.get(identity, []):
+                visit(child)
+
+    for item in wtg["objects"]:
+        if item.get("parent_id", 0) not in (-1, 0):
+            continue
+        visit(item)
+    if len(ordered) != len(wtg["objects"]):
+        raise ValueError("WTG object has an unreachable parent category")
+    wtg["objects"] = ordered
+    for index, item in enumerate(ordered):
+        item["object_order"] = index
+    reordered = [payload[o["object_id"]] for o in ordered if o["object_type"] in source_types]
+    wct["sources"] = [s for s, _ in reordered]
+    return [p for _, p in reordered]
+
+
 def prepare(
     config_path: Path, trigger_dir: Path,
 ) -> tuple[Path, dict, dict, int, int, list[tuple[str, str]], list[str]]:
     map_dir = load_map(config_path)
     wtg_path, wct_path = map_dir / "war3map.wtg", map_dir / "war3map.wct"
-    wtg = fmt.parse_wtg(wtg_path)
+    allow_stale_counts = json.loads(config_path.read_text(encoding="utf-8-sig")).get("allow_stale_wtg_counts", False)
+    wtg = fmt.parse_wtg(wtg_path, allow_stale_counts)
+    if allow_stale_counts:
+        # Some editor saves omit tombstones (Crocodile has category 0 and comment 9).
+        # Restore missing ids, preserving allocation counters and all live objects.
+        for kind, name, prefix in ((1, "map_header", 0), (4, "category", 2),
+                                   (8, "trigger", 3), (16, "comment", 4),
+                                   (32, "script", 5), (64, "variable", 6)):
+            info = wtg["type_info"][name]
+            live = {item["object_id"] & 0xFFFFFF for item in wtg["objects"] if item["object_type"] == kind}
+            if len(live) != info["total"] - len(info["deleted_ids"]):
+                if info["total"] > 1000000:
+                    raise ValueError("Invalid WTG allocation counter")
+                missing = set(range(info["total"])) - live - set(info["deleted_ids"])
+                referenced = {item["parent_id"] for item in wtg["objects"]}
+                if any((prefix << 24) | low in referenced for low in missing):
+                    raise ValueError(f"Missing WTG {name} id is still referenced")
+                info["deleted_ids"].extend(sorted(missing))
+                print(f"REPAIR  WTG {name} tombstones: {sorted(missing)}")
     source_objects = [item for item in wtg["objects"] if item["object_type"] in (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT)]
     if any(not item["is_custom_text"] or item["function_count"] for item in source_objects):
         raise ValueError("map contains unsupported GUI trigger data")
@@ -317,7 +377,8 @@ def prepare(
                     )
                     settings_moves.append((Path(old_path).as_posix(), Path(relative).as_posix()))
                 break
-        new_parent = category_for_path(wtg, relative)
+        new_parent = (item["parent_id"] if allow_stale_counts and expected_path(item, objects_by_id) == relative
+                      else category_for_path(wtg, relative))
         if item["parent_id"] != new_parent:
             print(f"CATEGORY {item['name']} -> {Path(relative).parent.as_posix()}")
             item["parent_id"] = new_parent
@@ -352,6 +413,7 @@ def prepare(
         enabled = configured_enabled.get(Path(relative).as_posix().casefold(), True)
         wtg["objects"].append({
             "object_type": fmt.OBJECT_TRIGGER,
+            "object_order": len(wtg["objects"]),
             "name": trigger_name,
             "comment": "",
             "is_comment": False,
@@ -368,6 +430,8 @@ def prepare(
         used.add(relative.casefold())
         added += 1
         print(f"ADD     {relative} -> WTG trigger 0x{object_id:08X}")
+    if allow_stale_counts:
+        source_paths = order_test_editor_payload(wtg, wct, source_paths)
     return map_dir, wtg, wct, differences, added, settings_moves, source_paths
 
 

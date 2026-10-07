@@ -1,11 +1,44 @@
+function ManaFix_Finish takes nothing returns nothing
+    local unit c = GetSpellAbilityUnit()
+    local integer id = GetSpellAbilityId()
+    local integer h = GetHandleId(c)
+
+    local integer savedId = LoadInteger(hs,h,StringHash("mana fix ability"))
+    local integer cost = LoadInteger(hs,h,StringHash("mana fix cost"))
+    local real before = LoadReal(hs,h,StringHash("mana fix before"))
+    local real now = GetUnitState(c,UNIT_STATE_MANA)
+    local real spent
+        
+    if id == savedId and cost > 0 then
+        set spent = before - now
+
+        if spent < I2R(cost) - 1.00 then
+            call SetUnitState(c,UNIT_STATE_MANA,now-(I2R(cost)-spent))
+        endif
+    endif
+
+    set c = null
+endfunction
 function Trig_CastingCheck_Actions takes nothing returns nothing
     local integer id = GetSpellAbilityId()
-    local unit c
+    local unit c = GetSpellAbilityUnit()
     local effect e
-    local integer i
+    local integer i = GetHandleId(c)
+    local integer lvl = GetUnitAbilityLevel(c,id)-1
+    local integer manaCost = 0
     local real x
     local real y
     local integer sh
+
+    if lvl >= 0 then
+        set manaCost = BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(c,id), ABILITY_ILF_MANA_COST, lvl)
+
+        if manaCost > 0 then
+            call SaveReal(hs,i,StringHash("mana fix before"),GetUnitState(c,UNIT_STATE_MANA))
+            call SaveInteger(hs,i,StringHash("mana fix cost"),manaCost)
+            call SaveInteger(hs,i,StringHash("mana fix ability"),id)
+        endif
+    endif
     if CheckCoordsInRect(gg_rct_Base,GetUnitX(GetSpellAbilityUnit()),GetUnitY(GetSpellAbilityUnit())) == false then 
     if id == ErzaG2_ID then 
     set c = GetSpellAbilityUnit()
@@ -131,7 +164,11 @@ endfunction
 //===========================================================================
 function InitTrig_CastingCheck takes nothing returns nothing
     local trigger trig2 = CreateTrigger()
+    local trigger manaFinish = CreateTrigger()
     set gg_trg_CastingCheck = CreateTrigger( )
+
+    call TriggerRegisterAnyUnitEventBJ(manaFinish, EVENT_PLAYER_UNIT_SPELL_ENDCAST)
+    call TriggerAddAction(manaFinish, function ManaFix_Finish)
     call TriggerRegisterAnyUnitEventBJ( gg_trg_CastingCheck, EVENT_PLAYER_UNIT_SPELL_CHANNEL )
     call TriggerRegisterAnyUnitEventBJ( trig2, EVENT_PLAYER_UNIT_SPELL_ENDCAST )
     call TriggerAddAction( gg_trg_CastingCheck, function Trig_CastingCheck_Actions )

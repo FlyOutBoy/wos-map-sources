@@ -1,34 +1,38 @@
-// Main.vj - complete MAIN map source based on Anime_WOS2_0.31c6.w3x
-// World Editor initialization comes from the original c6 war3map.j.
+// Main.vj - complete MAIN map source based on Anime_WOS2_0.32.w3x
+// World Editor initialization comes from Anime_WOS2_0.32.w3x/war3map.j.
 // Current external files under triggers are the source of truth.
 
+// BEGIN AUTO TRIGGER IMPORTS
 //! import "..\triggers\Map_Header.j"
-//! import "..\triggers\Systems\TasBox.j"
-//! import "..\triggers\Systems\Systems2.j"
-//! import "..\triggers\Systems\Systems1.j"
 //! import "..\triggers\WOS_Start\ShowCD.j"
 //! import "..\triggers\WOS_Start\TooltipBuilder.j"
 //! import "..\triggers\WOS_Start\UniversalTooltips.j"
+//! import "..\triggers\WOS_Start\UI_CAREER.j"
+//! import "..\triggers\WOS_Start\DefaultArmorChangeStable_Copy.j"
 //! import "..\triggers\WOS_Start\Save2.j"
 //! import "..\triggers\WOS_Start\SaveLoad.j"
 //! import "..\triggers\WOS_Start\MusicPlayer.j"
-//! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
-//! import "..\triggers\WOS_Start\UI_CAREER.j"
-//! import "..\triggers\WOS_Start\DefaultArmorChangeStable_Copy.j"
 //! import "..\triggers\WOS_Start\Scoreboard.j"
 //! import "..\triggers\WOS_Start\ChatCommand.j"
+//! import "..\triggers\WOS_Start\EMOTES.j"
 //! import "..\triggers\WOS_Start\Player_Pick_Mode.j"
+//! import "..\triggers\WOS_Start\Captain_Draft.j"
 //! import "..\triggers\WOS_Start\WoS_Shop_Init.j"
 //! import "..\triggers\WOS_Start\WoS_Pick_Init.j"
 //! import "..\triggers\WOS_Start\Starts.j"
+//! import "..\triggers\WOS_Start\INITSS.j"
 //! import "..\triggers\WOS_Start\BuildsForChars.j"
 //! import "..\triggers\WOS_Start\TestUnit.j"
+//! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
 //! import "..\triggers\WOS_Start\Leave.j"
 //! import "..\triggers\Round_End\RoundEnd.j"
 //! import "..\triggers\Systems\CastAItems.j"
+//! import "..\triggers\Systems\TasBox.j"
 //! import "..\triggers\Systems\CastCheck.j"
 //! import "..\triggers\Systems\ClickEvent.j"
 //! import "..\triggers\Systems\DecorDestroy_and_Erza_Debuff.j"
+//! import "..\triggers\Systems\Systems1.j"
+//! import "..\triggers\Systems\Systems2.j"
 //! import "..\triggers\Systems\DmgSys.j"
 //! import "..\triggers\Systems\AtkCancel.j"
 //! import "..\triggers\Systems\MouseMove.j"
@@ -68,7 +72,6 @@
 //! import "..\triggers\Heroes\Raiden.j"
 //! import "..\triggers\Heroes\Frieren.j"
 //! import "..\triggers\Heroes\Ainz.j"
-//! import "..\triggers\Heroes\Natsu.j"
 //! import "..\triggers\Heroes\Laxus.j"
 //! import "..\triggers\Heroes\Brandish.j"
 //! import "..\triggers\Heroes\Patriot.j"
@@ -92,20 +95,23 @@
 //! import "..\triggers\Heroes\Inori.j"
 //! import "..\triggers\Heroes\Kenjaku.j"
 //! import "..\triggers\Heroes\AlterSaber.j"
+//! import "..\triggers\Heroes\Natsu.j"
 //! import "..\triggers\Heroes\Kyoraku.j"
 //! import "..\triggers\Heroes\Tomioka.j"
-//! import "..\triggers\Erza\ErzaT.j"
-//! import "..\triggers\Erza\ErzaQ.j"
-//! import "..\triggers\Erza\ErzaW.j"
-//! import "..\triggers\Erza\ErzaE.j"
-//! import "..\triggers\Erza\ErzaR.j"
-//! import "..\triggers\Erza\ErzaG2_Nakagami.j"
-//! import "..\triggers\Erza\ErzaG2_Fairy.j"
-//! import "..\triggers\Erza\ErzaBase.j"
+//! import "..\triggers\Heroes\Erza\ErzaQ.j"
+//! import "..\triggers\Heroes\Erza\ErzaW.j"
+//! import "..\triggers\Heroes\Erza\ErzaE.j"
+//! import "..\triggers\Heroes\Erza\ErzaR.j"
+//! import "..\triggers\Heroes\Erza\ErzaT.j"
+//! import "..\triggers\Heroes\Erza\ErzaG2_Nakagami.j"
+//! import "..\triggers\Heroes\Erza\ErzaG2_Fairy.j"
+//! import "..\triggers\Heroes\Erza\ErzaBase.j"
 //! import "..\triggers\Heroes\Milim.j"
+//! import "..\triggers\Heroes\Crocodile.j"
+// END AUTO TRIGGER IMPORTS
 
 globals
-    // World Editor generated handles from c6
+    // World Editor generated handles from Anime_WOS2_0.32.w3x
 rect gg_rct_Caster= null
 rect gg_rct_Base= null
 rect gg_rct_Test= null
@@ -174,40 +180,31 @@ trigger gg_trg_ShowCD= null
 trigger gg_trg_TooltipBuilder= null
 trigger gg_trg_UniversalTooltips= null
 trigger gg_trg_UI_CAREER= null
-trigger gg_trg_DefaultArmorChange= null
 trigger gg_trg_DefaultArmorChangeStable_Copy= null
 trigger gg_trg_Save2= null
 trigger gg_trg_SaveLoad= null
 trigger gg_trg_MusicPlayer= null
 trigger gg_trg_Scoreboard= null
 trigger gg_trg_ChatCommand= null
+trigger gg_trg_EMOTES= null
 trigger gg_trg_Player_Pick_Mode= null
+trigger gg_trg_Captain_Draft= null
 trigger gg_trg_WoS_Shop_Init= null
 trigger gg_trg_WoS_Pick_Init= null
-trigger gg_trg_WoS_Pick_Init_Copy_2= null
-trigger gg_trg_WoS_Pick_Init_Copy= null
 trigger gg_trg_Starts= null
-trigger gg_trg_Starts_Copy= null
+trigger gg_trg_INITSS= null
 trigger gg_trg_BuildsForChars= null
-trigger gg_trg_WoS_Shop_Init_Copy_2= null
 trigger gg_trg_TestUnit= null
-trigger gg_trg_TestUnit_Copy= null
 trigger gg_trg_WoS_Hero_Icons_Init= null
-trigger gg_trg_WoS_Hero_Icons_Init_Copy_2= null
-trigger gg_trg_Untitled_Trigger_001= null
-trigger gg_trg_WoS_Hero_Icons_Init_Copy= null
 trigger gg_trg_Leave= null
 trigger gg_trg_RoundEnd= null
 trigger gg_trg_CastAItems= null
 trigger gg_trg_TasBox= null
 trigger gg_trg_CastCheck= null
-trigger gg_trg_CastCheck_Copy= null
 trigger gg_trg_ClickEvent= null
 trigger gg_trg_DecorDestroy_and_Erza_Debuff= null
 trigger gg_trg_Systems1= null
 trigger gg_trg_Systems2= null
-trigger gg_trg_Systems_Copy_2= null
-trigger gg_trg_Systems_Copy= null
 trigger gg_trg_DmgSys= null
 trigger gg_trg_AtkCancel= null
 trigger gg_trg_MouseMove= null
@@ -223,7 +220,6 @@ trigger gg_trg_Evol1= null
 trigger gg_trg_Evol2= null
 trigger gg_trg_sukuna_spawn= null
 trigger gg_trg_ESC= null
-trigger gg_trg_AllyDie= null
 trigger gg_trg_Killme= null
 trigger gg_trg_AnimCheck= null
 trigger gg_trg_hpset= null
@@ -245,30 +241,23 @@ trigger gg_trg_ItemEnter= null
 trigger gg_trg_ItemLeave= null
 trigger gg_trg_Items= null
 trigger gg_trg_Toji= null
-trigger gg_trg_Toji_____________________u= null
 trigger gg_trg_Raiden= null
 trigger gg_trg_Frieren= null
 trigger gg_trg_Ainz= null
-trigger gg_trg_Ainz_____________________u= null
 trigger gg_trg_Laxus= null
-trigger gg_trg_Laxus_____________________u= null
 trigger gg_trg_Brandish= null
 trigger gg_trg_Patriot= null
 trigger gg_trg_Asta= null
 trigger gg_trg_Gojo= null
 trigger gg_trg_Bambietta= null
-trigger gg_trg_Bambietta_____________________u= null
 trigger gg_trg_Kirito= null
 trigger gg_trg_Alucard= null
 trigger gg_trg_Starrk= null
-trigger gg_trg_Starrk_Copy= null
 trigger gg_trg_Takeshi= null
 trigger gg_trg_Barragan= null
 trigger gg_trg_Mahoraga= null
 trigger gg_trg_Harribel= null
-trigger gg_trg_Tsuna_Copy= null
 trigger gg_trg_Tsuna= null
-trigger gg_trg_Tsuna_Copy_2= null
 trigger gg_trg_Rimuru= null
 trigger gg_trg_DarkShiki= null
 trigger gg_trg_BazzB= null
@@ -289,6 +278,7 @@ trigger gg_trg_ErzaT= null
 trigger gg_trg_ErzaG2_Nakagami= null
 trigger gg_trg_ErzaG2_Fairy= null
 trigger gg_trg_ErzaBase= null
+trigger gg_trg_Milim= null
 endglobals
 
 //   Warcraft III map script
@@ -518,6 +508,7 @@ endfunction
 
 //===========================================================================
 function InitCustomTriggers takes nothing returns nothing
+    //Function not found: call InitTrig_ShowCD()
     //Function not found: call InitTrig_TooltipBuilder()
     //Function not found: call InitTrig_UniversalTooltips()
     //Function not found: call InitTrig_UI_CAREER()
@@ -527,10 +518,13 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_MusicPlayer()
     //Function not found: call InitTrig_Scoreboard()
     //Function not found: call InitTrig_ChatCommand()
+    //Function not found: call InitTrig_EMOTES()
     //Function not found: call InitTrig_Player_Pick_Mode()
+    //Function not found: call InitTrig_Captain_Draft()
     call InitTrig_WoS_Shop_Init()
     //Function not found: call InitTrig_WoS_Pick_Init()
     call InitTrig_Starts()
+    call InitTrig_INITSS()
     call InitTrig_BuildsForChars()
     call InitTrig_TestUnit()
     //Function not found: call InitTrig_WoS_Hero_Icons_Init()
@@ -616,6 +610,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_ErzaG2_Nakagami()
     //Function not found: call InitTrig_ErzaG2_Fairy()
     //Function not found: call InitTrig_ErzaBase()
+    //Function not found: call InitTrig_Milim()
 endfunction
 
 //===========================================================================
@@ -637,6 +632,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(0), 0)
     call SetPlayerColor(Player(0), ConvertPlayerColor(0))
     call SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(0), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(0), false)
     call SetPlayerController(Player(0), MAP_CONTROL_USER)
 
@@ -645,6 +641,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(1), 1)
     call SetPlayerColor(Player(1), ConvertPlayerColor(1))
     call SetPlayerRacePreference(Player(1), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(1), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(1), false)
     call SetPlayerController(Player(1), MAP_CONTROL_USER)
 
@@ -653,6 +650,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(2), 2)
     call SetPlayerColor(Player(2), ConvertPlayerColor(2))
     call SetPlayerRacePreference(Player(2), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(2), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(2), false)
     call SetPlayerController(Player(2), MAP_CONTROL_USER)
 
@@ -661,6 +659,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(3), 3)
     call SetPlayerColor(Player(3), ConvertPlayerColor(3))
     call SetPlayerRacePreference(Player(3), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(3), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(3), false)
     call SetPlayerController(Player(3), MAP_CONTROL_USER)
 
@@ -669,6 +668,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(4), 4)
     call SetPlayerColor(Player(4), ConvertPlayerColor(4))
     call SetPlayerRacePreference(Player(4), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(4), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(4), false)
     call SetPlayerController(Player(4), MAP_CONTROL_USER)
 
@@ -677,6 +677,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(5), 5)
     call SetPlayerColor(Player(5), ConvertPlayerColor(5))
     call SetPlayerRacePreference(Player(5), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(5), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(5), false)
     call SetPlayerController(Player(5), MAP_CONTROL_USER)
 
@@ -685,6 +686,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(6), 6)
     call SetPlayerColor(Player(6), ConvertPlayerColor(6))
     call SetPlayerRacePreference(Player(6), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(6), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(6), false)
     call SetPlayerController(Player(6), MAP_CONTROL_USER)
 
@@ -693,6 +695,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(7), 7)
     call SetPlayerColor(Player(7), ConvertPlayerColor(7))
     call SetPlayerRacePreference(Player(7), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(7), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(7), false)
     call SetPlayerController(Player(7), MAP_CONTROL_USER)
 
@@ -701,6 +704,7 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(8), 8)
     call SetPlayerColor(Player(8), ConvertPlayerColor(8))
     call SetPlayerRacePreference(Player(8), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(8), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(8), false)
     call SetPlayerController(Player(8), MAP_CONTROL_USER)
 
@@ -709,8 +713,54 @@ function InitCustomPlayerSlots takes nothing returns nothing
     call ForcePlayerStartLocation(Player(9), 9)
     call SetPlayerColor(Player(9), ConvertPlayerColor(9))
     call SetPlayerRacePreference(Player(9), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(9), RACE_PREF_USER_SELECTABLE)
     call SetPlayerRaceSelectable(Player(9), false)
     call SetPlayerController(Player(9), MAP_CONTROL_USER)
+
+    // Player 10
+    call SetPlayerStartLocation(Player(10), 10)
+    call ForcePlayerStartLocation(Player(10), 10)
+    call SetPlayerColor(Player(10), ConvertPlayerColor(10))
+    call SetPlayerRacePreference(Player(10), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(10), RACE_PREF_USER_SELECTABLE)
+    call SetPlayerRaceSelectable(Player(10), false)
+    call SetPlayerController(Player(10), MAP_CONTROL_USER)
+
+    // Player 11
+    call SetPlayerStartLocation(Player(11), 11)
+    call ForcePlayerStartLocation(Player(11), 11)
+    call SetPlayerColor(Player(11), ConvertPlayerColor(11))
+    call SetPlayerRacePreference(Player(11), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(11), RACE_PREF_USER_SELECTABLE)
+    call SetPlayerRaceSelectable(Player(11), false)
+    call SetPlayerController(Player(11), MAP_CONTROL_USER)
+
+    // Player 12
+    call SetPlayerStartLocation(Player(12), 12)
+    call ForcePlayerStartLocation(Player(12), 12)
+    call SetPlayerColor(Player(12), ConvertPlayerColor(12))
+    call SetPlayerRacePreference(Player(12), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(12), RACE_PREF_USER_SELECTABLE)
+    call SetPlayerRaceSelectable(Player(12), false)
+    call SetPlayerController(Player(12), MAP_CONTROL_USER)
+
+    // Player 13
+    call SetPlayerStartLocation(Player(13), 13)
+    call ForcePlayerStartLocation(Player(13), 13)
+    call SetPlayerColor(Player(13), ConvertPlayerColor(13))
+    call SetPlayerRacePreference(Player(13), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(13), RACE_PREF_USER_SELECTABLE)
+    call SetPlayerRaceSelectable(Player(13), false)
+    call SetPlayerController(Player(13), MAP_CONTROL_USER)
+
+    // Player 14
+    call SetPlayerStartLocation(Player(14), 14)
+    call ForcePlayerStartLocation(Player(14), 14)
+    call SetPlayerColor(Player(14), ConvertPlayerColor(14))
+    call SetPlayerRacePreference(Player(14), RACE_PREF_HUMAN)
+    call SetPlayerRaceSkin(Player(14), RACE_PREF_USER_SELECTABLE)
+    call SetPlayerRaceSelectable(Player(14), false)
+    call SetPlayerController(Player(14), MAP_CONTROL_USER)
 
 endfunction
 
@@ -827,11 +877,67 @@ function InitCustomTeams takes nothing returns nothing
     call SetPlayerAllianceStateVisionBJ(Player(9), Player(7), true)
     call SetPlayerAllianceStateVisionBJ(Player(9), Player(8), true)
 
+    // Force: TRIGSTR_3744
+    call SetPlayerTeam(Player(10), 2)
+    call SetPlayerState(Player(10), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(11), 2)
+    call SetPlayerState(Player(11), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(12), 2)
+    call SetPlayerState(Player(12), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(13), 2)
+    call SetPlayerState(Player(13), PLAYER_STATE_ALLIED_VICTORY, 1)
+    call SetPlayerTeam(Player(14), 2)
+    call SetPlayerState(Player(14), PLAYER_STATE_ALLIED_VICTORY, 1)
+
+    //   Allied
+    call SetPlayerAllianceStateAllyBJ(Player(10), Player(11), true)
+    call SetPlayerAllianceStateAllyBJ(Player(10), Player(12), true)
+    call SetPlayerAllianceStateAllyBJ(Player(10), Player(13), true)
+    call SetPlayerAllianceStateAllyBJ(Player(10), Player(14), true)
+    call SetPlayerAllianceStateAllyBJ(Player(11), Player(10), true)
+    call SetPlayerAllianceStateAllyBJ(Player(11), Player(12), true)
+    call SetPlayerAllianceStateAllyBJ(Player(11), Player(13), true)
+    call SetPlayerAllianceStateAllyBJ(Player(11), Player(14), true)
+    call SetPlayerAllianceStateAllyBJ(Player(12), Player(10), true)
+    call SetPlayerAllianceStateAllyBJ(Player(12), Player(11), true)
+    call SetPlayerAllianceStateAllyBJ(Player(12), Player(13), true)
+    call SetPlayerAllianceStateAllyBJ(Player(12), Player(14), true)
+    call SetPlayerAllianceStateAllyBJ(Player(13), Player(10), true)
+    call SetPlayerAllianceStateAllyBJ(Player(13), Player(11), true)
+    call SetPlayerAllianceStateAllyBJ(Player(13), Player(12), true)
+    call SetPlayerAllianceStateAllyBJ(Player(13), Player(14), true)
+    call SetPlayerAllianceStateAllyBJ(Player(14), Player(10), true)
+    call SetPlayerAllianceStateAllyBJ(Player(14), Player(11), true)
+    call SetPlayerAllianceStateAllyBJ(Player(14), Player(12), true)
+    call SetPlayerAllianceStateAllyBJ(Player(14), Player(13), true)
+
+    //   Shared Vision
+    call SetPlayerAllianceStateVisionBJ(Player(10), Player(11), true)
+    call SetPlayerAllianceStateVisionBJ(Player(10), Player(12), true)
+    call SetPlayerAllianceStateVisionBJ(Player(10), Player(13), true)
+    call SetPlayerAllianceStateVisionBJ(Player(10), Player(14), true)
+    call SetPlayerAllianceStateVisionBJ(Player(11), Player(10), true)
+    call SetPlayerAllianceStateVisionBJ(Player(11), Player(12), true)
+    call SetPlayerAllianceStateVisionBJ(Player(11), Player(13), true)
+    call SetPlayerAllianceStateVisionBJ(Player(11), Player(14), true)
+    call SetPlayerAllianceStateVisionBJ(Player(12), Player(10), true)
+    call SetPlayerAllianceStateVisionBJ(Player(12), Player(11), true)
+    call SetPlayerAllianceStateVisionBJ(Player(12), Player(13), true)
+    call SetPlayerAllianceStateVisionBJ(Player(12), Player(14), true)
+    call SetPlayerAllianceStateVisionBJ(Player(13), Player(10), true)
+    call SetPlayerAllianceStateVisionBJ(Player(13), Player(11), true)
+    call SetPlayerAllianceStateVisionBJ(Player(13), Player(12), true)
+    call SetPlayerAllianceStateVisionBJ(Player(13), Player(14), true)
+    call SetPlayerAllianceStateVisionBJ(Player(14), Player(10), true)
+    call SetPlayerAllianceStateVisionBJ(Player(14), Player(11), true)
+    call SetPlayerAllianceStateVisionBJ(Player(14), Player(12), true)
+    call SetPlayerAllianceStateVisionBJ(Player(14), Player(13), true)
+
 endfunction
 
 function InitAllyPriorities takes nothing returns nothing
 
-    call SetStartLocPrioCount(0, 9)
+    call SetStartLocPrioCount(0, 14)
     call SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(0, 1, 2, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(0, 2, 3, MAP_LOC_PRIO_HIGH)
@@ -841,8 +947,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(0, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(0, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(0, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(0, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(1, 9)
+    call SetStartLocPrioCount(1, 14)
     call SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(1, 1, 2, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(1, 2, 3, MAP_LOC_PRIO_HIGH)
@@ -852,8 +963,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(1, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(1, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(1, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(1, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(2, 9)
+    call SetStartLocPrioCount(2, 14)
     call SetStartLocPrio(2, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(2, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(2, 2, 3, MAP_LOC_PRIO_HIGH)
@@ -863,8 +979,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(2, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(2, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(2, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(2, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(3, 9)
+    call SetStartLocPrioCount(3, 14)
     call SetStartLocPrio(3, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(3, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(3, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -874,8 +995,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(3, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(3, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(3, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(3, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(4, 9)
+    call SetStartLocPrioCount(4, 14)
     call SetStartLocPrio(4, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(4, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(4, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -885,8 +1011,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(4, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(4, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(4, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(4, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(5, 9)
+    call SetStartLocPrioCount(5, 14)
     call SetStartLocPrio(5, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(5, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(5, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -896,8 +1027,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(5, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(5, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(5, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(5, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(6, 9)
+    call SetStartLocPrioCount(6, 14)
     call SetStartLocPrio(6, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(6, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(6, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -907,8 +1043,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(6, 6, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(6, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(6, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(6, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(7, 9)
+    call SetStartLocPrioCount(7, 14)
     call SetStartLocPrio(7, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(7, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(7, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -918,8 +1059,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(7, 6, 6, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(7, 7, 8, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(7, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(7, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(8, 9)
+    call SetStartLocPrioCount(8, 14)
     call SetStartLocPrio(8, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(8, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(8, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -929,8 +1075,13 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(8, 6, 6, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(8, 7, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(8, 8, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(8, 13, 14, MAP_LOC_PRIO_HIGH)
 
-    call SetStartLocPrioCount(9, 9)
+    call SetStartLocPrioCount(9, 14)
     call SetStartLocPrio(9, 0, 0, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(9, 1, 1, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(9, 2, 2, MAP_LOC_PRIO_HIGH)
@@ -940,6 +1091,91 @@ function InitAllyPriorities takes nothing returns nothing
     call SetStartLocPrio(9, 6, 6, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(9, 7, 7, MAP_LOC_PRIO_HIGH)
     call SetStartLocPrio(9, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 9, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(9, 13, 14, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(10, 14)
+    call SetStartLocPrio(10, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 9, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 10, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(10, 13, 14, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(11, 14)
+    call SetStartLocPrio(11, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 9, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 10, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 11, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(11, 13, 14, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(12, 14)
+    call SetStartLocPrio(12, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 9, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 10, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 11, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 12, 13, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(12, 13, 14, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(13, 14)
+    call SetStartLocPrio(13, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 9, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 10, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 11, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 12, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(13, 13, 14, MAP_LOC_PRIO_HIGH)
+
+    call SetStartLocPrioCount(14, 14)
+    call SetStartLocPrio(14, 0, 0, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 1, 1, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 2, 2, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 3, 3, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 4, 4, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 5, 5, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 6, 6, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 7, 7, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 8, 8, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 9, 9, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 10, 10, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 11, 11, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 12, 12, MAP_LOC_PRIO_HIGH)
+    call SetStartLocPrio(14, 13, 13, MAP_LOC_PRIO_HIGH)
 endfunction
 
 //***************************************************************************
@@ -952,7 +1188,10 @@ endfunction
 function main takes nothing returns nothing
     call SetCameraBounds(- 6144.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 18432.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 18432.0 - GetCameraMargin(CAMERA_MARGIN_TOP), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 18432.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 18432.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), - 6144.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
     call SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
-    call SetTerrainFogEx(0, 40000.0, 40000.0, 0.000, 0.000, 0.000, 0.000)
+    call SetTerrainFogExV(0, 40000.0, 40000.0, 0.000, 0.0, 0.0, 10000.0, 10000.0, 0.000, 0.000, 0.000)
+    call BlzSetTerrainFogMaxLinearDensity(1.0)
+    call BlzSetTerrainFogDrawOverSky(false)
+    call SetHDWaterParamsEx(0, 0, 0, false, 20, 0, 100, 10, 0, 50, 100, 100)
     call NewSoundEnvironment("Default")
     call SetAmbientDaySound("LordaeronSummerDay")
     call SetAmbientNightSound("LordaeronSummerNight")
@@ -977,8 +1216,8 @@ endfunction
 function config takes nothing returns nothing
     call SetMapName("TRIGSTR_003")
     call SetMapDescription("TRIGSTR_208")
-    call SetPlayers(10)
-    call SetTeams(10)
+    call SetPlayers(15)
+    call SetTeams(15)
     call SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
 
     call DefineStartLocation(0, 18368.0, - 6016.0)
@@ -991,6 +1230,11 @@ function config takes nothing returns nothing
     call DefineStartLocation(7, 18368.0, - 6016.0)
     call DefineStartLocation(8, 18368.0, - 6016.0)
     call DefineStartLocation(9, 18368.0, - 6016.0)
+    call DefineStartLocation(10, 18368.0, - 6016.0)
+    call DefineStartLocation(11, 18368.0, - 6016.0)
+    call DefineStartLocation(12, 18368.0, - 6016.0)
+    call DefineStartLocation(13, 18368.0, - 6016.0)
+    call DefineStartLocation(14, 18368.0, - 6016.0)
 
     // Player setup
     call InitCustomPlayerSlots()

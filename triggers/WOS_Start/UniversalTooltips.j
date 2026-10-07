@@ -413,9 +413,25 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         return s
     endfunction
 
+    private function LoreOnly takes string text returns string
+        local string marker = "|n|n|cffffcc00Ability Stats:|r"
+        local integer i = 0
+        local integer limit = StringLength(text)-StringLength(marker)
+        loop
+            exitwhen i > limit
+            if SubString(text,i,i+StringLength(marker)) == marker then
+                return SubString(text,0,i)
+            endif
+            set i = i+1
+        endloop
+        return text
+    endfunction
+
     private function CaptureDesc takes integer abilId returns nothing
         if not HaveSavedString(HT_DATA, abilId, 9999) then
-            call SaveStr(HT_DATA, abilId, 9999, NormalizeDesc(BlzGetAbilityExtendedTooltip(abilId, 0)))
+            // Object Data also contains a complete static fallback. Keep only
+            // its lore when adding live hero damage and item cooldown changes.
+            call SaveStr(HT_DATA, abilId, 9999, NormalizeDesc(LoreOnly(BlzGetAbilityExtendedTooltip(abilId, 0))))
         endif
     endfunction
 
@@ -423,7 +439,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         if HaveSavedString(HT_DATA, abilId, 9999) then
             return LoadStr(HT_DATA, abilId, 9999)
         endif
-        return BlzGetAbilityExtendedTooltip(abilId, 0)
+        return NormalizeDesc(LoreOnly(BlzGetAbilityExtendedTooltip(abilId, 0)))
     endfunction
 
     private function FormulaStr takes integer statType, real statBase, real statStep, real staticBase, real staticStep, integer lvl returns string
@@ -687,7 +703,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
             set builder = TooltipBuilder.create()
             call builder.addDescription(desc)
             call builder.addBonus(ParseLevelTags(bns, 0))
-            if (this.statBase != 0 or this.staticBase != 0) then
+            if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
                 call builder.addDamage(this.dmgType, FormulaList(this.statType, this.statBase, this.statStep, this.staticBase, this.staticStep, this.maxLv))
             endif
             if (this.dmgType2 != 0) then
@@ -715,7 +731,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
                 set builder = TooltipBuilder.create()
                 call builder.addDescription(desc)
                 call builder.addBonus(ParseLevelTags(bns, i))
-                if (this.statBase != 0 or this.staticBase != 0) then
+                if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
                     call builder.addDamage(this.dmgType, FormulaStr(this.statType, this.statBase, this.statStep, this.staticBase, this.staticStep, i))
                 endif
                 if (this.dmgType2 != 0) then
@@ -1194,6 +1210,18 @@ endif
     private function InitHeroes_Part1 takes nothing returns nothing
         local timer t = GetExpiredTimer()
         local HeroData form
+
+        // Crocodile: MAIN abilities A0I7-A0IE; Q/W/E/R have five levels.
+        call SpellData.createSimple(CrocodileQ_ID, 5, 1, 2, CrocodileQ_DamageAgiBase, CrocodileQ_DamageAgiStep, T_Rad(CrocodileQ_Aoe) + T_Prop("Range", CrocodileQ_Distance) + T_Slow(I2R(CrocodileQ_Slow), CrocodileQ_SandSlowTime) + T_Dur("Sand Mark", CrocodileSand_Duration) + T_Dur("Ground Sand", CrocodileSand_GroundDuration), T_Bonus("W Combo", "Detonates quicksand for extra damage and stun."))
+        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Dur("Ground Sand", CrocodileSand_GroundDuration), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage and " + FormatReal(CrocodileW_ComboStun) + " sec stun.") + T_Bonus("R Combo", "Combines with the sandstorm."))
+        call SpellData.createSimple(CrocodileE_ID, 5, 1, 2, CrocodileE_DamageAgiBase, CrocodileE_DamageAgiStep, T_Rad(CrocodileE_Aoe) + T_Prop("Dash Range", CrocodileE_Distance) + T_Prop("Charges", 3.0) + T_Dur("Recharge", CrocodileE_Recharge) + T_Dur("Use Cooldown", CrocodileE_UseCD) + T_Prop("Hits", I2R(CrocodileE_HitTicks)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration), "")
+        call SpellData.createSimple(CrocodileR_ID, 5, 1, 2, CrocodileR_DamageAgi, 0.0, T_RadExp(CrocodileR_StartAoe, CrocodileR_EndAoe) + T_Dur("Duration", CrocodileR_Duration) + T_Prop("Hits", I2R(CrocodileR_Hits)) + T_Stun(CrocodileR_StunTime) + T_Dur("Ground Sand", CrocodileSand_GroundDuration), T_Bonus("W Combo", "Combines when cast into quicksand."))
+        call SpellData.createUtility(CrocodileT_ID, 1, T_Rad(CrocodileT_MaxAoe) + T_Dur("Channel", CrocodileT_Duration) + T_Dur("Spread", CrocodileT_SpreadTime) + T_PropS("Mana Drain", FormatReal(CrocodileT_ManaDrain*100.0) + "% Max MP / sec") + T_PropS("Damage Reduction", FormatReal(CrocodileT_DamageReduction*100.0) + "%") + T_Dur("T2 Unlock", CrocodileT2_UnlockTime), "Immune to crowd control while channeling. T2 detonates active sand.")
+        call SpellData.createSimple(CrocodileT2_ID, 1, 1, 2, CrocodileT2_DamageAgi, 0.0, T_Dur("Availability", CrocodileT2_Window) + T_Dur("Explosion Delay", CrocodileT2_Delay), "Each enemy inside active sand takes damage once. Removes the detonated sand.")
+        call SpellData.createSimple(CrocodileF_ID, 1, 0, 2, CrocodileF_DamageAgi, 0.0, T_Prop("Max Stacks", I2R(CrocodileF_MaxStacks)) + T_Prop("Attack Range", CrocodileF_Range) + T_PropS("Attack Speed", "+" + FormatReal(CrocodileF_AttackSpeed*100.0) + "%") + T_Dur("Cooldown", CrocodileF_InternalCD), "Enhanced normal attack. Each successful cast grants one stack. Three stacks launch three blades with triple damage; each enemy is hit once.")
+        call SpellData.createUtility(CrocodileG_ID, 1, T_PropS("Spell Mana Drain", FormatReal(CrocodileG_ManaDrain*100.0) + "% Max MP per hit") + T_PropS("Damage Bonus", FormatReal(CrocodileG_MissingScale*100.0) + "% per 1% missing target mana, up to " + FormatReal(CrocodileG_MaxBonus*100.0) + "%") + T_Prop("Sand Movement Speed", I2R(CrocodileG_MoveSpeed)), "Movement speed bonus applies while standing on active sand.")
+        set form = HeroData.create(Crocodile_ID, 0, CrocodileQ_ID, CrocodileW_ID, CrocodileE_ID, CrocodileR_ID, CrocodileT_ID, CrocodileF_ID, CrocodileG_ID, 0, 0, 0)
+        call form.addExtra(CrocodileT2_ID, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
         // ===========================================================================
         // 1. Сакадзуки Акаину (Akainu_ID) -> Ловкость (2)
@@ -1939,7 +1967,7 @@ endif
         call SpellData.createUtility(GojoG_ID, 1, "Passive|nMana Restore: " + FormatReal(Gojo_G_ManaRestore) + "% for " + FormatReal(Gojo_G_ManaRestoreTime) + " sec", "")
         call SpellData.create(GojoQ2_ID, 1, 1, 3, GojoQ_DamageIntBase + (GojoQ_DamageIntStep * 6.0), 0.0, GojoQ_Damage2StaticBase + (GojoQ_Damage2StaticStep * 5.0), 0.0, T_Rad(GojoQLvl3_DamageAoe) + "Pulls enemies towards the center", "")
         call SpellData.create(GojoW2_ID, 1, 2, 3, GojoW_DamageIntBase + (GojoW_DamageIntStep * 6.0), 0.0, GojoW_Damage2StaticBase + (GojoW_Damage2StaticStep * 5.0), 0.0, T_Rad(GojoWLvl3_DamageAoe), "")
-        call SpellData.createUtility(GojoE2_ID, 1, "", "")
+        call SpellData.createUtility(GojoE2_ID, 1, "Cancels the active Eternity effect.", "")
         call SpellData.createSimple(GojoRQ_ID, 5, 1, 4, GojoRQ_Damage, 0.0, T_Rad(GojoRQ_DamageAoe) + T_Stun(GojoRQ_Stun), "")
         call SpellData.createUtility(GojoRW_ID, 5, "", "")
         call SpellData.createUtility(GojoRR_ID, 5, "", "")

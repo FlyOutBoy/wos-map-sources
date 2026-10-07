@@ -1,4 +1,4 @@
 Parse successful:     4443 lines: C:\Users\Gear\Desktop\WOS\VS WOS\libs\common.j
 Parse successful:    11384 lines: C:\Users\Gear\Desktop\WOS\VS WOS\libs\Blizzard.j
-Parse successful:   121562 lines: logs\currentmapscript.j
-Parse successful:   137389 lines: <total>
+Parse successful:   130086 lines: logs\currentmapscript.j
+Parse successful:   145913 lines: <total>

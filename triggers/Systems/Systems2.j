@@ -29,6 +29,18 @@ globals
     integer GearTimer05Users
     integer GearTimer10Users
 
+    // Optional listeners use the existing clock; no per-instance timers.
+    trigger GearTimer03Listeners = CreateTrigger()
+    trigger GearSpellListeners = CreateTrigger()
+    boolean GearSpellHandled = false
+    trigger GearDamageListeners = CreateTrigger()
+    unit GearDamageSource = null
+    unit GearDamageTarget = null
+    real GearDamageAmount = 0.0
+    integer GearDamageType = 0
+    integer GearDamagePhase = 0 // 0 attack, 1 outgoing preview, 2 incoming, 3 applied
+
+
     hashtable hs = InitHashtable()
     unit array DummyPlayer
     integer FakeAbi_ID = 'A06H'
@@ -445,6 +457,57 @@ endfunction
 //===========================================================================
 
 // Shared timer scheduler
+function GearCCProtected takes unit u returns boolean
+    return LoadInteger(hs, GetHandleId(u), StringHash("cc protection owners")) > 0
+endfunction
+
+function GearCCProtect takes unit u, boolean add returns nothing
+    local integer hid = GetHandleId(u)
+    local integer count = LoadInteger(hs, hid, StringHash("cc protection owners"))
+    if add then
+        set count = count + 1
+    else
+        set count = IMaxBJ(0, count - 1)
+    endif
+    call SaveInteger(hs, hid, StringHash("cc protection owners"), count)
+endfunction
+
+function GearSpellDispatch takes nothing returns boolean
+    local boolean previous = GearSpellHandled
+    local boolean handled
+    set GearSpellHandled = false
+    call TriggerExecute(GearSpellListeners)
+    set handled = GearSpellHandled
+    set GearSpellHandled = previous
+    return handled
+endfunction
+
+// Reflected/nested damage must not overwrite the context of its caller.
+// Phase 1 is pure: it runs for both shield preview and final damage.
+function GearDamageRun takes unit c, unit td, real amount, integer kind, integer phase returns real
+    local unit oldSource = GearDamageSource
+    local unit oldTarget = GearDamageTarget
+    local real oldAmount = GearDamageAmount
+    local integer oldType = GearDamageType
+    local integer oldPhase = GearDamagePhase
+    local real result
+    set GearDamageSource = c
+    set GearDamageTarget = td
+    set GearDamageAmount = amount
+    set GearDamageType = kind
+    set GearDamagePhase = phase
+    call TriggerExecute(GearDamageListeners)
+    set result = GearDamageAmount
+    set GearDamageSource = oldSource
+    set GearDamageTarget = oldTarget
+    set GearDamageAmount = oldAmount
+    set GearDamageType = oldType
+    set GearDamagePhase = oldPhase
+    set oldSource = null
+    set oldTarget = null
+    return result
+endfunction
+
 function GearTimer03Acquire takes nothing returns nothing
     set GearTimer03Users = GearTimer03Users + 1
     if GearTimer03Users == 1 then
@@ -735,6 +798,11 @@ endfunction
         call SetUnitTimeScale(c, 1)
         call PauseUnit(c, true)
     endfunction
+    function StartSpellUnit2_2 takes unit c returns nothing
+        call IssueImmediateOrder(c, "stop")
+        call SetUnitTimeScale(c, 1)
+        call BlzPauseUnitEx(c, true)
+    endfunction
     function StopSpellUnit takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
@@ -747,6 +815,13 @@ endfunction
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call PauseUnit(c, false)
+        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),1)
+        call MyFlush(GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),0,ahk_delay )
+    endfunction
+    function StopSpellUnit2_2 takes unit c returns nothing
+        call IssueImmediateOrder(c, "stop")
+        call SetUnitTimeScale(c, 1)
+        call BlzPauseUnitEx(c, false)
         call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),1)
         call MyFlush(GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),0,ahk_delay )
     endfunction
@@ -831,7 +906,7 @@ endfunction
     local real targetX
     local real targetY
 
-    if c == null or move == 0  then
+    if c == null or move == 0 or GearCCProtected(c) then
         return
     endif
 
@@ -860,7 +935,7 @@ function MoveUnit3 takes unit c, real sr, real a returns nothing
     local real targetX
     local real targetY
 
-    if c == null  then
+    if c == null or GearCCProtected(c) then
         return
     endif
 
@@ -1301,7 +1376,7 @@ endstruct
             loop
                 exitwhen i > MUI_3
                 set this = m_3[i]
-                if c != null and r <= rmax then
+                if c != null and r <= rmax and not GearCCProtected(c) then
                     set r = RoundReal(r + 0.03, 3)
                         if check == 0 then
                             call MoveUnit3(c, move, a)
@@ -2839,7 +2914,7 @@ else
             loop
                 exitwhen i > MUI_22
                 set this = m_22[i]
-                if r < rmax and GetWidgetLife(c) > 1 and GetUnitAbilityLevel(c, 'A15H') == 0 then
+                if r < rmax and GetWidgetLife(c) > 1 and GetUnitAbilityLevel(c, 'A15H') == 0 and not GearCCProtected(c) then
                     set r = RoundReal(r + 0.03, 3)
                     call EffVision(e, c)
                     call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
@@ -4573,10 +4648,13 @@ endfunction
     call KS_EffectColor.ColorEffDummy_Start(c, preare_time, red, green, blue, 255, rmax, false, false)
    endif
    endfunction
-    function ColorEffDummy3 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+    function ColorEffDummy3Alpha takes effect c, real preare_time, integer red, integer green, integer blue, integer alpha, real rmax returns nothing
       if c != null then 
-      call KS_EffectColor.ColorEffDummy_Start(c, preare_time, red, green, blue, 255, rmax, true, true)
+      call KS_EffectColor.ColorEffDummy_Start(c, preare_time, red, green, blue, alpha, rmax, true, true)
     endif
+    endfunction
+    function ColorEffDummy3 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
+        call ColorEffDummy3Alpha(c,preare_time,red,green,blue,255,rmax)
     endfunction
     function ColorEffDummy32 takes effect c, real preare_time, integer red, integer green, integer blue, real rmax returns nothing
         if c != null then 
@@ -4783,6 +4861,7 @@ private function GearTimer03Loop takes nothing returns nothing
     call KS_EffectHeight.ELoopHeightSet()
     call KS_RemoveDestructable.Loop_MyRemoveDest()
     call KS_FlushInteger.Loop_MyFlushIntegerC()
+    call TriggerExecute(GearTimer03Listeners)
 endfunction
 
 private function GearTimer05Loop takes nothing returns nothing

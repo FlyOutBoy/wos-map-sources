@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register one hero J source in the WoS pick/build systems."""
+"""Copy one selected hero J source to MAIN and register it in the WoS systems."""
 
 from __future__ import annotations
 
@@ -511,6 +511,8 @@ def update_trigger_setting(workspace: Path, hero_file: Path, enabled: bool) -> T
 def resolve_hero_file(workspace: Path, supplied: str | None) -> Path:
     value = supplied or ""
     candidate = Path(value) if value else Path()
+    if not candidate.is_absolute():
+        candidate = workspace / candidate
     if not value or not candidate.is_file() or candidate.suffix.casefold() != ".j":
         print("The currently active VS Code file is not a usable hero .j file.")
         value = input("Enter the hero J file path: ").strip().strip('"')
@@ -523,6 +525,24 @@ def resolve_hero_file(workspace: Path, supplied: str | None) -> Path:
     return candidate
 
 
+def main_hero_file(workspace: Path, source: Path, hero: str) -> TextFile:
+    """Keep MAIN sources in place; stage external/TEST sources under MAIN Heroes."""
+    trigger_root = (workspace / "triggers").resolve()
+    if source.is_relative_to(trigger_root):
+        destination = source
+    else:
+        destination = (trigger_root / "Heroes" / f"{hero}.j").resolve()
+        if not destination.is_relative_to(trigger_root):
+            raise TransferError(f"MAIN hero destination must be inside {trigger_root}: {destination}")
+    selected = TextFile.load(source)
+    selected.path = destination
+    return selected
+
+
+def file_changed(file: TextFile) -> bool:
+    return not file.path.is_file() or file.encoded() != file.path.read_bytes()
+
+
 def confirm(question: str, assume_yes: bool) -> bool:
     if assume_yes:
         return True
@@ -530,19 +550,28 @@ def confirm(question: str, assume_yes: bool) -> bool:
 
 
 def write_transaction(files: list[TextFile], workspace: Path, hero: str) -> Path | None:
-    changed = [file for file in files if file.encoded() != file.path.read_bytes()]
+    changed = [file for file in files if file_changed(file)]
     if not changed:
         return None
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M%S_%f")
     backup = workspace / "backups" / "hero-transfer" / f"{stamp}_{hero}"
     backup.mkdir(parents=True, exist_ok=False)
+    created: list[Path] = []
     for file in changed:
         relative = file.path.resolve().relative_to(workspace.resolve())
         destination = backup / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(file.path, destination)
+        if file.path.exists():
+            shutil.copy2(file.path, destination)
+        else:
+            created.append(file.path)
+    (backup / "created-files.json").write_text(
+        json.dumps([path.relative_to(workspace).as_posix() for path in created], indent=2) + "\n",
+        encoding="utf-8",
+    )
     try:
         for file in changed:
+            file.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = file.path.with_name(file.path.name + ".hero-transfer.tmp")
             temporary.write_bytes(file.encoded())
             temporary.replace(file.path)
@@ -552,7 +581,12 @@ def write_transaction(files: list[TextFile], workspace: Path, hero: str) -> Path
             saved = backup / relative
             if saved.is_file():
                 shutil.copy2(saved, file.path)
+            elif file.path in created:
+                file.path.unlink(missing_ok=True)
         raise
+    finally:
+        for file in changed:
+            file.path.with_name(file.path.name + ".hero-transfer.tmp").unlink(missing_ok=True)
     return backup
 
 
@@ -571,11 +605,13 @@ def main() -> int:
         workspace = args.workspace.resolve()
         hero_file = resolve_hero_file(workspace, args.hero_file)
         hero, declarations = parse_hero(hero_file)
+        main_source = main_hero_file(workspace, hero_file, hero)
         has_f = f"{hero}F_ID" in declarations
         has_g = f"{hero}G_ID" in declarations
 
         print("\nHERO TRANSFER")
         print(f"Selected source: {hero_file}")
+        print(f"MAIN target:    {main_source.path}")
         print(f"Detected hero:  {hero} ({hero}_ID = '{declarations[f'{hero}_ID']}')")
         print("Abilities:      " + ", ".join(letter for letter in "QWERTFG" if f"{hero}{letter}_ID" in declarations))
         if not confirm("Use exactly this J file for Hero Transfer? Type Y to continue: ", args.yes):
@@ -619,11 +655,13 @@ def main() -> int:
         trigger_setting_missing = False
         if trigger_settings_path.is_file():
             settings = json.loads(trigger_settings_path.read_text(encoding="utf-8-sig"))
-            relative = hero_file.relative_to((workspace / "triggers").resolve()).as_posix()
-            trigger_setting_missing = relative not in settings.get("triggers", {})
+            relative = main_source.path.relative_to((workspace / "triggers").resolve()).as_posix()
+            trigger_setting_missing = settings.get("triggers", {}).get(relative) is not True
 
         print("\nTransfer summary:")
         print(f"  Hero:        {hero}")
+        print(f"  Source:      {hero_file}")
+        print(f"  MAIN target: {main_source.path}")
         print(f"  Section:     {category} - {category_name}")
         print(f"  Array slot:  Hero_ID{category_index}[{slot}]")
         print(f"  Shop:        page {page}, slot {slot}")
@@ -639,7 +677,7 @@ def main() -> int:
         add_trigger = True
         if trigger_setting_missing:
             add_trigger = confirm(
-                f"\n{hero_file.name} is not in trigger-settings.json. Add it enabled so task 3 creates it under Heroes? [Y/N]: ",
+                f"\n{main_source.path.name} is not enabled in MAIN trigger-settings.json. Enable it for task 3? [Y/N]: ",
                 args.yes,
             )
 
@@ -668,14 +706,14 @@ def main() -> int:
             files["death"].text = add_death_sound(files["death"].text, hero)
         files["level"].text = add_level_up(files["level"].text, hero, has_f, has_g)
 
-        write_files = list(files.values())
+        write_files = [main_source, *files.values()]
         if add_trigger:
-            settings_file = update_trigger_setting(workspace, hero_file, True)
+            settings_file = update_trigger_setting(workspace, main_source.path, True)
             if settings_file is not None:
                 write_files.append(settings_file)
 
         if args.dry_run:
-            changed = [file.path for file in write_files if file.encoded() != file.path.read_bytes()]
+            changed = [file.path for file in write_files if file_changed(file)]
             print("\nDRY RUN OK: no files were written")
             for path in changed:
                 print(f"  WOULD UPDATE {path}")

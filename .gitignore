@@ -22,6 +22,23 @@ wos-build.json
 *.w3m
 logs/
 test_map/
+!test_map/
+test_map/*
+!test_map/README.md
+!test_map/heroes/
+!test_map/compatibility/
+!test_map/base/
+test_map/base/*
+!test_map/base/test-source-manifest.json
+!test_map/base/trigger-manifest.json
+!test_map/base/trigger-settings.json
+!test_map/base/dependency-manifest.json
+backups/test-source-import/
+backups/crocodile-objects/
+backups/crocodile-triggers/
+backups/test-objects/
+backups/test-triggers/
+backups/test-maps/
 
 # Файлы локальных бэкапов
 *.bak

@@ -1,0 +1,76 @@
+{
+  "format": "warcraft-3-object-data-manifest-v1",
+  "map_directory": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x",
+  "files": [
+    {
+      "json": "units.json",
+      "binary": "war3map.w3u",
+      "sha256": "a9b11524e6ca7c04bce49b6edb5a34ebcdf6212d9f61a951a3576cc91e0dcd43"
+    },
+    {
+      "json": "items.json",
+      "binary": "war3map.w3t",
+      "sha256": "2854157f8b80cb6727ffdcffb3791af6f991a957d18a502f5ade123282407de0"
+    },
+    {
+      "json": "destructables.json",
+      "binary": "war3map.w3b",
+      "sha256": "c829b5ced44a69d2f58da0b57ab204ae13e60c69896d52cce04ca16cab6b239d"
+    },
+    {
+      "json": "doodads.json",
+      "binary": "war3map.w3d",
+      "sha256": "14d9ac14c2de21ecd16a5c11d9f47c2760a03867d70e0ce88fc562debf8159b5"
+    },
+    {
+      "json": "abilities.json",
+      "binary": "war3map.w3a",
+      "sha256": "3d59ea169a70947c1faa7c1bad5335623247cdbee09dd8727710994c9f43f777"
+    },
+    {
+      "json": "buffs.json",
+      "binary": "war3map.w3h",
+      "sha256": "327abbae5757a3c7d7b67b71aa8d47689afe4660a88e0609418c01df2ab3b9ff"
+    },
+    {
+      "json": "upgrades.json",
+      "binary": "war3map.w3q",
+      "sha256": "4225528cc599e79596e9d5c01488232d8b7090a60a62e6b4ef684e02c6c2180b"
+    },
+    {
+      "json": "units-skin.json",
+      "binary": "war3mapSkin.w3u",
+      "sha256": "e0a856fac6276b0a20bc0d00f8750f3912fad869ce0724a34e803a5bf78ab267"
+    },
+    {
+      "json": "items-skin.json",
+      "binary": "war3mapSkin.w3t",
+      "sha256": "968cf0f47c6786d689ef8cafbad85871f6f279807eba75413e31b0a70c7d722c"
+    },
+    {
+      "json": "destructables-skin.json",
+      "binary": "war3mapSkin.w3b",
+      "sha256": "5aed6596453a0b54c53a617eedbbde53b30d35066ab57f4424a8ed79815c5aba"
+    },
+    {
+      "json": "doodads-skin.json",
+      "binary": "war3mapSkin.w3d",
+      "sha256": "663fefd0f3f0d5a551e4fff1986ab410cedf36fb2feb66ef4bc5813db806e868"
+    },
+    {
+      "json": "abilities-skin.json",
+      "binary": "war3mapSkin.w3a",
+      "sha256": "e6de3dfcb62ad2ab471d66471d5074350c3e9874bc5b2cf6e906e515059c226c"
+    },
+    {
+      "json": "buffs-skin.json",
+      "binary": "war3mapSkin.w3h",
+      "sha256": "77c5cfb73294a481f4a7aab742dd16f21142d8ec0065465c9f9a1f5da24bd51e"
+    },
+    {
+      "json": "upgrades-skin.json",
+      "binary": "war3mapSkin.w3q",
+      "sha256": "4225528cc599e79596e9d5c01488232d8b7090a60a62e6b4ef684e02c6c2180b"
+    }
+  ]
+}

@@ -29,6 +29,7 @@ local real r = 0
 local real x1 = 0
 local real y1 = 0
 local real sr = 0
+local real cd 
 local real r1 = 0
 local integer i = GetPlayerId(GetOwningPlayer(c))
 local real a = GAngle2(c,x,y)
@@ -36,6 +37,15 @@ if GetUnitAbilityLevel(c,'B00D')>0 then
 call SilenceUnit(c,c,Erza6R_Silence)
 call UnitRemoveAbility(c,'B00D')
 endif
+/*if id == 'A0GH' then 
+if IsItemInInventory(c,'I00T')>0 then 
+call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I00T')))
+call UnitAddItemById(c,'I03U')
+elseif IsItemInInventory(c,'I03U')>0 then
+call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03U')))
+call UnitAddItemById(c,'I00T')
+endif
+endif*/
 if id == 'A0BZ' then 
 if IsItemInInventory(c,'I024')>0 then 
 call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I024')))
@@ -43,6 +53,18 @@ call UnitAddItemById(c,'I025')
 elseif IsItemInInventory(c,'I025')>0 then
 call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I025')))
 call UnitAddItemById(c,'I024')
+endif
+endif
+if id == 'A0G0' or  id == 'A0G1'  or  id == 'A0FD' then 
+if IsItemInInventory(c,'I02T')>0 then 
+call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I02T')))
+call UnitAddItemById(c,'I03E')
+elseif IsItemInInventory(c,'I03E')>0 then
+call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03E')))
+call UnitAddItemById(c,'I03F')
+elseif IsItemInInventory(c,'I03F')>0 then
+call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03F')))
+call UnitAddItemById(c,'I02T')
 endif
 endif
 if id == 'A0E4' then 
@@ -65,6 +87,9 @@ call HPS(c,c,(GetUnitState(c, UNIT_STATE_MAX_LIFE) * (AngelBlessing_Heal/100)),3
 //call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) + (GetUnitState(c, UNIT_STATE_MAX_LIFE) * 0.15))
 call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_jntx-guangzhuyellow.mdl",c,"origin"),3)
 endif
+if id == 'A0HY' then 
+call ShikiKnifeEvolved_Start(c,x,y)
+endif
 if id == NaofumiShield_ID then 
 call Naofumi_Start(c)
 endif 
@@ -73,6 +98,9 @@ call TurboNeko_Start(c,td)
 endif 
 if id == Raijin_Wrath_ID then 
 call RaijinWrath_Start(c,x,y)
+endif
+if id == Rhitta_ID then 
+call Rhitta_Start(c,x,y)
 endif
 if id == TuskBarrel_ID then 
 call TuskBarrel_Start(c,x,y)
@@ -93,7 +121,7 @@ if id == RedCup_ID then
 call RedCup_Start(c,x,y)
 endif
 if id == HokageHat_ID then
-call SetMpCurrent(td,-150)
+call SetMpCurrent(td,-HokageHat_Manaburn)
 call RootUnit(c,td,HokageHat_RootTime)
 if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
@@ -101,6 +129,13 @@ call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif
 call EUTU2(EffectSpawn("war3mapImported\\wos_1hongse_2blue.mdl",GetUnitX(td),GetUnitY(td),1,1,1,1),HokageHat_RootTime,1,td)
 call EUTU2(EffectSpawn("war3mapImported\\wos_s225.mdl",GetUnitX(td),GetUnitY(td),1,1,1,1),HokageHat_RootTime,1,td)
+endif
+if id == HokageHatEvolved_ID then
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+call BambiettaG_Start(c)
+call BambiettaG2_Start(c,x,y)
+endif
+call HokageHatEvolved_Start(c,x,y)
 endif
 if id == Hiraishin_ID then
 call BlinkEff(c)
@@ -112,10 +147,18 @@ if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and B
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif
+set cd = BlzGetUnitAbilityCooldown(c,'A076',GetUnitAbilityLevel(c,'A076')-1)/2
 if IsUnitEnemy(td,GetOwningPlayer(c)) then 
-call dmgphys(c,td,Hiraishin_DamageBase+(Hiraishin_Damage *GetMainStatValue(c,true) ))
+call dmgatk(c,td,Hiraishin_DamageBase+(Hiraishin_Damage *GetMainStatValue(c,true) ))
+if GetUnitAbilityLevel(td,'B02R')>0 then 
+call BlzStartUnitAbilityCooldown(c,'A076',cd)
+call CD_Start(c,0.03,'A076',cd)
+endif
+call BuffUnit01(c, td, 'A0GC', "curse", 1)
 else
+call CD_Start(c,0.03,'A076',cd)
 call SetMpCurrent(td,200)
+call SetMpCurrent(c,200)
 endif
 call BlinkEff(c)
 call SetUnitX(c,GetUnitX(c))
@@ -139,7 +182,7 @@ call SetHpCurrent2(c,c,FairyTailEmblem_HpRestoreStatic)
 call BlzStartUnitAbilityCooldown(c,'A04Y',FairyTailEmblem_CD )
 endif   
 if IsItemInInventory(c,'I00H')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0  then
-set r = 25
+set r = 35
 call BlzStartUnitAbilityCooldown(c,'A01I',2)
 if GetUnitAbilityLevel(c,'A010') == 0 then 
 call UnitAddAbility(c,'A010')
@@ -168,7 +211,7 @@ call MyRemoveAbility(c,r,'A015',1)
 endif
 endif
 if IsItemInInventory(c,'I01I')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A07E')==0 then
-set r = 25
+set r = 35
 call BlzStartUnitAbilityCooldown(c,'A07E',2)
 if GetUnitAbilityLevel(c,'A07H') == 0 then 
 call UnitAddAbility(c,'A07H')
@@ -198,7 +241,7 @@ endif
 endif
  if id == 'A00Y' then 
  call ImmuneToPushDebuff(c)
- call MUE(c,750,0.3,GetUnitFacing(c)*bj_DEGTORAD)
+ call MUE(c,Incursio_Range ,0.3,GetUnitFacing(c)*bj_DEGTORAD)
  call BuffUnitMS(c,c,0.2)
  elseif id == FunnyBarrel_ID then 
  call FunnyBarrel_Start(c,x,y)
@@ -213,8 +256,8 @@ endif
   
  endif 
  if id == 'A01B' then
- if SR3(c,x,y) > 750 then 
- set sr = 750
+ if SR3(c,x,y) > UraharaSet_Range  then 
+ set sr = UraharaSet_Range 
  else
  set sr = SR3(c,x,y)
  endif

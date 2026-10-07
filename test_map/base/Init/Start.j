@@ -1,6 +1,5 @@
 globals
 integer LLL = 0
-real ahk_delay = 0
 boolean udg_RK_KOTH_ENABLED = false
 integer CapPickPhase = 0
 unit array Hero
@@ -13,8 +12,8 @@ integer E_ID = 'A002'
 
 integer R_ID = 'A003'
 integer T_ID = 'A004'//UlquiorraT3_ID//'A01P'
-integer G_ID = 'A01V'
-integer F_ID = 'A01U'
+integer G_ID = 'A01U'
+integer F_ID = 'A01V'
 unit array HeroChosen
 integer array AutoBuyRecommendedIndex
 integer array AutoBuyRecommendedUnitId
@@ -88,7 +87,7 @@ loop
 endloop
 
 if Hero[i] == null then 
-set Hero[i] = CreateUnit(Player(0),'H00A',1,1,270)
+set Hero[i] = CreateUnit(Player(0),'Z00A',1,1,270)
 //call MahoragaTInfo_Start(Hero[i],true)
 //call BlzSetUnitSkin(Hero[i],Ulquiorra_Morph3_ID)
 call SetHeroLevel(Hero[i],35,false)
@@ -117,6 +116,7 @@ call UnitMakeAbilityPermanent(Hero[i],true,R_ID)
 call UnitMakeAbilityPermanent(Hero[i],true,T_ID)
 call UnitMakeAbilityPermanent(Hero[i],true,G_ID)
 call UnitMakeAbilityPermanent(Hero[i],true,F_ID)
+call TestHero_Register(Hero[i])
 //call SaveInteger(hs, GetHandleId(Hero[i]), StringHash("stack_count"), 6)
 //call MySpellStacksForAbility(Hero[i], AinzQ_ID, 0, 6, 5.00)
 //call TsunaF_Start(Hero[i])

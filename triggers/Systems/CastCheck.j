@@ -1,9 +1,88 @@
 globals 
 real ahk_delay = 0.06
 endglobals
+globals
+    timer ManaFixTimer = CreateTimer()
+    integer ManaFixCount = 0
+
+    unit array ManaFixUnit
+    integer array ManaFixId
+    integer array ManaFixCost
+    real array ManaFixBefore
+endglobals
+
+function ManaFix_Check takes nothing returns nothing
+    local integer i = 1
+    local unit c
+    local real mana
+    local real before
+    local real spent
+    local real cost
+
+    loop
+        exitwhen i > ManaFixCount
+
+        set c = ManaFixUnit[i]
+
+        if c != null and GetUnitTypeId(c) != 0 then
+
+            set mana   = GetUnitState(c,UNIT_STATE_MANA)
+            set before = ManaFixBefore[i]
+            set cost   = I2R(ManaFixCost[i])
+
+            set spent = before - mana
+
+            // Warcraft вообще не снял нужную ману
+            if spent < cost - 1.00 then
+                call SetUnitState(c,UNIT_STATE_MANA,mana-(cost-spent))
+            endif
+
+        endif
+
+        set ManaFixUnit[i] = null
+        set ManaFixId[i] = 0
+        set ManaFixCost[i] = 0
+        set ManaFixBefore[i] = 0.
+
+        set i = i + 1
+    endloop
+
+    set ManaFixCount = 0
+    set c = null
+endfunction
+
+function ManaFix_Add takes unit c, integer id returns nothing
+    local integer h = GetHandleId(c)
+    local integer cost
+
+    // Snapshot должен относиться именно к этой способности
+    if LoadInteger(hs,h,StringHash("mana fix ability")) != id then
+        return
+    endif
+
+    set cost = LoadInteger(hs,h,StringHash("mana fix cost"))
+
+    if cost <= 0 then
+        return
+    endif
+
+    set ManaFixCount = ManaFixCount + 1
+
+    set ManaFixUnit[ManaFixCount] = c
+    set ManaFixId[ManaFixCount] = id
+    set ManaFixCost[ManaFixCount] = cost
+    set ManaFixBefore[ManaFixCount] = LoadReal(hs,h,StringHash("mana fix before"))
+
+    if ManaFixCount == 1 then
+        call TimerStart(ManaFixTimer,0.01,false,function ManaFix_Check)
+    endif
+endfunction
 function DisableMoveRoot takes unit c, integer id returns boolean 
 local boolean b = true
 local integer idc = GetUnitTypeId(c)
+if GearCCProtected(c) then
+    return true
+endif
 if GetUnitAbilityLevel(c,'BEer') >0 then
 if id == 'A01B' or id == 'A076' or id == 'A00Y' or id == OkarunQ_ID or id == GojoRQ_ID or id == Erza4W_Start or id == Erza5E_ID or id == Erza7W_ID then 
  set b = false
@@ -79,6 +158,16 @@ if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
 //call MyFlush(GetHandleId(Player(i)),StringHash("ahk pidor"),0,ahk_delay )
     if (CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and CheckCoordsInRect(gg_rct_Cage,GetUnitX(c),GetUnitY(c)) == false) or SpellExtension(c,id) then 
     call ItemsCast(c,td,x,y,id)
+/*set rr = BlzGetUnitAbilityCooldownRemaining(c,id)
+if rr <= 0.001 then
+    call ManaFix_Add(c,id)
+endif
+*/
+call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1))
+
+    if GearSpellDispatch() then
+        set check = 1
+    else
     if GetUnitTypeId(c) == Raiden_ID then 
     if id == RaidenQ_ID then 
     call RaidenQ_Start(c,x,y)
@@ -1194,7 +1283,43 @@ if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
     
     
     
-    if GetUnitTypeId(c) == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then 
+    static if LIBRARY_CrocodileSpells then
+    if GetUnitTypeId(c) == Crocodile_ID then
+    if id == CrocodileQ_ID then
+    if CrocodileQ_Start(c,x,y) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    elseif id == CrocodileW_ID then
+    if CrocodileW_Start(c,x,y) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    elseif id == CrocodileE_ID then
+    if CrocodileE_Start(c,x,y) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    elseif id == CrocodileR_ID then
+    if CrocodileR_Start(c,x,y) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    elseif id == CrocodileT_ID then
+    if GetUnitCurrentOrder(c) == OrderId("ambush") and CrocodileT_Start(c) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    elseif id == CrocodileT2_ID then
+    if CrocodileT2_Start(c) then
+    set check = 1
+    call CrocodileF_AddStack(c)
+    endif
+    endif
+    endif
+    endif
+    endif // shared dispatch
+    if GetUnitTypeId(c) == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then
     call StarrkPas(c)
     endif
     if id != FrierenG_ID and check == 1 then
@@ -1237,6 +1362,7 @@ if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
     elseif IsUnitType(c,UNIT_TYPE_HERO)  and BlzGetUnitAbilityCooldownRemaining(c,id)==0 then 
     call IssueImmediateOrder(c,"stop")
     set i2 = BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(c,id),ABILITY_ILF_MANA_COST,GetUnitAbilityLevel(c,id)-1)
+    
     call MyAddMana(c,I2R(i2),0.03)
     if b == false and IntegerCd(c,"cancel tooltip",3) then 
     call DisplayTimedTextToPlayer(Player(i),0,0,0.01,"|c00FF0000Can't use this ability while rooted!|r")

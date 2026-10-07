@@ -172,6 +172,19 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID3_Dummy[n], AkainuR_ID)
     call UnitAddAbility(Hero_ID3_Dummy[n], AkainuT_ID)
     call UnitAddAbility(Hero_ID3_Dummy[n], AkainuF_ID)
+    // HERO TRANSFER: Crocodile / BuildsForChars
+    set n = 1
+    set MaxHeroes = MaxHeroes + 1
+    set Hero_ID3[n] = Crocodile_ID // Crocodile
+    set Hero_ID3_Dummy[n] = CreateUnit(Player(12), Hero_ID3[n], GetRectCenterX(gg_rct_Test), GetRectCenterY(gg_rct_Test), 0)
+    call ShowUnit(Hero_ID3_Dummy[n], false)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileQ_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileW_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileE_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileR_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileT_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileF_ID)
+    call UnitAddAbility(Hero_ID3_Dummy[n], CrocodileG_ID)
 //=========Jujutsu Kaisen==============
     set n = 0
 set MaxHeroes = MaxHeroes + 1

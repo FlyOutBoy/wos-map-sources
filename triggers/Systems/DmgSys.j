@@ -4,6 +4,35 @@ boolean QuincyCrossDamageActive = false
 boolean MurasameTrigger = false
 boolean KurikaraTrigger = false
 endglobals
+// Applied exactly once to the source damage before DamageCheck/shield previews.
+function CrocodileG_OffensiveDamage takes unit c, unit td, real amount returns real
+    local real maxMana
+    local real missingPercent
+    static if LIBRARY_CrocodileSpells then
+        if amount > 0.0 and GetUnitTypeId(c) == Crocodile_ID and IsUnitType(c,UNIT_TYPE_HERO) and not IsUnitIllusion(c) and IsUnitEnemy(td,GetOwningPlayer(c)) and GetUnitAbilityLevel(c,CrocodileG_ID) > 0 then
+            set maxMana = GetUnitState(td,UNIT_STATE_MAX_MANA)
+            if maxMana > 0.0 then
+                set missingPercent = 100.0*(1.0-GetUnitState(td,UNIT_STATE_MANA)/maxMana)
+                set amount = amount*(1.0+RMinBJ(CrocodileG_MaxBonus,RMaxBJ(0.0,missingPercent)*CrocodileG_MissingScale))
+            endif
+        endif
+    endif
+    return amount
+endfunction
+
+// Only a positive final spell hit depletes mana. F uses dmgatk and is excluded.
+function CrocodileG_AppliedSpellHit takes unit c, unit td, real amount, integer typedmg, boolean isAttack returns nothing
+    local real maxMana
+    static if LIBRARY_CrocodileSpells then
+        if amount > 0.0 and not isAttack and (typedmg == 1 or typedmg == 2) and GetUnitTypeId(c) == Crocodile_ID and IsUnitType(c,UNIT_TYPE_HERO) and not IsUnitIllusion(c) and IsUnitEnemy(td,GetOwningPlayer(c)) and GetUnitAbilityLevel(c,CrocodileG_ID) > 0 then
+            set maxMana = GetUnitState(td,UNIT_STATE_MAX_MANA)
+            if maxMana > 0.0 then
+                call SetMpCurrent(td,-CrocodileG_ManaDrain*maxMana)
+            endif
+        endif
+    endif
+endfunction
+
 function checkdmgsys takes nothing returns boolean
     return GetEventDamage() >= 1 and GetUnitAbilityLevel(GetTriggerUnit(), 'Avul') == 0
 endfunction
@@ -154,6 +183,12 @@ endif
     endif
     endif
      
+    if BlzGetEventIsAttack() then
+        static if LIBRARY_CrocodileSpells then
+            set dmg = Crocodile_Attack(c,td,dmg)
+        endif
+        set dmg = GearDamageRun(c, td, dmg, 0, 0)
+    endif
     call AlterSaberW_PasTrigger(c, td)
     return dmg
 endfunction
@@ -248,6 +283,13 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     endif
     
     
+    set dmg = CrocodileG_OffensiveDamage(c,td,dmg)
+    static if LIBRARY_CrocodileSpells then
+        if targetId == Crocodile_ID and CrocodileT_IsChanneling(td) then
+            set dmg = dmg*(1.0-CrocodileT_DamageReduction)
+        endif
+    endif
+    set dmg = GearDamageRun(c, td, dmg, typedmg, 2)
     // Предварительный урон со всеми усилениями атакующего, но ещё без резистов цели.
     // DamageCheck в текущей реализации не изменяет состояние.
     set penetrationTrigger = DamageCheck(c, td, dmg, typedmg)
@@ -632,6 +674,8 @@ endif
    
    call SaveReal(hs,GetHandleId(td),StringHash("frieren f dmg"),hpblock1)
    endif
+    set dmg = GearDamageRun(c, td, dmg, typedmg, 3)
+    call CrocodileG_AppliedSpellHit(c,td,dmg,typedmg,BlzGetEventIsAttack())
     if dmg != dmg_base then
         call BlzSetEventDamage(dmg)
     endif

@@ -178,6 +178,9 @@
     ],
     "MilimSpells": [
       "Heroes/Milim.j"
+    ],
+    "CrocodileSpells": [
+      "Heroes/Crocodile.j"
     ]
   },
   "files": [
@@ -537,12 +540,18 @@
     },
     {
       "order": 29,
-      "path": "Systems/ClickEvent.j",
+      "path": "Systems/CastingCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
       "order": 30,
+      "path": "Systems/ClickEvent.j",
+      "provides": [],
+      "dependencies": []
+    },
+    {
+      "order": 31,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
       "provides": [
         "AAADest"
@@ -559,7 +568,7 @@
       ]
     },
     {
-      "order": 31,
+      "order": 32,
       "path": "Systems/Systems1.j",
       "provides": [
         "GearSystems"
@@ -576,7 +585,7 @@
       ]
     },
     {
-      "order": 32,
+      "order": 33,
       "path": "Systems/Systems2.j",
       "provides": [
         "GearSystems2"
@@ -593,146 +602,140 @@
       ]
     },
     {
-      "order": 33,
+      "order": 34,
       "path": "Systems/DmgSys.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 34,
+      "order": 35,
       "path": "Systems/AtkCancel.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 35,
+      "order": 36,
       "path": "Systems/MouseMove.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 36,
+      "order": 37,
       "path": "Systems/Death.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 37,
+      "order": 38,
       "path": "Systems/silence.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 38,
+      "order": 39,
       "path": "Systems/LvlUpCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 39,
+      "order": 40,
       "path": "Systems/LvlSelf.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 40,
+      "order": 41,
       "path": "Systems/MagRes.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 41,
+      "order": 42,
       "path": "Systems/PhysRes.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 42,
+      "order": 43,
       "path": "Systems/slow.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 43,
+      "order": 44,
       "path": "Systems/NeviSound.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 44,
+      "order": 45,
       "path": "Systems/Evol1.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 45,
+      "order": 46,
       "path": "Systems/Evol2.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 46,
+      "order": 47,
       "path": "Systems/sukuna_spawn.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 47,
+      "order": 48,
       "path": "Systems/ESC.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 48,
+      "order": 49,
       "path": "Systems/Killme.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 49,
+      "order": 50,
       "path": "Systems/AnimCheck.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 50,
+      "order": 51,
       "path": "Systems/hpset.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 51,
+      "order": 52,
       "path": "Systems/mpset.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 52,
+      "order": 53,
       "path": "Systems/ArrowLeft.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 53,
+      "order": 54,
       "path": "Systems/ArrowUp.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 54,
+      "order": 55,
       "path": "Systems/ArrowDown.j",
       "provides": [],
       "dependencies": []
     },
     {
-      "order": 55,
-      "path": "Systems/ArrowRight.j",
-      "provides": [],
-      "dependencies": []
-    },
-    {
       "order": 56,
-      "path": "Systems/CastingCheck.j",
+      "path": "Systems/ArrowRight.j",
       "provides": [],
       "dependencies": []
     },
@@ -1512,6 +1515,31 @@
           "keyword": "uses",
           "resolved_paths": [
             "Systems/Systems1.j"
+          ]
+        }
+      ]
+    },
+    {
+      "order": 107,
+      "path": "Heroes/Crocodile.j",
+      "provides": [
+        "CrocodileSpells"
+      ],
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/Systems1.j"
+          ]
+        },
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "uses",
+          "resolved_paths": [
+            "Systems/TasBox.j"
           ]
         }
       ]

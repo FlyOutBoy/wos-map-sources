@@ -1979,7 +1979,11 @@ library ItemsSpells uses GearSystems
         endmethod
 
         public static method TurboNeko_Start takes unit NewC, unit NewTd returns nothing
-            local thistype this = thistype.create( )
+            local thistype this
+            if GearCCProtected(NewTd) then
+                return
+            endif
+            set this = thistype.create( )
             set MUI_Item13 = MUI_Item13 + 1
             set m_Item13[ MUI_Item13] = this
             set c = NewC

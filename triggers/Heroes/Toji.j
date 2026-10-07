@@ -2179,7 +2179,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         set TojiTimer03Callback = function TojiTimer03Loop
         set TojiTimer05 = CreateTimer()
         set TojiTimer05Callback = function TojiTimer05Loop
-
+/*
         call TriggerRegisterAnyUnitEventBJ(trgPoint, EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)
         call TriggerAddCondition(trgPoint, Condition(function Toji_TrackPointOrder))
 
@@ -2188,7 +2188,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 
         call TriggerRegisterAnyUnitEventBJ(trgTarget, EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)
         call TriggerAddCondition(trgTarget, Condition(function Toji_TrackTargetOrder))
-
+*/
         set trgPoint = null
         set trgOrder = null
         set trgTarget = null

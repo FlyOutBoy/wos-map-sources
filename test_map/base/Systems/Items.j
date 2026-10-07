@@ -8,6 +8,24 @@ library ItemsSpells uses GearSystems
         real Chogurt_MpRestoreStatic = 20
         real Chogurt_DmgReduct = 7.5
         real ChogurtEvolved_DmgReduct = 12.5
+//----------------------Murasame----------------------------------------------
+        real Murasame_DamageBase = 50.00
+        real Murasame_AttackDamage = 0.60
+//----------------------ItachiSet----------------------------------------------
+        integer ItachiSet_ID = 'I01B'        
+        real ItachiSet_Bonus = 17.5
+//----------------------RaikageHat----------------------------------------------
+        integer RaikageHat_ID = 'I00T'        
+        real RaikageHat_Bonus = 17.5
+//----------------------DemonDwellerSword----------------------------------------------
+        integer DemonDwellerSword_ID = 'I041'
+        integer DemonDwellerSword_Abi_ID = 'A0HX'
+        integer DemonDwellerSword_Abi_CD_ID = 'A0HW'
+        integer DemonDwellerSword_Phys_ID = 'B03A'
+        integer DemonDwellerSword_Mag_ID = 'B039'
+        real DemonDwellerSword_Bonus = 25
+        real DemonDwellerSword_MinDmg = 500
+        real DemonDwellerSword_CD = 5
 //----------------------RockleeWeights----------------------------------------------
         integer RockleeWeights_ID = 'A06Q'
         real RockleeWeights_Range = 1100 // how far wind move
@@ -17,18 +35,18 @@ library ItemsSpells uses GearSystems
 //----------------------RedCup----------------------------------------------
         integer RedCup_ID = 'A09L'
         real RedCup_Range = 1820 // how far wind move
-        real RedCup_Time = 0.81 //how long wind move
+        real RedCup_Time = 0.9 //how long wind move
         real RedCup_Aoe = 400 // how fast barrel will land after cast       
         real RedCup_Damage = 5.5// how much damage dealt x mainstat 
 //----------------------MeraMera no mi----------------------------------------------
         real MeraMera_Aoe = 850       
-        real MeraMera_Damage = 50     
-        real MeraMera_MaxDamage = 300   
-        real MeraMera_MaxHpDamage = 1.5//% of max owner hp
+        real MeraMera_Damage = 25     
+        real MeraMera_MaxDamage = 250   
+        real MeraMera_MaxHpDamage = 1//% of max owner hp
         unit array MeraMeraDummy
 //----------------------Yata Mirror----------------------------------------------
         real YataMirror_Range = 1000       
-        real YataMirror_ReversedDmg = 30// %
+        real YataMirror_ReversedDmg = 35// %
 //----------------------FairyTailEmblem----------------------------------------------
         real FairyTailEmblem_CD = 18
         real FairyTailEmblem_ManaRestoreStatic = 250
@@ -36,11 +54,17 @@ library ItemsSpells uses GearSystems
         real FairyTailEmblem_HpRestoreStatic = 350 // of max mana
 //----------------------RedFlower----------------------------------------------
         integer RedFlower_ID = 'A09M'
-        real RedFlower_DamageBase = 5.5// how much damage dealt x agi
+        real RedFlower_DamageBase = 6// how much damage dealt x agi
         real RedFlower_Time = 1.8 // max travel time
-        real RedFlower_Speed = 2100 // traveled for 1 sec     
+        real RedFlower_Speed = 2400 // traveled for 1 sec     
 //----------------------Avalon----------------------------------------------
-        real Avalon_HpRestore = 20 // traveled for 1 sec     
+        real Avalon_HpRestore = 20 // traveled for 1 sec      
+//----------------------Avalon Evolved----------------------------------------------
+        real AvalonEvolved_HpRestore = 50 // traveled for 1 sec   
+//----------------------Urahara Set----------------------------------------------
+        real UraharaSet_Range = 900 // traveled for 1 sec  
+//----------------------Incursio----------------------------------------------
+        real Incursio_Range = 750 // traveled for 1 sec   
 //----------------------Funny_Barrel----------------------------------------------
         integer Raijin_Wrath_ID = 'A06O'
         real Raijin_Wrath_Damage = 5.5// how much damage dealt x mainstat
@@ -77,45 +101,46 @@ library ItemsSpells uses GearSystems
         real HokageHatEvolved_Time = 4// how long root
 //----------------------Shark_Trail----------------------------------------------
         integer Shark_Trail_ID = 'A06P'
-        real Shark_Trail_DamageBase = 5.5// how much damage dealt x agi
+        real Shark_Trail_DamageBase = 6// how much damage dealt x agi
         real Shark_Trail_Time = 1.8 // max travel time
-        real Shark_Trail_Speed = 1500 // traveled for 1 sec   
+        real Shark_Trail_Speed = 1900 // traveled for 1 sec   
 //----------------------Earth_Power----------------------------------------------
-        real Earth_Power_DamageBase = 2.25 // how much damage dealt x agi
-        real Earth_Power_CD = 2.5 // how much damage dealt x agi
+        real Earth_Power_DamageBase = 2 // how much damage dealt x agi
+        real Earth_Power_CD = 3 // how much damage dealt x agi
         real Earth_Power_Time = 0.42 // max travel time
         real Earth_Power_MinDmg = 200 // 5 = 5%, deal dmg each sec 5 
 //----------------------Guts_Armor----------------------------------------------
         integer GutsArmor_Buff_ID = 'B02D'
         real GutsArmor_DamageBase = 2.2 // how much damage dealt x str
         real GutsArmor_CD = 2 // how much damage dealt x agi
-        real GutsArmor_DmgTreshold = 400 // max travel time
+        real GutsArmor_DmgTreshold = 200 // max travel time
 //----------------------QuincyCross----------------------------------------------
-        real QuincyCross_DamageBase = 0.65 // how much damage dealt x main
+        real QuincyCross_DamageBase = 40 // how much damage static
         real QuincyCross_MaxDmg = 99999 // from which dmg amount it will work
-        real QuincyCross_CD = 0.9 // how much damage dealt x main
+        real QuincyCross_CD = 0 // how much damage dealt x main
         integer QuincyCross_MaxStacks = 0
         integer QuincyCross_Item_ID = 'I023'
         boolean QuincyCross_ReduceEffects = true
 //----------------------Tachikaze----------------------------------------------
-        real Tachikaze_DamageBase = 0.5 // how much damage dealt x main
-        real Tachikaze_CD = 0.3 // how much damage dealt x main
+        real Tachikaze_DamageBase = 0.8 // how much damage dealt x main
+        real Tachikaze_CD = 0.95 // how much damage dealt x main
 //----------------------RyijinJakka----------------------------------------------
-        real RyijinJakka_DamageBase = 1.75 // how much damage dealt x main
+        real RyijinJakka_DamageBase = 2 // how much damage dealt x main
         real RyijinJakka_MinDmg = 200 // from which dmg amount it will work
-        real RyijinJakka_CD = 5 // how much damage dealt x main
+        real RyijinJakka_CD = 7 // how much damage dealt x main
 //----------------------Nejibana----------------------------------------------
-        real Nejibana_DamageBase = 1.75 // how much damage dealt x main
+        real Nejibana_DamageBase = 2 // how much damage dealt x main
         real Nejibana_MinDmg = 200 // from which dmg amount it will work
-        real Nejibana_CD = 5 // how much damage dealt x main
+        real Nejibana_CD = 7 // how much damage dealt x main
 //----------------------Gonryomaru----------------------------------------------
-        real Gonryomaru_DamageBase = 1.75 // how much damage dealt x main
+        real Gonryomaru_DamageBase = 2 // how much damage dealt x main
         real Gonryomaru_MinDmg = 200 // from which dmg amount it will work
-        real Gonryomaru_CD = 5 // how much damage dealt x main
+        real Gonryomaru_CD = 7 // how much damage dealt x main
 //----------------------Gonryomaru----------------------------------------------
         real SogyoNoKotowari_CD = 4 // how much damage dealt x main
 //----------------------Cup of Tea----------------------------------------------
-        integer CupOfTea_CD = 25  
+        integer CupOfTea_CD = 25 
+        integer CupOfTeaEvolved_CD = 20 
 //----------------------Holy Grail----------------------------------------------
         real HolyGrail_HpRegen = 10
         real HolyGrail_MpRegen = 4
@@ -130,9 +155,17 @@ library ItemsSpells uses GearSystems
         real ElixirOfLife_CD = 7
 //----------------------Shiki Knife----------------------------------------------
         real ShikiKnife_DmgBase = 80
-        real ShikiKnife_DmgAgi = 0.8
-        real ShikiKnife_CD = 4
+        real ShikiKnife_DmgAgi = 1
+        real ShikiKnife_CD = 6
         real ShikiKnife_RangeCheck = 650
+//----------------------Shiki Knife Evolved----------------------------------------------
+        real ShikiKnifeEvolved_DmgBase = 125
+        real ShikiKnifeEvolved_DmgAgi = 1.5
+        real ShikiKnifeEvolved_Multiplier = 1.5
+        real ShikiKnifeEvolved_CD = 6
+        real ShikiKnifeEvolved_RangeCheck = 650
+        real ShikiKnifeEvolved_Range = 2100
+        real ShikiKnifeEvolved_Aoe = 150
 //----------------------Hungry Sin----------------------------------------------
         real HungrySin_hp = 25
         real HungrySin_mp = 10
@@ -146,24 +179,24 @@ library ItemsSpells uses GearSystems
 //----------------------Lust_Sin----------------------------------------------
         real LustSin_CD = 5
         real LustSin_MinDmg = 400 // from which dmg amount it will work
-        real LustSin_IgnoreAmount = 90 // ignore 90% of shield
+        real LustSin_IgnoreAmount = 100 // ignore 90% of shield
 //----------------------Envy_Sin----------------------------------------------
-        real EnvySin_IgnoreAmount = 30 // ignore 90% of shield
+        real EnvySin_IgnoreAmount = 25 // ignore 90% of shield
 //----------------------Wrath_Sin----------------------------------------------
-        real WrathSin_IgnoreAmount = 35 // ignore 90% of shield
-        real WrathSin_IgnoreAmountAdd = 40 // ignore 90% of shield
+        real WrathSin_IgnoreAmount = 25 // ignore 90% of shield
+        real WrathSin_IgnoreAmountAdd = 65 // ignore 90% of shield
 //----------------------Funny_Barrel----------------------------------------------
         integer FunnyBarrel_ID = 'A00Z'
-        real FunnyBarrel_Damage = 100.00// how much damage dealt
+        real FunnyBarrel_Damage = 175.00// how much damage dealt
         real FunnyBarrel_DamageLvlMultiplier = 0.00// how much damage dealt
         real FunnyBarrel_FireExist = 9 // how long fire after explosion lives
         real FunnyBarrel_Time = 1.02 // how fast barrel will land after cast
         real FunnyBarrel_Aoe = 375 // how fast barrel will land after cast  
 //----------------------Tusk_Barrel----------------------------------------------
         integer TuskBarrel_ID = 'A09N'
-        real TuskBarrel_Range = 1700
+        real TuskBarrel_Range = 1800
         real TuskBarrel_PushRange = 600
-        real TuskBarrel_Damage = 100.00// how much damage dealt
+        real TuskBarrel_Damage = 225.00// how much damage dealt
         real TuskBarrel_DamageStat = 4// how much damage dealt
         real TuskBarrel_DamageLvlMultiplier = 0.00// how much damage dealt
         real TuskBarrel_FireExist = 9 // how long fire after explosion lives
@@ -203,22 +236,31 @@ library ItemsSpells uses GearSystems
         real FunnyPresent_PushTime = 0.51         
 //----------------------Naofumi_Shield----------------------------------------------
         integer NaofumiShield_ID = 'A02T'
-        real NaofumiShield_Duration = 4   
+        real NaofumiShield_Duration = 5   
 //----------------------Nichirin----------------------------------------------
         real Nichirin_Decrease = 14   
 //----------------------TrueZangetsu----------------------------------------------
         real TrueZangetsu_Decrease = 14  
+//----------------------DeathNote----------------------------------------------
+        integer DeathNote_ID = 'I044'
+        integer DeathNote_CD_ID = 'A0I1'
+        integer DeathNote_Abi_ID = 'A0I0'
+        integer DeathNote_Buff_ID = 'B03B'
+        real DeathNote_Damage = 30 // % of dealt dmg
+        real DeathNote_CD = 5 // % of dealt dmg
+        real DeathNote_MinDmg = 800 // % of dealt dmg
+        real DeathNote_Time = 2.01 // max travel time
 //----------------------KazekageHat----------------------------------------------
         real KazekageHat_Decrease = 50
 //----------------------KanshoandBakuya----------------------------------------------
         real KanshoandBakuya_Decrease = 50  
 //----------------------Okarun Egg----------------------------------------------
-        real OkarunEggReduceCD = 15 // 15 = 15%   
+        real OkarunEggReduceCD = 12.5 // 15 = 15%   
 //----------------------Prison Realm----------------------------------------------
         real PrisonRealmReduceCD = 25 // 15 = 15% 
         real PrisonRealmCD = 4 // 15 = 15% 
 //----------------------Kurikara----------------------------------------------
-        real Kurikara_MaxManaDmg = 5 // 5 = 5%, deal dmg each sec 5 
+        real Kurikara_MaxManaDmg = 4.5 // 5 = 5%, deal dmg each sec 5 
         real Kurikara_MinDmg = 200 // 5 = 5%, deal dmg each sec 5 
 //---------------W ability-----------------------------------------------------
     endglobals
@@ -691,7 +733,7 @@ library ItemsSpells uses GearSystems
             set y = NewY
             set g = CreateGroup()
             set u = null
-            set dmg = Raijin_Wrath_Damage * GetHeroInt(c,true) 
+            set dmg = Raijin_Wrath_Damage * GetHeroAgi(c,true) 
             set aoe = Raijin_Wrath_Aoe
             set dmg = SacredGearBooster(c,dmg)
             
@@ -1454,7 +1496,7 @@ library ItemsSpells uses GearSystems
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u,g2)== false then
                         call MUE(u,((rmax-r)/0.03)*move,rmax-r,a)
                         call ErzaPassive(c,u,2)
-                        call dmgmag(c,u,dmg)
+                        call dmgphys(c,u,dmg)
                         if k3 == 1 then 
                     call DestroyEffect(e3)
                     set x = GetUnitX(u)
@@ -1643,7 +1685,7 @@ library ItemsSpells uses GearSystems
             set a = GAngle(c,td)
             set rmax = RedFlower_Time 
             set move = RedFlower_Speed  / 33
-            set dmg = RedFlower_DamageBase *GetHeroAgi(c,true)
+            set dmg = RedFlower_DamageBase *GetHeroInt(c,true)
             set r = 0
             set r2 = 0
             set r3 = 0
@@ -1937,7 +1979,11 @@ library ItemsSpells uses GearSystems
         endmethod
 
         public static method TurboNeko_Start takes unit NewC, unit NewTd returns nothing
-            local thistype this = thistype.create( )
+            local thistype this
+            if GearCCProtected(NewTd) then
+                return
+            endif
+            set this = thistype.create( )
             set MUI_Item13 = MUI_Item13 + 1
             set m_Item13[ MUI_Item13] = this
             set c = NewC
@@ -2130,7 +2176,224 @@ library ItemsSpells uses GearSystems
         endmethod
 
     endstruct
+    private struct ItemsSpells_ShikiKnifeEvolved
+        private static timer t_Item3 = CreateTimer()
+        private static integer array m_Item3
+        private static integer MUI_Item3 = -1
+        unit c
+        real x
+        real y
+        real r2
+        integer k3
+        real r3
+        group g
+        real r5
+        unit u
+        real dmg
+        integer check
+        real aoe
+        real move
+        real r
+        effect e
+        effect e2
+        real a
+        real rmax
 
+        private static method Loop_ShikiKnifeEvolved takes nothing returns nothing
+            local integer this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_Item3
+                set this = m_Item3[i]
+                if r <= rmax then
+                    set r = r + 0.03
+                    call BlzSetSpecialEffectYaw(e,a)
+                    call MoveEff(e, move, a)
+                      if k3 == 1 then 
+                    call MoveEff(e2, move, a)
+                    endif
+                    set r5 = r5 + move
+                    if r5>r3 then 
+                    set r = 999
+                    endif
+                    set x = GetEffX(e)
+                    set y = GetEffY(e)
+                    call GroupClear(g)
+                    call GroupEnumUnitsInRange( g , x , y , aoe , NoDecor_Cond)
+                    loop
+                        set u = FirstOfGroup( g )
+                        exitwhen u == null or check >0
+                        if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                    call dmgatk(c, u, dmg)
+                    set check = 1
+                    call BlzSetSpecialEffectPosition(e,GetUnitX(u),GetUnitY(u),200)
+                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", u, "origin"))
+                            call DestroyEffect( EffectSpawn("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", x, y, a * bj_RADTODEG, 0.35, 3, 145))
+                    set r = 999
+                        endif
+                        call GroupRemoveUnit( g , u )
+                    endloop
+                else  
+                    if k3 == 1 then 
+                    call DestroyEffect(e2)
+                    call BambiettaG2_Start(c,x,y)
+                    set k3 = 0
+                    endif
+                    
+                    call DestroyGroup(g)
+                    call ColorEffDummy3(e,0,255,255,255,0.15)
+                    set c = null
+                    set g = null
+                    set e = null
+                    set e2 = null
+                    set u = null
+                    set m_Item3[i] = m_Item3[ MUI_Item3]
+                    set MUI_Item3 = MUI_Item3 - 1
+                    if MUI_Item3 == -1 then
+                        call PauseTimer( t_Item3)
+                    endif
+                    call deallocate(this)
+                    set i = i - 1
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        public static method ShikiKnifeEvolved_Start takes unit NewC, real NewX,real NewY returns nothing
+            local thistype this = thistype.create( )
+            set MUI_Item3 = MUI_Item3 + 1
+            set m_Item3[ MUI_Item3] = this
+            set c = NewC
+            set x = NewX
+            set y = NewY
+            set check = 0
+            set a = GAngle2(c,x,y)
+            set g = CreateGroup()
+            set u = null
+            set rmax = 4 
+            set r5 = 0
+            set move = 90
+            set dmg = ShikiKnifeEvolved_DmgBase + GetHeroAgi(c,true)*ShikiKnifeEvolved_DmgAgi
+            set dmg = dmg * ShikiKnifeEvolved_DmgAgi
+            set dmg = SacredGearBooster(c,dmg)
+            
+            set aoe = ShikiKnifeEvolved_Aoe 
+            set r = 0
+            set r2 = 0
+            set r3 =ShikiKnifeEvolved_Range 
+            call SetUnitAnimation(c, "attack")
+            set e = EffectSpawn("war3mapimported\\wos_mh_nanaya_xd.mdl", GetUnitX(c) + 140 * Cos(a), GetUnitY(c) + 140 * Sin(a), a * bj_RADTODEG, 1, 2, 195)
+            set k3 = 0
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            call BambiettaG_Start(c)
+            if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
+            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
+            else
+            set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
+            endif
+            set k3 = 1
+            endif
+
+            if MUI_Item3 == 0 then
+                call TimerStart( t_Item3, 0.03, true, function thistype.Loop_ShikiKnifeEvolved)
+            endif
+        endmethod
+
+    endstruct
+private struct ItemsSpells_DeathNote
+        private static timer t_Item9 = CreateTimer()
+        private static integer array m_Item9
+        private static integer MUI_Item9 = -1
+        unit c
+        unit td
+        real x
+        real y
+        real r2
+        integer k3
+        real r3
+        real dmg
+        real r
+        effect e
+        effect e2
+        real a
+        real rmax
+
+        private static method Loop_DeathNote takes nothing returns nothing
+            local integer this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_Item9
+                set this = m_Item9[i]
+                if r< 0.06 then 
+                set r = r + 0.03
+                endif
+                if r> 0.03 then 
+                if SpellBoolCaster(td) and r <= rmax and GetUnitAbilityLevel(td,DeathNote_Buff_ID )>0 then
+                if GetUnitAbilityLevel(td,'Avul')==0 then 
+                set r = r + 0.03
+                endif 
+                    set a = GAngle5(e,GetUnitX(td),GetUnitY(td))
+                    set x = GetUnitX(td)
+                    set y = GetUnitY(td)
+                    call BlzSetSpecialEffectYaw(e,a)
+                    call BlzSetSpecialEffectPosition(e,x,y,0)
+                    
+                    else
+                    call ColorEffDummy3(e,0,255,255,255,0.5)
+                    if GetUnitAbilityLevel(td,DeathNote_Buff_ID )>0 then 
+                    call dmgmag(c, td, dmg)
+                   
+                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 1.5, 1))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
+                    call UnitRemoveAbility(td,DeathNote_Buff_ID)
+                    endif
+                    set c = null
+                    set td = null
+                    set e = null
+                    set e2 = null
+                    set m_Item9[i] = m_Item9[ MUI_Item9]
+                    set MUI_Item9 = MUI_Item9 - 1
+                    if MUI_Item9 == -1 then
+                        call PauseTimer( t_Item9)
+                    endif
+                    call deallocate(this)
+                    set i = i - 1
+                endif
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        public static method DeathNote_Start takes unit NewC, unit NewTd, real NewDmg returns nothing
+            local thistype this = thistype.create( )
+            set MUI_Item9 = MUI_Item9 + 1
+            set m_Item9[ MUI_Item9] = this
+            set c = NewC
+            set td = NewTd            
+            set a = GAngle(c,td)
+            set rmax = DeathNote_Time  
+            set dmg = NewDmg
+            set r = 0
+            set r2 = 0
+            set r3 = 0
+            set k3 = 0
+            
+
+            set e = EffectSpawnScale("war3mapImported\\wos_.mdl", x,y, a * bj_RADTODEG, 0.43, 0.01, 0, 0.15, 0.01, 1.5)
+            if MUI_Item9 == 0 then
+                call TimerStart( t_Item9, 0.03, true, function thistype.Loop_DeathNote)
+            endif
+        endmethod
+
+    endstruct
+
+    function DeathNote_Start takes unit c, unit td, real dmg  returns nothing
+    call BuffUnit01(c,td,DeathNote_Abi_ID,"curse",1)
+        call ItemsSpells_DeathNote.DeathNote_Start( c, td, dmg*(DeathNote_Damage/100 ) )
+    endfunction  
+    function ShikiKnifeEvolved_Start takes unit c, real x, real y returns nothing
+        call ItemsSpells_ShikiKnifeEvolved.ShikiKnifeEvolved_Start( c, x, y )
+    endfunction
     function Naofumi_Start takes unit c returns nothing
         call ItemsSpells_NaofumiShield.NaofumiShield_Start( c )
     endfunction
@@ -2172,8 +2435,7 @@ library ItemsSpells uses GearSystems
     endfunction
     function EarthPower takes unit c, unit td returns nothing
         call ItemsSpells_EarthPower.EarthPower_Start( c, td )
-    endfunction  
-    
+    endfunction      
     function HokageHatEvolved_Start takes unit c, real x, real y returns nothing
         call ItemsSpells_HokageHatEvolved.HokageHatEvolved_Start( c, x, y )
     endfunction
@@ -2182,7 +2444,7 @@ library ItemsSpells uses GearSystems
         call ItemsSpells_TurboNeko.TurboNeko_Start( c, td )
         endif
     endfunction    
-    function QuincyCross_Start takes unit c, unit td returns nothing
+    function QuincyCross_Start takes unit c, unit td returns nothing 
     local item cross
     local integer stacks
     local boolean completed = false

@@ -1,0 +1,4754 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3map.w3b",
+  "source_sha256": "c829b5ced44a69d2f58da0b57ab204ae13e60c69896d52cce04ca16cab6b239d",
+  "kind": "destructables",
+  "record_mode": "simple",
+  "format_version": 3,
+  "original_objects": [],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B000",
+        "hex": "42303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дерево_1"
+    },
+    {
+      "old_id": {
+        "text": "ZTw0",
+        "hex": "5A547730"
+      },
+      "new_id": {
+        "text": "B001",
+        "hex": "42303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 10.0,
+            "_original_value": 10.0,
+            "_raw_hex": "00002041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_1"
+    },
+    {
+      "old_id": {
+        "text": "ITw2",
+        "hex": "49547732"
+      },
+      "new_id": {
+        "text": "B002",
+        "hex": "42303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 10.0,
+            "_original_value": 10.0,
+            "_raw_hex": "00002041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_1"
+    },
+    {
+      "old_id": {
+        "text": "ZTw0",
+        "hex": "5A547730"
+      },
+      "new_id": {
+        "text": "B003",
+        "hex": "42303033"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_2"
+    },
+    {
+      "old_id": {
+        "text": "ITw2",
+        "hex": "49547732"
+      },
+      "new_id": {
+        "text": "B004",
+        "hex": "42303034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B005",
+        "hex": "42303035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 80.0,
+            "_original_value": 80.0,
+            "_raw_hex": "0000A042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дом_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B006",
+        "hex": "42303036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_0"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B007",
+        "hex": "42303037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дерево_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B008",
+        "hex": "42303038"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Манике_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B009",
+        "hex": "42303039"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дерево_3"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00A",
+        "hex": "42303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Понеглиф_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00B",
+        "hex": "42303042"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 80.0,
+            "_original_value": 80.0,
+            "_raw_hex": "0000A042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дом_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00C",
+        "hex": "42303043"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 80.0,
+            "_original_value": 80.0,
+            "_raw_hex": "0000A042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дом_3"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00D",
+        "hex": "42303044"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 80.0,
+            "_original_value": 80.0,
+            "_raw_hex": "0000A042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дом_4"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00E",
+        "hex": "42303045"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 80.0,
+            "_original_value": 80.0,
+            "_raw_hex": "0000A042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дом_5"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00F",
+        "hex": "42303046"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Дерево_4"
+    },
+    {
+      "old_id": {
+        "text": "ITw2",
+        "hex": "49547732"
+      },
+      "new_id": {
+        "text": "B00G",
+        "hex": "42303047"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 10.0,
+            "_original_value": 10.0,
+            "_raw_hex": "00002041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_1"
+    },
+    {
+      "old_id": {
+        "text": "ITw2",
+        "hex": "49547732"
+      },
+      "new_id": {
+        "text": "B00H",
+        "hex": "42303048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 10.0,
+            "_original_value": 10.0,
+            "_raw_hex": "00002041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "barm",
+            "hex": "6261726D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Wood",
+            "_original_value": "Wood",
+            "_encoding": "utf-8",
+            "_raw_base64": "V29vZA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "btar",
+            "hex": "62746172"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "tree",
+            "_original_value": "tree",
+            "_encoding": "utf-8",
+            "_raw_base64": "dHJlZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Стена_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00I",
+        "hex": "42303049"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bwal",
+            "hex": "6277616C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bcat",
+            "hex": "62636174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "P",
+            "_original_value": "P",
+            "_encoding": "utf-8",
+            "_raw_base64": "UA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Арена_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00J",
+        "hex": "4230304A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00K",
+        "hex": "4230304B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00L",
+        "hex": "4230304C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_3"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00M",
+        "hex": "4230304D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_4"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00N",
+        "hex": "4230304E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 120.0,
+            "_original_value": 120.0,
+            "_raw_hex": "0000F042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_3_uriska"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00O",
+        "hex": "4230304F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Бочка  красная"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00P",
+        "hex": "42303050"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Бочка  обычная"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00Q",
+        "hex": "42303051"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Башня_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00R",
+        "hex": "42303052"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Башня_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00S",
+        "hex": "42303053"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Автомат"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00T",
+        "hex": "42303054"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Гидрант_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00U",
+        "hex": "42303055"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Коробка_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00V",
+        "hex": "42303056"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Коробка_2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00W",
+        "hex": "42303057"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Мишень"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00X",
+        "hex": "42303058"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Мусорка"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00Y",
+        "hex": "42303059"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Телефон"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B00Z",
+        "hex": "4230305A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Пластиковый стол"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B010",
+        "hex": "42303130"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Пластиковый стул"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B011",
+        "hex": "42303131"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Трава"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B012",
+        "hex": "42303132"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 20.0,
+            "_original_value": 20.0,
+            "_raw_hex": "0000A041"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Трава2"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B013",
+        "hex": "42303133"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 200.0,
+            "_original_value": 200.0,
+            "_raw_hex": "00004843"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Золото"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B014",
+        "hex": "42303134"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Машина_1"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B015",
+        "hex": "42303135"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Поезд"
+    },
+    {
+      "old_id": {
+        "text": "YY19",
+        "hex": "59593139"
+      },
+      "new_id": {
+        "text": "B016",
+        "hex": "42303136"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bfra",
+            "hex": "62667261"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shop Base"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B017",
+        "hex": "42303137"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 100.0,
+            "_original_value": 100.0,
+            "_raw_hex": "0000C842"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bwal",
+            "hex": "6277616C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Поезд Даммик"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B018",
+        "hex": "42303138"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 99999.0,
+            "_original_value": 99999.0,
+            "_raw_hex": "804FC347"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kyoraku Bankai Tex"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B019",
+        "hex": "42303139"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Кристалл маленький"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B01A",
+        "hex": "42303141"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Кристалл Большой"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B01B",
+        "hex": "42303142"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 120.0,
+            "_original_value": 120.0,
+            "_raw_hex": "0000F042"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Здание_3_zesu"
+    }
+  ]
+}

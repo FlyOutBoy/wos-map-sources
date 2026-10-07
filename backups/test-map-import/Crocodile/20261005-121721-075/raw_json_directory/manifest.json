@@ -1,0 +1,56 @@
+{
+  "format": "warcraft-3-object-data-manifest-v1",
+  "map_directory": "C:\\Users\\Gear\\Desktop\\WOS\\VS WOS\\test_map\\unpacked",
+  "files": [
+    {
+      "json": "units.json",
+      "binary": "war3map.w3u",
+      "sha256": "7d445c8f3317d6145c1beafbebb78afbbac73b3278c0b0e9b408ce296917424f"
+    },
+    {
+      "json": "destructables.json",
+      "binary": "war3map.w3b",
+      "sha256": "e91e40d21f54497eebceb84436c88ac0fbbc7cdf975ef5558d196f130f6b0931"
+    },
+    {
+      "json": "abilities.json",
+      "binary": "war3map.w3a",
+      "sha256": "1253a5aa7f2cbe2a82145d22e4c14f97fef385a19d7f657574f1a80cdcd50a08"
+    },
+    {
+      "json": "buffs.json",
+      "binary": "war3map.w3h",
+      "sha256": "c16d8f03985c780f5de219d8a425e5217c2f2c53065a28a0bda060c02bb38778"
+    },
+    {
+      "json": "upgrades.json",
+      "binary": "war3map.w3q",
+      "sha256": "6a45922ba15746c969fe4f79670336c39d2a15c4381469a34f3c890c6c8d1e18"
+    },
+    {
+      "json": "units-skin.json",
+      "binary": "war3mapSkin.w3u",
+      "sha256": "98f95b30366f9c7098b47a04fd6fc6e484020e1088a72bf43a56be24b1bf3124"
+    },
+    {
+      "json": "destructables-skin.json",
+      "binary": "war3mapSkin.w3b",
+      "sha256": "51bc8c8106e34f0fd1ecc3412d9921ee08466c93d589833b86cead585c00091c"
+    },
+    {
+      "json": "abilities-skin.json",
+      "binary": "war3mapSkin.w3a",
+      "sha256": "6b2786df9fc5c4e5d0f0e9b6974ce8a48c66f2786fb5caeef417cb4e063d0085"
+    },
+    {
+      "json": "buffs-skin.json",
+      "binary": "war3mapSkin.w3h",
+      "sha256": "18cd8a189b23abc3ce11bc466b71905f565c457668d94822516b367c2ca1812e"
+    },
+    {
+      "json": "upgrades-skin.json",
+      "binary": "war3mapSkin.w3q",
+      "sha256": "6a45922ba15746c969fe4f79670336c39d2a15c4381469a34f3c890c6c8d1e18"
+    }
+  ]
+}

@@ -318,6 +318,8 @@ function InitHeroShopRegistry takes nothing returns nothing
     call RegisterShopHero(Frieren_ID,    6, 12)  // shop 29
     // HERO TRANSFER: Milim / InitHeroShopRegistry
     call RegisterShopHero(Milim_ID, 6, 13)  // shop 30
+    // HERO TRANSFER: Crocodile / InitHeroShopRegistry
+    call RegisterShopHero(Crocodile_ID, 4, 1)  // shop 31
 endfunction
 
 function SetHeroId takes integer page, integer slot, integer heroId returns nothing
@@ -613,6 +615,13 @@ set w = MilimW_ID
 set e = MilimE_ID
 set r = MilimR_ID
 set t = MilimT_ID
+// HERO TRANSFER: Crocodile / LearnHeroSpells
+elseif id == Crocodile_ID then
+set q = CrocodileQ_ID
+set w = CrocodileW_ID
+set e = CrocodileE_ID
+set r = CrocodileR_ID
+set t = CrocodileT_ID
 endif
 loop
 exitwhen i == 5  
@@ -1522,6 +1531,15 @@ if id == Milim_ID then
     set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
     set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
+// HERO TRANSFER: Crocodile / RecommenedItems
+if id == Crocodile_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
+    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
+    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 set ItemsFrameCurrentPage_ID[i] = 0
 set ItemsCraftPlayerDebug_ID[i] = -1
 
@@ -1774,6 +1792,9 @@ endfunction
     function DebuffImmune_Start takes unit c, integer level returns integer
 local integer k = level 
 local real cd = 0
+if GearCCProtected(c) then
+    return 0
+endif
 if LoadInteger(hs,GetHandleId(c),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(c),StringHash("erza g2 type")) == 1 then
         set k = 0
         endif
@@ -3013,7 +3034,7 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
     endif
 
 
-    return dmg
+    return GearDamageRun(c, td, dmg, typedmg, 1)
 endfunction
 
 

@@ -1,0 +1,120 @@
+{
+  "B000": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B001": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B002": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B003": {
+    "name": "",
+    "base_id": "YTfb"
+  },
+  "B004": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B005": {
+    "name": "",
+    "base_id": "KTtw",
+    "field_bfil": "war3mapImported\\wos_jiejin.mdl",
+    "field_blit": 0,
+    "field_bshd": "",
+    "field_bvar": 1
+  },
+  "B006": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B007": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B008": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00A": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00C": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00D": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00F": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00G": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00H": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00I": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00K": {
+    "name": "",
+    "base_id": "ITtc",
+    "field_bfil": "war3mapImported\\Wos_InoriCrystall.mdl",
+    "field_bshd": "",
+    "field_bvar": 1
+  },
+  "B00L": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00M": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00N": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00O": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00P": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "B00Q": {
+    "name": "",
+    "base_id": "DTrf"
+  },
+  "EB02": {
+    "name": "",
+    "base_id": "EB02",
+    "field_bfil": "Doodads\\Terrain\\ElvenBridgeLarge45\\ElvenBridgeLarge45.mdl",
+    "field_bhps": 50.0,
+    "field_bptd": ""
+  },
+  "ITtc": {
+    "name": "",
+    "base_id": "ITtc"
+  },
+  "VTlt": {
+    "name": "",
+    "base_id": "VTlt"
+  },
+  "YTfb": {
+    "name": "",
+    "base_id": "YTfb"
+  }
+}

@@ -201,7 +201,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             local trigger tTarget = CreateTrigger()
             local trigger tImmediate = CreateTrigger()
             local integer i = 0
-            loop
+            /*loop
                 exitwhen i >= 16
                 call TriggerRegisterPlayerUnitEvent(tPoint, Player(i), EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, null)
                 call TriggerRegisterPlayerUnitEvent(tTarget, Player(i), EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER, null)
@@ -211,6 +211,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             call TriggerAddCondition(tPoint, Condition(function OnHeroPointOrder))
             call TriggerAddCondition(tTarget, Condition(function OnHeroTargetOrder))
             call TriggerAddCondition(tImmediate, Condition(function OnHeroImmediateOrder))
+        */
         endmethod
     endstruct
 

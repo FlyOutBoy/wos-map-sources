@@ -1,0 +1,40 @@
+{
+  "format": "warcraft-3-minimal-object-workspace-manifest-v1",
+  "files": [
+    {
+      "category": "abilities",
+      "file": "abilities.json",
+      "objects": 102
+    },
+    {
+      "category": "units",
+      "file": "units.json",
+      "objects": 42
+    },
+    {
+      "category": "items",
+      "file": "items.json",
+      "objects": 0
+    },
+    {
+      "category": "buffs",
+      "file": "buffs.json",
+      "objects": 114
+    },
+    {
+      "category": "upgrades",
+      "file": "upgrades.json",
+      "objects": 1
+    },
+    {
+      "category": "destructables",
+      "file": "destructables.json",
+      "objects": 27
+    },
+    {
+      "category": "doodads",
+      "file": "doodads.json",
+      "objects": 0
+    }
+  ]
+}

@@ -8,16 +8,24 @@
     "commonJ": "libs\\common.j",
     "blizzardJ": "libs\\Blizzard.j",
     "buildDir": "_build",
-    "testHero": "Milim",
+    "testHero": "Crocodile",
     "testMapsDir": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes",
     "testBaseSource": "test_map\\map_source\\TestBase.vj",
     "testHeroSourceDirs": [
-        "triggers\\Heroes"
+        "triggers/Heroes",
+        "test_map/heroes"
     ],
     "sharedSources": [
         "triggers\\WOS_Start\\TooltipBuilder.j",
         "triggers\\WOS_Start\\UniversalTooltips.j"
     ],
     "mainMap": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\YourMainMap.w3x",
-    "mainSource": "map_source\\Main.vj"
+    "mainSource": "map_source\\Main.vj",
+    "testCompanionSourceDirs": [
+        "triggers/Heroes"
+    ],
+    "testOnlySources": [
+        "test_map/compatibility/KyorakuSounds.j"
+    ],
+    "testMapTemplate": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes\\Crocodile.w3x"
 }

@@ -25,7 +25,6 @@ endfunction
 
 function InitTrig_MouseMove takes nothing returns nothing
     set gg_trg_MouseMove = CreateTrigger()
-    call TriggerRegisterTimerEvent(gg_trg_MouseMove, 0.01, false)
+    call TriggerRegisterTimerEvent(gg_trg_MouseMove, 5, false)
     call TriggerAddAction( gg_trg_MouseMove, function Trig_StartMouseTriggers )
 endfunction
-

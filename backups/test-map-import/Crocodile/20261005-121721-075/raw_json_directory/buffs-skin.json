@@ -1,0 +1,6700 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3mapSkin.w3h",
+  "source_sha256": "18cd8a189b23abc3ce11bc466b71905f565c457668d94822516b367c2ca1812e",
+  "kind": "buffs",
+  "record_mode": "simple",
+  "format_version": 3,
+  "original_objects": [
+    {
+      "old_id": {
+        "text": "Bvul",
+        "hex": "4276756C"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bvng",
+        "hex": "42766E67"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bsta",
+        "hex": "42737461"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bssd",
+        "hex": "42737364"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bspo",
+        "hex": "4273706F"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bspe",
+        "hex": "42737065"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bshs",
+        "hex": "42736873"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Broa",
+        "hex": "42726F61"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Brej",
+        "hex": "4272656A"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bpxf",
+        "hex": "42707866"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bpsh",
+        "hex": "42707368"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bpsd",
+        "hex": "42707364"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bprg",
+        "hex": "42707267"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bpoi",
+        "hex": "42706F69"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bply",
+        "hex": "42706C79"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Boar",
+        "hex": "426F6172"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bmfl",
+        "hex": "426D666C"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bmfa",
+        "hex": "426D6661"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Blsh",
+        "hex": "426C7368"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Binv",
+        "hex": "42696E76"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bhwd",
+        "hex": "42687764"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bhea",
+        "hex": "42686561"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bfro",
+        "hex": "4266726F"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bfae",
+        "hex": "42666165"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Beye",
+        "hex": "42657965"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bdet",
+        "hex": "42646574"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcyc",
+        "hex": "42637963"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcri",
+        "hex": "42637269"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bchd",
+        "hex": "42636864"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bblo",
+        "hex": "42626C6F"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bams",
+        "hex": "42616D73"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BUsl",
+        "hex": "4255736C"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BUau",
+        "hex": "42556175"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BUan",
+        "hex": "4255616E"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BOwk",
+        "hex": "424F776B"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BOmi",
+        "hex": "424F6D69"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BOhx",
+        "hex": "424F6878"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BOac",
+        "hex": "424F6163"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNss",
+        "hex": "424E7373"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNsi",
+        "hex": "424E7369"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNrd",
+        "hex": "424E7264"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNin",
+        "hex": "424E696E"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNeg",
+        "hex": "424E6567"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNdm",
+        "hex": "424E646D"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BNba",
+        "hex": "424E6261"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIrm",
+        "hex": "4249726D"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIrl",
+        "hex": "4249726C"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIrg",
+        "hex": "42497267"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIpd",
+        "hex": "42497064"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIpb",
+        "hex": "42497062"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIil",
+        "hex": "4249696C"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BIcf",
+        "hex": "42496366"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHtb",
+        "hex": "42487462"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHfs",
+        "hex": "42486673"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHad",
+        "hex": "42486164"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHab",
+        "hex": "42486162"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BFig",
+        "hex": "42466967"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEsv",
+        "hex": "42457376"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEst",
+        "hex": "42457374"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEsh",
+        "hex": "42457368"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEme",
+        "hex": "42456D65"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEim",
+        "hex": "4245696D"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEia",
+        "hex": "42456961"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEfn",
+        "hex": "4245666E"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEer",
+        "hex": "42456572"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "BEer",
+            "hex": "42456572"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEar",
+        "hex": "42456172"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BEah",
+        "hex": "42456168"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "AEsd",
+        "hex": "41457364"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "XEsf",
+        "hex": "58457366"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bslo",
+        "hex": "42736C6F"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "Bslo",
+            "hex": "42736C6F"
+          }
+        }
+      ],
+      "display_name": ""
+    }
+  ],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B000",
+        "hex": "42303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_393",
+            "_original_value": "TRIGSTR_393",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zOTM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B001",
+        "hex": "42303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_554",
+            "_original_value": "TRIGSTR_554",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NTQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_555",
+            "_original_value": "TRIGSTR_555",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NTU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_556",
+            "_original_value": "TRIGSTR_556",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NTY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JpbXVydV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "aurafbred",
+            "_original_value": "aurafbred",
+            "_encoding": "utf-8",
+            "_raw_base64": "YXVyYWZicmVk"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B002",
+        "hex": "42303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_750",
+            "_original_value": "TRIGSTR_750",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_751",
+            "_original_value": "TRIGSTR_751",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTE="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_W.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_W.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX1cuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B003",
+        "hex": "42303033"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_794",
+            "_original_value": "TRIGSTR_794",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83OTQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_795",
+            "_original_value": "TRIGSTR_795",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83OTU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX1IuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_a (207).mdx",
+            "_original_value": "war3mapImported\\wos_a (207).mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19hICgyMDcpLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B105",
+        "hex": "42313035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1024",
+            "_original_value": "TRIGSTR_1024",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_800",
+            "_original_value": "TRIGSTR_800",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MDA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_W.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_W.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RzdW5hX1cuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B104",
+        "hex": "42313034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_894",
+            "_original_value": "TRIGSTR_894",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84OTQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_833",
+            "_original_value": "TRIGSTR_833",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84MzM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JpbXVydTNfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B204",
+        "hex": "42323034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_852",
+            "_original_value": "TRIGSTR_852",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_853",
+            "_original_value": "TRIGSTR_853",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_W2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_W2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1Rha2VzaGlfVzIuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B205",
+        "hex": "42323035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_854",
+            "_original_value": "TRIGSTR_854",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_855",
+            "_original_value": "TRIGSTR_855",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1Rha2VzaGlfRTIuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Bubbles3.mdx",
+            "_original_value": "war3mapImported\\wos_Bubbles3.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19CdWJibGVzMy5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B206",
+        "hex": "42323036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_856",
+            "_original_value": "TRIGSTR_856",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_857",
+            "_original_value": "TRIGSTR_857",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_Q3.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_Q3.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1Rha2VzaGlfUTMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B207",
+        "hex": "42323037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_858",
+            "_original_value": "TRIGSTR_858",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_859",
+            "_original_value": "TRIGSTR_859",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NTk="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1Rha2VzaGlfVC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B004",
+        "hex": "42303034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_862",
+            "_original_value": "TRIGSTR_862",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NjI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_863",
+            "_original_value": "TRIGSTR_863",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NjM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru2_Q.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru2_Q.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JpbXVydTJfUS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_greatsagecirc.mdx",
+            "_original_value": "war3mapImported\\wos_greatsagecirc.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19ncmVhdHNhZ2VjaXJjLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B005",
+        "hex": "42303035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_896",
+            "_original_value": "TRIGSTR_896",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84OTY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_897",
+            "_original_value": "TRIGSTR_897",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84OTc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_W.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_W.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JpbXVydTNfVy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_longskill_buff_67.mdx",
+            "_original_value": "war3mapImported\\wos_longskill_buff_67.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19sb25nc2tpbGxfYnVmZl82Ny5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B006",
+        "hex": "42303036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_932",
+            "_original_value": "TRIGSTR_932",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_931",
+            "_original_value": "TRIGSTR_931",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzE="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1JpbXVydTNfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_a (613x).mdx",
+            "_original_value": "war3mapImported\\wos_a (613x).mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19hICg2MTN4KS5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B007",
+        "hex": "42303037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_934",
+            "_original_value": "TRIGSTR_934",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_935",
+            "_original_value": "TRIGSTR_935",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B008",
+        "hex": "42303038"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_982",
+            "_original_value": "TRIGSTR_982",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_983",
+            "_original_value": "TRIGSTR_983",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_940",
+            "_original_value": "TRIGSTR_940",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NDA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff1.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff1.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjEubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B009",
+        "hex": "42303039"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_984",
+            "_original_value": "TRIGSTR_984",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_985",
+            "_original_value": "TRIGSTR_985",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_943",
+            "_original_value": "TRIGSTR_943",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NDM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff2.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff2.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjIubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00A",
+        "hex": "42303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_986",
+            "_original_value": "TRIGSTR_986",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_987",
+            "_original_value": "TRIGSTR_987",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_946",
+            "_original_value": "TRIGSTR_946",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NDY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff3.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff3.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjMubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00B",
+        "hex": "42303042"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_988",
+            "_original_value": "TRIGSTR_988",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_989",
+            "_original_value": "TRIGSTR_989",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODk="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1025",
+            "_original_value": "TRIGSTR_1025",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff4.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff4.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjQubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00C",
+        "hex": "42303043"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_990",
+            "_original_value": "TRIGSTR_990",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_991",
+            "_original_value": "TRIGSTR_991",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTE="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_952",
+            "_original_value": "TRIGSTR_952",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NTI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff5.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff5.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjUubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00D",
+        "hex": "42303044"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_992",
+            "_original_value": "TRIGSTR_992",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTI="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_993",
+            "_original_value": "TRIGSTR_993",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTM="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_955",
+            "_original_value": "TRIGSTR_955",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NTU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff6.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff6.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjYubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00E",
+        "hex": "42303045"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_994",
+            "_original_value": "TRIGSTR_994",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_995",
+            "_original_value": "TRIGSTR_995",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_958",
+            "_original_value": "TRIGSTR_958",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NTg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff7.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff7.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjcubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00F",
+        "hex": "42303046"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_996",
+            "_original_value": "TRIGSTR_996",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTY="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_997",
+            "_original_value": "TRIGSTR_997",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_961",
+            "_original_value": "TRIGSTR_961",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NjE="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff8.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff8.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjgubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00G",
+        "hex": "42303047"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_998",
+            "_original_value": "TRIGSTR_998",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_999",
+            "_original_value": "TRIGSTR_999",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85OTk="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX01haG9yYWdhX0UyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_964",
+            "_original_value": "TRIGSTR_964",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85NjQ="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_mahoragawheelbuff9.mdx",
+            "_original_value": "war3mapImported\\wos_mahoragawheelbuff9.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19tYWhvcmFnYXdoZWVsYnVmZjkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "BZ0H",
+        "hex": "425A3048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1006",
+            "_original_value": "TRIGSTR_1006",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDA2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1007",
+            "_original_value": "TRIGSTR_1007",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDA3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1BhdHJpb3RfVy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_tx238.mdx",
+            "_original_value": "war3mapImported\\wos_tx238.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc190eDIzOC5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00H",
+        "hex": "42303048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1008",
+            "_original_value": "TRIGSTR_1008",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDA4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1009",
+            "_original_value": "TRIGSTR_1009",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDA5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_F2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_F2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1BhdHJpb3RfRjIuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_patriotf.mdx",
+            "_original_value": "war3mapImported\\wos_patriotf.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19wYXRyaW90Zi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00I",
+        "hex": "42303049"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1028",
+            "_original_value": "TRIGSTR_1028",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1029",
+            "_original_value": "TRIGSTR_1029",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfVC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1030",
+            "_original_value": "TRIGSTR_1030",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDMw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_AinzTDebuff.mdx",
+            "_original_value": "war3mapImported\\wos_AinzTDebuff.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19BaW56VERlYnVmZi5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00J",
+        "hex": "4230304A"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1032",
+            "_original_value": "TRIGSTR_1032",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDMy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1033",
+            "_original_value": "TRIGSTR_1033",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDMz"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1034",
+            "_original_value": "TRIGSTR_1034",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM0"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_ade (blue).mdx",
+            "_original_value": "war3mapImported\\wos_ade (blue).mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19hZGUgKGJsdWUpLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00K",
+        "hex": "4230304B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1035",
+            "_original_value": "TRIGSTR_1035",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1036",
+            "_original_value": "TRIGSTR_1036",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1037",
+            "_original_value": "TRIGSTR_1037",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_fuxuan-21.mdx",
+            "_original_value": "war3mapImported\\wos_fuxuan-21.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19mdXh1YW4tMjEubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00L",
+        "hex": "4230304C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1038",
+            "_original_value": "TRIGSTR_1038",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1039",
+            "_original_value": "TRIGSTR_1039",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDM5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1040",
+            "_original_value": "TRIGSTR_1040",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_shieldfullpoten.mdx",
+            "_original_value": "war3mapImported\\wos_shieldfullpoten.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19zaGllbGRmdWxscG90ZW4ubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00M",
+        "hex": "4230304D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1041",
+            "_original_value": "TRIGSTR_1041",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQx"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1042",
+            "_original_value": "TRIGSTR_1042",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1043",
+            "_original_value": "TRIGSTR_1043",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQz"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_cxbfjsym.mdx",
+            "_original_value": "war3mapImported\\wos_cxbfjsym.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19jeGJmanN5bS5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00N",
+        "hex": "4230304E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1044",
+            "_original_value": "TRIGSTR_1044",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ0"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1045",
+            "_original_value": "TRIGSTR_1045",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1046",
+            "_original_value": "TRIGSTR_1046",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_lifeessense.mdx",
+            "_original_value": "war3mapImported\\wos_lifeessense.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19saWZlZXNzZW5zZS5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00O",
+        "hex": "4230304F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1047",
+            "_original_value": "TRIGSTR_1047",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1048",
+            "_original_value": "TRIGSTR_1048",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0FpbnpfRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1049",
+            "_original_value": "TRIGSTR_1049",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDQ5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_tx_caihongbz2.mdx",
+            "_original_value": "war3mapImported\\wos_tx_caihongbz2.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc190eF9jYWlob25nYnoyLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B05P",
+        "hex": "42303550"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1051",
+            "_original_value": "TRIGSTR_1051",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDUx"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1052",
+            "_original_value": "TRIGSTR_1052",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDUy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0ZyaWVyZW5fRi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_arcaneorb.mdx",
+            "_original_value": "war3mapImported\\wos_arcaneorb.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19hcmNhbmVvcmIubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1060",
+            "_original_value": "TRIGSTR_1060",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDYw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "TRIGSTR_1060"
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00P",
+        "hex": "42303050"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1053",
+            "_original_value": "TRIGSTR_1053",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDUz"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1054",
+            "_original_value": "TRIGSTR_1054",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDU0"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0ZyaWVyZW5fRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_barrier_frir1.mdx",
+            "_original_value": "war3mapImported\\wos_barrier_frir1.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19iYXJyaWVyX2ZyaXIxLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1061",
+            "_original_value": "TRIGSTR_1061",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDYx"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "TRIGSTR_1061"
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00Q",
+        "hex": "42303051"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1055",
+            "_original_value": "TRIGSTR_1055",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDU1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1056",
+            "_original_value": "TRIGSTR_1056",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDU2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0ZyaWVyZW5fRzIuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_firefly-shieldaura.mdx",
+            "_original_value": "war3mapImported\\wos_firefly-shieldaura.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maXJlZmx5LXNoaWVsZGF1cmEubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1062",
+            "_original_value": "TRIGSTR_1062",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDYy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "TRIGSTR_1062"
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00R",
+        "hex": "42303052"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1057",
+            "_original_value": "TRIGSTR_1057",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDU3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1058",
+            "_original_value": "TRIGSTR_1058",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDU4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G3.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G3.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0ZyaWVyZW5fRzMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1063",
+            "_original_value": "TRIGSTR_1063",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDYz"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "TRIGSTR_1063"
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00S",
+        "hex": "42303053"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1065",
+            "_original_value": "TRIGSTR_1065",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDY1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1066",
+            "_original_value": "TRIGSTR_1066",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDY2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_W.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_W.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfVy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1067",
+            "_original_value": "TRIGSTR_1067",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDY3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Chains_Buff_noglow.mdx",
+            "_original_value": "war3mapImported\\wos_Chains_Buff_noglow.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19DaGFpbnNfQnVmZl9ub2dsb3cubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00T",
+        "hex": "42303054"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1069",
+            "_original_value": "TRIGSTR_1069",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDY5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1070",
+            "_original_value": "TRIGSTR_1070",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDcw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1071",
+            "_original_value": "TRIGSTR_1071",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDcx"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00U",
+        "hex": "42303055"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1075",
+            "_original_value": "TRIGSTR_1075",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDc1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1076",
+            "_original_value": "TRIGSTR_1076",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDc2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1077",
+            "_original_value": "TRIGSTR_1077",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDc3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_TojiMark_1.mdx",
+            "_original_value": "war3mapImported\\wos_TojiMark_1.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Ub2ppTWFya18xLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00V",
+        "hex": "42303056"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1078",
+            "_original_value": "TRIGSTR_1078",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDc4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1079",
+            "_original_value": "TRIGSTR_1079",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDc5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1080",
+            "_original_value": "TRIGSTR_1080",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDgw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_TojiMark_2.mdx",
+            "_original_value": "war3mapImported\\wos_TojiMark_2.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Ub2ppTWFya18yLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00W",
+        "hex": "42303057"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1081",
+            "_original_value": "TRIGSTR_1081",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDgx"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1082",
+            "_original_value": "TRIGSTR_1082",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDgy"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1083",
+            "_original_value": "TRIGSTR_1083",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDgz"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_TojiMark_3.mdx",
+            "_original_value": "war3mapImported\\wos_TojiMark_3.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Ub2ppTWFya18zLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00X",
+        "hex": "42303058"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1084",
+            "_original_value": "TRIGSTR_1084",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg0"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1085",
+            "_original_value": "TRIGSTR_1085",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1086",
+            "_original_value": "TRIGSTR_1086",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_TojiMark_4.mdx",
+            "_original_value": "war3mapImported\\wos_TojiMark_4.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Ub2ppTWFya180Lm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "Bcmg",
+        "hex": "42636D67"
+      },
+      "new_id": {
+        "text": "B00Y",
+        "hex": "42303059"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1087",
+            "_original_value": "TRIGSTR_1087",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1088",
+            "_original_value": "TRIGSTR_1088",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX1RvamlfRy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1089",
+            "_original_value": "TRIGSTR_1089",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDg5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_TojiMark_5.mdx",
+            "_original_value": "war3mapImported\\wos_TojiMark_5.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Ub2ppTWFya181Lm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    }
+  ]
+}

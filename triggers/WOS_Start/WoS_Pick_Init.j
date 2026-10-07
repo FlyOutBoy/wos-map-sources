@@ -711,6 +711,7 @@ function TestUnit_CreateSelectedHero takes player controller, integer heroId, in
 
     set created = CreateUnit(Player(ownerId), heroId, x, y, facing)
     set Hero[ownerId] = created
+    call Crocodile_InitializeHero(created)
     if allied then
         set TestAllyUnit = created
     else
@@ -888,6 +889,10 @@ function RandomPick takes player p returns nothing
         elseif k2 == Hero_ID5[13] then
             set FRAME_PlayerPickString[pid] = "Milim"
             call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick1", p)
+        // HERO TRANSFER: Crocodile / RandomPick
+        elseif k2 == Hero_ID3[1] then
+            set FRAME_PlayerPickString[pid] = "Crocodile"
+            call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick1", p)
         endif
         call MakeSoundLocal("Pick\\PickPick2",p)
         set PickedOnce[pid] = PickedOnce[pid] + 1
@@ -898,6 +903,7 @@ call BlzFrameSetVisible(EmojiToggle, true)
     endif
        
         set Hero[pid] = CreateUnit(p, PlayerFrameCurrent_ID[pid], BaseX, BaseY, 270)
+        call Crocodile_InitializeHero(Hero[pid])
         call SetHeroLevel(Hero[pid], 2, false)
         call SetFlyInit(Hero[pid])
         call LearnHeroSpells(Hero[pid])
@@ -1342,6 +1348,14 @@ endif
                     set b = 4
                     set s = "Akainu"
                     set s_name = "Sakazuki Akainu"
+                    if GetLocalPlayer() == p then
+                        call BlzFrameSetText(FRAME_PlayerPickDifficultText, "|c00FFFC01Difficulty: " + "|c0028E800Easy|r")
+                    endif
+                // HERO TRANSFER: Crocodile / OnClick details
+                elseif GetHeroId(PlayerFrameCurrentPage_ID[pid], k3) == Crocodile_ID then
+                    set s = "Crocodile"
+                    set b = 2
+                    set s_name = "Crocodile"
                     if GetLocalPlayer() == p then
                         call BlzFrameSetText(FRAME_PlayerPickDifficultText, "|c00FFFC01Difficulty: " + "|c0028E800Easy|r")
                     endif
@@ -1966,6 +1980,19 @@ endif
             elseif i == 4 then
                 call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick5", p)
             endif
+        // HERO TRANSFER: Crocodile / OnClick sounds
+        elseif PlayerFrameCurrent_ID[pid] == Hero_ID3[1] then
+            if i == 0 then
+                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick1", p)
+            elseif i == 1 then
+                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick2", p)
+            elseif i == 2 then
+                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick3", p)
+            elseif i == 3 then
+                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick4", p)
+            elseif i == 4 then
+                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick5", p)
+            endif
         endif
     endif
     if clicked == FRAME_Pick[3] then
@@ -1997,6 +2024,7 @@ endif
         set BaseY = GetRectCenterY(gg_rct_Pick)
         call MakeSoundLocal("Pick\\PickPick1",p)
         set Hero[pid] = CreateUnit(p, id, BaseX, BaseY, 270)
+        call Crocodile_InitializeHero(Hero[pid])
         call SetFlyInit(Hero[pid])
         //
        // call BlzFrameSetEnable(FRAME_ICON[0], false)
@@ -2101,6 +2129,10 @@ endif
         elseif id == Hero_ID5[13] then
             set FRAME_PlayerPickString[pid] = "Milim"
             call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick2", p)
+        // HERO TRANSFER: Crocodile / OnClick confirm
+        elseif id == Hero_ID3[1] then
+            set FRAME_PlayerPickString[pid] = "Crocodile"
+            call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick2", p)
         endif
        // set Hero_ID0[0] = 12
        // call BlzFrameSetTexture(FRAME_ICON2[0], "ReplaceableTextures\\CommandButtons\\BTNCancel", 0, false) 
@@ -2750,14 +2782,36 @@ function GuideRefreshAbilityTooltip takes nothing returns nothing
             elseif hoverSlot == 6 then
                 set id = MilimG_ID
             endif
+        // HERO TRANSFER: Crocodile / GuideRefreshAbilityTooltip
+        elseif PlayerFrameCurrent_ID[pid] == Hero_ID3[1] then
+            set i = 1
+            set d = Hero_ID3_Dummy[i]
+            if hoverSlot == 0 then
+                set id = CrocodileQ_ID
+            elseif hoverSlot == 1 then
+                set id = CrocodileW_ID
+            elseif hoverSlot == 2 then
+                set id = CrocodileE_ID
+            elseif hoverSlot == 3 then
+                set id = CrocodileR_ID
+            elseif hoverSlot == 4 then
+                set id = CrocodileT_ID
+            elseif hoverSlot == 5 then
+                set id = CrocodileF_ID
+            elseif hoverSlot == 6 then
+                set id = CrocodileG_ID
+            endif
         endif
         if id != 0 then
-            set tooltipTitle = BlzGetAbilityStringLevelField(BlzGetUnitAbility(d, id), ABILITY_SLF_TOOLTIP_LEARN, 1)
-            if tooltipTitle != "Tool tip missing!" then
-                set tooltipExtended = BlzGetAbilityStringLevelField(BlzGetUnitAbility(d, id), ABILITY_SLF_TOOLTIP_LEARN_EXTENDED, 0)
-            else
-                set tooltipTitle = BlzGetAbilityStringLevelField(BlzGetUnitAbility(d, id), ABILITY_SLF_TOOLTIP_NORMAL, 0)
-                set tooltipExtended = BlzGetAbilityStringLevelField(BlzGetUnitAbility(d, id), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0)
+            // Read the same global research text written by UniversalTooltips.
+            // A preview dummy may still hold its original ability field values.
+            set tooltipTitle = BlzGetAbilityResearchTooltip(id, 0)
+            set tooltipExtended = BlzGetAbilityResearchExtendedTooltip(id, 0)
+            if tooltipTitle == null or tooltipTitle == "" or tooltipTitle == "Tool tip missing!" then
+                set tooltipTitle = BlzGetAbilityTooltip(id, 0)
+            endif
+            if tooltipExtended == null or tooltipExtended == "" or tooltipExtended == "Tool tip missing!" then
+                set tooltipExtended = BlzGetAbilityExtendedTooltip(id, 0)
             endif
             set tooltipText = tooltipTitle + "|n|n" + tooltipExtended
             if GetLocalPlayer() == p then

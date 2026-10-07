@@ -1,0 +1,793 @@
+{
+  "AEsd": {
+    "name": "",
+    "base_id": "AEsd",
+    "race": ""
+  },
+  "B000": {
+    "name": "",
+    "base_id": "Bcmg",
+    "editor_suffix": "TRIGSTR_393"
+  },
+  "B001": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_555",
+    "extended_tooltip": "TRIGSTR_556",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru_F.blp",
+    "target_art": "aurafbred",
+    "editor_suffix": "TRIGSTR_554",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B002": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_750",
+    "extended_tooltip": "TRIGSTR_751",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_W.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B003": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_794",
+    "extended_tooltip": "TRIGSTR_795",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_R.blp",
+    "target_art": "war3mapImported\\wos_a (207).mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B004": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_862",
+    "extended_tooltip": "TRIGSTR_863",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru2_Q.blp",
+    "target_art": "war3mapImported\\wos_greatsagecirc.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B005": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_896",
+    "extended_tooltip": "TRIGSTR_897",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_W.blp",
+    "target_art": "war3mapImported\\wos_longskill_buff_67.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B006": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_932",
+    "extended_tooltip": "TRIGSTR_931",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+    "target_art": "war3mapImported\\wos_a (613x).mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B007": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_934",
+    "extended_tooltip": "TRIGSTR_935",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B008": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_982",
+    "extended_tooltip": "TRIGSTR_983",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff1.mdx",
+    "editor_suffix": "TRIGSTR_940",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B009": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_984",
+    "extended_tooltip": "TRIGSTR_985",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff2.mdx",
+    "editor_suffix": "TRIGSTR_943",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00A": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_986",
+    "extended_tooltip": "TRIGSTR_987",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff3.mdx",
+    "editor_suffix": "TRIGSTR_946",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00B": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_988",
+    "extended_tooltip": "TRIGSTR_989",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff4.mdx",
+    "editor_suffix": "TRIGSTR_1025",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00C": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_990",
+    "extended_tooltip": "TRIGSTR_991",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff5.mdx",
+    "editor_suffix": "TRIGSTR_952",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00D": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_992",
+    "extended_tooltip": "TRIGSTR_993",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff6.mdx",
+    "editor_suffix": "TRIGSTR_955",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00E": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_994",
+    "extended_tooltip": "TRIGSTR_995",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff7.mdx",
+    "editor_suffix": "TRIGSTR_958",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00F": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_996",
+    "extended_tooltip": "TRIGSTR_997",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff8.mdx",
+    "editor_suffix": "TRIGSTR_961",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00G": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_998",
+    "extended_tooltip": "TRIGSTR_999",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Mahoraga_E2.blp",
+    "target_art": "war3mapImported\\wos_mahoragawheelbuff9.mdx",
+    "editor_suffix": "TRIGSTR_964",
+    "target_attachment_point_1": "origin",
+    "field_feat": "war3mapImported\\wos_mahoragawheelbuff.mdx"
+  },
+  "B00H": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1008",
+    "extended_tooltip": "TRIGSTR_1009",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_F2.blp",
+    "target_art": "war3mapImported\\wos_patriotf.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00I": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1028",
+    "extended_tooltip": "TRIGSTR_1029",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_T.blp",
+    "target_art": "war3mapImported\\wos_AinzTDebuff.mdx",
+    "editor_suffix": "TRIGSTR_1030",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00J": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1032",
+    "extended_tooltip": "TRIGSTR_1033",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_ade (blue).mdx",
+    "editor_suffix": "TRIGSTR_1034",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00K": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1035",
+    "extended_tooltip": "TRIGSTR_1036",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_fuxuan-21.mdx",
+    "editor_suffix": "TRIGSTR_1037",
+    "target_attachment_point_1": "chest",
+    "field_feat": ""
+  },
+  "B00L": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1038",
+    "extended_tooltip": "TRIGSTR_1039",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_shieldfullpoten.mdx",
+    "editor_suffix": "TRIGSTR_1040",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00M": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1041",
+    "extended_tooltip": "TRIGSTR_1042",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_cxbfjsym.mdx",
+    "editor_suffix": "TRIGSTR_1043",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00N": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1044",
+    "extended_tooltip": "TRIGSTR_1045",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_lifeessense.mdx",
+    "editor_suffix": "TRIGSTR_1046",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00O": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1047",
+    "extended_tooltip": "TRIGSTR_1048",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_F.blp",
+    "target_art": "war3mapImported\\wos_tx_caihongbz2.mdx",
+    "editor_suffix": "TRIGSTR_1049",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00P": {
+    "name": "TRIGSTR_1061",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1053",
+    "extended_tooltip": "TRIGSTR_1054",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G.blp",
+    "target_art": "war3mapImported\\wos_barrier_frir1.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00Q": {
+    "name": "TRIGSTR_1062",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1055",
+    "extended_tooltip": "TRIGSTR_1056",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G2.blp",
+    "target_art": "war3mapImported\\wos_firefly-shieldaura.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00R": {
+    "name": "TRIGSTR_1063",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1057",
+    "extended_tooltip": "TRIGSTR_1058",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G3.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00S": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1065",
+    "extended_tooltip": "TRIGSTR_1066",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_W.blp",
+    "target_art": "war3mapImported\\wos_Chains_Buff_noglow.mdx",
+    "editor_suffix": "TRIGSTR_1067",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00T": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1069",
+    "extended_tooltip": "TRIGSTR_1070",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_E.blp",
+    "editor_suffix": "TRIGSTR_1071",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00U": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1075",
+    "extended_tooltip": "TRIGSTR_1076",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_1.mdx",
+    "editor_suffix": "TRIGSTR_1077",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00V": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1078",
+    "extended_tooltip": "TRIGSTR_1079",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_2.mdx",
+    "editor_suffix": "TRIGSTR_1080",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00W": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1081",
+    "extended_tooltip": "TRIGSTR_1082",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_3.mdx",
+    "editor_suffix": "TRIGSTR_1083",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00X": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1084",
+    "extended_tooltip": "TRIGSTR_1085",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_4.mdx",
+    "editor_suffix": "TRIGSTR_1086",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B00Y": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1087",
+    "extended_tooltip": "TRIGSTR_1088",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Toji_G.blp",
+    "target_art": "war3mapImported\\wos_TojiMark_5.mdx",
+    "editor_suffix": "TRIGSTR_1089",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B05P": {
+    "name": "TRIGSTR_1060",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1051",
+    "extended_tooltip": "TRIGSTR_1052",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_F.blp",
+    "target_art": "war3mapImported\\wos_arcaneorb.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B104": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_894",
+    "extended_tooltip": "TRIGSTR_833",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_F.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B105": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1024",
+    "extended_tooltip": "TRIGSTR_800",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_W.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B204": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_852",
+    "extended_tooltip": "TRIGSTR_853",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_W2.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B205": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_854",
+    "extended_tooltip": "TRIGSTR_855",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_E2.blp",
+    "target_art": "war3mapImported\\wos_Bubbles3.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": ""
+  },
+  "B206": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_856",
+    "extended_tooltip": "TRIGSTR_857",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_Q3.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "B207": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_858",
+    "extended_tooltip": "TRIGSTR_859",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_T.blp",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "Bams": {
+    "name": "",
+    "base_id": "Bams",
+    "race": ""
+  },
+  "Bblo": {
+    "name": "",
+    "base_id": "Bblo",
+    "race": ""
+  },
+  "Bchd": {
+    "name": "",
+    "base_id": "Bchd",
+    "race": ""
+  },
+  "Bcri": {
+    "name": "",
+    "base_id": "Bcri",
+    "race": ""
+  },
+  "Bcyc": {
+    "name": "",
+    "base_id": "Bcyc",
+    "race": ""
+  },
+  "Bdet": {
+    "name": "",
+    "base_id": "Bdet",
+    "race": ""
+  },
+  "BEah": {
+    "name": "",
+    "base_id": "BEah",
+    "race": ""
+  },
+  "BEar": {
+    "name": "",
+    "base_id": "BEar",
+    "race": ""
+  },
+  "BEer": {
+    "name": "",
+    "base_id": "BEer",
+    "target_art": "",
+    "race": ""
+  },
+  "BEfn": {
+    "name": "",
+    "base_id": "BEfn",
+    "race": ""
+  },
+  "BEia": {
+    "name": "",
+    "base_id": "BEia",
+    "race": ""
+  },
+  "BEim": {
+    "name": "",
+    "base_id": "BEim",
+    "race": ""
+  },
+  "BEme": {
+    "name": "",
+    "base_id": "BEme",
+    "race": ""
+  },
+  "BEsh": {
+    "name": "",
+    "base_id": "BEsh",
+    "race": ""
+  },
+  "BEst": {
+    "name": "",
+    "base_id": "BEst",
+    "race": ""
+  },
+  "BEsv": {
+    "name": "",
+    "base_id": "BEsv",
+    "race": ""
+  },
+  "Beye": {
+    "name": "",
+    "base_id": "Beye",
+    "race": ""
+  },
+  "Bfae": {
+    "name": "",
+    "base_id": "Bfae",
+    "race": ""
+  },
+  "BFig": {
+    "name": "",
+    "base_id": "BFig",
+    "race": ""
+  },
+  "Bfro": {
+    "name": "",
+    "base_id": "Bfro",
+    "race": ""
+  },
+  "BHab": {
+    "name": "",
+    "base_id": "BHab",
+    "race": ""
+  },
+  "BHad": {
+    "name": "",
+    "base_id": "BHad",
+    "race": ""
+  },
+  "BHds": {
+    "name": "",
+    "base_id": "BHds",
+    "race": ""
+  },
+  "Bhea": {
+    "name": "",
+    "base_id": "Bhea",
+    "race": ""
+  },
+  "BHfs": {
+    "name": "",
+    "base_id": "BHfs",
+    "race": ""
+  },
+  "BHtb": {
+    "name": "",
+    "base_id": "BHtb"
+  },
+  "Bhwd": {
+    "name": "",
+    "base_id": "Bhwd",
+    "race": ""
+  },
+  "BIcf": {
+    "name": "",
+    "base_id": "BIcf",
+    "race": ""
+  },
+  "BIil": {
+    "name": "",
+    "base_id": "BIil",
+    "race": ""
+  },
+  "Binv": {
+    "name": "",
+    "base_id": "Binv",
+    "race": ""
+  },
+  "BIpb": {
+    "name": "",
+    "base_id": "BIpb"
+  },
+  "BIpd": {
+    "name": "",
+    "base_id": "BIpd"
+  },
+  "BIrg": {
+    "name": "",
+    "base_id": "BIrg",
+    "race": ""
+  },
+  "BIrl": {
+    "name": "",
+    "base_id": "BIrl",
+    "race": ""
+  },
+  "BIrm": {
+    "name": "",
+    "base_id": "BIrm",
+    "race": ""
+  },
+  "Blsh": {
+    "name": "",
+    "base_id": "Blsh",
+    "race": ""
+  },
+  "Bmfa": {
+    "name": "",
+    "base_id": "Bmfa",
+    "race": ""
+  },
+  "Bmfl": {
+    "name": "",
+    "base_id": "Bmfl",
+    "race": ""
+  },
+  "BNba": {
+    "name": "",
+    "base_id": "BNba",
+    "race": ""
+  },
+  "BNdm": {
+    "name": "",
+    "base_id": "BNdm",
+    "race": ""
+  },
+  "BNeg": {
+    "name": "",
+    "base_id": "BNeg",
+    "race": ""
+  },
+  "BNin": {
+    "name": "",
+    "base_id": "BNin",
+    "race": ""
+  },
+  "BNrd": {
+    "name": "",
+    "base_id": "BNrd",
+    "race": ""
+  },
+  "BNsi": {
+    "name": "",
+    "base_id": "BNsi",
+    "race": ""
+  },
+  "BNss": {
+    "name": "",
+    "base_id": "BNss",
+    "race": ""
+  },
+  "BOac": {
+    "name": "",
+    "base_id": "BOac",
+    "race": ""
+  },
+  "Boar": {
+    "name": "",
+    "base_id": "Boar",
+    "race": ""
+  },
+  "BOhx": {
+    "name": "",
+    "base_id": "BOhx",
+    "race": ""
+  },
+  "BOmi": {
+    "name": "",
+    "base_id": "BOmi",
+    "race": ""
+  },
+  "BOwk": {
+    "name": "",
+    "base_id": "BOwk",
+    "race": ""
+  },
+  "Bply": {
+    "name": "",
+    "base_id": "Bply",
+    "race": ""
+  },
+  "Bpoi": {
+    "name": "",
+    "base_id": "Bpoi",
+    "race": ""
+  },
+  "Bprg": {
+    "name": "",
+    "base_id": "Bprg",
+    "race": ""
+  },
+  "Bpsd": {
+    "name": "",
+    "base_id": "Bpsd",
+    "race": ""
+  },
+  "Bpsh": {
+    "name": "",
+    "base_id": "Bpsh",
+    "race": ""
+  },
+  "Bpxf": {
+    "name": "",
+    "base_id": "Bpxf",
+    "race": ""
+  },
+  "Brej": {
+    "name": "",
+    "base_id": "Brej",
+    "race": ""
+  },
+  "Broa": {
+    "name": "",
+    "base_id": "Broa",
+    "race": ""
+  },
+  "Bshs": {
+    "name": "",
+    "base_id": "Bshs",
+    "race": ""
+  },
+  "Bslo": {
+    "name": "",
+    "base_id": "Bslo",
+    "target_art": ""
+  },
+  "Bspe": {
+    "name": "",
+    "base_id": "Bspe",
+    "race": ""
+  },
+  "Bspo": {
+    "name": "",
+    "base_id": "Bspo",
+    "race": ""
+  },
+  "Bssd": {
+    "name": "",
+    "base_id": "Bssd",
+    "race": ""
+  },
+  "Bsta": {
+    "name": "",
+    "base_id": "Bsta"
+  },
+  "BUan": {
+    "name": "",
+    "base_id": "BUan",
+    "race": ""
+  },
+  "BUau": {
+    "name": "",
+    "base_id": "BUau",
+    "race": ""
+  },
+  "BUsl": {
+    "name": "",
+    "base_id": "BUsl",
+    "race": ""
+  },
+  "Bvng": {
+    "name": "",
+    "base_id": "Bvng",
+    "race": ""
+  },
+  "Bvul": {
+    "name": "",
+    "base_id": "Bvul",
+    "race": ""
+  },
+  "BZ0H": {
+    "name": "",
+    "base_id": "Bcmg",
+    "tooltip": "TRIGSTR_1006",
+    "extended_tooltip": "TRIGSTR_1007",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
+    "target_art": "war3mapImported\\wos_tx238.mdx",
+    "target_attachment_point_1": "origin",
+    "field_feat": ""
+  },
+  "XEsf": {
+    "name": "",
+    "base_id": "XEsf"
+  }
+}

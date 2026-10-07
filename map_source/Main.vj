@@ -29,6 +29,7 @@
 //! import "..\triggers\Systems\CastAItems.j"
 //! import "..\triggers\Systems\TasBox.j"
 //! import "..\triggers\Systems\CastCheck.j"
+//! import "..\triggers\Systems\CastingCheck.j"
 //! import "..\triggers\Systems\ClickEvent.j"
 //! import "..\triggers\Systems\DecorDestroy_and_Erza_Debuff.j"
 //! import "..\triggers\Systems\Systems1.j"
@@ -56,7 +57,6 @@
 //! import "..\triggers\Systems\ArrowUp.j"
 //! import "..\triggers\Systems\ArrowDown.j"
 //! import "..\triggers\Systems\ArrowRight.j"
-//! import "..\triggers\Systems\CastingCheck.j"
 //! import "..\triggers\Systems\ButtonPressed.j"
 //! import "..\triggers\Systems\ButtonPressed_ESC.j"
 //! import "..\triggers\Systems\ButtonUnPressed_ESC.j"
@@ -107,6 +107,7 @@
 //! import "..\triggers\Heroes\Erza\ErzaG2_Fairy.j"
 //! import "..\triggers\Heroes\Erza\ErzaBase.j"
 //! import "..\triggers\Heroes\Milim.j"
+//! import "..\triggers\Heroes\Crocodile.j"
 // END AUTO TRIGGER IMPORTS
 
 globals
@@ -278,6 +279,7 @@ trigger gg_trg_ErzaG2_Nakagami= null
 trigger gg_trg_ErzaG2_Fairy= null
 trigger gg_trg_ErzaBase= null
 trigger gg_trg_Milim= null
+trigger gg_trg_Crocodile= null
 endglobals
 
 //   Warcraft III map script
@@ -532,6 +534,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_CastAItems()
     //Function not found: call InitTrig_TasBox()
     call InitTrig_CastCheck()
+    call InitTrig_CastingCheck()
     call InitTrig_ClickEvent()
     //Function not found: call InitTrig_DecorDestroy_and_Erza_Debuff()
     //Function not found: call InitTrig_Systems1()
@@ -559,7 +562,6 @@ function InitCustomTriggers takes nothing returns nothing
     call InitTrig_ArrowUp()
     call InitTrig_ArrowDown()
     call InitTrig_ArrowRight()
-    call InitTrig_CastingCheck()
     call InitTrig_ButtonPressed()
     call InitTrig_ButtonPressed_ESC()
     call InitTrig_ButtonUnPressed_ESC()
@@ -610,6 +612,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_ErzaG2_Fairy()
     //Function not found: call InitTrig_ErzaBase()
     //Function not found: call InitTrig_Milim()
+    //Function not found: call InitTrig_Crocodile()
 endfunction
 
 //===========================================================================

@@ -1,0 +1,436 @@
+{
+  "_format": "warcraft-3-object-data-json-v1",
+  "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
+  "source_file": "war3map.w3b",
+  "source_sha256": "e91e40d21f54497eebceb84436c88ac0fbbc7cdf975ef5558d196f130f6b0931",
+  "kind": "destructables",
+  "record_mode": "simple",
+  "format_version": 3,
+  "original_objects": [
+    {
+      "old_id": {
+        "text": "YTfb",
+        "hex": "59546662"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "VTlt",
+        "hex": "56546C74"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "ITtc",
+        "hex": "49547463"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "EB02",
+        "hex": "45423032"
+      },
+      "new_id": {
+        "text": "",
+        "hex": "00000000"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 50.0,
+            "_original_value": 50.0,
+            "_raw_hex": "00004842"
+          },
+          "sanity_check": {
+            "text": "EB02",
+            "hex": "45423032"
+          }
+        }
+      ],
+      "display_name": ""
+    }
+  ],
+  "custom_objects": [
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00Q",
+        "hex": "42303051"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00P",
+        "hex": "42303050"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00O",
+        "hex": "4230304F"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00N",
+        "hex": "4230304E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00M",
+        "hex": "4230304D"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00L",
+        "hex": "4230304C"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "ITtc",
+        "hex": "49547463"
+      },
+      "new_id": {
+        "text": "B00K",
+        "hex": "4230304B"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00I",
+        "hex": "42303049"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00H",
+        "hex": "42303048"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00G",
+        "hex": "42303047"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00F",
+        "hex": "42303046"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00D",
+        "hex": "42303044"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00C",
+        "hex": "42303043"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B00A",
+        "hex": "42303041"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B008",
+        "hex": "42303038"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B007",
+        "hex": "42303037"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B006",
+        "hex": "42303036"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B004",
+        "hex": "42303034"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B002",
+        "hex": "42303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B001",
+        "hex": "42303031"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "DTrf",
+        "hex": "44547266"
+      },
+      "new_id": {
+        "text": "B000",
+        "hex": "42303030"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "YTfb",
+        "hex": "59546662"
+      },
+      "new_id": {
+        "text": "B003",
+        "hex": "42303033"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "KTtw",
+        "hex": "4B547477"
+      },
+      "new_id": {
+        "text": "B005",
+        "hex": "42303035"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    }
+  ]
+}

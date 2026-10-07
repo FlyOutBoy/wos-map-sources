@@ -8,14 +8,14 @@
     "magic_number": "0x80000004",
     "format_version": 7,
     "trigger_definition_version": 2,
-    "object_count": 119,
-    "custom_text_object_count": 106
+    "object_count": 120,
+    "custom_text_object_count": 107
   },
   "wct": {
     "magic_number": "0x80000004",
     "format_version": 1,
     "header_comment": "",
-    "source_count": 106
+    "source_count": 107
   },
   "sources": [
     {
@@ -146,8 +146,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 69769,
-      "sha256": "1f00d2c735b533b4484d40d396494e5011593f5a4a79bf26ada8b36aced40790",
+      "source_bytes": 69770,
+      "sha256": "d600a5210331e9cd4f62dd4fcc90fb89c78c31965b420038fe59b1fe84021b1c",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -208,8 +208,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UniversalTooltips.j",
-      "source_bytes": 217450,
-      "sha256": "c723be649d1bba28cda97f2ea1126c7ba40ed5201f540e09ba09b3212ca9a615",
+      "source_bytes": 221799,
+      "sha256": "79d7b99217ead4f2b5e23e1cf10a51406e3a8f2b565a1e8557a38b092221f538",
       "declarations": {
         "libraries": [
           "AAUniversalTooltips"
@@ -581,8 +581,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 231963,
-      "sha256": "93c59ae0e061dfc33713f40d08199e309e1693327fc3bddde0739deda7f854ba",
+      "source_bytes": 234597,
+      "sha256": "a1c74c65d069f11c7dc50c7ad5884c370ed23f4a8e3449a2a9ed98f9f4257ee9",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -656,8 +656,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/BuildsForChars.j",
-      "source_bytes": 21554,
-      "sha256": "823c43bdbbfbdb76d344545e71333bb2090a8f1c28c5c9fa92f760431954697b",
+      "source_bytes": 22287,
+      "sha256": "718e17d2452559464352dfc9982ee2da6dae4a8a717991787eef67684c171c5b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -834,8 +834,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/TasBox.j",
-      "source_bytes": 6082,
-      "sha256": "2300b96a5c73a910383ba52ccbb9146045ec5158276f4f2469c30d6ad21c3c30",
+      "source_bytes": 7147,
+      "sha256": "adcc9d477ddbb655c5810e5c9d3876eeb21f36ba8299e49c93f7d4392ed1711f",
       "declarations": {
         "libraries": [
           "TasAbilityChargeBox"
@@ -867,8 +867,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastCheck.j",
-      "source_bytes": 38546,
-      "sha256": "d9d6abb86714fb567006b425d77711f138f7bcabfb5d50eba52f6bd849a43970",
+      "source_bytes": 41893,
+      "sha256": "9dfc40a7245c1831aff46c32bec16a686205157fd512fa9310c4af68c32ae44d",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -882,6 +882,31 @@
       "order": 29,
       "wct_index": 28,
       "object_order": 32,
+      "object_id": "0x0300002C",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "CastingCheck",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/CastingCheck.j",
+      "source_bytes": 7636,
+      "sha256": "49b00c4ecd55d1af7af8334b380be6ba507ab641120a189c706894dddd1225a4",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 30,
+      "wct_index": 29,
+      "object_order": 33,
       "object_id": "0x0300004E",
       "object_type": "trigger",
       "category": "Systems",
@@ -904,9 +929,9 @@
       "dependencies": []
     },
     {
-      "order": 30,
-      "wct_index": 29,
-      "object_order": 33,
+      "order": 31,
+      "wct_index": 30,
+      "object_order": 34,
       "object_id": "0x0300004D",
       "object_type": "trigger",
       "category": "Systems",
@@ -939,9 +964,9 @@
       ]
     },
     {
-      "order": 31,
-      "wct_index": 30,
-      "object_order": 35,
+      "order": 32,
+      "wct_index": 31,
+      "object_order": 36,
       "object_id": "0x03000048",
       "object_type": "trigger",
       "category": "Systems",
@@ -952,8 +977,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 140923,
-      "sha256": "70bdfa6aae88571bcde5687c17359cb31b95033d0f246a08b34fb6dcd5a63b6e",
+      "source_bytes": 141721,
+      "sha256": "e257151657639261b6141112d9c843efb287e00dbf319dbbe01d9a69d419b047",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -972,9 +997,9 @@
       ]
     },
     {
-      "order": 32,
-      "wct_index": 31,
-      "object_order": 36,
+      "order": 33,
+      "wct_index": 32,
+      "object_order": 37,
       "object_id": "0x0300006F",
       "object_type": "trigger",
       "category": "Systems",
@@ -985,8 +1010,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems2.j",
-      "source_bytes": 198099,
-      "sha256": "fabff25d27bec9c08d6df7d79da234b284229743d9fdddb620b26330487e027d",
+      "source_bytes": 201422,
+      "sha256": "ef28e60b4e0827628f925f0b113804af0fb599cbe6143cffd67740f9886ebdbf",
       "declarations": {
         "libraries": [
           "GearSystems2"
@@ -1040,9 +1065,9 @@
       ]
     },
     {
-      "order": 33,
-      "wct_index": 32,
-      "object_order": 38,
+      "order": 34,
+      "wct_index": 33,
+      "object_order": 39,
       "object_id": "0x0300004F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1053,8 +1078,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 40185,
-      "sha256": "b9294511b77d10e35adb789e72d22a4cbe58930702ba6341c0c6663154ad0b5a",
+      "source_bytes": 42467,
+      "sha256": "6899716d0e7ec7f2f9dd3880d02002b68f1efcea03c0cf8029e468afb45a1b7c",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1065,9 +1090,9 @@
       "dependencies": []
     },
     {
-      "order": 34,
-      "wct_index": 33,
-      "object_order": 39,
+      "order": 35,
+      "wct_index": 34,
+      "object_order": 40,
       "object_id": "0x03000055",
       "object_type": "trigger",
       "category": "Systems",
@@ -1090,9 +1115,9 @@
       "dependencies": []
     },
     {
-      "order": 35,
-      "wct_index": 34,
-      "object_order": 40,
+      "order": 36,
+      "wct_index": 35,
+      "object_order": 41,
       "object_id": "0x03000051",
       "object_type": "trigger",
       "category": "Systems",
@@ -1115,9 +1140,9 @@
       "dependencies": []
     },
     {
-      "order": 36,
-      "wct_index": 35,
-      "object_order": 41,
+      "order": 37,
+      "wct_index": 36,
+      "object_order": 42,
       "object_id": "0x03000029",
       "object_type": "trigger",
       "category": "Systems",
@@ -1128,8 +1153,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/Death.j",
-      "source_bytes": 7330,
-      "sha256": "8764ef70a3c957b2c56d52b512e1e899d296b698e4cd557b3bee0ef49ef690db",
+      "source_bytes": 7419,
+      "sha256": "461869a696c7a7f527758fd461bdbb5c4e20b1540cc2862ec61f13e4faaa5713",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1140,9 +1165,9 @@
       "dependencies": []
     },
     {
-      "order": 37,
-      "wct_index": 36,
-      "object_order": 42,
+      "order": 38,
+      "wct_index": 37,
+      "object_order": 43,
       "object_id": "0x0300002F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1165,9 +1190,9 @@
       "dependencies": []
     },
     {
-      "order": 38,
-      "wct_index": 37,
-      "object_order": 43,
+      "order": 39,
+      "wct_index": 38,
+      "object_order": 44,
       "object_id": "0x0300004B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1178,8 +1203,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/LvlUpCheck.j",
-      "source_bytes": 17435,
-      "sha256": "ea5b8bebfc5eea6d48f11eadb649ec5eaa8f877a3f156b197602dc1f65bfe019",
+      "source_bytes": 17566,
+      "sha256": "0438c681fc32fb31035595140f66ed24f29d936fd18371d75faeda2fd85e3d89",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1190,9 +1215,9 @@
       "dependencies": []
     },
     {
-      "order": 39,
-      "wct_index": 38,
-      "object_order": 44,
+      "order": 40,
+      "wct_index": 39,
+      "object_order": 45,
       "object_id": "0x03000044",
       "object_type": "trigger",
       "category": "Systems",
@@ -1215,9 +1240,9 @@
       "dependencies": []
     },
     {
-      "order": 40,
-      "wct_index": 39,
-      "object_order": 45,
+      "order": 41,
+      "wct_index": 40,
+      "object_order": 46,
       "object_id": "0x03000020",
       "object_type": "trigger",
       "category": "Systems",
@@ -1240,9 +1265,9 @@
       "dependencies": []
     },
     {
-      "order": 41,
-      "wct_index": 40,
-      "object_order": 46,
+      "order": 42,
+      "wct_index": 41,
+      "object_order": 47,
       "object_id": "0x03000021",
       "object_type": "trigger",
       "category": "Systems",
@@ -1265,9 +1290,9 @@
       "dependencies": []
     },
     {
-      "order": 42,
-      "wct_index": 41,
-      "object_order": 47,
+      "order": 43,
+      "wct_index": 42,
+      "object_order": 48,
       "object_id": "0x0300003D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1290,9 +1315,9 @@
       "dependencies": []
     },
     {
-      "order": 43,
-      "wct_index": 42,
-      "object_order": 48,
+      "order": 44,
+      "wct_index": 43,
+      "object_order": 49,
       "object_id": "0x03000006",
       "object_type": "trigger",
       "category": "Systems",
@@ -1315,9 +1340,9 @@
       "dependencies": []
     },
     {
-      "order": 44,
-      "wct_index": 43,
-      "object_order": 49,
+      "order": 45,
+      "wct_index": 44,
+      "object_order": 50,
       "object_id": "0x03000011",
       "object_type": "trigger",
       "category": "Systems",
@@ -1340,9 +1365,9 @@
       "dependencies": []
     },
     {
-      "order": 45,
-      "wct_index": 44,
-      "object_order": 50,
+      "order": 46,
+      "wct_index": 45,
+      "object_order": 51,
       "object_id": "0x03000012",
       "object_type": "trigger",
       "category": "Systems",
@@ -1365,9 +1390,9 @@
       "dependencies": []
     },
     {
-      "order": 46,
-      "wct_index": 45,
-      "object_order": 51,
+      "order": 47,
+      "wct_index": 46,
+      "object_order": 52,
       "object_id": "0x03000030",
       "object_type": "trigger",
       "category": "Systems",
@@ -1390,9 +1415,9 @@
       "dependencies": []
     },
     {
-      "order": 47,
-      "wct_index": 46,
-      "object_order": 52,
+      "order": 48,
+      "wct_index": 47,
+      "object_order": 53,
       "object_id": "0x0300003F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1415,9 +1440,9 @@
       "dependencies": []
     },
     {
-      "order": 48,
-      "wct_index": 47,
-      "object_order": 53,
+      "order": 49,
+      "wct_index": 48,
+      "object_order": 54,
       "object_id": "0x03000041",
       "object_type": "trigger",
       "category": "Systems",
@@ -1440,9 +1465,9 @@
       "dependencies": []
     },
     {
-      "order": 49,
-      "wct_index": 48,
-      "object_order": 54,
+      "order": 50,
+      "wct_index": 49,
+      "object_order": 55,
       "object_id": "0x03000043",
       "object_type": "trigger",
       "category": "Systems",
@@ -1465,9 +1490,9 @@
       "dependencies": []
     },
     {
-      "order": 50,
-      "wct_index": 49,
-      "object_order": 55,
+      "order": 51,
+      "wct_index": 50,
+      "object_order": 56,
       "object_id": "0x0300000D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1490,9 +1515,9 @@
       "dependencies": []
     },
     {
-      "order": 51,
-      "wct_index": 50,
-      "object_order": 56,
+      "order": 52,
+      "wct_index": 51,
+      "object_order": 57,
       "object_id": "0x03000014",
       "object_type": "trigger",
       "category": "Systems",
@@ -1515,9 +1540,9 @@
       "dependencies": []
     },
     {
-      "order": 52,
-      "wct_index": 51,
-      "object_order": 57,
+      "order": 53,
+      "wct_index": 52,
+      "object_order": 58,
       "object_id": "0x0300003E",
       "object_type": "trigger",
       "category": "Systems",
@@ -1540,9 +1565,9 @@
       "dependencies": []
     },
     {
-      "order": 53,
-      "wct_index": 52,
-      "object_order": 58,
+      "order": 54,
+      "wct_index": 53,
+      "object_order": 59,
       "object_id": "0x0300003B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1565,9 +1590,9 @@
       "dependencies": []
     },
     {
-      "order": 54,
-      "wct_index": 53,
-      "object_order": 59,
+      "order": 55,
+      "wct_index": 54,
+      "object_order": 60,
       "object_id": "0x03000001",
       "object_type": "trigger",
       "category": "Systems",
@@ -1590,9 +1615,9 @@
       "dependencies": []
     },
     {
-      "order": 55,
-      "wct_index": 54,
-      "object_order": 60,
+      "order": 56,
+      "wct_index": 55,
+      "object_order": 61,
       "object_id": "0x03000056",
       "object_type": "trigger",
       "category": "Systems",
@@ -1605,31 +1630,6 @@
       "path": "Systems/ArrowRight.j",
       "source_bytes": 3113,
       "sha256": "2512c1dec315b6da5e216d92ee7eda78070cd069f8f21d28d2c90841cb860960",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 56,
-      "wct_index": 55,
-      "object_order": 62,
-      "object_id": "0x0300002C",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "CastingCheck",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/CastingCheck.j",
-      "source_bytes": 6147,
-      "sha256": "707d36029645ed80f8106cb8f6dbe73ff3373fa1392f0827761a55a76cdabc07",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1828,8 +1828,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemCupOfTea.j",
-      "source_bytes": 1208,
-      "sha256": "ba97633de2c326897d816d487664553ec97562ec8857f52376791ab566e0c897",
+      "source_bytes": 1209,
+      "sha256": "fa67f5605ef7be0bf578c5a452e542e854d168460f57724b76f591d15ecb5b9b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1853,8 +1853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemEnter.j",
-      "source_bytes": 6330,
-      "sha256": "2ea0ccb8732f35131c279d60a9940f2e4d3d9f5febb7630f1cbe43dcb4a8ae28",
+      "source_bytes": 6331,
+      "sha256": "322846bb17890d36cfaebadbed19392c736203bce7831523b956bf5f07d01a4b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1903,8 +1903,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 109234,
-      "sha256": "7225dfc3743651853d5d0a0aa43932f0d74adf4ff1e908f38fb3f06312649e53",
+      "source_bytes": 109348,
+      "sha256": "fba2c7bfcac6a1e3f2f531b11ecdf8b8748c7e4fdbf9a8852d570fab838530e8",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -1955,8 +1955,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Toji.j",
-      "source_bytes": 108149,
-      "sha256": "aac39a5deba21fa249dc467f6a57e2aa59a0571e7a33cfe6826fc12862866ae0",
+      "source_bytes": 108153,
+      "sha256": "91c963ff21d1008591eb4b8ed48359b1eae7483f655c4d5c7ec5e71946bb01ab",
       "declarations": {
         "libraries": [
           "TojiSpells"
@@ -2182,8 +2182,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Brandish.j",
-      "source_bytes": 58107,
-      "sha256": "176d3b2f83db19ebb20b2eceacf4da6af0a6c3ed79d216cfd6cdacadf4343abe",
+      "source_bytes": 58121,
+      "sha256": "23b9b26ff075c8594a2722f29c2376585e0fc63da8f212b9de23ab250cf24030",
       "declarations": {
         "libraries": [
           "BrandishSpells"
@@ -2224,8 +2224,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
-      "source_bytes": 97511,
-      "sha256": "a260751b5920ed6f802db7ac20b4c73902417141e693c08d30f19463b05907ba",
+      "source_bytes": 97512,
+      "sha256": "bac7c1fb6c99ca6f0c8d569c906be5a8ca8dab23a83c7cfbc5e53e912780e076",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -2664,8 +2664,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Tsuna.j",
-      "source_bytes": 165595,
-      "sha256": "1e879e8db67850262711f3bbd9dd8dd654d0b97d9627a07ee392647d813e31f1",
+      "source_bytes": 165603,
+      "sha256": "b1503aece4cae43690206aff1e9afa344520b12a4f337d5f2b40b05650957fc6",
       "declarations": {
         "libraries": [
           "TsunaSpells"
@@ -3583,6 +3583,62 @@
       "dependencies": [
         {
           "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 107,
+      "wct_index": 106,
+      "object_order": 119,
+      "object_id": "0x03000064",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Crocodile",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Crocodile.j",
+      "source_bytes": 151588,
+      "sha256": "c0a280f1bbe069f866d0daa5d01fa0b0bf2df002f129e06aea4e9829dff6b11e",
+      "declarations": {
+        "libraries": [
+          "CrocodileSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "CrocodileSand_Struct",
+          "CrocodileSand_Debuff",
+          "CrocodileQ_Trail",
+          "CrocodileQ_Struct",
+          "CrocodileW_Struct",
+          "CrocodileE_Struct",
+          "CrocodileR_Target",
+          "CrocodileR_Struct",
+          "CrocodileT_Sand",
+          "CrocodileT_Wave",
+          "CrocodileT_Struct",
+          "CrocodileT2_Struct",
+          "CrocodileF_Projectile",
+          "CrocodileF_Single",
+          "CrocodileF_Struct",
+          "CrocodileG_Struct",
+          "CrocodileCore_Struct"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "TasAbilityChargeBox",
           "optional": false,
           "keyword": "uses"
         }

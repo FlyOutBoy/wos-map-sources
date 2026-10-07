@@ -30,6 +30,7 @@
     "Systems/CastAItems.j": true,
     "Systems/TasBox.j": true,
     "Systems/CastCheck.j": true,
+    "Systems/CastingCheck.j": true,
     "Systems/ClickEvent.j": true,
     "Systems/DecorDestroy_and_Erza_Debuff.j": true,
     "Systems/Systems1.j": true,
@@ -57,7 +58,6 @@
     "Systems/ArrowUp.j": true,
     "Systems/ArrowDown.j": true,
     "Systems/ArrowRight.j": true,
-    "Systems/CastingCheck.j": true,
     "Systems/ButtonPressed.j": true,
     "Systems/ButtonPressed_ESC.j": true,
     "Systems/ButtonUnPressed_ESC.j": true,
@@ -107,6 +107,7 @@
     "Heroes/Erza/ErzaG2_Nakagami.j": true,
     "Heroes/Erza/ErzaG2_Fairy.j": true,
     "Heroes/Erza/ErzaBase.j": true,
-    "Heroes/Milim.j": true
+    "Heroes/Milim.j": true,
+    "Heroes/Crocodile.j": true
   }
 }

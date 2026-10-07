@@ -115,7 +115,7 @@ def read_trigger_object(reader: BinaryReader, object_order: int) -> dict:
     return result
 
 
-def parse_wtg(path: Path) -> dict:
+def parse_wtg(path: Path, allow_stale_counts: bool = False) -> dict:
     reader = BinaryReader(path.read_bytes(), path)
     if reader.read(4) != b"WTG!":
         raise ValueError(f"{path} does not have a WTG! signature")
@@ -166,7 +166,9 @@ def parse_wtg(path: Path) -> dict:
         OBJECT_VARIABLE: type_info["variable"]["total"] - len(type_info["variable"]["deleted_ids"]),
     }
     for object_type, expected in expected_current.items():
-        if actual_counts[object_type] != expected:
+        if actual_counts[object_type] != expected and not (
+            allow_stale_counts and actual_counts[object_type] < expected
+        ):
             raise ValueError(
                 f"WTG type-count mismatch for object type {object_type}: "
                 f"header says {expected}, parsed {actual_counts[object_type]}"
@@ -345,8 +347,8 @@ def write_dependency_manifest(output: Path, manifest: dict) -> None:
     )
 
 
-def extract(wtg_path: Path, wct_path: Path, output: Path) -> dict:
-    wtg = parse_wtg(wtg_path)
+def extract(wtg_path: Path, wct_path: Path, output: Path, allow_stale_counts: bool = False) -> dict:
+    wtg = parse_wtg(wtg_path, allow_stale_counts)
     source_objects = [
         item for item in wtg["objects"] if item["object_type"] in (OBJECT_TRIGGER, OBJECT_SCRIPT)
     ]
@@ -459,8 +461,9 @@ def main() -> None:
     parser.add_argument("--wtg", type=Path, default=Path("war3map.wtg"))
     parser.add_argument("--wct", type=Path, default=Path("war3map.wct"))
     parser.add_argument("--output", type=Path, default=Path("triggers"))
+    parser.add_argument("--allow-stale-counts", action="store_true")
     args = parser.parse_args()
-    manifest = extract(args.wtg, args.wct, args.output)
+    manifest = extract(args.wtg, args.wct, args.output, args.allow_stale_counts)
     print(
         f"Extracted {manifest['wct']['source_count']} triggers plus map header "
         f"to {args.output}"
