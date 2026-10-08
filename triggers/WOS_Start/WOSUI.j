@@ -5,6 +5,10 @@ globals
     private leaderboard WUI_ServiceBoard = null
     private framehandle WUI_Root = null
     private framehandle WUI_SimpleRoot = null
+    private timer WUI_BootTimer = CreateTimer()
+    private boolean WUI_Ready = false
+    private integer WUI_ReadyCount = 0
+    private trigger array WUI_ReadyOwner
     private timer WUI_DockTimer = CreateTimer()
     private hashtable WUI_DockKeys = InitHashtable()
     private integer WUI_DockCount = 0
@@ -42,6 +46,22 @@ globals
     constant string WUI_GOLD = "|cffd5b876"
     constant string WUI_TEXT = "|cffe1e5eb"
 endglobals
+
+// Library initializers register owners only. No frame native may run until the
+// bootstrap timer fires in game time; every client allocates the same handles.
+// One trigger per owner also keeps large UI builds in separate JASS threads.
+function WUI_OnReady takes code callback returns nothing
+    local trigger owner = CreateTrigger()
+    call TriggerAddAction(owner, callback)
+    if WUI_Ready then
+        call TriggerExecute(owner)
+        call DestroyTrigger(owner)
+    else
+        set WUI_ReadyCount = WUI_ReadyCount + 1
+        set WUI_ReadyOwner[WUI_ReadyCount] = owner
+    endif
+    set owner = null
+endfunction
 
 function WUI_GetRoot takes nothing returns framehandle
     return WUI_Root
@@ -315,12 +335,24 @@ function WUI_Tooltip takes framehandle owner, string label returns nothing
 endfunction
 
 function WUI_StyleButton takes framehandle control returns nothing
-    // ScriptDialogButton's documented child order: normal, pushed, disabled.
+    // These five children are backdrops/highlight, never the native text string.
+    if control == null then
+        return
+    endif
+    if BlzFrameGetChildrenCount(control) < 5 then
+        return
+    endif
     call BlzFrameSetTexture(BlzFrameGetChild(control, 0), "UI\\WOS\\button.tga", 0, true)
     call BlzFrameSetTexture(BlzFrameGetChild(control, 1), "UI\\WOS\\pressed.tga", 0, true)
     call BlzFrameSetTexture(BlzFrameGetChild(control, 2), "UI\\WOS\\disabled.tga", 0, true)
     call BlzFrameSetTexture(BlzFrameGetChild(control, 3), "UI\\WOS\\disabled.tga", 0, true)
     call BlzFrameSetAlpha(BlzFrameGetChild(control, 4), 110)
+endfunction
+
+function WUI_HideNativeDeadZone takes nothing returns nothing
+    if WUI_DeadZone != null then
+        call BlzFrameSetVisible(WUI_DeadZone, false)
+    endif
 endfunction
 
 function WUI_CommandSlot takes integer slot returns integer
@@ -388,54 +420,81 @@ endfunction
 
 function WUI_InstallNativeLayout takes nothing returns nothing
     local integer i = 0
-    local framehandle simpleParent = BlzFrameGetParent(WUI_Command[0])
+    local framehandle simpleParent = null
+    local framehandle itemParent = null
     local framehandle detail = BlzGetFrameByName("SimpleInfoPanelUnitDetail", 0)
     local framehandle cover = BlzGetFrameByName("SimpleInventoryCover", 0)
     local framehandle minimap = BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0)
-    if WUI_HiddenDetails != null then
+    if WUI_HiddenDetails != null or WUI_Command[0] == null or WUI_Item[0] == null or WUI_SimpleRoot == null then
         set simpleParent = null
         set detail = null
         set cover = null
         set minimap = null
         return
     endif
+    set simpleParent = BlzFrameGetParent(WUI_Command[0])
+    set itemParent = BlzFrameGetParent(WUI_Item[0])
+    if simpleParent == null or itemParent == null then
+        set simpleParent = null
+        set itemParent = null
+        set detail = null
+        set cover = null
+        set minimap = null
+        return
+    endif
     // Do not move a SIMPLEFRAME into the normal FRAME hierarchy.
-    call BlzFrameSetParent(BlzFrameGetParent(WUI_Item[0]), simpleParent)
-    set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", BlzGetFrameByName("ConsoleUI", 0), "", 0)
+    call BlzFrameSetParent(itemParent, simpleParent)
+    set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", WUI_SimpleRoot, "", 0)
     call BlzFrameSetVisible(WUI_HiddenDetails, false)
     if detail != null then
         // Keep real status icons/tooltips when the large unit detail panel is hidden.
-        call BlzFrameSetParent(WUI_Buffs, simpleParent)
-        call WUI_Place(WUI_Buffs, 0.245, 0.113, 0.165, 0.016)
+        if WUI_Buffs != null then
+            call BlzFrameSetParent(WUI_Buffs, simpleParent)
+            call WUI_Place(WUI_Buffs, 0.245, 0.113, 0.165, 0.016)
+        endif
         call BlzFrameSetParent(detail, WUI_HiddenDetails)
     endif
     if cover != null then
         call BlzFrameSetAlpha(cover, 0)
     endif
     call BlzEnableUIAutoPosition(false)
-    call BlzFrameClearAllPoints(minimap)
-    call BlzFrameSetAbsPoint(minimap, FRAMEPOINT_BOTTOMLEFT, 0.004, 0.004)
-    call BlzFrameSetAbsPoint(minimap, FRAMEPOINT_TOPRIGHT, 0.144, 0.144)
+    if minimap != null then
+        call BlzFrameClearAllPoints(minimap)
+        call BlzFrameSetAbsPoint(minimap, FRAMEPOINT_BOTTOMLEFT, 0.004, 0.004)
+        call BlzFrameSetAbsPoint(minimap, FRAMEPOINT_TOPRIGHT, 0.144, 0.144)
+    endif
     loop
         exitwhen i >= 6
         call WUI_Place(WUI_Item[i], 0.630 + I2R(ModuloInteger(i, 3)) * 0.025, 0.060 - I2R(i / 3) * 0.025, 0.022, 0.022)
         set i = i + 1
     endloop
-    call BlzFrameSetVisible(WUI_Console, false)
-    call BlzFrameSetVisible(WUI_Portrait, false)
-    call BlzFrameSetVisible(WUI_Resource, false)
-    call BlzFrameSetVisible(WUI_HeroBar, false)
-    if WUI_DeadZone != null then
-        call BlzFrameSetVisible(WUI_DeadZone, false)
+    if WUI_Console != null then
+        call BlzFrameSetVisible(WUI_Console, false)
     endif
+    if WUI_Portrait != null then
+        call BlzFrameSetVisible(WUI_Portrait, false)
+    endif
+    if WUI_Resource != null then
+        call BlzFrameSetVisible(WUI_Resource, false)
+    endif
+    if WUI_HeroBar != null then
+        call BlzFrameSetVisible(WUI_HeroBar, false)
+    endif
+    call WUI_HideNativeDeadZone()
     set i = 0
     loop
         exitwhen i >= 5
-        call BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP_BUTTON, i), false)
+        set cover = BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP_BUTTON, i)
+        if cover != null then
+            call BlzFrameSetVisible(cover, false)
+        endif
         set i = i + 1
     endloop
-    call BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0), true)
+    if minimap != null then
+        call BlzFrameSetVisible(minimap, true)
+    endif
     set simpleParent = null
+    set itemParent = null
     set detail = null
     set cover = null
     set minimap = null
@@ -445,14 +504,23 @@ private function WUI_CreateControls takes nothing returns nothing
     local integer i = 0
     local framehandle text
     local framehandle back
+    local framehandle label
     local trigger events = CreateTrigger()
     set WUI_Console = BlzGetFrameByName("ConsoleUIBackdrop", 0)
     set WUI_Portrait = BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0)
     set WUI_Resource = BlzGetFrameByName("ResourceBarFrame", 0)
     set WUI_HeroBar = BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR, 0)
     set WUI_Buffs = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR, 0)
-    call BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL, 0), false)
-    set WUI_DeadZone = BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5)
+    // A native SimpleFontString cannot safely receive visibility/alpha calls.
+    set label = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL, 0)
+    if label != null then
+        call BlzFrameSetText(label, "")
+    endif
+    if WUI_SimpleRoot != null then
+        if BlzFrameGetChildrenCount(WUI_SimpleRoot) > 5 then
+            set WUI_DeadZone = BlzFrameGetChild(WUI_SimpleRoot, 5)
+        endif
+    endif
     loop
         exitwhen i >= 12
         set WUI_Command[i] = BlzGetFrameByName("CommandButton_" + I2S(i), 0)
@@ -514,6 +582,7 @@ private function WUI_CreateControls takes nothing returns nothing
     endloop
     set text = null
     set back = null
+    set label = null
     set events = null
 endfunction
 
@@ -564,9 +633,12 @@ private function WUI_CreateTestHelp takes nothing returns nothing
     set events = null
 endfunction
 
-private function WUI_Init takes nothing returns nothing
+private function WUI_Bootstrap takes nothing returns nothing
     local framehandle board
     local framehandle part
+    local integer index = 1
+    call DestroyTimer(WUI_BootTimer)
+    set WUI_BootTimer = null
     set WUI_SimpleRoot = BlzGetFrameByName("ConsoleUI", 0)
     // Keep the service board ROOT visible: hidden parents hide their children.
     // Its visual children alone are hidden. No players' existing boards are replaced.
@@ -584,7 +656,7 @@ private function WUI_Init takes nothing returns nothing
         endif
         set part = BlzGetFrameByName("LeaderboardTitle", 0)
         if part != null then
-            call BlzFrameSetVisible(part, false)
+            call BlzFrameSetText(part, "")
         endif
     endif
     set WUI_Root = BlzCreateFrameByType("FRAME", "WOSIndependentRoot", board, "", 0)
@@ -594,9 +666,22 @@ private function WUI_Init takes nothing returns nothing
     call BlzFrameSetVisible(WUI_Root, true)
     call WUI_CreateTestHelp()
     call WUI_CreateControls()
+    set WUI_Ready = true
+    loop
+        exitwhen index > WUI_ReadyCount
+        call TriggerExecute(WUI_ReadyOwner[index])
+        call DestroyTrigger(WUI_ReadyOwner[index])
+        set WUI_ReadyOwner[index] = null
+        set index = index + 1
+    endloop
+    set WUI_ReadyCount = 0
     call TimerStart(WUI_DockTimer, 0.10, true, function WUI_RefreshDocks)
     set board = null
     set part = null
+endfunction
+
+private function WUI_Init takes nothing returns nothing
+    call TimerStart(WUI_BootTimer, 0.10, false, function WUI_Bootstrap)
 endfunction
 
 endlibrary

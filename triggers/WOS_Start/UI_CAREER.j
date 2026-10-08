@@ -1056,21 +1056,16 @@ endif
     set gameUI = null
 endfunction
 
-private function WCS_DelayedInit takes nothing returns nothing
-    local timer initTimer = GetExpiredTimer()
+private function WCS_StartUI takes nothing returns nothing
     call WCS_CreateUI()
     // MyHeroIdInit fills all pages atomically from the map's 1-second trigger.
     // Retry until at least one real ID exists and no pick/ban has written 12.
     set WCS_CatalogTimer = CreateTimer()
     call TimerStart(WCS_CatalogTimer, 0.10, true, function WCS_CatalogTick)
-    call DestroyTimer(initTimer)
-    set initTimer = null
 endfunction
 
 private function WCS_Init takes nothing returns nothing
-    local timer initTimer = CreateTimer()
-    call TimerStart(initTimer, 0.00, false, function WCS_DelayedInit)
-    set initTimer = null
+    call WUI_OnReady(function WCS_StartUI)
 endfunction
 
 endlibrary

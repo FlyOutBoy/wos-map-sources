@@ -63,6 +63,111 @@ class NativeCommandLayout(unittest.TestCase):
                 self.assertGreaterEqual(y, .035)
 
 
+class DeferredUIStartup(unittest.TestCase):
+    """Exercise the real bootstrap; mocks reject unsafe loading-time natives."""
+    def setUp(self):
+        self.vm = load_source('WOSUI.j')
+        self.calls = []
+        self.timers = []
+        self.destroyed = []
+        self.children = 5
+        source = (ROOT / 'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
+        for name in set(re.findall(r'\b(Blz\w+|Leaderboard\w+)\s*\(', source)):
+            self.vm.g[name] = lambda *args, n=name: self.native(n, *args)
+        for constant in set(re.findall(r'\b(?:ORIGIN_FRAME_|FRAMEPOINT_|FRAMEEVENT_|TEXT_JUSTIFY_)\w+', source)):
+            self.vm.g[constant] = constant
+        self.vm.g.update({
+            'CreateTimer': lambda: object(), 'InitHashtable': dict,
+            'CreateTrigger': list, 'TriggerAddAction': lambda t, c: t.append(c),
+            'TriggerExecute': lambda t: [c() for c in list(t)],
+            'DestroyTrigger': lambda t: self.destroyed.append(t),
+            'TimerStart': lambda *args: self.timers.append(args),
+            'DestroyTimer': lambda *_: None,
+            'CreateLeaderboardBJ': lambda *_: self.native('CreateLeaderboardBJ'),
+            'bj_FORCE_ALL_PLAYERS': 'all-players', 'I2R': float, 'I2S': str,
+            'BlzGetFrameByName': lambda name, _: 'named:' + name,
+            'BlzGetOriginFrame': lambda origin, _: 'origin:' + origin,
+            'BlzCreateFrameByType': self.create_frame,
+            'BlzCreateFrame': lambda name, parent, *_: self.create_frame('FRAME', name, parent),
+            'BlzFrameGetChildrenCount': lambda _: self.children,
+            'BlzFrameGetChild': self.child,
+            'BlzFrameSetVisible': self.visibility,
+        })
+        # Evaluate declarations from the production globals, including constants.
+        for name, value in re.findall(r'^    (?:private )?(?:constant )?\w+ (\w+) = ([^\n]+)', source.split('endglobals', 1)[0], re.M):
+            value = re.sub(r'\b(true|false|null)\b', lambda m: {'true': 'True', 'false': 'False', 'null': 'None'}[m[0]], value)
+            self.vm.g[name] = eval(value, {}, self.vm.g)
+
+    def native(self, name, *args):
+        self.calls.append((name, args))
+        return name
+
+    def create_frame(self, kind, name, parent, *_):
+        self.assertIsNotNone(parent, 'Every owner must have a ready parent')
+        self.native('create', kind, name, parent)
+        return kind + ':' + name
+
+    def child(self, frame, index):
+        self.assertLess(index, self.children, 'Warcraft does not bounds-check children')
+        self.native('child', frame, index)
+        return 'child:' + str(index)
+
+    def visibility(self, frame, visible):
+        self.assertIsNotNone(frame)
+        self.assertNotIn('BUFF_BAR_LABEL', frame)
+        self.assertNotIn('LeaderboardTitle', frame)
+        self.native('visible', frame, visible)
+
+    def test_initializers_only_register_or_schedule_until_game_time(self):
+        self.vm.run('WUI_Init')
+        self.assertFalse(self.calls)
+        self.assertEqual(1, len(self.timers))
+        self.assertEqual((.10, False), self.timers[0][1:3])
+        owners = [('DefaultArmorChangeStable_Copy.j', 'HeroUnitPanelStats_Init'),
+                  ('ShowCD.j', 'InitAllyHeroAbilityUI'), ('ChatCommand.j', 'Init'),
+                  ('TeamMapPings.j', 'TMP_Init'), ('Scoreboard.j', 'WOS_STATS_Init'),
+                  ('UI_CAREER.j', 'WCS_Init')]
+        callbacks = []
+        for file, initializer in owners:
+            vm = load_source(file)
+            vm.g['WUI_OnReady'] = callbacks.append
+            vm.run(initializer)
+        self.assertEqual(len(owners), len(callbacks))
+        self.assertTrue(all(callable(callback) for callback in callbacks))
+
+    def test_bootstrap_creates_root_before_owners_once(self):
+        observed = []
+        callback = lambda: observed.append((self.vm.g['WUI_Root'], self.vm.g['WUI_Ready']))
+        self.vm.run('WUI_OnReady', (callback,))
+        self.vm.run('WUI_OnReady', (callback,))
+        self.assertFalse(observed)
+        self.assertFalse(self.calls)
+        self.vm.run('WUI_Init')
+        self.timers[0][3]()
+        self.assertEqual([('FRAME:WOSIndependentRoot', True)] * 2, observed)
+        self.assertEqual(0, self.vm.g['WUI_ReadyCount'])
+        self.assertEqual(2, len(self.destroyed))
+        # Late owners execute once without replaying the initial queue.
+        self.vm.run('WUI_OnReady', (callback,))
+        self.assertEqual(3, len(observed))
+        self.assertEqual(3, len(self.destroyed))
+
+    def test_native_strings_and_short_console_tree_are_safe(self):
+        self.vm.run('WUI_Bootstrap')
+        self.assertIsNone(self.vm.g['WUI_DeadZone'])
+        self.assertFalse(any(name == 'child' for name, _ in self.calls))
+        text_calls = [args for name, args in self.calls if name == 'BlzFrameSetText']
+        self.assertIn(('origin:ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL', ''), text_calls)
+        self.assertIn(('named:LeaderboardTitle', ''), text_calls)
+
+    def test_style_button_does_not_read_missing_children(self):
+        self.children = 3
+        self.vm.run('WUI_StyleButton', ('button',))
+        self.assertFalse(self.calls)
+        self.vm.run('WUI_StyleButton', (None,))
+        self.assertFalse(self.calls)
+
+
 class HiddenEnemyData(unittest.TestCase):
     def setUp(self):
         self.frames = {}

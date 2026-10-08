@@ -1389,7 +1389,7 @@ private function AHUI_InitPlayerState takes nothing returns nothing
     endloop
 endfunction
 
-private function InitAllyHeroAbilityUI takes nothing returns nothing
+private function AHUI_StartUI takes nothing returns nothing
     set AHUI_GameUI = WUI_GetRoot()
     set AHUI_ConsoleBackdrop = BlzGetFrameByName("ConsoleUIBackdrop", 0)
 
@@ -1402,6 +1402,10 @@ private function InitAllyHeroAbilityUI takes nothing returns nothing
     call TimerStart(AHUI_UpdateTimer, AHUI_UPDATE_PERIOD, true, function AHUI_Periodic)
 
     call TimerStart(CreateTimer(), AHUI_TooltipsDelay, false, function AHUI_EnableTooltips)
+endfunction
+
+private function InitAllyHeroAbilityUI takes nothing returns nothing
+    call WUI_OnReady(function AHUI_StartUI)
 endfunction
 
 endlibrary

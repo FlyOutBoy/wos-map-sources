@@ -7,7 +7,7 @@ runtime evidence is recorded separately in PROGRESS.md.
 | Block | Work / dependencies | Priority | Status | Completion criteria |
 |---|---|---|---|---|
 | 1. Audit | All frame owners, selection/data sources, roots, native frames, assets | P0 | DONE | Architecture/inventory saved; 45 production owners identified; detailed owners read as their blocks start |
-| 2. Infrastructure | Independent root, synchronous frame allocation, shared layout/style; depends 1 | P0 | IN_PROGRESS | Root/migration compiled; native layout/hiding compiled; buffs retained; in-game visibility pending |
+| 2. Infrastructure | Independent root, synchronous frame allocation, shared layout/style; depends 1 | P0 | IN_PROGRESS | Load crash investigated; root/owners deferred to 0.10s, native layout to 0.30s; unsafe native text hiding removed; real MAIN compile and startup tests pass; launched but map entry unconfirmed |
 | 3. Assets | Graphite surface, thin gold borders, button states, bars, resource icons; depends 1 | P1 | IN_PROGRESS | 13 real textures installed in MAIN, all 29 UI/ping imports and packed bytes verified; in-game appearance pending |
 | 4a. Selected unit HUD | Existing stat overlay + selection logic; portrait/icon/level, actual damage/resists/attributes | P0 | IN_PROGRESS | Compiled, privacy tests pass; runtime pending. No fabricated stats; Avul Block; null/ordinary/hidden selection handled; hover details |
 | 4b. Native command/inventory | Move real QWERTFG slots and inventory; preserve learn/target/item interactions | P0 | IN_PROGRESS | Compiled, 7/12-slot tests pass; native interaction pending. No duplicate command system; native interactions and alternate command cards reachable |
@@ -20,7 +20,7 @@ runtime evidence is recorded separately in PROGRESS.md.
 | 9b. Test panel | Replace permanent help texttags, right scrollable collapse panel | P1 | IN_PROGRESS | Compiled, scroll/collapse runtime pending. TestMode-only; original commands documented, working commands unchanged |
 | 9c. Menu/camera | Functional native system buttons in compact menu, existing camera slider | P1 | IN_PROGRESS | Native menu drawer and camera placement compiled; runtime pending. Critical menus/hotkeys stay reachable; local camera only |
 | 10a. Native integration | MAIN push/build, native WTG/WCT identities/order, imports and packed bytes | P0 | DONE | Guarded MAIN push and full build PASS, 109 source identities/order verified, 29 resources registered and all 33 extracted archive entries byte-equal |
-| 10b. Game verification | Native interactions, visuals, all modes, multiplayer/fog/resolution matrix | P0 | IN_PROGRESS | Actual Warcraft scenarios in OWNER_STATUS/REQUEST remain unverified; require gameplay evidence. No native UI automation available |
+| 10b. Game verification | Native interactions, visuals, all modes, multiplayer/fog/resolution matrix | P0 | IN_PROGRESS | User reported load crash on 3.0.1.24342; checkpoint 11 addresses startup. CLI launch responds/no new report, but map entry unconfirmed. Native automation failed with kernel-assets OS error 3 even after reset; awaiting real screen state |
 
 Do not write MAIN while World Editor runs. Preserve current dirty working tree.
 Do not recreate HeroIcons/shop/pick/combat data systems. Complete coherent blocks

@@ -241,7 +241,7 @@ private function UNITSTAT_DelayedInit takes nothing returns nothing
     set initTimer = null
 endfunction
 
-private function HeroUnitPanelStats_Init takes nothing returns nothing
+private function UNITSTAT_CreateUI takes nothing returns nothing
     local trigger events = CreateTrigger()
     local framehandle back
     local integer i = 0
@@ -301,6 +301,10 @@ private function HeroUnitPanelStats_Init takes nothing returns nothing
     set events = null
     set back = null
     set initTimer = null
+endfunction
+
+private function HeroUnitPanelStats_Init takes nothing returns nothing
+    call WUI_OnReady(function UNITSTAT_CreateUI)
 endfunction
 
 endlibrary

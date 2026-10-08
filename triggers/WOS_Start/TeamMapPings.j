@@ -555,7 +555,7 @@ private function TMP_Periodic takes nothing returns nothing
     endif
 endfunction
 
-private function TMP_Init takes nothing returns nothing
+private function TMP_StartUI takes nothing returns nothing
     local framehandle ui = WUI_GetRoot()
     local trigger frames = CreateTrigger()
     local trigger keys = CreateTrigger()
@@ -731,6 +731,10 @@ private function TMP_Init takes nothing returns nothing
     set mouse = null
     set mouseMove = null
     set sync = null
+endfunction
+
+private function TMP_Init takes nothing returns nothing
+    call WUI_OnReady(function TMP_StartUI)
 endfunction
 
 endlibrary

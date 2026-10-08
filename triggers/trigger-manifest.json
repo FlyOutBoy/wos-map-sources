@@ -146,8 +146,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 71782,
-      "sha256": "0757ece57ca07b13fe09e29bd592b06db52e4d100ac9a088baa97ef101ab2418",
+      "source_bytes": 71903,
+      "sha256": "05fc4e38e064b12a2cfd0dbb7845f944e029fb369f6cf9df67bebcf91b887436",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -254,8 +254,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UI_CAREER.j",
-      "source_bytes": 47818,
-      "sha256": "b224092ad686ac799dee37c21137e9896e9900ca0c6728e4f7af690a18b07247",
+      "source_bytes": 47611,
+      "sha256": "e982aed6fdc6fab8c94e72f89128f47c8daca63d3a4412ebe62059c95d1363ce",
       "declarations": {
         "libraries": [
           "WosCareerStats"
@@ -297,8 +297,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16422,
-      "sha256": "c0fff7bfc65cf3c065863cf2c7f3898efa57d3f011a2db9e3835f40945d08ba2",
+      "source_bytes": 16553,
+      "sha256": "e408d97560a1a45e4c2e6f09d2833a2a4bc15e288672f460f7512956d4cbb330",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -395,8 +395,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 60718,
-      "sha256": "5618471a859b6e2fb46194c9d78694c3a49b29cca329b49f1e4cb44c48674c63",
+      "source_bytes": 60844,
+      "sha256": "de40c68e6a59c8840a52d747df20f409c5ecc9f434ec1e2b6129402e6d72835a",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -428,8 +428,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Scoreboard.j",
-      "source_bytes": 92750,
-      "sha256": "7bb1e8421c2ed8e33e5a3a268499ec8191dcf5fc8f2369d610f260c2a7e9e52a",
+      "source_bytes": 92428,
+      "sha256": "335c145ac71c24fa859f4bf7d728144dc643f7d7d0c7f8b0fd8524b94e77a653",
       "declarations": {
         "libraries": [
           "WosScoreboard"
@@ -466,8 +466,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ChatCommand.j",
-      "source_bytes": 28301,
-      "sha256": "42ef5d2d6b930cf59ef71f2fd254507765150b71a6446646e4c8a02e765f01e9",
+      "source_bytes": 28424,
+      "sha256": "3dc5e13d86b81a20fadfd0de9af3093848bd9e28c51546acce1e054e2cd357dd",
       "declarations": {
         "libraries": [
           "CustomImageChat"
@@ -617,8 +617,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 238584,
-      "sha256": "ca79aff06b3d77d1fe1576bb5a9b9de3c928ee83df9d2018c235b7e1ddc94c43",
+      "source_bytes": 238527,
+      "sha256": "46a9aa010eb94ea214ce408cdae7745a0aa44607d3fba17cba45a2f1821a2f25",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -815,8 +815,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TeamMapPings.j",
-      "source_bytes": 33672,
-      "sha256": "f5739c5ca22cb269b5b0374d4c4cdf8b56c7a0e5b269946e1517728ff47aeb96",
+      "source_bytes": 33791,
+      "sha256": "2154e621716116e273cf17e2614f2c4a2b7d7671d7b8b3b15010a776e6a2322b",
       "declarations": {
         "libraries": [
           "TeamMapPings"
@@ -853,8 +853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 27274,
-      "sha256": "8f61272d70dc7b6bf282d2a91ceed993c9f44f37b270bf83063c90dcbbf93c8c",
+      "source_bytes": 29978,
+      "sha256": "cca9f32c52f169fb99ff2a7127e5432b3e21c4e618e16522d767bf895e2fe4cb",
       "declarations": {
         "libraries": [
           "WOSUI"

@@ -6,41 +6,64 @@ workflow. Source and native map evidence take precedence over these notes.
 
 ## Current boundary and exact next action
 
-Implementation checkpoints 1..10 are saved; real MAIN is now updated and built.
+Checkpoint 11 crash correction is implemented and integrated in native MAIN.
+Read the latest PROGRESS.md entry before anything else. User reported immediate
+load crash on Warcraft 3.0.1.24342, ACCESS_VIOLATION read 0x18 at 20:35:28.
+WUI_Init now ONLY schedules a 0.10s timer; WUI_OnReady queues six frame owners
+plus music TOC. Native selected layout waits another 0.20s. Buff label/leaderboard
+title clear text instead of unsafe visibility; child/null-parent guards added.
+Real MAIN compile PASS: 147965 pjass lines, 106 enabled triggers + header,
+3 disabled. All 57 regression tests PASS: HUD/startup/docks 17, pings 21,
+ally ability UI 8, trigger order 3, workflow 8. Independent native identity/order
+and all 33 packed archive entries PASS. No object-data/gameplay edits here.
+At 20:49 editor guard FALSE, guarded push updated 9 scripts (no insertions).
+Packed map launched at 20:52:30, PID 31052, -launch -editor -loadfile ... -hd 0.
+Process responds, no new crash report, but War3Log stops at map-catalogue scanning
+(20:52:32) and has NO custom-map open/Played confirmation. Do not call this a
+successful map load. An async question asks user what is visible (map/menu/crash).
+Exact next action: use user reply to finish real load verification. If at menu,
+compare launch flags with the successful World Editor command in prior Crash.txt
+(that command has NO -editor flag). Do not kill/relaunch an unknown active game.
+If crash, read NEW Crash.txt/War3Log and isolate the still-unsafe frame native.
+Do not launch tools/check_wos_ui.py's empty-main artifact.
+
+computer-use initialization attempted through deferred mcp__node_repl__js after
+reading the skill. It fails "failed to write kernel assets ... (os error 3)";
+reset/retry also failed. Direct UI inspection is blocked by helper startup, not
+by user permission. No custom input/screenshot workaround. CLI game launch/log
+monitoring can still be used; process survival does not verify UI appearance.
+
 Native integration block 10a DONE. Other blocks remain IN_PROGRESS because
-Warcraft interaction/visual/multiplayer verification is pending. Full real MAIN
-compile PASS: 147876 pjass lines, 106 enabled triggers + header (3 disabled). All 53
-tests PASS: HUD/docks 13, pings 21, ally ability UI 8, trigger order 3, workflow 8.
-No game run has verified this redesign. Do not label runtime success from compile.
+Warcraft interaction/visual/multiplayer verification is pending. User's previous
+real run exposed the critical load error. Do not label runtime success from compile.
 
 User confirmed closure; process guard FALSE before integration. No pending closure
 question. Future native writes must retain the process guard: an open editor can
 overwrite external WTG/WCT. Build now blocks before source/import mutations, with
 a second compiled-script guard retained. INTEGRATION.md contains exact commands.
 
-Guarded push/full MAIN build PASS: 109 native sources, 46 changes + WOSUI insertion
-id 0x03000071. Independent WTG/WCT identity/category traversal check PASS, all 29
-resource imports verified and 33 extracted archive entries byte-match native MAIN.
-_build/ui-redesign/integration-verification.json and full-main-pjass.txt save evidence.
+WOSUI id 0x03000071 was inserted in checkpoint 10; no new trigger in checkpoint 11.
+Latest evidence: _build/ui-redesign/crash-fix-integration-verification.json,
+crash-fix-full-main-pjass.txt, crash-fix-runtime.json and archive/.
 Compiled main initializes WOSUI before dependent UI owners and original map init.
 
-Exact next action: play _build/WoS_Test.w3x using OWNER_STATUS runtime matrix. No
-native Warcraft UI automation is available; obtain actual gameplay/screenshots to
-fix visual/input issues. Do not repeat imports/migration/build without new changes.
+After the map loads, play _build/WoS_Test.w3x using OWNER_STATUS
+runtime matrix; obtain actual gameplay/screenshots to fix visual/input issues.
+Do not repeat completed migration. The crash correction justifies a new build.
 
 Native MAIN Scenario Folder:
 C:/Users/Gear/Documents/Warcraft III/Maps/WoS/Anime_WOS2_0.32.w3x
 Packed _build/WoS_Test.w3x is the MAIN output, not test_map. check_wos_ui.py uses
 an empty main for compilation only; NEVER package it as a playable map script.
-Packed SHA256: a05ba35dffdc08205d81b6dbdf75b2bde7e21ec5115941eb449b7344c1e00ad6.
-Backups: backups/trigger-sync/2026-10-08_200834_844462/map-before-push;
-backups/ui-redesign/assets/20261008-200844-860447;
-backups/main-map-build/20261008-200916-304. No new object-data/gameplay edits.
+Latest packed SHA256:
+1a1d7c326f2852e2f2c7849b668e42ec46ca29109bc5427b4fd1f7a8ac48cafd.
+Latest backups: backups/trigger-sync/2026-10-08_205047_996178/map-before-push;
+backups/main-map-build/20261008-205131-201. Checkpoint 10 backups in PROGRESS.md.
 
 ## Implemented owners and contracts
 
 - WOSUI.j provides independent normal FRAME root under an all-player service
-  leaderboard (visible, zero-size; title/backdrop hidden). Native SIMPLEFRAMEs
+  leaderboard (visible, zero-size; title empty/backdrop hidden). Native SIMPLEFRAMEs
   remain under cached ConsoleUI. GameUI and ConsoleUI stay visible.
 - Compact existing selected HUD, native commands/items/buffs/minimap/menu, real
   gold/lumber, toolbar, native TestMode-only scroll/collapse help and camera.
@@ -89,7 +112,7 @@ No native Warcraft UI automation is available. No subagents were requested.
 Checkpoints: 654b679 core/assets/docs; e64d873 WTG/WCT order; bff70cb HUD/pick/shop/
 secondary surfaces; 3d92d32 dynamic docks; a856a90 exceptional hero windows;
 66f2c6b top score/controls; f89ef4d overlay/captain/owner coverage.
-Checkpoint 10 is the latest native integration checkpoint; identify its commit
+Checkpoint 11 is the latest native crash-fix checkpoint; identify its commit
 with git log. Git clean between prior checkpoints. Preserve ignored backups
 and unrelated edits. Five generated log/backup files were restored after saving
 full build evidence separately; actual Main.vj and sync metadata must stay updated.

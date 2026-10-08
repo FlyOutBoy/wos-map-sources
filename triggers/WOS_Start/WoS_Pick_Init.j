@@ -3305,7 +3305,7 @@ function InitTrig_UI takes nothing returns nothing
     endif
     // The fifth ConsoleUI child is the stock dead-zone overlay. It otherwise
     // steals mouse focus from ally-side buttons while the draft is open.
-    call BlzFrameSetVisible(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), false)
+    call WUI_HideNativeDeadZone()
 endfunction
 // Captain Mode: функция IsInTeam1 перенесена в CaptainMode_Module.j
 

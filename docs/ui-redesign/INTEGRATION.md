@@ -1,6 +1,6 @@
 # MAIN integration after editor closure
 
-User confirmed closure and checkpoint 10 integration has completed successfully.
+User confirmed closure and checkpoint 11 native integration has completed successfully.
 These steps are retained for subsequent changes; do not bypass the process guard.
 World Editor does not reload external WTG/WCT and can overwrite corrected sources.
 The build now rejects an open editor before changing MAIN source/imports; a later

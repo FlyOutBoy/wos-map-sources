@@ -247,3 +247,43 @@
   matrix; use real screenshots/interaction evidence to correct any native frame,
   hover/drag/learn/menu/selection/resolution issues. Do not redo completed migration
   or MAIN import work. Multiplayer/fog testing also remains required.
+
+## Checkpoint 11 — load-crash correction (native integration complete)
+
+- User reported an immediate critical error after checkpoint 10. Crash.txt at
+  Documents/Warcraft III/Errors/2026-10-08 20.35.28 ba6e19b4 records Warcraft
+  3.0.1.24342 ACCESS_VIOLATION read 0x18; War3Log reaches Played at 20:35:28.
+  Engine stack does not identify a JASS native, so exact causality is unproven.
+- Found WUI_Init creating leaderboard/root, reading and hiding native frames in
+  loading-time initialization; four dependent owners also created UI immediately.
+  Moved shared root/controls and all six UI owners to WUI_OnReady bootstrap at
+  0.10s game time. Music TOC now loads through the same ready queue. Selected HUD
+  retains a second 0.20s delay before native reparenting/hiding (0.30s total).
+- Removed visibility calls on native buff label and leaderboard title strings;
+  clear their text instead. Added child-count checks to button skins/Console
+  deadzone, null/parent guards to native layout, reused cached deadzone in pick.
+- Production compile PASS: 147003 pjass lines (compile-only empty main).
+  HUD/startup/dock tests PASS: 17, including four new real-body startup regressions.
+- computer-use skill was read/announced. mcp__node_repl__js initialization failed
+  with "failed to write kernel assets: Системе не удается найти указанный путь.
+  (os error 3)"; reset + retry also failed. Direct visual automation unavailable
+  in this turn. Do not work around SDK via custom input/screenshot automation.
+- At 20:49 editor guard FALSE. Guarded push PASS: 109 sources, 9 scripts updated,
+  0 inserted. Backup: backups/trigger-sync/2026-10-08_205047_996178/map-before-push.
+  Real MAIN build PASS: 147965 pjass lines; compiled script backup:
+  backups/main-map-build/20261008-205131-201. All 57 regressions PASS; ping harness
+  now verifies no frame allocation until its ready callback executes.
+- Packed _build/WoS_Test.w3x: 6360 files; SHA256
+  1a1d7c326f2852e2f2c7849b668e42ec46ca29109bc5427b4fd1f7a8ac48cafd.
+  Independent native WTG/WCT identity/category and 29 imports PASS; 33 extracted
+  archive entries byte-match native MAIN. Evidence: crash-fix-full-main-pjass.txt,
+  crash-fix-integration-verification.json and archive/ under _build/ui-redesign.
+  Saved compile evidence and restored ONLY five generated files clean at turn start.
+- Launched actual packed MAIN at 20:52:30, PID 31052. It responds, with no new
+  crash report as of 20:54. War3Log ends at 20:52:32 catalogue scanning, no custom
+  map load/Played line, so this does NOT establish map-load success. Saved launch
+  arguments/hash/status at _build/ui-redesign/crash-fix-runtime.json.
+- Async user question is pending: map loaded, menu/login, or another critical.
+  Next: obtain real screen state; if menu, examine launch flags (current -editor
+  differs from World Editor's working command); if crash, inspect the new report.
+  Direct visual/input/fog/resolution verification remains pending.

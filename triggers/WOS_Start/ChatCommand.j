@@ -692,7 +692,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     call BlzFrameSetVisible(EmojiPanel, false)
 endfunction
 
-private function Init takes nothing returns nothing
+private function Emoji_StartUI takes nothing returns nothing
     local integer i = 0
 
     call RegisterDefaultEmojis()
@@ -729,6 +729,10 @@ private function Init takes nothing returns nothing
     call TimerStart(EmojiTimer, 0.05, true, function EmojiPeriodic)
 
     // Native chat is never cleared or replaced by this emoji system.
+endfunction
+
+private function Init takes nothing returns nothing
+    call WUI_OnReady(function Emoji_StartUI)
 endfunction
 
 endlibrary

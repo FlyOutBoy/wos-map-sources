@@ -1688,19 +1688,8 @@ private function WOS_STATS_CreateUI takes nothing returns nothing
     set gameUI = null
 endfunction
 
-private function WOS_STATS_DelayedInit takes nothing returns nothing
-    local timer initTimer = GetExpiredTimer()
-
-    call WOS_STATS_CreateUI()
-    call DestroyTimer(initTimer)
-    set initTimer = null
-endfunction
-
 private function WOS_STATS_Init takes nothing returns nothing
-    local timer initTimer = CreateTimer()
-
-    call TimerStart(initTimer, 0.00, false, function WOS_STATS_DelayedInit)
-    set initTimer = null
+    call WUI_OnReady(function WOS_STATS_CreateUI)
 endfunction
 
 endlibrary

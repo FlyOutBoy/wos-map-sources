@@ -1424,14 +1424,18 @@ endfunction
 
 
 
-private function LocalMp3Player_Init takes nothing returns nothing
-    local integer pid = 0
-    local player p
+private function LMP_LoadTemplates takes nothing returns nothing
     // Load all required frame definitions once, before any player UI is built.
     set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc during initialization.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc after UI startup.|r")
     endif
+endfunction
+
+private function LocalMp3Player_Init takes nothing returns nothing
+    local integer pid = 0
+    local player p
+    call WUI_OnReady(function LMP_LoadTemplates)
     loop
         exitwhen pid >= 10
         set p = Player(pid)

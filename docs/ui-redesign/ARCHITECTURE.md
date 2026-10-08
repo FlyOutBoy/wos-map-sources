@@ -28,7 +28,16 @@ Paths above are relative to `triggers/`. Exhaustive inventory is saved in FRAME_
 - Create/get frame handles synchronously; first-time native lookups inside a
   GetLocalPlayer block can cause different handle allocation across clients.
 - A hidden parent hides descendants. A service leaderboard root must stay visible;
-  hide its title/backdrop, not the root itself. New normal FRAME root lives there.
+  clear its title text and hide its backdrop. New normal FRAME root lives there.
+- WUI_Init only schedules WUI_Bootstrap for 0.10s game time. No frame lookup,
+  creation, TOC load or visibility mutation belongs in a library initializer.
+  WUI_OnReady registers one trigger per UI owner; bootstrap creates the root and
+  controls first, then executes/destroys these triggers in registration order.
+  Selected HUD, ally ability UI, emoji, pings, scoreboard, career and music TOC
+  startup use this boundary. Selected HUD waits another 0.20s before native layout.
+- Native SimpleFontStrings (buff label, leaderboard title) receive text setters
+  only, never visibility/alpha setters. Child lookups require an index/count guard;
+  native layout does not reparent absent command/item parents or hide null handles.
 - Keep GameUI visible. Preserve stock command/item handlers and system menus.
 - Avoid BlzHideOriginFrames(true) until each required stock surface is accounted for.
 - Reforged moving commands/items uses named CommandButton_N / InventoryButton_N;
@@ -44,7 +53,7 @@ Primary references checked:
 
 ## Implemented layout contract (compiled, not game verified)
 
-- WOSUI.j normal root independent of Console. CreateLeaderboardBJ associates the service board with all players; board root size is zero, visible, title/backdrop hidden. All roots created synchronously.
+- WOSUI.j normal root independent of Console. CreateLeaderboardBJ associates the service board with all players; board root size is zero, visible, title empty, backdrop hidden. All roots created synchronously after the startup timer.
 - Native command/item SIMPLEFRAME tree retained; items share command parent. Native buff bar is also moved out of hidden unit-detail panel and retains engine status tooltips.
 - Seven slots [8,9,10,11,7,5,6], centers X=0.354+slot*0.040, Y=0.044, size=0.036.
 - Native slots 0..4 are in Orders/Learn drawer; ordinary unit fallback shows 12.

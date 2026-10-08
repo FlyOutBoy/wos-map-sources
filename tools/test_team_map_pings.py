@@ -34,6 +34,7 @@ class TeamMapPings(unittest.TestCase):
         self.pings = []
         self.sync = []
         self.frames = {}
+        self.ready_callbacks = []
         self.registrations = []
         self.frame_points = {}
         self.terrain_visible = True
@@ -52,6 +53,7 @@ class TeamMapPings(unittest.TestCase):
         g.update({
             'Player':lambda p:p, 'GetPlayerId':lambda p:p, 'GetLocalPlayer':lambda:self.viewer,
             'WUI_GetRoot':lambda:'independent-root',
+            'WUI_OnReady':self.ready_callbacks.append,
             'GetTriggerPlayer':lambda:self.sender, 'GetPlayerName':lambda p:f'Player {p+1}',
             'IsPlayerAlly':lambda a,b:a//5==b//5,
             'GetPlayerSlotState':lambda p:g['PLAYER_SLOT_STATE_PLAYING'],
@@ -108,6 +110,9 @@ class TeamMapPings(unittest.TestCase):
                            ('BlzFrameSetLevel','level'),('BlzFrameSetScale','scale')]:
             g[name] = lambda f,*v,p=prop:self.frames.__setitem__((f,p),v[0] if len(v)==1 else v)
         self.vm.run('TMP_Init')
+        self.assertFalse(self.frames, 'Pings must not create UI during map loading')
+        for callback in self.ready_callbacks:
+            callback()
 
     def create_frame(self,kind,name,*args):
         return f'{name}:{len(self.frames)}:{args[-1]}'
