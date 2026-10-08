@@ -26,7 +26,7 @@ globals
     // Captain Draft UI positions. Change only these values to tune the layout.
     // Start text uses absolute screen coordinates.
     real CaptainDraftStartTextX = 0.40
-    real CaptainDraftStartTextY = 0.198
+    real CaptainDraftStartTextY = 0.526
     real CaptainDraftStartTextWidth = 0.320
     real CaptainDraftStartTextHeight = 0.026
     // BAN/PICK text offsets are relative to their corresponding action button.
@@ -41,14 +41,14 @@ globals
     real CaptainDraftPickTextHeight = 0.026
     // Final player-claim text uses absolute screen coordinates.
     real CaptainDraftClaimTextX = 0.400
-    real CaptainDraftClaimTextY = 0.198
+    real CaptainDraftClaimTextY = 0.526
     real CaptainDraftClaimTextWidth = 0.320
     real CaptainDraftClaimTextHeight = 0.026
     // Moving PanelX/PanelY moves the BANS frame, label and every icon together.
-    real CaptainDraftPanelX = 0.394
-    real CaptainDraftPanelY = 0.1225
-    real CaptainDraftPanelWidth = 0.285
-    real CaptainDraftPanelHeight = 0.054
+    real CaptainDraftPanelX = 0.600
+    real CaptainDraftPanelY = 0.192
+    real CaptainDraftPanelWidth = 0.255
+    real CaptainDraftPanelHeight = 0.032
     real CaptainDraftBanLabelOffsetX = 0.020
     real CaptainDraftBanLabelOffsetY = 0.000
     real CaptainDraftBanFirstIconOffsetX = 0.071
@@ -416,26 +416,15 @@ function CaptainDraft_PositionStatus takes nothing returns nothing
     if FRAME_TimerToStart == null then
         return
     endif
+    // Status stays in the header through BAN/PICK/CLAIM, away from action icons.
     call BlzFrameClearAllPoints(FRAME_TimerToStart)
-    if CaptainDraftStage == 1 then
-        // During BAN the text occupies the free space to the left of the ban button.
-        call BlzFrameSetSize(FRAME_TimerToStart, CaptainDraftBanTextWidth, CaptainDraftBanTextHeight)
-        call BlzFrameSetPoint(FRAME_TimerToStart, FRAMEPOINT_RIGHT, FRAME_Pick[4], FRAMEPOINT_LEFT, CaptainDraftBanTextOffsetX, CaptainDraftBanTextOffsetY)
-        call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_RIGHT, TEXT_JUSTIFY_MIDDLE)
-    elseif CaptainDraftStage == 2 then
-        // During PICK it starts after the green button and has enough width for a full nickname.
-        call BlzFrameSetSize(FRAME_TimerToStart, CaptainDraftPickTextWidth, CaptainDraftPickTextHeight)
-        call BlzFrameSetPoint(FRAME_TimerToStart, FRAMEPOINT_LEFT, FRAME_Pick[2], FRAMEPOINT_RIGHT, CaptainDraftPickTextOffsetX, CaptainDraftPickTextOffsetY)
-        call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_LEFT, TEXT_JUSTIFY_MIDDLE)
-    elseif CaptainDraftStage == 0 then
-        call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftStartTextX, CaptainDraftStartTextY)
-        call BlzFrameSetSize(FRAME_TimerToStart, CaptainDraftStartTextWidth, CaptainDraftStartTextHeight)
-        call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_CENTER, TEXT_JUSTIFY_MIDDLE)
-    else
+    if CaptainDraftStage >= 3 then
         call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftClaimTextX, CaptainDraftClaimTextY)
-        call BlzFrameSetSize(FRAME_TimerToStart, CaptainDraftClaimTextWidth, CaptainDraftClaimTextHeight)
-        call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_CENTER, TEXT_JUSTIFY_MIDDLE)
+    else
+        call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftStartTextX, CaptainDraftStartTextY)
     endif
+    call BlzFrameSetSize(FRAME_TimerToStart, 0.510, 0.016)
+    call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
 endfunction
 
 function CaptainDraft_HideBanEffect takes nothing returns nothing
@@ -619,7 +608,7 @@ function CaptainDraft_CreateUI takes nothing returns nothing
     local integer i = 0
     local framehandle tooltip
     local framehandle tooltipText
-    local framehandle parent = BlzGetFrameByName("ConsoleUIBackdrop", 0)
+    local framehandle parent = WUI_GetRoot()
 
     if CaptainDraftUICreated then
         return
@@ -628,7 +617,7 @@ function CaptainDraft_CreateUI takes nothing returns nothing
     set CaptainDraftHoverTrigger = CreateTrigger()
     call TriggerAddAction(CaptainDraftHoverTrigger, function CaptainDraft_OnClaimHover)
     // A tight scoreboard-style border around BANS only; no opaque black plate.
-    set CaptainDraftPanel = BlzCreateFrame("ListBoxWar3", parent, 0, 9500)
+    set CaptainDraftPanel = WUI_Window("WOSCaptainBans", parent, 0, 9500)
     call BlzFrameSetAbsPoint(CaptainDraftPanel, FRAMEPOINT_CENTER, CaptainDraftPanelX, CaptainDraftPanelY)
     call BlzFrameSetSize(CaptainDraftPanel, CaptainDraftPanelWidth, CaptainDraftPanelHeight)
 

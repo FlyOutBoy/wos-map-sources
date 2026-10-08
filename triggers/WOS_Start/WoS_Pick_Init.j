@@ -2849,6 +2849,90 @@ function GuideCreateAbilityTooltip takes integer slot returns nothing
     set tooltip = null
 endfunction
 
+// Relocate the existing controls only; catalogue IDs, votes and click owners stay intact.
+function WOS_LayoutHeroPick takes framehandle portraitEdge returns nothing
+    local integer i = 0
+    local real x
+    call WUI_Place(FRAME_MAIN, 0.420, 0.331, 0.656, 0.426)
+    call WUI_Place(FRAME_MAIN2, 0.380, 0.362, 0.222, 0.304)
+    call WUI_Place(FRAME_MAIN3, 0.608, 0.362, 0.230, 0.304)
+    call WUI_Place(FRAME_HeroName, 0.608, 0.492, 0.159, 0.022)
+    call BlzFrameSetScale(FRAME_HeroName, 0.82)
+    call WUI_Place(FRAME_HeroAttribute, 0.510, 0.492, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroAttackType, 0.706, 0.492, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroModel, 0.608, 0.410, 0.110, 0.110)
+    call BlzFrameSetAllPoints(portraitEdge, FRAME_HeroModel)
+    call BlzFrameSetTexture(portraitEdge, WUI_BORDER_TEXTURE, 0, true)
+    call BlzFrameSetLevel(portraitEdge, 3)
+    call BlzFrameSetEnable(portraitEdge, false)
+    call WUI_Place(FRAME_HeroStr, 0.553, 0.338, 0.090, 0.015)
+    call WUI_Place(FRAME_HeroAgi, 0.553, 0.321, 0.090, 0.015)
+    call WUI_Place(FRAME_HeroInt, 0.553, 0.304, 0.090, 0.015)
+    call WUI_Place(FRAME_HeroAtk, 0.663, 0.341, 0.095, 0.015)
+    call WUI_Place(FRAME_HeroArmor, 0.663, 0.326, 0.095, 0.015)
+    call WUI_Place(FRAME_HeroMS, 0.663, 0.311, 0.095, 0.015)
+    call WUI_Place(FRAME_HeroAS, 0.663, 0.296, 0.095, 0.015)
+    call BlzFrameSetScale(FRAME_HeroStr, 0.84)
+    call BlzFrameSetScale(FRAME_HeroAgi, 0.84)
+    call BlzFrameSetScale(FRAME_HeroInt, 0.84)
+    call BlzFrameSetScale(FRAME_HeroAtk, 0.78)
+    call BlzFrameSetScale(FRAME_HeroArmor, 0.78)
+    call BlzFrameSetScale(FRAME_HeroMS, 0.78)
+    call BlzFrameSetScale(FRAME_HeroAS, 0.78)
+    call WUI_Place(FRAME_PlayerPickDifficultText, 0.183, 0.190, 0.152, 0.017)
+    call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 0.83)
+    call WUI_Place(FRAME_TimerToStart, 0.400, 0.526, 0.510, 0.016)
+    call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(FRAME_TimerToStart, 0.94)
+    loop
+        exitwhen i >= 30
+        call WUI_Place(FRAME_ICON[i], 0.298 + I2R(ModuloInteger(i, 5)) * 0.041, 0.477 - I2R(i / 5) * 0.041, 0.036, 0.036)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 6
+        call WUI_Place(Frame_PageHeroList[i], 0.181, 0.476 - I2R(i) * 0.049, 0.151, 0.040)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 5
+        call WUI_Place(FRAME_Pick[i], 0.298 + I2R(i) * 0.041, 0.236, 0.031, 0.031)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 7
+        call WUI_Place(FRAME_ICON5[i], 0.512 + I2R(i) * 0.032, 0.238, 0.029, 0.029)
+        call BlzFrameClearAllPoints(FRAME_AbiText[i])
+        call BlzFrameSetPoint(FRAME_AbiText[i], FRAMEPOINT_TOP, FRAME_ICON5[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
+        call BlzFrameSetScale(FRAME_AbiText[i], 0.67)
+        call WUI_Place(FRAME_AbilityTooltip[i], 0.608, 0.376, 0.214, 0.220)
+        call BlzFrameSetTexture(FRAME_AbilityTooltip[i], WUI_PANEL_TEXTURE, 0, true)
+        call BlzFrameSetScale(FRAME_AbilityTooltipText[i], 0.78)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 10
+        set x = 0.148 + I2R(i) * 0.058
+        if i >= 5 then
+            set x = x + 0.039
+        endif
+        call WUI_Place(FRAME_PlayerPick[i], x, 0.155, 0.028, 0.028)
+        call WUI_Place(FRAME_PlayerPickText[i], x, 0.131, 0.055, 0.016)
+        call BlzFrameSetScale(FRAME_PlayerPickText[i], 0.64)
+        call WUI_Place(FRAME_Repick[i], 0.018, 0.552, 0.027, 0.027)
+        call WUI_Place(FRAME_Swap[i], 0.052, 0.552, 0.027, 0.027)
+        call WUI_Place(FRAME_RepickText[i], 0.018, 0.530, 0.028, 0.009)
+        call WUI_Place(FRAME_SwapText[i], 0.052, 0.530, 0.028, 0.009)
+        call WUI_Tooltip(FRAME_Repick[i], "REPICK|nReturn to the existing hero selection.")
+        call WUI_Tooltip(FRAME_Swap[i], "SWAP|nRequest an ally hero swap.")
+        set i = i + 1
+    endloop
+endfunction
+
 function CreateUI takes nothing returns nothing
     local integer i = 0
     local integer i2 = 0
@@ -2859,16 +2943,17 @@ function CreateUI takes nothing returns nothing
     set FrameClick = CreateTrigger()
     set FrameGuideRefresh = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
-    set FRAME_MAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
+    set FRAME_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call BlzFrameSetAbsPoint(FRAME_MAIN, FRAMEPOINT_CENTER, 0.4, 0.32)
     call BlzFrameSetSize(FRAME_MAIN, 0.85, 0.5)
-    set FRAME_MAIN2 = BlzCreateFrame("EscMenuBackdrop", FRAME_MAIN, 1, 0)
+    set FRAME_MAIN2 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_MAIN2, FRAMEPOINT_CENTER, 0.35, 0.35)
     call BlzFrameSetSize(FRAME_MAIN2, 0.3, 0.4)
-    set FRAME_MAIN3 = BlzCreateFrame("EscMenuBackdrop", FRAME_MAIN, 1, 0)
+    set FRAME_MAIN3 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_MAIN3, FRAMEPOINT_CENTER, 0.645, 0.35)
     call BlzFrameSetSize(FRAME_MAIN3, 0.3, 0.4)
     set FRAME_HeroName = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)
+    call WUI_StyleButton(FRAME_HeroName)
     call BlzFrameSetAbsPoint(FRAME_HeroName, FRAMEPOINT_CENTER, 0.645, 0.51)
     call BlzFrameSetSize(FRAME_HeroName, 0.15, 0.03)
     call BlzFrameSetText(FRAME_HeroName, "Hero Name")
@@ -3054,7 +3139,7 @@ function CreateUI takes nothing returns nothing
     set i = 0
     loop
         exitwhen i == 10
-        set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetFrameByName("ConsoleUIBackdrop", 0), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetSize(FRAME_Repick[i], 0.05, 0.05)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Repick[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
@@ -3067,7 +3152,7 @@ function CreateUI takes nothing returns nothing
         call BlzFrameSetPoint(FRAME_RepickText[i], FRAMEPOINT_LEFT, FRAME_Repick[i], FRAMEPOINT_TOPLEFT, 0., -0.0575 )
         call BlzFrameSetEnable(FRAME_Repick[i], false)
         call BlzFrameSetVisible(FRAME_Repick[i], false)
-        set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetFrameByName("ConsoleUIBackdrop", 0), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetSize(FRAME_Swap[i], 0.04, 0.04)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Swap[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)
@@ -3199,6 +3284,7 @@ function CreateUI takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_TimerToStart,false)
     call TriggerAddAction(FrameClick, function OnClick)
     call TriggerAddAction(FrameGuideRefresh, function GuideRefreshAbilityTooltip)
+    call WOS_LayoutHeroPick(border)
     call CaptainDraft_CreateUI()
 endfunction
 // Captain Mode: функция SetVoteStackTexture перенесена в CaptainMode_Module.j
@@ -4345,8 +4431,8 @@ function Map_Start takes nothing returns nothing
     set PlayerColor[8] = "|cff939596"
     set PlayerColor[9] = "|cff7ebff1"
     if TestMode == true then 
-        call FogModifierStart(CreateFogModifierRect(Player(1), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
-        call FogModifierStart(CreateFogModifierRect(Player(6), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
+      //  call FogModifierStart(CreateFogModifierRect(Player(1), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
+      //  call FogModifierStart(CreateFogModifierRect(Player(6), FOG_OF_WAR_VISIBLE, gg_rct_Arena, true, false))
     endif    
            
                 

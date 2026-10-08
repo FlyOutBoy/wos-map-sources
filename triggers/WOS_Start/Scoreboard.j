@@ -2,7 +2,7 @@
 // WoS Scoreboard — compact Horde edition
 // Компактная таблица общей статистики на клавишу P.
 //===========================================================================
-library WosScoreboard initializer WOS_STATS_Init requires heroicon
+library WosScoreboard initializer WOS_STATS_Init requires heroicon, WOSUI
 
 globals
     //=======================================================================
@@ -13,8 +13,8 @@ globals
     private constant string WOS_STATS_FRAME_TEMPLATE = "ListBoxWar3"
     // Р‘РµР»Р°СЏ РѕСЃРЅРѕРІР° РЅСѓР¶РЅР° РґР»СЏ BlzFrameSetVertexColor: С‡С‘СЂРЅСѓСЋ С‚РµРєСЃС‚СѓСЂСѓ РЅРµРІРѕР·РјРѕР¶РЅРѕ РѕРєСЂР°СЃРёС‚СЊ.
     private constant string WOS_STATS_TEX_ROW = "Textures\\white.blp"
-    private constant string WOS_STATS_TEX_PANEL_FILL = "Textures\\black32.blp"
-    private constant string WOS_STATS_TEX_TOOLTIP = "Textures\\black32.blp"
+    private constant string WOS_STATS_TEX_PANEL_FILL = WUI_PANEL_TEXTURE
+    private constant string WOS_STATS_TEX_TOOLTIP = WUI_PANEL_TEXTURE
     private constant string WOS_STATS_TEX_CLOSE = "Music\\Music_Close.blp"
     private constant string WOS_STATS_TEX_OPACITY_OFF = "Pick\\wos_transp.blp"
     private constant string WOS_STATS_TEX_OPACITY_ON = "Pick\\wos_transp2.blp"
@@ -1603,11 +1603,12 @@ endfunction
 
 private function WOS_STATS_CreateUI takes nothing returns nothing
     local integer pid = 0
-    local framehandle gameUI = BlzGetFrameByName("ConsoleUIBackdrop", 0)
+    local framehandle gameUI = WUI_GetRoot()
 
     // Компактная рамка ListBoxWar3: тоньше EscMenuBackdrop и не подрезает
     // верхнюю строку интерфейса толстой каменной кромкой.
-    set WOS_STATS_Main = BlzCreateFrame(WOS_STATS_FRAME_TEMPLATE, gameUI, 0, 4700)
+    set WOS_STATS_Main = BlzCreateFrameByType("FRAME", "WOSScoreboardWindow", gameUI, "", 4700)
+    call WUI_Border("WOSScoreboardBorder", WOS_STATS_Main)
     call BlzFrameSetAbsPoint(WOS_STATS_Main, FRAMEPOINT_CENTER, WOS_STATS_ScaleX(WOS_STATS_PANEL_X), WOS_STATS_ScaleY(WOS_STATS_PANEL_Y))
     call BlzFrameSetSize(WOS_STATS_Main, WOS_STATS_ScaleSize(WOS_STATS_PANEL_WIDTH), WOS_STATS_ScaleSize(WOS_STATS_PANEL_HEIGHT))
     set WOS_STATS_OpaqueBack = WOS_STATS_CreateBackdrop(WOS_STATS_Main, WOS_STATS_TEX_PANEL_FILL, WOS_STATS_PANEL_X, WOS_STATS_PANEL_Y, WOS_STATS_CONTENT_WIDTH, WOS_STATS_CONTENT_HEIGHT, 255, 4709)

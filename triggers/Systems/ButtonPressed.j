@@ -3,6 +3,44 @@ globals
     boolean array EffectActive
 endglobals
 
+// The toolbar and all shop hotkeys share this existing catalogue state.
+function WOS_ToggleShop takes player p returns nothing
+    local integer id = GetPlayerId(p)
+    local integer playerHandleId = GetHandleId(p)
+    if Hero[id] == null and not IsObserverSlot(id) then
+        return
+    endif
+    if LoadInteger(hs, playerHandleId, StringHash("shop key guard")) != 0 then
+        return
+    endif
+    call SaveInteger(hs, playerHandleId, StringHash("shop key guard"), 1)
+    call MyFlush(playerHandleId, StringHash("shop key guard"), 0, 0.15)
+    if Shop_Active[id] then
+        set Shop_Active[id] = false
+        if ShopUICreated and FRAME_ShopMAIN != null and GetLocalPlayer() == p then
+            call BlzFrameSetVisible(FRAME_ShopMAIN, false)
+        endif
+    elseif END1 == 0 then
+        if not ShopUICreated or FRAME_ShopMAIN == null then
+            call DisplayTimedTextToPlayer(p, 0, 0, 1.50, "Shop UI is not ready yet")
+        else
+            set Shop_Active[id] = true
+            set ItemsCraftPlayerDebug_ID[id] = -1
+            call ReloadItemPage(ItemsFrameCurrentPage_ID[id], p)
+            call ShopUpdateCatalogueNavigation(id, p)
+            if GetLocalPlayer() == p then
+                if IsObserverSlot(id) then
+                    call BlzFrameSetVisible(FRAME_AutoBuyCheckbox, false)
+                    call BlzFrameSetVisible(FRAME_AutoBuyText, false)
+                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[6], false)
+                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[7], false)
+                endif
+                call BlzFrameSetVisible(FRAME_ShopMAIN, true)
+            endif
+        endif
+    endif
+endfunction
+
 function Trig_ButtonPressed_Actions takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer id = GetPlayerId(p)
@@ -19,27 +57,8 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
     // Spectators can open the shop as a catalogue, while every hero/gameplay
     // hotkey remains disabled because they return before the normal handler.
     if IsObserverSlot(id) then
-        if isShopKey and LoadInteger(hs, playerHandleId, StringHash("shop key guard")) == 0 then
-            call SaveInteger(hs, playerHandleId, StringHash("shop key guard"), 1)
-            call MyFlush(playerHandleId, StringHash("shop key guard"), 0, 0.15)
-            if Shop_Active[id] then
-                set Shop_Active[id] = false
-                if ShopUICreated and FRAME_ShopMAIN != null and GetLocalPlayer() == p then
-                    call BlzFrameSetVisible(FRAME_ShopMAIN, false)
-                endif
-            elseif END1 == 0 and ShopUICreated and FRAME_ShopMAIN != null then
-                set Shop_Active[id] = true
-                set ItemsCraftPlayerDebug_ID[id] = -1
-                call ReloadItemPage(ItemsFrameCurrentPage_ID[id], p)
-                call ShopUpdateCatalogueNavigation(id, p)
-                if GetLocalPlayer() == p then
-                    call BlzFrameSetVisible(FRAME_AutoBuyCheckbox, false)
-                    call BlzFrameSetVisible(FRAME_AutoBuyText, false)
-                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[6], false)
-                    call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[7], false)
-                    call BlzFrameSetVisible(FRAME_ShopMAIN, true)
-                endif
-            endif
+        if isShopKey then
+            call WOS_ToggleShop(p)
         endif
         set hero = null
         set p = null
@@ -123,29 +142,12 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
             set PlayerDamageMag[id] = PlayerDamageMagAll[id]
             set PlayerHeal[id] = PlayerHealAll[id]
 
-        elseif but == OSKEY_K then
-            if true then
-                if Chat_Active[id] then
-                    set Chat_Active[id] = false
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetVisible(FRAME_Chat0, false)
-                    endif
-                elseif LoadInteger(hs, playerHandleId, StringHash("chat cd")) == 0 then
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetVisible(FRAME_Chat0, true)
-                    endif
-                    set Chat_Active[id] = true
-                else
-                    call DisplayTimedTextToPlayer(p, 0, 0, 0.01, "emoji cd")
-                endif
-            endif
+        // K is owned by EmojiStandalone (its registered key-up event).
         endif
 
         // Магазин обрабатывается отдельно: B может одновременно переключать тестовую ауру.
         // Защита от двойной регистрации события и автоповтора одного физического нажатия.
         if isShopKey and LoadInteger(hs, playerHandleId, StringHash("shop key guard")) == 0 then
-            call SaveInteger(hs, playerHandleId, StringHash("shop key guard"), 1)
-            call MyFlush(playerHandleId, StringHash("shop key guard"), 0, 0.15)
             if PlayerShopButton[id] == null then
                 set PlayerShopButton[id] = but
                 if but == OSKEY_B then
@@ -161,28 +163,7 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
             endif
             // Первое нажатие не только назначает клавишу, но и сразу открывает магазин.
             if PlayerShopButton[id] == but then
-                if Shop_Active[id] then
-                    set Shop_Active[id] = false
-                    if ShopUICreated and FRAME_ShopMAIN != null and GetLocalPlayer() == p then
-                        call BlzFrameSetVisible(FRAME_ShopMAIN, false)
-                    endif
-                elseif END1 == 0 then
-                    // До завершения CreateItemUI обращаться к framehandle нельзя.
-                    if not ShopUICreated or FRAME_ShopMAIN == null then
-                        call DisplayTimedTextToPlayer(p, 0, 0, 1.50, "Shop UI is not ready yet")
-                    else
-                        set Shop_Active[id] = true
-                        set ItemsCraftPlayerDebug_ID[id] = -1
-                        // ItemsFrameCurrentPage_ID хранится отдельно для каждого игрока.
-                        // Не сбрасываем его при закрытии: повторное открытие возвращает
-                        // игрока на последнюю выбранную страницу магазина.
-                        call ReloadItemPage(ItemsFrameCurrentPage_ID[id], p)
-                        call ShopUpdateCatalogueNavigation(id, p)
-                        if GetLocalPlayer() == p then
-                            call BlzFrameSetVisible(FRAME_ShopMAIN, true)
-                        endif
-                    endif
-                endif
+                call WOS_ToggleShop(p)
             endif
         endif
     endif

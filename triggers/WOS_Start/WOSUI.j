@@ -59,9 +59,30 @@ function WUI_Border takes string name, framehandle owner returns framehandle
     return edge
 endfunction
 
+function WUI_Window takes string name, framehandle parent, integer layer, integer context returns framehandle
+    local framehandle panel = BlzCreateFrameByType("BACKDROP", name, parent, "", context)
+    local framehandle edge = WUI_Border(name + "Edge", panel)
+    call BlzFrameSetTexture(panel, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetLevel(panel, layer)
+    set edge = null
+    return panel
+endfunction
+
 function WUI_SetText takes framehandle frame, string value returns nothing
     if BlzFrameGetText(frame) != value then
         call BlzFrameSetText(frame, value)
+    endif
+endfunction
+
+function WUI_SetValue takes framehandle frame, real value returns nothing
+    if BlzFrameGetValue(frame) != value then
+        call BlzFrameSetValue(frame, value)
+    endif
+endfunction
+
+function WUI_ShowNativeBuffs takes boolean visible returns nothing
+    if WUI_Buffs != null then
+        call BlzFrameSetVisible(WUI_Buffs, visible)
     endif
 endfunction
 
@@ -90,6 +111,8 @@ function WUI_StyleButton takes framehandle control returns nothing
     call BlzFrameSetTexture(BlzFrameGetChild(control, 0), "UI\\WOS\\button.tga", 0, true)
     call BlzFrameSetTexture(BlzFrameGetChild(control, 1), "UI\\WOS\\pressed.tga", 0, true)
     call BlzFrameSetTexture(BlzFrameGetChild(control, 2), "UI\\WOS\\disabled.tga", 0, true)
+    call BlzFrameSetTexture(BlzFrameGetChild(control, 3), "UI\\WOS\\disabled.tga", 0, true)
+    call BlzFrameSetAlpha(BlzFrameGetChild(control, 4), 110)
 endfunction
 
 function WUI_CommandSlot takes integer slot returns integer
@@ -173,6 +196,9 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", BlzGetFrameByName("ConsoleUI", 0), "", 0)
     call BlzFrameSetVisible(WUI_HiddenDetails, false)
     if detail != null then
+        // Keep real status icons/tooltips when the large unit detail panel is hidden.
+        call BlzFrameSetParent(WUI_Buffs, simpleParent)
+        call WUI_Place(WUI_Buffs, 0.245, 0.113, 0.165, 0.016)
         call BlzFrameSetParent(detail, WUI_HiddenDetails)
     endif
     if cover != null then
@@ -216,6 +242,8 @@ private function WUI_CreateControls takes nothing returns nothing
     set WUI_Portrait = BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0)
     set WUI_Resource = BlzGetFrameByName("ResourceBarFrame", 0)
     set WUI_HeroBar = BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR, 0)
+    set WUI_Buffs = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR, 0)
+    call BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL, 0), false)
     set WUI_DeadZone = BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5)
     loop
         exitwhen i >= 12
@@ -247,8 +275,18 @@ private function WUI_CreateControls takes nothing returns nothing
     set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)
     call BlzFrameSetAllPoints(text, WUI_Menu)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetText(text, "|cffd5b876=|r")
+    call BlzFrameSetText(text, "")
     call BlzFrameSetEnable(text, false)
+    set i = 0
+    loop
+        exitwhen i >= 3
+        set back = BlzCreateFrameByType("BACKDROP", "WOSMenuLine", WUI_Menu, "", i)
+        call WUI_Place(back, 0.780, 0.577 - I2R(i) * 0.004, 0.013, 0.001)
+        call BlzFrameSetTexture(back, "Textures\\white.blp", 0, true)
+        call BlzFrameSetVertexColor(back, BlzConvertColor(255, 213, 184, 118))
+        call BlzFrameSetEnable(back, false)
+        set i = i + 1
+    endloop
     set WUI_Orders = BlzCreateFrameByType("BUTTON", "WOSOrderDrawer", WUI_Root, "", 0)
     call WUI_Place(WUI_Orders, 0.566, 0.110, 0.090, 0.016)
     set text = BlzCreateFrameByType("TEXT", "WOSOrderDrawerLabel", WUI_Orders, "", 0)
@@ -323,14 +361,14 @@ private function WUI_Init takes nothing returns nothing
     local framehandle part
     // Keep the service board ROOT visible: hidden parents hide their children.
     // Its visual children alone are hidden. No players' existing boards are replaced.
-    set WUI_ServiceBoard = CreateLeaderboard()
-    call LeaderboardSetLabel(WUI_ServiceBoard, "WOS UI")
+    set WUI_ServiceBoard = CreateLeaderboardBJ(bj_FORCE_ALL_PLAYERS, "WOS UI")
     call LeaderboardSetSizeByItemCount(WUI_ServiceBoard, 0)
     call LeaderboardDisplay(WUI_ServiceBoard, true)
     set board = BlzGetFrameByName("Leaderboard", 0)
     if board == null then
         set board = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
     else
+        call BlzFrameSetSize(board, 0.00, 0.00)
         set part = BlzGetFrameByName("LeaderboardBackdrop", 0)
         if part != null then
             call BlzFrameSetVisible(part, false)

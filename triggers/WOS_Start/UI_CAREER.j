@@ -1,7 +1,7 @@
 //===========================================================================
 // WOS2 Career Statistics
 //===========================================================================
-library WosCareerStats initializer WCS_Init requires AAINIT, heroicon
+library WosCareerStats initializer WCS_Init requires AAINIT, heroicon, WOSUI
 
 globals
     private constant integer WCS_PLAYER_COUNT = 10
@@ -21,7 +21,7 @@ globals
     private constant real WCS_OPEN_Y = 0.560
     private constant real WCS_OPEN_SIZE = 0.022
 
-    private constant string WCS_TEX_BLACK = "Textures\\black32.blp"
+    private constant string WCS_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string WCS_TEX_CLOSE = "Music\\Music_Close.blp"
     private constant string WCS_TEX_EMPTY = "Pick\\wos_stat"
     private constant string WCS_TEX_OPEN = "Pick\\wos_stat"
@@ -182,6 +182,7 @@ endfunction
 
 private function WCS_CreateTextButton takes framehandle parent, real x, real y, real width, real height, string value, integer context returns framehandle
     local framehandle buttonFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)
+    call WUI_StyleButton(buttonFrame)
     call BlzFrameSetAbsPoint(buttonFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(buttonFrame, width, height)
     call BlzFrameSetText(buttonFrame, value)
@@ -312,7 +313,7 @@ private function WCS_GetExtraHeroId takes player viewer, integer rank, integer e
 endfunction
 
 private function WCS_CreateTooltip takes framehandle owner, real width, real height, integer context returns framehandle
-    local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "WcsTooltip", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", context)
+    local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "WcsTooltip", WUI_GetRoot(), "", context)
     local framehandle label = BlzCreateFrameByType("TEXT", "WcsTooltipText", tooltip, "", context)
     call BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_TOP, 0.0, 0.002)
     call BlzFrameSetSize(tooltip, width, height)
@@ -968,7 +969,7 @@ private function WCS_CreateDetailPage takes nothing returns nothing
 endfunction
 
 private function WCS_CreateUI takes nothing returns nothing
-    local framehandle gameUI = BlzGetFrameByName("ConsoleUIBackdrop", 0)
+    local framehandle gameUI = WUI_GetRoot()
     local integer pid = 0
     set WCS_OpenButton = WCS_CreateIconButton(gameUI, WCS_OPEN_X, WCS_OPEN_Y, WCS_OPEN_SIZE, 8200)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
@@ -976,7 +977,7 @@ private function WCS_CreateUI takes nothing returns nothing
     call BlzFrameSetLevel(WCS_OpenButton, 100)
     call BlzFrameSetLevel(WCS_OpenIcon, 101)
 
-    set WCS_Main = BlzCreateFrame("ListBoxWar3", gameUI, 0, 8210)
+    set WCS_Main = WUI_Window("WOSCareerWindow", gameUI, 0, 8210)
     call BlzFrameSetAbsPoint(WCS_Main, FRAMEPOINT_CENTER, WCS_PANEL_X, WCS_PANEL_Y)
     call BlzFrameSetSize(WCS_Main, WCS_PANEL_WIDTH, WCS_PANEL_HEIGHT)
     // КРИТИЧНО: панель изначально всегда скрыта.

@@ -1,4 +1,4 @@
-library CustomImageChat initializer Init uses GearSystems
+library CustomImageChat initializer Init uses GearSystems, WOSUI
 globals
     private integer array PlayerEmojiAccessLevel
 endglobals
@@ -6,12 +6,12 @@ globals
     // -------------------------------------------------------------------------
     // LAYOUT: change only these values if the palette/feed overlaps another UI.
     // Warcraft UI coordinates normally use X = 0.00..0.80 and Y = 0.00..0.60.
-    private constant real EMOJI_TOGGLE_X = 0.22
-    private constant real EMOJI_TOGGLE_Y = 0.1325
-    private constant real EMOJI_MUTE_X   = 0.25
-    private constant real EMOJI_MUTE_Y   = 0.1325
-    private constant real EMOJI_PANEL_X  = 0.390
-    private constant real EMOJI_PANEL_Y  = 0.215
+    private constant real EMOJI_TOGGLE_X = 0.744
+    private constant real EMOJI_TOGGLE_Y = 0.035
+    private constant real EMOJI_MUTE_X   = 0.770
+    private constant real EMOJI_MUTE_Y   = 0.035
+    private constant real EMOJI_PANEL_X  = 0.615
+    private constant real EMOJI_PANEL_Y  = 0.121
     private constant real EMOJI_FEED_X   = 0.12
     private constant real EMOJI_FEED_Y   = 0.20
 
@@ -22,7 +22,7 @@ globals
     private constant integer EMOJI_COLUMNS   = 5
 
     // Both the main button and palette buttons are 20% smaller than before.
-    private constant real EMOJI_TOGGLE_SIZE = 0.0224
+    private constant real EMOJI_TOGGLE_SIZE = 0.020
     // Palette emojis are 20% larger: 0.0240 -> 0.0288.
     private constant real EMOJI_BUTTON_SIZE = 0.0288
     private constant real EMOJI_BUTTON_STEP = 0.0324
@@ -388,11 +388,9 @@ private function OnEmojiFrameClick takes nothing returns nothing
             set PlayerEmojiEnabled[pid] = not PlayerEmojiEnabled[pid]
 
             if PlayerEmojiEnabled[pid] then
-                // The button now offers the "block emojis" action.
-                call BlzFrameSetTexture(EmojiMuteIcon, "Pick\\PickButton_Pick_Ban", 0, true)
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
             else
-                // The button now offers the "enable emojis" action.
-                call BlzFrameSetTexture(EmojiMuteIcon, "Pick\\PickButton_Pick_Manual", 0, true)
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\unchecked.tga", 0, true)
                 set FeedCount = 0
                 call HideFeedFrames()
             endif
@@ -606,14 +604,14 @@ private function CreateEmojiFeed takes nothing returns nothing
 
         // These output frames are attached directly to Game UI. There is no
         // sized parent FRAME, so no invisible 0.145 x 0.150 mouse-blocking box.
-        set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+        set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", WUI_GetRoot(), "", 0)
         call BlzFrameSetSize(EmojiFeedName[i], 0.102, 0.018)
         call BlzFrameSetFont(EmojiFeedName[i], "Fonts\\FRIZQT__.TTF", 0.011, 0)
         call BlzFrameSetTextAlignment(EmojiFeedName[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
         call BlzFrameSetEnable(EmojiFeedName[i], false)
         call BlzFrameSetVisible(EmojiFeedName[i], false)
 
-        set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+        set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", WUI_GetRoot(), "", 0)
         call BlzFrameSetSize(EmojiFeedIcon[i], 0.027, 0.027)
         call BlzFrameSetEnable(EmojiFeedIcon[i], false)
         call BlzFrameSetVisible(EmojiFeedIcon[i], false)
@@ -629,28 +627,32 @@ private function CreateEmojiPalette takes nothing returns nothing
     local real x
     local real y
 
-    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetRoot(), "", 0)
     call BlzFrameSetAbsPoint(EmojiToggle, FRAMEPOINT_CENTER, EMOJI_TOGGLE_X, EMOJI_TOGGLE_Y)
     call BlzFrameSetSize(EmojiToggle, EMOJI_TOGGLE_SIZE, EMOJI_TOGGLE_SIZE)
     call BlzFrameSetVisible(EmojiToggle, false)
     set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)
     call BlzFrameSetAllPoints(EmojiToggleIcon, EmojiToggle)
-    call BlzFrameSetTexture(EmojiToggleIcon, EmojiPath[1], 0, true)
+    call BlzFrameSetTexture(EmojiToggleIcon, "UI\\TeamPings\\button-emoji.tga", 0, true)
+    call BlzFrameSetAlpha(EmojiToggleIcon, 190)
     call BlzFrameSetEnable(EmojiToggleIcon, false)
-    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+    call WUI_Tooltip(EmojiToggle, "CHAT EMOJIS|nOpen the chat emoji palette.")
+    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetRoot(), "", 0)
     call BlzFrameSetAbsPoint(EmojiMuteButton, FRAMEPOINT_CENTER, EMOJI_MUTE_X, EMOJI_MUTE_Y)
-    call BlzFrameSetSize(EmojiMuteButton, EMOJI_TOGGLE_SIZE, EMOJI_TOGGLE_SIZE)
+    call BlzFrameSetSize(EmojiMuteButton, 0.012, 0.012)
 
     set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)
     call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
-    call BlzFrameSetTexture(EmojiMuteIcon, "Pick\\PickButton_Pick_Ban", 0, true)
+    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
+    call BlzFrameSetAlpha(EmojiMuteIcon, 190)
     call BlzFrameSetEnable(EmojiMuteIcon, false)
+    call WUI_Tooltip(EmojiMuteButton, "SHOW CHAT EMOJIS|nChecked: enabled. Unchecked: muted.")
     
     call BlzFrameSetVisible(EmojiMuteButton, false)
-    set EmojiPanel = BlzCreateFrameByType("BACKDROP", "NativeEmojiPanel", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+    set EmojiPanel = WUI_Window("WOSChatEmojiWindow", WUI_GetRoot(), 1, 0)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_BOTTOMLEFT, EMOJI_PANEL_X, EMOJI_PANEL_Y)
     call BlzFrameSetSize(EmojiPanel, 0.172, 0.106)
-    call BlzFrameSetTexture(EmojiPanel, "Textures\\black32.blp", 0, true)
+    call BlzFrameSetTexture(EmojiPanel, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(EmojiPanel, 190)
     call BlzFrameSetLevel(EmojiPanel, 1)
     // Disable the semi-transparent backdrop itself. EmojiButton frames are
@@ -667,7 +669,7 @@ private function CreateEmojiPalette takes nothing returns nothing
 
         // Parent buttons directly to Game UI. EmojiPanel has alpha 190;
         // keeping buttons outside it prevents inherited transparency.
-        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "NativeEmojiButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "NativeEmojiButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
         call BlzFrameSetSize(EmojiButton[i], EMOJI_BUTTON_SIZE, EMOJI_BUTTON_SIZE)
         call BlzFrameSetAlpha(EmojiButton[i], 255)

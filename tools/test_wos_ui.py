@@ -109,6 +109,7 @@ class HiddenEnemyData(unittest.TestCase):
             'UNITSTAT_Tooltip': 'tooltip', 'GroupClear': lambda *_: None,
             'GroupEnumUnitsSelected': lambda *_: None, 'FirstOfGroup': lambda *_: selected,
             'WUI_SetText': lambda f, v: self.frames.update({(f, 'text'): v}),
+            'WUI_ShowNativeBuffs': lambda v: self.frames.update({('buffs', 'visible'): v}),
             'I2S': str, 'PLAYER_STATE_RESOURCE_GOLD': 'gold',
             'PLAYER_STATE_RESOURCE_LUMBER': 'lumber',
             'GetPlayerState': lambda p, s: 120 if s == 'gold' else 45,

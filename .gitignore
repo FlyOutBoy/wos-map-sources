@@ -8,6 +8,9 @@
 *.pyc
 object-data-backups/
 backups/trigger-sync/
+backups/team-ping-assets/
+backups/main-map-build/
+backups/ui-redesign/
 backups/source-import/
 backups/import-path-fix/
 # Персональные конфиги сборки в корне

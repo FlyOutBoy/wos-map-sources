@@ -1,280 +1,306 @@
-library HeroUnitPanelStats initializer HeroUnitPanelStats_Init requires heroicon
-    globals
-        private timer UNITSTAT_UpdateTimer = null
-        private group UNITSTAT_SelectedGroup = null
+library HeroUnitPanelStats initializer HeroUnitPanelStats_Init requires heroicon, WOSUI
 
-        private framehandle UNITSTAT_GameUI = null
-        private framehandle UNITSTAT_ArmorContainer = null
-        
-        private framehandle UNITSTAT_PhysRes = null
-        private framehandle UNITSTAT_MagRes = null
-        private framehandle UNITSTAT_HpRegen = null
-        private framehandle UNITSTAT_MpRegen = null
-        private framehandle UNITSTAT_MoveSpeed = null
-        private framehandle UNITSTAT_AttackSpeed = null
-        private framehandle UNITSTAT_Invulnerable = null
+// Existing selected-unit overlay migrated into the compact HUD. All combat data
+// comes from the map's existing functions or the stock engine panel.
+globals
+    private group UNITSTAT_SelectedGroup = null
+    private timer UNITSTAT_UpdateTimer = null
+    private framehandle UNITSTAT_Root = null
+    private framehandle UNITSTAT_Portrait = null
+    private framehandle UNITSTAT_Level = null
+    private framehandle array UNITSTAT_Widget
+    private framehandle array UNITSTAT_Value
+    private string array UNITSTAT_Help
+    private framehandle array UNITSTAT_Bar
+    private framehandle array UNITSTAT_BarText
+    private framehandle array UNITSTAT_Regen
+    private framehandle UNITSTAT_Tooltip = null
+    private framehandle UNITSTAT_TooltipText = null
+    private framehandle UNITSTAT_Gold = null
+    private framehandle UNITSTAT_EngineDamage = null
+    private framehandle UNITSTAT_Shop = null
+    private framehandle UNITSTAT_Emotes = null
+    private integer UNITSTAT_Hover = -1
+    private unit UNITSTAT_LastSelected = null
+    private integer UNITSTAT_LastType = 0
+    private boolean UNITSTAT_Compact = false
+endglobals
 
-        private unit UNITSTAT_DummyHero = null
+private function UNITSTAT_ToolbarClick takes nothing returns nothing
+    if BlzGetTriggerFrame() == UNITSTAT_Shop then
+        call WOS_ToggleShop.evaluate(GetTriggerPlayer())
+    else
+        call Emoji_ToggleMenu(GetTriggerPlayer())
+    endif
+    if GetLocalPlayer() == GetTriggerPlayer() then
+        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
+        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
+    endif
+endfunction
 
-        private constant real UNITSTAT_UPDATE_PERIOD = 0.05
-        private constant real UNITSTAT_TEXT_SCALE = 0.70
-        private constant real UNITSTAT_ARMOR_OFFSCREEN_X = 0.400
-        private constant real UNITSTAT_ARMOR_OFFSCREEN_Y = -0.180
-        private constant real UNITSTAT_ARMOR_TINY_SIZE = 0.00001
+private function UNITSTAT_CreateToolbar takes nothing returns nothing
+    local trigger clicks = CreateTrigger()
+    local framehandle icon
+    local framehandle text
+    set UNITSTAT_Shop = BlzCreateFrameByType("BUTTON", "WOSShopToolbar", WUI_GetRoot(), "", 0)
+    call WUI_Place(UNITSTAT_Shop, 0.718, 0.060, 0.020, 0.020)
+    set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)
+    call BlzFrameSetAllPoints(icon, UNITSTAT_Shop)
+    call BlzFrameSetTexture(icon, "ReplaceableTextures\\CommandButtons\\BTNMarketplace.blp", 0, true)
+    call BlzFrameSetEnable(icon, false)
+    call WUI_Tooltip(UNITSTAT_Shop, "SHOP [Tab]|nOpen or close your current shop tab.")
+    set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetRoot(), "", 0)
+    call WUI_Place(UNITSTAT_Emotes, 0.770, 0.060, 0.020, 0.020)
+    set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)
+    call BlzFrameSetAllPoints(icon, UNITSTAT_Emotes)
+    call BlzFrameSetTexture(icon, "UI\\TeamPings\\button-emoji.tga", 0, true)
+    call BlzFrameSetEnable(icon, false)
+    set text = BlzCreateFrameByType("TEXT", "WOSEmotesToolbarHotkey", UNITSTAT_Emotes, "", 0)
+    call BlzFrameSetPoint(text, FRAMEPOINT_BOTTOMRIGHT, UNITSTAT_Emotes, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
+    call BlzFrameSetText(text, WUI_GOLD + "K|r")
+    call BlzFrameSetScale(text, 0.55)
+    call BlzFrameSetEnable(text, false)
+    call WUI_Tooltip(UNITSTAT_Emotes, "EMOTES [K]|nOpen the existing hero emote palette.")
+    call BlzTriggerRegisterFrameEvent(clicks, UNITSTAT_Shop, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(clicks, UNITSTAT_Emotes, FRAMEEVENT_CONTROL_CLICK)
+    call TriggerAddAction(clicks, function UNITSTAT_ToolbarClick)
+    set icon = null
+    set text = null
+    set clicks = null
+endfunction
 
-        // All offsets are relative to the left side of the former armor slot.
-        // X: positive = right. Y: positive = up.
-        private constant real UNITSTAT_HP_REGEN_X = -0.005
-        private constant real UNITSTAT_HP_REGEN_Y = 0.008
-        private constant real UNITSTAT_MP_REGEN_X = -0.005
-        private constant real UNITSTAT_MP_REGEN_Y = -0.008
-        private constant real UNITSTAT_HP_REGEN_SCALE = 0.68
-        private constant real UNITSTAT_MP_REGEN_SCALE = 0.68
+private function UNITSTAT_Text takes string name, framehandle parent, real x, real y, real width returns framehandle
+    local framehandle text = BlzCreateFrameByType("TEXT", name, parent, "", 0)
+    call WUI_Place(text, x, y, width, 0.012)
+    call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(text, 0.64)
+    call BlzFrameSetEnable(text, false)
+    return text
+endfunction
 
-        private constant real UNITSTAT_PHYS_RES_X = 0.045
-        private constant real UNITSTAT_PHYS_RES_Y = 0.008
-        private constant real UNITSTAT_MAG_RES_X = 0.045
-        private constant real UNITSTAT_MAG_RES_Y = -0.008
+private function UNITSTAT_WidgetCreate takes integer index, string texture, real x, real y, real width, trigger events returns nothing
+    local framehandle icon
+    set UNITSTAT_Widget[index] = BlzCreateFrameByType("BUTTON", "WOSStatWidget", UNITSTAT_Root, "", index)
+    call WUI_Place(UNITSTAT_Widget[index], x, y, width, 0.013)
+    set icon = BlzCreateFrameByType("BACKDROP", "WOSStatIcon", UNITSTAT_Widget[index], "", index)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_LEFT, UNITSTAT_Widget[index], FRAMEPOINT_LEFT, 0.001, 0.00)
+    call BlzFrameSetSize(icon, 0.010, 0.010)
+    call BlzFrameSetTexture(icon, texture, 0, true)
+    call BlzFrameSetEnable(icon, false)
+    set UNITSTAT_Value[index] = UNITSTAT_Text("WOSStatValue", UNITSTAT_Widget[index], x + 0.006, y, width - 0.012)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[index], FRAMEEVENT_MOUSE_ENTER)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[index], FRAMEEVENT_MOUSE_LEAVE)
+    set icon = null
+endfunction
 
-        private constant real UNITSTAT_MOVE_SPEED_X = 0.145
-        private constant real UNITSTAT_MOVE_SPEED_Y = 0.008
-        private constant real UNITSTAT_ATTACK_SPEED_X = 0.145
-        private constant real UNITSTAT_ATTACK_SPEED_Y = -0.008
+private function UNITSTAT_HoverEvent takes nothing returns nothing
+    local integer i = 0
+    if GetLocalPlayer() != GetTriggerPlayer() then
+        return
+    endif
+    if BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_LEAVE then
+        set UNITSTAT_Hover = -1
+        call BlzFrameSetVisible(UNITSTAT_Tooltip, false)
+        return
+    endif
+    loop
+        exitwhen i >= 8
+        if BlzGetTriggerFrame() == UNITSTAT_Widget[i] then
+            set UNITSTAT_Hover = i
+            call WUI_SetText(UNITSTAT_TooltipText, UNITSTAT_Help[i])
+            call BlzFrameSetVisible(UNITSTAT_Tooltip, true)
+            return
+        endif
+        set i = i + 1
+    endloop
+endfunction
 
-        private constant real UNITSTAT_INVULNERABLE_X = 0.04
-        private constant real UNITSTAT_INVULNERABLE_Y = 0.0
-
-        // Used only if Warcraft has not exposed the armor container yet.
-        private constant real UNITSTAT_FALLBACK_X = 0.405
-        private constant real UNITSTAT_FALLBACK_Y = 0.108
-
-        private constant integer UNITSTAT_INVUL_ABILITY = 'Avul'
-    endglobals
-
-    private function UNITSTAT_CreateText takes string frameName, integer context, real width returns framehandle
-        local framehandle result = BlzCreateFrameByType("TEXT", frameName, UNITSTAT_GameUI, "", context)
-        call BlzFrameSetSize(result, width, 0.012)
-        call BlzFrameSetTextAlignment(result, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
-        call BlzFrameSetScale(result, UNITSTAT_TEXT_SCALE)
-        call BlzFrameSetLevel(result, 25)
-        return result
-    endfunction
-
-    private function UNITSTAT_Update takes nothing returns nothing
-        local integer i = 0
-        local unit selected = null
-        
-        local boolean showVitals
-        local boolean showHero
-        local boolean invulnerable
-        
-        local string hpRegenStr = ""
-        local string mpRegenStr = ""
-        local string physResStr = ""
-        local string magResStr = ""
-        local string msStr = ""
-        local string asStr = ""
-
-        local integer maxMp
-
-        loop
-            exitwhen i >= bj_MAX_PLAYER_SLOTS
-            if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
-                
-                call GroupClear(UNITSTAT_SelectedGroup)
-                call GroupEnumUnitsSelected(UNITSTAT_SelectedGroup, Player(i), null)
-                set selected = FirstOfGroup(UNITSTAT_SelectedGroup)
-
-                set showVitals = false
-                set showHero = false
-                set invulnerable = false
-                set maxMp = 0
-
-                if selected != null then
-                    set showVitals = true
-                    set showHero = true //IsUnitType(selected, UNIT_TYPE_HERO) or IsHeroUnitId(GetUnitTypeId(selected))
-                    set invulnerable = GetUnitAbilityLevel(selected, UNITSTAT_INVUL_ABILITY) > 0 and CheckCoordsInRect(gg_rct_Base,GetUnitX(selected),GetUnitY(selected))== false 
-
-                    set maxMp = BlzGetUnitMaxMana(selected)
-
-                    set hpRegenStr = "|cff62ff62HP: +" + R2SW(GetHpRegen(selected), 0, 2) + "|r"
-                    set mpRegenStr = "|cff6fa8ffMP: +" + R2SW(GetMpRegen(selected), 0, 2) + "|r"
-
-                    if showHero then
-                        set physResStr = "|cffff6b6bPhys Res: |r|cffffffff" + R2SW(GetPhysRes(selected), 0, 2) + "%|r"
-                        set magResStr = "|cff6fa8ffMag Res: |r|cffffffff" + R2SW(GetMagRes(selected), 0, 2) + "%|r"
-                        set msStr = "|cffffd36bMS: |r|cffffffff" + I2S(R2I(GetUnitMoveSpeed(selected))) + "|r"
-                        set asStr = "|cffdededeAS: |r|cffffffff" + R2SW(GetAS(selected), 0, 2) + "s|r"
-                    endif
-                endif
-
-                if GetLocalPlayer() == Player(i) then
-                    if not showVitals then
-                        call BlzFrameSetVisible(UNITSTAT_HpRegen, false)
-                        call BlzFrameSetVisible(UNITSTAT_MpRegen, false)
-                        call BlzFrameSetVisible(UNITSTAT_PhysRes, false)
-                        call BlzFrameSetVisible(UNITSTAT_MagRes, false)
-                        call BlzFrameSetVisible(UNITSTAT_MoveSpeed, false)
-                        call BlzFrameSetVisible(UNITSTAT_AttackSpeed, false)
-                        call BlzFrameSetVisible(UNITSTAT_Invulnerable, false)
-                    else
-                        call BlzFrameSetText(UNITSTAT_HpRegen, hpRegenStr)
-                        call BlzFrameSetText(UNITSTAT_MpRegen, mpRegenStr)
-                        
-                        call BlzFrameSetVisible(UNITSTAT_HpRegen, true)
-
-                        if maxMp <= 0 then
-                            call BlzFrameSetVisible(UNITSTAT_MpRegen, false)
-                        else
-                            call BlzFrameSetVisible(UNITSTAT_MpRegen, true)
-                        endif
-
-                        if not showHero then
-                            call BlzFrameSetVisible(UNITSTAT_PhysRes, false)
-                            call BlzFrameSetVisible(UNITSTAT_MagRes, false)
-                            call BlzFrameSetVisible(UNITSTAT_MoveSpeed, false)
-                            call BlzFrameSetVisible(UNITSTAT_AttackSpeed, false)
-                            call BlzFrameSetVisible(UNITSTAT_Invulnerable, false)
-                           // call BJDebugMsg("not")
-                        else
-                           // call BJDebugMsg("true")
-                            call BlzFrameSetText(UNITSTAT_PhysRes, physResStr)
-                            call BlzFrameSetText(UNITSTAT_MagRes, magResStr)
-                            call BlzFrameSetText(UNITSTAT_MoveSpeed, msStr)
-                            call BlzFrameSetText(UNITSTAT_AttackSpeed, asStr)
-                            
-                            if invulnerable then
-                                call BlzFrameSetVisible(UNITSTAT_PhysRes, false)
-                                call BlzFrameSetVisible(UNITSTAT_MagRes, false)
-                                call BlzFrameSetVisible(UNITSTAT_Invulnerable, true)
-                            else
-                                call BlzFrameSetVisible(UNITSTAT_PhysRes, true)
-                                call BlzFrameSetVisible(UNITSTAT_MagRes, true)
-                                call BlzFrameSetVisible(UNITSTAT_Invulnerable, false)
-                            endif
-                            
-                            call BlzFrameSetVisible(UNITSTAT_MoveSpeed, true)
-                            call BlzFrameSetVisible(UNITSTAT_AttackSpeed, true)
-                        endif
-                    endif
-                endif
-            endif
-            set i = i + 1
-        endloop
-
+private function UNITSTAT_Update takes nothing returns nothing
+    local unit selected
+    local integer i = 0
+    local integer heroType
+    local boolean hero
+    local boolean readable
+    local boolean blocked
+    local real maximum
+    local real value
+    local string damage
+    local string color
+    call GroupClear(UNITSTAT_SelectedGroup)
+    call GroupEnumUnitsSelected(UNITSTAT_SelectedGroup, GetLocalPlayer(), null)
+    set selected = FirstOfGroup(UNITSTAT_SelectedGroup)
+    set readable = selected != null
+    if readable then
+        set readable = IsPlayerAlly(GetOwningPlayer(selected), GetLocalPlayer()) or (IsUnitVisible(selected, GetLocalPlayer()) and IsUnitDetected(selected, GetLocalPlayer()))
+    endif
+    call BlzFrameSetVisible(UNITSTAT_Root, readable)
+    call WUI_ShowNativeBuffs(readable)
+    call WUI_SetText(UNITSTAT_Gold, "|cffd5b876" + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_GOLD)) + "|r")
+    set UNITSTAT_Help[7] = "|cffd5b876GOLD|r|nCurrent: " + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_GOLD)) + "|nNext round: " + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_LUMBER))
+    if not readable then
+        if UNITSTAT_Hover == 7 then
+            call WUI_SetText(UNITSTAT_TooltipText, UNITSTAT_Help[7])
+        else
+            call BlzFrameSetVisible(UNITSTAT_Tooltip, false)
+        endif
         set selected = null
-    endfunction
-
-    private function UNITSTAT_DelayedInit takes nothing returns nothing
-        local timer initTimer = GetExpiredTimer()
-        local framehandle armorBackdrop
-        local framehandle heroContainer
-        local framehandle heroIcon
-        local framehandle heroText
-
-        call DestroyTimer(initTimer)
-
-        set armorBackdrop = BlzGetFrameByName("InfoPanelIconBackdrop", 2)
-        if armorBackdrop != null then
-            call BlzFrameClearAllPoints(armorBackdrop)
-            call BlzFrameSetSize(armorBackdrop, UNITSTAT_ARMOR_TINY_SIZE, UNITSTAT_ARMOR_TINY_SIZE)
-            call BlzFrameSetAbsPoint(armorBackdrop, FRAMEPOINT_BOTTOM, UNITSTAT_ARMOR_OFFSCREEN_X, UNITSTAT_ARMOR_OFFSCREEN_Y)
+        return
+    endif
+    set hero = IsUnitType(selected, UNIT_TYPE_HERO) or IsHeroUnitId(GetUnitTypeId(selected))
+    set heroType = GetUnitTypeId(selected)
+    if selected != UNITSTAT_LastSelected or heroType != UNITSTAT_LastType then
+        call BlzFrameSetTexture(UNITSTAT_Portrait, BlzGetAbilityIcon(heroType), 0, true)
+        call WUI_LayoutCommands(hero)
+        set UNITSTAT_LastSelected = selected
+        set UNITSTAT_LastType = heroType
+    endif
+    set UNITSTAT_Compact = hero
+    set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r"
+    if hero then
+        call WUI_SetText(UNITSTAT_Level, "|cffd5b876" + I2S(GetHeroLevel(selected)) + "|r")
+    else
+        call WUI_SetText(UNITSTAT_Level, "")
+    endif
+    if UNITSTAT_EngineDamage != null then
+        set damage = BlzFrameGetText(UNITSTAT_EngineDamage)
+    else
+        set damage = R2SW(GetAttack(selected), 0, 0)
+    endif
+    call WUI_SetText(UNITSTAT_Value[0], "|cffe1e5eb" + damage + "|r")
+    set UNITSTAT_Help[0] = "|cffd5b876ATTACK|r|nDamage: " + damage + "|nAttack interval: " + R2SW(GetAS(selected), 0, 2) + "s|nRange: " + R2SW(BlzGetUnitWeaponRealField(selected, UNIT_WEAPON_RF_ATTACK_RANGE, 0), 0, 0)
+    set blocked = GetUnitAbilityLevel(selected, 'Avul') > 0 and not CheckCoordsInRect(gg_rct_Base, GetUnitX(selected), GetUnitY(selected))
+    if blocked then
+        call WUI_SetText(UNITSTAT_Value[1], "|cffe8c975Block|r")
+        call WUI_SetText(UNITSTAT_Value[2], "|cffe8c975Block|r")
+    else
+        call WUI_SetText(UNITSTAT_Value[1], "|cffff8a83" + R2SW(GetPhysRes(selected), 0, 1) + "%|r")
+        call WUI_SetText(UNITSTAT_Value[2], "|cff7caefa" + R2SW(GetMagRes(selected), 0, 1) + "%|r")
+    endif
+    set UNITSTAT_Help[1] = "|cffff8a83PHYSICAL RESISTANCE|r|n" + R2SW(GetPhysRes(selected), 0, 2) + "%|nUses the map's physical damage system.|nInvulnerability blocks damage outside the base."
+    set UNITSTAT_Help[2] = "|cff7caefaMAGICAL RESISTANCE|r|n" + R2SW(GetMagRes(selected), 0, 2) + "%|nUses the map's magical damage system.|nInvulnerability blocks damage outside the base."
+    set i = 3
+    loop
+        exitwhen i >= 6
+        call BlzFrameSetVisible(UNITSTAT_Widget[i], hero)
+        set color = "|cffe1e5eb"
+        if i == 3 then
+            set value = I2R(GetHeroStr(selected, true))
+            if GetMainStatStr(selected) then
+                set color = WUI_GOLD
+            endif
+            set UNITSTAT_Help[i] = "|cffd5b876STRENGTH|r|nTotal: " + I2S(GetHeroStr(selected, true)) + "|nBase: " + I2S(GetHeroStr(selected, false))
+        elseif i == 4 then
+            set value = I2R(GetHeroAgi(selected, true))
+            if GetMainStatAgi(selected) then
+                set color = WUI_GOLD
+            endif
+            set UNITSTAT_Help[i] = "|cffd5b876AGILITY|r|nTotal: " + I2S(GetHeroAgi(selected, true)) + "|nBase: " + I2S(GetHeroAgi(selected, false))
+        else
+            set value = I2R(GetHeroInt(selected, true))
+            if GetMainStatInt(selected) then
+                set color = WUI_GOLD
+            endif
+            set UNITSTAT_Help[i] = "|cffd5b876INTELLIGENCE|r|nTotal: " + I2S(GetHeroInt(selected, true)) + "|nBase: " + I2S(GetHeroInt(selected, false))
         endif
-
-        set UNITSTAT_ArmorContainer = BlzGetFrameByName("SimpleInfoPanelIconArmor", 2)
-        if UNITSTAT_ArmorContainer != null then
-            call BlzFrameClearAllPoints(UNITSTAT_PhysRes)
-            call BlzFrameClearAllPoints(UNITSTAT_MagRes)
-            call BlzFrameClearAllPoints(UNITSTAT_MoveSpeed)
-            call BlzFrameClearAllPoints(UNITSTAT_AttackSpeed)
-            call BlzFrameClearAllPoints(UNITSTAT_Invulnerable)
-            call BlzFrameClearAllPoints(UNITSTAT_HpRegen)
-            call BlzFrameClearAllPoints(UNITSTAT_MpRegen)
-
-            call BlzFrameSetPoint(UNITSTAT_HpRegen, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_HP_REGEN_X, UNITSTAT_HP_REGEN_Y)
-            call BlzFrameSetPoint(UNITSTAT_MpRegen, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_MP_REGEN_X, UNITSTAT_MP_REGEN_Y)
-            call BlzFrameSetPoint(UNITSTAT_PhysRes, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_PHYS_RES_X, UNITSTAT_PHYS_RES_Y)
-            call BlzFrameSetPoint(UNITSTAT_MagRes, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_MAG_RES_X, UNITSTAT_MAG_RES_Y)
-            call BlzFrameSetPoint(UNITSTAT_MoveSpeed, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_MOVE_SPEED_X, UNITSTAT_MOVE_SPEED_Y)
-            call BlzFrameSetPoint(UNITSTAT_AttackSpeed, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_ATTACK_SPEED_X, UNITSTAT_ATTACK_SPEED_Y)
-            call BlzFrameSetPoint(UNITSTAT_Invulnerable, FRAMEPOINT_LEFT, UNITSTAT_ArmorContainer, FRAMEPOINT_LEFT, UNITSTAT_INVULNERABLE_X, UNITSTAT_INVULNERABLE_Y)
+        call WUI_SetText(UNITSTAT_Value[i], color + I2S(R2I(value)) + "|r")
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 2
+        if i == 0 then
+            set maximum = I2R(BlzGetUnitMaxHP(selected))
+            set value = GetWidgetLife(selected)
+            call WUI_SetText(UNITSTAT_Regen[i], "+" + R2SW(GetHpRegen(selected), 0, 1))
+        else
+            set maximum = I2R(BlzGetUnitMaxMana(selected))
+            set value = GetUnitState(selected, UNIT_STATE_MANA)
+            call WUI_SetText(UNITSTAT_Regen[i], "+" + R2SW(GetMpRegen(selected), 0, 1))
         endif
+        call BlzFrameSetVisible(UNITSTAT_Bar[i], maximum > 0.00)
+        call BlzFrameSetVisible(UNITSTAT_BarText[i], maximum > 0.00)
+        call BlzFrameSetVisible(UNITSTAT_Regen[i], maximum > 0.00)
+        call WUI_SetValue(UNITSTAT_Bar[i], 100.00 * value / RMaxBJ(1.00, maximum))
+        call WUI_SetText(UNITSTAT_BarText[i], I2S(R2I(value)) + " / " + I2S(R2I(maximum)))
+        set i = i + 1
+    endloop
+    if UNITSTAT_Hover >= 0 then
+        call WUI_SetText(UNITSTAT_TooltipText, UNITSTAT_Help[UNITSTAT_Hover])
+    endif
+    set selected = null
+endfunction
 
-        set heroContainer = BlzGetFrameByName("SimpleInfoPanelIconHero", 6)
-        set heroIcon = BlzGetFrameByName("InfoPanelIconHeroIcon", 6)
-        set heroText = BlzGetFrameByName("SimpleInfoPanelIconHeroText", 6)
-        if heroContainer != null and heroIcon != null and heroText != null then
-            call BlzFrameClearAllPoints(heroIcon)
-            call BlzFrameSetPoint(heroIcon, FRAMEPOINT_TOPLEFT, heroContainer, FRAMEPOINT_TOPLEFT, 0.002, -0.003)
+private function UNITSTAT_DelayedInit takes nothing returns nothing
+    local timer initTimer = GetExpiredTimer()
+    call DestroyTimer(initTimer)
+    call WUI_InstallNativeLayout()
+    set UNITSTAT_EngineDamage = BlzGetFrameByName("InfoPanelIconValue", 0)
+    call WUI_LayoutCommands(false)
+    set UNITSTAT_UpdateTimer = CreateTimer()
+    call TimerStart(UNITSTAT_UpdateTimer, 0.10, true, function UNITSTAT_Update)
+    set initTimer = null
+endfunction
 
-            call BlzFrameClearAllPoints(heroText)
-            call BlzFrameSetPoint(heroText, FRAMEPOINT_LEFT, heroIcon, FRAMEPOINT_RIGHT, 0.006, 0.000)
-            call BlzFrameSetPoint(heroText, FRAMEPOINT_RIGHT, heroContainer, FRAMEPOINT_RIGHT, 0.000, 0.000)
-            call BlzFrameSetPoint(heroText, FRAMEPOINT_TOP, heroContainer, FRAMEPOINT_TOP, 0.000, 0.000)
-            call BlzFrameSetPoint(heroText, FRAMEPOINT_BOTTOM, heroContainer, FRAMEPOINT_BOTTOM, 0.000, 0.000)
+private function HeroUnitPanelStats_Init takes nothing returns nothing
+    local trigger events = CreateTrigger()
+    local framehandle back
+    local integer i = 0
+    local timer initTimer = CreateTimer()
+    set UNITSTAT_SelectedGroup = CreateGroup()
+    set UNITSTAT_Root = BlzCreateFrameByType("FRAME", "WOSSelectedUnitHUD", WUI_GetRoot(), "", 0)
+    set back = WUI_Panel("WOSSelectedUnitBack", UNITSTAT_Root, 0.178, 0.076)
+    call WUI_Place(back, 0.242, 0.052, 0.178, 0.076)
+    set back = WUI_Border("WOSSelectedUnitEdge", back)
+    set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)
+    call WUI_Place(UNITSTAT_Widget[6], 0.176, 0.051, 0.041, 0.041)
+    set UNITSTAT_Portrait = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitIconTexture", UNITSTAT_Widget[6], "", 0)
+    call BlzFrameSetAllPoints(UNITSTAT_Portrait, UNITSTAT_Widget[6])
+    set back = WUI_Border("WOSSelectedUnitBorder", UNITSTAT_Widget[6])
+    set UNITSTAT_Level = UNITSTAT_Text("WOSSelectedUnitLevel", UNITSTAT_Root, 0.176, 0.022, 0.031)
+    call UNITSTAT_WidgetCreate(0, "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp", 0.255, 0.074, 0.109, events)
+    call UNITSTAT_WidgetCreate(1, "ReplaceableTextures\\CommandButtons\\BTNDefend.blp", 0.226, 0.056, 0.052, events)
+    call UNITSTAT_WidgetCreate(2, "ReplaceableTextures\\CommandButtons\\BTNSpellShieldAmulet.blp", 0.283, 0.056, 0.052, events)
+    call UNITSTAT_WidgetCreate(3, "UI\\Widgets\\Console\\Human\\human-attribute-stre.blp", 0.216, 0.038, 0.032, events)
+    call UNITSTAT_WidgetCreate(4, "UI\\Widgets\\Console\\Human\\human-attribute-agil.blp", 0.252, 0.038, 0.032, events)
+    call UNITSTAT_WidgetCreate(5, "UI\\Widgets\\Console\\Human\\human-attribute-inte.blp", 0.288, 0.038, 0.032, events)
+    loop
+        exitwhen i >= 2
+        set back = WUI_Panel("WOSVitalsBack", UNITSTAT_Root, 0.277, 0.009)
+        call WUI_Place(back, 0.474, 0.093 - I2R(i) * 0.014, 0.277, 0.009)
+        set UNITSTAT_Bar[i] = BlzCreateFrameByType("STATUSBAR", "WOSVitals", UNITSTAT_Root, "", i)
+        call WUI_Place(UNITSTAT_Bar[i], 0.474, 0.093 - I2R(i) * 0.014, 0.275, 0.007)
+        if i == 0 then
+            call BlzFrameSetTexture(UNITSTAT_Bar[i], "UI\\WOS\\hp.tga", 0, true)
+        else
+            call BlzFrameSetTexture(UNITSTAT_Bar[i], "UI\\WOS\\mp.tga", 0, true)
         endif
+        set UNITSTAT_BarText[i] = UNITSTAT_Text("WOSVitalsNumber", UNITSTAT_Root, 0.470, 0.093 - I2R(i) * 0.014, 0.160)
+        call BlzFrameSetScale(UNITSTAT_BarText[i], 0.56)
+        set UNITSTAT_Regen[i] = UNITSTAT_Text("WOSVitalsRegen", UNITSTAT_Root, 0.586, 0.093 - I2R(i) * 0.014, 0.044)
+        call BlzFrameSetScale(UNITSTAT_Regen[i], 0.54)
+        set i = i + 1
+    endloop
+    set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetRoot(), "", 0)
+    call WUI_Place(UNITSTAT_Widget[7], 0.742, 0.091, 0.093, 0.016)
+    set UNITSTAT_Gold = UNITSTAT_Text("WOSGold", UNITSTAT_Widget[7], 0.742, 0.091, 0.090)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[7], FRAMEEVENT_MOUSE_ENTER)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[7], FRAMEEVENT_MOUSE_LEAVE)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[6], FRAMEEVENT_MOUSE_ENTER)
+    call BlzTriggerRegisterFrameEvent(events, UNITSTAT_Widget[6], FRAMEEVENT_MOUSE_LEAVE)
+    call TriggerAddAction(events, function UNITSTAT_HoverEvent)
+    set UNITSTAT_Tooltip = WUI_Panel("WOSStatTooltip", WUI_GetRoot(), 0.225, 0.104)
+    call WUI_Place(UNITSTAT_Tooltip, 0.272, 0.179, 0.225, 0.104)
+    set back = WUI_Border("WOSStatTooltipBorder", UNITSTAT_Tooltip)
+    set UNITSTAT_TooltipText = UNITSTAT_Text("WOSStatTooltipText", UNITSTAT_Tooltip, 0.272, 0.179, 0.208)
+    call BlzFrameSetSize(UNITSTAT_TooltipText, 0.208, 0.090)
+    call BlzFrameSetTextAlignment(UNITSTAT_TooltipText, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetVisible(UNITSTAT_Tooltip, false)
+    call BlzFrameSetVisible(UNITSTAT_Root, false)
+    call UNITSTAT_CreateToolbar()
+    call TimerStart(initTimer, 0.20, false, function UNITSTAT_DelayedInit)
+    set events = null
+    set back = null
+    set initTimer = null
+endfunction
 
-        call ClearSelection()
-        call RemoveUnit(UNITSTAT_DummyHero)
-        set UNITSTAT_DummyHero = null
-
-        set UNITSTAT_UpdateTimer = CreateTimer()
-        call TimerStart(UNITSTAT_UpdateTimer, UNITSTAT_UPDATE_PERIOD, true, function UNITSTAT_Update)
-    endfunction
-
-    private function UNITSTAT_CreateUI takes nothing returns nothing
-        set UNITSTAT_GameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        set UNITSTAT_SelectedGroup = CreateGroup()
-
-        set UNITSTAT_PhysRes = UNITSTAT_CreateText("HeroPanelPhysRes", 6100, 0.086)
-        set UNITSTAT_MagRes = UNITSTAT_CreateText("HeroPanelMagRes", 6101, 0.086)
-        set UNITSTAT_HpRegen = UNITSTAT_CreateText("HeroPanelHpRegen", 6104, 0.045)
-        set UNITSTAT_MpRegen = UNITSTAT_CreateText("HeroPanelMpRegen", 6105, 0.045)
-        set UNITSTAT_MoveSpeed = UNITSTAT_CreateText("HeroPanelMoveSpeed", 6106, 0.080)
-        set UNITSTAT_AttackSpeed = UNITSTAT_CreateText("HeroPanelAttackSpeed", 6107, 0.080)
-        set UNITSTAT_Invulnerable = UNITSTAT_CreateText("HeroPanelInvulnerable", 6108, 0.095)
-        
-        call BlzFrameSetScale(UNITSTAT_PhysRes, 0.78)
-        call BlzFrameSetScale(UNITSTAT_MagRes, 0.78)
-        call BlzFrameSetScale(UNITSTAT_HpRegen, UNITSTAT_HP_REGEN_SCALE)
-        call BlzFrameSetScale(UNITSTAT_MpRegen, UNITSTAT_MP_REGEN_SCALE)
-        call BlzFrameSetScale(UNITSTAT_Invulnerable, 0.90)
-        call BlzFrameSetText(UNITSTAT_Invulnerable, "|cffff2020INVUL|r")
-
-        call BlzFrameSetSize(UNITSTAT_HpRegen, 0.072, 0.012)
-        call BlzFrameSetSize(UNITSTAT_MpRegen, 0.072, 0.012)
-        call BlzFrameSetTextAlignment(UNITSTAT_HpRegen, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
-        call BlzFrameSetTextAlignment(UNITSTAT_MpRegen, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
-
-        // Visible fallback until the dummy Paladin exposes the armor container.
-        call BlzFrameSetAbsPoint(UNITSTAT_HpRegen, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_HP_REGEN_X, UNITSTAT_FALLBACK_Y + UNITSTAT_HP_REGEN_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_MpRegen, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_MP_REGEN_X, UNITSTAT_FALLBACK_Y + UNITSTAT_MP_REGEN_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_PhysRes, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_PHYS_RES_X, UNITSTAT_FALLBACK_Y + UNITSTAT_PHYS_RES_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_MagRes, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_MAG_RES_X, UNITSTAT_FALLBACK_Y + UNITSTAT_MAG_RES_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_MoveSpeed, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_MOVE_SPEED_X, UNITSTAT_FALLBACK_Y + UNITSTAT_MOVE_SPEED_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_AttackSpeed, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_ATTACK_SPEED_X, UNITSTAT_FALLBACK_Y + UNITSTAT_ATTACK_SPEED_Y)
-        call BlzFrameSetAbsPoint(UNITSTAT_Invulnerable, FRAMEPOINT_LEFT, UNITSTAT_FALLBACK_X + UNITSTAT_INVULNERABLE_X, UNITSTAT_FALLBACK_Y + UNITSTAT_INVULNERABLE_Y)
-
-        call BlzFrameSetVisible(UNITSTAT_PhysRes, false)
-        call BlzFrameSetVisible(UNITSTAT_MagRes, false)
-        call BlzFrameSetVisible(UNITSTAT_MoveSpeed, false)
-        call BlzFrameSetVisible(UNITSTAT_AttackSpeed, false)
-        call BlzFrameSetVisible(UNITSTAT_Invulnerable, false)
-        call BlzFrameSetVisible(UNITSTAT_HpRegen, false)
-        call BlzFrameSetVisible(UNITSTAT_MpRegen, false)
-    endfunction
-
-    private function HeroUnitPanelStats_Init takes nothing returns nothing
-        local timer initTimer = CreateTimer()
-        
-        call UNITSTAT_CreateUI()
-        
-        set UNITSTAT_DummyHero = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'Hpal', 0, 0, 0)
-        call BlzSetUnitRealField(UNITSTAT_DummyHero, UNIT_RF_SCALING_VALUE, 0.01)
-        
-        call SelectUnit(UNITSTAT_DummyHero, true)
-
-        call TimerStart(initTimer, 0.10, false, function UNITSTAT_DelayedInit)
-        set initTimer = null
-    endfunction
 endlibrary

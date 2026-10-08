@@ -219,53 +219,12 @@ function UpdateFullShieldEffects takes nothing returns nothing
     set u = null
 endfunction
 
-function TestComm takes nothing returns nothing 
-local real x 
-local real y 
-local real r = 200
-local real r2 = 235
-local real a = 270 *bj_DEGTORAD
-local real fly = 300
-local real scale = 20
-if ModeSystemsInitialized then
-return
-endif
-set ModeSystemsInitialized = true
-set x = (GetRectCenterX(gg_rct_TestMode))
-set y = (GetRectCenterY(gg_rct_TestMode))
-call CreateTT_perm(x,y,fly,scale,"|c00FFFC01Arrow Left - create enemy on left side |r")
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Right button - create hurt ally |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Down button - self root for 2 sec |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Up button - self stun 2 sec |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01ESC button - (fast press) restore cd, hp and mp (longpress 0.15sec+) give max lvl |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-lvl X' pick your hero or enemy and write -lvl 35(for example)  |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-X' to play animation of your hero( -0 to play first animation )  |r")
-set r = r + r2 
-set r = 0
-set x = (GetRectCenterX(gg_rct_TestMode2))
-set y = (GetRectCenterY(gg_rct_TestMode2))
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-slow' take self slow 50% for 4 sec  |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-silence' take self silence for 3 sec  |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-sukuna' summon round ender sukuna on center instantly  |r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-killme' kill  your hero after few sec|r")
-set r = r + r2 +50
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-pr x'  pick your hero or enemy and write -pr 35(for example) to set 35% physical resistance|r")
-set r = r + r2 +90
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-mr x'  pick your hero or enemy and write -mr 35(for example) to set 35% magical resistance|r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-hp x'  pick your hero or enemy and write -hp 3500(for example) to set current life to this amount|r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-mp x'  pick your hero or enemy and write -mp 3500(for example) to set current mana to this amount|r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01 You can pick enemy hero and open shop to buy any items to it |r")
+function TestComm takes nothing returns nothing
+    if ModeSystemsInitialized then
+        return
+    endif
+    set ModeSystemsInitialized = true
+    call WUI_ShowTestHelp(TestMode)
 endfunction
 
 function MusicInit takes nothing returns nothing
@@ -503,50 +462,11 @@ local real r2 = 265
 local real a = 270 *bj_DEGTORAD
 local real fly = 300
 local real scale = 20
-                set main_frame = BlzCreateFrameByType("BACKDROP", "SS", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                set main_frame = BlzCreateFrameByType("BACKDROP", "SS", WUI_GetRoot(), "", 0)
              //   call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
             //    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-set x = (GetRectCenterX(gg_rct_Evergreen)+700*Cos(180*bj_DEGTORAD)-115*Cos(90*bj_DEGTORAD))
-set y = (GetRectCenterY(gg_rct_Evergreen)+700*Sin(180*bj_DEGTORAD)-115*Sin(90*bj_DEGTORAD))
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Elemental debuffs + combo:|r")
-set x = (GetRectCenterX(gg_rct_Evergreen)+1450*Cos(180*bj_DEGTORAD)-415*Cos(90*bj_DEGTORAD))
-set y = (GetRectCenterY(gg_rct_Evergreen)+1450*Sin(180*bj_DEGTORAD)-415*Sin(90*bj_DEGTORAD))
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'- deal 40 magic dmg per sec, duration 5 sec|r")
-set r = r + 110 + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Water'- 100 dmg when apply, slow 10%, duration 5 sec|r")
-set r = r + r2+60 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Lightning'- duration 5 sec, after expires stun for 0.6 sec and burn 120 mana|r")
-set x = (GetRectCenterX(gg_rct_Evergreen)+100*Cos(180*bj_DEGTORAD)-475*Cos(90*bj_DEGTORAD))
-set y = (GetRectCenterY(gg_rct_Evergreen)+100*Sin(180*bj_DEGTORAD)-475*Sin(90*bj_DEGTORAD))
-set r = 200
-set r2 = 285
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'+'Water'- deal 1.5* Main stat dmg,duration 8 sec, increase taken physical damage by 10%|r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'+'Lightning'- deal 1.5* Main stat dmg,stun 1.25, duration 2.5 sec(cant reapplied till exist)|r")
-set r = r + r2 
-call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Lightning + Water'- duration 5 sec, slow 10% and deal 0.4* Main stat dmg per sec|r")
-
-    set i = 0
-    set x = (GetRectCenterX(gg_rct_Chest)+300*Cos(180*bj_DEGTORAD)+150*Cos(270*bj_DEGTORAD))
-    set y = (GetRectCenterY(gg_rct_Chest)+300*Sin(180*bj_DEGTORAD)+150*Sin(270*bj_DEGTORAD))
-    call CreateTT_perm(x,y,650,20,"|c00FFFC01Press 'F2' to open/close statistics|r")
-    set x = (GetRectCenterX(gg_rct_Evergreen)+210*Cos(180*bj_DEGTORAD)+150*Cos(90*bj_DEGTORAD))
-    set y = (GetRectCenterY(gg_rct_Evergreen)+210*Sin(180*bj_DEGTORAD)+150*Sin(90*bj_DEGTORAD))
-    call CreateTT_perm(x,y,650,20,"|c00FFFC01'F3'/'F4' clear/load dmg stat|r")
-    set x = (GetRectCenterX(gg_rct_Evergreen)+1400*Cos(180*bj_DEGTORAD)-450*Cos(90*bj_DEGTORAD))
-    set y = (GetRectCenterY(gg_rct_Evergreen)+1400*Sin(180*bj_DEGTORAD)-450*Sin(90*bj_DEGTORAD))
-    set k2 = 2500
-    
-    set x = (GetRectCenterX(gg_rct_Shop)+150*Cos(180*bj_DEGTORAD)+45*Cos(270*bj_DEGTORAD))
-    set y = (GetRectCenterY(gg_rct_Shop)+150*Sin(180*bj_DEGTORAD)+45*Sin(270*bj_DEGTORAD))
-     set ShopInfo = CreateTextTag()
-    call SetTextTagPos(ShopInfo, x,y, z) 
-    
-     call SetTextTagText(ShopInfo, "|c00FFFC01Press 'TAB' to open/close shop, USE AUTOBUY in shop if  you NEW|r", 0.02)
-     call SetTextTagVisibility(ShopInfo,true)
-     call SetTextTagPermanent(ShopInfo, true)
-  // call SetTextTagLifespan(ShopInfo, 1)
-    call SetTextTagVelocity(ShopInfo, 0, 0)
+// Permanent instruction texttags are now in the scrollable TestMode panel.
+set i = 0
 loop
 exitwhen i == 15
 set CameraSetup[i] = BaseCam

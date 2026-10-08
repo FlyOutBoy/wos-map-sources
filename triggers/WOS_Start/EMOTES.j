@@ -9,7 +9,7 @@
 //
 //  The only section normally edited is ConfigureEmojis below.
 // ============================================================================
-library EmojiStandalone requires GearSystems
+library EmojiStandalone requires GearSystems, WOSUI
 
 globals
     private constant integer EMOJI_MAX             = 30
@@ -20,12 +20,12 @@ globals
     private constant real    EMOJI_EFFECT_DURATION = 3.50
     private constant real    EMOJI_PERIOD          = 0.05
 
-    // 0.0288 * 2: every emoji button is exactly twice the old CustomImage size.
-    private constant real    EMOJI_BUTTON_SIZE     = 0.0576
-    private constant real    EMOJI_BUTTON_STEP     = 0.0648
+    // Compact icon grid; effect IDs, permissions and sync handlers are unchanged.
+    private constant real    EMOJI_BUTTON_SIZE     = 0.0420
+    private constant real    EMOJI_BUTTON_STEP     = 0.0480
     private constant real    EMOJI_HEADER_HEIGHT   = 0.0260
     private constant real    EMOJI_CLOSE_SIZE      = 0.0200
-    private constant integer EMOJI_PANEL_ALPHA     = 100
+    private constant integer EMOJI_PANEL_ALPHA     = 235
     private constant string  EMOJI_CLOSE_TEXTURE   = "Music\\Music_Close.blp"
     private constant real    EMOJI_PANEL_CENTER_X  = 0.370
     private constant real    EMOJI_PANEL_CENTER_Y  = 0.310
@@ -322,6 +322,12 @@ function Emoji_ShowMenu takes player p, boolean flag returns nothing
     endif
 endfunction
 
+function Emoji_ToggleMenu takes player p returns nothing
+    if EmojiInitialized and GetLocalPlayer() == p then
+        call Emoji_ShowMenu(p, not EmojiPanelOpen[GetPlayerId(p)])
+    endif
+endfunction
+
 function Emoji_Send takes player sender, integer emojiId returns nothing
     local integer pid = GetPlayerId(sender)
     local unit hero
@@ -384,7 +390,7 @@ private function OnEmojiKey takes nothing returns nothing
     local integer i = 1
 
     if key == EmojiMenuKey and metaKey == EmojiMenuMeta then
-        call Emoji_ShowMenu(p, not EmojiPanelOpen[pid])
+        call Emoji_ToggleMenu(p)
     else
         loop
             exitwhen i > EmojiCount
@@ -458,17 +464,17 @@ private function CreatePanel takes nothing returns nothing
     set panelWidth = 0.010 + EMOJI_BUTTON_SIZE + I2R(columns - 1) * EMOJI_BUTTON_STEP
     set panelHeight = 0.010 + EMOJI_BUTTON_SIZE + I2R(rows - 1) * EMOJI_BUTTON_STEP + EMOJI_HEADER_HEIGHT
 
-    set EmojiPanel = BlzCreateFrameByType("BACKDROP", "WosEmojiPanel", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+    set EmojiPanel = WUI_Window("WOSEmoteWindow", WUI_GetRoot(), 1, 0)
     call BlzFrameSetSize(EmojiPanel, panelWidth, panelHeight)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EMOJI_PANEL_CENTER_X, EMOJI_PANEL_CENTER_Y)
-    call BlzFrameSetTexture(EmojiPanel, "Textures\\black32.blp", 0, true)
+    call BlzFrameSetTexture(EmojiPanel, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(EmojiPanel, EMOJI_PANEL_ALPHA)
     call BlzFrameSetLevel(EmojiPanel, 1)
     call BlzFrameSetEnable(EmojiPanel, false)
 
     // Same close-button icon and button style as MusicPlayer.j.
     // It is parented to Game UI so the panel's transparency is not inherited.
-    set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+    set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
     call BlzFrameSetPoint(EmojiCloseButton, FRAMEPOINT_TOPRIGHT, EmojiPanel, FRAMEPOINT_TOPRIGHT, -0.004, -0.004)
     call BlzFrameSetSize(EmojiCloseButton, EMOJI_CLOSE_SIZE, EMOJI_CLOSE_SIZE)
     call BlzFrameSetLevel(EmojiCloseButton, 3)
@@ -480,7 +486,7 @@ private function CreatePanel takes nothing returns nothing
     call BlzFrameSetEnable(EmojiCloseIcon, false)
 
     // Local status line inside the header: green when ready, countdown otherwise.
-    set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+    set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", WUI_GetRoot(), "", 0)
     call BlzFrameSetPoint(EmojiCooldownText, FRAMEPOINT_TOP, EmojiPanel, FRAMEPOINT_TOP, 0.000, -0.006)
     call BlzFrameSetSize(EmojiCooldownText, 0.145, 0.018)
     call BlzFrameSetTextAlignment(EmojiCooldownText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
@@ -498,7 +504,7 @@ private function CreatePanel takes nothing returns nothing
 
         // Same visual approach as CustomImage: a Warcraft button template with
         // a separate texture backdrop on top.
-        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
         call BlzFrameSetSize(EmojiButton[i], EMOJI_BUTTON_SIZE, EMOJI_BUTTON_SIZE)
         call BlzFrameSetAlpha(EmojiButton[i], 255)

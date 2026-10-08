@@ -662,7 +662,7 @@ set PicksPerTurn[7] = 1
     endif
     set FrameCapClick2 = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
-    set Frame_Cap2_MAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
+    set Frame_Cap2_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call BlzFrameSetAbsPoint(Frame_Cap2_MAIN, FRAMEPOINT_CENTER, 0.40, 0.33)
     call BlzFrameSetSize(Frame_Cap2_MAIN, 0.45, 0.35)
   // set CaptainPid1 = 0 
@@ -1231,13 +1231,13 @@ function CreateCaptainUI takes nothing returns nothing
     local framehandle border
     set FrameCapClick = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
-    set Frame_Cap1_MAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
+    set Frame_Cap1_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call BlzFrameSetAbsPoint(Frame_Cap1_MAIN, FRAMEPOINT_CENTER, 0.40, 0.32)
     call BlzFrameSetSize(Frame_Cap1_MAIN, 0.45, 0.2)
-    //set Frame_Cap1_1 = BlzCreateFrame("EscMenuBackdrop", Frame_Cap1_MAIN, 1, 0)
+    //set Frame_Cap1_1 = WUI_Window("WOSWindow", Frame_Cap1_MAIN, 1, 0)
     //call BlzFrameSetAbsPoint(Frame_Cap1_1, FRAMEPOINT_CENTER, 0.35, 0.35)
     //call BlzFrameSetSize(Frame_Cap1_1, 0.25, 0.4)
-    //set Frame_Cap1_2 = BlzCreateFrame("EscMenuBackdrop", Frame_Cap1_MAIN, 1, 0)
+    //set Frame_Cap1_2 = WUI_Window("WOSWindow", Frame_Cap1_MAIN, 1, 0)
     //call BlzFrameSetAbsPoint(Frame_Cap1_2, FRAMEPOINT_CENTER, 0.625, 0.35)
     //call BlzFrameSetSize(Frame_Cap1_2, 0.3, 0.4)
     

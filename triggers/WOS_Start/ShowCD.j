@@ -1,6 +1,6 @@
-library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems
+library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI
 
-// Информационная панель способностей выбранного союзного героя.
+// Информационная панель способностей выбранного чужого героя.
 //
 // Важные правила безопасности:
 // 1. Фреймы создаются синхронно для каждого pid, но изменяются только внутри
@@ -8,7 +8,9 @@ library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems
 // 2. GetLocalPlayer() нигде не присваивается переменной.
 // 3. У каждого игрока свой контекст выбранного героя и свой набор фреймов.
 // 4. Кулдауны читаются только на локальном клиенте и только для чужого героя
-//    союзного игрока. Выбор собственного Hero[pid] очищает панель.
+//    союзного игрока (наблюдатели 11–15 сохраняют полный просмотр).
+//    Для врагов доступны иконки и описания без чтения оставшегося КД.
+//    Выбор собственного Hero[pid] очищает панель.
 // 5. Игровые объекты, синхронные hashtable и игровое состояние из локальных
 //    UI-веток не создаются и не изменяются.
 // 6. Стандартные command buttons не скрываются, не перемещаются, не
@@ -30,7 +32,7 @@ endglobals
 globals
     private constant real AHUI_UPDATE_PERIOD = 0.03
     private constant integer AHUI_REFRESH_TICKS = 3
-    private constant real AHUI_ICON_SIZE = 0.0385
+    private constant real AHUI_ICON_SIZE = 0.036
     private constant real AHUI_COOLDOWN_TEXT_SCALE = 1.80
     private constant real AHUI_COMMAND_X0 = 0.6375
     private constant real AHUI_COMMAND_X_STEP = 0.0434
@@ -196,14 +198,11 @@ private function AHUI_GetOriginSlot takes integer slot returns integer
 endfunction
 
 private function AHUI_GetSlotCenterX takes integer slot returns real
-    return AHUI_COMMAND_X0 + AHUI_COMMAND_X_STEP * I2R(AHUI_GetSlotX(slot))
+    return WUI_COMMAND_X + WUI_COMMAND_STEP * I2R(slot)
 endfunction
 
 private function AHUI_GetSlotCenterY takes integer slot returns real
-    if slot < 4 then
-        return AHUI_COMMAND_BOTTOM_Y
-    endif
-    return AHUI_COMMAND_MIDDLE_Y
+    return WUI_HUD_Y
 endfunction
 
 // Индекс собственного набора фреймов игрока. При bj_MAX_PLAYER_SLOTS == 24
@@ -310,11 +309,36 @@ private function AHUI_SetActiveHeroAbility takes unit whichHero, integer slot, i
     endif
 endfunction
 
+private function AHUI_CanReadCooldown takes unit whichHero, integer viewerId returns boolean
+    local player owner = null
+    local boolean result = false
+    if whichHero == null or viewerId < 0 or viewerId >= bj_MAX_PLAYER_SLOTS then
+        return false
+    endif
+    set owner = GetOwningPlayer(whichHero)
+    if viewerId >= 10 and viewerId <= 14 then
+        set result = owner != Player(viewerId)
+    else
+        set result = owner != Player(viewerId) and IsPlayerAlly(Player(viewerId), owner)
+    endif
+    set owner = null
+    return result
+endfunction
+
 private function AHUI_ConfigureHeroAbilities takes unit whichHero returns nothing
     local integer heroId = GetUnitTypeId(whichHero)
     // Проверяются только базовые unit type ID. Скины и вторичные model ID не
     // меняют GetUnitTypeId героя и поэтому здесь намеренно не перечисляются.
-    if heroId == Ainz_ID then
+    if heroId == Crocodile_ID then
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, CrocodileQ_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_W, CrocodileW_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, CrocodileE_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, CrocodileR_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, CrocodileT_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, CrocodileT2_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, CrocodileF_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, CrocodileG_ID)
+    elseif heroId == Ainz_ID then
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, AinzQ_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, AinzQ2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, AinzQ3_ID)
@@ -795,6 +819,10 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     local real progress = 0.00
     local string iconPath = null
 
+    if GetLocalPlayer() != Player(pid) then
+        return
+    endif
+
     if abilityId == 0 then
         call AHUI_HideSlot(pid, slot)
         return
@@ -825,6 +853,19 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         call BlzFrameSetAlpha(AHUI_Icon[index], 0)
         call BlzFrameSetAlpha(AHUI_CooldownFill[index], 255)
         call BlzFrameSetVisible(AHUI_CooldownFill[index], true)
+        call BlzFrameSetVisible(AHUI_CooldownText[index], false)
+        set iconPath = null
+        return
+    endif
+
+    // При выборе врага или смене alliance очищаем весь старый прогресс.
+    // Не читаем remaining даже для определения состояния иконки.
+    if not AHUI_CanReadCooldown(AHUI_SelectedHero[pid], pid) then
+        set AHUI_CooldownPeak[index] = 0.00
+        set AHUI_LastRemaining[index] = 0.00
+        call BlzFrameSetAlpha(AHUI_Icon[index], AHUI_READY_ALPHA)
+        call BlzFrameSetVisible(AHUI_CooldownFill[index], false)
+        call BlzFrameSetText(AHUI_CooldownText[index], "")
         call BlzFrameSetVisible(AHUI_CooldownText[index], false)
         set iconPath = null
         return
@@ -989,14 +1030,9 @@ private function AHUI_IsEligibleHero takes unit whichHero, integer viewerId retu
 
     set owner = GetOwningPlayer(whichHero)
 
-// Игроки 11-15 могут смотреть cooldown ЛЮБОГО чужого героя,
-// независимо от alliance.
-if viewerId >= 10 and viewerId <= 14 then
+    // Чужой герой доступен для просмотра описаний независимо от alliance.
+    // Право читать кулдауны проверяется отдельно в AHUI_CanReadCooldown.
     set result = owner != Player(viewerId)
-else
-    // Остальные — только союзники, как раньше.
-    set result = owner != Player(viewerId) and IsPlayerAlly(Player(viewerId), owner)
-endif
 
 set owner = null
 return result
@@ -1071,9 +1107,9 @@ private function AHUI_Refresh takes integer pid returns nothing
     endif
 
     // Никакое состояние не берётся из предыдущего тика: белый список героя и
-    // фактический остаток КД каждой его основной/вторичной способности читаются заново.
+    // разрешённый остаток КД каждой его основной/вторичной способности читаются заново.
     call AHUI_ClearResolvedAbilities()
-    set AHUI_AllowCooldownRead = true
+    set AHUI_AllowCooldownRead = AHUI_CanReadCooldown(AHUI_SelectedHero[pid], pid)
     call AHUI_ConfigureHeroAbilities(AHUI_SelectedHero[pid])
     set AHUI_AllowCooldownRead = false
 
@@ -1126,7 +1162,7 @@ private function AHUI_OnSelect takes nothing returns nothing
             call AHUI_Refresh(pid)
             call AHUI_UpdateHoveredSlot(pid)
         else
-            // Враг, чужой обычный юнит и неосновной собственный юнит сразу
+            // Обычный юнит, иллюзия и собственный герой сразу
             // очищают локальную панель, поэтому старый кулдаун не мигнёт.
             call AHUI_ClearSelection(pid)
         endif
@@ -1181,7 +1217,7 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
     local integer pid = 0
     local integer slot = 0
     local integer index = 0
-    local framehandle console = BlzGetFrameByName("ConsoleUIBackdrop", 0)
+    local framehandle console = WUI_GetRoot()
 
     // Origin-фреймы используются только как визуальные якоря. Hover считается
     // отдельно по локальным screen coordinates мыши.

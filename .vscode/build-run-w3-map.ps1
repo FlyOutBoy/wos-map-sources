@@ -184,6 +184,20 @@ try {
         & $triggerSettingsApplier `
             -TriggerDirectory (Join-Path $workspaceRoot "triggers") `
             -MainSource $source
+
+        # Register the versioned wheel textures so later World Editor saves retain them.
+        if (Test-Path -LiteralPath $originalMap -PathType Container) {
+            $pingAssets = Join-Path $workspaceRoot 'assets\UI\TeamPings'
+            if (Test-Path -LiteralPath $pingAssets -PathType Container) {
+                & python (Join-Path $workspaceRoot 'tools\install_team_ping_assets.py') --map $originalMap
+                if ($LASTEXITCODE -ne 0) { throw 'Command wheel asset installation failed' }
+            }
+            $sharedUIAssets = Join-Path $workspaceRoot 'assets\UI\WOS'
+            if (Test-Path -LiteralPath $sharedUIAssets -PathType Container) {
+                & python (Join-Path $workspaceRoot 'tools\install_wos_ui_assets.py') --map $originalMap
+                if ($LASTEXITCODE -ne 0) { throw 'Shared UI asset installation failed' }
+            }
+        }
     }
 
     Write-Host "Selected profile: $profileName"

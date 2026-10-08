@@ -1,20 +1,53 @@
 # Resume UI redesign
 
-Read PLAN.md and PROGRESS.md before touching UI. Full user requirements are saved
-in REQUEST.md; workflow in WORKFLOW.md. Source code takes precedence over notes.
+Read PLAN.md, PROGRESS.md and relevant ARCHITECTURE.md before editing. The user's
+full requirements are REQUEST.md; mandatory staged workflow is WORKFLOW.md.
+Source code and actual map state take precedence over these notes.
 
-1. Active blocks: 2/3/9; root/HUD/toolbar implemented; pick/shop style and mode layout next.
-2. Existing working baseline: Crocodile integration, AllyHeroAbilityUI and five-sector TeamMapPings; prior WTG/WCT order repair already implemented.
-3. Implemented and compiled: WOSUI.j, 13 normal FRAME parent migrations, 10 shared UI assets/importer, Z release-to-send/no sector labels. Actual game verification NOT done.
-4. Current implementation: WOSUI native layout (0.20s), existing HeroUnitPanelStats rewritten, test help replaces tags, top HP/MP guards and hide-subtree. Compile PASS; toolbar wired to real shop/K handlers; window styles incomplete. MAIN not written yet.
-5. Open next: WOSUI.j, DefaultArmorChangeStable_Copy.j, WoS_Hero_Icons_Init.j, Systems/ButtonPressed.j, ChatCommand.j; ARCHITECTURE.md + FRAME_INVENTORY.md.
-6. Risks: hidden Console parents; native SIMPLEFRAME cannot be reparented to normal FRAME; local handle allocation; hidden enemy HP/MP. No new compile error known.
-7. HUD/native/privacy/shop/import tests: `python -m unittest discover -s tools -p test_wos_ui.py` (9 PASS). Full compile 146697 lines PASS. Fast bounded full compile: `python tools/check_wos_ui.py` (PASS); full build `.vscode/build-run-w3-map.ps1 -Target Main -NoLaunch`; tests `python -m unittest discover -s tools -p test_team_map_pings.py` (21 PASS), `test_sync_war3_triggers.py`, `test_test_map_workflow.py`.
-8. Continue: pick/shop window skins/layout; CaptainDraft/UI_CAREER/MusicPlayer alias parents still need inspection. Inspect source before each change.
-9. Do not recreate hero selection/shop/HeroIcons/ability data or repeat audit/root migration/Z fix/trigger order repair. Do not rerun tools/migrate_wos_ui_roots.py without a new reason. Do not restore current dirty files wholesale.
-10. Agreed style: compact graphite/black, thin gold, native icons/logos, actual combat stats, seven real QWERTFG abilities, preserve all handlers and hotkeys.
+1. Active blocks: 2/3/4/5/6/7/9. Core/HUD/toolbar/pick/shop implementation compiled;
+   secondary surfaces now implemented; MAIN integration waits for editor closure.
+2. Existing baseline to preserve: Crocodile integration, AllyHeroAbilityUI enemy
+   tooltips without cooldowns, five-sector TeamMapPings and WTG/WCT traversal repair.
+3. Implemented: WOSUI independent service-board root + native commands/items/buffs/
+   minimap/menu; compact existing selected HUD; TestMode scroll/collapse help; top
+   visible-only HP/MP; real shop/K toolbar; emoji checkbox; Z release-once/center text.
+   Existing pick/shop compact layouts and graphite skins are now written.
+4. Latest full compile PASS: 146899 pjass lines. Production tests: HUD 9, pings 21,
+   ally ability UI 7, trigger sync 3, workflow 8 PASS. No actual game verification.
+   MAIN still untouched by this task: World Editor running. Do not claim runtime PASS.
+5. Open next: sync_war3_project.py guard, sync_war3_triggers.py, verify_wos_ui.py, then WOSUI.j and
+   check_wos_ui.py/build script. FRAME_INVENTORY.md lists all 45 production owners.
+6. Fixed alias roots: Captain_Draft/UI_CAREER/MusicPlayer; these must remain outside
+   Console. Native SIMPLEFRAMEs stay in native hierarchy. Service board root stays
+   visible with title/backdrop hidden, all players associated, native size zero.
+7. Validate: python tools/check_wos_ui.py; python -m unittest discover -s tools -p
+   test_wos_ui.py (9), test_team_map_pings.py (21), test_ally_hero_ability_ui.py (7),
+   test_sync_war3_triggers.py (3), test_test_map_workflow.py (8). Full build:
+   powershell .vscode/build-run-w3-map.ps1 -Target Main -NoLaunch (requires WE closed).
+8. Native audit passed (108 baseline sources unchanged); check prepares 109 sources.
+   Pending question already asks user to close WITHOUT saving. Do not ask it again.
+   After closure, guarded push/build/extract/verify. Guard in
+   tools/sync_war3_project.py prevents an open editor overwriting external triggers.
+9. Do not repeat audit/root migration/command or shop controller implementation.
+   WOS_ToggleShop is the shared real shop handler; .evaluate bridges plain map
+   function ordering. K belongs to EmojiStandalone; no duplicate key-down handler.
+10. Agreed style: graphite/thin gold/native logos/icons, no fake slots/stats. Core
+    assets 12 RGBA TGA + unchanged built-in imagegen source, install_wos_ui_assets.
+    Current compact pick/shop geometry is centralized in WOS_LayoutHeroPick and
+    WOS_LayoutShop. Preserve handlers, rawcodes, recipes, selection and purchases.
 
-Native MAIN is a Scenario Folder at `C:/Users/Gear/Documents/Warcraft III/Maps/WoS/Anime_WOS2_0.32.w3x`.
-World Editor must be closed before native saves. Inspect its process state each time.
-Do not claim compiled-only code works in game. Completion statuses and runtime
-verification are separate. No subagents were requested.
+Pending: in-game native item/learn card/buff/menu hierarchy, attack range formatting,
+resolution changes, fog/multiplayer; final top-panel/menu styling; 45-owner
+hero counters and remaining windows. PLAN statuses intentionally IN_PROGRESS.
+First checkpoint commit: 654b679 (shared core/assets/docs/tests). Other implementation
+changes remain in working tree; preserve all earlier dirty files and ignored backups.
+Native MAIN: C:/Users/Gear/Documents/Warcraft III/Maps/WoS/Anime_WOS2_0.32.w3x (Scenario Folder).
+Build filename _build/WoS_Test.w3x is still the MAIN packed test output, not test_map.
+No native computer UI automation is available. No subagents were requested.
+
+Latest secondary skins: career/music/emotes/chat/player stats; scoreboard transparency
+retained. Camera placement implemented. Current explicit pending user input: editor
+closure; do not proceed with dependent native writes until reply and process check.
+Archive extraction list _build/ui-redesign/archive-names.json (32 entries).
+Verify command: python tools/verify_wos_ui.py --archive _build/ui-redesign/archive.
+Use .vscode/test-map-archive.ps1 -Mode Extract with build MPQ and bundled SFmpq.dll.

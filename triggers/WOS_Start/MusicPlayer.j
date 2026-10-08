@@ -1,4 +1,4 @@
-library LocalMp3Player initializer LocalMp3Player_Init
+library LocalMp3Player initializer LocalMp3Player_Init requires WOSUI
 
 globals
     private constant integer LMP_ROWS = 3
@@ -18,7 +18,7 @@ globals
     private constant boolean LMP_AUDIO_ENABLED = true
     private constant string LMP_COMMAND = "-music"
     private constant string LMP_LINK_URL = "bit.ly/4x8cOaB"
-    private constant string LMP_TEX_BLACK = "Textures\\black32.blp"
+    private constant string LMP_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string LMP_TEX_CLOSE = "Music\\Music_Close.blp"
     private constant string LMP_TEX_OPEN = "Music\\Music_Icon.blp"
     private constant string LMP_TEX_LINK = "Music\\Music_Link.blp"
@@ -1049,6 +1049,7 @@ endfunction
 //===========================================================================
 private function LMP_CreateTextButton takes framehandle parent, string text, real x, real y, real width, real height, integer context returns framehandle
     local framehandle newFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)
+    call WUI_StyleButton(newFrame)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, width, height)
@@ -1104,8 +1105,8 @@ private function LMP_AttachNativeTooltip takes framehandle whichFrame, string wh
 endfunction
 
 private function LMP_CreateFrames takes nothing returns nothing
-    local framehandle consoleUI = BlzGetFrameByName("ConsoleUIBackdrop", 0)
-    local framehandle gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    local framehandle consoleUI = WUI_GetRoot()
+    local framehandle gameUI = WUI_GetRoot()
     local framehandle title
     local framehandle icon
     local integer row = 0
@@ -1142,7 +1143,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(lmpLinkEditTrigger, lmpLinkEdit, FRAMEEVENT_CONTROL_CLICK)
 
     // Plain black translucent background, matching the emoji panel.
-    set lmpPanel = BlzCreateFrameByType("BACKDROP", "LMPPanel", consoleUI, "", 0)
+    set lmpPanel = WUI_Window("WOSMusicWindow", consoleUI, 0, 0)
     call BlzFrameSetAbsPoint(lmpPanel, FRAMEPOINT_CENTER, LMP_PANEL_X, LMP_PANEL_Y)
     call BlzFrameSetSize(lmpPanel, LMP_PANEL_WIDTH, LMP_PANEL_HEIGHT)
     call BlzFrameSetTexture(lmpPanel, LMP_TEX_BLACK, 0, true)

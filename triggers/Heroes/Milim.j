@@ -1,7 +1,7 @@
 // @ignore-file-errors
 // VS Code jass.jass 1.9.21 incorrectly reports valid vJASS `local thistype this`
 // declarations as keyword conflicts. JassHelper remains the source of truth.
-library MilimSpells uses GearSystems
+library MilimSpells uses GearSystems, WOSUI
     globals
 //--------------------------------------Milim--------------------------------------------------------------
         integer Milim_ID = 'H02K'
@@ -1317,7 +1317,7 @@ private struct MilimTKS
                             set r = 0
                             
                             if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", WUI_GetRoot(), "", 0)
                                 call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
                                 call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
                                 call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)

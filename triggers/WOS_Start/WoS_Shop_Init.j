@@ -2473,6 +2473,87 @@ function SyncDataHandler takes nothing returns nothing
     endif
 endfunction
 
+function WOS_LayoutShop takes nothing returns nothing
+    local integer i = 0
+    local integer column
+    local integer row
+    local real x
+    local real y
+    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
+    call WUI_Place(FRAME_ShopItemList, 0.307, 0.370, 0.307, 0.240)
+    call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.399, 0.170, 0.176)
+    call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.248, 0.170, 0.105)
+    call WUI_Place(FRAME_ShopItemInventory, 0.706, 0.349, 0.125, 0.282)
+    call WUI_Place(FRAME_ShopItemDescriptionName, 0.554, 0.291, 0.158, 0.016)
+    call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.73)
+    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.243, 0.158, 0.074)
+    call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.71)
+    call WUI_Place(FRAME_ShopItemInventoryName, 0.706, 0.479, 0.116, 0.016)
+    call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.76)
+    call WUI_Place(FRAME_ShopSearchLabel, 0.178, 0.196, 0.047, 0.016)
+    call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.70)
+    call WUI_Place(FRAME_ShopSearchEditBox, 0.322, 0.196, 0.227, 0.024)
+    call WUI_Place(FRAME_ShopSearchClear, 0.446, 0.196, 0.017, 0.017)
+    call WUI_Place(FRAME_ShopSearchPrevious, 0.273, 0.227, 0.015, 0.015)
+    call WUI_Place(FRAME_ShopSearchPageText, 0.307, 0.227, 0.039, 0.012)
+    call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.70)
+    call WUI_Place(FRAME_ShopSearchNext, 0.341, 0.227, 0.015, 0.015)
+    call WUI_Place(FRAME_AutoBuyCheckbox, 0.047, 0.230, 0.017, 0.017)
+    call WUI_Place(FRAME_AutoBuyText, 0.101, 0.230, 0.085, 0.016)
+    call BlzFrameSetScale(FRAME_AutoBuyText, 0.75)
+    loop
+        exitwhen i >= 7
+        call WUI_Place(FRAME_ShopSection[i], 0.088, 0.478 - I2R(i) * 0.030, 0.108, 0.025)
+        call BlzFrameSetScale(FRAME_ShopSection[i], 0.80)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 35
+        set column = ModuloInteger(i, 7)
+        set row = i / 7
+        set x = 0.179 + I2R(column) * 0.042
+        set y = 0.457 - I2R(row) * 0.045
+        call WUI_Place(FRAME_ShopItem[i], x, y, 0.031, 0.031)
+        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.022, 0.041, 0.008)
+        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.57)
+        set i = i + 1
+    endloop
+    set i = 36
+    loop
+        exitwhen i >= 43
+        set x = 0.495 + I2R(ModuloInteger(i - 36, 3)) * 0.047
+        set y = 0.427
+        if i >= 39 then
+            set y = 0.359
+        endif
+        if i == 42 then
+            set x = 0.554
+            set y = 0.472
+        endif
+        call WUI_Place(FRAME_ShopItem[i], x, y, 0.030, 0.030)
+        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.020, 0.043, 0.008)
+        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.57)
+        set i = i + 1
+    endloop
+    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, 0.550, 0.427, 0.160, 0.066)
+    call WUI_Place(FRAME_ShopCraftComponentWheelArea, 0.550, 0.355, 0.160, 0.066)
+    set i = 0
+    loop
+        exitwhen i >= 8
+        set x = 0.679 + I2R(ModuloInteger(i, 2)) * 0.051
+        set y = 0.452 - I2R(i / 2) * 0.055
+        if i >= 6 then
+            set y = 0.267
+        endif
+        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.035, 0.035)
+        call WUI_Place(FRAME_ShopItemInventorySlotCost[i], x, y - 0.024, 0.049, 0.009)
+        call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.59)
+        set i = i + 1
+    endloop
+endfunction
+
 function CreateItemUI takes nothing returns nothing
     local integer i = 1
     local integer pid
@@ -2554,18 +2635,18 @@ set ShopSearchDeadQuery[pid] = ""
     call InitCraftRecipes()
     set ShopSearchDebounceTimer = CreateTimer()
 call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, function ShopSearchDebounceTick)
-    set FRAME_ShopMAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
+    set FRAME_ShopMAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopMAIN, FRAMEPOINT_CENTER, 0.42, 0.33)
     call BlzFrameSetSize(FRAME_ShopMAIN, 0.96, 0.36)
-    set FRAME_ShopItemList = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)
+    set FRAME_ShopItemList = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopItemList, FRAMEPOINT_CENTER, 0.31, 0.355)
-    call BlzFrameSetTexture(FRAME_ShopItemList, "textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(FRAME_ShopItemList, 155)
+    call BlzFrameSetTexture(FRAME_ShopItemList, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetAlpha(FRAME_ShopItemList, 255)
     call BlzFrameSetSize(FRAME_ShopItemList, 0.38, 0.28)
-    set FRAME_ShopItemCraft = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)
+    set FRAME_ShopItemCraft = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopItemCraft, FRAMEPOINT_CENTER, 0.5775, 0.405)
-    call BlzFrameSetTexture(FRAME_ShopItemCraft, "textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(FRAME_ShopItemCraft, 155)
+    call BlzFrameSetTexture(FRAME_ShopItemCraft, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetAlpha(FRAME_ShopItemCraft, 255)
     call BlzFrameSetSize(FRAME_ShopItemCraft, 0.18, 0.18)
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItemCraft), 0, 400)
     call BlzFrameSetEnable(FRAME_ShopItemCraft, true)
@@ -2587,10 +2668,10 @@ call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, func
     call BlzFrameSetEnable(FRAME_ShopCraftComponentWheelArea, true)
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopCraftComponentWheelArea), 0, 404)
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopCraftComponentWheelArea, FRAMEEVENT_MOUSE_WHEEL)
-    set FRAME_ShopItemDescription = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)
+    set FRAME_ShopItemDescription = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopItemDescription, FRAMEPOINT_CENTER, 0.5775, 0.2725)
-    call BlzFrameSetTexture(FRAME_ShopItemDescription, "textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(FRAME_ShopItemDescription, 155)
+    call BlzFrameSetTexture(FRAME_ShopItemDescription, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetAlpha(FRAME_ShopItemDescription, 255)
     call BlzFrameSetSize(FRAME_ShopItemDescription, 0.18, 0.115)
     set FRAME_ShopItemDescriptionName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemDescription, "", 0)
     call BlzFrameSetPoint(FRAME_ShopItemDescriptionName, FRAMEPOINT_BOTTOM, FRAME_ShopItemDescription, FRAMEPOINT_TOP, 0, -0.0225 )
@@ -2599,10 +2680,10 @@ call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, func
     call BlzFrameSetSize(FRAME_ShopItemDescriptionName2, 0.15, 0.08)
     call BlzFrameSetPoint(FRAME_ShopItemDescriptionName2, FRAMEPOINT_BOTTOM, FRAME_ShopItemDescription, FRAMEPOINT_CENTER, 0, -0.045 )
     call BlzFrameSetText(FRAME_ShopItemDescriptionName2, "|c00FFFF00|r")
-    set FRAME_ShopItemInventory = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)
+    set FRAME_ShopItemInventory = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.7225, 0.355)
-    call BlzFrameSetTexture(FRAME_ShopItemInventory, "textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(FRAME_ShopItemInventory, 155)
+    call BlzFrameSetTexture(FRAME_ShopItemInventory, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetAlpha(FRAME_ShopItemInventory, 255)
     call BlzFrameSetSize(FRAME_ShopItemInventory, 0.135, 0.28)
     set FRAME_ShopItemInventoryName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventory, "", 0)
     call BlzFrameSetPoint(FRAME_ShopItemInventoryName, FRAMEPOINT_BOTTOM, FRAME_ShopItemInventory, FRAMEPOINT_TOP, 0, -0.025 )
@@ -2674,6 +2755,7 @@ call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, func
     loop
         exitwhen i == 7
         set FRAME_ShopSection[i] = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_ShopMAIN, "ScriptDialogButton", 0)
+        call WUI_StyleButton(FRAME_ShopSection[i])
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSection[i]), 0, 100 + i)
         call BlzFrameSetAbsPoint(FRAME_ShopSection[i], FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(FRAME_ShopSection[i], 0.11, 0.03)
@@ -2848,6 +2930,7 @@ call TimerStart(ShopSearchDebounceTimer, SHOP_SEARCH_DEBOUNCE_PERIOD, true, func
     call TimerStart(ShopInventoryTimer, 0.50, true, function PlayerInventoryPeriodic)
     call TimerStart(ShopAutoBuyTimer, 0.50, true, function AutoBuyPeriodic)
     call BlzFrameSetVisible(FRAME_ShopMAIN, false)
+    call WOS_LayoutShop()
     set ShopUICreated = true
 endfunction
 

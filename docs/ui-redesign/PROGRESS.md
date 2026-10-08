@@ -75,3 +75,51 @@
 - MAIN save pending: World Editor still running.
 - Next exact action: graphite/thin-gold skin on existing pick/shop windows, compact
   pick layout including Captain Draft positions; inspect aliases still under Console.
+
+## Checkpoint 4 — existing pick/shop compact layouts and hierarchy repair
+
+- WUI_Window and WUI_StyleButton use real graphite/alpha gold resources. Existing
+  pick/shop/legacy captain windows lose EscMenuBackdrop stone frames.
+- WOS_LayoutHeroPick relocates existing 30 grid buttons, all six logo categories,
+  five actions, preview icon/stats/seven ability tooltips and ten player slots.
+  Repick/swap and captions shrink; handlers/category data remain unchanged.
+- CaptainDraft root fixed (variable alias was missed in initial migration). Ban
+  strip moved beneath preview; all phase text now stays in header instead of
+  overlapping buttons. Claim/vote/pick algorithms unchanged.
+- WOS_LayoutShop keeps all seven sections, 35 catalogue slots, recipe relations,
+  selected item, inventory/buy/sell, search/pages and Auto-buy; new compact geometry.
+- UI_CAREER/MusicPlayer aliases now use independent normal root. Systems2 native
+  SIMPLEFRAME counter uses native ConsoleUI. Native status/buff bar retained and
+  moved outside hidden detail panel; visible only for readable selection.
+- Service leaderboard now associates all players via CreateLeaderboardBJ and
+  zero-sizes the native board root. This follows the primary Simpleframes example.
+- Full compile PASS (146894 pjass lines); HUD tests 9 PASS before final layout (no
+  handler changes since). Game display/drag/modal behavior remains UNVERIFIED.
+- MAIN not written; World Editor currently open.
+- Next exact action: shared skins for scoreboard/career/music/emote panels, then
+  full regression checks and ask to close editor before saving/building MAIN.
+
+## Checkpoint 5 — secondary surfaces / final pre-save checks
+
+- Career/music/emote/chat-emoji/player-stat panels share graphite/thin gold. Career
+  and music text buttons use common button states. Emote grid reduced to .042/.048
+  while preserving effect IDs, VIP access, cooldowns and sync. Chat palette moved
+  above the right toolbar. Scoreboard retains its existing opacity switch; root is
+  transparent FRAME with gold border, opaque fill/tooltip use shared graphite.
+- Camera slider moved to X=.150 beside minimap, icon at (.150,.140); native camera
+  handler and range unchanged. Player statistics panel moved inside 4:3 bounds.
+- Full production compile PASS (146899 pjass lines); all 48 regression tests PASS.
+- Native MAIN audit: all 108 existing WCT sources match last extraction hashes; no
+  unseen saved map edits detected. Sync check prepares 109 triggers, 17 source
+  changes + one WOSUI entry; validates category traversal before any write.
+- tools/verify_wos_ui.py prepared: derives identities directly from native WTG
+  names/categories, checks every WCT source against its real project file, all 28
+  UI/ping imports/assets, optional archive byte equality. Extraction name list
+  ready at _build/ui-redesign/archive-names.json. Not run against old MAIN yet.
+- Required user response pending: close World Editor WITHOUT saving. Guard still
+  reports editor running. No native files overwritten.
+- Next action on closure: guarded sync push, full MAIN -NoLaunch build, extract
+  archive and verify all source identities/order/assets/script bytes, update docs.
+- Remaining implementation: hero-specific bar/counter skins and shared primitive
+  integration (45 owners), any remaining secondary windows; final top/menu/style
+  polish and all runtime/multiplayer/resolution scenarios. Do not mark full task done.

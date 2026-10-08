@@ -1,4 +1,4 @@
-library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox
+library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox, WOSUI
 globals
     framehandle array FrameCD_Icon
     framehandle array FrameCD_Cooldown
@@ -3450,7 +3450,7 @@ endif
             set tmp_x = 0.26875 +(0.0265*k3) //* 0.0225
                 set tmp_y = 0.17
                 if frame0_pas1[k2] == null then 
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", BlzGetFrameByName("ConsoleUI", 0), "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                 if GetLocalPlayer() == Player(k) then 
@@ -3463,7 +3463,7 @@ endif
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
                 call BlzFrameSetSize(frame0_pas1[k2], 0.025, 0.025)
-                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", WUI_GetRoot(), "", 0)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_TOP, frame0_pas1[k2], FRAMEPOINT_BOTTOM, 0, -0.005)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_BOTTOMLEFT,frame0_pas1[k2],FRAMEPOINT_BOTTOMLEFT, tmp_x-0.0265, tmp_y-0.335)
                 

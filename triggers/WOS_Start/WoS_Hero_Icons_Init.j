@@ -1,4 +1,4 @@
-library heroicon requires LocalMp3Player, AAINIT, GearSystems
+library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
     globals
         integer firsttimecleardummy = 0
         trigger FrameClickHeroMain
@@ -11,6 +11,11 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems
         trigger FrameBoxCheck
         trigger FrameSliderCheck
         framehandle FRAME_StatusHeroMain
+        private framehandle StatusPortraitRoot
+        private framehandle array StatusHpBar
+        private framehandle array StatusMpBar
+        private real array StatusLastHpPercent
+        private real array StatusLastMpPercent
         framehandle FRAME_StatusHeroMain2
         integer Test_int = 0
         real Test_real = 0
@@ -211,6 +216,9 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems
         local boolean typeChanged
         local boolean shouldShow = u != null and (not CaptainMode or CapPickPhase >= 2)
         local string icon
+        local boolean canInspect
+        local real hp
+        local real mp
 
         if not shouldShow then
             if StatusLastVisible[i] then
@@ -226,6 +234,30 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems
             set u = null
             return
         endif
+
+        // Stop BEFORE reading type changes, death or vitals of hidden enemies.
+        // Local presentation caches never alter unit/game state.
+        set canInspect = IsPlayerAlly(GetLocalPlayer(), GetOwningPlayer(u)) or (IsUnitVisible(u, GetLocalPlayer()) and IsUnitDetected(u, GetLocalPlayer()))
+        if not canInspect then
+            call BlzFrameSetVisible(StatusHpBar[i], false)
+            call BlzFrameSetVisible(StatusMpBar[i], false)
+            call BlzFrameSetAlpha(FRAME_StatusHero[i], 130)
+            set u = null
+            return
+        endif
+        call BlzFrameSetAlpha(FRAME_StatusHero[i], 255)
+        set hp = 100.00 * GetWidgetLife(u) / RMaxBJ(1.00, I2R(BlzGetUnitMaxHP(u)))
+        set mp = 100.00 * GetUnitState(u, UNIT_STATE_MANA) / RMaxBJ(1.00, I2R(BlzGetUnitMaxMana(u)))
+        if hp != StatusLastHpPercent[i] then
+            call BlzFrameSetValue(StatusHpBar[i], hp)
+            set StatusLastHpPercent[i] = hp
+        endif
+        if mp != StatusLastMpPercent[i] then
+            call BlzFrameSetValue(StatusMpBar[i], mp)
+            set StatusLastMpPercent[i] = mp
+        endif
+        call BlzFrameSetVisible(StatusHpBar[i], true)
+        call BlzFrameSetVisible(StatusMpBar[i], BlzGetUnitMaxMana(u) > 0)
 
         set heroType = GetUnitTypeId(u)
         set leaveState = Leave[i]
@@ -936,11 +968,11 @@ endif
         if clicked == FRAME_TopCheckbox then
             if BlzGetTriggerFrameEvent() == FRAMEEVENT_CHECKBOX_CHECKED then
                 if GetLocalPlayer() == GetTriggerPlayer() then
-                    call BlzFrameSetVisible(FRAME_StatusHeroMain, false)
+                    call BlzFrameSetVisible(StatusPortraitRoot, false)
                 endif
             else
                 if GetLocalPlayer() == GetTriggerPlayer() then
-                    call BlzFrameSetVisible(FRAME_StatusHeroMain, true)
+                    call BlzFrameSetVisible(StatusPortraitRoot, true)
                 endif
             endif
         endif
@@ -1062,16 +1094,18 @@ endfunction
        // call TriggerAddAction( FrameAltHeroMainOff, function FrameAlt_Show_False )
     // === Р вЂњР В»Р В°Р Р†Р Р…РЎвЂ№Р в„– Р С”Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ ===
         // Прозрачный контейнер: внешняя стандартная рамка больше не рисуется.
-        set FRAME_StatusHeroMain = BlzCreateFrameByType("FRAME", "StatusHeroMain", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+        set FRAME_StatusHeroMain = BlzCreateFrameByType("FRAME", "StatusHeroMain", WUI_GetRoot(), "", 0)
         call BlzFrameSetAbsPoint(FRAME_StatusHeroMain, FRAMEPOINT_CENTER, STATUS_BAR_CENTER_X, STATUS_BAR_CENTER_Y)
         call BlzFrameSetAlpha(FRAME_StatusHeroMain, 255)
         call BlzFrameSetSize(FRAME_StatusHeroMain, 0.410, 0.054)
         call BlzFrameSetLevel(FRAME_StatusHeroMain, 5)
-        set FRAME_StatusHeroMain2 = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
+        set StatusPortraitRoot = BlzCreateFrameByType("FRAME", "WOSHeroPortraits", FRAME_StatusHeroMain, "", 0)
+        call BlzFrameSetAllPoints(StatusPortraitRoot, FRAME_StatusHeroMain)
+        set FRAME_StatusHeroMain2 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
         call BlzFrameSetAbsPoint(FRAME_StatusHeroMain2, FRAMEPOINT_CENTER, 0.3, 0.16)
         call BlzFrameSetAlpha(FRAME_StatusHeroMain2, 0)
         call BlzFrameSetSize(FRAME_StatusHeroMain2, 0.38, 0.06)
-        set FRAME_StatusHeroMain3 = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
+        set FRAME_StatusHeroMain3 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
         call BlzFrameSetAbsPoint(FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, STATUS_OPTIONS_CENTER_X, STATUS_OPTIONS_CENTER_Y)
         call BlzFrameSetAlpha(FRAME_StatusHeroMain3, 0)
         call BlzFrameSetSize(FRAME_StatusHeroMain3, 0.180, 0.028)
@@ -1087,8 +1121,8 @@ endfunction
         call BlzFrameSetAlpha(FRAME_TopCheckboxString, 255)
         call BlzFrameSetPoint(FRAME_TopCheckboxString, FRAMEPOINT_CENTER, FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, 0.038, 0.000)
         call BlzFrameSetScale(FRAME_TopCheckboxString, 0.82)
-        call BlzFrameSetText(FRAME_TopCheckboxString, "|cffffff00Hide UI|r")
-        set FRAME_StatusHeroMain4 = BlzCreateFrame("EscMenuBackdrop", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 0, 0)
+        call BlzFrameSetText(FRAME_TopCheckboxString, "|cffd5b876Hide heroes|r")
+        set FRAME_StatusHeroMain4 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
         call BlzFrameSetPoint(FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_CENTER, -0.30, -0.2225)//0.39 - 0, 215
         call BlzFrameSetAlpha(FRAME_StatusHeroMain4, 0)
         call BlzFrameSetSize(FRAME_StatusHeroMain4, 0.29, 0.0225 )
@@ -1107,13 +1141,15 @@ endfunction
         call BlzFrameSetAlpha(FRAME_CamSliderStringBack, 225)
         call BlzFrameSetSize(FRAME_CamSliderStringBack, 0.0165, 0.0165)
         call BlzFrameSetTexture(FRAME_CamSliderStringBack, "Pick\\CameraIcon", 0, true)
+        call WUI_Place(FRAME_CamSlider, 0.150, 0.070, 0.007, 0.112)
+        call WUI_Place(FRAME_CamSliderStringBack, 0.150, 0.140, 0.009, 0.009)
         set i = 0
         set r = STATUS_HERO_STEP
        
         loop
             exitwhen i == 10
             set FRAME_StatusHeroStringPlayerShowBoolean[i] = false
-            set FRAME_StatusHero[i] = BlzCreateFrameByType("BUTTON", "MyStatusButton", FRAME_StatusHeroMain, "ScoreScreenTabButtonTemplate", 0)
+            set FRAME_StatusHero[i] = BlzCreateFrameByType("BUTTON", "MyStatusButton", StatusPortraitRoot, "", 0)
             set FRAME_StatusHeroBack[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)
             call BlzFrameSetAllPoints(FRAME_StatusHeroBack[i], FRAME_StatusHero[i])
             call BlzFrameSetPoint(FRAME_StatusHero[i], FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, x + r * k, y)
@@ -1124,6 +1160,16 @@ endfunction
             call BlzFrameSetAlpha(FRAME_StatusHeroBack[i], 255)
             call BlzTriggerRegisterFrameEvent(FrameClickHeroMain, FRAME_StatusHero[i], FRAMEEVENT_CONTROL_CLICK)
             call BlzFrameSetTexture(FRAME_StatusHeroBack[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
+            set StatusHpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroHp", FRAME_StatusHero[i], "", i)
+            call BlzFrameSetPoint(StatusHpBar[i], FRAMEPOINT_TOP, FRAME_StatusHero[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
+            call BlzFrameSetSize(StatusHpBar[i], STATUS_HERO_SIZE, 0.002)
+            call BlzFrameSetTexture(StatusHpBar[i], "UI\\WOS\\hp.tga", 0, true)
+            set StatusMpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroMp", FRAME_StatusHero[i], "", i)
+            call BlzFrameSetPoint(StatusMpBar[i], FRAMEPOINT_TOP, StatusHpBar[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
+            call BlzFrameSetSize(StatusMpBar[i], STATUS_HERO_SIZE, 0.002)
+            call BlzFrameSetTexture(StatusMpBar[i], "UI\\WOS\\mp.tga", 0, true)
+            set StatusLastHpPercent[i] = -1.00
+            set StatusLastMpPercent[i] = -1.00
             set FRAME_StatusHeroBack2[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)
             call BlzFrameSetSize(FRAME_StatusHeroBack2[i], 0.018, 0.018)
             call BlzFrameSetAlpha(FRAME_StatusHeroBack2[i], 0)
@@ -1279,9 +1325,9 @@ endfunction
         
       
         set y = -0.03
-        set FRAME_StatsMain = BlzCreateFrame("EscMenuTextAreaTemplate", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
-        call BlzFrameSetAbsPoint(FRAME_StatsMain, FRAMEPOINT_CENTER, -0.0525, 0.3)
-        call BlzFrameSetSize(FRAME_StatsMain, 0.15, 0.23)
+        set FRAME_StatsMain = WUI_Window("WOSPlayerStats", WUI_GetRoot(), 0, 0)
+        call BlzFrameSetAbsPoint(FRAME_StatsMain, FRAMEPOINT_CENTER, 0.092, 0.309)
+        call BlzFrameSetSize(FRAME_StatsMain, 0.165, 0.232)
         set FRAME_StatsCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_StatsMain, 0, 0)
         call BlzFrameSetSize(FRAME_StatsCheckbox, 0.02, 0.02)
         call BlzFrameSetAlpha(FRAME_StatsCheckbox, 255)
@@ -1351,15 +1397,15 @@ endfunction
         call BlzFrameSetText(FRAME_ShopButtonText, "|cffffff00Shop Key|r")
         
         call BlzFrameSetEnable(FRAME_StatsMain,false)
-        set x = 0.19
-        set y = 0.1325
+        set x = 0.744
+        set y = 0.060
         
         set FrameLinkMain2 = CreateTrigger()
-        set FRAME_LINK2 = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_LINK2 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetTexture(FRAME_LINK2, "WOS\\DiscordIcon", 0, false)
         call BlzFrameSetAbsPoint(FRAME_LINK2,FRAMEPOINT_CENTER, x,y )// - 0.03 * i)
         call BlzFrameSetSize(FRAME_LINK2, 0.02, 0.02)
-        set FRAME_LINK4 = BlzCreateFrameByType("BUTTON", "MyIconButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_LINK4 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetTexture(FRAME_LINK4, "WOS\\DiscordIcon", 0, false)
         call BlzFrameSetAbsPoint(FRAME_LINK4,FRAMEPOINT_CENTER, x,y )// - 0.03 * i)
         call BlzFrameSetSize(FRAME_LINK4, 0.02, 0.02)
@@ -1367,17 +1413,17 @@ endfunction
         set FRAME_LINK3 = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_LINK2, "", 0)
         call BlzFrameSetTexture(FRAME_LINK3, "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, true)
         call BlzFrameSetAllPoints(FRAME_LINK3, FRAME_LINK2)
-        call BlzFrameSetSize(FRAME_LINK3, 0.03, 0.03)
+        call BlzFrameSetSize(FRAME_LINK3, 0.020, 0.020)
         call BlzFrameSetTexture(FRAME_LINK3, "WOS\\DiscordIcon", 0, true)
         set FRAME_LINK5 = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_LINK4, "", 0)
         call BlzFrameSetTexture(FRAME_LINK5, "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, true)
         call BlzFrameSetAllPoints(FRAME_LINK5, FRAME_LINK4)
-        call BlzFrameSetSize(FRAME_LINK5, 0.03, 0.03)
+        call BlzFrameSetSize(FRAME_LINK5, 0.020, 0.020)
         call BlzFrameSetTexture(FRAME_LINK5, "WOS\\DiscordIcon2", 0, true)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK2, FRAMEEVENT_CONTROL_CLICK)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK4, FRAMEEVENT_CONTROL_CLICK)
             call TriggerAddAction(FrameLinkMain2, function OnClickFrameLink)
-     set FRAME_LINK = BlzCreateFrame("EscMenuEditBoxTemplate",  BlzGetFrameByName("ConsoleUIBackdrop", 0),0,0)
+     set FRAME_LINK = BlzCreateFrame("EscMenuEditBoxTemplate",  WUI_GetRoot(),0,0)
     call BlzFrameSetAbsPoint(FRAME_LINK, FRAMEPOINT_CENTER, 0.52, 0.1525) 
     call BlzFrameSetSize(FRAME_LINK, 0.15, 0.03) 
     call BlzFrameSetText(FRAME_LINK,"discord.gg/wos2")    
@@ -1394,7 +1440,7 @@ endfunction
         set y = 0.0275
         set k = 210
         set r1 = y
-        /*set FRAME_Chat0 = BlzCreateFrameByType("BACKDROP", "MyIconButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+        /*set FRAME_Chat0 = BlzCreateFrameByType("BACKDROP", "MyIconButton", WUI_GetRoot(), "", 0)
         call BlzFrameSetAbsPoint(FRAME_Chat0,FRAMEPOINT_CENTER, 0.37,0.31 )// - 0.03 * i)
         call BlzFrameSetSize(FRAME_Chat0, 0.3, 0.15)
         call BlzFrameSetTexture(FRAME_Chat0,"war3mapimported\\border1.blp",0,true)
