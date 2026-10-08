@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "2854157f8b80cb6727ffdcffb3791af6f991a957d18a502f5ade123282407de0",
+  "source_sha256": "417969894304c25b810df91b126220917a164e13edf4fb89dfa9b646d02c14cd",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -2493,10 +2493,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A02I,A00X",
-            "_original_value": "A02I,A00X",
+            "value": "A02I,A00M",
+            "_original_value": "A02I,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTAySSxBMDBY"
+            "_raw_base64": "QTAySSxBMDBN"
           },
           "sanity_check": {
             "text": "",
@@ -6687,10 +6687,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0CX,A07X",
-            "_original_value": "A0CX,A07X",
+            "value": "A0CX,A07Y",
+            "_original_value": "A0CX,A07Y",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBDWCxBMDdY"
+            "_raw_base64": "QTBDWCxBMDdZ"
           },
           "sanity_check": {
             "text": "",
@@ -7598,10 +7598,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A05H",
-            "_original_value": "A05H",
+            "value": "A0F5",
+            "_original_value": "A0F5",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA1SA=="
+            "_raw_base64": "QTBGNQ=="
           },
           "sanity_check": {
             "text": "",
@@ -11239,7 +11239,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 4500
+            "value": 3500
           },
           "sanity_check": {
             "text": "",
@@ -11571,10 +11571,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0HW,A00M",
-            "_original_value": "A0HW,A00M",
+            "value": "A0HW,A00W",
+            "_original_value": "A0HW,A00W",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBIVyxBMDBN"
+            "_raw_base64": "QTBIVyxBMDBX"
           },
           "sanity_check": {
             "text": "",

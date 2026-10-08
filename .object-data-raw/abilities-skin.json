@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3a",
-  "source_sha256": "b50a38cc3627ea7508d15c2443f9d9411a9f6b76538cb30bb3068c7614eccf1e",
+  "source_sha256": "9e964ad2d2d842a9996be6da0abf0afbd2c13004c29b1cf7e9c7871a53be4d52",
   "kind": "abilities",
   "record_mode": "level",
   "format_version": 3,
@@ -4145,50 +4145,6 @@
       "modifications": [
         {
           "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_362",
-            "_original_value": "TRIGSTR_362",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjI=",
-            "resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled.",
-            "_original_resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled."
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_363",
-            "_original_value": "TRIGSTR_363",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjM=",
-            "resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled.",
-            "_original_resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled."
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "anam",
             "hex": "616E616D"
           },
@@ -4223,28 +4179,6 @@
             "_original_value": "TRIGSTR_8763",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl84NzYz",
-            "resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled.",
-            "_original_resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled."
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_8789",
-            "_original_value": "TRIGSTR_8789",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84Nzg5",
             "resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled.",
             "_original_resolved_value": "Marks a target unit for the manifestation of a Demon. The afflicted unit cannot cast spells and will take 40 damage per second until it dies. Upon its death, a great Demon will spawn from its corpse. Doom cannot be dispelled or cancelled."
           },
@@ -118530,50 +118464,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10017",
-            "_original_value": "TRIGSTR_10017",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDAxNw==",
-            "resolved_value": "Tsuna absorb all incoming damage and restore his mana points from damage, if take 1000/2000/3250 or more damage at 12/25/35 lvl, will gain after ability 10/20/30 all stats for 15 sec, also at 35 lvl after taken 3250 damage he will gain new ability to enter in Cambio Forma mode for 20 sec. Every 1250 absorbed dmg give 10% chance to F ability, you can press |cffff0000S|r to cancel ability immediatly.|n|n|cffffa500[Absorption]:|r 1000/2000/3250 damage unlocks stats|n|cffffa500[Lv. 35]:|r Max absorption unlocks Vongola Gear|n|n|cffffcc00Duration:|r 3 sec|nConverts 20% damage to MP|n|cffffcc00Stats Duration:|r 10 sec|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Tsuna absorb all incoming damage and restore his mana points from damage, if take 1000/2000/3250 or more damage at 12/25/35 lvl, will gain after ability 10/20/30 all stats for 15 sec, also at 35 lvl after taken 3250 damage he will gain new ability to enter in Cambio Forma mode for 20 sec. Every 1250 absorbed dmg give 10% chance to F ability, you can press |cffff0000S|r to cancel ability immediatly.|n|n|cffffa500[Absorption]:|r 1000/2000/3250 damage unlocks stats|n|cffffa500[Lv. 35]:|r Max absorption unlocks Vongola Gear|n|n|cffffcc00Duration:|r 3 sec|nConverts 20% damage to MP|n|cffffcc00Stats Duration:|r 10 sec|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10018",
-            "_original_value": "TRIGSTR_10018",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDAxOA==",
-            "resolved_value": "Tsuna absorb all incoming damage and restore his mana points from damage, if take 1000/2000/3250 or more damage at 12/25/35 lvl, will gain after ability 10/20/30 all stats for 15 sec, also at 35 lvl after taken 3250 damage he will gain new ability to enter in Cambio Forma mode for 20 sec. Every 1250 absorbed dmg give 10% chance to F ability, you can press |cffff0000S|r to cancel ability immediatly.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Absorption]:|r 1000/2000/3250 damage unlocks stats|n|cffffa500[Lv. 35]:|r Max absorption unlocks Vongola Gear|n|n|cffffcc00Duration:|r 3 sec|nConverts 20% damage to MP|n|cffffcc00Stats Duration:|r 10 sec|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Tsuna absorb all incoming damage and restore his mana points from damage, if take 1000/2000/3250 or more damage at 12/25/35 lvl, will gain after ability 10/20/30 all stats for 15 sec, also at 35 lvl after taken 3250 damage he will gain new ability to enter in Cambio Forma mode for 20 sec. Every 1250 absorbed dmg give 10% chance to F ability, you can press |cffff0000S|r to cancel ability immediatly.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Absorption]:|r 1000/2000/3250 damage unlocks stats|n|cffffa500[Lv. 35]:|r Max absorption unlocks Vongola Gear|n|n|cffffcc00Duration:|r 3 sec|nConverts 20% damage to MP|n|cffffcc00Stats Duration:|r 10 sec|n|cffffcc00CD:|r 30 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -128859,138 +128749,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10073",
-            "_original_value": "TRIGSTR_10073",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3Mw==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 2/3/4/5/6|n|cffffcc00Range:|r 1000/1075/1150/1225/1300|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 70/85/100/115/130",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 2/3/4/5/6|n|cffffcc00Range:|r 1000/1075/1150/1225/1300|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 70/85/100/115/130"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10074",
-            "_original_value": "TRIGSTR_10074",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3NA==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1000|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 70",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1000|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 70"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10075",
-            "_original_value": "TRIGSTR_10075",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3NQ==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 1075|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 85",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 1075|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 85"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10076",
-            "_original_value": "TRIGSTR_10076",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3Ng==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 1150|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 1150|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10077",
-            "_original_value": "TRIGSTR_10077",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3Nw==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 1225|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 115",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 1225|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 115"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10078",
-            "_original_value": "TRIGSTR_10078",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA3OA==",
-            "resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 130",
-            "_original_resolved_value": "Yamamoto charges and then slashes the sword at the point.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[State]:|r |cffFF3333Offensive State|r|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 500|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 130"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -130830,50 +130588,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10087",
-            "_original_value": "TRIGSTR_10087",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA4Nw==",
-            "resolved_value": "Yamamoto uses cambio forma to reduce ongoing cooldowns by 20 sec and improve skills.|n|nPassive|nDealing 8000 damage to enemy heroes unlocks Vongola Primo Form|n|cffffcc00CD:|r 500 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Yamamoto uses cambio forma to reduce ongoing cooldowns by 20 sec and improve skills.|n|nPassive|nDealing 8000 damage to enemy heroes unlocks Vongola Primo Form|n|cffffcc00CD:|r 500 sec|n|cff33ccffMana:|r 200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10088",
-            "_original_value": "TRIGSTR_10088",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDA4OA==",
-            "resolved_value": "Yamamoto uses cambio forma to reduce ongoing cooldowns by 20 sec and improve skills.|n|n|cffffcc00Ability Stats:|r|n|nPassive|nDealing 8000 damage to enemy heroes unlocks Vongola Primo Form|n|cffffcc00CD:|r 500 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Yamamoto uses cambio forma to reduce ongoing cooldowns by 20 sec and improve skills.|n|n|cffffcc00Ability Stats:|r|n|nPassive|nDealing 8000 damage to enemy heroes unlocks Vongola Primo Form|n|cffffcc00CD:|r 500 sec|n|cff33ccffMana:|r 200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -156567,50 +156281,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10229",
-            "_original_value": "TRIGSTR_10229",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIyOQ==",
-            "resolved_value": "Rimuru strikes point with immense amount of fire.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Ultimate Skill Veldora after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 450|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Rimuru strikes point with immense amount of fire.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Ultimate Skill Veldora after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 450|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10230",
-            "_original_value": "TRIGSTR_10230",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzMA==",
-            "resolved_value": "Rimuru strikes point with immense amount of fire.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Ultimate Skill Veldora after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 450|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Rimuru strikes point with immense amount of fire.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Ultimate Skill Veldora after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 450|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -157220,50 +156890,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10231",
-            "_original_value": "TRIGSTR_10231",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzMQ==",
-            "resolved_value": "Rimuru releases a massive surge of flames from the earth, striking all nearby enemies. Affected targets are stunned.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Ifrite Flame Attack after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 550|n|cffffcc00Stun:|r 0.50 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Rimuru releases a massive surge of flames from the earth, striking all nearby enemies. Affected targets are stunned.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Ifrite Flame Attack after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 550|n|cffffcc00Stun:|r 0.50 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10232",
-            "_original_value": "TRIGSTR_10232",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzMg==",
-            "resolved_value": "Rimuru releases a massive surge of flames from the earth, striking all nearby enemies. Affected targets are stunned.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Ifrite Flame Attack after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 550|n|cffffcc00Stun:|r 0.50 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Rimuru releases a massive surge of flames from the earth, striking all nearby enemies. Affected targets are stunned.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Ifrite Flame Attack after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 5|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 550|n|cffffcc00Stun:|r 0.50 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -157871,50 +157497,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10233",
-            "_original_value": "TRIGSTR_10233",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzMw==",
-            "resolved_value": "Creates a localized storm, dealing continuous damage and reducing enemy movement speed.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Black Flame Erruption after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 6|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 900|n|cffffcc00Slow:|r 20% for 1 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Creates a localized storm, dealing continuous damage and reducing enemy movement speed.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|nReplaced by Black Flame Erruption after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 6|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 900|n|cffffcc00Slow:|r 20% for 1 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10234",
-            "_original_value": "TRIGSTR_10234",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzNA==",
-            "resolved_value": "Creates a localized storm, dealing continuous damage and reducing enemy movement speed.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Black Flame Erruption after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 6|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 900|n|cffffcc00Slow:|r 20% for 1 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Creates a localized storm, dealing continuous damage and reducing enemy movement speed.|n[|c00FFFF00Demon Lord Aura|r]: After use, this ability is replaced by a new one.|n|n|cffffcc00Ability Stats:|r|nReplaced by Black Flame Erruption after cast|n|n|cff33ccffMag. Damage:|r Intelligence x 6|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 900|n|cffffcc00Slow:|r 20% for 1 sec|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -159194,50 +158776,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10237",
-            "_original_value": "TRIGSTR_10237",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzNw==",
-            "resolved_value": "Rimuru attackes enemy in area using sun rays.|nEvery tick stun 0.1 sec.|n|n|cff33ccffMag. Damage:|r Intelligence x 3|n|cffffcc00Range:|r 2100|n|cffffcc00Radius:|r 1000|nDuration: 6.5 sec|nTicks: 4|n|cffffcc00CD:|r 40 sec|n|cff33ccffMana:|r 250",
-            "_original_resolved_value": "Rimuru attackes enemy in area using sun rays.|nEvery tick stun 0.1 sec.|n|n|cff33ccffMag. Damage:|r Intelligence x 3|n|cffffcc00Range:|r 2100|n|cffffcc00Radius:|r 1000|nDuration: 6.5 sec|nTicks: 4|n|cffffcc00CD:|r 40 sec|n|cff33ccffMana:|r 250"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10238",
-            "_original_value": "TRIGSTR_10238",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDIzOA==",
-            "resolved_value": "Rimuru attackes enemy in area using sun rays.|nEvery tick stun 0.1 sec.|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 3|n|cffffcc00Range:|r 2100|n|cffffcc00Radius:|r 1000|nDuration: 6.5 sec|nTicks: 4|n|cffffcc00CD:|r 40 sec|n|cff33ccffMana:|r 250",
-            "_original_resolved_value": "Rimuru attackes enemy in area using sun rays.|nEvery tick stun 0.1 sec.|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 3|n|cffffcc00Range:|r 2100|n|cffffcc00Radius:|r 1000|nDuration: 6.5 sec|nTicks: 4|n|cffffcc00CD:|r 40 sec|n|cff33ccffMana:|r 250"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -214675,50 +214213,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10543",
-            "_original_value": "TRIGSTR_10543",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDU0Mw==",
-            "resolved_value": "Asta swings the sword to release a forward 2 waves of energy that explodes upon impact, dealing damage and knocking back enemies in the area.|n[|c00FFFC01Black Divider (T)|r] increase aoe by 35%. Additional damage 1x agi.|n|n|cffffa500[Demon Form (T)]:|r Increases AoE by +35% and amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1600|n|cffffcc00Projectile Range:|r 1350|n|cffffcc00Radius:|r 350 (Explosion 450)|n|cffffcc00Strikes:|r 2|n|cffffcc00Cast Time:|r 0.60 sec|n|cffffcc00Duration:|r 1.65 sec|n|cffffcc00Knockback:|r 150|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 20 (Explosion 40)|n|cff33ccffMana:|r 60",
-            "_original_resolved_value": "Asta swings the sword to release a forward 2 waves of energy that explodes upon impact, dealing damage and knocking back enemies in the area.|n[|c00FFFC01Black Divider (T)|r] increase aoe by 35%. Additional damage 1x agi.|n|n|cffffa500[Demon Form (T)]:|r Increases AoE by +35% and amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1600|n|cffffcc00Projectile Range:|r 1350|n|cffffcc00Radius:|r 350 (Explosion 450)|n|cffffcc00Strikes:|r 2|n|cffffcc00Cast Time:|r 0.60 sec|n|cffffcc00Duration:|r 1.65 sec|n|cffffcc00Knockback:|r 150|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 20 (Explosion 40)|n|cff33ccffMana:|r 60"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10544",
-            "_original_value": "TRIGSTR_10544",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDU0NA==",
-            "resolved_value": "Asta swings the sword to release a forward 2 waves of energy that explodes upon impact, dealing damage and knocking back enemies in the area.|n[|c00FFFC01Black Divider (T)|r] increase aoe by 35%. Additional damage 1x agi.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Demon Form (T)]:|r Increases AoE by +35% and amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1600|n|cffffcc00Projectile Range:|r 1350|n|cffffcc00Radius:|r 350 (Explosion 450)|n|cffffcc00Strikes:|r 2|n|cffffcc00Cast Time:|r 0.60 sec|n|cffffcc00Duration:|r 1.65 sec|n|cffffcc00Knockback:|r 150|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 20 (Explosion 40)|n|cff33ccffMana:|r 60",
-            "_original_resolved_value": "Asta swings the sword to release a forward 2 waves of energy that explodes upon impact, dealing damage and knocking back enemies in the area.|n[|c00FFFC01Black Divider (T)|r] increase aoe by 35%. Additional damage 1x agi.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Demon Form (T)]:|r Increases AoE by +35% and amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1600|n|cffffcc00Projectile Range:|r 1350|n|cffffcc00Radius:|r 350 (Explosion 450)|n|cffffcc00Strikes:|r 2|n|cffffcc00Cast Time:|r 0.60 sec|n|cffffcc00Duration:|r 1.65 sec|n|cffffcc00Knockback:|r 150|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 20 (Explosion 40)|n|cff33ccffMana:|r 60"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -215343,50 +214837,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10545",
-            "_original_value": "TRIGSTR_10545",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDU0NQ==",
-            "resolved_value": "Charges to enemy , knocking aside all enemies in his path and dealing damage, cause stun.|n[|c00FFFC01Black Divider (T)|r] Additional damage 1x agi.|n|n|cffffa500[Demon Form (T)]:|r Amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1100|n|cffffcc00Radius:|r 265|n|cffffcc00Cast Time:|r 0.45 sec|n|cffffcc00Duration:|r 1.55 sec|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Knockback:|r 400|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 50|n|cff33ccffMana:|r 75",
-            "_original_resolved_value": "Charges to enemy , knocking aside all enemies in his path and dealing damage, cause stun.|n[|c00FFFC01Black Divider (T)|r] Additional damage 1x agi.|n|n|cffffa500[Demon Form (T)]:|r Amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1100|n|cffffcc00Radius:|r 265|n|cffffcc00Cast Time:|r 0.45 sec|n|cffffcc00Duration:|r 1.55 sec|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Knockback:|r 400|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 50|n|cff33ccffMana:|r 75"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10546",
-            "_original_value": "TRIGSTR_10546",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDU0Ng==",
-            "resolved_value": "Charges to enemy , knocking aside all enemies in his path and dealing damage, cause stun.|n[|c00FFFC01Black Divider (T)|r] Additional damage 1x agi.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Demon Form (T)]:|r Amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1100|n|cffffcc00Radius:|r 265|n|cffffcc00Cast Time:|r 0.45 sec|n|cffffcc00Duration:|r 1.55 sec|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Knockback:|r 400|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 50|n|cff33ccffMana:|r 75",
-            "_original_resolved_value": "Charges to enemy , knocking aside all enemies in his path and dealing damage, cause stun.|n[|c00FFFC01Black Divider (T)|r] Additional damage 1x agi.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Demon Form (T)]:|r Amplifies damage (+Agility x 0.75)|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1100|n|cffffcc00Radius:|r 265|n|cffffcc00Cast Time:|r 0.45 sec|n|cffffcc00Duration:|r 1.55 sec|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Knockback:|r 400|n|cffffcc00CD:|r 20 sec|n|cffcc9966Decor Damage:|r 50|n|cff33ccffMana:|r 75"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -255386,138 +254836,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10725",
-            "_original_value": "TRIGSTR_10725",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDcyNQ==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 1/2/3/4/5 + 150|n|cffffcc00Range:|r 1600/1700/1800/1900/2000|n|cffffcc00Radius:|r 300|nRange: 1200/1300/1400/1500/1600|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 125/140/155/170/185",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 1/2/3/4/5 + 150|n|cffffcc00Range:|r 1600/1700/1800/1900/2000|n|cffffcc00Radius:|r 300|nRange: 1200/1300/1400/1500/1600|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 125/140/155/170/185"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10726",
-            "_original_value": "TRIGSTR_10726",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDcyNg==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 1 + 150|n|cffffcc00Range:|r 1600|n|cffffcc00Radius:|r 300|nRange: 1200|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 1 + 150|n|cffffcc00Range:|r 1600|n|cffffcc00Radius:|r 300|nRange: 1200|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10727",
-            "_original_value": "TRIGSTR_10727",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDcyNw==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 2 + 150|n|cffffcc00Range:|r 1700|n|cffffcc00Radius:|r 300|nRange: 1300|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 140",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 2 + 150|n|cffffcc00Range:|r 1700|n|cffffcc00Radius:|r 300|nRange: 1300|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 140"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10728",
-            "_original_value": "TRIGSTR_10728",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDcyOA==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 3 + 150|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 300|nRange: 1400|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 155",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 3 + 150|n|cffffcc00Range:|r 1800|n|cffffcc00Radius:|r 300|nRange: 1400|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 155"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10729",
-            "_original_value": "TRIGSTR_10729",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDcyOQ==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 4 + 150|n|cffffcc00Range:|r 1900|n|cffffcc00Radius:|r 300|nRange: 1500|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 170",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 4 + 150|n|cffffcc00Range:|r 1900|n|cffffcc00Radius:|r 300|nRange: 1500|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 170"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10730",
-            "_original_value": "TRIGSTR_10730",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczMA==",
-            "resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 5 + 150|n|cffffcc00Range:|r 2000|n|cffffcc00Radius:|r 300|nRange: 1600|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 185",
-            "_original_resolved_value": "Fires a beam of concentrated mana dealing magic damage.|n[|c00FFFC01ability lvl 3 grade|r] grants a new Q2 ability to finish the combo, which strike to already damaged units by Q ability.|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by Enhanced Zoltraak (Radius 675, Int x 5 Damage)|n|n|cff33ccffMag. Damage:|r Intelligence x 5 + 150|n|cffffcc00Range:|r 2000|n|cffffcc00Radius:|r 300|nRange: 1600|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 185"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -256166,28 +255484,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10731",
-            "_original_value": "TRIGSTR_10731",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczMQ==",
-            "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cff33ccffMag. Damage:|r Intelligence x 0.20/0.40/0.60/0.80/1 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 100/125/150/175/200",
-            "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cff33ccffMag. Damage:|r Intelligence x 0.20/0.40/0.60/0.80/1 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 100/125/150/175/200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aub1",
             "hex": "61756231"
           },
@@ -256202,94 +255498,6 @@
             "_raw_base64": "VFJJR1NUUl8xMDczMg==",
             "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.20 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 100",
             "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.20 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10733",
-            "_original_value": "TRIGSTR_10733",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczMw==",
-            "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.40 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.40 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10734",
-            "_original_value": "TRIGSTR_10734",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczNA==",
-            "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.60 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.60 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10735",
-            "_original_value": "TRIGSTR_10735",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczNQ==",
-            "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.80 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 175",
-            "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 0.80 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 175"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10736",
-            "_original_value": "TRIGSTR_10736",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDczNg==",
-            "resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 1 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Frieren  fire fast zoltrakk homing missles to those hit by Q ability, if it was 1 target it hit by 4 missile, 2 - by 2 missiles, 4+ only by 1 missile|n[|c00FFFC01Height of Magic grade|r] grants a new target Q3 ability it able when you finish Q2 or miss with Q ability (dont damage anyone).|n|n|cffffcc00Ability Stats:|r|n|n|cff33ccffMag. Damage:|r Intelligence x 1 + 40|nSecondary Zoltraak attack|n|cffffcc00CD:|r 10 sec|n|cff33ccffMana:|r 200"
           },
           "sanity_check": {
             "text": "",
@@ -259785,28 +258993,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10755",
-            "_original_value": "TRIGSTR_10755",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc1NQ==",
-            "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 700/800/900/1000/1100|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100/125/150/175/200",
-            "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 700/800/900/1000/1100|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100/125/150/175/200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aub1",
             "hex": "61756231"
           },
@@ -259821,94 +259007,6 @@
             "_raw_base64": "VFJJR1NUUl8xMDc1Ng==",
             "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 700|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100",
             "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 700|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10757",
-            "_original_value": "TRIGSTR_10757",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc1Nw==",
-            "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 800|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 800|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10758",
-            "_original_value": "TRIGSTR_10758",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc1OA==",
-            "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 900|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 150",
-            "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 900|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 150"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10759",
-            "_original_value": "TRIGSTR_10759",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc1OQ==",
-            "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 1000|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 175",
-            "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 1000|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 175"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10760",
-            "_original_value": "TRIGSTR_10760",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc2MA==",
-            "resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 1100|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Creates a mimic of Frieren in the point that copy every Frieren ability except F. Abilities deal 50% damage and take 300%.|n|c00FFFC01[Height of Magic grade]|r mimic no longer copy Frieren body and drop from air as large golem that stun enemy for and have 5000 hp and 250 attack, abilities deal 75% of damage.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Morph (T)]:|r Replaced by a Golem drop (Radius 550, Stun 0.50 sec, Golem Duration: 16 sec, Int x 4 Damage)|n|n|cffffcc00Range:|r 1100|nDuration: 8 sec|n|cffffcc00Cast Range:|r 3000|nCreates an illusion of Frieren that mirrors your spellcasts|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 200"
           },
           "sanity_check": {
             "text": "",
@@ -261833,50 +260931,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10765",
-            "_original_value": "TRIGSTR_10765",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc2NQ==",
-            "resolved_value": "Frieren create a barrier depend on F stacks amount.|n[|c00FFFC011-4 stacks|r]: Create a barrier that blocks next incoming damage and removes.|n[|c00FFFC015-9 stacks|r]: Create a barrier that blocks incoming damage.|n[|c00FFFC0110 stacks|r]: Create a barrier around frieren for that blocks next incoming damage for ally around her.|n|n|cffffcc00Radius:|r 450|nConsumes Magic Stacks to grant a protective buff|n|cffffcc00Buff Duration:|r 1.50 sec|n|cffffcc00CD:|r 15 sec|n|cff33ccffMana:|r 300",
-            "_original_resolved_value": "Frieren create a barrier depend on F stacks amount.|n[|c00FFFC011-4 stacks|r]: Create a barrier that blocks next incoming damage and removes.|n[|c00FFFC015-9 stacks|r]: Create a barrier that blocks incoming damage.|n[|c00FFFC0110 stacks|r]: Create a barrier around frieren for that blocks next incoming damage for ally around her.|n|n|cffffcc00Radius:|r 450|nConsumes Magic Stacks to grant a protective buff|n|cffffcc00Buff Duration:|r 1.50 sec|n|cffffcc00CD:|r 15 sec|n|cff33ccffMana:|r 300"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10766",
-            "_original_value": "TRIGSTR_10766",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc2Ng==",
-            "resolved_value": "Frieren create a barrier depend on F stacks amount.|n[|c00FFFC011-4 stacks|r]: Create a barrier that blocks next incoming damage and removes.|n[|c00FFFC015-9 stacks|r]: Create a barrier that blocks incoming damage.|n[|c00FFFC0110 stacks|r]: Create a barrier around frieren for that blocks next incoming damage for ally around her.|n|n|cffffcc00Ability Stats:|r|n|n|cffffcc00Radius:|r 450|nConsumes Magic Stacks to grant a protective buff|n|cffffcc00Buff Duration:|r 1.50 sec|n|cffffcc00CD:|r 15 sec|n|cff33ccffMana:|r 300",
-            "_original_resolved_value": "Frieren create a barrier depend on F stacks amount.|n[|c00FFFC011-4 stacks|r]: Create a barrier that blocks next incoming damage and removes.|n[|c00FFFC015-9 stacks|r]: Create a barrier that blocks incoming damage.|n[|c00FFFC0110 stacks|r]: Create a barrier around frieren for that blocks next incoming damage for ally around her.|n|n|cffffcc00Ability Stats:|r|n|n|cffffcc00Radius:|r 450|nConsumes Magic Stacks to grant a protective buff|n|cffffcc00Buff Duration:|r 1.50 sec|n|cffffcc00CD:|r 15 sec|n|cff33ccffMana:|r 300"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -262430,50 +261484,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10767",
-            "_original_value": "TRIGSTR_10767",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc2Nw==",
-            "resolved_value": "Frieren cause debuff to enemy for 7 seconds. Store dmg from Frieren during this debuff, explode enemy when debuff ends.|n|n|cffffcc00Range:|r 1800|nStores 50% of Frieren's damage and explodes|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Frieren cause debuff to enemy for 7 seconds. Store dmg from Frieren during this debuff, explode enemy when debuff ends.|n|n|cffffcc00Range:|r 1800|nStores 50% of Frieren's damage and explodes|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10768",
-            "_original_value": "TRIGSTR_10768",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDc2OA==",
-            "resolved_value": "Frieren cause debuff to enemy for 7 seconds. Store dmg from Frieren during this debuff, explode enemy when debuff ends.|n|n|cffffcc00Ability Stats:|r|n|n|cffffcc00Range:|r 1800|nStores 50% of Frieren's damage and explodes|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125",
-            "_original_resolved_value": "Frieren cause debuff to enemy for 7 seconds. Store dmg from Frieren during this debuff, explode enemy when debuff ends.|n|n|cffffcc00Ability Stats:|r|n|n|cffffcc00Range:|r 1800|nStores 50% of Frieren's damage and explodes|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 125"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -281873,138 +280883,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10877",
-            "_original_value": "TRIGSTR_10877",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg3Nw==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 2/3/4/5/6|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 60/70/80/90/100",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 2/3/4/5/6|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20/19/18/17/16 sec|n|cff33ccffMana:|r 60/70/80/90/100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10878",
-            "_original_value": "TRIGSTR_10878",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg3OA==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 60",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 2|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 60"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10879",
-            "_original_value": "TRIGSTR_10879",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg3OQ==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 70",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 70"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10880",
-            "_original_value": "TRIGSTR_10880",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4MA==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 80",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 80"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10881",
-            "_original_value": "TRIGSTR_10881",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4MQ==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 90",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 17 sec|n|cff33ccffMana:|r 90"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10882",
-            "_original_value": "TRIGSTR_10882",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4Mg==",
-            "resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Detonates quicksand for extra damage and stun.|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 1450|n|cffffcc00Radius:|r 255|n|cffffcc00Range:|r 1655|n|cffffcc00Slow:|r 30% for 5 sec|n|cffffcc00Sand Mark:|r 20 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 16 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -282541,138 +281419,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10883",
-            "_original_value": "TRIGSTR_10883",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4Mw==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22/21/20/19/18 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22/21/20/19/18 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "A0I8",
-            "hex": "41304938"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10884",
-            "_original_value": "TRIGSTR_10884",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4NA==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10885",
-            "_original_value": "TRIGSTR_10885",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4NQ==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 21 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 21 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10886",
-            "_original_value": "TRIGSTR_10886",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4Ng==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 20 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10887",
-            "_original_value": "TRIGSTR_10887",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4Nw==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 19 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10888",
-            "_original_value": "TRIGSTR_10888",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4OA==",
-            "resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[Q Combo]:|r Agility x 3 physical damage and 1.50 sec stun.|n|cffffa500[R Combo]:|r Combines with the sandstorm.|n|n|cffff3333Phys. Damage:|r Agility x 0.75|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 600|n|cffffcc00Duration:|r 3 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Slow:|r 30% for 3 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 18 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -283230,138 +281976,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10889",
-            "_original_value": "TRIGSTR_10889",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg4OQ==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffff3333Phys. Damage:|r Agility x 3/4/5/6/7|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 80/85/90/95/100",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffff3333Phys. Damage:|r Agility x 3/4/5/6/7|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 80/85/90/95/100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10890",
-            "_original_value": "TRIGSTR_10890",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5MA==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 80",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 3|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 80"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10891",
-            "_original_value": "TRIGSTR_10891",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5MQ==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 85",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 4|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 85"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10892",
-            "_original_value": "TRIGSTR_10892",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5Mg==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 90",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 5|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 90"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10893",
-            "_original_value": "TRIGSTR_10893",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5Mw==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 95",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 6|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 95"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10894",
-            "_original_value": "TRIGSTR_10894",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5NA==",
-            "resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 7|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|n|cffff3333Phys. Damage:|r Agility x 7|n|cffffcc00Range:|r 99999|n|cffffcc00Radius:|r 375|n|cffffcc00Dash Range:|r 750|n|cffffcc00Charges:|r 3|n|cffffcc00Recharge:|r 1 sec|n|cffffcc00Use Cooldown:|r 1 sec|n|cffffcc00Hits:|r 5|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 1 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -283881,138 +282495,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10895",
-            "_original_value": "TRIGSTR_10895",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5NQ==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1200/1300/1400/1500/1600|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 25/24/23/22/21 sec|n|cff33ccffMana:|r 100/110/120/130/140",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1200/1300/1400/1500/1600|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 25/24/23/22/21 sec|n|cff33ccffMana:|r 100/110/120/130/140"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10896",
-            "_original_value": "TRIGSTR_10896",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5Ng==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1200|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 25 sec|n|cff33ccffMana:|r 100"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 2,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10897",
-            "_original_value": "TRIGSTR_10897",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5Nw==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 24 sec|n|cff33ccffMana:|r 110",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1300|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 24 sec|n|cff33ccffMana:|r 110"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 3,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10898",
-            "_original_value": "TRIGSTR_10898",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5OA==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1400|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 23 sec|n|cff33ccffMana:|r 120",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1400|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 23 sec|n|cff33ccffMana:|r 120"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 4,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10899",
-            "_original_value": "TRIGSTR_10899",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDg5OQ==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 130",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1500|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 22 sec|n|cff33ccffMana:|r 130"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 5,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10900",
-            "_original_value": "TRIGSTR_10900",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwMA==",
-            "resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1600|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 21 sec|n|cff33ccffMana:|r 140",
-            "_original_resolved_value": "Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.|n|n|cffffcc00Ability Stats:|r|n|cffffa500[W Combo]:|r Combines when cast into quicksand.|n|n|cffff3333Phys. Damage:|r Agility x 0.60|n|cffffcc00Range:|r 1600|n|cffffcc00Radius:|r 200 (Explosion 400)|n|cffffcc00Duration:|r 2.50 sec|n|cffffcc00Hits:|r 6|n|cffffcc00Stun:|r 1 sec|n|cffffcc00Ground Sand:|r 20 sec|n|cffffcc00CD:|r 21 sec|n|cff33ccffMana:|r 140"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -284551,50 +283033,6 @@
         0
       ],
       "modifications": [
-        {
-          "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10901",
-            "_original_value": "TRIGSTR_10901",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwMQ==",
-            "resolved_value": "Crocodile places a hand on the ground to dry out a large area, turning it into sand. Channels for 5 seconds; sand expands for 3 seconds. Ground Death unlocks after 1 second.|n|nImmune to crowd control while channeling. T2 detonates active sand.|n|n|cffffcc00Range:|r 1875|n|cffffcc00Radius:|r 1700|n|cffffcc00Channel:|r 5 sec|n|cffffcc00Spread:|r 3 sec|n|cffffcc00Mana Drain:|r 10% Max MP / sec|n|cffffcc00Damage Reduction:|r 20%|n|cffffcc00T2 Unlock:|r 1 sec|n|cffffcc00CD:|r 35 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Crocodile places a hand on the ground to dry out a large area, turning it into sand. Channels for 5 seconds; sand expands for 3 seconds. Ground Death unlocks after 1 second.|n|nImmune to crowd control while channeling. T2 detonates active sand.|n|n|cffffcc00Range:|r 1875|n|cffffcc00Radius:|r 1700|n|cffffcc00Channel:|r 5 sec|n|cffffcc00Spread:|r 3 sec|n|cffffcc00Mana Drain:|r 10% Max MP / sec|n|cffffcc00Damage Reduction:|r 20%|n|cffffcc00T2 Unlock:|r 1 sec|n|cffffcc00CD:|r 35 sec|n|cff33ccffMana:|r 200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10902",
-            "_original_value": "TRIGSTR_10902",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwMg==",
-            "resolved_value": "Crocodile places a hand on the ground to dry out a large area, turning it into sand. Channels for 5 seconds; sand expands for 3 seconds. Ground Death unlocks after 1 second.|n|n|cffffcc00Ability Stats:|r|nImmune to crowd control while channeling. T2 detonates active sand.|n|n|cffffcc00Range:|r 1875|n|cffffcc00Radius:|r 1700|n|cffffcc00Channel:|r 5 sec|n|cffffcc00Spread:|r 3 sec|n|cffffcc00Mana Drain:|r 10% Max MP / sec|n|cffffcc00Damage Reduction:|r 20%|n|cffffcc00T2 Unlock:|r 1 sec|n|cffffcc00CD:|r 35 sec|n|cff33ccffMana:|r 200",
-            "_original_resolved_value": "Crocodile places a hand on the ground to dry out a large area, turning it into sand. Channels for 5 seconds; sand expands for 3 seconds. Ground Death unlocks after 1 second.|n|n|cffffcc00Ability Stats:|r|nImmune to crowd control while channeling. T2 detonates active sand.|n|n|cffffcc00Range:|r 1875|n|cffffcc00Radius:|r 1700|n|cffffcc00Channel:|r 5 sec|n|cffffcc00Spread:|r 3 sec|n|cffffcc00Mana Drain:|r 10% Max MP / sec|n|cffffcc00Damage Reduction:|r 20%|n|cffffcc00T2 Unlock:|r 1 sec|n|cffffcc00CD:|r 35 sec|n|cff33ccffMana:|r 200"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
         {
           "field": {
             "text": "aani",
@@ -285223,50 +283661,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10903",
-            "_original_value": "TRIGSTR_10903",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwMw==",
-            "resolved_value": "Crocodile drains all moisture on contact. Detonates his active sand, including trails from other abilities, and removes it after the explosion.|n|nEach enemy inside active sand takes damage once. Removes the detonated sand.|n|n|cffff3333Phys. Damage:|r Agility x 10|n|cffffcc00Range:|r 1875|n|cffffcc00Availability:|r 10 sec|n|cffffcc00Explosion Delay:|r 0.50 sec|n|cffffcc00CD:|r 10 sec",
-            "_original_resolved_value": "Crocodile drains all moisture on contact. Detonates his active sand, including trails from other abilities, and removes it after the explosion.|n|nEach enemy inside active sand takes damage once. Removes the detonated sand.|n|n|cffff3333Phys. Damage:|r Agility x 10|n|cffffcc00Range:|r 1875|n|cffffcc00Availability:|r 10 sec|n|cffffcc00Explosion Delay:|r 0.50 sec|n|cffffcc00CD:|r 10 sec"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10904",
-            "_original_value": "TRIGSTR_10904",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwNA==",
-            "resolved_value": "Crocodile drains all moisture on contact. Detonates his active sand, including trails from other abilities, and removes it after the explosion.|n|n|cffffcc00Ability Stats:|r|nEach enemy inside active sand takes damage once. Removes the detonated sand.|n|n|cffff3333Phys. Damage:|r Agility x 10|n|cffffcc00Range:|r 1875|n|cffffcc00Availability:|r 10 sec|n|cffffcc00Explosion Delay:|r 0.50 sec|n|cffffcc00CD:|r 10 sec",
-            "_original_resolved_value": "Crocodile drains all moisture on contact. Detonates his active sand, including trails from other abilities, and removes it after the explosion.|n|n|cffffcc00Ability Stats:|r|nEach enemy inside active sand takes damage once. Removes the detonated sand.|n|n|cffff3333Phys. Damage:|r Agility x 10|n|cffffcc00Range:|r 1875|n|cffffcc00Availability:|r 10 sec|n|cffffcc00Explosion Delay:|r 0.50 sec|n|cffffcc00CD:|r 10 sec"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aani",
             "hex": "61616E69"
           },
@@ -285893,50 +284287,6 @@
       "modifications": [
         {
           "field": {
-            "text": "arut",
-            "hex": "61727574"
-          },
-          "field_name": "Research extended tooltip / Полная подсказка изучения",
-          "type": "string",
-          "level": 0,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10905",
-            "_original_value": "TRIGSTR_10905",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwNQ==",
-            "resolved_value": "Each time Crocodile cast a spell, he gain 1 stack of La Spada. Max 3 stacks|nThis treat as enhanced normal attack |nWhen Crocodile has the passive, He gain 800 range of normal attack and his normal attack is replaced by La Spada ranged attack, gaining 300% attack speed and dealing agi physical damage to the target, once stacks depleted attack speed bonus and range bonus will be back to normal. if there 3 stacks it become 3 blades skillshot with increased aoe and damage|n|nEnhanced normal attack. Each successful cast grants one stack. Three stacks launch three blades with triple damage; each enemy is hit once.|n|n|cffffcc00Damage:|r Agility x 3|n|cffffcc00Max Stacks:|r 3|n|cffffcc00Attack Range:|r 800|n|cffffcc00Attack Speed:|r +300%|n|cffffcc00Cooldown:|r 2 sec",
-            "_original_resolved_value": "Each time Crocodile cast a spell, he gain 1 stack of La Spada. Max 3 stacks|nThis treat as enhanced normal attack |nWhen Crocodile has the passive, He gain 800 range of normal attack and his normal attack is replaced by La Spada ranged attack, gaining 300% attack speed and dealing agi physical damage to the target, once stacks depleted attack speed bonus and range bonus will be back to normal. if there 3 stacks it become 3 blades skillshot with increased aoe and damage|n|nEnhanced normal attack. Each successful cast grants one stack. Three stacks launch three blades with triple damage; each enemy is hit once.|n|n|cffffcc00Damage:|r Agility x 3|n|cffffcc00Max Stacks:|r 3|n|cffffcc00Attack Range:|r 800|n|cffffcc00Attack Speed:|r +300%|n|cffffcc00Cooldown:|r 2 sec"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "aub1",
-            "hex": "61756231"
-          },
-          "field_name": "Extended tooltip / Полная подсказка",
-          "type": "string",
-          "level": 1,
-          "data_pointer": 0,
-          "data": {
-            "value": "TRIGSTR_10906",
-            "_original_value": "TRIGSTR_10906",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwNg==",
-            "resolved_value": "Each time Crocodile cast a spell, he gain 1 stack of La Spada. Max 3 stacks|nThis treat as enhanced normal attack |nWhen Crocodile has the passive, He gain 800 range of normal attack and his normal attack is replaced by La Spada ranged attack, gaining 300% attack speed and dealing agi physical damage to the target, once stacks depleted attack speed bonus and range bonus will be back to normal. if there 3 stacks it become 3 blades skillshot with increased aoe and damage|n|n|cffffcc00Ability Stats:|r|nEnhanced normal attack. Each successful cast grants one stack. Three stacks launch three blades with triple damage; each enemy is hit once.|n|n|cffffcc00Damage:|r Agility x 3|n|cffffcc00Max Stacks:|r 3|n|cffffcc00Attack Range:|r 800|n|cffffcc00Attack Speed:|r +300%|n|cffffcc00Cooldown:|r 2 sec",
-            "_original_resolved_value": "Each time Crocodile cast a spell, he gain 1 stack of La Spada. Max 3 stacks|nThis treat as enhanced normal attack |nWhen Crocodile has the passive, He gain 800 range of normal attack and his normal attack is replaced by La Spada ranged attack, gaining 300% attack speed and dealing agi physical damage to the target, once stacks depleted attack speed bonus and range bonus will be back to normal. if there 3 stacks it become 3 blades skillshot with increased aoe and damage|n|n|cffffcc00Ability Stats:|r|nEnhanced normal attack. Each successful cast grants one stack. Three stacks launch three blades with triple damage; each enemy is hit once.|n|n|cffffcc00Damage:|r Agility x 3|n|cffffcc00Max Stacks:|r 3|n|cffffcc00Attack Range:|r 800|n|cffffcc00Attack Speed:|r +300%|n|cffffcc00Cooldown:|r 2 sec"
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "aart",
             "hex": "61617274"
           },
@@ -286135,12 +284485,12 @@
           "level": 0,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_10907",
-            "_original_value": "TRIGSTR_10907",
+            "value": "TRIGSTR_1045",
+            "_original_value": "TRIGSTR_1045",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwNw==",
-            "resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 1% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80",
-            "_original_resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 1% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80"
+            "_raw_base64": "VFJJR1NUUl8xMDQ1",
+            "resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 2% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80",
+            "_original_resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 2% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80"
           },
           "sanity_check": {
             "text": "",
@@ -286157,12 +284507,12 @@
           "level": 1,
           "data_pointer": 0,
           "data": {
-            "value": "TRIGSTR_10908",
-            "_original_value": "TRIGSTR_10908",
+            "value": "TRIGSTR_1046",
+            "_original_value": "TRIGSTR_1046",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMDkwOA==",
-            "resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|n|cffffcc00Ability Stats:|r|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 1% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80",
-            "_original_resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|n|cffffcc00Ability Stats:|r|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 1% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80"
+            "_raw_base64": "VFJJR1NUUl8xMDQ2",
+            "resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|n|cffffcc00Ability Stats:|r|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 2% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80",
+            "_original_resolved_value": "Crocodile dries up any person or object he touches by draining all moisture.|nWhen crocodile stand on sand effect on ground, Crocodile gain bonus movement speed |nEach time crocodile damage enemies with spell will deplete their mana by 1 %|nCrocodile will deal extra damage to enemies based on their missing mana,|nfor each 1% of missing mana, crocodile will deal 0.35% extra damage to enemies.|nMaximum capped at 15%|n|n|cffffcc00Ability Stats:|r|nMovement speed bonus applies while standing on active sand.|n|n|cffffcc00Spell Mana Drain:|r 2% Max MP per hit|n|cffffcc00Damage Bonus:|r 0.35% per 1% missing target mana, up to 15%|n|cffffcc00Sand Movement Speed:|r 80"
           },
           "sanity_check": {
             "text": "",

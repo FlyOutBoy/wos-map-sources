@@ -589,8 +589,20 @@ def discover_map_files(map_dir: Path) -> list[Path]:
     return paths
 
 
-def dump_json(path: Path, document: dict[str, Any]) -> None:
-    path.write_text(json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+def dump_json(path: Path, document: dict[str, Any], *, newline: str | None = None) -> None:
+    # Editors/watchers can hold the old JSON open on Windows. Replace a fully
+    # written sibling, avoiding partial files and transient truncation errors.
+    import os
+    import tempfile
+    payload = json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+    descriptor, temporary = tempfile.mkstemp(prefix=path.name+'.', suffix='.tmp', dir=path.parent)
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8', newline=newline) as stream:
+            stream.write(payload)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def export_files(map_dir: Path, json_dir: Path, force: bool) -> None:

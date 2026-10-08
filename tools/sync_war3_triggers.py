@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 import extract_war3_triggers as fmt
+from war3_object_data import dump_json
 
 
 def i32(value: int) -> bytes:
@@ -509,11 +510,7 @@ def write_sync_metadata(
         },
         "sources": sources,
     }
-    (trigger_dir / "trigger-manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
+    dump_json(trigger_dir / "trigger-manifest.json", manifest, newline="\n")
     settings = {
         "format": 1,
         "description": "true = enabled and imported; false = disabled and excluded from Main.vj",
@@ -523,11 +520,7 @@ def write_sync_metadata(
             if item["wct_index"] != "map_header"
         },
     }
-    (trigger_dir / "trigger-settings.json").write_text(
-        json.dumps(settings, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
+    dump_json(trigger_dir / "trigger-settings.json", settings, newline="\n")
     fmt.write_dependency_manifest(trigger_dir, manifest)
     fmt.write_index(trigger_dir, manifest)
 
@@ -550,7 +543,7 @@ def migrate_enabled_settings(trigger_dir: Path, moves: list[tuple[str, str]]) ->
             raise ValueError(f"{path}: cannot move setting {relative} to existing {target}")
         updated[target] = enabled
     document["triggers"] = updated
-    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    dump_json(path, document, newline="\n")
     for old, new in moves:
         print(f"SETTING {old} -> {new}")
 

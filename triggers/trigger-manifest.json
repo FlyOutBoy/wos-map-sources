@@ -208,8 +208,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UniversalTooltips.j",
-      "source_bytes": 221799,
-      "sha256": "79d7b99217ead4f2b5e23e1cf10a51406e3a8f2b565a1e8557a38b092221f538",
+      "source_bytes": 224729,
+      "sha256": "281e57dc0ec283fb734aa25bfa5ce921dd1fc0aa3a774cad687f5a4705f11ecd",
       "declarations": {
         "libraries": [
           "AAUniversalTooltips"
@@ -581,8 +581,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 234597,
-      "sha256": "a1c74c65d069f11c7dc50c7ad5884c370ed23f4a8e3449a2a9ed98f9f4257ee9",
+      "source_bytes": 234602,
+      "sha256": "702b404d52b5d2bf021cb24c21e7ad5be1a659a3742dcc2ec55b85dfb4dcd687",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -942,8 +942,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
-      "source_bytes": 55817,
-      "sha256": "5568806b7a1bb029a7b01c67deb2e024e92ab8b24396789980508190e1cc9a10",
+      "source_bytes": 58256,
+      "sha256": "5de642da685c4aa861d7034f8da4839f5e188f67f7fa93caa060f46e559a0fd5",
       "declarations": {
         "libraries": [
           "AAADest"
@@ -1078,8 +1078,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 42467,
-      "sha256": "6899716d0e7ec7f2f9dd3880d02002b68f1efcea03c0cf8029e468afb45a1b7c",
+      "source_bytes": 42501,
+      "sha256": "7ca7f60f34d07b4f5a550263884a4559d88d067ed4ba7e19682ec1be3fcb2727",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1904,7 +1904,7 @@
       "run_on_map_init": false,
       "path": "Items/Items.j",
       "source_bytes": 109348,
-      "sha256": "fba2c7bfcac6a1e3f2f531b11ecdf8b8748c7e4fdbf9a8852d570fab838530e8",
+      "sha256": "3e67ecde4b65133a2433c7fded841a5ac523b7de5c4ffee5f8bc9174eb221fa7",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -2466,7 +2466,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Starrk.j",
       "source_bytes": 145537,
-      "sha256": "4bbd6348397e42b1217b411efd3bfb2914fd7af37a5b264a9d1f8593aa2864fa",
+      "sha256": "38d9d93e96ab6ac7401ff1ecb76e7d860c29b672433f5b2b0c406322468ce2fe",
       "declarations": {
         "libraries": [
           "StarrkSpells"
@@ -2505,8 +2505,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Takeshi.j",
-      "source_bytes": 149384,
-      "sha256": "1b88582af537bfcb76a2ab410a7480c64b6481f7697fc2e6759579940e61b273",
+      "source_bytes": 149382,
+      "sha256": "1684bfc65992d3a7d91286c2518b3a7b38f73f102531225fe145e085a20486f4",
       "declarations": {
         "libraries": [
           "TakeshiSpells"
@@ -2665,7 +2665,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Tsuna.j",
       "source_bytes": 165603,
-      "sha256": "b1503aece4cae43690206aff1e9afa344520b12a4f337d5f2b40b05650957fc6",
+      "sha256": "1a24faacc03ae6554996b2e370902ca1bc45eddc5cccca5b2848884c87c0dc6b",
       "declarations": {
         "libraries": [
           "TsunaSpells"
@@ -2712,8 +2712,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Rimuru.j",
-      "source_bytes": 203622,
-      "sha256": "bfc3db0e5926e7a7bb829380eaccf78d3d4eff44ca3ec5f6b6d395a9364e4332",
+      "source_bytes": 203624,
+      "sha256": "2faf4856c170f8d4773bf5775bcebd59656bb16f148d432c1de15479e307cb64",
       "declarations": {
         "libraries": [
           "RimuruSpells"
@@ -3104,7 +3104,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Natsu.j",
       "source_bytes": 118662,
-      "sha256": "92514a58efd527f4c7e2eeec6276123361994da9e633f5d63ca67f0a00fe10f4",
+      "sha256": "7841d197ab13e302fcac638f4b25abcd5195aaff19b41cb5c53860dcb976d0f2",
       "declarations": {
         "libraries": [
           "NatsuSpells"
@@ -3602,8 +3602,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Crocodile.j",
-      "source_bytes": 151588,
-      "sha256": "c0a280f1bbe069f866d0daa5d01fa0b0bf2df002f129e06aea4e9829dff6b11e",
+      "source_bytes": 170644,
+      "sha256": "5a6619ac2059141bed594c506a674070b996f7da845e0342a20ef063519fbcf0",
       "declarations": {
         "libraries": [
           "CrocodileSpells"
@@ -3612,6 +3612,7 @@
         "structs": [
           "CrocodileSand_Struct",
           "CrocodileSand_Debuff",
+          "CrocodileQ_ExplosionDecor",
           "CrocodileQ_Trail",
           "CrocodileQ_Struct",
           "CrocodileW_Struct",
@@ -3634,6 +3635,16 @@
       "dependencies": [
         {
           "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "GearSystems2",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "AAADest",
           "optional": false,
           "keyword": "uses"
         },

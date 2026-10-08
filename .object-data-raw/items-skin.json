@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "968cf0f47c6786d689ef8cafbad85871f6f279807eba75413e31b0a70c7d722c",
+  "source_sha256": "9bcba75566941e622b332f53f63cd6ca64beee4e6fc1007a472b5cc34fd956e9",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -3801,12 +3801,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4942",
-            "_original_value": "TRIGSTR_4942",
+            "value": "TRIGSTR_1188",
+            "_original_value": "TRIGSTR_1188",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTQy",
-            "resolved_value": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl8xMTg4",
+            "resolved_value": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -3821,12 +3821,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4943",
-            "_original_value": "TRIGSTR_4943",
+            "value": "TRIGSTR_1191",
+            "_original_value": "TRIGSTR_1191",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTQz",
-            "resolved_value": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
-            "_original_resolved_value": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec."
+            "_raw_base64": "VFJJR1NUUl8xMTkx",
+            "resolved_value": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec."
           },
           "sanity_check": {
             "text": "",
@@ -10029,12 +10029,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4294",
-            "_original_value": "TRIGSTR_4294",
+            "value": "TRIGSTR_1223",
+            "_original_value": "TRIGSTR_1223",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80Mjk0",
-            "resolved_value": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
-            "_original_resolved_value": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec."
+            "_raw_base64": "VFJJR1NUUl8xMjIz",
+            "resolved_value": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec."
           },
           "sanity_check": {
             "text": "",
@@ -10049,12 +10049,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4295",
-            "_original_value": "TRIGSTR_4295",
+            "value": "TRIGSTR_1328",
+            "_original_value": "TRIGSTR_1328",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80Mjk1",
-            "resolved_value": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
-            "_original_resolved_value": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec."
+            "_raw_base64": "VFJJR1NUUl8xMzI4",
+            "resolved_value": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17733,12 +17733,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8707",
-            "_original_value": "TRIGSTR_8707",
+            "value": "TRIGSTR_1330",
+            "_original_value": "TRIGSTR_1330",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzA3",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8xMzMw",
+            "resolved_value": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17753,12 +17753,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8709",
-            "_original_value": "TRIGSTR_8709",
+            "value": "TRIGSTR_1332",
+            "_original_value": "TRIGSTR_1332",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzA5",
-            "resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8xMzMy",
+            "resolved_value": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",

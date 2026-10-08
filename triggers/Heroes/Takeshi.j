@@ -36,7 +36,7 @@ library TakeshiSpells uses GearSystems
         integer TakeshiE_ID = 'A08U'
         real TakeshiE_DamageAgiBase = 2 // base number x Agi damage for 1 level
         real TakeshiE_DamageAgiStep = 1 // additional number x Agi damage for each next level
-        real TakeshiE_DamageAoe = 500
+        real TakeshiE_DamageAoe = 625
 //---------------R ability-----------------------------------------------------
         integer TakeshiR_ID = 'A08V'
         real TakeshiR_DamageAgiBase = 5 // base number x Agi damage for 1 level
@@ -92,7 +92,7 @@ library TakeshiSpells uses GearSystems
 //---------------G ability-----------------------------------------------------
         integer TakeshiG_ID = 'A08Y'
         real TakeshiG_Duration = 20
-        real TakeshiG_TakenDamageToEnter = 8000
+        real TakeshiG_TakenDamageToEnter = 6000
         real TakeshiG_ReduceCD = 15
 //---------------G2 ability-----------------------------------------------------
         integer TakeshiG2_ID = 'A09A'
@@ -973,8 +973,8 @@ endfunction
             set k2 = 0
             set check = 0
             call StartSpellUnit2(c)
-            set move = (SR3(c, x, y) - 125) / 9
-            set r5 = 0.45
+            set move = (SR3(c, x, y) - 25) / 9
+            set r5 = 0.3
             set rmax = 0.15+r5
             set g = CreateGroup()
             set scale = 5.75

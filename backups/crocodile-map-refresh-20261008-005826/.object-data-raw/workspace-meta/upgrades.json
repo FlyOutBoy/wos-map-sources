@@ -1,0 +1,21 @@
+{
+  "format": "warcraft-3-minimal-object-metadata-v1",
+  "category": "upgrades",
+  "objects": {
+    "R000": {
+      "base_id": "Rhac",
+      "name_source": null,
+      "fields": {}
+    },
+    "R001": {
+      "base_id": "Rhme",
+      "name_source": null,
+      "fields": {}
+    },
+    "R002": {
+      "base_id": "Rhar",
+      "name_source": null,
+      "fields": {}
+    }
+  }
+}

@@ -42,6 +42,8 @@ class MainIntegration(unittest.TestCase):
             'UnitMakeAbilityPermanent': lambda u,b,a: self.permanent.append((u,a,b)),
             'dmgatk': self.attack_damage,
             'EffectSpawn2': self.vm.effect,
+            'CrocodileW_QContact': object(),
+            'TriggerEvaluate': lambda t: self.vm.run('CrocodileW_ReceiveQ'),
         })
         self.vm.run('Crocodile_InitializeHero', (self.c,))
         self.fixture.fixture.e = self.state(1)
@@ -108,7 +110,7 @@ class MainIntegration(unittest.TestCase):
             self.assertIn(ids[a], abilities)
             self.assertIn(ids[b], buffs)
         self.assertEqual('ambush', abilities[ids['T']]['base_order_id level 1'])
-        self.assertEqual(5, abilities[ids['T']]['follow_through_time level 1'])
+        self.assertEqual(self.vm.g['CrocodileT_Duration'], abilities[ids['T']]['follow_through_time level 1'])
 
     def test_independent_permanent_passives_and_idempotent_registration(self):
         for missing in [('F',),('G',),('F','G')]:
@@ -156,7 +158,7 @@ class MainIntegration(unittest.TestCase):
 
     def test_g_only_positive_applied_spells_deplete_mana(self):
         u = self.vm.unit(500)
-        for typed, attack, amount, expected in [(1,False,30,99),(2,False,30,99),(0,True,30,100),(3,False,30,100),(1,True,30,100),(2,False,0,100)]:
+        for typed, attack, amount, expected in [(1,False,30,98),(2,False,30,98),(0,True,30,100),(3,False,30,100),(1,True,30,100),(2,False,0,100)]:
             with self.subTest(typed=typed,attack=attack,amount=amount):
                 u.mana = 100
                 self.vm.run('CrocodileG_AppliedSpellHit',(self.c,u,amount,typed,attack))
@@ -207,10 +209,10 @@ class MainIntegration(unittest.TestCase):
         self.assertEqual(1,self.c.protection)
         self.assertEqual(self.fixture.fixture.orders['ambush'],self.c.order)
         self.assertIsNotNone(t.aura)
-        self.assertEqual(70,u.mana)
+        self.assertEqual(76,u.mana)
         self.step(66)
         self.assertFalse(t.channelActive)
-        self.assertEqual(50,u.mana)
+        self.assertEqual(68,u.mana)
         self.assertEqual(0,self.c.protection)
         self.assertIsNone(t.aura)
         self.assertIsNone(t.manaGroup)
@@ -292,7 +294,7 @@ class MainIntegration(unittest.TestCase):
         self.assertFalse(self.vm.damage)
         self.step(1)
         hits = [d for c,u,d in self.vm.damage if u is target]
-        self.assertEqual([1000],hits)
+        self.assertEqual([100*self.vm.g['CrocodileT2_DamageAgi']],hits)
         self.assertFalse(self.c.paused)
 
     def test_q_mark_buff_failure_has_grace_then_cleans_tracker(self):
@@ -316,15 +318,15 @@ class MainIntegration(unittest.TestCase):
         self.step(1)
         self.assertEqual(0,self.c.protection)
 
-    def test_t_native_full_finish_preserves_fifth_mana_pulse(self):
+    def test_t_native_full_finish_preserves_fourth_mana_pulse(self):
         u = self.vm.unit(10)
         t = self.begin_t()
-        self.step(166)
-        self.assertEqual(60,u.mana)
+        self.step(133)
+        self.assertEqual(76,u.mana)
         self.vm.g.update(GetTriggerUnit=lambda: self.c,GetSpellAbilityId=lambda: self.vm.g['CrocodileT_ID'])
         self.vm.run('CrocodileT_OnFinish')
         self.step(1)
-        self.assertEqual(50,u.mana)
+        self.assertEqual(68,u.mana)
         self.assertFalse(t.channelActive)
         self.assertEqual(0,self.c.protection)
 
@@ -333,7 +335,7 @@ class MainIntegration(unittest.TestCase):
         self.assertTrue(self.vm.run('CrocodileE_Begin',(self.c,750,0)))
         self.step(30)
         self.assertEqual(5,len([d for _,target,d in self.vm.damage if target is u]))
-        self.assertAlmostEqual(300,sum(d for _,target,d in self.vm.damage if target is u))
+        self.assertAlmostEqual(100*self.vm.g['CrocodileE_DamageAgiBase'],sum(d for _,target,d in self.vm.damage if target is u))
         self.assertFalse(self.state(1).active)
         self.assertFalse(self.c.paused)
         self.assertAlmostEqual(750,self.c.x)
@@ -342,7 +344,7 @@ class MainIntegration(unittest.TestCase):
         # Execute MAIN movement and native PauseUnit wrappers, rather than the
         # unrestricted movement and pause mocks used by the original E tests.
         systems = (ROOT/'triggers/Systems/Systems2.j').read_text(encoding='utf-8-sig')
-        for name in ('StartSpellUnit2', 'StopSpellUnit2', 'MoveUnit', 'PathableCheck3'):
+        for name in ('StartSpellUnit', 'StopSpellUnit', 'StartSpellUnit2', 'StopSpellUnit2', 'MoveUnit', 'PathableCheck3'):
             function = re.search(r'\bfunction '+name+r' takes.*?endfunction', systems, re.S)[0]
             function = re.sub(r'/\*.*?\*/', '', function, flags=re.S)
             method = function.replace('endfunction','endmethod').replace('function','method')
@@ -361,18 +363,22 @@ class MainIntegration(unittest.TestCase):
 
     def test_e_empty_ground_releases_main_pause_and_all_three_charges_work(self):
         self.use_main_dash_helpers()
+        self.c.hero_level = 25
         for _ in range(3):
             x = self.c.x
             self.assertTrue(self.vm.run('CrocodileE_Begin',(self.c,x+750,0)))
             self.assertTrue(self.c.paused)
+            self.assertIn('Avul',self.c.abilities)
             self.step(20)
             self.assertFalse(self.state(1).active)
             self.assertFalse(self.c.paused)
+            self.assertNotIn('Avul',self.c.abilities)
             self.assertEqual(1,self.c.timescale)
             self.assertAlmostEqual(x+750,self.c.x)
-            self.assertFalse(self.vm.groups)
+            sand_group = self.vm.g['CrocodileSand_ScanGroup']
+            self.assertEqual({id(sand_group)} if sand_group is not None else set(),self.vm.groups)
             self.assertFalse(self.vm.damage)
-            self.step(15)
+            self.step(30)
 
     def test_e_main_arena_boundary_stops_dash_and_releases_pause(self):
         self.use_main_dash_helpers(arena=(-100,-100,200,100))
@@ -400,10 +406,11 @@ class MainIntegration(unittest.TestCase):
         self.assertTrue(self.vm.run('CrocodileE_Begin',(self.c,750,0)))
         self.step(25)
         self.assertEqual(5,len([d for _,u,d in self.vm.damage if u is target]))
-        self.assertAlmostEqual(300,sum(d for _,u,d in self.vm.damage if u is target))
+        self.assertAlmostEqual(100*self.vm.g['CrocodileE_DamageAgiBase'],sum(d for _,u,d in self.vm.damage if u is target))
         self.assertFalse(self.c.paused)
         self.assertFalse(self.state(1).active)
-        self.assertFalse(self.vm.groups)
+        sand_group = self.vm.g['CrocodileSand_ScanGroup']
+        self.assertEqual({id(sand_group)} if sand_group is not None else set(),self.vm.groups)
 
     def test_e_aborted_movement_ticks_still_reach_early_pause_deadline(self):
         self.use_main_dash_helpers()
@@ -439,9 +446,10 @@ class MainIntegration(unittest.TestCase):
         landings = []
         self.vm.g['HeightSet'] = lambda u,t,h: landings.append((u,t,h))
         u = self.vm.unit(100)
+        self.c.abilities[self.vm.g['CrocodileR_ID']] = {'level':1}
         self.assertTrue(self.vm.run('CrocodileR_Begin',(self.c,2500,0)))
         self.step(85)
-        self.assertEqual([60]*6,[d for _,target,d in self.vm.damage if target is u])
+        self.assertEqual([self.c.agi*self.vm.g['CrocodileR_DamageAgi']]*6,[d for _,target,d in self.vm.damage if target is u])
         self.assertEqual([(u,.5,0)],landings)
         self.assertFalse(self.c.paused)
 

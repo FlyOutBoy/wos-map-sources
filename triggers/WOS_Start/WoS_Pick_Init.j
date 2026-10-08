@@ -12,7 +12,7 @@ boolean BanSelectionLocked = false
 endglobals
 
 globals
-    constant string MAP_VERSION = "0.32g"
+    constant string MAP_VERSION = "0.33a"
 endglobals
 globals
     integer MaxHeroBans = 4          // Р РЋР С“Р В РЎвЂќР В РЎвЂўР В Р’В»Р РЋР Р‰Р В РЎвЂќР В РЎвЂў Р В РЎвЂ“Р В Р’ВµР РЋР вЂљР В РЎвЂўР В Р’ВµР В Р вЂ  Р В Р’В±Р В Р’В°Р В Р вЂ¦Р В РЎвЂР РЋРІР‚С™Р РЋР С“Р РЋР РЏ Р В Р’В·Р В Р’В° Р В РЎвЂР В РЎвЂ“Р РЋР вЂљР РЋРЎвЂњ Р Р†Р вЂљРІР‚Сњ Р В РЎВР В Р’ВµР В Р вЂ¦Р РЋР РЏР В РІвЂћвЂ“ Р РЋРІР‚С™Р РЋРЎвЂњР РЋРІР‚С™
@@ -20,7 +20,7 @@ globals
     // BAN IMMUNITY: put the three protected hero rawcodes here.
     // Example: integer BanImmuneHero1 = 'H00A'
     // Leave a slot equal to 0 when it is not used.
-    integer BanImmuneHero1 = Milim_ID
+    integer BanImmuneHero1 = Crocodile_ID
     integer BanImmuneHero2 = 0
     integer BanImmuneHero3 = 0
     // =========================================================================
@@ -3608,7 +3608,7 @@ endif
                     call BlzFrameSetTexture(FRAME_ICON_Pick[3], "Pick\\PickButton_Pick_Random", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
-                    if (FramePlayerFirstName[i] == "C130" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID5[13]) then
+                    if (FramePlayerFirstName[i] == "Hansel" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID3[1]) then
                         call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif

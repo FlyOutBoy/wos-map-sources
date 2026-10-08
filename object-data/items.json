@@ -378,13 +378,13 @@
     "name": "Bunshin Scroll",
     "base_id": "rde1",
     "tooltip": "Bunshin Scroll",
-    "extended_tooltip": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
+    "extended_tooltip": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_BunshinScroll.blp",
     "actively_used": 1,
     "cooldown_group": "AChv",
-    "description": "+10 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
+    "description": "+15 allstats\nActive: Create illusion of your hero with 1 sec delay, illusion take 300% dmg and deal 100% of dmg.\nDuration: 20 sec.\nCooldown: 25 sec.",
     "field_uhot": "",
-    "abilities": "A02I,A00X",
+    "abilities": "A02I,A00M",
     "gold_cost": 5000
   },
   "I00W": {
@@ -1010,13 +1010,13 @@
     "name": "Turbo Neko",
     "base_id": "rde1",
     "tooltip": "Turbo Neko",
-    "extended_tooltip": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
+    "extended_tooltip": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_TurboNeko.blp",
     "actively_used": 1,
     "cooldown_group": "Abof",
-    "description": "+10 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
+    "description": "+15 allstats\nActive: Sweeps the target unit into a swirling cyclone, making them invulnerable but fully disabled, clear debuffs from ally.\nDuration: 2 sec.\nCooldown: 30 sec.",
     "field_uhot": "",
-    "abilities": "A0CX,A07X",
+    "abilities": "A0CX,A07Y",
     "gold_cost": 5000
   },
   "I02B": {
@@ -1148,7 +1148,7 @@
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Rhitta.blp",
     "actively_used": 1,
     "classification": "Miscellaneous",
-    "cooldown_group": "A05H",
+    "cooldown_group": "A0F5",
     "max_hit_points": 111,
     "description": "+30 str\nActive: Attack point with divine axe and deal 5.5x str physical dmg, apply fire debuff.\nCooldown: 20 sec.",
     "abilities": "A0F5,A0G7",
@@ -1721,7 +1721,7 @@
     "description": "+15 allstat \nActive: Reveal invisible units in area .\nDuration: 10 sec.\nCooldown: 15 sec.",
     "field_uhot": "",
     "abilities": "A0HE,A07Y",
-    "gold_cost": 4500
+    "gold_cost": 3500
   },
   "I03X": {
     "name": "Demon Sword Lostvayne",
@@ -1774,12 +1774,12 @@
     "name": "Demon-Dweller Sword",
     "base_id": "rde1",
     "tooltip": "Demon-Dweller Sword",
-    "extended_tooltip": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+    "extended_tooltip": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_DemonDwellerSword.blp",
     "cooldown_group": "A03T",
-    "description": "+15 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 25%, while dealing magical damage increases your physical damage by 25%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+    "description": "+20 allstats\nPassive: Dealing 500+ physical damage increases your magical damage by 30%, while dealing magical damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
     "field_uhot": "",
-    "abilities": "A0HW,A00M",
+    "abilities": "A0HW,A00W",
     "gold_cost": 7500
   },
   "I042": {

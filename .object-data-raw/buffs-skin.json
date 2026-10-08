@@ -422,10 +422,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "",
-            "_original_value": "",
-            "_encoding": "utf-8",
-            "_raw_base64": ""
+            "value": "Marked by Kansho and Bakuya."
           },
           "sanity_check": {
             "text": "",
@@ -530,10 +527,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "",
-            "_original_value": "",
-            "_encoding": "utf-8",
-            "_raw_base64": ""
+            "value": "Marked by Kazekage Hat."
           },
           "sanity_check": {
             "text": "",
@@ -2206,12 +2200,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2016",
-            "_original_value": "TRIGSTR_2016",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDE2",
-            "resolved_value": "unit gain less heal and mana regen",
-            "_original_resolved_value": "unit gain less heal and mana regen"
+            "value": "Active healing received is reduced by 40%; mana restored is reduced by 25%."
           },
           "sanity_check": {
             "text": "",
@@ -5634,12 +5623,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5726",
-            "_original_value": "TRIGSTR_5726",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzI2",
-            "resolved_value": "Unit deal 25% damage to Alucard, also he take 20% more damage from him and alucard have 40% lifesteal on this target.",
-            "_original_resolved_value": "Unit deal 25% damage to Alucard, also he take 20% more damage from him and alucard have 40% lifesteal on this target."
+            "value": "Deals 75% less damage to Alucard and takes 20% more damage from him. Alucard heals for 20% of damage dealt to this target."
           },
           "sanity_check": {
             "text": "",
@@ -5726,12 +5710,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5727",
-            "_original_value": "TRIGSTR_5727",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzI3",
-            "resolved_value": "Unit deal 30% less damage to Alucard, also he take 10% more damage from him, and alucard have 20% lifesteal on this target.",
-            "_original_resolved_value": "Unit deal 30% less damage to Alucard, also he take 10% more damage from him, and alucard have 20% lifesteal on this target."
+            "value": "Deals 30% less damage to Alucard and takes 10% more damage from him. Alucard heals for 10% of damage dealt to this target."
           },
           "sanity_check": {
             "text": "",
@@ -5815,19 +5794,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5734",
-            "_original_value": "TRIGSTR_5734",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzM0",
-            "resolved_value": "Unit deal 3% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 3% less damage to Mahoraga"
+            "value": "Deals 5% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01G",
+            "hex": "42303147"
           }
         },
         {
@@ -5927,19 +5901,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5735",
-            "_original_value": "TRIGSTR_5735",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzM1",
-            "resolved_value": "Unit deal 6% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 6% less damage to Mahoraga"
+            "value": "Deals 10% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01H",
+            "hex": "42303148"
           }
         },
         {
@@ -6039,19 +6008,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5738",
-            "_original_value": "TRIGSTR_5738",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzM4",
-            "resolved_value": "Unit deal 9% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 9% less damage to Mahoraga"
+            "value": "Deals 15% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01I",
+            "hex": "42303149"
           }
         },
         {
@@ -6151,19 +6115,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5739",
-            "_original_value": "TRIGSTR_5739",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzM5",
-            "resolved_value": "Unit deal 12% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 12% less damage to Mahoraga"
+            "value": "Deals 20% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01J",
+            "hex": "4230314A"
           }
         },
         {
@@ -6263,19 +6222,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2277",
-            "_original_value": "TRIGSTR_2277",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjc3",
-            "resolved_value": "Unit deal 15% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 15% less damage to Mahoraga"
+            "value": "Deals 25% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01K",
+            "hex": "4230314B"
           }
         },
         {
@@ -6375,19 +6329,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5742",
-            "_original_value": "TRIGSTR_5742",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzQy",
-            "resolved_value": "Unit deal 18% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 18% less damage to Mahoraga"
+            "value": "Deals 30% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01L",
+            "hex": "4230314C"
           }
         },
         {
@@ -6487,19 +6436,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5743",
-            "_original_value": "TRIGSTR_5743",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzQz",
-            "resolved_value": "Unit deal 21% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 21% less damage to Mahoraga"
+            "value": "Deals 35% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01M",
+            "hex": "4230314D"
           }
         },
         {
@@ -6599,19 +6543,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2280",
-            "_original_value": "TRIGSTR_2280",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjgw",
-            "resolved_value": "Unit deal 20% less damage to Mahoraga",
-            "_original_resolved_value": "Unit deal 20% less damage to Mahoraga"
+            "value": "Deals 40% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01N",
+            "hex": "4230314E"
           }
         },
         {
@@ -7679,19 +7618,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4890",
-            "_original_value": "TRIGSTR_4890",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODkw",
-            "resolved_value": "Unit Gain armor  and hp regen",
-            "_original_resolved_value": "Unit Gain armor  and hp regen"
+            "value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01X",
+            "hex": "42303158"
           }
         },
         {
@@ -7791,19 +7725,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4893",
-            "_original_value": "TRIGSTR_4893",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODkz",
-            "resolved_value": "Unit Gain additional physical spell damage and decrease hp regen",
-            "_original_resolved_value": "Unit Gain additional physical spell damage and decrease hp regen"
+            "value": "Normal attacks and physical spells deal 4% more damage. Health regeneration is reduced by 5 HP/sec."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B01Y",
+            "hex": "42303159"
           }
         },
         {
@@ -8127,19 +8056,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4904",
-            "_original_value": "TRIGSTR_4904",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTA0",
-            "resolved_value": "Unit Gain additional physical spell damage and decrease hp regen",
-            "_original_resolved_value": "Unit Gain additional physical spell damage and decrease hp regen"
+            "value": "Normal attacks and physical spells deal 6% more damage. Health regeneration is reduced by 10 HP/sec."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B021",
+            "hex": "42303231"
           }
         },
         {
@@ -8239,19 +8163,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4907",
-            "_original_value": "TRIGSTR_4907",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTA3",
-            "resolved_value": "Unit Gain additional physical spell damage and decrease hp regen",
-            "_original_resolved_value": "Unit Gain additional physical spell damage and decrease hp regen"
+            "value": "Normal attacks and physical spells deal 8% more damage. Health regeneration is reduced by 15 HP/sec."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B022",
+            "hex": "42303232"
           }
         },
         {
@@ -8351,19 +8270,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4910",
-            "_original_value": "TRIGSTR_4910",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTEw",
-            "resolved_value": "Unit Gain additional physical spell damage and decrease hp regen",
-            "_original_resolved_value": "Unit Gain additional physical spell damage and decrease hp regen"
+            "value": "Normal attacks and physical spells deal 10% more damage. Health regeneration is reduced by 20 HP/sec."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B023",
+            "hex": "42303233"
           }
         },
         {
@@ -8463,19 +8377,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4918",
-            "_original_value": "TRIGSTR_4918",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTE4",
-            "resolved_value": "Unit Gain additional physical spell damage and decrease hp regen",
-            "_original_resolved_value": "Unit Gain additional physical spell damage and decrease hp regen"
+            "value": "Normal attacks and physical spells deal 12% more damage. Health regeneration is reduced by 25 HP/sec."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B024",
+            "hex": "42303234"
           }
         },
         {
@@ -13603,19 +13512,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8939",
-            "_original_value": "TRIGSTR_8939",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTM5",
-            "resolved_value": "Desert Spada: Sand Mark",
-            "_original_resolved_value": "Desert Spada: Sand Mark"
+            "value": "Marked for 5 sec. Leaves ground sand while moving. All ground sand lasts 20 sec and slows by 10% / 20% / 30% at Crocodile hero levels 1 / 25 / 35."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B03D",
+            "hex": "42303344"
           }
         },
         {
@@ -13715,19 +13619,14 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "Extended tooltip / Полная подсказка",
+          "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8944",
-            "_original_value": "TRIGSTR_8944",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTQ0",
-            "resolved_value": "Suna Suna no Mi: Sand Speed",
-            "_original_resolved_value": "Suna Suna no Mi: Sand Speed"
+            "value": "Movement speed +80 while standing on active sand. Removed after leaving the sand."
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "B03E",
+            "hex": "42303345"
           }
         },
         {

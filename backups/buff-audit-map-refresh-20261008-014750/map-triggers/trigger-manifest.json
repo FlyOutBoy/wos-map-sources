@@ -1,0 +1,3659 @@
+{
+  "format": 1,
+  "source_files": {
+    "wtg": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3map.wtg",
+    "wct": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3map.wct"
+  },
+  "wtg": {
+    "magic_number": "0x80000004",
+    "format_version": 7,
+    "trigger_definition_version": 2,
+    "object_count": 120,
+    "custom_text_object_count": 107
+  },
+  "wct": {
+    "magic_number": "0x80000004",
+    "format_version": 1,
+    "header_comment": "",
+    "source_count": 107
+  },
+  "sources": [
+    {
+      "order": 0,
+      "wct_index": "map_header",
+      "object_order": 0,
+      "object_id": "0x00000000",
+      "object_type": "map_header",
+      "category": "Map Header",
+      "trigger_name": "Map Header",
+      "enabled": true,
+      "run_on_map_init": true,
+      "path": "Map_Header.j",
+      "source_bytes": 246,
+      "sha256": "45a7c84ca02c7accabcce5a40d932f04f589a8d06e5e9298af262481a196a779",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 1,
+      "wct_index": 0,
+      "object_order": 2,
+      "object_id": "0x03000019",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Loan",
+      "comment": "",
+      "enabled": false,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Loan.j",
+      "source_bytes": 10813,
+      "sha256": "76842b898e63e6530d9ccbf197b2056d12c4765e9bd64e5e8399308683a616a6",
+      "declarations": {
+        "libraries": [
+          "GoldLoanSystem"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 2,
+      "wct_index": 1,
+      "object_order": 3,
+      "object_id": "0x0300001A",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Loan Copy",
+      "comment": "",
+      "enabled": false,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Loan_Copy.j",
+      "source_bytes": 9576,
+      "sha256": "561bb61d4e7b815f01281beaafc57b974b94934cf39d9034be789b61d981d863",
+      "declarations": {
+        "libraries": [
+          "GoldLoanSystem"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 3,
+      "wct_index": 2,
+      "object_order": 4,
+      "object_id": "0x0300002D",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "ShowTextCD",
+      "comment": "",
+      "enabled": false,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/ShowTextCD.j",
+      "source_bytes": 13191,
+      "sha256": "36cec9d6ad32725a7b0b82433f7ddefc27b5a6a55829f5b4ce7355b838c70202",
+      "declarations": {
+        "libraries": [
+          "AllyCooldownChatPing"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "AllyHeroAbilityUI",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "wct_index": 3,
+      "object_order": 5,
+      "object_id": "0x0300000F",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "ShowCD",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/ShowCD.j",
+      "source_bytes": 69770,
+      "sha256": "d600a5210331e9cd4f62dd4fcc90fb89c78c31965b420038fe59b1fe84021b1c",
+      "declarations": {
+        "libraries": [
+          "AllyHeroAbilityUI"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "wct_index": 4,
+      "object_order": 6,
+      "object_id": "0x0300006A",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "TooltipBuilder",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/TooltipBuilder.j",
+      "source_bytes": 7664,
+      "sha256": "95866634a7b52256e25d2f1443e1774a04fd97e64659d46ee555bb6313b7b034",
+      "declarations": {
+        "libraries": [
+          "TooltipBuilder"
+        ],
+        "scopes": [],
+        "structs": [
+          "TooltipBuilder"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 6,
+      "wct_index": 5,
+      "object_order": 7,
+      "object_id": "0x0300006B",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "UniversalTooltips",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/UniversalTooltips.j",
+      "source_bytes": 222687,
+      "sha256": "05bc0c48f1a154437bc081ed3d0dbc1feaabb31189aef4f773cc308a6140466f",
+      "declarations": {
+        "libraries": [
+          "AAUniversalTooltips"
+        ],
+        "scopes": [],
+        "structs": [
+          "SpellData",
+          "HeroData"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "TooltipBuilder",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 7,
+      "wct_index": 6,
+      "object_order": 8,
+      "object_id": "0x0300005C",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "UI CAREER",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/UI_CAREER.j",
+      "source_bytes": 47835,
+      "sha256": "8646696a48365185fe66c1e12451c6dd91e0d0ef83034b512972e0fc2a5a2d94",
+      "declarations": {
+        "libraries": [
+          "WosCareerStats"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "wct_index": 7,
+      "object_order": 9,
+      "object_id": "0x03000061",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "DefaultArmorChangeStable Copy",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
+      "source_bytes": 15749,
+      "sha256": "9375f19f1aa1f100be330d673c230c130d4b8791e914c300fcb9456e879e0745",
+      "declarations": {
+        "libraries": [
+          "HeroUnitPanelStats"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 9,
+      "wct_index": 8,
+      "object_order": 10,
+      "object_id": "0x03000079",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Save2",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Save2.j",
+      "source_bytes": 10607,
+      "sha256": "2ff6fa67d23db381cff24092227a51a613154e3fa2091a8c0b894bc98b9ed9a6",
+      "declarations": {
+        "libraries": [
+          "WOS2BotCodec"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 10,
+      "wct_index": 9,
+      "object_order": 11,
+      "object_id": "0x03000010",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "SaveLoad",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/SaveLoad.j",
+      "source_bytes": 82321,
+      "sha256": "e27e226587548b4829a0ce6921dbf4cf0a8a7012d4af8b2941d1e1d9733c6f15",
+      "declarations": {
+        "libraries": [
+          "AAINIT"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "WOS2BotCodec",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "wct_index": 10,
+      "object_order": 12,
+      "object_id": "0x03000065",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "MusicPlayer",
+      "comment": "call BlzFrameSetFocus(lmpLinkEdit, true)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/MusicPlayer.j",
+      "source_bytes": 60747,
+      "sha256": "b246ed8e7403e3f7fcbf9c3f033b594baa0e1485f959b9cd06a3cc7315cb1051",
+      "declarations": {
+        "libraries": [
+          "LocalMp3Player"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 12,
+      "wct_index": 11,
+      "object_order": 13,
+      "object_id": "0x0300005D",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Scoreboard",
+      "comment": "   set PlayerDamageTakenMag[id] = 0\r\n            set PlayerDamageTakenPhys[id] = 0\r\n            set PlayerDamagePhys[id] = 0\r\n            set PlayerDamageMag[id] = 0\r\n            set PlayerHeal[id] = 0\r\n\r\n        elseif but == OSKEY_F4 then\r\n            set PlayerDamageTakenMag[id] = PlayerDamageTakenMagAll[id]\r\n            set PlayerDamageTakenPhys[id] = PlayerDamageTakenPhysAll[id]\r\n            set PlayerDamagePhys[id] = PlayerDamagePhysAll[id]\r\n            set PlayerDamageMag[id] = PlayerDamageMagAll[id]\r\n            set PlayerHeal[id] = PlayerHealAll[id]\r\n",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Scoreboard.j",
+      "source_bytes": 92710,
+      "sha256": "30e2ca3205eeff7b8992dc90a39425a9df22c3a4c199320b641ce2a178794ce6",
+      "declarations": {
+        "libraries": [
+          "WosScoreboard"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 13,
+      "wct_index": 12,
+      "object_order": 14,
+      "object_id": "0x0300005A",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "ChatCommand",
+      "comment": "call BlzFrameSetVisible(EmojiMuteIcon, false)\r\ncall BlzFrameSetVisible(EmojiToggle, false)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/ChatCommand.j",
+      "source_bytes": 28438,
+      "sha256": "0d37e233cbc3485b8ba6e29878e6b28ac7aea3fc6c573c303312b375640512ee",
+      "declarations": {
+        "libraries": [
+          "CustomImageChat"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "wct_index": 13,
+      "object_order": 15,
+      "object_id": "0x03000075",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "EMOTES",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/EMOTES.j",
+      "source_bytes": 21769,
+      "sha256": "e867d1134fd3e139a39215d36c8f75f26618bb2624502015dc4d3359b1aea161",
+      "declarations": {
+        "libraries": [
+          "EmojiStandalone"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 15,
+      "wct_index": 14,
+      "object_order": 16,
+      "object_id": "0x03000069",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Player Pick Mode",
+      "comment": "r_train  \r\n        // Show countdown, keep pick buttons disabled\r\n                    if timeLeft >= 1 then\r\n                        call BlzFrameSetText(FRAME_TimerToStart, \"|c00FFFF00Time to pick: \" + I2S(timeLeft) + \"|r\")\r\n                    endif\r\n        // Enable random button 1 sec before pick opens\r\n                    if timeLeft == 1 then\r\n                        set i = 0\r\n                        loop\r\n                            exitwhen i == 10\r\n                            if GetLocalPlayer() == Player(i) then\r\n                                call BlzFrameSetTexture(FRAME_ICON_Pick[3], \"Pick\\\\PickButton_Pick_Random\", 0, true)\r\n                                call BlzFrameSetEnable(FRAME_Pick[3], true)\r\n                // Enable manual pick for \"Zesu\" only if they have Rimuru selected\r\n                                if (FramePlayerFirstName[i] == \"Dizmus\" or FramePlayerFirstName[i] == \"ThunderGear\") and (PlayerFrameCurrent_ID[i] == Hero_ID4[13] ) then\r\n                                    call BlzFrameSetTexture(FRAME_ICON_Pick[2], \"Pick\\\\PickButton_Pick_Manual\", 0, true)\r\n                                    call BlzFrameSetEnable(FRAME_Pick[2], true)\r\n                                endif\r\n                            endif\r\n                            set i = i + 1\r\n                        endloop\r\n                    endif\r\n                endif\r\n                if TimeMove >= PrePickTime then\r\n                    set PickPhaseActive = true\r\n        // Enable pick (manual) and icon buttons for all players\r\n                    set i = 0\r\n                    loop\r\n                        exitwhen i == 10\r\n                        if GetLocalPlayer() == Player(i) then\r\n                            call BlzFrameSetEnable(FRAME_Pick[2], true) // manual pick button\r\n                            call BlzFrameSetTexture(FRAME_ICON_Pick[2], \"Pick\\\\PickButton_Pick_Manual\", 0, true)\r\n             ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Player_Pick_Mode.j",
+      "source_bytes": 90459,
+      "sha256": "ae39ab9d8b406f9deb876b26072dc85470e43bb02b7d746e317e61a337098991",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 16,
+      "wct_index": 15,
+      "object_order": 17,
+      "object_id": "0x03000074",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Captain Draft",
+      "comment": "CaptainDraftSoundPicksStarts",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Captain_Draft.j",
+      "source_bytes": 57271,
+      "sha256": "f26765579fc4c4c5fa8afd493d75bc7be5573cd01164beb01262d78fd2ada185",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 17,
+      "wct_index": 16,
+      "object_order": 18,
+      "object_id": "0x03000028",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "WoS Shop Init",
+      "comment": "trigger FrameClick2 = CreateTrigger()\r\n    trigger FrameGuideEnter2 = CreateTrigger()\r\n    trigger FrameGuideLeave2 = CreateTrigger()\r\n\r\nframehandle FRAME_AutoBuyCheckbox\r\n    framehandle FRAME_AutoBuyText\r\nFrameShopCheckbox",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/WoS_Shop_Init.j",
+      "source_bytes": 120544,
+      "sha256": "37a446cd7eed0528b5c077d09d54480865458aef14f68dbcb54755c6d32a7975",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 18,
+      "wct_index": 17,
+      "object_order": 19,
+      "object_id": "0x03000046",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "WoS Pick Init",
+      "comment": "call BlzFrameSetPoint(FRAME_Repick[i], FRAMEPOINT_LEFT, BlzGetFrameByName(\"ConsoleUIBackdrop\", 0), FRAMEPOINT_LEFT, -0.03, 0.13+0.12)\r\ncall BlzFrameSetPoint(FRAME_Swap[i], FRAMEPOINT_LEFT, BlzGetFrameByName(\"ConsoleUIBackdrop\", 0), FRAMEPOINT_LEFT, -0.03, 0.20+0.12)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/WoS_Pick_Init.j",
+      "source_bytes": 234597,
+      "sha256": "a1c74c65d069f11c7dc50c7ad5884c370ed23f4a8e3449a2a9ed98f9f4257ee9",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 19,
+      "wct_index": 18,
+      "object_order": 20,
+      "object_id": "0x03000024",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Starts",
+      "comment": "    button udg_NormalButton\r\n    button udg_CaptainButton\r\n    boolean TestMode = false\r\n    boolean CaptainMode = false",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Starts.j",
+      "source_bytes": 25575,
+      "sha256": "477c7afd0cee17b07f1e67c5e113b0b53881c3a8ef4f63f5e0c5212d96d456e7",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 20,
+      "wct_index": 19,
+      "object_order": 21,
+      "object_id": "0x03000076",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "INITSS",
+      "comment": "",
+      "enabled": true,
+      "initially_off": true,
+      "run_on_map_init": false,
+      "path": "WOS_Start/INITSS.j",
+      "source_bytes": 439,
+      "sha256": "838bd4bf1f14cc0dc04750660f35eb788dff00f2dc813e37fffb0a8277ae184e",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 21,
+      "wct_index": 20,
+      "object_order": 22,
+      "object_id": "0x03000008",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "BuildsForChars",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/BuildsForChars.j",
+      "source_bytes": 22287,
+      "sha256": "718e17d2452559464352dfc9982ee2da6dae4a8a717991787eef67684c171c5b",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 22,
+      "wct_index": 21,
+      "object_order": 23,
+      "object_id": "0x0300002A",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "TestUnit",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/TestUnit.j",
+      "source_bytes": 1248,
+      "sha256": "558f4e70cab782126ea9aff2f3c084f7daffed1a38e22ad62b15b4a8d4196a00",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 23,
+      "wct_index": 22,
+      "object_order": 24,
+      "object_id": "0x03000022",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "WoS Hero Icons Init",
+      "comment": "private function HeroIcon_RefreshItemCache takes unit whichUnit returns nothing\r\n    local integer unitHandleId\r\n    local integer slot = 0\r\n    local item slotItem\r\n\r\n    if whichUnit == null then\r\n        return\r\n    endif\r\n\r\n    set unitHandleId = GetHandleId(whichUnit)\r\n    call FlushChildHashtable(ItemCache, unitHandleId)\r\n\r\n    loop\r\n        exitwhen slot >= 6\r\n        set slotItem = UnitItemInSlot(whichUnit, slot)\r\n        if slotItem != null then\r\n            call SaveBoolean(ItemCache, unitHandleId, GetItemTypeId(slotItem), true)\r\n        endif\r\n        set slotItem = null\r\n        set slot = slot + 1\r\n    endloop\r\nendfunction",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/WoS_Hero_Icons_Init.j",
+      "source_bytes": 85968,
+      "sha256": "52a2b3ea4c74b8b48992e65f91f41bf118e35b66162bc3366b2a0989b7e5845b",
+      "declarations": {
+        "libraries": [
+          "heroicon"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "LocalMp3Player",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 24,
+      "wct_index": 23,
+      "object_order": 25,
+      "object_id": "0x03000053",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "Leave",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/Leave.j",
+      "source_bytes": 2705,
+      "sha256": "54da03099513d7db4cfee4ae45ef9b0428072d6a4835e1b10722b6a913994248",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 25,
+      "wct_index": 24,
+      "object_order": 27,
+      "object_id": "0x03000031",
+      "object_type": "trigger",
+      "category": "Round End",
+      "category_id": "0x02000008",
+      "trigger_name": "RoundEnd",
+      "comment": "war3mapImported\\wos_SukunaDomainArea2.mdl",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Round_End/RoundEnd.j",
+      "source_bytes": 29226,
+      "sha256": "61233fb7218c7e7ff21d73d506e46f002f89c0bb4126b9fc01741654275e0807",
+      "declarations": {
+        "libraries": [
+          "RoundSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "RoundEnd"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 26,
+      "wct_index": 25,
+      "object_order": 29,
+      "object_id": "0x03000037",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "CastAItems",
+      "comment": "//----------------------Urahara Set----------------------------------------------\r\n        real UraharaSet_Range = 900 // traveled for 1 sec  \r\n//----------------------Incursio----------------------------------------------\r\n        real Incursio_Range = 900 // traveled for 1 sec  ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/CastAItems.j",
+      "source_bytes": 12153,
+      "sha256": "3454fb58b9fb686429c44bd9d4f68a8c55668c0a75a35213e00d4f2364b6cff3",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 27,
+      "wct_index": 26,
+      "object_order": 30,
+      "object_id": "0x0300006E",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "TasBox",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/TasBox.j",
+      "source_bytes": 7147,
+      "sha256": "adcc9d477ddbb655c5810e5c9d3876eeb21f36ba8299e49c93f7d4392ed1711f",
+      "declarations": {
+        "libraries": [
+          "TasAbilityChargeBox"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "FrameLoader",
+          "optional": true,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 28,
+      "wct_index": 27,
+      "object_order": 31,
+      "object_id": "0x03000045",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "CastCheck",
+      "comment": "or TestMode == true",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/CastCheck.j",
+      "source_bytes": 41893,
+      "sha256": "9dfc40a7245c1831aff46c32bec16a686205157fd512fa9310c4af68c32ae44d",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 29,
+      "wct_index": 28,
+      "object_order": 32,
+      "object_id": "0x0300002C",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "CastingCheck",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/CastingCheck.j",
+      "source_bytes": 7636,
+      "sha256": "49b00c4ecd55d1af7af8334b380be6ba507ab641120a189c706894dddd1225a4",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 30,
+      "wct_index": 29,
+      "object_order": 33,
+      "object_id": "0x0300004E",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ClickEvent",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ClickEvent.j",
+      "source_bytes": 2373,
+      "sha256": "cdebe4cddd46452f84b678785a82656cc8edd9ba3669e0c8ab2ad7edbe8ed159",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 31,
+      "wct_index": 30,
+      "object_order": 34,
+      "object_id": "0x0300004D",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "DecorDestroy and Erza Debuff",
+      "comment": "DecorAliveCond = Condition(function DecorAlive_Filter)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
+      "source_bytes": 58256,
+      "sha256": "5de642da685c4aa861d7034f8da4839f5e188f67f7fa93caa060f46e559a0fd5",
+      "declarations": {
+        "libraries": [
+          "AAADest"
+        ],
+        "scopes": [],
+        "structs": [
+          "ErzaDebuffs"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 32,
+      "wct_index": 31,
+      "object_order": 36,
+      "object_id": "0x03000048",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Systems1",
+      "comment": "//----------------------ItachiSet----------------------------------------------\r\n        integer ItachiSet_ID = 'I01B'        \r\n        real ItachiSet_Bonus = 17.5\r\n//----------------------RaikageHat----------------------------------------------\r\n        integer RaikageHat_ID = 'I00T'        \r\n        real RaikageHat_Bonus = 17.5\r\n//----------------------DemonDwellerSword----------------------------------------------\r\n        integer DemonDwellerSword_ID = 'I041'\n        integer DemonDwellerSword_Phys_ID = 'I00T'\n        integer DemonDwellerSword_Mag_ID = 'I00T'\r\n        real DemonDwellerSword_Bonus = 25\r\n        real DemonDwellerSword_MinDmg = 500\r\n        real DemonDwellerSword_CD = 10",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": true,
+      "path": "Systems/Systems1.j",
+      "source_bytes": 141721,
+      "sha256": "e257151657639261b6141112d9c843efb287e00dbf319dbbe01d9a69d419b047",
+      "declarations": {
+        "libraries": [
+          "GearSystems"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems2",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 33,
+      "wct_index": 32,
+      "object_order": 37,
+      "object_id": "0x0300006F",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Systems2",
+      "comment": "   real str_hpregen = 0.2\r\n        real int_mpregen = 0.2    \r\n        real agi_as = 0.005 \r\n        real agi_ms = 1.00 \r\n        real agi_def = 0.1\r\n        real armor_resist = 0",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": true,
+      "path": "Systems/Systems2.j",
+      "source_bytes": 201422,
+      "sha256": "ef28e60b4e0827628f925f0b113804af0fb599cbe6143cffd67740f9886ebdbf",
+      "declarations": {
+        "libraries": [
+          "GearSystems2"
+        ],
+        "scopes": [],
+        "structs": [
+          "KS_Flush",
+          "KS_FlushBuff",
+          "KS_AddMana",
+          "KS_FlushReal",
+          "UnitMoveWall",
+          "KS_RemoveUnit",
+          "KS_RemoveEffect",
+          "KS_MoveUnit",
+          "KS_UnitHeight",
+          "KS_DamageOverTime",
+          "KS_SpellTimer",
+          "KS_UnitColor",
+          "KS_EffectColor",
+          "KS_RemoveFog",
+          "KS_MoveEffectToUnit",
+          "KS_MoveUnitToUnit",
+          "KS_DelayedDamage",
+          "KS_BlockRegen",
+          "KS_RemoveAbility",
+          "KS_RemoveAbility2",
+          "KS_DelayedSound",
+          "KS_UnitScale",
+          "KS_MoveEffect",
+          "KS_EffectScale",
+          "KS_HealOverTime",
+          "KS_LightningColor",
+          "KS_TextTagDelay",
+          "KS_Fear",
+          "KS_AbilityLevel",
+          "KS_Cooldown",
+          "KS_FakeCooldown",
+          "KS_EffectHeight",
+          "KS_RemoveDestructable",
+          "KS_BuffTimer"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 34,
+      "wct_index": 33,
+      "object_order": 39,
+      "object_id": "0x0300004F",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "DmgSys",
+      "comment": "integer DemonDwellerSword_ID = 'I041'\n        integer DemonDwellerSword_Abi_ID = 'A0HX'\n        integer DemonDwellerSword_Phys_ID = 'B03A'\n        integer DemonDwellerSword_Mag_ID = 'B039'\r\n        real DemonDwellerSword_Bonus = 25\r\n        real DemonDwellerSword_MinDmg = 500\r\n        real DemonDwellerSword_CD = 10",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/DmgSys.j",
+      "source_bytes": 42501,
+      "sha256": "7ca7f60f34d07b4f5a550263884a4559d88d067ed4ba7e19682ec1be3fcb2727",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 35,
+      "wct_index": 34,
+      "object_order": 40,
+      "object_id": "0x03000055",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "AtkCancel",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/AtkCancel.j",
+      "source_bytes": 589,
+      "sha256": "bde391de0d697a99a122727d193f94cdd4b8ede1871a100134ab63ef9714c013",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 36,
+      "wct_index": 35,
+      "object_order": 41,
+      "object_id": "0x03000051",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "MouseMove",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/MouseMove.j",
+      "source_bytes": 1121,
+      "sha256": "6cd23d50905275c686dc5c4df6693baa316c051810bceef07fa808533040a9ae",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 37,
+      "wct_index": 36,
+      "object_order": 42,
+      "object_id": "0x03000029",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Death",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/Death.j",
+      "source_bytes": 7419,
+      "sha256": "461869a696c7a7f527758fd461bdbb5c4e20b1540cc2862ec61f13e4faaa5713",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 38,
+      "wct_index": 37,
+      "object_order": 43,
+      "object_id": "0x0300002F",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "silence",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/silence.j",
+      "source_bytes": 735,
+      "sha256": "0e7c7de0091805f4c31654c389cbdeb4e842f73349e796693685db29edcb5ed2",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 39,
+      "wct_index": 38,
+      "object_order": 44,
+      "object_id": "0x0300004B",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LvlUpCheck",
+      "comment": "InoriEAlt_ID",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LvlUpCheck.j",
+      "source_bytes": 17566,
+      "sha256": "0438c681fc32fb31035595140f66ed24f29d936fd18371d75faeda2fd85e3d89",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 40,
+      "wct_index": 39,
+      "object_order": 45,
+      "object_id": "0x03000044",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LvlSelf",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LvlSelf.j",
+      "source_bytes": 977,
+      "sha256": "bce41dc24639031a7d7fe8892fe6661b6175dbc941555a90013656604b15175f",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 41,
+      "wct_index": 40,
+      "object_order": 46,
+      "object_id": "0x03000020",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "MagRes",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/MagRes.j",
+      "source_bytes": 2341,
+      "sha256": "adc2451b6cc799dc86e479437d541a6bd1c7284f0982906d07d9f78f93d7bdcc",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 42,
+      "wct_index": 41,
+      "object_order": 47,
+      "object_id": "0x03000021",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "PhysRes",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/PhysRes.j",
+      "source_bytes": 2354,
+      "sha256": "4b79ffdf3312722e3832bae95ff346ad5ccea6a2532a2a43b1fd6a1423d7cb12",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 43,
+      "wct_index": 42,
+      "object_order": 48,
+      "object_id": "0x0300003D",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "slow",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/slow.j",
+      "source_bytes": 723,
+      "sha256": "d48fb5610d02f3bb7db7272f8b0b05835708e93020d499798ad555e872011ce4",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 44,
+      "wct_index": 43,
+      "object_order": 49,
+      "object_id": "0x03000006",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "NeviSound",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/NeviSound.j",
+      "source_bytes": 1320,
+      "sha256": "ed705f896ed4042c3388aaf258c11d9ebf3669441850a4887c19bb4ed33dc92c",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 45,
+      "wct_index": 44,
+      "object_order": 50,
+      "object_id": "0x03000011",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Evol1",
+      "comment": "if id == Rimuru_ID and  LoadInteger(hs, GetHandleId(c), StringHash(\"evol kill\")) >= RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(c),StringHash(\"rimuru evol 2\")) == 0 then \r\ncall SaveInteger(hs,GetHandleId(c),StringHash(\"rimuru evol 2\"),1)\r\ncall RimuruEvol2_Start(c,false)\r\nendif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/Evol1.j",
+      "source_bytes": 1201,
+      "sha256": "456900bf35bbdc312071674174264c47f34868c697acd8b0d81726d638c5f71d",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 46,
+      "wct_index": 45,
+      "object_order": 51,
+      "object_id": "0x03000012",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Evol2",
+      "comment": "if id == Rimuru_ID and  LoadInteger(hs, GetHandleId(c), StringHash(\"evol kill\")) >= RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(c),StringHash(\"rimuru evol 2\")) == 0 then \r\ncall SaveInteger(hs,GetHandleId(c),StringHash(\"rimuru evol 2\"),1)\r\ncall RimuruEvol2_Start(c,false)\r\nendif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/Evol2.j",
+      "source_bytes": 1193,
+      "sha256": "b229a26cc1bafdfcdac2e5dfb0fe514d0893c212e5d9202bfc05e3aeb2b3d8be",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 47,
+      "wct_index": 46,
+      "object_order": 52,
+      "object_id": "0x03000030",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "sukuna spawn",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/sukuna_spawn.j",
+      "source_bytes": 725,
+      "sha256": "3c127a4d349f523efe04cca9b2c2253248ead8414d12a2c1a12df170f21f82d4",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 48,
+      "wct_index": 47,
+      "object_order": 53,
+      "object_id": "0x0300003F",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ESC",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ESC.j",
+      "source_bytes": 1708,
+      "sha256": "b1f23bd588caa392d7fbe288999f5aa8d19a13eb56d09e067f8911b6d22406d3",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 49,
+      "wct_index": 48,
+      "object_order": 54,
+      "object_id": "0x03000041",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "Killme",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/Killme.j",
+      "source_bytes": 968,
+      "sha256": "127dd107d11a098b7f6a96d0dbf0beb6501328be4639fce90e112c6b56f37110",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 50,
+      "wct_index": 49,
+      "object_order": 55,
+      "object_id": "0x03000043",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "AnimCheck",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/AnimCheck.j",
+      "source_bytes": 1217,
+      "sha256": "79d113d4e13784b0642fe32df20ca6ba84796397648948a1912e364f357271e6",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 51,
+      "wct_index": 50,
+      "object_order": 56,
+      "object_id": "0x0300000D",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "hpset",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/hpset.j",
+      "source_bytes": 895,
+      "sha256": "0b433647b169c1374c1b155ccb1d27882322e3636df8797036bee86ebf7359e5",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 52,
+      "wct_index": 51,
+      "object_order": 57,
+      "object_id": "0x03000014",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "mpset",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/mpset.j",
+      "source_bytes": 895,
+      "sha256": "4bd287c02ab6eef089cdedd46fe22e68af49a30aebe16d09afe8da8f1185557a",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 53,
+      "wct_index": 52,
+      "object_order": 58,
+      "object_id": "0x0300003E",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ArrowLeft",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ArrowLeft.j",
+      "source_bytes": 3297,
+      "sha256": "2500cae7448fde42819fcbbb45e96029f3769dfc99bc094360899d8c8c85b37e",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 54,
+      "wct_index": 53,
+      "object_order": 59,
+      "object_id": "0x0300003B",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ArrowUp",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ArrowUp.j",
+      "source_bytes": 3353,
+      "sha256": "a6d6969c3cdb38902db248b6a8d5118dc5b402f17ce930f9b107fb6e19713ed5",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 55,
+      "wct_index": 54,
+      "object_order": 60,
+      "object_id": "0x03000001",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ArrowDown",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ArrowDown.j",
+      "source_bytes": 1613,
+      "sha256": "753e09574c2883ebd1799615cc1d78eea053751903fbdbb25b03008dbacb0d5f",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 56,
+      "wct_index": 55,
+      "object_order": 61,
+      "object_id": "0x03000056",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ArrowRight",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ArrowRight.j",
+      "source_bytes": 3113,
+      "sha256": "2512c1dec315b6da5e216d92ee7eda78070cd069f8f21d28d2c90841cb860960",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 57,
+      "wct_index": 56,
+      "object_order": 64,
+      "object_id": "0x03000054",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ButtonPressed",
+      "comment": "FRAME_Chat0",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ButtonPressed.j",
+      "source_bytes": 11115,
+      "sha256": "6d8727d1144b6ef2567abf8d74d7b79e197ae609f5b89a9f1553b8beaf814d8d",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 58,
+      "wct_index": 57,
+      "object_order": 65,
+      "object_id": "0x0300001F",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ButtonPressed ESC",
+      "comment": "FRAME_Chat0",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ButtonPressed_ESC.j",
+      "source_bytes": 1713,
+      "sha256": "1e5efe0c07e8fbc361347ea2c05f73d909508f4559c7d69cd42fcbdc9a7f1b53",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 59,
+      "wct_index": 58,
+      "object_order": 66,
+      "object_id": "0x03000016",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ButtonUnPressed_ESC",
+      "comment": "FRAME_Chat0",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ButtonUnPressed_ESC.j",
+      "source_bytes": 1217,
+      "sha256": "e37cc26227f6283254bc236df111f67f0f7907a329657014b23e794e24b8e5bc",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 60,
+      "wct_index": 59,
+      "object_order": 68,
+      "object_id": "0x0300001C",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "EnterBase",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/EnterBase.j",
+      "source_bytes": 2303,
+      "sha256": "da00a557e3d9081bfbf4f12f038c014f4ada86d3683476996bcefc2c2c241438",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 61,
+      "wct_index": 60,
+      "object_order": 69,
+      "object_id": "0x03000027",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "EnterRegion",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/EnterRegion.j",
+      "source_bytes": 5087,
+      "sha256": "6714f8507f0d0ddf59d182c7cdf5feab670d2c48bccbed70d1b9165ed5754b90",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 62,
+      "wct_index": 61,
+      "object_order": 70,
+      "object_id": "0x0300001D",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LeavesBase",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LeavesBase.j",
+      "source_bytes": 1076,
+      "sha256": "1f6b4b2ddd5db17e2604d00da35343c666dbabd0d9be36d27942040f9983af3e",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 63,
+      "wct_index": 62,
+      "object_order": 71,
+      "object_id": "0x03000026",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LeavesRegion",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LeavesRegion.j",
+      "source_bytes": 956,
+      "sha256": "c3ec18ffa591fb7d11ef35e809b1cf0ca727f9192539184b9ae055919d613227",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 64,
+      "wct_index": 63,
+      "object_order": 73,
+      "object_id": "0x03000007",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ItemCupOfTea",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ItemCupOfTea.j",
+      "source_bytes": 1209,
+      "sha256": "fa67f5605ef7be0bf578c5a452e542e854d168460f57724b76f591d15ecb5b9b",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 65,
+      "wct_index": 64,
+      "object_order": 74,
+      "object_id": "0x03000039",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ItemEnter",
+      "comment": " endif\r\n    if CheckBanGroup(c, id, 'I00J', 'I01M', 0) then\r\n        return true\r\n    endif\r\n    if CheckBanGroup(c, id, 'I00R', 'I01L', 0) then\r\n        return true\r\n    endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ItemEnter.j",
+      "source_bytes": 6331,
+      "sha256": "322846bb17890d36cfaebadbed19392c736203bce7831523b956bf5f07d01a4b",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 66,
+      "wct_index": 65,
+      "object_order": 75,
+      "object_id": "0x03000038",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ItemLeave",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ItemLeave.j",
+      "source_bytes": 3964,
+      "sha256": "9299e9cb8bed1a7d8bdfec2f7f682ddb04340f95bfcc389b23cf015de9aea6a9",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 67,
+      "wct_index": 66,
+      "object_order": 77,
+      "object_id": "0x0300003A",
+      "object_type": "trigger",
+      "category": "Items",
+      "category_id": "0x02000006",
+      "trigger_name": "Items",
+      "comment": "integer DeathNote_ID = 'A02G'\r\n        integer DeathNote_Abi_ID = 'A0I0'\r\n        integer DeathNote_Buff_ID = 'B03B'\r\n        real DeathNote_Damage = 30 // % of dealt dmg\r\n        real DeathNote_Time = 2.01 // max travel time",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Items/Items.j",
+      "source_bytes": 109348,
+      "sha256": "3e67ecde4b65133a2433c7fded841a5ac523b7de5c4ffee5f8bc9174eb221fa7",
+      "declarations": {
+        "libraries": [
+          "ItemsSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "ItemsSpells_FunnyBarrel",
+          "ItemsSpells_TsuchikageHat",
+          "ItemsSpells_FunnyPresent",
+          "ItemsSpells_NaofumiShield",
+          "ItemsSpells_RaijinWrath",
+          "ItemsSpells_Rhitta",
+          "ItemsSpells_SharkTrail",
+          "ItemsSpells_RockleeWeight",
+          "ItemsSpells_Chogurt",
+          "ItemsSpells_HokageHatEvolved",
+          "ItemsSpells_EarthPower",
+          "ItemsSpells_RedCup",
+          "ItemsSpells_RedFlower",
+          "ItemsSpells_TuskBarrel",
+          "ItemsSpells_TurboNeko",
+          "ItemsSpells_TsuchikageHatEvolve",
+          "ItemsSpells_ShikiKnifeEvolved",
+          "ItemsSpells_DeathNote"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 68,
+      "wct_index": 67,
+      "object_order": 79,
+      "object_id": "0x03000070",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Toji",
+      "comment": " real RaidenTW_DamageAgiBase = 0.2 \r\n        real RaidenTW_DamageAgiStep = 0.15 \r\n        real RaidenTTW_DamageAgiBonus = 0.2 \r\n\r\nreal RaidenW_DamageAgiBase = 0.4 \r\n        real RaidenW_DamageAgiStep = 0.1 \r\n        real RaidenW_Damage2StaticBase = 50 \r\n        real RaidenW_Damage2StaticStep = 0 ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Toji.j",
+      "source_bytes": 108153,
+      "sha256": "91c963ff21d1008591eb4b8ed48359b1eae7483f655c4d5c7ec5e71946bb01ab",
+      "declarations": {
+        "libraries": [
+          "TojiSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "TojiSpells_Q",
+          "TojiSpells_W",
+          "TojiSpells_E",
+          "TojiSpells_R_Insectoids",
+          "TojiSpells_G_Debuff",
+          "TojiSpells_G",
+          "TojiSpells_T",
+          "TojiSpells_F"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 69,
+      "wct_index": 68,
+      "object_order": 80,
+      "object_id": "0x0300001E",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Raiden",
+      "comment": " real RaidenTW_DamageAgiBase = 0.2 \r\n        real RaidenTW_DamageAgiStep = 0.15 \r\n        real RaidenTTW_DamageAgiBonus = 0.2 \r\n\r\nreal RaidenW_DamageAgiBase = 0.4 \r\n        real RaidenW_DamageAgiStep = 0.1 \r\n        real RaidenW_Damage2StaticBase = 50 \r\n        real RaidenW_Damage2StaticStep = 0 ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Raiden.j",
+      "source_bytes": 121798,
+      "sha256": "6b5f5d2dab2a5182babfb842d9be9b356402c19e2cf6847a3c79a6ac6e43aae0",
+      "declarations": {
+        "libraries": [
+          "RaidenSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "RaidenQ_KS",
+          "RaidenOrderInit",
+          "RaidenW_KS",
+          "RaidenTW_KS",
+          "RaidenE_KS",
+          "RaidenR_KS",
+          "RaidenT_KS",
+          "RaidenT2_KS",
+          "RaidenPas_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 70,
+      "wct_index": 69,
+      "object_order": 81,
+      "object_id": "0x0300006C",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Frieren",
+      "comment": "real FrierenQ_RangeBase = 1200 // base \r\n        real FrierenQ_RangeStep = 100 // base \r\n        real FrierenQ_TimeSwap_Q2 = 4\r\n        real FrierenQ_TimeSwap_TQ = 5 ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Frieren.j",
+      "source_bytes": 120686,
+      "sha256": "fdb3db5b6e3b144e386fba0f050476b77b8cf413f90e946da830156eb31b5291",
+      "declarations": {
+        "libraries": [
+          "FrierenSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "FrierenSpells_Q",
+          "FrierenSpells_FrierenQ2_Act",
+          "FrierenSpells_Q2",
+          "FrierenSpells_TQ",
+          "FrierenSpells_W",
+          "FrierenSpells_W2",
+          "FrierenSpells_E",
+          "FrierenRSearch",
+          "FrierenSpells_TR",
+          "KS_MoveUnitFrir",
+          "FrierenSpells_T",
+          "FrierenSpells_T2",
+          "FrierenSpells_G",
+          "FrierenSpells_F"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 71,
+      "wct_index": 70,
+      "object_order": 82,
+      "object_id": "0x03000066",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Ainz",
+      "comment": "if IsUnitEnemy(td,GetOwningPlayer(c)) then \r\n        call AinzW_KS.AinzW2_Start(c, c, td)\r\n        else\r\n         call BuffUnit01(c, td, AinzF_BuffSpell_ID, AinzF_BuffOrder, 8)\r\n        endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Ainz.j",
+      "source_bytes": 165558,
+      "sha256": "b8437561d9be46e82b1be154bf854417e6ac0d1caac94a7a210c27fe1fad890b",
+      "declarations": {
+        "libraries": [
+          "AinzSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "AinzOrderInit",
+          "AinzQ_KS",
+          "AinzW_KS",
+          "AinzE_KS",
+          "AinzR_KS",
+          "AinzT_KS",
+          "AinzTQ_KS",
+          "AinzTW_KS",
+          "AinzTE_KS",
+          "AinzTR_KS",
+          "AinzF_KS",
+          "AinzG_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 72,
+      "wct_index": 71,
+      "object_order": 83,
+      "object_id": "0x03000040",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Laxus",
+      "comment": "AstaG_MagRes12",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Laxus.j",
+      "source_bytes": 116356,
+      "sha256": "85d73430b13b979ec68a8b3ba72bdc119c35acbfbc8f0032b1feaede3e72d9ed",
+      "declarations": {
+        "libraries": [
+          "LaxusSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "LaxusOrderInit",
+          "LaxusW2_Revert",
+          "LaxusQ_KS",
+          "LaxusW_KS",
+          "LaxusE_KS",
+          "LaxusR_KS",
+          "LaxusT_KS",
+          "LaxusF_KS",
+          "LaxusG_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "NatsuSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 73,
+      "wct_index": 72,
+      "object_order": 84,
+      "object_id": "0x03000060",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Brandish",
+      "comment": "AstaG_MagRes12",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Brandish.j",
+      "source_bytes": 58121,
+      "sha256": "23b9b26ff075c8594a2722f29c2376585e0fc63da8f212b9de23ab250cf24030",
+      "declarations": {
+        "libraries": [
+          "BrandishSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "BrandishOrderInit",
+          "BrandishSpells_Utility",
+          "BrandishSpells_Q",
+          "BrandishSpells_W",
+          "BrandishSpells_E",
+          "BrandishSpells_R",
+          "BrandishSpells_T",
+          "BrandishSpells_F"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 74,
+      "wct_index": 73,
+      "object_order": 85,
+      "object_id": "0x0300005F",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Patriot",
+      "comment": "AstaG_MagRes12",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Patriot.j",
+      "source_bytes": 97512,
+      "sha256": "bac7c1fb6c99ca6f0c8d569c906be5a8ca8dab23a83c7cfbc5e53e912780e076",
+      "declarations": {
+        "libraries": [
+          "PatriotSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "PatriotOrderInit",
+          "PatriotSpells_Q",
+          "PatriotSpells_W",
+          "PatriotSpells_E",
+          "PatriotSpells_R",
+          "PatriotSpells_T",
+          "PatriotSpells_T2",
+          "PatriotSpells_F"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 75,
+      "wct_index": 74,
+      "object_order": 86,
+      "object_id": "0x03000059",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Asta",
+      "comment": "AstaG_MagRes12",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Asta.j",
+      "source_bytes": 97536,
+      "sha256": "d6a1bafe10ba484d51d226338d20718229cc96553183c4dce66d2816563806f1",
+      "declarations": {
+        "libraries": [
+          "AstaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "AstaOrderInit",
+          "AstaSpells_Q",
+          "AstaSpells_W",
+          "AstaSpells_E",
+          "AstaSpells_R",
+          "AstaSpells_T",
+          "AstaSpells_F"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 76,
+      "wct_index": 75,
+      "object_order": 87,
+      "object_id": "0x0300003C",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Gojo",
+      "comment": "\r\n          ",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Gojo.j",
+      "source_bytes": 127432,
+      "sha256": "7a4684e0b60e330d0996120cb85b5b8fc81a8e5a9fc0200f64134c7407823f0d",
+      "declarations": {
+        "libraries": [
+          "GojoSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "GojoSpells_Q",
+          "GojoSpells_W",
+          "GojoSpells_E",
+          "GojoSpells_R",
+          "GojoSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 77,
+      "wct_index": 76,
+      "object_order": 88,
+      "object_id": "0x03000058",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Bambietta",
+      "comment": "BambiettaTE_Stun\r\n\r\n        real BambiettaTR_PushRange = 500\r\n        real BambiettaTR_PushDuration = 0.3",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Bambietta.j",
+      "source_bytes": 110607,
+      "sha256": "56d8c0ce904d6ff65d18fb0cacb904f5f09307e0555a1d0640aa00f8f424e789",
+      "declarations": {
+        "libraries": [
+          "BambiettaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "BambiettaSpells_Q",
+          "BambiettaSpells_W",
+          "BambiettaSpells_E",
+          "BambiettaSpells_R",
+          "BambiettaSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 78,
+      "wct_index": 77,
+      "object_order": 89,
+      "object_id": "0x03000057",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Kirito",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Kirito.j",
+      "source_bytes": 82891,
+      "sha256": "ecddd25588b6f556b466ca657601cca2d056906c698edfae8b505670b8007f3f",
+      "declarations": {
+        "libraries": [
+          "KiritoSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "KiritoSpells_Q",
+          "KiritoSpells_W",
+          "KiritoSpells_E",
+          "KiritoSpells_R",
+          "KiritoSpells_T",
+          "KiritoSpells_G"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 79,
+      "wct_index": 78,
+      "object_order": 90,
+      "object_id": "0x03000009",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Alucard",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Alucard.j",
+      "source_bytes": 105819,
+      "sha256": "72d3d518d4c3b74eb7607f45ca55f9a0478cec6d6bcb8ffe53727732b890a1cb",
+      "declarations": {
+        "libraries": [
+          "AlucardSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "AlucardSpells_Utility",
+          "AlucardSpells_Q",
+          "AlucardSpells_W",
+          "AlucardSpells_E",
+          "AlucardSpells_R",
+          "AlucardSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 80,
+      "wct_index": 79,
+      "object_order": 91,
+      "object_id": "0x03000004",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Starrk",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Starrk.j",
+      "source_bytes": 145537,
+      "sha256": "38d9d93e96ab6ac7401ff1ecb76e7d860c29b672433f5b2b0c406322468ce2fe",
+      "declarations": {
+        "libraries": [
+          "StarrkSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "StarrkSpells_Utility",
+          "StarrkSpells_Q",
+          "StarrkSpells_W",
+          "StarrkSpells_E",
+          "StarrkSpells_R",
+          "StarrkSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 81,
+      "wct_index": 80,
+      "object_order": 92,
+      "object_id": "0x03000003",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Takeshi",
+      "comment": "dmg2 +\"/\"R2I(I2S(rmax))",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Takeshi.j",
+      "source_bytes": 149382,
+      "sha256": "35999f7593409e0d065f93fe5fc7e1285cb6663f1e9dd033d99def74b4305584",
+      "declarations": {
+        "libraries": [
+          "TakeshiSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "TakeshiSpells_Q",
+          "TakeshiSpells_W",
+          "TakeshiSpells_E",
+          "TakeshiSpells_R",
+          "TakeshiSpells_T",
+          "TakeshiSpells_G"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 82,
+      "wct_index": 81,
+      "object_order": 93,
+      "object_id": "0x03000015",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Barragan",
+      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Barragan.j",
+      "source_bytes": 91754,
+      "sha256": "323a57a84ec154abcbed51aec08027f99c740b5ecec2899ffff3c92f9d2eaadf",
+      "declarations": {
+        "libraries": [
+          "BarraganSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "HeroSpells_Q",
+          "HeroSpells_W",
+          "HeroSpells_E",
+          "HeroSpells_R",
+          "HeroSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 83,
+      "wct_index": 82,
+      "object_order": 94,
+      "object_id": "0x03000017",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Mahoraga",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Mahoraga.j",
+      "source_bytes": 89452,
+      "sha256": "eb913139284bbb0d89678ac9895e580cd39af79e7bdf5275d292b402e4b640d9",
+      "declarations": {
+        "libraries": [
+          "MahoragaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "MahoragaSpells_Q",
+          "MahoragaSpells_E",
+          "MahoragaSpells_W",
+          "MahoragaSpells_T",
+          "MahoragaSpells_F",
+          "MahoragaSpells_G"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 84,
+      "wct_index": 83,
+      "object_order": 95,
+      "object_id": "0x03000013",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Harribel",
+      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Harribel.j",
+      "source_bytes": 77131,
+      "sha256": "89b7f116bfcd040715f2396b6e498d647dbc56f55be0171311bb6b0b4bcf4ef6",
+      "declarations": {
+        "libraries": [
+          "HarribelSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "HarribelSpells_Q",
+          "HarribelSpells_W",
+          "HarribelSpells_E",
+          "HarribelSpells_R",
+          "HarribelSpells_T",
+          "HarribelSpells_G"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 85,
+      "wct_index": 84,
+      "object_order": 96,
+      "object_id": "0x03000062",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Tsuna",
+      "comment": "3.8\r\n",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Tsuna.j",
+      "source_bytes": 165603,
+      "sha256": "1a24faacc03ae6554996b2e370902ca1bc45eddc5cccca5b2848884c87c0dc6b",
+      "declarations": {
+        "libraries": [
+          "TsunaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "TsunaQKS",
+          "TsunaQ2KS",
+          "TsunaWKS",
+          "TsunaW2KS",
+          "TsunaEKS",
+          "TsunaE2KS",
+          "TsunaRKS",
+          "TsunaR2KS",
+          "TsunaTKS",
+          "TsunaT2KS",
+          "TsunaFKS",
+          "TsunaGKS",
+          "TsunaG2KS",
+          "TsunaG3KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 86,
+      "wct_index": 85,
+      "object_order": 97,
+      "object_id": "0x0300000E",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Rimuru",
+      "comment": "\r\n\t\t if k4>0 then \r\n                                     call ErzaPassive(c,u,k4)\r\n                                    endif\r\n\r\n\t\tset k4 = 0\r\n                                if GetUnitAbilityLevel(c,RimuruG3_IntBonus_ID)>0 then \r\n                                set k4 = GetRandomInt(1,3)\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Rimuru.j",
+      "source_bytes": 203624,
+      "sha256": "2faf4856c170f8d4773bf5775bcebd59656bb16f148d432c1de15479e307cb64",
+      "declarations": {
+        "libraries": [
+          "RimuruSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "RimuruQ_KS",
+          "RimuruW_KS",
+          "RimuruE_KS",
+          "RimuruT2Helper_KS",
+          "RimuruT_KS",
+          "RimuruR_KS",
+          "RimuruG_KS",
+          "Rimuru2Q_KS",
+          "Rimuru2W2_KS",
+          "Rimuru2W_KS",
+          "Rimuru2E_KS",
+          "Rimuru2R_KS",
+          "Rimuru2T_KS",
+          "Rimuru2F_KS",
+          "Rimuru2Evol_KS",
+          "Rimuru3Q_KS",
+          "Rimuru3W_KS",
+          "Rimuru3E_KS",
+          "Rimuru3E2_KS",
+          "Rimuru3E3_KS",
+          "Rimuru3R_KS",
+          "Rimuru3T_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 87,
+      "wct_index": 86,
+      "object_order": 98,
+      "object_id": "0x0300000C",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "DarkShiki",
+      "comment": "TakeshiT_ManacostPerSec",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/DarkShiki.j",
+      "source_bytes": 63838,
+      "sha256": "3487330a1f7218a9beab41559be14b1cb92b6672f6f4610c6d2a508515cdff64",
+      "declarations": {
+        "libraries": [
+          "DarkShikiSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "DarkShikiPas_KS",
+          "DarkShikiPassive_KS",
+          "DarkShikiQ_KS",
+          "DarkShikiW_KS",
+          "DarkShikiE_KS",
+          "DarkShikiR_KS",
+          "DarkShikiT_KS",
+          "DarkShikiG_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 88,
+      "wct_index": 87,
+      "object_order": 99,
+      "object_id": "0x0300000B",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "BazzB",
+      "comment": "3.8\r\n",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/BazzB.j",
+      "source_bytes": 45800,
+      "sha256": "b859c14ca79d3d275ba098042c4896317ac3fadd214b37ab4c9b0420498ec385",
+      "declarations": {
+        "libraries": [
+          "BazzBSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "BazzBSpells_Q",
+          "BazzBSpells_W",
+          "BazzBSpells_E",
+          "BazzBSpells_R",
+          "BazzBSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 89,
+      "wct_index": 88,
+      "object_order": 100,
+      "object_id": "0x03000005",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Neuvillette",
+      "comment": "real OkarunQ_DamageSpeedBonus = 50 // % of okarun speed",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Neuvillette.j",
+      "source_bytes": 44107,
+      "sha256": "65ec4ca83270efdf111351e585a1a338af9d5ba1194847d4e8ab819dd0faac65",
+      "declarations": {
+        "libraries": [
+          "NeuvilletteSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "NeuvilletteSpells_Q",
+          "NeuvilletteSpells_W",
+          "NeuvilletteSpells_E",
+          "NeuvilletteSpells_R",
+          "NeuvilletteSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 90,
+      "wct_index": 89,
+      "object_order": 101,
+      "object_id": "0x03000002",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Okarun",
+      "comment": "real OkarunQ_DamageSpeedBonus = 50 // % of okarun speed",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Okarun.j",
+      "source_bytes": 60878,
+      "sha256": "300e2ddf641d73ac7c740f2b6e775d098386f7c0f780c422836bf028170af532",
+      "declarations": {
+        "libraries": [
+          "OkarunSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "OkarunQ_KS",
+          "OkarunW_KS",
+          "OkarunE_KS",
+          "OkarunR_KS",
+          "OkarunTBuff_KS",
+          "OkarunT_KS",
+          "OkarunF_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 91,
+      "wct_index": 90,
+      "object_order": 102,
+      "object_id": "0x03000000",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Akainu",
+      "comment": "KenjakuQ2_SummonHpBase\r\nKenjakuQ2_SummonHpStep\r\nKenjakuQ2_SummonMSBase\r\nKenjakuQ2_SummonMSStep",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Akainu.j",
+      "source_bytes": 47488,
+      "sha256": "0ebdc79ad794970acdaaee5df5ee7d9a8a4a6e0be0b696c6d0c0ea740d8eb887",
+      "declarations": {
+        "libraries": [
+          "AkainuSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "AkainuSpells_Q",
+          "AkainuSpells_W2",
+          "AkainuSpells_W",
+          "AkainuSpells_E",
+          "AkainuSpells_R",
+          "AkainuSpells_T2",
+          "AkainuSpells_T"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 92,
+      "wct_index": 91,
+      "object_order": 103,
+      "object_id": "0x03000050",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Inori",
+      "comment": "call SetHpCurrent2(c,td,r4)\r\n                            call HealTT(c,td, r4, 150)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Inori.j",
+      "source_bytes": 141334,
+      "sha256": "12f70b6ac0f3ff0451104b1cb612fba68de0c0423bbddf5e004d3e946333e29b",
+      "declarations": {
+        "libraries": [
+          "InoriSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "InoriQ_KS",
+          "InoriQ2_KS",
+          "InoriW_KS",
+          "InoriW2_KS",
+          "InoriE_KS",
+          "InoriR_KS",
+          "InoriR2_KS",
+          "InoriT_KS",
+          "InoriT2_KS",
+          "InoriF_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 93,
+      "wct_index": 92,
+      "object_order": 104,
+      "object_id": "0x03000047",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Kenjaku",
+      "comment": "KenjakuQ2_SummonHpBase\r\nKenjakuQ2_SummonHpStep\r\nKenjakuQ2_SummonMSBase\r\nKenjakuQ2_SummonMSStep",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Kenjaku.j",
+      "source_bytes": 121742,
+      "sha256": "748ad1969d404c0ff533ef0129a19bd74d7d91f323d9c677408886dcabbbf129",
+      "declarations": {
+        "libraries": [
+          "KenjakuSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "KenjakuQ_KS",
+          "KenjakuQ2_KS",
+          "KenjakuW_KS",
+          "KenjakuW2_KS",
+          "KenjakuE_KS",
+          "KenjakuE2_KS",
+          "KenjakuR_KS",
+          "KenjakuR2_KS",
+          "KenjakuT_KS",
+          "KenjakuF_KS",
+          "KenjakuF2_KS",
+          "KenjakuSummon_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 94,
+      "wct_index": 93,
+      "object_order": 105,
+      "object_id": "0x03000034",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "AlterSaber",
+      "comment": "if GetHeroLevel(c) >= AlterSaberComboLvlCheck and kc > 0 then\r\n                                    call SwapAbility(c, AlterSaberComboTime1, AlterSaberComboW_ID, AlterSaberW_ID)\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/AlterSaber.j",
+      "source_bytes": 89507,
+      "sha256": "9f094d9afab3ac26e8489b063bc195a97f58300ded4b9ea33c94c4561da5be3d",
+      "declarations": {
+        "libraries": [
+          "AlterSaberSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "AlterSaberQ_KS",
+          "AlterSaberW_KS",
+          "AlterSaberW2_KS",
+          "AlterSaberE_KS",
+          "AlterSaberComboW_KS",
+          "AlterSaberComboE_KS",
+          "AlterSaberR_KS",
+          "AlterSaberRR_KS",
+          "AlterSaberT_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 95,
+      "wct_index": 94,
+      "object_order": 106,
+      "object_id": "0x03000042",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Natsu",
+      "comment": "\r\n        real NatsuR_BonusAdd = 2// % dmg with each R press\r\n        real NatsuR_BonusMax = 20// %",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Natsu.j",
+      "source_bytes": 118662,
+      "sha256": "7841d197ab13e302fcac638f4b25abcd5195aaff19b41cb5c53860dcb976d0f2",
+      "declarations": {
+        "libraries": [
+          "NatsuSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "NatsuQ_KS",
+          "NatsuW_KS",
+          "NatsuE_KS",
+          "NatsuR_KS",
+          "NatsuT_KS",
+          "NatsuG2_KS",
+          "NatsuG_KS",
+          "NatsuPas_KS",
+          "NatsuFR_KS",
+          "NatsuFT_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 96,
+      "wct_index": 95,
+      "object_order": 107,
+      "object_id": "0x0300004C",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Kyoraku",
+      "comment": "KyorakuFrameClick",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Kyoraku.j",
+      "source_bytes": 130120,
+      "sha256": "45f8de3e43e7ccc260f4ed66a6ae69a5621a5d68eb188dc4b36969b38029899d",
+      "declarations": {
+        "libraries": [
+          "KyorakuSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "KyorakuQ_KS",
+          "KyorakuQ2_KS",
+          "KyorakuW_KS",
+          "KyorakuW2_KS",
+          "KyorakuE_KS",
+          "KyorakuE3_KS",
+          "KyorakuE2_KS",
+          "KyorakuR_KS",
+          "KyorakuT4_KS",
+          "KyorakuT_KS",
+          "KyorakuF_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 97,
+      "wct_index": 96,
+      "object_order": 108,
+      "object_id": "0x03000033",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Tomioka",
+      "comment": " BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0 then\r\nset r = 25\r\ncall BlzStartUnitAbilityCooldown(c,'A01I',2.5)",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Tomioka.j",
+      "source_bytes": 61688,
+      "sha256": "9ed553429176f6471642698358c13bd0386d6375100525a1b4eec8691ea17c15",
+      "declarations": {
+        "libraries": [
+          "TomiokaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "TomiokaQ_KS",
+          "TomiokaW_KS",
+          "TomiokaE_KS",
+          "TomiokaR_KS",
+          "TomiokaT_KS",
+          "TomiokaF_KS",
+          "TomiokaG_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 98,
+      "wct_index": 97,
+      "object_order": 110,
+      "object_id": "0x0300002B",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaQ",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaQ.j",
+      "source_bytes": 34725,
+      "sha256": "f3c36cf6506a1311dd8caed5d7216f57581f2a0b335775283c0251d28ec3bef5",
+      "declarations": {
+        "libraries": [
+          "ErzaQSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "ErzaPas_KS",
+          "ErzaQ_KS",
+          "ErzaW_KS",
+          "ErzaE_KS",
+          "ErzaR_KS",
+          "ErzaT_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 99,
+      "wct_index": 98,
+      "object_order": 111,
+      "object_id": "0x03000052",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaW",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaW.j",
+      "source_bytes": 35006,
+      "sha256": "1678cdbb0444df9e0a3a2ba12212dae82c337d033f0bff743adee1cb71d9450d",
+      "declarations": {
+        "libraries": [
+          "ErzaWSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza2Q_KS",
+          "Erza2W_KS",
+          "Erza2E_KS",
+          "Erza2R_KS",
+          "Erza2T_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 100,
+      "wct_index": 99,
+      "object_order": 112,
+      "object_id": "0x03000035",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaE",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaE.j",
+      "source_bytes": 40774,
+      "sha256": "64892158e08ad565fe669d4e80f1cbb56c1bceb2742ad6bf27df3bab28170bd2",
+      "declarations": {
+        "libraries": [
+          "ErzaESpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza3Q_KS",
+          "Erza3W_KS",
+          "Erza3E_KS",
+          "Erza3R_KS",
+          "Erza3T_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 101,
+      "wct_index": 100,
+      "object_order": 113,
+      "object_id": "0x03000036",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaR",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaR.j",
+      "source_bytes": 89851,
+      "sha256": "3d858c43568498d6ccfbff06264ec3bbc5b9dbee6427e58c5518c6015a8b9c9a",
+      "declarations": {
+        "libraries": [
+          "ErzaRSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza4Q_KS",
+          "Erza4W_KS",
+          "Erza4E_KS",
+          "Erza4R_KS",
+          "Erza4TT_KS",
+          "Erza4T_KS",
+          "Erza4F_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 102,
+      "wct_index": 101,
+      "object_order": 114,
+      "object_id": "0x03000032",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaT",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaT.j",
+      "source_bytes": 98964,
+      "sha256": "9faf2649f41ed0212a0448f5670851baa9680a8ed2b24941ad04f8737805ab07",
+      "declarations": {
+        "libraries": [
+          "ErzaTSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza5Q_KS",
+          "Erza5W_KS",
+          "Erza5E_KS",
+          "Erza5R2_KS",
+          "Erza5R_KS",
+          "Erza5T_KS",
+          "Erza5F_KS",
+          "Erza5TT_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 103,
+      "wct_index": 102,
+      "object_order": 115,
+      "object_id": "0x0300002E",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaG2 Nakagami",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaG2_Nakagami.j",
+      "source_bytes": 45984,
+      "sha256": "f9620f495e80a507d3b40e10b50b149c8ef180577f85409519b54530aded98ac",
+      "declarations": {
+        "libraries": [
+          "ErzaG1Spells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza6Q_KS",
+          "Erza6W_KS",
+          "Erza6E_KS",
+          "Erza6R_KS",
+          "Erza6T_KS",
+          "Erza6G_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 104,
+      "wct_index": 103,
+      "object_order": 116,
+      "object_id": "0x03000025",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaG2 Fairy",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaG2_Fairy.j",
+      "source_bytes": 37136,
+      "sha256": "c4073696968c511e69a3b826b981f8b7df4907d0c654e6f8d6e4684c48731061",
+      "declarations": {
+        "libraries": [
+          "ErzaG2Spells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza7Q_KS",
+          "Erza7W_KS",
+          "Erza7E_KS",
+          "Erza7R_KS",
+          "Erza7T_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 105,
+      "wct_index": 104,
+      "object_order": 117,
+      "object_id": "0x03000023",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaBase",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaBase.j",
+      "source_bytes": 32040,
+      "sha256": "dd2860b948d5c3047f3c174169d36abb334e3f7600e7100143b632f1e6546323",
+      "declarations": {
+        "libraries": [
+          "ErzaBase"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaQSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 106,
+      "wct_index": 105,
+      "object_order": 118,
+      "object_id": "0x0300007A",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Milim",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Milim.j",
+      "source_bytes": 97122,
+      "sha256": "62167c167aaca2e3fa62002dc1a983e719cc55fa7d5b1d507a22f3e342b8e98d",
+      "declarations": {
+        "libraries": [
+          "MilimSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "MilimQKS",
+          "MilimWKS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 107,
+      "wct_index": 106,
+      "object_order": 119,
+      "object_id": "0x03000064",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Crocodile",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Crocodile.j",
+      "source_bytes": 169482,
+      "sha256": "0f46c1b138b446d367875d6d31af7eb988b42c26faa72fa4b8a3c39a9a0b9abc",
+      "declarations": {
+        "libraries": [
+          "CrocodileSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "CrocodileSand_Struct",
+          "CrocodileSand_Debuff",
+          "CrocodileQ_ExplosionDecor",
+          "CrocodileQ_Trail",
+          "CrocodileQ_Struct",
+          "CrocodileW_Struct",
+          "CrocodileE_Struct",
+          "CrocodileR_Target",
+          "CrocodileR_Struct",
+          "CrocodileT_Sand",
+          "CrocodileT_Wave",
+          "CrocodileT_Struct",
+          "CrocodileT2_Struct",
+          "CrocodileF_Projectile",
+          "CrocodileF_Single",
+          "CrocodileF_Struct",
+          "CrocodileG_Struct",
+          "CrocodileCore_Struct"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "GearSystems2",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "AAADest",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    }
+  ]
+}

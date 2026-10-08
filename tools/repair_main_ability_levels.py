@@ -206,16 +206,14 @@ def stage(apply=False):
     before = {(identity,field,level):fields.get(identity,field,level)
         for identity in fields.objects for field,level in fields.fields(identity)}
     fields.repair_levels(records)
-    # E explicitly overwrites the native cooldown with its own three-charge
-    # use clock. Bake that same value, rather than the old 20..16 second table.
-    for level in range(1,6):
-        identity = vm.g['CrocodileE_ID']
-        sample = fields.fields(identity)[('acdn',level)]
-        fields.put(identity,'acdn',level,vm.g['CrocodileE_UseCD'],template=sample)
+    # Native Channel and the scripted T duration must agree after map edits.
+    fields.put(vm.g['CrocodileT_ID'],'Ncl1',1,vm.g['CrocodileT_Duration'],kind='unreal',pointer=1)
+    # E reads its recharge from Object Data; never replace acdn with the
+    # shorter interval between uses.
     crocodile_lore = {
         'Q': 'Crocodile sends a sand slash through enemies, dealing physical damage, slowing them and applying a sand mark. Creates sand along its path; marked enemies leave sand as they move. Combines with Desert Girasole.',
         'W': 'Crocodile creates quicksand that pulls enemies toward its centre and deals six physical damage pulses over 3 seconds. Combines with Q for an explosion and stun, and with R for an enlarged sandstorm. Leaves ground sand.',
-        'E': 'Crocodile dashes forward. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Has three independently recharging charges. Leaves ground sand.',
+        'E': 'Crocodile dashes forward while invulnerable. On contact, deals five physical damage pulses that split its total damage, then continues the dash. Each charge recharges independently at the ability cooldown. Leaves ground sand.',
         'R': 'Crocodile creates a moving sandstorm that lifts and carries enemies, dealing six physical damage pulses. Can combine with quicksand. Leaves ground sand.',
     }
     for slot,lore in crocodile_lore.items():

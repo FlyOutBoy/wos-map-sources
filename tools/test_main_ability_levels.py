@@ -45,11 +45,11 @@ class MainAbilityLevels(unittest.TestCase):
             self.assertNotIn('Tool tip missing',desc)
 
     def test_crocodile_q_e_scaling_and_e_uses_actual_charge_cooldown(self):
-        for identity,amounts in [('A0I7',(5,6)),('A0I9',(6,7))]:
+        for identity,amounts in [('A0I7',(4,5)),('A0I9',(3.5,4))]:
             for level,amount in zip((4,5),amounts):
                 self.assertIn(f'Agility x {amount}',self.fields.get(identity,'aub1',level))
-        for level in range(1,6):
-            self.assertEqual(self.vm.g['CrocodileE_UseCD'],self.fields.get('A0I9','acdn',level))
+        for level, cooldown in enumerate((18,16,14,12,10),1):
+            self.assertEqual(cooldown,self.fields.get('A0I9','acdn',level))
         self.assertIn('five physical damage pulses that split its total damage',self.fields.get('A0I9','arut'))
 
     def test_range_progression_is_retained_for_crocodile_r(self):

@@ -1,13 +1,25 @@
-library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbilityChargeBox
+library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSystems2, AAADest, TasAbilityChargeBox
     globals
 //================================ Crocodile Core ========================================
         integer Crocodile_ID = 'H02M'
         private constant integer CrocodileCore_DataKey = 0
         private constant real CrocodilePeriod = 0.03
         private hashtable CrocodileTable = InitHashtable()
+        private hashtable CrocodileDecorHits = InitHashtable()
+        private integer CrocodileDecorKey = 0
+        private unit CrocodileG_ManaSource = null
+        private integer CrocodileG_ManaContext = 0 // 0: normal; -1: no passive burn; positive: W cast.
+        private trigger CrocodileW_QContact = null
+        private unit CrocodileW_QSource = null
+        private real CrocodileW_QStartX = 0.0
+        private real CrocodileW_QStartY = 0.0
+        private real CrocodileW_QAngle = 0.0
+        private real CrocodileW_QFrom = 0.0
+        private real CrocodileW_QTo = 0.0
+        private real CrocodileW_QRadius = 0.0
 
 //================================ Crocodile Sand ========================================
-        real CrocodileSand_Duration = 20.0 // Target debuff; ground patch lifetime is configured below.
+        real CrocodileSand_Duration = 5.0 // Target debuff; ground patch lifetime is configured below.
         private constant integer CrocodileSand_DebuffKey = 7
         real CrocodileSand_Radius = 250.0
         real CrocodileSand_LargeAoe = 400.0
@@ -18,6 +30,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         private group CrocodileSand_ScanGroup = null
         constant real CrocodileSand_MinDistance = 180.0
         integer CrocodileSand_Slow = 10
+        integer CrocodileSand_SlowLevel25 = 20
+        integer CrocodileSand_SlowLevel35 = 30
+        integer CrocodileSand_SecondSlowHeroLevel = 25
+        integer CrocodileSand_ThirdSlowHeroLevel = 35
 
 //================================ Crocodile Q ========================================
         integer CrocodileQ_ID = 'A0I7'
@@ -37,12 +53,14 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileQ_ExplosionSpacing = 350.0
         real CrocodileQ_ScanOverlap = 5.0 // AoE 300 -> scan every 295 distance.
         real CrocodileQ_Aoe = 255.0
-        real CrocodileQ_DamageAgiBase = 2.0
+        real CrocodileQ_DamageAgiBase = 1.0
         real CrocodileQ_DamageAgiStep = 1.0
         integer CrocodileQ_Slow = 30
+        integer CrocodileQ_SharedMarkHeroLevel = 35
         real CrocodileQ_PullDistance = 55.0
-        real CrocodileQ_PullDuration = 0.18
-        real CrocodileQ_SandSlowTime = 5.0
+        real CrocodileQ_PullDuration = 0.21
+        real CrocodileQ_DecorRetryPeriod = 0.06
+        real CrocodileQ_DecorRetryDuration = 1.08 // Also covers decor with a 1-second cooldown.
         integer CrocodileQ_Animation = 10
         real CrocodileQ_EffectScale = 0.45
         real CrocodileQ_EffectHeight = 40.0
@@ -55,12 +73,15 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileW_CastTime = 0.45
         integer CrocodileW_Hits = 6
         real CrocodileW_Aoe = 600.0
-        real CrocodileW_PullSpeed = 150.0
-        real CrocodileW_EdgePullMultiplier = 0.20
+        real CrocodileW_PullSpeed = 187.5
+        real CrocodileW_EdgePullMultiplier = 0.50
+        real CrocodileW_DecorDamage = 20.0
+        real CrocodileW_DecorPeriod = 1.0
         real CrocodileW_DamageAgi = 0.75
         integer CrocodileW_Slow = 30
-        real CrocodileW_ComboDamageAgi = 3.0
+        real CrocodileW_ComboDamageAgi = 2.0
         real CrocodileW_ComboStun = 1.5
+        integer CrocodileW_ManaBurnHits = 4
         integer CrocodileW_Animation = 10
 
 //================================ Crocodile E ========================================
@@ -78,10 +99,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileE_HitOffset = 150.0
         real CrocodileE_HitAnimationSpeed = 0.01
         real CrocodileE_HitSlowTime = 0.51 // Seconds from cast start; affects animation only during E damage.
-        real CrocodileE_DamageAgiBase = 3.0
-        real CrocodileE_DamageAgiStep = 1.0
-        real CrocodileE_Recharge = 1.0
-        real CrocodileE_UseCD = 1.0
+        real CrocodileE_DamageAgiBase = 2.0
+        real CrocodileE_DamageAgiStep = 0.5
+        integer CrocodileE_ThirdChargeHeroLevel = 25
+        real CrocodileE_UseCD = 1.5
         integer CrocodileE_Slow = 35
         integer CrocodileE_Animation = 2
 
@@ -95,7 +116,8 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileR_CastTime = 0.45
         real CrocodileR_StartAoe = 200.0
         real CrocodileR_EndAoe = 400.0
-        real CrocodileR_DamageAgi = 0.6
+        real CrocodileR_DamageAgi = 0.5
+        real CrocodileR_DamageStep = 0.2
         integer CrocodileR_Hits = 6
         real CrocodileR_StunTime = 1.0
         real CrocodileR_PullSpeed = 1200.0
@@ -112,7 +134,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileWR_ComboEffectScale = 1.0
         real CrocodileWR_ComboEffectHeight = 30.0
         real CrocodileWR_ComboEffectPeriod = 0.12
-        real CrocodileWR_DurationBonus = 0.6
+        real CrocodileWR_DurationBonus = 1.0
         integer CrocodileSandColorR = 255
         integer CrocodileSandColorG = 205
         integer CrocodileSandColorB = 120
@@ -122,9 +144,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         private constant integer CrocodileT_DataKey = 4
         private constant integer CrocodileT_PhaseKey = 8
         real CrocodileT_SpreadTime = 3.0
-        real CrocodileT_Duration = 5.0
-        real CrocodileT_ManaDrain = 0.10
+        real CrocodileT_Duration = 4.0
+        real CrocodileT_ManaDrain = 0.08
         real CrocodileT_ManaDrainPeriod = 1.0
+        integer CrocodileT_InvulnerabilityHeroLevel = 35
         real CrocodileT_DamageReduction = 0.20
         real CrocodileT_MaxAoe = 1700.0
         real CrocodileT_RingSpacing = 475.0
@@ -156,7 +179,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real CrocodileT2_UnlockTime = 1.0
         real CrocodileT2_CheckPeriod = 0.1
         real CrocodileT2_Window = 10.0
-        real CrocodileT2_DamageAgi = 10.0
+        real CrocodileT2_DamageAgi = 11.0
         real CrocodileT2_MergeDistance = 450.0
         integer CrocodileT2_MergeMaxPatches = 32
         real CrocodileT2_ExplosionBaseRadius = 50.0
@@ -178,9 +201,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         integer CrocodileF_ID = 'A0ID'
         private constant integer CrocodileF_DataKey = 2
         integer CrocodileF_MaxStacks = 3
+        integer CrocodileF_MinHeroLevel = 12
         real CrocodileF_Range = 800.0
         real CrocodileF_AttackSpeed = 3.0
-        real CrocodileF_DamageAgi = 3.0
+        real CrocodileF_DamageAgi = 2.0
         real CrocodileF_InternalCD = 2.0
         real CrocodileF_ProjectileSpeed = 2484.0 // Previous speed + 15%.
         real CrocodileF_BladeMoveDelay = 0.15
@@ -234,6 +258,16 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
 
     // PauseUnit is boolean: overlapping owned casts must release only the last lock.
 //================================ Crocodile Sand ========================================
+    private function CrocodileSand_SlowTarget takes unit c, unit u returns nothing
+        if GetHeroLevel(c) >= CrocodileSand_ThirdSlowHeroLevel then
+            call SlowUnit(c,u,CrocodileSand_SlowLevel35,1)
+        elseif GetHeroLevel(c) >= CrocodileSand_SecondSlowHeroLevel then
+            call SlowUnit(c,u,CrocodileSand_SlowLevel25,1)
+        else
+            call SlowUnit(c,u,CrocodileSand_Slow,1)
+        endif
+    endfunction
+
     private struct CrocodileSand_Struct
         static integer array m
         static integer MUI = -1
@@ -243,7 +277,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real radius
         real r
         real rmax
-        real slowLife
         real pulse
         effect e
         boolean endNow
@@ -288,8 +321,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                 set this = m[i]
                 set r = RoundReal(r+CrocodilePeriod,3)
                 set pulse = pulse + CrocodilePeriod
-                set slowLife = RMaxBJ(0.0,slowLife-CrocodilePeriod)
-                if not endNow and slowLife > 0.0 and pulse + 0.001 >= 0.5 then
+                if not endNow and r < rmax and pulse + 0.001 >= 0.5 then
                     set pulse = 0.0
                     if CrocodileSand_ScanGroup == null then
                         set CrocodileSand_ScanGroup = CreateGroup()
@@ -300,7 +332,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                         exitwhen u == null
                         call GroupRemoveUnit(CrocodileSand_ScanGroup,u)
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
-                            call SlowUnit(c,u,CrocodileSand_Slow,1)
+                            call CrocodileSand_SlowTarget(c,u)
                         endif
                     endloop
                 endif
@@ -362,11 +394,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set radius = NewAoe
             set r = 0.0
             set pulse = 0.0
-            set slowLife = 0.0
             set endNow = false
-            if qHit then
-                set slowLife = CrocodileQ_SandSlowTime
-            endif
             set rmax = CrocodileSand_GroundDuration
             call CrocodileSand_CreateVisual()
         endmethod
@@ -473,6 +501,161 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
     endfunction
 
 //================================ Crocodile Q - Desert Spada ========================================
+    private function CrocodileDecor_NewKey takes nothing returns integer
+        set CrocodileDecorKey = CrocodileDecorKey+1
+        return CrocodileDecorKey
+    endfunction
+
+    private function CrocodileW_CheckQ takes unit source, real sx, real sy, real angle, real fromDistance, real toDistance, real qRadius returns nothing
+        // Synchronous notification avoids a Q/W struct forward dependency.
+        set CrocodileW_QSource = source
+        set CrocodileW_QStartX = sx
+        set CrocodileW_QStartY = sy
+        set CrocodileW_QAngle = angle
+        set CrocodileW_QFrom = fromDistance
+        set CrocodileW_QTo = toDistance
+        set CrocodileW_QRadius = qRadius
+        if CrocodileW_QContact != null then
+            call TriggerEvaluate(CrocodileW_QContact)
+        endif
+        set CrocodileW_QSource = null
+    endfunction
+
+    // MAIN calls this only after a positive final hit. Rejected hits never
+    // consume W's per-target allowance. The context is restored after damage.
+    function CrocodileG_CanDrainMana takes unit c, unit target returns boolean
+        local integer hits
+        if c != CrocodileG_ManaSource or CrocodileG_ManaContext == 0 then
+            return true
+        elseif CrocodileG_ManaContext < 0 then
+            return false
+        endif
+        set hits = LoadInteger(CrocodileDecorHits,CrocodileG_ManaContext,GetHandleId(target))
+        if hits >= CrocodileW_ManaBurnHits then
+            return false
+        endif
+        call SaveInteger(CrocodileDecorHits,CrocodileG_ManaContext,GetHandleId(target),hits+1)
+        return true
+    endfunction
+
+    private function Crocodile_SpellDamage takes unit c, unit target, real amount, integer manaContext returns nothing
+        local unit previousSource = CrocodileG_ManaSource
+        local integer previousContext = CrocodileG_ManaContext
+        set CrocodileG_ManaSource = c
+        set CrocodileG_ManaContext = manaContext
+        call dmgphys(c,target,amount)
+        set CrocodileG_ManaSource = previousSource
+        set CrocodileG_ManaContext = previousContext
+        set previousSource = null
+    endfunction
+
+    private function Crocodile_ApplySharedMark takes unit c, unit target returns nothing
+        if GetHeroLevel(c) >= CrocodileQ_SharedMarkHeroLevel then
+            call CrocodileQ_ApplySandMark(c,target)
+        endif
+    endfunction
+
+    private function CrocodileE_MaxCharges takes unit c returns integer
+        local integer level = GetUnitAbilityLevel(c,CrocodileE_ID)
+        if level == 0 then
+            return 0
+        elseif GetHeroLevel(c) >= CrocodileE_ThirdChargeHeroLevel then
+            return 3
+        elseif level >= 3 then
+            return 2
+        endif
+        return 1
+    endfunction
+
+    private function CrocodileE_RechargeTime takes unit c returns real
+        return RMaxBJ(CrocodilePeriod,BlzGetUnitAbilityCooldown(c,CrocodileE_ID,IMaxBJ(0,GetUnitAbilityLevel(c,CrocodileE_ID)-1)))
+    endfunction
+
+    private function CrocodileQ_Pull takes unit u, real x, real y returns nothing
+        local real duration = RMaxBJ(CrocodilePeriod,CrocodileQ_PullDuration-CrocodilePeriod)
+        local real distance = RMinBJ(CrocodileQ_PullDistance,SR3(u,x,y))
+        // MUE includes a final tick at r == rmax. Account for it so both the
+        // configured duration and distance are respected; retain MAIN CC resistance.
+        if distance > 1.0 then
+            call MUE(u,distance*duration/(duration+CrocodilePeriod),duration,Atan2(y-GetUnitY(u),x-GetUnitX(u)))
+        endif
+    endfunction
+
+    private struct CrocodileQ_ExplosionDecor
+        static integer array m
+        static integer MUI = -1
+        unit c
+        real x
+        real y
+        real a
+        real distance
+        real radius
+        real scanStep
+        real r
+        real rmax
+        real pulse
+        integer decorKey
+
+        method CrocodileQExplosionDecor_Scan takes nothing returns nothing
+            local real amount = 0.0
+            local real section
+            loop
+                exitwhen amount >= distance
+                set section = RMinBJ(scanStep,distance-amount)
+                call DecorRemoveLine(c,x+amount*Cos(a),y+amount*Sin(a),a,section,radius,25.0,CrocodileDecorHits,decorKey)
+                set amount = amount+section
+            endloop
+        endmethod
+
+        static method Loop_CrocodileQExplosionDecor takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            loop
+                exitwhen i > MUI
+                set this = m[i]
+                set r = RoundReal(r+CrocodilePeriod,3)
+                set pulse = pulse+CrocodilePeriod
+                if SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 and (pulse+0.001 >= CrocodileQ_DecorRetryPeriod or r+0.001 >= rmax) then
+                    set pulse = 0.0
+                    call CrocodileQExplosionDecor_Scan()
+                endif
+                if r+0.001 >= rmax or not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
+                    call FlushChildHashtable(CrocodileDecorHits,decorKey)
+                    set c = null
+                    set m[i] = m[MUI]
+                    set MUI = MUI-1
+                    call destroy()
+                    if MUI == -1 then
+                        call GearTimer03Release()
+                    endif
+                else
+                    set i = i+1
+                endif
+            endloop
+        endmethod
+
+        static method CrocodileQExplosionDecor_Start takes unit NewC, real NewX, real NewY, real NewA, real NewDistance, real NewRadius, real NewScanStep returns nothing
+            local thistype this = thistype.allocate()
+            set MUI = MUI+1
+            set m[MUI] = this
+            if MUI == 0 then
+                call GearTimer03Acquire()
+            endif
+            set c = NewC
+            set x = NewX
+            set y = NewY
+            set a = NewA
+            set distance = NewDistance
+            set radius = NewRadius
+            set scanStep = RMaxBJ(1.0,NewScanStep)
+            set r = 0.0
+            set rmax = RMaxBJ(CrocodilePeriod,CrocodileQ_DecorRetryDuration)
+            set pulse = 0.0
+            set decorKey = CrocodileDecor_NewKey()
+            call CrocodileQExplosionDecor_Scan()
+        endmethod
+    endstruct
+
     private struct CrocodileQ_Trail
         effect e
         integer next
@@ -501,6 +684,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real effectStop
         real scanDistance
         real scanStep
+        integer decorKey
         real radius
         real dmg
         real r
@@ -575,12 +759,15 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             set trails = trail
                             set nextTrail = nextTrail + RMaxBJ(1.0,CrocodileQ_TrailSpacing)
                         endloop
-//---------------- Q first pass: scan by AoE, not every move tick -------------
+//---------------- Q first pass: scan every moved segment immediately --------
                         loop
-                            exitwhen scanDistance >= distance or (distance-scanDistance+0.001 < scanStep and distance+0.001 < maxDistance)
+                            exitwhen scanDistance >= distance
                             set section = RMinBJ(scanStep,distance-scanDistance)
                             set px = startX+(scanDistance+section/2)*Cos(a)
                             set py = startY+(scanDistance+section/2)*Sin(a)
+                            call VisionTimed(GetOwningPlayer(c),px,py,radius*1.5,3.0)
+                            call DecorRemoveLine(c,startX+scanDistance*Cos(a),startY+scanDistance*Sin(a),a,section,radius,15.0,CrocodileDecorHits,decorKey)
+                            call CrocodileW_CheckQ(c,startX,startY,a,scanDistance,scanDistance+section,radius)
                             call GroupEnumUnitsInRange(g,px,py,radius+section/2,NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
@@ -594,7 +781,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                                     call CrocodileQ_HitSand(u)
                                     call SlowUnit(c,u,CrocodileQ_Slow,2)
                                     if CrocodileQ_PullDuration > 0.0 and SR3(u,px,py) > 1.0 then
-                                        call MoveUnit(u,RMinBJ(CrocodileQ_PullDistance,SR3(u,px,py)),Atan2(py-GetUnitY(u),px-GetUnitX(u)))
+                                        set projection = RMaxBJ(0.0,RMinBJ(maxDistance,(GetUnitX(u)-startX)*Cos(a)+(GetUnitY(u)-startY)*Sin(a)))
+                                        set px = startX+projection*Cos(a)
+                                        set py = startY+projection*Sin(a)
+                                        call CrocodileQ_Pull(u,px,py)
                                     endif
                                 endif
                             endloop
@@ -614,6 +804,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             
             call MakeSound("war3mapImported\\Hero_Crocodile_Q3")
 //---------------- Q damage: independent of VFX count; same AoE scan step -----
+                            call CrocodileQ_ExplosionDecor.CrocodileQExplosionDecor_Start(c,startX,startY,a,distance,radius,scanStep)
                             set amount = 0.0
                             loop
                                 exitwhen amount >= distance
@@ -631,6 +822,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                                         if not IsUnitInGroup(u,g2) then
                                             call GroupAddUnit(g2,u)
                                             call CrocodileQ_HitSand(u)
+                                            call SlowUnit(c,u,CrocodileQ_Slow,2)
                                         endif
                                         call dmgphys(c,u,dmg)
                                     endif
@@ -662,6 +854,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                         call StopSpellUnit2(c)
                     endif
                     call CrocodileQ_ClearVisuals()
+                    call FlushChildHashtable(CrocodileDecorHits,decorKey)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     call DestroyGroup(g3)
@@ -710,6 +903,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set effectDistance = 0.0
             set effectStop = RMaxBJ(0.0,maxDistance-CrocodileQ_EffectStopDistance*CrocodileQ_SlashScaleMultiplier)
             set scanDistance = 0.0
+            set decorKey = CrocodileDecor_NewKey()
             set radius = CrocodileQ_Aoe
             set scanStep = RMaxBJ(1.0,radius-CrocodileQ_ScanOverlap)
             set dmg = GetHeroAgi(c,true)*(CrocodileQ_DamageAgiBase+CrocodileQ_DamageAgiStep*(GetUnitAbilityLevel(c,CrocodileQ_ID)-1))
@@ -752,12 +946,15 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real scanTime
         real dmg
         real damageRmax
+        real decorPulse
         group g
         group pullGroup
         effect e
         effect e2
         boolean combo
+        boolean comboPending
         real comboPullTime
+        integer manaKey
 
 
         // Shared only by W cast and Q crossing a pit. One combo per pit.
@@ -777,13 +974,31 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                 exitwhen u == null
                 call GroupRemoveUnit(g,u)
                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
-                    call dmgphys(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi)
+                    call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi,manaKey)
+                    call Crocodile_ApplySharedMark(c,u)
                     call GroupAddUnit(pullGroup,u)
                     call StunUnit(c,u,CrocodileW_ComboStun)
                 endif
             endloop
             set u = null
             set e2 = null
+        endmethod
+
+        static method CrocodileW_RecordQ takes unit source, real sx, real sy, real angle, real fromDistance, real toDistance, real qRadius returns nothing
+            local integer i = 0
+            local thistype this
+            local real projection
+            loop
+                exitwhen i > MUI
+                set this = m[i]
+                if c == source and not combo and r < rmax then
+                    set projection = RMaxBJ(fromDistance,RMinBJ(toDistance,(x-sx)*Cos(angle)+(y-sy)*Sin(angle)))
+                    if SR0(x,y,sx+projection*Cos(angle),sy+projection*Sin(angle)) <= radius+qRadius then
+                        set comboPending = true
+                    endif
+                endif
+                set i = i+1
+            endloop
         endmethod
 
         static method Loop_CrocodileW takes nothing returns nothing
@@ -802,7 +1017,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                 if r == 0.51 then 
             call MakeSound("war3mapImported\\Hero_Crocodile_W2")
                 endif
-                if r> 0.51 then 
+                if not combo and SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 then
 //---------------- W + Q: check the current segment, including final tick ----
                 set j = 0
                 loop
@@ -811,7 +1026,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                     if slash.c == c and slash.distance > 0.0 and not combo then
                         set projection = RMaxBJ(slash.previousDistance,RMinBJ(slash.distance,(x-slash.startX)*Cos(slash.a)+(y-slash.startY)*Sin(slash.a)))
                         if SR0(x,y,slash.startX+projection*Cos(slash.a),slash.startY+projection*Sin(slash.a)) <= radius+slash.radius then
-                            call CrocodileW_Combo()
+                            set comboPending = true
                         endif
                     endif
                     set j = j + 1
@@ -824,6 +1039,15 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                 endif
                 set scanTime = scanTime + CrocodilePeriod
                 if SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 and r> 0.51 then
+                    if comboPending then
+                        call CrocodileW_Combo()
+                        set comboPending = false
+                    endif
+                    set decorPulse = decorPulse+CrocodilePeriod
+                    if decorPulse+0.001 >= CrocodileW_DecorPeriod then
+                        set decorPulse = decorPulse-RMaxBJ(CrocodilePeriod,CrocodileW_DecorPeriod)
+                        call DecorRemove(c,x,y,radius,CrocodileW_DecorDamage)
+                    endif
                     if scanTime + 0.001 >= 0.15 or r + 0.001 >= rmax then
                         set scanTime = 0.0
                         call GroupEnumUnitsInRange(pullGroup,x,y,radius,NoDecor_Cond)
@@ -835,9 +1059,9 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                         if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) then
                             set distance = SR3(u,x,y)
                             if distance > 0.0 and distance <= radius then
-                                // Quadratic depth: weak at the rim, stronger near the center.
+                                // Linear depth and a stronger rim keep the outer pull useful.
                                 set depth = RMaxBJ(0.0,1.0-distance/RMaxBJ(1.0,radius))
-                                set pullSpeed = CrocodileW_PullSpeed*(CrocodileW_EdgePullMultiplier+(1.0-CrocodileW_EdgePullMultiplier)*depth*depth)
+                                set pullSpeed = CrocodileW_PullSpeed*(CrocodileW_EdgePullMultiplier+(1.0-CrocodileW_EdgePullMultiplier)*depth)
                                 if comboPullTime > 0.0 then
                                     set pullSpeed = RMaxBJ(pullSpeed,distance/RMaxBJ(CrocodilePeriod,comboPullTime))
                                 endif
@@ -855,7 +1079,8 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             exitwhen u == null
                             call GroupRemoveUnit(g,u)
                             if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) then
-                                call dmgphys(c,u,dmg)
+                                call Crocodile_SpellDamage(c,u,dmg,manaKey)
+                                call Crocodile_ApplySharedMark(c,u)
                                 call SlowUnit(c,u,CrocodileW_Slow,2)
                             endif
                         endloop
@@ -877,6 +1102,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                     call DestroyEffect(e2)
                     call DestroyGroup(g)
                     call DestroyGroup(pullGroup)
+                    call FlushChildHashtable(CrocodileDecorHits,manaKey)
                     set c = null
                     set e = null
                     set e2 = null
@@ -897,6 +1123,9 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
 
         static method CrocodileW_Begin takes unit NewC, real NewX, real NewY returns boolean
             local thistype this
+            local integer j = 0
+            local CrocodileQ_Struct slash
+            local real projection
             if LoadInteger(CrocodileTable, GetHandleId(NewC), CrocodileCore_DataKey) == 0 or IsUnitIllusion(NewC) or not SpellBoolCaster(NewC) or LoadInteger(CrocodileTable, GetHandleId(NewC), CrocodileT_PhaseKey) != 0 then
                 return false
             endif
@@ -912,12 +1141,28 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set radius = CrocodileW_Aoe
             set r = 0.0
             set rmax = RMaxBJ(0.03,CrocodileW_Duration)+0.51
+            set decorPulse = 0.0
+            call VisionTimed(GetOwningPlayer(c),x,y,radius*1.5,3.0)
             set damageRmax = rmax // Freeze the six original damage times; rmax may extend for R.
             set hits = 0
             set castPauseHeld = true
             call StartSpellUnit2(c)
             set scanTime = 0.0
             set combo = false
+            set comboPending = false
+            set manaKey = CrocodileDecor_NewKey()
+            // Q may have crossed this area before W's windup finishes.
+            loop
+                exitwhen j > CrocodileQ_Struct.MUI
+                set slash = CrocodileQ_Struct.m[j]
+                if slash.c == c and slash.distance > 0.0 then
+                    set projection = RMaxBJ(0.0,RMinBJ(slash.distance,(x-slash.startX)*Cos(slash.a)+(y-slash.startY)*Sin(slash.a)))
+                    if SR0(x,y,slash.startX+projection*Cos(slash.a),slash.startY+projection*Sin(slash.a)) <= radius+slash.radius then
+                        set comboPending = true
+                    endif
+                endif
+                set j = j+1
+            endloop
             set comboPullTime = 0.0
             set dmg = GetHeroAgi(c,true)*CrocodileW_DamageAgi
             set g = CreateGroup()
@@ -931,6 +1176,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
 
 
     endstruct
+
+    private function CrocodileW_ReceiveQ takes nothing returns boolean
+        call CrocodileW_Struct.CrocodileW_RecordQ(CrocodileW_QSource,CrocodileW_QStartX,CrocodileW_QStartY,CrocodileW_QAngle,CrocodileW_QFrom,CrocodileW_QTo,CrocodileW_QRadius)
+        return false
+    endfunction
 
 //================================ Crocodile E - Crescent Cutlass ========================================
     private struct CrocodileE_Struct
@@ -946,6 +1196,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         boolean active
         boolean cancelDash
         boolean movementStopped
+        integer decorKey
         real x
         real y
         real a
@@ -1009,9 +1260,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         method CrocodileE_Finish takes nothing returns nothing
             // Release the cast before sand/VFX helpers can execute other code.
             set active = false
+            call FlushChildHashtable(CrocodileDecorHits,decorKey)
             if castPauseHeld then
                 set castPauseHeld = false
-                call StopSpellUnit2(c)
+                call StopSpellUnit(c)
             endif
             if LoadInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey) == 0 then
                 call SetUnitTimeScale(c,1.0)
@@ -1128,6 +1380,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             local thistype this
             local integer i = 0
             local integer count
+            local integer capacity
             local real remaining
             local real step
             local real oldX
@@ -1149,23 +1402,24 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                 set charge2 = RMaxBJ(0.0,charge2-CrocodilePeriod)
                 set charge3 = RMaxBJ(0.0,charge3-CrocodilePeriod)
                 set count = 0
-                set remaining = CrocodileE_Recharge
-                if charge1 == 0.0 then
+                set capacity = CrocodileE_MaxCharges(c)
+                set remaining = 999999.0
+                if capacity >= 1 and charge1 == 0.0 then
                     set count = count + 1
-                else
+                elseif capacity >= 1 then
                     set remaining = RMinBJ(remaining,charge1)
                 endif
-                if charge2 == 0.0 then
+                if capacity >= 2 and charge2 == 0.0 then
                     set count = count + 1
-                else
+                elseif capacity >= 2 then
                     set remaining = RMinBJ(remaining,charge2)
                 endif
-                if charge3 == 0.0 then
+                if capacity >= 3 and charge3 == 0.0 then
                     set count = count + 1
-                else
+                elseif capacity >= 3 then
                     set remaining = RMinBJ(remaining,charge3)
                 endif
-                if count > 0 then
+                if count > 0 or capacity == 0 then
                     set remaining = 0.0
                 endif
                 set remaining = RMaxBJ(remaining,useCooldown)
@@ -1238,6 +1492,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             if not hitStarted then
                                 call CrocodileE_TryContact(oldX,oldY)
                             endif
+                            call DecorRemoveLine(c,oldX+CrocodileE_HitOffset*dirX,oldY+CrocodileE_HitOffset*dirY,a,SR0(x,y,oldX,oldY),radius,20.0,CrocodileDecorHits,decorKey)
                             set distance = distance+SR0(x,y,oldX,oldY)
                         endif
                     endif
@@ -1275,30 +1530,32 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set charge1 = 0.0
             set charge2 = 0.0
             set charge3 = 0.0
-            set shownCharges = 3
+            set shownCharges = CrocodileE_MaxCharges(c)
             set castPauseHeld = false
             set active = false
             set cancelDash = false
             set g = null
             set e = null
             call SaveInteger(CrocodileTable,GetHandleId(c),CrocodileE_DataKey,this)
-            call TasAbilityChargeBox_SetValue(c,CrocodileE_ID,"3")
+            call TasAbilityChargeBox_SetValue(c,CrocodileE_ID,I2S(shownCharges))
         endmethod
 
         static method CrocodileE_Begin takes unit NewC, real NewX, real NewY returns boolean
             local thistype this = LoadInteger(CrocodileTable,GetHandleId(NewC),CrocodileE_DataKey)
+            local integer capacity = CrocodileE_MaxCharges(NewC)
+            local real recharge = CrocodileE_RechargeTime(NewC)
             if LoadInteger(CrocodileTable, GetHandleId(NewC), CrocodileCore_DataKey) == 0 or IsUnitIllusion(NewC) or not SpellBoolCaster(NewC) or LoadInteger(CrocodileTable, GetHandleId(NewC), CrocodileT_PhaseKey) != 0 then
                 return false
             endif
             if this == 0 or active or useCooldown > 0.0 or CrocodileE_Duration <= 0.0 then
                 return false
             endif
-            if charge1 == 0.0 then
-                set charge1 = CrocodileE_Recharge
-            elseif charge2 == 0.0 then
-                set charge2 = CrocodileE_Recharge
-            elseif charge3 == 0.0 then
-                set charge3 = CrocodileE_Recharge
+            if capacity >= 1 and charge1 == 0.0 then
+                set charge1 = recharge
+            elseif capacity >= 2 and charge2 == 0.0 then
+                set charge2 = recharge
+            elseif capacity >= 3 and charge3 == 0.0 then
+                set charge3 = recharge
             else
                 return false
             endif
@@ -1307,6 +1564,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set active = true
             set cancelDash = false
             set movementStopped = false
+            set decorKey = CrocodileDecor_NewKey()
             set x = GetUnitX(c)
             set y = GetUnitY(c)
             set a = Atan2(NewY-y,NewX-x)
@@ -1339,7 +1597,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set e2 = null
             set e3 = null
             set castPauseHeld = true
-            call StartSpellUnit2(c)
+            call StartSpellUnit(c)
 //---------------- E effect --------------------------------------------------
             //set e = AddSpecialEffectTarget("war3mapImported\\wos_Death_Spell2.mdl",c,"hand right")
             set e = AddSpecialEffectTarget("war3mapImported\\wos_[DoFT]CrocodileSandSekiro.mdl",c,"hand right")
@@ -1383,6 +1641,13 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
         real r
         real rmax
         real baseDuration
+        real decorPulse
+        real decorX
+        real decorY
+        integer decorKey
+        real visionX
+        real visionY
+        real visionPulse
         integer hits
         integer maxHits
         real sandDistance
@@ -1525,7 +1790,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             set wCenterX = nearest.x
                             set wCenterY = nearest.y
                             set rmax = rmax+RMaxBJ(0.0,CrocodileWR_DurationBonus)
-                            set nearest.rmax = RMaxBJ(nearest.rmax+RMaxBJ(0.0,CrocodileWR_DurationBonus),nearest.r+RMaxBJ(0.0,rmax-r))
+                            set nearest.rmax = nearest.rmax+RMaxBJ(0.0,CrocodileWR_DurationBonus)
                             set nextComboEffect = r
                             call BlzSetSpecialEffectScale(e2,BlzGetSpecialEffectScale(e2)*CrocodileWR_SizeMultiplier)
                         endif
@@ -1551,6 +1816,21 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                     endif
                     set radius = CrocodileR_StartAoe + (CrocodileR_EndAoe-CrocodileR_StartAoe)*RMinBJ(1.0,r/RMaxBJ(baseDuration,CrocodilePeriod))
                     set radius = radius*sizeMultiplier
+                    set decorPulse = decorPulse+CrocodilePeriod
+                    if decorPulse+0.001 >= 0.3 or r+0.001 >= rmax then
+                        set decorPulse = RMaxBJ(0.0,decorPulse-0.3)
+                        call DecorRemoveLine(c,decorX,decorY,Atan2(y-decorY,x-decorX),SR0(x,y,decorX,decorY),radius,50.0,CrocodileDecorHits,decorKey)
+                        call FlushChildHashtable(CrocodileDecorHits,decorKey)
+                        set decorX = x
+                        set decorY = y
+                    endif
+                    set visionPulse = visionPulse+CrocodilePeriod
+                    if SR0(x,y,visionX,visionY)+0.001 >= radius*0.5 or visionPulse+0.001 >= 1.0 or r+0.001 >= rmax then
+                        call VisionTimed(GetOwningPlayer(c),x,y,radius*1.5,3.0)
+                        set visionX = x
+                        set visionY = y
+                        set visionPulse = 0.0
+                    endif
                     call BlzSetSpecialEffectScale(e,(CrocodileR_StartScale+(CrocodileR_EndScale-CrocodileR_StartScale)*RMinBJ(1.0,r/RMaxBJ(baseDuration,CrocodilePeriod)))*sizeMultiplier)
                     call GroupEnumUnitsInRange(g,x,y,radius,NoDecor_Cond)
                     loop
@@ -1592,6 +1872,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                             call MoveUnit(u,RMinBJ(CrocodileR_PullSpeed*CrocodilePeriod,SR3(u,targetX,targetY)),Atan2(targetY-GetUnitY(u),targetX-GetUnitX(u)))
                             if damageTick then
                                 call dmgphys(c,u,dmg)
+                                call Crocodile_ApplySharedMark(c,u)
                             endif
                         endif
                         set target = next
@@ -1607,6 +1888,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
                     endif
                     call CrocodileR_ReleaseAll()
                     call DestroyEffect(e)
+                    call FlushChildHashtable(CrocodileDecorHits,decorKey)
                     call DestroyEffect(e2)
                     call DestroyGroup(g)
                     set c = null
@@ -1647,6 +1929,14 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set r = 0.0
             set rmax = CrocodileR_Duration
             set baseDuration = rmax
+            set decorPulse = 0.0
+            set decorX = x
+            set decorY = y
+            set decorKey = CrocodileDecor_NewKey()
+            set visionPulse = 0.0
+            set visionX = x
+            set visionY = y
+            call VisionTimed(GetOwningPlayer(c),x,y,CrocodileR_StartAoe*1.5,3.0)
             set stoppedByW = false
             set wCenterX = x
             set wCenterY = y
@@ -1655,7 +1945,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, TasAbi
             set maxHits = IMaxBJ(1,CrocodileR_Hits)
             set sandDistance = 0.0
             set radius = CrocodileR_StartAoe
-            set dmg = GetHeroAgi(c,true)*CrocodileR_DamageAgi
+            set dmg = GetHeroAgi(c,true)*(CrocodileR_DamageAgi+(CrocodileR_DamageStep*(GetUnitAbilityLevel(c,CrocodileR_ID)-1)))
             set g = CreateGroup()
             set captured = 0
             set castPauseHeld = true
@@ -1804,8 +2094,12 @@ endmethod
         integer waveHead
         boolean spreading
         boolean channelActive
+        boolean invulnerabilityHeld
         boolean spreadComplete
         real manaPulse
+        real sandSlowPulse
+        real decorPulse
+        real visionPulse
         group manaGroup
         boolean animationApplied
         boolean channelFinished
@@ -2033,6 +2327,10 @@ endmethod
                 return
             endif
             set channelActive = false
+            if invulnerabilityHeld then
+                set invulnerabilityHeld = false
+                call UnitRemoveAbility(c,'Avul')
+            endif
             call CrocodileT_EndSpread()
             set endTime = r+windowTime
             call RemoveSavedInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey)
@@ -2059,12 +2357,30 @@ endmethod
                 exitwhen u == null
                 call GroupRemoveUnit(manaGroup,u)
                 if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) and CrocodileT_Contains(GetUnitX(u),GetUnitY(u)) then
+                    call Crocodile_ApplySharedMark(c,u)
                     set maxMana = GetUnitState(u,UNIT_STATE_MAX_MANA)
                     if maxMana > 0.0 then
                         call SetMpCurrent(u,-CrocodileT_ManaDrain*maxMana)
                     endif
                 endif
             endloop
+            set u = null
+        endmethod
+
+        method CrocodileT_SlowGround takes nothing returns nothing
+            local group g = CreateGroup()
+            local unit u
+            call GroupEnumUnitsInRange(g,x,y,maxReach,NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(g)
+                exitwhen u == null
+                call GroupRemoveUnit(g,u)
+                if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) and CrocodileT_Contains(GetUnitX(u),GetUnitY(u)) then
+                    call CrocodileSand_SlowTarget(c,u)
+                endif
+            endloop
+            call DestroyGroup(g)
+            set g = null
             set u = null
         endmethod
 
@@ -2117,7 +2433,6 @@ endmethod
                     set sand.radius = patch.radius
                     set sand.r = 0.0
                     set sand.rmax = remaining
-                    set sand.slowLife = 0.0
                     set sand.pulse = 0.0
                     set sand.endNow = false
                     set sand.largeVisual = patch.radius >= CrocodileSand_LargeAoe
@@ -2179,6 +2494,16 @@ endmethod
                         // SPELL_FINISH can arrive before the shared timer's
                         // final update. Keep the due fifth pulse on a full cast.
                         if not channelFinished or r+0.001 >= CrocodileT_Duration then
+                            set decorPulse = decorPulse+CrocodilePeriod
+                            if decorPulse+0.001 >= 0.5 then
+                                set decorPulse = decorPulse-0.5
+                                call DecorRemove(c,x,y,maxReach,100.0)
+                            endif
+                            set visionPulse = visionPulse+CrocodilePeriod
+                            if visionPulse+0.001 >= 1.0 then
+                                set visionPulse = visionPulse-1.0
+                                call VisionTimed(GetOwningPlayer(c),x,y,maxReach*1.5,3.0)
+                            endif
                             set manaPulse = manaPulse+CrocodilePeriod
                             if manaPulse+0.001 >= CrocodileT_ManaDrainPeriod then
                                 set manaPulse = manaPulse-RMaxBJ(CrocodilePeriod,CrocodileT_ManaDrainPeriod)
@@ -2188,6 +2513,13 @@ endmethod
                         if channelFinished or r+0.001 >= CrocodileT_Duration then
                             call CrocodileT_EndChannel()
                         endif
+                    endif
+                endif
+                if not endNow and not t2Pending and r < endTime and patchHead != 0 then
+                    set sandSlowPulse = sandSlowPulse+CrocodilePeriod
+                    if sandSlowPulse+0.001 >= 0.5 then
+                        set sandSlowPulse = 0.0
+                        call CrocodileT_SlowGround()
                     endif
                 endif
                 if endNow then
@@ -2249,8 +2581,13 @@ endmethod
             set maxReach = 0.0
             set spreading = true
             set channelActive = true
+            set invulnerabilityHeld = false
             set spreadComplete = false
             set manaPulse = 0.0
+            set sandSlowPulse = 0.0
+            set decorPulse = 0.0
+            set visionPulse = 0.0
+            call VisionTimed(GetOwningPlayer(c),x,y,minScale*150.0*1.5,3.0)
             set manaGroup = CreateGroup()
             set animationApplied = false
             set channelFinished = false
@@ -2271,10 +2608,11 @@ endmethod
             call TimerStart(t2Timer,RMaxBJ(0.01,CrocodileT2_CheckPeriod),true,function thistype.CrocodileT_ControlT2)
             if dash != 0 and dash.active then
                 set dash.cancelDash = true
-                if dash.castPauseHeld then
-                    set dash.castPauseHeld = false
-                    call StopSpellUnit2(c)
-                endif
+                call dash.CrocodileE_Finish()
+            endif
+            if GetHeroLevel(c) >= CrocodileT_InvulnerabilityHeroLevel and GetUnitAbilityLevel(c,'Avul') == 0 then
+                set invulnerabilityHeld = true
+                call UnitAddAbility(c,'Avul')
             endif
             set aura = AddSpecialEffectTarget("war3mapImported\\wos_AjeelAura2.mdl",c,"origin")
             call SetUnitTimeScale(c,1.0)
@@ -2435,10 +2773,17 @@ endmethod
         static method CrocodileT2_Detonate takes CrocodileT_Struct ground returns nothing
             local unit c = ground.c
             local group scan
+            local CrocodileT_Sand patch
             local integer i
             local unit u
             call MakeSound("war3mapImported\\Hero_Crocodile_T2_2")
             call CrocodileT2_CollectSand(ground)
+            set patch = ground.patchHead
+            loop
+                exitwhen patch == 0
+                call VisionTimed(GetOwningPlayer(c),patch.x,patch.y,patch.radius*1.5,3.0)
+                set patch = patch.next
+            endloop
             set scan = CreateGroup()
             // One broad enumeration; exact original patch areas decide the damage.
             call GroupEnumUnitsInRange(scan,ground.x,ground.y,ground.maxReach,NoDecor_Cond)
@@ -2458,7 +2803,8 @@ endmethod
                 set u = FirstOfGroup(scan)
                 exitwhen u == null
                 call GroupRemoveUnit(scan,u)
-                call dmgphys(c,u,GetHeroAgi(c,true)*CrocodileT2_DamageAgi)
+                call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileT2_DamageAgi,-1)
+                call Crocodile_ApplySharedMark(c,u)
             endloop
             call DestroyGroup(scan)
             set scan = null
@@ -2512,6 +2858,8 @@ endmethod
         real spread
         real maxDistance
         real nextSand
+        real environmentDistance
+        integer decorKey
         real sandSpacing
         group g
         group g2
@@ -2542,10 +2890,16 @@ endmethod
             set u = null
         endmethod
 
+        method CrocodileF_EnvironmentSegment takes real angle, real length returns nothing
+            call VisionTimed(GetOwningPlayer(c),x+(environmentDistance+length*0.5)*Cos(angle),y+(environmentDistance+length*0.5)*Sin(angle),radius*1.5,2.0)
+            call DecorRemoveLine(c,x+environmentDistance*Cos(angle),y+environmentDistance*Sin(angle),angle,length,radius,50.0,CrocodileDecorHits,decorKey)
+        endmethod
+
         static method Loop_CrocodileF_Projectile takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real step
+            local real section
             loop
                 exitwhen i > MUI
                 set this = m[i]
@@ -2558,6 +2912,14 @@ endmethod
                     call CrocodileF_HitSegment(x+distance*Cos(a+spread),y+distance*Sin(a+spread),a+spread,step)
                     call CrocodileF_HitSegment(x+distance*Cos(a-spread),y+distance*Sin(a-spread),a-spread,step)
                     set distance = distance + step
+                    loop
+                        exitwhen environmentDistance >= distance or (distance-environmentDistance+0.001 < radius and distance+0.001 < maxDistance)
+                        set section = RMinBJ(radius,distance-environmentDistance)
+                        call CrocodileF_EnvironmentSegment(a,section)
+                        call CrocodileF_EnvironmentSegment(a+spread,section)
+                        call CrocodileF_EnvironmentSegment(a-spread,section)
+                        set environmentDistance = environmentDistance+section
+                    endloop
                     call MoveEff(e,step,a)
                     call MoveEff(e2,step,a+spread)
                     call MoveEff(e3,step,a-spread)
@@ -2582,6 +2944,7 @@ endmethod
                     endif
                 endif
                 if distance >= maxDistance or not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
+                    call FlushChildHashtable(CrocodileDecorHits,decorKey)
                     call ColorEffDummy3(e,0,255,255,255,0.45)
                     call ColorEffDummy3(e2,0,255,255,255,0.45)
                     call ColorEffDummy3(e3,0,255,255,255,0.45)
@@ -2631,6 +2994,9 @@ endmethod
             set maxDistance = CrocodileF_ProjectileRange
             set sandSpacing = RMaxBJ(CrocodileSand_MinDistance,CrocodileF_SandSpacing)
             set nextSand = sandSpacing
+            set environmentDistance = 0.0
+            set decorKey = CrocodileDecor_NewKey()
+            call VisionTimed(GetOwningPlayer(c),x,y,radius*1.5,2.0)
             set g = CreateGroup()
             set g2 = CreateGroup()
             call MakeSound("war3mapImported\\Hero_Crocodile_F4")
@@ -2657,6 +3023,8 @@ endmethod
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_SandPoff.mdl",x,y,0,1,2,1))
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_newdirtexnofire.mdl",x,y,0,1,2,1))
         call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", target, "chest"))
+        call VisionTimed(GetOwningPlayer(c),x,y,CrocodileF_ProjectileAoe*1.5,2.0)
+        call DecorRemove(c,x,y,CrocodileF_ProjectileAoe,20.0)
         call MakeSound("war3mapImported\\Hero_Crocodile_F5")
 
         if SpellBool(target) and IsUnitEnemy(target,GetOwningPlayer(c)) and not IsUnitType(target,UNIT_TYPE_STRUCTURE) then
@@ -2766,6 +3134,7 @@ endstruct
             endif
             // Elapsed clock fraction prevents a proc just before a tick shortening the CD.
             set cooldown = CrocodileF_InternalCD+TimerGetElapsed(GearTimer03)
+            call BlzStartUnitAbilityCooldown(c,CrocodileF_ID,CrocodileF_InternalCD)
             set ownsAttackBlock = true
             set pendingTarget = target
             set pendingStacks = 1
@@ -2902,6 +3271,8 @@ endstruct
             set onSand = enabled
             if enabled and CrocodileG_SandMS_Ability_ID != 0 and CrocodileG_SandMS_Buff_ID != 0 then
                 call BuffUnit01(c,c,CrocodileG_SandMS_Ability_ID,"bloodlust",1)
+            elseif CrocodileG_SandMS_Buff_ID != 0 then
+                call UnitRemoveAbility(c,CrocodileG_SandMS_Buff_ID)
             endif
         endmethod
 
@@ -2980,6 +3351,7 @@ endstruct
                 endif
             endloop
             call CrocodileQ_Struct.Loop_CrocodileQ()
+            call CrocodileQ_ExplosionDecor.Loop_CrocodileQExplosionDecor()
             call CrocodileW_Struct.Loop_CrocodileW()
             call CrocodileE_Struct.Loop_CrocodileE()
             call CrocodileR_Struct.Loop_CrocodileR()
@@ -3026,6 +3398,7 @@ endstruct
                 if attack != 0 then
                     set attack.stacks = 0
                     set attack.cooldown = 0.0
+                    call BlzEndUnitAbilityCooldown(c,CrocodileF_ID)
                     call attack.CrocodileF_ReleaseCaster()
                     call TasAbilityChargeBox_SetValue(c,CrocodileF_ID,"0")
                     call attack.CrocodileF_SetEnhanced(false)
@@ -3126,7 +3499,7 @@ endstruct
 
     function CrocodileF_AddStack takes unit c returns nothing
         local CrocodileF_Struct attack = LoadInteger(CrocodileTable,GetHandleId(c),CrocodileF_DataKey)
-        if Crocodile_IsRegistered(c) and SpellBoolCaster(c) and attack != 0 and GetUnitAbilityLevel(c,CrocodileF_ID) > 0 then
+        if Crocodile_IsRegistered(c) and SpellBoolCaster(c) and attack != 0 and GetUnitAbilityLevel(c,CrocodileF_ID) > 0 and GetHeroLevel(c) >= CrocodileF_MinHeroLevel then
             set attack.stacks = IMinBJ(CrocodileF_MaxStacks,attack.stacks+1)
             call TasAbilityChargeBox_SetValue(c,CrocodileF_ID,I2S(attack.stacks))
             call attack.CrocodileF_SetEnhanced(attack.cooldown <= TimerGetElapsed(GearTimer03) and not attack.ownsAttackBlock)
@@ -3160,6 +3533,8 @@ endstruct
         local trigger summon = CreateTrigger()
         local trigger attackStart = CreateTrigger()
         local trigger finish = CreateTrigger()
+        set CrocodileW_QContact = CreateTrigger()
+        call TriggerAddCondition(CrocodileW_QContact,Condition(function CrocodileW_ReceiveQ))
         call TriggerAddAction(GearTimer03Listeners,function CrocodileCore_Struct.Loop_Crocodile)
         call TriggerRegisterAnyUnitEventBJ(summon,EVENT_PLAYER_UNIT_SUMMON)
         call TriggerAddAction(summon,function CrocodileCore_Struct.Crocodile_Summon)

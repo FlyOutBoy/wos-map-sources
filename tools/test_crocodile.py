@@ -67,6 +67,8 @@ class JassState:
         self.timed_effects = []
         self.fade_history = []
         self.scan_calls = []
+        self.vision_calls = []
+        self.decor_calls = []
         self.clock_users = 0
         self.elapsed = 0.0
         self.pause_history = []
@@ -74,8 +76,14 @@ class JassState:
         self.ability_history = []
         self.range_history = []
         self.g = {
+            "VisionTimed": lambda *args: self.vision_calls.append(args),
+            "DecorRemove": lambda *args: self.decor_calls.append(args),
+            "DecorRemoveLine": lambda *args: self.decor_calls.append(args),
             "bj_PI": math.pi, "bj_RADTODEG": 180/math.pi, "bj_DEGTORAD": math.pi/180,
             "CrocodileTable": {}, "instances": [None]*8192, "last": -1,
+            "CrocodileDecorHits": {},
+            "LoadBoolean": lambda table,key,child: table.get((key,child),False),
+            "SaveBoolean": lambda table,key,child,v: table.update({(key,child):v}),
             "RMinBJ": min, "RMaxBJ": max, "IMinBJ": min, "IMaxBJ": max,
             "RAbsBJ": abs, "RoundReal":lambda v,n:round(v,n), "SquareRoot": math.sqrt, "Cos": math.cos, "Sin": math.sin, "Atan2": math.atan2,
             "GetHandleId": id, "GetOwningPlayer": lambda u: u.owner,
@@ -84,6 +92,7 @@ class JassState:
             "SR0": lambda x,y,a,b: math.hypot(x-a,y-b),
             "SR3": lambda u,x,y: math.hypot(u.x-x,u.y-y),
             "GetHeroAgi": lambda u,b: u.agi,
+            "GetHeroLevel": lambda u: u.hero_level,
             "IsUnitEnemy": lambda u,p: u.owner != p,
             "SpellBool": lambda u: u.life > 0,
             "SpellBoolCaster": lambda u: u.life > 0,
@@ -93,6 +102,8 @@ class JassState:
             "BlzPauseUnitEx": self.pause,
             "StartSpellUnit2": lambda u: self.spell_pause(u,True),
             "StopSpellUnit2": lambda u: self.spell_pause(u,False),
+            "StartSpellUnit": lambda u: (self.add_ability(u,'Avul'),self.spell_pause(u,True)),
+            "StopSpellUnit": lambda u: (self.remove_ability(u,'Avul'),self.spell_pause(u,False)),
             "R2I": int,
             "GetRandomInt": lambda a,b:a,
             "GetRandomReal": lambda a,b:(a+b)/2,
@@ -138,6 +149,7 @@ class JassState:
             "I2S": str, "BlzEndUnitAbilityCooldown": lambda u,a: setattr(u,"cooldown",0),
             "BlzGetUnitAbilityCooldownRemaining": lambda u,a: u.cooldown,
             "BlzStartUnitAbilityCooldown": lambda u,a,v: setattr(u,"cooldown",v),
+            "BlzGetUnitAbilityCooldown": lambda u,a,n: u.abilities.get(a,{}).get('cooldowns',[18,16,14,12,10])[n],
             "TasAbilityChargeBox_SetValue": self.counter,
             "TasAbilityChargeBox_Clear": lambda u: None,
             "TasAbilityChargeBox_ClearValue": lambda u,a: u.counters.pop(a,None),
@@ -191,7 +203,7 @@ class JassState:
         for name in re.findall(r"\b(?:UNIT_WEAPON_\w+|ABILITY_[RI]LF_\w+|ABILITY_IF_\w+|UNIT_TYPE_\w+|PATHING_TYPE_\w+)\b",self.text):
             self.g[name] = name
         # Constants and rawcodes are read from the implementation, not copied.
-        for name, value in re.findall(r"^        (?:private )?(?:constant )?(?:integer|real|string|group) (\w+) = ([^\n]+)",self.text,re.M):
+        for name, value in re.findall(r"^        (?:private )?(?:constant )?(?:integer|real|string|group|unit|player|trigger) (\w+) = ([^\n]+)",self.text,re.M):
             self.g[name] = eval(value.split(" //")[0].replace("null","None"), {}, self.g)
         self.g["thistype"] = self
         self.structs = {}
@@ -238,7 +250,7 @@ class JassState:
 
     def unit(self, x=0, y=0, owner=1):
         u = SimpleNamespace(x=x,y=y,owner=owner,agi=100,life=100,type="H00A",illusion=False,counters={},
-            mana=100,max_mana=100,cooldown=0,charge_ui="",protection=0,disabled={},abilities={},weapons=[],paused=False,pause_count=0,height=0.0,facing=0.0)
+            mana=100,max_mana=100,cooldown=0,charge_ui="",protection=0,disabled={},abilities={},weapons=[],paused=False,pause_count=0,height=0.0,facing=0.0,hero_level=12)
         for index,enabled in enumerate([True,False]):
             u.weapons.append({"UNIT_WEAPON_BF_ATTACKS_ENABLED":enabled,"UNIT_WEAPON_RF_ATTACK_RANGE":175 if index == 0 else 800,
                               "UNIT_WEAPON_SF_ATTACK_PROJECTILE_ART":"original"})
