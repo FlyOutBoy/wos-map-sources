@@ -273,7 +273,7 @@ def candidate_files(trigger_dir: Path) -> list[str]:
     )
 
 
-def order_test_editor_payload(wtg: dict, wct: dict, source_paths: list[str]) -> list[str]:
+def order_editor_payload(wtg: dict, wct: dict, source_paths: list[str]) -> list[str]:
     """Keep WCT aligned with the editor's depth-first category traversal.
 
     Appending a trigger belonging to an earlier category at the end of WTG
@@ -281,6 +281,7 @@ def order_test_editor_payload(wtg: dict, wct: dict, source_paths: list[str]) -> 
     tree when assigning WCT text. Reorder both files together before packing.
     """
     source_types = (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT)
+    original_ids = [o["object_id"] for o in wtg["objects"]]
     source_objects = [o for o in wtg["objects"] if o["object_type"] in source_types]
     if not (len(source_objects) == len(wct["sources"]) == len(source_paths)):
         raise ValueError("cannot order mismatched WTG/WCT payload")
@@ -312,6 +313,8 @@ def order_test_editor_payload(wtg: dict, wct: dict, source_paths: list[str]) -> 
         item["object_order"] = index
     reordered = [payload[o["object_id"]] for o in ordered if o["object_type"] in source_types]
     wct["sources"] = [s for s, _ in reordered]
+    if original_ids != [o["object_id"] for o in ordered]:
+        print("ORDER   WTG/WCT aligned with editor category traversal; source identities preserved")
     return [p for _, p in reordered]
 
 
@@ -431,8 +434,9 @@ def prepare(
         used.add(relative.casefold())
         added += 1
         print(f"ADD     {relative} -> WTG trigger 0x{object_id:08X}")
-    if allow_stale_counts:
-        source_paths = order_test_editor_payload(wtg, wct, source_paths)
+    # MAIN and TEST use the same editor traversal. A trigger added to an earlier
+    # category must move together with its WCT source, regardless of count repair.
+    source_paths = order_editor_payload(wtg, wct, source_paths)
     return map_dir, wtg, wct, differences, added, settings_moves, source_paths
 
 
@@ -548,7 +552,24 @@ def migrate_enabled_settings(trigger_dir: Path, moves: list[tuple[str, str]]) ->
         print(f"SETTING {old} -> {new}")
 
 
+def validate_editor_order(wtg: dict) -> None:
+    """Reject a child that reappears after its category's subtree has ended."""
+    ancestors: list[int] = []
+    for item in wtg["objects"]:
+        parent = item.get("parent_id", 0)
+        if parent in (-1, 0):
+            ancestors.clear()
+        else:
+            while ancestors and ancestors[-1] != parent:
+                ancestors.pop()
+            if not ancestors:
+                raise ValueError(f"WTG object {item.get('name', item['object_id'])!r} is outside its category subtree; WCT would shift in World Editor")
+        if item["object_type"] == fmt.OBJECT_CATEGORY:
+            ancestors.append(item["object_id"])
+
+
 def validate_counts(wtg: dict, wct: dict) -> None:
+    validate_editor_order(wtg)
     count = sum(item["object_type"] in (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT) for item in wtg["objects"])
     if count != len(wct["sources"]):
         raise ValueError(f"WTG/WCT source-count mismatch: {count} != {len(wct['sources'])}")
@@ -584,6 +605,7 @@ def push(config_path: Path, trigger_dir: Path, backup_root: Path) -> None:
         (verify / "war3map.wtg").write_bytes(encoded_wtg)
         (verify / "war3map.wct").write_bytes(encoded_wct)
         checked_wtg = fmt.parse_wtg(verify / "war3map.wtg")
+        validate_editor_order(checked_wtg)
         fmt.parse_wct(verify / "war3map.wct", sum(
             item["object_type"] in (fmt.OBJECT_TRIGGER, fmt.OBJECT_SCRIPT) for item in checked_wtg["objects"]
         ))

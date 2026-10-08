@@ -130,13 +130,13 @@ class TestWtgCompatibility(unittest.TestCase):
             trigger(0x03000004, 0x02000001, True)]}
         wct = {"sources": [b"startup", b"modern GearSystems", b"old GearSystems", b"tooltip"]}
         paths = ["Start.j", "Systems1.j", "Systems_Copy.j", "TooltipBuilder.j"]
-        actual = triggers.order_test_editor_payload(wtg, wct, paths)
+        actual = triggers.order_editor_payload(wtg, wct, paths)
         self.assertEqual(["Start.j", "TooltipBuilder.j", "Systems1.j", "Systems_Copy.j"], actual)
         self.assertEqual([b"startup", b"tooltip", b"modern GearSystems", b"old GearSystems"], wct["sources"])
         active = [s for o, s in zip([o for o in wtg["objects"] if o["object_type"] == fmt.OBJECT_TRIGGER],
                                    wct["sources"]) if o["enabled"]]
         self.assertEqual(1, sum(b"GearSystems" in s for s in active))
-        self.assertEqual(actual, triggers.order_test_editor_payload(wtg, wct, actual))
+        self.assertEqual(actual, triggers.order_editor_payload(wtg, wct, actual))
 
     def test_push_new_dependency_triggers_writes_metadata_and_is_idempotent(self):
         with tempfile.TemporaryDirectory() as directory:
