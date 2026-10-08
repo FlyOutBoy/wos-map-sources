@@ -70,6 +70,16 @@ Primary references checked:
   search/page navigation and Auto-buy. Main bounds X=.022..778, Y=.169..509.
   Selection/purchase/crafting/recipe/search algorithms were not rewritten.
 - Secondary windows: career/music/emote/chat emoji/player stats share WUI_Window; scoreboard uses a transparent FRAME + WUI_Border so its existing opacity switch remains functional. Camera slider is at (.150,.070), .007x.112, beside minimap.
+- WOSUI dynamic dock registry is presentation only. Synchronous registration uses
+  stable owner/source keys so recreated frames replace old entries. Refresh reads
+  local frame visibility, packs owner meters above minimap, buffs above HUD and
+  existing public meters below the top bar; movement interpolates at 0.10s.
+  It never reads units or changes buff duration, casting, charges or visibility.
+  45 six-frame production meters reuse original handles/state via WUI_HeroMeter.
+  MyFrame/MyFrameBuff unit timers and Kenjaku/Tsuna chips retain native SIMPLEFRAME
+  parents from WUI_GetSimpleRoot; independent labels follow numeric coordinates.
+  WOSHeroMeter.add/update/show is the shared constructor API for future owners.
+  Details and remaining exceptional owners: DYNAMIC_METERS.md.
 - CaptainDraft/UI_CAREER/MusicPlayer variable aliases were missed by first direct
   parent migration and are now corrected. Normal roots use service root; native
   SIMPLEFRAME counter in Systems2 now uses ConsoleUI instead of ConsoleUIBackdrop.

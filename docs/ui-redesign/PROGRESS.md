@@ -123,3 +123,30 @@
 - Remaining implementation: hero-specific bar/counter skins and shared primitive
   integration (45 owners), any remaining secondary windows; final top/menu/style
   polish and all runtime/multiplayer/resolution scenarios. Do not mark full task done.
+
+## Checkpoint 6 — shared dynamic hero meters and unit buff timers
+
+- User requested a common system that adds hero meters and moves them dynamically,
+  including unit buffs. WOSUI now owns stable-key registration, owner-specific
+  packing and smooth gap closure at .10s; settled coordinates stop updating.
+- 45 active six-frame meter sites in 28 hero/system files attached without changing
+  existing counters, min/max values, timing or visibility. An independent source
+  fingerprint confirmed all non-presentation statements unchanged. Commented
+  Milim/Mahoraga prototypes remain untouched; distinct special windows still pending.
+- WOSHeroMeter.add/update/show constructor available for future owners. Existing
+  owners retain their real frame references and game state. Recreated panels reuse
+  their key and hide old visuals instead of growing the registry.
+- MyFrame/MyFrameBuff unit icons + timer labels, Kenjaku barriers and Tsuna beam
+  chips join the dynamic buff strip. Native SIMPLEFRAMEs use cached ConsoleUI;
+  normal labels retain independent root and follow numeric coordinates. Charge
+  badges remain on real native command slots, now .012 with shared graphite skin.
+- Added real gold meter texture: 13 shared UI resources + 16 ping resources;
+  extraction list regenerated for 33 archive entries. No MAIN write yet.
+- Full production compile PASS: 146811 pjass lines / 107 enabled sources. HUD/dock
+  production tests 13 PASS; pings 21, ally ability UI 7, trigger order 3, workflow 8
+  PASS (52 total). Game/native interaction/multiplayer remain unverified.
+- Four recovery files updated; prior commits 654b679/e64d873/bff70cb recorded.
+  Editor guard still TRUE; earlier close-without-saving question remains pending.
+- Next independent action: style/register Erza Second Origin two-icon meter;
+  preserve Inori weapon selection and Kyoraku help controls while compacting them.
+  On confirmed editor closure: guarded push/build/archive verification as checkpoint 5.

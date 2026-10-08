@@ -190,5 +190,83 @@ class SharedImports(unittest.TestCase):
                                  (scenario / 'UI/WOS' / (name + '.tga')).read_bytes())
 
 
+class DynamicHeroAndBuffDocks(unittest.TestCase):
+    def setUp(self):
+        self.vm = load_source('WOSUI.j')
+        self.positions = {}
+        self.visible = defaultdict(bool)
+        self.moves = []
+        self.vm.g.update({
+            'WUI_DockCount': 0, 'WUI_DockKeys': {}, 'WUI_OrdersOpen': False,
+            'GetPlayerId': lambda p: p, 'GetLocalPlayer': lambda: 0,
+            'StringHash': lambda s: s, 'I2R': float,
+            'ModuloInteger': lambda a, b: a % b,
+            'BlzFrameIsVisible': lambda f: self.visible[f],
+            'BlzFrameSetVisible': lambda f, v: self.visible.update({f: v}),
+            'BlzFrameClearAllPoints': lambda *_: None,
+            'BlzFrameSetSize': lambda *_: None,
+            'BlzFrameSetScale': lambda *_: None,
+            'BlzFrameSetAbsPoint': self.place,
+            'FRAMEPOINT_CENTER': 'center',
+        })
+
+    def place(self, frame, point, x, y):
+        self.positions[frame] = (x, y)
+        self.moves.append(frame)
+
+    def register(self, frame, owner=0, kind=0, label=None):
+        self.visible[frame] = True
+        self.vm.run('WUI_RegisterDock', (frame, label, owner, kind, frame))
+
+    def test_hidden_meter_reclaims_space_with_smooth_movement(self):
+        self.register('first')
+        self.register('second')
+        self.vm.run('WUI_RefreshDocks')
+        self.assertAlmostEqual(.162, self.positions['first'][1])
+        self.assertAlmostEqual(.192, self.positions['second'][1])
+        self.visible['first'] = False
+        self.vm.run('WUI_RefreshDocks')
+        self.assertGreater(self.positions['second'][1], .162)
+        self.assertLess(self.positions['second'][1], .192)
+        for _ in range(8):
+            self.vm.run('WUI_RefreshDocks')
+        self.assertAlmostEqual(.162, self.positions['second'][1], delta=.0002)
+        self.moves.clear()
+        self.vm.run('WUI_RefreshDocks')
+        self.assertFalse(self.moves, 'Settled docks should not rewrite native points')
+
+    def test_unit_buff_labels_follow_their_icons_and_avoid_orders(self):
+        self.register('buff-a', kind=1, label='time-a')
+        self.register('buff-b', kind=1, label='time-b')
+        self.vm.run('WUI_RefreshDocks')
+        self.assertAlmostEqual(.178, self.positions['buff-a'][0])
+        self.assertAlmostEqual(.204, self.positions['buff-b'][0])
+        self.assertAlmostEqual(self.positions['buff-b'][1]-.016, self.positions['time-b'][1])
+        self.vm.g['WUI_OrdersOpen'] = True
+        self.vm.run('WUI_RefreshDocks')
+        self.assertGreater(self.positions['buff-a'][1], .144)
+        self.assertAlmostEqual(self.positions['buff-a'][1]-.016, self.positions['time-a'][1])
+
+    def test_other_players_private_meters_do_not_take_local_slots(self):
+        self.register('opponent', owner=5)
+        self.register('own')
+        self.register('public', owner=-1, kind=2)
+        self.vm.run('WUI_RefreshDocks')
+        self.assertNotIn('opponent', self.positions)
+        self.assertAlmostEqual(.162, self.positions['own'][1])
+        self.assertEqual((.325, .490), self.positions['public'])
+
+    def test_same_key_rebinds_recreated_frame_without_registry_growth(self):
+        self.register('old')
+        self.vm.run('WUI_RefreshDocks')
+        self.visible['new'] = True
+        self.vm.run('WUI_RegisterDock', ('new', None, 0, 0, 'old'))
+        self.assertEqual(1, self.vm.g['WUI_DockCount'])
+        self.assertFalse(self.visible['old'])
+        self.moves.clear()
+        self.vm.run('WUI_RefreshDocks')
+        self.assertEqual(['new'], self.moves)
+
+
 if __name__ == '__main__':
     unittest.main()

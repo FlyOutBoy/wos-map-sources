@@ -1,4 +1,4 @@
-library TasAbilityChargeBox requires optional FrameLoader
+library TasAbilityChargeBox requires WOSUI, optional FrameLoader
    
 //Adds a custom ChargeBox over Command Buttons to display a xx Text
 //requires loading a fdf/toc containing "TasAbilityChargeBox"
@@ -117,15 +117,15 @@ library TasAbilityChargeBox requires optional FrameLoader
             call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLabel", 21), "")
 
             call BlzFrameClearAllPoints(FrameIcon[i])
-            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.003, -0.003)
-            call BlzFrameSetSize(FrameIcon[i], 0.02, 0.02)
-            call BlzFrameSetTexture(FrameIcon[i], "UI/Widgets/Console/Human/CommandButton/human-button-lvls-overlay.blp", 0, true)
+            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.001, -0.001)
+            call BlzFrameSetSize(FrameIcon[i], 0.012, 0.012)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
 
             call BlzFrameClearAllPoints(FrameText[i])
-            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.003, -0.003)
-            call BlzFrameSetSize(FrameText[i], 0.02, 0.02)
+            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.001, -0.001)
+            call BlzFrameSetSize(FrameText[i], 0.012, 0.012)
             call BlzFrameSetTextAlignment(FrameText[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-            call BlzFrameSetFont(FrameText[i], font, 0.011, 0)
+            call BlzFrameSetFont(FrameText[i], font, 0.008, 0)
 
             call BlzFrameSetVisible(FrameBox[i], false)
             set i = i + 1
@@ -136,6 +136,16 @@ library TasAbilityChargeBox requires optional FrameLoader
             set FrameBox[i] = BlzCreateSimpleFrame("TasAbilityChargeBox", BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i), i)
             // reserve HandleId, used Async later
             set FrameText[i] =  BlzGetFrameByName("TasAbilityChargeBoxText", i)
+            set FrameIcon[i] = BlzGetFrameByName("TasAbilityChargeBoxTexture", i)
+            set commandButton = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)
+            call BlzFrameClearAllPoints(FrameIcon[i])
+            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.001, -0.001)
+            call BlzFrameSetSize(FrameIcon[i], 0.012, 0.012)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
+            call BlzFrameClearAllPoints(FrameText[i])
+            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.001, -0.001)
+            call BlzFrameSetSize(FrameText[i], 0.012, 0.012)
+            call BlzFrameSetFont(FrameText[i], font, 0.008, 0)
             call BlzFrameSetVisible(FrameBox[i], false)
             set i = i + 1
          endloop

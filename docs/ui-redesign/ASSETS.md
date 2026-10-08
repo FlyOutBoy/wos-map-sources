@@ -6,7 +6,7 @@
   ornaments or glow. Intended as actual game-panel background behind small text.
 - Deterministic pixel geometry for accurate small states/borders: `tools/build_wos_ui_assets.py`.
 - Production TGA assets in `assets/UI/WOS`: panel (512²), border/button/hover/pressed/
-  selected/disabled (128²), hp/mp/bar-back (256×16), checked/unchecked (64x64), all 32-bit RGBA.
+  selected/disabled (128²), hp/mp/meter/bar-back (256×16), checked/unchecked (64x64), all 32-bit RGBA.
 - Registration/copy: `python tools/install_wos_ui_assets.py --map <MAIN folder>`;
   installer preserves existing import bytes and backs up changed resources.
 - Existing `assets/UI/TeamPings` 16 wheel/minimap/toolbar textures remain usable.

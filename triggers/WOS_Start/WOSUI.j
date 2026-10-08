@@ -4,6 +4,17 @@ library WOSUI initializer WUI_Init
 globals
     private leaderboard WUI_ServiceBoard = null
     private framehandle WUI_Root = null
+    private framehandle WUI_SimpleRoot = null
+    private timer WUI_DockTimer = CreateTimer()
+    private hashtable WUI_DockKeys = InitHashtable()
+    private integer WUI_DockCount = 0
+    private framehandle array WUI_DockFrame
+    private framehandle array WUI_DockLabel
+    private integer array WUI_DockOwner
+    private integer array WUI_DockKind
+    private boolean array WUI_DockPlaced
+    private real array WUI_DockX
+    private real array WUI_DockY
     private framehandle WUI_TestPanel = null
     private framehandle WUI_TestToggle = null
     private boolean WUI_TestOpen = true
@@ -34,6 +45,10 @@ endglobals
 
 function WUI_GetRoot takes nothing returns framehandle
     return WUI_Root
+endfunction
+
+function WUI_GetSimpleRoot takes nothing returns framehandle
+    return WUI_SimpleRoot
 endfunction
 
 function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
@@ -68,6 +83,137 @@ function WUI_Window takes string name, framehandle parent, integer layer, intege
     return panel
 endfunction
 
+// Existing hero owners keep their state, values and visibility. Only presentation
+// is shared. This helper allocates no handles and can be reused when showing a bar.
+function WUI_Pin takes framehandle child, framehandle owner, real x, real y, real width, real height returns nothing
+    call BlzFrameClearAllPoints(child)
+    call BlzFrameSetPoint(child, FRAMEPOINT_CENTER, owner, FRAMEPOINT_CENTER, x, y)
+    call BlzFrameSetSize(child, width, height)
+endfunction
+
+function WUI_HeroMeter takes framehandle panel, framehandle back, framehandle bar, framehandle icon, framehandle title, framehandle value returns nothing
+    call BlzFrameSetSize(panel, 0.140, 0.025)
+    call BlzFrameSetTexture(back, "UI\\WOS\\bar-back.tga", 0, true)
+    call WUI_Pin(back, panel, 0.012, -0.004, 0.104, 0.007)
+    call BlzFrameSetScale(bar, 1.00)
+    call BlzFrameSetTexture(bar, "UI\\WOS\\meter.tga", 0, true)
+    call WUI_Pin(bar, panel, 0.012, -0.004, 0.104, 0.007)
+    call WUI_Pin(icon, panel, -0.055, 0.000, 0.019, 0.019)
+    call BlzFrameSetScale(title, 0.70)
+    call WUI_Pin(title, panel, 0.012, 0.006, 0.112, 0.011)
+    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(value, 0.66)
+    call WUI_Pin(value, panel, 0.012, -0.004, 0.104, 0.009)
+    call BlzFrameSetTextAlignment(value, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+endfunction
+
+// Registration is synchronous. Per-client visibility, coordinates and movement
+// belong only to presentation; they never feed casting, charges or game timers.
+function WUI_RegisterDock takes framehandle panel, framehandle label, integer owner, integer kind, string key returns nothing
+    local integer index = LoadInteger(WUI_DockKeys, StringHash(key), 0)
+    if panel == null then
+        return
+    endif
+    if index == 0 then
+        set WUI_DockCount = WUI_DockCount + 1
+        set index = WUI_DockCount
+        call SaveInteger(WUI_DockKeys, StringHash(key), 0, index)
+    elseif WUI_DockFrame[index] != null and WUI_DockFrame[index] != panel then
+        call BlzFrameSetVisible(WUI_DockFrame[index], false)
+        if WUI_DockLabel[index] != null then
+            call BlzFrameSetVisible(WUI_DockLabel[index], false)
+        endif
+    endif
+    set WUI_DockFrame[index] = panel
+    set WUI_DockLabel[index] = label
+    set WUI_DockOwner[index] = owner
+    set WUI_DockKind[index] = kind
+    set WUI_DockPlaced[index] = false
+endfunction
+
+function WUI_RegisterMeter takes framehandle panel, integer owner, string key returns nothing
+    call WUI_RegisterDock(panel, null, owner, 0, key)
+endfunction
+
+function WUI_RegisterPublicMeter takes framehandle panel, string key returns nothing
+    call WUI_RegisterDock(panel, null, -1, 2, key)
+endfunction
+
+function WUI_RegisterBuff takes framehandle panel, framehandle label, integer owner, string key returns nothing
+    call WUI_RegisterDock(panel, label, owner, 1, key)
+endfunction
+
+function WUI_SimpleBorder takes framehandle owner returns nothing
+    local framehandle edge = BlzCreateFrameByType("SIMPLESTATUSBAR", "WOSBuffBorder", owner, "", 0)
+    call BlzFrameSetAllPoints(edge, owner)
+    call BlzFrameSetTexture(edge, WUI_BORDER_TEXTURE, 0, true)
+    call BlzFrameSetMinMaxValue(edge, 0.00, 100.00)
+    call BlzFrameSetValue(edge, 100.00)
+    call BlzFrameSetEnable(edge, false)
+    set edge = null
+endfunction
+
+function WUI_RefreshDocks takes nothing returns nothing
+    local integer playerId = GetPlayerId(GetLocalPlayer())
+    local integer index = 1
+    local integer meterSlot = 0
+    local integer buffSlot = 0
+    local integer publicSlot = 0
+    local integer column
+    local integer row
+    local real x
+    local real y
+    local real buffY = 0.144
+    if WUI_OrdersOpen then
+        set buffY = 0.181
+    endif
+    loop
+        exitwhen index > WUI_DockCount
+        if WUI_DockOwner[index] == playerId or WUI_DockOwner[index] == -1 then
+            if BlzFrameIsVisible(WUI_DockFrame[index]) then
+                if WUI_DockKind[index] == 0 then
+                    set x = 0.075
+                    set y = 0.162 + I2R(meterSlot) * 0.030
+                    set meterSlot = meterSlot + 1
+                elseif WUI_DockKind[index] == 1 then
+                    set column = ModuloInteger(buffSlot, 20)
+                    set row = (buffSlot - column) / 20
+                    set x = 0.178 + I2R(column) * 0.026
+                    set y = buffY + I2R(row) * 0.035
+                    set buffSlot = buffSlot + 1
+                else
+                    set column = ModuloInteger(publicSlot, 2)
+                    set row = (publicSlot - column) / 2
+                    set x = 0.325 + I2R(column) * 0.150
+                    set y = 0.490 - I2R(row) * 0.030
+                    set publicSlot = publicSlot + 1
+                endif
+                if not WUI_DockPlaced[index] then
+                    set WUI_DockX[index] = x
+                    set WUI_DockY[index] = y
+                else
+                    set x = WUI_DockX[index] + (x - WUI_DockX[index]) * 0.60
+                    set y = WUI_DockY[index] + (y - WUI_DockY[index]) * 0.60
+                endif
+                if RAbsBJ(x - WUI_DockX[index]) > 0.0001 or RAbsBJ(y - WUI_DockY[index]) > 0.0001 or not WUI_DockPlaced[index] then
+                    call BlzFrameClearAllPoints(WUI_DockFrame[index])
+                    call BlzFrameSetAbsPoint(WUI_DockFrame[index], FRAMEPOINT_CENTER, x, y)
+                    set WUI_DockX[index] = x
+                    set WUI_DockY[index] = y
+                    if WUI_DockLabel[index] != null then
+                        call WUI_Place(WUI_DockLabel[index], x, y - 0.016, 0.025, 0.010)
+                        call BlzFrameSetScale(WUI_DockLabel[index], 0.66)
+                    endif
+                endif
+                set WUI_DockPlaced[index] = true
+            else
+                set WUI_DockPlaced[index] = false
+            endif
+        endif
+        set index = index + 1
+    endloop
+endfunction
+
 function WUI_SetText takes framehandle frame, string value returns nothing
     if BlzFrameGetText(frame) != value then
         call BlzFrameSetText(frame, value)
@@ -79,6 +225,68 @@ function WUI_SetValue takes framehandle frame, real value returns nothing
         call BlzFrameSetValue(frame, value)
     endif
 endfunction
+
+// For new heroes: one synchronous add, then update/show from the existing owner.
+// Legacy meters attach to the same dock without replacing their frame references.
+struct WOSHeroMeter
+    framehandle panel
+    framehandle back
+    framehandle bar
+    framehandle icon
+    framehandle title
+    framehandle value
+    integer owner
+
+    static method add takes integer playerId, string key, string iconPath, string caption, real maximum returns thistype
+        local thistype this = thistype.allocate()
+        set owner = playerId
+        set panel = WUI_Window("WOSHeroMeter", WUI_GetRoot(), 0, 0)
+        set back = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", panel, "", 0)
+        set bar = BlzCreateFrameByType("STATUSBAR", "WOSMeterFill", panel, "", 0)
+        set icon = BlzCreateFrameByType("BACKDROP", "WOSMeterIcon", panel, "", 0)
+        set title = BlzCreateFrameByType("TEXT", "WOSMeterTitle", panel, "", 0)
+        set value = BlzCreateFrameByType("TEXT", "WOSMeterValue", panel, "", 0)
+        call BlzFrameSetTexture(icon, iconPath, 0, true)
+        call BlzFrameSetText(title, WUI_GOLD + caption + "|r")
+        call BlzFrameSetMinMaxValue(bar, 0.00, maximum)
+        call WUI_HeroMeter(panel, back, bar, icon, title, value)
+        call BlzFrameSetVisible(panel, false)
+        call WUI_RegisterMeter(panel, owner, key)
+        return this
+    endmethod
+
+    method update takes real amount, string caption returns nothing
+        call WUI_SetValue(bar, amount)
+        call WUI_SetText(value, WUI_TEXT + caption + "|r")
+    endmethod
+
+    method show takes boolean visible returns nothing
+        if GetPlayerId(GetLocalPlayer()) == owner then
+            call BlzFrameSetVisible(panel, visible)
+        endif
+        call WUI_RefreshDocks()
+    endmethod
+
+    method onDestroy takes nothing returns nothing
+        local integer index = 1
+        loop
+            exitwhen index > WUI_DockCount
+            if WUI_DockFrame[index] == panel then
+                set WUI_DockFrame[index] = null
+                set WUI_DockLabel[index] = null
+                set WUI_DockOwner[index] = -2
+            endif
+            set index = index + 1
+        endloop
+        call BlzDestroyFrame(panel)
+        set panel = null
+        set back = null
+        set bar = null
+        set icon = null
+        set title = null
+        set value = null
+    endmethod
+endstruct
 
 function WUI_ShowNativeBuffs takes boolean visible returns nothing
     if WUI_Buffs != null then
@@ -359,6 +567,7 @@ endfunction
 private function WUI_Init takes nothing returns nothing
     local framehandle board
     local framehandle part
+    set WUI_SimpleRoot = BlzGetFrameByName("ConsoleUI", 0)
     // Keep the service board ROOT visible: hidden parents hide their children.
     // Its visual children alone are hidden. No players' existing boards are replaced.
     set WUI_ServiceBoard = CreateLeaderboardBJ(bj_FORCE_ALL_PLAYERS, "WOS UI")
@@ -385,6 +594,7 @@ private function WUI_Init takes nothing returns nothing
     call BlzFrameSetVisible(WUI_Root, true)
     call WUI_CreateTestHelp()
     call WUI_CreateControls()
+    call TimerStart(WUI_DockTimer, 0.10, true, function WUI_RefreshDocks)
     set board = null
     set part = null
 endfunction

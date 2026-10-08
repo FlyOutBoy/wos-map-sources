@@ -1875,36 +1875,27 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             call MySpellStacks(c, 2, BambiettaG_CD)
                             set rmax = BambiettaT_Duration
                             if framebambietta_morph1[k2] == null then
-                                set framebambietta_morph1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(framebambietta_morph1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+                                set framebambietta_morph1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
                                 call BlzFrameSetVisible(framebambietta_morph1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(framebambietta_morph1[k2], true)
                                 endif
-                                set framebambietta_morph2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", framebambietta_morph1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph2[k2], 0.1, 0.019)
+                                set framebambietta_morph2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", framebambietta_morph1[k2], "", 0)
+
                                 set framebambietta_morph3[k2] = BlzCreateFrameByType("STATUSBAR", "", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetSize(framebambietta_morph3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(framebambietta_morph3[k2], 0.5)
-                                call BlzFrameSetModel(framebambietta_morph3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
                                 call BlzFrameSetMinMaxValue(framebambietta_morph3[k2], 0, rmax + 1)
                                 call BlzFrameSetValue(framebambietta_morph3[k2], rmax)
                                 set framebambietta_morph4[k2] = BlzCreateFrameByType("BACKDROP", "SS", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph4[k2], 0.03, 0.03)
+
                                 call BlzFrameSetTexture(framebambietta_morph4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_T", 0, false)
                                 set framebambietta_morph5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
                                 call BlzFrameSetText(framebambietta_morph5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(framebambietta_morph5[k2], 0.9)
                                 set framebambietta_morph6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
                                 call BlzFrameSetText(framebambietta_morph6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(framebambietta_morph6[k2], 0.9)
+
+                                call WUI_HeroMeter(framebambietta_morph1[k2], framebambietta_morph2[k2], framebambietta_morph3[k2], framebambietta_morph4[k2], framebambietta_morph5[k2], framebambietta_morph6[k2])
+                                call WUI_RegisterMeter(framebambietta_morph1[k2], k2, "Heroes/Bambietta.j:framebambietta_morph1:" + I2S(k2))
+                                call WUI_RefreshDocks()
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(framebambietta_morph1[k2], true)

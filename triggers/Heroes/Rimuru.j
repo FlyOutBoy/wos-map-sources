@@ -3832,36 +3832,27 @@ function RimuruEvol2_Start takes unit c, boolean b returns nothing
     local integer k3 = RimuruEvol2_Counter
     if b == true then
         if frameRimuru2_pas1[k2] == null then
-            set frameRimuru2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frameRimuru2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+            set frameRimuru2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
             call BlzFrameSetVisible(frameRimuru2_pas1[k2], false)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frameRimuru2_pas1[k2], true)
             endif
-            set frameRimuru2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru2_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas2[k2], 0.1, 0.019)
+            set frameRimuru2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameRimuru2_pas1[k2], "", 0)
+
             set frameRimuru2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetSize(frameRimuru2_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frameRimuru2_pas3[k2], 0.5)
-            call BlzFrameSetModel(frameRimuru2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
             call BlzFrameSetMinMaxValue(frameRimuru2_pas3[k2], 0, I2R(k3))
             call BlzFrameSetValue(frameRimuru2_pas3[k2], 0)
             set frameRimuru2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas4[k2], 0.03, 0.03)
+
             call BlzFrameSetTexture(frameRimuru2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_G.blp", 0, false)
             set frameRimuru2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
             call BlzFrameSetText(frameRimuru2_pas5[k2], "|c00FFFF00" + "Soul Gathered:|r")
-            call BlzFrameSetScale(frameRimuru2_pas5[k2], 0.9)
             set frameRimuru2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
             call BlzFrameSetText(frameRimuru2_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetScale(frameRimuru2_pas6[k2], 0.9)
+
+            call WUI_HeroMeter(frameRimuru2_pas1[k2], frameRimuru2_pas2[k2], frameRimuru2_pas3[k2], frameRimuru2_pas4[k2], frameRimuru2_pas5[k2], frameRimuru2_pas6[k2])
+            call WUI_RegisterMeter(frameRimuru2_pas1[k2], k2, "Heroes/Rimuru.j:frameRimuru2_pas1:" + I2S(k2))
+            call WUI_RefreshDocks()
         else
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frameRimuru2_pas1[k2], true)
@@ -3892,36 +3883,27 @@ function RimuruEvol_Start takes unit c, boolean b returns nothing
     local integer k3 = RimuruEvol1_MagiculeDmg
     if b == true then
         if frameRimuru1_pas1[k2] == null then
-            set frameRimuru1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frameRimuru1_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+            set frameRimuru1_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
             call BlzFrameSetVisible(frameRimuru1_pas1[k2], false)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frameRimuru1_pas1[k2], true)
             endif
-            set frameRimuru1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru1_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas2[k2], 0.1, 0.019)
+            set frameRimuru1_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameRimuru1_pas1[k2], "", 0)
+
             set frameRimuru1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetSize(frameRimuru1_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frameRimuru1_pas3[k2], 0.5)
-            call BlzFrameSetModel(frameRimuru1_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
             call BlzFrameSetMinMaxValue(frameRimuru1_pas3[k2], 0, I2R(k3 + 10))
             call BlzFrameSetValue(frameRimuru1_pas3[k2], 0)
             set frameRimuru1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas4[k2], 0.03, 0.03)
+
             call BlzFrameSetTexture(frameRimuru1_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru_Evol1.blp", 0, false)
             set frameRimuru1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
             call BlzFrameSetText(frameRimuru1_pas5[k2], "|c00FFFF00" + "Magicule absorbed:|r")
-            call BlzFrameSetScale(frameRimuru1_pas5[k2], 0.9)
             set frameRimuru1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
             call BlzFrameSetText(frameRimuru1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetScale(frameRimuru1_pas6[k2], 0.9)
+
+            call WUI_HeroMeter(frameRimuru1_pas1[k2], frameRimuru1_pas2[k2], frameRimuru1_pas3[k2], frameRimuru1_pas4[k2], frameRimuru1_pas5[k2], frameRimuru1_pas6[k2])
+            call WUI_RegisterMeter(frameRimuru1_pas1[k2], k2, "Heroes/Rimuru.j:frameRimuru1_pas1:" + I2S(k2))
+            call WUI_RefreshDocks()
         else
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frameRimuru1_pas1[k2], true)

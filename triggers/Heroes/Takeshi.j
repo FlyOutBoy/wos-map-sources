@@ -130,36 +130,27 @@ local real dmg2 = LoadReal(hs,GetHandleId(c),StringHash("takeshi dmg"))+dmg
 local real rmax = TakeshiG_TakenDamageToEnter
 if GetHeroLevel(c)>=35 then 
 if frameTakeshi_pas1 [k2] == null then
-                set frameTakeshi_pas1 [k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas1 [k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frameTakeshi_pas1 [k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frameTakeshi_pas1 [k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+                set frameTakeshi_pas1 [k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
                 call BlzFrameSetVisible(frameTakeshi_pas1 [k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frameTakeshi_pas1 [k2], true)
                 endif
-                set frameTakeshi_pas2 [k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameTakeshi_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas2 [k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frameTakeshi_pas2 [k2], 0.1, 0.019)
+                set frameTakeshi_pas2 [k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameTakeshi_pas1[k2], "", 0)
+
                 set frameTakeshi_pas3 [k2] = BlzCreateFrameByType("STATUSBAR", "", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetSize(frameTakeshi_pas3 [k2], 0.1, 0.035)
-                call BlzFrameSetScale(frameTakeshi_pas3 [k2], 0.5)
-                call BlzFrameSetModel(frameTakeshi_pas3 [k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas3 [k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                 call BlzFrameSetMinMaxValue(frameTakeshi_pas3 [k2], 0, rmax+2)
                 call BlzFrameSetValue(frameTakeshi_pas3 [k2], 0)
                 set frameTakeshi_pas4 [k2] = BlzCreateFrameByType("BACKDROP", "SS", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas4 [k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frameTakeshi_pas4 [k2], 0.03, 0.03)
+
                 call BlzFrameSetTexture(frameTakeshi_pas4 [k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_G2", 0, false)
                 set frameTakeshi_pas5 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas5 [k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                 call BlzFrameSetText(frameTakeshi_pas5 [k2], "|c00FFFF00" + "Cambio Damage:" + "|r")
-                call BlzFrameSetScale(frameTakeshi_pas5 [k2], 0.9)
                 set frameTakeshi_pas6 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas6 [k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                 call BlzFrameSetText(frameTakeshi_pas6 [k2], "|c00FFFF00" +I2S(R2I(dmg2))+"/"+I2S(R2I(rmax))+ "|r")
-                call BlzFrameSetScale(frameTakeshi_pas6 [k2], 0.9)
+
+                call WUI_HeroMeter(frameTakeshi_pas1[k2], frameTakeshi_pas2[k2], frameTakeshi_pas3[k2], frameTakeshi_pas4[k2], frameTakeshi_pas5[k2], frameTakeshi_pas6[k2])
+                call WUI_RegisterMeter(frameTakeshi_pas1[k2], k2, "Heroes/Takeshi.j:frameTakeshi_pas1:" + I2S(k2))
+                call WUI_RefreshDocks()
             else
                 /*if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frameTakeshi_pas1[k2], true)
@@ -1698,36 +1689,27 @@ endfunction
                         call StopSpellUnit(c)
                         set r = 0
                         if frame2_pas1[k2] == null then
-                            set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                            call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+                            set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
                             call BlzFrameSetVisible(frame2_pas1[k2], false)
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame2_pas1[k2], true)
                             endif
-                            set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                            call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
+                            set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)
+
                             set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                            call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                            call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
                             call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
                             call BlzFrameSetValue(frame2_pas3[k2], rmax)
                             set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
+
                             call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_G", 0, false)
                             set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
                             call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                            call BlzFrameSetScale(frame2_pas5[k2], 0.9)
                             set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
                             call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                            call BlzFrameSetScale(frame2_pas6[k2], 0.9)
+
+                            call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
+                            call WUI_RegisterMeter(frame2_pas1[k2], k2, "Heroes/Takeshi.j:frame2_pas1:" + I2S(k2))
+                            call WUI_RefreshDocks()
                         else
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame2_pas1[k2], true)

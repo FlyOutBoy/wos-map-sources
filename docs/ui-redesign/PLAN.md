@@ -15,7 +15,7 @@ runtime evidence is recorded separately in PROGRESS.md.
 | 5. Top panel | Existing heroicon, visible-only HP/MP, score/train/rounds; depends 2 | P0 | IN_PROGRESS | Guard tests pass, runtime and final style pending. Hidden enemy values never read; local caches only; hide portraits leaves score visible |
 | 6. Hero selection | Existing categories/pages/preview/players, all normal/captain/draft modes; depends 2,3 | P1 | IN_PROGRESS | Compact 5x6 layout/header/categories/preview/players and draft aliases compiled; runtime pending. Real handlers unchanged; grid compact; no missing categories/actions |
 | 7. Shops | Existing tabs/search/auto-buy/recipes/craft/item info; depends 2,3 | P1 | IN_PROGRESS | Existing seven tabs/search/recipes/inventory relaid and skinned; compile passed, runtime pending. All tabs and purchases preserved, consistent textures/spacing |
-| 8. Other UI | Scoreboard/career/votes/hero bars/music/emotes/tooltips; depends 2,3 | P1 | IN_PROGRESS | Scoreboard/career/music/emote/player surfaces implemented; remaining hero counters/windows pending. Every inventory entry migrated or explicitly deferred with reason |
+| 8. Other UI | Scoreboard/career/votes/hero bars/music/emotes/tooltips; depends 2,3 | P1 | IN_PROGRESS | Secondary surfaces + 45 active hero meters and shared unit-buff docks implemented; special selection windows/remaining controls pending. Every inventory entry migrated or explicitly deferred with reason |
 | 9a. Z wheel | Existing TeamMapPings: no segment labels, center hover, release commits valid sector | P0 | IN_PROGRESS | Code compiled; 21 production tests pass including release-once; in-game key/frame behavior pending |
 | 9b. Test panel | Replace permanent help texttags, right scrollable collapse panel | P1 | IN_PROGRESS | Compiled, scroll/collapse runtime pending. TestMode-only; original commands documented, working commands unchanged |
 | 9c. Menu/camera | Functional native system buttons in compact menu, existing camera slider | P1 | IN_PROGRESS | Native menu drawer and camera placement compiled; runtime pending. Critical menus/hotkeys stay reachable; local camera only |
@@ -24,3 +24,8 @@ runtime evidence is recorded separately in PROGRESS.md.
 Do not write MAIN while World Editor runs. Preserve current dirty working tree.
 Do not recreate HeroIcons/shop/pick/combat data systems. Complete coherent blocks
 and update PLAN/PROGRESS/RESUME after each checkpoint.
+
+User addition: hero meters and unit buff timers need one shared dynamic placement
+system. WOSUI now provides registration, automatic compaction, smooth movement,
+native SIMPLEFRAME-safe buff icons and a WOSHeroMeter constructor for new owners.
+Runtime verification remains pending; implementation is checkpoint 6.
