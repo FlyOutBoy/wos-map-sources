@@ -36,6 +36,8 @@ class NativeCommandLayout(unittest.TestCase):
             'ModuloInteger': lambda a, b: a % b,
             'BlzFrameClearAllPoints': lambda *_: None,
             'BlzFrameSetSize': lambda *_: None,
+            'BlzFrameSetScale': lambda *_: None,
+            'BlzFrameSetVisible': lambda *_: None,
             'BlzFrameSetAbsPoint': lambda f, _, x, y: self.positions.update({f: (x, y)}),
         })
 

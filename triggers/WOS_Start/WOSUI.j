@@ -5,6 +5,9 @@ globals
     private leaderboard WUI_ServiceBoard = null
     private framehandle WUI_Root = null
     private framehandle WUI_SimpleRoot = null
+    private boolean WUI_FrameDefinitionsReady = false
+    private framehandle WUI_NativeBack = null
+    private framehandle array WUI_EmptyAbility
     private timer WUI_BootTimer = CreateTimer()
     private boolean WUI_Ready = false
     private integer WUI_ReadyCount = 0
@@ -91,11 +94,26 @@ function WUI_GetSimpleRoot takes nothing returns framehandle
     return WUI_SimpleRoot
 endfunction
 
+// Disabling a large FRAME is not a reliable mouse pass-through rule. FDF defines
+// IGNORETRACKEVENTS; absolute children work with a zero-area root.
+function WUI_Passive takes string name, framehandle parent returns framehandle
+    return BlzCreateFrameByType("FRAME", name, parent, "WOSPassiveFrame", 0)
+endfunction
+
 function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
     if frame != null then
         call BlzFrameClearAllPoints(frame)
         call BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(frame, width, height)
+    endif
+endfunction
+
+// Native wrappers contain fixed-size art, cooldowns, hotkeys and mouse buttons.
+// Resize the entire wrapper subtree; changing just its width leaves stock art.
+function WUI_PlaceNativeButton takes framehandle control, real x, real y, real size returns nothing
+    if control != null then
+        call BlzFrameSetScale(control, size / 0.039)
+        call WUI_Place(control, x, y, 0.039, 0.039)
     endif
 endfunction
 
@@ -132,7 +150,7 @@ endfunction
 // Eight independently anchored slices keep the generated metal corners square.
 // Decorations are passive normal frames; never reparent native SIMPLEFRAMEs.
 function WUI_OrnateBorder takes string name, framehandle owner, real corner returns framehandle
-    local framehandle edge = BlzCreateFrameByType("FRAME", name, owner, "", 0)
+    local framehandle edge = WUI_Passive(name, owner)
     local framehandle piece
     local integer i = 0
     local framepointtype anchor
@@ -187,6 +205,16 @@ function WUI_OrnateBorder takes string name, framehandle owner, real corner retu
     call BlzFrameSetEnable(piece, false)
     set piece = null
     set anchor = null
+    return edge
+endfunction
+
+// Window backgrounds sit inside the metal rails instead of beyond their inset.
+// The expanded ornament bounds are presentation-only and never a hit rectangle.
+function WUI_OrnateWindow takes string name, framehandle owner, real corner returns framehandle
+    local framehandle edge = WUI_OrnateBorder(name, owner, corner * 1.10)
+    call BlzFrameClearAllPoints(edge)
+    call BlzFrameSetPoint(edge, FRAMEPOINT_TOPLEFT, owner, FRAMEPOINT_TOPLEFT, -corner * 0.35, corner * 0.35)
+    call BlzFrameSetPoint(edge, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, corner * 0.35, -corner * 0.35)
     return edge
 endfunction
 
@@ -500,11 +528,19 @@ function WUI_LayoutCommands takes boolean compact returns nothing
     local real y
     set WUI_CompactCommands = compact
     loop
+        exitwhen i >= 7
+        if WUI_EmptyAbility[i] != null then
+            call BlzFrameSetVisible(WUI_EmptyAbility[i], compact)
+        endif
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
         exitwhen i >= 12
         if compact and i < 5 and not WUI_OrdersOpen then
-            call WUI_Place(WUI_Command[i], -0.20, -0.20, WUI_ICON_SIZE, WUI_ICON_SIZE)
+            call WUI_PlaceNativeButton(WUI_Command[i], -0.20, -0.20, WUI_ICON_SIZE)
         elseif compact and i < 5 then
-            call WUI_Place(WUI_Command[i], WUI_COMMAND_X + I2R(i) * WUI_COMMAND_STEP, 0.139, WUI_ICON_SIZE, WUI_ICON_SIZE)
+            call WUI_PlaceNativeButton(WUI_Command[i], WUI_COMMAND_X + I2R(i) * WUI_COMMAND_STEP, 0.139, WUI_ICON_SIZE)
         elseif not compact then
             // Ordinary units, shop and learn cards retain access to all 12 slots.
             set y = 0.016
@@ -512,7 +548,7 @@ function WUI_LayoutCommands takes boolean compact returns nothing
                 set y = 0.047
             endif
             // Both rows remain below MP; alternative cards cannot cover vitals.
-            call WUI_Place(WUI_Command[i], WUI_COMMAND_X + I2R(ModuloInteger(i, 6)) * WUI_COMMAND_STEP, y, 0.028, 0.028)
+            call WUI_PlaceNativeButton(WUI_Command[i], WUI_COMMAND_X + I2R(ModuloInteger(i, 6)) * WUI_COMMAND_STEP, y, 0.028)
         endif
         set i = i + 1
     endloop
@@ -520,7 +556,7 @@ function WUI_LayoutCommands takes boolean compact returns nothing
         set slot = 0
         loop
             exitwhen slot >= 7
-            call WUI_Place(WUI_Command[WUI_CommandSlot(slot)], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE, WUI_ICON_SIZE)
+            call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE)
             set slot = slot + 1
         endloop
     endif
@@ -534,7 +570,7 @@ private function WUI_ControlClick takes nothing returns nothing
             loop
                 exitwhen i >= 3
                 if WUI_MenuOpen then
-                    call WUI_Place(WUI_System[i], 0.730, 0.540 - I2R(i) * 0.025, 0.110, 0.021)
+                    call WUI_Place(WUI_System[i], 0.730, 0.509 - I2R(i) * 0.025, 0.110, 0.021)
                 else
                     call WUI_Place(WUI_System[i], -0.20, -0.20, 0.110, 0.021)
                 endif
@@ -632,7 +668,7 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     endif
     loop
         exitwhen i >= 6
-        call WUI_Place(WUI_Item[i], 0.630 + I2R(ModuloInteger(i, 3)) * 0.025, 0.060 - I2R(i / 3) * 0.025, 0.022, 0.022)
+        call WUI_PlaceNativeButton(WUI_Item[i], 0.630 + I2R(ModuloInteger(i, 3)) * 0.025, 0.062 - I2R(i / 3) * 0.027, 0.022)
         set i = i + 1
     endloop
     if WUI_Console != null then
@@ -689,9 +725,9 @@ function WUI_ShowNativeAbilitySlot takes integer slot, boolean visible returns n
         return
     endif
     if visible then
-        call WUI_Place(WUI_Command[WUI_CommandSlot(slot)], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE, WUI_ICON_SIZE)
+        call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE)
     else
-        call WUI_Place(WUI_Command[WUI_CommandSlot(slot)], -0.20, -0.20, WUI_ICON_SIZE, WUI_ICON_SIZE)
+        call WUI_PlaceNativeButton(WUI_Command[WUI_CommandSlot(slot)], -0.20, -0.20, WUI_ICON_SIZE)
     endif
 endfunction
 
@@ -746,35 +782,48 @@ function WUI_TextButton takes string name, framehandle parent, string caption, r
 endfunction
 
 private function WUI_CreateHUDChrome takes nothing returns nothing
-    local framehandle panel = BlzCreateFrameByType("FRAME", "WOSHUDSurface", WUI_Root, "", 0)
+    local framehandle panel = WUI_Passive("WOSHUDSurface", WUI_Root)
     local framehandle edge
-    local framehandle nativeBack
+    local framehandle texture
+    local integer slot = 0
     // Normal FRAMEs draw over native SIMPLEFRAME buttons. Their ornament center
     // must remain empty; an opaque chassis is created in the native family.
-    if WUI_SimpleRoot != null and BlzLoadTOCFile("UI\\WOS\\WOSHUD.toc") then
-        set nativeBack = BlzCreateSimpleFrame("WOSNativeHUDSurface", WUI_SimpleRoot, 9050)
-        call WUI_Place(nativeBack, 0.474, 0.054, 0.640, 0.104)
-        call BlzFrameSetLevel(nativeBack, 0)
-        call BlzFrameSetEnable(nativeBack, false)
+    if WUI_SimpleRoot != null and WUI_FrameDefinitionsReady then
+        set WUI_NativeBack = BlzCreateSimpleFrame("WOSNativeHUDSurface", WUI_SimpleRoot, 9050)
+        call WUI_Place(WUI_NativeBack, 0.474, 0.054, 0.640, 0.104)
+        call BlzFrameSetLevel(WUI_NativeBack, 1)
+        set texture = BlzGetFrameByName("WOSNativeHUDTexture", 9050)
+        if texture != null then
+            call BlzFrameSetTexture(texture, WUI_PANEL_TEXTURE, 0, true)
+        endif
+        call BlzFrameSetVisible(WUI_NativeBack, true)
+        loop
+            exitwhen slot >= 7
+            set WUI_EmptyAbility[slot] = BlzCreateSimpleFrame("WOSNativeEmptyAbility", WUI_SimpleRoot, 9060 + slot)
+            call WUI_Place(WUI_EmptyAbility[slot], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE, WUI_ICON_SIZE)
+            call BlzFrameSetLevel(WUI_EmptyAbility[slot], 1)
+            call BlzFrameSetVisible(WUI_EmptyAbility[slot], WUI_CompactCommands)
+            set slot = slot + 1
+        endloop
     endif
     call WUI_Place(panel, 0.474, 0.054, 0.640, 0.104)
     call BlzFrameSetEnable(panel, false)
-    set edge = WUI_OrnateBorder("WOSHUDMetal", panel, 0.024)
-    set panel = BlzCreateFrameByType("FRAME", "WOSMinimapSurface", WUI_Root, "", 0)
+    set edge = WUI_OrnateWindow("WOSHUDMetal", panel, 0.024)
+    set panel = WUI_Passive("WOSMinimapSurface", WUI_Root)
     call WUI_Place(panel, 0.074, 0.074, 0.148, 0.148)
     call BlzFrameSetEnable(panel, false)
     set edge = WUI_OrnateBorder("WOSMinimapMetal", panel, 0.025)
-    set panel = BlzCreateFrameByType("FRAME", "WOSInventorySurface", WUI_Root, "", 0)
+    set panel = WUI_Passive("WOSInventorySurface", WUI_Root)
     call WUI_Place(panel, 0.660, 0.049, 0.090, 0.082)
     call BlzFrameSetEnable(panel, false)
-    set edge = WUI_OrnateBorder("WOSInventoryMetal", panel, 0.012)
+    set edge = WUI_OrnateWindow("WOSInventoryMetal", panel, 0.012)
     set panel = WUI_Panel("WOSToolbarSurface", WUI_Root, 0.088, 0.082)
     call WUI_Place(panel, 0.746, 0.049, 0.088, 0.082)
     call BlzFrameSetEnable(panel, false)
-    set edge = WUI_OrnateBorder("WOSToolbarMetal", panel, 0.012)
+    set edge = WUI_OrnateWindow("WOSToolbarMetal", panel, 0.012)
     set panel = null
     set edge = null
-    set nativeBack = null
+    set texture = null
 endfunction
 
 private function WUI_TryNativeLayout takes nothing returns nothing
@@ -818,6 +867,10 @@ function WUI_RestoreCompactNative takes nothing returns nothing
     endif
     call BlzFrameSetVisible(WUI_CommandBar, true)
     call BlzFrameSetVisible(WUI_NativeDetailParent, true)
+    call WUI_HideNativeDeadZone()
+    if WUI_NativeBack != null then
+        call BlzFrameSetVisible(WUI_NativeBack, true)
+    endif
     call WUI_LayoutCommands(WUI_CompactCommands)
 endfunction
 
@@ -877,7 +930,7 @@ private function WUI_CreateControls takes nothing returns nothing
     call BlzFrameSetAllPoints(text, WUI_Orders)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(text, 0.80)
-    call BlzFrameSetText(text, "|cffd5b876Orders / Learn|r")
+    call BlzFrameSetText(text, "|cffd5b876Orders|r")
     call BlzFrameSetEnable(text, false)
     call BlzTriggerRegisterFrameEvent(events, WUI_Menu, FRAMEEVENT_CONTROL_CLICK)
     call BlzTriggerRegisterFrameEvent(events, WUI_Orders, FRAMEEVENT_CONTROL_CLICK)
@@ -992,10 +1045,11 @@ private function WUI_Bootstrap takes nothing returns nothing
             call BlzFrameSetText(part, "")
         endif
     endif
-    set WUI_Root = BlzCreateFrameByType("FRAME", "WOSIndependentRoot", board, "", 0)
-    call BlzFrameSetAbsPoint(WUI_Root, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
-    call BlzFrameSetAbsPoint(WUI_Root, FRAMEPOINT_TOPRIGHT, 0.80, 0.60)
-    call BlzFrameSetEnable(WUI_Root, false)
+    set WUI_FrameDefinitionsReady = BlzLoadTOCFile("UI\\WOS\\WOSHUD.toc")
+    set WUI_Root = WUI_Passive("WOSIndependentRoot", board)
+    call WUI_Place(WUI_Root, 0.00, 0.00, 0.0001, 0.0001)
+    // Never disable the ancestor of interactive controls.
+    call BlzFrameSetEnable(WUI_Root, true)
     call BlzFrameSetVisible(WUI_Root, true)
     call WUI_CreateTestHelp()
     call WUI_CreateControls()

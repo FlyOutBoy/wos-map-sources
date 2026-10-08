@@ -1,10 +1,32 @@
+// Containers and ornament rails never own mouse input, even while visible.
+Frame "FRAME" "WOSPassiveFrame" {
+    LayerStyle "IGNORETRACKEVENTS",
+}
+
 // Passive native-family surface stays below real command and inventory buttons.
 Frame "SIMPLEFRAME" "WOSNativeHUDSurface" {
     Width 0.640,
     Height 0.104,
-    Texture "WOSNativeHUDTexture" {
-        SetAllPoints,
-        File "UI\WOS\panel.tga",
-        AlphaMode "BLEND",
+    Layer "BACKGROUND" {
+        Texture "WOSNativeHUDTexture" {
+            // Texture inherits the SIMPLEFRAME's actual size.
+            File "UI\WOS\panel.tga",
+            AlphaMode "BLEND",
+        }
+    }
+}
+
+Frame "SIMPLEFRAME" "WOSNativeEmptyAbility" {
+    Width 0.036,
+    Height 0.036,
+    Layer "BACKGROUND" {
+        Texture "WOSEmptyAbilityBack" {
+            File "Textures\black32.blp",
+            AlphaMode "BLEND",
+        }
+        Texture "WOSEmptyAbilityBorder" {
+            File "UI\WOS\border.tga",
+            AlphaMode "BLEND",
+        }
     }
 }

@@ -295,6 +295,10 @@ function WOS_ModeFrameClick takes nothing returns nothing
     loop
         exitwhen i >= 4
         if BlzGetTriggerFrame() == WOS_ModeButton[i] then
+            if GetLocalPlayer() == GetTriggerPlayer() then
+                call BlzFrameSetEnable(WOS_ModeButton[i], false)
+                call BlzFrameSetEnable(WOS_ModeButton[i], true)
+            endif
             if i == 0 then
                 call WOS_SelectMode(1)
             elseif i == 1 then
@@ -316,21 +320,23 @@ function WOS_CreateModeSelector takes nothing returns nothing
     local framehandle panel
     local framehandle title
     local trigger events = CreateTrigger()
-    set WOS_ModeRoot = BlzCreateFrameByType("FRAME", "WOSModeSelector", WUI_GetRoot(), "", 0)
+    set WOS_ModeRoot = WUI_Passive("WOSModeSelector", WUI_GetRoot())
     call WUI_RegisterModal(WOS_ModeRoot)
     call BlzFrameSetLevel(WOS_ModeRoot, 30)
     set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
-    call WUI_Place(panel, 0.400, 0.330, 0.270, 0.275)
-    set title = WUI_OrnateBorder("WOSModeMetal", panel, 0.032)
+    call WUI_Place(panel, 0.400, 0.323, 0.270, 0.261)
+    set title = WUI_OrnateWindow("WOSModeMetal", panel, 0.032)
     set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
     call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)
     call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(title, WUI_GOLD + "CHOOSE GAME MODE|r")
+    call BlzFrameSetEnable(title, false)
     set title = BlzCreateFrameByType("TEXT", "WOSModeHint", panel, "", 0)
     call WUI_Place(title, 0.400, 0.410, 0.240, 0.018)
     call BlzFrameSetScale(title, 0.78)
     call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(title, "Host selects a mode - Normal after 20s")
+    call BlzFrameSetEnable(title, false)
     loop
         exitwhen i >= 4
         if i == 0 then

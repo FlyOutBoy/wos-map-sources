@@ -45,7 +45,7 @@ class NativeChassis(unittest.TestCase):
 
 
 class ShopTree(unittest.TestCase):
-    def test_top_tabs_clear_the_larger_leftward_catalogue(self):
+    def test_footer_tabs_clear_the_leftward_catalogue(self):
         vm, pos, size = layout_fixture.ShopAndPickLayout().layout('WoS_Shop_Init.j','WOS_LayoutShop')
         tabs = [pos[vm.g['FRAME_ShopSection'][i]] for i in range(7)]
         self.assertEqual(1, len({y for x,y in tabs}))
@@ -53,8 +53,8 @@ class ShopTree(unittest.TestCase):
         self.assertLess(pos[vm.g['FRAME_ShopItem'][0]][0], .10)
         for i in range(35):
             self.assertEqual((.040,.040), size[vm.g['FRAME_ShopItem'][i]])
-        list_top = pos['FRAME_ShopItemList'][1] + size['FRAME_ShopItemList'][1]/2
-        self.assertGreater(tabs[0][1] - size[vm.g['FRAME_ShopSection'][0]][1]/2, list_top)
+        list_bottom = pos['FRAME_ShopItemList'][1] - size['FRAME_ShopItemList'][1]/2
+        self.assertLess(tabs[0][1] + size[vm.g['FRAME_ShopSection'][0]][1]/2, list_bottom)
 
     def test_recipe_branch_visibility_changes_with_actual_relations(self):
         vm = load_source('WoS_Shop_Init.j')

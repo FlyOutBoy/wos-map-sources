@@ -427,7 +427,7 @@ function ReloadAfterPick takes player p returns nothing
                     call BlzFrameSetVisible(FRAME_HeroArmor, false)
                     call BlzFrameSetVisible(FRAME_HeroMS, false)
                     call BlzFrameSetVisible(FRAME_HeroAS, false)
-                    call BlzFrameSetText(FRAME_HeroName, "Hero Name")
+                    call WUI_SetButtonCaption(FRAME_HeroName, "Hero Name")
                 endif
 //call ReloadHeroPage(PlayerFrameCurrentPage_ID[k], Player(k))
             endif
@@ -504,7 +504,7 @@ function CaptainDraft_ClearHeroPreview takes integer pid returns nothing
     call BlzFrameSetVisible(FRAME_HeroMS, false)
     call BlzFrameSetVisible(FRAME_HeroAS, false)
     call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
-    call BlzFrameSetText(FRAME_HeroName, "Hero Name")
+    call WUI_SetButtonCaption(FRAME_HeroName, "Hero Name")
 endfunction
 
 function CaptainDraft_ApplyPending takes nothing returns nothing
@@ -1194,7 +1194,7 @@ function OnClick takes nothing returns nothing
             call BlzFrameSetVisible(FRAME_HeroArmor, false)
             call BlzFrameSetVisible(FRAME_HeroMS, false)
             call BlzFrameSetVisible(FRAME_HeroAS, false)
-            call BlzFrameSetText(FRAME_HeroName, "Hero Name")
+            call WUI_SetButtonCaption(FRAME_HeroName, "Hero Name")
         endif
         if clicked == Frame_PageHeroList[0] then
             set PlayerFrameCurrentPage_ID[pid] = 1
@@ -1553,7 +1553,7 @@ endif
                 call BlzFrameSetVisible(FRAME_HeroMS, true)
                 call BlzFrameSetVisible(FRAME_HeroAS, true)
                 call BlzFrameSetTexture(FRAME_HeroModel, heroModelPath, 0, false)
-                call BlzFrameSetText(FRAME_HeroName, s_name)
+                call WUI_SetButtonCaption(FRAME_HeroName, s_name)
                 call BlzFrameSetText(FRAME_HeroStr, heroStrText)
                 call BlzFrameSetText(FRAME_HeroAgi, heroAgiText)
                 call BlzFrameSetText(FRAME_HeroInt, heroIntText)
@@ -2853,11 +2853,12 @@ endfunction
 function WOS_LayoutHeroPick takes nothing returns nothing
     local integer i = 0
     local real x
+    local real y
     call WUI_Place(FRAME_MAIN, 0.420, 0.331, 0.656, 0.426)
     call WUI_Place(FRAME_MAIN2, 0.380, 0.362, 0.222, 0.304)
     call WUI_Place(FRAME_MAIN3, 0.608, 0.362, 0.230, 0.304)
-    call WUI_Place(FRAME_HeroName, 0.608, 0.492, 0.159, 0.022)
-    call BlzFrameSetScale(FRAME_HeroName, 0.82)
+    call WUI_Place(FRAME_HeroName, 0.608, 0.492, 0.159, 0.024)
+    call BlzFrameSetScale(FRAME_HeroName, 1.00)
     call WUI_Place(FRAME_HeroAttribute, 0.510, 0.492, 0.022, 0.022)
     call WUI_Place(FRAME_HeroAttackType, 0.706, 0.492, 0.022, 0.022)
     call WUI_Place(FRAME_HeroModel, 0.608, 0.410, 0.110, 0.110)
@@ -2879,8 +2880,10 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     call BlzFrameSetScale(FRAME_HeroArmor, 0.78)
     call BlzFrameSetScale(FRAME_HeroMS, 0.78)
     call BlzFrameSetScale(FRAME_HeroAS, 0.78)
-    call WUI_Place(FRAME_PlayerPickDifficultText, 0.183, 0.190, 0.152, 0.017)
-    call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 0.83)
+    call WUI_Place(FRAME_PlayerPickDifficultText, 0.420, 0.191, 0.240, 0.020)
+    call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 1.10)
+    call BlzFrameSetTextAlignment(FRAME_PlayerPickDifficultText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(FRAME_PlayerPickDifficultText, false)
     call WUI_Place(FRAME_TimerToStart, 0.400, 0.526, 0.510, 0.016)
     call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_TimerToStart, 0.94)
@@ -2904,7 +2907,14 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     set i = 0
     loop
         exitwhen i >= 7
-        call WUI_Place(FRAME_ICON5[i], 0.512 + I2R(i) * 0.032, 0.238, 0.029, 0.029)
+        // Original working pick: QWERT below, F/G in the row above at right.
+        set x = 0.518 + I2R(i) * 0.042
+        set y = 0.236
+        if i >= 5 then
+            set x = 0.644 + I2R(i - 5) * 0.042
+            set y = 0.274
+        endif
+        call WUI_Place(FRAME_ICON5[i], x, y, 0.026, 0.026)
         call BlzFrameClearAllPoints(FRAME_AbiText[i])
         call BlzFrameSetPoint(FRAME_AbiText[i], FRAMEPOINT_TOP, FRAME_ICON5[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
         call BlzFrameSetScale(FRAME_AbiText[i], 0.67)
@@ -2949,15 +2959,14 @@ function WOS_CreatePickShell takes nothing returns nothing
     set FRAME_MAIN2 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
     call WUI_Place(FRAME_MAIN2, 0.380, 0.362, 0.222, 0.304)
     set FRAME_MAIN3 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
-    set border = WUI_OrnateBorder("WOSPickMainMetal", FRAME_MAIN, 0.029)
-    set border = WUI_OrnateBorder("WOSPickCatalogueMetal", FRAME_MAIN2, 0.021)
-    set border = WUI_OrnateBorder("WOSPickPreviewMetal", FRAME_MAIN3, 0.021)
+    set border = WUI_OrnateWindow("WOSPickMainMetal", FRAME_MAIN, 0.029)
+    set border = WUI_OrnateWindow("WOSPickCatalogueMetal", FRAME_MAIN2, 0.021)
+    set border = WUI_OrnateWindow("WOSPickPreviewMetal", FRAME_MAIN3, 0.021)
     call WUI_Place(FRAME_MAIN3, 0.608, 0.362, 0.230, 0.304)
-    set FRAME_HeroName = BlzCreateFrame("ScriptDialogButton", FRAME_MAIN3, 0, 9030)
-    call WUI_StyleButton(FRAME_HeroName)
+    set FRAME_HeroName = WUI_TextButton("WOSPickHeroName", FRAME_MAIN3, "Hero Name", 0.159, 0.024)
     call BlzFrameSetAbsPoint(FRAME_HeroName, FRAMEPOINT_CENTER, 0.645, 0.51)
     call BlzFrameSetSize(FRAME_HeroName, 0.15, 0.03)
-    call BlzFrameSetText(FRAME_HeroName, "Hero Name")
+    call WUI_SetButtonCaption(FRAME_HeroName, "Hero Name")
     call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_HeroName, FRAMEEVENT_CONTROL_CLICK)
     set FRAME_PlayerPickDifficultText = BlzCreateFrameByType("TEXT", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)
     call BlzFrameSetAbsPoint(FRAME_PlayerPickDifficultText, FRAMEPOINT_CENTER, 0.395, 0.0675)

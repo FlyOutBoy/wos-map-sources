@@ -825,6 +825,17 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         return
     endif
 
+    // Own row contains only Warcraft's learned commands. Empty cells are drawn
+    // underneath by the passive native HUD, never DISBTN or substitute orders.
+    if ownHero then
+        call AHUI_HideSlot(pid, slot)
+        if abilityId != 0 then
+            set level = GetUnitAbilityLevel(AHUI_SelectedHero[pid], abilityId)
+        endif
+        call WUI_ShowNativeAbilitySlot(slot, abilityId != 0 and level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], Player(pid), abilityId))
+        return
+    endif
+
     if abilityId == 0 then
         call AHUI_HideSlot(pid, slot)
         call BlzFrameSetTexture(AHUI_Icon[index], "UI\\WOS\\disabled.tga", 0, true)
@@ -855,23 +866,9 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     call BlzFrameSetVisible(AHUI_Icon[index], true)
     call BlzFrameSetVisible(AHUI_KeyText[index], true)
 
-    if ownHero then
-        call WUI_ShowNativeAbilitySlot(slot, level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], Player(pid), abilityId))
-        // Learned own abilities stay real native commands: click, targeting,
-        // costs, cooldowns and orders remain handled by Warcraft itself.
-        if level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], Player(pid), abilityId) then
-            set AHUI_SlotVisible[index] = false
-            call BlzFrameSetVisible(AHUI_Icon[index], false)
-            call BlzFrameSetVisible(AHUI_CooldownFill[index], false)
-            call BlzFrameSetVisible(AHUI_CooldownText[index], false)
-            set iconPath = null
-            return
-        endif
-    endif
-
     // Неизученная или сейчас отсутствующая способность остаётся видимой как
     // DISBTN, но без выдуманного таймера.
-    if level <= 0 or ownHero then
+    if level <= 0 then
         set AHUI_CooldownPeak[index] = 0.00
         set AHUI_LastRemaining[index] = 0.00
         call BlzFrameSetAlpha(AHUI_Icon[index], 0)
@@ -1260,7 +1257,7 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
             exitwhen slot >= AHUI_SLOT_COUNT
             set index = AHUI_FrameIndex(pid, slot)
 
-            set AHUI_Root[index] = BlzCreateFrameByType("FRAME", "AHUIRoot", console, "", index)
+            set AHUI_Root[index] = BlzCreateFrameByType("FRAME", "AHUIRoot", console, "WOSPassiveFrame", index)
             call BlzFrameClearAllPoints(AHUI_Root[index])
             call BlzFrameSetSize(AHUI_Root[index], AHUI_ICON_SIZE, AHUI_ICON_SIZE)
             // A normal FRAME cannot safely anchor to a native SIMPLEFRAME tree.

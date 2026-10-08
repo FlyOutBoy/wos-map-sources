@@ -1,5 +1,28 @@
 # UI redesign plan
 
+## Checkpoint 14a — input and geometry source correction complete
+
+Implemented WOSPassiveFrame FDF with IGNORETRACKEVENTS for root/decorations,
+zero-area independent root with interactive ancestors enabled; mode text passive.
+Root/decorative full rectangles were concrete mouse-control suspects (game input
+confirmation still pending). Mode panel top trimmed; window ornament +10% corners
+and outside-rail padding; button styling retained. Native commands/items resize
+the complete wrapper subtree, not only the outer rectangle (stock art 0.039 base).
+Six items: 0.022, 3 columns/2 rows, 0.025/0.027 spacing. Chassis uses native FDF
+BACKGROUND texture explicitly initialized and restored visible after pick.
+Seven empty SIMPLEFRAME cells below real commands; own unlearned/hidden/absent
+ability overlays are completely hidden, learned commands remain native.
+Pick baseline 7b3aca7 was read: F/G upper-right, QWERT below and difficulty centered
+under preview/catalogue; restored these relationships using new compact bounds.
+Hero-name uses actual styled TextButton and all existing caption updates retained.
+Selected stat card width 0.096 (was 0.178), attributes and resist values vertical,
+portrait remains real selected-unit icon. Gold gets ResourceGold.blp icon.
+Shop categories integrated into bottom bar, search above, catalogue/pager spaced,
+cost labels centered/passive, recipe branch graph/crafting data unchanged.
+Menu drawer below openers. 81 regressions PASS; compile-only PASS (147695 lines).
+Native MAIN NOT written yet. Next: guarded push, real MAIN build, packed-byte
+verification and game launch/log inspection; do not play compile-only artifact.
+
 ## Checkpoint 14 — active correction from actual game screenshots
 
 User screenshots confirm checkpoint 13 loads, but expose blocked mode/world clicks,

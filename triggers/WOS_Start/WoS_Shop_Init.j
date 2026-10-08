@@ -2497,32 +2497,35 @@ function WOS_LayoutShop takes nothing returns nothing
     local real joinY
     local real distance
     call WUI_Place(FRAME_ShopMAIN, 0.400, 0.343, 0.756, 0.366)
-    call WUI_Place(FRAME_ShopItemList, 0.248, 0.352, 0.414, 0.266)
+    call WUI_Place(FRAME_ShopItemList, 0.248, 0.368, 0.414, 0.284)
     call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.379, 0.182, 0.208)
     call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.217, 0.182, 0.104)
     call WUI_Place(FRAME_ShopItemInventory, 0.710, 0.324, 0.118, 0.318)
     call WUI_Place(FRAME_ShopRecipeTitle, 0.554, 0.473, 0.157, 0.012)
     call WUI_Place(FRAME_ShopItemDescriptionName, 0.554, 0.255, 0.158, 0.016)
     call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.85)
-    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.211, 0.158, 0.066)
+    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.209, 0.158, 0.077)
     call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-    call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.92)
+    call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.80)
+    call BlzFrameSetEnable(FRAME_ShopItemDescriptionName2, false)
     call WUI_Place(FRAME_ShopItemInventoryName, 0.710, 0.468, 0.110, 0.016)
     call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.90)
-    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.190, 0.047, 0.016)
+    call BlzFrameSetTextAlignment(FRAME_ShopItemInventoryName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(FRAME_ShopItemInventoryName, false)
+    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.209, 0.047, 0.016)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.85)
-    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.190, 0.200, 0.025)
-    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.190, 0.019, 0.019)
-    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.208, 0.015, 0.015)
-    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.208, 0.039, 0.012)
+    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.209, 0.200, 0.025)
+    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.209, 0.019, 0.019)
+    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.518, 0.015, 0.015)
+    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.518, 0.039, 0.012)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
-    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.208, 0.015, 0.015)
-    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.190, 0.017, 0.017)
-    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.190, 0.085, 0.016)
+    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.518, 0.015, 0.015)
+    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.209, 0.017, 0.017)
+    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.209, 0.085, 0.016)
     call BlzFrameSetScale(FRAME_AutoBuyText, 0.90)
     loop
         exitwhen i >= 7
-        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.502, 0.098, 0.030)
+        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.178, 0.098, 0.030)
         set i = i + 1
     endloop
     set i = 0
@@ -2531,10 +2534,12 @@ function WOS_LayoutShop takes nothing returns nothing
         set column = ModuloInteger(i, 7)
         set row = i / 7
         set x = 0.068 + I2R(column) * 0.058
-        set y = 0.453 - I2R(row) * 0.053
+        set y = 0.469 - I2R(row) * 0.053
         call WUI_Place(FRAME_ShopItem[i], x, y, 0.040, 0.040)
         call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.027, 0.047, 0.010)
         call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
+        call BlzFrameSetTextAlignment(FRAME_ShopItemCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(FRAME_ShopItemCost[i], false)
         set i = i + 1
     endloop
     set i = 36
@@ -2552,6 +2557,8 @@ function WOS_LayoutShop takes nothing returns nothing
         call WUI_Place(FRAME_ShopItem[i], x, y, 0.036, 0.036)
         call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.026, 0.046, 0.010)
         call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
+        call BlzFrameSetTextAlignment(FRAME_ShopItemCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(FRAME_ShopItemCost[i], false)
         set i = i + 1
     endloop
     call BlzFrameSetAllPoints(FRAME_ShopItemCraftSprite, FRAME_ShopItem[42])
@@ -2592,6 +2599,8 @@ function WOS_LayoutShop takes nothing returns nothing
         call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.037, 0.037)
         call WUI_Place(FRAME_ShopItemInventorySlotCost[i], x, y - 0.026, 0.049, 0.010)
         call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.88)
+        call BlzFrameSetTextAlignment(FRAME_ShopItemInventorySlotCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(FRAME_ShopItemInventorySlotCost[i], false)
         set i = i + 1
     endloop
 endfunction
@@ -2795,11 +2804,11 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetLevel(FRAME_ShopItemCraftSprite2, 25)
     call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
 
-    set border = WUI_OrnateBorder("ShopMainMetal", FRAME_ShopMAIN, 0.027)
-    set border = WUI_OrnateBorder("ShopCatalogueMetal", FRAME_ShopItemList, 0.020)
-    set border = WUI_OrnateBorder("ShopRecipeMetal", FRAME_ShopItemCraft, 0.021)
-    set border = WUI_OrnateBorder("ShopDescriptionMetal", FRAME_ShopItemDescription, 0.018)
-    set border = WUI_OrnateBorder("ShopInventoryMetal", FRAME_ShopItemInventory, 0.021)
+    set border = WUI_OrnateWindow("ShopMainMetal", FRAME_ShopMAIN, 0.027)
+    set border = WUI_OrnateWindow("ShopCatalogueMetal", FRAME_ShopItemList, 0.020)
+    set border = WUI_OrnateWindow("ShopRecipeMetal", FRAME_ShopItemCraft, 0.021)
+    set border = WUI_OrnateWindow("ShopDescriptionMetal", FRAME_ShopItemDescription, 0.018)
+    set border = WUI_OrnateWindow("ShopInventoryMetal", FRAME_ShopItemInventory, 0.021)
     set FRAME_ShopRecipeTitle = BlzCreateFrameByType("TEXT", "ShopRecipeTitle", FRAME_ShopItemCraft, "", 0)
     call BlzFrameSetTextAlignment(FRAME_ShopRecipeTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopRecipeTitle, 0.82)

@@ -192,16 +192,16 @@ class AllyAbilityUI(unittest.TestCase):
         self.assertFalse(self.vm.run('AHUI_CanReadCooldown',(self.c,0)))
         self.assertTrue(self.vm.run('AHUI_CanReadCooldown',(self.c,10)))
 
-    def test_own_hero_keeps_learned_native_commands_and_shows_unlearned_icons(self):
+    def test_own_hero_keeps_native_commands_and_leaves_unlearned_cells_empty(self):
         self.c.owner = self.viewer
         del self.c.abilities[self.vm.g['CrocodileW_ID']]
         self.refresh()
         self.assertFalse(self.reads, 'Own commands use the native cooldown renderer')
         for slot in range(7):
-            self.assertTrue(self.value('AHUI_Root',slot,'visible'))
-            self.assertTrue(self.value('AHUI_KeyText',slot,'visible'))
+            self.assertFalse(self.value('AHUI_Root',slot,'visible'))
+            self.assertFalse(self.value('AHUI_KeyText',slot,'visible'))
         self.assertFalse(self.frames[('native',1),'visible'])
-        self.assertTrue(self.value('AHUI_CooldownFill',1,'visible'))
+        self.assertFalse(self.value('AHUI_CooldownFill',1,'visible'))
         self.assertFalse(self.value('AHUI_CooldownText',1,'visible'))
         self.assertTrue(self.frames[('native',0),'visible'])
         self.assertFalse(self.value('AHUI_Icon',0,'visible'))
@@ -210,24 +210,24 @@ class AllyAbilityUI(unittest.TestCase):
         self.assertTrue(self.frames[('native',1),'visible'])
         self.assertFalse(self.value('AHUI_CooldownFill',1,'visible'))
 
-    def test_hidden_own_ability_keeps_its_placeholder_without_exposing_stock_occupant(self):
+    def test_hidden_own_ability_leaves_empty_cell_without_exposing_stock_occupant(self):
         self.c.owner = self.viewer
         ability = self.vm.g['CrocodileF_ID']
         self.vm.run('AHUI_OnBlzUnitHideAbility',(self.c,ability,True))
         self.refresh()
         self.assertFalse(self.frames[('native',5),'visible'])
-        self.assertTrue(self.value('AHUI_KeyText',5,'visible'))
-        self.assertTrue(self.value('AHUI_CooldownFill',5,'visible'))
+        self.assertFalse(self.value('AHUI_KeyText',5,'visible'))
+        self.assertFalse(self.value('AHUI_CooldownFill',5,'visible'))
         self.assertFalse(self.value('AHUI_CooldownText',5,'visible'))
         self.assertFalse(self.reads)
 
-    def test_empty_slot_still_has_a_key_and_does_not_leave_a_native_learn_button(self):
+    def test_empty_slot_has_no_icon_or_native_learn_button(self):
         self.c.owner = self.viewer
         self.vm.g['AHUI_CurrentAbility'][6] = 0
         self.vm.run('AHUI_RefreshSlot',(0,6))
-        self.assertTrue(self.value('AHUI_Root',6,'visible'))
-        self.assertTrue(self.value('AHUI_KeyText',6,'visible'))
-        self.assertEqual('UI\\WOS\\disabled.tga',self.value('AHUI_Icon',6,'texture'))
+        self.assertFalse(self.value('AHUI_Root',6,'visible'))
+        self.assertFalse(self.value('AHUI_KeyText',6,'visible'))
+        self.assertFalse(self.value('AHUI_Icon',6,'visible'))
         self.assertFalse(self.frames[('native',6),'visible'])
         self.assertFalse(self.reads)
 
