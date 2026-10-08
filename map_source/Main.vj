@@ -26,6 +26,7 @@
 //! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
 //! import "..\triggers\WOS_Start\Leave.j"
 //! import "..\triggers\WOS_Start\TeamMapPings.j"
+//! import "..\triggers\WOS_Start\WOSUI.j"
 //! import "..\triggers\Round_End\RoundEnd.j"
 //! import "..\triggers\Systems\CastAItems.j"
 //! import "..\triggers\Systems\TasBox.j"
@@ -109,7 +110,6 @@
 //! import "..\triggers\Heroes\Erza\ErzaBase.j"
 //! import "..\triggers\Heroes\Milim.j"
 //! import "..\triggers\Heroes\Crocodile.j"
-//! import "..\triggers\WOS_Start\WOSUI.j"
 // END AUTO TRIGGER IMPORTS
 
 globals

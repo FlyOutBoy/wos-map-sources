@@ -12,3 +12,5 @@
 - Existing `assets/UI/TeamPings` 16 wheel/minimap/toolbar textures remain usable.
 - No downloaded/external runtime resources. Every game path is inside map imports.
 - Runtime style quality has not yet been inspected in Warcraft.
+- Checkpoint 10: all 13 shared UI + 16 ping resources installed/registered in MAIN;
+  extracted packed archive bytes match the native scenario and project assets.

@@ -1,9 +1,10 @@
 # MAIN integration after editor closure
 
-Required user reply is pending. Do not ask again or bypass the process guard.
+User confirmed closure and checkpoint 10 integration has completed successfully.
+These steps are retained for subsequent changes; do not bypass the process guard.
 World Editor does not reload external WTG/WCT and can overwrite corrected sources.
-Do not run build while editor is open: asset installation happens before the later
-compiled-script guard in the build script.
+The build now rejects an open editor before changing MAIN source/imports; a later
+compiled-script guard also protects against the editor opening during compilation.
 
 ## 1. Confirm process state, then push
 

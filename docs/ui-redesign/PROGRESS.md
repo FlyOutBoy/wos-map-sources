@@ -212,3 +212,38 @@
 - Next action: once user confirms closure and guard is false, integrate and build
   full MAIN, verify native WTG/WCT identities and all 29 resource imports, extract
   and compare all 33 archive entries. Actual game/native interactions remain pending.
+
+## Checkpoint 10 — real MAIN integration and packed archive verification
+
+- User confirmed editor closed. Process guard FALSE; guarded push wrote 109 native
+  triggers (46 updated + new WOSUI) and refreshed manifest/settings/dependencies.
+  Backup: backups/trigger-sync/2026-10-08_200834_844462/map-before-push.
+- MAIN build PASS with original map initialization, 106 enabled triggers + header,
+  3 disabled triggers, no unresolved required dependencies. Actual compiled main
+  initializes WOSUI before GearSystems2/AllyHeroAbilityUI/selected HUD and original
+  InitCustomTriggers/RunInitializationTriggers. pjass PASS: 147876 total lines.
+- Installed 13 shared UI textures; 16 existing ping assets already matched. Asset
+  backup: backups/ui-redesign/assets/20261008-200844-860447. Native compiled-script
+  backup: backups/main-map-build/20261008-200916-304. Native scenario now contains
+  updated WTG/WCT/imports/assets/compiled script; no object-data/gameplay edits here.
+- Packed full MAIN: _build/WoS_Test.w3x, 6360 files. SHA256:
+  a05ba35dffdc08205d81b6dbdf75b2bde7e21ec5115941eb449b7344c1e00ad6.
+  Independent native verification PASS: all 109 WCT identities/order and 29 imports.
+  All 33 extracted archive entries byte-match native MAIN; verification report at
+  _build/ui-redesign/integration-verification.json; full compile log saved beside it.
+- Fixed build guard ordering: open editor now blocks before MAIN source/import
+  mutations. Mocked real PowerShell process check rejects with exit 1 and preserves
+  hashes of WTG/WCT/imp/script/Main.vj. Existing late guard retained for compile race.
+- Archive verifier initially exposed extraction skipping slash-separated nested
+  paths. Extractor now normalizes SFmpq paths and rejects explicitly requested
+  missing entries. Real 33-entry extraction PASS; deliberate missing-entry check
+  correctly fails. No map rebuild needed for this extraction-only fix.
+- Prior 53 tests PASS; trigger sync 3 + workflow 8 rerun after metadata integration
+  also PASS. git diff --check PASS after restoring only five originally clean,
+  owned generated log/backup files; actual map source and metadata retained.
+- Checkpoint 9 committed as f89ef4d. All recovery/owner/asset docs updated again.
+  No pending editor-closure question. Full game UI/runtime remains UNVERIFIED.
+- Next action: test _build/WoS_Test.w3x in Warcraft using OWNER_STATUS runtime
+  matrix; use real screenshots/interaction evidence to correct any native frame,
+  hover/drag/learn/menu/selection/resolution issues. Do not redo completed migration
+  or MAIN import work. Multiplayer/fog testing also remains required.

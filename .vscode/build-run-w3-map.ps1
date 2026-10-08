@@ -167,6 +167,11 @@ try {
         $source = & (Join-Path $PSScriptRoot 'prepare-test-map.ps1') -OutputDirectory $buildDir
         $profileName = "TEST / $testHero"
     } else {
+        # Reject before changing MAIN source/imports or packing a stale editor map.
+        # Keep the later script guard too, in case the editor opens during compile.
+        if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {
+            throw "World Editor is running. Close the map WITHOUT saving before building MAIN; it can overwrite externally changed WTG/WCT files."
+        }
         $profileName = "MAIN"
         $originalMap = Resolve-WorkspacePath ([string]$config.mainMap)
         $source = Resolve-WorkspacePath ([string]$config.mainSource)

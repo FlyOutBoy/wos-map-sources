@@ -2,6 +2,8 @@
 
 Owner: `triggers/WOS_Start/WOSUI.j`. Current implementation compiled; actual
 Warcraft visibility, fonts and movement still need a game run.
+Native MAIN and _build/WoS_Test.w3x now include this implementation (checkpoint 10);
+full map build, source identities and packed UI resource bytes verified.
 
 - `WUI_HeroMeter(panel, back, bar, icon, title, value)` styles six existing handles.
 - `WUI_RegisterMeter(panel, playerId, stableKey)` attaches a private hero meter.

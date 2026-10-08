@@ -1,8 +1,9 @@
 # Production UI owner status
 
 Implementation and native/game verification are distinct. Every row below is
-implemented in project code and compiled; MAIN integration and Warcraft runtime
-are PENDING while editor closure is outstanding. None is marked runtime DONE.
+implemented in project code and compiled. MAIN integration PASS: 109 native
+sources, 29 imports and 33 packed entries verified. Warcraft runtime remains
+PENDING for every row; none is marked runtime DONE.
 
 | Owner | Implemented boundary / remaining verification |
 |---|---|

@@ -104,6 +104,8 @@ try {
     }
     if ($NamesFile) { $names = Get-Content -LiteralPath $NamesFile -Raw -Encoding UTF8 | ConvertFrom-Json }
     foreach ($name in $names) {
+        # SFmpq hashes Windows archive paths; JSON lists may use forward slashes.
+        $name = ([string]$name).Replace('/', '\')
         $path = Join-Path $Directory $name
         $destinationRoot = [IO.Path]::GetFullPath($Directory).TrimEnd('\') + '\'
         $path = [IO.Path]::GetFullPath($path)
@@ -116,7 +118,10 @@ try {
             continue
         }
         $file = [IntPtr]::Zero
-        if (-not [TestMpq]::SFileOpenFileEx($handle, $name, 0, [ref]$file)) { continue }
+        if (-not [TestMpq]::SFileOpenFileEx($handle, $name, 0, [ref]$file)) {
+            if ($NamesFile) { throw "Requested archive entry is missing: $name" }
+            continue
+        }
         try {
             $size = [TestMpq]::SFileGetFileSize($file, [IntPtr]::Zero)
             $bytes = New-Object byte[] $size

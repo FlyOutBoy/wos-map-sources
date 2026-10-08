@@ -108,3 +108,13 @@ Primary references checked:
 Native JassHelper/pjass and production-handler tests are available. No native
 Warcraft UI automation is available; visual, actual item drag, menu modal behavior,
 resolution changes and live multiplayer must be recorded as unverified until played.
+
+MAIN integration checkpoint 10: 109 native WCT sources independently matched to
+WTG names/categories and project files; editor traversal retained. Full MAIN
+JassHelper build passed (147876 pjass lines). All 29 UI/ping imports registered;
+33 extracted archive entries match native map bytes. Compiled main initializes
+WOSUI before GearSystems2, AllyHeroAbilityUI and selected HUD, then original map
+initialization. This proves packaged integration, not actual engine UI behavior.
+Build guard now rejects open World Editor before source/import mutations; late
+script guard remains for an editor opened during compilation. Explicit archive
+extraction normalizes path separators and fails on requested missing entries.
