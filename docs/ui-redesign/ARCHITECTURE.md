@@ -20,10 +20,10 @@ portrait remains real selected-unit icon. Gold gets ResourceGold.blp icon.
 Shop categories integrated into bottom bar, search above, catalogue/pager spaced,
 cost labels centered/passive, recipe branch graph/crafting data unchanged.
 Menu drawer below openers. 81 regressions PASS; compile-only PASS (147695 lines).
-Native MAIN NOT written yet. Next: guarded push, real MAIN build, packed-byte
-verification and game launch/log inspection; do not play compile-only artifact.
+Native MAIN integration complete: 109 source identities, 40 resources/45 packed
+entries PASS; full MAIN compile 148657 lines. Runtime input/appearance unverified.
 
-## Checkpoint 14 — active correction from actual game screenshots
+## Checkpoint 14 — screenshot acceptance targets (supersedes checkpoint 13)
 
 User screenshots confirm checkpoint 13 loads, but expose blocked mode/world clicks,
 transparent HUD chassis, oversized native inventory art, missing gold icon, pick
@@ -37,7 +37,7 @@ hit testing/root sizing is first priority, then matching background/border geome
 (+~10% outer frame), menu drawer below top openers. Latest extra screenshot confirms
 native item icons overlap neighbors and gold has only number, no icon.
 
-No checkpoint 14 changes integrated yet. Read WOSUI.j, Starts.j,
+Checkpoint 14 sources are integrated. Read WOSUI.j, Starts.j,
 DefaultArmorChangeStable_Copy.j, ShowCD.j, WoS_Pick_Init.j, WoS_Shop_Init.j.
 Compare 7b3aca7 pick creation coordinates and saved pre-redesign source backups.
 Keep native family/normal family separate, deferred startup and enemy privacy.
@@ -50,7 +50,7 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
   allocation and no normal/native parent mixing. Windows retain their real owners.
 - WOSHUD.fdf/TOC creates the opaque bottom surface as native SIMPLEFRAME; normal
   chassis/minimap/inventory frames contain only transparent ornaments. Commands
-  and native inventory parent use level 2; chassis level 0. Never put an opaque
+  and native inventory parent use level 2; chassis level 1. Never put an opaque
   normal backdrop across native buttons, since normal frames render above them.
 - WUI_TextButton stores its own backdrop/label/selected presentation state, shares
   local hover trigger, preserves callers' click events. Shop tabs use this helper.
@@ -60,11 +60,10 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
 - Systems1's HideBottomUI(false)/HideUIExceptTopMenu(false) calls
   WUI_RestoreCompactNative.evaluate after the stock restoration, so pick/draft
   cannot restore resources/hero/console bars over the compact UI.
-- ShowCD accepts own selected heroes for seven passive placeholder slots. Learned
-  own icons/cooldown overlays are hidden so native commands stay authoritative;
-  missing/unlearned positions hide native occupants via WUI_ShowNativeAbilitySlot.
-  Every slot keeps its hotkey. Enemy descriptions and no enemy cooldown reads are
-  unchanged. Placeholder frames are disabled and never consume targeting clicks.
+- ShowCD accepts own selected heroes only to hide stock occupants of empty cells
+  via WUI_ShowNativeAbilitySlot. All own normal overlays/keys are hidden, learned
+  commands stay native. Seven passive native cells underneath supply empty borders.
+  Foreign descriptions/cooldown privacy are unchanged. No fake own ability icons.
 
 ## Owners and integration boundaries
 

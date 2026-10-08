@@ -1,15 +1,15 @@
 # MAIN integration after editor closure
 
-LATEST checkpoint 13: _build/WoS_Test_2.w3x, SHA256
-54d6a726d04a3b62997046b6f27dde145bca61d0eb66d2f6941012f476b83d15.
-Full MAIN build PASS (148574 total pjass lines), 109 source identities/traversal,
-40 UI/ping/model/frame resources and 45 extracted archive byte checks PASS.
-Native push backup: backups/trigger-sync/2026-10-08_222121_122659/map-before-push;
-compiled script: backups/main-map-build/20261008-222153-351. Sources updated ten,
-new WTG entries zero. Second slot is final; earlier first slot is held by the running game.
-Runtime evidence: _build/ui-redesign/checkpoint13-runtime.json and War3Log.
+LATEST checkpoint 14: _build/WoS_Test.w3x, SHA256
+b69e7dccb27980bcae1fa6c8e06c6697acd41344f25f654ecdd71beb99d2ddcb.
+Full MAIN build PASS (148657 total pjass lines), 109 source identities/traversal,
+40 resources and 45 packed byte checks PASS. Source backup
+backups/trigger-sync/2026-10-09_005611_586281/map-before-push; compiled script
+backups/main-map-build/20261009-005655-754. Six sources updated, no WTG additions.
+First slot is latest and game PID 8820 holds it after launch at 00:58:18 +03:00.
+Runtime evidence: _build/ui-redesign/checkpoint14-runtime.json and War3Log.
+Native integration complete; game input/appearance still pending.
 
-User confirmed closure and checkpoint 13 native integration has completed successfully.
 These steps are retained for subsequent changes; do not bypass the process guard.
 World Editor does not reload external WTG/WCT and can overwrite corrected sources.
 The build now rejects an open editor before changing MAIN source/imports; a later
@@ -37,7 +37,7 @@ python tools/verify_wos_ui.py
 ```
 
 Expect 21 UI textures + 16 ping textures + 1 clock model + FDF/TOC, old imports retained, full MAIN logic compiled.
-_build/WoS_Test.w3x or WoS_Test_2.w3x is the packed MAIN output; use the actual path printed by the build (latest checkpoint 13 uses second slot). tools/check_wos_ui.py uses an
+_build/WoS_Test.w3x or WoS_Test_2.w3x is the packed MAIN output; use the actual path printed by the build (latest checkpoint 14 uses first slot). tools/check_wos_ui.py uses an
 empty main solely to validate source; NEVER use its output as playable map script.
 
 ## 3. Independently compare packed archive

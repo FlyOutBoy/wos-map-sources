@@ -1,11 +1,13 @@
 # Production UI owner status
 
 Implementation and native/game verification are distinct. Every row below is
-implemented in project code and compiled. MAIN integration PASS: 109 native
-sources, 40 resources and 45 packed entries verified in checkpoint 13. User
-screenshots confirm checkpoint 12 game entry, console hidden, textured bars and
-attribute icons rendered. Checkpoint 13 appearance/input still pending; no entire
-owner is marked runtime DONE. Exact next verification is recorded in RESUME.md.
+implemented in project code and compiled. Latest MAIN integration checkpoint 14
+PASS: 109 native sources, 40 resources, 45 packed entries; 81 regressions PASS.
+Actual checkpoint 13 screenshots establish mode/world input blockers, oversized
+native items, transparent chassis and pick/shop layout regressions. Checkpoint 14
+corrects those source paths; native game input/appearance is still pending. Game
+PID 8820 was launched at 00:58:18 +03:00; log only confirms catalogue scan so far.
+No entire owner is marked runtime DONE. Next verification is recorded in RESUME.md.
 
 | Owner | Implemented boundary / remaining verification |
 |---|---|

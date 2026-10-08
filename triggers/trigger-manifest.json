@@ -146,8 +146,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 73185,
-      "sha256": "a87e765995c0fac6c7dca7a74a92ed9f076c00fe3d185c319242f83b618c6ccc",
+      "source_bytes": 72973,
+      "sha256": "102edbb89b7636660b1f42885b5d7f0b1e2f4b8f204ddd0136c37158d71ba722",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -297,8 +297,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16553,
-      "sha256": "18516b1ea74862e6693ab1b1ca283f9cc79d7cc9f57c60dc5d6e0327530acb96",
+      "source_bytes": 16803,
+      "sha256": "40c6bee7eddeb8ce73b8b4a7ba1b05fd94a224148bb3f28741a3a158a4f23cfd",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -592,8 +592,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 127304,
-      "sha256": "d54b0f5d102265f34a09deddb28287d5829faf9e7d9ee6ef2db179750f73a7b6",
+      "source_bytes": 128065,
+      "sha256": "aaa74204731d59a9056186fbf13facc3ff8770112e8a1612b4fc5ecec4916f74",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -617,8 +617,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 240025,
-      "sha256": "bab73b032ca55a1f8fab66073b8337df35a6e5cacd68214e5417de192f827fac",
+      "source_bytes": 240446,
+      "sha256": "044f2e06ae199f143991cad17b57cb4e752ccc0853ecf4106e35635f0fec2a59",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -642,8 +642,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 21612,
-      "sha256": "56253bd31696da79eb679d515468bfb4c355dc12e7fab3c8dfb43de9f0a98009",
+      "source_bytes": 21881,
+      "sha256": "c8c7b943c82aedabfa74a671f6222f33deb430eae04a0ee6dc7915dce8c4b739",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -853,8 +853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 46398,
-      "sha256": "514b48b11d6c693dd449d8c826ba43eced03e22a7833f6cd30d1cdf5a2fc2470",
+      "source_bytes": 48905,
+      "sha256": "a2204fe936d7635a61e1734f0ebbb89fe99502beb47f537d382620cbc1d62ae5",
       "declarations": {
         "libraries": [
           "WOSUI"

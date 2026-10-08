@@ -7,7 +7,9 @@ Prompt and provenance: `assets/UI/WOS/source/ornate-frame.json`.
 Four 256x256 corner crops, two 128x32 horizontal rails and two 32x128 vertical rails
 are exported as `ornate-{tl,tr,bl,br,top,bottom,left,right}.tga`. Corners stay square
 in game; rails stretch independently. Cropping/resampling only, no repainting.
-`WOSHUD.fdf` and `WOSHUD.toc` define one passive native-family surface under buttons.
+`WOSHUD.fdf`/TOC now define the IGNORETRACKEVENTS passive FRAME template,
+opaque native BACKGROUND chassis and seven passive empty native ability cells.
+Texture initialization is explicit; do not call unsafe visibility/scale on native Texture children.
 Verified packaging: 21 shared TGA + 16 ping TGA + clock MDX + FDF/TOC = 40
 resources; with native WTG/WCT/imports/script/skin = 45 verified packed entries.
 Latest source changes have compile/test evidence; final Warcraft appearance still

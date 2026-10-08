@@ -427,3 +427,21 @@ Menu drawer below openers. 81 regressions PASS; compile-only PASS (147695 lines)
 Native MAIN NOT written yet. Next: guarded push, real MAIN build, packed-byte
 verification and game launch/log inspection; do not play compile-only artifact.
 
+
+## Checkpoint 14b — guarded MAIN integration and runtime boundary
+
+- Source commit 4313fe3, preserving 72687b8 ornate checkpoint. Guard returned False.
+- Push: 109 sources, 6 updated, zero WTG insertions. Backup
+  backups/trigger-sync/2026-10-09_005611_586281/map-before-push.
+- Full MAIN build PASS (148657 pjass lines); compiled script backup
+  backups/main-map-build/20261009-005655-754. FDF/TOC backup
+  backups/ui-redesign/frames/20261009-005624-240979.
+- Latest map _build/WoS_Test.w3x, SHA256
+  b69e7dccb27980bcae1fa6c8e06c6697acd41344f25f654ecdd71beb99d2ddcb.
+- 109 native WTG/WCT identities/traversal, 40 resources/45 packed bytes PASS.
+- Launched configured full MAIN at 00:58:18 +03:00, PID 8820 responds. Log so far
+  ends at catalogue scanning 00:58:20; NO verified custom-map opening/UI input.
+  GUI helper unavailable (kernel-assets OS error 3; recovery attempts exhausted).
+  Asked user whether mode/world clicks work; answer pending, not approval.
+- 81 tests PASS. Next: inspect fresh log and actual user game input/presentation,
+  do not mark UI blocks DONE based on compilation or process survival.
