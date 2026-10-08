@@ -5,12 +5,13 @@ import json
 import struct
 import sync_war3_triggers as sync
 from install_wos_ui_assets import ASSET_NAMES as UI_NAMES
+from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES
 from install_team_ping_assets import ASSET_NAMES as PING_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 RESOURCES = [f'UI/WOS/{name}.tga' for name in sorted(UI_NAMES)] + [
-    f'UI/TeamPings/{name}.tga' for name in sorted(PING_NAMES)]
-ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j'] + RESOURCES
+    f'UI/TeamPings/{name}.tga' for name in sorted(PING_NAMES)] + [CONSOLE_MODEL]
+ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j', 'war3mapSkin.txt'] + RESOURCES
 
 
 def verify(archive=None):
@@ -47,6 +48,9 @@ def verify(archive=None):
     for relative in RESOURCES:
         assert relative.casefold() in imports, f'Missing import: {relative}'
         assert (scenario / relative).read_bytes() == (ROOT / 'assets' / relative).read_bytes(), relative
+    skin = (scenario / 'war3mapSkin.txt').read_text(encoding='utf-8-sig')
+    for key, value in SKIN_VALUES.items():
+        assert f'{key}={value}' in skin, f'Missing console skin override: {key}'
     if archive:
         for name in ARCHIVE_NAMES:
             assert (archive / name).read_bytes() == (scenario / name).read_bytes(), f'Archive mismatch: {name}'

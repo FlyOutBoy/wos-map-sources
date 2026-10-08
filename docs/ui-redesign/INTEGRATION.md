@@ -1,6 +1,6 @@
 # MAIN integration after editor closure
 
-User confirmed closure and checkpoint 11 native integration has completed successfully.
+User confirmed closure and checkpoint 12 native integration has completed successfully.
 These steps are retained for subsequent changes; do not bypass the process guard.
 World Editor does not reload external WTG/WCT and can overwrite corrected sources.
 The build now rejects an open editor before changing MAIN source/imports; a later
@@ -27,8 +27,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/build-run-w3-map.ps1
 python tools/verify_wos_ui.py
 ```
 
-Expect 13 UI + 16 ping resources, old imports retained, full MAIN logic compiled.
-_build/WoS_Test.w3x is the packed MAIN test output. tools/check_wos_ui.py uses an
+Expect 13 UI textures + 16 ping textures + 1 clock model, old imports retained, full MAIN logic compiled.
+_build/WoS_Test.w3x or WoS_Test_2.w3x is the packed MAIN output; use the actual path printed by the build (latest checkpoint 12 uses second slot). tools/check_wos_ui.py uses an
 empty main solely to validate source; NEVER use its output as playable map script.
 
 ## 3. Independently compare packed archive
@@ -39,8 +39,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/test-map-archive.ps1
 python tools/verify_wos_ui.py --archive _build/ui-redesign/archive
 ```
 
-Extraction script handles 32-bit SFmpq compatibility. All 33 entries must match
-native map bytes: WTG/WCT/imp/compiled script + 29 resources. Verifier derives WCT
+Extraction script handles 32-bit SFmpq compatibility. All 35 entries must match
+native map bytes: WTG/WCT/imp/compiled script/skin + 30 resources. Verifier derives WCT
 identities directly from WTG names/categories, independent of the new manifest.
 
 ## 4. Save checkpoint and retain verification boundary

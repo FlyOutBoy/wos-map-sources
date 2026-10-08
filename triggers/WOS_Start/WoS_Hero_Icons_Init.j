@@ -249,11 +249,11 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         set hp = 100.00 * GetWidgetLife(u) / RMaxBJ(1.00, I2R(BlzGetUnitMaxHP(u)))
         set mp = 100.00 * GetUnitState(u, UNIT_STATE_MANA) / RMaxBJ(1.00, I2R(BlzGetUnitMaxMana(u)))
         if hp != StatusLastHpPercent[i] then
-            call BlzFrameSetValue(StatusHpBar[i], hp)
+            call WUI_SetValue(StatusHpBar[i], hp)
             set StatusLastHpPercent[i] = hp
         endif
         if mp != StatusLastMpPercent[i] then
-            call BlzFrameSetValue(StatusMpBar[i], mp)
+            call WUI_SetValue(StatusMpBar[i], mp)
             set StatusLastMpPercent[i] = mp
         endif
         call BlzFrameSetVisible(StatusHpBar[i], true)
@@ -1159,14 +1159,10 @@ endfunction
             call BlzFrameSetAlpha(FRAME_StatusHeroBack[i], 255)
             call BlzTriggerRegisterFrameEvent(FrameClickHeroMain, FRAME_StatusHero[i], FRAMEEVENT_CONTROL_CLICK)
             call BlzFrameSetTexture(FRAME_StatusHeroBack[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
-            set StatusHpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroHp", FRAME_StatusHero[i], "", i)
-            call BlzFrameSetPoint(StatusHpBar[i], FRAMEPOINT_TOP, FRAME_StatusHero[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
-            call BlzFrameSetSize(StatusHpBar[i], STATUS_HERO_SIZE, 0.002)
-            call BlzFrameSetTexture(StatusHpBar[i], "UI\\WOS\\hp.tga", 0, true)
-            set StatusMpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroMp", FRAME_StatusHero[i], "", i)
-            call BlzFrameSetPoint(StatusMpBar[i], FRAMEPOINT_TOP, StatusHpBar[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
-            call BlzFrameSetSize(StatusMpBar[i], STATUS_HERO_SIZE, 0.002)
-            call BlzFrameSetTexture(StatusMpBar[i], "UI\\WOS\\mp.tga", 0, true)
+            set StatusHpBar[i] = WUI_CreateFill("WOSHeroHp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\hp.tga")
+            call BlzFrameSetPoint(StatusHpBar[i], FRAMEPOINT_TOPLEFT, FRAME_StatusHero[i], FRAMEPOINT_BOTTOMLEFT, 0.00, -0.001)
+            set StatusMpBar[i] = WUI_CreateFill("WOSHeroMp", FRAME_StatusHero[i], STATUS_HERO_SIZE, 0.002, 100.00, "UI\\WOS\\mp.tga")
+            call BlzFrameSetPoint(StatusMpBar[i], FRAMEPOINT_TOPLEFT, FRAME_StatusHero[i], FRAMEPOINT_BOTTOMLEFT, 0.00, -0.004)
             set StatusLastHpPercent[i] = -1.00
             set StatusLastMpPercent[i] = -1.00
             set FRAME_StatusHeroBack2[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)

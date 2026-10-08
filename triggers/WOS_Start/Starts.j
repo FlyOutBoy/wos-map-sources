@@ -1,4 +1,6 @@
 globals
+    framehandle WOS_ModeRoot = null
+    framehandle array WOS_ModeButton
     dialog udg_ModeDialog
     button udg_TestButton
     button udg_NormalButton
@@ -237,7 +239,7 @@ function MusicInit takes nothing returns nothing
         return
     endif
 
-    // Сначала стандартная музыка карты для всех клиентов.
+    // РЎРЅР°С‡Р°Р»Р° СЃС‚Р°РЅРґР°СЂС‚РЅР°СЏ РјСѓР·С‹РєР° РєР°СЂС‚С‹ РґР»СЏ РІСЃРµС… РєР»РёРµРЅС‚РѕРІ.
     call StopMusic(false)
     call ClearMapMusic()
     call SetMapMusic("war3mapImported\\King Gnu - SPECIALZ.mp3", false, 0)
@@ -246,66 +248,123 @@ function MusicInit takes nothing returns nothing
     set musicenabled = true
     set expired = null
 endfunction
-function CheckPickedMode takes nothing returns nothing
-call DestroyTimer(GetExpiredTimer())
-if PickedMode == 0 then 
-call PlayersMsg("Normal Mode activated",1)
-        set PickedMode = 1
-        set TestMode = false
-        call Map_Start()
-    call DialogDisplay(Player(0), udg_ModeDialog, false)
-    call DialogDestroy(udg_ModeDialog)
-    if PlayersAmount <2 then
-call TimerStart(CreateTimer(),1,false,function MusicInit)
+// The frame selector and timeout use one authoritative mode transition.
+function WOS_SelectMode takes integer mode returns nothing
+    if PickedMode != 0 or mode < 1 or mode > 4 then
+        return
     endif
-endif
-endfunction
-function OnModeButton takes nothing returns nothing
-    local button b = GetClickedButton()
-    local integer k = 0
-    if b == udg_TestButton then
-        set PickedMode = 2
-        set TestMode = true
-        set CaptainMode = false
-        set CaptainDraftMode = false
-        set CaptainDraftPreRoundUnlimitedSwap = false
+    set PickedMode = mode
+    set TestMode = mode == 2
+    set CaptainMode = mode == 3
+    set CaptainDraftMode = mode == 4
+    set CaptainDraftPreRoundUnlimitedSwap = CaptainDraftMode
+    if TestMode then
         call TestComm()
-        call PlayersMsg("Test Mode activated",1)
-    elseif b == udg_NormalButton then
-        call PlayersMsg("Normal Mode activated",1)
-        set PickedMode = 1
-        set TestMode = false
-        set CaptainMode = false
-        set CaptainDraftMode = false
-        set CaptainDraftPreRoundUnlimitedSwap = false
-    elseif b == udg_CaptainButton then
-        call PlayersMsg("Player Pick Mode activated",1)
-        set PickedMode = 3
-        set TestMode = false
-        set CaptainMode = true
-        set CaptainDraftMode = false
-        set CaptainDraftPreRoundUnlimitedSwap = false
-    elseif b == udg_CaptainDraftButton then
-        call PlayersMsg("Captain Draft Mode activated",1)
-        set PickedMode = 4
-        set TestMode = false
-        set CaptainMode = false
-        set CaptainDraftMode = true
-        set CaptainDraftPreRoundUnlimitedSwap = true
+        call PlayersMsg("Test Mode activated", 1)
+    elseif CaptainMode then
+        call PlayersMsg("Player Pick Mode activated", 1)
+    elseif CaptainDraftMode then
+        call PlayersMsg("Captain Draft Mode activated", 1)
         call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundModeStart)
+    else
+        call PlayersMsg("Normal Mode activated", 1)
     endif
-    if PlayersAmount <2 then
-call TimerStart(CreateTimer(),1,false,function MusicInit)
+    if WOS_ModeRoot != null then
+        call BlzFrameSetVisible(WOS_ModeRoot, false)
+    endif
+    if PlayersAmount < 2 then
+        call TimerStart(CreateTimer(), 1.00, false, function MusicInit)
     endif
     call SetFloatGameState(GAME_STATE_TIME_OF_DAY, 8.00)
     call Map_Start()
-    call DialogDisplay(Player(0), udg_ModeDialog, false)
-    call DialogDestroy(udg_ModeDialog)
     if CaptainDraftMode then
         call CaptainDraft_StartFirstSideVote()
     endif
-    set b = null
 endfunction
+
+function CheckPickedMode takes nothing returns nothing
+    call DestroyTimer(GetExpiredTimer())
+    call WOS_SelectMode(1)
+endfunction
+
+function WOS_ModeFrameClick takes nothing returns nothing
+    local integer i = 0
+    if GetTriggerPlayer() != Player(0) then
+        return
+    endif
+    loop
+        exitwhen i >= 4
+        if BlzGetTriggerFrame() == WOS_ModeButton[i] then
+            if i == 0 then
+                call WOS_SelectMode(1)
+            elseif i == 1 then
+                call WOS_SelectMode(3)
+            elseif i == 2 then
+                call WOS_SelectMode(4)
+            else
+                call WOS_SelectMode(2)
+            endif
+            return
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
+function WOS_CreateModeSelector takes nothing returns nothing
+    local integer i = 0
+    local string caption
+    local framehandle shade
+    local framehandle panel
+    local framehandle title
+    local trigger events = CreateTrigger()
+    set WOS_ModeRoot = BlzCreateFrameByType("FRAME", "WOSModeSelector", WUI_GetRoot(), "", 0)
+    call WUI_RegisterModal(WOS_ModeRoot)
+    call WUI_RegisterModal(WOS_ModeRoot)
+    call BlzFrameSetLevel(WOS_ModeRoot, 30)
+    set shade = BlzCreateFrameByType("BUTTON", "WOSModeShade", WOS_ModeRoot, "", 0)
+    call WUI_Place(shade, 0.400, 0.300, 0.800, 0.600)
+    set panel = BlzCreateFrameByType("BACKDROP", "WOSModeDim", shade, "", 0)
+    call BlzFrameSetAllPoints(panel, shade)
+    call BlzFrameSetTexture(panel, "Textures\\black32.blp", 0, true)
+    call BlzFrameSetAlpha(panel, 170)
+    call BlzFrameSetEnable(panel, false)
+    set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
+    call WUI_Place(panel, 0.400, 0.330, 0.270, 0.275)
+    set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
+    call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)
+    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetText(title, WUI_GOLD + "CHOOSE GAME MODE|r")
+    set title = BlzCreateFrameByType("TEXT", "WOSModeHint", panel, "", 0)
+    call WUI_Place(title, 0.400, 0.410, 0.240, 0.018)
+    call BlzFrameSetScale(title, 0.78)
+    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetText(title, "Host selects a mode - Normal after 20s")
+    loop
+        exitwhen i >= 4
+        if i == 0 then
+            set caption = "Normal Mode"
+        elseif i == 1 then
+            set caption = "Player Pick Mode"
+        elseif i == 2 then
+            set caption = "Captain Draft Mode"
+        else
+            set caption = "Test Mode"
+        endif
+        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.230, 0.037)
+        call WUI_Place(WOS_ModeButton[i], 0.400, 0.374 - I2R(i) * 0.047, 0.230, 0.037)
+        call BlzTriggerRegisterFrameEvent(events, WOS_ModeButton[i], FRAMEEVENT_CONTROL_CLICK)
+        if GetLocalPlayer() != Player(0) then
+            call BlzFrameSetEnable(WOS_ModeButton[i], false)
+        endif
+        set i = i + 1
+    endloop
+    call TriggerAddAction(events, function WOS_ModeFrameClick)
+    set shade = null
+    set panel = null
+    set title = null
+    set events = null
+endfunction
+
 function MeraMeraNoMi takes unit hero returns nothing
 local unit target = null
 local player owner = null
@@ -487,16 +546,8 @@ endloop
     if PlayersAmount >1 then 
     call MusicInit()
     endif
-    set udg_ModeDialog = DialogCreate()
     set AAADestNoDecorCond = Condition(function NoDecor_Filter)
-    call DialogSetMessage(udg_ModeDialog, "Pick Game Mode")
-    set udg_NormalButton = DialogAddButton(udg_ModeDialog, "Normal Mode", 0)
-    set udg_CaptainButton = DialogAddButton(udg_ModeDialog, "Player Pick Mode", 0)
-    set udg_CaptainDraftButton = DialogAddButton(udg_ModeDialog, "Captain Draft Mode", 0)
-    set udg_TestButton = DialogAddButton(udg_ModeDialog, "Test Mode", 0)
-    call TriggerRegisterDialogEvent(t, udg_ModeDialog)
-    call TriggerAddAction(t, function OnModeButton)
-    call DialogDisplay(Player(0), udg_ModeDialog, true)
+    call WUI_OnReady(function WOS_CreateModeSelector)
     call TimerStart(CreateTimer(),20,false,function CheckPickedMode )
     set CamSetupTimer = CreateTimer()
     set RegenTimer = CreateTimer()

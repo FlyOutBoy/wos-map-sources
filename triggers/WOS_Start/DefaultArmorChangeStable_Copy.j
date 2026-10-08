@@ -73,7 +73,7 @@ private function UNITSTAT_Text takes string name, framehandle parent, real x, re
     local framehandle text = BlzCreateFrameByType("TEXT", name, parent, "", 0)
     call WUI_Place(text, x, y, width, 0.012)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetScale(text, 0.64)
+    call BlzFrameSetScale(text, 0.80)
     call BlzFrameSetEnable(text, false)
     return text
 endfunction
@@ -233,7 +233,7 @@ endfunction
 private function UNITSTAT_DelayedInit takes nothing returns nothing
     local timer initTimer = GetExpiredTimer()
     call DestroyTimer(initTimer)
-    call WUI_InstallNativeLayout()
+    call WUI_StartNativeLayout()
     set UNITSTAT_EngineDamage = BlzGetFrameByName("InfoPanelIconValue", 0)
     call WUI_LayoutCommands(false)
     set UNITSTAT_UpdateTimer = CreateTimer()
@@ -260,24 +260,23 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     call UNITSTAT_WidgetCreate(0, "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp", 0.255, 0.074, 0.109, events)
     call UNITSTAT_WidgetCreate(1, "ReplaceableTextures\\CommandButtons\\BTNDefend.blp", 0.226, 0.056, 0.052, events)
     call UNITSTAT_WidgetCreate(2, "ReplaceableTextures\\CommandButtons\\BTNSpellShieldAmulet.blp", 0.283, 0.056, 0.052, events)
-    call UNITSTAT_WidgetCreate(3, "UI\\Widgets\\Console\\Human\\human-attribute-stre.blp", 0.216, 0.038, 0.032, events)
-    call UNITSTAT_WidgetCreate(4, "UI\\Widgets\\Console\\Human\\human-attribute-agil.blp", 0.252, 0.038, 0.032, events)
-    call UNITSTAT_WidgetCreate(5, "UI\\Widgets\\Console\\Human\\human-attribute-inte.blp", 0.288, 0.038, 0.032, events)
+    call UNITSTAT_WidgetCreate(3, "UI\\Widgets\\Console\\Human\\human-attribute-str.blp", 0.216, 0.038, 0.032, events)
+    call UNITSTAT_WidgetCreate(4, "UI\\Widgets\\Console\\Human\\human-attribute-agi.blp", 0.252, 0.038, 0.032, events)
+    call UNITSTAT_WidgetCreate(5, "UI\\Widgets\\Console\\Human\\human-attribute-int.blp", 0.288, 0.038, 0.032, events)
     loop
         exitwhen i >= 2
         set back = WUI_Panel("WOSVitalsBack", UNITSTAT_Root, 0.277, 0.009)
         call WUI_Place(back, 0.474, 0.093 - I2R(i) * 0.014, 0.277, 0.009)
-        set UNITSTAT_Bar[i] = BlzCreateFrameByType("STATUSBAR", "WOSVitals", UNITSTAT_Root, "", i)
-        call WUI_Place(UNITSTAT_Bar[i], 0.474, 0.093 - I2R(i) * 0.014, 0.275, 0.007)
         if i == 0 then
-            call BlzFrameSetTexture(UNITSTAT_Bar[i], "UI\\WOS\\hp.tga", 0, true)
+            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsHp", UNITSTAT_Root, 0.275, 0.007, 100.00, "UI\\WOS\\hp.tga")
         else
-            call BlzFrameSetTexture(UNITSTAT_Bar[i], "UI\\WOS\\mp.tga", 0, true)
+            set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsMp", UNITSTAT_Root, 0.275, 0.007, 100.00, "UI\\WOS\\mp.tga")
         endif
+        call BlzFrameSetAbsPoint(UNITSTAT_Bar[i], FRAMEPOINT_LEFT, 0.3365, 0.093 - I2R(i) * 0.014)
         set UNITSTAT_BarText[i] = UNITSTAT_Text("WOSVitalsNumber", UNITSTAT_Root, 0.470, 0.093 - I2R(i) * 0.014, 0.160)
-        call BlzFrameSetScale(UNITSTAT_BarText[i], 0.56)
+        call BlzFrameSetScale(UNITSTAT_BarText[i], 0.76)
         set UNITSTAT_Regen[i] = UNITSTAT_Text("WOSVitalsRegen", UNITSTAT_Root, 0.586, 0.093 - I2R(i) * 0.014, 0.044)
-        call BlzFrameSetScale(UNITSTAT_Regen[i], 0.54)
+        call BlzFrameSetScale(UNITSTAT_Regen[i], 0.70)
         set i = i + 1
     endloop
     set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetRoot(), "", 0)

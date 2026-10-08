@@ -287,3 +287,51 @@
   Next: obtain real screen state; if menu, examine launch flags (current -editor
   differs from World Editor's working command); if crash, inspect the new report.
   Direct visual/input/fog/resolution verification remains pending.
+
+## Checkpoint 12 - native console, bars, pick/shop correction (2026-10-08)
+
+- User screenshots establish checkpoint 11 game entry, but show stock stone chrome,
+  missing fills, green icons, blank test help and uncompacted pick. Shop also reported.
+- WOSUI: detach actual command/detail/system/tooltip containers BEFORE hiding 2+
+  ConsoleTopBar/ConsoleBottomBar, recache slots and retry lazy containers. Native
+  inventory/buffs/minimap/system menu preserved. Twelve-button cards below MP.
+- Normal BACKDROP percentage fills replace model STATUSBAR for selected/top vitals
+  and new hero meters. Fixed left anchors/clamping/caching. Corrected attribute
+  str/agi/int textures and enlarged HUD fonts.
+- Test help: five TEXT pages, wheel/arrows and independent collapse action; no
+  lazy stock TEXTAREA. Modal registry suppresses help over pick/shop/mode selector.
+- Pick/shop large builds dispatch components and layout in fresh synchronous JASS
+  threads. Full button/slider templates, root bounds, readable prices, recipe
+  scroll regions/controls. Existing catalogue/purchase/search/autobuy owners kept.
+- Starts: styled four-mode frame selector; host-only once-only common mode action,
+  all flags, music, map start, captain vote and 20s normal timeout preserved.
+- Console installer: blank six textures + 2+ overlays + inventory cover; empty
+  classic clock model. Only ten owned CustomSkin keys changed; imports and other
+  settings/translations preserved/backed up. Verifier includes skin/model.
+- All 68 production regression tests PASS. After final ordinary-card position fix,
+  all 28 relevant HUD/startup/native/layout/packaging tests PASS again.
+- Real MAIN compile PASS: 148290 pjass lines, 106 enabled + header, 3 disabled.
+  Guarded pushes updated 6 then 1 sources, NO trigger insertions. All 109 native
+  identities/category traversal, 30 resources, 35 extracted archive comparisons PASS.
+- Latest packed MAIN _build/WoS_Test_2.w3x. SHA256:
+  55d9c13daa3a58bc382eae57041b73ec73ee12302cf0064599ebaf485ed9add0.
+- Backups: trigger-sync/2026-10-08_213527_135120/map-before-push;
+  trigger-sync/2026-10-08_214136_001032/map-before-push;
+  main-map-build/20261008-214208-098;
+  ui-redesign/console/20261008-213544-474564 (all under backups/).
+- Launched first slot 21:37:30 WITHOUT -editor, PID 24004. Responding/no new crash
+  report, but log stops at catalogue scanning: NO confirmed custom-map opening or
+  rendering. It locks first slot, final build used second slot. Direct window
+  helper still unavailable (kernel assets OS error 3); no alternative input/helper.
+- Evidence: _build/ui-redesign/visual-fix-{integration-verification.json,
+  full-main-pjass.txt,runtime.json,war3log.txt}, archive/.
+- Next exact action: user async reply (map/menu/error), then actual latest map
+  visual/input verification. Do not claim game success from compile/process survival.
+
+- New user screenshots received before checkpoint commit: console hidden, HP/MP
+  fill and attribute icons render, game entry confirmed by images. Remaining style
+  issues: 4:3-only mode dim square, small mismatched shop buttons, recipe tree/
+  background/relations, vertical shop tabs consume left space, score backdrop,
+  menu overlaps stats/music/link openers. User requests horizontal top shop menu,
+  catalogue left, drawn recipe inheritance, closer ornate supplied concept.
+- Next checkpoint 13 owns these changes. This supersedes pending map/menu question.

@@ -21,7 +21,16 @@ globals
     private real array WUI_DockY
     private framehandle WUI_TestPanel = null
     private framehandle WUI_TestToggle = null
+    private framehandle WUI_TestText = null
+    private framehandle WUI_TestPrevious = null
+    private framehandle WUI_TestNext = null
+    private framehandle WUI_TestPageLabel = null
+    private string array WUI_TestPage
+    private integer WUI_TestPageIndex = 0
     private boolean WUI_TestOpen = true
+    private boolean WUI_TestEnabled = false
+    private integer WUI_ModalCount = 0
+    private framehandle array WUI_Modal
     private framehandle array WUI_Command
     private framehandle array WUI_Item
     private framehandle array WUI_System
@@ -37,6 +46,15 @@ globals
     private framehandle WUI_DeadZone = null
     private framehandle WUI_HiddenDetails = null
     private framehandle WUI_Buffs = null
+    private framehandle WUI_CommandBar = null
+    private framehandle WUI_NativeDetail = null
+    private framehandle WUI_NativeDetailParent = null
+    private framehandle WUI_TopConsole = null
+    private framehandle WUI_BottomConsole = null
+    private framehandle WUI_NativeTooltip = null
+    private timer WUI_NativeTimer = CreateTimer()
+    private boolean WUI_NativeReady = false
+    private hashtable WUI_Fills = InitHashtable()
     constant real WUI_HUD_Y = 0.044
     constant real WUI_COMMAND_X = 0.354
     constant real WUI_COMMAND_STEP = 0.040
@@ -86,6 +104,21 @@ function WUI_Panel takes string name, framehandle parent, real width, real heigh
     return panel
 endfunction
 
+// Textured bars belong to the normal FRAME family with their HUD/text parent.
+// STATUSBAR is an animated model; it cannot display a fill texture this way.
+function WUI_CreateFill takes string name, framehandle parent, real width, real height, real maximum, string texture returns framehandle
+    local framehandle fill = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)
+    local integer key = GetHandleId(fill)
+    call BlzFrameSetTexture(fill, texture, 0, true)
+    call BlzFrameSetSize(fill, width, height)
+    call BlzFrameSetEnable(fill, false)
+    call SaveReal(WUI_Fills, key, 0, maximum)
+    call SaveReal(WUI_Fills, key, 1, width)
+    call SaveReal(WUI_Fills, key, 2, height)
+    call SaveReal(WUI_Fills, key, 3, maximum)
+    return fill
+endfunction
+
 function WUI_Border takes string name, framehandle owner returns framehandle
     local framehandle edge = BlzCreateFrameByType("BACKDROP", name, owner, "", 0)
     call BlzFrameSetAllPoints(edge, owner)
@@ -117,7 +150,12 @@ function WUI_HeroMeter takes framehandle panel, framehandle back, framehandle ba
     call WUI_Pin(back, panel, 0.012, -0.004, 0.104, 0.007)
     call BlzFrameSetScale(bar, 1.00)
     call BlzFrameSetTexture(bar, "UI\\WOS\\meter.tga", 0, true)
-    call WUI_Pin(bar, panel, 0.012, -0.004, 0.104, 0.007)
+    if HaveSavedReal(WUI_Fills, GetHandleId(bar), 0) then
+        call BlzFrameClearAllPoints(bar)
+        call BlzFrameSetPoint(bar, FRAMEPOINT_LEFT, panel, FRAMEPOINT_CENTER, -0.040, -0.004)
+    else
+        call WUI_Pin(bar, panel, 0.012, -0.004, 0.104, 0.007)
+    endif
     call WUI_Pin(icon, panel, -0.055, 0.000, 0.019, 0.019)
     call BlzFrameSetScale(title, 0.70)
     call WUI_Pin(title, panel, 0.012, 0.006, 0.112, 0.011)
@@ -173,6 +211,25 @@ function WUI_SimpleBorder takes framehandle owner returns nothing
     set edge = null
 endfunction
 
+function WUI_RegisterModal takes framehandle panel returns nothing
+    set WUI_ModalCount = WUI_ModalCount + 1
+    set WUI_Modal[WUI_ModalCount] = panel
+endfunction
+
+private function WUI_RefreshHelpVisibility takes nothing returns nothing
+    local integer i = 1
+    local boolean visible = WUI_TestEnabled
+    loop
+        exitwhen i > WUI_ModalCount
+        if WUI_Modal[i] != null and BlzFrameIsVisible(WUI_Modal[i]) then
+            set visible = false
+        endif
+        set i = i + 1
+    endloop
+    call BlzFrameSetVisible(WUI_TestToggle, visible)
+    call BlzFrameSetVisible(WUI_TestPanel, visible and WUI_TestOpen)
+endfunction
+
 function WUI_RefreshDocks takes nothing returns nothing
     local integer playerId = GetPlayerId(GetLocalPlayer())
     local integer index = 1
@@ -184,6 +241,7 @@ function WUI_RefreshDocks takes nothing returns nothing
     local real x
     local real y
     local real buffY = 0.144
+    call WUI_RefreshHelpVisibility()
     if WUI_OrdersOpen then
         set buffY = 0.181
     endif
@@ -241,7 +299,16 @@ function WUI_SetText takes framehandle frame, string value returns nothing
 endfunction
 
 function WUI_SetValue takes framehandle frame, real value returns nothing
-    if BlzFrameGetValue(frame) != value then
+    local integer key = GetHandleId(frame)
+    local real maximum
+    if HaveSavedReal(WUI_Fills, key, 0) then
+        set maximum = LoadReal(WUI_Fills, key, 0)
+        set value = RMaxBJ(0.00, RMinBJ(maximum, value))
+        if LoadReal(WUI_Fills, key, 3) != value then
+            call BlzFrameSetSize(frame, LoadReal(WUI_Fills, key, 1) * value / RMaxBJ(0.01, maximum), LoadReal(WUI_Fills, key, 2))
+            call SaveReal(WUI_Fills, key, 3, value)
+        endif
+    elseif BlzFrameGetValue(frame) != value then
         call BlzFrameSetValue(frame, value)
     endif
 endfunction
@@ -262,13 +329,12 @@ struct WOSHeroMeter
         set owner = playerId
         set panel = WUI_Window("WOSHeroMeter", WUI_GetRoot(), 0, 0)
         set back = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", panel, "", 0)
-        set bar = BlzCreateFrameByType("STATUSBAR", "WOSMeterFill", panel, "", 0)
+        set bar = WUI_CreateFill("WOSMeterFill", panel, 0.104, 0.007, maximum, "UI\\WOS\\meter.tga")
         set icon = BlzCreateFrameByType("BACKDROP", "WOSMeterIcon", panel, "", 0)
         set title = BlzCreateFrameByType("TEXT", "WOSMeterTitle", panel, "", 0)
         set value = BlzCreateFrameByType("TEXT", "WOSMeterValue", panel, "", 0)
         call BlzFrameSetTexture(icon, iconPath, 0, true)
         call BlzFrameSetText(title, WUI_GOLD + caption + "|r")
-        call BlzFrameSetMinMaxValue(bar, 0.00, maximum)
         call WUI_HeroMeter(panel, back, bar, icon, title, value)
         call BlzFrameSetVisible(panel, false)
         call WUI_RegisterMeter(panel, owner, key)
@@ -298,6 +364,7 @@ struct WOSHeroMeter
             endif
             set index = index + 1
         endloop
+        call FlushChildHashtable(WUI_Fills, GetHandleId(bar))
         call BlzDestroyFrame(panel)
         set panel = null
         set back = null
@@ -377,11 +444,12 @@ function WUI_LayoutCommands takes boolean compact returns nothing
             call WUI_Place(WUI_Command[i], WUI_COMMAND_X + I2R(i) * WUI_COMMAND_STEP, 0.139, WUI_ICON_SIZE, WUI_ICON_SIZE)
         elseif not compact then
             // Ordinary units, shop and learn cards retain access to all 12 slots.
-            set y = 0.035
+            set y = 0.016
             if i < 6 then
-                set y = y + WUI_COMMAND_STEP
+                set y = 0.047
             endif
-            call WUI_Place(WUI_Command[i], WUI_COMMAND_X + I2R(ModuloInteger(i, 6)) * WUI_COMMAND_STEP, y, WUI_ICON_SIZE, WUI_ICON_SIZE)
+            // Both rows remain below MP; alternative cards cannot cover vitals.
+            call WUI_Place(WUI_Command[i], WUI_COMMAND_X + I2R(ModuloInteger(i, 6)) * WUI_COMMAND_STEP, y, 0.028, 0.028)
         endif
         set i = i + 1
     endloop
@@ -418,44 +486,78 @@ private function WUI_ControlClick takes nothing returns nothing
     endif
 endfunction
 
+private function WUI_CacheNativeSlots takes nothing returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 12
+        set WUI_Command[i] = BlzGetFrameByName("CommandButton_" + I2S(i), 0)
+        if WUI_Command[i] == null then
+            set WUI_Command[i] = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)
+        endif
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set WUI_Item[i] = BlzGetFrameByName("InventoryButton_" + I2S(i), 0)
+        if WUI_Item[i] == null then
+            set WUI_Item[i] = BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, i)
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
 function WUI_InstallNativeLayout takes nothing returns nothing
     local integer i = 0
-    local framehandle simpleParent = null
-    local framehandle itemParent = null
     local framehandle detail = BlzGetFrameByName("SimpleInfoPanelUnitDetail", 0)
     local framehandle cover = BlzGetFrameByName("SimpleInventoryCover", 0)
     local framehandle minimap = BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0)
-    if WUI_HiddenDetails != null or WUI_Command[0] == null or WUI_Item[0] == null or WUI_SimpleRoot == null then
-        set simpleParent = null
+    local framehandle label = BlzGetFrameByName("InventoryText", 0)
+    local framehandle systemBar = BlzGetFrameByName("UpperButtonBarFrame", 0)
+    if WUI_NativeReady or WUI_SimpleRoot == null then
         set detail = null
         set cover = null
         set minimap = null
         return
     endif
-    set simpleParent = BlzFrameGetParent(WUI_Command[0])
-    set itemParent = BlzFrameGetParent(WUI_Item[0])
-    if simpleParent == null or itemParent == null then
-        set simpleParent = null
-        set itemParent = null
+    set WUI_CommandBar = BlzGetFrameByName("CommandBarFrame", 0)
+    if detail != null then
+        set WUI_NativeDetailParent = BlzFrameGetParent(detail)
+    endif
+    // Reforged 2+ puts the whole stock lower UI under ConsoleBottomBar.
+    // Never infer/reparent a container from one command/item slot: those may
+    // not exist before selection, or its immediate parent may be a wrapper.
+    if WUI_CommandBar == null or WUI_NativeDetailParent == null then
         set detail = null
         set cover = null
         set minimap = null
         return
     endif
+    call WUI_CacheNativeSlots()
     // Do not move a SIMPLEFRAME into the normal FRAME hierarchy.
-    call BlzFrameSetParent(itemParent, simpleParent)
+    call BlzFrameSetParent(WUI_CommandBar, WUI_SimpleRoot)
+    call BlzFrameSetParent(WUI_NativeDetailParent, WUI_SimpleRoot)
+    if systemBar != null then
+        call BlzFrameSetParent(systemBar, WUI_SimpleRoot)
+    endif
+    if WUI_NativeTooltip != null then
+        call BlzFrameSetParent(WUI_NativeTooltip, WUI_SimpleRoot)
+    endif
     set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", WUI_SimpleRoot, "", 0)
     call BlzFrameSetVisible(WUI_HiddenDetails, false)
     if detail != null then
         // Keep real status icons/tooltips when the large unit detail panel is hidden.
         if WUI_Buffs != null then
-            call BlzFrameSetParent(WUI_Buffs, simpleParent)
+            call BlzFrameSetParent(WUI_Buffs, WUI_SimpleRoot)
             call WUI_Place(WUI_Buffs, 0.245, 0.113, 0.165, 0.016)
         endif
         call BlzFrameSetParent(detail, WUI_HiddenDetails)
     endif
     if cover != null then
         call BlzFrameSetAlpha(cover, 0)
+    endif
+    if label != null then
+        call BlzFrameSetText(label, "")
     endif
     call BlzEnableUIAutoPosition(false)
     if minimap != null then
@@ -470,6 +572,17 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     endloop
     if WUI_Console != null then
         call BlzFrameSetVisible(WUI_Console, false)
+    endif
+    if WUI_TopConsole != null then
+        call BlzFrameSetVisible(WUI_TopConsole, false)
+    endif
+    if WUI_BottomConsole != null then
+        call BlzFrameSetVisible(WUI_BottomConsole, false)
+    endif
+    call BlzFrameSetVisible(WUI_CommandBar, true)
+    call BlzFrameSetVisible(WUI_NativeDetailParent, true)
+    if systemBar != null then
+        call BlzFrameSetVisible(systemBar, true)
     endif
     if WUI_Portrait != null then
         call BlzFrameSetVisible(WUI_Portrait, false)
@@ -493,11 +606,44 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     if minimap != null then
         call BlzFrameSetVisible(minimap, true)
     endif
-    set simpleParent = null
-    set itemParent = null
+    set WUI_NativeReady = true
     set detail = null
     set cover = null
     set minimap = null
+    set systemBar = null
+endfunction
+
+function WUI_TextButton takes string name, framehandle parent, string caption, real width, real height returns framehandle
+    local framehandle control = BlzCreateFrameByType("BUTTON", name, parent, "", 0)
+    local framehandle back = BlzCreateFrameByType("BACKDROP", name + "Back", control, "", 0)
+    local framehandle text = BlzCreateFrameByType("TEXT", name + "Text", control, "", 0)
+    call BlzFrameSetSize(control, width, height)
+    call BlzFrameSetAllPoints(back, control)
+    call BlzFrameSetTexture(back, "UI\\WOS\\button.tga", 0, true)
+    call BlzFrameSetEnable(back, false)
+    call BlzFrameSetAllPoints(text, control)
+    call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(text, 0.90)
+    call BlzFrameSetText(text, WUI_TEXT + caption + "|r")
+    call BlzFrameSetEnable(text, false)
+    set back = null
+    set text = null
+    return control
+endfunction
+
+private function WUI_TryNativeLayout takes nothing returns nothing
+    call WUI_InstallNativeLayout()
+    if WUI_NativeReady then
+        call PauseTimer(WUI_NativeTimer)
+        call WUI_LayoutCommands(WUI_CompactCommands)
+    endif
+endfunction
+
+function WUI_StartNativeLayout takes nothing returns nothing
+    call WUI_TryNativeLayout()
+    if not WUI_NativeReady then
+        call TimerStart(WUI_NativeTimer, 0.25, true, function WUI_TryNativeLayout)
+    endif
 endfunction
 
 private function WUI_CreateControls takes nothing returns nothing
@@ -507,6 +653,9 @@ private function WUI_CreateControls takes nothing returns nothing
     local framehandle label
     local trigger events = CreateTrigger()
     set WUI_Console = BlzGetFrameByName("ConsoleUIBackdrop", 0)
+    set WUI_TopConsole = BlzGetFrameByName("ConsoleTopBar", 0)
+    set WUI_BottomConsole = BlzGetFrameByName("ConsoleBottomBar", 0)
+    set WUI_NativeTooltip = BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0)
     set WUI_Portrait = BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0)
     set WUI_Resource = BlzGetFrameByName("ResourceBarFrame", 0)
     set WUI_HeroBar = BlzGetOriginFrame(ORIGIN_FRAME_HERO_BAR, 0)
@@ -521,23 +670,7 @@ private function WUI_CreateControls takes nothing returns nothing
             set WUI_DeadZone = BlzFrameGetChild(WUI_SimpleRoot, 5)
         endif
     endif
-    loop
-        exitwhen i >= 12
-        set WUI_Command[i] = BlzGetFrameByName("CommandButton_" + I2S(i), 0)
-        if WUI_Command[i] == null then
-            set WUI_Command[i] = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)
-        endif
-        set i = i + 1
-    endloop
-    set i = 0
-    loop
-        exitwhen i >= 6
-        set WUI_Item[i] = BlzGetFrameByName("InventoryButton_" + I2S(i), 0)
-        if WUI_Item[i] == null then
-            set WUI_Item[i] = BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, i)
-        endif
-        set i = i + 1
-    endloop
+    call WUI_CacheNativeSlots()
     set i = 0
     loop
         exitwhen i >= 4
@@ -568,7 +701,7 @@ private function WUI_CreateControls takes nothing returns nothing
     set text = BlzCreateFrameByType("TEXT", "WOSOrderDrawerLabel", WUI_Orders, "", 0)
     call BlzFrameSetAllPoints(text, WUI_Orders)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetScale(text, 0.60)
+    call BlzFrameSetScale(text, 0.80)
     call BlzFrameSetText(text, "|cffd5b876Orders / Learn|r")
     call BlzFrameSetEnable(text, false)
     call BlzTriggerRegisterFrameEvent(events, WUI_Menu, FRAMEEVENT_CONTROL_CLICK)
@@ -596,41 +729,66 @@ private function WUI_TestClick takes nothing returns nothing
 endfunction
 
 function WUI_ShowTestHelp takes boolean enabled returns nothing
-    call BlzFrameSetVisible(WUI_TestToggle, enabled)
-    call BlzFrameSetVisible(WUI_TestPanel, enabled and WUI_TestOpen)
+    set WUI_TestEnabled = enabled
+    call WUI_RefreshHelpVisibility()
+endfunction
+
+private function WUI_TestScroll takes nothing returns nothing
+    if GetLocalPlayer() == GetTriggerPlayer() then
+        if BlzGetTriggerFrame() == WUI_TestPrevious or (BlzGetTriggerFrame() == WUI_TestPanel and BlzGetTriggerFrameValue() > 0.00) then
+            set WUI_TestPageIndex = IMaxBJ(0, WUI_TestPageIndex - 1)
+        else
+            set WUI_TestPageIndex = IMinBJ(4, WUI_TestPageIndex + 1)
+        endif
+        call WUI_SetText(WUI_TestText, WUI_TestPage[WUI_TestPageIndex])
+        call WUI_SetText(WUI_TestPageLabel, I2S(WUI_TestPageIndex + 1) + " / 5 - Scroll to browse")
+    endif
 endfunction
 
 private function WUI_CreateTestHelp takes nothing returns nothing
-    local framehandle title
-    local framehandle text
+    local framehandle back
     local trigger events = CreateTrigger()
-    local string help = "|cffd5b876UNITS & RECOVERY|r|nLeft / Right: create enemy / hurt ally.|nDown / Up: self root / stun for 2s.|nEsc: restore HP, MP and cooldowns.|nHold Esc (0.15s+): maximum level.|n|n"
-    set help = help + "|cffd5b876SELECTED UNIT|r|n-lvl X: set level (example: -lvl 35).|n-pr X / -mr X: set physical / magical resistance %.|n-hp X / -mp X: set current HP / MP.|n-X: play animation X (example: -0).|nBuy items for a selected enemy in the shop.|n|n"
-    set help = help + "|cffd5b876TEST EFFECTS|r|n-slow: self slow 50%, 4s.|n-silence: self silence, 3s.|n-sukuna: summon the round ender.|n-killme: kill your hero after a delay.|n|n"
-    set help = help + "|cffd5b876WINDOWS & HOTKEYS|r|nTab: shop; use Auto-buy for recommended items.|nF2: statistics.|nF3 / F4: clear / load damage statistics.|nHold Z, select a sector, release: team ping.|nK: emotes.|n|n"
-    set help = help + "|cffd5b876ELEMENTS|r|nFire: 40 magic damage/s, 5s.|nWater: 100 damage on apply, 10% slow, 5s.|nLightning: after 5s, stun 0.6s and burn 120 mana.|nFire + Water: 1.5 x main stat damage, +10% physical damage taken, 8s.|nFire + Lightning: 1.5 x main stat damage, stun 1.25s, 2.5s lockout.|nLightning + Water: 10% slow, 0.4 x main stat damage/s, 5s."
-    set WUI_TestPanel = WUI_Panel("WOSTestHelpPanel", WUI_Root, 0.192, 0.246)
+    local trigger scroll = CreateTrigger()
+    set WUI_TestPage[0] = "|cffd5b876UNITS & RECOVERY|r|n|nLeft / Right: create enemy / hurt ally.|n|nDown / Up: self root / stun for 2s.|n|nEsc: restore HP, MP and cooldowns.|n|nHold Esc (0.15s+): maximum level."
+    set WUI_TestPage[1] = "|cffd5b876SELECTED UNIT|r|n|n-lvl X: set level (example: -lvl 35).|n|n-pr X / -mr X: set physical / magical resistance %.|n|n-hp X / -mp X: set current HP / MP.|n|n-X: play animation X (example: -0).|n|nBuy items for a selected enemy in the shop."
+    set WUI_TestPage[2] = "|cffd5b876TEST EFFECTS|r|n|n-slow: self slow 50%, 4s.|n|n-silence: self silence, 3s.|n|n-sukuna: summon the round ender.|n|n-killme: kill your hero after a delay."
+    set WUI_TestPage[3] = "|cffd5b876WINDOWS & HOTKEYS|r|n|nTab: shop; use Auto-buy for recommended items.|n|nF2: statistics.|n|nF3 / F4: clear / load damage statistics.|n|nHold Z, select a sector, release: team ping.|n|nK: emotes."
+    set WUI_TestPage[4] = "|cffd5b876ELEMENTS|r|n|nFire: 40 magic damage/s, 5s.|nWater: 100 damage on apply, 10% slow, 5s.|nLightning: after 5s, stun 0.6s and burn 120 mana.|n|nFire + Water: 1.5 x main stat damage, +10% physical damage taken, 8s.|n|nFire + Lightning: 1.5 x main stat damage, stun 1.25s, 2.5s lockout.|n|nLightning + Water: 10% slow, 0.4 x main stat damage/s, 5s."
+    // Ordinary text needs no lazy-loaded stock FDF template.
+    set WUI_TestPanel = BlzCreateFrameByType("BUTTON", "WOSTestHelpPanel", WUI_Root, "", 0)
     call WUI_Place(WUI_TestPanel, 0.694, 0.325, 0.192, 0.246)
-    set text = BlzCreateFrame("EscMenuTextAreaTemplate", WUI_TestPanel, 0, 9020)
-    call WUI_Place(text, 0.694, 0.325, 0.182, 0.234)
-    call BlzFrameSetText(text, help)
-    call BlzFrameSetScale(text, 0.78)
-    set WUI_TestToggle = BlzCreateFrameByType("BUTTON", "WOSTestHelpToggle", WUI_Root, "", 0)
+    set back = WUI_Panel("WOSTestHelpBack", WUI_TestPanel, 0.192, 0.246)
+    call BlzFrameSetAllPoints(back, WUI_TestPanel)
+    call BlzFrameSetEnable(back, false)
+    set back = WUI_Border("WOSTestHelpBorder", WUI_TestPanel)
+    set WUI_TestText = BlzCreateFrameByType("TEXT", "WOSTestHelpText", WUI_TestPanel, "", 0)
+    call WUI_Place(WUI_TestText, 0.694, 0.333, 0.174, 0.208)
+    call BlzFrameSetTextAlignment(WUI_TestText, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetScale(WUI_TestText, 0.86)
+    call BlzFrameSetText(WUI_TestText, WUI_TestPage[0])
+    call BlzFrameSetEnable(WUI_TestText, false)
+    set WUI_TestPageLabel = BlzCreateFrameByType("TEXT", "WOSTestPageLabel", WUI_TestPanel, "", 0)
+    call WUI_Place(WUI_TestPageLabel, 0.694, 0.212, 0.130, 0.014)
+    call BlzFrameSetTextAlignment(WUI_TestPageLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(WUI_TestPageLabel, 0.66)
+    call BlzFrameSetText(WUI_TestPageLabel, "1 / 5 - Scroll to browse")
+    call BlzFrameSetEnable(WUI_TestPageLabel, false)
+    set WUI_TestPrevious = WUI_TextButton("WOSTestPrevious", WUI_TestPanel, "<", 0.016, 0.016)
+    set WUI_TestNext = WUI_TextButton("WOSTestNext", WUI_TestPanel, ">", 0.016, 0.016)
+    call WUI_Place(WUI_TestPrevious, 0.612, 0.212, 0.016, 0.016)
+    call WUI_Place(WUI_TestNext, 0.776, 0.212, 0.016, 0.016)
+    set WUI_TestToggle = WUI_TextButton("WOSTestHelpToggle", WUI_Root, "TEST COMMANDS  +/-", 0.192, 0.021)
     call WUI_Place(WUI_TestToggle, 0.694, 0.459, 0.192, 0.021)
-    set title = WUI_Panel("WOSTestHelpHeading", WUI_TestToggle, 0.192, 0.021)
-    call BlzFrameSetAllPoints(title, WUI_TestToggle)
-    set title = BlzCreateFrameByType("TEXT", "WOSTestHelpTitle", WUI_TestToggle, "", 0)
-    call BlzFrameSetAllPoints(title, WUI_TestToggle)
-    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetScale(title, 0.72)
-    call BlzFrameSetText(title, "|cffd5b876TEST COMMANDS|r  +/-")
-    call BlzFrameSetEnable(title, false)
     call BlzTriggerRegisterFrameEvent(events, WUI_TestToggle, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(events, function WUI_TestClick)
+    call BlzTriggerRegisterFrameEvent(scroll, WUI_TestPanel, FRAMEEVENT_MOUSE_WHEEL)
+    call BlzTriggerRegisterFrameEvent(scroll, WUI_TestPrevious, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(scroll, WUI_TestNext, FRAMEEVENT_CONTROL_CLICK)
+    call TriggerAddAction(scroll, function WUI_TestScroll)
     call WUI_ShowTestHelp(false)
-    set title = null
-    set text = null
+    set back = null
     set events = null
+    set scroll = null
 endfunction
 
 private function WUI_Bootstrap takes nothing returns nothing

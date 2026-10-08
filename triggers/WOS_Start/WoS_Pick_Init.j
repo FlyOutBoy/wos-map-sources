@@ -87,6 +87,7 @@ integer PrepJustStarted = 0
     framehandle FRAME_HeroArmor
     framehandle FRAME_HeroMS
     framehandle FRAME_HeroAS
+    framehandle FRAME_HeroPortraitBorder
     framehandle FRAME_HeroName
     framehandle FRAME_HeroNameBack
     framehandle FRAME_TimerToStart
@@ -2849,7 +2850,7 @@ function GuideCreateAbilityTooltip takes integer slot returns nothing
 endfunction
 
 // Relocate the existing controls only; catalogue IDs, votes and click owners stay intact.
-function WOS_LayoutHeroPick takes framehandle portraitEdge returns nothing
+function WOS_LayoutHeroPick takes nothing returns nothing
     local integer i = 0
     local real x
     call WUI_Place(FRAME_MAIN, 0.420, 0.331, 0.656, 0.426)
@@ -2860,10 +2861,10 @@ function WOS_LayoutHeroPick takes framehandle portraitEdge returns nothing
     call WUI_Place(FRAME_HeroAttribute, 0.510, 0.492, 0.022, 0.022)
     call WUI_Place(FRAME_HeroAttackType, 0.706, 0.492, 0.022, 0.022)
     call WUI_Place(FRAME_HeroModel, 0.608, 0.410, 0.110, 0.110)
-    call BlzFrameSetAllPoints(portraitEdge, FRAME_HeroModel)
-    call BlzFrameSetTexture(portraitEdge, WUI_BORDER_TEXTURE, 0, true)
-    call BlzFrameSetLevel(portraitEdge, 3)
-    call BlzFrameSetEnable(portraitEdge, false)
+    call BlzFrameSetAllPoints(FRAME_HeroPortraitBorder, FRAME_HeroModel)
+    call BlzFrameSetTexture(FRAME_HeroPortraitBorder, WUI_BORDER_TEXTURE, 0, true)
+    call BlzFrameSetLevel(FRAME_HeroPortraitBorder, 3)
+    call BlzFrameSetEnable(FRAME_HeroPortraitBorder, false)
     call WUI_Place(FRAME_HeroStr, 0.553, 0.338, 0.090, 0.015)
     call WUI_Place(FRAME_HeroAgi, 0.553, 0.321, 0.090, 0.015)
     call WUI_Place(FRAME_HeroInt, 0.553, 0.304, 0.090, 0.015)
@@ -2932,7 +2933,7 @@ function WOS_LayoutHeroPick takes framehandle portraitEdge returns nothing
     endloop
 endfunction
 
-function CreateUI takes nothing returns nothing
+function WOS_CreatePickShell takes nothing returns nothing
     local integer i = 0
     local integer i2 = 0
     local integer k = 0
@@ -2943,15 +2944,13 @@ function CreateUI takes nothing returns nothing
     set FrameGuideRefresh = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
     set FRAME_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
-    call BlzFrameSetAbsPoint(FRAME_MAIN, FRAMEPOINT_CENTER, 0.4, 0.32)
-    call BlzFrameSetSize(FRAME_MAIN, 0.85, 0.5)
+    call WUI_RegisterModal(FRAME_MAIN)
+    call WUI_Place(FRAME_MAIN, 0.420, 0.331, 0.656, 0.426)
     set FRAME_MAIN2 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_MAIN2, FRAMEPOINT_CENTER, 0.35, 0.35)
-    call BlzFrameSetSize(FRAME_MAIN2, 0.3, 0.4)
+    call WUI_Place(FRAME_MAIN2, 0.380, 0.362, 0.222, 0.304)
     set FRAME_MAIN3 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_MAIN3, FRAMEPOINT_CENTER, 0.645, 0.35)
-    call BlzFrameSetSize(FRAME_MAIN3, 0.3, 0.4)
-    set FRAME_HeroName = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)
+    call WUI_Place(FRAME_MAIN3, 0.608, 0.362, 0.230, 0.304)
+    set FRAME_HeroName = BlzCreateFrame("ScriptDialogButton", FRAME_MAIN3, 0, 9030)
     call WUI_StyleButton(FRAME_HeroName)
     call BlzFrameSetAbsPoint(FRAME_HeroName, FRAMEPOINT_CENTER, 0.645, 0.51)
     call BlzFrameSetSize(FRAME_HeroName, 0.15, 0.03)
@@ -2972,6 +2971,7 @@ function CreateUI takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_HeroModel, false)
     call BlzFrameSetLevel(FRAME_HeroModel, 2) // Р В РЎвЂ”Р В РЎвЂўР В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІР‚В¦ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљР В Р’В°
     set border = BlzCreateFrameByType("BACKDROP", "ThinBorder", FRAME_MAIN3, "", 0)
+    set FRAME_HeroPortraitBorder = border
     call BlzFrameSetAbsPoint(border, FRAMEPOINT_CENTER, 0.645, 0.39)
     call BlzFrameSetTexture(border, "Textures\\black32.blp", 0, true)
     call BlzFrameSetSize(border, 0.2, 0.2) // Р РЋРІР‚РЋР РЋРЎвЂњР РЋРІР‚С™Р РЋР Р‰ Р В Р’В±Р В РЎвЂўР В Р’В»Р РЋР Р‰Р РЋРІвЂљВ¬Р В Р’Вµ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљР В Р’В°, Р РЋРІР‚РЋР РЋРІР‚С™Р В РЎвЂўР В Р’В±Р РЋРІР‚в„– Р РЋР вЂљР В Р’В°Р В РЎВР В РЎвЂќР В Р’В° Р В Р вЂ Р В РЎвЂР В РўвЂР В Р вЂ¦Р В Р’В°
@@ -3023,6 +3023,16 @@ function CreateUI takes nothing returns nothing
     call BlzFrameSetSize(FRAME_HeroAS, 0.1, 0.05)
     call BlzFrameSetVisible(FRAME_HeroAS, false)
     call BlzFrameSetScale(FRAME_HeroAS, 1.1)
+
+endfunction
+
+function WOS_CreatePickCatalogue takes nothing returns nothing
+    local integer i = 0
+    local integer i2 = 0
+    local integer k = 0
+    local real x = 0.025
+    local real y = -0.05
+    local framehandle border
     set i = 0
     loop
         exitwhen i == bj_MAX_PLAYERS
@@ -3101,6 +3111,16 @@ function CreateUI takes nothing returns nothing
             set y = y - 0.05
         endif
     endloop
+
+endfunction
+
+function WOS_CreatePickCategories takes nothing returns nothing
+    local integer i = 0
+    local integer i2 = 0
+    local integer k = 0
+    local real x = 0.025
+    local real y = -0.05
+    local framehandle border
     set i2 = 0
     set y = -0.06
     set x = 0.03
@@ -3144,7 +3164,7 @@ function CreateUI takes nothing returns nothing
         set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
         call BlzFrameSetTexture(FRAME_RepickHover[i], "Pick\\RepickButton", 0, true)
         call BlzFrameSetAllPoints(FRAME_RepickHover[i], FRAME_Repick[i])
-        call BlzFrameSetPoint(FRAME_Repick[i], FRAMEPOINT_LEFT, BlzGetFrameByName("ConsoleUIBackdrop", 0), FRAMEPOINT_LEFT, -0.035 -0.045, 0.13+0.07+0.29)
+        call WUI_Place(FRAME_Repick[i], 0.018, 0.552, 0.027, 0.027)
         set FRAME_RepickText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
         call BlzFrameSetTexture(FRAME_RepickText[i], "Pick\\RepickButtonText", 0, true)
         call BlzFrameSetSize(FRAME_RepickText[i], 0.06, 0.02)
@@ -3157,7 +3177,7 @@ function CreateUI takes nothing returns nothing
         set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)
         call BlzFrameSetTexture(FRAME_SwapHover[i], "Pick\\SwapButton", 0, true)
         call BlzFrameSetAllPoints(FRAME_SwapHover[i], FRAME_Swap[i])
-        call BlzFrameSetPoint(FRAME_Swap[i], FRAMEPOINT_LEFT, BlzGetFrameByName("ConsoleUIBackdrop", 0), FRAMEPOINT_LEFT,  -0.03+0.015, 0.20+0.29)
+        call WUI_Place(FRAME_Swap[i], 0.052, 0.552, 0.027, 0.027)
         set FRAME_SwapText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)
         call BlzFrameSetTexture(FRAME_SwapText[i], "Pick\\SwapButtonText", 0, true)
         call BlzFrameSetSize(FRAME_SwapText[i], 0.055, 0.0175)
@@ -3166,6 +3186,16 @@ function CreateUI takes nothing returns nothing
         call BlzFrameSetVisible(FRAME_Swap[i], false)
         set i = i + 1
     endloop
+
+endfunction
+
+function WOS_CreatePickAbilities takes nothing returns nothing
+    local integer i = 0
+    local integer i2 = 0
+    local integer k = 0
+    local real x = 0.025
+    local real y = -0.05
+    local framehandle border
     set y = 0.05
     set x = 0.03
     set i = 0
@@ -3214,6 +3244,16 @@ function CreateUI takes nothing returns nothing
         endif
         set x = x + 0.05
     endloop
+
+endfunction
+
+function WOS_CreatePickPlayers takes nothing returns nothing
+    local integer i = 0
+    local integer i2 = 0
+    local integer k = 0
+    local real x = 0.025
+    local real y = -0.05
+    local framehandle border
     set y = 0.06
     set x = 0.04
     set i = 0
@@ -3283,8 +3323,19 @@ function CreateUI takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_TimerToStart,false)
     call TriggerAddAction(FrameClick, function OnClick)
     call TriggerAddAction(FrameGuideRefresh, function GuideRefreshAbilityTooltip)
-    call WOS_LayoutHeroPick(border)
-    call CaptainDraft_CreateUI()
+
+endfunction
+
+// Fresh synchronous JASS threads prevent a large frame build from exhausting
+// the caller's operation budget before handlers and final layout are installed.
+function CreateUI takes nothing returns nothing
+    call WUI_OnReady(function WOS_CreatePickShell)
+    call WUI_OnReady(function WOS_CreatePickCatalogue)
+    call WUI_OnReady(function WOS_CreatePickCategories)
+    call WUI_OnReady(function WOS_CreatePickAbilities)
+    call WUI_OnReady(function WOS_CreatePickPlayers)
+    call WUI_OnReady(function WOS_LayoutHeroPick)
+    call WUI_OnReady(function CaptainDraft_CreateUI)
 endfunction
 // Captain Mode: функция SetVoteStackTexture перенесена в CaptainMode_Module.j
 // Captain Mode: функция ResetCapVotes перенесена в CaptainMode_Module.j

@@ -127,3 +127,27 @@ initialization. This proves packaged integration, not actual engine UI behavior.
 Build guard now rejects open World Editor before source/import mutations; late
 script guard remains for an editor opened during compilation. Explicit archive
 extraction normalizes path separators and fails on requested missing entries.
+
+### Checkpoint 12 corrections (integrated; game rendering unverified)
+
+Reforged 2+ ConsoleTopBar/ConsoleBottomBar contain stock textures and command/unit
+containers. Move named CommandBarFrame, parent(SimpleInfoPanelUnitDetail), upper
+system button bar and native tooltip to ConsoleUI SIMPLE root first, then hide
+chrome; preserve inventory/buffs and do not infer a container from slot zero.
+Native setup retries missing lazy containers; frame work stays in game-time timers.
+CustomSkin console/overlay/inventory textures become blank, clock uses an empty
+classic MDX. Installer edits only owned keys, backs up and preserves other sections.
+Normal BACKDROP width fills remain in normal HUD family; left anchored, percentage
+clamped/cached by WUI_SetValue. Legacy MDX meters keep native value API.
+Big pick/shop factories dispatch components and final layout through WUI_OnReady
+fresh synchronous threads. Full templates use BlzCreateFrame, not incomplete
+ByType inheritance. Mode selector uses normal frames, same four gameplay modes,
+host-only action, shared once-only timeout/click transition. Help uses five TEXT
+pages + wheel/arrow events; collapse uses its own trigger and cannot eat scroll.
+
+Help/modal registry: WUI_RegisterModal called synchronously for mode/pick/shop;
+local dock refresh suppresses help while one is visible, retains collapse state.
+Ordinary command cards use two rows at Y=.047/.016, size .028, below MP .079.
+Latest MAIN compile/109 identity/30 import/35 archive checks pass. The first slot
+is held by launched Warcraft; final packed artifact is WoS_Test_2.w3x.
+Primary console skin reference: https://www.hiveworkshop.com/threads/customconsoleui.328354/

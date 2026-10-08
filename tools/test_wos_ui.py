@@ -60,7 +60,8 @@ class NativeCommandLayout(unittest.TestCase):
             if frame in self.positions:
                 x, y = self.positions[frame]
                 self.assertGreater(x, 0)
-                self.assertGreaterEqual(y, .035)
+                self.assertGreaterEqual(y, .015)
+                self.assertLess(y + .014, .0755, "Alternate cards must remain below MP")
 
 
 class DeferredUIStartup(unittest.TestCase):
@@ -286,7 +287,7 @@ class SharedImports(unittest.TestCase):
             imp.write_bytes(struct.pack('<II', 1, 1) + old_entry)
             install_ui(scenario)
             first = imp.read_bytes()
-            self.assertEqual(1 + len(ASSET_NAMES), struct.unpack_from('<II', first)[1])
+            self.assertEqual(2 + len(ASSET_NAMES), struct.unpack_from('<II', first)[1])
             self.assertEqual(old_entry, first[8:8 + len(old_entry)])
             install_ui(scenario)
             self.assertEqual(first, imp.read_bytes())
@@ -303,6 +304,7 @@ class DynamicHeroAndBuffDocks(unittest.TestCase):
         self.moves = []
         self.vm.g.update({
             'WUI_DockCount': 0, 'WUI_DockKeys': {}, 'WUI_OrdersOpen': False,
+            'WUI_RefreshHelpVisibility': lambda: None,
             'GetPlayerId': lambda p: p, 'GetLocalPlayer': lambda: 0,
             'StringHash': lambda s: s, 'I2R': float,
             'ModuloInteger': lambda a, b: a % b,

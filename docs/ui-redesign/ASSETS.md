@@ -14,3 +14,10 @@
 - Runtime style quality has not yet been inspected in Warcraft.
 - Checkpoint 10: all 13 shared UI + 16 ping resources installed/registered in MAIN;
   extracted packed archive bytes match the native scenario and project assets.
+
+- Checkpoint 12 adds UI/WOS/empty-clock.mdx: classic v800 MDX header, one Stand
+  sequence, no render geometry, textures or emitters. Replaces TimeOfDayIndicator.
+- Ten owned CustomSkin keys blank stock console, two overlay textures and inventory
+  cover; installer preserves other skin sections/keys and backs up changes.
+- MAIN now includes 30 UI/ping resources. Skin + model included in packed-byte
+  verification (35 entries). Engine appearance remains unverified.
