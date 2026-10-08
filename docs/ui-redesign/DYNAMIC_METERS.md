@@ -34,7 +34,10 @@ native icon + independent timer text now share the buff strip. Kenjaku barrier
 and Tsuna beam chips use the same registry. TasAbilityChargeBox retains native
 command parenting and actual charge data, with compact .012 badges.
 
-Remaining special layouts: Erza Second Origin two-icon meter, Inori weapon
-selection, Kyoraku public ability-help drawer. Keep their extra controls and rules.
+Erza Second Origin's two-icon meter now adds a 46th registered meter, with both
+icons, original progress range, switch conditions and selection sprite retained.
+Inori weapon selection and Kyoraku public help drawer are compact graphite windows;
+their original handlers and visibility rules remain. Inori long descriptions now
+scroll instead of relying on a fixed plain-text box. All need actual game preview.
 Production dock tests cover gap closure, smooth movement, idle update suppression,
 buff-label attachment/orders avoidance, private ownership and stable key rebinding.

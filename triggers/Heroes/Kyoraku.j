@@ -1511,9 +1511,8 @@ endfunction
                             if frame_KyorBankai1[k2] == null then
                                 set frame_KyorBankai1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
                                 call BlzFrameSetVisible(frame_KyorBankai1[k2], true)
-                                set frame_KyorBankai12[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_KyorBankai12[k2], FRAMEPOINT_CENTER, 0, 0)
-                                call BlzFrameSetSize(frame_KyorBankai12[k2], 0, 0)
+                                set frame_KyorBankai12[k2] = WUI_Window("WOSKyorakuHelp", main_frame, 0, 0)
+                                call WUI_Place(frame_KyorBankai12[k2], 0.689, 0.320, 0.194, 0.196)
                                 call BlzFrameSetVisible(frame_KyorBankai12[k2], true)
                                 set frame_KyorBankai2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_KyorBankai1[k2], "", 0)
 
@@ -1532,11 +1531,11 @@ endfunction
                                 call WUI_RegisterPublicMeter(frame_KyorBankai1[k2], "Heroes/Kyoraku.j:frame_KyorBankai1:" + I2S(k2))
                                 call WUI_RefreshDocks()
                                 set frame_KyorBankai7[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", frame_KyorBankai12[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_KyorBankai7[k2], FRAMEPOINT_CENTER, 0.83, 0.34)
-                                call BlzFrameSetSize(frame_KyorBankai7[k2], 0.19, 0.17 )
+                                call BlzFrameSetScale(frame_KyorBankai7[k2], 0.78)
+                                call WUI_Place(frame_KyorBankai7[k2], 0.689, 0.320, 0.184, 0.186)
                                 call BlzFrameSetAlpha(frame_KyorBankai7[k2], 225)
-                                set xxx = 0.9
-                                set yyy = 0.4
+                                set xxx = 0.775
+                                set yyy = 0.430
         set frame_KyorBankai8[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetAbsPoint(frame_KyorBankai8[k2],FRAMEPOINT_CENTER, xxx,yyy )// - 0.03 * i)
         call BlzFrameSetSize(frame_KyorBankai8[k2], 0.02, 0.02)

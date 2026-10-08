@@ -75,11 +75,16 @@ Primary references checked:
   local frame visibility, packs owner meters above minimap, buffs above HUD and
   existing public meters below the top bar; movement interpolates at 0.10s.
   It never reads units or changes buff duration, casting, charges or visibility.
-  45 six-frame production meters reuse original handles/state via WUI_HeroMeter.
+  45 six-frame production meters reuse original handles/state via WUI_HeroMeter;
+  Erza Second Origin's two-icon meter adds one adapted member (46 total).
   MyFrame/MyFrameBuff unit timers and Kenjaku/Tsuna chips retain native SIMPLEFRAME
   parents from WUI_GetSimpleRoot; independent labels follow numeric coordinates.
   WOSHeroMeter.add/update/show is the shared constructor API for future owners.
   Details and remaining exceptional owners: DYNAMIC_METERS.md.
+- Inori's existing weapon selection keeps all four real click handlers; panel
+  .360x.248 at (.400,.345), real ability descriptions use scrollable TEXTAREA.
+  Existing selection sprite now follows actual weapon buttons. Kyoraku's public
+  help panel is .194x.196 at (.689,.320), controls at (.775,.430), within 4:3 bounds.
 - CaptainDraft/UI_CAREER/MusicPlayer variable aliases were missed by first direct
   parent migration and are now corrected. Normal roots use service root; native
   SIMPLEFRAME counter in Systems2 now uses ConsoleUI instead of ConsoleUIBackdrop.

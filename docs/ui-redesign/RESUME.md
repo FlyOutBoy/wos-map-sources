@@ -12,7 +12,7 @@ Source code and actual map state take precedence over these notes.
    minimap/menu; compact existing selected HUD; TestMode scroll/collapse help; top
    visible-only HP/MP; real shop/K toolbar; emoji checkbox; Z release-once/center text.
    Existing pick/shop compact layouts and graphite skins are now written.
-4. Latest full compile PASS: 146811 pjass lines. Production tests: HUD/docks 13, pings 21,
+4. Latest full compile PASS: 146833 pjass lines. Production tests: HUD/docks 13, pings 21,
    ally ability UI 7, trigger sync 3, workflow 8 PASS. No actual game verification.
    MAIN still untouched by this task: World Editor running. Do not claim runtime PASS.
 5. Open next: sync_war3_project.py guard, sync_war3_triggers.py, verify_wos_ui.py, then WOSUI.j and
@@ -40,8 +40,8 @@ Pending: in-game native item/learn card/buff/menu hierarchy, attack range format
 resolution changes, fog/multiplayer; final top-panel/menu styling; 45-owner
 hero counters and remaining windows. PLAN statuses intentionally IN_PROGRESS.
 Checkpoints: 654b679 shared core/assets/docs/tests; e64d873 traversal repair;
-bff70cb compact HUD/toolbar/pick/shop/secondary surfaces. Checkpoint 6 dynamic dock
-changes are the current working tree until their commit is recorded in PROGRESS.
+bff70cb compact HUD/toolbar/pick/shop/secondary surfaces; 3d92d32 dynamic docks.
+Checkpoint 7 special windows is the current change until its commit is recorded.
 Preserve source changes and ignored backups; do not redo completed migrations.
 Native MAIN: C:/Users/Gear/Documents/Warcraft III/Maps/WoS/Anime_WOS2_0.32.w3x (Scenario Folder).
 Build filename _build/WoS_Test.w3x is still the MAIN packed test output, not test_map.
@@ -61,5 +61,8 @@ Native charge box stays attached to actual command buttons, now .012 size.
 Open DYNAMIC_METERS.md for APIs and presentation-only boundaries. Registration
 must remain synchronous; dock refresh never alters game state or visibility.
 One-time tools/migrate_wos_ui_meters.py already applied; do not rerun it.
-Next independent work while editor closure is pending: Erza Second Origin's
-two-icon meter, Inori weapon selection and Kyoraku help controls, then top styling.
+Erza Second Origin's two-icon meter now attaches to the same dock (46 total).
+Inori weapon selection is compact with native scrollable real descriptions;
+selector follows actual weapon buttons. Kyoraku help/control now fit 4:3 bounds.
+Next independent work while editor closure is pending: compact top score styling,
+then inspect remaining vote/options/tooltips from FRAME_INVENTORY without re-audit.

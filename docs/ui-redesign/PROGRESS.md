@@ -150,3 +150,22 @@
 - Next independent action: style/register Erza Second Origin two-icon meter;
   preserve Inori weapon selection and Kyoraku help controls while compacting them.
   On confirmed editor closure: guarded push/build/archive verification as checkpoint 5.
+
+## Checkpoint 7 — exceptional hero panels
+
+- Erza Second Origin's real two-icon meter uses the shared dock (46 meter sites).
+  Both icons, original numeric range/values and switch rules retained; thin fill
+  fits between icons. Selection sprite retained with compact scale.
+- Inori weapon selection: graphite .360x.248 modal, same four controls and confirm
+  gating. Real ability descriptions now native scrollable TEXTAREA; existing
+  selector follows real weapon buttons after layout changes.
+- Kyoraku public help panel and toggle moved into 4:3 bounds, real scroll and
+  per-player collapse rules retained. Only local xxx/yyy UI coordinate assignments
+  changed outside frame calls; their usage is limited to control coordinates.
+- Full production compile PASS: 146833 pjass lines. Non-presentation fingerprints
+  match for Inori/Erza; Kyoraku differs only in those two presentation coordinates.
+  No new gameplay behavior or asset added; prior 52 tests remain last test evidence.
+- Dynamic dock checkpoint committed as 3d92d32. All four recovery files current.
+  MAIN still pending editor closure; no native changes or runtime verification.
+- Next exact independent action: compact existing top score/train/timer styling,
+  respecting RearrangeTeamUI positioning and its match-slot persistence.
