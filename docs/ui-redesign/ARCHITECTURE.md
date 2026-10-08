@@ -52,6 +52,12 @@ Primary references checked:
   directly right (0.200..0.310), vitals center (0.474,0.093/0.079), items 3×2
   X=0.630/0.655/0.680, Y=0.060/0.035; gold center (0.742,0.091).
 - Top portrait subtree is separately hideable; scores/train remain on original root.
+- Top root center (.400,.560), icons .028 with original .030 step/positions retained
+  for RearrangeTeamUI compatibility. Central score surface .084x.055; scores at
+  ±.027, font 1.55, train .018. Options at (.650,.590) use .012 existing checkboxes.
+  Camera/damage/options containers are transparent FRAMEs instead of alpha-zero
+  EscMenuBackdrops; manual hero tooltips share graphite/thin-gold surface.
+  Existing damage summary is compact at (.505,.117), .300x.016; its data unchanged.
 - Test help only shown by original TestComm when TestMode is enabled.
 - Toolbar: X=.718/.744/.770, Y=.060/.035, size=.020; emoji checkbox .012.
   WOS_ToggleShop in Systems/ButtonPressed.j owns real keyboard/toolbar open/close;

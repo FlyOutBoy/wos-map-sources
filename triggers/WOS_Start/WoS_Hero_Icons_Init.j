@@ -139,15 +139,15 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         // Параметры компактной верхней панели. Центральная точка интерфейса Warcraft III — 0.40.
         private constant real STATUS_BAR_CENTER_X = 0.400
         // Табло опущено под строку Ping/FPS, а опции имеют отдельную высоту.
-        private constant real STATUS_BAR_CENTER_Y = 0.535
+        private constant real STATUS_BAR_CENTER_Y = 0.560
         // Общая позиция блока Hide UI / Shop Key.
         // X расположен немного левее центра иконки 6-го игрока, Y поднят на 0.045.
-        private constant real STATUS_OPTIONS_CENTER_X = 0.445
-        private constant real STATUS_OPTIONS_CENTER_Y = 0.56
+        private constant real STATUS_OPTIONS_CENTER_X = 0.650
+        private constant real STATUS_OPTIONS_CENTER_Y = 0.590
         // Общая позиция текста Round Ends / Round Start In относительно центра табло.
         private constant real STATUS_ROUND_TIMER_X = 0.000
         private constant real STATUS_ROUND_TIMER_Y = -0.03
-        private constant real STATUS_HERO_SIZE = 0.030
+        private constant real STATUS_HERO_SIZE = 0.028
         private constant real STATUS_HERO_STEP = 0.030
         private constant real STATUS_LEFT_FIRST = -0.188
         private constant real STATUS_RIGHT_SHIFT = 0.106
@@ -1101,30 +1101,29 @@ endfunction
         call BlzFrameSetLevel(FRAME_StatusHeroMain, 5)
         set StatusPortraitRoot = BlzCreateFrameByType("FRAME", "WOSHeroPortraits", FRAME_StatusHeroMain, "", 0)
         call BlzFrameSetAllPoints(StatusPortraitRoot, FRAME_StatusHeroMain)
-        set FRAME_StatusHeroMain2 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
-        call BlzFrameSetAbsPoint(FRAME_StatusHeroMain2, FRAMEPOINT_CENTER, 0.3, 0.16)
-        call BlzFrameSetAlpha(FRAME_StatusHeroMain2, 0)
-        call BlzFrameSetSize(FRAME_StatusHeroMain2, 0.38, 0.06)
-        set FRAME_StatusHeroMain3 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
+        set border = WUI_Window("WOSTeamScoreSurface", FRAME_StatusHeroMain, 0, 0)
+        call WUI_Pin(border, FRAME_StatusHeroMain, 0.000, -0.007, 0.084, 0.055)
+        call BlzFrameSetEnable(border, false)
+        set FRAME_StatusHeroMain2 = BlzCreateFrameByType("FRAME", "WOSDamageSummary", WUI_GetRoot(), "", 0)
+        call WUI_Place(FRAME_StatusHeroMain2, 0.505, 0.117, 0.300, 0.016)
+        set FRAME_StatusHeroMain3 = BlzCreateFrameByType("FRAME", "WOSTopOptions", WUI_GetRoot(), "", 0)
         call BlzFrameSetAbsPoint(FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, STATUS_OPTIONS_CENTER_X, STATUS_OPTIONS_CENTER_Y)
-        call BlzFrameSetAlpha(FRAME_StatusHeroMain3, 0)
-        call BlzFrameSetSize(FRAME_StatusHeroMain3, 0.180, 0.028)
+        call BlzFrameSetSize(FRAME_StatusHeroMain3, 0.128, 0.016)
         set FRAME_TopCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_StatusHeroMain3, 0, 0)
-        call BlzFrameSetSize(FRAME_TopCheckbox, 0.016, 0.016)
+        call BlzFrameSetSize(FRAME_TopCheckbox, 0.012, 0.012)
         call BlzFrameSetAlpha(FRAME_TopCheckbox, 255)
-        call BlzFrameSetPoint(FRAME_TopCheckbox, FRAMEPOINT_CENTER, FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetPoint(FRAME_TopCheckbox, FRAMEPOINT_CENTER, FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, -0.054, 0.000)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_TopCheckbox, FRAMEEVENT_CHECKBOX_CHECKED)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_TopCheckbox, FRAMEEVENT_CHECKBOX_UNCHECKED)
         call TriggerAddAction(FrameBoxCheck, function CheckBoxCheck)
         set FRAME_TopCheckboxString = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain3, "", 0)
-        call BlzFrameSetSize(FRAME_TopCheckboxString, 0.060, 0.009)
+        call BlzFrameSetSize(FRAME_TopCheckboxString, 0.055, 0.009)
         call BlzFrameSetAlpha(FRAME_TopCheckboxString, 255)
-        call BlzFrameSetPoint(FRAME_TopCheckboxString, FRAMEPOINT_CENTER, FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, 0.038, 0.000)
-        call BlzFrameSetScale(FRAME_TopCheckboxString, 0.82)
+        call BlzFrameSetPoint(FRAME_TopCheckboxString, FRAMEPOINT_CENTER, FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, -0.018, 0.000)
+        call BlzFrameSetScale(FRAME_TopCheckboxString, 0.66)
         call BlzFrameSetText(FRAME_TopCheckboxString, "|cffd5b876Hide heroes|r")
-        set FRAME_StatusHeroMain4 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)
+        set FRAME_StatusHeroMain4 = BlzCreateFrameByType("FRAME", "WOSCameraControls", WUI_GetRoot(), "", 0)
         call BlzFrameSetPoint(FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_CENTER, -0.30, -0.2225)//0.39 - 0, 215
-        call BlzFrameSetAlpha(FRAME_StatusHeroMain4, 0)
         call BlzFrameSetSize(FRAME_StatusHeroMain4, 0.29, 0.0225 )
         set FRAME_CamSlider = BlzCreateFrameByType("SLIDER", "CamSlider", FRAME_StatusHeroMain4, "QuestMainListScrollBar", 0)
         call BlzFrameClearAllPoints(FRAME_CamSlider)
@@ -1180,10 +1179,9 @@ endfunction
             call BlzFrameSetVisible(FRAME_StatusHeroStringPlayerName[i], false)
 
             // Простой ручной tooltip без системного обработчика, вызывавшего зависание клиента.
-            set FRAME_StatusHeroTooltip[i] = BlzCreateFrameByType("BACKDROP", "StatusHeroNameTooltip", FRAME_StatusHeroMain, "", 3000 + i)
+            set FRAME_StatusHeroTooltip[i] = WUI_Window("StatusHeroNameTooltip", FRAME_StatusHeroMain, 0, 3000 + i)
             call BlzFrameSetPoint(FRAME_StatusHeroTooltip[i], FRAMEPOINT_TOP, FRAME_StatusHero[i], FRAMEPOINT_BOTTOM, 0.000, -0.003)
             call BlzFrameSetSize(FRAME_StatusHeroTooltip[i], GetStatusHeroTooltipWidth(GetPlayerName(Player(i))), 0.020)
-            call BlzFrameSetTexture(FRAME_StatusHeroTooltip[i], "Textures\\black32.blp", 0, true)
             call BlzFrameSetAlpha(FRAME_StatusHeroTooltip[i], 230)
             call BlzFrameSetLevel(FRAME_StatusHeroTooltip[i], 60)
             set FRAME_StatusHeroTooltipText[i] = BlzCreateFrameByType("TEXT", "StatusHeroNameTooltipText", FRAME_StatusHeroTooltip[i], "", 3100 + i)
@@ -1254,7 +1252,7 @@ endfunction
             set FRAME_StatusHeroBack[10] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[10], "", 0)
             call BlzFrameSetAllPoints(FRAME_StatusHeroBack[10], FRAME_StatusHero[10])
             call BlzFrameSetPoint(FRAME_StatusHero[10], FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, r3, r2)
-            call BlzFrameSetSize(FRAME_StatusHero[10], 0.024, 0.024)
+            call BlzFrameSetSize(FRAME_StatusHero[10], 0.018, 0.018)
             call BlzFrameSetLevel(FRAME_StatusHero[10], 10)
             call BlzFrameSetLevel(FRAME_StatusHeroBack[10], 10)
             call BlzFrameSetAlpha(FRAME_StatusHero[10], 255)
@@ -1270,10 +1268,10 @@ endfunction
     call BlzFrameSetEnable(FRAME_StatusHeroStringPlayerKill[10],false)
         set k = 5
         set FRAME_StatusHeroStringPlayerTakenDamageMag = BlzCreateFrameByType("TEXT", "MyPlayerName1", FRAME_StatusHeroMain2, "", 0)
-        call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerTakenDamageMag, FRAMEPOINT_LEFT, FRAME_StatusHeroMain2, FRAMEPOINT_CENTER, -0.065, -0.005 )// - 0.03 * i)
+        call BlzFrameSetAllPoints(FRAME_StatusHeroStringPlayerTakenDamageMag, FRAME_StatusHeroMain2)
         call BlzFrameSetText(FRAME_StatusHeroStringPlayerTakenDamageMag, "|c00FFFF00Dmg taken:|r |c004675FF" + I2S(0) + "%Mag|r/|cffff0000" + I2S(0) + "%Phys|r")
-        call BlzFrameSetScale(FRAME_StatusHeroStringPlayerTakenDamageMag, 1.3)
-        call BlzFrameSetSize(FRAME_StatusHeroStringPlayerTakenDamageMag, 0.2, 0.005)
+        call BlzFrameSetScale(FRAME_StatusHeroStringPlayerTakenDamageMag, 0.72)
+        call BlzFrameSetTextAlignment(FRAME_StatusHeroStringPlayerTakenDamageMag, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         call BlzFrameSetAlpha(FRAME_StatusHeroStringPlayerTakenDamageMag, 255)
         call BlzFrameSetVisible(FRAME_StatusHeroMain2, false)
         set FRAME_RoundCount = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
@@ -1287,7 +1285,7 @@ endfunction
         set FRAME_RoundTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
         call BlzFrameSetPoint(FRAME_RoundTimer, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, STATUS_ROUND_TIMER_X, STATUS_ROUND_TIMER_Y)
         call BlzFrameSetText(FRAME_RoundTimer, "Round Start In: |c00FFFF00" + I2S(TimeRound / 60) + ":00|r")
-        call BlzFrameSetScale(FRAME_RoundTimer, 0.84)
+        call BlzFrameSetScale(FRAME_RoundTimer, 0.70)
         call BlzFrameSetAlpha(FRAME_RoundTimer, 255)
         call BlzFrameSetEnable(FRAME_RoundTimer,false)
         call BlzFrameSetVisible(FRAME_RoundTimer, true)
@@ -1299,21 +1297,21 @@ endfunction
         call BlzFrameSetScale(FRAME_GameTimer, 0.70)
         call BlzFrameSetEnable(FRAME_GameTimer,false)
         set FRAME_Team1Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore1", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Team1Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, -0.012, 0.000)
+        call BlzFrameSetPoint(FRAME_Team1Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, -0.027, 0.000)
         call BlzFrameSetSize(FRAME_Team1Rounds, 0.024, 0.024)
         call BlzFrameSetTextAlignment(FRAME_Team1Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         call BlzFrameSetText(FRAME_Team1Rounds, "|cffff4040" + I2S(Team1Round) + "|r")
-        call BlzFrameSetScale(FRAME_Team1Rounds, 2.40)
+        call BlzFrameSetScale(FRAME_Team1Rounds, 1.55)
         call BlzFrameSetAlpha(FRAME_Team1Rounds, 255)
         call BlzFrameSetLevel(FRAME_Team1Rounds, 50)
         call BlzFrameSetVisible(FRAME_Team1Rounds, true)
         call BlzFrameSetEnable(FRAME_Team1Rounds,false)
         set FRAME_Team2Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore2", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Team2Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.012, 0.000)
+        call BlzFrameSetPoint(FRAME_Team2Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.027, 0.000)
         call BlzFrameSetSize(FRAME_Team2Rounds, 0.024, 0.024)
         call BlzFrameSetTextAlignment(FRAME_Team2Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         call BlzFrameSetText(FRAME_Team2Rounds, "|cff4080ff" + I2S(Team2Round) + "|r")
-        call BlzFrameSetScale(FRAME_Team2Rounds, 2.40)
+        call BlzFrameSetScale(FRAME_Team2Rounds, 1.55)
         call BlzFrameSetAlpha(FRAME_Team2Rounds, 255)
         call BlzFrameSetLevel(FRAME_Team2Rounds, 50)
         call BlzFrameSetVisible(FRAME_Team2Rounds, true)
@@ -1384,17 +1382,17 @@ endfunction
         call BlzFrameSetVisible(FRAME_StatsMain, false)
         
         set FRAME_ShopButtonCheck = BlzCreateFrame("QuestCheckBox2", FRAME_StatusHeroMain3, 0, 0)
-        call BlzFrameSetSize(FRAME_ShopButtonCheck, 0.016, 0.016)
+        call BlzFrameSetSize(FRAME_ShopButtonCheck, 0.012, 0.012)
         call BlzFrameSetAlpha(FRAME_ShopButtonCheck, 255)
-        call BlzFrameSetPoint(FRAME_ShopButtonCheck, FRAMEPOINT_LEFT, FRAME_TopCheckboxString, FRAMEPOINT_RIGHT, -0.020, 0.000)
+        call BlzFrameSetPoint(FRAME_ShopButtonCheck, FRAMEPOINT_LEFT, FRAME_TopCheckboxString, FRAMEPOINT_RIGHT, 0.004, 0.000)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_ShopButtonCheck, FRAMEEVENT_CHECKBOX_CHECKED)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_ShopButtonCheck, FRAMEEVENT_CHECKBOX_UNCHECKED)
         set FRAME_ShopButtonText = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain3, "", 0)
-        call BlzFrameSetSize(FRAME_ShopButtonText, 0.065, 0.009)
+        call BlzFrameSetSize(FRAME_ShopButtonText, 0.048, 0.009)
         call BlzFrameSetAlpha(FRAME_ShopButtonText, 255)
         call BlzFrameSetPoint(FRAME_ShopButtonText, FRAMEPOINT_LEFT, FRAME_ShopButtonCheck, FRAMEPOINT_RIGHT, 0.004, 0.000)
-        call BlzFrameSetScale(FRAME_ShopButtonText, 0.82)
-        call BlzFrameSetText(FRAME_ShopButtonText, "|cffffff00Shop Key|r")
+        call BlzFrameSetScale(FRAME_ShopButtonText, 0.66)
+        call BlzFrameSetText(FRAME_ShopButtonText, WUI_GOLD + "Shop key|r")
         
         call BlzFrameSetEnable(FRAME_StatsMain,false)
         set x = 0.744

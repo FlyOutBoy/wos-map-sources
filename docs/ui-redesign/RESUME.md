@@ -12,7 +12,7 @@ Source code and actual map state take precedence over these notes.
    minimap/menu; compact existing selected HUD; TestMode scroll/collapse help; top
    visible-only HP/MP; real shop/K toolbar; emoji checkbox; Z release-once/center text.
    Existing pick/shop compact layouts and graphite skins are now written.
-4. Latest full compile PASS: 146833 pjass lines. Production tests: HUD/docks 13, pings 21,
+4. Latest full compile PASS: 146831 pjass lines. Production tests: HUD/docks 13, pings 21,
    ally ability UI 7, trigger sync 3, workflow 8 PASS. No actual game verification.
    MAIN still untouched by this task: World Editor running. Do not claim runtime PASS.
 5. Open next: sync_war3_project.py guard, sync_war3_triggers.py, verify_wos_ui.py, then WOSUI.j and
@@ -41,7 +41,8 @@ resolution changes, fog/multiplayer; final top-panel/menu styling; 45-owner
 hero counters and remaining windows. PLAN statuses intentionally IN_PROGRESS.
 Checkpoints: 654b679 shared core/assets/docs/tests; e64d873 traversal repair;
 bff70cb compact HUD/toolbar/pick/shop/secondary surfaces; 3d92d32 dynamic docks.
-Checkpoint 7 special windows is the current change until its commit is recorded.
+a856a90 special hero windows. Checkpoint 8 top styling is the current change until
+its commit is recorded. Git status was clean between these checkpoints.
 Preserve source changes and ignored backups; do not redo completed migrations.
 Native MAIN: C:/Users/Gear/Documents/Warcraft III/Maps/WoS/Anime_WOS2_0.32.w3x (Scenario Folder).
 Build filename _build/WoS_Test.w3x is still the MAIN packed test output, not test_map.
@@ -64,5 +65,7 @@ One-time tools/migrate_wos_ui_meters.py already applied; do not rerun it.
 Erza Second Origin's two-icon meter now attaches to the same dock (46 total).
 Inori weapon selection is compact with native scrollable real descriptions;
 selector follows actual weapon buttons. Kyoraku help/control now fit 4:3 bounds.
-Next independent work while editor closure is pending: compact top score styling,
-then inspect remaining vote/options/tooltips from FRAME_INVENTORY without re-audit.
+Compact top score/train/options styling now implemented, original .030 hero step
+retained to match RearrangeTeamUI. Root center Y=.560, .028 icons, options Y=.590.
+Next independent work while editor closure is pending: inspect remaining
+vote/options/tooltips from FRAME_INVENTORY without re-auditing completed owners.

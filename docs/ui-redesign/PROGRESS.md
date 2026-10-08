@@ -169,3 +169,19 @@
   MAIN still pending editor closure; no native changes or runtime verification.
 - Next exact independent action: compact existing top score/train/timer styling,
   respecting RearrangeTeamUI positioning and its match-slot persistence.
+
+## Checkpoint 8 — compact top scoreboard and controls
+
+- Existing heroicon root moved to Y=.560, icons .028 and original .030 slot step
+  retained; RearrangeTeamUI match slots and saved team ordering remain compatible.
+- Thin graphite/gold central score surface, smaller scores at ±.027 and .018 train
+  icon; real train kills/game clock/round timer continue using original counters.
+- Existing Hide heroes / Shop key controls moved to Y=.590 with smaller .012
+  checkboxes and separated labels. Damage summary moved to compact HUD row.
+  Camera/options/summary use transparent FRAME roots instead of alpha-zero stone
+  backdrops; existing manual hero-name tooltips share graphite surface.
+- Full compile PASS: 146831 pjass lines. Production HUD/dock/privacy tests 13 PASS.
+  No runtime evidence; MAIN save remains pending closed-editor response.
+- Checkpoint 7 committed as a856a90. Four recovery files updated again.
+- Next independent action: remaining mode/vote/tooltip skins from FRAME_INVENTORY;
+  create explicit owner status list to distinguish implementation from runtime.
