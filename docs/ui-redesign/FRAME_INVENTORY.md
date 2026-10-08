@@ -9,18 +9,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1294 | Loop_AinzW | `set frame1_pas1[check2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1302 | Loop_AinzW | `set frame1_pas2[check2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[check2], 0, 0)` |
-| 1305 | Loop_AinzW | `set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)` |
-| 1312 | Loop_AinzW | `set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)` |
-| 1316 | Loop_AinzW | `set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
-| 1320 | Loop_AinzW | `set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
-| 2193 | AinzT_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2201 | AinzT_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 2204 | AinzT_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 2211 | AinzT_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 2215 | AinzT_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2219 | AinzT_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1294 | Loop_AinzW | `set frame1_pas1[check2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1299 | Loop_AinzW | `set frame1_pas2[check2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1_pas1[check2], "", 0)` |
+| 1301 | Loop_AinzW | `set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)` |
+| 1304 | Loop_AinzW | `set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)` |
+| 1307 | Loop_AinzW | `set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
+| 1309 | Loop_AinzW | `set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
+| 2184 | AinzT_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2189 | AinzT_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 2191 | AinzT_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 2194 | AinzT_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 2197 | AinzT_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2199 | AinzT_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/AlterSaber.j
 
@@ -28,12 +28,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1108 | Loop_AlterSaberR | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1116 | Loop_AlterSaberR | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1119 | Loop_AlterSaberR | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1126 | Loop_AlterSaberR | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1130 | Loop_AlterSaberR | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1134 | Loop_AlterSaberR | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1108 | Loop_AlterSaberR | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1113 | Loop_AlterSaberR | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1115 | Loop_AlterSaberR | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1118 | Loop_AlterSaberR | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1121 | Loop_AlterSaberR | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1123 | Loop_AlterSaberR | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Alucard.j
 
@@ -41,18 +41,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1032 | AlucardW2_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1040 | AlucardW2_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1043 | AlucardW2_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1050 | AlucardW2_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1054 | AlucardW2_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1058 | AlucardW2_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1460 | Loop_AlucardR | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1468 | Loop_AlucardR | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1471 | Loop_AlucardR | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1478 | Loop_AlucardR | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1482 | Loop_AlucardR | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1486 | Loop_AlucardR | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1032 | AlucardW2_Start | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1037 | AlucardW2_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1039 | AlucardW2_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1042 | AlucardW2_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1045 | AlucardW2_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1047 | AlucardW2_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1451 | Loop_AlucardR | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1456 | Loop_AlucardR | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1458 | Loop_AlucardR | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1461 | Loop_AlucardR | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1464 | Loop_AlucardR | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1466 | Loop_AlucardR | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Asta.j
 
@@ -60,12 +60,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1643 | AstaT_Start | `set frameAsta_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1651 | AstaT_Start | `set frameAsta_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameAsta_pas1[k2], 0, 0)` |
-| 1654 | AstaT_Start | `set frameAsta_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameAsta_pas1[k2], "", 0)` |
-| 1661 | AstaT_Start | `set frameAsta_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameAsta_pas1[k2], "", 0)` |
-| 1665 | AstaT_Start | `set frameAsta_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)` |
-| 1669 | AstaT_Start | `set frameAsta_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)` |
+| 1643 | AstaT_Start | `set frameAsta_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1648 | AstaT_Start | `set frameAsta_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameAsta_pas1[k2], "", 0)` |
+| 1650 | AstaT_Start | `set frameAsta_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameAsta_pas1[k2], "", 0)` |
+| 1653 | AstaT_Start | `set frameAsta_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameAsta_pas1[k2], "", 0)` |
+| 1656 | AstaT_Start | `set frameAsta_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)` |
+| 1658 | AstaT_Start | `set frameAsta_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Bambietta.j
 
@@ -73,12 +73,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1878 | Loop_BambiettaT | `set framebambietta_morph1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1886 | Loop_BambiettaT | `set framebambietta_morph2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", framebambietta_morph1[k2], 0, 0)` |
-| 1889 | Loop_BambiettaT | `set framebambietta_morph3[k2] = BlzCreateFrameByType("STATUSBAR", "", framebambietta_morph1[k2], "", 0)` |
-| 1896 | Loop_BambiettaT | `set framebambietta_morph4[k2] = BlzCreateFrameByType("BACKDROP", "SS", framebambietta_morph1[k2], "", 0)` |
-| 1900 | Loop_BambiettaT | `set framebambietta_morph5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)` |
-| 1904 | Loop_BambiettaT | `set framebambietta_morph6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)` |
+| 1878 | Loop_BambiettaT | `set framebambietta_morph1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1883 | Loop_BambiettaT | `set framebambietta_morph2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", framebambietta_morph1[k2], "", 0)` |
+| 1885 | Loop_BambiettaT | `set framebambietta_morph3[k2] = BlzCreateFrameByType("STATUSBAR", "", framebambietta_morph1[k2], "", 0)` |
+| 1888 | Loop_BambiettaT | `set framebambietta_morph4[k2] = BlzCreateFrameByType("BACKDROP", "SS", framebambietta_morph1[k2], "", 0)` |
+| 1891 | Loop_BambiettaT | `set framebambietta_morph5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)` |
+| 1893 | Loop_BambiettaT | `set framebambietta_morph6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)` |
 
 ## triggers/Heroes/Barragan.j
 
@@ -86,18 +86,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 835 | Loop_BarraganE | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 843 | Loop_BarraganE | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 846 | Loop_BarraganE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 853 | Loop_BarraganE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 857 | Loop_BarraganE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 861 | Loop_BarraganE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1408 | BarraganT_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1416 | BarraganT_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1419 | BarraganT_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1426 | BarraganT_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1430 | BarraganT_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1434 | BarraganT_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 835 | Loop_BarraganE | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 840 | Loop_BarraganE | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 842 | Loop_BarraganE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 845 | Loop_BarraganE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 848 | Loop_BarraganE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 850 | Loop_BarraganE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1399 | BarraganT_Start | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1404 | BarraganT_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1406 | BarraganT_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1409 | BarraganT_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1412 | BarraganT_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1414 | BarraganT_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/DarkShiki.j
 
@@ -105,12 +105,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 358 | Loop_DarkShikiQ | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 366 | Loop_DarkShikiQ | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 369 | Loop_DarkShikiQ | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 376 | Loop_DarkShikiQ | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 380 | Loop_DarkShikiQ | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 384 | Loop_DarkShikiQ | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 358 | Loop_DarkShikiQ | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 363 | Loop_DarkShikiQ | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 365 | Loop_DarkShikiQ | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 368 | Loop_DarkShikiQ | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 371 | Loop_DarkShikiQ | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 373 | Loop_DarkShikiQ | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Erza/ErzaG2_Nakagami.j
 
@@ -118,12 +118,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 840 | ErzaG_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS",main_frame, "", 0)` |
-| 848 | ErzaG_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 851 | ErzaG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 858 | ErzaG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)` |
-| 866 | ErzaG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 870 | ErzaG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 840 | ErzaG_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 845 | ErzaG_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 847 | ErzaG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 850 | ErzaG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)` |
+| 857 | ErzaG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 859 | ErzaG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Erza/ErzaR.j
 
@@ -131,18 +131,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1018 | ErzaTT_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1026 | ErzaTT_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1029 | ErzaTT_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1036 | ErzaTT_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1040 | ErzaTT_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1044 | ErzaTT_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1357 | ErzaF_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1365 | ErzaF_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1368 | ErzaF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1375 | ErzaF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1379 | ErzaF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1383 | ErzaF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1018 | ErzaTT_Start | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1023 | ErzaTT_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1025 | ErzaTT_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1028 | ErzaTT_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1031 | ErzaTT_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1033 | ErzaTT_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1348 | ErzaF_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1353 | ErzaF_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1355 | ErzaF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1358 | ErzaF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1361 | ErzaF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1363 | ErzaF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Erza/ErzaT.j
 
@@ -150,12 +150,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1589 | ErzaTT_Start | `set frame_pas1[check] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1597 | ErzaTT_Start | `set frame_pas2[check] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[check], 0, 0)` |
-| 1600 | ErzaTT_Start | `set frame_pas3[check] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[check], "", 0)` |
-| 1607 | ErzaTT_Start | `set frame_pas4[check] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[check], "", 0)` |
-| 1611 | ErzaTT_Start | `set frame_pas5[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)` |
-| 1615 | ErzaTT_Start | `set frame_pas6[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)` |
+| 1589 | ErzaTT_Start | `set frame_pas1[check] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1594 | ErzaTT_Start | `set frame_pas2[check] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[check], "", 0)` |
+| 1596 | ErzaTT_Start | `set frame_pas3[check] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[check], "", 0)` |
+| 1599 | ErzaTT_Start | `set frame_pas4[check] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[check], "", 0)` |
+| 1602 | ErzaTT_Start | `set frame_pas5[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)` |
+| 1604 | ErzaTT_Start | `set frame_pas6[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)` |
 
 ## triggers/Heroes/Frieren.j
 
@@ -163,12 +163,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1883 | FrierenT_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1891 | FrierenT_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1894 | FrierenT_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1901 | FrierenT_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1905 | FrierenT_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1909 | FrierenT_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1883 | FrierenT_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1888 | FrierenT_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1890 | FrierenT_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1893 | FrierenT_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1896 | FrierenT_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1898 | FrierenT_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Gojo.j
 
@@ -176,18 +176,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1313 | GojoE_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1321 | GojoE_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1324 | GojoE_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1336 | GojoE_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1340 | GojoE_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1344 | GojoE_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2192 | GojoT2_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2200 | GojoT2_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 2203 | GojoT2_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 2210 | GojoT2_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 2214 | GojoT2_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 2218 | GojoT2_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1313 | GojoE_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1318 | GojoE_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1320 | GojoE_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1328 | GojoE_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1331 | GojoE_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1333 | GojoE_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2183 | GojoT2_Start | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2188 | GojoT2_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 2190 | GojoT2_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 2193 | GojoT2_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 2196 | GojoT2_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 2198 | GojoT2_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Harribel.j
 
@@ -195,18 +195,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 567 | Loop_HarribelE | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 575 | Loop_HarribelE | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 578 | Loop_HarribelE | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 585 | Loop_HarribelE | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 589 | Loop_HarribelE | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 593 | Loop_HarribelE | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1344 | HarribelG_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1352 | HarribelG_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1355 | HarribelG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1362 | HarribelG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1366 | HarribelG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1370 | HarribelG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 567 | Loop_HarribelE | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 572 | Loop_HarribelE | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 574 | Loop_HarribelE | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 577 | Loop_HarribelE | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 580 | Loop_HarribelE | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 582 | Loop_HarribelE | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1335 | HarribelG_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1340 | HarribelG_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1342 | HarribelG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1345 | HarribelG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1348 | HarribelG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1350 | HarribelG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Inori.j
 
@@ -214,54 +214,55 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1123 | Loop_InoriE | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1131 | Loop_InoriE | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1134 | Loop_InoriE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1141 | Loop_InoriE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1145 | Loop_InoriE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1149 | Loop_InoriE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2036 | Loop_InoriT2 | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2044 | Loop_InoriT2 | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 2047 | Loop_InoriT2 | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 2054 | Loop_InoriT2 | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 2058 | Loop_InoriT2 | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 2062 | Loop_InoriT2 | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 2430 | InoriG_Start | `set inori_frame_pas1[k2] = BlzCreateFrame("EscMenuBackdrop", main_frame, 0, 0)` |
-| 2437 | InoriG_Start | `set inori_frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)` |
-| 2441 | InoriG_Start | `set inori_frame_pas3[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)` |
-| 2447 | InoriG_Start | `set inori_frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
-| 2451 | InoriG_Start | `set inori_frame_pas5[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
-| 2456 | InoriG_Start | `set inori_frame_pas6[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
-| 2460 | InoriG_Start | `set inori_frame_pas7[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
-| 2463 | InoriG_Start | `set inori_frame_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", inori_frame_pas1[k2], "WarCraftIIILogo", 0)` |
-| 2471 | InoriG_Start | `set inori_frame_pas9[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
-| 2475 | InoriG_Start | `set inori_frame_pas10[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
-| 2480 | InoriG_Start | `set inori_frame_pas11[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
-| 2484 | InoriG_Start | `set inori_frame_pas12[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
-| 2489 | InoriG_Start | `set inori_frame_pas13[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)` |
-| 2496 | InoriG_Start | `set inori_frame_pas14[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)` |
+| 1123 | Loop_InoriE | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1128 | Loop_InoriE | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1130 | Loop_InoriE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1133 | Loop_InoriE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1136 | Loop_InoriE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1138 | Loop_InoriE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2027 | Loop_InoriT2 | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2032 | Loop_InoriT2 | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 2034 | Loop_InoriT2 | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 2037 | Loop_InoriT2 | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 2040 | Loop_InoriT2 | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 2042 | Loop_InoriT2 | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 2414 | InoriG_Start | `set inori_frame_pas1[k2] = WUI_Window("WOSInoriWeapons", main_frame, 0, 0)` |
+| 2421 | InoriG_Start | `set inori_frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)` |
+| 2425 | InoriG_Start | `set inori_frame_pas3[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)` |
+| 2431 | InoriG_Start | `set inori_frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
+| 2435 | InoriG_Start | `set inori_frame_pas5[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
+| 2440 | InoriG_Start | `set inori_frame_pas6[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
+| 2444 | InoriG_Start | `set inori_frame_pas7[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
+| 2447 | InoriG_Start | `set inori_frame_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", inori_frame_pas1[k2], "WarCraftIIILogo", 0)` |
+| 2455 | InoriG_Start | `set inori_frame_pas9[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
+| 2459 | InoriG_Start | `set inori_frame_pas10[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
+| 2464 | InoriG_Start | `set inori_frame_pas11[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)` |
+| 2468 | InoriG_Start | `set inori_frame_pas12[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)` |
+| 2473 | InoriG_Start | `set inori_frame_pas13[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", inori_frame_pas1[k2], 0, 0)` |
+| 2480 | InoriG_Start | `set inori_frame_pas14[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", inori_frame_pas1[k2], 0, 0)` |
 
 ## triggers/Heroes/Kenjaku.j
 
-15 creation/TOC sites.
+16 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
-| 1061 | KenjakuR_Start | `set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)` |
+| 1061 | KenjakuR_Start | `set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)` |
 | 1067 | KenjakuR_Start | `set frame0_pas2[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceBackGround", frame0_pas1[k2], "", 0)` |
 | 1068 | KenjakuR_Start | `set frame0_pas3[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceForeGround", frame0_pas2[k2], "", 0)` |
-| 1630 | KenjakuF_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1638 | KenjakuF_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1641 | KenjakuF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1648 | KenjakuF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1652 | KenjakuF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1656 | KenjakuF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1788 | Loop_KenjakuF2 | `set frame2_pas1[ k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1793 | Loop_KenjakuF2 | `set frame2_pas2[ k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[ k2], 0, 0)` |
-| 1796 | Loop_KenjakuF2 | `set frame2_pas3[ k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[ k2], "", 0)` |
-| 1803 | Loop_KenjakuF2 | `set frame2_pas4[ k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[ k2], "", 0)` |
-| 1807 | Loop_KenjakuF2 | `set frame2_pas5[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)` |
-| 1811 | Loop_KenjakuF2 | `set frame2_pas6[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)` |
+| 1074 | KenjakuR_Start | `call WUI_SimpleBorder(frame0_pas1[k2])` |
+| 1632 | KenjakuF_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1637 | KenjakuF_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1639 | KenjakuF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1642 | KenjakuF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1645 | KenjakuF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1647 | KenjakuF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1781 | Loop_KenjakuF2 | `set frame2_pas1[ k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1783 | Loop_KenjakuF2 | `set frame2_pas2[ k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[ k2], "", 0)` |
+| 1785 | Loop_KenjakuF2 | `set frame2_pas3[ k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[ k2], "", 0)` |
+| 1788 | Loop_KenjakuF2 | `set frame2_pas4[ k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[ k2], "", 0)` |
+| 1791 | Loop_KenjakuF2 | `set frame2_pas5[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)` |
+| 1793 | Loop_KenjakuF2 | `set frame2_pas6[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)` |
 
 ## triggers/Heroes/Kirito.j
 
@@ -269,12 +270,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 813 | KiritoR_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 821 | KiritoR_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 824 | KiritoR_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 831 | KiritoR_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 835 | KiritoR_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 839 | KiritoR_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 813 | KiritoR_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 818 | KiritoR_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 820 | KiritoR_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 823 | KiritoR_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 826 | KiritoR_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 828 | KiritoR_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Kyoraku.j
 
@@ -282,24 +283,24 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 552 | KyorakuW_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 560 | KyorakuW_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 563 | KyorakuW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 570 | KyorakuW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 574 | KyorakuW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 578 | KyorakuW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1521 | Loop_KyorakuT | `set frame_KyorBankai1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1526 | Loop_KyorakuT | `set frame_KyorBankai12[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1530 | Loop_KyorakuT | `set frame_KyorBankai2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_KyorBankai1[k2], 0, 0)` |
-| 1533 | Loop_KyorakuT | `set frame_KyorBankai3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_KyorBankai1[k2], "", 0)` |
-| 1540 | Loop_KyorakuT | `set frame_KyorBankai4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_KyorBankai1[k2], "", 0)` |
-| 1544 | Loop_KyorakuT | `set frame_KyorBankai5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)` |
-| 1548 | Loop_KyorakuT | `set frame_KyorBankai6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)` |
-| 1552 | Loop_KyorakuT | `set frame_KyorBankai7[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", frame_KyorBankai12[k2], 0, 0)` |
-| 1558 | Loop_KyorakuT | `set frame_KyorBankai8[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)` |
-| 1561 | Loop_KyorakuT | `set frame_KyorBankai9[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)` |
-| 1565 | Loop_KyorakuT | `set frame_KyorBankai10[k2] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", frame_KyorBankai8[k2], "", 0)` |
-| 1569 | Loop_KyorakuT | `set frame_KyorBankai11[k2] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", frame_KyorBankai9[k2], "", 0)` |
+| 552 | KyorakuW_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 557 | KyorakuW_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 559 | KyorakuW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 562 | KyorakuW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 565 | KyorakuW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 567 | KyorakuW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1512 | Loop_KyorakuT | `set frame_KyorBankai1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1514 | Loop_KyorakuT | `set frame_KyorBankai12[k2] = WUI_Window("WOSKyorakuHelp", main_frame, 0, 0)` |
+| 1517 | Loop_KyorakuT | `set frame_KyorBankai2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_KyorBankai1[k2], "", 0)` |
+| 1519 | Loop_KyorakuT | `set frame_KyorBankai3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_KyorBankai1[k2], "", 0)` |
+| 1522 | Loop_KyorakuT | `set frame_KyorBankai4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_KyorBankai1[k2], "", 0)` |
+| 1525 | Loop_KyorakuT | `set frame_KyorBankai5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)` |
+| 1527 | Loop_KyorakuT | `set frame_KyorBankai6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)` |
+| 1533 | Loop_KyorakuT | `set frame_KyorBankai7[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", frame_KyorBankai12[k2], 0, 0)` |
+| 1539 | Loop_KyorakuT | `set frame_KyorBankai8[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)` |
+| 1542 | Loop_KyorakuT | `set frame_KyorBankai9[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)` |
+| 1546 | Loop_KyorakuT | `set frame_KyorBankai10[k2] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", frame_KyorBankai8[k2], "", 0)` |
+| 1550 | Loop_KyorakuT | `set frame_KyorBankai11[k2] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", frame_KyorBankai9[k2], "", 0)` |
 
 ## triggers/Heroes/Laxus.j
 
@@ -307,12 +308,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 2087 | LaxusG_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2095 | LaxusG_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 2098 | LaxusG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 2105 | LaxusG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 2109 | LaxusG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2113 | LaxusG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2087 | LaxusG_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2092 | LaxusG_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 2094 | LaxusG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 2097 | LaxusG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 2100 | LaxusG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2102 | LaxusG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Natsu.j
 
@@ -320,18 +321,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1275 | NatsuG2_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1283 | NatsuG2_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1286 | NatsuG2_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1293 | NatsuG2_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1297 | NatsuG2_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1301 | NatsuG2_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1569 | NatsuPas_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1577 | NatsuPas_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1580 | NatsuPas_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1587 | NatsuPas_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1591 | NatsuPas_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1595 | NatsuPas_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1275 | NatsuG2_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1280 | NatsuG2_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1282 | NatsuG2_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1285 | NatsuG2_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1288 | NatsuG2_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1290 | NatsuG2_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1560 | NatsuPas_Start | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1565 | NatsuPas_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1567 | NatsuPas_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1570 | NatsuPas_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1573 | NatsuPas_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1575 | NatsuPas_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Okarun.j
 
@@ -339,12 +340,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1057 | OkarunF_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1065 | OkarunF_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1068 | OkarunF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1075 | OkarunF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1079 | OkarunF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1083 | OkarunF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1057 | OkarunF_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1062 | OkarunF_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1064 | OkarunF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1067 | OkarunF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1070 | OkarunF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1072 | OkarunF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Patriot.j
 
@@ -352,12 +353,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 918 | PatriotE_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 926 | PatriotE_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 929 | PatriotE_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 936 | PatriotE_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 940 | PatriotE_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 944 | PatriotE_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 918 | PatriotE_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 923 | PatriotE_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 925 | PatriotE_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 928 | PatriotE_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 931 | PatriotE_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 933 | PatriotE_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Raiden.j
 
@@ -365,24 +366,24 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 755 | RaidenW_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 763 | RaidenW_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 766 | RaidenW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 773 | RaidenW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 777 | RaidenW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 781 | RaidenW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1091 | RaidenTW_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1099 | RaidenTW_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1102 | RaidenTW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1109 | RaidenTW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1113 | RaidenTW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1117 | RaidenTW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1834 | Loop_RaidenT | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1842 | Loop_RaidenT | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1845 | Loop_RaidenT | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1852 | Loop_RaidenT | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1856 | Loop_RaidenT | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1860 | Loop_RaidenT | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 755 | RaidenW_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 760 | RaidenW_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 762 | RaidenW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 765 | RaidenW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 768 | RaidenW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 770 | RaidenW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1082 | RaidenTW_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1087 | RaidenTW_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1089 | RaidenTW_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1092 | RaidenTW_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1095 | RaidenTW_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1097 | RaidenTW_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1816 | Loop_RaidenT | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1821 | Loop_RaidenT | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1823 | Loop_RaidenT | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1826 | Loop_RaidenT | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1829 | Loop_RaidenT | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1831 | Loop_RaidenT | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Rimuru.j
 
@@ -390,18 +391,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 3835 | RimuruEvol2_Start | `set frameRimuru2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 3843 | RimuruEvol2_Start | `set frameRimuru2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru2_pas1[k2], 0, 0)` |
-| 3846 | RimuruEvol2_Start | `set frameRimuru2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru2_pas1[k2], "", 0)` |
-| 3853 | RimuruEvol2_Start | `set frameRimuru2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru2_pas1[k2], "", 0)` |
-| 3857 | RimuruEvol2_Start | `set frameRimuru2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)` |
-| 3861 | RimuruEvol2_Start | `set frameRimuru2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)` |
-| 3895 | RimuruEvol_Start | `set frameRimuru1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 3903 | RimuruEvol_Start | `set frameRimuru1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru1_pas1[k2], 0, 0)` |
-| 3906 | RimuruEvol_Start | `set frameRimuru1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru1_pas1[k2], "", 0)` |
-| 3913 | RimuruEvol_Start | `set frameRimuru1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru1_pas1[k2], "", 0)` |
-| 3917 | RimuruEvol_Start | `set frameRimuru1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)` |
-| 3921 | RimuruEvol_Start | `set frameRimuru1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)` |
+| 3835 | RimuruEvol2_Start | `set frameRimuru2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 3840 | RimuruEvol2_Start | `set frameRimuru2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameRimuru2_pas1[k2], "", 0)` |
+| 3842 | RimuruEvol2_Start | `set frameRimuru2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru2_pas1[k2], "", 0)` |
+| 3845 | RimuruEvol2_Start | `set frameRimuru2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru2_pas1[k2], "", 0)` |
+| 3848 | RimuruEvol2_Start | `set frameRimuru2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)` |
+| 3850 | RimuruEvol2_Start | `set frameRimuru2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)` |
+| 3886 | RimuruEvol_Start | `set frameRimuru1_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 3891 | RimuruEvol_Start | `set frameRimuru1_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameRimuru1_pas1[k2], "", 0)` |
+| 3893 | RimuruEvol_Start | `set frameRimuru1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru1_pas1[k2], "", 0)` |
+| 3896 | RimuruEvol_Start | `set frameRimuru1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru1_pas1[k2], "", 0)` |
+| 3899 | RimuruEvol_Start | `set frameRimuru1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)` |
+| 3901 | RimuruEvol_Start | `set frameRimuru1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Starrk.j
 
@@ -409,18 +410,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1020 | Loop_StarrkE | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1028 | Loop_StarrkE | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1031 | Loop_StarrkE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1038 | Loop_StarrkE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 1042 | Loop_StarrkE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1046 | Loop_StarrkE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2001 | Loop_StarrkT | `set frame1_pas1[check2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2009 | Loop_StarrkT | `set frame1_pas2[check2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[check2], 0, 0)` |
-| 2012 | Loop_StarrkT | `set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)` |
-| 2019 | Loop_StarrkT | `set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)` |
-| 2023 | Loop_StarrkT | `set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
-| 2027 | Loop_StarrkT | `set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
+| 1020 | Loop_StarrkE | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1025 | Loop_StarrkE | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1027 | Loop_StarrkE | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1030 | Loop_StarrkE | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 1033 | Loop_StarrkE | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1035 | Loop_StarrkE | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1992 | Loop_StarrkT | `set frame1_pas1[check2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1997 | Loop_StarrkT | `set frame1_pas2[check2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1_pas1[check2], "", 0)` |
+| 1999 | Loop_StarrkT | `set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)` |
+| 2002 | Loop_StarrkT | `set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)` |
+| 2005 | Loop_StarrkT | `set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
+| 2007 | Loop_StarrkT | `set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)` |
 
 ## triggers/Heroes/Takeshi.j
 
@@ -428,18 +429,18 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 133 | TakeshiGAdd_Start | `set frameTakeshi_pas1 [k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 141 | TakeshiGAdd_Start | `set frameTakeshi_pas2 [k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameTakeshi_pas1[k2], 0, 0)` |
-| 144 | TakeshiGAdd_Start | `set frameTakeshi_pas3 [k2] = BlzCreateFrameByType("STATUSBAR", "", frameTakeshi_pas1[k2], "", 0)` |
-| 151 | TakeshiGAdd_Start | `set frameTakeshi_pas4 [k2] = BlzCreateFrameByType("BACKDROP", "SS", frameTakeshi_pas1[k2], "", 0)` |
-| 155 | TakeshiGAdd_Start | `set frameTakeshi_pas5 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)` |
-| 159 | TakeshiGAdd_Start | `set frameTakeshi_pas6 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)` |
-| 1701 | Loop_TakeshiG | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 1709 | Loop_TakeshiG | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 1712 | Loop_TakeshiG | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 1719 | Loop_TakeshiG | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 1723 | Loop_TakeshiG | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 1727 | Loop_TakeshiG | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 133 | TakeshiGAdd_Start | `set frameTakeshi_pas1 [k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 138 | TakeshiGAdd_Start | `set frameTakeshi_pas2 [k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameTakeshi_pas1[k2], "", 0)` |
+| 140 | TakeshiGAdd_Start | `set frameTakeshi_pas3 [k2] = BlzCreateFrameByType("STATUSBAR", "", frameTakeshi_pas1[k2], "", 0)` |
+| 143 | TakeshiGAdd_Start | `set frameTakeshi_pas4 [k2] = BlzCreateFrameByType("BACKDROP", "SS", frameTakeshi_pas1[k2], "", 0)` |
+| 146 | TakeshiGAdd_Start | `set frameTakeshi_pas5 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)` |
+| 148 | TakeshiGAdd_Start | `set frameTakeshi_pas6 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)` |
+| 1692 | Loop_TakeshiG | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1697 | Loop_TakeshiG | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 1699 | Loop_TakeshiG | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 1702 | Loop_TakeshiG | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 1705 | Loop_TakeshiG | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 1707 | Loop_TakeshiG | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Tomioka.j
 
@@ -447,41 +448,42 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 1106 | TomiokaG_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS",main_frame, "", 0)` |
-| 1114 | TomiokaG_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 1117 | TomiokaG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 1124 | TomiokaG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)` |
-| 1128 | TomiokaG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 1132 | TomiokaG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1106 | TomiokaG_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 1111 | TomiokaG_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 1113 | TomiokaG_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 1116 | TomiokaG_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)` |
+| 1119 | TomiokaG_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 1121 | TomiokaG_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Heroes/Tsuna.j
 
-22 creation/TOC sites.
+23 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
-| 2047 | TsunaT_Start | `set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)` |
+| 2047 | TsunaT_Start | `set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)` |
 | 2053 | TsunaT_Start | `set frame0_pas2[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceBackGround", frame0_pas1[k2], "", 0)` |
 | 2054 | TsunaT_Start | `set frame0_pas3[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceForeGround", frame0_pas2[k2], "", 0)` |
-| 2060 | TsunaT_Start | `set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", main_frame, "", 0)` |
-| 2427 | TsunaF_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2435 | TsunaF_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
-| 2438 | TsunaF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 2445 | TsunaF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 2449 | TsunaF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2453 | TsunaF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 2596 | TsunaG_Start | `set frame1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2604 | TsunaG_Start | `set frame1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[k2], 0, 0)` |
-| 2607 | TsunaG_Start | `set frame1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[k2], "", 0)` |
-| 2614 | TsunaG_Start | `set frame1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[k2], "", 0)` |
-| 2618 | TsunaG_Start | `set frame1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)` |
-| 2622 | TsunaG_Start | `set frame1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)` |
-| 2730 | Loop_TsunaG2 | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 2738 | Loop_TsunaG2 | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 2741 | Loop_TsunaG2 | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 2748 | Loop_TsunaG2 | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 2752 | Loop_TsunaG2 | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 2756 | Loop_TsunaG2 | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 2060 | TsunaT_Start | `call WUI_SimpleBorder(frame0_pas1[k2])` |
+| 2061 | TsunaT_Start | `set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", main_frame, "", 0)` |
+| 2429 | TsunaF_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2434 | TsunaF_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
+| 2436 | TsunaF_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
+| 2439 | TsunaF_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 2442 | TsunaF_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2444 | TsunaF_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 2589 | TsunaG_Start | `set frame1_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2594 | TsunaG_Start | `set frame1_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1_pas1[k2], "", 0)` |
+| 2596 | TsunaG_Start | `set frame1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[k2], "", 0)` |
+| 2599 | TsunaG_Start | `set frame1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[k2], "", 0)` |
+| 2602 | TsunaG_Start | `set frame1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)` |
+| 2604 | TsunaG_Start | `set frame1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)` |
+| 2714 | Loop_TsunaG2 | `set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 2719 | Loop_TsunaG2 | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)` |
+| 2721 | Loop_TsunaG2 | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 2724 | Loop_TsunaG2 | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 2727 | Loop_TsunaG2 | `set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 2729 | Loop_TsunaG2 | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
 
 ## triggers/Systems/DecorDestroy_and_Erza_Debuff.j
 
@@ -489,20 +491,20 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 242 | ErzaBar_Start | `set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 250 | ErzaBar_Start | `set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)` |
-| 253 | ErzaBar_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
-| 260 | ErzaBar_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 264 | ErzaBar_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
-| 268 | ErzaBar_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 272 | ErzaBar_Start | `set frame2_pas7[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
-| 276 | ErzaBar_Start | `set frame2_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", frame2_pas1[k2], "WarCraftIIILogo", 0)` |
-| 337 | MyFlushStacks_Start | `set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)` |
-| 345 | MyFlushStacks_Start | `set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)` |
+| 242 | ErzaBar_Start | `set frame2_pas1[k2] = WUI_Window("WOSErzaOrigin", main_frame, 0, 0)` |
+| 247 | ErzaBar_Start | `set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginBack", frame2_pas1[k2], "", 0)` |
+| 250 | ErzaBar_Start | `set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)` |
+| 256 | ErzaBar_Start | `set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 260 | ErzaBar_Start | `set frame2_pas5[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)` |
+| 264 | ErzaBar_Start | `set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 268 | ErzaBar_Start | `set frame2_pas7[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)` |
+| 280 | ErzaBar_Start | `set frame2_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", frame2_pas1[k2], "WarCraftIIILogo", 0)` |
+| 341 | MyFlushStacks_Start | `set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)` |
+| 346 | MyFlushStacks_Start | `set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)` |
 | 348 | MyFlushStacks_Start | `set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)` |
-| 355 | MyFlushStacks_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
-| 359 | MyFlushStacks_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
-| 363 | MyFlushStacks_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 351 | MyFlushStacks_Start | `set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)` |
+| 354 | MyFlushStacks_Start | `set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
+| 356 | MyFlushStacks_Start | `set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)` |
 
 ## triggers/Systems/Systems2.j
 
@@ -527,15 +529,15 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 631 | CaptainDraft_CreateUI | `set CaptainDraftPanel = BlzCreateFrame("ListBoxWar3", parent, 0, 9500)` |
-| 635 | CaptainDraft_CreateUI | `set CaptainDraftStatus = BlzCreateFrameByType("TEXT", "CaptainDraftStatus", CaptainDraftPanel, "", 9501)` |
-| 642 | CaptainDraft_CreateUI | `set CaptainDraftBanLabel = BlzCreateFrameByType("TEXT", "CaptainDraftBanLabel", CaptainDraftPanel, "", 9502)` |
-| 650 | CaptainDraft_CreateUI | `set CaptainDraftBanButton[i] = BlzCreateFrameByType("BUTTON", "CaptainDraftBanButton", CaptainDraftPanel, "ScoreScreenTabButtonTemplate", 9510 + i)` |
-| 653 | CaptainDraft_CreateUI | `set CaptainDraftBanIcon[i] = BlzCreateFrameByType("BACKDROP", "CaptainDraftBanIcon", CaptainDraftBanButton[i], "", 9520 + i)` |
-| 656 | CaptainDraft_CreateUI | `set tooltip = BlzCreateFrameByType("BACKDROP", "CaptainDraftBanTooltip", CaptainDraftPanel, "", 9550 + i)` |
-| 662 | CaptainDraft_CreateUI | `set tooltipText = BlzCreateFrameByType("TEXT", "CaptainDraftBanTooltipText", tooltip, "", 9560 + i)` |
-| 671 | CaptainDraft_CreateUI | `set CaptainDraftBanHighlight[i] = BlzCreateFrameByType("SPRITE", "CaptainDraftBanHighlight", CaptainDraftPanel, "WarCraftIIILogo", 9570 + i)` |
-| 684 | CaptainDraft_CreateUI | `set CaptainDraftClaimHover[i] = BlzCreateFrameByType("SPRITE", "CaptainDraftClaimHover", FRAME_MAIN, "WarCraftIIILogo", 9590 + i)` |
+| 620 | CaptainDraft_CreateUI | `set CaptainDraftPanel = WUI_Window("WOSCaptainBans", parent, 0, 9500)` |
+| 624 | CaptainDraft_CreateUI | `set CaptainDraftStatus = BlzCreateFrameByType("TEXT", "CaptainDraftStatus", CaptainDraftPanel, "", 9501)` |
+| 631 | CaptainDraft_CreateUI | `set CaptainDraftBanLabel = BlzCreateFrameByType("TEXT", "CaptainDraftBanLabel", CaptainDraftPanel, "", 9502)` |
+| 639 | CaptainDraft_CreateUI | `set CaptainDraftBanButton[i] = BlzCreateFrameByType("BUTTON", "CaptainDraftBanButton", CaptainDraftPanel, "ScoreScreenTabButtonTemplate", 9510 + i)` |
+| 642 | CaptainDraft_CreateUI | `set CaptainDraftBanIcon[i] = BlzCreateFrameByType("BACKDROP", "CaptainDraftBanIcon", CaptainDraftBanButton[i], "", 9520 + i)` |
+| 645 | CaptainDraft_CreateUI | `set tooltip = WUI_Window("CaptainDraftBanTooltip", CaptainDraftPanel, 0, 9550 + i)` |
+| 650 | CaptainDraft_CreateUI | `set tooltipText = BlzCreateFrameByType("TEXT", "CaptainDraftBanTooltipText", tooltip, "", 9560 + i)` |
+| 659 | CaptainDraft_CreateUI | `set CaptainDraftBanHighlight[i] = BlzCreateFrameByType("SPRITE", "CaptainDraftBanHighlight", CaptainDraftPanel, "WarCraftIIILogo", 9570 + i)` |
+| 672 | CaptainDraft_CreateUI | `set CaptainDraftClaimHover[i] = BlzCreateFrameByType("SPRITE", "CaptainDraftClaimHover", FRAME_MAIN, "WarCraftIIILogo", 9590 + i)` |
 
 ## triggers/WOS_Start/ChatCommand.j
 
@@ -543,30 +545,41 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 609 | CreateEmojiFeed | `set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", WUI_GetRoot(), "", 0)` |
-| 616 | CreateEmojiFeed | `set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", WUI_GetRoot(), "", 0)` |
-| 632 | CreateEmojiPalette | `set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetRoot(), "", 0)` |
-| 636 | CreateEmojiPalette | `set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)` |
-| 641 | CreateEmojiPalette | `set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetRoot(), "", 0)` |
-| 645 | CreateEmojiPalette | `set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)` |
-| 652 | CreateEmojiPalette | `set EmojiPanel = BlzCreateFrameByType("BACKDROP", "NativeEmojiPanel", WUI_GetRoot(), "", 0)` |
+| 607 | CreateEmojiFeed | `set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", WUI_GetRoot(), "", 0)` |
+| 614 | CreateEmojiFeed | `set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", WUI_GetRoot(), "", 0)` |
+| 630 | CreateEmojiPalette | `set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetRoot(), "", 0)` |
+| 634 | CreateEmojiPalette | `set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)` |
+| 640 | CreateEmojiPalette | `set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetRoot(), "", 0)` |
+| 644 | CreateEmojiPalette | `set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)` |
+| 652 | CreateEmojiPalette | `set EmojiPanel = WUI_Window("WOSChatEmojiWindow", WUI_GetRoot(), 1, 0)` |
 | 672 | CreateEmojiPalette | `set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "NativeEmojiButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
 | 678 | CreateEmojiPalette | `set EmojiButtonIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiButtonIcon", EmojiButton[i], "", 0)` |
 
 ## triggers/WOS_Start/DefaultArmorChangeStable_Copy.j
 
-8 creation/TOC sites.
+19 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
-| 28 | UNITSTAT_Text | `local framehandle text = BlzCreateFrameByType("TEXT", name, parent, "", 0)` |
-| 38 | UNITSTAT_WidgetCreate | `set UNITSTAT_Widget[index] = BlzCreateFrameByType("BUTTON", "WOSStatWidget", UNITSTAT_Root, "", index)` |
-| 40 | UNITSTAT_WidgetCreate | `set icon = BlzCreateFrameByType("BACKDROP", "WOSStatIcon", UNITSTAT_Widget[index], "", index)` |
-| 204 | HeroUnitPanelStats_Init | `set UNITSTAT_Root = BlzCreateFrameByType("FRAME", "WOSSelectedUnitHUD", WUI_GetRoot(), "", 0)` |
-| 208 | HeroUnitPanelStats_Init | `set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)` |
-| 210 | HeroUnitPanelStats_Init | `set UNITSTAT_Portrait = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitIconTexture", UNITSTAT_Widget[6], "", 0)` |
-| 224 | HeroUnitPanelStats_Init | `set UNITSTAT_Bar[i] = BlzCreateFrameByType("STATUSBAR", "WOSVitals", UNITSTAT_Root, "", i)` |
-| 237 | HeroUnitPanelStats_Init | `set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetRoot(), "", 0)` |
+| 45 | UNITSTAT_CreateToolbar | `set UNITSTAT_Shop = BlzCreateFrameByType("BUTTON", "WOSShopToolbar", WUI_GetRoot(), "", 0)` |
+| 47 | UNITSTAT_CreateToolbar | `set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)` |
+| 52 | UNITSTAT_CreateToolbar | `set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetRoot(), "", 0)` |
+| 54 | UNITSTAT_CreateToolbar | `set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)` |
+| 58 | UNITSTAT_CreateToolbar | `set text = BlzCreateFrameByType("TEXT", "WOSEmotesToolbarHotkey", UNITSTAT_Emotes, "", 0)` |
+| 73 | UNITSTAT_Text | `local framehandle text = BlzCreateFrameByType("TEXT", name, parent, "", 0)` |
+| 83 | UNITSTAT_WidgetCreate | `set UNITSTAT_Widget[index] = BlzCreateFrameByType("BUTTON", "WOSStatWidget", UNITSTAT_Root, "", index)` |
+| 85 | UNITSTAT_WidgetCreate | `set icon = BlzCreateFrameByType("BACKDROP", "WOSStatIcon", UNITSTAT_Widget[index], "", index)` |
+| 250 | HeroUnitPanelStats_Init | `set UNITSTAT_Root = BlzCreateFrameByType("FRAME", "WOSSelectedUnitHUD", WUI_GetRoot(), "", 0)` |
+| 251 | HeroUnitPanelStats_Init | `set back = WUI_Panel("WOSSelectedUnitBack", UNITSTAT_Root, 0.178, 0.076)` |
+| 253 | HeroUnitPanelStats_Init | `set back = WUI_Border("WOSSelectedUnitEdge", back)` |
+| 254 | HeroUnitPanelStats_Init | `set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)` |
+| 256 | HeroUnitPanelStats_Init | `set UNITSTAT_Portrait = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitIconTexture", UNITSTAT_Widget[6], "", 0)` |
+| 258 | HeroUnitPanelStats_Init | `set back = WUI_Border("WOSSelectedUnitBorder", UNITSTAT_Widget[6])` |
+| 268 | HeroUnitPanelStats_Init | `set back = WUI_Panel("WOSVitalsBack", UNITSTAT_Root, 0.277, 0.009)` |
+| 270 | HeroUnitPanelStats_Init | `set UNITSTAT_Bar[i] = BlzCreateFrameByType("STATUSBAR", "WOSVitals", UNITSTAT_Root, "", i)` |
+| 283 | HeroUnitPanelStats_Init | `set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetRoot(), "", 0)` |
+| 291 | HeroUnitPanelStats_Init | `set UNITSTAT_Tooltip = WUI_Panel("WOSStatTooltip", WUI_GetRoot(), 0.225, 0.104)` |
+| 293 | HeroUnitPanelStats_Init | `set back = WUI_Border("WOSStatTooltipBorder", UNITSTAT_Tooltip)` |
 
 ## triggers/WOS_Start/EMOTES.j
 
@@ -574,12 +587,12 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 461 | CreatePanel | `set EmojiPanel = BlzCreateFrameByType("BACKDROP", "WosEmojiPanel", WUI_GetRoot(), "", 0)` |
-| 471 | CreatePanel | `set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
-| 477 | CreatePanel | `set EmojiCloseIcon = BlzCreateFrameByType("BACKDROP", "WosEmojiCloseIcon", EmojiCloseButton, "", 0)` |
-| 483 | CreatePanel | `set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", WUI_GetRoot(), "", 0)` |
-| 501 | CreatePanel | `set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
-| 507 | CreatePanel | `set EmojiButtonIcon[i] = BlzCreateFrameByType("BACKDROP", "WosEmojiButtonIcon", EmojiButton[i], "", 0)` |
+| 467 | CreatePanel | `set EmojiPanel = WUI_Window("WOSEmoteWindow", WUI_GetRoot(), 1, 0)` |
+| 477 | CreatePanel | `set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
+| 483 | CreatePanel | `set EmojiCloseIcon = BlzCreateFrameByType("BACKDROP", "WosEmojiCloseIcon", EmojiCloseButton, "", 0)` |
+| 489 | CreatePanel | `set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", WUI_GetRoot(), "", 0)` |
+| 507 | CreatePanel | `set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
+| 513 | CreatePanel | `set EmojiButtonIcon[i] = BlzCreateFrameByType("BACKDROP", "WosEmojiButtonIcon", EmojiButton[i], "", 0)` |
 
 ## triggers/WOS_Start/MusicPlayer.j
 
@@ -588,24 +601,24 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | Line | Function | Creation |
 |---|---|---|
 | 1051 | LMP_CreateTextButton | `local framehandle newFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)` |
-| 1062 | LMP_CreateIconButton | `local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "ScoreScreenTabButtonTemplate", context)` |
-| 1072 | LMP_CreateIcon | `local framehandle icon = BlzCreateFrameByType("BACKDROP", "LMPIcon", iconParent, "", 0)` |
-| 1082 | LMP_AttachNativeTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "LMPNativeTooltip", lmpPanel, "", context)` |
-| 1083 | LMP_AttachNativeTooltip | `local framehandle tooltipText = BlzCreateFrameByType("TEXT", "LMPNativeTooltipText", tooltip, "", context)` |
-| 1132 | LMP_CreateFrames | `set lmpLinkEdit = BlzCreateFrame("EscMenuEditBoxTemplate", consoleUI, 0, 0)` |
-| 1145 | LMP_CreateFrames | `set lmpPanel = BlzCreateFrameByType("BACKDROP", "LMPPanel", consoleUI, "", 0)` |
-| 1151 | LMP_CreateFrames | `set title = BlzCreateFrameByType("TEXT", "LMPTitle", lmpPanel, "", 0)` |
-| 1161 | LMP_CreateFrames | `set lmpNowPlaying = BlzCreateFrameByType("TEXT", "LMPNowPlaying", lmpPanel, "", 0)` |
-| 1166 | LMP_CreateFrames | `set lmpEqualizer = BlzCreateFrameByType("TEXT", "LMPEqualizer", lmpPanel, "", 0)` |
-| 1173 | LMP_CreateFrames | `set lmpTimeText = BlzCreateFrameByType("TEXT", "LMPTime", lmpPanel, "", 0)` |
-| 1181 | LMP_CreateFrames | `set lmpSeek = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 0)` |
-| 1199 | LMP_CreateFrames | `set lmpSeekBlocker = BlzCreateFrameByType("BUTTON", "LMPProgressBlocker", gameUI, "", 600)` |
-| 1207 | LMP_CreateFrames | `set lmpListBox = BlzCreateFrameByType("BACKDROP", "LMPListBox", lmpPanel, "", 0)` |
-| 1223 | LMP_CreateFrames | `set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)` |
-| 1261 | LMP_CreateFrames | `set lmpVolumeText = BlzCreateFrameByType("TEXT", "LMPVolumeText", lmpPanel, "", 0)` |
-| 1268 | LMP_CreateFrames | `set lmpVolumeSlider = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 1)` |
-| 1399 | LocalMp3Player_CreateUI | `set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")` |
-| 1430 | LocalMp3Player_Init | `set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")` |
+| 1063 | LMP_CreateIconButton | `local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "ScoreScreenTabButtonTemplate", context)` |
+| 1073 | LMP_CreateIcon | `local framehandle icon = BlzCreateFrameByType("BACKDROP", "LMPIcon", iconParent, "", 0)` |
+| 1083 | LMP_AttachNativeTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "LMPNativeTooltip", lmpPanel, "", context)` |
+| 1084 | LMP_AttachNativeTooltip | `local framehandle tooltipText = BlzCreateFrameByType("TEXT", "LMPNativeTooltipText", tooltip, "", context)` |
+| 1133 | LMP_CreateFrames | `set lmpLinkEdit = BlzCreateFrame("EscMenuEditBoxTemplate", consoleUI, 0, 0)` |
+| 1146 | LMP_CreateFrames | `set lmpPanel = WUI_Window("WOSMusicWindow", consoleUI, 0, 0)` |
+| 1152 | LMP_CreateFrames | `set title = BlzCreateFrameByType("TEXT", "LMPTitle", lmpPanel, "", 0)` |
+| 1162 | LMP_CreateFrames | `set lmpNowPlaying = BlzCreateFrameByType("TEXT", "LMPNowPlaying", lmpPanel, "", 0)` |
+| 1167 | LMP_CreateFrames | `set lmpEqualizer = BlzCreateFrameByType("TEXT", "LMPEqualizer", lmpPanel, "", 0)` |
+| 1174 | LMP_CreateFrames | `set lmpTimeText = BlzCreateFrameByType("TEXT", "LMPTime", lmpPanel, "", 0)` |
+| 1182 | LMP_CreateFrames | `set lmpSeek = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 0)` |
+| 1200 | LMP_CreateFrames | `set lmpSeekBlocker = BlzCreateFrameByType("BUTTON", "LMPProgressBlocker", gameUI, "", 600)` |
+| 1208 | LMP_CreateFrames | `set lmpListBox = BlzCreateFrameByType("BACKDROP", "LMPListBox", lmpPanel, "", 0)` |
+| 1224 | LMP_CreateFrames | `set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)` |
+| 1262 | LMP_CreateFrames | `set lmpVolumeText = BlzCreateFrameByType("TEXT", "LMPVolumeText", lmpPanel, "", 0)` |
+| 1269 | LMP_CreateFrames | `set lmpVolumeSlider = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 1)` |
+| 1400 | LocalMp3Player_CreateUI | `set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")` |
+| 1431 | LocalMp3Player_Init | `set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")` |
 
 ## triggers/WOS_Start/Player_Pick_Mode.j
 
@@ -613,53 +626,53 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 665 | CreatePlayerPickUI | `set Frame_Cap2_MAIN = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 691 | CreatePlayerPickUI | `set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 695 | CreatePlayerPickUI | `set Frame_Cap2_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[i], "", 0)` |
-| 702 | CreatePlayerPickUI | `set Frame_Cap2_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
-| 717 | CreatePlayerPickUI | `set Frame_Cap2_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap2_3[i], "", 0)` |
-| 746 | CreatePlayerPickUI | `set Frame_Cap2_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 751 | CreatePlayerPickUI | `set Frame_Cap2_4[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[11], "", 0)` |
-| 761 | CreatePlayerPickUI | `set Frame_Cap2_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
-| 768 | CreatePlayerPickUI | `set Frame_Cap2_7[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[11], "", 0)` |
-| 774 | CreatePlayerPickUI | `set Frame_Cap2_10 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 779 | CreatePlayerPickUI | `set Frame_Cap2_13 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 785 | CreatePlayerPickUI | `set Frame_Cap2_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 790 | CreatePlayerPickUI | `set Frame_Cap2_4[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[12], "", 0)` |
-| 800 | CreatePlayerPickUI | `set Frame_Cap2_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
-| 807 | CreatePlayerPickUI | `set Frame_Cap2_7[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[12], "", 0)` |
-| 812 | CreatePlayerPickUI | `set Frame_Cap2_11 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 818 | CreatePlayerPickUI | `set Frame_Cap2_14 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 846 | CreatePlayerPickUI | `set Frame_Cap2_6 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 851 | CreatePlayerPickUI | `set Frame_Cap2_8 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
-| 864 | CreatePlayerPickUI | `set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 870 | CreatePlayerPickUI | `set Frame_Cap2_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[i], "", 0)` |
-| 876 | CreatePlayerPickUI | `set Frame_Cap2_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
-| 890 | CreatePlayerPickUI | `set Frame_Cap2_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap2_3[i], "", 0)` |
-| 1234 | CreateCaptainUI | `set Frame_Cap1_MAIN = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 1260 | CreateCaptainUI | `set Frame_Cap1_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 1264 | CreateCaptainUI | `set Frame_Cap1_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[i], "", 0)` |
-| 1271 | CreateCaptainUI | `set Frame_Cap1_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
-| 1278 | CreateCaptainUI | `set Frame_Cap1_7[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[i], "", 0)` |
-| 1286 | CreateCaptainUI | `set Frame_Cap1_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap1_3[i], "", 0)` |
-| 1313 | CreateCaptainUI | `set Frame_Cap1_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 1318 | CreateCaptainUI | `set Frame_Cap1_4[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[11], "", 0)` |
-| 1324 | CreateCaptainUI | `set Frame_Cap1_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
-| 1331 | CreateCaptainUI | `set Frame_Cap1_7[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[11], "", 0)` |
-| 1337 | CreateCaptainUI | `set Frame_Cap1_10 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
-| 1342 | CreateCaptainUI | `set Frame_Cap1_13 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
-| 1348 | CreateCaptainUI | `set Frame_Cap1_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 1353 | CreateCaptainUI | `set Frame_Cap1_4[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[12], "", 0)` |
-| 1359 | CreateCaptainUI | `set Frame_Cap1_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
-| 1366 | CreateCaptainUI | `set Frame_Cap1_7[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[12], "", 0)` |
-| 1371 | CreateCaptainUI | `set Frame_Cap1_11 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
-| 1377 | CreateCaptainUI | `set Frame_Cap1_14 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
-| 1383 | CreateCaptainUI | `set Frame_Cap1_6 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
-| 1388 | CreateCaptainUI | `set Frame_Cap1_8 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 747 | CreatePlayerPickUI | `set Frame_Cap2_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)` |
+| 773 | CreatePlayerPickUI | `set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 777 | CreatePlayerPickUI | `set Frame_Cap2_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[i], "", 0)` |
+| 784 | CreatePlayerPickUI | `set Frame_Cap2_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
+| 799 | CreatePlayerPickUI | `set Frame_Cap2_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap2_3[i], "", 0)` |
+| 828 | CreatePlayerPickUI | `set Frame_Cap2_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 833 | CreatePlayerPickUI | `set Frame_Cap2_4[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[11], "", 0)` |
+| 843 | CreatePlayerPickUI | `set Frame_Cap2_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
+| 850 | CreatePlayerPickUI | `set Frame_Cap2_7[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[11], "", 0)` |
+| 856 | CreatePlayerPickUI | `set Frame_Cap2_10 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 861 | CreatePlayerPickUI | `set Frame_Cap2_13 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 867 | CreatePlayerPickUI | `set Frame_Cap2_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 872 | CreatePlayerPickUI | `set Frame_Cap2_4[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[12], "", 0)` |
+| 882 | CreatePlayerPickUI | `set Frame_Cap2_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
+| 889 | CreatePlayerPickUI | `set Frame_Cap2_7[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[12], "", 0)` |
+| 894 | CreatePlayerPickUI | `set Frame_Cap2_11 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 900 | CreatePlayerPickUI | `set Frame_Cap2_14 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 928 | CreatePlayerPickUI | `set Frame_Cap2_6 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 933 | CreatePlayerPickUI | `set Frame_Cap2_8 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap2_MAIN, "", 0)` |
+| 946 | CreatePlayerPickUI | `set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 952 | CreatePlayerPickUI | `set Frame_Cap2_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap2_3[i], "", 0)` |
+| 958 | CreatePlayerPickUI | `set Frame_Cap2_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)` |
+| 972 | CreatePlayerPickUI | `set Frame_Cap2_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap2_3[i], "", 0)` |
+| 1317 | CreateCaptainUI | `set Frame_Cap1_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)` |
+| 1343 | CreateCaptainUI | `set Frame_Cap1_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 1347 | CreateCaptainUI | `set Frame_Cap1_4[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[i], "", 0)` |
+| 1354 | CreateCaptainUI | `set Frame_Cap1_9[i] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
+| 1361 | CreateCaptainUI | `set Frame_Cap1_7[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[i], "", 0)` |
+| 1369 | CreateCaptainUI | `set Frame_Cap1_5[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", Frame_Cap1_3[i], "", 0)` |
+| 1396 | CreateCaptainUI | `set Frame_Cap1_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 1401 | CreateCaptainUI | `set Frame_Cap1_4[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[11], "", 0)` |
+| 1407 | CreateCaptainUI | `set Frame_Cap1_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
+| 1414 | CreateCaptainUI | `set Frame_Cap1_7[11] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[11], "", 0)` |
+| 1420 | CreateCaptainUI | `set Frame_Cap1_10 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 1425 | CreateCaptainUI | `set Frame_Cap1_13 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 1431 | CreateCaptainUI | `set Frame_Cap1_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 1436 | CreateCaptainUI | `set Frame_Cap1_4[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[12], "", 0)` |
+| 1442 | CreateCaptainUI | `set Frame_Cap1_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)` |
+| 1449 | CreateCaptainUI | `set Frame_Cap1_7[12] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", Frame_Cap1_3[12], "", 0)` |
+| 1454 | CreateCaptainUI | `set Frame_Cap1_11 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 1460 | CreateCaptainUI | `set Frame_Cap1_14 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 1466 | CreateCaptainUI | `set Frame_Cap1_6 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
+| 1471 | CreateCaptainUI | `set Frame_Cap1_8 = BlzCreateFrameByType("TEXT", "TextT", Frame_Cap1_MAIN, "", 0)` |
 
 ## triggers/WOS_Start/Scoreboard.j
 
-21 creation/TOC sites.
+22 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
@@ -676,14 +689,15 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | 1543 | WOS_STATS_CreateRows | `set WOS_STATS_HeroIcon[row] = BlzCreateFrameByType("BACKDROP", "WosStatsHeroIcon", WOS_STATS_RowContent[row], "", 700 + row)` |
 | 1575 | WOS_STATS_CreateRows | `set WOS_STATS_ItemButton[itemIndex] = BlzCreateFrameByType("BUTTON", "WosStatsItemButton", WOS_STATS_RowContent[row], "ScoreScreenTabButtonTemplate", 1000 + itemIndex)` |
 | 1580 | WOS_STATS_CreateRows | `set icon = BlzCreateFrameByType("BACKDROP", "WosStatsItemIcon", WOS_STATS_ItemButton[itemIndex], "", 1100 + itemIndex)` |
-| 1610 | WOS_STATS_CreateUI | `set WOS_STATS_Main = BlzCreateFrame(WOS_STATS_FRAME_TEMPLATE, gameUI, 0, 4700)` |
-| 1618 | WOS_STATS_CreateUI | `set WOS_STATS_Inner = BlzCreateFrameByType("FRAME", "WosStatsInner", WOS_STATS_Main, "", 4701)` |
-| 1631 | WOS_STATS_CreateUI | `set WOS_STATS_CloseButton = BlzCreateFrameByType("BUTTON", "WosStatsCloseButton", WOS_STATS_Main, "", 4704)` |
-| 1635 | WOS_STATS_CreateUI | `set WOS_STATS_CloseIcon = BlzCreateFrameByType("BACKDROP", "WosStatsCloseIcon", WOS_STATS_CloseButton, "", 4705)` |
-| 1641 | WOS_STATS_CreateUI | `set WOS_STATS_OpacityButton = BlzCreateFrameByType("BUTTON", "WosStatsOpacityButton", WOS_STATS_Main, "", 4710)` |
-| 1645 | WOS_STATS_CreateUI | `set WOS_STATS_OpacityIcon = BlzCreateFrameByType("BACKDROP", "WosStatsOpacityIcon", WOS_STATS_OpacityButton, "", 4711)` |
-| 1651 | WOS_STATS_CreateUI | `set WOS_STATS_ExpandButton = BlzCreateFrameByType("BUTTON", "WosStatsExpandButton", WOS_STATS_Main, "", 4712)` |
-| 1655 | WOS_STATS_CreateUI | `set WOS_STATS_ExpandIcon = BlzCreateFrameByType("BACKDROP", "WosStatsExpandIcon", WOS_STATS_ExpandButton, "", 4713)` |
+| 1610 | WOS_STATS_CreateUI | `set WOS_STATS_Main = BlzCreateFrameByType("FRAME", "WOSScoreboardWindow", gameUI, "", 4700)` |
+| 1611 | WOS_STATS_CreateUI | `call WUI_Border("WOSScoreboardBorder", WOS_STATS_Main)` |
+| 1619 | WOS_STATS_CreateUI | `set WOS_STATS_Inner = BlzCreateFrameByType("FRAME", "WosStatsInner", WOS_STATS_Main, "", 4701)` |
+| 1632 | WOS_STATS_CreateUI | `set WOS_STATS_CloseButton = BlzCreateFrameByType("BUTTON", "WosStatsCloseButton", WOS_STATS_Main, "", 4704)` |
+| 1636 | WOS_STATS_CreateUI | `set WOS_STATS_CloseIcon = BlzCreateFrameByType("BACKDROP", "WosStatsCloseIcon", WOS_STATS_CloseButton, "", 4705)` |
+| 1642 | WOS_STATS_CreateUI | `set WOS_STATS_OpacityButton = BlzCreateFrameByType("BUTTON", "WosStatsOpacityButton", WOS_STATS_Main, "", 4710)` |
+| 1646 | WOS_STATS_CreateUI | `set WOS_STATS_OpacityIcon = BlzCreateFrameByType("BACKDROP", "WosStatsOpacityIcon", WOS_STATS_OpacityButton, "", 4711)` |
+| 1652 | WOS_STATS_CreateUI | `set WOS_STATS_ExpandButton = BlzCreateFrameByType("BUTTON", "WosStatsExpandButton", WOS_STATS_Main, "", 4712)` |
+| 1656 | WOS_STATS_CreateUI | `set WOS_STATS_ExpandIcon = BlzCreateFrameByType("BACKDROP", "WosStatsExpandIcon", WOS_STATS_ExpandButton, "", 4713)` |
 
 ## triggers/WOS_Start/ShowCD.j
 
@@ -692,17 +706,17 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | Line | Function | Creation |
 |---|---|---|
 | 1239 | AHUI_CreateSlotFrames | `set AHUI_Root[index] = BlzCreateFrameByType("FRAME", "AHUIRoot", console, "", index)` |
-| 1247 | AHUI_CreateSlotFrames | `set AHUI_Icon[index] = BlzCreateFrameByType("BACKDROP", "AHUIIcon", AHUI_Root[index], "", index)` |
-| 1254 | AHUI_CreateSlotFrames | `set AHUI_CooldownFill[index] = BlzCreateFrameByType("BACKDROP", "AHUICooldownFill", AHUI_Root[index], "", index)` |
-| 1262 | AHUI_CreateSlotFrames | `set AHUI_CooldownText[index] = BlzCreateFrameByType("TEXT", "AHUICooldownText", AHUI_Root[index], "", index)` |
-| 1273 | AHUI_CreateSlotFrames | `set AHUI_KeyText[index] = BlzCreateFrameByType("TEXT", "AHUIKeyText", AHUI_Root[index], "", index)` |
-| 1300 | AHUI_CreateTooltipFrames | `set AHUI_TooltipRoot[pid] = BlzCreateFrameByType("FRAME", "AHUITooltipRoot", AHUI_GameUI, "", pid)` |
-| 1307 | AHUI_CreateTooltipFrames | `set AHUI_TooltipBackdrop[pid] = BlzCreateFrame("EscMenuControlBackdropTemplate", AHUI_TooltipRoot[pid], 0, pid)` |
-| 1314 | AHUI_CreateTooltipFrames | `set AHUI_TooltipTitle[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipTitle", AHUI_TooltipRoot[pid], "", pid)` |
-| 1324 | AHUI_CreateTooltipFrames | `set AHUI_TooltipManaIcon[pid] = BlzCreateFrameByType("BACKDROP", "AHUITooltipManaIcon", AHUI_TooltipRoot[pid], "", pid)` |
-| 1333 | AHUI_CreateTooltipFrames | `set AHUI_TooltipManaText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipManaText", AHUI_TooltipRoot[pid], "", pid)` |
-| 1342 | AHUI_CreateTooltipFrames | `set AHUI_TooltipSeparator[pid] = BlzCreateFrameByType("BACKDROP", "AHUITooltipSeparator", AHUI_TooltipRoot[pid], "", pid)` |
-| 1351 | AHUI_CreateTooltipFrames | `set AHUI_TooltipText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipText", AHUI_TooltipRoot[pid], "", pid)` |
+| 1248 | AHUI_CreateSlotFrames | `set AHUI_Icon[index] = BlzCreateFrameByType("BACKDROP", "AHUIIcon", AHUI_Root[index], "", index)` |
+| 1255 | AHUI_CreateSlotFrames | `set AHUI_CooldownFill[index] = BlzCreateFrameByType("BACKDROP", "AHUICooldownFill", AHUI_Root[index], "", index)` |
+| 1263 | AHUI_CreateSlotFrames | `set AHUI_CooldownText[index] = BlzCreateFrameByType("TEXT", "AHUICooldownText", AHUI_Root[index], "", index)` |
+| 1274 | AHUI_CreateSlotFrames | `set AHUI_KeyText[index] = BlzCreateFrameByType("TEXT", "AHUIKeyText", AHUI_Root[index], "", index)` |
+| 1301 | AHUI_CreateTooltipFrames | `set AHUI_TooltipRoot[pid] = BlzCreateFrameByType("FRAME", "AHUITooltipRoot", AHUI_GameUI, "", pid)` |
+| 1308 | AHUI_CreateTooltipFrames | `set AHUI_TooltipBackdrop[pid] = WUI_Window("WOSAbilityTooltip", AHUI_TooltipRoot[pid], 0, pid)` |
+| 1315 | AHUI_CreateTooltipFrames | `set AHUI_TooltipTitle[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipTitle", AHUI_TooltipRoot[pid], "", pid)` |
+| 1325 | AHUI_CreateTooltipFrames | `set AHUI_TooltipManaIcon[pid] = BlzCreateFrameByType("BACKDROP", "AHUITooltipManaIcon", AHUI_TooltipRoot[pid], "", pid)` |
+| 1334 | AHUI_CreateTooltipFrames | `set AHUI_TooltipManaText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipManaText", AHUI_TooltipRoot[pid], "", pid)` |
+| 1343 | AHUI_CreateTooltipFrames | `set AHUI_TooltipSeparator[pid] = BlzCreateFrameByType("BACKDROP", "AHUITooltipSeparator", AHUI_TooltipRoot[pid], "", pid)` |
+| 1352 | AHUI_CreateTooltipFrames | `set AHUI_TooltipText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipText", AHUI_TooltipRoot[pid], "", pid)` |
 
 ## triggers/WOS_Start/Starts.j
 
@@ -743,36 +757,37 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | 170 | WCS_CreateIconButton | `local framehandle result = BlzCreateFrameByType("BUTTON", "WcsIconButton", parent, "ScoreScreenTabButtonTemplate", context)` |
 | 177 | WCS_CreateIcon | `local framehandle result = BlzCreateFrameByType("BACKDROP", "WcsIcon", buttonFrame, "", context)` |
 | 184 | WCS_CreateTextButton | `local framehandle buttonFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)` |
-| 315 | WCS_CreateTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "WcsTooltip", WUI_GetRoot(), "", context)` |
-| 316 | WCS_CreateTooltip | `local framehandle label = BlzCreateFrameByType("TEXT", "WcsTooltipText", tooltip, "", context)` |
-| 908 | WCS_CreateDetailPage | `set WCS_DetailHeroIcon = BlzCreateFrameByType("BACKDROP", "WcsDetailHeroIcon", WCS_DetailPage, "", 8710)` |
-| 979 | WCS_CreateUI | `set WCS_Main = BlzCreateFrame("ListBoxWar3", gameUI, 0, 8210)` |
-| 990 | WCS_CreateUI | `set WCS_HomePage = BlzCreateFrameByType("FRAME", "WcsHomePage", WCS_Main, "", 8230)` |
-| 991 | WCS_CreateUI | `set WCS_HeroesPage = BlzCreateFrameByType("FRAME", "WcsHeroesPage", WCS_Main, "", 8231)` |
-| 992 | WCS_CreateUI | `set WCS_DetailPage = BlzCreateFrameByType("FRAME", "WcsDetailPage", WCS_Main, "", 8232)` |
+| 316 | WCS_CreateTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "WcsTooltip", WUI_GetRoot(), "", context)` |
+| 317 | WCS_CreateTooltip | `local framehandle label = BlzCreateFrameByType("TEXT", "WcsTooltipText", tooltip, "", context)` |
+| 909 | WCS_CreateDetailPage | `set WCS_DetailHeroIcon = BlzCreateFrameByType("BACKDROP", "WcsDetailHeroIcon", WCS_DetailPage, "", 8710)` |
+| 980 | WCS_CreateUI | `set WCS_Main = WUI_Window("WOSCareerWindow", gameUI, 0, 8210)` |
+| 991 | WCS_CreateUI | `set WCS_HomePage = BlzCreateFrameByType("FRAME", "WcsHomePage", WCS_Main, "", 8230)` |
+| 992 | WCS_CreateUI | `set WCS_HeroesPage = BlzCreateFrameByType("FRAME", "WcsHeroesPage", WCS_Main, "", 8231)` |
+| 993 | WCS_CreateUI | `set WCS_DetailPage = BlzCreateFrameByType("FRAME", "WcsDetailPage", WCS_Main, "", 8232)` |
 
 ## triggers/WOS_Start/WoS_Hero_Icons_Init.j
 
-58 creation/TOC sites.
+59 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
 | 1097 | CreateStatusHeroUI | `set FRAME_StatusHeroMain = BlzCreateFrameByType("FRAME", "StatusHeroMain", WUI_GetRoot(), "", 0)` |
 | 1102 | CreateStatusHeroUI | `set StatusPortraitRoot = BlzCreateFrameByType("FRAME", "WOSHeroPortraits", FRAME_StatusHeroMain, "", 0)` |
-| 1104 | CreateStatusHeroUI | `set FRAME_StatusHeroMain2 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 1108 | CreateStatusHeroUI | `set FRAME_StatusHeroMain3 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
+| 1104 | CreateStatusHeroUI | `set border = WUI_Window("WOSTeamScoreSurface", FRAME_StatusHeroMain, 0, 0)` |
+| 1107 | CreateStatusHeroUI | `set FRAME_StatusHeroMain2 = BlzCreateFrameByType("FRAME", "WOSDamageSummary", WUI_GetRoot(), "", 0)` |
+| 1109 | CreateStatusHeroUI | `set FRAME_StatusHeroMain3 = BlzCreateFrameByType("FRAME", "WOSTopOptions", WUI_GetRoot(), "", 0)` |
 | 1112 | CreateStatusHeroUI | `set FRAME_TopCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_StatusHeroMain3, 0, 0)` |
 | 1119 | CreateStatusHeroUI | `set FRAME_TopCheckboxString = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain3, "", 0)` |
-| 1125 | CreateStatusHeroUI | `set FRAME_StatusHeroMain4 = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 1129 | CreateStatusHeroUI | `set FRAME_CamSlider = BlzCreateFrameByType("SLIDER", "CamSlider", FRAME_StatusHeroMain4, "QuestMainListScrollBar", 0)` |
-| 1139 | CreateStatusHeroUI | `set FRAME_CamSliderStringBack = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHeroMain4, "", 0)` |
-| 1150 | CreateStatusHeroUI | `set FRAME_StatusHero[i] = BlzCreateFrameByType("BUTTON", "MyStatusButton", StatusPortraitRoot, "", 0)` |
-| 1151 | CreateStatusHeroUI | `set FRAME_StatusHeroBack[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)` |
-| 1161 | CreateStatusHeroUI | `set StatusHpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroHp", FRAME_StatusHero[i], "", i)` |
-| 1165 | CreateStatusHeroUI | `set StatusMpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroMp", FRAME_StatusHero[i], "", i)` |
-| 1171 | CreateStatusHeroUI | `set FRAME_StatusHeroBack2[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)` |
-| 1175 | CreateStatusHeroUI | `set FRAME_StatusHeroStringPlayerName[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)` |
-| 1181 | CreateStatusHeroUI | `set FRAME_StatusHeroTooltip[i] = BlzCreateFrameByType("BACKDROP", "StatusHeroNameTooltip", FRAME_StatusHeroMain, "", 3000 + i)` |
+| 1125 | CreateStatusHeroUI | `set FRAME_StatusHeroMain4 = BlzCreateFrameByType("FRAME", "WOSCameraControls", WUI_GetRoot(), "", 0)` |
+| 1128 | CreateStatusHeroUI | `set FRAME_CamSlider = BlzCreateFrameByType("SLIDER", "CamSlider", FRAME_StatusHeroMain4, "QuestMainListScrollBar", 0)` |
+| 1138 | CreateStatusHeroUI | `set FRAME_CamSliderStringBack = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHeroMain4, "", 0)` |
+| 1151 | CreateStatusHeroUI | `set FRAME_StatusHero[i] = BlzCreateFrameByType("BUTTON", "MyStatusButton", StatusPortraitRoot, "", 0)` |
+| 1152 | CreateStatusHeroUI | `set FRAME_StatusHeroBack[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)` |
+| 1162 | CreateStatusHeroUI | `set StatusHpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroHp", FRAME_StatusHero[i], "", i)` |
+| 1166 | CreateStatusHeroUI | `set StatusMpBar[i] = BlzCreateFrameByType("STATUSBAR", "WOSHeroMp", FRAME_StatusHero[i], "", i)` |
+| 1172 | CreateStatusHeroUI | `set FRAME_StatusHeroBack2[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)` |
+| 1176 | CreateStatusHeroUI | `set FRAME_StatusHeroStringPlayerName[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)` |
+| 1182 | CreateStatusHeroUI | `set FRAME_StatusHeroTooltip[i] = WUI_Window("StatusHeroNameTooltip", FRAME_StatusHeroMain, 0, 3000 + i)` |
 | 1187 | CreateStatusHeroUI | `set FRAME_StatusHeroTooltipText[i] = BlzCreateFrameByType("TEXT", "StatusHeroNameTooltipText", FRAME_StatusHeroTooltip[i], "", 3100 + i)` |
 | 1197 | CreateStatusHeroUI | `set FRAME_StatusHeroStringPlayerKill[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)` |
 | 1203 | CreateStatusHeroUI | `set FRAME_SwapSprite[i] = BlzCreateFrameByType("SPRITE", "justAName", FRAME_StatusHeroBack[i], "WarCraftIIILogo", 0)` |
@@ -792,7 +807,7 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | 1293 | CreateStatusHeroUI | `set FRAME_GameTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)` |
 | 1299 | CreateStatusHeroUI | `set FRAME_Team1Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore1", FRAME_StatusHeroMain, "", 0)` |
 | 1309 | CreateStatusHeroUI | `set FRAME_Team2Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore2", FRAME_StatusHeroMain, "", 0)` |
-| 1326 | CreateStatusHeroUI | `set FRAME_StatsMain = BlzCreateFrame("EscMenuTextAreaTemplate", WUI_GetRoot(), 0, 0)` |
+| 1326 | CreateStatusHeroUI | `set FRAME_StatsMain = WUI_Window("WOSPlayerStats", WUI_GetRoot(), 0, 0)` |
 | 1329 | CreateStatusHeroUI | `set FRAME_StatsCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_StatsMain, 0, 0)` |
 | 1335 | CreateStatusHeroUI | `set FRAME_StatsCheckboxString = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)` |
 | 1340 | CreateStatusHeroUI | `set FRAME_Stats1 = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatsMain, "", 0)` |
@@ -822,45 +837,45 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 
 | Line | Function | Creation |
 |---|---|---|
-| 2829 | GuideCreateAbilityTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "AbilityNativeTooltip", FRAME_MAIN3, "", 8000 + slot)` |
+| 2829 | GuideCreateAbilityTooltip | `local framehandle tooltip = WUI_Window("AbilityNativeTooltip", FRAME_MAIN3, 0, 8000 + slot)` |
 | 2830 | GuideCreateAbilityTooltip | `local framehandle tooltipText = BlzCreateFrameByType("TEXT", "AbilityNativeTooltipText", tooltip, "", 8100 + slot)` |
-| 2862 | CreateUI | `set FRAME_MAIN = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 2865 | CreateUI | `set FRAME_MAIN2 = BlzCreateFrame("EscMenuBackdrop", FRAME_MAIN, 1, 0)` |
-| 2868 | CreateUI | `set FRAME_MAIN3 = BlzCreateFrame("EscMenuBackdrop", FRAME_MAIN, 1, 0)` |
-| 2871 | CreateUI | `set FRAME_HeroName = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2876 | CreateUI | `set FRAME_PlayerPickDifficultText = BlzCreateFrameByType("TEXT", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2883 | CreateUI | `set FRAME_HeroModel = BlzCreateFrameByType("BACKDROP", "Port", FRAME_MAIN3, "", 0)` |
-| 2890 | CreateUI | `set border = BlzCreateFrameByType("BACKDROP", "ThinBorder", FRAME_MAIN3, "", 0)` |
-| 2895 | CreateUI | `set FRAME_HeroAttribute = BlzCreateFrameByType("BACKDROP", "attribute", FRAME_MAIN3, "", 0)` |
-| 2901 | CreateUI | `set FRAME_HeroAttackType = BlzCreateFrameByType("BACKDROP", "atk", FRAME_MAIN3, "", 0)` |
-| 2907 | CreateUI | `set FRAME_HeroStr = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2912 | CreateUI | `set FRAME_HeroAgi = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2917 | CreateUI | `set FRAME_HeroInt = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2922 | CreateUI | `set FRAME_HeroAtk = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2927 | CreateUI | `set FRAME_HeroArmor = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2932 | CreateUI | `set FRAME_HeroMS = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2937 | CreateUI | `set FRAME_HeroAS = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
-| 2953 | CreateUI | `set FRAME_Pick[k] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
-| 2954 | CreateUI | `set FRAME_ICON_Pick[k] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Pick[k], "", 0)` |
-| 2998 | CreateUI | `set FRAME_ICON[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
-| 2999 | CreateUI | `set FRAME_ICON2[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON[i], "", 0)` |
-| 3027 | CreateUI | `set Frame_PageHeroList[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
-| 3028 | CreateUI | `set Frame_PageHeroListImage[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", Frame_PageHeroList[i], "", 0)` |
-| 3057 | CreateUI | `set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
-| 3060 | CreateUI | `set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)` |
-| 3064 | CreateUI | `set FRAME_RepickText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)` |
-| 3070 | CreateUI | `set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
-| 3073 | CreateUI | `set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)` |
-| 3077 | CreateUI | `set FRAME_SwapText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)` |
-| 3091 | CreateUI | `set FRAME_ICON5[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN3, "ScoreScreenTabButtonTemplate", 0)` |
-| 3092 | CreateUI | `set FRAME_ICON6[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON5[i], "", 0)` |
-| 3101 | CreateUI | `set FRAME_AbiText[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", FRAME_ICON5[i], "", 0)` |
-| 3139 | CreateUI | `set FRAME_PlayerPick[i] = BlzCreateFrameByType("BUTTON", "MyPickTeamButton", FRAME_MAIN, "", 0)` |
-| 3142 | CreateUI | `set FRAME_PlayerPickBack[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", FRAME_PlayerPick[i], "", 0)` |
-| 3153 | CreateUI | `set FRAME_PlayerPickText[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", FRAME_PlayerPick[i], "", 0)` |
-| 3172 | CreateUI | `set FRAME_BanSpinSprite = BlzCreateFrameByType("SPRITE", "justAName", FRAME_MAIN, "WarCraftIIILogo", 0)` |
-| 3181 | CreateUI | `set FRAME_BanHighlight[i] = BlzCreateFrameByType("SPRITE", "justAName", FRAME_MAIN, "WarCraftIIILogo", 0)` |
-| 3190 | CreateUI | `set FRAME_TimerToStart = BlzCreateFrameByType("TEXT", "TextT", FRAME_MAIN2, "", 0)` |
+| 2945 | CreateUI | `set FRAME_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)` |
+| 2948 | CreateUI | `set FRAME_MAIN2 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)` |
+| 2951 | CreateUI | `set FRAME_MAIN3 = WUI_Window("WOSWindow", FRAME_MAIN, 1, 0)` |
+| 2954 | CreateUI | `set FRAME_HeroName = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 2960 | CreateUI | `set FRAME_PlayerPickDifficultText = BlzCreateFrameByType("TEXT", "MyHeroNameButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 2967 | CreateUI | `set FRAME_HeroModel = BlzCreateFrameByType("BACKDROP", "Port", FRAME_MAIN3, "", 0)` |
+| 2974 | CreateUI | `set border = BlzCreateFrameByType("BACKDROP", "ThinBorder", FRAME_MAIN3, "", 0)` |
+| 2979 | CreateUI | `set FRAME_HeroAttribute = BlzCreateFrameByType("BACKDROP", "attribute", FRAME_MAIN3, "", 0)` |
+| 2985 | CreateUI | `set FRAME_HeroAttackType = BlzCreateFrameByType("BACKDROP", "atk", FRAME_MAIN3, "", 0)` |
+| 2991 | CreateUI | `set FRAME_HeroStr = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 2996 | CreateUI | `set FRAME_HeroAgi = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3001 | CreateUI | `set FRAME_HeroInt = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3006 | CreateUI | `set FRAME_HeroAtk = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3011 | CreateUI | `set FRAME_HeroArmor = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3016 | CreateUI | `set FRAME_HeroMS = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3021 | CreateUI | `set FRAME_HeroAS = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)` |
+| 3037 | CreateUI | `set FRAME_Pick[k] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
+| 3038 | CreateUI | `set FRAME_ICON_Pick[k] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Pick[k], "", 0)` |
+| 3082 | CreateUI | `set FRAME_ICON[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
+| 3083 | CreateUI | `set FRAME_ICON2[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON[i], "", 0)` |
+| 3111 | CreateUI | `set Frame_PageHeroList[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)` |
+| 3112 | CreateUI | `set Frame_PageHeroListImage[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", Frame_PageHeroList[i], "", 0)` |
+| 3141 | CreateUI | `set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
+| 3144 | CreateUI | `set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)` |
+| 3148 | CreateUI | `set FRAME_RepickText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)` |
+| 3154 | CreateUI | `set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)` |
+| 3157 | CreateUI | `set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)` |
+| 3161 | CreateUI | `set FRAME_SwapText[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)` |
+| 3175 | CreateUI | `set FRAME_ICON5[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN3, "ScoreScreenTabButtonTemplate", 0)` |
+| 3176 | CreateUI | `set FRAME_ICON6[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON5[i], "", 0)` |
+| 3185 | CreateUI | `set FRAME_AbiText[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", FRAME_ICON5[i], "", 0)` |
+| 3223 | CreateUI | `set FRAME_PlayerPick[i] = BlzCreateFrameByType("BUTTON", "MyPickTeamButton", FRAME_MAIN, "", 0)` |
+| 3226 | CreateUI | `set FRAME_PlayerPickBack[i] = BlzCreateFrameByType("BACKDROP", "MyPickTeamButton", FRAME_PlayerPick[i], "", 0)` |
+| 3237 | CreateUI | `set FRAME_PlayerPickText[i] = BlzCreateFrameByType("TEXT", "MyIconTextAbi", FRAME_PlayerPick[i], "", 0)` |
+| 3256 | CreateUI | `set FRAME_BanSpinSprite = BlzCreateFrameByType("SPRITE", "justAName", FRAME_MAIN, "WarCraftIIILogo", 0)` |
+| 3265 | CreateUI | `set FRAME_BanHighlight[i] = BlzCreateFrameByType("SPRITE", "justAName", FRAME_MAIN, "WarCraftIIILogo", 0)` |
+| 3274 | CreateUI | `set FRAME_TimerToStart = BlzCreateFrameByType("TEXT", "TextT", FRAME_MAIN2, "", 0)` |
 
 ## triggers/WOS_Start/WoS_Shop_Init.j
 
@@ -870,59 +885,75 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 |---|---|---|
 | 229 | ShopCreateItemTooltip | `local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "ShopNativeTooltip", FRAME_ShopMAIN, "", context)` |
 | 230 | ShopCreateItemTooltip | `local framehandle tooltipText = BlzCreateFrameByType("TEXT", "ShopNativeTooltipText", tooltip, "", context)` |
-| 2557 | CreateItemUI | `set FRAME_ShopMAIN = BlzCreateFrame("EscMenuBackdrop", WUI_GetRoot(), 0, 0)` |
-| 2560 | CreateItemUI | `set FRAME_ShopItemList = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)` |
-| 2565 | CreateItemUI | `set FRAME_ShopItemCraft = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)` |
-| 2574 | CreateItemUI | `set FRAME_ShopCraftUpgradeWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftUpgradeWheelArea", FRAME_ShopItemCraft, "", 5101)` |
-| 2582 | CreateItemUI | `set FRAME_ShopCraftComponentWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftComponentWheelArea", FRAME_ShopItemCraft, "", 5102)` |
-| 2590 | CreateItemUI | `set FRAME_ShopItemDescription = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)` |
-| 2595 | CreateItemUI | `set FRAME_ShopItemDescriptionName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemDescription, "", 0)` |
-| 2598 | CreateItemUI | `set FRAME_ShopItemDescriptionName2 = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemDescription, "", 0)` |
-| 2602 | CreateItemUI | `set FRAME_ShopItemInventory = BlzCreateFrame("EscMenuBackdrop", FRAME_ShopMAIN, 1, 0)` |
-| 2607 | CreateItemUI | `set FRAME_ShopItemInventoryName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventory, "", 0)` |
-| 2610 | CreateItemUI | `set FRAME_ShopSearchLabel = BlzCreateFrameByType("TEXT", "ShopSearchLabel", FRAME_ShopMAIN, "", 0)` |
-| 2616 | CreateItemUI | `set FRAME_ShopSearchEditBox = BlzCreateFrame("EscMenuEditBoxTemplate", FRAME_ShopMAIN, 0, 0)` |
-| 2624 | CreateItemUI | `set FRAME_ShopSearchClear = BlzCreateFrameByType("BUTTON", "ShopSearchClear", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 2627 | CreateItemUI | `set FRAME_ShopSearchClearIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchClearIcon", FRAME_ShopSearchClear, "", 0)` |
-| 2632 | CreateItemUI | `set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 2635 | CreateItemUI | `set FRAME_ShopSearchPreviousIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchPreviousIcon", FRAME_ShopSearchPrevious, "", 0)` |
-| 2640 | CreateItemUI | `set FRAME_ShopSearchPageText = BlzCreateFrameByType("TEXT", "ShopSearchPageText", FRAME_ShopMAIN, "", 0)` |
-| 2646 | CreateItemUI | `set FRAME_ShopSearchNext = BlzCreateFrameByType("BUTTON", "ShopSearchNext", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
-| 2649 | CreateItemUI | `set FRAME_ShopSearchNextIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchNextIcon", FRAME_ShopSearchNext, "", 0)` |
-| 2659 | CreateItemUI | `set FRAME_ShopItemCraftSprite = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemCraft, "WarCraftIIILogo", 0)` |
-| 2665 | CreateItemUI | `set FRAME_ShopItemCraftSprite2 = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemInventory, "WarCraftIIILogo", 0)` |
-| 2676 | CreateItemUI | `set FRAME_ShopSection[i] = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_ShopMAIN, "ScriptDialogButton", 0)` |
-| 2700 | CreateItemUI | `set FRAME_AutoBuyCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_ShopMAIN, 0, 0)` |
-| 2706 | CreateItemUI | `set FRAME_AutoBuyText = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_ShopMAIN, "", 0)` |
-| 2716 | CreateItemUI | `set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemList, "ScoreScreenTabButtonTemplate", 0)` |
-| 2718 | CreateItemUI | `set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)` |
-| 2724 | CreateItemUI | `set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)` |
-| 2746 | CreateItemUI | `set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemCraft, "ScoreScreenTabButtonTemplate", 0)` |
-| 2748 | CreateItemUI | `set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)` |
-| 2752 | CreateItemUI | `set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)` |
-| 2764 | CreateItemUI | `set FRAME_ShopItemCraftGoldSlot = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemCraft, "", 0)` |
-| 2781 | CreateItemUI | `set FRAME_ShopCraftUpgradeScroll = BlzCreateFrameByType("SLIDER", "ShopCraftUpgradeScroll", FRAME_ShopItemCraft, "QuestMainListScrollBar", 0)` |
-| 2793 | CreateItemUI | `set FRAME_ShopCraftComponentScroll = BlzCreateFrameByType("SLIDER", "ShopCraftComponentScroll", FRAME_ShopItemCraft, "QuestMainListScrollBar", 0)` |
-| 2811 | CreateItemUI | `set FRAME_ShopItemInventorySlot[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemInventory, "ScoreScreenTabButtonTemplate", 0)` |
-| 2813 | CreateItemUI | `set FRAME_ShopItemInventorySlotBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemInventorySlot[i], "", 0)` |
-| 2822 | CreateItemUI | `set FRAME_ShopItemInventorySlotCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventorySlot[i], "", 0)` |
+| 2638 | CreateItemUI | `set FRAME_ShopMAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)` |
+| 2641 | CreateItemUI | `set FRAME_ShopItemList = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)` |
+| 2646 | CreateItemUI | `set FRAME_ShopItemCraft = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)` |
+| 2655 | CreateItemUI | `set FRAME_ShopCraftUpgradeWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftUpgradeWheelArea", FRAME_ShopItemCraft, "", 5101)` |
+| 2663 | CreateItemUI | `set FRAME_ShopCraftComponentWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftComponentWheelArea", FRAME_ShopItemCraft, "", 5102)` |
+| 2671 | CreateItemUI | `set FRAME_ShopItemDescription = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)` |
+| 2676 | CreateItemUI | `set FRAME_ShopItemDescriptionName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemDescription, "", 0)` |
+| 2679 | CreateItemUI | `set FRAME_ShopItemDescriptionName2 = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemDescription, "", 0)` |
+| 2683 | CreateItemUI | `set FRAME_ShopItemInventory = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)` |
+| 2688 | CreateItemUI | `set FRAME_ShopItemInventoryName = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventory, "", 0)` |
+| 2691 | CreateItemUI | `set FRAME_ShopSearchLabel = BlzCreateFrameByType("TEXT", "ShopSearchLabel", FRAME_ShopMAIN, "", 0)` |
+| 2697 | CreateItemUI | `set FRAME_ShopSearchEditBox = BlzCreateFrame("EscMenuEditBoxTemplate", FRAME_ShopMAIN, 0, 0)` |
+| 2705 | CreateItemUI | `set FRAME_ShopSearchClear = BlzCreateFrameByType("BUTTON", "ShopSearchClear", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 2708 | CreateItemUI | `set FRAME_ShopSearchClearIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchClearIcon", FRAME_ShopSearchClear, "", 0)` |
+| 2713 | CreateItemUI | `set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 2716 | CreateItemUI | `set FRAME_ShopSearchPreviousIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchPreviousIcon", FRAME_ShopSearchPrevious, "", 0)` |
+| 2721 | CreateItemUI | `set FRAME_ShopSearchPageText = BlzCreateFrameByType("TEXT", "ShopSearchPageText", FRAME_ShopMAIN, "", 0)` |
+| 2727 | CreateItemUI | `set FRAME_ShopSearchNext = BlzCreateFrameByType("BUTTON", "ShopSearchNext", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)` |
+| 2730 | CreateItemUI | `set FRAME_ShopSearchNextIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchNextIcon", FRAME_ShopSearchNext, "", 0)` |
+| 2740 | CreateItemUI | `set FRAME_ShopItemCraftSprite = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemCraft, "WarCraftIIILogo", 0)` |
+| 2746 | CreateItemUI | `set FRAME_ShopItemCraftSprite2 = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemInventory, "WarCraftIIILogo", 0)` |
+| 2757 | CreateItemUI | `set FRAME_ShopSection[i] = BlzCreateFrameByType("GLUETEXTBUTTON", "MyHeroNameButton", FRAME_ShopMAIN, "ScriptDialogButton", 0)` |
+| 2782 | CreateItemUI | `set FRAME_AutoBuyCheckbox = BlzCreateFrame("QuestCheckBox2", FRAME_ShopMAIN, 0, 0)` |
+| 2788 | CreateItemUI | `set FRAME_AutoBuyText = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_ShopMAIN, "", 0)` |
+| 2798 | CreateItemUI | `set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemList, "ScoreScreenTabButtonTemplate", 0)` |
+| 2800 | CreateItemUI | `set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)` |
+| 2806 | CreateItemUI | `set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)` |
+| 2828 | CreateItemUI | `set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemCraft, "ScoreScreenTabButtonTemplate", 0)` |
+| 2830 | CreateItemUI | `set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)` |
+| 2834 | CreateItemUI | `set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)` |
+| 2846 | CreateItemUI | `set FRAME_ShopItemCraftGoldSlot = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemCraft, "", 0)` |
+| 2863 | CreateItemUI | `set FRAME_ShopCraftUpgradeScroll = BlzCreateFrameByType("SLIDER", "ShopCraftUpgradeScroll", FRAME_ShopItemCraft, "QuestMainListScrollBar", 0)` |
+| 2875 | CreateItemUI | `set FRAME_ShopCraftComponentScroll = BlzCreateFrameByType("SLIDER", "ShopCraftComponentScroll", FRAME_ShopItemCraft, "QuestMainListScrollBar", 0)` |
+| 2893 | CreateItemUI | `set FRAME_ShopItemInventorySlot[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemInventory, "ScoreScreenTabButtonTemplate", 0)` |
+| 2895 | CreateItemUI | `set FRAME_ShopItemInventorySlotBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemInventorySlot[i], "", 0)` |
+| 2904 | CreateItemUI | `set FRAME_ShopItemInventorySlotCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventorySlot[i], "", 0)` |
 
 ## triggers/WOS_Start/WOSUI.j
 
-12 creation/TOC sites.
+28 creation/TOC sites.
 
 | Line | Function | Creation |
 |---|---|---|
-| 48 | WUI_Panel | `local framehandle panel = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)` |
-| 55 | WUI_Border | `local framehandle edge = BlzCreateFrameByType("BACKDROP", name, owner, "", 0)` |
-| 141 | WUI_InstallNativeLayout | `set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", BlzGetFrameByName("ConsoleUI", 0), "", 0)` |
-| 211 | WUI_CreateControls | `set WUI_Menu = BlzCreateFrameByType("BUTTON", "WOSCompactMenu", WUI_Root, "", 0)` |
-| 215 | WUI_CreateControls | `set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)` |
-| 220 | WUI_CreateControls | `set WUI_Orders = BlzCreateFrameByType("BUTTON", "WOSOrderDrawer", WUI_Root, "", 0)` |
-| 222 | WUI_CreateControls | `set text = BlzCreateFrameByType("TEXT", "WOSOrderDrawerLabel", WUI_Orders, "", 0)` |
-| 267 | WUI_CreateTestHelp | `set text = BlzCreateFrame("EscMenuTextAreaTemplate", WUI_TestPanel, 0, 9020)` |
-| 271 | WUI_CreateTestHelp | `set WUI_TestToggle = BlzCreateFrameByType("BUTTON", "WOSTestHelpToggle", WUI_Root, "", 0)` |
-| 275 | WUI_CreateTestHelp | `set title = BlzCreateFrameByType("TEXT", "WOSTestHelpTitle", WUI_TestToggle, "", 0)` |
-| 294 | WUI_Init | `set WUI_ServiceBoard = CreateLeaderboard()` |
-| 311 | WUI_Init | `set WUI_Root = BlzCreateFrameByType("FRAME", "WOSIndependentRoot", board, "", 0)` |
+| 63 | WUI_Panel | `local framehandle panel = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)` |
+| 70 | WUI_Border | `local framehandle edge = BlzCreateFrameByType("BACKDROP", name, owner, "", 0)` |
+| 78 | WUI_Window | `local framehandle panel = BlzCreateFrameByType("BACKDROP", name, parent, "", context)` |
+| 79 | WUI_Window | `local framehandle edge = WUI_Border(name + "Edge", panel)` |
+| 147 | WUI_SimpleBorder | `local framehandle edge = BlzCreateFrameByType("SIMPLESTATUSBAR", "WOSBuffBorder", owner, "", 0)` |
+| 243 | add | `set panel = WUI_Window("WOSHeroMeter", WUI_GetRoot(), 0, 0)` |
+| 244 | add | `set back = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", panel, "", 0)` |
+| 245 | add | `set bar = BlzCreateFrameByType("STATUSBAR", "WOSMeterFill", panel, "", 0)` |
+| 246 | add | `set icon = BlzCreateFrameByType("BACKDROP", "WOSMeterIcon", panel, "", 0)` |
+| 247 | add | `set title = BlzCreateFrameByType("TEXT", "WOSMeterTitle", panel, "", 0)` |
+| 248 | add | `set value = BlzCreateFrameByType("TEXT", "WOSMeterValue", panel, "", 0)` |
+| 299 | WUI_Tooltip | `local framehandle box = WUI_Panel("WOSToolbarTooltip", WUI_Root, 0.170, 0.038)` |
+| 300 | WUI_Tooltip | `local framehandle text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)` |
+| 301 | WUI_Tooltip | `local framehandle edge = WUI_Border("WOSToolbarTooltipBorder", box)` |
+| 404 | WUI_InstallNativeLayout | `set WUI_HiddenDetails = BlzCreateFrameByType("SIMPLEFRAME", "WOSHiddenNativeDetails", BlzGetFrameByName("ConsoleUI", 0), "", 0)` |
+| 479 | WUI_CreateControls | `set WUI_Menu = BlzCreateFrameByType("BUTTON", "WOSCompactMenu", WUI_Root, "", 0)` |
+| 481 | WUI_CreateControls | `set back = WUI_Panel("WOSMenuBack", WUI_Menu, 0.025, 0.025)` |
+| 483 | WUI_CreateControls | `set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)` |
+| 491 | WUI_CreateControls | `set back = BlzCreateFrameByType("BACKDROP", "WOSMenuLine", WUI_Menu, "", i)` |
+| 498 | WUI_CreateControls | `set WUI_Orders = BlzCreateFrameByType("BUTTON", "WOSOrderDrawer", WUI_Root, "", 0)` |
+| 500 | WUI_CreateControls | `set text = BlzCreateFrameByType("TEXT", "WOSOrderDrawerLabel", WUI_Orders, "", 0)` |
+| 543 | WUI_CreateTestHelp | `set WUI_TestPanel = WUI_Panel("WOSTestHelpPanel", WUI_Root, 0.192, 0.246)` |
+| 545 | WUI_CreateTestHelp | `set text = BlzCreateFrame("EscMenuTextAreaTemplate", WUI_TestPanel, 0, 9020)` |
+| 549 | WUI_CreateTestHelp | `set WUI_TestToggle = BlzCreateFrameByType("BUTTON", "WOSTestHelpToggle", WUI_Root, "", 0)` |
+| 551 | WUI_CreateTestHelp | `set title = WUI_Panel("WOSTestHelpHeading", WUI_TestToggle, 0.192, 0.021)` |
+| 553 | WUI_CreateTestHelp | `set title = BlzCreateFrameByType("TEXT", "WOSTestHelpTitle", WUI_TestToggle, "", 0)` |
+| 573 | WUI_Init | `set WUI_ServiceBoard = CreateLeaderboardBJ(bj_FORCE_ALL_PLAYERS, "WOS UI")` |
+| 590 | WUI_Init | `set WUI_Root = BlzCreateFrameByType("FRAME", "WOSIndependentRoot", board, "", 0)` |
 

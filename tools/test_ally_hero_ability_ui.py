@@ -51,6 +51,7 @@ class AllyAbilityUI(unittest.TestCase):
             'BlzFrameSetTexture':lambda f,v,*_:self.frame(f,'texture',v),
             'BlzFrameSetSize':lambda f,*v:self.frame(f,'size',v),
             'BlzFrameSetPoint':lambda *a:None, 'BlzFrameClearAllPoints':lambda *a:None,
+            'BlzFrameSetAbsPoint':lambda *a:None,
             'BlzFrameGetHeight':lambda f:.06,
             'BlzGetAbilityTooltip':lambda a,l:'Title '+a,
             'BlzGetAbilityExtendedTooltip':lambda a,l:f'Description {a} rank {l+1}',
@@ -144,6 +145,41 @@ class AllyAbilityUI(unittest.TestCase):
         self.vm.run('AHUI_RefreshSlot',(1,0))
         self.assertFalse(self.frames)
         self.assertFalse(self.reads)
+
+    def test_overlay_roots_use_absolute_hud_positions_without_simpleframe_anchors(self):
+        roots = []
+        positions = {}
+
+        def create(kind, name, parent, template, context):
+            frame = (name, context)
+            if name == 'AHUIRoot':
+                self.assertEqual('independent-root', parent)
+                roots.append(frame)
+            return frame
+
+        def point(frame, anchor, target, target_anchor, x, y):
+            self.assertNotEqual('native-simple', target[0],
+                                'Normal overlays must not anchor into native SIMPLEFRAME hierarchy')
+
+        self.vm.g.update({
+            'WUI_GetRoot': lambda: 'independent-root',
+            'GetSlotByXY': lambda x, y: y * 4 + x,
+            'BlzGetOriginFrame': lambda kind, slot: ('native-simple', slot),
+            'BlzCreateFrameByType': create,
+            'BlzFrameSetAbsPoint': lambda f, _, x, y: positions.update({f: (x, y)}),
+            'BlzFrameSetPoint': point, 'BlzFrameSetAllPoints': lambda *_: None,
+            'BlzFrameSetLevel': lambda *_: None, 'BlzFrameSetEnable': lambda *_: None,
+            'BlzFrameSetScale': lambda *_: None, 'BlzFrameSetTextAlignment': lambda *_: None,
+            'ORIGIN_FRAME_COMMAND_BUTTON': 'commands', 'FRAMEPOINT_CENTER': 'center',
+            'TEXT_JUSTIFY_MIDDLE': 'middle', 'TEXT_JUSTIFY_CENTER': 'center',
+            'TEXT_JUSTIFY_TOP': 'top', 'TEXT_JUSTIFY_LEFT': 'left',
+        })
+        self.vm.run('AHUI_CreateSlotFrames')
+        self.assertEqual(24 * 7, len(roots))
+        for frame in roots:
+            slot = frame[1] % 7
+            self.assertAlmostEqual(.354 + slot * .040, positions[frame][0])
+            self.assertEqual(.044, positions[frame][1])
 
     def test_own_units_and_illusions_are_rejected_and_observers_keep_permissions(self):
         self.assertFalse(self.vm.run('AHUI_IsEligibleHero',(self.c,1)))

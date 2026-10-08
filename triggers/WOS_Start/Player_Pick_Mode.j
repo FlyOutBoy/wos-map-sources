@@ -599,6 +599,88 @@ function PlayerUpdateIcon takes nothing returns nothing
     endloop
 endfunction
 
+// Reposition the existing vote/team-pick handles, never allocate a second picker.
+function WOS_LayoutCaptainVote takes boolean teamSelection returns nothing
+    local integer i = 0
+    local integer column
+    local real x
+    local real y
+    if teamSelection then
+        call WUI_Place(Frame_Cap2_MAIN, 0.400, 0.347, 0.444, 0.286)
+        loop
+            exitwhen i >= 10
+            set column = ModuloInteger(i, 5)
+            set x = 0.264 + I2R(column) * 0.068
+            set y = 0.430
+            if i >= 5 then
+                set y = 0.368
+            endif
+            call WUI_Place(Frame_Cap2_3[i], x, y, 0.034, 0.034)
+            if Frame_Cap2_5[i] != null then
+                call WUI_Place(Frame_Cap2_5[i], x, y - 0.032, 0.062, 0.022)
+                call BlzFrameSetScale(Frame_Cap2_5[i], 0.65)
+            endif
+            set i = i + 1
+        endloop
+        call WUI_Place(Frame_Cap2_3[11], 0.238, 0.295, 0.029, 0.029)
+        call WUI_Place(Frame_Cap2_3[12], 0.433, 0.295, 0.029, 0.029)
+        set i = 20
+        loop
+            exitwhen i >= 28
+            if i < 24 then
+                set x = 0.278 + I2R(i - 20) * 0.040
+            else
+                set x = 0.473 + I2R(i - 24) * 0.040
+            endif
+            call WUI_Place(Frame_Cap2_3[i], x, 0.295, 0.029, 0.029)
+            call WUI_Place(Frame_Cap2_5[i], x, 0.267, 0.038, 0.022)
+            call BlzFrameSetScale(Frame_Cap2_5[i], 0.58)
+            set i = i + 1
+        endloop
+        call WUI_Place(Frame_Cap2_10, 0.318, 0.326, 0.165, 0.016)
+        call WUI_Place(Frame_Cap2_11, 0.513, 0.326, 0.165, 0.016)
+        call BlzFrameSetScale(Frame_Cap2_10, 0.72)
+        call BlzFrameSetScale(Frame_Cap2_11, 0.72)
+        call WUI_Place(Frame_Cap2_13, 0.238, 0.267, 0.068, 0.022)
+        call WUI_Place(Frame_Cap2_14, 0.433, 0.267, 0.068, 0.022)
+        call BlzFrameSetScale(Frame_Cap2_13, 0.60)
+        call BlzFrameSetScale(Frame_Cap2_14, 0.60)
+        call WUI_Place(Frame_Cap2_6, 0.400, 0.474, 0.370, 0.016)
+        call BlzFrameSetScale(Frame_Cap2_6, 0.83)
+        call WUI_Place(Frame_Cap2_8, 0.400, 0.224, 0.370, 0.015)
+        call BlzFrameSetScale(Frame_Cap2_8, 0.70)
+    else
+        call WUI_Place(Frame_Cap1_MAIN, 0.400, 0.345, 0.400, 0.258)
+        loop
+            exitwhen i >= 10
+            set column = ModuloInteger(i, 5)
+            set x = 0.264 + I2R(column) * 0.068
+            set y = 0.398
+            if i >= 5 then
+                set y = 0.342
+            endif
+            call WUI_Place(Frame_Cap1_3[i], x, y, 0.034, 0.034)
+            call WUI_Place(Frame_Cap1_5[i], x, y - 0.030, 0.062, 0.022)
+            call BlzFrameSetScale(Frame_Cap1_5[i], 0.65)
+            set i = i + 1
+        endloop
+        call WUI_Place(Frame_Cap1_3[11], 0.328, 0.279, 0.032, 0.032)
+        call WUI_Place(Frame_Cap1_3[12], 0.472, 0.279, 0.032, 0.032)
+        call WUI_Place(Frame_Cap1_10, 0.328, 0.308, 0.130, 0.012)
+        call WUI_Place(Frame_Cap1_11, 0.472, 0.308, 0.130, 0.012)
+        call BlzFrameSetScale(Frame_Cap1_10, 0.72)
+        call BlzFrameSetScale(Frame_Cap1_11, 0.72)
+        call WUI_Place(Frame_Cap1_13, 0.328, 0.250, 0.125, 0.022)
+        call WUI_Place(Frame_Cap1_14, 0.472, 0.250, 0.125, 0.022)
+        call BlzFrameSetScale(Frame_Cap1_13, 0.65)
+        call BlzFrameSetScale(Frame_Cap1_14, 0.65)
+        call WUI_Place(Frame_Cap1_6, 0.400, 0.460, 0.370, 0.016)
+        call BlzFrameSetScale(Frame_Cap1_6, 0.83)
+        call WUI_Place(Frame_Cap1_8, 0.400, 0.436, 0.370, 0.013)
+        call BlzFrameSetScale(Frame_Cap1_8, 0.72)
+    endif
+endfunction
+
 function CreatePlayerPickUI takes nothing returns nothing
     local integer i = 0
     local integer i2 = 0
@@ -907,6 +989,7 @@ set PicksPerTurn[7] = 1
         endif
     endloop
 
+call WOS_LayoutCaptainVote(true)
 set CapPickPhase = 3
 
 call BlzFrameSetVisible(FRAME_StatusHeroMain, true)
@@ -1390,6 +1473,7 @@ function CreateCaptainUI takes nothing returns nothing
     call BlzFrameSetText(Frame_Cap1_8, "Click on button to vote|r")  
     call BlzFrameSetSize(Frame_Cap1_8, 0.2, 0.005)
     call BlzFrameSetScale(Frame_Cap1_8, 1.1)
+    call WOS_LayoutCaptainVote(false)
     call TriggerAddAction(FrameCapClick, function CapOnClick)
     call TimerStart(FrameCapTimer, 1, true, function CapPickTime)
 endfunction

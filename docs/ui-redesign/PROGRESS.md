@@ -185,3 +185,30 @@
 - Checkpoint 7 committed as a856a90. Four recovery files updated again.
 - Next independent action: remaining mode/vote/tooltip skins from FRAME_INVENTORY;
   create explicit owner status list to distinguish implementation from runtime.
+
+## Checkpoint 9 — ability overlay hierarchy, captain votes and owner coverage
+
+- AllyHeroAbilityUI overlays previously anchored normal FRAME roots to native
+  SIMPLEFRAME command buttons. All 168 actual overlays now use absolute HUD slot
+  coordinates, independent normal root and matching compact text. Tooltip root no
+  longer anchors hidden ConsoleUIBackdrop. Enemy cooldown privacy unchanged.
+- Shared graphite/gold surfaces for ability tooltips, hero preview and draft bans.
+  WOS_LayoutCaptainVote compacts the existing ten candidates, captain controls,
+  team slots, names, instructions and real timers in both phases. No new duplicate
+  controls, allocation or vote/team algorithms.
+- Inventory regenerated with shared frame creation helpers included. OWNER_STATUS
+  records all 45 active production owners and explicit pending game checks. Legacy
+  Systems2 AllyCD initializer is commented and has no active external ShowAllyCD
+  calls; retained instead of resurrecting a duplicate cooldown controller.
+- Full production compile PASS: 146914 pjass lines / 107 enabled sources. All 53
+  tests PASS: HUD/docks 13, pings 21, ally UI 8 (new real overlay placement test),
+  WTG/WCT order 3, workflow 8. git diff --check PASS.
+- Read-only native sync check PASS: 109 WTG triggers prepared, 46 source differences
+  plus new WOSUI id 0x03000071, category traversal and identities preserved. Native
+  MAIN remains untouched; World Editor process still running, required closure
+  reply pending. Project CRLF normalization produces no semantic code differences.
+- Checkpoint 8 committed as 66f2c6b. Recovery files updated; INTEGRATION.md contains
+  exact guarded push/build/archive steps and the generated-log cleanup boundary.
+- Next action: once user confirms closure and guard is false, integrate and build
+  full MAIN, verify native WTG/WCT identities and all 29 resource imports, extract
+  and compare all 33 archive entries. Actual game/native interactions remain pending.

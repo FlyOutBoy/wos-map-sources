@@ -2826,12 +2826,11 @@ endfunction
 // Создаёт постоянную нативную подсказку для одной кнопки способности.
 // BlzFrameSetTooltip сам отслеживает реальный вход и выход курсора.
 function GuideCreateAbilityTooltip takes integer slot returns nothing
-    local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "AbilityNativeTooltip", FRAME_MAIN3, "", 8000 + slot)
+    local framehandle tooltip = WUI_Window("AbilityNativeTooltip", FRAME_MAIN3, 0, 8000 + slot)
     local framehandle tooltipText = BlzCreateFrameByType("TEXT", "AbilityNativeTooltipText", tooltip, "", 8100 + slot)
 
     call BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0.645, 0.39)
     call BlzFrameSetSize(tooltip, 0.19, 0.19)
-    call BlzFrameSetTexture(tooltip, "Textures\\black32.blp", 0, true)
     call BlzFrameSetAlpha(tooltip, 235)
     call BlzFrameSetLevel(tooltip, 50)
 

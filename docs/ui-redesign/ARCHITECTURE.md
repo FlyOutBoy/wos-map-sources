@@ -69,8 +69,15 @@ Primary references checked:
   pick/preview/player handles. Main bounds X=.092..748, Y=.118..544; same 5x6 grid.
   Seven preview abilities remain real tooltip handles; logos remain imported originals.
 - CaptainDraft root uses WUI_GetRoot; bans at (.600,.192), status at header Y=.526
-  for all phases. Player claim controls retain original owners. Legacy captain voting
-  panel still retains its own layout but uses new surface.
+  for all phases. Player claim controls retain original owners. WOS_LayoutCaptainVote
+  repositions actual captain voting and team selection handles at their creation
+  boundaries; candidate/captain/team indices and all vote/pick handlers retained.
+  Vote modal .400x.258 at (.400,.345); team modal .444x.286 at (.400,.347).
+- AllyHeroAbilityUI normal overlay roots use absolute command HUD coordinates
+  (.354+slot*.040,.044), avoiding anchors across FRAME/SIMPLEFRAME hierarchies.
+  Tooltips use the independent WUI root, graphite surface and bottom-right
+  (.790,.152). Real ally cooldowns and enemy-description-only privacy retained.
+  Hero preview and draft ban tooltips also share the graphite/gold surface.
 - WOS_LayoutShop at the end of CreateItemUI moves existing seven tabs, 35 catalogue
   cells, six recipe relations + selected item, eight inventory/buy/sell handles,
   search/page navigation and Auto-buy. Main bounds X=.022..778, Y=.169..509.

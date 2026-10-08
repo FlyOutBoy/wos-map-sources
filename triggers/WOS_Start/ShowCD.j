@@ -33,7 +33,7 @@ globals
     private constant real AHUI_UPDATE_PERIOD = 0.03
     private constant integer AHUI_REFRESH_TICKS = 3
     private constant real AHUI_ICON_SIZE = 0.036
-    private constant real AHUI_COOLDOWN_TEXT_SCALE = 1.80
+    private constant real AHUI_COOLDOWN_TEXT_SCALE = 1.15
     private constant real AHUI_COMMAND_X0 = 0.6375
     private constant real AHUI_COMMAND_X_STEP = 0.0434
     private constant real AHUI_COMMAND_BOTTOM_Y = 0.0258
@@ -998,7 +998,7 @@ call BlzFrameSetSize(AHUI_TooltipRoot[pid], 0.300, boxHeight)
 
 // Позиция окна
 call BlzFrameClearAllPoints(AHUI_TooltipRoot[pid])
-call BlzFrameSetPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOMRIGHT, AHUI_ConsoleBackdrop, FRAMEPOINT_TOPRIGHT, -0.006, 0.025)
+call BlzFrameSetAbsPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOMRIGHT, 0.790, 0.152)
 
 // Показываем tooltip
 call BlzFrameSetVisible(AHUI_TooltipBackdrop[pid], true)
@@ -1239,7 +1239,8 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
             set AHUI_Root[index] = BlzCreateFrameByType("FRAME", "AHUIRoot", console, "", index)
             call BlzFrameClearAllPoints(AHUI_Root[index])
             call BlzFrameSetSize(AHUI_Root[index], AHUI_ICON_SIZE, AHUI_ICON_SIZE)
-            call BlzFrameSetPoint(AHUI_Root[index], FRAMEPOINT_CENTER, AHUI_Origin[slot], FRAMEPOINT_CENTER, 0.00, 0.00)
+            // A normal FRAME cannot safely anchor to a native SIMPLEFRAME tree.
+            call BlzFrameSetAbsPoint(AHUI_Root[index], FRAMEPOINT_CENTER, AHUI_GetSlotCenterX(slot), AHUI_GetSlotCenterY(slot))
             call BlzFrameSetLevel(AHUI_Root[index], 100)
             call BlzFrameSetEnable(AHUI_Root[index], false)
             call BlzFrameSetVisible(AHUI_Root[index], false)
@@ -1275,7 +1276,7 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
             call BlzFrameSetSize(AHUI_KeyText[index], 0.014, 0.014)
             call BlzFrameSetPoint(AHUI_KeyText[index], FRAMEPOINT_TOPLEFT, AHUI_Root[index], FRAMEPOINT_TOPLEFT, 0.002, -0.002)
             call BlzFrameSetTextAlignment(AHUI_KeyText[index], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-            call BlzFrameSetScale(AHUI_KeyText[index], 1.15)
+            call BlzFrameSetScale(AHUI_KeyText[index], 0.72)
             call BlzFrameSetText(AHUI_KeyText[index], "|cffffcc00" + AHUI_GetKeyText(slot) + "|r")
             call BlzFrameSetAlpha(AHUI_KeyText[index], 255)
             call BlzFrameSetLevel(AHUI_KeyText[index], 111)
@@ -1303,8 +1304,8 @@ private function AHUI_CreateTooltipFrames takes nothing returns nothing
         call BlzFrameSetEnable(AHUI_TooltipRoot[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipRoot[pid], false)
 
-        // Warcraft-like backdrop + border
-        set AHUI_TooltipBackdrop[pid] = BlzCreateFrame("EscMenuControlBackdropTemplate", AHUI_TooltipRoot[pid], 0, pid)
+        // Shared graphite surface; existing tooltip content and sizing are retained.
+        set AHUI_TooltipBackdrop[pid] = WUI_Window("WOSAbilityTooltip", AHUI_TooltipRoot[pid], 0, pid)
         call BlzFrameSetAllPoints(AHUI_TooltipBackdrop[pid], AHUI_TooltipRoot[pid])
         call BlzFrameSetLevel(AHUI_TooltipBackdrop[pid], 1001)
         call BlzFrameSetEnable(AHUI_TooltipBackdrop[pid], false)
@@ -1315,7 +1316,7 @@ private function AHUI_CreateTooltipFrames takes nothing returns nothing
         call BlzFrameSetSize(AHUI_TooltipTitle[pid], 0.278, 0.020)
         call BlzFrameSetPoint(AHUI_TooltipTitle[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.009)
         call BlzFrameSetTextAlignment(AHUI_TooltipTitle[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-        call BlzFrameSetScale(AHUI_TooltipTitle[pid], 1.10)
+        call BlzFrameSetScale(AHUI_TooltipTitle[pid], 0.90)
         call BlzFrameSetLevel(AHUI_TooltipTitle[pid], 1002)
         call BlzFrameSetEnable(AHUI_TooltipTitle[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipTitle[pid], false)
@@ -1389,7 +1390,7 @@ private function AHUI_InitPlayerState takes nothing returns nothing
 endfunction
 
 private function InitAllyHeroAbilityUI takes nothing returns nothing
-    set AHUI_GameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    set AHUI_GameUI = WUI_GetRoot()
     set AHUI_ConsoleBackdrop = BlzGetFrameByName("ConsoleUIBackdrop", 0)
 
     call AHUI_InitPlayerState()

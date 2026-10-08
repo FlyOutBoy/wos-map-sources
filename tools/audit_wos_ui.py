@@ -19,7 +19,7 @@ def audit():
             match = re.search(r'\b(?:function|method) (\w+) takes',line)
             if match:
                 owner = match[1]
-            if re.search(r'BlzCreateFrame|BlzLoadTOCFile|CreateLeaderboard',line):
+            if re.search(r'BlzCreateFrame|BlzLoadTOCFile|CreateLeaderboard|WUI_Window\(|WUI_Panel\(|WUI_Border\(|WUI_SimpleBorder\(',line):
                 sites.append((number,owner,line.strip()))
         if not sites:
             continue
