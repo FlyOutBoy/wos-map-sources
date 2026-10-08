@@ -297,8 +297,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16803,
-      "sha256": "40c6bee7eddeb8ce73b8b4a7ba1b05fd94a224148bb3f28741a3a158a4f23cfd",
+      "source_bytes": 16773,
+      "sha256": "1cfe8b5eb0c0a2e0750371351eca44cfae5b90cf9167d4d0f108a77578576e93",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -466,8 +466,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ChatCommand.j",
-      "source_bytes": 28424,
-      "sha256": "3dc5e13d86b81a20fadfd0de9af3093848bd9e28c51546acce1e054e2cd357dd",
+      "source_bytes": 28046,
+      "sha256": "df7e0b7e9e52c53c8a92893266990ccdd30541c538521bfc11a5a73bda928e11",
       "declarations": {
         "libraries": [
           "CustomImageChat"
@@ -742,8 +742,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 87889,
-      "sha256": "90b668d5c56292f7a59dd6dc130664c0376ed110951b1e360f81335624273274",
+      "source_bytes": 87709,
+      "sha256": "c7f9eedac9b65cd0fc6965523102fd1af4b5707c593691ef7ff4472ae923aa07",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -815,8 +815,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TeamMapPings.j",
-      "source_bytes": 33791,
-      "sha256": "2154e621716116e273cf17e2614f2c4a2b7d7671d7b8b3b15010a776e6a2322b",
+      "source_bytes": 33606,
+      "sha256": "a67fa04c3972a3a22c917d4e2845a7d849a3cbbf071e5f8396ed20175270973b",
       "declarations": {
         "libraries": [
           "TeamMapPings"
@@ -853,8 +853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 48905,
-      "sha256": "a2204fe936d7635a61e1734f0ebbb89fe99502beb47f537d382620cbc1d62ae5",
+      "source_bytes": 49390,
+      "sha256": "13fb37269434ed1067ea24c209ed8e2c9e0311a10058c026aed65588d3d042bc",
       "declarations": {
         "libraries": [
           "WOSUI"

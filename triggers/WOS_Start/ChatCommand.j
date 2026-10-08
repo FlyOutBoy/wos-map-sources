@@ -6,10 +6,6 @@ globals
     // -------------------------------------------------------------------------
     // LAYOUT: change only these values if the palette/feed overlaps another UI.
     // Warcraft UI coordinates normally use X = 0.00..0.80 and Y = 0.00..0.60.
-    private constant real EMOJI_TOGGLE_X = 0.744
-    private constant real EMOJI_TOGGLE_Y = 0.035
-    private constant real EMOJI_MUTE_X   = 0.770
-    private constant real EMOJI_MUTE_Y   = 0.035
     private constant real EMOJI_PANEL_X  = 0.615
     private constant real EMOJI_PANEL_Y  = 0.121
     private constant real EMOJI_FEED_X   = 0.12
@@ -22,7 +18,6 @@ globals
     private constant integer EMOJI_COLUMNS   = 5
 
     // Both the main button and palette buttons are 20% smaller than before.
-    private constant real EMOJI_TOGGLE_SIZE = 0.020
     // Palette emojis are 20% larger: 0.0240 -> 0.0288.
     private constant real EMOJI_BUTTON_SIZE = 0.0288
     private constant real EMOJI_BUTTON_STEP = 0.0324
@@ -628,8 +623,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     local real y
 
     set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetRoot(), "", 0)
-    call BlzFrameSetAbsPoint(EmojiToggle, FRAMEPOINT_CENTER, EMOJI_TOGGLE_X, EMOJI_TOGGLE_Y)
-    call BlzFrameSetSize(EmojiToggle, EMOJI_TOGGLE_SIZE, EMOJI_TOGGLE_SIZE)
+    call WUI_PlaceToolbar(EmojiToggle, 1, 1)
     call BlzFrameSetVisible(EmojiToggle, false)
     set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)
     call BlzFrameSetAllPoints(EmojiToggleIcon, EmojiToggle)
@@ -638,11 +632,11 @@ private function CreateEmojiPalette takes nothing returns nothing
     call BlzFrameSetEnable(EmojiToggleIcon, false)
     call WUI_Tooltip(EmojiToggle, "CHAT EMOJIS|nOpen the chat emoji palette.")
     set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetRoot(), "", 0)
-    call BlzFrameSetAbsPoint(EmojiMuteButton, FRAMEPOINT_CENTER, EMOJI_MUTE_X, EMOJI_MUTE_Y)
-    call BlzFrameSetSize(EmojiMuteButton, 0.012, 0.012)
+    call WUI_PlaceToolbar(EmojiMuteButton, 2, 1)
 
     set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)
-    call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
+    call BlzFrameSetPoint(EmojiMuteIcon, FRAMEPOINT_CENTER, EmojiMuteButton, FRAMEPOINT_CENTER, 0.00, 0.00)
+    call BlzFrameSetSize(EmojiMuteIcon, 0.012, 0.012)
     call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
     call BlzFrameSetAlpha(EmojiMuteIcon, 190)
     call BlzFrameSetEnable(EmojiMuteIcon, false)

@@ -94,10 +94,13 @@ function WUI_GetSimpleRoot takes nothing returns framehandle
     return WUI_SimpleRoot
 endfunction
 
-// Disabling a large FRAME is not a reliable mouse pass-through rule. FDF defines
-// IGNORETRACKEVENTS; absolute children work with a zero-area root.
+// BACKDROP containers never track mouse input. This remains true even if custom
+// FDF loading fails. Vertex tint hides only their own image, never their children.
 function WUI_Passive takes string name, framehandle parent returns framehandle
-    return BlzCreateFrameByType("FRAME", name, parent, "WOSPassiveFrame", 0)
+    local framehandle container = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)
+    call BlzFrameSetTexture(container, "Textures\\white.blp", 0, true)
+    call BlzFrameSetVertexColor(container, BlzConvertColor(0, 255, 255, 255))
+    return container
 endfunction
 
 function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
@@ -106,6 +109,11 @@ function WUI_Place takes framehandle frame, real x, real y, real width, real hei
         call BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(frame, width, height)
     endif
+endfunction
+
+// Six existing toolbar actions share one grid and one mouse-target size.
+function WUI_PlaceToolbar takes framehandle control, integer column, integer row returns nothing
+    call WUI_Place(control, 0.718 + I2R(column) * 0.026, 0.060 - I2R(row) * 0.028, 0.020, 0.020)
 endfunction
 
 // Native wrappers contain fixed-size art, cooldowns, hotkeys and mouse buttons.

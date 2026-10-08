@@ -1,5 +1,72 @@
 # Existing UI architecture
 
+## Checkpoint 15b — integrated MAIN, runtime verification boundary
+
+Guard: World Editor not running. Push 109 sources, 5 updated, 0 added WTG entries.
+Source backup: backups/trigger-sync/2026-10-09_014944_924627/map-before-push.
+Frame resources backup: backups/ui-redesign/frames/20261009-014958-877878.
+Full MAIN compile PASS: 148654 total pjass lines (132827 actual script).
+Compiled-script backup: backups/main-map-build/20261009-015030-381.
+Latest packed map: _build/WoS_Test.w3x (first slot, real MAIN).
+SHA256 dcefc6acab76aba5fe0fe694b4609fe18f7726f1f57593f9656323e0517c33d1.
+109 native WTG/WCT identities/traversal, TOC format, 40 resource imports and all
+45 archive entries byte-equal PASS. 86 regression tests PASS.
+Evidence: _build/ui-redesign/checkpoint15-{full-main-pjass.txt,
+integration-verification.json,launch.json}, checkpoint15-archive/.
+All build/check processes finished; no compilation or validation errors.
+Configured game launched for log inspection. Actual click/visual verification
+is still unavailable: Computer Use fails at initialization (kernel-assets error3).
+Do NOT issue shutdown unless this unresolved completion condition is verified.
+
+
+Runtime follow-up: launched at 01:51:25 +03:00, PID 26028 responding. At 01:52:27,
+War3Log ends at catalogue scanning 01:51:28, NO confirmed custom-map opening.
+No new crash directory (last 2026-10-08 20.35.28 ba6e19b4). This is NOT evidence
+that mode/world input or the actual interface works. Game inspection is blocked
+by Computer Use initialization, not user permission. User cannot participate in
+click verification. Do not ask again and do not fabricate successful interaction.
+Shutdown was NOT run or scheduled, because full completion is still unverified.
+Runtime evidence: checkpoint15-runtime.json and checkpoint15-war3log.txt.
+
+## Checkpoint 15 — resource parser and decoration correction
+
+Latest user screenshot e245fa6b confirms checkpoint 14 actually loaded: gold icon
+is visible, but mode clicks STILL fail and the native HUD chassis is transparent.
+The user cannot help with runtime clicks; proceed with independent work and save
+accurate evidence. Do NOT request the same manual runtime test again.
+
+Concrete packaging defect: WOSHUD.toc was one line with a single LF terminator.
+Warcraft TOC requires a complete ending line; the Tasyen TOC tutorial documents
+failure without it and the CRLF/LF difference:
+https://www.hiveworkshop.com/threads/ui-toc-files.315854/
+This can skip WOSHUD.fdf, leaving no native chassis/empty cells and no passive
+FRAME inheritance. It is a strongly supported explanation, not yet runtime proof.
+
+Fixed: exact UTF-8 no-BOM CRLF + empty ending line; .gitattributes preserves bytes.
+Installer validates before any map mutation, verifier checks source AND native
+TOC, including registered FDF existence. WUI_Passive now uses BACKDROP with only
+its own image alpha-zero vertex tint; never alpha-zero/disabled ancestors. Root,
+mode/container/ornament input behavior no longer relies on custom FDF inheritance.
+Normal BACKDROP containers are in normal family; native controls remain SIMPLEFRAME.
+Six toolbar controls share WUI_PlaceToolbar 3x2 grid (.020 cells, .026/.028 step).
+Z hover no longer expands the hit box; its hotkey sits at bottom-right like K.
+Shop, Discord, emotes, ping, chat emoji and emoji mute handlers are unchanged.
+Combat, WTG identities, cooldown privacy and pick/shop data remain preserved.
+86 regressions PASS, including rejected old TOC bytes, no-TOC decoration fallback
+and toolbar bounds/non-overlap. No claim that mocks simulate Warcraft hit tests.
+
+Computer Use Initialize retried after latest user request: same kernel-assets
+OS error 3, before sky can load. No app input/screenshot helper workaround.
+Source/native integration is complete (see latest checkpoint 15b above).
+Next: restore supported Computer Use availability, then verify actual mode/world
+clicks, HUD/empty slots/items, pick rows and shop layout using the latest MAIN.
+Input/appearance remain unverified; no further speculative owner migrations.
+
+USER SHUTDOWN REQUIREMENT: shutdown /s /t 60 ONLY as the final action after full
+task completion, all files saved, build/check processes finished and no errors.
+No extra confirmation. Do NOT run/schedule shutdown while input/visual acceptance
+is still unresolved or tools prevent determining completion.
+
 ## Checkpoint 14a — input and geometry source correction complete
 
 Implemented WOSPassiveFrame FDF with IGNORETRACKEVENTS for root/decorations,

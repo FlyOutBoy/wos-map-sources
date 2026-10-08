@@ -19,6 +19,30 @@ SKIN_VALUES.update(ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overla
                    TimeOfDayIndicator=CONSOLE_MODEL.replace('/', '\\'))
 
 
+def validate_frame_resources(asset_root):
+    """Validate bytes the game parses, before any native-map mutation.
+
+    The TOC reader can silently skip its final FDF with a single LF terminator.
+    Compilation and an archive byte comparison cannot detect that runtime fault.
+    Keep the TOC as UTF-8 without BOM, CRLF and a complete empty ending line.
+    """
+    for name in FRAME_RESOURCES:
+        if not name.endswith('.toc'):
+            continue
+        data = (asset_root / name).read_bytes()
+        if data.startswith(b'\xef\xbb\xbf') or not data.endswith(b'\r\n\r\n'):
+            raise ValueError(f'{name}: TOC must have no BOM and end with CRLF + empty line')
+        if b'\n' in data.replace(b'\r\n', b'') or b'\r' in data.replace(b'\r\n', b''):
+            raise ValueError(f'{name}: TOC contains non-CRLF line endings')
+        entries = [line.strip() for line in data.decode('utf-8').splitlines() if line.strip()]
+        if not entries:
+            raise ValueError(f'{name}: TOC has no frame definitions')
+        for entry in entries:
+            resource = entry.replace('\\', '/')
+            if resource not in FRAME_RESOURCES or not (asset_root / resource).is_file():
+                raise ValueError(f'{name}: frame definition is not bundled: {entry}')
+
+
 def hide_stock_console(text):
     """Edit only CustomSkin keys; preserve translations and unrelated overrides."""
     match = re.search(r'(?m)^\[CustomSkin\][^\n]*\n', text)
@@ -79,12 +103,14 @@ def install_console(map_dir):
     print('Stock console skin/model installed; backup:', backup)
 
 def install_ui(map_dir):
+    validate_frame_resources(ROOT / 'assets')
     install(map_dir,ROOT/'assets/UI/WOS',ROOT/'backups/ui-redesign/assets',ASSET_NAMES,'UI/WOS')
     install_console(map_dir)
     install_frame_resources(map_dir)
 
 
 def install_frame_resources(map_dir):
+    validate_frame_resources(ROOT / 'assets')
     imp = map_dir / 'war3map.imp'
     original = imp.read_bytes()
     version, count = struct.unpack_from('<II', original)

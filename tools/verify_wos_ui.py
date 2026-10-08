@@ -5,7 +5,7 @@ import json
 import struct
 import sync_war3_triggers as sync
 from install_wos_ui_assets import ASSET_NAMES as UI_NAMES
-from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES, FRAME_RESOURCES
+from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES, FRAME_RESOURCES, validate_frame_resources
 from install_team_ping_assets import ASSET_NAMES as PING_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +15,9 @@ ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j', 'war3
 
 
 def verify(archive=None):
+    validate_frame_resources(ROOT / 'assets')
     scenario = sync.load_map(ROOT / 'object-data.config.json')
+    validate_frame_resources(scenario)
     wtg = sync.fmt.parse_wtg(scenario / 'war3map.wtg')
     objects = [o for o in wtg['objects'] if o['object_type'] in (
         sync.fmt.OBJECT_TRIGGER, sync.fmt.OBJECT_SCRIPT)]
@@ -55,7 +57,7 @@ def verify(archive=None):
         for name in ARCHIVE_NAMES:
             assert (archive / name).read_bytes() == (scenario / name).read_bytes(), f'Archive mismatch: {name}'
     print(json.dumps({'native_trigger_count': len(objects), 'native_source_identity': 'PASS',
-                      'category_traversal': 'PASS', 'ui_imports': len(RESOURCES),
+                      'category_traversal': 'PASS', 'frame_resource_format': 'PASS', 'ui_imports': len(RESOURCES),
                       'archive_matches_native': bool(archive), 'game_runtime_tested': False}, indent=2))
 
 

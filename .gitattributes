@@ -1,2 +1,4 @@
 # This legacy trigger is stored with CRLF in Git; preserve its editor format.
 triggers/Heroes/Laxus.j -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Warcraft's TOC reader needs CRLF and a final empty line. Preserve exact bytes.
+assets/UI/WOS/*.toc -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

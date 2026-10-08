@@ -24,9 +24,9 @@ class InputAndNativeGeometry(unittest.TestCase):
         self.assertIn(('BlzFrameSetEnable', (self.vm.g['WUI_Root'], True)), self.fixture.calls)
         self.fixture.calls.clear()
         self.vm.run('WUI_OrnateBorder', ('button-edge', 'button', .020))
-        self.assertIn(('create', ('FRAME', 'button-edge', 'button')), self.fixture.calls)
+        self.assertIn(('create', ('BACKDROP', 'button-edge', 'button')), self.fixture.calls)
         source = (ROOT / 'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
-        self.assertIn('BlzCreateFrameByType("FRAME", name, parent, "WOSPassiveFrame", 0)', source)
+        self.assertIn('BlzCreateFrameByType("BACKDROP", name, parent, "", 0)', source)
         self.assertIn('local framehandle edge = WUI_Passive(name, owner)', source)
 
     def test_inventory_art_and_hitboxes_scale_with_wrappers_into_six_cells(self):

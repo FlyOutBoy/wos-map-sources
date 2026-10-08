@@ -151,7 +151,7 @@ class DeferredUIStartup(unittest.TestCase):
         self.assertFalse(self.calls)
         self.vm.run('WUI_Init')
         self.timers[0][3]()
-        self.assertEqual([('FRAME:WOSIndependentRoot', True)] * 2, observed)
+        self.assertEqual([('BACKDROP:WOSIndependentRoot', True)] * 2, observed)
         self.assertEqual(0, self.vm.g['WUI_ReadyCount'])
         self.assertEqual(3, len(self.destroyed))
         # Late owners execute once without replaying the initial queue.

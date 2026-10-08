@@ -36,3 +36,9 @@ requires a new actual game screenshot after integration.
   cover; installer preserves other skin sections/keys and backs up changes.
 - MAIN now includes 30 UI/ping resources. Skin + model included in packed-byte
   verification (35 entries). Engine appearance remains unverified.
+
+TOC parser contract (checkpoint 15): WOSHUD.toc is UTF-8 without BOM, exact CRLF
+plus empty ending line. Git preserves bytes (-text); installer validates before
+mutating MAIN and verifier checks project/native/packed copies. Passive normal
+containers now use transparent BACKDROP independent of this FDF load. Native
+chassis and seven empty SIMPLEFRAME cells still require the loaded definitions.

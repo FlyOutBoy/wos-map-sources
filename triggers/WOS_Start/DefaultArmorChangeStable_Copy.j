@@ -43,14 +43,14 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     local framehandle icon
     local framehandle text
     set UNITSTAT_Shop = BlzCreateFrameByType("BUTTON", "WOSShopToolbar", WUI_GetRoot(), "", 0)
-    call WUI_Place(UNITSTAT_Shop, 0.718, 0.060, 0.020, 0.020)
+    call WUI_PlaceToolbar(UNITSTAT_Shop, 0, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Shop)
     call BlzFrameSetTexture(icon, "ReplaceableTextures\\CommandButtons\\BTNMarketplace.blp", 0, true)
     call BlzFrameSetEnable(icon, false)
     call WUI_Tooltip(UNITSTAT_Shop, "SHOP [Tab]|nOpen or close your current shop tab.")
     set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetRoot(), "", 0)
-    call WUI_Place(UNITSTAT_Emotes, 0.770, 0.060, 0.020, 0.020)
+    call WUI_PlaceToolbar(UNITSTAT_Emotes, 2, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Emotes)
     call BlzFrameSetTexture(icon, "UI\\TeamPings\\button-emoji.tga", 0, true)

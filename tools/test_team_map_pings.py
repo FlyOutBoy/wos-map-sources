@@ -44,7 +44,7 @@ class TeamMapPings(unittest.TestCase):
         for kind, name in re.findall(r'^\s*private (\w+) array (\w+)', source, re.M):
             default = 0 if kind in ('integer','real') else None
             g[name] = defaultdict(lambda v=default:v)
-        constants = ['FRAMEPOINT_CENTER','FRAMEPOINT_TOP','TEXT_JUSTIFY_MIDDLE','TEXT_JUSTIFY_CENTER',
+        constants = ['FRAMEPOINT_CENTER','FRAMEPOINT_TOP','FRAMEPOINT_BOTTOMRIGHT','TEXT_JUSTIFY_MIDDLE','TEXT_JUSTIFY_CENTER',
                      'ORIGIN_FRAME_GAME_UI','ORIGIN_FRAME_MINIMAP','FRAMEPOINT_BOTTOM','FRAMEPOINT_BOTTOMLEFT','UNIT_TYPE_HERO','FRAMEEVENT_CONTROL_CLICK','FRAMEEVENT_MOUSE_ENTER','FRAMEEVENT_MOUSE_LEAVE',
                      'EVENT_PLAYER_MOUSE_DOWN','EVENT_PLAYER_MOUSE_MOVE','PLAYER_SLOT_STATE_PLAYING','MAP_CONTROL_USER']
         g.update({name:name for name in constants})
@@ -53,6 +53,7 @@ class TeamMapPings(unittest.TestCase):
         g.update({
             'Player':lambda p:p, 'GetPlayerId':lambda p:p, 'GetLocalPlayer':lambda:self.viewer,
             'WUI_GetRoot':lambda:'independent-root',
+            'WUI_PlaceToolbar': lambda f,c,r: self.frame_points.update({f: ('FRAMEPOINT_CENTER', .718 + c*.026, .060 - r*.028)}),
             'WUI_OnReady':self.ready_callbacks.append,
             'GetTriggerPlayer':lambda:self.sender, 'GetPlayerName':lambda p:f'Player {p+1}',
             'IsPlayerAlly':lambda a,b:a//5==b//5,

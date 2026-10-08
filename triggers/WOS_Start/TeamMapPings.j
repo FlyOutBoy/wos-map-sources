@@ -440,11 +440,9 @@ private function TMP_OnFrame takes nothing returns nothing
     if frame == TMP_Toggle and ev == FRAMEEVENT_CONTROL_CLICK then
         call TMP_ToggleMute()
     elseif frame == TMP_Toggle and ev == FRAMEEVENT_MOUSE_ENTER then
-        call BlzFrameSetSize(TMP_Toggle, 0.034, 0.030)
         call BlzFrameSetText(TMP_Hint, "|cff75d9ffHold Z: send orders|r  ·  Click this button: mute / enable pings  ·  Cooldown: 2.5s")
         call BlzFrameSetVisible(TMP_Hint, true)
     elseif frame == TMP_Toggle and ev == FRAMEEVENT_MOUSE_LEAVE then
-        call BlzFrameSetSize(TMP_Toggle, 0.027, 0.024)
         if not TMP_Open then
             call BlzFrameSetVisible(TMP_Hint, false)
         endif
@@ -653,8 +651,7 @@ private function TMP_StartUI takes nothing returns nothing
         set kind = kind + 1
     endloop
     set TMP_Toggle = BlzCreateFrameByType("BUTTON", "TeamPingToggle", ui, "", 0)
-    call BlzFrameSetAbsPoint(TMP_Toggle, FRAMEPOINT_CENTER, 0.718, 0.035)
-    call BlzFrameSetSize(TMP_Toggle, 0.020, 0.020)
+    call WUI_PlaceToolbar(TMP_Toggle, 0, 1)
     set TMP_ToggleIcon = BlzCreateFrameByType("BACKDROP", "TeamPingToggleIcon", TMP_Toggle, "", 0)
     call BlzFrameSetPoint(TMP_ToggleIcon, FRAMEPOINT_CENTER, TMP_Toggle, FRAMEPOINT_CENTER, 0, 0)
     call BlzFrameSetSize(TMP_ToggleIcon, 0.018, 0.018)
@@ -662,9 +659,9 @@ private function TMP_StartUI takes nothing returns nothing
     call BlzFrameSetAlpha(TMP_ToggleIcon, 190)
     call BlzFrameSetEnable(TMP_ToggleIcon, false)
     set TMP_ToggleText = BlzCreateFrameByType("TEXT", "TeamPingToggleText", TMP_Toggle, "", 0)
-    call BlzFrameSetPoint(TMP_ToggleText, FRAMEPOINT_TOP, TMP_Toggle, FRAMEPOINT_BOTTOM, 0, 0.002)
-    call BlzFrameSetSize(TMP_ToggleText, 0.034, 0.010)
-    call BlzFrameSetScale(TMP_ToggleText, 0.62)
+    call BlzFrameSetPoint(TMP_ToggleText, FRAMEPOINT_BOTTOMRIGHT, TMP_Toggle, FRAMEPOINT_BOTTOMRIGHT, 0, 0)
+    call BlzFrameSetSize(TMP_ToggleText, 0.008, 0.008)
+    call BlzFrameSetScale(TMP_ToggleText, 0.55)
     call BlzFrameSetLevel(TMP_ToggleText, 3)
     call BlzFrameSetTextAlignment(TMP_ToggleText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(TMP_ToggleText, "|cffffffffZ|r")
