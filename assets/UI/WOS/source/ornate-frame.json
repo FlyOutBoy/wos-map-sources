@@ -1,0 +1,9 @@
+{
+  "mode": "built-in image_gen.imagegen",
+  "operation": "new generation",
+  "transparent_background": true,
+  "original": "C:/Users/Gear/.codex/generated_images/01a11689-5baa-73e3-889b-598b7f8ec559/exec-06769581-14c0-4e11-a925-f923c2c56d19.png",
+  "saved_copy": "assets/UI/WOS/source/ornate-frame.png",
+  "dimensions": [1254, 1254],
+  "prompt": "Create a production-ready game UI ornament frame asset for a Warcraft-style dark fantasy anime arena HUD. A single square rectangular border only, centered, perfectly front-on flat 2D, symmetrical, all four corners visible, with slim straight connecting gold metal rails and ornate angular gold corner flourishes. Dark gunmetal steel inner rim, engraved warm antique gold outer rim, fine bright gold edge highlights, sharp beveled metal, very small jewel-like angular center accents on edges. Match an elegant black-and-gold fantasy HUD rather than chunky stone. All interior space and all exterior space must be fully transparent with an alpha channel: no dark panel fill, no checkerboard, no background, no shadow occupying the interior. Keep ornamentation within a narrow perimeter band, approximately 12% of canvas width maximum at corners and 5% along straight edges. The middle 70% of each straight edge must be simple and uniform so it can be stretched as a nine-slice UI frame. Square 1024x1024 asset. No text, letters, labels, icons, characters, watermark, interface screenshot, buttons or multiple frames. This is one reusable ornate frame, not an atlas."
+}

@@ -187,6 +187,7 @@ class ShopAndPickLayout(unittest.TestCase):
             'WUI_Tooltip': lambda *_: None, 'I2R': float, 'ModuloInteger': lambda a, b: a % b,
             'WUI_BORDER_TEXTURE': 'border', 'WUI_PANEL_TEXTURE': 'panel',
             'jass_div': lambda a, b: a // b,
+            'RAbsBJ': abs, 'RMaxBJ': max,
             'FRAMEPOINT_TOP': 'top', 'FRAMEPOINT_BOTTOM': 'bottom',
             'TEXT_JUSTIFY_TOP': 'top', 'TEXT_JUSTIFY_MIDDLE': 'middle',
             'TEXT_JUSTIFY_LEFT': 'left', 'TEXT_JUSTIFY_CENTER': 'center',

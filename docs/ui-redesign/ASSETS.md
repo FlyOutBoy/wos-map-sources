@@ -1,5 +1,18 @@
 # UI assets
 
+Checkpoint 13 adds ONE built-in imagegen asset, saved unchanged as
+`assets/UI/WOS/source/ornate-frame.png` (RGBA 1254x1254, transparent interior and
+exterior). Mode: built-in tool, new transparent generation, no external API/CLI.
+Prompt and provenance: `assets/UI/WOS/source/ornate-frame.json`.
+Four 256x256 corner crops, two 128x32 horizontal rails and two 32x128 vertical rails
+are exported as `ornate-{tl,tr,bl,br,top,bottom,left,right}.tga`. Corners stay square
+in game; rails stretch independently. Cropping/resampling only, no repainting.
+`WOSHUD.fdf` and `WOSHUD.toc` define one passive native-family surface under buttons.
+Verified packaging: 21 shared TGA + 16 ping TGA + clock MDX + FDF/TOC = 40
+resources; with native WTG/WCT/imports/script/skin = 45 verified packed entries.
+Latest source changes have compile/test evidence; final Warcraft appearance still
+requires a new actual game screenshot after integration.
+
 - Built-in imagegen source: `assets/UI/WOS/source/graphite.png` (unchanged copied output).
 - Production request: ONE seamless square almost-black #0d1118 graphite material,
   very low contrast, no objects, borders, writing, logos, bright corner gradients,

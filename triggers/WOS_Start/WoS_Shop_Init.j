@@ -31,6 +31,8 @@ globals
     framehandle FRAME_ShopItemCraft
     framehandle FRAME_ShopItemCraftSprite
     framehandle FRAME_ShopItemCraftSprite2
+    framehandle array FRAME_ShopRecipeLine
+    framehandle FRAME_ShopRecipeTitle
     framehandle FRAME_ShopItemDescription
     framehandle FRAME_ShopItemDescriptionName
     framehandle FRAME_ShopItemDescriptionName2
@@ -1273,6 +1275,15 @@ function ResetCraftFrames takes player p returns nothing
         endloop
 endfunction
 
+// Recipe edges are presentation only. A branch exists only for an actual
+// displayed relation, including each player's current three-item scroll page.
+function ShopShowRecipeBranch takes integer slot, boolean visible returns nothing
+    local integer part = slot * 3
+    call BlzFrameSetVisible(FRAME_ShopRecipeLine[part], visible)
+    call BlzFrameSetVisible(FRAME_ShopRecipeLine[part + 1], visible)
+    call BlzFrameSetVisible(FRAME_ShopRecipeLine[part + 2], visible)
+endfunction
+
 function ShopSaveCraftScrollState takes integer pid, integer itemId returns nothing
     if itemId != 0 then
         call SaveInteger(CraftScrollStateTable, itemId, pid, ShopCraftUpgradeOffset[pid])
@@ -1363,6 +1374,9 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
             set relatedId = GetVisibleCraftRelation(id, false, ShopCraftComponentOffset[pid], slot - 3)
         endif
         call SetPlayerCraftSlot(pid, slot, relatedId)
+        if GetLocalPlayer() == p then
+            call ShopShowRecipeBranch(slot, relatedId != 0)
+        endif
 
         if relatedId != 0 then
             set frameIndex = 36 + slot
@@ -1511,6 +1525,7 @@ function ShopCraftOnWheel takes nothing returns nothing
 endfunction
 
 function ReloadItemPageCore takes integer page, player p, boolean showControls returns nothing
+    local integer tab = 0
     local integer pid = GetPlayerId(p)
     local integer slot = 0
     local integer id
@@ -1531,6 +1546,16 @@ function ReloadItemPageCore takes integer page, player p, boolean showControls r
         set slot = slot + 1
     endloop
     set selectedUnit = null
+    if GetLocalPlayer() == p then
+        loop
+            exitwhen tab >= 7
+            if FRAME_ShopSection[tab] != null then
+                call WUI_SetButtonSelected(FRAME_ShopSection[tab], tab == page)
+            endif
+            set tab = tab + 1
+        endloop
+    endif
+
 endfunction
 
 function ReloadItemPage takes integer page, player p returns nothing
@@ -1917,19 +1942,8 @@ if frameCode >= 100 and frameCode <= 106 then
                 call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, true)
                 call BlzFrameSetTexture(FRAME_ShopItemBack[42], iconPath, 0, false)
                 call BlzFrameSetText(FRAME_ShopItemCost[42], costStr)
-                if slot == 0 then
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, -0.025, 0.08)
-                elseif slot == 1 then
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.0275, 0.08)
-                elseif slot == 2 then
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, -0.025, 0.025)
-                elseif slot == 3 then
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.0275, 0.025)
-                elseif slot == 4 then
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, -0.025, -0.03)
-                else
-                    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.0275, -0.03)
-                endif
+                call BlzFrameClearAllPoints(FRAME_ShopItemCraftSprite2)
+                call BlzFrameSetAllPoints(FRAME_ShopItemCraftSprite2, FRAME_ShopItemInventorySlot[slot])
             endif
             call ShopShowItemDescription(id, p)
             call CraftItemCheck(id, p, ItemsFrameCurrentPage_ID[pid])
@@ -2477,35 +2491,38 @@ function WOS_LayoutShop takes nothing returns nothing
     local integer i = 0
     local integer column
     local integer row
+    local integer branch
     local real x
     local real y
-    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
-    call WUI_Place(FRAME_ShopItemList, 0.307, 0.370, 0.307, 0.240)
-    call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.399, 0.170, 0.176)
-    call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.248, 0.170, 0.105)
-    call WUI_Place(FRAME_ShopItemInventory, 0.706, 0.349, 0.125, 0.282)
-    call WUI_Place(FRAME_ShopItemDescriptionName, 0.554, 0.291, 0.158, 0.016)
-    call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.73)
-    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.243, 0.158, 0.074)
+    local real joinY
+    local real distance
+    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.343, 0.756, 0.366)
+    call WUI_Place(FRAME_ShopItemList, 0.248, 0.352, 0.414, 0.266)
+    call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.379, 0.182, 0.208)
+    call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.217, 0.182, 0.104)
+    call WUI_Place(FRAME_ShopItemInventory, 0.710, 0.324, 0.118, 0.318)
+    call WUI_Place(FRAME_ShopRecipeTitle, 0.554, 0.473, 0.157, 0.012)
+    call WUI_Place(FRAME_ShopItemDescriptionName, 0.554, 0.255, 0.158, 0.016)
+    call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.85)
+    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.211, 0.158, 0.066)
     call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-    call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.82)
-    call WUI_Place(FRAME_ShopItemInventoryName, 0.706, 0.479, 0.116, 0.016)
-    call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.76)
-    call WUI_Place(FRAME_ShopSearchLabel, 0.178, 0.196, 0.047, 0.016)
-    call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.70)
-    call WUI_Place(FRAME_ShopSearchEditBox, 0.322, 0.196, 0.227, 0.024)
-    call WUI_Place(FRAME_ShopSearchClear, 0.446, 0.196, 0.017, 0.017)
-    call WUI_Place(FRAME_ShopSearchPrevious, 0.273, 0.227, 0.015, 0.015)
-    call WUI_Place(FRAME_ShopSearchPageText, 0.307, 0.227, 0.039, 0.012)
-    call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.70)
-    call WUI_Place(FRAME_ShopSearchNext, 0.341, 0.227, 0.015, 0.015)
-    call WUI_Place(FRAME_AutoBuyCheckbox, 0.047, 0.230, 0.017, 0.017)
-    call WUI_Place(FRAME_AutoBuyText, 0.101, 0.230, 0.085, 0.016)
-    call BlzFrameSetScale(FRAME_AutoBuyText, 0.75)
+    call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.92)
+    call WUI_Place(FRAME_ShopItemInventoryName, 0.710, 0.468, 0.110, 0.016)
+    call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.90)
+    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.190, 0.047, 0.016)
+    call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.85)
+    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.190, 0.200, 0.025)
+    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.190, 0.019, 0.019)
+    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.208, 0.015, 0.015)
+    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.208, 0.039, 0.012)
+    call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
+    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.208, 0.015, 0.015)
+    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.190, 0.017, 0.017)
+    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.190, 0.085, 0.016)
+    call BlzFrameSetScale(FRAME_AutoBuyText, 0.90)
     loop
         exitwhen i >= 7
-        call WUI_Place(FRAME_ShopSection[i], 0.088, 0.478 - I2R(i) * 0.030, 0.108, 0.025)
-        call BlzFrameSetScale(FRAME_ShopSection[i], 0.80)
+        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.502, 0.098, 0.030)
         set i = i + 1
     endloop
     set i = 0
@@ -2513,45 +2530,68 @@ function WOS_LayoutShop takes nothing returns nothing
         exitwhen i >= 35
         set column = ModuloInteger(i, 7)
         set row = i / 7
-        set x = 0.179 + I2R(column) * 0.042
-        set y = 0.457 - I2R(row) * 0.045
-        call WUI_Place(FRAME_ShopItem[i], x, y, 0.031, 0.031)
-        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.022, 0.041, 0.008)
-        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.74)
+        set x = 0.068 + I2R(column) * 0.058
+        set y = 0.453 - I2R(row) * 0.053
+        call WUI_Place(FRAME_ShopItem[i], x, y, 0.040, 0.040)
+        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.027, 0.047, 0.010)
+        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
         set i = i + 1
     endloop
     set i = 36
     loop
         exitwhen i >= 43
-        set x = 0.495 + I2R(ModuloInteger(i - 36, 3)) * 0.047
-        set y = 0.427
+        set x = 0.495 + I2R(ModuloInteger(i - 36, 3)) * 0.057
+        set y = 0.442
         if i >= 39 then
-            set y = 0.359
+            set y = 0.313
         endif
         if i == 42 then
-            set x = 0.554
-            set y = 0.472
+            set x = 0.552
+            set y = 0.377
         endif
-        call WUI_Place(FRAME_ShopItem[i], x, y, 0.030, 0.030)
-        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.020, 0.043, 0.008)
-        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.74)
+        call WUI_Place(FRAME_ShopItem[i], x, y, 0.036, 0.036)
+        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.026, 0.046, 0.010)
+        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
         set i = i + 1
     endloop
-    call WUI_Place(FRAME_ShopCraftUpgradeScroll, 0.630, 0.422, 0.007, 0.055)
-    call WUI_Place(FRAME_ShopCraftComponentScroll, 0.630, 0.353, 0.007, 0.055)
-    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, 0.550, 0.427, 0.160, 0.066)
-    call WUI_Place(FRAME_ShopCraftComponentWheelArea, 0.550, 0.355, 0.160, 0.066)
+    call BlzFrameSetAllPoints(FRAME_ShopItemCraftSprite, FRAME_ShopItem[42])
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set x = 0.495 + I2R(ModuloInteger(i, 3)) * 0.057
+        set y = 0.424
+        set joinY = 0.405
+        set distance = 0.010
+        if i >= 3 then
+            set y = 0.331
+            set joinY = 0.347
+            set distance = 0.012
+        endif
+        set branch = i * 3
+        call WUI_Place(FRAME_ShopRecipeLine[branch], x, (y + joinY) * 0.50, 0.0008, RAbsBJ(y - joinY))
+        call WUI_Place(FRAME_ShopRecipeLine[branch + 1], (x + 0.552) * 0.50, joinY, RMaxBJ(0.0008, RAbsBJ(x - 0.552)), 0.0008)
+        if i < 3 then
+            call WUI_Place(FRAME_ShopRecipeLine[branch + 2], 0.552, joinY - distance * 0.50, 0.0008, distance)
+        else
+            call WUI_Place(FRAME_ShopRecipeLine[branch + 2], 0.552, joinY + distance * 0.50, 0.0008, distance)
+        endif
+        set i = i + 1
+    endloop
+    call WUI_Place(FRAME_ShopCraftUpgradeScroll, 0.637, 0.431, 0.007, 0.047)
+    call WUI_Place(FRAME_ShopCraftComponentScroll, 0.637, 0.324, 0.007, 0.047)
+    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, 0.550, 0.439, 0.160, 0.060)
+    call WUI_Place(FRAME_ShopCraftComponentWheelArea, 0.550, 0.315, 0.160, 0.060)
     set i = 0
     loop
         exitwhen i >= 8
-        set x = 0.679 + I2R(ModuloInteger(i, 2)) * 0.051
-        set y = 0.452 - I2R(i / 2) * 0.055
+        set x = 0.684 + I2R(ModuloInteger(i, 2)) * 0.052
+        set y = 0.429 - I2R(i / 2) * 0.061
         if i >= 6 then
-            set y = 0.267
+            set y = 0.223
         endif
-        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.035, 0.035)
-        call WUI_Place(FRAME_ShopItemInventorySlotCost[i], x, y - 0.024, 0.049, 0.009)
-        call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.74)
+        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.037, 0.037)
+        call WUI_Place(FRAME_ShopItemInventorySlotCost[i], x, y - 0.026, 0.049, 0.010)
+        call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.88)
         set i = i + 1
     endloop
 endfunction
@@ -2645,6 +2685,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     local real x = 0.015
     local real y = -0.05
     local framehandle border
+    local integer line = 0
     set FRAME_ShopMAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call WUI_RegisterModal(FRAME_ShopMAIN)
     call WUI_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
@@ -2747,18 +2788,31 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetVisible(FRAME_ShopSearchNext, false)
     call BlzFrameSetVisible(FRAME_ShopSearchNextIcon, false)
     call BlzFrameSetVisible(FRAME_ShopSearchPageText, false)
-    set FRAME_ShopItemCraftSprite = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemCraft, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemCraft, FRAMEPOINT_CENTER, 0.0, 0.0)
-    call BlzFrameSetSize(FRAME_ShopItemCraftSprite, 1., 1.)
-    call BlzFrameSetScale(FRAME_ShopItemCraftSprite, 1.)
-    call BlzFrameSetModel(FRAME_ShopItemCraftSprite, "Pick\\selecter5.mdx", 0)
+    set FRAME_ShopItemCraftSprite = WUI_Border("ShopSelectedRecipe", FRAME_ShopItemCraft)
+    call BlzFrameSetLevel(FRAME_ShopItemCraftSprite, 25)
     call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, false)
-    set FRAME_ShopItemCraftSprite2 = BlzCreateFrameByType("SPRITE", "justAName", FRAME_ShopItemInventory, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(FRAME_ShopItemCraftSprite2, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemInventory, FRAMEPOINT_CENTER, -0.025, 0.08)
-    call BlzFrameSetSize(FRAME_ShopItemCraftSprite2, 1., 1.)
-    call BlzFrameSetScale(FRAME_ShopItemCraftSprite2, 1.)
-    call BlzFrameSetModel(FRAME_ShopItemCraftSprite2, "Pick\\selecter5.mdx", 0)
+    set FRAME_ShopItemCraftSprite2 = WUI_Border("ShopSelectedInventory", FRAME_ShopItemInventory)
+    call BlzFrameSetLevel(FRAME_ShopItemCraftSprite2, 25)
     call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
+
+    set border = WUI_OrnateBorder("ShopMainMetal", FRAME_ShopMAIN, 0.027)
+    set border = WUI_OrnateBorder("ShopCatalogueMetal", FRAME_ShopItemList, 0.020)
+    set border = WUI_OrnateBorder("ShopRecipeMetal", FRAME_ShopItemCraft, 0.021)
+    set border = WUI_OrnateBorder("ShopDescriptionMetal", FRAME_ShopItemDescription, 0.018)
+    set border = WUI_OrnateBorder("ShopInventoryMetal", FRAME_ShopItemInventory, 0.021)
+    set FRAME_ShopRecipeTitle = BlzCreateFrameByType("TEXT", "ShopRecipeTitle", FRAME_ShopItemCraft, "", 0)
+    call BlzFrameSetTextAlignment(FRAME_ShopRecipeTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(FRAME_ShopRecipeTitle, 0.82)
+    call BlzFrameSetText(FRAME_ShopRecipeTitle, WUI_GOLD + "ITEM TREE|r")
+    loop
+        exitwhen line >= 18
+        set FRAME_ShopRecipeLine[line] = BlzCreateFrameByType("BACKDROP", "ShopRecipeEdge", FRAME_ShopItemCraft, "", line)
+        call BlzFrameSetTexture(FRAME_ShopRecipeLine[line], "UI\\WOS\\meter.tga", 0, true)
+        call BlzFrameSetLevel(FRAME_ShopRecipeLine[line], 2)
+        call BlzFrameSetEnable(FRAME_ShopRecipeLine[line], false)
+        call BlzFrameSetVisible(FRAME_ShopRecipeLine[line], false)
+        set line = line + 1
+    endloop
 
 endfunction
 
@@ -2775,25 +2829,24 @@ function WOS_CreateShopTabs takes nothing returns nothing
     set i = 0
     loop
         exitwhen i == 7
-        set FRAME_ShopSection[i] = BlzCreateFrame("ScriptDialogButton", FRAME_ShopMAIN, 0, 9100 + i)
-        call WUI_StyleButton(FRAME_ShopSection[i])
+        set FRAME_ShopSection[i] = WUI_TextButton("ShopCategory" + I2S(i), FRAME_ShopMAIN, "", 0.098, 0.030)
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSection[i]), 0, 100 + i)
         call BlzFrameSetAbsPoint(FRAME_ShopSection[i], FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(FRAME_ShopSection[i], 0.11, 0.03)
         if i == 0 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Recommended")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Recommended")
         elseif i == 1 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Base")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Base")
         elseif i == 2 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Strength")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Strength")
         elseif i == 3 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Agility")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Agility")
         elseif i == 4 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Intelligence")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Intelligence")
         elseif i == 5 then
-            call BlzFrameSetText(FRAME_ShopSection[i], "Universal")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Universal")
         else
-            call BlzFrameSetText(FRAME_ShopSection[i], "Defensive")
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "Defensive")
         endif
         call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSection[i], FRAMEEVENT_CONTROL_CLICK)
         set i = i + 1
@@ -2886,12 +2939,7 @@ function WOS_CreateShopRecipes takes nothing returns nothing
         else
             call BlzFrameSetEnable(FRAME_ShopItem[i], false)
         endif
-        if i == 42 then
-            set FRAME_ShopItemCraftGoldSlot = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemCraft, "", 0)
-            call BlzFrameSetTexture(FRAME_ShopItemCraftGoldSlot, "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder2", 0, false)
-            call BlzFrameSetAllPoints(FRAME_ShopItemCraftGoldSlot, FRAME_ShopItem[42])
-            call BlzFrameSetLevel(FRAME_ShopItemCraftGoldSlot, 5)
-        else
+        if i != 42 then
             call BlzFrameSetVisible(FRAME_ShopItemBack[i], false)
         endif
         call BlzFrameSetAlpha(FRAME_ShopItemBack[i],255)

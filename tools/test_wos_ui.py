@@ -6,7 +6,7 @@ import tempfile
 import struct
 import unittest
 from test_crocodile import JassState
-from install_wos_ui_assets import install_ui, ASSET_NAMES
+from install_wos_ui_assets import install_ui, ASSET_NAMES, FRAME_RESOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -90,6 +90,10 @@ class DeferredUIStartup(unittest.TestCase):
             'BlzGetOriginFrame': lambda origin, _: 'origin:' + origin,
             'BlzCreateFrameByType': self.create_frame,
             'BlzCreateFrame': lambda name, parent, *_: self.create_frame('FRAME', name, parent),
+            'BlzCreateSimpleFrame': lambda name, parent, *_: self.create_frame('SIMPLEFRAME', name, parent),
+            'BlzLoadTOCFile': lambda *_: True,
+            'SaveFrameHandle': lambda table, key, child, frame: table.update({(key, child): frame}),
+            'LoadFrameHandle': lambda table, key, child: table.get((key, child)),
             'BlzFrameGetChildrenCount': lambda _: self.children,
             'BlzFrameGetChild': self.child,
             'BlzFrameSetVisible': self.visibility,
@@ -147,11 +151,11 @@ class DeferredUIStartup(unittest.TestCase):
         self.timers[0][3]()
         self.assertEqual([('FRAME:WOSIndependentRoot', True)] * 2, observed)
         self.assertEqual(0, self.vm.g['WUI_ReadyCount'])
-        self.assertEqual(2, len(self.destroyed))
+        self.assertEqual(3, len(self.destroyed))
         # Late owners execute once without replaying the initial queue.
         self.vm.run('WUI_OnReady', (callback,))
         self.assertEqual(3, len(observed))
-        self.assertEqual(3, len(self.destroyed))
+        self.assertEqual(4, len(self.destroyed))
 
     def test_native_strings_and_short_console_tree_are_safe(self):
         self.vm.run('WUI_Bootstrap')
@@ -287,7 +291,7 @@ class SharedImports(unittest.TestCase):
             imp.write_bytes(struct.pack('<II', 1, 1) + old_entry)
             install_ui(scenario)
             first = imp.read_bytes()
-            self.assertEqual(2 + len(ASSET_NAMES), struct.unpack_from('<II', first)[1])
+            self.assertEqual(2 + len(ASSET_NAMES) + len(FRAME_RESOURCES), struct.unpack_from('<II', first)[1])
             self.assertEqual(old_entry, first[8:8 + len(old_entry)])
             install_ui(scenario)
             self.assertEqual(first, imp.read_bytes())

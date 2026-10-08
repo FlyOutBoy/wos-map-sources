@@ -1,10 +1,74 @@
 # Resume UI redesign
 
+## Checkpoint 14 — active correction from actual game screenshots
+
+User screenshots confirm checkpoint 13 loads, but expose blocked mode/world clicks,
+transparent HUD chassis, oversized native inventory art, missing gold icon, pick
+layout regressions and crooked shop alignment. New steering SUPERSEDES DISBTN
+placeholders: all seven own positions remain, unlearned/absent positions are EMPTY;
+keep actual native learned buttons. Restore pick F/G upper row, QWERT lower row,
+name button and centered difficulty using pre-redesign backup. STR/AGI/INT vertical,
+selected stat card half-width; six native items uniform and bounded. Shop categories
+move into lower shop interface; recipe relations stay functional. Passive frame
+hit testing/root sizing is first priority, then matching background/border geometry
+(+~10% outer frame), menu drawer below top openers. Latest extra screenshot confirms
+native item icons overlap neighbors and gold has only number, no icon.
+
+No checkpoint 14 changes integrated yet. Read WOSUI.j, Starts.j,
+DefaultArmorChangeStable_Copy.j, ShowCD.j, WoS_Pick_Init.j, WoS_Shop_Init.j.
+Compare 7b3aca7 pick creation coordinates and saved pre-redesign source backups.
+Keep native family/normal family separate, deferred startup and enemy privacy.
+Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptance.
+
 Read PLAN.md, relevant PROGRESS.md/ARCHITECTURE.md and factual Git state first.
 REQUEST.md is the full user specification; WORKFLOW.md is the required staged
 workflow. Source and native map evidence take precedence over these notes.
 
 ## Current boundary and exact next action
+
+Checkpoint 13 source changes and guarded MAIN integration are complete.
+Latest user screenshots confirm checkpoint 12 game entry, hidden console and
+working fills/icons. Remaining visual defects prompted this new checkpoint:
+mode dim square removed; seven larger shop tabs in a horizontal top row; catalogue
+leftward with 0.040 icons; actual recipe edges update on selection/scroll; selected
+recipe/inventory borders follow actual handles; gold placeholder no longer covers
+the item; score backdrop removed; menu/stats/link/music separated at Y .548.
+Built-in imagegen produced transparent ornate gold/metal source, preserved at
+assets/UI/WOS/source/ornate-frame.png. Eight cropped TGA slices are registered.
+Native FDF/TOC chassis is SIMPLEFRAME (below real buttons); normal ornament frames
+have empty centers, avoiding the FRAME-over-SIMPLEFRAME occlusion problem.
+Stock BlzHideOriginFrames(false) restores old bars after pick/draft: Systems1 now
+reapplies WUI_RestoreCompactNative on that transition, in game time only.
+NEW USER STEERING: show all seven Q/W/E/R/T/F/G positions for own selected heroes
+even before learning. ShowCD now supplies passive DISBTN/empty placeholders and
+key labels, leaving learned native commands interactive; stock occupants of empty
+positions (including learn button) move offscreen. Own cooldowns remain native;
+enemy cooldown guard unchanged. 76 regression tests PASS, compile-only PASS
+(147612 total pjass lines). World Editor/game were not running at last check.
+Real MAIN build PASS: 148574 total pjass lines, 106 enabled + header, 3 disabled.
+109 WTG/WCT identities/traversal PASS; 40 resources, 45 extracted entries match.
+LATEST MAP: _build/WoS_Test_2.w3x (final checkpoint 13 uses second slot).
+SHA256: 54d6a726d04a3b62997046b6f27dde145bca61d0eb66d2f6941012f476b83d15.
+Native source backup: backups/trigger-sync/2026-10-08_222121_122659/map-before-push.
+Compiled script backup: backups/main-map-build/20261008-222153-351.
+Texture/frame backups: backups/ui-redesign/assets/20261008-221504-116775 and
+backups/ui-redesign/frames/20261008-221504-126392. No WTG entries inserted.
+Game launched 22:18:08 with configured -editor/-loadfile, PID 23100. Log ends in
+catalogue scanning 22:18:11, responding: NO verified custom-map opening yet.
+NEXT: actual checkpoint 13 game appearance/input, all seven own slots before/
+after learning, mode background, shop tabs/search/recipe scrolling/crafting,
+top opener separation and native chassis layering. UI automation helper remains
+unavailable (kernel-assets OS error 3); no screenshot/input workaround permitted.
+One-off source migration script was removed after its asserted edits completed.
+Never launch compile-only empty-main artifact. Checkpoint evidence lives under
+_build/ui-redesign/checkpoint13-{integration-verification.json,full-main-pjass.txt,
+runtime.json}; archive/ contains actual checkpoint 13 packed bytes.
+
+Own hidden/disabled ability fallback was added after the initial build. Game PID
+23100 holds the earlier first slot; final hidden-ability correction is in second
+slot and has not been launched. Never overwrite a slot held by a running game.
+
+Historical checkpoint 12 integration evidence follows.
 
 Checkpoint 12 visual/native correction is implemented and integrated in MAIN.
 User screenshots confirm checkpoint 11 enters game, but stock console/blank bars/

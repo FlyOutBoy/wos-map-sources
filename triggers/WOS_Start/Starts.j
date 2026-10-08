@@ -313,23 +313,15 @@ endfunction
 function WOS_CreateModeSelector takes nothing returns nothing
     local integer i = 0
     local string caption
-    local framehandle shade
     local framehandle panel
     local framehandle title
     local trigger events = CreateTrigger()
     set WOS_ModeRoot = BlzCreateFrameByType("FRAME", "WOSModeSelector", WUI_GetRoot(), "", 0)
     call WUI_RegisterModal(WOS_ModeRoot)
-    call WUI_RegisterModal(WOS_ModeRoot)
     call BlzFrameSetLevel(WOS_ModeRoot, 30)
-    set shade = BlzCreateFrameByType("BUTTON", "WOSModeShade", WOS_ModeRoot, "", 0)
-    call WUI_Place(shade, 0.400, 0.300, 0.800, 0.600)
-    set panel = BlzCreateFrameByType("BACKDROP", "WOSModeDim", shade, "", 0)
-    call BlzFrameSetAllPoints(panel, shade)
-    call BlzFrameSetTexture(panel, "Textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(panel, 170)
-    call BlzFrameSetEnable(panel, false)
     set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
     call WUI_Place(panel, 0.400, 0.330, 0.270, 0.275)
+    set title = WUI_OrnateBorder("WOSModeMetal", panel, 0.032)
     set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
     call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)
     call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
@@ -359,7 +351,6 @@ function WOS_CreateModeSelector takes nothing returns nothing
         set i = i + 1
     endloop
     call TriggerAddAction(events, function WOS_ModeFrameClick)
-    set shade = null
     set panel = null
     set title = null
     set events = null

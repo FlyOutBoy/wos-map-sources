@@ -1,6 +1,7 @@
 library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI
 
-// Информационная панель способностей выбранного чужого героя.
+// Descriptions for selected heroes and seven passive placeholders for own heroes.
+// Learned available own commands remain native; enemy cooldowns remain private.
 //
 // Важные правила безопасности:
 // 1. Фреймы создаются синхронно для каждого pid, но изменяются только внутри
@@ -818,6 +819,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     local real remaining = 0.00
     local real progress = 0.00
     local string iconPath = null
+    local boolean ownHero = GetOwningPlayer(AHUI_SelectedHero[pid]) == Player(pid)
 
     if GetLocalPlayer() != Player(pid) then
         return
@@ -825,6 +827,14 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
 
     if abilityId == 0 then
         call AHUI_HideSlot(pid, slot)
+        call BlzFrameSetTexture(AHUI_Icon[index], "UI\\WOS\\disabled.tga", 0, true)
+        call BlzFrameSetAlpha(AHUI_Icon[index], 255)
+        call BlzFrameSetVisible(AHUI_Root[index], true)
+        call BlzFrameSetVisible(AHUI_Icon[index], true)
+        call BlzFrameSetVisible(AHUI_KeyText[index], true)
+        if ownHero then
+            call WUI_ShowNativeAbilitySlot(slot, false)
+        endif
         return
     endif
 
@@ -845,9 +855,23 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     call BlzFrameSetVisible(AHUI_Icon[index], true)
     call BlzFrameSetVisible(AHUI_KeyText[index], true)
 
+    if ownHero then
+        call WUI_ShowNativeAbilitySlot(slot, level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], Player(pid), abilityId))
+        // Learned own abilities stay real native commands: click, targeting,
+        // costs, cooldowns and orders remain handled by Warcraft itself.
+        if level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], Player(pid), abilityId) then
+            set AHUI_SlotVisible[index] = false
+            call BlzFrameSetVisible(AHUI_Icon[index], false)
+            call BlzFrameSetVisible(AHUI_CooldownFill[index], false)
+            call BlzFrameSetVisible(AHUI_CooldownText[index], false)
+            set iconPath = null
+            return
+        endif
+    endif
+
     // Неизученная или сейчас отсутствующая способность остаётся видимой как
     // DISBTN, но без выдуманного таймера.
-    if level <= 0 then
+    if level <= 0 or ownHero then
         set AHUI_CooldownPeak[index] = 0.00
         set AHUI_LastRemaining[index] = 0.00
         call BlzFrameSetAlpha(AHUI_Icon[index], 0)
@@ -1032,7 +1056,7 @@ private function AHUI_IsEligibleHero takes unit whichHero, integer viewerId retu
 
     // Чужой герой доступен для просмотра описаний независимо от alliance.
     // Право читать кулдауны проверяется отдельно в AHUI_CanReadCooldown.
-    set result = owner != Player(viewerId)
+    set result = true
 
 set owner = null
 return result

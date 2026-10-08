@@ -335,3 +335,71 @@
   menu overlaps stats/music/link openers. User requests horizontal top shop menu,
   catalogue left, drawn recipe inheritance, closer ornate supplied concept.
 - Next checkpoint 13 owns these changes. This supersedes pending map/menu question.
+
+## Checkpoint 13 source completion - 2026-10-08
+
+- Removed the 4:3-only mode shade and duplicate modal registration. Mode panel and
+  all four buttons use the generated ornament; transitions remain host-only.
+- Shop seven categories use code-owned skinned buttons, hover/selected states and
+  one horizontal top row. Catalogue shifts left, icons return to .040, prices and
+  item descriptions are enlarged. Search/paging/autobuy/inventory handlers kept.
+- Selected item is the center tree node; actual upgrades above/components below.
+  Eighteen passive edge segments update for actual visible recipes/scroll pages.
+  Removed old-coordinate sprites and the gold placeholder masking the real icon.
+- Built-in imagegen created alpha ornate-frame.png; eight independently anchored
+  crops preserve corner proportions. Applied to mode, shop, hero pick and HUD.
+  Opaque HUD surface uses a SIMPLEFRAME FDF beneath native commands/items; normal
+  FRAME ornament centers are transparent, including minimap/inventory.
+- Removed flat score box. Menu/career stats/link/music at .653/.691/.729/.767,
+  common Y .548. Found stock BlzHideOriginFrames(false) restoration in hero pick;
+  WUI_RestoreCompactNative now reapplies compact native chrome after returning.
+- User steering: seven own QWERTFG slots always render, passive dark unlearned
+  icons/empty slots with hotkeys. Learned own commands stay native and clickable;
+  empty slot's old native occupant/learn button moves offscreen. Enemy cooldown
+  reads remain guarded, own cooldowns rendered by engine.
+- 75 regression tests PASS; full-source compile-only PASS, 147611 total lines.
+  Alpha checked: generated source RGBA 1254x1254, transparent center; all eight
+  crops RGBA. Native integration pending at this checkpoint boundary.
+
+- Integration completed: guarded push updated ten sources, inserted zero WTG
+  entries; source backup 2026-10-08_221446_959411. MAIN build PASS, 148573 pjass
+  lines, 106 enabled + header, 3 disabled. Packed 6371 files into WoS_Test.w3x.
+  All 109 source identities/traversal, 40 resources and 45 packed byte checks PASS.
+  SHA256 faf77ee5c87e9715934677290d22616fa0093961d5e905781735e501a288efb8.
+  Script backup backups/main-map-build/20261008-221535-456. Launched configured
+  -editor/-loadfile test of actual MAIN at 22:18:08, PID 23100. Log ends in catalogue
+  scanning 22:18:11, process responding; NO verified custom-map opening yet.
+  Visual verification pending; native automation unavailable. One-off migration removed.
+
+- Final own-hidden-ability fallback: hidden/disabled learned abilities also retain
+  their DISBTN instead of exposing the native learn/utility occupant. All 76 tests
+  PASS; affected ally/own/privacy tests (11) PASS after final test cleanup.
+  Final MAIN build: 148574 pjass lines, latest _build/WoS_Test_2.w3x (first slot
+  held by PID 23100), SHA256
+  54d6a726d04a3b62997046b6f27dde145bca61d0eb66d2f6941012f476b83d15.
+  109 identities/traversal, 40 resources and 45 latest packed byte checks PASS.
+  Final source backup 2026-10-08_222121_122659, compiled script backup
+  20261008-222153-351. The final hidden-ability change has not been launched;
+  earlier first-slot game log still ends in catalogue scanning. Do not overwrite
+  an occupied slot or claim visual success from a responding process.
+
+## Checkpoint 14 — active correction from actual game screenshots
+
+User screenshots confirm checkpoint 13 loads, but expose blocked mode/world clicks,
+transparent HUD chassis, oversized native inventory art, missing gold icon, pick
+layout regressions and crooked shop alignment. New steering SUPERSEDES DISBTN
+placeholders: all seven own positions remain, unlearned/absent positions are EMPTY;
+keep actual native learned buttons. Restore pick F/G upper row, QWERT lower row,
+name button and centered difficulty using pre-redesign backup. STR/AGI/INT vertical,
+selected stat card half-width; six native items uniform and bounded. Shop categories
+move into lower shop interface; recipe relations stay functional. Passive frame
+hit testing/root sizing is first priority, then matching background/border geometry
+(+~10% outer frame), menu drawer below top openers. Latest extra screenshot confirms
+native item icons overlap neighbors and gold has only number, no icon.
+
+No checkpoint 14 changes integrated yet. Read WOSUI.j, Starts.j,
+DefaultArmorChangeStable_Copy.j, ShowCD.j, WoS_Pick_Init.j, WoS_Shop_Init.j.
+Compare 7b3aca7 pick creation coordinates and saved pre-redesign source backups.
+Keep native family/normal family separate, deferred startup and enemy privacy.
+Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptance.
+

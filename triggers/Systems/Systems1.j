@@ -94,14 +94,18 @@ endfunction
     if GetLocalPlayer() == p then
     call BlzHideOriginFrames(b)
     endif
-    if b == false then 
-    
+    if b == false and GetLocalPlayer() == p then
+        call WUI_RestoreCompactNative.evaluate()
     endif
 endfunction
 function HideUIExceptTopMenu takes player p, boolean b returns nothing
     if GetLocalPlayer() == p then
         // Скрывает или возвращает стандартный интерфейс.
         call BlzHideOriginFrames(b)
+
+        if not b then
+            call WUI_RestoreCompactNative.evaluate()
+        endif
 
         // Верхняя панель с кнопками меню остаётся видимой.
         call BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarMenuButton", 0), true)

@@ -34,7 +34,22 @@ def build():
             factor = .90 + .16*(1-y/15)
             draw.line((0,y,255,y),fill=(*[min(255,round(c*factor)) for c in color],255))
         image.save(OUT/(name+'.tga'))
-    print('Prepared 13 Warcraft UI textures:',OUT)
+    # Slice the generated ornament without repainting its gold/metal details.
+    # Corners keep their aspect ratio. Uniform rails stretch separately.
+    ornament = Image.open(OUT/'source/ornate-frame.png').convert('RGBA')
+    w, h = ornament.size
+    boxes = {
+        'ornate-tl': (0,0,w//4,h//4), 'ornate-tr': (w*3//4,0,w,h//4),
+        'ornate-bl': (0,h*3//4,w//4,h), 'ornate-br': (w*3//4,h*3//4,w,h),
+        'ornate-top': (w*3//10,h*5//100,w*4//10,h*9//100),
+        'ornate-bottom': (w*3//10,h*89//100,w*4//10,h*93//100),
+        'ornate-left': (w*3//100,h*3//10,w*7//100,h*4//10),
+        'ornate-right': (w*93//100,h*3//10,w*97//100,h*4//10),
+    }
+    for name, box in boxes.items():
+        size = (256,256) if name[-2:] in ('tl','tr','bl','br') else ((128,32) if name.endswith(('top','bottom')) else (32,128))
+        ornament.crop(box).resize(size,Image.Resampling.LANCZOS).save(OUT/(name+'.tga'))
+    print('Prepared 21 Warcraft UI textures:',OUT)
 
 if __name__ == '__main__':
     build()

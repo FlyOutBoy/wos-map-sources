@@ -146,8 +146,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 71903,
-      "sha256": "05fc4e38e064b12a2cfd0dbb7845f944e029fb369f6cf9df67bebcf91b887436",
+      "source_bytes": 73185,
+      "sha256": "a87e765995c0fac6c7dca7a74a92ed9f076c00fe3d185c319242f83b618c6ccc",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -255,7 +255,7 @@
       "run_on_map_init": false,
       "path": "WOS_Start/UI_CAREER.j",
       "source_bytes": 47611,
-      "sha256": "e982aed6fdc6fab8c94e72f89128f47c8daca63d3a4412ebe62059c95d1363ce",
+      "sha256": "1be511c5a581a22b3eb91439b11aef8dab43c321c9346525e4a590922c17c7b3",
       "declarations": {
         "libraries": [
           "WosCareerStats"
@@ -297,8 +297,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16540,
-      "sha256": "de0b9df8f054ddfdbd08b122498f6a3019ee782cd1d4d314e7e5b6c9029b6a6c",
+      "source_bytes": 16553,
+      "sha256": "18516b1ea74862e6693ab1b1ca283f9cc79d7cc9f57c60dc5d6e0327530acb96",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -396,7 +396,7 @@
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
       "source_bytes": 60844,
-      "sha256": "de40c68e6a59c8840a52d747df20f409c5ecc9f434ec1e2b6129402e6d72835a",
+      "sha256": "4841c5242758df62fee8c87497b1e92db75d5e283fcd8f85e7e7114550372c2e",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -592,8 +592,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 125977,
-      "sha256": "420788401342e79fc3911f6966d6e12bae814892a4661a4ce0b7b0b6803d5bef",
+      "source_bytes": 127304,
+      "sha256": "d54b0f5d102265f34a09deddb28287d5829faf9e7d9ee6ef2db179750f73a7b6",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -617,8 +617,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 239793,
-      "sha256": "f54c1a99488215cddcad36895643df7fa980106bbced6243c6180052ec884ebf",
+      "source_bytes": 240025,
+      "sha256": "bab73b032ca55a1f8fab66073b8337df35a6e5cacd68214e5417de192f827fac",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -642,8 +642,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 22055,
-      "sha256": "e6fb673f5ec2efd75caf8edba4eaf6caa628fdf04c9318aa369846ea64e2b0bc",
+      "source_bytes": 21612,
+      "sha256": "56253bd31696da79eb679d515468bfb4c355dc12e7fab3c8dfb43de9f0a98009",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -742,8 +742,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 88101,
-      "sha256": "f97046ee0a71a97600a77e83c51d20710ca6fd53d23261ef9ae1cfd5764011dd",
+      "source_bytes": 87889,
+      "sha256": "90b668d5c56292f7a59dd6dc130664c0376ed110951b1e360f81335624273274",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -853,8 +853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 37599,
-      "sha256": "1f8e520d0eedb39faf5eb5120ea8beeaded43531745a59d33504f198c1b1f54b",
+      "source_bytes": 46398,
+      "sha256": "514b48b11d6c693dd449d8c826ba43eced03e22a7833f6cd30d1cdf5a2fc2470",
       "declarations": {
         "libraries": [
           "WOSUI"
@@ -1090,8 +1090,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 141721,
-      "sha256": "e257151657639261b6141112d9c843efb287e00dbf319dbbe01d9a69d419b047",
+      "source_bytes": 141884,
+      "sha256": "7fb3f624b17c25a4c57613cc4def181c9e41e86944e582bc79f1bcb0eb5cd6cd",
       "declarations": {
         "libraries": [
           "GearSystems"

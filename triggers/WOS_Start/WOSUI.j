@@ -55,6 +55,8 @@ globals
     private timer WUI_NativeTimer = CreateTimer()
     private boolean WUI_NativeReady = false
     private hashtable WUI_Fills = InitHashtable()
+    private hashtable WUI_ButtonStyle = InitHashtable()
+    private trigger WUI_ButtonEvents = null
     constant real WUI_HUD_Y = 0.044
     constant real WUI_COMMAND_X = 0.354
     constant real WUI_COMMAND_STEP = 0.040
@@ -124,6 +126,67 @@ function WUI_Border takes string name, framehandle owner returns framehandle
     call BlzFrameSetAllPoints(edge, owner)
     call BlzFrameSetTexture(edge, WUI_BORDER_TEXTURE, 0, true)
     call BlzFrameSetEnable(edge, false)
+    return edge
+endfunction
+
+// Eight independently anchored slices keep the generated metal corners square.
+// Decorations are passive normal frames; never reparent native SIMPLEFRAMEs.
+function WUI_OrnateBorder takes string name, framehandle owner, real corner returns framehandle
+    local framehandle edge = BlzCreateFrameByType("FRAME", name, owner, "", 0)
+    local framehandle piece
+    local integer i = 0
+    local framepointtype anchor
+    local string texture
+    call BlzFrameSetAllPoints(edge, owner)
+    call BlzFrameSetEnable(edge, false)
+    loop
+        exitwhen i >= 4
+        if i == 0 then
+            set anchor = FRAMEPOINT_TOPLEFT
+            set texture = "tl"
+        elseif i == 1 then
+            set anchor = FRAMEPOINT_TOPRIGHT
+            set texture = "tr"
+        elseif i == 2 then
+            set anchor = FRAMEPOINT_BOTTOMLEFT
+            set texture = "bl"
+        else
+            set anchor = FRAMEPOINT_BOTTOMRIGHT
+            set texture = "br"
+        endif
+        set piece = BlzCreateFrameByType("BACKDROP", name + texture, edge, "", i)
+        call BlzFrameSetPoint(piece, anchor, edge, anchor, 0.00, 0.00)
+        call BlzFrameSetSize(piece, corner, corner)
+        call BlzFrameSetTexture(piece, "UI\\WOS\\ornate-" + texture + ".tga", 0, true)
+        call BlzFrameSetEnable(piece, false)
+        set i = i + 1
+    endloop
+    set piece = BlzCreateFrameByType("BACKDROP", name + "Top", edge, "", 0)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_TOPLEFT, edge, FRAMEPOINT_TOPLEFT, corner, -corner * 0.20)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_TOPRIGHT, edge, FRAMEPOINT_TOPRIGHT, -corner, -corner * 0.20)
+    call BlzFrameSetSize(piece, 0.00, corner * 0.16)
+    call BlzFrameSetTexture(piece, "UI\\WOS\\ornate-top.tga", 0, true)
+    call BlzFrameSetEnable(piece, false)
+    set piece = BlzCreateFrameByType("BACKDROP", name + "Bottom", edge, "", 0)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMLEFT, edge, FRAMEPOINT_BOTTOMLEFT, corner, corner * 0.28)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMRIGHT, edge, FRAMEPOINT_BOTTOMRIGHT, -corner, corner * 0.28)
+    call BlzFrameSetSize(piece, 0.00, corner * 0.16)
+    call BlzFrameSetTexture(piece, "UI\\WOS\\ornate-bottom.tga", 0, true)
+    call BlzFrameSetEnable(piece, false)
+    set piece = BlzCreateFrameByType("BACKDROP", name + "Left", edge, "", 0)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_TOPLEFT, edge, FRAMEPOINT_TOPLEFT, corner * 0.12, -corner)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMLEFT, edge, FRAMEPOINT_BOTTOMLEFT, corner * 0.12, corner)
+    call BlzFrameSetSize(piece, corner * 0.16, 0.00)
+    call BlzFrameSetTexture(piece, "UI\\WOS\\ornate-left.tga", 0, true)
+    call BlzFrameSetEnable(piece, false)
+    set piece = BlzCreateFrameByType("BACKDROP", name + "Right", edge, "", 0)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_TOPRIGHT, edge, FRAMEPOINT_TOPRIGHT, -corner * 0.12, -corner)
+    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMRIGHT, edge, FRAMEPOINT_BOTTOMRIGHT, -corner * 0.12, corner)
+    call BlzFrameSetSize(piece, corner * 0.16, 0.00)
+    call BlzFrameSetTexture(piece, "UI\\WOS\\ornate-right.tga", 0, true)
+    call BlzFrameSetEnable(piece, false)
+    set piece = null
+    set anchor = null
     return edge
 endfunction
 
@@ -537,6 +600,8 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     // Do not move a SIMPLEFRAME into the normal FRAME hierarchy.
     call BlzFrameSetParent(WUI_CommandBar, WUI_SimpleRoot)
     call BlzFrameSetParent(WUI_NativeDetailParent, WUI_SimpleRoot)
+    call BlzFrameSetLevel(WUI_CommandBar, 2)
+    call BlzFrameSetLevel(WUI_NativeDetailParent, 2)
     if systemBar != null then
         call BlzFrameSetParent(systemBar, WUI_SimpleRoot)
     endif
@@ -613,6 +678,46 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     set systemBar = null
 endfunction
 
+function WUI_SetButtonCaption takes framehandle control, string caption returns nothing
+    call BlzFrameSetText(LoadFrameHandle(WUI_ButtonStyle, GetHandleId(control), 1), WUI_TEXT + caption + "|r")
+endfunction
+
+// Placeholder overlays never intercept orders. Empty/unlearned logical slots
+// move the native occupant out of the row (including the stock learn button).
+function WUI_ShowNativeAbilitySlot takes integer slot, boolean visible returns nothing
+    if not WUI_CompactCommands or slot < 0 or slot >= 7 then
+        return
+    endif
+    if visible then
+        call WUI_Place(WUI_Command[WUI_CommandSlot(slot)], WUI_COMMAND_X + I2R(slot) * WUI_COMMAND_STEP, WUI_HUD_Y, WUI_ICON_SIZE, WUI_ICON_SIZE)
+    else
+        call WUI_Place(WUI_Command[WUI_CommandSlot(slot)], -0.20, -0.20, WUI_ICON_SIZE, WUI_ICON_SIZE)
+    endif
+endfunction
+
+function WUI_SetButtonSelected takes framehandle control, boolean selected returns nothing
+    local integer key = GetHandleId(control)
+    call SaveBoolean(WUI_ButtonStyle, key, 2, selected)
+    if selected then
+        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), "UI\\WOS\\selected.tga", 0, true)
+    else
+        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), "UI\\WOS\\button.tga", 0, true)
+    endif
+endfunction
+
+private function WUI_ButtonHover takes nothing returns nothing
+    local framehandle control = BlzGetTriggerFrame()
+    local integer key = GetHandleId(control)
+    if GetLocalPlayer() == GetTriggerPlayer() then
+        if BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_ENTER then
+            call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), "UI\\WOS\\hover.tga", 0, true)
+        else
+            call WUI_SetButtonSelected(control, LoadBoolean(WUI_ButtonStyle, key, 2))
+        endif
+    endif
+    set control = null
+endfunction
+
 function WUI_TextButton takes string name, framehandle parent, string caption, real width, real height returns framehandle
     local framehandle control = BlzCreateFrameByType("BUTTON", name, parent, "", 0)
     local framehandle back = BlzCreateFrameByType("BACKDROP", name + "Back", control, "", 0)
@@ -626,9 +731,50 @@ function WUI_TextButton takes string name, framehandle parent, string caption, r
     call BlzFrameSetScale(text, 0.90)
     call BlzFrameSetText(text, WUI_TEXT + caption + "|r")
     call BlzFrameSetEnable(text, false)
+    call SaveFrameHandle(WUI_ButtonStyle, GetHandleId(control), 0, back)
+    call SaveFrameHandle(WUI_ButtonStyle, GetHandleId(control), 1, text)
+    if WUI_ButtonEvents == null then
+        set WUI_ButtonEvents = CreateTrigger()
+        call TriggerAddAction(WUI_ButtonEvents, function WUI_ButtonHover)
+    endif
+    call BlzTriggerRegisterFrameEvent(WUI_ButtonEvents, control, FRAMEEVENT_MOUSE_ENTER)
+    call BlzTriggerRegisterFrameEvent(WUI_ButtonEvents, control, FRAMEEVENT_MOUSE_LEAVE)
+    set back = WUI_OrnateBorder(name + "Metal", control, height * 0.48)
     set back = null
     set text = null
     return control
+endfunction
+
+private function WUI_CreateHUDChrome takes nothing returns nothing
+    local framehandle panel = BlzCreateFrameByType("FRAME", "WOSHUDSurface", WUI_Root, "", 0)
+    local framehandle edge
+    local framehandle nativeBack
+    // Normal FRAMEs draw over native SIMPLEFRAME buttons. Their ornament center
+    // must remain empty; an opaque chassis is created in the native family.
+    if WUI_SimpleRoot != null and BlzLoadTOCFile("UI\\WOS\\WOSHUD.toc") then
+        set nativeBack = BlzCreateSimpleFrame("WOSNativeHUDSurface", WUI_SimpleRoot, 9050)
+        call WUI_Place(nativeBack, 0.474, 0.054, 0.640, 0.104)
+        call BlzFrameSetLevel(nativeBack, 0)
+        call BlzFrameSetEnable(nativeBack, false)
+    endif
+    call WUI_Place(panel, 0.474, 0.054, 0.640, 0.104)
+    call BlzFrameSetEnable(panel, false)
+    set edge = WUI_OrnateBorder("WOSHUDMetal", panel, 0.024)
+    set panel = BlzCreateFrameByType("FRAME", "WOSMinimapSurface", WUI_Root, "", 0)
+    call WUI_Place(panel, 0.074, 0.074, 0.148, 0.148)
+    call BlzFrameSetEnable(panel, false)
+    set edge = WUI_OrnateBorder("WOSMinimapMetal", panel, 0.025)
+    set panel = BlzCreateFrameByType("FRAME", "WOSInventorySurface", WUI_Root, "", 0)
+    call WUI_Place(panel, 0.660, 0.049, 0.090, 0.082)
+    call BlzFrameSetEnable(panel, false)
+    set edge = WUI_OrnateBorder("WOSInventoryMetal", panel, 0.012)
+    set panel = WUI_Panel("WOSToolbarSurface", WUI_Root, 0.088, 0.082)
+    call WUI_Place(panel, 0.746, 0.049, 0.088, 0.082)
+    call BlzFrameSetEnable(panel, false)
+    set edge = WUI_OrnateBorder("WOSToolbarMetal", panel, 0.012)
+    set panel = null
+    set edge = null
+    set nativeBack = null
 endfunction
 
 private function WUI_TryNativeLayout takes nothing returns nothing
@@ -644,6 +790,35 @@ function WUI_StartNativeLayout takes nothing returns nothing
     if not WUI_NativeReady then
         call TimerStart(WUI_NativeTimer, 0.25, true, function WUI_TryNativeLayout)
     endif
+endfunction
+
+// Hero-pick/draft owners call BlzHideOriginFrames(false) when returning to play.
+// That engine call restores stock bars too; reapply the compact skin afterwards.
+function WUI_RestoreCompactNative takes nothing returns nothing
+    if not WUI_NativeReady then
+        return
+    endif
+    if WUI_Console != null then
+        call BlzFrameSetVisible(WUI_Console, false)
+    endif
+    if WUI_TopConsole != null then
+        call BlzFrameSetVisible(WUI_TopConsole, false)
+    endif
+    if WUI_BottomConsole != null then
+        call BlzFrameSetVisible(WUI_BottomConsole, false)
+    endif
+    if WUI_Resource != null then
+        call BlzFrameSetVisible(WUI_Resource, false)
+    endif
+    if WUI_HeroBar != null then
+        call BlzFrameSetVisible(WUI_HeroBar, false)
+    endif
+    if WUI_Portrait != null then
+        call BlzFrameSetVisible(WUI_Portrait, false)
+    endif
+    call BlzFrameSetVisible(WUI_CommandBar, true)
+    call BlzFrameSetVisible(WUI_NativeDetailParent, true)
+    call WUI_LayoutCommands(WUI_CompactCommands)
 endfunction
 
 private function WUI_CreateControls takes nothing returns nothing
@@ -678,7 +853,7 @@ private function WUI_CreateControls takes nothing returns nothing
         set i = i + 1
     endloop
     set WUI_Menu = BlzCreateFrameByType("BUTTON", "WOSCompactMenu", WUI_Root, "", 0)
-    call WUI_Place(WUI_Menu, 0.780, 0.573, 0.025, 0.025)
+    call WUI_Place(WUI_Menu, 0.653, 0.548, 0.025, 0.025)
     set back = WUI_Panel("WOSMenuBack", WUI_Menu, 0.025, 0.025)
     call BlzFrameSetAllPoints(back, WUI_Menu)
     set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)
@@ -690,7 +865,7 @@ private function WUI_CreateControls takes nothing returns nothing
     loop
         exitwhen i >= 3
         set back = BlzCreateFrameByType("BACKDROP", "WOSMenuLine", WUI_Menu, "", i)
-        call WUI_Place(back, 0.780, 0.577 - I2R(i) * 0.004, 0.013, 0.001)
+        call WUI_Place(back, 0.653, 0.552 - I2R(i) * 0.004, 0.013, 0.001)
         call BlzFrameSetTexture(back, "Textures\\white.blp", 0, true)
         call BlzFrameSetVertexColor(back, BlzConvertColor(255, 213, 184, 118))
         call BlzFrameSetEnable(back, false)
@@ -825,6 +1000,7 @@ private function WUI_Bootstrap takes nothing returns nothing
     call WUI_CreateTestHelp()
     call WUI_CreateControls()
     set WUI_Ready = true
+    call WUI_OnReady(function WUI_CreateHUDChrome)
     loop
         exitwhen index > WUI_ReadyCount
         call TriggerExecute(WUI_ReadyOwner[index])

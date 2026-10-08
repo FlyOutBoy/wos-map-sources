@@ -250,7 +250,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     set UNITSTAT_Root = BlzCreateFrameByType("FRAME", "WOSSelectedUnitHUD", WUI_GetRoot(), "", 0)
     set back = WUI_Panel("WOSSelectedUnitBack", UNITSTAT_Root, 0.178, 0.076)
     call WUI_Place(back, 0.242, 0.052, 0.178, 0.076)
-    set back = WUI_Border("WOSSelectedUnitEdge", back)
+    set back = WUI_OrnateBorder("WOSSelectedUnitEdge", back, 0.014)
     set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)
     call WUI_Place(UNITSTAT_Widget[6], 0.176, 0.051, 0.041, 0.041)
     set UNITSTAT_Portrait = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitIconTexture", UNITSTAT_Widget[6], "", 0)

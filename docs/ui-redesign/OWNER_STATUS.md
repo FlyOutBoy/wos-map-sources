@@ -2,8 +2,10 @@
 
 Implementation and native/game verification are distinct. Every row below is
 implemented in project code and compiled. MAIN integration PASS: 109 native
-sources, 29 imports and 33 packed entries verified. Warcraft runtime remains
-PENDING for every row; none is marked runtime DONE.
+sources, 40 resources and 45 packed entries verified in checkpoint 13. User
+screenshots confirm checkpoint 12 game entry, console hidden, textured bars and
+attribute icons rendered. Checkpoint 13 appearance/input still pending; no entire
+owner is marked runtime DONE. Exact next verification is recorded in RESUME.md.
 
 | Owner | Implemented boundary / remaining verification |
 |---|---|

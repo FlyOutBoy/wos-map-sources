@@ -5,12 +5,12 @@ import json
 import struct
 import sync_war3_triggers as sync
 from install_wos_ui_assets import ASSET_NAMES as UI_NAMES
-from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES
+from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES, FRAME_RESOURCES
 from install_team_ping_assets import ASSET_NAMES as PING_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 RESOURCES = [f'UI/WOS/{name}.tga' for name in sorted(UI_NAMES)] + [
-    f'UI/TeamPings/{name}.tga' for name in sorted(PING_NAMES)] + [CONSOLE_MODEL]
+    f'UI/TeamPings/{name}.tga' for name in sorted(PING_NAMES)] + [CONSOLE_MODEL] + FRAME_RESOURCES
 ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j', 'war3mapSkin.txt'] + RESOURCES
 
 

@@ -1,5 +1,48 @@
 # Existing UI architecture
 
+## Checkpoint 14 — active correction from actual game screenshots
+
+User screenshots confirm checkpoint 13 loads, but expose blocked mode/world clicks,
+transparent HUD chassis, oversized native inventory art, missing gold icon, pick
+layout regressions and crooked shop alignment. New steering SUPERSEDES DISBTN
+placeholders: all seven own positions remain, unlearned/absent positions are EMPTY;
+keep actual native learned buttons. Restore pick F/G upper row, QWERT lower row,
+name button and centered difficulty using pre-redesign backup. STR/AGI/INT vertical,
+selected stat card half-width; six native items uniform and bounded. Shop categories
+move into lower shop interface; recipe relations stay functional. Passive frame
+hit testing/root sizing is first priority, then matching background/border geometry
+(+~10% outer frame), menu drawer below top openers. Latest extra screenshot confirms
+native item icons overlap neighbors and gold has only number, no icon.
+
+No checkpoint 14 changes integrated yet. Read WOSUI.j, Starts.j,
+DefaultArmorChangeStable_Copy.j, ShowCD.j, WoS_Pick_Init.j, WoS_Shop_Init.j.
+Compare 7b3aca7 pick creation coordinates and saved pre-redesign source backups.
+Keep native family/normal family separate, deferred startup and enemy privacy.
+Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptance.
+
+## Checkpoint 13 presentation contracts
+
+- WUI_OrnateBorder is a passive normal FRAME with four square corners and four
+  independently anchored rails. Reuses eight generated alpha TGA crops; no local
+  allocation and no normal/native parent mixing. Windows retain their real owners.
+- WOSHUD.fdf/TOC creates the opaque bottom surface as native SIMPLEFRAME; normal
+  chassis/minimap/inventory frames contain only transparent ornaments. Commands
+  and native inventory parent use level 2; chassis level 0. Never put an opaque
+  normal backdrop across native buttons, since normal frames render above them.
+- WUI_TextButton stores its own backdrop/label/selected presentation state, shares
+  local hover trigger, preserves callers' click events. Shop tabs use this helper.
+- Shop tree has 18 allocated passive lines, three per visible relation. Local
+  CraftItemCheck shows a branch only when GetVisibleCraftRelation returns a real
+  ID. Current recipe offsets, crafting cost/data and synchronized input unchanged.
+- Systems1's HideBottomUI(false)/HideUIExceptTopMenu(false) calls
+  WUI_RestoreCompactNative.evaluate after the stock restoration, so pick/draft
+  cannot restore resources/hero/console bars over the compact UI.
+- ShowCD accepts own selected heroes for seven passive placeholder slots. Learned
+  own icons/cooldown overlays are hidden so native commands stay authoritative;
+  missing/unlearned positions hide native occupants via WUI_ShowNativeAbilitySlot.
+  Every slot keeps its hotkey. Enemy descriptions and no enemy cooldown reads are
+  unchanged. Placeholder frames are disabled and never consume targeting clicks.
+
 ## Owners and integration boundaries
 
 | Source | Responsibility / data |

@@ -1,0 +1,10 @@
+// Passive native-family surface stays below real command and inventory buttons.
+Frame "SIMPLEFRAME" "WOSNativeHUDSurface" {
+    Width 0.640,
+    Height 0.104,
+    Texture "WOSNativeHUDTexture" {
+        SetAllPoints,
+        File "UI\WOS\panel.tga",
+        AlphaMode "BLEND",
+    }
+}

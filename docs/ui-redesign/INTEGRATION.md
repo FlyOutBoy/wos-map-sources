@@ -1,6 +1,15 @@
 # MAIN integration after editor closure
 
-User confirmed closure and checkpoint 12 native integration has completed successfully.
+LATEST checkpoint 13: _build/WoS_Test_2.w3x, SHA256
+54d6a726d04a3b62997046b6f27dde145bca61d0eb66d2f6941012f476b83d15.
+Full MAIN build PASS (148574 total pjass lines), 109 source identities/traversal,
+40 UI/ping/model/frame resources and 45 extracted archive byte checks PASS.
+Native push backup: backups/trigger-sync/2026-10-08_222121_122659/map-before-push;
+compiled script: backups/main-map-build/20261008-222153-351. Sources updated ten,
+new WTG entries zero. Second slot is final; earlier first slot is held by the running game.
+Runtime evidence: _build/ui-redesign/checkpoint13-runtime.json and War3Log.
+
+User confirmed closure and checkpoint 13 native integration has completed successfully.
 These steps are retained for subsequent changes; do not bypass the process guard.
 World Editor does not reload external WTG/WCT and can overwrite corrected sources.
 The build now rejects an open editor before changing MAIN source/imports; a later
@@ -27,20 +36,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/build-run-w3-map.ps1
 python tools/verify_wos_ui.py
 ```
 
-Expect 13 UI textures + 16 ping textures + 1 clock model, old imports retained, full MAIN logic compiled.
-_build/WoS_Test.w3x or WoS_Test_2.w3x is the packed MAIN output; use the actual path printed by the build (latest checkpoint 12 uses second slot). tools/check_wos_ui.py uses an
+Expect 21 UI textures + 16 ping textures + 1 clock model + FDF/TOC, old imports retained, full MAIN logic compiled.
+_build/WoS_Test.w3x or WoS_Test_2.w3x is the packed MAIN output; use the actual path printed by the build (latest checkpoint 13 uses second slot). tools/check_wos_ui.py uses an
 empty main solely to validate source; NEVER use its output as playable map script.
 
 ## 3. Independently compare packed archive
 
 ```powershell
 python tools/verify_wos_ui.py --names-output _build/ui-redesign/archive-names.json
-powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/test-map-archive.ps1 -Mode Extract -Map _build/WoS_Test.w3x -Directory _build/ui-redesign/archive -Library "E:/WAR3REF/Warcraft III/_retail_/x86_64/JassHelper/sfmpq.dll" -NamesFile _build/ui-redesign/archive-names.json
+powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/test-map-archive.ps1 -Mode Extract -Map _build/WoS_Test_2.w3x -Directory _build/ui-redesign/archive -Library "E:/WAR3REF/Warcraft III/_retail_/x86_64/JassHelper/sfmpq.dll" -NamesFile _build/ui-redesign/archive-names.json
 python tools/verify_wos_ui.py --archive _build/ui-redesign/archive
 ```
 
-Extraction script handles 32-bit SFmpq compatibility. All 35 entries must match
-native map bytes: WTG/WCT/imp/compiled script/skin + 30 resources. Verifier derives WCT
+Extraction script handles 32-bit SFmpq compatibility. All 45 entries must match
+native map bytes: WTG/WCT/imp/compiled script/skin + 40 resources. Verifier derives WCT
 identities directly from WTG names/categories, independent of the new manifest.
 
 ## 4. Save checkpoint and retain verification boundary
