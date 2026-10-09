@@ -48,8 +48,8 @@ class InputAndNativeGeometry(unittest.TestCase):
             x, y = positions[frame]
             width = sizes[frame][0] * scales[frame]
             bounds.append((x - width/2, y - width/2, x + width/2, y + width/2))
-            self.assertGreaterEqual(bounds[-1][0], .578)
-            self.assertLessEqual(bounds[-1][2], .682)
+            self.assertGreaterEqual(bounds[-1][0], .534)
+            self.assertLessEqual(bounds[-1][2], .638)
             self.assertGreaterEqual(bounds[-1][1], .002)
             self.assertLessEqual(bounds[-1][3], .098)
         for i, a in enumerate(bounds):
@@ -95,7 +95,7 @@ class RestoredPickAndHUD(unittest.TestCase):
                     CreateTrigger=list, CreateTimer=lambda: 'timer', CreateGroup=lambda: 'group',
                     UNITSTAT_CreateToolbar=lambda: None, UNITSTAT_WidgetCreate=lambda i, t, x, y, w, _: positions.update({i: (x, y, w)}),
                     WUI_Passive=lambda *_: 'stat-root', WUI_Panel=lambda name, *args: name,
-                    WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge',
+                    WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge', WUI_Pin=lambda *_: None,
                     UNITSTAT_Text=lambda *_: 'text', WUI_CreateFill=lambda *_: 'fill', I2R=float,
                     TasAbilityChargeBox_CreatePortraitLabel=lambda *_: 'level-text',
                     TimerStart=lambda *_: None, TriggerAddAction=lambda *_: None,
@@ -110,7 +110,7 @@ class RestoredPickAndHUD(unittest.TestCase):
         self.assertEqual(1, len({positions[i][0] for i in (3, 4, 5)}))
         self.assertGreater(positions[3][1], positions[4][1])
         self.assertGreater(positions[4][1], positions[5][1])
-        self.assertEqual(positions['WOSSelectedUnitBack'][2:], (.104, .096))
+        self.assertEqual(positions['WOSSelectedUnitBack'][2:], (.104, .088))
         self.assertIn('WOSGoldIcon', positions)
         self.assertIn('UI\\\\Feedback\\\\Resources\\\\ResourceGold.blp', source)
 

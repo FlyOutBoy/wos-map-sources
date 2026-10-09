@@ -146,8 +146,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 72973,
-      "sha256": "102edbb89b7636660b1f42885b5d7f0b1e2f4b8f204ddd0136c37158d71ba722",
+      "source_bytes": 72989,
+      "sha256": "ab8f17d21c295bec4c9258af29ac5c7a0cbeb039c860cc86a7d1d4bdfc90ccdb",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -213,8 +213,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UniversalTooltips.j",
-      "source_bytes": 224729,
-      "sha256": "281e57dc0ec283fb734aa25bfa5ce921dd1fc0aa3a774cad687f5a4705f11ecd",
+      "source_bytes": 224939,
+      "sha256": "68d535ef30ded7f38332d5aff48d3a84c819850aaa16cf48dbffd5e97e46fa2b",
       "declarations": {
         "libraries": [
           "AAUniversalTooltips"
@@ -237,6 +237,11 @@
           "name": "TooltipBuilder",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
@@ -254,8 +259,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UI_CAREER.j",
-      "source_bytes": 47611,
-      "sha256": "1be511c5a581a22b3eb91439b11aef8dab43c321c9346525e4a590922c17c7b3",
+      "source_bytes": 47851,
+      "sha256": "8e0c8cf5cc305e539e6dd5644c6106122b5e15b3fdd019a3d84ab5f5fc98e05d",
       "declarations": {
         "libraries": [
           "WosCareerStats"
@@ -297,8 +302,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16956,
-      "sha256": "7fe1884a154955b7f6e3f0bb7089a29f7e20b36329a86d9ed9e2bacdb8d010d9",
+      "source_bytes": 17042,
+      "sha256": "4c4184739d1d806c3814dd67a5e799278a31bf86b84530cd48d15469af98a056",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -316,6 +321,11 @@
         },
         {
           "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "TasAbilityChargeBox",
           "optional": false,
           "keyword": "requires"
         }
@@ -395,8 +405,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 60844,
-      "sha256": "4841c5242758df62fee8c87497b1e92db75d5e283fcd8f85e7e7114550372c2e",
+      "source_bytes": 62214,
+      "sha256": "00e350bbd7a56cb048d2fc7fc04b99ceae0c314e056edb8fb38d84a837928b97",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -466,8 +476,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ChatCommand.j",
-      "source_bytes": 28046,
-      "sha256": "df7e0b7e9e52c53c8a92893266990ccdd30541c538521bfc11a5a73bda928e11",
+      "source_bytes": 28270,
+      "sha256": "fa6a2c70a11b272d8a47d88ddc2ef076acffe6c53ca3299615b538be847f0648",
       "declarations": {
         "libraries": [
           "CustomImageChat"
@@ -567,8 +577,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Captain_Draft.j",
-      "source_bytes": 55977,
-      "sha256": "f77ce8898d0c895bbae71f4fae3f6d7439ccf7366efc56cbfb7d8631d965c7a0",
+      "source_bytes": 55961,
+      "sha256": "7643309070ffe48c61c4b83b79a888d2c240067fb748d3239f62931abd29619d",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -592,8 +602,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 128065,
-      "sha256": "aaa74204731d59a9056186fbf13facc3ff8770112e8a1612b4fc5ecec4916f74",
+      "source_bytes": 128062,
+      "sha256": "ba3e787101bff81027dcfe13eae113a07cba1e121166a5a7baa1095e51fd31f3",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -617,8 +627,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 240446,
-      "sha256": "044f2e06ae199f143991cad17b57cb4e752ccc0853ecf4106e35635f0fec2a59",
+      "source_bytes": 239309,
+      "sha256": "dd81bca7f862449e051e06e427fb404c91dff5ed4412d9a00e558a2a5396665b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -642,8 +652,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 21881,
-      "sha256": "c8c7b943c82aedabfa74a671f6222f33deb430eae04a0ee6dc7915dce8c4b739",
+      "source_bytes": 21946,
+      "sha256": "b31019f92a384618fa6a25b3165193c862da261f3dc137837149d626480ebb14",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -742,8 +752,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 87709,
-      "sha256": "c7f9eedac9b65cd0fc6965523102fd1af4b5707c593691ef7ff4472ae923aa07",
+      "source_bytes": 89348,
+      "sha256": "7a843522d822f3cd081c3e1d90cb61f649b55f20ab133740a694baba8f191911",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -815,8 +825,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TeamMapPings.j",
-      "source_bytes": 33606,
-      "sha256": "a67fa04c3972a3a22c917d4e2845a7d849a3cbbf071e5f8396ed20175270973b",
+      "source_bytes": 33495,
+      "sha256": "53ab66a2ad2c1f7774244ea66b8e6449855223e7fe975dc14dbca3d385a49584",
       "declarations": {
         "libraries": [
           "TeamMapPings"
@@ -853,8 +863,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 52045,
-      "sha256": "78ea854e3df87079a932bf09c80d8d1f8bed2dc3702be46c379515bdd89b4022",
+      "source_bytes": 57958,
+      "sha256": "f686265a37217c49466d5fb500a569e2249323226fae33be705a026e167eb7be",
       "declarations": {
         "libraries": [
           "WOSUI"
@@ -942,8 +952,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/TasBox.j",
-      "source_bytes": 7910,
-      "sha256": "367d41c70c5a502d556faa830bdcafc8cefd9606c72f712cf8107478c401ef6c",
+      "source_bytes": 8953,
+      "sha256": "c9304dd297f456aa042109eb9f2b5f987a97f38e9456d1976837b19b37b4f911",
       "declarations": {
         "libraries": [
           "TasAbilityChargeBox"

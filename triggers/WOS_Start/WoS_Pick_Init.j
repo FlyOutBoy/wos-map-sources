@@ -2861,10 +2861,10 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     call BlzFrameSetScale(FRAME_HeroName, 1.00)
     call WUI_Place(FRAME_HeroAttribute, 0.510, 0.492, 0.022, 0.022)
     call WUI_Place(FRAME_HeroAttackType, 0.706, 0.492, 0.022, 0.022)
-    call WUI_Place(FRAME_HeroModel, 0.608, 0.410, 0.110, 0.110)
-    call BlzFrameSetAllPoints(FRAME_HeroPortraitBorder, FRAME_HeroModel)
-    call BlzFrameSetTexture(FRAME_HeroPortraitBorder, WUI_BORDER_TEXTURE, 0, true)
-    call BlzFrameSetLevel(FRAME_HeroPortraitBorder, 3)
+    call WUI_Place(FRAME_HeroModel, 0.608, 0.413, 0.110, 0.110)
+    call BlzFrameSetScale(FRAME_HeroPortraitBorder, 1.15)
+    call WUI_Pin(FRAME_HeroPortraitBorder, FRAME_HeroModel, 0.000, 0.000, 0.110, 0.110)
+    call BlzFrameSetLevel(FRAME_HeroPortraitBorder, 1)
     call BlzFrameSetEnable(FRAME_HeroPortraitBorder, false)
     call WUI_Place(FRAME_HeroStr, 0.553, 0.338, 0.090, 0.015)
     call WUI_Place(FRAME_HeroAgi, 0.553, 0.321, 0.090, 0.015)
@@ -2982,12 +2982,9 @@ function WOS_CreatePickShell takes nothing returns nothing
     // Модель также остается прозрачной для событий мыши.
     call BlzFrameSetEnable(FRAME_HeroModel, false)
     call BlzFrameSetLevel(FRAME_HeroModel, 2) // Р В РЎвЂ”Р В РЎвЂўР В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІР‚В¦ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљР В Р’В°
-    set border = BlzCreateFrameByType("BACKDROP", "ThinBorder", FRAME_MAIN3, "", 0)
+    set border = WUI_Window("WOSPickPortraitSurface", FRAME_MAIN3, 1, 0)
     set FRAME_HeroPortraitBorder = border
-    call BlzFrameSetAbsPoint(border, FRAMEPOINT_CENTER, 0.645, 0.39)
-    call BlzFrameSetTexture(border, "Textures\\black32.blp", 0, true)
-    call BlzFrameSetSize(border, 0.2, 0.2) // Р РЋРІР‚РЋР РЋРЎвЂњР РЋРІР‚С™Р РЋР Р‰ Р В Р’В±Р В РЎвЂўР В Р’В»Р РЋР Р‰Р РЋРІвЂљВ¬Р В Р’Вµ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљР В Р’В°, Р РЋРІР‚РЋР РЋРІР‚С™Р В РЎвЂўР В Р’В±Р РЋРІР‚в„– Р РЋР вЂљР В Р’В°Р В РЎВР В РЎвЂќР В Р’В° Р В Р вЂ Р В РЎвЂР В РўвЂР В Р вЂ¦Р В Р’В°
-    call BlzFrameSetLevel(border, 0) // Р В РЎвЂ”Р В РЎвЂўР В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІР‚В¦ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљР В Р’В°
+    set border = WUI_OrnateBorder("WOSPickPortraitMetal", FRAME_HeroPortraitBorder, 0.012)
     set FRAME_HeroAttribute = BlzCreateFrameByType("BACKDROP", "attribute", FRAME_MAIN3, "", 0)
     call BlzFrameSetAbsPoint(FRAME_HeroAttribute, FRAMEPOINT_CENTER, 0.54, 0.5075)
     call BlzFrameSetSize(FRAME_HeroAttribute, 0.0375, 0.0375)

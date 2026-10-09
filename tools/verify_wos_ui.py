@@ -12,6 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 RESOURCES = [f'UI/WOS/{name}.tga' for name in sorted(UI_NAMES)] + [
     f'UI/TeamPings/{name}.tga' for name in sorted(PING_NAMES)] + [CONSOLE_MODEL] + FRAME_RESOURCES
 ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j', 'war3mapSkin.txt'] + RESOURCES
+LEGACY_UI_RESOURCES = ['Music/'+name+'.blp' for name in (
+    'Music_Close', 'Music_Icon', 'Music_Link', 'Music_LoopOff', 'Music_LoopOn',
+    'Music_MergeOff', 'Music_MergeOn', 'Music_Pause', 'Music_Play', 'Music_Rerun',
+    'Music_SkipLeft', 'Music_SkipRight', 'Music_SkipTrackLeft', 'Music_SkipTrackRight')]
+ARCHIVE_NAMES += LEGACY_UI_RESOURCES
 
 
 def verify(archive=None):
@@ -52,6 +57,10 @@ def verify(archive=None):
     for relative in RESOURCES:
         assert relative.casefold() in imports, f'Missing import: {relative}'
         assert (scenario / relative).read_bytes() == (ROOT / 'assets' / relative).read_bytes(), relative
+    for relative in LEGACY_UI_RESOURCES:
+        assert relative.casefold() in imports, f'Missing legacy UI import: {relative}'
+        data = (scenario / relative).read_bytes()
+        assert data[:4] in (b'BLP1', b'BLP2'), f'Invalid legacy icon: {relative}'
     skin = (scenario / 'war3mapSkin.txt').read_text(encoding='utf-8-sig')
     for key, value in SKIN_VALUES.items():
         assert f'{key}={value}' in skin, f'Missing console skin override: {key}'
@@ -60,6 +69,7 @@ def verify(archive=None):
             assert (archive / name).read_bytes() == (scenario / name).read_bytes(), f'Archive mismatch: {name}'
     print(json.dumps({'native_trigger_count': len(objects), 'native_source_identity': 'PASS',
                       'category_traversal': 'PASS', 'frame_resource_format': 'PASS', 'ui_imports': len(RESOURCES),
+                      'legacy_music_icons': len(LEGACY_UI_RESOURCES),
                       'archive_matches_native': bool(archive), 'game_runtime_tested': False}, indent=2))
 
 

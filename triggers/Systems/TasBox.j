@@ -17,7 +17,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       public hashtable Hash = InitHashtable()
       private timer UpdateTimer = null
       private boolean Initialized = false
-      public string TocPath ="war3mapImported/TasAbilityChargeBox.toc" // no TocPath or TocPath = "" create it without fdf
+      public string TocPath ="UI\\WOS\\Charges.toc" // Loaded once by WOSUI before this owner creates frames.
       public framehandle array FrameBox
       public framehandle array FrameText
       public framehandle array FrameIcon
@@ -121,7 +121,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       local framehandle commandButton
       local integer i = 0
       local string font = "Fonts/FRIZQT__.TTF"
-      if TocPath == null or TocPath == "" or not BlzLoadTOCFile(TocPath) then
+      if not WUI_HasChargeDefinitions() then
          static if REFORGED then
             set font = SkinManagerGetLocalPath("InfoPanelTextFont")
          endif
@@ -177,6 +177,11 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       set Unit[GetPlayerId(GetTriggerPlayer())] = GetTriggerUnit()
    endfunction
 
+   private function StartFrames takes nothing returns nothing
+      call Create()
+      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
+   endfunction
+
    public function Init takes nothing returns nothing
       local trigger trig
       if Initialized then
@@ -184,11 +189,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       endif
       set Initialized = true
       set UpdateTimer = CreateTimer()
-      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
-      call Create()
-      static if LIBRARY_FrameLoader then
-         call FrameLoaderAdd(function Create)
-      endif
+      call WUI_OnReady(function StartFrames)
       set trig = CreateTrigger()
       call TriggerAddAction(trig, function Select)
       call TriggerRegisterAnyUnitEventBJ(trig, EVENT_PLAYER_UNIT_SELECTED)

@@ -33,7 +33,7 @@ endglobals
 globals
     private constant real AHUI_UPDATE_PERIOD = 0.03
     private constant integer AHUI_REFRESH_TICKS = 3
-    private constant real AHUI_ICON_SIZE = 0.036
+    private constant real AHUI_ICON_SIZE = WUI_ICON_SIZE
     private constant real AHUI_COOLDOWN_TEXT_SCALE = 1.15
     private constant real AHUI_COMMAND_X0 = 0.6375
     private constant real AHUI_COMMAND_X_STEP = 0.0434
@@ -203,7 +203,7 @@ private function AHUI_GetSlotCenterX takes integer slot returns real
 endfunction
 
 private function AHUI_GetSlotCenterY takes integer slot returns real
-    return WUI_HUD_Y
+    return WUI_AbilityY(slot)
 endfunction
 
 // Индекс собственного набора фреймов игрока. При bj_MAX_PLAYER_SLOTS == 24
@@ -1019,7 +1019,7 @@ call BlzFrameSetSize(AHUI_TooltipRoot[pid], 0.300, boxHeight)
 
 // Позиция окна
 call BlzFrameClearAllPoints(AHUI_TooltipRoot[pid])
-call BlzFrameSetAbsPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOMRIGHT, 0.790, 0.152)
+call BlzFrameSetAbsPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOMLEFT, 0.256, 0.106)
 
 // Показываем tooltip
 call BlzFrameSetVisible(AHUI_TooltipBackdrop[pid], true)

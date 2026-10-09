@@ -17,6 +17,9 @@ class AllyAbilityUI(unittest.TestCase):
         self.frames = {}
         self.reads = []
         g = self.vm.g
+        wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
+        g['WUI_ICON_SIZE'] = float(re.search(r'WUI_ICON_SIZE = ([0-9.]+)', wui)[1])
+        g['WUI_AbilityY'] = lambda slot: .044 if slot >= 5 else .023
         for kind,name,value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?(integer|real|boolean|string) (\w+) = (.*)',source):
             g[name] = eval(value.split('//')[0].strip().replace('false','False').replace('true','True'),{},g)
         for kind,name in re.findall(r'(?m)^\s*private (\w+) array (\w+)',source):
@@ -57,7 +60,7 @@ class AllyAbilityUI(unittest.TestCase):
             'BlzGetAbilityTooltip':lambda a,l:'Title '+a,
             'BlzGetAbilityExtendedTooltip':lambda a,l:f'Description {a} rank {l+1}',
             'BlzGetAbilityManaCost':lambda a,l:50,
-            'FRAMEPOINT_TOPLEFT':'tl','FRAMEPOINT_TOPRIGHT':'tr','FRAMEPOINT_BOTTOMRIGHT':'br',
+            'FRAMEPOINT_TOPLEFT':'tl','FRAMEPOINT_TOPRIGHT':'tr','FRAMEPOINT_BOTTOMRIGHT':'br','FRAMEPOINT_BOTTOMLEFT':'bl',
         })
         self.c = self.vm.unit(owner=1)
         self.c.type = g['Crocodile_ID']
@@ -180,7 +183,7 @@ class AllyAbilityUI(unittest.TestCase):
         for frame in roots:
             slot = frame[1] % 7
             self.assertAlmostEqual(.354 + slot * .040, positions[frame][0])
-            self.assertEqual(.044, positions[frame][1])
+            self.assertEqual(.044 if slot >= 5 else .023, positions[frame][1])
 
     def test_own_heroes_allow_placeholders_and_observers_keep_permissions(self):
         self.assertTrue(self.vm.run('AHUI_IsEligibleHero',(self.c,1)))

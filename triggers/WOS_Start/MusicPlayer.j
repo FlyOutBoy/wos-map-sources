@@ -538,8 +538,11 @@ private function LMP_UpdateHeader takes player whichPlayer returns nothing
             call BlzFrameSetText(lmpNowPlaying, "|cffffcc00" + lmpTitle[trackIndex] + "|r")
             set durationSeconds = (lmpDurationMs[trackIndex] + 500) / 1000
             call BlzFrameSetText(lmpTimeText, LMP_FormatTime(R2I(lmpElapsed[pid])) + " / " + LMP_FormatTime(durationSeconds))
+        elseif lmpTrackCount > 0 then
+            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaChoose a track|r")
+            call BlzFrameSetText(lmpTimeText, "0:00 / 0:00")
         else
-            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaNo tracks imported|r")
+            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaNo local tracks found|r")
             call BlzFrameSetText(lmpTimeText, "0:00 / 0:00")
         endif
 
@@ -608,6 +611,20 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
 
     if flag then
         call LMP_UpdateAll(whichPlayer)
+    endif
+endfunction
+
+function LocalMp3Player_SetTopVisible takes player viewer, boolean visible returns nothing
+    if not lmpFramesReady then
+        return
+    endif
+    call LMP_SetVisible(viewer, false)
+    set lmpLinkVisible[GetPlayerId(viewer)] = false
+    if GetLocalPlayer() == viewer then
+        call BlzFrameSetVisible(lmpOpenButton, visible)
+        call BlzFrameSetVisible(lmpLinkButton, visible)
+        call BlzFrameSetVisible(lmpLinkActiveButton, false)
+        call BlzFrameSetVisible(lmpLinkEdit, false)
     endif
 endfunction
 
@@ -1073,6 +1090,7 @@ private function LMP_CreateIcon takes framehandle iconParent, string texture ret
 
     call BlzFrameSetAllPoints(icon, iconParent)
     call BlzFrameSetTexture(icon, texture, 0, true)
+    call BlzFrameSetEnable(icon, false)
 
     return icon
 endfunction
@@ -1111,6 +1129,31 @@ private function LMP_CreateFrames takes nothing returns nothing
     local integer row = 0
     local real rowY
 
+    // Allocate required FDF controls before any window or input blocker.
+    // A parser/create failure must never leave a half-built visible panel.
+    set lmpLinkEdit = BlzCreateFrame("LMPLinkEditTemplate", consoleUI, 0, 0)
+    set lmpSeek = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 0)
+    set lmpVolumeSlider = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 1)
+    if lmpLinkEdit == null or lmpSeek == null or lmpVolumeSlider == null then
+        if lmpLinkEdit != null then
+            call BlzDestroyFrame(lmpLinkEdit)
+            set lmpLinkEdit = null
+        endif
+        if lmpSeek != null then
+            call BlzDestroyFrame(lmpSeek)
+            set lmpSeek = null
+        endif
+        if lmpVolumeSlider != null then
+            call BlzDestroyFrame(lmpVolumeSlider)
+            set lmpVolumeSlider = null
+        endif
+        call BJDebugMsg("|cffff2020LocalMp3Player: private Music.fdf controls were not created.|r")
+        return
+    endif
+    call BlzFrameSetVisible(lmpLinkEdit, false)
+    call BlzFrameSetVisible(lmpSeek, false)
+    call BlzFrameSetVisible(lmpVolumeSlider, false)
+
     // Independent external buttons: no ResourceBar/Upkeep lookup, mutation or anchor.
     set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.580, LMP_OPEN_SIZE, 100)
     set icon = LMP_CreateIcon(lmpOpenButton, LMP_TEX_OPEN)
@@ -1129,7 +1172,6 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
     call BlzFrameSetVisible(lmpLinkActiveButton, false)
 
-    set lmpLinkEdit = BlzCreateFrame("EscMenuEditBoxTemplate", consoleUI, 0, 0)
     call BlzFrameSetAbsPoint(lmpLinkEdit, FRAMEPOINT_CENTER, LMP_LINK_EDIT_X, LMP_LINK_EDIT_Y)
     call BlzFrameClearAllPoints(lmpLinkEdit)
     call BlzFrameSetPoint(lmpLinkEdit, FRAMEPOINT_TOP, lmpLinkButton, FRAMEPOINT_BOTTOM, 0.000, -0.004)
@@ -1143,6 +1185,7 @@ private function LMP_CreateFrames takes nothing returns nothing
 
     // Plain black translucent background, matching the emoji panel.
     set lmpPanel = WUI_Window("WOSMusicWindow", consoleUI, 0, 0)
+    call BlzFrameSetVisible(lmpPanel, false)
     call BlzFrameSetAbsPoint(lmpPanel, FRAMEPOINT_CENTER, LMP_PANEL_X, LMP_PANEL_Y)
     call BlzFrameSetSize(lmpPanel, LMP_PANEL_WIDTH, LMP_PANEL_HEIGHT)
     call BlzFrameSetTexture(lmpPanel, LMP_TEX_BLACK, 0, true)
@@ -1177,11 +1220,6 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(lmpTimeText, 0.78)
 
     // Private horizontal definition, loaded once after the common UI bootstrap.
-    set lmpSeek = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 0)
-    if lmpSeek == null then
-        call BJDebugMsg("|cffff2020LocalMp3Player: native EscMenuSliderTemplate was not created.|r")
-        return
-    endif
     call BlzFrameClearAllPoints(lmpSeek)
     call BlzFrameSetAbsPoint(lmpSeek, FRAMEPOINT_CENTER, LMP_PROGRESS_X, LMP_PROGRESS_Y)
     call BlzFrameSetSize(lmpSeek, LMP_PROGRESS_WIDTH, LMP_PROGRESS_HEIGHT)
@@ -1190,12 +1228,13 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetAlpha(lmpSeek, 255)
     call BlzFrameSetValue(lmpSeek, 0.00)
     call BlzFrameSetEnable(lmpSeek, true)
-    call BlzFrameSetVisible(lmpSeek, true)
+    call BlzFrameSetVisible(lmpSeek, false)
     call BlzFrameSetLevel(lmpSeek, 20)
 
     // The duration bar is display-only. This transparent frame consumes mouse
     // clicks while leaving the slider and its moving thumb fully visible.
     set lmpSeekBlocker = BlzCreateFrameByType("BUTTON", "LMPProgressBlocker", gameUI, "", 600)
+    call BlzFrameSetVisible(lmpSeekBlocker, false)
     call BlzFrameClearAllPoints(lmpSeekBlocker)
     call BlzFrameSetAbsPoint(lmpSeekBlocker, FRAMEPOINT_CENTER, LMP_PROGRESS_X, LMP_PROGRESS_Y)
     call BlzFrameSetSize(lmpSeekBlocker, LMP_PROGRESS_WIDTH, LMP_PROGRESS_HEIGHT)
@@ -1264,11 +1303,6 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(lmpVolumeText, 0.72)
     call BlzFrameSetText(lmpVolumeText, "|cffffffffVOLUME 100%|r")
 
-    set lmpVolumeSlider = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 1)
-    if lmpVolumeSlider == null then
-        call BJDebugMsg("|cffff2020LocalMp3Player: native volume EscMenuSliderTemplate was not created.|r")
-        return
-    endif
     call BlzFrameClearAllPoints(lmpVolumeSlider)
     call BlzFrameSetAbsPoint(lmpVolumeSlider, FRAMEPOINT_CENTER, LMP_VOLUME_X, LMP_VOLUME_Y)
     call BlzFrameSetSize(lmpVolumeSlider, LMP_VOLUME_WIDTH, LMP_VOLUME_HEIGHT)
@@ -1277,7 +1311,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetAlpha(lmpVolumeSlider, 255)
     call BlzFrameSetValue(lmpVolumeSlider, 127.00)
     call BlzFrameSetEnable(lmpVolumeSlider, true)
-    call BlzFrameSetVisible(lmpVolumeSlider, true)
+    call BlzFrameSetVisible(lmpVolumeSlider, false)
     call BlzFrameSetLevel(lmpVolumeSlider, 20)
     call BlzTriggerRegisterFrameEvent(lmpVolumeTrigger, lmpVolumeSlider, FRAMEEVENT_SLIDER_VALUE_CHANGED)
 
@@ -1392,14 +1426,14 @@ function LocalMp3Player_CreateUI takes nothing returns nothing
         return
     endif
 
-    // The private resource is normally loaded by the game-time ready owner.
-    // Retry here only after a failed load, never reload successful definitions.
+    // The shared game-time bootstrap owns definitions for music, link and shop.
+    // Read its result; reparsing stock FDF globals can abort with duplicate names.
     if not lmpTocLoaded then
-        set lmpTocLoaded = BlzLoadTOCFile("UI\\WOS\\Music.toc")
+        set lmpTocLoaded = WUI_HasMusicDefinitions()
     endif
 
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load UI\\WOS\\Music.toc.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load shared UI\\WOS\\Templates.toc.|r")
         return
     endif
 
@@ -1423,13 +1457,13 @@ endfunction
 
 
 private function LMP_LoadTemplates takes nothing returns nothing
-    // Load all required frame definitions once, before any player UI is built.
+    // Read the shared bootstrap result before any player music UI is built.
     if lmpTocLoaded then
         return
     endif
-    set lmpTocLoaded = BlzLoadTOCFile("UI\\WOS\\Music.toc")
+    set lmpTocLoaded = WUI_HasMusicDefinitions()
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load UI\\WOS\\Music.toc after UI startup.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load shared UI\\WOS\\Templates.toc after UI startup.|r")
     endif
 endfunction
 

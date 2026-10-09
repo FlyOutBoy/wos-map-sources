@@ -1,0 +1,22 @@
+// Tas charge box has no dependency on an engine string table.
+Frame "SIMPLEFRAME" "TasAbilityChargeBox" {
+    SetAllPoints,
+    Layer "ARTWORK" {
+        Texture "TasAbilityChargeBoxTexture" {
+            Anchor BOTTOMRIGHT, 0.001,-0.001,
+            Width 0.012,
+            Height 0.012,
+            File "UI\WOS\button.tga",
+            AlphaMode "BLEND",
+        }
+        String "TasAbilityChargeBoxText" {
+            Font "Fonts\FRIZQT__.TTF", 0.008,
+            Anchor BOTTOMRIGHT, 0.001,-0.001,
+            Width 0.012,
+            Height 0.012,
+            FontJustificationH JUSTIFYCENTER,
+            FontJustificationV JUSTIFYMIDDLE,
+            Text "99",
+        }
+    }
+}

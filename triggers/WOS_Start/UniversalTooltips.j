@@ -1,4 +1,4 @@
-library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilder
+library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilder, WOSUI
 
     globals
         private hashtable HT_DATA = null
@@ -40,6 +40,8 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         endif
         if tooltip != null then
             call BlzFrameSetSize(tooltip, 0.28, 0.0)
+            call BlzFrameClearAllPoints(tooltip)
+            call BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_BOTTOMLEFT, 0.256, 0.106)
         endif
         
         if itemTooltipText != null then
@@ -47,17 +49,18 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         endif
         if itemTooltip != null then
             call BlzFrameSetSize(itemTooltip, 0.28, 0.0)
+            call BlzFrameClearAllPoints(itemTooltip)
+            call BlzFrameSetAbsPoint(itemTooltip, FRAMEPOINT_BOTTOMLEFT, 0.256, 0.106)
         endif
         
         set tooltipText = null
         set tooltip = null
         set itemTooltipText = null
         set itemTooltip = null
-        call DestroyTimer(GetExpiredTimer())
     endfunction
 
     private function InitTooltipFrameFix takes nothing returns nothing
-        call TimerStart(CreateTimer(), 0.00, false, function FixTooltipBoxSize)
+        call WUI_OnReady(function FixTooltipBoxSize)
     endfunction
 
     //===========================================================================

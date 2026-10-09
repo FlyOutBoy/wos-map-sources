@@ -1,3 +1,31 @@
+// Private names and direct resource paths avoid loading stock template globals.
+Frame "EDITBOX" "LMPLinkEditTemplate" {
+    Width 0.100,
+    Height 0.026,
+    FrameFont "Fonts\FRIZQT__.TTF", 0.011, "",
+    EditBorderSize 0.006,
+    EditCursorColor 0.835 0.722 0.463 1.0,
+    EditTextColor 0.882 0.898 0.922 1.0,
+    EditHighlightColor 0.835 0.722 0.463 0.25,
+    EditMaxChars 255,
+    EditTextFrame "LMPLinkEditText",
+    Frame "TEXT" "LMPLinkEditText" {
+        FrameFont "Fonts\FRIZQT__.TTF", 0.011, "",
+        FontColor 0.882 0.898 0.922 1.0,
+        FontJustificationH JUSTIFYLEFT,
+        FontJustificationV JUSTIFYMIDDLE,
+    }
+    ControlBackdrop "LMPLinkEditBack",
+    Frame "BACKDROP" "LMPLinkEditBack" {
+        BackdropBackground "UI\WOS\button.tga",
+        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+        BackdropCornerSize 0.006,
+        BackdropBackgroundInsets 0.002 0.002 0.002 0.002,
+        BackdropBlendAll,
+    }
+}
+
 Frame "SLIDER" "LMPHorizontalSliderTemplate" {
     Height 0.012,
     Width 0.139,
@@ -9,25 +37,27 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
 
     ControlBackdrop "LMPBar",
     Frame "BACKDROP" "LMPBar" {
+        DecorateFileNames,
         BackdropTileBackground,
-        BackdropBackground "UI\WOS\bar-back.tga",
+        BackdropBackground "EscMenuSliderBackground",
         BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
         BackdropCornerSize 0.006,
         BackdropBackgroundSize 0.006,
         BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
-        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropEdgeFile "EscMenuSliderBorder",
         BackdropBlendAll,
     }
 
     ControlDisabledBackdrop "LMPBarDisabled",
     Frame "BACKDROP" "LMPBarDisabled" {
+        DecorateFileNames,
         BackdropTileBackground,
-        BackdropBackground "UI\WOS\bar-back.tga",
+        BackdropBackground "EscMenuSliderBackground",
         BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
         BackdropCornerSize 0.006,
         BackdropBackgroundSize 0.006,
         BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
-        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropEdgeFile "EscMenuSliderDisabledBorder",
         BackdropBlendAll,
     }
 
@@ -38,14 +68,16 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
 
         ControlBackdrop "LMPThumbBackdrop",
         Frame "BACKDROP" "LMPThumbBackdrop" {
-                BackdropBlendAll,
-            BackdropBackground "UI\WOS\selected.tga",
+            DecorateFileNames,
+            BackdropBlendAll,
+            BackdropBackground "EscMenuSliderThumbButton",
         }
 
         ControlDisabledBackdrop "LMPThumbDisabled",
         Frame "BACKDROP" "LMPThumbDisabled" {
-                BackdropBlendAll,
-            BackdropBackground "UI\WOS\disabled.tga",
+            DecorateFileNames,
+            BackdropBlendAll,
+            BackdropBackground "EscMenuSliderDisabledThumbButton",
         }
     }
 }

@@ -12,8 +12,7 @@ ASSET_NAMES = {'panel','border','button','hover','pressed','selected','disabled'
 ASSET_NAMES.update('ornate-' + suffix for suffix in ('tl','tr','bl','br','top','bottom','left','right'))
 ASSET_NAMES.update('toolbar-' + suffix for suffix in ('shop', 'community', 'chat', 'emotes', 'ping', 'ping-muted'))
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
-FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf', 'UI/WOS/Music.toc']
-ENGINE_FRAME_RESOURCES = {'UI/FrameDef/UI/escmenutemplates.fdf'}
+FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf', 'UI/WOS/Music.toc', 'UI/WOS/Charges.fdf', 'UI/WOS/Charges.toc', 'UI/WOS/Templates.toc']
 BLANK_TEXTURE = r'UI\Widgets\EscMenu\Human\blank-background.blp'
 SKIN_VALUES = {f'ConsoleTexture{i:02}': BLANK_TEXTURE for i in range(1, 7)}
 SKIN_VALUES.update(ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overlay=BLANK_TEXTURE,
@@ -41,10 +40,19 @@ def validate_frame_resources(asset_root):
             raise ValueError(f'{name}: TOC has no frame definitions')
         for entry in entries:
             resource = entry.replace('\\', '/')
-            if resource in ENGINE_FRAME_RESOURCES:
-                continue
             if resource not in FRAME_RESOURCES or not (asset_root / resource).is_file():
                 raise ValueError(f'{name}: frame definition is not bundled: {entry}')
+
+    # The game can return success after loading only the prefix of a broken FDF.
+    # Validate the enum that actually aborted Music.fdf in War3Log, before import.
+    for name in FRAME_RESOURCES:
+        if not name.endswith('.fdf'):
+            continue
+        source = (asset_root / name).read_text(encoding='utf-8-sig')
+        for axis, token in re.findall(r'FontJustification([HV])\s+(\w+)\s*,', source):
+            allowed = {'JUSTIFYLEFT', 'JUSTIFYCENTER', 'JUSTIFYRIGHT'} if axis == 'H' else {'JUSTIFYTOP', 'JUSTIFYMIDDLE', 'JUSTIFYBOTTOM'}
+            if token not in allowed:
+                raise ValueError(f'{name}: invalid FontJustification{axis} value {token}')
 
 
 def validate_passive_texture(asset_root):

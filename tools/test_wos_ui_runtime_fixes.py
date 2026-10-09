@@ -172,6 +172,7 @@ class ShopAndPickLayout(unittest.TestCase):
         vm = load_source(file)
         source = (ROOT / 'triggers/WOS_Start' / file).read_text(encoding='utf-8-sig')
         positions, sizes = {}, {}
+        vm.g['layout_scales'] = {}
         for name in re.findall(r'^\s*framehandle (\w+)\s*$', source, re.M):
             vm.g[name] = name
         for name in re.findall(r'^\s*framehandle array (\w+)', source, re.M):
@@ -180,7 +181,8 @@ class ShopAndPickLayout(unittest.TestCase):
         vm.methods[function] = re.sub(r'\bi / ([257])\b', r'jass_div(i, \1)', vm.methods[function])
         vm.g.update({
             'WUI_Place': lambda f, x, y, w, h: (positions.update({f: (x, y)}), sizes.update({f: (w, h)})),
-            'BlzFrameSetScale': lambda *_: None, 'BlzFrameSetAllPoints': lambda *_: None,
+            'WUI_Pin': lambda f, owner, x, y, w, h: (positions.update({f: (positions[owner][0]+x, positions[owner][1]+y)}), sizes.update({f: (w, h)})),
+            'BlzFrameSetScale': lambda f, scale: vm.g['layout_scales'].update({f: scale}), 'BlzFrameSetAllPoints': lambda *_: None,
             'BlzFrameSetTexture': lambda *_: None, 'BlzFrameSetLevel': lambda *_: None,
             'BlzFrameSetEnable': lambda *_: None, 'BlzFrameClearAllPoints': lambda *_: None,
             'BlzFrameSetPoint': lambda *_: None, 'BlzFrameSetTextAlignment': lambda *_: None,

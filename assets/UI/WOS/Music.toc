@@ -1,3 +1,2 @@
-UI\FrameDef\UI\escmenutemplates.fdf
 UI\WOS\Music.fdf
 

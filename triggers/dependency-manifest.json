@@ -292,6 +292,14 @@
           "resolved_paths": [
             "WOS_Start/TooltipBuilder.j"
           ]
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "WOS_Start/WOSUI.j"
+          ]
         }
       ]
     },
@@ -349,6 +357,14 @@
           "keyword": "requires",
           "resolved_paths": [
             "WOS_Start/WOSUI.j"
+          ]
+        },
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "requires",
+          "resolved_paths": [
+            "Systems/TasBox.j"
           ]
         }
       ]

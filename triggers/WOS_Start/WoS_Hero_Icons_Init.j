@@ -12,6 +12,12 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         trigger FrameSliderCheck
         framehandle FRAME_StatusHeroMain
         private boolean array StatusHeroesHidden
+        private framehandle StatusTeamChrome
+        private framehandle StatusTrainBox
+        private framehandle StatusGameTimeBox
+        private framehandle StatusTeam1Box
+        private framehandle StatusTeam2Box
+        private framehandle StatusRoundClockBox
         private framehandle StatusPortraitRoot
         private framehandle array StatusHpBar
         private framehandle array StatusMpBar
@@ -719,7 +725,7 @@ endfunction
         endif
 
         if StatusLastTrainKill != TrainKill then
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[10], "|cffffff00Kills:" + I2S(TrainKill) + "|r")
+            call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[10], "|cffd5b876Train kills: " + I2S(TrainKill) + "|r")
             set StatusLastTrainKill = TrainKill
         endif
 
@@ -933,6 +939,71 @@ endif
         set i = 0
         set p = null
     endfunction
+    // Labels use zero offsets against their OWN boxes. Font scale never changes
+    // the position of a score or timer, unlike scaled offsets from the team root.
+    private function WOS_CreateRoundCounters takes nothing returns nothing
+        local framehandle border
+        set FRAME_RoundCount = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
+        call BlzFrameSetPoint(FRAME_RoundCount, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetText(FRAME_RoundCount, "Round: |c00FFFF00" + I2S(CurrentRound) + "|r")
+        call BlzFrameSetScale(FRAME_RoundCount, 0.75)
+        call BlzFrameSetAlpha(FRAME_RoundCount, 255)
+        call BlzFrameSetEnable(FRAME_RoundCount,false)
+        call BlzFrameSetVisible(FRAME_RoundCount, false)
+        set StatusRoundClockBox = WUI_Passive("WOSRoundClockBox", FRAME_StatusHeroMain)
+        call WUI_Place(StatusRoundClockBox, 0.400, 0.579, 0.050, 0.028)
+        set FRAME_RoundTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", StatusRoundClockBox, "", 0)
+        call BlzFrameSetPoint(FRAME_RoundTimer, FRAMEPOINT_CENTER, StatusRoundClockBox, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetText(FRAME_RoundTimer, "STARTS|n|c00FFFF00" + I2S(TimeRound / 60) + ":00|r")
+        call BlzFrameSetSize(FRAME_RoundTimer, 0.050, 0.028)
+        call BlzFrameSetTextAlignment(FRAME_RoundTimer, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetScale(FRAME_RoundTimer, 0.73)
+        call BlzFrameSetAlpha(FRAME_RoundTimer, 255)
+        call BlzFrameSetEnable(FRAME_RoundTimer,false)
+        call BlzFrameSetVisible(FRAME_RoundTimer, true)
+        set StatusGameTimeBox = WUI_Panel("WOSGameTimeBox", FRAME_StatusHeroMain, 0.090, 0.013)
+        call WUI_Place(StatusGameTimeBox, 0.400, 0.545, 0.090, 0.013)
+        call WUI_RegisterTopControl(StatusGameTimeBox)
+        set border = WUI_OrnateBorder("WOSGameTimeMetal", StatusGameTimeBox, 0.005)
+        set FRAME_GameTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
+        call BlzFrameSetParent(FRAME_GameTimer, StatusGameTimeBox)
+        call BlzFrameSetPoint(FRAME_GameTimer, FRAMEPOINT_CENTER, StatusGameTimeBox, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetTextAlignment(FRAME_GameTimer, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetText(FRAME_GameTimer, GetCompactGameTimerText())
+        call BlzFrameSetAlpha(FRAME_GameTimer, 255)
+        call BlzFrameSetScale(FRAME_GameTimer, 0.70)
+        call BlzFrameSetEnable(FRAME_GameTimer,false)
+        set StatusTeam1Box = WUI_Panel("WOSTeam1ScoreBox", FRAME_StatusHeroMain, 0.033, 0.035)
+        call BlzFrameSetPoint(StatusTeam1Box, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, -0.043, 0.011)
+        set border = WUI_OrnateBorder("WOSTeam1ScoreMetal", StatusTeam1Box, 0.009)
+        set FRAME_Team1Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore1", FRAME_StatusHeroMain, "", 0)
+        call BlzFrameSetParent(FRAME_Team1Rounds, StatusTeam1Box)
+        call BlzFrameSetPoint(FRAME_Team1Rounds, FRAMEPOINT_CENTER, StatusTeam1Box, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetSize(FRAME_Team1Rounds, 0.015, 0.015)
+        call BlzFrameSetTextAlignment(FRAME_Team1Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetText(FRAME_Team1Rounds, "|cffff4040" + I2S(Team1Round) + "|r")
+        call BlzFrameSetScale(FRAME_Team1Rounds, 2.00)
+        call BlzFrameSetAlpha(FRAME_Team1Rounds, 255)
+        call BlzFrameSetLevel(FRAME_Team1Rounds, 50)
+        call BlzFrameSetVisible(FRAME_Team1Rounds, true)
+        call BlzFrameSetEnable(FRAME_Team1Rounds,false)
+        set StatusTeam2Box = WUI_Panel("WOSTeam2ScoreBox", FRAME_StatusHeroMain, 0.033, 0.035)
+        call BlzFrameSetPoint(StatusTeam2Box, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.043, 0.011)
+        set border = WUI_OrnateBorder("WOSTeam2ScoreMetal", StatusTeam2Box, 0.009)
+        set FRAME_Team2Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore2", FRAME_StatusHeroMain, "", 0)
+        call BlzFrameSetParent(FRAME_Team2Rounds, StatusTeam2Box)
+        call BlzFrameSetPoint(FRAME_Team2Rounds, FRAMEPOINT_CENTER, StatusTeam2Box, FRAMEPOINT_CENTER, 0.000, 0.000)
+        call BlzFrameSetSize(FRAME_Team2Rounds, 0.015, 0.015)
+        call BlzFrameSetTextAlignment(FRAME_Team2Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetText(FRAME_Team2Rounds, "|cff4080ff" + I2S(Team2Round) + "|r")
+        call BlzFrameSetScale(FRAME_Team2Rounds, 2.00)
+        call BlzFrameSetAlpha(FRAME_Team2Rounds, 255)
+        call BlzFrameSetLevel(FRAME_Team2Rounds, 50)
+        call BlzFrameSetVisible(FRAME_Team2Rounds, true)
+        call BlzFrameSetEnable(FRAME_Team2Rounds,false)
+        set border = null
+    endfunction
+
     function CheckBoxCheck takes nothing returns nothing
         local framehandle clicked = BlzGetTriggerFrame()
         local integer i = GetPlayerId(GetTriggerPlayer())
@@ -969,7 +1040,12 @@ endif
         if clicked == FRAME_TopCheckbox then
             set StatusHeroesHidden[i] = not StatusHeroesHidden[i]
             if GetLocalPlayer() == GetTriggerPlayer() then
-                call BlzFrameSetVisible(StatusPortraitRoot, not StatusHeroesHidden[i])
+                call WUI_ShowTopControls(not StatusHeroesHidden[i])
+                call LocalMp3Player_SetTopVisible(GetTriggerPlayer(), not StatusHeroesHidden[i])
+                call BlzFrameSetVisible(FRAME_ShopButtonCheck, not StatusHeroesHidden[i])
+                if StatusHeroesHidden[i] then
+                    call BlzFrameSetVisible(FRAME_StatsMain, false)
+                endif
                 call WUI_SetButtonSelected(FRAME_TopCheckbox, StatusHeroesHidden[i])
             endif
         endif
@@ -1097,13 +1173,17 @@ endfunction
        // call TriggerAddAction( FrameAltHeroMainOff, function FrameAlt_Show_False )
     // === Р вЂњР В»Р В°Р Р†Р Р…РЎвЂ№Р в„– Р С”Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ ===
         // Прозрачный контейнер: внешняя стандартная рамка больше не рисуется.
-        set FRAME_StatusHeroMain = WUI_Window("StatusHeroMain", WUI_GetRoot(), 0, 0)
+        set FRAME_StatusHeroMain = WUI_Passive("StatusHeroMain", WUI_GetRoot())
         call BlzFrameSetAbsPoint(FRAME_StatusHeroMain, FRAMEPOINT_CENTER, STATUS_BAR_CENTER_X, STATUS_BAR_CENTER_Y)
         call BlzFrameSetAlpha(FRAME_StatusHeroMain, 255)
         call BlzFrameSetSize(FRAME_StatusHeroMain, 0.450, 0.064)
         call BlzFrameSetLevel(FRAME_StatusHeroMain, 5)
+        // Empty pixels preserve engine FPS/ping beneath the team rectangle.
+        set StatusTeamChrome = WUI_OrnateBorder("WOSTeamMetal", FRAME_StatusHeroMain, 0.012)
+        call WUI_RegisterTopControl(StatusTeamChrome)
         set StatusPortraitRoot = BlzCreateFrameByType("FRAME", "WOSHeroPortraits", FRAME_StatusHeroMain, "", 0)
         call BlzFrameSetAllPoints(StatusPortraitRoot, FRAME_StatusHeroMain)
+        call WUI_RegisterTopControl(StatusPortraitRoot)
         set FRAME_StatusHeroMain2 = BlzCreateFrameByType("FRAME", "WOSDamageSummary", WUI_GetRoot(), "", 0)
         call WUI_Place(FRAME_StatusHeroMain2, 0.505, 0.117, 0.300, 0.016)
         set FRAME_StatusHeroMain3 = BlzCreateFrameByType("FRAME", "WOSTopOptions", WUI_GetRoot(), "", 0)
@@ -1131,8 +1211,8 @@ endfunction
         call BlzFrameSetAlpha(FRAME_CamSliderStringBack, 225)
         call BlzFrameSetSize(FRAME_CamSliderStringBack, 0.0165, 0.0165)
         call BlzFrameSetTexture(FRAME_CamSliderStringBack, "Pick\\CameraIcon", 0, true)
-        call WUI_Place(FRAME_CamSlider, 0.174, 0.074, 0.014, 0.120)
-        call WUI_Place(FRAME_CamSliderStringBack, 0.174, 0.146, 0.012, 0.012)
+        call WUI_Place(FRAME_CamSlider, 0.1335, 0.067, 0.014, 0.126)
+        call WUI_Place(FRAME_CamSliderStringBack, 0.1335, 0.135, 0.012, 0.012)
         set i = 0
         set r = STATUS_HERO_STEP
        
@@ -1142,7 +1222,7 @@ endfunction
             set FRAME_StatusHero[i] = BlzCreateFrameByType("BUTTON", "MyStatusButton", StatusPortraitRoot, "", 0)
             set FRAME_StatusHeroBack[i] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[i], "", 0)
             call BlzFrameSetAllPoints(FRAME_StatusHeroBack[i], FRAME_StatusHero[i])
-            call BlzFrameSetPoint(FRAME_StatusHero[i], FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, x + r * k, y)
+            call BlzFrameSetPoint(FRAME_StatusHero[i], FRAMEPOINT_CENTER, StatusPortraitRoot, FRAMEPOINT_CENTER, x + r * k, y)
             call BlzFrameSetSize(FRAME_StatusHero[i], STATUS_HERO_SIZE, STATUS_HERO_SIZE)
             call BlzFrameSetLevel(FRAME_StatusHero[i], 10)
             call BlzFrameSetLevel(FRAME_StatusHeroBack[i], 10)
@@ -1166,7 +1246,7 @@ endfunction
             call BlzFrameSetVisible(FRAME_StatusHeroStringPlayerName[i], false)
 
             // Простой ручной tooltip без системного обработчика, вызывавшего зависание клиента.
-            set FRAME_StatusHeroTooltip[i] = WUI_Window("StatusHeroNameTooltip", FRAME_StatusHeroMain, 0, 3000 + i)
+            set FRAME_StatusHeroTooltip[i] = WUI_Window("StatusHeroNameTooltip", StatusPortraitRoot, 0, 3000 + i)
             call BlzFrameSetPoint(FRAME_StatusHeroTooltip[i], FRAMEPOINT_TOP, FRAME_StatusHero[i], FRAMEPOINT_BOTTOM, 0.000, -0.003)
             call BlzFrameSetSize(FRAME_StatusHeroTooltip[i], GetStatusHeroTooltipWidth(GetPlayerName(Player(i))), 0.020)
             call BlzFrameSetAlpha(FRAME_StatusHeroTooltip[i], 230)
@@ -1200,31 +1280,31 @@ endfunction
         call BlzFrameSetModel(FRAME_SwapSprite2[i], "Pick\\selecter6.mdx", 0)
         call BlzFrameSetVisible(FRAME_SwapSprite2[i], false)
             set rkek3 = (1-rkek+1)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.045*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.045*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerKill[i],rkek)
             set FRAME_StatusHeroStringPlayerDeath[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDeath[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.055*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDeath[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.055*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerDeath[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDeath[i],rkek)
             set FRAME_StatusHeroStringPlayerDamagePhys[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamagePhys[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.065*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamagePhys[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.065*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamagePhys[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamagePhys[i],rkek)
             set FRAME_StatusHeroStringPlayerDamageMag[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageMag[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.075*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageMag[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.075*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageMag[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageMag[i],rkek)
             set FRAME_StatusHeroStringPlayerHeal[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerHeal[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.085*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerHeal[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.085*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerHeal[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerHeal[i],rkek)
             set FRAME_StatusHeroStringPlayerDamageTakenPhys[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.095*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.095*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenPhys[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageTakenPhys[i],rkek)
             set FRAME_StatusHeroStringPlayerDamageTakenMag[i] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[i], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenMag[i], FRAMEPOINT_LEFT, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.105*rkek3 )// - 0.03 * i)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerDamageTakenMag[i], FRAMEPOINT_LEFT, StatusPortraitRoot, FRAMEPOINT_CENTER, (x+rkek2) + r * k, y - 0.105*rkek3 )// - 0.03 * i)
             call BlzFrameSetText(FRAME_StatusHeroStringPlayerDamageTakenMag[i], "|c00FFFF00" + "" + "|r")
             call BlzFrameSetScale(FRAME_StatusHeroStringPlayerDamageTakenMag[i],rkek)
             set k = k + 1
@@ -1235,20 +1315,25 @@ endfunction
         endloop
         set r2 = 0.012
         set r3 = 0.000
-        set FRAME_StatusHero[10] = BlzCreateFrameByType("BUTTON", "MyStatusButton", FRAME_StatusHeroMain, "ScoreScreenTabButtonTemplate", 0)
+        set StatusTrainBox = WUI_Panel("WOSTrainKillsBox", FRAME_StatusHeroMain, 0.090, 0.017)
+        call WUI_Place(StatusTrainBox, 0.400, 0.519, 0.090, 0.017)
+        call WUI_RegisterTopControl(StatusTrainBox)
+        set border = WUI_OrnateBorder("WOSTrainKillsMetal", StatusTrainBox, 0.006)
+        set FRAME_StatusHero[10] = BlzCreateFrameByType("BUTTON", "MyStatusButton", StatusTrainBox, "", 0)
             set FRAME_StatusHeroBack[10] = BlzCreateFrameByType("BACKDROP", "MyStatusButtonIcon", FRAME_StatusHero[10], "", 0)
             call BlzFrameSetAllPoints(FRAME_StatusHeroBack[10], FRAME_StatusHero[10])
-            call BlzFrameSetPoint(FRAME_StatusHero[10], FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, -0.028)
-            call BlzFrameSetSize(FRAME_StatusHero[10], 0.090, 0.007)
+            call BlzFrameSetPoint(FRAME_StatusHero[10], FRAMEPOINT_CENTER, StatusTrainBox, FRAMEPOINT_CENTER, 0.000, 0.000)
+            call BlzFrameSetSize(FRAME_StatusHero[10], 0.086, 0.014)
             call BlzFrameSetLevel(FRAME_StatusHero[10], 10)
             call BlzFrameSetLevel(FRAME_StatusHeroBack[10], 10)
             call BlzFrameSetAlpha(FRAME_StatusHero[10], 255)
             call BlzFrameSetAlpha(FRAME_StatusHeroBack[10], 255)
             call BlzFrameSetTexture(FRAME_StatusHeroBack[10], WUI_EMPTY_TEXTURE, 0, true)
             set FRAME_StatusHeroStringPlayerKill[10] = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHero[10], "", 0)
-            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[10], FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, -0.028)
-            call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[10], "|cffffff00Kills:" + I2S(TrainKill) + "|r")
-            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerKill[10], 0.48)
+            call BlzFrameSetPoint(FRAME_StatusHeroStringPlayerKill[10], FRAMEPOINT_CENTER, StatusTrainBox, FRAMEPOINT_CENTER, 0.000, 0.000)
+            call BlzFrameSetTextAlignment(FRAME_StatusHeroStringPlayerKill[10], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetText(FRAME_StatusHeroStringPlayerKill[10], "|cffd5b876Train kills: " + I2S(TrainKill) + "|r")
+            call BlzFrameSetScale(FRAME_StatusHeroStringPlayerKill[10], 0.70)
             
     call BlzFrameSetEnable(FRAME_StatusHero[10],false)
     call BlzFrameSetEnable(FRAME_StatusHeroBack[10],false)
@@ -1261,60 +1346,8 @@ endfunction
         call BlzFrameSetTextAlignment(FRAME_StatusHeroStringPlayerTakenDamageMag, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         call BlzFrameSetAlpha(FRAME_StatusHeroStringPlayerTakenDamageMag, 255)
         call BlzFrameSetVisible(FRAME_StatusHeroMain2, false)
-        set FRAME_RoundCount = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_RoundCount, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, 0.000)
-        call BlzFrameSetText(FRAME_RoundCount, "Round: |c00FFFF00" + I2S(CurrentRound) + "|r")
-        call BlzFrameSetScale(FRAME_RoundCount, 0.75)
-        call BlzFrameSetAlpha(FRAME_RoundCount, 255)
-        call BlzFrameSetEnable(FRAME_RoundCount,false)
-        call BlzFrameSetVisible(FRAME_RoundCount, false)
-        set k = 7
-        set FRAME_RoundTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_RoundTimer, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, STATUS_ROUND_TIMER_X, STATUS_ROUND_TIMER_Y)
-        call BlzFrameSetText(FRAME_RoundTimer, "STARTS|n|c00FFFF00" + I2S(TimeRound / 60) + ":00|r")
-        call BlzFrameSetSize(FRAME_RoundTimer, 0.050, 0.028)
-        call BlzFrameSetTextAlignment(FRAME_RoundTimer, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetScale(FRAME_RoundTimer, 0.73)
-        call BlzFrameSetAlpha(FRAME_RoundTimer, 255)
-        call BlzFrameSetEnable(FRAME_RoundTimer,false)
-        call BlzFrameSetVisible(FRAME_RoundTimer, true)
-        set k = 9
-        set border = WUI_Panel("WOSGameTimeBox", FRAME_StatusHeroMain, 0.090, 0.013)
-        call BlzFrameSetPoint(border, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, -0.017)
-        set border = WUI_Border("WOSGameTimeMetal", border)
-        set FRAME_GameTimer = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_GameTimer, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.000, -0.017)
-        call BlzFrameSetText(FRAME_GameTimer, GetCompactGameTimerText())
-        call BlzFrameSetAlpha(FRAME_GameTimer, 255)
-        call BlzFrameSetScale(FRAME_GameTimer, 0.70)
-        call BlzFrameSetEnable(FRAME_GameTimer,false)
-        set border = WUI_Panel("WOSTeam1ScoreBox", FRAME_StatusHeroMain, 0.033, 0.035)
-        call BlzFrameSetPoint(border, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, -0.043, 0.011)
-        set border = WUI_OrnateBorder("WOSTeam1ScoreMetal", border, 0.009)
-        set FRAME_Team1Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore1", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Team1Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, -0.043, 0.011)
-        call BlzFrameSetSize(FRAME_Team1Rounds, 0.030, 0.030)
-        call BlzFrameSetTextAlignment(FRAME_Team1Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetText(FRAME_Team1Rounds, "|cffff4040" + I2S(Team1Round) + "|r")
-        call BlzFrameSetScale(FRAME_Team1Rounds, 2.00)
-        call BlzFrameSetAlpha(FRAME_Team1Rounds, 255)
-        call BlzFrameSetLevel(FRAME_Team1Rounds, 50)
-        call BlzFrameSetVisible(FRAME_Team1Rounds, true)
-        call BlzFrameSetEnable(FRAME_Team1Rounds,false)
-        set border = WUI_Panel("WOSTeam2ScoreBox", FRAME_StatusHeroMain, 0.033, 0.035)
-        call BlzFrameSetPoint(border, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.043, 0.011)
-        set border = WUI_OrnateBorder("WOSTeam2ScoreMetal", border, 0.009)
-        set FRAME_Team2Rounds = BlzCreateFrameByType("TEXT", "MyPlayerScore2", FRAME_StatusHeroMain, "", 0)
-        call BlzFrameSetPoint(FRAME_Team2Rounds, FRAMEPOINT_CENTER, FRAME_StatusHeroMain, FRAMEPOINT_CENTER, 0.043, 0.011)
-        call BlzFrameSetSize(FRAME_Team2Rounds, 0.030, 0.030)
-        call BlzFrameSetTextAlignment(FRAME_Team2Rounds, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetText(FRAME_Team2Rounds, "|cff4080ff" + I2S(Team2Round) + "|r")
-        call BlzFrameSetScale(FRAME_Team2Rounds, 2.00)
-        call BlzFrameSetAlpha(FRAME_Team2Rounds, 255)
-        call BlzFrameSetLevel(FRAME_Team2Rounds, 50)
-        call BlzFrameSetVisible(FRAME_Team2Rounds, true)
+        call WOS_CreateRoundCounters()
         call TriggerAddAction(FrameClickHeroMain, function OnClickStatusHero)
-        call BlzFrameSetEnable(FRAME_Team2Rounds,false)
         call BlzFrameSetVisible(FRAME_StatusHeroMain, false)
         call BlzFrameSetVisible(FRAME_StatusHeroMain3, false)
         call BlzFrameSetVisible(FRAME_StatusHeroMain4, false)
@@ -1407,7 +1440,7 @@ endfunction
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK2, FRAMEEVENT_CONTROL_CLICK)
         call BlzTriggerRegisterFrameEvent(FrameLinkMain2, FRAME_LINK4, FRAMEEVENT_CONTROL_CLICK)
             call TriggerAddAction(FrameLinkMain2, function OnClickFrameLink)
-     set FRAME_LINK = BlzCreateFrame("EscMenuEditBoxTemplate",  WUI_GetRoot(),0,0)
+     set FRAME_LINK = BlzCreateFrame("LMPLinkEditTemplate",  WUI_GetRoot(),0,0)
     call BlzFrameSetAbsPoint(FRAME_LINK, FRAMEPOINT_CENTER, 0.52, 0.1525) 
     call BlzFrameSetSize(FRAME_LINK, 0.15, 0.03) 
     call BlzFrameSetText(FRAME_LINK,"discord.gg/wos2")    

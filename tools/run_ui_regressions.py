@@ -5,10 +5,10 @@ import unittest
 
 SUITES = ['test_wos_ui', 'test_wos_ui_runtime_fixes', 'test_wos_ui_checkpoint13',
           'test_wos_ui_checkpoint14', 'test_wos_ui_checkpoint15', 'test_wos_ui_checkpoint16',
-          'test_wos_ui_checkpoint17', 'test_ally_hero_ability_ui', 'test_team_map_pings',
+          'test_wos_ui_checkpoint17', 'test_wos_ui_checkpoint18', 'test_wos_ui_checkpoint19', 'test_ally_hero_ability_ui', 'test_team_map_pings',
           'test_sync_war3_triggers', 'test_test_map_workflow']
 if __name__ == '__main__':
-    report = Path('_build/ui-redesign/checkpoint17-tests.txt')
+    report = Path('_build/ui-redesign/checkpoint19-tests.txt')
     report.parent.mkdir(parents=True, exist_ok=True)
     names = [name for name in SUITES if Path(__file__).with_name(name+'.py').exists()]
     with report.open('w', encoding='utf-8') as stream:

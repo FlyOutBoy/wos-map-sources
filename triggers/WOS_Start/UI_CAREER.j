@@ -707,6 +707,10 @@ private function WCS_SetOpen takes player viewer, boolean open returns nothing
     endif
 endfunction
 
+private function WCS_CloseTopWindow takes nothing returns nothing
+    call WCS_SetOpen(GetLocalPlayer(), false)
+endfunction
+
 private function WCS_ResetClickedFrame takes nothing returns nothing
     if GetLocalPlayer() == GetTriggerPlayer() then
         call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
@@ -972,6 +976,8 @@ private function WCS_CreateUI takes nothing returns nothing
     local framehandle gameUI = WUI_GetRoot()
     local integer pid = 0
     set WCS_OpenButton = WCS_CreateIconButton(gameUI, WUI_TopActionX(1), 0.580, WCS_OPEN_SIZE, 8200)
+    call WUI_RegisterTopControl(WCS_OpenButton)
+    call WUI_RegisterTopClose(function WCS_CloseTopWindow)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
     call BlzFrameSetVisible(WCS_OpenButton, false)
     call BlzFrameSetLevel(WCS_OpenButton, 100)

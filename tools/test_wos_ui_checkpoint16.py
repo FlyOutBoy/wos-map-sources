@@ -27,7 +27,7 @@ class RealTransparency(unittest.TestCase):
             base = Path(directory)
             folder = base / 'assets/UI/WOS'
             folder.mkdir(parents=True)
-            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'Music.toc', 'Music.fdf', 'empty.tga'):
+            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'Music.toc', 'Music.fdf', 'Charges.toc', 'Charges.fdf', 'Templates.toc', 'empty.tga'):
                 (folder / name).write_bytes((ROOT / 'assets/UI/WOS' / name).read_bytes())
             data = bytearray((folder / 'empty.tga').read_bytes())
             data[18 + data[0] + 3] = 255

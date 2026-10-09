@@ -322,9 +322,10 @@ function WOS_CreateModeSelector takes nothing returns nothing
     local trigger events = CreateTrigger()
     set WOS_ModeRoot = WUI_Passive("WOSModeSelector", WUI_GetRoot())
     call WUI_RegisterModal(WOS_ModeRoot)
+    call BlzFrameSetScale(WOS_ModeRoot, 1.15)
     call BlzFrameSetLevel(WOS_ModeRoot, 30)
     set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
-    call WUI_Place(panel, 0.400, 0.323, 0.3105, 0.3132)
+    call WUI_Place(panel, 0.400, 0.323, 0.270, 0.272347826)
     set title = WUI_OrnateWindow("WOSModeMetal", panel, 0.032)
     set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
     call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)
@@ -348,8 +349,8 @@ function WOS_CreateModeSelector takes nothing returns nothing
         else
             set caption = "Test Mode"
         endif
-        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.230, 0.037)
-        call WUI_Place(WOS_ModeButton[i], 0.400, 0.374 - I2R(i) * 0.047, 0.230, 0.037)
+        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.230, 0.038608696)
+        call WUI_Place(WOS_ModeButton[i], 0.400, 0.374 - I2R(i) * 0.054, 0.230, 0.038608696)
         call BlzTriggerRegisterFrameEvent(events, WOS_ModeButton[i], FRAMEEVENT_CONTROL_CLICK)
         if GetLocalPlayer() != Player(0) then
             call BlzFrameSetEnable(WOS_ModeButton[i], false)

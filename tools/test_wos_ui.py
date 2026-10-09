@@ -16,6 +16,9 @@ def load_source(filename):
     # Comments include retired implementations, which are not compiled by Warcraft.
     source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
     vm = JassState(source)
+    # Import literal production constants/default flags for dependent helpers.
+    for name, value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?(?:real|boolean) (\w+) = ([0-9.]+|true|false)\s*$', source):
+        vm.g[name] = value == 'true' if value in ('true', 'false') else float(value)
     for kind, name in re.findall(r'(?m)^\s*(?:private )?(\w+) array (\w+)', source):
         default = False if kind == 'boolean' else 0 if kind in ('integer', 'real') else None
         vm.g[name] = defaultdict(lambda v=default: v)
@@ -30,8 +33,8 @@ class NativeCommandLayout(unittest.TestCase):
         self.positions = {}
         self.vm.g.update({
             'WUI_OrdersOpen': False, 'WUI_CompactCommands': False,
-            'WUI_COMMAND_X': .318, 'WUI_COMMAND_STEP': .039,
-            'WUI_HUD_Y': .044, 'WUI_ICON_SIZE': .036,
+            'WUI_COMMAND_X': .274, 'WUI_COMMAND_STEP': .039,
+            'WUI_HUD_Y': .023, 'WUI_ICON_SIZE': .036,
             'FRAMEPOINT_CENTER': 'center', 'I2R': float,
             'ModuloInteger': lambda a, b: a % b,
             'BlzFrameClearAllPoints': lambda *_: None,
@@ -46,8 +49,8 @@ class NativeCommandLayout(unittest.TestCase):
         g = self.vm.g
         for index, native in enumerate((8, 9, 10, 11, 7, 5, 6)):
             x, y = self.positions[g['WUI_Command'][native]]
-            self.assertAlmostEqual(.318 + index * .039, x)
-            self.assertEqual(.044, y)
+            self.assertAlmostEqual(.274 + index * .039, x)
+            self.assertEqual(.044 if index >= 5 else .023, y)
         for index in range(5):
             self.assertEqual((-.20, -.20), self.positions[g['WUI_Command'][index]])
         g['WUI_OrdersOpen'] = True

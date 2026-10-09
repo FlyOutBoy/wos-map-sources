@@ -2497,7 +2497,7 @@ function WOS_LayoutShop takes nothing returns nothing
     local real joinY
     local real distance
     call WUI_Place(FRAME_ShopMAIN, 0.400, 0.343, 0.756, 0.366)
-    call WUI_Place(FRAME_ShopItemList, 0.248, 0.368, 0.414, 0.284)
+    call WUI_Place(FRAME_ShopItemList, 0.248, 0.340, 0.414, 0.282)
     call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.379, 0.182, 0.208)
     call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.217, 0.182, 0.104)
     call WUI_Place(FRAME_ShopItemInventory, 0.710, 0.324, 0.118, 0.318)
@@ -2512,20 +2512,20 @@ function WOS_LayoutShop takes nothing returns nothing
     call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.90)
     call BlzFrameSetTextAlignment(FRAME_ShopItemInventoryName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(FRAME_ShopItemInventoryName, false)
-    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.209, 0.047, 0.016)
+    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.177, 0.047, 0.016)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.85)
-    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.209, 0.200, 0.025)
-    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.209, 0.019, 0.019)
-    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.518, 0.015, 0.015)
-    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.518, 0.039, 0.012)
+    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.177, 0.200, 0.025)
+    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.177, 0.019, 0.019)
+    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.480, 0.015, 0.015)
+    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.480, 0.039, 0.012)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
-    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.518, 0.015, 0.015)
-    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.209, 0.017, 0.017)
-    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.209, 0.085, 0.016)
+    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.480, 0.015, 0.015)
+    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.177, 0.017, 0.017)
+    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.177, 0.085, 0.016)
     call BlzFrameSetScale(FRAME_AutoBuyText, 0.90)
     loop
         exitwhen i >= 7
-        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.178, 0.098, 0.030)
+        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.505, 0.098, 0.027)
         set i = i + 1
     endloop
     set i = 0
@@ -2534,7 +2534,7 @@ function WOS_LayoutShop takes nothing returns nothing
         set column = ModuloInteger(i, 7)
         set row = i / 7
         set x = 0.068 + I2R(column) * 0.058
-        set y = 0.469 - I2R(row) * 0.053
+        set y = 0.445 - I2R(row) * 0.051
         call WUI_Place(FRAME_ShopItem[i], x, y, 0.040, 0.040)
         call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.027, 0.047, 0.010)
         call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
@@ -2754,7 +2754,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetTextAlignment(FRAME_ShopSearchLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 1.10)
     call BlzFrameSetText(FRAME_ShopSearchLabel, "|c00FFD700Search:|r")
-    set FRAME_ShopSearchEditBox = BlzCreateFrame("EscMenuEditBoxTemplate", FRAME_ShopMAIN, 0, 0)
+    set FRAME_ShopSearchEditBox = BlzCreateFrame("LMPLinkEditTemplate", FRAME_ShopMAIN, 0, 0)
     call BlzFrameSetAbsPoint(FRAME_ShopSearchEditBox, FRAMEPOINT_CENTER, 0.285, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchEditBox, 0.195, 0.030)
     call BlzFrameSetAlpha(FRAME_ShopSearchEditBox, 220)

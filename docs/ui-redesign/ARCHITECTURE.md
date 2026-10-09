@@ -1,5 +1,67 @@
 # Existing UI architecture
 
+## Checkpoint 19 — integrated, engine verification pending (2026-10-09)
+
+Latest reference: the original scenario folder
+`C:/Users/Gear/Documents/Warcraft III/Maps/Anime_WOS2_0.32.w3x`, not MAIN.
+Backup loads Templates.toc before frame creation and its charge definitions separately.
+WUI now loads one Templates.toc at game-time .10: HUD, Music, Charges in dependency
+order, before all queued owners. Stock engine FDF is already present and must not
+be reloaded (previous ReplayPanelStringTemplate duplicate). Private EDITBOX remains;
+the horizontal slider body/skin names now match the backup's LocalMp3Player.fdf.
+
+Actual split-layout bug fixed: ShowCD still used .036 icons and one Y coordinate,
+while native commands used .028 and two rows. Both now share WUI_ICON_SIZE=.036,
+X=.274, step=.039, QWERT Y=.023, FG Y=.044. Existing native cooldown child models
+are resized after lazy creation; no orders, animation values or charge labels replaced.
+Main chassis is .608 x .090 at (.448,.045); equal side boxes .104 x .088;
+all lower sections moved .018 left, vitals/stats/actions .008 down. Minimap is .140
+square; camera moved exactly -.0175 X to .1335, height reduced .140 -> .126 (10%),
+Y=.067; native/ally tooltip bottoms (.256,.106). Portrait keeps its larger border
+and Tas level label. Mode parent-scale correction from18 retained.
+Music header now says Choose a track when tracks exist but none was selected;
+the previous No tracks imported header was false in that state. Local scan unchanged.
+All14 Music BLPs match the original backup, decode as256x256 RGBA, and match archive.
+
+Integration 13:52:00: 109 native source identities; 0 added, 6 updated;
+backup `backups/trigger-sync/2026-10-09_135200_132860/map-before-push`.
+Full MAIN build 13:52:33 succeeded; 6383 files; 133106 script lines /148933 total.
+Archive SHA256 D394486164D7F951DD4E46822EE799BEE7F5F213DF07D232D831380157A97A16.
+118 regression checks passed. Source/MAIN/archive:52 UI assets plus14 original
+music icons byte-identical; native WTG/WCT identities and traversal PASS.
+Evidence `_build/ui-redesign/checkpoint19-{tests.txt,integration-verification.json,
+map-sha256.txt,full-main-pjass.txt,backup-comparison.json}`.
+
+Owned game process16204 launched13:54:48 for startup inspection. The game ended13:56:22.
+Saved log has0 FDF parser errors and38 model creation failures; see
+`_build/ui-redesign/checkpoint19-runtime-inspection.json`. Computer Use
+initialization still fails before import: kernel assets OS error3; no real click,
+render, slider dragging or playback confirmation. Game log can be buffered; an alive
+process and static checks are not engine verification. Earlier18 log has empty-name
+model failures and SpellMarkerBlue/cupbubble failures (those assets equal backup).
+Do not report complete success or shut down the computer while verification is
+unresolved. No shutdown command issued. MAIN/artifact are saved for continued work.
+
+Checkpoint18 was integrated13:14:39 with113 checks and hash B073625C...;
+its geometry/three-load setup is superseded by19. Older sections below are history.
+
+## Checkpoint 18 — active corrections (2026-10-09)
+
+Latest steering supersedes17 geometry: shrink minimap frame, integrate full-height
+camera slider in its right edge, dock all lower sections immediately beside it.
+Also: actual mode/portrait frame scale; central timer-based dependency TOC load;
+no partial Music window on creation failure; score text anchored to its own boxes;
+separate gold train-kill caption; Hide UI hides top chrome except scores/round clock;
+shop categories above, item rows aligned below tree header; tooltips above abilities;
+translucent team backdrop preserves FPS/ping beneath. Do not alpha a text ancestor.
+
+Runtime evidence: War3Log 12:36:25.192, Music.fdf line16 rejects JUSTIFYCENTER for
+FontJustificationV and aborts parsing before slider. Correct token JUSTIFYMIDDLE.
+Prior17 source was integrated12:32, SHA2568F6DBB61...,103 tests passed, but this
+real FDF parser failure is not covered by those tests. New integration/checks pending.
+Computer Use initialization OS error3 persists; real click/render verification not
+available. Shutdown remains conditional on full completion, never while unresolved.
+
 ## Checkpoint 17 — authoritative current state (2026-10-09)
 
 Latest request: fix recurring music TOC failure, unify lower boxes/actions, enlarge
@@ -7,17 +69,32 @@ mode/minimap rectangles, move vitals/abilities left, portrait level badge, flush
 top scoreboard/action panel and right test-help block. Screenshot references:
 40aaafc5, cd78d241, 82cdc068, 7b841409. These supersede checkpoint16 geometry.
 
-Actual native war3mapImported/Templates.toc bytes end in SINGLE LF, without an
-empty final line. Failure aborts LocalMp3Player_CreateUI and hides Link/Music.
-Music now loads versioned UI/WOS/Music.toc once in WUI_OnReady game-time (.10),
-with no-BOM CRLF + empty ending. Includes only engine escmenutemplates.fdf and
-bundled Music.fdf. Private horizontal slider uses bundled graphite/gold textures.
+War3Log at 11:18:34 reports escmenutemplates.fdf line437 duplicate
+ReplayPanelStringTemplate. Reloading engine FDF globals aborts the original
+Templates.toc and prevents Link/Music creation. Its LF/no-empty-ending bytes
+were also malformed, but repairing that alone does not fix this actual error.
+WUI_Bootstrap now loads only bundled WOSHUD.toc and Music.toc at game-time .10,
+BEFORE queued owners; LMP reads WUI_HasMusicDefinitions, never reloads stock FDF.
+Music.toc is no-BOM CRLF + empty line and lists ONLY UI\WOS\Music.fdf.
+Music.fdf owns independent slider and EDITBOX LMPLinkEditTemplate, with direct
+bundled graphite/gold textures, no Includes/inheritance/global StringList.
+Music URL, community link and shop search all use that private EDITBOX.
+First17 MAIN/artifact (12:12, hash E43E...) included stock Esc templates and is
+SUPERSEDED: final root-cause correction and latest geometry must be pushed,
+compiled and verified again before using the map.
 Music icon buttons no longer inherit Glue templates. Track rows use custom
 WUI_TextButton and WUI_SetButtonText updates their TEXT child, not the BUTTON.
 Installer/verifier cover both private resources and reject malformed endings.
 Primary format reference: https://www.hiveworkshop.com/threads/ui-toc-files.315854/
 BlzLoadTOCFile false still reports an error; do not mask real resource failures.
 
+Latest screenshots75cf72ae/842660b3: outer mode panel had enlarged but buttons
+had not. Actual four BUTTONs are now .2645x.0444 (old .230x.037 times1.15/1.20),
+centers .374-.054*i, with nonoverlapping hitboxes inside panel. Pick portrait
+art .110square stays intact at(.608,.413); frame .1265square =1.15x with filled
+WUI_Window graphite background/ornate gold edge bound to portrait center.
+Its bottom .34975 clears stats top .3455; top .47625 clears name bottom .480.
+HUD portrait border also enlarged .0437square around .038portrait (1.15x).
 Mode full panel .3105x.3132 = old .270x.261 times1.15/1.20 (not just ornaments).
 Minimap frame .1702 square = old.148 times1.15, center(.074,.074); native image
 BL(-.0065,-.0065), TR(.1545,.1545). This uses wide-display margins; check4:3
@@ -49,7 +126,7 @@ gold textures: shop/cart, community/chat, chat smile, emotes, ping, muted ping.
 Chat mute uses same dark button material plus gold check state. Gameplay emotes,
 ping target selection/fog safeguards/controllers are preserved.
 
-100 regression checks PASS; production compile-only PASS147780 total lines before
+Regression suite currently103 checks; rerun after root-cause/geometry changes. Previous100 checks PASS; production compile-only PASS147780 total lines before
 the final cosmetic icon alignment (full MAIN build below is authoritative).
 Evidence: _build/ui-redesign/checkpoint17-tests.txt. Tests exercise production
 TOC bytes, successful load caching, dynamic track text child, actual emitted
