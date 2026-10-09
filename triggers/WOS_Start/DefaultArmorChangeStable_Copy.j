@@ -1,4 +1,4 @@
-library HeroUnitPanelStats initializer HeroUnitPanelStats_Init requires heroicon, WOSUI
+library HeroUnitPanelStats initializer HeroUnitPanelStats_Init requires heroicon, WOSUI, TasAbilityChargeBox
 
 // Existing selected-unit overlay migrated into the compact HUD. All combat data
 // comes from the map's existing functions or the stock engine panel.
@@ -46,14 +46,14 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     call WUI_PlaceToolbar(UNITSTAT_Shop, 0, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Shop)
-    call BlzFrameSetTexture(icon, "ReplaceableTextures\\CommandButtons\\BTNMarketplace.blp", 0, true)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-shop.tga", 0, true)
     call BlzFrameSetEnable(icon, false)
     call WUI_Tooltip(UNITSTAT_Shop, "SHOP [Tab]|nOpen or close your current shop tab.")
     set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetRoot(), "", 0)
     call WUI_PlaceToolbar(UNITSTAT_Emotes, 2, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Emotes)
-    call BlzFrameSetTexture(icon, "UI\\TeamPings\\button-emoji.tga", 0, true)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\toolbar-emotes.tga", 0, true)
     call BlzFrameSetEnable(icon, false)
     set text = BlzCreateFrameByType("TEXT", "WOSEmotesToolbarHotkey", UNITSTAT_Emotes, "", 0)
     call BlzFrameSetPoint(text, FRAMEPOINT_BOTTOMRIGHT, UNITSTAT_Emotes, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
@@ -250,34 +250,34 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     local timer initTimer = CreateTimer()
     set UNITSTAT_SelectedGroup = CreateGroup()
     set UNITSTAT_Root = WUI_Passive("WOSSelectedUnitHUD", WUI_GetRoot())
-    set back = WUI_Panel("WOSSelectedUnitBack", UNITSTAT_Root, 0.096, 0.092)
-    call WUI_Place(back, 0.203, 0.052, 0.096, 0.092)
+    set back = WUI_Panel("WOSSelectedUnitBack", UNITSTAT_Root, 0.104, 0.096)
+    call WUI_Place(back, 0.240, 0.050, 0.104, 0.096)
     set back = WUI_OrnateWindow("WOSSelectedUnitEdge", back, 0.014)
     set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)
-    call WUI_Place(UNITSTAT_Widget[6], 0.177, 0.059, 0.038, 0.038)
+    call WUI_Place(UNITSTAT_Widget[6], 0.211, 0.059, 0.038, 0.038)
     set UNITSTAT_Portrait = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitIconTexture", UNITSTAT_Widget[6], "", 0)
     call BlzFrameSetAllPoints(UNITSTAT_Portrait, UNITSTAT_Widget[6])
     set back = WUI_Border("WOSSelectedUnitBorder", UNITSTAT_Widget[6])
-    set UNITSTAT_Level = UNITSTAT_Text("WOSSelectedUnitLevel", UNITSTAT_Root, 0.177, 0.032, 0.031)
-    call UNITSTAT_WidgetCreate(0, "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp", 0.224, 0.085, 0.048, events)
-    call UNITSTAT_WidgetCreate(1, "ReplaceableTextures\\CommandButtons\\BTNDefend.blp", 0.224, 0.071, 0.048, events)
-    call UNITSTAT_WidgetCreate(2, "ReplaceableTextures\\CommandButtons\\BTNSpellShieldAmulet.blp", 0.224, 0.057, 0.048, events)
-    call UNITSTAT_WidgetCreate(3, "UI\\Widgets\\Console\\Human\\human-attribute-str.blp", 0.224, 0.043, 0.048, events)
-    call UNITSTAT_WidgetCreate(4, "UI\\Widgets\\Console\\Human\\human-attribute-agi.blp", 0.224, 0.029, 0.048, events)
-    call UNITSTAT_WidgetCreate(5, "UI\\Widgets\\Console\\Human\\human-attribute-int.blp", 0.224, 0.015, 0.048, events)
+    set UNITSTAT_Level = TasAbilityChargeBox_CreatePortraitLabel(UNITSTAT_Widget[6])
+    call UNITSTAT_WidgetCreate(0, "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp", 0.265, 0.085, 0.048, events)
+    call UNITSTAT_WidgetCreate(1, "ReplaceableTextures\\CommandButtons\\BTNDefend.blp", 0.265, 0.071, 0.048, events)
+    call UNITSTAT_WidgetCreate(2, "ReplaceableTextures\\CommandButtons\\BTNSpellShieldAmulet.blp", 0.265, 0.057, 0.048, events)
+    call UNITSTAT_WidgetCreate(3, "UI\\Widgets\\Console\\Human\\human-attribute-str.blp", 0.265, 0.043, 0.048, events)
+    call UNITSTAT_WidgetCreate(4, "UI\\Widgets\\Console\\Human\\human-attribute-agi.blp", 0.265, 0.029, 0.048, events)
+    call UNITSTAT_WidgetCreate(5, "UI\\Widgets\\Console\\Human\\human-attribute-int.blp", 0.265, 0.015, 0.048, events)
     loop
         exitwhen i >= 2
         set back = WUI_Panel("WOSVitalsBack", UNITSTAT_Root, 0.277, 0.009)
-        call WUI_Place(back, 0.474, 0.093 - I2R(i) * 0.014, 0.277, 0.009)
+        call WUI_Place(back, 0.4385, 0.091 - I2R(i) * 0.014, 0.277, 0.009)
         if i == 0 then
             set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsHp", UNITSTAT_Root, 0.275, 0.007, 100.00, "UI\\WOS\\hp.tga")
         else
             set UNITSTAT_Bar[i] = WUI_CreateFill("WOSVitalsMp", UNITSTAT_Root, 0.275, 0.007, 100.00, "UI\\WOS\\mp.tga")
         endif
-        call BlzFrameSetAbsPoint(UNITSTAT_Bar[i], FRAMEPOINT_LEFT, 0.3365, 0.093 - I2R(i) * 0.014)
-        set UNITSTAT_BarText[i] = UNITSTAT_Text("WOSVitalsNumber", UNITSTAT_Root, 0.470, 0.093 - I2R(i) * 0.014, 0.160)
+        call BlzFrameSetAbsPoint(UNITSTAT_Bar[i], FRAMEPOINT_LEFT, 0.301, 0.091 - I2R(i) * 0.014)
+        set UNITSTAT_BarText[i] = UNITSTAT_Text("WOSVitalsNumber", UNITSTAT_Root, 0.4345, 0.091 - I2R(i) * 0.014, 0.160)
         call BlzFrameSetScale(UNITSTAT_BarText[i], 0.76)
-        set UNITSTAT_Regen[i] = UNITSTAT_Text("WOSVitalsRegen", UNITSTAT_Root, 0.586, 0.093 - I2R(i) * 0.014, 0.044)
+        set UNITSTAT_Regen[i] = UNITSTAT_Text("WOSVitalsRegen", UNITSTAT_Root, 0.5505, 0.091 - I2R(i) * 0.014, 0.044)
         call BlzFrameSetScale(UNITSTAT_Regen[i], 0.70)
         set i = i + 1
     endloop

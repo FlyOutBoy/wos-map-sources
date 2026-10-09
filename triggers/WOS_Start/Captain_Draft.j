@@ -1289,9 +1289,9 @@ function CaptainDraft_Finish takes nothing returns nothing
     endif
     if FRAME_RoundTimer != null then
         if thinkSeconds < 10 then
-            call BlzFrameSetText(FRAME_RoundTimer, "Round Start In: |c00FFFF00" + I2S(thinkMinutes) + ":0" + I2S(thinkSeconds) + "|r")
+            call BlzFrameSetText(FRAME_RoundTimer, "STARTS|n|c00FFFF00" + I2S(thinkMinutes) + ":0" + I2S(thinkSeconds) + "|r")
         else
-            call BlzFrameSetText(FRAME_RoundTimer, "Round Start In: |c00FFFF00" + I2S(thinkMinutes) + ":" + I2S(thinkSeconds) + "|r")
+            call BlzFrameSetText(FRAME_RoundTimer, "STARTS|n|c00FFFF00" + I2S(thinkMinutes) + ":" + I2S(thinkSeconds) + "|r")
         endif
     endif
     call SetTeamAlliances()

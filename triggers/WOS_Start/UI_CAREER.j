@@ -971,7 +971,7 @@ endfunction
 private function WCS_CreateUI takes nothing returns nothing
     local framehandle gameUI = WUI_GetRoot()
     local integer pid = 0
-    set WCS_OpenButton = WCS_CreateIconButton(gameUI, WCS_OPEN_X, WCS_OPEN_Y, WCS_OPEN_SIZE, 8200)
+    set WCS_OpenButton = WCS_CreateIconButton(gameUI, WUI_TopActionX(1), 0.580, WCS_OPEN_SIZE, 8200)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
     call BlzFrameSetVisible(WCS_OpenButton, false)
     call BlzFrameSetLevel(WCS_OpenButton, 100)

@@ -30,7 +30,7 @@ class NativeCommandLayout(unittest.TestCase):
         self.positions = {}
         self.vm.g.update({
             'WUI_OrdersOpen': False, 'WUI_CompactCommands': False,
-            'WUI_COMMAND_X': .354, 'WUI_COMMAND_STEP': .040,
+            'WUI_COMMAND_X': .318, 'WUI_COMMAND_STEP': .039,
             'WUI_HUD_Y': .044, 'WUI_ICON_SIZE': .036,
             'FRAMEPOINT_CENTER': 'center', 'I2R': float,
             'ModuloInteger': lambda a, b: a % b,
@@ -46,7 +46,7 @@ class NativeCommandLayout(unittest.TestCase):
         g = self.vm.g
         for index, native in enumerate((8, 9, 10, 11, 7, 5, 6)):
             x, y = self.positions[g['WUI_Command'][native]]
-            self.assertAlmostEqual(.354 + index * .040, x)
+            self.assertAlmostEqual(.318 + index * .039, x)
             self.assertEqual(.044, y)
         for index in range(5):
             self.assertEqual((-.20, -.20), self.positions[g['WUI_Command'][index]])
@@ -88,6 +88,9 @@ class DeferredUIStartup(unittest.TestCase):
             'DestroyTimer': lambda *_: None,
             'CreateLeaderboardBJ': lambda *_: self.native('CreateLeaderboardBJ'),
             'bj_FORCE_ALL_PLAYERS': 'all-players', 'I2R': float, 'I2S': str,
+            'BlzGetLocalClientWidth': lambda: 1920,
+            'BlzGetLocalClientHeight': lambda: 1080,
+            'RMaxBJ': max,
             'BlzGetFrameByName': lambda name, _: 'named:' + name,
             'BlzGetOriginFrame': lambda origin, _: 'origin:' + origin,
             'BlzCreateFrameByType': self.create_frame,

@@ -23,6 +23,42 @@ def build():
         draw = ImageDraw.Draw(image)
         draw.rounded_rectangle((1,1,126,126),radius=5,fill=fill,outline=line,width=1)
         image.save(OUT/(name+'.tga'))
+    # Established UI icon system: deterministic gold glyphs on matching dark
+    # buttons, with alpha outside the rounded outline. No stock item/shop icon.
+    for name in ('shop', 'community', 'chat', 'emotes', 'ping', 'ping-muted'):
+        image = Image.open(OUT/'button.tga').convert('RGBA')
+        draw = ImageDraw.Draw(image)
+        gold = (221, 191, 124, 255)
+        if name == 'shop':
+            draw.line((24, 30, 35, 30, 46, 83, 96, 83), fill=gold, width=6)
+            draw.line((40, 42, 102, 42, 93, 70, 46, 70), fill=gold, width=6)
+            for x in (53, 71, 89):
+                draw.line((x, 45, x-3, 68), fill=gold, width=3)
+            for x in (51, 88):
+                draw.ellipse((x-5, 92, x+5, 102), fill=gold)
+        elif name in ('community', 'chat'):
+            draw.rounded_rectangle((24, 30, 104, 87), radius=19, outline=gold, width=6)
+            draw.line((43, 86, 35, 103, 66, 87), fill=gold, width=5)
+            if name == 'community':
+                for x in (47, 64, 81):
+                    draw.ellipse((x-4, 54, x+4, 62), fill=gold)
+            else:
+                for x in (48, 80):
+                    draw.ellipse((x-3, 46, x+3, 52), fill=gold)
+                draw.arc((44, 49, 84, 75), 0, 180, fill=gold, width=5)
+        elif name == 'emotes':
+            draw.ellipse((26, 26, 102, 102), outline=gold, width=6)
+            for x in (48, 80):
+                draw.ellipse((x-4, 44, x+4, 52), fill=gold)
+            draw.arc((43, 49, 85, 84), 0, 180, fill=gold, width=6)
+        else:
+            draw.ellipse((41, 41, 87, 87), outline=gold, width=5)
+            draw.ellipse((57, 57, 71, 71), fill=gold)
+            for line in ((64, 23, 64, 43), (64, 85, 64, 105), (23, 64, 43, 64), (85, 64, 105, 64)):
+                draw.line(line, fill=gold, width=5)
+            if name == 'ping-muted':
+                draw.line((28, 99, 99, 28), fill=(240, 179, 96, 255), width=7)
+        image.save(OUT/('toolbar-'+name+'.tga'))
     for name, checked in [('checked', True), ('unchecked', False)]:
         image = Image.new('RGBA', (64, 64))
         draw = ImageDraw.Draw(image)
@@ -52,7 +88,7 @@ def build():
     for name, box in boxes.items():
         size = (256,256) if name[-2:] in ('tl','tr','bl','br') else ((128,32) if name.endswith(('top','bottom')) else (32,128))
         ornament.crop(box).resize(size,Image.Resampling.LANCZOS).save(OUT/(name+'.tga'))
-    print('Prepared 22 Warcraft UI textures:',OUT)
+    print('Prepared 28 Warcraft UI textures:',OUT)
 
 if __name__ == '__main__':
     build()

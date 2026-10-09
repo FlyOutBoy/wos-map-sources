@@ -27,7 +27,7 @@ class RealTransparency(unittest.TestCase):
             base = Path(directory)
             folder = base / 'assets/UI/WOS'
             folder.mkdir(parents=True)
-            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'empty.tga'):
+            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'Music.toc', 'Music.fdf', 'empty.tga'):
                 (folder / name).write_bytes((ROOT / 'assets/UI/WOS' / name).read_bytes())
             data = bytearray((folder / 'empty.tga').read_bytes())
             data[18 + data[0] + 3] = 255
@@ -68,11 +68,13 @@ class OrnamentAndControls(unittest.TestCase):
         sizes = {a[0]: a[1:] for n, a in self.fixture.calls if n == 'BlzFrameSetSize'}
         x, y = pos['BACKDROP:WOSTopActionsPanel']
         w, h = sizes['BACKDROP:WOSTopActionsPanel']
-        for xx in (.653, .691, .729, .767):
+        for xx in (self.vm.run('WUI_TopActionX', (i,)) for i in range(4)):
             self.assertLessEqual(x-w/2, xx-.0125)
             self.assertGreaterEqual(x+w/2, xx+.0125)
-            self.assertGreaterEqual(y+h/2, .548+.0125)
-            self.assertLessEqual(y-h/2, .529-.005)
+            self.assertGreaterEqual(y+h/2, .580+.0125)
+            self.assertLessEqual(y-h/2, .558-.005)
+        self.assertAlmostEqual(.6, y+h/2)
+        self.assertAlmostEqual(self.vm.run('WUI_ScreenRight'), x+w/2)
         self.assertIn(('BlzFrameSetText', ('TEXT:WOSMenuGlyph', '|cffd5b876Menu|r')), self.fixture.calls)
 
     def test_stock_glow_follows_portrait_and_cannot_leak_at_old_location(self):

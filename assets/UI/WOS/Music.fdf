@@ -1,0 +1,51 @@
+Frame "SLIDER" "LMPHorizontalSliderTemplate" {
+    Height 0.012,
+    Width 0.139,
+    SliderLayoutHorizontal,
+    SliderMinValue 0,
+    SliderMaxValue 1000,
+    SliderStepSize 1,
+    SliderInitialValue 0,
+
+    ControlBackdrop "LMPBar",
+    Frame "BACKDROP" "LMPBar" {
+        BackdropTileBackground,
+        BackdropBackground "UI\WOS\bar-back.tga",
+        BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+        BackdropCornerSize 0.006,
+        BackdropBackgroundSize 0.006,
+        BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
+        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropBlendAll,
+    }
+
+    ControlDisabledBackdrop "LMPBarDisabled",
+    Frame "BACKDROP" "LMPBarDisabled" {
+        BackdropTileBackground,
+        BackdropBackground "UI\WOS\bar-back.tga",
+        BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+        BackdropCornerSize 0.006,
+        BackdropBackgroundSize 0.006,
+        BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
+        BackdropEdgeFile "UI\WOS\border.tga",
+        BackdropBlendAll,
+    }
+
+    SliderThumbButtonFrame "LMPThumb",
+    Frame "BUTTON" "LMPThumb" {
+        Width 0.016,
+        Height 0.016,
+
+        ControlBackdrop "LMPThumbBackdrop",
+        Frame "BACKDROP" "LMPThumbBackdrop" {
+                BackdropBlendAll,
+            BackdropBackground "UI\WOS\selected.tga",
+        }
+
+        ControlDisabledBackdrop "LMPThumbDisabled",
+        Frame "BACKDROP" "LMPThumbDisabled" {
+                BackdropBlendAll,
+            BackdropBackground "UI\WOS\disabled.tga",
+        }
+    }
+}

@@ -3902,9 +3902,9 @@ call ShopForceFirstRoundAutoBuy()
                     call PauseTimer(FrameCapTimer2)
                 endif
                 if (Time_RoundEnd - (Time_RoundEnd/60)*60) < 10 then
-    call BlzFrameSetText(FRAME_RoundTimer, "Round Ends: |c00FFFF00" + I2S(Time_RoundEnd/60) + ":0" + I2S(Time_RoundEnd - (Time_RoundEnd/60)*60))
+    call BlzFrameSetText(FRAME_RoundTimer, "ENDS|n|c00FFFF00" + I2S(Time_RoundEnd/60) + ":0" + I2S(Time_RoundEnd - (Time_RoundEnd/60)*60))
 else
-    call BlzFrameSetText(FRAME_RoundTimer, "Round Ends: |c00FFFF00" + I2S(Time_RoundEnd/60) + ":" + I2S(Time_RoundEnd - (Time_RoundEnd/60)*60))
+    call BlzFrameSetText(FRAME_RoundTimer, "ENDS|n|c00FFFF00" + I2S(Time_RoundEnd/60) + ":" + I2S(Time_RoundEnd - (Time_RoundEnd/60)*60))
 endif
                 set k1 = GetRandomInt(1, 4)
                 if k1 == 1 then
@@ -3943,7 +3943,7 @@ endif
                 set FirstTime = 1
                 set FRAME_RoundCountSec = 0
                 set FRAME_RoundCountMin = 0
-    call BlzFrameSetText(FRAME_RoundTimer, "|c00FFFF00Round Starts now!")
+    call BlzFrameSetText(FRAME_RoundTimer, "|c00FFFF00STARTS NOW")
                 set TimeMove = 1
                 if TestMode == false then
                     call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[6], false)

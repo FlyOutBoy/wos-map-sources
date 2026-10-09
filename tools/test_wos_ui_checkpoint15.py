@@ -54,11 +54,11 @@ class PassiveFallback(unittest.TestCase):
             for row in range(2):
                 vm.run('WUI_PlaceToolbar', ((column, row), column, row))
         for x,y,w,h in positions.values():
-            self.assertGreaterEqual(x-w/2, .702)
-            self.assertLessEqual(x+w/2, .790)
-            self.assertGreaterEqual(y-h/2, .008)
-            self.assertLessEqual(y+h/2, .090)
-            self.assertEqual((.020, .020), (w, h))
+            self.assertGreaterEqual(x-w/2, .692)
+            self.assertLessEqual(x+w/2, .796)
+            self.assertGreaterEqual(y-h/2, .002)
+            self.assertLessEqual(y+h/2, .098)
+            self.assertEqual((.023, .023), (w, h))
         values = list(positions.values())
         for i, (x,y,w,h) in enumerate(values):
             for xx,yy,ww,hh in values[i+1:]:

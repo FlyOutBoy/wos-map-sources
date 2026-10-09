@@ -515,11 +515,11 @@ private function LMP_UpdateList takes player whichPlayer returns nothing
                 else
                     set prefix = "|cffdddddd  "
                 endif
-                call BlzFrameSetText(lmpRow[row], prefix + I2S(trackIndex) + ". " + lmpTitle[trackIndex] + "|r")
+                call WUI_SetButtonText(lmpRow[row], prefix + I2S(trackIndex) + ". " + lmpTitle[trackIndex] + "|r")
                 call BlzFrameSetEnable(lmpRow[row], true)
             else
                 set lmpRowTrack[row] = 0
-                call BlzFrameSetText(lmpRow[row], "")
+                call WUI_SetButtonText(lmpRow[row], "")
                 call BlzFrameSetEnable(lmpRow[row], false)
             endif
 
@@ -1048,19 +1048,18 @@ endfunction
 // Frame construction
 //===========================================================================
 private function LMP_CreateTextButton takes framehandle parent, string text, real x, real y, real width, real height, integer context returns framehandle
-    local framehandle newFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)
-    call WUI_StyleButton(newFrame)
+    local framehandle newFrame = WUI_TextButton("LMPTextButton" + I2S(context), parent, text, width, height)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, width, height)
-    call BlzFrameSetText(newFrame, text)
+    call WUI_SetButtonText(newFrame, text)
     call BlzTriggerRegisterFrameEvent(lmpClickTrigger, newFrame, FRAMEEVENT_CONTROL_CLICK)
 
     return newFrame
 endfunction
 
 private function LMP_CreateIconButton takes framehandle parent, real x, real y, real size, integer context returns framehandle
-    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "ScoreScreenTabButtonTemplate", context)
+    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "", context)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, size, size)
@@ -1113,18 +1112,18 @@ private function LMP_CreateFrames takes nothing returns nothing
     local real rowY
 
     // Independent external buttons: no ResourceBar/Upkeep lookup, mutation or anchor.
-    set lmpOpenButton = LMP_CreateIconButton(consoleUI, LMP_OPEN_X, LMP_OPEN_Y, LMP_OPEN_SIZE, 100)
+    set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.580, LMP_OPEN_SIZE, 100)
     set icon = LMP_CreateIcon(lmpOpenButton, LMP_TEX_OPEN)
     call BlzFrameSetLevel(lmpOpenButton, 100)
     call BlzFrameSetLevel(icon, 101)
     call BlzFrameSetVisible(lmpOpenButton,false)
-    set lmpLinkButton = LMP_CreateIconButton(consoleUI, LMP_LINK_X, LMP_LINK_Y, LMP_LINK_SIZE, 101)
+    set lmpLinkButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(2), 0.580, LMP_LINK_SIZE, 101)
     set lmpLinkIcon = LMP_CreateIcon(lmpLinkButton, LMP_TEX_LINK)
     call BlzFrameSetLevel(lmpLinkButton, 100)
     call BlzFrameSetLevel(lmpLinkIcon, 101)    
     call BlzFrameSetVisible(lmpLinkButton, false)
     
-    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, LMP_LINK_X, LMP_LINK_Y, LMP_LINK_SIZE, 102)
+    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(2), 0.580, LMP_LINK_SIZE, 102)
     set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, LMP_TEX_CLOSE)
     call BlzFrameSetLevel(lmpLinkActiveButton, 100)
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
@@ -1177,9 +1176,8 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetTextAlignment(lmpTimeText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(lmpTimeText, 0.78)
 
-    // Native horizontal template from UI\FrameDef\UI\escmenutemplates.fdf.
-    // Templates.TOC is loaded immediately before LocalMp3Player_CreateUI.
-    set lmpSeek = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 0)
+    // Private horizontal definition, loaded once after the common UI bootstrap.
+    set lmpSeek = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 0)
     if lmpSeek == null then
         call BJDebugMsg("|cffff2020LocalMp3Player: native EscMenuSliderTemplate was not created.|r")
         return
@@ -1266,7 +1264,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(lmpVolumeText, 0.72)
     call BlzFrameSetText(lmpVolumeText, "|cffffffffVOLUME 100%|r")
 
-    set lmpVolumeSlider = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 1)
+    set lmpVolumeSlider = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 1)
     if lmpVolumeSlider == null then
         call BJDebugMsg("|cffff2020LocalMp3Player: native volume EscMenuSliderTemplate was not created.|r")
         return
@@ -1394,14 +1392,14 @@ function LocalMp3Player_CreateUI takes nothing returns nothing
         return
     endif
 
-    // The TOC is normally loaded by the library initializer. Retry once here
-    // in case another map system requested the UI unusually early.
+    // The private resource is normally loaded by the game-time ready owner.
+    // Retry here only after a failed load, never reload successful definitions.
     if not lmpTocLoaded then
-        set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")
+        set lmpTocLoaded = BlzLoadTOCFile("UI\\WOS\\Music.toc")
     endif
 
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load UI\\WOS\\Music.toc.|r")
         return
     endif
 
@@ -1426,9 +1424,12 @@ endfunction
 
 private function LMP_LoadTemplates takes nothing returns nothing
     // Load all required frame definitions once, before any player UI is built.
-    set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")
+    if lmpTocLoaded then
+        return
+    endif
+    set lmpTocLoaded = BlzLoadTOCFile("UI\\WOS\\Music.toc")
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc after UI startup.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load UI\\WOS\\Music.toc after UI startup.|r")
     endif
 endfunction
 

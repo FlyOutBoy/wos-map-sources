@@ -43,15 +43,15 @@ class InputAndNativeGeometry(unittest.TestCase):
         bounds = []
         for i in range(6):
             frame = 'named:InventoryButton_' + str(i)
-            self.assertAlmostEqual(.022/.039, scales[frame])
+            self.assertAlmostEqual(.024/.039, scales[frame])
             self.assertEqual((.039, .039), sizes[frame])
             x, y = positions[frame]
             width = sizes[frame][0] * scales[frame]
             bounds.append((x - width/2, y - width/2, x + width/2, y + width/2))
-            self.assertGreaterEqual(bounds[-1][0], .615)
-            self.assertLessEqual(bounds[-1][2], .705)
-            self.assertGreaterEqual(bounds[-1][1], .008)
-            self.assertLessEqual(bounds[-1][3], .090)
+            self.assertGreaterEqual(bounds[-1][0], .578)
+            self.assertLessEqual(bounds[-1][2], .682)
+            self.assertGreaterEqual(bounds[-1][1], .002)
+            self.assertLessEqual(bounds[-1][3], .098)
         for i, a in enumerate(bounds):
             for b in bounds[i + 1:]:
                 self.assertTrue(a[2] <= b[0] or b[2] <= a[0] or a[3] <= b[1] or b[3] <= a[1])
@@ -97,6 +97,7 @@ class RestoredPickAndHUD(unittest.TestCase):
                     WUI_Passive=lambda *_: 'stat-root', WUI_Panel=lambda name, *args: name,
                     WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge',
                     UNITSTAT_Text=lambda *_: 'text', WUI_CreateFill=lambda *_: 'fill', I2R=float,
+                    TasAbilityChargeBox_CreatePortraitLabel=lambda *_: 'level-text',
                     TimerStart=lambda *_: None, TriggerAddAction=lambda *_: None,
                     WUI_Place=lambda f, x, y, w, h: positions.update({f: (x, y, w, h)}),
                     BlzCreateFrameByType=lambda _, name, *args: name)
@@ -109,7 +110,7 @@ class RestoredPickAndHUD(unittest.TestCase):
         self.assertEqual(1, len({positions[i][0] for i in (3, 4, 5)}))
         self.assertGreater(positions[3][1], positions[4][1])
         self.assertGreater(positions[4][1], positions[5][1])
-        self.assertLess(positions['WOSSelectedUnitBack'][2], .10)
+        self.assertEqual(positions['WOSSelectedUnitBack'][2:], (.104, .096))
         self.assertIn('WOSGoldIcon', positions)
         self.assertIn('UI\\\\Feedback\\\\Resources\\\\ResourceGold.blp', source)
 

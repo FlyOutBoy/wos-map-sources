@@ -89,7 +89,7 @@ class TestHelpVisibility(unittest.TestCase):
                          BlzFrameGetText=lambda _: '', BlzFrameSetText=lambda *_: None)
         for _ in range(10):
             self.vm.run('WUI_TestScroll')
-        self.assertEqual(4, self.vm.g['WUI_TestPageIndex'])
+        self.assertEqual(2, self.vm.g['WUI_TestPageIndex'])
         self.assertTrue(self.vm.g['WUI_TestOpen'])
         self.vm.g['BlzGetTriggerFrameValue'] = lambda: 1
         for _ in range(10):

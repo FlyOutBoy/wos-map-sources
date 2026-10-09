@@ -324,7 +324,7 @@ function WOS_CreateModeSelector takes nothing returns nothing
     call WUI_RegisterModal(WOS_ModeRoot)
     call BlzFrameSetLevel(WOS_ModeRoot, 30)
     set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
-    call WUI_Place(panel, 0.400, 0.323, 0.270, 0.261)
+    call WUI_Place(panel, 0.400, 0.323, 0.3105, 0.3132)
     set title = WUI_OrnateWindow("WOSModeMetal", panel, 0.032)
     set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
     call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)

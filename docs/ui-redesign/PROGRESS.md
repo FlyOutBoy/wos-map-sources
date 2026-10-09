@@ -1,5 +1,76 @@
 # Progress
 
+## Checkpoint 17 — authoritative current state (2026-10-09)
+
+Latest request: fix recurring music TOC failure, unify lower boxes/actions, enlarge
+mode/minimap rectangles, move vitals/abilities left, portrait level badge, flush
+top scoreboard/action panel and right test-help block. Screenshot references:
+40aaafc5, cd78d241, 82cdc068, 7b841409. These supersede checkpoint16 geometry.
+
+Actual native war3mapImported/Templates.toc bytes end in SINGLE LF, without an
+empty final line. Failure aborts LocalMp3Player_CreateUI and hides Link/Music.
+Music now loads versioned UI/WOS/Music.toc once in WUI_OnReady game-time (.10),
+with no-BOM CRLF + empty ending. Includes only engine escmenutemplates.fdf and
+bundled Music.fdf. Private horizontal slider uses bundled graphite/gold textures.
+Music icon buttons no longer inherit Glue templates. Track rows use custom
+WUI_TextButton and WUI_SetButtonText updates their TEXT child, not the BUTTON.
+Installer/verifier cover both private resources and reject malformed endings.
+Primary format reference: https://www.hiveworkshop.com/threads/ui-toc-files.315854/
+BlzLoadTOCFile false still reports an error; do not mask real resource failures.
+
+Mode full panel .3105x.3132 = old .270x.261 times1.15/1.20 (not just ornaments).
+Minimap frame .1702 square = old.148 times1.15, center(.074,.074); native image
+BL(-.0065,-.0065), TR(.1545,.1545). This uses wide-display margins; check4:3
+rendering separately. Camera slider .014x.120 at(.174,.074), twice old width.
+Three lower boxes all .104x.096: stats(.240,.050), inventory(.630,.050), actions
+(.744,.050). Main chassis native/normal .608x.098 center(.492,.049), lower than16.
+Native frame families unchanged; opaque normal FRAMEs must not cover native
+SIMPLEFRAME commands/items. COMMAND_X=.318, STEP=.039, SIZE=.036, Y=.044.
+Stats right=.292, ability left=.300, ability right=.570, inventory left=.578,
+inventory right=.682, toolbar left=.692. Native items remain scaled wrappers,
+3x2, .024 icons with .026 column/.031 row spacing. Never resize wrapper alone.
+Vitals left=.301 (was.3365), width.275. Stats remain vertical. Hero level is
+TasAbilityChargeBox_CreatePortraitLabel: normal-family counter attached BOTTOMLEFT
+to portrait, using TasBox font .008 and gold/graphite style; moves with portrait.
+
+Top team panel .450x.064 center(.400,.568), flushY=.600. Ten hero portraits
+remain clickable. Scoreboxes separate center±.043 atY=.579, score font2.00.
+Round timer has compact STARTS/ENDS title+time between scoreboxes; every active
+timer writer updated, phase/remaining-time calculation unchanged. Thin elapsed
+time box below at(.400,.551), .090x.013; kills caption retained below.
+WUI_ScreenRight=.4+.3*clientWidth/clientHeight; presentation-only calculations.
+Top actions .180x.072 center(right-.090,.564), flushTOP/RIGHT. Icon centers
+right-.156+.044*i atY=.580; Menu caption/target are readable. Hide UI and Shop Key
+are actual buttons below, preserving local portrait hiding and shop-key rebinding.
+System drawer opens below; not over Music/Link. Test help .210x.260, flushRIGHT,
+three denser pages, all Arrow names preserved, commands gold/explanations white.
+Toolbar six targets .023 square atX=.717+.027*column,Y=.065-.031*row; six new
+gold textures: shop/cart, community/chat, chat smile, emotes, ping, muted ping.
+Chat mute uses same dark button material plus gold check state. Gameplay emotes,
+ping target selection/fog safeguards/controllers are preserved.
+
+100 regression checks PASS; production compile-only PASS147780 total lines before
+the final cosmetic icon alignment (full MAIN build below is authoritative).
+Evidence: _build/ui-redesign/checkpoint17-tests.txt. Tests exercise production
+TOC bytes, successful load caching, dynamic track text child, actual emitted
+anchors, viewport aspect ratios, portrait badge, inherited privacy/input guards.
+Not evidence of Warcraft rendering or successful real clicks.
+
+INTEGRATION STATUS: source/assets ready; MAIN push/full build/archive comparison
+pending. Editor/game were not running at inspection. Recheck guard before push.
+Run tools/run_ui_regressions.py for full suite; .vscode/build-run-w3-map.ps1
+-Target Main -NoLaunch for guarded source/assets/main-script build. Verify all
+resources with tools/verify_wos_ui.py and explicit archive extraction name list.
+Keep checkpoints and WTG/WCT identities; never overwrite an open editor.
+
+Computer Use retried: initialization fails before @oai/sky import with kernel
+assets OS error3. No custom UI automation workaround, no user click assistance
+available. Actual new-map render/click acceptance remains unresolved. Do not
+claim task fully complete or shutdown. User authorized shutdown /s /t60 ONLY
+after full completion, all saved/builds finished/no errors; must be LAST action.
+
+Older checkpoint entries below are history and superseded where they conflict.
+
 ## Checkpoint 16 — authoritative current state (2026-10-09)
 
 User screenshots 88a01576/ab276217 show intact golden ornaments over WHITE

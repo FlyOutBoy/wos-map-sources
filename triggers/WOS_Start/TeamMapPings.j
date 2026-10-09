@@ -408,7 +408,7 @@ private function TMP_ToggleMute takes nothing returns nothing
     set TMP_Muted = not TMP_Muted
     call TMP_Close()
     if TMP_Muted then
-        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\TeamPings\\button-ping-muted.tga", 0, true)
+        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping-muted.tga", 0, true)
         call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 1.50, "|cffffcc66Team pings muted. Hold Z to send your own.|r")
         loop
             exitwhen pid >= 10
@@ -419,7 +419,7 @@ private function TMP_ToggleMute takes nothing returns nothing
             set pid = pid + 1
         endloop
     else
-        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\TeamPings\\button-ping.tga", 0, true)
+        call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.tga", 0, true)
         call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 1.50, "|cff70ef90Team pings enabled.|r")
     endif
     loop
@@ -653,10 +653,9 @@ private function TMP_StartUI takes nothing returns nothing
     set TMP_Toggle = BlzCreateFrameByType("BUTTON", "TeamPingToggle", ui, "", 0)
     call WUI_PlaceToolbar(TMP_Toggle, 0, 1)
     set TMP_ToggleIcon = BlzCreateFrameByType("BACKDROP", "TeamPingToggleIcon", TMP_Toggle, "", 0)
-    call BlzFrameSetPoint(TMP_ToggleIcon, FRAMEPOINT_CENTER, TMP_Toggle, FRAMEPOINT_CENTER, 0, 0)
-    call BlzFrameSetSize(TMP_ToggleIcon, 0.018, 0.018)
-    call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\TeamPings\\button-ping.tga", 0, true)
-    call BlzFrameSetAlpha(TMP_ToggleIcon, 190)
+    call BlzFrameSetAllPoints(TMP_ToggleIcon, TMP_Toggle)
+    call BlzFrameSetTexture(TMP_ToggleIcon, "UI\\WOS\\toolbar-ping.tga", 0, true)
+    call BlzFrameSetAlpha(TMP_ToggleIcon, 255)
     call BlzFrameSetEnable(TMP_ToggleIcon, false)
     set TMP_ToggleText = BlzCreateFrameByType("TEXT", "TeamPingToggleText", TMP_Toggle, "", 0)
     call BlzFrameSetPoint(TMP_ToggleText, FRAMEPOINT_BOTTOMRIGHT, TMP_Toggle, FRAMEPOINT_BOTTOMRIGHT, 0, 0)

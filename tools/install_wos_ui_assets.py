@@ -10,8 +10,10 @@ from install_team_ping_assets import install
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_NAMES = {'panel','border','button','hover','pressed','selected','disabled','hp','mp','meter','bar-back','checked','unchecked','empty'}
 ASSET_NAMES.update('ornate-' + suffix for suffix in ('tl','tr','bl','br','top','bottom','left','right'))
+ASSET_NAMES.update('toolbar-' + suffix for suffix in ('shop', 'community', 'chat', 'emotes', 'ping', 'ping-muted'))
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
-FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc']
+FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf', 'UI/WOS/Music.toc']
+ENGINE_FRAME_RESOURCES = {'UI/FrameDef/UI/escmenutemplates.fdf'}
 BLANK_TEXTURE = r'UI\Widgets\EscMenu\Human\blank-background.blp'
 SKIN_VALUES = {f'ConsoleTexture{i:02}': BLANK_TEXTURE for i in range(1, 7)}
 SKIN_VALUES.update(ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overlay=BLANK_TEXTURE,
@@ -39,6 +41,8 @@ def validate_frame_resources(asset_root):
             raise ValueError(f'{name}: TOC has no frame definitions')
         for entry in entries:
             resource = entry.replace('\\', '/')
+            if resource in ENGINE_FRAME_RESOURCES:
+                continue
             if resource not in FRAME_RESOURCES or not (asset_root / resource).is_file():
                 raise ValueError(f'{name}: frame definition is not bundled: {entry}')
 

@@ -22,6 +22,24 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       public framehandle array FrameText
       public framehandle array FrameIcon
    endglobals
+
+   // Normal FRAME counterpart of the library's native command charge counter.
+   // A portrait is not a SIMPLEFRAME: keep the same font/material without
+   // reparenting a native texture across the two frame families.
+   public function CreatePortraitLabel takes framehandle portrait returns framehandle
+      local framehandle box = WUI_Panel("TasPortraitChargeBox", portrait, 0.015, 0.015)
+      local framehandle text = BlzCreateFrameByType("TEXT", "TasPortraitChargeText", box, "", 0)
+      local framehandle edge = WUI_Border("TasPortraitChargeEdge", box)
+      call BlzFrameSetTexture(box, "UI\\WOS\\button.tga", 0, true)
+      call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMLEFT, portrait, FRAMEPOINT_BOTTOMLEFT, -0.001, -0.001)
+      call BlzFrameSetAllPoints(text, box)
+      call BlzFrameSetFont(text, "Fonts/FRIZQT__.TTF", 0.008, 0)
+      call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+      call BlzFrameSetEnable(text, false)
+      set edge = null
+      set box = null
+      return text
+   endfunction
    
    public function GetUnitSpellCodeKey takes integer unitId, integer spellCode returns integer
       local integer count = LoadInteger(Hash, unitId, 0)
