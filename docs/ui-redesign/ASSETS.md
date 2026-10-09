@@ -1,5 +1,11 @@
 # UI assets
 
+Checkpoint16 adds code-generated UI/WOS/empty.tga:32x32 uncompressed RGBA,
+all alpha zero. BACKDROP vertex tint was ignored by the user's Warcraft build.
+Installer/verifier reject opaque pixels. Builder now produces22 shared TGA;
+expected total41 resources/46 compared packed entries. Original generated gold
+slices/graphite are unchanged; corner and rail dimensions grow15% in WOSUI.j.
+
 Checkpoint 13 adds ONE built-in imagegen asset, saved unchanged as
 `assets/UI/WOS/source/ornate-frame.png` (RGBA 1254x1254, transparent interior and
 exterior). Mode: built-in tool, new transparent generation, no external API/CLI.

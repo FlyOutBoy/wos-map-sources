@@ -46,6 +46,8 @@ globals
     private framehandle WUI_Portrait = null
     private framehandle WUI_Resource = null
     private framehandle WUI_HeroBar = null
+    private framehandle array WUI_HeroIndicator
+    private framehandle WUI_HeroIndicatorOwner = null
     private framehandle WUI_DeadZone = null
     private framehandle WUI_HiddenDetails = null
     private framehandle WUI_Buffs = null
@@ -66,6 +68,8 @@ globals
     constant real WUI_ICON_SIZE = 0.036
     constant string WUI_PANEL_TEXTURE = "UI\\WOS\\panel.tga"
     constant string WUI_BORDER_TEXTURE = "UI\\WOS\\border.tga"
+    constant string WUI_EMPTY_TEXTURE = "UI\\WOS\\empty.tga"
+    constant real WUI_ORNAMENT_SCALE = 1.15
     constant string WUI_GOLD = "|cffd5b876"
     constant string WUI_TEXT = "|cffe1e5eb"
 endglobals
@@ -95,12 +99,47 @@ function WUI_GetSimpleRoot takes nothing returns framehandle
 endfunction
 
 // BACKDROP containers never track mouse input. This remains true even if custom
-// FDF loading fails. Vertex tint hides only their own image, never their children.
+// FDF loading fails. Real pixel alpha hides only their image, never their children.
+// Vertex alpha on a BACKDROP is ignored by some Warcraft builds.
 function WUI_Passive takes string name, framehandle parent returns framehandle
     local framehandle container = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)
-    call BlzFrameSetTexture(container, "Textures\\white.blp", 0, true)
-    call BlzFrameSetVertexColor(container, BlzConvertColor(0, 255, 255, 255))
+    call BlzFrameSetTexture(container, WUI_EMPTY_TEXTURE, 0, true)
     return container
+endfunction
+
+// Keep the stock skill-point glow attached to the replacement portrait. The
+// engine re-shows these indicators after level-ups even with HeroBar hidden.
+function WUI_BindHeroIndicator takes framehandle owner returns nothing
+    local integer i = 0
+    set WUI_HeroIndicatorOwner = owner
+    loop
+        exitwhen i >= 7
+        set WUI_HeroIndicator[i] = BlzGetOriginFrame(ORIGIN_FRAME_HERO_BUTTON_INDICATOR, i)
+        if WUI_HeroIndicator[i] != null then
+            call BlzFrameSetVisible(WUI_HeroIndicator[i], false)
+            call BlzFrameClearAllPoints(WUI_HeroIndicator[i])
+            if i == 0 and owner != null then
+                call BlzFrameSetParent(WUI_HeroIndicator[i], owner)
+                call BlzFrameSetPoint(WUI_HeroIndicator[i], FRAMEPOINT_BOTTOMLEFT, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, 0.00)
+                call BlzFrameSetSize(WUI_HeroIndicator[i], 0.039, 0.039)
+                call BlzFrameSetScale(WUI_HeroIndicator[i], 0.038 / 0.039)
+            else
+                call BlzFrameSetAbsPoint(WUI_HeroIndicator[i], FRAMEPOINT_CENTER, -0.20, -0.20)
+            endif
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
+function WUI_ShowHeroIndicator takes boolean visible returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 7
+        if WUI_HeroIndicator[i] != null then
+            call BlzFrameSetVisible(WUI_HeroIndicator[i], visible and i == 0 and WUI_HeroIndicatorOwner != null)
+        endif
+        set i = i + 1
+    endloop
 endfunction
 
 function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
@@ -163,6 +202,7 @@ function WUI_OrnateBorder takes string name, framehandle owner, real corner retu
     local integer i = 0
     local framepointtype anchor
     local string texture
+    set corner = corner * WUI_ORNAMENT_SCALE
     call BlzFrameSetAllPoints(edge, owner)
     call BlzFrameSetEnable(edge, false)
     loop
@@ -913,23 +953,43 @@ private function WUI_CreateControls takes nothing returns nothing
         set WUI_System[i] = BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, i)
         set i = i + 1
     endloop
+    // One passive graphite strip integrates menu, stats, link and music.
+    set back = WUI_Panel("WOSTopActionsPanel", WUI_Root, 0.163, 0.050)
+    call WUI_Place(back, 0.710, 0.541, 0.163, 0.050)
+    call BlzFrameSetEnable(back, false)
+    set back = WUI_OrnateBorder("WOSTopActionsMetal", back, 0.014)
     set WUI_Menu = BlzCreateFrameByType("BUTTON", "WOSCompactMenu", WUI_Root, "", 0)
-    call WUI_Place(WUI_Menu, 0.653, 0.548, 0.025, 0.025)
-    set back = WUI_Panel("WOSMenuBack", WUI_Menu, 0.025, 0.025)
-    call BlzFrameSetAllPoints(back, WUI_Menu)
+    call WUI_Place(WUI_Menu, 0.653, 0.541, 0.032, 0.041)
     set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)
-    call BlzFrameSetAllPoints(text, WUI_Menu)
+    call WUI_Place(text, 0.653, 0.529, 0.035, 0.010)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetText(text, "")
+    call BlzFrameSetText(text, WUI_GOLD + "Menu|r")
+    call BlzFrameSetScale(text, 0.62)
     call BlzFrameSetEnable(text, false)
     set i = 0
     loop
         exitwhen i >= 3
         set back = BlzCreateFrameByType("BACKDROP", "WOSMenuLine", WUI_Menu, "", i)
         call WUI_Place(back, 0.653, 0.552 - I2R(i) * 0.004, 0.013, 0.001)
-        call BlzFrameSetTexture(back, "Textures\\white.blp", 0, true)
-        call BlzFrameSetVertexColor(back, BlzConvertColor(255, 213, 184, 118))
+        call BlzFrameSetTexture(back, "UI\\WOS\\meter.tga", 0, true)
         call BlzFrameSetEnable(back, false)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 3
+        set text = BlzCreateFrameByType("TEXT", "WOSTopActionLabel", WUI_Root, "", i)
+        call WUI_Place(text, 0.691 + I2R(i) * 0.038, 0.529, 0.034, 0.010)
+        call BlzFrameSetScale(text, 0.62)
+        call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(text, false)
+        if i == 0 then
+            call BlzFrameSetText(text, WUI_GOLD + "Stats|r")
+        elseif i == 1 then
+            call BlzFrameSetText(text, WUI_GOLD + "Link|r")
+        else
+            call BlzFrameSetText(text, WUI_GOLD + "Music|r")
+        endif
         set i = i + 1
     endloop
     set WUI_Orders = BlzCreateFrameByType("BUTTON", "WOSOrderDrawer", WUI_Root, "", 0)

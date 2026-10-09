@@ -5,7 +5,7 @@ import json
 import struct
 import sync_war3_triggers as sync
 from install_wos_ui_assets import ASSET_NAMES as UI_NAMES
-from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES, FRAME_RESOURCES, validate_frame_resources
+from install_wos_ui_assets import CONSOLE_MODEL, SKIN_VALUES, FRAME_RESOURCES, validate_frame_resources, validate_passive_texture
 from install_team_ping_assets import ASSET_NAMES as PING_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,8 +16,10 @@ ARCHIVE_NAMES = ['war3map.wtg', 'war3map.wct', 'war3map.imp', 'war3map.j', 'war3
 
 def verify(archive=None):
     validate_frame_resources(ROOT / 'assets')
+    validate_passive_texture(ROOT / 'assets')
     scenario = sync.load_map(ROOT / 'object-data.config.json')
     validate_frame_resources(scenario)
+    validate_passive_texture(scenario)
     wtg = sync.fmt.parse_wtg(scenario / 'war3map.wtg')
     objects = [o for o in wtg['objects'] if o['object_type'] in (
         sync.fmt.OBJECT_TRIGGER, sync.fmt.OBJECT_SCRIPT)]

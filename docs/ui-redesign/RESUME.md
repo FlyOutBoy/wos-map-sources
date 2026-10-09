@@ -1,5 +1,72 @@
 # Resume UI redesign
 
+## Checkpoint 16 — authoritative current state (2026-10-09)
+
+User screenshots 88a01576/ab276217 show intact golden ornaments over WHITE
+rectangles. The earlier claim that zero vertex alpha makes a BACKDROP image
+transparent was wrong on this Warcraft build. Graphite panel.tga is valid opaque
+dark RGBA (channels max53, alpha255). User clarified the prior global Templates.toc
+failure was a Warcraft bug; do not chase that as the current white-fill defect.
+
+Implemented: WUI_Passive now uses real transparent pixels in UI/WOS/empty.tga
+(32x32 RGBA, all alpha zero). No white.blp/vertex-alpha fallback and no alpha-zero
+parents (which hide children). Installer/source/native verifier reject even one
+opaque fallback pixel before accepting imports. WOSHUD.toc keeps correct no-BOM
+CRLF plus complete empty ending line. Existing gold/graphite source art unchanged.
+
+WUI_ORNAMENT_SCALE=1.15 enlarges all square corners and rail thickness by15%;
+existing window and mouse-target bounds stay unchanged. Normal window/button
+fills are existing graphite/button textures; native command/item/minimap surfaces
+retain SIMPLEFRAME family, with transparent normal FRAME ornament overlays.
+Do not replace native HUD backgrounds with opaque normal FRAME images.
+
+Top actions share passive graphite panel .163x.050 at (.710,.541), ornate edge.
+Menu/Stats/Link/Music labels at y.529; icons x.653/.691/.729/.767 at y.548.
+Menu target .032x.041 includes caption; system drawer remains BELOW at .509,
+then -.025 per row. Existing action handlers unchanged.
+
+WUI_BindHeroIndicator runs from UNITSTAT_DelayedInit (.30 total game-time), never
+library initialization. Stock indicator0 reparented/anchored BOTTOMLEFT to new
+UNITSTAT_Widget[6] portrait (.038). Other six indicators hidden/offscreen.
+WUI_ShowHeroIndicator refreshes every .10: only selected local Hero with skill
+points; no hidden-enemy skill queries. Engine re-shows indicators on level-up:
+https://www.hiveworkshop.com/threads/ui-originframes.316034/
+Mode/pick/shop controllers, combat, fog/cooldown privacy and WTG identities preserved.
+
+92 regression checks PASS (actual alpha bytes, rejected opaque fallback, panel
+fit, recorded indicator anchors, existing controllers/privacy/order/native cells).
+Production compile-only PASS:147754 total pjass lines,107 production inputs.
+User confirmed editor CLOSED before MAIN integration. Native push already DONE:
+109 sources,2 updated,0 added. Backup:
+backups/trigger-sync/2026-10-09_111303_391267/map-before-push.
+Only new texture empty.tga installed; backup:
+backups/ui-redesign/assets/20261009-111304-065802.
+Full MAIN build PASS:148716 total pjass lines (132889 actual script),
+actual packed _build/WoS_Test.w3x has6372 files.
+Compiled native MAIN script updated; previous script:
+backups/main-map-build/20261009-111335-528.
+41 resource imports and all46 compared archive entries match native MAIN bytes.
+109 WTG/WCT identities/category traversal and source/native TOC+pixel guards PASS.
+SHA256:975b11616ff1ac4d6ae52e3a655b66bc8f8ca8c4fdcb86ee61e085c5849087fd.
+Evidence:_build/ui-redesign/checkpoint16-{full-main-pjass.txt,
+integration-verification.json,map-sha256.txt,launch.json,runtime.json,war3log.txt}
+and checkpoint16-archive/. Do not repeat build/push without inspecting state.
+
+Supported Computer Use initialization retried: still fails before sky import
+with kernel-assets OS error3. No custom automation helper workaround. User cannot
+participate in click-test; do not ask again. CLI launch/log inspection is possible
+but does not establish actual successful clicks/rendering.
+Shutdown /s /t 60 authorized ONLY after FULL completion, saved files, finished
+build/check processes and no errors; must be final action. NOT scheduled.
+Configured game launched at11:17:14+03,PID24012 responding. Last log11:17:16
+only scans installed map catalogue: no confirmed custom-map opening or actual
+mode/world clicks. No new crash folder at inspection (last2026-10-08 20.35.28).
+Build/check processes finished. Next: supported runtime inspection when available;
+source/native integration and checkpoint evidence are already saved. Actual
+click/visual acceptance remains unresolved; do not claim full task completion.
+
+Older entries below are HISTORY and superseded wherever they conflict above.
+
 ## Checkpoint 15b — integrated MAIN, runtime verification boundary
 
 Guard: World Editor not running. Push 109 sources, 5 updated, 0 added WTG entries.

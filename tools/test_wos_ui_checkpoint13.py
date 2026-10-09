@@ -19,7 +19,7 @@ class NativeChassis(unittest.TestCase):
         for name in ('WOSHUDSurface', 'WOSMinimapSurface', 'WOSInventorySurface'):
             self.assertIn(('BACKDROP', name, 'BACKDROP:WOSIndependentRoot'), created)
             # Only this container's image is transparent, never its descendants.
-            self.assertIn(('BlzFrameSetVertexColor', ('BACKDROP:' + name, 'BlzConvertColor')), fixture.calls)
+            self.assertIn(('BlzFrameSetTexture', ('BACKDROP:' + name, 'UI\\WOS\\empty.tga', 0, True)), fixture.calls)
 
     def test_returning_from_pick_hides_engine_restored_stock_chrome(self):
         fixture = ui_fixture.DeferredUIStartup()

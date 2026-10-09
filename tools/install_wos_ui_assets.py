@@ -8,7 +8,7 @@ import struct
 from install_team_ping_assets import install
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSET_NAMES = {'panel','border','button','hover','pressed','selected','disabled','hp','mp','meter','bar-back','checked','unchecked'}
+ASSET_NAMES = {'panel','border','button','hover','pressed','selected','disabled','hp','mp','meter','bar-back','checked','unchecked','empty'}
 ASSET_NAMES.update('ornate-' + suffix for suffix in ('tl','tr','bl','br','top','bottom','left','right'))
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
 FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc']
@@ -41,6 +41,19 @@ def validate_frame_resources(asset_root):
             resource = entry.replace('\\', '/')
             if resource not in FRAME_RESOURCES or not (asset_root / resource).is_file():
                 raise ValueError(f'{name}: frame definition is not bundled: {entry}')
+
+
+def validate_passive_texture(asset_root):
+    """Reject an opaque fallback container before writing anything to MAIN."""
+    data = (asset_root / 'UI/WOS/empty.tga').read_bytes()
+    if len(data) < 18 or data[1:3] != b'\x00\x02':
+        raise ValueError('empty.tga: expected uncompressed true-colour TGA')
+    width, height = struct.unpack_from('<HH', data, 12)
+    if (width, height, data[16], data[17] & 15) != (32, 32, 32, 8):
+        raise ValueError('empty.tga: expected 32x32 RGBA with eight alpha bits')
+    pixels = data[18 + data[0]:18 + data[0] + width * height * 4]
+    if len(pixels) != width * height * 4 or any(pixels[3::4]):
+        raise ValueError('empty.tga: every pixel must have zero alpha')
 
 
 def hide_stock_console(text):
@@ -104,6 +117,7 @@ def install_console(map_dir):
 
 def install_ui(map_dir):
     validate_frame_resources(ROOT / 'assets')
+    validate_passive_texture(ROOT / 'assets')
     install(map_dir,ROOT/'assets/UI/WOS',ROOT/'backups/ui-redesign/assets',ASSET_NAMES,'UI/WOS')
     install_console(map_dir)
     install_frame_resources(map_dir)

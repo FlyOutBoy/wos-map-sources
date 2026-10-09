@@ -6,6 +6,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT/'assets/UI/WOS'
 
 def build():
+    # Pixel alpha works even when BACKDROP vertex tint is ignored. Keeping
+    # container alpha at 255 also keeps all its children visible.
+    Image.new('RGBA', (32,32), (0,0,0,0)).save(OUT/'empty.tga')
     # Format/downscale only; keep the original built-in imagegen source unchanged.
     Image.open(OUT/'source/graphite.png').convert('RGBA').resize((512,512),Image.Resampling.LANCZOS).save(OUT/'panel.tga')
     edge = Image.new('RGBA',(128,128))
@@ -49,7 +52,7 @@ def build():
     for name, box in boxes.items():
         size = (256,256) if name[-2:] in ('tl','tr','bl','br') else ((128,32) if name.endswith(('top','bottom')) else (32,128))
         ornament.crop(box).resize(size,Image.Resampling.LANCZOS).save(OUT/(name+'.tga'))
-    print('Prepared 21 Warcraft UI textures:',OUT)
+    print('Prepared 22 Warcraft UI textures:',OUT)
 
 if __name__ == '__main__':
     build()

@@ -297,8 +297,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 16773,
-      "sha256": "1cfe8b5eb0c0a2e0750371351eca44cfae5b90cf9167d4d0f108a77578576e93",
+      "source_bytes": 16956,
+      "sha256": "7fe1884a154955b7f6e3f0bb7089a29f7e20b36329a86d9ed9e2bacdb8d010d9",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -853,8 +853,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 49390,
-      "sha256": "13fb37269434ed1067ea24c209ed8e2c9e0311a10058c026aed65588d3d042bc",
+      "source_bytes": 52045,
+      "sha256": "78ea854e3df87079a932bf09c80d8d1f8bed2dc3702be46c379515bdd89b4022",
       "declarations": {
         "libraries": [
           "WOSUI"

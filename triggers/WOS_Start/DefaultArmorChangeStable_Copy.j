@@ -134,6 +134,7 @@ private function UNITSTAT_Update takes nothing returns nothing
         set readable = IsPlayerAlly(GetOwningPlayer(selected), GetLocalPlayer()) or (IsUnitVisible(selected, GetLocalPlayer()) and IsUnitDetected(selected, GetLocalPlayer()))
     endif
     call BlzFrameSetVisible(UNITSTAT_Root, readable)
+    call WUI_ShowHeroIndicator(readable and selected == Hero[GetPlayerId(GetLocalPlayer())] and GetHeroSkillPoints(selected) > 0)
     call WUI_ShowNativeBuffs(readable)
     call WUI_SetText(UNITSTAT_Gold, "|cffd5b876" + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_GOLD)) + "|r")
     set UNITSTAT_Help[7] = "|cffd5b876GOLD|r|nCurrent: " + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_GOLD)) + "|nNext round: " + I2S(GetPlayerState(GetLocalPlayer(), PLAYER_STATE_RESOURCE_LUMBER))
@@ -234,6 +235,7 @@ private function UNITSTAT_DelayedInit takes nothing returns nothing
     local timer initTimer = GetExpiredTimer()
     call DestroyTimer(initTimer)
     call WUI_StartNativeLayout()
+    call WUI_BindHeroIndicator(UNITSTAT_Widget[6])
     set UNITSTAT_EngineDamage = BlzGetFrameByName("InfoPanelIconValue", 0)
     call WUI_LayoutCommands(false)
     set UNITSTAT_UpdateTimer = CreateTimer()

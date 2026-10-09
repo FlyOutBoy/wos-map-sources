@@ -222,12 +222,14 @@ class HiddenEnemyData(unittest.TestCase):
             'GroupEnumUnitsSelected': lambda *_: None, 'FirstOfGroup': lambda *_: selected,
             'WUI_SetText': lambda f, v: self.frames.update({(f, 'text'): v}),
             'WUI_ShowNativeBuffs': lambda v: self.frames.update({('buffs', 'visible'): v}),
+            'WUI_ShowHeroIndicator': lambda v: self.frames.update({('skill-glow', 'visible'): v}),
             'I2S': str, 'PLAYER_STATE_RESOURCE_GOLD': 'gold',
             'PLAYER_STATE_RESOURCE_LUMBER': 'lumber',
             'GetPlayerState': lambda p, s: 120 if s == 'gold' else 45,
         })
         vm.run('UNITSTAT_Update')
         self.assertFalse(self.frames['selected-hud', 'visible'])
+        self.assertFalse(self.frames['skill-glow', 'visible'])
         self.assertIn('120', self.frames['gold', 'text'])
         self.assertIn('Next round: 45', vm.g['UNITSTAT_Help'][7])
 
