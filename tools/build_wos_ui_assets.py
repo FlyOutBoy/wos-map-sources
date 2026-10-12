@@ -92,3 +92,9 @@ def build():
 
 if __name__ == '__main__':
     build()
+    # Checkpoint 20: clean rails rebuilt from the corner art + new HUD textures.
+    from build_wos_ui_textures_cp20 import build as build_checkpoint20
+    build_checkpoint20()
+    # Checkpoint 21: stat medallions, attack types, wheels, fields, glows.
+    from build_wos_ui_textures_cp21 import build as build_checkpoint21
+    build_checkpoint21()

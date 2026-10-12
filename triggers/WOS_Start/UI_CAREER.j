@@ -15,8 +15,12 @@ globals
 
     private constant real WCS_PANEL_X = 0.400
     private constant real WCS_PANEL_Y = 0.315
-    private constant real WCS_PANEL_WIDTH = 0.350
-    private constant real WCS_PANEL_HEIGHT = 0.265
+    // Checkpoint 23: the whole window is laid out 1.2x larger around its
+    // centre (WCS_X / WCS_Y / WCS_S), with a readable minimum text scale.
+    private constant real WCS_ZOOM = 1.20
+    private constant real WCS_MIN_TEXT = 0.62
+    private constant real WCS_PANEL_WIDTH = 0.350 * WCS_ZOOM
+    private constant real WCS_PANEL_HEIGHT = 0.265 * WCS_ZOOM
     private constant real WCS_OPEN_X = 0.691
     private constant real WCS_OPEN_Y = 0.548
     private constant real WCS_OPEN_SIZE = 0.022
@@ -24,7 +28,7 @@ globals
     private constant string WCS_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string WCS_TEX_CLOSE = "Music\\Music_Close.blp"
     private constant string WCS_TEX_EMPTY = "Pick\\wos_stat"
-    private constant string WCS_TEX_OPEN = "Pick\\wos_stat"
+    private constant string WCS_TEX_OPEN = "UI\\WOS\\glyph-history.tga"
 
     private framehandle WCS_Main = null
     private framehandle WCS_OpenButton = null
@@ -47,6 +51,8 @@ globals
     private framehandle array WCS_HeroButton
     private framehandle array WCS_HeroIcon
     private framehandle array WCS_HeroName
+    private framehandle array WCS_HeroStatBack
+    private framehandle array WCS_HeroStat
     private framehandle array WCS_HeroTooltip
     private framehandle array WCS_HeroTooltipText
     private integer array WCS_VisibleHeroId
@@ -115,17 +121,29 @@ endfunction
 
 private function WCS_CategoryTexture takes integer category returns string
     if category == 1 then
-        return "Pick\\Pick_Gacha.blp"
+        return "UI\\WOS\\pick-logo-gacha.tga"
     elseif category == 2 then
-        return "Pick\\Pick_Bleach.blp"
+        return "UI\\WOS\\pick-logo-bleach.tga"
     elseif category == 3 then
-        return "Pick\\Pick_FairyTail.blp"
+        return "UI\\WOS\\pick-logo-fairytail.tga"
     elseif category == 4 then
-        return "Pick\\Pick_OnePiece.blp"
+        return "UI\\WOS\\pick-logo-onepiece.tga"
     elseif category == 5 then
-        return "Pick\\Pick_JujutsuKaisen.blp"
+        return "UI\\WOS\\pick-logo-jujutsu.tga"
     endif
-    return "Pick\\Pick_Other.blp"
+    return "UI\\WOS\\pick-logo-other.tga"
+endfunction
+
+private function WCS_X takes real x returns real
+    return WCS_PANEL_X + (x - WCS_PANEL_X) * WCS_ZOOM
+endfunction
+
+private function WCS_Y takes real y returns real
+    return WCS_PANEL_Y + (y - WCS_PANEL_Y) * WCS_ZOOM
+endfunction
+
+private function WCS_S takes real value returns real
+    return value * WCS_ZOOM
 endfunction
 
 private function WCS_Percent takes integer wins, integer games returns string
@@ -149,27 +167,29 @@ endfunction
 
 private function WCS_CreateText takes framehandle parent, real x, real y, real width, real height, real scale, textaligntype horizontal, string value, integer context returns framehandle
     local framehandle result = BlzCreateFrameByType("TEXT", "WcsText", parent, "", context)
-    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, x, y)
-    call BlzFrameSetSize(result, width, height)
+    local real shown = RMaxBJ(scale * WCS_ZOOM, WCS_MIN_TEXT)
+    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, WCS_X(x), WCS_Y(y))
+    // Scale shrinks the box too: keep the zoomed on-screen box size.
+    call BlzFrameSetSize(result, WCS_S(width) * scale / shown, WCS_S(height) * scale / shown)
     call BlzFrameSetTextAlignment(result, TEXT_JUSTIFY_MIDDLE, horizontal)
-    call BlzFrameSetScale(result, scale)
+    call BlzFrameSetScale(result, shown)
     call BlzFrameSetText(result, value)
     return result
 endfunction
 
 private function WCS_CreateBackdrop takes framehandle parent, real x, real y, real width, real height, integer alpha, integer context returns framehandle
     local framehandle result = BlzCreateFrameByType("BACKDROP", "WcsBackdrop", parent, "", context)
-    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, x, y)
-    call BlzFrameSetSize(result, width, height)
+    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, WCS_X(x), WCS_Y(y))
+    call BlzFrameSetSize(result, WCS_S(width), WCS_S(height))
     call BlzFrameSetTexture(result, WCS_TEX_BLACK, 0, true)
     call BlzFrameSetAlpha(result, alpha)
     return result
 endfunction
 
 private function WCS_CreateIconButton takes framehandle parent, real x, real y, real size, integer context returns framehandle
-    local framehandle result = BlzCreateFrameByType("BUTTON", "WcsIconButton", parent, "ScoreScreenTabButtonTemplate", context)
-    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, x, y)
-    call BlzFrameSetSize(result, size, size)
+    local framehandle result = BlzCreateFrameByType("BUTTON", "WcsIconButton", parent, "WOSIconButtonTemplate", context)
+    call BlzFrameSetAbsPoint(result, FRAMEPOINT_CENTER, WCS_X(x), WCS_Y(y))
+    call BlzFrameSetSize(result, WCS_S(size), WCS_S(size))
     return result
 endfunction
 
@@ -180,13 +200,11 @@ private function WCS_CreateIcon takes framehandle buttonFrame, string texture, i
     return result
 endfunction
 
+// Same gold text button as Hide UI / Shop Key.
 private function WCS_CreateTextButton takes framehandle parent, real x, real y, real width, real height, string value, integer context returns framehandle
-    local framehandle buttonFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)
-    call WUI_StyleButton(buttonFrame)
-    call BlzFrameSetAbsPoint(buttonFrame, FRAMEPOINT_CENTER, x, y)
-    call BlzFrameSetSize(buttonFrame, width, height)
-    call BlzFrameSetText(buttonFrame, value)
-    call BlzFrameSetScale(buttonFrame, 0.80)
+    local framehandle buttonFrame = WUI_TextButton("WcsTextButton", parent, value, WCS_S(width), WCS_S(height) * 0.80)
+    call WUI_Place(buttonFrame, WCS_X(x), WCS_Y(y), WCS_S(width), WCS_S(height) * 0.80)
+    call WUI_SetButtonTextScale(buttonFrame, 0.86)
     return buttonFrame
 endfunction
 
@@ -313,14 +331,13 @@ private function WCS_GetExtraHeroId takes player viewer, integer rank, integer e
 endfunction
 
 private function WCS_CreateTooltip takes framehandle owner, real width, real height, integer context returns framehandle
-    local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "WcsTooltip", WUI_GetRoot(), "", context)
+    // Checkpoint 23: shared tooltip box with a drawn gold edge.
+    local framehandle tooltip = WUI_TooltipBox(WUI_GetRoot(), width, height)
     local framehandle label = BlzCreateFrameByType("TEXT", "WcsTooltipText", tooltip, "", context)
     call BlzFrameSetPoint(tooltip, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_TOP, 0.0, 0.002)
-    call BlzFrameSetSize(tooltip, width, height)
-    call BlzFrameSetTexture(tooltip, WCS_TEX_BLACK, 0, true)
-    call BlzFrameSetAlpha(tooltip, 225)
     call BlzFrameSetLevel(tooltip, 90)
-    call BlzFrameSetAllPoints(label, tooltip)
+    call BlzFrameSetPoint(label, FRAMEPOINT_TOPLEFT, tooltip, FRAMEPOINT_TOPLEFT, 0.006, -0.005)
+    call BlzFrameSetPoint(label, FRAMEPOINT_BOTTOMRIGHT, tooltip, FRAMEPOINT_BOTTOMRIGHT, -0.006, 0.005)
     call BlzFrameSetTextAlignment(label, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(label, 0.85)
     call BlzFrameSetText(label, "")
@@ -392,20 +409,25 @@ private function WCS_SetPage takes integer pid, integer page returns nothing
 endfunction
 
 private function WCS_UpdateHome takes integer pid returns nothing
-    local player viewer =null
-    local integer games = SaveSystem_GetGamesPlayed(viewer)
-    local integer wins = SaveSystem_GetGamesWon(viewer)
+    local player viewer = null
+    local integer games
+    local integer wins
     local integer heroId = 0
     local integer heroGames
     local integer heroWins
     if pid < 0 or pid >= WCS_PLAYER_COUNT or GetLocalPlayer() != Player(pid) then
         return
     endif
-   set viewer = Player(pid)
+    set viewer = Player(pid)
+    set games = SaveSystem_GetGamesPlayed(viewer)
+    set wins = SaveSystem_GetGamesWon(viewer)
     if Hero[pid] != null then
         set heroId = GetUnitTypeId(Hero[pid])
     endif
-    call BlzFrameSetText(WCS_HomeOverall, "|cffffd36bYOUR CAREER|r\n\nGames  |cffffffff" + I2S(games) + "|r\nWins  |cff76d7a8" + I2S(wins) + "|r\nLosses  |cffff7777" + I2S(games - wins) + "|r\nWin rate  |cffffffff" + WCS_Percent(wins, games) + "|r")
+    call BlzFrameSetText(WCS_HomeOverall, "|cffffd36bYOUR CAREER / " + SaveSystem_CareerSource() + "|r\n\nGames  |cffffffff" + I2S(games) + "|r\nWins  |cff76d7a8" + I2S(wins) + "|r\nLosses  |cffff7777" + I2S(games - wins) + "|r\nWin rate  |cffffffff" + WCS_Percent(wins, games) + "|r\nLocal  " + I2S(SaveSystem_GetLocalGames()) + " games / " + WCS_Percent(SaveSystem_GetLocalWins(), SaveSystem_GetLocalGames()) + "\nKilled by the train  |cffff9a5a" + I2S(SaveSystem_GetLocalTrainDeaths()) + "|r")
+    if SaveSystem_IsLocalLoadFailed() and not SaveSystem_HasAppProfile() then
+        call BlzFrameSetText(WCS_HomeOverall, "|cffffd36bYOUR CAREER|r\n\n|cffff7777Profile unavailable.|r\nYour saved progress has been kept.")
+    endif
     if heroId == 0 then
         call BlzFrameSetText(WCS_HomeHero, "|cffffd36bSELECTED HERO|r\n|cff9aa7b4No hero selected yet.|r")
     else
@@ -456,6 +478,7 @@ private function WCS_UpdateHeroes takes integer pid returns nothing
             call BlzFrameSetVisible(WCS_HeroName[slot], false)
             call BlzFrameSetText(WCS_HeroName[slot], "")
             call BlzFrameSetText(WCS_HeroTooltipText[slot], "")
+            call BlzFrameSetVisible(WCS_HeroStatBack[slot], false)
         else
             set games = SaveSystem_GetHeroGames(viewer, heroId)
             set wins = SaveSystem_GetHeroWins(viewer, heroId)
@@ -463,6 +486,10 @@ private function WCS_UpdateHeroes takes integer pid returns nothing
             call BlzFrameSetVisible(WCS_HeroName[slot], true)
             call BlzFrameSetTexture(WCS_HeroIcon[slot], BlzGetAbilityIcon(heroId), 0, false)
             call BlzFrameSetText(WCS_HeroName[slot], GetObjectName(heroId))
+            call BlzFrameSetVisible(WCS_HeroStatBack[slot], games > 0)
+            if games > 0 then
+                call BlzFrameSetText(WCS_HeroStat[slot], "|cffffffff" + I2S(games) + "|r |cffffd36b" + WCS_Percent(wins, games) + "|r")
+            endif
             call BlzFrameSetText(WCS_HeroTooltipText[slot], "|cffffd36b" + GetObjectName(heroId) + "|r\nGames: " + I2S(games) + "   Wins: " + I2S(wins) + "\nWin rate: " + WCS_Percent(wins, games) + "\n|cff9aa7b4Click for details.|r")
         endif
         set slot = slot + 1
@@ -644,7 +671,7 @@ private function WCS_UpdateDetail takes integer pid returns nothing
     call BlzFrameSetText(WCS_Title, "|cffffd36bHERO DETAILS|r")
     call BlzFrameSetTexture(WCS_DetailHeroIcon, BlzGetAbilityIcon(heroId), 0, false)
     call BlzFrameSetText(WCS_DetailHeroName, "|cffffd36b" + GetObjectName(heroId) + "|r")
-    call BlzFrameSetText(WCS_DetailPersonal, "|cffffd36bMATCHES|r\n\n|cffffffffGames  " + I2S(games) + "\nWins  " + I2S(wins) + "\nLosses  " + I2S(games - wins) + "|r\n|cffffd36b" + WCS_Percent(wins, games) + "|r")
+    call BlzFrameSetText(WCS_DetailPersonal, "|cffffd36b" + SaveSystem_HeroCareerSource(heroId) + " MATCHES|r\n\n|cffffffffGames  " + I2S(games) + "\nWins  " + I2S(wins) + "\nLosses  " + I2S(games - wins) + "|r\n|cffffd36b" + WCS_Percent(wins, games) + "|r\nLocal  " + I2S(SaveSystem_GetLocalHeroGames(heroId)) + "\n" + WCS_Percent(SaveSystem_GetLocalHeroWins(heroId), SaveSystem_GetLocalHeroGames(heroId)))
     call BlzFrameSetText(WCS_DetailRounds, "|cffffd36bROUNDS|r\n\n|cffffffffWon  " + I2S(roundWins) + "\nLost  " + I2S(roundLosses) + "|r\n|cffffd36b" + WCS_Percent(roundWins, roundWins + roundLosses) + "|r")
     if combatGames > 0 then
         call BlzFrameSetText(WCS_DetailAverage, "|cffffd36bAVERAGES|r\n\n|cffffffffKills  " + WCS_Decimal100(averageKills) + "\nDeaths  " + WCS_Decimal100(averageDeaths) + "\nGames  " + I2S(combatGames) + "|r")
@@ -875,7 +902,8 @@ private function WCS_CreateHeroesPage takes nothing returns nothing
         set x = 0.264
         set y = 0.390 - I2R(category)*0.036
         set WCS_CategoryButton[category] = WCS_CreateIconButton(WCS_HeroesPage, x, y, 0.025, 8400 + category)
-        call BlzFrameSetSize(WCS_CategoryButton[category], 0.055, 0.027)
+        // 4:1 franchise plates (same art as the hero pick).
+        call BlzFrameSetSize(WCS_CategoryButton[category], WCS_S(0.064), WCS_S(0.016))
         set WCS_CategoryIcon[category] = WCS_CreateIcon(WCS_CategoryButton[category], WCS_CategoryTexture(category + 1), 8410 + category)
         set tooltipText = WCS_CreateTooltip(WCS_CategoryButton[category], 0.130, 0.026, 8420 + category)
         set WCS_CategoryTooltip[category] = WCS_LastCreatedTooltip
@@ -891,7 +919,21 @@ private function WCS_CreateHeroesPage takes nothing returns nothing
         set y = 0.390 - I2R(row)*0.043
         set WCS_HeroButton[slot] = WCS_CreateIconButton(WCS_HeroesPage, x, y + 0.004, 0.028, 9100 + slot)
         set WCS_HeroIcon[slot] = WCS_CreateIcon(WCS_HeroButton[slot], WCS_TEX_EMPTY, 9200 + slot)
+        set tooltipText = WUI_IconFrame(WCS_HeroButton[slot], WUI_ICON_FRAME)
         set WCS_HeroName[slot] = WCS_CreateText(WCS_HeroesPage, x, y - 0.016, 0.045, 0.011, 0.56, TEXT_JUSTIFY_CENTER, "", 9300 + slot)
+        // Short career line over the bottom of the icon: games / win rate.
+        set WCS_HeroStatBack[slot] = BlzCreateFrameByType("BACKDROP", "WcsHeroStatBack", WCS_HeroButton[slot], "", 9500 + slot)
+        call BlzFrameSetPoint(WCS_HeroStatBack[slot], FRAMEPOINT_BOTTOMLEFT, WCS_HeroButton[slot], FRAMEPOINT_BOTTOMLEFT, WCS_S(0.0020), WCS_S(0.0020))
+        call BlzFrameSetPoint(WCS_HeroStatBack[slot], FRAMEPOINT_TOPRIGHT, WCS_HeroButton[slot], FRAMEPOINT_BOTTOMRIGHT, -WCS_S(0.0020), WCS_S(0.0110))
+        call BlzFrameSetTexture(WCS_HeroStatBack[slot], WCS_TEX_BLACK, 0, true)
+        call BlzFrameSetAlpha(WCS_HeroStatBack[slot], 200)
+        call BlzFrameSetEnable(WCS_HeroStatBack[slot], false)
+        set WCS_HeroStat[slot] = BlzCreateFrameByType("TEXT", "WcsHeroStat", WCS_HeroStatBack[slot], "", 9600 + slot)
+        call BlzFrameSetAllPoints(WCS_HeroStat[slot], WCS_HeroStatBack[slot])
+        call BlzFrameSetScale(WCS_HeroStat[slot], 0.62)
+        call BlzFrameSetTextAlignment(WCS_HeroStat[slot], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(WCS_HeroStat[slot], false)
+        call BlzFrameSetVisible(WCS_HeroStatBack[slot], false)
         set WCS_HeroTooltipText[slot] = WCS_CreateTooltip(WCS_HeroButton[slot], 0.160, 0.055, 9400 + slot)
         set WCS_HeroTooltip[slot] = WCS_LastCreatedTooltip
         call BlzTriggerRegisterFrameEvent(WCS_HeroTrigger, WCS_HeroButton[slot], FRAMEEVENT_CONTROL_CLICK)
@@ -911,8 +953,9 @@ private function WCS_CreateDetailPage takes nothing returns nothing
     call WCS_CreateBackdrop(WCS_DetailPage, 0.315, 0.221, 0.155, 0.062, 155, 8701)
     call WCS_CreateBackdrop(WCS_DetailPage, 0.485, 0.221, 0.155, 0.062, 155, 8702)
     set WCS_DetailHeroIcon = BlzCreateFrameByType("BACKDROP", "WcsDetailHeroIcon", WCS_DetailPage, "", 8710)
-    call BlzFrameSetAbsPoint(WCS_DetailHeroIcon, FRAMEPOINT_CENTER, 0.255, 0.398)
-    call BlzFrameSetSize(WCS_DetailHeroIcon, 0.036, 0.036)
+    call BlzFrameSetAbsPoint(WCS_DetailHeroIcon, FRAMEPOINT_CENTER, WCS_X(0.255), WCS_Y(0.398))
+    call BlzFrameSetSize(WCS_DetailHeroIcon, WCS_S(0.036), WCS_S(0.036))
+    set tooltipText = WUI_IconFrame(WCS_DetailHeroIcon, WUI_ICON_FRAME)
     set WCS_DetailHeroName = WCS_CreateText(WCS_DetailPage, 0.385, 0.399, 0.210, 0.030, 0.94, TEXT_JUSTIFY_CENTER, "", 8711)
     set WCS_DetailPersonal = WCS_CreateText(WCS_DetailPage, 0.260, 0.326, 0.058, 0.106, 0.48, TEXT_JUSTIFY_CENTER, "", 8720)
     set WCS_DetailRounds = WCS_CreateText(WCS_DetailPage, 0.322, 0.326, 0.058, 0.106, 0.48, TEXT_JUSTIFY_CENTER, "", 8721)
@@ -975,7 +1018,9 @@ endfunction
 private function WCS_CreateUI takes nothing returns nothing
     local framehandle gameUI = WUI_GetRoot()
     local integer pid = 0
-    set WCS_OpenButton = WCS_CreateIconButton(gameUI, WUI_TopActionX(1), 0.580, WCS_OPEN_SIZE, 8200)
+    set WCS_OpenButton = WCS_CreateIconButton(gameUI, WUI_TopActionX(2), 0.584, WCS_OPEN_SIZE, 8200)
+    // Top-bar position is screen space, not the zoomed career window space.
+    call WUI_Place(WCS_OpenButton, WUI_TopActionX(2), 0.584, WCS_OPEN_SIZE, WCS_OPEN_SIZE)
     call WUI_RegisterTopControl(WCS_OpenButton)
     call WUI_RegisterTopClose(function WCS_CloseTopWindow)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
@@ -986,12 +1031,21 @@ private function WCS_CreateUI takes nothing returns nothing
     set WCS_Main = WUI_Window("WOSCareerWindow", gameUI, 0, 8210)
     call BlzFrameSetAbsPoint(WCS_Main, FRAMEPOINT_CENTER, WCS_PANEL_X, WCS_PANEL_Y)
     call BlzFrameSetSize(WCS_Main, WCS_PANEL_WIDTH, WCS_PANEL_HEIGHT)
+    set WCS_CloseIcon = WUI_OrnateWindow("WOSCareerMetal", WCS_Main, 0.024)
     // КРИТИЧНО: панель изначально всегда скрыта.
 call BlzFrameSetVisible(WCS_Main, false)
     set WCS_Title = WCS_CreateText(WCS_Main, 0.445, 0.436, 0.160, 0.018, 0.76, TEXT_JUSTIFY_CENTER, "|cffffd36bWOS2 CAREER STATISTICS|r", 8211)
 
-    set WCS_CloseButton = WCS_CreateIconButton(WCS_Main, 0.560, 0.438, 0.012, 8212)
-    set WCS_CloseIcon = WCS_CreateIcon(WCS_CloseButton, WCS_TEX_CLOSE, 8213)
+    // Shop-style close button: graphite fill, gold X, gold hairline.
+    set WCS_CloseButton = BlzCreateFrameByType("BUTTON", "WcsCloseButton", WCS_Main, "", 8212)
+    call WUI_Place(WCS_CloseButton, WCS_PANEL_X + WCS_PANEL_WIDTH * 0.5 - 0.016, WCS_PANEL_Y + WCS_PANEL_HEIGHT * 0.5 - 0.016, 0.016, 0.016)
+    set WCS_CloseIcon = WCS_CreateIcon(WCS_CloseButton, WUI_FILL_NORMAL, 8213)
+    set WCS_CloseIcon = BlzCreateFrameByType("BACKDROP", "WcsCloseGlyph", WCS_CloseButton, "", 8215)
+    call BlzFrameSetPoint(WCS_CloseIcon, FRAMEPOINT_TOPLEFT, WCS_CloseButton, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+    call BlzFrameSetPoint(WCS_CloseIcon, FRAMEPOINT_BOTTOMRIGHT, WCS_CloseButton, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+    call BlzFrameSetTexture(WCS_CloseIcon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetEnable(WCS_CloseIcon, false)
+    call WUI_GoldFrame("WcsCloseEdge", WCS_CloseButton, 0.0026, 0.0000)
     set WCS_HomeButton = WCS_CreateTextButton(WCS_Main, 0.258, 0.430, 0.064, 0.024, "HOME", 8214)
     set WCS_HeroesButton = WCS_CreateTextButton(WCS_Main, 0.334, 0.430, 0.078, 0.024, "HEROES", 8216)
     set WCS_HomePage = BlzCreateFrameByType("FRAME", "WcsHomePage", WCS_Main, "", 8230)

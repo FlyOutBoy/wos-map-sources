@@ -1596,6 +1596,8 @@ library KenjakuSpells uses GearSystems
                 if GetLocalPlayer() == Player(k2) then
                     call BlzFrameSetVisible(frame_pas1[k2], false)
                 endif
+                // The next round start may restart the passive for this unit.
+                call RemoveSavedBoolean(hs, GetHandleId(c), StringHash("KenjakuF Started"))
                 set c = null
                 set m_KenjakuF[i] = m_KenjakuF[ MUI_KenjakuF]
                 set MUI_KenjakuF = MUI_KenjakuF - 1
@@ -1613,6 +1615,7 @@ library KenjakuSpells uses GearSystems
         set m_KenjakuF[ MUI_KenjakuF] = this
         set c = NewC
         call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), 0)
+        call SaveBoolean(hs, GetHandleId(c), StringHash("KenjakuF Started"), true)
         set check = 1
         set check2 = GetUnitTypeId(c)
         set k3 = KenjakuF_BaseStacksAmount

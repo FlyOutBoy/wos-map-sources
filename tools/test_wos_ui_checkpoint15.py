@@ -53,12 +53,13 @@ class PassiveFallback(unittest.TestCase):
         for column in range(3):
             for row in range(2):
                 vm.run('WUI_PlaceToolbar', ((column, row), column, row))
+        # Checkpoint 20: right block .697-.798, below the gold row/divider (.0655).
         for x,y,w,h in positions.values():
-            self.assertGreaterEqual(x-w/2, .648)
-            self.assertLessEqual(x+w/2, .752)
+            self.assertGreaterEqual(x-w/2, .699)
+            self.assertLessEqual(x+w/2, .829)
             self.assertGreaterEqual(y-h/2, .002)
-            self.assertLessEqual(y+h/2, .098)
-            self.assertEqual((.023, .023), (w, h))
+            self.assertLessEqual(y+h/2, .0655)
+            self.assertEqual((.025, .025), (w, h))
         values = list(positions.values())
         for i, (x,y,w,h) in enumerate(values):
             for xx,yy,ww,hh in values[i+1:]:
@@ -75,8 +76,7 @@ class PassiveFallback(unittest.TestCase):
         vm.run('WUI_Bootstrap')
         self.assertFalse(vm.g['WUI_FrameDefinitionsReady'])
         self.assertEqual('BACKDROP:WOSIndependentRoot', vm.g['WUI_Root'])
-        for name in ('WOSIndependentRoot', 'WOSHUDSurface', 'WOSMinimapSurface',
-                     'WOSInventorySurface', 'WOSHUDMetal'):
+        for name in ('WOSIndependentRoot', 'WOSHUDSurface', 'WOSMinimapSurface', 'WOSHUDMetal'):
             self.assertTrue(any(n == 'create' and a[:2] == ('BACKDROP', name)
                                 for n, a in fixture.calls), name)
         self.assertFalse(any(n == 'BlzFrameSetAlpha' and a[1] == 0 for n, a in fixture.calls))

@@ -35,29 +35,17 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
     SliderStepSize 1,
     SliderInitialValue 0,
 
+    // Checkpoint 23: same art as the camera slider (thin gold track, gold
+    // diamond thumb) instead of the stock yellow escape-menu bar.
     ControlBackdrop "LMPBar",
     Frame "BACKDROP" "LMPBar" {
-        DecorateFileNames,
-        BackdropTileBackground,
-        BackdropBackground "EscMenuSliderBackground",
-        BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
-        BackdropCornerSize 0.006,
-        BackdropBackgroundSize 0.006,
-        BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
-        BackdropEdgeFile "EscMenuSliderBorder",
+        BackdropBackground "UI\WOS\slider-clean-h.tga",
         BackdropBlendAll,
     }
 
     ControlDisabledBackdrop "LMPBarDisabled",
     Frame "BACKDROP" "LMPBarDisabled" {
-        DecorateFileNames,
-        BackdropTileBackground,
-        BackdropBackground "EscMenuSliderBackground",
-        BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
-        BackdropCornerSize 0.006,
-        BackdropBackgroundSize 0.006,
-        BackdropBackgroundInsets 0.0025 0.0025 0.0025 0.0025,
-        BackdropEdgeFile "EscMenuSliderDisabledBorder",
+        BackdropBackground "UI\WOS\slider-clean-h.tga",
         BackdropBlendAll,
     }
 
@@ -68,16 +56,14 @@ Frame "SLIDER" "LMPHorizontalSliderTemplate" {
 
         ControlBackdrop "LMPThumbBackdrop",
         Frame "BACKDROP" "LMPThumbBackdrop" {
-            DecorateFileNames,
             BackdropBlendAll,
-            BackdropBackground "EscMenuSliderThumbButton",
+            BackdropBackground "UI\WOS\slider-thumb.tga",
         }
 
         ControlDisabledBackdrop "LMPThumbDisabled",
         Frame "BACKDROP" "LMPThumbDisabled" {
-            DecorateFileNames,
             BackdropBlendAll,
-            BackdropBackground "EscMenuSliderDisabledThumbButton",
+            BackdropBackground "UI\WOS\slider-thumb.tga",
         }
     }
 }

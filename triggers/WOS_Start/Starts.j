@@ -1,5 +1,9 @@
 globals
     framehandle WOS_ModeRoot = null
+    // Checkpoint 22: live countdown in the mode selector hint.
+    framehandle WOS_ModeHint = null
+    integer WOS_ModeSecondsLeft = 20
+    timer WOS_ModeCountdown = null
     framehandle array WOS_ModeButton
     dialog udg_ModeDialog
     button udg_TestButton
@@ -19,6 +23,7 @@ globals
     boolean ModeSystemsInitialized = false
     group MeraMeraEnumGroup = null
     timer CamSetupTimer = null
+    integer array WOS_CameraArea
     framehandle main_frame 
     timer RegenTimer = null
     timer FullShieldEffectTimer = null
@@ -260,14 +265,12 @@ function WOS_SelectMode takes integer mode returns nothing
     set CaptainDraftPreRoundUnlimitedSwap = CaptainDraftMode
     if TestMode then
         call TestComm()
-        call PlayersMsg("Test Mode activated", 1)
     elseif CaptainMode then
         call PlayersMsg("Player Pick Mode activated", 1)
     elseif CaptainDraftMode then
         call PlayersMsg("Captain Draft Mode activated", 1)
         call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundModeStart)
     else
-        call PlayersMsg("Normal Mode activated", 1)
     endif
     if WOS_ModeRoot != null then
         call BlzFrameSetVisible(WOS_ModeRoot, false)
@@ -279,6 +282,20 @@ function WOS_SelectMode takes integer mode returns nothing
     call Map_Start()
     if CaptainDraftMode then
         call CaptainDraft_StartFirstSideVote()
+    endif
+endfunction
+
+function WOS_ModeHintText takes nothing returns string
+    return WUI_TEXT + "Host selects a mode - Normal in |r" + WUI_GOLD + I2S(WOS_ModeSecondsLeft) + "s|r"
+endfunction
+
+function WOS_ModeCountdownTick takes nothing returns nothing
+    set WOS_ModeSecondsLeft = IMaxBJ(0, WOS_ModeSecondsLeft - 1)
+    if PickedMode != 0 or WOS_ModeSecondsLeft <= 0 then
+        call PauseTimer(WOS_ModeCountdown)
+    endif
+    if WOS_ModeHint != null then
+        call BlzFrameSetText(WOS_ModeHint, WOS_ModeHintText())
     endif
 endfunction
 
@@ -314,6 +331,8 @@ function WOS_ModeFrameClick takes nothing returns nothing
     endloop
 endfunction
 
+// Checkpoint 20: real sizes (no parent scale), flush gold frames. Every
+// button's visible frame is exactly its clickable rectangle.
 function WOS_CreateModeSelector takes nothing returns nothing
     local integer i = 0
     local string caption
@@ -322,22 +341,24 @@ function WOS_CreateModeSelector takes nothing returns nothing
     local trigger events = CreateTrigger()
     set WOS_ModeRoot = WUI_Passive("WOSModeSelector", WUI_GetRoot())
     call WUI_RegisterModal(WOS_ModeRoot)
-    call BlzFrameSetScale(WOS_ModeRoot, 1.15)
     call BlzFrameSetLevel(WOS_ModeRoot, 30)
     set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
-    call WUI_Place(panel, 0.400, 0.323, 0.270, 0.272347826)
-    set title = WUI_OrnateWindow("WOSModeMetal", panel, 0.032)
+    call WUI_Place(panel, 0.400, 0.330, 0.330, 0.300)
+    set title = WUI_OrnateBorder("WOSModeMetal", panel, 0.030)
     set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
-    call WUI_Place(title, 0.400, 0.439, 0.240, 0.021)
+    call WUI_Place(title, 0.400, 0.452, 0.280, 0.022)
+    call BlzFrameSetScale(title, 1.20)
     call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(title, WUI_GOLD + "CHOOSE GAME MODE|r")
     call BlzFrameSetEnable(title, false)
     set title = BlzCreateFrameByType("TEXT", "WOSModeHint", panel, "", 0)
-    call WUI_Place(title, 0.400, 0.410, 0.240, 0.018)
-    call BlzFrameSetScale(title, 0.78)
+    set WOS_ModeHint = title
+    call WUI_Place(title, 0.400, 0.431, 0.280, 0.016)
+    call BlzFrameSetScale(title, 0.80)
     call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetText(title, "Host selects a mode - Normal after 20s")
+    call BlzFrameSetText(title, WOS_ModeHintText())
     call BlzFrameSetEnable(title, false)
+    set title = WUI_Divider("WOSModeDivider", panel, 0.400, 0.418, 0.240, false)
     loop
         exitwhen i >= 4
         if i == 0 then
@@ -349,8 +370,9 @@ function WOS_CreateModeSelector takes nothing returns nothing
         else
             set caption = "Test Mode"
         endif
-        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.230, 0.038608696)
-        call WUI_Place(WOS_ModeButton[i], 0.400, 0.374 - I2R(i) * 0.054, 0.230, 0.038608696)
+        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.264, 0.040)
+        call WUI_Place(WOS_ModeButton[i], 0.400, 0.386 - I2R(i) * 0.054, 0.264, 0.040)
+        call WUI_SetButtonTextScale(WOS_ModeButton[i], 1.00)
         call BlzTriggerRegisterFrameEvent(events, WOS_ModeButton[i], FRAMEEVENT_CONTROL_CLICK)
         if GetLocalPlayer() != Player(0) then
             call BlzFrameSetEnable(WOS_ModeButton[i], false)
@@ -358,6 +380,10 @@ function WOS_CreateModeSelector takes nothing returns nothing
         set i = i + 1
     endloop
     call TriggerAddAction(events, function WOS_ModeFrameClick)
+    // Allocate/register on every client; only Player 1 sees the selector.
+    if GetLocalPlayer() != Player(0) then
+        call BlzFrameSetVisible(WOS_ModeRoot, false)
+    endif
     set panel = null
     set title = null
     set events = null
@@ -467,6 +493,48 @@ function Regen takes nothing returns nothing
    
     set u = null
 endfunction
+function WOS_MinimapSummon takes nothing returns nothing
+    local unit u = GetSummonedUnit()
+    local integer pid = GetPlayerId(GetOwningPlayer(u))
+    if pid < 15 and IsUnitIllusion(u) and Hero[pid] != null then
+        call WOS_RegisterHeroMinimap(u, Hero[pid])
+    endif
+    set u = null
+endfunction
+
+function WOS_UpdateArenaCamera takes integer pid returns nothing
+    local unit u = Hero[pid]
+    local boolean atBase = CondArena == 0
+    local integer area = 2
+    if u != null and GetUnitTypeId(u) != 0 then
+        set atBase = CheckCoordsInRect(gg_rct_Base, GetUnitX(u), GetUnitY(u))
+    endif
+    if atBase then
+        set area = 1
+    endif
+    if WOS_CameraArea[pid] != area then
+        set WOS_CameraArea[pid] = area
+        // Base: no lock, the usual map camera and minimap. Arena: camera
+        // locked to the arena and the Arena.png minimap overlay.
+        // ARENA LOCK DISABLED (test): minimap overlay + camera bounds on gg_rct_Arena.
+        //call ArenaMinimap_SetArena(Player(pid), not atBase, gg_rct_Arena)
+        if atBase then
+            call SetCameraBoundsToRectForPlayerBJ(Player(pid), bj_mapInitialCameraBounds)
+            if u != null and GetUnitTypeId(u) != 0 then
+                call PanCameraToTimedForPlayer(Player(pid), GetUnitX(u), GetUnitY(u), 0.0)
+            endif
+        else
+            //call SetCameraBoundsToRectForPlayerBJ(Player(pid), gg_rct_Arena)
+            if u != null and GetUnitTypeId(u) != 0 then
+                call PanCameraToTimedForPlayer(Player(pid), GetUnitX(u), GetUnitY(u), 0.0)
+            else
+                call PanCameraToTimedForPlayer(Player(pid), GetRectCenterX(gg_rct_Arena), GetRectCenterY(gg_rct_Arena), 0.0)
+            endif
+        endif
+    endif
+    set u = null
+endfunction
+
 function CamSetup takes nothing returns nothing
     local integer i = 0
     local unit u
@@ -475,6 +543,7 @@ function CamSetup takes nothing returns nothing
     loop
         exitwhen i == 15
         if IsActivePlayerSlot(i) or IsActiveObserverSlot(i) then
+            call WOS_UpdateArenaCamera(i)
             set u = Hero[i]
             if u != null and Leave[i] == 0 and CondArena != 0 and not IsUnitType(u, UNIT_TYPE_DEAD) then
                 set x = GetUnitX(u)
@@ -505,10 +574,12 @@ function CamSetup takes nothing returns nothing
         endif
         set i = i + 1
     endloop
+    call WOS_UpdateHeroMinimap()
     set u = null
 endfunction
 function InitTrig_ModeDialog takes nothing returns nothing
     local trigger t = CreateTrigger()
+    local trigger minimapSummon = CreateTrigger()
     local real x  
     local real y 
     local real z  = 650
@@ -520,6 +591,7 @@ local real a = 270 *bj_DEGTORAD
 local real fly = 300
 local real scale = 20
                 set main_frame = BlzCreateFrameByType("BACKDROP", "SS", WUI_GetRoot(), "", 0)
+                call WUI_RegisterHeroLayer(main_frame)
              //   call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
             //    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
 // Permanent instruction texttags are now in the scrollable TestMode panel.
@@ -541,12 +613,17 @@ call PanCameraToTimedForPlayer(Player(i),GetRectCenterX(gg_rct_Base),GetRectCent
 set i = i + 1
 endloop
     call TasAbilityChargeBox_Init()
+    call TriggerRegisterAnyUnitEventBJ(minimapSummon, EVENT_PLAYER_UNIT_SUMMON)
+    call TriggerAddAction(minimapSummon, function WOS_MinimapSummon)
+    set minimapSummon = null
     if PlayersAmount >1 then 
     call MusicInit()
     endif
     set AAADestNoDecorCond = Condition(function NoDecor_Filter)
     call WUI_OnReady(function WOS_CreateModeSelector)
     call TimerStart(CreateTimer(),20,false,function CheckPickedMode )
+    set WOS_ModeCountdown = CreateTimer()
+    call TimerStart(WOS_ModeCountdown, 1.00, true, function WOS_ModeCountdownTick)
     set CamSetupTimer = CreateTimer()
     set RegenTimer = CreateTimer()
     call TimerStart(CamSetupTimer,0.20,true,function CamSetup )

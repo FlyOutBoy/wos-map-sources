@@ -16,7 +16,9 @@ class NativeChassis(unittest.TestCase):
         fixture.vm.run('WUI_Bootstrap')
         created = [args for name, args in fixture.calls if name == 'create']
         self.assertIn(('SIMPLEFRAME', 'WOSNativeHUDSurface', 'named:ConsoleUI'), created)
-        for name in ('WOSHUDSurface', 'WOSMinimapSurface', 'WOSInventorySurface'):
+        # Checkpoint 20: one continuous chassis; no separate inventory box.
+        self.assertNotIn(('BACKDROP', 'WOSInventorySurface', 'BACKDROP:WOSIndependentRoot'), created)
+        for name in ('WOSHUDSurface', 'WOSMinimapSurface'):
             self.assertIn(('BACKDROP', name, 'BACKDROP:WOSIndependentRoot'), created)
             # Only this container's image is transparent, never its descendants.
             self.assertIn(('BlzFrameSetTexture', ('BACKDROP:' + name, 'UI\\WOS\\empty.tga', 0, True)), fixture.calls)
@@ -32,8 +34,11 @@ class NativeChassis(unittest.TestCase):
         vm.g['ModuloInteger'] = lambda a,b:a % b
         fixture.calls.clear()
         vm.run('WUI_RestoreCompactNative')
-        for name in ('ConsoleTopBar', 'ConsoleBottomBar', 'ResourceBarFrame'):
+        for name in ('ConsoleTopBar', 'ConsoleBottomBar'):
             self.assertIn(('visible', ('named:' + name, False)), fixture.calls)
+        # The bar stays visible for /fps; its four mouse listeners are hidden
+        # separately, without touching the native resource strings.
+        self.assertIn(('visible', ('named:ResourceBarFrame', True)), fixture.calls)
         self.assertIn(('visible', ('commands', True)), fixture.calls)
 
     def test_mode_selector_has_no_four_by_three_shade(self):
@@ -52,37 +57,41 @@ class ShopTree(unittest.TestCase):
         self.assertEqual(sorted(x for x,y in tabs), [x for x,y in tabs])
         self.assertLess(pos[vm.g['FRAME_ShopItem'][0]][0], .10)
         for i in range(35):
-            self.assertEqual((.040,.040), size[vm.g['FRAME_ShopItem'][i]])
+            self.assertEqual((.038,.038), size[vm.g['FRAME_ShopItem'][i]])
         list_top = pos['FRAME_ShopItemList'][1] + size['FRAME_ShopItemList'][1]/2
         self.assertGreater(tabs[0][1] - size[vm.g['FRAME_ShopSection'][0]][1]/2, list_top)
 
     def test_recipe_branch_visibility_changes_with_actual_relations(self):
+        # Checkpoint 24b: slots 0-5 upgrades, 6-11 their upgrades, 12-17 components, 18-23 theirs.
         vm = load_source('WoS_Shop_Init.j')
         visible = {}
-        relations = [111,0,222,333,0,0]
+        relations = [111,0,222,0,0,0] + [333,0,0,0,0,0]
         vm.g.update({
-            'FRAME_ShopRecipeLine': {i:('line',i) for i in range(18)},
+            'FRAME_ShopRecipeLine': {i:('line',i) for i in range(72)},
             'GetLocalPlayer':lambda:0,'GetPlayerId':lambda p:p,
             'ShopCraftScrollItemId':{0:77},'ShopCraftUpgradeOffset':{0:0},'ShopCraftComponentOffset':{0:0},
             'GetSelectedHeroForPlayer':lambda _:None,'ShopUpdateCraftScrollbars':lambda *_:None,
-            'ResetCraftFrames':lambda *_:None,'GetVisibleCraftRelation':lambda id,up,offset,slot:relations[slot if up else slot+3],
-            'GetCraftUpgradeCount':lambda _:2,'HasCraftComponents':lambda _:True,
+            'ResetCraftFrames':lambda *_:None,'WUI_Place':lambda *_:None,'ShopPlacePrice':lambda *_:None,'GetVisibleCraftRelation':lambda id,up,offset,slot:relations[slot if up else slot+6],
+            'GetCraftUpgradeCount':lambda _:3,'GetCraftUpgrade':lambda *_:0,'GetCraftComponent':lambda *_:0,'GetCraftComponentCount':lambda _:1,'HasCraftComponents':lambda _:True,
             'CheckItemsReduceCostCraft':lambda u,c,id,r:c,'GetItemValue':lambda _:100,
             'CheckBanItems':lambda *_:False,'BlzGetAbilityIcon':lambda _:'icon',
             'BlzFrameSetVisible':lambda f,v:visible.update({f:v}),
             'BlzFrameSetTexture':lambda *_:None,'BlzFrameSetEnable':lambda *_:None,
-            'BlzFrameSetText':lambda *_:None,'I2S':str,
+            'BlzFrameSetText':lambda *_:None,'I2S':str,'I2R':float,'IMinBJ':min,
+            'RAbsBJ':abs,'RMaxBJ':max,'BlzFrameClearAllPoints':lambda *_:None,
+            'BlzFrameSetAbsPoint':lambda *_:None,'BlzFrameSetSize':lambda *_:None,
+            'StringLength':len,'BlzFrameSetScale':lambda *_:None,'BlzFrameSetLevel':lambda *_:None,
+            'FRAMEPOINT_CENTER':'center','FRAMEPOINT_TOP':'top','GetObjectName':lambda *_:'name','WUI_TEXT':'',
         })
         vm.run('CraftItemCheck',(77,0,0))
-        self.assertEqual([True,False,True,True,False,False], [visible['line',i*3] for i in range(6)])
-        relations[:] = [0,444,0,0,555,0]
+        self.assertEqual([True,False,True] + [False]*9 + [True] + [False]*11, [visible['line',i*3] for i in range(24)])
+        relations[:] = [0,444,0,0,0,0] + [0,555,0,0,0,0]
         vm.run('CraftItemCheck',(77,0,0))
-        self.assertEqual([False,True,False,False,True,False], [visible['line',i*3] for i in range(6)])
+        self.assertEqual([False,True] + [False]*10 + [False,True] + [False]*10, [visible['line',i*3] for i in range(24)])
         visible.clear()
         vm.g['GetLocalPlayer'] = lambda:1
         vm.run('CraftItemCheck',(77,0,0))
         self.assertFalse(visible)
-
 
 if __name__ == '__main__':
     unittest.main()

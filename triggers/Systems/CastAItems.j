@@ -123,7 +123,7 @@ endif
 if id == HokageHat_ID then
 call SetMpCurrent(td,-HokageHat_Manaburn)
 call RootUnit(c,td,HokageHat_RootTime)
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif
@@ -131,7 +131,7 @@ call EUTU2(EffectSpawn("war3mapImported\\wos_1hongse_2blue.mdl",GetUnitX(td),Get
 call EUTU2(EffectSpawn("war3mapImported\\wos_s225.mdl",GetUnitX(td),GetUnitY(td),1,1,1,1),HokageHat_RootTime,1,td)
 endif
 if id == HokageHatEvolved_ID then
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,x,y)
 endif
@@ -143,7 +143,7 @@ call MakeSound("war3mapimported\\Item_Hiraishin")
 call DestroyEffect(EffectSpawn("war3mapImported\\wos_1jinse_94.mdl",GetUnitX(c),GetUnitY(c),1,1,1,1))
 call DestroyEffect(EffectSpawn("war3mapImported\\wos_0713.mdl",GetUnitX(c),GetUnitY(c),1,1,1,125))
 call PosUnit(c,GetUnitX(td)+50*Cos(GAngle(c,td)),GetUnitY(td)+50*Sin(GAngle(c,td)))
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif

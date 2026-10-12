@@ -1,5 +1,15 @@
 # UI assets
 
+Checkpoint 20 (Claude, 2026-10-09): `tools/build_wos_ui_textures_cp20.py` generates
+27 deterministic RGBA TGA (no external art): line-h/line-v hairlines, gem,
+fill-normal/hover/pressed/selected/disabled/primary, tab, panel-soft (graphite with
+baked alpha 228), slot-empty, divider-v/h, icon-attack/phys/magic, pip-empty/full/
+ready, learn-glow, badge, glyph-repick/swap/camera, slider-track/thumb. It also
+rebuilds ornate-top/bottom/left/right by replicating the corner rail-exit pixel
+profiles (32 px thick, centred), removing stray crop rows. Corner art unchanged.
+New FDF: WOSControls.fdf (SLIDER "WOSVerticalSlider"), last entry of Templates.toc.
+WOSNativeEmptyAbility now uses slot-empty.tga. Installer total: 55 UI/WOS TGA.
+
 Checkpoint16 adds code-generated UI/WOS/empty.tga:32x32 uncompressed RGBA,
 all alpha zero. BACKDROP vertex tint was ignored by the user's Warcraft build.
 Installer/verifier reject opaque pixels. Builder now produces22 shared TGA;

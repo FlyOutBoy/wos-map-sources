@@ -20,8 +20,8 @@ globals
     private constant string LMP_LINK_URL = "bit.ly/4x8cOaB"
     private constant string LMP_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string LMP_TEX_CLOSE = "Music\\Music_Close.blp"
-    private constant string LMP_TEX_OPEN = "Music\\Music_Icon.blp"
-    private constant string LMP_TEX_LINK = "Music\\Music_Link.blp"
+    private constant string LMP_TEX_OPEN = "UI\\WOS\\glyph-music.tga"
+    private constant string LMP_TEX_LINK = "UI\\WOS\\glyph-link.tga"
     private constant string LMP_TEX_LOOP_OFF = "Music\\Music_LoopOff.blp"
     private constant string LMP_TEX_LOOP_ON = "Music\\Music_LoopOn.blp"
     private constant string LMP_TEX_SHUFFLE_OFF = "Music\\Music_MergeOff.blp"
@@ -96,7 +96,7 @@ globals
 
     private constant real LMP_CONTROLS_ROW1_Y = 0.255
     private constant real LMP_CONTROLS_ROW2_Y = 0.225
-    private constant real LMP_CONTROL_SIZE = 0.019
+    private constant real LMP_CONTROL_SIZE = 0.022
     private constant real LMP_PREVIOUS_X = 0.350
     private constant real LMP_BACK_10_X = 0.385
     private constant real LMP_PLAY_PAUSE_X = 0.420
@@ -686,6 +686,19 @@ private function LMP_PlayTrack takes player whichPlayer, integer trackIndex retu
     call LMP_UpdateAll(whichPlayer)
 endfunction
 
+// Checkpoint 27b: last chosen track for the local4 settings file (local).
+function LocalMp3Player_GetCurrent takes integer pid returns integer
+    return lmpCurrent[pid]
+endfunction
+
+// Local: select a saved track without starting it (the player presses play).
+function LocalMp3Player_SetCurrent takes integer pid, integer trackIndex returns nothing
+    if trackIndex > 0 and trackIndex <= lmpTrackCount then
+        set lmpCurrent[pid] = trackIndex
+        set lmpElapsed[pid] = 0.00
+    endif
+endfunction
+
 private function LMP_Play takes player whichPlayer returns nothing
     local integer pid = GetPlayerId(whichPlayer)
 
@@ -1030,11 +1043,15 @@ private function LMP_OnTick takes nothing returns nothing
                         endif
                         call LMP_PlayTrack(p, nextTrack)
                     else
-                        // Keep the horizontal thumb moving smoothly.
-                        set seekValue = lmpElapsed[pid] * 1000000.00 / I2R(durationMs)
-                        call LMP_SetProgress(p, seekValue)
+                        // Keep the horizontal thumb moving smoothly - only while the
+                        // player window is open (checkpoint 27d: a programmatic
+                        // slider value fires a synced value-changed event).
+                        if lmpPanel != null and BlzFrameIsVisible(lmpPanel) then
+                            set seekValue = lmpElapsed[pid] * 1000000.00 / I2R(durationMs)
+                            call LMP_SetProgress(p, seekValue)
+                        endif
 
-                        if lmpEqualizerElapsed[pid] >= 0.20 then
+                        if lmpEqualizerElapsed[pid] >= 0.20 and lmpPanel != null and BlzFrameIsVisible(lmpPanel) then
                             set lmpEqualizerElapsed[pid] = 0.00
                             set lmpEqualizerPhase[pid] = ModuloInteger(lmpEqualizerPhase[pid] + 1, 4)
                             call LMP_UpdateEqualizer(p)
@@ -1076,7 +1093,7 @@ private function LMP_CreateTextButton takes framehandle parent, string text, rea
 endfunction
 
 private function LMP_CreateIconButton takes framehandle parent, real x, real y, real size, integer context returns framehandle
-    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "", context)
+    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "WOSIconButtonTemplate", context)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, size, size)
@@ -1093,6 +1110,26 @@ private function LMP_CreateIcon takes framehandle iconParent, string texture ret
     call BlzFrameSetEnable(icon, false)
 
     return icon
+endfunction
+
+// Checkpoint 25: player controls in the UI style - graphite plate, gold
+// hairline, the glyph inset (it used to float as a bare white icon).
+private function LMP_StyleControl takes framehandle control returns nothing
+    local framehandle icon = BlzFrameGetChild(control, 0)
+    local framehandle plate = BlzCreateFrameByType("BACKDROP", "LMPControlPlate", control, "", 0)
+    call BlzFrameSetAllPoints(plate, control)
+    call BlzFrameSetTexture(plate, WUI_FILL_NORMAL, 0, true)
+    call BlzFrameSetEnable(plate, false)
+    call BlzFrameSetLevel(plate, 1)
+    set plate = WUI_GoldFrame("LMPControlEdge", plate, 0.0024, 0.0045)
+    if icon != null then
+        call BlzFrameClearAllPoints(icon)
+        call BlzFrameSetPoint(icon, FRAMEPOINT_TOPLEFT, control, FRAMEPOINT_TOPLEFT, 0.0045, -0.0045)
+        call BlzFrameSetPoint(icon, FRAMEPOINT_BOTTOMRIGHT, control, FRAMEPOINT_BOTTOMRIGHT, -0.0045, 0.0045)
+        call BlzFrameSetLevel(icon, 3)
+    endif
+    set icon = null
+    set plate = null
 endfunction
 
 private function LMP_AttachNativeTooltip takes framehandle whichFrame, string whichText returns nothing
@@ -1131,7 +1168,13 @@ private function LMP_CreateFrames takes nothing returns nothing
 
     // Allocate required FDF controls before any window or input blocker.
     // A parser/create failure must never leave a half-built visible panel.
-    set lmpLinkEdit = BlzCreateFrame("LMPLinkEditTemplate", consoleUI, 0, 0)
+    set lmpLinkEdit = null
+    if WUI_HasFrameDefinitions() then
+        set lmpLinkEdit = BlzCreateFrame("WOSEditBox", consoleUI, 0, 9161)
+    endif
+    if lmpLinkEdit == null then
+        set lmpLinkEdit = BlzCreateFrame("LMPLinkEditTemplate", consoleUI, 0, 0)
+    endif
     set lmpSeek = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 0)
     set lmpVolumeSlider = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 1)
     if lmpLinkEdit == null or lmpSeek == null or lmpVolumeSlider == null then
@@ -1155,19 +1198,19 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetVisible(lmpVolumeSlider, false)
 
     // Independent external buttons: no ResourceBar/Upkeep lookup, mutation or anchor.
-    set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.580, LMP_OPEN_SIZE, 100)
+    set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(4), 0.584, LMP_OPEN_SIZE, 100)
     set icon = LMP_CreateIcon(lmpOpenButton, LMP_TEX_OPEN)
     call BlzFrameSetLevel(lmpOpenButton, 100)
     call BlzFrameSetLevel(icon, 101)
     call BlzFrameSetVisible(lmpOpenButton,false)
-    set lmpLinkButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(2), 0.580, LMP_LINK_SIZE, 101)
+    set lmpLinkButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 101)
     set lmpLinkIcon = LMP_CreateIcon(lmpLinkButton, LMP_TEX_LINK)
     call BlzFrameSetLevel(lmpLinkButton, 100)
     call BlzFrameSetLevel(lmpLinkIcon, 101)    
     call BlzFrameSetVisible(lmpLinkButton, false)
     
-    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(2), 0.580, LMP_LINK_SIZE, 102)
-    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, LMP_TEX_CLOSE)
+    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 102)
+    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, "UI\\WOS\\glyph-close.tga")
     call BlzFrameSetLevel(lmpLinkActiveButton, 100)
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
     call BlzFrameSetVisible(lmpLinkActiveButton, false)
@@ -1176,6 +1219,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameClearAllPoints(lmpLinkEdit)
     call BlzFrameSetPoint(lmpLinkEdit, FRAMEPOINT_TOP, lmpLinkButton, FRAMEPOINT_BOTTOM, 0.000, -0.004)
     call BlzFrameSetSize(lmpLinkEdit, LMP_LINK_EDIT_WIDTH, LMP_LINK_EDIT_HEIGHT)
+    set icon = WUI_GoldFrame("LMPLinkEditEdge", lmpLinkEdit, 0.0030, 0.0060)
     call BlzFrameSetText(lmpLinkEdit, LMP_LINK_URL)
     call BlzFrameSetEnable(lmpLinkEdit, true)
     call BlzFrameSetLevel(lmpLinkEdit, 20)
@@ -1189,7 +1233,10 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetAbsPoint(lmpPanel, FRAMEPOINT_CENTER, LMP_PANEL_X, LMP_PANEL_Y)
     call BlzFrameSetSize(lmpPanel, LMP_PANEL_WIDTH, LMP_PANEL_HEIGHT)
     call BlzFrameSetTexture(lmpPanel, LMP_TEX_BLACK, 0, true)
-    call BlzFrameSetAlpha(lmpPanel, 210)
+    // Checkpoint 23: opaque fill that reaches flush ornate rails (the old
+    // translucent fill spilled past its inner border).
+    call BlzFrameSetAlpha(lmpPanel, 255)
+    set icon = WUI_OrnateWindow("WOSMusicMetal", lmpPanel, 0.022)
 
     set title = BlzCreateFrameByType("TEXT", "LMPTitle", lmpPanel, "", 0)
     call BlzFrameSetAbsPoint(title, FRAMEPOINT_CENTER, LMP_TITLE_X, LMP_TITLE_Y)
@@ -1198,8 +1245,15 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(title, 0.82)
     call BlzFrameSetText(title, "|cffffcc00WOS2 Music|r")
 
-    set lmpCloseButton = LMP_CreateIconButton(lmpPanel, LMP_CLOSE_X, LMP_CLOSE_Y, LMP_CLOSE_SIZE, 103)
-    set icon = LMP_CreateIcon(lmpCloseButton, LMP_TEX_CLOSE)
+    // Close button in the shop style: graphite fill, gold X, gold hairline.
+    set lmpCloseButton = LMP_CreateIconButton(lmpPanel, LMP_CLOSE_X, LMP_CLOSE_Y, 0.016, 103)
+    set icon = LMP_CreateIcon(lmpCloseButton, WUI_FILL_NORMAL)
+    set icon = BlzCreateFrameByType("BACKDROP", "LMPCloseGlyph", lmpCloseButton, "", 0)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_TOPLEFT, lmpCloseButton, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_BOTTOMRIGHT, lmpCloseButton, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetEnable(icon, false)
+    set icon = WUI_GoldFrame("LMPCloseEdge", lmpCloseButton, 0.0026, 0.0000)
 
     set lmpNowPlaying = BlzCreateFrameByType("TEXT", "LMPNowPlaying", lmpPanel, "", 0)
     call BlzFrameSetAbsPoint(lmpNowPlaying, FRAMEPOINT_CENTER, LMP_NOW_X, LMP_NOW_Y)
@@ -1258,7 +1312,14 @@ private function LMP_CreateFrames takes nothing returns nothing
         set row = row + 1
     endloop
 
-    set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)
+    // Same gold slider as the camera (WOSControls.fdf), stock one as fallback.
+    set lmpScroll = null
+    if WUI_HasFrameDefinitions() then
+        set lmpScroll = BlzCreateFrame("WOSVerticalSlider", lmpPanel, 0, 9160)
+    endif
+    if lmpScroll == null then
+        set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)
+    endif
     call BlzFrameSetAbsPoint(lmpScroll, FRAMEPOINT_CENTER, LMP_SCROLL_X, LMP_SCROLL_Y)
     call BlzFrameSetSize(lmpScroll, LMP_SCROLL_WIDTH, LMP_SCROLL_HEIGHT)
     call BlzFrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
@@ -1286,6 +1347,14 @@ private function LMP_CreateFrames takes nothing returns nothing
     set lmpShuffleButton = LMP_CreateIconButton(lmpPanel, LMP_SHUFFLE_X, LMP_CONTROLS_ROW2_Y, LMP_CONTROL_SIZE, 207)
     set lmpShuffleIcon = LMP_CreateIcon(lmpShuffleButton, LMP_TEX_SHUFFLE_OFF)
 
+    call LMP_StyleControl(lmpPreviousButton)
+    call LMP_StyleControl(lmpBack10Button)
+    call LMP_StyleControl(lmpPlayPauseButton)
+    call LMP_StyleControl(lmpForward10Button)
+    call LMP_StyleControl(lmpNextButton)
+    call LMP_StyleControl(lmpRerunButton)
+    call LMP_StyleControl(lmpLoopButton)
+    call LMP_StyleControl(lmpShuffleButton)
     call LMP_AttachNativeTooltip(lmpPreviousButton, "Previous track")
     call LMP_AttachNativeTooltip(lmpBack10Button, "Rewind 10 seconds")
     call LMP_AttachNativeTooltip(lmpPlayPauseButton, "Play / pause")
@@ -1322,6 +1391,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     // После полного создания музыкального UI показываем кнопку открытия.
     call BlzFrameSetVisible(lmpOpenButton, true)
     call BlzFrameSetVisible(lmpLinkButton, true)
+    call WUI_ReleaseGhost(0)
 
     call TriggerAddAction(lmpClickTrigger, function LMP_OnClick)
     call TriggerAddAction(lmpScrollTrigger, function LMP_OnScroll)

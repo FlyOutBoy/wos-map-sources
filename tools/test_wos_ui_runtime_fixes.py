@@ -83,16 +83,27 @@ class TestHelpVisibility(unittest.TestCase):
         self.assertTrue(self.visible[self.vm.g['WUI_TestToggle']])
 
     def test_scroll_pages_remain_bounded_without_toggling_panel(self):
+        # Checkpoint 27: the wheel scrolls lines inside a page; only the < / >
+        # buttons change the page (bounded to 2 pages, panel stays open).
+        # Template buttons share one name in the simulator: make them distinct.
+        self.vm.g.update(WUI_TestNext='next-button', WUI_TestPrevious='previous-button')
+        source = {'frame': self.vm.g['WUI_TestPanel']}
         self.vm.g.update(GetLocalPlayer=lambda: 0, GetTriggerPlayer=lambda: 0,
-                         BlzGetTriggerFrame=lambda: self.vm.g['WUI_TestPanel'],
+                         BlzGetTriggerFrame=lambda: source['frame'],
                          BlzGetTriggerFrameValue=lambda: -1,
-                         BlzFrameGetText=lambda _: '', BlzFrameSetText=lambda *_: None)
+                         BlzGetTriggerFrameEvent=lambda: 'wheel', FRAMEEVENT_SLIDER_VALUE_CHANGED='slider',
+                         BlzFrameGetText=lambda _: '', BlzFrameSetText=lambda *_: None,
+                         StringLength=len, SubString=lambda t, a, b: t[a:b])
         for _ in range(10):
             self.vm.run('WUI_TestScroll')
-        self.assertEqual(2, self.vm.g['WUI_TestPageIndex'])
+        self.assertEqual(0, self.vm.g['WUI_TestPageIndex'])
         self.assertTrue(self.vm.g['WUI_TestOpen'])
-        self.vm.g['BlzGetTriggerFrameValue'] = lambda: 1
-        for _ in range(10):
+        source['frame'] = self.vm.g['WUI_TestNext']
+        for _ in range(5):
+            self.vm.run('WUI_TestScroll')
+        self.assertEqual(1, self.vm.g['WUI_TestPageIndex'])
+        source['frame'] = self.vm.g['WUI_TestPrevious']
+        for _ in range(5):
             self.vm.run('WUI_TestScroll')
         self.assertEqual(0, self.vm.g['WUI_TestPageIndex'])
 
@@ -173,7 +184,7 @@ class ShopAndPickLayout(unittest.TestCase):
         source = (ROOT / 'triggers/WOS_Start' / file).read_text(encoding='utf-8-sig')
         positions, sizes = {}, {}
         vm.g['layout_scales'] = {}
-        for name in re.findall(r'^\s*framehandle (\w+)\s*$', source, re.M):
+        for name in re.findall(r'^\s*framehandle (\w+)\s*(?:=\s*null)?\s*$', source, re.M):
             vm.g[name] = name
         for name in re.findall(r'^\s*framehandle array (\w+)', source, re.M):
             vm.g[name].update({i: (name, i) for i in range(96)})
@@ -186,13 +197,35 @@ class ShopAndPickLayout(unittest.TestCase):
             'BlzFrameSetTexture': lambda *_: None, 'BlzFrameSetLevel': lambda *_: None,
             'BlzFrameSetEnable': lambda *_: None, 'BlzFrameClearAllPoints': lambda *_: None,
             'BlzFrameSetPoint': lambda *_: None, 'BlzFrameSetTextAlignment': lambda *_: None,
-            'WUI_Tooltip': lambda *_: None, 'I2R': float, 'ModuloInteger': lambda a, b: a % b,
+            'WUI_Tooltip': lambda *_: None, 'WUI_TooltipBelow': lambda *_: None, 'I2R': float, 'ModuloInteger': lambda a, b: a % b,
             'WUI_BORDER_TEXTURE': 'border', 'WUI_PANEL_TEXTURE': 'panel',
             'jass_div': lambda a, b: a // b,
             'RAbsBJ': abs, 'RMaxBJ': max,
             'FRAMEPOINT_TOP': 'top', 'FRAMEPOINT_BOTTOM': 'bottom',
             'TEXT_JUSTIFY_TOP': 'top', 'TEXT_JUSTIFY_MIDDLE': 'middle',
             'TEXT_JUSTIFY_LEFT': 'left', 'TEXT_JUSTIFY_CENTER': 'center',
+            # Checkpoint 20 presentation helpers: record anchors, ignore ornaments.
+            'WUI_Panel': lambda name, *_: name, 'WUI_GoldFrame': lambda *_: 'gold-frame', 'WUI_MinimalEdge': lambda *_: None, 'WUI_SetButtonMinimal': lambda *_: None,
+            'WUI_Divider': lambda *_: 'divider', 'BlzFrameSetAlpha': lambda *_: None,
+            'BlzFrameSetAbsPoint': lambda f, point, x, y: positions.update({f: (x, y)}),
+            'BlzFrameSetSize': lambda f, w, h: sizes.update({f: (w, h)}),
+            'BlzCreateFrameByType': lambda kind, name, *_: name, 'BlzFrameSetText': lambda *_: None,
+            'WUI_GOLD': 'gold', 'WUI_FILL_NORMAL': 'fill', 'WUI_EMPTY_TEXTURE': 'empty',
+            'FRAMEPOINT_LEFT': 'left', 'FRAMEPOINT_TOPLEFT': 'topleft', 'FRAMEPOINT_BOTTOMRIGHT': 'bottomright',
+            # Checkpoint 21: plaques, medallions and docked swap/repick.
+            'TEXT_JUSTIFY_RIGHT': 'right', 'BlzFrameSetVisible': lambda *_: None,
+            'BlzFrameSetParent': lambda *_: None, 'FRAMEPOINT_CENTER': 'center',
+            'WOS_REPICK_X': 0.124, 'WOS_SWAP_X': 0.150, 'WOS_SWAP_Y': 0.577,
+            # Checkpoint 22: icon bevel frames, toggles, ban row helpers.
+            'MaxHeroBans': 4, 'CaptainDraftBanTotal': 6, 'CaptainDraftMode': False,
+            'WUI_IconFrame': lambda *_: 'icon-frame', 'WUI_ICON_FRAME': 'icon-frame',
+            'WUI_ICON_FRAME_BAN': 'icon-frame-ban', 'WUI_OrnateWindow': lambda *_: 'ornate',
+            'WUI_ToggleButton': lambda name, *_: name, 'WUI_SetToggleState': lambda *_: None, 'WUI_SetToggleGlyph': lambda *_: None, 'BlzFrameGetChildrenCount': lambda *_: 0, 'BlzFrameGetWidth': lambda *_: 0.0,
+            'WUI_TOGGLE_X': 0.2885, 'WUI_TOGGLE_VOICE_Y': 0.0400, 'WUI_TOGGLE_HOTKEY_Y': 0.0185,
+            'WUI_TOGGLE_SIZE': 0.018, 'WUI_FILL_SELECTED': 'fill-selected',
+            'BlzFrameSetTooltip': lambda *_: None, 'BlzFrameSetModel': lambda *_: None,
+            'BlzTriggerRegisterFrameEvent': lambda *_: None, 'SaveInteger': lambda *_: None,
+            'GetHandleId': id, 'LoadBoolean': lambda *_: False, 'SaveBoolean': lambda *_: None,
         })
         vm.run(function)
         return vm, positions, sizes
@@ -200,7 +233,9 @@ class ShopAndPickLayout(unittest.TestCase):
     def test_all_shop_controls_fit_inside_their_panels(self):
         vm, pos, sizes = self.layout('WoS_Shop_Init.j', 'WOS_LayoutShop')
         for array, panel, count, start in (('FRAME_ShopItem', 'FRAME_ShopItemList', 35, 0),
-                                          ('FRAME_ShopItem', 'FRAME_ShopItemCraft', 7, 36),
+                                          # Tree rows are placed per item at render time
+                                          # (checkpoint 21); only the centre is static.
+                                          ('FRAME_ShopItem', 'FRAME_ShopItemCraft', 1, 42),
                                           ('FRAME_ShopItemInventorySlot', 'FRAME_ShopItemInventory', 8, 0),
                                           ('FRAME_ShopSection', 'FRAME_ShopMAIN', 7, 0)):
             px, py = pos[panel]; pw, ph = sizes[panel]
@@ -224,9 +259,9 @@ class ShopAndPickLayout(unittest.TestCase):
 
 class ConsoleAssets(unittest.TestCase):
     def test_skin_overrides_preserve_other_sections_and_are_idempotent(self):
-        original = '[CustomSkin]\nLumberIcon=my-icon.blp\nConsoleTexture01=old\n\n[FrameDef]\nLUMBER=TRIGSTR_12\n'
+        original = '[CustomSkin]\nMinimapPingTexture=my-icon.blp\nConsoleTexture01=old\n\n[FrameDef]\nLUMBER=TRIGSTR_12\n'
         updated = hide_stock_console(original)
-        self.assertIn('LumberIcon=my-icon.blp', updated)
+        self.assertIn('MinimapPingTexture=my-icon.blp', updated)
         self.assertIn('[FrameDef]\nLUMBER=TRIGSTR_12\n', updated)
         self.assertEqual(updated, hide_stock_console(updated))
         self.assertEqual(1, updated.count('ConsoleTexture01='))

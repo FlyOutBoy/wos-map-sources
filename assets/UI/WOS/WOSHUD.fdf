@@ -21,7 +21,7 @@ Frame "SIMPLEFRAME" "WOSNativeEmptyAbility" {
     Height 0.036,
     Layer "BACKGROUND" {
         Texture "WOSEmptyAbilityBack" {
-            File "Textures\black32.blp",
+            File "UI\WOS\slot-empty.tga",
             AlphaMode "BLEND",
         }
         Texture "WOSEmptyAbilityBorder" {

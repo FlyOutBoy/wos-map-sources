@@ -100,7 +100,7 @@ endif
         call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_Ldeff (262)", td, "chest"))
     endif
     endif
-    if sourceId == Bambietta_ID and GetHeroLevel(c)>=BambiettaG_Lvl_CD and SR2(c,td)<175 and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0  then 
+    if sourceId == Bambietta_ID and GetHeroLevel(c)>=BambiettaG_Lvl_CD and SR2(c,td)<175 and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0  then 
     call BambiettaG_Start(c)
     call BambiettaG2_Start(c,x,y)
     endif
@@ -483,13 +483,13 @@ endif
         if LoadInteger(hs, targetOwnerHid, KEY_ZERO_KAI) == 0 then
             if LoadInteger(hs, targetHid, StringHash("mode def")) == 1 then
                 set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
-            elseif BlzGetUnitAbilityCooldownRemaining(td, FakeAbi_ID) == 0 and y1 <= x1 and SR2(c, td) <= TsunaF_Aoe then
+            elseif BlzGetUnitAbilityCooldownRemaining(td, TsunaF_ID) == 0 and y1 <= x1 and SR2(c, td) <= TsunaF_Aoe then
                 set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
                 call TsunaDodge(td, c)
             endif
         endif
     endif
-    if targetId == Alucard_ID and BlzGetUnitAbilityCooldownRemaining(td, FakeAbi_ID) == 0 and GetHeroLevel(td) >= 12 and LoadInteger(hs, targetHid , StringHash("Alucard pas vision")) == 0 then
+    if targetId == Alucard_ID and BlzGetUnitAbilityCooldownRemaining(td, AlucardF_ID) == 0 and GetHeroLevel(td) >= 12 and LoadInteger(hs, targetHid , StringHash("Alucard pas vision")) == 0 then
         call SaveInteger(hs, targetHid , StringHash("Alucard pas vision"), 1)
         call AlucardF_Start(td, c)
     endif

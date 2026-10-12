@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "d2fcde74eea2e1b93902c6e44b3f0cb1960c3549d0b06057339108ab7863c2e2",
+  "source_sha256": "e73dbb86cb838f274669175fc8d42cb42a618c814e8ca68651db0e5bd1260368",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -218,10 +218,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_464",
-            "_original_value": "TRIGSTR_464",
+            "value": "TRIGSTR_6968",
+            "_original_value": "TRIGSTR_6968",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NjQ=",
+            "_raw_base64": "VFJJR1NUUl82OTY4",
             "resolved_value": "Speed Increase",
             "_original_resolved_value": "Speed Increase"
           },
@@ -422,7 +422,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Marked by Kansho and Bakuya."
+            "value": "TRIGSTR_6969",
+            "_original_value": "TRIGSTR_6969",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82OTY5",
+            "resolved_value": "Marked by Kansho and Bakuya.",
+            "_original_resolved_value": "Marked by Kansho and Bakuya."
           },
           "sanity_check": {
             "text": "",
@@ -507,10 +512,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1329",
-            "_original_value": "TRIGSTR_1329",
+            "value": "TRIGSTR_7051",
+            "_original_value": "TRIGSTR_7051",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMzI5",
+            "_raw_base64": "VFJJR1NUUl83MDUx",
             "resolved_value": "Kazekage Hat",
             "_original_resolved_value": "Kazekage Hat"
           },
@@ -527,7 +532,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Marked by Kazekage Hat."
+            "value": "TRIGSTR_7068",
+            "_original_value": "TRIGSTR_7068",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MDY4",
+            "resolved_value": "Marked by Kazekage Hat.",
+            "_original_resolved_value": "Marked by Kazekage Hat."
           },
           "sanity_check": {
             "text": "",
@@ -612,10 +622,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1486",
-            "_original_value": "TRIGSTR_1486",
+            "value": "TRIGSTR_7160",
+            "_original_value": "TRIGSTR_7160",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xNDg2",
+            "_raw_base64": "VFJJR1NUUl83MTYw",
             "resolved_value": "Knight of Ruin",
             "_original_resolved_value": "Knight of Ruin"
           },
@@ -704,10 +714,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2691",
-            "_original_value": "TRIGSTR_2691",
+            "value": "TRIGSTR_7176",
+            "_original_value": "TRIGSTR_7176",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjkx",
+            "_raw_base64": "VFJJR1NUUl83MTc2",
             "resolved_value": "Fire Stack",
             "_original_resolved_value": "Fire Stack"
           },
@@ -814,10 +824,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2693",
-            "_original_value": "TRIGSTR_2693",
+            "value": "TRIGSTR_7177",
+            "_original_value": "TRIGSTR_7177",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjkz",
+            "_raw_base64": "VFJJR1NUUl83MTc3",
             "resolved_value": "Water Stack",
             "_original_resolved_value": "Water Stack"
           },
@@ -924,10 +934,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2695",
-            "_original_value": "TRIGSTR_2695",
+            "value": "TRIGSTR_7178",
+            "_original_value": "TRIGSTR_7178",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjk1",
+            "_raw_base64": "VFJJR1NUUl83MTc4",
             "resolved_value": "Lightning Stack",
             "_original_resolved_value": "Lightning Stack"
           },
@@ -1034,10 +1044,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2697",
-            "_original_value": "TRIGSTR_2697",
+            "value": "TRIGSTR_7179",
+            "_original_value": "TRIGSTR_7179",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjk3",
+            "_raw_base64": "VFJJR1NUUl83MTc5",
             "resolved_value": "Wape Stack",
             "_original_resolved_value": "Wape Stack"
           },
@@ -1126,10 +1136,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2699",
-            "_original_value": "TRIGSTR_2699",
+            "value": "TRIGSTR_7180",
+            "_original_value": "TRIGSTR_7180",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNjk5",
+            "_raw_base64": "VFJJR1NUUl83MTgw",
             "resolved_value": "Overload  Stack",
             "_original_resolved_value": "Overload  Stack"
           },
@@ -1218,10 +1228,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2701",
-            "_original_value": "TRIGSTR_2701",
+            "value": "TRIGSTR_7202",
+            "_original_value": "TRIGSTR_7202",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNzAx",
+            "_raw_base64": "VFJJR1NUUl83MjAy",
             "resolved_value": "Electrized Stack",
             "_original_resolved_value": "Electrized Stack"
           },
@@ -1328,10 +1338,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2942",
-            "_original_value": "TRIGSTR_2942",
+            "value": "TRIGSTR_2944",
+            "_original_value": "TRIGSTR_2944",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yOTQy",
+            "_raw_base64": "VFJJR1NUUl8yOTQ0",
             "resolved_value": "Nakagami Verdict",
             "_original_resolved_value": "Nakagami Verdict"
           },
@@ -1420,10 +1430,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2944",
-            "_original_value": "TRIGSTR_2944",
+            "value": "TRIGSTR_7204",
+            "_original_value": "TRIGSTR_7204",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yOTQ0",
+            "_raw_base64": "VFJJR1NUUl83MjA0",
             "resolved_value": "Nakagami Verdict",
             "_original_resolved_value": "Nakagami Verdict"
           },
@@ -1550,10 +1560,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2947",
-            "_original_value": "TRIGSTR_2947",
+            "value": "TRIGSTR_7205",
+            "_original_value": "TRIGSTR_7205",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yOTQ3",
+            "_raw_base64": "VFJJR1NUUl83MjA1",
             "resolved_value": "Nakagami Starlight",
             "_original_resolved_value": "Nakagami Starlight"
           },
@@ -1680,10 +1690,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3248",
-            "_original_value": "TRIGSTR_3248",
+            "value": "TRIGSTR_7206",
+            "_original_value": "TRIGSTR_7206",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMjQ4",
+            "_raw_base64": "VFJJR1NUUl83MjA2",
             "resolved_value": "Kurikara Flame",
             "_original_resolved_value": "Kurikara Flame"
           },
@@ -1772,10 +1782,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3635",
-            "_original_value": "TRIGSTR_3635",
+            "value": "TRIGSTR_7212",
+            "_original_value": "TRIGSTR_7212",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjM1",
+            "_raw_base64": "VFJJR1NUUl83MjEy",
             "resolved_value": "Daruma San Ga Koronda",
             "_original_resolved_value": "Daruma San Ga Koronda"
           },
@@ -1864,10 +1874,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3699",
-            "_original_value": "TRIGSTR_3699",
+            "value": "TRIGSTR_7213",
+            "_original_value": "TRIGSTR_7213",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjk5",
+            "_raw_base64": "VFJJR1NUUl83MjEz",
             "resolved_value": "Play Participant",
             "_original_resolved_value": "Play Participant"
           },
@@ -2180,10 +2190,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4607",
-            "_original_value": "TRIGSTR_4607",
+            "value": "TRIGSTR_7214",
+            "_original_value": "TRIGSTR_7214",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NjA3",
+            "_raw_base64": "VFJJR1NUUl83MjE0",
             "resolved_value": "Apocalypse Virus",
             "_original_resolved_value": "Apocalypse Virus"
           },
@@ -2200,7 +2210,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Active healing received is reduced by 40%; mana restored is reduced by 25%."
+            "value": "TRIGSTR_7215",
+            "_original_value": "TRIGSTR_7215",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MjE1",
+            "resolved_value": "Active healing received is reduced by 40%; mana restored is reduced by 25%.",
+            "_original_resolved_value": "Active healing received is reduced by 40%; mana restored is reduced by 25%."
           },
           "sanity_check": {
             "text": "",
@@ -2287,10 +2302,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5951",
-            "_original_value": "TRIGSTR_5951",
+            "value": "TRIGSTR_7216",
+            "_original_value": "TRIGSTR_7216",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTUx",
+            "_raw_base64": "VFJJR1NUUl83MjE2",
             "resolved_value": "Turbo Speed",
             "_original_resolved_value": "Turbo Speed"
           },
@@ -2399,10 +2414,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4673",
-            "_original_value": "TRIGSTR_4673",
+            "value": "TRIGSTR_5981",
+            "_original_value": "TRIGSTR_5981",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80Njcz",
+            "_raw_base64": "VFJJR1NUUl81OTgx",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2475,10 +2490,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5971",
-            "_original_value": "TRIGSTR_5971",
+            "value": "TRIGSTR_5983",
+            "_original_value": "TRIGSTR_5983",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTcx",
+            "_raw_base64": "VFJJR1NUUl81OTgz",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2531,10 +2546,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5973",
-            "_original_value": "TRIGSTR_5973",
+            "value": "TRIGSTR_5985",
+            "_original_value": "TRIGSTR_5985",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTcz",
+            "_raw_base64": "VFJJR1NUUl81OTg1",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2607,10 +2622,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5975",
-            "_original_value": "TRIGSTR_5975",
+            "value": "TRIGSTR_5987",
+            "_original_value": "TRIGSTR_5987",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTc1",
+            "_raw_base64": "VFJJR1NUUl81OTg3",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2663,10 +2678,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5977",
-            "_original_value": "TRIGSTR_5977",
+            "value": "TRIGSTR_5989",
+            "_original_value": "TRIGSTR_5989",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTc3",
+            "_raw_base64": "VFJJR1NUUl81OTg5",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2739,10 +2754,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5979",
-            "_original_value": "TRIGSTR_5979",
+            "value": "TRIGSTR_6769",
+            "_original_value": "TRIGSTR_6769",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTc5",
+            "_raw_base64": "VFJJR1NUUl82NzY5",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2795,10 +2810,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5981",
-            "_original_value": "TRIGSTR_5981",
+            "value": "TRIGSTR_7218",
+            "_original_value": "TRIGSTR_7218",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTgx",
+            "_raw_base64": "VFJJR1NUUl83MjE4",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2871,10 +2886,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5983",
-            "_original_value": "TRIGSTR_5983",
+            "value": "TRIGSTR_7219",
+            "_original_value": "TRIGSTR_7219",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTgz",
+            "_raw_base64": "VFJJR1NUUl83MjE5",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -2927,10 +2942,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5985",
-            "_original_value": "TRIGSTR_5985",
+            "value": "TRIGSTR_7220",
+            "_original_value": "TRIGSTR_7220",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTg1",
+            "_raw_base64": "VFJJR1NUUl83MjIw",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -3003,10 +3018,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5987",
-            "_original_value": "TRIGSTR_5987",
+            "value": "TRIGSTR_7221",
+            "_original_value": "TRIGSTR_7221",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTg3",
+            "_raw_base64": "VFJJR1NUUl83MjIx",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -3463,10 +3478,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5989",
-            "_original_value": "TRIGSTR_5989",
+            "value": "TRIGSTR_7223",
+            "_original_value": "TRIGSTR_7223",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTg5",
+            "_raw_base64": "VFJJR1NUUl83MjIz",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -3539,10 +3554,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6769",
-            "_original_value": "TRIGSTR_6769",
+            "value": "TRIGSTR_7224",
+            "_original_value": "TRIGSTR_7224",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82NzY5",
+            "_raw_base64": "VFJJR1NUUl83MjI0",
             "resolved_value": "Black Clover",
             "_original_resolved_value": "Black Clover"
           },
@@ -3687,10 +3702,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7174",
-            "_original_value": "TRIGSTR_7174",
+            "value": "TRIGSTR_7228",
+            "_original_value": "TRIGSTR_7228",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTc0",
+            "_raw_base64": "VFJJR1NUUl83MjI4",
             "resolved_value": "Mantello di Vongola Primo",
             "_original_resolved_value": "Mantello di Vongola Primo"
           },
@@ -5493,10 +5508,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1906",
-            "_original_value": "TRIGSTR_1906",
+            "value": "TRIGSTR_7339",
+            "_original_value": "TRIGSTR_7339",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTA2",
+            "_raw_base64": "VFJJR1NUUl83MzM5",
             "resolved_value": "Soul Drain",
             "_original_resolved_value": "Soul Drain"
           },
@@ -5603,10 +5618,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1908",
-            "_original_value": "TRIGSTR_1908",
+            "value": "TRIGSTR_7343",
+            "_original_value": "TRIGSTR_7343",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTA4",
+            "_raw_base64": "VFJJR1NUUl83MzQz",
             "resolved_value": "Cromwell Approval",
             "_original_resolved_value": "Cromwell Approval"
           },
@@ -5623,7 +5638,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 75% less damage to Alucard and takes 20% more damage from him. Alucard heals for 20% of damage dealt to this target."
+            "value": "TRIGSTR_7344",
+            "_original_value": "TRIGSTR_7344",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MzQ0",
+            "resolved_value": "Deals 75% less damage to Alucard and takes 20% more damage from him. Alucard heals for 20% of damage dealt to this target.",
+            "_original_resolved_value": "Deals 75% less damage to Alucard and takes 20% more damage from him. Alucard heals for 20% of damage dealt to this target."
           },
           "sanity_check": {
             "text": "",
@@ -5690,10 +5710,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1910",
-            "_original_value": "TRIGSTR_1910",
+            "value": "TRIGSTR_7355",
+            "_original_value": "TRIGSTR_7355",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTEw",
+            "_raw_base64": "VFJJR1NUUl83MzU1",
             "resolved_value": "Cromwell Approval(Lesser)",
             "_original_resolved_value": "Cromwell Approval(Lesser)"
           },
@@ -5710,7 +5730,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 30% less damage to Alucard and takes 10% more damage from him. Alucard heals for 10% of damage dealt to this target."
+            "value": "TRIGSTR_7356",
+            "_original_value": "TRIGSTR_7356",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MzU2",
+            "resolved_value": "Deals 30% less damage to Alucard and takes 10% more damage from him. Alucard heals for 10% of damage dealt to this target.",
+            "_original_resolved_value": "Deals 30% less damage to Alucard and takes 10% more damage from him. Alucard heals for 10% of damage dealt to this target."
           },
           "sanity_check": {
             "text": "",
@@ -5777,10 +5802,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2262",
-            "_original_value": "TRIGSTR_2262",
+            "value": "TRIGSTR_7358",
+            "_original_value": "TRIGSTR_7358",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjYy",
+            "_raw_base64": "VFJJR1NUUl83MzU4",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -5794,10 +5819,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 5% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7359",
+            "_original_value": "TRIGSTR_7359",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83MzU5",
+            "resolved_value": "Deals 5% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 5% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01G",
@@ -5884,10 +5914,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2272",
-            "_original_value": "TRIGSTR_2272",
+            "value": "TRIGSTR_7361",
+            "_original_value": "TRIGSTR_7361",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjcy",
+            "_raw_base64": "VFJJR1NUUl83MzYx",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -5901,10 +5931,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 10% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7417",
+            "_original_value": "TRIGSTR_7417",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDE3",
+            "resolved_value": "Deals 10% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 10% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01H",
@@ -5991,10 +6026,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2276",
-            "_original_value": "TRIGSTR_2276",
+            "value": "TRIGSTR_7420",
+            "_original_value": "TRIGSTR_7420",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjc2",
+            "_raw_base64": "VFJJR1NUUl83NDIw",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -6008,10 +6043,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 15% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7421",
+            "_original_value": "TRIGSTR_7421",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDIx",
+            "resolved_value": "Deals 15% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 15% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01I",
@@ -6098,10 +6138,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2279",
-            "_original_value": "TRIGSTR_2279",
+            "value": "TRIGSTR_7423",
+            "_original_value": "TRIGSTR_7423",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjc5",
+            "_raw_base64": "VFJJR1NUUl83NDIz",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -6115,10 +6155,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 20% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7424",
+            "_original_value": "TRIGSTR_7424",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDI0",
+            "resolved_value": "Deals 20% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 20% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01J",
@@ -6205,10 +6250,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2282",
-            "_original_value": "TRIGSTR_2282",
+            "value": "TRIGSTR_7436",
+            "_original_value": "TRIGSTR_7436",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjgy",
+            "_raw_base64": "VFJJR1NUUl83NDM2",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -6222,10 +6267,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 25% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7437",
+            "_original_value": "TRIGSTR_7437",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDM3",
+            "resolved_value": "Deals 25% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 25% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01K",
@@ -6312,10 +6362,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2294",
-            "_original_value": "TRIGSTR_2294",
+            "value": "TRIGSTR_7441",
+            "_original_value": "TRIGSTR_7441",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjk0",
+            "_raw_base64": "VFJJR1NUUl83NDQx",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -6329,10 +6379,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 30% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7442",
+            "_original_value": "TRIGSTR_7442",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDQy",
+            "resolved_value": "Deals 30% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 30% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01L",
@@ -6419,10 +6474,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2297",
-            "_original_value": "TRIGSTR_2297",
+            "value": "TRIGSTR_7443",
+            "_original_value": "TRIGSTR_7443",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMjk3",
+            "_raw_base64": "VFJJR1NUUl83NDQz",
             "resolved_value": "Absolute Adaptation",
             "_original_resolved_value": "Absolute Adaptation"
           },
@@ -6436,10 +6491,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 35% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7444",
+            "_original_value": "TRIGSTR_7444",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDQ0",
+            "resolved_value": "Deals 35% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 35% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01M",
@@ -6526,10 +6586,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2312",
-            "_original_value": "TRIGSTR_2312",
+            "value": "TRIGSTR_7445",
+            "_original_value": "TRIGSTR_7445",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMzEy",
+            "_raw_base64": "VFJJR1NUUl83NDQ1",
             "resolved_value": "Absolute Adaptation (Complete)",
             "_original_resolved_value": "Absolute Adaptation (Complete)"
           },
@@ -6543,10 +6603,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Deals 40% less damage to Mahoraga while adaptation is active."
+            "value": "TRIGSTR_7446",
+            "_original_value": "TRIGSTR_7446",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDQ2",
+            "resolved_value": "Deals 40% less damage to Mahoraga while adaptation is active.",
+            "_original_resolved_value": "Deals 40% less damage to Mahoraga while adaptation is active."
           },
           "sanity_check": {
             "text": "B01N",
@@ -6633,10 +6698,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2317",
-            "_original_value": "TRIGSTR_2317",
+            "value": "TRIGSTR_7447",
+            "_original_value": "TRIGSTR_7447",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMzE3",
+            "_raw_base64": "VFJJR1NUUl83NDQ3",
             "resolved_value": "Divine Rush",
             "_original_resolved_value": "Divine Rush"
           },
@@ -7041,10 +7106,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1652",
-            "_original_value": "TRIGSTR_1652",
+            "value": "TRIGSTR_7448",
+            "_original_value": "TRIGSTR_7448",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xNjUy",
+            "_raw_base64": "VFJJR1NUUl83NDQ4",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -7153,10 +7218,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1883",
-            "_original_value": "TRIGSTR_1883",
+            "value": "TRIGSTR_7449",
+            "_original_value": "TRIGSTR_7449",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODgz",
+            "_raw_base64": "VFJJR1NUUl83NDQ5",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -7265,10 +7330,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2052",
-            "_original_value": "TRIGSTR_2052",
+            "value": "TRIGSTR_7456",
+            "_original_value": "TRIGSTR_7456",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMDUy",
+            "_raw_base64": "VFJJR1NUUl83NDU2",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -7377,10 +7442,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2362",
-            "_original_value": "TRIGSTR_2362",
+            "value": "TRIGSTR_7457",
+            "_original_value": "TRIGSTR_7457",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMzYy",
+            "_raw_base64": "VFJJR1NUUl83NDU3",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -7489,10 +7554,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2365",
-            "_original_value": "TRIGSTR_2365",
+            "value": "TRIGSTR_7458",
+            "_original_value": "TRIGSTR_7458",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yMzY1",
+            "_raw_base64": "VFJJR1NUUl83NDU4",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -7601,10 +7666,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4889",
-            "_original_value": "TRIGSTR_4889",
+            "value": "TRIGSTR_7459",
+            "_original_value": "TRIGSTR_7459",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODg5",
+            "_raw_base64": "VFJJR1NUUl83NDU5",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -7618,10 +7683,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank."
+            "value": "TRIGSTR_7460",
+            "_original_value": "TRIGSTR_7460",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDYw",
+            "resolved_value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.",
+            "_original_resolved_value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank."
           },
           "sanity_check": {
             "text": "B01X",
@@ -7708,10 +7778,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4892",
-            "_original_value": "TRIGSTR_4892",
+            "value": "TRIGSTR_7461",
+            "_original_value": "TRIGSTR_7461",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODky",
+            "_raw_base64": "VFJJR1NUUl83NDYx",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -7725,10 +7795,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Normal attacks and physical spells deal 4% more damage. Health regeneration is reduced by 5 HP/sec."
+            "value": "TRIGSTR_7469",
+            "_original_value": "TRIGSTR_7469",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NDY5",
+            "resolved_value": "Normal attacks and physical spells deal 4% more damage. Health regeneration is reduced by 5 HP/sec.",
+            "_original_resolved_value": "Normal attacks and physical spells deal 4% more damage. Health regeneration is reduced by 5 HP/sec."
           },
           "sanity_check": {
             "text": "B01Y",
@@ -7815,10 +7890,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4897",
-            "_original_value": "TRIGSTR_4897",
+            "value": "TRIGSTR_7484",
+            "_original_value": "TRIGSTR_7484",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODk3",
+            "_raw_base64": "VFJJR1NUUl83NDg0",
             "resolved_value": "Shield Up",
             "_original_resolved_value": "Shield Up"
           },
@@ -7927,10 +8002,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4900",
-            "_original_value": "TRIGSTR_4900",
+            "value": "TRIGSTR_7493",
+            "_original_value": "TRIGSTR_7493",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTAw",
+            "_raw_base64": "VFJJR1NUUl83NDkz",
             "resolved_value": "Shield Up",
             "_original_resolved_value": "Shield Up"
           },
@@ -8039,10 +8114,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4903",
-            "_original_value": "TRIGSTR_4903",
+            "value": "TRIGSTR_7500",
+            "_original_value": "TRIGSTR_7500",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTAz",
+            "_raw_base64": "VFJJR1NUUl83NTAw",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8056,10 +8131,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Normal attacks and physical spells deal 6% more damage. Health regeneration is reduced by 10 HP/sec."
+            "value": "TRIGSTR_7518",
+            "_original_value": "TRIGSTR_7518",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTE4",
+            "resolved_value": "Normal attacks and physical spells deal 6% more damage. Health regeneration is reduced by 10 HP/sec.",
+            "_original_resolved_value": "Normal attacks and physical spells deal 6% more damage. Health regeneration is reduced by 10 HP/sec."
           },
           "sanity_check": {
             "text": "B021",
@@ -8146,10 +8226,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4906",
-            "_original_value": "TRIGSTR_4906",
+            "value": "TRIGSTR_7535",
+            "_original_value": "TRIGSTR_7535",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTA2",
+            "_raw_base64": "VFJJR1NUUl83NTM1",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8163,10 +8243,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Normal attacks and physical spells deal 8% more damage. Health regeneration is reduced by 15 HP/sec."
+            "value": "TRIGSTR_7538",
+            "_original_value": "TRIGSTR_7538",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTM4",
+            "resolved_value": "Normal attacks and physical spells deal 8% more damage. Health regeneration is reduced by 15 HP/sec.",
+            "_original_resolved_value": "Normal attacks and physical spells deal 8% more damage. Health regeneration is reduced by 15 HP/sec."
           },
           "sanity_check": {
             "text": "B022",
@@ -8253,10 +8338,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4909",
-            "_original_value": "TRIGSTR_4909",
+            "value": "TRIGSTR_7540",
+            "_original_value": "TRIGSTR_7540",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTA5",
+            "_raw_base64": "VFJJR1NUUl83NTQw",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8270,10 +8355,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Normal attacks and physical spells deal 10% more damage. Health regeneration is reduced by 20 HP/sec."
+            "value": "TRIGSTR_7541",
+            "_original_value": "TRIGSTR_7541",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTQx",
+            "resolved_value": "Normal attacks and physical spells deal 10% more damage. Health regeneration is reduced by 20 HP/sec.",
+            "_original_resolved_value": "Normal attacks and physical spells deal 10% more damage. Health regeneration is reduced by 20 HP/sec."
           },
           "sanity_check": {
             "text": "B023",
@@ -8360,10 +8450,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4917",
-            "_original_value": "TRIGSTR_4917",
+            "value": "TRIGSTR_7542",
+            "_original_value": "TRIGSTR_7542",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80OTE3",
+            "_raw_base64": "VFJJR1NUUl83NTQy",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8377,10 +8467,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Normal attacks and physical spells deal 12% more damage. Health regeneration is reduced by 25 HP/sec."
+            "value": "TRIGSTR_7549",
+            "_original_value": "TRIGSTR_7549",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTQ5",
+            "resolved_value": "Normal attacks and physical spells deal 12% more damage. Health regeneration is reduced by 25 HP/sec.",
+            "_original_resolved_value": "Normal attacks and physical spells deal 12% more damage. Health regeneration is reduced by 25 HP/sec."
           },
           "sanity_check": {
             "text": "B024",
@@ -9341,10 +9436,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4859",
-            "_original_value": "TRIGSTR_4859",
+            "value": "TRIGSTR_7553",
+            "_original_value": "TRIGSTR_7553",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80ODU5",
+            "_raw_base64": "VFJJR1NUUl83NTUz",
             "resolved_value": "Command T Expansion",
             "_original_resolved_value": "Command T Expansion"
           },
@@ -9563,10 +9658,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4229",
-            "_original_value": "TRIGSTR_4229",
+            "value": "TRIGSTR_7554",
+            "_original_value": "TRIGSTR_7554",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI5",
+            "_raw_base64": "VFJJR1NUUl83NTU0",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -9675,10 +9770,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4337",
-            "_original_value": "TRIGSTR_4337",
+            "value": "TRIGSTR_7555",
+            "_original_value": "TRIGSTR_7555",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzM3",
+            "_raw_base64": "VFJJR1NUUl83NTU1",
             "resolved_value": "Hell Blaze",
             "_original_resolved_value": "Hell Blaze"
           },
@@ -10011,10 +10106,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6341",
-            "_original_value": "TRIGSTR_6341",
+            "value": "TRIGSTR_7557",
+            "_original_value": "TRIGSTR_7557",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MzQx",
+            "_raw_base64": "VFJJR1NUUl83NTU3",
             "resolved_value": "Body of Effulgent Beryl",
             "_original_resolved_value": "Body of Effulgent Beryl"
           },
@@ -10123,10 +10218,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6357",
-            "_original_value": "TRIGSTR_6357",
+            "value": "TRIGSTR_7558",
+            "_original_value": "TRIGSTR_7558",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MzU3",
+            "_raw_base64": "VFJJR1NUUl83NTU4",
             "resolved_value": "Fly",
             "_original_resolved_value": "Fly"
           },
@@ -10235,10 +10330,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6386",
-            "_original_value": "TRIGSTR_6386",
+            "value": "TRIGSTR_7561",
+            "_original_value": "TRIGSTR_7561",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Mzg2",
+            "_raw_base64": "VFJJR1NUUl83NTYx",
             "resolved_value": "Bless of Magic Caster",
             "_original_resolved_value": "Bless of Magic Caster"
           },
@@ -10365,10 +10460,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6428",
-            "_original_value": "TRIGSTR_6428",
+            "value": "TRIGSTR_7564",
+            "_original_value": "TRIGSTR_7564",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82NDI4",
+            "_raw_base64": "VFJJR1NUUl83NTY0",
             "resolved_value": "Infinity Wall",
             "_original_resolved_value": "Infinity Wall"
           },
@@ -10477,10 +10572,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6431",
-            "_original_value": "TRIGSTR_6431",
+            "value": "TRIGSTR_7567",
+            "_original_value": "TRIGSTR_7567",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82NDMx",
+            "_raw_base64": "VFJJR1NUUl83NTY3",
             "resolved_value": "Magic Ward, Holy",
             "_original_resolved_value": "Magic Ward, Holy"
           },
@@ -10589,10 +10684,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6434",
-            "_original_value": "TRIGSTR_6434",
+            "value": "TRIGSTR_7568",
+            "_original_value": "TRIGSTR_7568",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82NDM0",
+            "_raw_base64": "VFJJR1NUUl83NTY4",
             "resolved_value": "Life Essence",
             "_original_resolved_value": "Life Essence"
           },
@@ -10701,10 +10796,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6690",
-            "_original_value": "TRIGSTR_6690",
+            "value": "TRIGSTR_7581",
+            "_original_value": "TRIGSTR_7581",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82Njkw",
+            "_raw_base64": "VFJJR1NUUl83NTgx",
             "resolved_value": "Greater Full Potential",
             "_original_resolved_value": "Greater Full Potential"
           },
@@ -10813,10 +10908,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6719",
-            "_original_value": "TRIGSTR_6719",
+            "value": "TRIGSTR_7584",
+            "_original_value": "TRIGSTR_7584",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82NzE5",
+            "_raw_base64": "VFJJR1NUUl83NTg0",
             "resolved_value": "Undead Knight Protect",
             "_original_resolved_value": "Undead Knight Protect"
           },
@@ -13512,10 +13607,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Marked for 5 sec. Leaves ground sand while moving. All ground sand lasts 20 sec and slows by 10% / 20% / 30% at Crocodile hero levels 1 / 25 / 35."
+            "value": "TRIGSTR_7587",
+            "_original_value": "TRIGSTR_7587",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTg3",
+            "resolved_value": "Marked for 5 sec. Leaves ground sand while moving. All ground sand lasts 20 sec and slows by 10% / 20% / 30% at Crocodile hero levels 1 / 25 / 35.",
+            "_original_resolved_value": "Marked for 5 sec. Leaves ground sand while moving. All ground sand lasts 20 sec and slows by 10% / 20% / 30% at Crocodile hero levels 1 / 25 / 35."
           },
           "sanity_check": {
             "text": "B03D",
@@ -13566,10 +13666,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8942",
-            "_original_value": "TRIGSTR_8942",
+            "value": "TRIGSTR_8939",
+            "_original_value": "TRIGSTR_8939",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTQy",
+            "_raw_base64": "VFJJR1NUUl84OTM5",
             "resolved_value": "Desert Spada: Sand Mark",
             "_original_resolved_value": "Desert Spada: Sand Mark"
           },
@@ -13619,10 +13719,15 @@
             "text": "fube",
             "hex": "66756265"
           },
-          "field_name": "",
+          "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "Movement speed +80 while standing on active sand. Removed after leaving the sand."
+            "value": "TRIGSTR_7588",
+            "_original_value": "TRIGSTR_7588",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl83NTg4",
+            "resolved_value": "Movement speed +80 while standing on active sand. Removed after leaving the sand.",
+            "_original_resolved_value": "Movement speed +80 while standing on active sand. Removed after leaving the sand."
           },
           "sanity_check": {
             "text": "B03E",
@@ -13693,10 +13798,10 @@
           "field_name": "Name / Имя",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8946",
-            "_original_value": "TRIGSTR_8946",
+            "value": "TRIGSTR_8944",
+            "_original_value": "TRIGSTR_8944",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84OTQ2",
+            "_raw_base64": "VFJJR1NUUl84OTQ0",
             "resolved_value": "Suna Suna no Mi: Sand Speed",
             "_original_resolved_value": "Suna Suna no Mi: Sand Speed"
           },

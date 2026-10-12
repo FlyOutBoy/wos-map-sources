@@ -2415,6 +2415,72 @@ endloop
     1 - move
     6 - atk bite
      */ 
+
+    // UI clock follows the actual six independently expiring stat abilities.
+    private struct Starrk_StackMeter
+        private static unit array tracked
+        private static WUI_TrackedMeter array meter
+        private static integer count = 0
+        private static real uiTick = 0.0
+
+        private static method loopUI takes nothing returns nothing
+            local integer pid = 0
+            local unit u
+            local real remaining
+            local string stacks
+            set uiTick = uiTick + 0.03
+            if uiTick < 0.12 then
+                return
+            endif
+            set uiTick = 0.0
+            loop
+                exitwhen pid >= 12
+                set u = tracked[pid]
+                if u != null then
+                    set stacks = TasAbilityChargeBox_GetValue(u, StarrkG_ID)
+                    if GetUnitTypeId(u) == 0 or Hero[pid] != u or stacks == "" then
+                        call meter[pid].close()
+                        set tracked[pid] = null
+                        set count = count - 1
+                        if count == 0 then
+                            call GearTimer03Release()
+                        endif
+                    else
+                        set remaining = GearAbilityTimeRemaining(u, Starrk_Pas1ID)
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas2ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas3ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas4ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas5ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas6ID))
+                        call meter[pid].update(remaining, "Agility: " + stacks + " stacks", true)
+                    endif
+                endif
+                set pid = pid + 1
+            endloop
+            set u = null
+        endmethod
+
+        static method track takes unit u returns nothing
+            local integer pid = GetPlayerId(GetOwningPlayer(u))
+            if pid >= 12 or Hero[pid] != u then
+                return
+            endif
+            if tracked[pid] == null then
+                set count = count + 1
+                if count == 1 then
+                    call GearTimer03Acquire()
+                endif
+            endif
+            set tracked[pid] = u
+            set meter[pid] = WUI_TrackedMeter.get(pid, "StarrkAgility")
+            call meter[pid].start(StarrkG_ID, "Agility stacks", StarkG_TimeStatAdd)
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            call TriggerAddAction(GearTimer03Listeners, function thistype.loopUI)
+        endmethod
+    endstruct
+
     function StarrkPas takes unit c returns nothing
         local group g = CreateGroup()
         local unit u = null
@@ -2452,23 +2518,30 @@ endloop
             if b == true then
                 if GetUnitAbilityLevel(c, Starrk_Pas1ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas1ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas1ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas1ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas2ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas2ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas2ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas2ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas3ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas3ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas3ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas3ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas4ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas4ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas4ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas4ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas5ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas5ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas5ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas5ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas6ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas6ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas6ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas6ID, 1)
                 endif
+                call Starrk_StackMeter.track(c)
                 call SetHpCurrent2(c, c, hp*scale)
                 call SetMpCurrent(c, mp*scale)
                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_longskill_point_39.mdx", c, "origin"))

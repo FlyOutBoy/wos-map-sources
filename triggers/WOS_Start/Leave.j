@@ -36,7 +36,8 @@ call SaveSystem_MatchSetFinalStats(id, false, PlayerKill[id], PlayerDeath[id], P
 call SaveSystem_MarkMatchPlayerLeft(id)
 call SetUnitPosition(Hero[id],GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster))
 call ShowUnit(Hero[id],false)
-call BlzFrameSetAlpha(FRAME_StatusHeroBack2[id], 255)
+// Checkpoint 26d: no extra small icon under a leaver (the slot shows the
+// greyed hero with the ban cross instead).
 if   PlayerDeath[id]- PlayerKill[id] >= 5 then 
 set Leave[id] = 2
 else
@@ -61,7 +62,7 @@ endloop
 else
 call PlayersMsg(GetPlayerVisualColorString(p)+leaveName+"|r leaves|r",2)
 endif
-call MakeSound("WOS\\Leave")
+call MakeSound("Game\\Player_Left")
 call SetPlayerName(Player(id),FramePlayerFirstNameBase[id])
 endif
 set p = null

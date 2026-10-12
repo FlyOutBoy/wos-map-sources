@@ -9003,6 +9003,19 @@
         "modification_index": 0
       },
       "fields": {
+        "field_bcpr": {
+          "source": {
+            "file": "war3mapSkin.w3b",
+            "group": "custom_objects",
+            "object_index": 41,
+            "modification_index": 13
+          },
+          "field_id": "bcpr",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
         "field_bdsn": {
           "source": {
             "file": "war3mapSkin.w3b",

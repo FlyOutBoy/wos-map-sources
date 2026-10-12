@@ -1993,7 +1993,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             call ReduceCooldown(c, BambiettaW_ID, BambiettaT_ReduceCD)
             call ReduceCooldown(c, BambiettaE_ID, BambiettaT_ReduceCD)
             call ReduceCooldown(c, BambiettaR_ID, BambiettaT_ReduceCD)
-            call BlzStartUnitAbilityCooldown(c, FakeAbi_ID, 0.01)
+            call BlzEndUnitAbilityCooldown(c, BambiettaG_ID)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BambiettaT_ID, false)
             call UnitAddAbility(c, BambiettaT2_ID)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BambiettaT2_ID, true)
@@ -2286,11 +2286,11 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
 
     function BambiettaG_Start takes unit c returns nothing
         if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) == 0 then
-            call FakeCD_Start(c, BambiettaG_ID, BambiettaG_CD, 0, 0)
+            call PassiveCD_Start(c, BambiettaG_ID, BambiettaG_CD)
         else
             call MyRemoveStack(c)
             if LoadInteger(hs, GetHandleId(c), StringHash("stack_count")) == 0 then
-                call FakeCD_Start(c, BambiettaG_ID, BambiettaG_CD, 0, 0)
+                call PassiveCD_Start(c, BambiettaG_ID, BambiettaG_CD)
             endif
         endif
     endfunction

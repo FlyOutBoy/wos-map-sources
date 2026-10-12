@@ -406,7 +406,7 @@ library AlterSaberSpells uses GearSystems
                     call SaveInteger(hs,GetHandleId(c),StringHash("saber w"),0)
 call SaveInteger(hs,GetHandleId(c),StringHash("saber w cd"),1)
 set time = AlterSaberG_CD_Base-((GetLevelPas3Check(c)-1)*AlterSaberG_CD_Step)
- call FakeCD_Start(c,AlterSaberG_ID,time,StringHash("saber w cd"),0)
+ call PassiveCD_Start(c, AlterSaberG_ID, time)
 call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                 
                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 0.81, 1.225, 1, 255, 255, 255, 255))
@@ -1552,7 +1552,7 @@ call NextDmg(c,td,dmg2,0,0.06)
 call SaveInteger(hs,GetHandleId(c),StringHash("saber w"),0)
 call SaveInteger(hs,GetHandleId(c),StringHash("saber w cd"),1)
 set time = AlterSaberG_CD_Base-((GetLevelPas3Check(c)-1)*AlterSaberG_CD_Step)
- call FakeCD_Start(c,AlterSaberG_ID,time,StringHash("saber w cd"),0)
+ call PassiveCD_Start(c, AlterSaberG_ID, time)
 call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
 endif
     endfunction

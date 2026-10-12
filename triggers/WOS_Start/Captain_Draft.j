@@ -73,9 +73,18 @@ globals
     boolean CaptainDraftVoteActive = false
     boolean CaptainDraftVoteFinished = false
     boolean array CaptainDraftPlayerVoted
-    dialog CaptainDraftVoteDialog = null
-    button CaptainDraftVoteButton1 = null
-    button CaptainDraftVoteButton2 = null
+    // Checkpoint 26: side each player currently votes for (0 none, 1, 2); a
+    // vote can be changed until the countdown ends.
+    integer array CaptainDraftPlayerVoteSide
+    // Checkpoint 23: styled vote window instead of the modal dialog (the
+    // dialog blocked the game menu, so players could not leave the lobby).
+    framehandle CaptainDraftVoteWindow = null
+    framehandle CaptainDraftVoteTitle = null
+    framehandle CaptainDraftVoteCounts = null
+    framehandle CaptainDraftVoteButton1 = null
+    framehandle CaptainDraftVoteButton2 = null
+    timer CaptainDraftVoteClock = null
+    integer CaptainDraftVoteLeft = 0
     trigger CaptainDraftVoteTrigger = null
     timer CaptainDraftVoteTimer = null
     integer CaptainDraftActionCount = 0
@@ -98,6 +107,10 @@ globals
     framehandle array CaptainDraftBanTooltipText
     framehandle array CaptainDraftBanHighlight
     framehandle array CaptainDraftClaimHover
+    framehandle array CaptainDraftClaimEdge
+    // Checkpoint 24: ban / pick log plate in the pick window's top-left corner.
+    framehandle CaptainDraftLogPlate = null
+    framehandle CaptainDraftLogText = null
     timer array CaptainDraftBanEffectTimer
     trigger CaptainDraftHoverTrigger = null
     boolean CaptainDraftPagesDirty = false
@@ -149,17 +162,18 @@ function CaptainDraft_FinishFirstSideVote takes nothing returns nothing
     else
         set CaptainDraftFirstSide = GetRandomInt(0, 1)
     endif
-    loop
-        exitwhen pid >= 10
-        if CaptainDraft_IsPlaying(pid) then
-            call DialogDisplay(Player(pid), CaptainDraftVoteDialog, false)
-        endif
-        set pid = pid + 1
-    endloop
+    if CaptainDraftVoteWindow != null then
+        call BlzFrameSetVisible(CaptainDraftVoteWindow, false)
+    endif
+    if CaptainDraftVoteClock != null then
+        call PauseTimer(CaptainDraftVoteClock)
+        call DestroyTimer(CaptainDraftVoteClock)
+        set CaptainDraftVoteClock = null
+    endif
     if CaptainDraftFirstSide == 0 then
-        call PlayersMsg("|cffffd36bCaptain Draft: Team 1 won the vote and acts first.|r", 1)
+        call WUI_Feed("|cffffd36bCaptain Draft: Team 1 won the vote and acts first.|r", 1)
     else
-        call PlayersMsg("|cffffd36bCaptain Draft: Team 2 won the vote and acts first.|r", 1)
+        call WUI_Feed("|cffffd36bCaptain Draft: Team 2 won the vote and acts first.|r", 1)
     endif
     if CaptainDraftVoteTimer != null then
         call PauseTimer(CaptainDraftVoteTimer)
@@ -170,27 +184,90 @@ function CaptainDraft_FinishFirstSideVote takes nothing returns nothing
         call DestroyTrigger(CaptainDraftVoteTrigger)
         set CaptainDraftVoteTrigger = null
     endif
-    if CaptainDraftVoteDialog != null then
-        call DialogDestroy(CaptainDraftVoteDialog)
-        set CaptainDraftVoteDialog = null
+endfunction
+
+function CaptainDraft_ShowVoteState takes nothing returns nothing
+    if CaptainDraftVoteWindow == null then
+        return
     endif
-    set CaptainDraftVoteButton1 = null
-    set CaptainDraftVoteButton2 = null
+    call BlzFrameSetText(CaptainDraftVoteTitle, "|cffd5b876WHO PICKS FIRST?|r  |cffa0a4ab" + I2S(IMaxBJ(CaptainDraftVoteLeft, 0)) + "s|r")
+    call BlzFrameSetText(CaptainDraftVoteCounts, "|cffff6a5a" + I2S(CaptainDraftVoteTeam1) + "|r  |cff8d96a3votes|r  |cff5aa9ff" + I2S(CaptainDraftVoteTeam2) + "|r")
+endfunction
+
+function CaptainDraft_VoteClockTick takes nothing returns nothing
+    set CaptainDraftVoteLeft = CaptainDraftVoteLeft - 1
+    call CaptainDraft_ShowVoteState()
 endfunction
 
 function CaptainDraft_OnFirstSideVote takes nothing returns nothing
     local integer pid = GetPlayerId(GetTriggerPlayer())
-    local button clicked = GetClickedButton()
-    if CaptainDraftVoteActive and CaptainDraft_IsPlaying(pid) and not CaptainDraftPlayerVoted[pid] then
-        set CaptainDraftPlayerVoted[pid] = true
+    local framehandle clicked = BlzGetTriggerFrame()
+    local integer side = 0
+    if GetLocalPlayer() == GetTriggerPlayer() then
+        call BlzFrameSetEnable(clicked, false)
+        call BlzFrameSetEnable(clicked, true)
+    endif
+    if CaptainDraftVoteActive and CaptainDraft_IsPlaying(pid) then
+        set side = 0
         if clicked == CaptainDraftVoteButton1 then
-            set CaptainDraftVoteTeam1 = CaptainDraftVoteTeam1 + 1
+            set side = 1
         elseif clicked == CaptainDraftVoteButton2 then
-            set CaptainDraftVoteTeam2 = CaptainDraftVoteTeam2 + 1
+            set side = 2
         endif
-        call DialogDisplay(Player(pid), CaptainDraftVoteDialog, false)
+        if side != 0 and side != CaptainDraftPlayerVoteSide[pid] then
+            // Checkpoint 26: a second click on the other side moves the vote.
+            if CaptainDraftPlayerVoteSide[pid] == 1 then
+                set CaptainDraftVoteTeam1 = CaptainDraftVoteTeam1 - 1
+            elseif CaptainDraftPlayerVoteSide[pid] == 2 then
+                set CaptainDraftVoteTeam2 = CaptainDraftVoteTeam2 - 1
+            endif
+            if side == 1 then
+                set CaptainDraftVoteTeam1 = CaptainDraftVoteTeam1 + 1
+            else
+                set CaptainDraftVoteTeam2 = CaptainDraftVoteTeam2 + 1
+            endif
+            set CaptainDraftPlayerVoteSide[pid] = side
+            set CaptainDraftPlayerVoted[pid] = true
+            // The voter sees the chosen side highlighted; buttons stay active.
+            if GetLocalPlayer() == GetTriggerPlayer() then
+                call WUI_SetButtonSelected(CaptainDraftVoteButton1, side == 1)
+                call WUI_SetButtonSelected(CaptainDraftVoteButton2, side == 2)
+            endif
+            call CaptainDraft_ShowVoteState()
+        endif
     endif
     set clicked = null
+endfunction
+
+function CaptainDraft_CreateVoteWindow takes nothing returns nothing
+    local framehandle part
+    if CaptainDraftVoteWindow != null then
+        return
+    endif
+    set CaptainDraftVoteWindow = WUI_Window("WOSDraftVote", WUI_GetRoot(), 0, 9480)
+    call WUI_Place(CaptainDraftVoteWindow, 0.400, 0.372, 0.210, 0.092)
+    call BlzFrameSetLevel(CaptainDraftVoteWindow, 30)
+    set part = WUI_OrnateWindow("WOSDraftVoteMetal", CaptainDraftVoteWindow, 0.018)
+    set CaptainDraftVoteTitle = BlzCreateFrameByType("TEXT", "WOSDraftVoteTitle", CaptainDraftVoteWindow, "", 0)
+    call BlzFrameSetPoint(CaptainDraftVoteTitle, FRAMEPOINT_TOP, CaptainDraftVoteWindow, FRAMEPOINT_TOP, 0.0, -0.012)
+    call BlzFrameSetSize(CaptainDraftVoteTitle, 0.190 / 0.90, 0.014 / 0.90)
+    call BlzFrameSetScale(CaptainDraftVoteTitle, 0.90)
+    call BlzFrameSetTextAlignment(CaptainDraftVoteTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(CaptainDraftVoteTitle, false)
+    set CaptainDraftVoteButton1 = WUI_TextButton("WOSDraftVoteTeam1", CaptainDraftVoteWindow, "TEAM 1", 0.078, 0.022)
+    call WUI_Place(CaptainDraftVoteButton1, 0.355, 0.369, 0.078, 0.022)
+    call WUI_SetButtonCaption(CaptainDraftVoteButton1, "|cffff6a5aTEAM 1|r")
+    set CaptainDraftVoteButton2 = WUI_TextButton("WOSDraftVoteTeam2", CaptainDraftVoteWindow, "TEAM 2", 0.078, 0.022)
+    call WUI_Place(CaptainDraftVoteButton2, 0.445, 0.369, 0.078, 0.022)
+    call WUI_SetButtonCaption(CaptainDraftVoteButton2, "|cff5aa9ffTEAM 2|r")
+    set CaptainDraftVoteCounts = BlzCreateFrameByType("TEXT", "WOSDraftVoteCounts", CaptainDraftVoteWindow, "", 0)
+    call BlzFrameSetPoint(CaptainDraftVoteCounts, FRAMEPOINT_BOTTOM, CaptainDraftVoteWindow, FRAMEPOINT_BOTTOM, 0.0, 0.011)
+    call BlzFrameSetSize(CaptainDraftVoteCounts, 0.190 / 0.78, 0.012 / 0.78)
+    call BlzFrameSetScale(CaptainDraftVoteCounts, 0.78)
+    call BlzFrameSetTextAlignment(CaptainDraftVoteCounts, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(CaptainDraftVoteCounts, false)
+    call BlzFrameSetVisible(CaptainDraftVoteWindow, false)
+    set part = null
 endfunction
 
 function CaptainDraft_StartFirstSideVote takes nothing returns nothing
@@ -203,26 +280,28 @@ function CaptainDraft_StartFirstSideVote takes nothing returns nothing
     loop
         exitwhen pid >= 10
         set CaptainDraftPlayerVoted[pid] = false
+        set CaptainDraftPlayerVoteSide[pid] = 0
         set pid = pid + 1
     endloop
-    set CaptainDraftVoteDialog = DialogCreate()
-    call DialogSetMessage(CaptainDraftVoteDialog, "Who gets the first pick? (" + I2S(CaptainDraftVoteTime) + " sec)")
-    set CaptainDraftVoteButton1 = DialogAddButton(CaptainDraftVoteDialog, "Team 1 starts", 0)
-    set CaptainDraftVoteButton2 = DialogAddButton(CaptainDraftVoteDialog, "Team 2 starts", 0)
+    call CaptainDraft_CreateVoteWindow()
     set CaptainDraftVoteTrigger = CreateTrigger()
-    call TriggerRegisterDialogEvent(CaptainDraftVoteTrigger, CaptainDraftVoteDialog)
+    call BlzTriggerRegisterFrameEvent(CaptainDraftVoteTrigger, CaptainDraftVoteButton1, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(CaptainDraftVoteTrigger, CaptainDraftVoteButton2, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(CaptainDraftVoteTrigger, function CaptainDraft_OnFirstSideVote)
-    set pid = 0
-    loop
-        exitwhen pid >= 10
-        if CaptainDraft_IsPlaying(pid) then
-            call DialogDisplay(Player(pid), CaptainDraftVoteDialog, true)
-        endif
-        set pid = pid + 1
-    endloop
+    call WUI_SetButtonSelected(CaptainDraftVoteButton1, false)
+    call WUI_SetButtonSelected(CaptainDraftVoteButton2, false)
+    // Only active players can vote; observers just watch the counter.
+    set pid = GetPlayerId(GetLocalPlayer())
+    call BlzFrameSetEnable(CaptainDraftVoteButton1, CaptainDraft_IsPlaying(pid))
+    call BlzFrameSetEnable(CaptainDraftVoteButton2, CaptainDraft_IsPlaying(pid))
+    set CaptainDraftVoteLeft = CaptainDraftVoteTime
+    call CaptainDraft_ShowVoteState()
+    call BlzFrameSetVisible(CaptainDraftVoteWindow, true)
+    set CaptainDraftVoteClock = CreateTimer()
+    call TimerStart(CaptainDraftVoteClock, 1.00, true, function CaptainDraft_VoteClockTick)
     set CaptainDraftVoteTimer = CreateTimer()
     call TimerStart(CaptainDraftVoteTimer, I2R(CaptainDraftVoteTime), false, function CaptainDraft_FinishFirstSideVote)
-    call PlayersMsg("|cffffd36bVote for the team that gets the first pick. You have " + I2S(CaptainDraftVoteTime) + " seconds.|r", 1)
+    call WUI_Feed("|cffffd36bVote for the team that gets the first pick. You have " + I2S(CaptainDraftVoteTime) + " seconds.|r", 1)
 endfunction
 
 function CaptainDraft_PlayConfiguredSound takes string soundPath returns nothing
@@ -390,8 +469,8 @@ function CaptainDraft_HideLegacyUI takes nothing returns nothing
         endif
         set i = i + 1
     endloop
-    if FRAME_PlayerPickDifficultText != null then
-        call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+    if FRAME_PlayerPickDifficultPlate != null then
+        call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
     endif
     if FRAME_Pick[3] != null then
         call BlzFrameSetVisible(FRAME_Pick[3], false)
@@ -417,14 +496,32 @@ function CaptainDraft_PositionStatus takes nothing returns nothing
         return
     endif
     // Status stays in the header through BAN/PICK/CLAIM, away from action icons.
-    call BlzFrameClearAllPoints(FRAME_TimerToStart)
-    if CaptainDraftStage >= 3 then
-        call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftClaimTextX, CaptainDraftClaimTextY)
-    else
-        call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftStartTextX, CaptainDraftStartTextY)
+    // Captain Draft statuses are long: the framed timer plate widens and
+    // moves to the centre of the title row.
+    // Checkpoint 24: exactly as wide as the hero grid and centred over it.
+    call WOS_PickTimerPlace(WOS_PickTimerPlate, FRAME_TimerToStart, 0.375, 0.5245, 0.214)
+    // Checkpoint 26: all header plates (ban log, timer, hero name) .022 high.
+    if WOS_PickTimerPlate != null then
+        call WUI_Place(WOS_PickTimerPlate, 0.375, 0.5245, 0.214, 0.022)
     endif
-    call BlzFrameSetSize(FRAME_TimerToStart, 0.510, 0.016)
-    call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    // Checkpoint 27b: hero info row level with those plates; the panel grows
+    // upwards so the name stays inside its top edge.
+    call WUI_Place(FRAME_MAIN3, 0.613, 0.369, 0.240, 0.338)
+    call WUI_Place(FRAME_HeroName, 0.613, 0.5245, 0.168, 0.022)
+    call WUI_Place(FRAME_HeroAttribute, 0.514, 0.5175, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroAttackType, 0.712, 0.5205, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroModel, 0.613, 0.4245, 0.156, 0.156)
+    call WOS_PickGridLayout(false)
+endfunction
+
+// Synced: last BAN / PICK of the draft on the top-left plate.
+function CaptainDraft_Log takes string message returns nothing
+    if CaptainDraftLogText == null then
+        call WUI_Feed(message, 1)
+        return
+    endif
+    call BlzFrameSetText(CaptainDraftLogText, message)
+    call BlzFrameSetVisible(CaptainDraftLogPlate, true)
 endfunction
 
 function CaptainDraft_HideBanEffect takes nothing returns nothing
@@ -468,27 +565,24 @@ function CaptainDraft_CanHoverClaimSlot takes integer slot returns boolean
     return CaptainDraftMode and CaptainDraftStage == 3 and pid >= 0 and pid < 10 and CaptainDraft_IsPlaying(pid) and CaptainDraftPlayerHero[pid] == 0 and slot >= 0 and slot < 10 and CaptainDraftPickedHero[slot] != 0 and CaptainDraftClaimedBy[slot] < 0 and ((pid < 5 and slot < 5) or (pid >= 5 and slot >= 5))
 endfunction
 
+// Checkpoint 23: the claim hover is an engine tooltip (an enlarged copy of
+// the icon) - local, no synced mouse events, no gold model. Slots that can
+// not be claimed keep an empty tooltip.
+function CaptainDraft_RefreshClaimZoom takes integer i returns nothing
+    local integer heroId = CaptainDraftPickedHero[i]
+    if CaptainDraftClaimHover[i] == null then
+        return
+    endif
+    if heroId != 0 and CaptainDraft_CanHoverClaimSlot(i) then
+        call BlzFrameSetTexture(CaptainDraftClaimHover[i], BlzGetAbilityIcon(heroId), 0, false)
+        call BlzFrameSetVisible(CaptainDraftClaimEdge[i], true)
+    else
+        call BlzFrameSetTexture(CaptainDraftClaimHover[i], WUI_EMPTY_TEXTURE, 0, true)
+        call BlzFrameSetVisible(CaptainDraftClaimEdge[i], false)
+    endif
+endfunction
+
 function CaptainDraft_OnClaimHover takes nothing returns nothing
-    local framehandle hovered = BlzGetTriggerFrame()
-    local frameeventtype eventType = BlzGetTriggerFrameEvent()
-    local integer i = 0
-    loop
-        exitwhen i >= 10
-        if hovered == FRAME_PlayerPick[i] then
-            if eventType == FRAMEEVENT_MOUSE_ENTER and CaptainDraft_CanHoverClaimSlot(i) then
-                call BlzFrameSetVisible(CaptainDraftClaimHover[i], true)
-                call BlzFrameSetSpriteAnimate(CaptainDraftClaimHover[i], 0, 0)
-            else
-                call BlzFrameSetVisible(CaptainDraftClaimHover[i], false)
-            endif
-            set hovered = null
-            set eventType = null
-            return
-        endif
-        set i = i + 1
-    endloop
-    set hovered = null
-    set eventType = null
 endfunction
 
 function CaptainDraft_UpdateRows takes nothing returns nothing
@@ -499,6 +593,9 @@ function CaptainDraft_UpdateRows takes nothing returns nothing
     loop
         exitwhen i >= CaptainDraftBanTotal
         set heroId = CaptainDraftBannedHero[i]
+        // Checkpoint 22: bans show in the shared slots between the teams
+        // (no proposer names in Captain Draft).
+        call WOS_PickBanSet(i, heroId, -1)
         if heroId != 0 then
             call BlzFrameSetTexture(CaptainDraftBanIcon[i], ConvertBTNtoDISBTN(BlzGetAbilityIcon(heroId)), 0, false)
             call BlzFrameSetText(CaptainDraftBanTooltipText[i], "|cffffd36b" + GetObjectName(heroId) + "|r")
@@ -526,6 +623,7 @@ function CaptainDraft_UpdateRows takes nothing returns nothing
         else
             call BlzFrameSetTexture(FRAME_PlayerPickBack[i], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
         endif
+        call CaptainDraft_RefreshClaimZoom(i)
         if heroId != 0 and CaptainDraftClaimedBy[i] >= 0 then
             call BlzFrameSetText(FRAME_PlayerPickText[i], SplitName(GetPlayerName(Player(CaptainDraftClaimedBy[i]))))
             call BlzFrameSetVisible(FRAME_PlayerPickText[i], true)
@@ -564,21 +662,21 @@ function CaptainDraft_UpdateControls takes nothing returns nothing
     call BlzFrameSetEnable(FRAME_ICON_Pick[2], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[3], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
-    call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual2", 0, true)
-    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
     call BlzFrameSetVisible(FRAME_Pick[2], CaptainDraftStage == 2)
     call BlzFrameSetVisible(FRAME_Pick[3], false)
     call BlzFrameSetVisible(FRAME_Pick[4], CaptainDraftStage == 1)
 
     if activePid >= 0 and GetLocalPlayer() == Player(activePid) then
         if CaptainDraftStage == 1 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban.tga", 0, true)
             call BlzFrameSetEnable(FRAME_Pick[4], true)
             call BlzFrameSetEnable(FRAME_ICON_Pick[4], true)
         else
             call BlzFrameSetEnable(FRAME_Pick[2], true)
             call BlzFrameSetEnable(FRAME_ICON_Pick[2], true)
-            call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
         endif
     endif
 
@@ -586,9 +684,7 @@ function CaptainDraft_UpdateControls takes nothing returns nothing
     loop
         exitwhen i >= 10
         call BlzFrameSetEnable(FRAME_PlayerPick[i], false)
-        if not CaptainDraft_CanHoverClaimSlot(i) then
-            call BlzFrameSetVisible(CaptainDraftClaimHover[i], false)
-        endif
+        call CaptainDraft_RefreshClaimZoom(i)
         set i = i + 1
     endloop
 
@@ -636,7 +732,7 @@ function CaptainDraft_CreateUI takes nothing returns nothing
 
     loop
         exitwhen i >= CaptainDraftBanTotal
-        set CaptainDraftBanButton[i] = BlzCreateFrameByType("BUTTON", "CaptainDraftBanButton", CaptainDraftPanel, "ScoreScreenTabButtonTemplate", 9510 + i)
+        set CaptainDraftBanButton[i] = BlzCreateFrameByType("BUTTON", "CaptainDraftBanButton", CaptainDraftPanel, "WOSIconButtonTemplate", 9510 + i)
         call BlzFrameSetPoint(CaptainDraftBanButton[i], FRAMEPOINT_CENTER, CaptainDraftPanel, FRAMEPOINT_LEFT, CaptainDraftBanFirstIconOffsetX + I2R(i) * CaptainDraftBanIconStepX, CaptainDraftBanIconOffsetY)
         call BlzFrameSetSize(CaptainDraftBanButton[i], CaptainDraftBanIconSize, CaptainDraftBanIconSize)
         set CaptainDraftBanIcon[i] = BlzCreateFrameByType("BACKDROP", "CaptainDraftBanIcon", CaptainDraftBanButton[i], "", 9520 + i)
@@ -669,32 +765,55 @@ function CaptainDraft_CreateUI takes nothing returns nothing
     set i = 0
     loop
         exitwhen i >= 10
-        set CaptainDraftClaimHover[i] = BlzCreateFrameByType("SPRITE", "CaptainDraftClaimHover", FRAME_MAIN, "WarCraftIIILogo", 9590 + i)
-        call BlzFrameSetPoint(CaptainDraftClaimHover[i], FRAMEPOINT_LEFT, FRAME_PlayerPick[i], FRAMEPOINT_LEFT, -0.0012, 0.48)
-        call BlzFrameSetSize(CaptainDraftClaimHover[i], 1.0, 1.0)
-        call BlzFrameSetScale(CaptainDraftClaimHover[i], 1.0)
-        call BlzFrameSetLevel(CaptainDraftClaimHover[i], 10)
-        call BlzFrameSetModel(CaptainDraftClaimHover[i], "Pick\\wos_IconShine1.mdx", 0)
+        // Hover zoom: 1.2x copy of the icon over the slot (engine tooltip).
+        set CaptainDraftClaimHover[i] = BlzCreateFrameByType("BACKDROP", "CaptainDraftClaimZoom", FRAME_MAIN, "", 9590 + i)
+        call BlzFrameSetPoint(CaptainDraftClaimHover[i], FRAMEPOINT_CENTER, FRAME_PlayerPick[i], FRAMEPOINT_CENTER, 0.0, 0.0)
+        call BlzFrameSetSize(CaptainDraftClaimHover[i], 0.036, 0.036)
+        call BlzFrameSetTexture(CaptainDraftClaimHover[i], WUI_EMPTY_TEXTURE, 0, true)
         call BlzFrameSetEnable(CaptainDraftClaimHover[i], false)
+        call BlzFrameSetLevel(CaptainDraftClaimHover[i], 12)
+        set CaptainDraftClaimEdge[i] = WUI_IconFrame(CaptainDraftClaimHover[i], WUI_ICON_FRAME)
+        call BlzFrameSetVisible(CaptainDraftClaimEdge[i], false)
         call BlzFrameSetVisible(CaptainDraftClaimHover[i], false)
-        call BlzTriggerRegisterFrameEvent(CaptainDraftHoverTrigger, FRAME_PlayerPick[i], FRAMEEVENT_MOUSE_ENTER)
-        call BlzTriggerRegisterFrameEvent(CaptainDraftHoverTrigger, FRAME_PlayerPick[i], FRAMEEVENT_MOUSE_LEAVE)
+        call BlzFrameSetTooltip(FRAME_PlayerPick[i], CaptainDraftClaimHover[i])
         set i = i + 1
     endloop
 
-    call BlzFrameSetVisible(CaptainDraftPanel, CaptainDraftMode)
+    // Log plate (same look as the timer plate), above the franchise logos.
+    set CaptainDraftLogPlate = BlzCreateFrameByType("BACKDROP", "CaptainDraftLogPlate", FRAME_MAIN, "", 0)
+    call WUI_Place(CaptainDraftLogPlate, 0.180, 0.5245, 0.150, 0.022)
+    call BlzFrameSetTexture(CaptainDraftLogPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetEnable(CaptainDraftLogPlate, false)
+    call BlzFrameSetLevel(CaptainDraftLogPlate, 6)
+    set tooltip = WUI_GoldFrame("CaptainDraftLogEdge", CaptainDraftLogPlate, 0.0030, 0.0070)
+    set CaptainDraftLogText = BlzCreateFrameByType("TEXT", "CaptainDraftLogText", CaptainDraftLogPlate, "", 0)
+    call BlzFrameSetPoint(CaptainDraftLogText, FRAMEPOINT_CENTER, CaptainDraftLogPlate, FRAMEPOINT_CENTER, 0.0, 0.0)
+    call BlzFrameSetSize(CaptainDraftLogText, 0.142 / 0.84, 0.016 / 0.84)
+    call BlzFrameSetScale(CaptainDraftLogText, 0.84)
+    call BlzFrameSetTextAlignment(CaptainDraftLogText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(CaptainDraftLogText, false)
+    call BlzFrameSetText(CaptainDraftLogText, "")
+    call BlzFrameSetVisible(CaptainDraftLogPlate, false)
+
+    // The old floating BANS panel is replaced by the shared ban slots.
+    call BlzFrameSetVisible(CaptainDraftPanel, false)
+    set i = 0
+    loop
+        exitwhen i >= CaptainDraftBanTotal or i >= WOS_PICK_BAN_MAX
+        if WOS_PickBanFx[i] != null then
+            call BlzFrameSetVisible(CaptainDraftBanHighlight[i], false)
+            set CaptainDraftBanHighlight[i] = WOS_PickBanFx[i]
+        endif
+        set i = i + 1
+    endloop
     if CaptainDraftMode then
+        call WOS_PickBanLayout(CaptainDraftBanTotal, false)
         call CaptainDraft_HideLegacyUI()
         call CaptainDraft_UpdateRows()
         call CaptainDraft_UpdateControls()
         call CaptainDraft_SetStatus("|cffffd36bVote: which team gets the first pick? " + I2S(CaptainDraftVoteTime) + "s|r")
         if FRAME_TimerToStart != null then
-            call BlzFrameClearAllPoints(FRAME_TimerToStart)
-            call BlzFrameSetAbsPoint(FRAME_TimerToStart, FRAMEPOINT_CENTER, CaptainDraftStartTextX, CaptainDraftStartTextY)
-            call BlzFrameSetSize(FRAME_TimerToStart, CaptainDraftStartTextWidth, CaptainDraftStartTextHeight)
-            call BlzFrameSetScale(FRAME_TimerToStart, 1.05)
-            call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_CENTER, TEXT_JUSTIFY_MIDDLE)
-            call BlzFrameSetLevel(FRAME_TimerToStart, 9600)
+            call CaptainDraft_PositionStatus()
             call BlzFrameSetVisible(FRAME_TimerToStart, true)
         endif
     endif
@@ -898,7 +1017,7 @@ function CaptainDraft_StartClaim takes nothing returns nothing
     call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundClaimPhase)
     call CaptainDraft_UpdateRows()
     call CaptainDraft_UpdateTurnUI()
-    call PlayersMsg("|cff70d6ffCaptain Draft: choose one of the drafted heroes.|r", 1)
+    call WUI_Feed("|cff70d6ffCaptain Draft: choose one of the drafted heroes.|r", 1)
 endfunction
 
 function CaptainDraft_AdvanceAction takes integer previousSide returns nothing
@@ -914,10 +1033,10 @@ function CaptainDraft_AdvanceAction takes integer previousSide returns nothing
     set CaptainDraftStage = CaptainDraftActionType[CaptainDraftTurn]
     if CaptainDraftStage != previousStage then
         if CaptainDraftStage == 1 then
-            call PlayersMsg("|cffff6060Captain Draft: BAN phase.|r", 1)
+            call WUI_Feed("|cffff6060Captain Draft: BAN phase.|r", 1)
             call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundBanPhase)
         else
-            call PlayersMsg("|cff70d6ffCaptain Draft: PICK phase.|r", 1)
+            call WUI_Feed("|cff70d6ffCaptain Draft: PICK phase.|r", 1)
             call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundPickPhase)
         endif
     endif
@@ -941,7 +1060,7 @@ function CaptainDraft_RecordBan takes integer heroId returns nothing
     // page arrays during a frame click can leave adjacent hero buttons with
     // stale ID/dummy data and may crash Reforged on the next selection.
     set CaptainDraftPagesDirty = true
-    call PlayersMsg("|cffff6060BAN:|r " + GetObjectName(heroId), 1)
+    call CaptainDraft_Log("|cffff6060BAN:|r " + WUI_TEXT + GetObjectName(heroId) + "|r")
     call CaptainDraft_UpdateRows()
     call CaptainDraft_PlayBanEffect(effectSlot)
     call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundBanConfirm)
@@ -967,7 +1086,7 @@ function CaptainDraft_RecordPick takes integer heroId returns nothing
     set CaptainDraftTeamPickCount[side] = CaptainDraftTeamPickCount[side] + 1
     set CaptainDraftPickCount = CaptainDraftPickCount + 1
     set CaptainDraftPagesDirty = true
-    call PlayersMsg("|cff70d6ffPICK:|r " + GetObjectName(heroId), 1)
+    call CaptainDraft_Log("|cff70d6ffPICK:|r " + WUI_TEXT + GetObjectName(heroId) + "|r")
     call CaptainDraft_AdvanceAction(side)
 endfunction
 
@@ -1039,7 +1158,11 @@ function CaptainDraft_Claim takes integer pid, integer slot returns nothing
     set CaptainDraftPlayerHero[pid] = heroId
     set CaptainDraftClaimedBy[slot] = pid
     set CaptainDraftClaimCount = CaptainDraftClaimCount + 1
-    call PlayersMsg(GetPlayerColorString(Player(pid)) + GetPlayerName(Player(pid)) + "|r chose |cff70d6ff" + GetObjectName(heroId) + "|r", 1)
+    call WUI_Feed(GetPlayerColorString(Player(pid)) + GetPlayerName(Player(pid)) + "|r chose |cff70d6ff" + GetObjectName(heroId) + "|r", 1)
+    // Click feedback for the claiming player only.
+    if GetLocalPlayer() == Player(pid) then
+        call StartSound(gg_snd_BattleNetTick)
+    endif
     call CaptainDraft_UpdateRows()
     call CaptainDraft_UpdateControls()
     // Start the preparation countdown only after the last currently active
@@ -1088,6 +1211,11 @@ function CaptainDraft_CreateHero takes integer pid, integer heroId returns nothi
     call SetHeroLevel(u, 2, false)
     call LearnHeroSpells(u)
     call HideBottomUI(Player(pid), false)
+    // Same as the normal pick: chat emoji buttons appear with the hero.
+    if GetLocalPlayer() == Player(pid) then
+        call BlzFrameSetVisible(EmojiMuteButton, true)
+        call BlzFrameSetVisible(EmojiToggle, true)
+    endif
     set PlayerVision[pid] = CreateFogModifierRadius(Player(pid), FOG_OF_WAR_VISIBLE, x, y, 1800, true, false)
     call FogModifierStart(PlayerVision[pid])
     call RecommenedItems(Player(pid))
@@ -1178,8 +1306,14 @@ function CaptainDraft_CloseUI takes nothing returns nothing
     if CaptainDraftPanel != null then
         call BlzFrameSetVisible(CaptainDraftPanel, false)
     endif
+    if CaptainDraftLogPlate != null then
+        call BlzFrameSetVisible(CaptainDraftLogPlate, false)
+    endif
     if FRAME_TimerToStart != null then
         call BlzFrameSetVisible(FRAME_TimerToStart, false)
+    endif
+    if WOS_PickTimerPlate != null then
+        call BlzFrameSetVisible(WOS_PickTimerPlate, false)
     endif
     if FRAME_Pick[2] != null then
         call BlzFrameSetVisible(FRAME_Pick[2], false)
@@ -1199,6 +1333,7 @@ function CaptainDraft_CloseUI takes nothing returns nothing
             call BlzFrameSetEnable(FRAME_PlayerPick[i], false)
         endif
         if CaptainDraftClaimHover[i] != null then
+            call BlzFrameSetTooltip(FRAME_PlayerPick[i], null)
             call BlzFrameSetVisible(CaptainDraftClaimHover[i], false)
         endif
         if CaptainDraftBanHighlight[i] != null then
@@ -1297,7 +1432,7 @@ function CaptainDraft_Finish takes nothing returns nothing
     call SetTeamAlliances()
     call RearrangeTeamUI()
     call CaptainDraft_EnablePreRoundSwap()
-    call PlayersMsg("|cff70d6ffCaptain Draft complete. The round starts soon.|r", 1)
+    call WUI_Feed("|cff70d6ffCaptain Draft complete. The round starts soon.|r", 1)
 endfunction
 
 function CaptainDraft_Tick takes nothing returns nothing
@@ -1324,7 +1459,9 @@ function CaptainDraft_Tick takes nothing returns nothing
         call CaptainDraft_InitOrders()
         set CaptainDraftStage = 1
         set CaptainDraftTime = 0
-        call BlzFrameSetVisible(CaptainDraftPanel, true)
+        call BlzFrameSetVisible(CaptainDraftPanel, false)
+        call WOS_PickBanLayout(CaptainDraftBanTotal, false)
+        call CaptainDraft_PositionStatus()
         call BlzFrameSetVisible(FRAME_TimerToStart, true)
         // CreateUI starts before a mode is selected, so initialize every
         // active player's hero page explicitly when the draft begins.
@@ -1339,7 +1476,7 @@ function CaptainDraft_Tick takes nothing returns nothing
             set heroId = heroId + 1
         endloop
         set CaptainDraftPagesDirty = true
-        call PlayersMsg("|cffff6060Captain Draft: BAN phase.|r", 1)
+        call WUI_Feed("|cffff6060Captain Draft: BAN phase.|r", 1)
         call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundBanPhase)
         call CaptainDraft_UpdateRows()
         call CaptainDraft_UpdateTurnUI()

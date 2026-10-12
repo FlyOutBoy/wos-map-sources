@@ -901,8 +901,8 @@ library RaidenSpells uses GearSystems
                             set r3 = r3 + 0.03
                         endif
                     elseif k3 == 1 then
-                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), 5)
-                        call BlzSetSpecialEffectPosition(e2, GetUnitX(c), GetUnitY(c), 0)
+                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), BlzGetLocalUnitZ(c) + 5)
+                        call BlzSetSpecialEffectPosition(e2, GetUnitX(c), GetUnitY(c), BlzGetLocalUnitZ(c))
                         if r < RaidenTTW_CastTime then
                             set r = r + 0.03
                             if r4 > 0.09 then
@@ -1606,7 +1606,7 @@ library RaidenSpells uses GearSystems
                             if SR5(e, x, y) > move then
                                 call MoveEff(e, move, GAngle5(e, x, y))
                             else
-                                call BlzSetSpecialEffectPosition(e, x, y, 3)
+                                call BlzSetSpecialEffectPosition(e, x, y, BlzGetLocalSpecialEffectZ(e))
                             endif
                         endif
                         if r == 1.20 then

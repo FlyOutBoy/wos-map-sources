@@ -76,6 +76,10 @@ class JassState:
         self.ability_history = []
         self.range_history = []
         self.g = {
+            # Checkpoint 24 natives used by shared UI code (harmless defaults).
+            "BlzGetAbilityPosX": lambda *args: -1, "BlzGetAbilityPosY": lambda *args: -1,
+            "BlzGetOriginFrame": lambda *args: None, "ORIGIN_FRAME_HERO_BUTTON": "ORIGIN_FRAME_HERO_BUTTON",
+            "BlzFrameSetPoint": lambda *args: None, "BlzFrameClearAllPoints": lambda *args: None, "FRAMEPOINT_CENTER": "center",
             "VisionTimed": lambda *args: self.vision_calls.append(args),
             "DecorRemove": lambda *args: self.decor_calls.append(args),
             "DecorRemoveLine": lambda *args: self.decor_calls.append(args),
@@ -84,7 +88,7 @@ class JassState:
             "CrocodileDecorHits": {},
             "LoadBoolean": lambda table,key,child: table.get((key,child),False),
             "SaveBoolean": lambda table,key,child,v: table.update({(key,child):v}),
-            "RMinBJ": min, "RMaxBJ": max, "IMinBJ": min, "IMaxBJ": max,
+            "RMinBJ": min, "RMaxBJ": max, "IMinBJ": min, "IMaxBJ": max, "ModuloInteger": lambda a, b: a % b,
             "RAbsBJ": abs, "RoundReal":lambda v,n:round(v,n), "SquareRoot": math.sqrt, "Cos": math.cos, "Sin": math.sin, "Atan2": math.atan2,
             "GetHandleId": id, "GetOwningPlayer": lambda u: u.owner,
             "GetUnitX": lambda u: u.x, "GetUnitY": lambda u: u.y,
@@ -214,6 +218,35 @@ class JassState:
             self.g[name] = ns
             for meth in re.findall(r"method (\w+) takes", body):
                 self.method_classes[meth] = ns
+        # Checkpoint 27d: shared UI helpers used by many owners (real
+        # implementations in the loaded source still override these).
+        self.g.setdefault("WUI_Show", lambda f, v: self.g.get("BlzFrameSetVisible", lambda *a: None)(f, v))
+        self.g.setdefault("WUI_SetText", lambda f, v: self.g.get("BlzFrameSetText", lambda *a: None)(f, v))
+        self.g.setdefault("BlzFrameIsVisible", lambda f: True)
+        self.g.setdefault("WUI_MeterEdges", {})
+        self.g.setdefault("BlzFrameGetParent", lambda f: ("parent", f))
+        self.g.setdefault("ArenaMinimap_SetArena", lambda *a: None)
+        def _place_shift(f, x, y, w, h):
+            place = self.g.get("WUI_Place")
+            if place is not None:
+                return place(f, x, y, w, h)
+            self.g.get("BlzFrameSetAbsPoint", lambda *a: None)(f, self.g.get("FRAMEPOINT_CENTER", "center"), x, y)
+        self.g.setdefault("WUI_PlaceShift", _place_shift)
+        self.g.setdefault("WUI_PlaceShiftLeft", _place_shift)
+        self.g.setdefault("WUI_RectShiftLeft", lambda *a: None)
+        self.g.setdefault("WUI_SetHud", lambda *a: None)
+        self.g.setdefault("ExecuteFunc", lambda name: self.run(name, ()) if name in self.methods else None)
+        self.g.setdefault("WUI_ShiftTable", {})
+        for _name, _value in (("WUI_HudLeft", 0.0), ("WUI_RectCount", 0), ("WOS_ARMOR_PER_AGI", 0.1), ("WOS_PHYS_RES_PER_AGI", 0.12), ("WOS_MAG_RES_PER_INT", 0.12)):
+            self.g.setdefault(_name, _value)
+        self.g.setdefault("WUI_SetHudShift", lambda shift: None)
+        self.g.setdefault("WUI_OnHudShift", lambda code: None)
+        self.g.setdefault("WUI_STATS_COLUMN", 0.044)
+        self.g.setdefault("FONT_SIZE", 0.009)
+        self.g.setdefault("BOX_SIZE", 0.0135)
+        for _name, _value in (("WUI_ShiftCount", 0), ("WUI_ShiftHookCount", 0), ("WUI_HudMode", 2), ("WUI_HudShift", 0.0)):
+            self.g.setdefault(_name, _value)
+        self.g.setdefault("bj_mapInitialCameraBounds", "initial-camera-bounds")
         self.g.update({name: lambda *args, n=name: self.run(n,args) for name in self.methods})
         self.g["Enemy"] = lambda c,u: u.life > 0 and u.owner != c.owner
         self.g["CanPull"] = lambda u: u.life > 0 and u.protection == 0

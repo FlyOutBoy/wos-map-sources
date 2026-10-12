@@ -533,6 +533,7 @@ library KiritoSpells uses GearSystems
                         loop
                             exitwhen k > 3
                             set dd[k] = CreateUnit(GetOwningPlayer(c), KiritoE_DummyId, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG + (90 * k))
+                            call WOS_RegisterHeroMinimap(dd[k], c)
                             call PauseUnit(dd[k], true)
                             call MyRemoveUnit(dd[k], rmax + 1)
                             call SaveUnitHandle(hs, GetHandleId(c), StringHash("dummy" + I2S(k)), dd[k])
@@ -606,6 +607,7 @@ library KiritoSpells uses GearSystems
                                             call ColorDummy3(dd[k], 0, 255, 255, 255, 0.75)
                                             set dd[k] = null
                                             set dd[k] = CreateUnit(GetOwningPlayer(c), KiritoE_DummyId2, GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359))
+                                            call WOS_RegisterHeroMinimap(dd[k], c)
                                             call MUTU2(dd[k], rmax - r, 65, u)                                            
                             call SaveUnitHandle(hs, GetHandleId(c), StringHash("dummy" + I2S(k)), dd[k])
                                             call MyRemoveUnit(dd[k], rmax - r)
@@ -1388,6 +1390,32 @@ library KiritoSpells uses GearSystems
         group g
         effect e
         effect e2
+        WUI_TrackedMeter healMeter
+        private static real uiTick = 0.0
+
+        private static method Loop_KiritoGMeter takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            local integer pid
+            set uiTick = uiTick + 0.03
+            if uiTick < 0.12 then
+                return
+            endif
+            set uiTick = 0.0
+            loop
+                exitwhen i > MUI_KiritoG
+                set this = m_KiritoG[i]
+                set pid = GetPlayerId(GetOwningPlayer(c))
+                if healMeter != 0 then
+                    call healMeter.update(TimerGetRemaining(t_KiritoG), "Next heal", GetUnitTypeId(c) != 0 and Hero[pid] == c and not IsUnitType(c, UNIT_TYPE_DEAD))
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            call TriggerAddAction(GearTimer03Listeners, function thistype.Loop_KiritoGMeter)
+        endmethod
 
         private static method Loop_KiritoG takes nothing returns nothing
             local integer this
@@ -1396,13 +1424,18 @@ library KiritoSpells uses GearSystems
             loop
                 exitwhen i > MUI_KiritoG
                 set this = m_KiritoG[i]
-                if c != null then
+                if c != null and GetUnitTypeId(c) != 0 then
+                    // The passive button shows the time to the next heal.
+                    call BlzStartUnitAbilityCooldown(c, KiritoG_ID, KiritoG_Time)
                     if IsUnitType(c,UNIT_TYPE_DEAD)==false and GetUnitState(c, UNIT_STATE_LIFE) < GetUnitState(c, UNIT_STATE_MAX_LIFE) then
                         set r5 = GetHeroAgi(c, true)*KiritoG_Heal
                         call SetHpCurrent2(c,c, r5)
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_e_buffgreen2a.mdx", c, "origin"))
                     endif
                 else
+                    if healMeter != 0 then
+                        call healMeter.close()
+                    endif
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
                     set c = null
@@ -1414,6 +1447,7 @@ library KiritoSpells uses GearSystems
                     set MUI_KiritoG = MUI_KiritoG - 1
                     if MUI_KiritoG == -1 then
                         call PauseTimer( t_KiritoG)
+                        call GearTimer03Release()
                     endif
                     call deallocate(this)
                 endif
@@ -1427,9 +1461,13 @@ library KiritoSpells uses GearSystems
             set m_KiritoG[ MUI_KiritoG] = this
             set c = NewC
             set r2 = 0
+            // No separate "Next heal" meter: the G button cooldown shows it.
+            set healMeter = 0
             if MUI_KiritoG == 0 then
+                call GearTimer03Acquire()
                 call TimerStart( t_KiritoG, KiritoG_Time, true, function thistype.Loop_KiritoG)
             endif
+            call BlzStartUnitAbilityCooldown(c, KiritoG_ID, TimerGetRemaining(t_KiritoG))
         endmethod
 
     endstruct

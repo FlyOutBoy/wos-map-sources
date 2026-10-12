@@ -2143,7 +2143,7 @@ library NatsuSpells uses GearSystems
             set dy = GetUnitY(responder) - damagedY
 
             if dx * dx + dy * dy <= rangeSquared and IntegerCd(responder, "pas f", NatsuF_Cd) then
-                call FakeCD_Start(responder, NatsuF_ID, NatsuF_Cd, StringHash("pas f"), 0)
+                call PassiveCD_Start(responder, NatsuF_ID, NatsuF_Cd)
                 call NatsuPas_Start(responder)
             endif
         endif

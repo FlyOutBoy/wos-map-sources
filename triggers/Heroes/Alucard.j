@@ -163,7 +163,7 @@ library AlucardSpells uses GearSystems
                             call AddSpellLevel(c,'A01C',10,false)
                             call UnitRemoveAbility(c, AlucardF_AdditionalMoveSpeed_ID)
                         endif
-                        call FakeCD_Start(c,AlucardF_ID,10,0,0)
+                        call PassiveCD_Start(c, AlucardF_ID, 10)
                     call DestroyEffect(e)
                     call DestroyFogModifier(fg)
                     call MyFlush(GetHandleId(c) , StringHash("Alucard pas vision"), 0, AlucardF_Cooldown)

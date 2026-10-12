@@ -1,5 +1,5 @@
 // WoS Shop - audited/refactored version
-// Invariants: catalogue slots 0..34, craft slots 36..42, inventory slots 0..5.
+// Invariants: catalogue slots 0..34, craft slots 36..46 (42 = centre), inventory slots 0..5.
 // Rawcode/item IDs are integers and use 0 (not null) as the empty value.
 // В локальных ветках GetLocalPlayer разрешены только прямые операции BlzFrame*.
 // Все вычисления, вызовы вспомогательных функций и присваивания выполняются до них.
@@ -26,6 +26,13 @@ globals
     framehandle FRAME_AutoBuyCheckbox
     framehandle FRAME_AutoBuyText
     framehandle FRAME_ShopItemList
+    // VIP tab (after Defensive): a promotion page over the catalogue + tree.
+    framehandle FRAME_ShopVipPage = null
+    framehandle FRAME_ShopVipLink = null
+    framehandle FRAME_ShopVipName = null
+    trigger ShopVipLinkTrigger = null
+    boolean array ShopVipOpen
+    constant string SHOP_VIP_URL = "buymeacoffee.com/thunder.gear/membership"
     framehandle FRAME_ShopItemInventory
     framehandle FRAME_ShopItemInventoryName
     framehandle FRAME_ShopItemCraft
@@ -47,7 +54,13 @@ globals
     framehandle array FRAME_ShopItem
     framehandle array FRAME_ShopItemBack
     framehandle array FRAME_ShopItemCost
+    // Checkpoint 22: translucent plate under the price inside each icon.
+    framehandle array FRAME_ShopItemPricePlate
+    framehandle array FRAME_ShopInventoryPricePlate
+    framehandle FRAME_ShopClose = null
     framehandle array FRAME_ShopItemTooltipText
+    framehandle array FRAME_ShopInventoryTooltipBox
+    framehandle array FRAME_ShopInventoryItemName
     framehandle array FRAME_ShopInventoryTooltipText
     boolean array Shop_Active
     integer array ItemsFrameCurrentPage_ID
@@ -81,6 +94,49 @@ integer array ItemsSearchAll_Index
     integer array ItemsCraftUpperRight_ID
     integer array ItemsCraftCenter_ID
     integer array ItemsCraftPlayerDebug_ID
+    // Checkpoint 21 item tree: up to SHOP_TREE_ROW items per row (upgrades on
+    // top, components below); icons shrink as a row fills so large trees need
+    // far less scrolling. Logical slots: 0-4 upgrades, 5-9 components.
+    // Checkpoint 24b: two levels each way, 6 per row. Slots 0-5 upgrades,
+    // 6-11 upgrades of those upgrades, 12-17 components, 18-23 components of
+    // those components. Paging (slider / wheel) moves the first level by 6.
+    // Frames 36..41 and 43..60 (42 = centre).
+    constant integer SHOP_TREE_ROW = 6
+    constant integer SHOP_TREE_PAGE = 6
+    constant integer SHOP_TREE_GROUP = 12
+    constant integer SHOP_TREE_SLOTS = 24
+    integer array ShopTreeTmpId
+    // Checkpoint 25: long item descriptions scroll (wheel over the text or the
+    // slider at its right). Local presentation only.
+    constant integer SHOP_DESC_LINES = 4
+    constant integer SHOP_DESC_CHARS = 62
+    string array ShopDescLine
+    integer ShopDescCount = 0
+    integer ShopDescOffset = 0
+    boolean ShopDescUpdating = false
+    framehandle FRAME_ShopDescScroll = null
+    framehandle FRAME_ShopDescWheel = null
+    // Checkpoint 24: fast buy (double click on an item) / fast sell (double
+    // click on an inventory item); synced flags, local icons.
+    boolean array ShopFastBuy
+    boolean array ShopFastSell
+    integer array ShopLastClickItem
+    integer array ShopLastClickCode
+    real array ShopLastClickTime
+    timer ShopClock = CreateTimer()
+    framehandle FRAME_FastBuyToggle = null
+    framehandle FRAME_FastBuyIcon = null
+    framehandle FRAME_FastSellToggle = null
+    framehandle FRAME_FastSellIcon = null
+    integer array ShopTreeTmpParent
+    constant real SHOP_TREE_X = 0.531
+    // Checkpoint 26b: centre (selected) item of the tree.
+    constant real SHOP_TREE_CENTER_Y = 0.359
+    constant real SHOP_LIST_X = 0.215
+    constant real SHOP_INV_X = 0.718
+    framehandle array FRAME_ShopItemName
+    framehandle FRAME_AutoBuyToggle = null
+    integer array ShopCraftSlotItem
     integer array ItemsCraftPlayerDebug2_ID
     integer array ShopCraftUpgradeOffset
     integer array ShopCraftComponentOffset
@@ -202,6 +258,131 @@ function ShopCacheItemDescription takes integer id returns nothing
     set it = null
 endfunction
 
+// Local: shows SHOP_DESC_LINES wrapped lines starting at ShopDescOffset.
+function ShopDescRender takes nothing returns nothing
+    local integer i = ShopDescOffset
+    local string text = ""
+    loop
+        exitwhen i >= ShopDescCount or i >= ShopDescOffset + SHOP_DESC_LINES
+        if text != "" then
+            set text = text + "|n"
+        endif
+        set text = text + ShopDescLine[i]
+        set i = i + 1
+    endloop
+    call BlzFrameSetText(FRAME_ShopItemDescriptionName2, text)
+    if FRAME_ShopDescScroll != null then
+        set ShopDescUpdating = true
+        call BlzFrameSetVisible(FRAME_ShopDescScroll, ShopDescCount > SHOP_DESC_LINES)
+        if ShopDescCount > SHOP_DESC_LINES then
+            call BlzFrameSetMinMaxValue(FRAME_ShopDescScroll, 0.00, I2R(ShopDescCount - SHOP_DESC_LINES))
+            call BlzFrameSetValue(FRAME_ShopDescScroll, I2R(ShopDescCount - SHOP_DESC_LINES - ShopDescOffset))
+        endif
+        set ShopDescUpdating = false
+    endif
+endfunction
+
+// Local: word-wraps the description into ShopDescLine[] (colour codes do
+// not count as characters and are carried over to the next line).
+function ShopDescWrap takes string text returns nothing
+    local integer length = StringLength(text)
+    local integer i = 0
+    local integer visible = 0
+    local integer lastSpace = -1
+    local integer lineStart = 0
+    local string color = ""
+    local string lineColor = ""
+    local string ch
+    set ShopDescCount = 0
+    set ShopDescOffset = 0
+    loop
+        exitwhen i >= length or ShopDescCount >= 60
+        set ch = SubString(text, i, i + 1)
+        if ch == "|" and i + 1 < length then
+            set ch = SubString(text, i + 1, i + 2)
+            if (ch == "c" or ch == "C") and i + 10 <= length then
+                set color = SubString(text, i, i + 10)
+                set i = i + 10
+            elseif ch == "r" or ch == "R" then
+                set color = ""
+                set i = i + 2
+            elseif ch == "n" or ch == "N" then
+                set ShopDescLine[ShopDescCount] = lineColor + SubString(text, lineStart, i)
+                set ShopDescCount = ShopDescCount + 1
+                set i = i + 2
+                set lineStart = i
+                set lineColor = color
+                set visible = 0
+                set lastSpace = -1
+            else
+                set i = i + 1
+                set visible = visible + 1
+            endif
+        else
+            if ch == " " then
+                set lastSpace = i
+            endif
+            set visible = visible + 1
+            set i = i + 1
+            if visible > SHOP_DESC_CHARS and lastSpace > lineStart then
+                set ShopDescLine[ShopDescCount] = lineColor + SubString(text, lineStart, lastSpace)
+                set ShopDescCount = ShopDescCount + 1
+                set lineStart = lastSpace + 1
+                set lineColor = color
+                set visible = i - lineStart
+                set lastSpace = -1
+            endif
+        endif
+    endloop
+    if lineStart < length and ShopDescCount < 60 then
+        set ShopDescLine[ShopDescCount] = lineColor + SubString(text, lineStart, length)
+        set ShopDescCount = ShopDescCount + 1
+    endif
+    call ShopDescRender()
+endfunction
+
+function ShopDescOnScroll takes nothing returns nothing
+    if GetLocalPlayer() != GetTriggerPlayer() or ShopDescUpdating then
+        return
+    endif
+    if BlzGetTriggerFrame() == FRAME_ShopDescWheel then
+        if BlzGetTriggerFrameValue() > 0.00 then
+            set ShopDescOffset = IMaxBJ(0, ShopDescOffset - 1)
+        else
+            set ShopDescOffset = IMinBJ(IMaxBJ(0, ShopDescCount - SHOP_DESC_LINES), ShopDescOffset + 1)
+        endif
+    else
+        // Checkpoint 27e: the echo of our own SetValue arrives later as a synced
+        // event; an unchanged offset must not render (and SetValue) again.
+        if IMaxBJ(0, ShopDescCount - SHOP_DESC_LINES - R2I(BlzGetTriggerFrameValue() + 0.50)) == ShopDescOffset then
+            return
+        endif
+        set ShopDescOffset = IMaxBJ(0, ShopDescCount - SHOP_DESC_LINES - R2I(BlzGetTriggerFrameValue() + 0.50))
+    endif
+    call ShopDescRender()
+endfunction
+
+function ShopCreateDescScroll takes nothing returns nothing
+    local trigger scroll = CreateTrigger()
+    set FRAME_ShopDescWheel = BlzCreateFrameByType("BUTTON", "ShopDescWheel", FRAME_ShopItemDescription, "", 0)
+    call WUI_Place(FRAME_ShopDescWheel, SHOP_TREE_X, 0.1905, 0.236, 0.052)
+    if WUI_HasFrameDefinitions() then
+        set FRAME_ShopDescScroll = BlzCreateFrame("WOSVerticalSlider", FRAME_ShopItemDescription, 0, 9152)
+    endif
+    if FRAME_ShopDescScroll == null then
+        set FRAME_ShopDescScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemDescription, 0, 9152)
+    endif
+    call WUI_Place(FRAME_ShopDescScroll, SHOP_TREE_X + 0.117, 0.1905, 0.009, 0.048)
+    call BlzFrameSetStepSize(FRAME_ShopDescScroll, 1.00)
+    call BlzFrameSetLevel(FRAME_ShopDescScroll, 20)
+    call BlzFrameSetVisible(FRAME_ShopDescScroll, false)
+    call BlzTriggerRegisterFrameEvent(scroll, FRAME_ShopDescWheel, FRAMEEVENT_MOUSE_WHEEL)
+    call BlzTriggerRegisterFrameEvent(scroll, FRAME_ShopDescScroll, FRAMEEVENT_SLIDER_VALUE_CHANGED)
+    call BlzTriggerRegisterFrameEvent(scroll, FRAME_ShopDescScroll, FRAMEEVENT_MOUSE_WHEEL)
+    call TriggerAddAction(scroll, function ShopDescOnScroll)
+    set scroll = null
+endfunction
+
 function ShopShowItemDescription takes integer id, player p returns nothing
     local string name
     local string description
@@ -222,7 +403,7 @@ function ShopShowItemDescription takes integer id, player p returns nothing
     set coloredName = "|c00FFFF00" + name + "|r"
     if GetLocalPlayer() == p then
         call BlzFrameSetText(FRAME_ShopItemDescriptionName, coloredName)
-        call BlzFrameSetText(FRAME_ShopItemDescriptionName2, description)
+        call ShopDescWrap(description)
     endif
 endfunction
 
@@ -231,7 +412,6 @@ function ShopCreateItemTooltip takes framehandle whichFrame returns framehandle
     local framehandle tooltip = BlzCreateFrameByType("BACKDROP", "ShopNativeTooltip", FRAME_ShopMAIN, "", context)
     local framehandle tooltipText = BlzCreateFrameByType("TEXT", "ShopNativeTooltipText", tooltip, "", context)
     set ShopTooltipContext = ShopTooltipContext + 1
-    call BlzFrameSetPoint(tooltip, FRAMEPOINT_TOP, whichFrame, FRAMEPOINT_BOTTOM, 0.0, ShopTooltipVerticalOffset)
     call BlzFrameSetSize(tooltip, 0.050, 0.020)
     call BlzFrameSetTexture(tooltip, "textures\\black32.blp", 0, true)
     call BlzFrameSetAlpha(tooltip, 205)
@@ -241,7 +421,10 @@ function ShopCreateItemTooltip takes framehandle whichFrame returns framehandle
     call BlzFrameSetScale(tooltipText, 0.90)
     call BlzFrameSetText(tooltipText, "")
     call BlzFrameSetVisible(tooltip, false)
-    call BlzFrameSetTooltip(whichFrame, tooltip)
+    if whichFrame != null then
+        call BlzFrameSetPoint(tooltip, FRAMEPOINT_TOP, whichFrame, FRAMEPOINT_BOTTOM, 0.0, ShopTooltipVerticalOffset)
+        call BlzFrameSetTooltip(whichFrame, tooltip)
+    endif
     set tooltip = null
     return tooltipText
 endfunction
@@ -583,6 +766,28 @@ function ShopBuildSearchResults takes integer pid, string query returns nothing
 endfunction
 
 
+// Price plate fits the digits (scale .78 font: ~.0047 per digit + margins).
+function ShopPricePlateWidth takes integer price returns real
+    return 0.0070 + I2R(StringLength(I2S(price))) * 0.0047
+endfunction
+
+// Icon of the given size centred at (x, y): price centred just above its
+// bottom edge, on a translucent black plate sized to the price.
+function ShopPlacePrice takes framehandle cost, framehandle plate, real x, real y, real size returns nothing
+    local real py = y - size * 0.5 + 0.0068
+    call BlzFrameClearAllPoints(cost)
+    call BlzFrameSetAbsPoint(cost, FRAMEPOINT_CENTER, x, py)
+    call BlzFrameSetSize(cost, size / 0.78, 0.010 / 0.78)
+    call BlzFrameSetScale(cost, 0.78)
+    call BlzFrameSetTextAlignment(cost, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(cost, false)
+    call BlzFrameSetLevel(cost, 4)
+    if plate != null then
+        call WUI_Place(plate, x, py, 0.020, 0.0105)
+        call BlzFrameSetLevel(plate, 3)
+    endif
+endfunction
+
 function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned, player p returns nothing
     local integer cacheIndex = GetPlayerId(p) * SHOP_SEARCH_PAGE_SIZE + slot
     local integer price = 0
@@ -594,9 +799,11 @@ function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned,
     local string iconPath = "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder"
     local real tooltipWidth = ShopGetItemTooltipWidth("")
     local framehandle tooltip = BlzFrameGetParent(FRAME_ShopItemTooltipText[slot])
+    local real plateWidth = 0.020
     
     if id != 0 then
         set price = GetItemValue(id)
+        set plateWidth = ShopPricePlateWidth(price)
         // Строки собираются глобально для избежания десинка
         set costStr = "|c00FFFF00" + I2S(price) + "|r"
         set itemName = GetObjectName(id)
@@ -612,13 +819,18 @@ function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned,
         if fullRefresh then
             if id == 0 then
                 call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], "")
+                call BlzFrameSetText(FRAME_ShopItemName[slot], "")
                 call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
                 call BlzFrameSetTexture(FRAME_ShopItemBack[slot], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
                 call BlzFrameSetText(FRAME_ShopItemCost[slot], "")
+                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], false)
                 call BlzFrameSetEnable(FRAME_ShopItem[slot], false)
             else
+                call BlzFrameSetSize(FRAME_ShopItemPricePlate[slot], plateWidth, 0.0105)
+                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], true)
                 call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
                 call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], tooltipNameStr)
+                call BlzFrameSetText(FRAME_ShopItemName[slot], WUI_TEXT + itemName + "|r")
                 call BlzFrameSetTexture(FRAME_ShopItemBack[slot], iconPath, 0, false)
                 call BlzFrameSetText(FRAME_ShopItemCost[slot], costStr)
                 call BlzFrameSetEnable(FRAME_ShopItem[slot], not banned)
@@ -924,41 +1136,45 @@ function GetCraftUpgrade takes integer itemId, integer index returns integer
 endfunction
 
 function GetCraftMaxOffset takes integer count returns integer
-    if count <= 3 then
+    if count <= SHOP_TREE_PAGE then
         return 0
     endif
-    return ((count - 1) / 3) * 3
+    return ((count - 1) / SHOP_TREE_PAGE) * SHOP_TREE_PAGE
 endfunction
 
 function GetVisibleCraftRelation takes integer itemId, boolean upgrades, integer offset, integer visibleSlot returns integer
     local integer count
-    local integer remaining
-    local integer index
+    local integer index = offset + visibleSlot
     if upgrades then
         set count = GetCraftUpgradeCount(itemId)
     else
         set count = GetCraftComponentCount(itemId)
     endif
-    set remaining = count - offset
-    if remaining <= 0 then
+    if visibleSlot < 0 or visibleSlot >= SHOP_TREE_PAGE or index >= count then
         return 0
-    elseif remaining == 1 then
-        if visibleSlot != 1 then
-            return 0
-        endif
-        set index = offset
-    elseif remaining == 2 then
-        if visibleSlot >= 2 then
-            return 0
-        endif
-        set index = offset + visibleSlot
-    else
-        set index = offset + visibleSlot
     endif
     if upgrades then
         return GetCraftUpgrade(itemId, index)
     endif
     return GetCraftComponent(itemId, index)
+endfunction
+
+// Frame index of a logical tree slot (0-11 upgrades, 12-23 components).
+function ShopTreeFrame takes integer slot returns integer
+    if slot < 6 then
+        return 36 + slot
+    endif
+    return 37 + slot
+endfunction
+
+// Inverse of ShopTreeFrame; -1 for non-tree frames (including the centre 42).
+function ShopTreeSlotFromFrame takes integer frameIndex returns integer
+    if frameIndex >= 36 and frameIndex <= 41 then
+        return frameIndex - 36
+    elseif frameIndex >= 43 and frameIndex <= 60 then
+        return frameIndex - 37
+    endif
+    return -1
 endfunction
 
 function RegisterCraftUpgrade takes integer componentId, integer resultId returns nothing
@@ -1246,33 +1462,41 @@ function InitCraftRecipes takes nothing returns nothing
 endfunction
 
 function SetPlayerCraftSlot takes integer pid, integer slot, integer itemId returns nothing
+    set ShopCraftSlotItem[pid * SHOP_TREE_SLOTS + slot] = itemId
+    // Legacy names for the first three items of each row.
     if slot == 0 then
         set ItemsCraftUpperLeft_ID[pid] = itemId
     elseif slot == 1 then
         set ItemsCraftUpperTop_ID[pid] = itemId
     elseif slot == 2 then
         set ItemsCraftUpperRight_ID[pid] = itemId
-    elseif slot == 3 then
+    elseif slot == SHOP_TREE_GROUP then
         set ItemsCraftLeft_ID[pid] = itemId
-    elseif slot == 4 then
+    elseif slot == SHOP_TREE_GROUP + 1 then
         set ItemsCraftBottom_ID[pid] = itemId
-    else
+    elseif slot == SHOP_TREE_GROUP + 2 then
         set ItemsCraftRight_ID[pid] = itemId
     endif
 endfunction
 
 function ResetCraftFrames takes player p returns nothing
-    local integer frameIndex = 36
-        loop
-            exitwhen frameIndex > 41
-            if GetLocalPlayer() == p then
-                call BlzFrameSetEnable(FRAME_ShopItem[frameIndex], false)
-                call BlzFrameSetVisible(FRAME_ShopItemBack[frameIndex], false)
-                call BlzFrameSetTexture(FRAME_ShopItemBack[frameIndex], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
-                call BlzFrameSetText(FRAME_ShopItemCost[frameIndex], "")
+    local integer slot = 0
+    local integer frameIndex
+    loop
+        exitwhen slot >= SHOP_TREE_SLOTS
+        set frameIndex = ShopTreeFrame(slot)
+        if GetLocalPlayer() == p then
+            call BlzFrameSetEnable(FRAME_ShopItem[frameIndex], false)
+            call BlzFrameSetVisible(FRAME_ShopItemBack[frameIndex], false)
+            call BlzFrameSetTexture(FRAME_ShopItemBack[frameIndex], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
+            call BlzFrameSetText(FRAME_ShopItemCost[frameIndex], "")
+            call BlzFrameSetVisible(FRAME_ShopItemPricePlate[frameIndex], false)
+            if FRAME_ShopItemName[frameIndex] != null then
+                call BlzFrameSetText(FRAME_ShopItemName[frameIndex], "")
             endif
-            set frameIndex = frameIndex + 1
-        endloop
+        endif
+        set slot = slot + 1
+    endloop
 endfunction
 
 // Recipe edges are presentation only. A branch exists only for an actual
@@ -1282,6 +1506,27 @@ function ShopShowRecipeBranch takes integer slot, boolean visible returns nothin
     call BlzFrameSetVisible(FRAME_ShopRecipeLine[part], visible)
     call BlzFrameSetVisible(FRAME_ShopRecipeLine[part + 1], visible)
     call BlzFrameSetVisible(FRAME_ShopRecipeLine[part + 2], visible)
+endfunction
+
+// Icon size / spacing for a row holding `count` visible items.
+// count = items in one visual row (1..6).
+function ShopTreeIconSize takes integer count returns real
+    if count <= 3 then
+        return 0.030
+    endif
+    return 0.028
+endfunction
+
+function ShopTreeStep takes integer count returns real
+    // Checkpoint 26: wider steps so names like "Tome of Agility +10" fit on one line.
+    if count <= 3 then
+        return 0.060
+    elseif count == 4 then
+        return 0.052
+    elseif count == 5 then
+        return 0.044
+    endif
+    return 0.038
 endfunction
 
 function ShopSaveCraftScrollState takes integer pid, integer itemId returns nothing
@@ -1302,8 +1547,8 @@ function ShopUpdateCraftScrollbars takes integer id, player p returns nothing
     local integer componentCount = GetCraftComponentCount(id)
     local integer upgradeMaxOffset = GetCraftMaxOffset(upgradeCount)
     local integer componentMaxOffset = GetCraftMaxOffset(componentCount)
-    local integer upgradeMaxPage = upgradeMaxOffset / 3
-    local integer componentMaxPage = componentMaxOffset / 3
+    local integer upgradeMaxPage = upgradeMaxOffset / SHOP_TREE_PAGE
+    local integer componentMaxPage = componentMaxOffset / SHOP_TREE_PAGE
     local integer upgradeValue
     local integer componentValue
     local boolean upgradeRangeChanged = ShopCraftUpgradeMaxPage[pid] != upgradeMaxPage
@@ -1319,11 +1564,11 @@ function ShopUpdateCraftScrollbars takes integer id, player p returns nothing
     set ShopCraftUpgradeMaxPage[pid] = upgradeMaxPage
     set ShopCraftComponentMaxPage[pid] = componentMaxPage
     call ShopSaveCraftScrollState(pid, id)
-    set upgradeValue = ShopCraftUpgradeOffset[pid] / 3
-    set componentValue = ShopCraftComponentOffset[pid] / 3
+    set upgradeValue = ShopCraftUpgradeOffset[pid] / SHOP_TREE_PAGE
+    set componentValue = ShopCraftComponentOffset[pid] / SHOP_TREE_PAGE
     set ShopCraftScrollUpdating[pid] = true
     if GetLocalPlayer() == p then
-        if upgradeCount > 3 then
+        if upgradeCount > SHOP_TREE_PAGE then
             if upgradeRangeChanged then
                 call BlzFrameSetMinMaxValue(FRAME_ShopCraftUpgradeScroll, 0.00, upgradeMaxPageValue)
             endif
@@ -1334,7 +1579,7 @@ function ShopUpdateCraftScrollbars takes integer id, player p returns nothing
         else
             call BlzFrameSetVisible(FRAME_ShopCraftUpgradeScroll, false)
         endif
-        if componentCount > 3 then
+        if componentCount > SHOP_TREE_PAGE then
             if componentRangeChanged then
                 call BlzFrameSetMinMaxValue(FRAME_ShopCraftComponentScroll, 0.00, componentMaxPageValue)
             endif
@@ -1349,16 +1594,110 @@ function ShopUpdateCraftScrollbars takes integer id, player p returns nothing
     set ShopCraftScrollUpdating[pid] = false
 endfunction
 
+// Fills ShopTreeTmpId / ShopTreeTmpParent for one group (upgrades or
+// components): first level = the visible page, second level = their own
+// upgrades (components) in order, no duplicates, at most one row.
+function ShopTreeCollect takes integer id, boolean upgrades, integer offset, integer base returns nothing
+    local integer k = 0
+    local integer j
+    local integer n
+    local integer count = 0
+    local integer parent
+    local integer candidate
+    local integer m
+    local boolean seen
+    loop
+        exitwhen k >= SHOP_TREE_ROW
+        set ShopTreeTmpId[base + k] = GetVisibleCraftRelation(id, upgrades, offset, k)
+        set ShopTreeTmpParent[base + k] = -1
+        set ShopTreeTmpId[base + SHOP_TREE_ROW + k] = 0
+        set ShopTreeTmpParent[base + SHOP_TREE_ROW + k] = -1
+        set k = k + 1
+    endloop
+    set k = 0
+    loop
+        exitwhen k >= SHOP_TREE_ROW or count >= SHOP_TREE_ROW
+        set parent = ShopTreeTmpId[base + k]
+        if parent != 0 then
+            if upgrades then
+                set n = GetCraftUpgradeCount(parent)
+            else
+                set n = GetCraftComponentCount(parent)
+            endif
+            set j = 0
+            loop
+                exitwhen j >= n or count >= SHOP_TREE_ROW
+                if upgrades then
+                    set candidate = GetCraftUpgrade(parent, j)
+                else
+                    set candidate = GetCraftComponent(parent, j)
+                endif
+                set seen = candidate == 0 or candidate == id
+                set m = 0
+                loop
+                    exitwhen m >= count or seen
+                    set seen = ShopTreeTmpId[base + SHOP_TREE_ROW + m] == candidate
+                    set m = m + 1
+                endloop
+                if not seen then
+                    set ShopTreeTmpId[base + SHOP_TREE_ROW + count] = candidate
+                    set ShopTreeTmpParent[base + SHOP_TREE_ROW + count] = k
+                    set count = count + 1
+                endif
+                set j = j + 1
+            endloop
+        endif
+        set k = k + 1
+    endloop
+endfunction
+
+function ShopTreeRowCount takes integer base returns integer
+    local integer k = 0
+    local integer count = 0
+    loop
+        exitwhen k >= SHOP_TREE_ROW
+        if ShopTreeTmpId[base + k] != 0 then
+            set count = k + 1
+        endif
+        set k = k + 1
+    endloop
+    return count
+endfunction
+
+function ShopTreeRowX takes integer k, integer count returns real
+    if count < 1 then
+        set count = 1
+    endif
+    return SHOP_TREE_X + (I2R(k) - I2R(count - 1) * 0.50) * ShopTreeStep(count)
+endfunction
+
 function CraftItemCheck takes integer id, player p, integer page returns nothing
     local integer pid = GetPlayerId(p)
     local integer slot = 0
+    local integer k
     local integer frameIndex
     local integer relatedId
     local integer value
+    local integer rowCount
+    local integer parentCount
+    local integer level
     local unit selectedUnit = GetSelectedHeroForPlayer(p)
     local string costStr = ""
     local string relatedIconPath = ""
     local boolean relatedBanned = false
+    local boolean top
+    local real size
+    local real x
+    local real y
+    local real joinY
+    local real edgeY
+    local real costY
+    local real priceScale
+    local real plateWidth
+    local real parentX
+    local real parentEdge
+    local real dy = 0.00
+    local integer rowBase
     if ShopCraftScrollItemId[pid] != id then
         call ShopSaveCraftScrollState(pid, ShopCraftScrollItemId[pid])
         set ShopCraftScrollItemId[pid] = id
@@ -1366,42 +1705,151 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
     endif
     call ShopUpdateCraftScrollbars(id, p)
     call ResetCraftFrames(p)
-    loop
-        exitwhen slot >= 6
-        if slot < 3 then
-            set relatedId = GetVisibleCraftRelation(id, true, ShopCraftUpgradeOffset[pid], slot)
-        else
-            set relatedId = GetVisibleCraftRelation(id, false, ShopCraftComponentOffset[pid], slot - 3)
+    call ShopTreeCollect(id, true, ShopCraftUpgradeOffset[pid], 0)
+    call ShopTreeCollect(id, false, ShopCraftComponentOffset[pid], SHOP_TREE_GROUP)
+    // No upgrade rows above: the whole tree (centre item + components) moves
+    // up into the free space so the main item always sits at the top.
+    if ShopTreeRowCount(0) == 0 then
+        set dy = 0.096
+    elseif ShopTreeRowCount(SHOP_TREE_ROW) == 0 then
+        set dy = 0.048
+    endif
+    if GetLocalPlayer() == p then
+        call WUI_Place(FRAME_ShopItem[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y + dy, 0.030, 0.030)
+        call ShopPlacePrice(FRAME_ShopItemCost[42], FRAME_ShopItemPricePlate[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y + dy, 0.030)
+        call BlzFrameSetSize(FRAME_ShopItemPricePlate[42], 0.0305, 0.0105)
+        if FRAME_ShopItemName[42] != null then
+            call BlzFrameClearAllPoints(FRAME_ShopItemName[42])
+            call BlzFrameSetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, SHOP_TREE_CENTER_Y + dy - 0.015 - 0.0012)
+            call BlzFrameSetSize(FRAME_ShopItemName[42], 0.080 / 0.56, 0.014 / 0.56)
         endif
+    endif
+    loop
+        exitwhen slot >= SHOP_TREE_SLOTS
+        set top = slot < SHOP_TREE_GROUP
+        set rowBase = (slot / SHOP_TREE_ROW) * SHOP_TREE_ROW
+        set k = slot - rowBase
+        set level = 1
+        if ModuloInteger(slot / SHOP_TREE_ROW, 2) == 1 then
+            set level = 2
+        endif
+        set relatedId = ShopTreeTmpId[slot]
+        set rowCount = ShopTreeRowCount(rowBase)
         call SetPlayerCraftSlot(pid, slot, relatedId)
+        set frameIndex = ShopTreeFrame(slot)
+        set size = ShopTreeIconSize(rowCount)
+        set x = ShopTreeRowX(k, rowCount)
+        // Rows: upgrades of upgrades .460, upgrades .417, centre .3755,
+        // components .334, components of components .292.
+        // Checkpoint 25: every icon has its name under it, so upward lines
+        // start below the name.
+        // Checkpoint 26b: every rail lies in the gap BETWEEN two rows, so the
+        // short ticks always point from the rail to their own row (upgrade
+        // rails open upwards like a branch) and a stem joins the parent.
+        // Rows: .455 / .4075 / centre .359 / .3105 / .262.
+        if top then
+            if level == 1 then
+                set y = 0.4075
+                set edgeY = y - size * 0.50 - 0.0105
+                set joinY = 0.378
+            else
+                set y = 0.455
+                set edgeY = y - size * 0.50 - 0.0105
+                set joinY = 0.4255
+            endif
+        else
+            if level == 1 then
+                set y = 0.3105
+                set edgeY = y + size * 0.50
+                set joinY = 0.3295
+            else
+                set y = 0.262
+                set edgeY = y + size * 0.50
+                set joinY = 0.281
+            endif
+        endif
+        set parentX = SHOP_TREE_X
+        if top then
+            set parentEdge = SHOP_TREE_CENTER_Y + 0.015
+        else
+            set parentEdge = SHOP_TREE_CENTER_Y - 0.015 - 0.0105
+        endif
+        if level == 2 and ShopTreeTmpParent[slot] >= 0 then
+            set parentCount = ShopTreeRowCount(rowBase - SHOP_TREE_ROW)
+            set parentX = ShopTreeRowX(ShopTreeTmpParent[slot], parentCount)
+            if top then
+                set parentEdge = 0.4075 + ShopTreeIconSize(parentCount) * 0.50
+            else
+                set parentEdge = 0.3105 - ShopTreeIconSize(parentCount) * 0.50 - 0.0105
+            endif
+        endif
+        set y = y + dy
+        set edgeY = edgeY + dy
+        set joinY = joinY + dy
+        set parentEdge = parentEdge + dy
+        set costY = y - size * 0.50 + 0.0062
+        set priceScale = 0.78
+        if size < 0.030 then
+            set priceScale = 0.64
+        endif
         if GetLocalPlayer() == p then
             call ShopShowRecipeBranch(slot, relatedId != 0)
         endif
-
         if relatedId != 0 then
-            set frameIndex = 36 + slot
-            if slot < 3 then
+            if top then
                 set value = CheckItemsReduceCostCraft(selectedUnit, GetItemValue(relatedId), relatedId, false)
             else
                 set value = GetItemValue(relatedId)
             endif
-             
             set costStr = "|c00FFFF00" + I2S(value) + "|r"
+            set plateWidth = ShopPricePlateWidth(value) * priceScale / 0.78
             set relatedBanned = CheckBanItems(relatedId, selectedUnit)
             set relatedIconPath = BlzGetAbilityIcon(relatedId)
             if relatedBanned then
                 set relatedIconPath = ConvertBTNtoDISBTN(relatedIconPath)
             endif
             if GetLocalPlayer() == p then
+                call BlzFrameClearAllPoints(FRAME_ShopItem[frameIndex])
+                call BlzFrameSetAbsPoint(FRAME_ShopItem[frameIndex], FRAMEPOINT_CENTER, x, y)
+                call BlzFrameSetSize(FRAME_ShopItem[frameIndex], size, size)
+                call BlzFrameClearAllPoints(FRAME_ShopItemCost[frameIndex])
+                call BlzFrameSetAbsPoint(FRAME_ShopItemCost[frameIndex], FRAMEPOINT_CENTER, x, costY)
+                call BlzFrameSetScale(FRAME_ShopItemCost[frameIndex], priceScale)
+                call BlzFrameSetSize(FRAME_ShopItemCost[frameIndex], 0.036 / priceScale, 0.010 / priceScale)
+                call BlzFrameSetLevel(FRAME_ShopItemCost[frameIndex], 4)
+                call BlzFrameClearAllPoints(FRAME_ShopItemPricePlate[frameIndex])
+                call BlzFrameSetAbsPoint(FRAME_ShopItemPricePlate[frameIndex], FRAMEPOINT_CENTER, x, costY)
+                call BlzFrameSetSize(FRAME_ShopItemPricePlate[frameIndex], plateWidth, 0.0105 * priceScale / 0.78)
+                call BlzFrameSetLevel(FRAME_ShopItemPricePlate[frameIndex], 3)
+                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[frameIndex], true)
+                // Segment 0: from the icon to its rail; 1: along the rail to the
+                // parent's x; 2: (second level only) down/up into the parent.
+                call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3])
+                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3], FRAMEPOINT_CENTER, x, (edgeY + joinY) * 0.50)
+                call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3], 0.0008, RAbsBJ(edgeY - joinY))
+                call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3 + 1])
+                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 1], FRAMEPOINT_CENTER, (x + parentX) * 0.50, joinY)
+                call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3 + 1], RMaxBJ(0.0008, RAbsBJ(x - parentX)), 0.0008)
+                call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3 + 2])
+                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 2], FRAMEPOINT_CENTER, parentX, (joinY + parentEdge) * 0.50)
+                call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3 + 2], 0.0008, RMaxBJ(0.0008, RAbsBJ(joinY - parentEdge)))
                 call BlzFrameSetEnable(FRAME_ShopItem[frameIndex], not relatedBanned)
                 call BlzFrameSetTexture(FRAME_ShopItemBack[frameIndex], relatedIconPath, 0, false)
                 call BlzFrameSetVisible(FRAME_ShopItemBack[frameIndex], true)
                 call BlzFrameSetText(FRAME_ShopItemCost[frameIndex], costStr)
+                call BlzFrameClearAllPoints(FRAME_ShopItemName[frameIndex])
+                call BlzFrameSetAbsPoint(FRAME_ShopItemName[frameIndex], FRAMEPOINT_TOP, x, y - size * 0.50 - 0.0012)
+                call BlzFrameSetSize(FRAME_ShopItemName[frameIndex], (ShopTreeStep(rowCount) - 0.002) / 0.56, 0.014 / 0.56)
+                call BlzFrameSetText(FRAME_ShopItemName[frameIndex], WUI_TEXT + GetObjectName(relatedId) + "|r")
             endif
         endif
         set slot = slot + 1
     endloop
 
+    // Checkpoint 25b: the selected (centre) item is named like the others.
+    if GetLocalPlayer() == p and FRAME_ShopItemName[42] != null then
+        call BlzFrameSetText(FRAME_ShopItemName[42], WUI_TEXT + GetObjectName(id) + "|r")
+    endif
     if id == 'I009' or id == 'I002' or id == 'I003' then
         set ItemsCraftPlayerDebug_ID[pid] = 42
     elseif GetCraftUpgradeCount(id) > 0 or HasCraftComponents(id) then
@@ -1434,7 +1882,7 @@ function ShopCraftOnScroll takes nothing returns nothing
     endif
     if changedFrame == FRAME_ShopCraftUpgradeScroll then
         set maxOffset = GetCraftMaxOffset(GetCraftUpgradeCount(id))
-        set newOffset = sliderValue * 3
+        set newOffset = sliderValue * SHOP_TREE_PAGE
         if newOffset < 0 then
             set newOffset = 0
         elseif newOffset > maxOffset then
@@ -1445,7 +1893,7 @@ function ShopCraftOnScroll takes nothing returns nothing
         endif
     elseif changedFrame == FRAME_ShopCraftComponentScroll then
         set maxOffset = GetCraftMaxOffset(GetCraftComponentCount(id))
-        set newOffset = sliderValue * 3
+        set newOffset = sliderValue * SHOP_TREE_PAGE
         if newOffset < 0 then
             set newOffset = 0
         elseif newOffset > maxOffset then
@@ -1470,8 +1918,9 @@ function ShopCraftOnWheel takes nothing returns nothing
     local integer maxOffset
     local integer newOffset
     local real wheelValue = BlzGetTriggerFrameValue()
-    local boolean scrollUpgrades = (frameCode >= 236 and frameCode <= 238) or frameCode == 401 or frameCode == 403
-    local boolean scrollComponents = (frameCode >= 239 and frameCode <= 241) or frameCode == 402 or frameCode == 404
+    local integer wheelSlot = ShopTreeSlotFromFrame(frameCode - 200)
+    local boolean scrollUpgrades = (wheelSlot >= 0 and wheelSlot < SHOP_TREE_GROUP) or frameCode == 401 or frameCode == 403
+    local boolean scrollComponents = wheelSlot >= SHOP_TREE_GROUP or frameCode == 402 or frameCode == 404
     
     if id == 0 then
         set hoveredFrame = null
@@ -1480,20 +1929,20 @@ function ShopCraftOnWheel takes nothing returns nothing
     endif
     
     if frameCode == 400 then
-        if upgradeCount > 3 and componentCount <= 3 then
+        if upgradeCount > SHOP_TREE_PAGE and componentCount <= SHOP_TREE_PAGE then
             set scrollUpgrades = true
-        elseif componentCount > 3 and upgradeCount <= 3 then
+        elseif componentCount > SHOP_TREE_PAGE and upgradeCount <= SHOP_TREE_PAGE then
             set scrollComponents = true
         endif
     endif
     
-    if scrollUpgrades and upgradeCount > 3 then
+    if scrollUpgrades and upgradeCount > SHOP_TREE_PAGE then
         set maxOffset = GetCraftMaxOffset(upgradeCount)
         set newOffset = ShopCraftUpgradeOffset[pid]
         if wheelValue < 0.00 then
-            set newOffset = newOffset - 3
+            set newOffset = newOffset - SHOP_TREE_PAGE
         elseif wheelValue > 0.00 then
-            set newOffset = newOffset + 3
+            set newOffset = newOffset + SHOP_TREE_PAGE
         endif
         if newOffset < 0 then
             set newOffset = 0
@@ -1503,13 +1952,13 @@ function ShopCraftOnWheel takes nothing returns nothing
         if newOffset != ShopCraftUpgradeOffset[pid] then
             call BlzSendSyncData("WScU", I2S(newOffset))
         endif
-    elseif scrollComponents and componentCount > 3 then
+    elseif scrollComponents and componentCount > SHOP_TREE_PAGE then
         set maxOffset = GetCraftMaxOffset(componentCount)
         set newOffset = ShopCraftComponentOffset[pid]
         if wheelValue < 0.00 then
-            set newOffset = newOffset - 3
+            set newOffset = newOffset - SHOP_TREE_PAGE
         elseif wheelValue > 0.00 then
-            set newOffset = newOffset + 3
+            set newOffset = newOffset + SHOP_TREE_PAGE
         endif
         if newOffset < 0 then
             set newOffset = 0
@@ -1548,9 +1997,9 @@ function ReloadItemPageCore takes integer page, player p, boolean showControls r
     set selectedUnit = null
     if GetLocalPlayer() == p then
         loop
-            exitwhen tab >= 7
+            exitwhen tab >= 8
             if FRAME_ShopSection[tab] != null then
-                call WUI_SetButtonSelected(FRAME_ShopSection[tab], tab == page)
+                call WUI_SetButtonSelected(FRAME_ShopSection[tab], tab == page and not ShopVipOpen[GetPlayerId(p)])
             endif
             set tab = tab + 1
         endloop
@@ -1785,20 +2234,198 @@ function CheckSlotAvailable takes unit c returns boolean
 endfunction
 
 function ShopGetCraftDisplayItem takes integer pid, integer slot returns integer
-    if slot == 0 then
-        return ItemsCraftUpperLeft_ID[pid]
-    elseif slot == 1 then
-        return ItemsCraftUpperTop_ID[pid]
-    elseif slot == 2 then
-        return ItemsCraftUpperRight_ID[pid]
-    elseif slot == 3 then
-        return ItemsCraftLeft_ID[pid]
-    elseif slot == 4 then
-        return ItemsCraftBottom_ID[pid]
-    elseif slot == 5 then
-        return ItemsCraftRight_ID[pid]
+    if slot < 0 or slot >= SHOP_TREE_SLOTS then
+        return 0
     endif
-    return 0
+    return ShopCraftSlotItem[pid * SHOP_TREE_SLOTS + slot]
+endfunction
+
+// Synced double-click state: a tree rebuild can move the selected item to the
+// centre or replace the item under the same physical button between clicks.
+function ShopFastAction takes integer pid, integer frameCode, integer id returns integer
+    local boolean buying = frameCode >= 200 and frameCode <= 260
+    local boolean selling = frameCode >= 300 and frameCode <= 305
+    local boolean sameItem = id == ShopLastClickItem[pid]
+    if id == 0 or not (buying or selling) then
+        return frameCode
+    endif
+    if buying and frameCode == ShopLastClickCode[pid] then
+        set sameItem = true
+    endif
+    if sameItem and buying == (ShopLastClickCode[pid] < 300) and TimerGetElapsed(ShopClock) - ShopLastClickTime[pid] <= 0.40 then
+        set id = ShopLastClickItem[pid]
+        set ShopLastClickItem[pid] = 0
+        if buying and ShopFastBuy[pid] then
+            set ItemsCurrentItem_ID[pid] = id
+            return 306
+        elseif selling and ShopFastSell[pid] then
+            return 307
+        endif
+    else
+        set ShopLastClickItem[pid] = id
+        set ShopLastClickCode[pid] = frameCode
+        set ShopLastClickTime[pid] = TimerGetElapsed(ShopClock)
+    endif
+    return frameCode
+endfunction
+
+// ===== VIP tab: promotion page =====
+function ShopVipText takes framehandle parent, string text, real x, real y, real width, real height, real scale returns framehandle
+    local framehandle frame = BlzCreateFrameByType("TEXT", "ShopVipText", parent, "", 0)
+    call WUI_Place(frame, x, y, width / scale, height / scale)
+    call BlzFrameSetScale(frame, scale)
+    call BlzFrameSetText(frame, text)
+    call BlzFrameSetEnable(frame, false)
+    call BlzFrameSetLevel(frame, 4)
+    return frame
+endfunction
+
+// One row of example icons: the emojis this tier adds; VIP III also shows its
+// exclusive emotes. Empty paths are skipped.
+function ShopVipIcons takes integer tier, real x, real y returns nothing
+    local framehandle icon
+    local string path
+    local integer n = 0
+    local integer shown = 0
+    local real step = 0.0195
+    local framehandle label = ShopVipText(FRAME_ShopVipPage, "|cff9aa0a8Examples:|r", x, y + 0.018 + 0.011 * I2R(tier / 3), 0.170, 0.010, 0.70)
+    call BlzFrameSetTextAlignment(label, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    loop
+        // VIP III shows two rows (14) so it has the most examples.
+        exitwhen (tier < 3 and shown >= 8) or shown >= 14 or n >= 31
+        set path = CustomChat_GetTierEmojiPath(tier, n)
+        set n = n + 1
+        if path != null and path != "" then
+            set icon = BlzCreateFrameByType("BACKDROP", "ShopVipEmoji", FRAME_ShopVipPage, "", tier * 16 + shown)
+            if tier == 3 then
+                call WUI_Place(icon, x + (I2R(ModuloInteger(shown, 7)) - 3.0) * 0.022, y + 0.011 - I2R(shown / 7) * 0.022, 0.0195, 0.0195)
+            else
+                call WUI_Place(icon, x + (I2R(shown) - 3.5) * step, y, 0.0175, 0.0175)
+            endif
+            call BlzFrameSetTexture(icon, path, 0, true)
+            call BlzFrameSetLevel(icon, 5)
+            call BlzFrameSetEnable(icon, false)
+            set shown = shown + 1
+        endif
+    endloop
+    set icon = null
+    set label = null
+    set path = null
+endfunction
+
+function ShopVipCard takes integer tier, real x, string title, string price, string perks, boolean best returns nothing
+    local framehandle card
+    local framehandle part
+    local real y = 0.336
+    local real height = 0.214
+    if best then
+        set height = 0.230
+        set y = 0.338
+    endif
+    set card = BlzCreateFrameByType("BACKDROP", "ShopVipCard", FRAME_ShopVipPage, "", tier)
+    call WUI_Place(card, x, y, 0.190, height)
+    call BlzFrameSetTexture(card, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetLevel(card, 2)
+    call BlzFrameSetEnable(card, false)
+    // Bronze / silver / gold metal frame per tier.
+    set part = BlzCreateFrameByType("BACKDROP", "ShopVipCardFrame", FRAME_ShopVipPage, "", tier)
+    call WUI_Place(part, x, y, 0.194, height + 0.004)
+    if tier == 1 then
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-bronze.tga", 0, true)
+    elseif tier == 2 then
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-silver.tga", 0, true)
+    else
+        call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-gold.tga", 0, true)
+    endif
+    call BlzFrameSetLevel(part, 3)
+    call BlzFrameSetEnable(part, false)
+    set part = ShopVipText(FRAME_ShopVipPage, title, x, y + height * 0.5 - 0.020, 0.180, 0.016, 1.10)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    set part = ShopVipText(FRAME_ShopVipPage, price, x, y + height * 0.5 - 0.040, 0.180, 0.020, 1.25)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    set part = ShopVipText(FRAME_ShopVipPage, perks, x + 0.004, y - 0.018, 0.150, height - 0.070, 0.78)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call ShopVipIcons(tier, x, y - height * 0.5 + 0.046)
+    set card = null
+    set part = null
+endfunction
+
+function ShopVipLinkEdited takes nothing returns nothing
+    // Read-only link: any typing restores it (local, like the music link).
+    if GetLocalPlayer() == GetTriggerPlayer() and BlzFrameGetText(FRAME_ShopVipLink) != SHOP_VIP_URL then
+        call BlzFrameSetText(FRAME_ShopVipLink, SHOP_VIP_URL)
+    endif
+endfunction
+
+function ShopCreateVipPage takes nothing returns nothing
+    local framehandle part
+    local string g = "|cffd5b876"
+    local string w = "|cffe1e5eb"
+    if FRAME_ShopVipPage != null then
+        return
+    endif
+    set FRAME_ShopVipPage = BlzCreateFrameByType("BACKDROP", "ShopVipPage", FRAME_ShopMAIN, "", 0)
+    call WUI_Place(FRAME_ShopVipPage, 0.3485, 0.319, 0.617, 0.328)
+    call BlzFrameSetTexture(FRAME_ShopVipPage, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetLevel(FRAME_ShopVipPage, 30)
+    call BlzFrameSetEnable(FRAME_ShopVipPage, false)
+    set part = WUI_GoldFrame("ShopVipPageEdge", FRAME_ShopVipPage, 0.0036, 0.0070)
+    set part = ShopVipText(FRAME_ShopVipPage, "|cffffd34dSUPPORT WAR OF SOULS  -  BECOME A VIP|r", 0.3485, 0.4695, 0.600, 0.020, 1.20)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    set part = ShopVipText(FRAME_ShopVipPage, w + "Monthly membership on Buy Me a Coffee. Every level keeps the map growing: new heroes, balance and effects. Your perks unlock in game for your nickname.|r", 0.3485, 0.4530, 0.590, 0.014, 0.80)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call ShopVipCard(1, 0.1515, "|cffe0a070BRONZE  -  VIP I|r", "|cffffffff$5|r " + g + "/ month|r", w + "- Hero aura (Arrow Up)|n- Golden skull on enemies|n  you kill|n- 14 chat emojis|n- Discord role|r", false)
+    call ShopVipCard(2, 0.3485, "|cffdfe3eaSILVER  -  VIP II|r", "|cffffffff$10|r " + g + "/ month|r", w + "- Everything in VIP I|n- 3 aura styles (Arrow Up)|n  + Arrow Down / Right auras|n- Emoji panel (hotkey K)|n- 21 chat emojis|n- Discord role|r", false)
+    call ShopVipCard(3, 0.5455, "|cffffd34dGOLD  -  VIP III|r", "|cffffd34d$20|r " + g + "/ month|r", "|cffffd34dBest value: every perk of the map|r|n" + w + "- Everything in VIP I and II|n- All auras: Panda and|n  Sharingan sets (4 styles each)|n- |cffffd34d[VIP]|r " + w + "tag after your name|n- 31 emojis + exclusive emotes|n- Discord role|r", true)
+    set FRAME_ShopVipName = ShopVipText(FRAME_ShopVipPage, "", 0.5455, 0.2420, 0.180, 0.012, 0.82)
+    call BlzFrameSetTextAlignment(FRAME_ShopVipName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    set part = ShopVipText(FRAME_ShopVipPage, g + "Join here - click the link, then Ctrl+A and Ctrl+C to copy it:|r", 0.3485, 0.2010, 0.560, 0.012, 0.80)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    set FRAME_ShopVipLink = null
+    if WUI_HasFrameDefinitions() then
+        set FRAME_ShopVipLink = BlzCreateFrame("WOSEditBox", FRAME_ShopVipPage, 0, 9171)
+    endif
+    if FRAME_ShopVipLink != null then
+        call WUI_Place(FRAME_ShopVipLink, 0.3485, 0.1780, 0.500, 0.022)
+        call BlzFrameSetLevel(FRAME_ShopVipLink, 8)
+        call BlzFrameSetText(FRAME_ShopVipLink, SHOP_VIP_URL)
+        set ShopVipLinkTrigger = CreateTrigger()
+        call BlzTriggerRegisterFrameEvent(ShopVipLinkTrigger, FRAME_ShopVipLink, FRAMEEVENT_EDITBOX_TEXT_CHANGED)
+        call TriggerAddAction(ShopVipLinkTrigger, function ShopVipLinkEdited)
+    endif
+    call BlzFrameSetVisible(FRAME_ShopVipPage, false)
+    set part = null
+endfunction
+
+// Local: VIP page instead of the catalogue / tree / description.
+function ShopShowVip takes player p, boolean open returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer tab = 0
+    set ShopVipOpen[pid] = open
+    if GetLocalPlayer() != p or FRAME_ShopVipPage == null then
+        return
+    endif
+    call BlzFrameSetVisible(FRAME_ShopVipPage, open)
+    call BlzFrameSetVisible(FRAME_ShopItemList, not open)
+    call BlzFrameSetVisible(FRAME_ShopItemCraft, not open)
+    call BlzFrameSetVisible(FRAME_ShopItemDescription, not open)
+    if open and FRAME_ShopVipLink != null then
+        call BlzFrameSetText(FRAME_ShopVipLink, SHOP_VIP_URL)
+    endif
+    if open and FRAME_ShopVipName != null then
+        call BlzFrameSetText(FRAME_ShopVipName, "|cff9aa0a8Your name:|r |cffffffff" + FramePlayerFirstName[pid] + "|r|cffffd34d[VIP]|r")
+    endif
+    loop
+        exitwhen tab >= 8
+        if FRAME_ShopSection[tab] != null then
+            if open then
+                call WUI_SetButtonSelected(FRAME_ShopSection[tab], tab == 7)
+            elseif tab == 7 then
+                call WUI_SetButtonSelected(FRAME_ShopSection[tab], false)
+            endif
+        endif
+        set tab = tab + 1
+    endloop
 endfunction
 
 function OnClickItem takes nothing returns nothing
@@ -1819,7 +2446,18 @@ function OnClickItem takes nothing returns nothing
     local unit d = GetSelectedHeroForPlayer(p)
     local string costStr = ""
     local string iconPath = ""
-    if frameCode == 242 then
+    if frameCode == 408 then
+        // Same state change as the shop key (ButtonPressed.j WOS_ToggleShop).
+        if GetLocalPlayer() == p then
+            call BlzFrameSetEnable(clicked, false)
+            call BlzFrameSetEnable(clicked, true)
+        endif
+        if Shop_Active[pid] then
+            set Shop_Active[pid] = false
+            if GetLocalPlayer() == p then
+                call BlzFrameSetVisible(FRAME_ShopMAIN, false)
+            endif
+        endif
         set clicked = null
         set d = null
         set p = null
@@ -1860,7 +2498,16 @@ function OnClickItem takes nothing returns nothing
         return
     endif
 
+if frameCode == 107 then
+        call ShopShowVip(p, true)
+        set clicked = null
+        set d = null
+        set p = null
+        return
+    endif
+
 if frameCode >= 100 and frameCode <= 106 then
+    call ShopShowVip(p, false)
 
     set ShopSearchPending[pid] = false
     set ShopSearchDebounceTicks[pid] = 0
@@ -1889,18 +2536,34 @@ if frameCode >= 100 and frameCode <= 106 then
         return
     endif
 
+    if frameCode >= 200 and frameCode <= 260 then
+        set slot = frameCode - 200
+        if slot < 35 then
+            set id = ShopGetPlayerPageItem(ItemsFrameCurrentPage_ID[pid], pid, slot)
+        elseif slot == 42 then
+            set id = ItemsCurrentItem_ID[pid]
+        else
+            set id = ShopGetCraftDisplayItem(pid, ShopTreeSlotFromFrame(slot))
+        endif
+    elseif frameCode >= 300 and frameCode <= 305 then
+        set id = ShopGetInventoryItemId(d, frameCode - 300)
+    endif
+    set frameCode = ShopFastAction(pid, frameCode, id)
+
     if GetLocalPlayer() == p then
         call BlzFrameSetText(FRAME_ShopItemDescriptionName, "|c00FFFF00Item name|r")
         call BlzFrameSetText(FRAME_ShopItemDescriptionName2, "")
         call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
     endif
 
-    if frameCode >= 200 and frameCode <= 241 then
+    if frameCode >= 200 and frameCode <= 260 then
         set slot = frameCode - 200
         if slot < 35 then
             set id = ShopGetPlayerPageItem(ItemsFrameCurrentPage_ID[pid], pid, slot)
+        elseif slot == 42 then
+            set id = ItemsCurrentItem_ID[pid]
         elseif slot >= 36 then
-            set id = ShopGetCraftDisplayItem(pid, slot - 36)
+            set id = ShopGetCraftDisplayItem(pid, ShopTreeSlotFromFrame(slot))
         endif
         if id != 0 then
             set ItemsCurrentItemBag_ID[pid] = 0
@@ -2263,6 +2926,7 @@ function PlayerInventoryPeriodic takes nothing returns nothing
     local string itemName
     local string iconPath
     local real tooltipWidth
+    local real invPlate = 0.020
     local framehandle tooltip
 
     loop
@@ -2302,13 +2966,14 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                 set itemName = ""
                 set iconPath = "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder"
                 set tooltipWidth = ShopGetItemTooltipWidth("")
-                set tooltip = BlzFrameGetParent(FRAME_ShopInventoryTooltipText[slot])
+                set tooltip = FRAME_ShopInventoryTooltipBox[slot]
                 
                 if id != 0 then
                     set refundFlag = LoadInteger(hs, GetHandleId(u), ShopRefundKey[slot])
                     set cost = GetItemValue(id)
                     set invCost1 = "|c0000FF00" + I2S(cost) + "|r"
                     set invCost2 = "|c00FFFF00" + I2S(R2I(cost * (RefundPercent/100))) + "|r"
+                    set invPlate = ShopPricePlateWidth(cost)
                     set itemName = GetObjectName(id)
                     set tooltipNameStr = "|cffffffff" + itemName + "|r"
                     set iconPath = BlzGetAbilityIcon(id)
@@ -2321,6 +2986,7 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                 
                 if GetLocalPlayer() == p then
                     if ShopInventoryLastId[cacheIndex] != id then
+                        call BlzFrameSetText(FRAME_ShopInventoryItemName[slot], WUI_TEXT + itemName + "|r")
                         if id == 0 then
                             call BlzFrameSetText(FRAME_ShopInventoryTooltipText[slot], "")
                             call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
@@ -2336,12 +3002,15 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                     if ShopInventoryLastId[cacheIndex] != id or ShopInventoryLastRefund[cacheIndex] != refundFlag then
                         if id == 0 then
                             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[slot], "")
+                            call BlzFrameSetVisible(FRAME_ShopInventoryPricePlate[slot], false)
                         else
                             if refundFlag == id then
                                 call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[slot], invCost1)
                             else
                                 call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[slot], invCost2)
                             endif
+                            call BlzFrameSetSize(FRAME_ShopInventoryPricePlate[slot], invPlate, 0.0105)
+                            call BlzFrameSetVisible(FRAME_ShopInventoryPricePlate[slot], true)
                         endif
                     endif
                 endif
@@ -2379,10 +3048,42 @@ function AutoBuyPeriodic takes nothing returns nothing
     set c = null
 endfunction
 
+// Local look of the HUD Autobuy toggle.
+function ShopShowAutoBuyState takes boolean on returns nothing
+    if FRAME_AutoBuyToggle == null then
+        return
+    endif
+    call WUI_SetButtonSelected(FRAME_AutoBuyToggle, on)
+    if on then
+        call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cff7ee870AUTO ON|r")
+    else
+        call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cff8d96a3AUTO OFF|r")
+    endif
+endfunction
+
 function FrameShopCheckboxCheck takes nothing returns nothing
     local framehandle clicked = BlzGetTriggerFrame()
     local integer pid = GetPlayerId(GetTriggerPlayer())
-    if clicked == FRAME_AutoBuyCheckbox then
+    local boolean on
+    if clicked == FRAME_AutoBuyToggle then
+        // Same state as the old shop checkbox (hashtable key "autobuy").
+        if pid >= 0 and pid < 10 and IsActivePlayerSlot(pid) then
+            set on = LoadInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy")) != 1
+            if on then
+                call ResetRecommendedAutoBuy(pid, Hero[pid])
+                call SaveInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy"), 1)
+            else
+                call SaveInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy"), 0)
+            endif
+            if GetLocalPlayer() == GetTriggerPlayer() then
+                call ShopShowAutoBuyState(on)
+            endif
+        endif
+        if GetLocalPlayer() == GetTriggerPlayer() then
+            call BlzFrameSetEnable(clicked, false)
+            call BlzFrameSetEnable(clicked, true)
+        endif
+    elseif clicked == FRAME_AutoBuyCheckbox then
         if pid >= 0 and pid < 10 and IsActivePlayerSlot(pid) then
             if BlzGetTriggerFrameEvent() == FRAMEEVENT_CHECKBOX_CHECKED then
                 if LoadInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy")) != 1 then
@@ -2487,6 +3188,75 @@ function SyncDataHandler takes nothing returns nothing
     endif
 endfunction
 
+// Synced toggle of fast buy / fast sell; the icon changes for its owner only.
+function ShopFastToggleClick takes nothing returns nothing
+    local player p = GetTriggerPlayer()
+    local integer pid = GetPlayerId(p)
+    if BlzGetTriggerFrame() == FRAME_FastBuyToggle then
+        set ShopFastBuy[pid] = not ShopFastBuy[pid]
+        if GetLocalPlayer() == p then
+            if ShopFastBuy[pid] then
+                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+            else
+                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+            endif
+        endif
+    else
+        set ShopFastSell[pid] = not ShopFastSell[pid]
+        if GetLocalPlayer() == p then
+            if ShopFastSell[pid] then
+                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+            else
+                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+            endif
+        endif
+    endif
+    if GetLocalPlayer() == p then
+        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
+        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
+    endif
+    set p = null
+endfunction
+
+function ShopCreateFastToggles takes nothing returns nothing
+    local trigger click = CreateTrigger()
+    set FRAME_FastBuyToggle = BlzCreateFrameByType("BUTTON", "ShopFastBuy", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
+    call WUI_Place(FRAME_FastBuyToggle, SHOP_INV_X - 0.024, 0.169, 0.022, 0.022)
+    set FRAME_FastBuyIcon = BlzCreateFrameByType("BACKDROP", "ShopFastBuyIcon", FRAME_FastBuyToggle, "", 0)
+    call BlzFrameSetAllPoints(FRAME_FastBuyIcon, FRAME_FastBuyToggle)
+    call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+    call BlzFrameSetEnable(FRAME_FastBuyIcon, false)
+    call WUI_Tooltip(FRAME_FastBuyToggle, "|cff7ee870FAST BUY|r|nWhen on: double-click an item in the list or the tree to buy it.")
+    set FRAME_FastSellToggle = BlzCreateFrameByType("BUTTON", "ShopFastSell", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
+    call WUI_Place(FRAME_FastSellToggle, SHOP_INV_X + 0.024, 0.169, 0.022, 0.022)
+    set FRAME_FastSellIcon = BlzCreateFrameByType("BACKDROP", "ShopFastSellIcon", FRAME_FastSellToggle, "", 0)
+    call BlzFrameSetAllPoints(FRAME_FastSellIcon, FRAME_FastSellToggle)
+    call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+    call BlzFrameSetEnable(FRAME_FastSellIcon, false)
+    call WUI_Tooltip(FRAME_FastSellToggle, "|cffff8a73FAST SELL|r|nWhen on: double-click an item of your inventory to sell it.")
+    call BlzTriggerRegisterFrameEvent(click, FRAME_FastBuyToggle, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(click, FRAME_FastSellToggle, FRAMEEVENT_CONTROL_CLICK)
+    call TriggerAddAction(click, function ShopFastToggleClick)
+    call TimerStart(ShopClock, 1000000.00, false, null)
+    set click = null
+endfunction
+
+// Graphite plate + gold hairline under a page arrow (catalogue paging).
+function ShopStylePageButton takes framehandle control, framehandle icon, string glyph returns nothing
+    local framehandle plate = BlzCreateFrameByType("BACKDROP", "ShopPagePlate", control, "", 0)
+    call BlzFrameSetAllPoints(plate, control)
+    call BlzFrameSetTexture(plate, WUI_FILL_NORMAL, 0, true)
+    call BlzFrameSetEnable(plate, false)
+    call BlzFrameSetLevel(plate, 1)
+    call WUI_MinimalEdge(plate)
+    call BlzFrameClearAllPoints(icon)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_CENTER, control, FRAMEPOINT_CENTER, 0.0, 0.0)
+    call BlzFrameSetSize(icon, 0.011, 0.011)
+    call BlzFrameSetTexture(icon, glyph, 0, true)
+    call BlzFrameSetLevel(icon, 3)
+    set plate = null
+endfunction
+
 function WOS_LayoutShop takes nothing returns nothing
     local integer i = 0
     local integer column
@@ -2496,36 +3266,56 @@ function WOS_LayoutShop takes nothing returns nothing
     local real y
     local real joinY
     local real distance
-    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.343, 0.756, 0.366)
-    call WUI_Place(FRAME_ShopItemList, 0.248, 0.340, 0.414, 0.282)
-    call WUI_Place(FRAME_ShopItemCraft, 0.554, 0.379, 0.182, 0.208)
-    call WUI_Place(FRAME_ShopItemDescription, 0.554, 0.217, 0.182, 0.104)
-    call WUI_Place(FRAME_ShopItemInventory, 0.710, 0.324, 0.118, 0.318)
-    call WUI_Place(FRAME_ShopRecipeTitle, 0.554, 0.473, 0.157, 0.012)
-    call WUI_Place(FRAME_ShopItemDescriptionName, 0.554, 0.255, 0.158, 0.016)
+    // Checkpoint 24: the window reaches down to just above the minimap block.
+    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.337, 0.756, 0.378)
+    // Checkpoint 23: narrower catalogue, wider item tree + description.
+    call WUI_Place(FRAME_ShopItemList, SHOP_LIST_X, 0.340, 0.350, 0.282)
+    // Checkpoint 26b: tree top level with the inventory (.483), description
+    // shorter (it scrolls) and flush below it; bottom level with inventory.
+    call WUI_Place(FRAME_ShopItemCraft, SHOP_TREE_X, 0.3595, 0.252, 0.247)
+    call WUI_Place(FRAME_ShopItemDescription, SHOP_TREE_X, 0.1955, 0.252, 0.081)
+    call WUI_Place(FRAME_ShopItemInventory, SHOP_INV_X, 0.319, 0.112, 0.328)
+    call ShopCreateVipPage()
+    call WUI_Place(FRAME_ShopRecipeTitle, SHOP_TREE_X, 0.4765, 0.157, 0.012)
+    call WUI_Place(FRAME_ShopItemDescriptionName, SHOP_TREE_X, 0.2255, 0.230 / 0.85, 0.016 / 0.85)
     call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.85)
-    call WUI_Place(FRAME_ShopItemDescriptionName2, 0.554, 0.209, 0.158, 0.077)
-    call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    // Centred description using the whole block.
+    call WUI_Place(FRAME_ShopItemDescriptionName2, SHOP_TREE_X, 0.1905, 0.236 / 0.80, 0.050 / 0.80)
+    call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.80)
     call BlzFrameSetEnable(FRAME_ShopItemDescriptionName2, false)
-    call WUI_Place(FRAME_ShopItemInventoryName, 0.710, 0.468, 0.110, 0.016)
+    call WUI_Place(FRAME_ShopItemInventoryName, SHOP_INV_X, 0.468, 0.110, 0.016)
     call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.90)
     call BlzFrameSetTextAlignment(FRAME_ShopItemInventoryName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(FRAME_ShopItemInventoryName, false)
-    call WUI_Place(FRAME_ShopSearchLabel, 0.066, 0.177, 0.047, 0.016)
-    call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.85)
-    call WUI_Place(FRAME_ShopSearchEditBox, 0.197, 0.177, 0.200, 0.025)
-    call WUI_Place(FRAME_ShopSearchClear, 0.311, 0.177, 0.019, 0.019)
-    call WUI_Place(FRAME_ShopSearchPrevious, 0.211, 0.480, 0.015, 0.015)
-    call WUI_Place(FRAME_ShopSearchPageText, 0.248, 0.480, 0.039, 0.012)
+    // Search row: gold caption | inset field with gold edge | clear (X) | Autobuy.
+    call WUI_Place(FRAME_ShopSearchLabel, 0.070, 0.165, 0.047, 0.016)
+    call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.80)
+    call BlzFrameSetTextAlignment(FRAME_ShopSearchLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
+    call WUI_Place(FRAME_ShopSearchEditBox, 0.205, 0.165, 0.230, 0.020)
+    call WUI_Place(FRAME_ShopSearchClear, 0.336, 0.165, 0.017, 0.017)
+    // Page switch of the catalogue: centred under the grid, above the search.
+    call WUI_Place(FRAME_ShopSearchPrevious, SHOP_LIST_X - 0.042, 0.1885, 0.018, 0.016)
+    call WUI_Place(FRAME_ShopSearchPageText, SHOP_LIST_X, 0.1885, 0.050, 0.012)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
-    call WUI_Place(FRAME_ShopSearchNext, 0.285, 0.480, 0.015, 0.015)
-    call WUI_Place(FRAME_AutoBuyCheckbox, 0.351, 0.177, 0.017, 0.017)
-    call WUI_Place(FRAME_AutoBuyText, 0.406, 0.177, 0.085, 0.016)
-    call BlzFrameSetScale(FRAME_AutoBuyText, 0.90)
+    call WUI_Place(FRAME_ShopSearchNext, SHOP_LIST_X + 0.042, 0.1885, 0.018, 0.016)
+    call ShopStylePageButton(FRAME_ShopSearchPrevious, FRAME_ShopSearchPreviousIcon, "UI\\WOS\\glyph-prev.tga")
+    call ShopStylePageButton(FRAME_ShopSearchNext, FRAME_ShopSearchNextIcon, "UI\\WOS\\glyph-next.tga")
+    if FRAME_FastBuyToggle == null then
+        call ShopCreateFastToggles()
+        call ShopCreateDescScroll()
+    endif
+    // Autobuy lives in the HUD inventory header now (FRAME_AutoBuyToggle).
+    call WUI_Place(FRAME_AutoBuyCheckbox, -0.40, -0.40, 0.016, 0.016)
+    call WUI_Place(FRAME_AutoBuyText, -0.40, -0.40, 0.060, 0.016)
+    call BlzFrameSetVisible(FRAME_AutoBuyCheckbox, false)
+    call BlzFrameSetVisible(FRAME_AutoBuyText, false)
+    call BlzFrameSetScale(FRAME_AutoBuyText, 0.85)
+    call BlzFrameSetTextAlignment(FRAME_AutoBuyText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
     loop
-        exitwhen i >= 7
-        call WUI_Place(FRAME_ShopSection[i], 0.090 + I2R(i) * 0.103, 0.505, 0.098, 0.027)
+        exitwhen i >= 8
+        call WUI_Place(FRAME_ShopSection[i], 0.0805 + I2R(i) * 0.0905, 0.505, 0.087, 0.027)
         set i = i + 1
     endloop
     set i = 0
@@ -2533,74 +3323,77 @@ function WOS_LayoutShop takes nothing returns nothing
         exitwhen i >= 35
         set column = ModuloInteger(i, 7)
         set row = i / 7
-        set x = 0.068 + I2R(column) * 0.058
-        set y = 0.445 - I2R(row) * 0.051
-        call WUI_Place(FRAME_ShopItem[i], x, y, 0.040, 0.040)
-        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.027, 0.047, 0.010)
-        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
-        call BlzFrameSetTextAlignment(FRAME_ShopItemCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetEnable(FRAME_ShopItemCost[i], false)
+        // Checkpoint 23: smaller icons, tighter grid, the name right below.
+        set x = SHOP_LIST_X + I2R(column - 3) * 0.049
+        set y = 0.4565 - I2R(row) * 0.0560
+        call WUI_Place(FRAME_ShopItem[i], x, y, 0.038, 0.038)
+        call ShopPlacePrice(FRAME_ShopItemCost[i], FRAME_ShopItemPricePlate[i], x, y, 0.038)
+        call BlzFrameClearAllPoints(FRAME_ShopItemName[i])
+        call BlzFrameSetAbsPoint(FRAME_ShopItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
+        call BlzFrameSetSize(FRAME_ShopItemName[i], 0.048 / 0.64, 0.014 / 0.64)
         set i = i + 1
     endloop
-    set i = 36
+    // Tree rows are placed per item when shown (CraftItemCheck); only the
+    // centre item is fixed. Its price sits to the right, clear of the lines.
+    call WUI_Place(FRAME_ShopItem[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y, 0.030, 0.030)
+    call ShopPlacePrice(FRAME_ShopItemCost[42], FRAME_ShopItemPricePlate[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y, 0.030)
+    call BlzFrameSetSize(FRAME_ShopItemPricePlate[42], 0.0305, 0.0105)
+    set FRAME_ShopItemName[42] = BlzCreateFrameByType("TEXT", "ShopTreeItemName", FRAME_ShopItem[42], "", 42)
+    call BlzFrameSetTextAlignment(FRAME_ShopItemName[42], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(FRAME_ShopItemName[42], 0.56)
+    call BlzFrameSetEnable(FRAME_ShopItemName[42], false)
+    call BlzFrameSetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, SHOP_TREE_CENTER_Y - 0.015 - 0.0012)
+    call BlzFrameSetSize(FRAME_ShopItemName[42], 0.080 / 0.56, 0.014 / 0.56)
+    call BlzFrameSetText(FRAME_ShopItemName[42], "")
+    call BlzFrameSetVisible(FRAME_ShopItemPricePlate[42], true)
+    set i = 0
     loop
-        exitwhen i >= 43
-        set x = 0.495 + I2R(ModuloInteger(i - 36, 3)) * 0.057
-        set y = 0.442
-        if i >= 39 then
-            set y = 0.313
+        exitwhen i >= SHOP_TREE_SLOTS
+        set branch = ShopTreeFrame(i)
+        call BlzFrameSetTextAlignment(FRAME_ShopItemCost[branch], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetEnable(FRAME_ShopItemCost[branch], false)
+        // Short trunk from each row to the centre item (one per row is enough;
+        // every branch's third segment is the same trunk).
+        // Trunks into the centre item; second-level segment 2 is dynamic.
+        if i < SHOP_TREE_ROW then
+            call WUI_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3910, 0.0008, 0.0012)
+        elseif i >= SHOP_TREE_GROUP and i < SHOP_TREE_GROUP + SHOP_TREE_ROW then
+            call WUI_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3482, 0.0008, 0.0025)
         endif
-        if i == 42 then
-            set x = 0.552
-            set y = 0.377
+        // Names under the tree icons (catalogue slots already have theirs).
+        if FRAME_ShopItemName[branch] == null then
+            set FRAME_ShopItemName[branch] = BlzCreateFrameByType("TEXT", "ShopTreeItemName", FRAME_ShopItem[branch], "", branch)
+            call BlzFrameSetTextAlignment(FRAME_ShopItemName[branch], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetScale(FRAME_ShopItemName[branch], 0.56)
+            call BlzFrameSetEnable(FRAME_ShopItemName[branch], false)
+            call BlzFrameSetText(FRAME_ShopItemName[branch], "")
         endif
-        call WUI_Place(FRAME_ShopItem[i], x, y, 0.036, 0.036)
-        call WUI_Place(FRAME_ShopItemCost[i], x, y - 0.026, 0.046, 0.010)
-        call BlzFrameSetScale(FRAME_ShopItemCost[i], 0.88)
-        call BlzFrameSetTextAlignment(FRAME_ShopItemCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetEnable(FRAME_ShopItemCost[i], false)
         set i = i + 1
     endloop
     call BlzFrameSetAllPoints(FRAME_ShopItemCraftSprite, FRAME_ShopItem[42])
-    set i = 0
-    loop
-        exitwhen i >= 6
-        set x = 0.495 + I2R(ModuloInteger(i, 3)) * 0.057
-        set y = 0.424
-        set joinY = 0.405
-        set distance = 0.010
-        if i >= 3 then
-            set y = 0.331
-            set joinY = 0.347
-            set distance = 0.012
-        endif
-        set branch = i * 3
-        call WUI_Place(FRAME_ShopRecipeLine[branch], x, (y + joinY) * 0.50, 0.0008, RAbsBJ(y - joinY))
-        call WUI_Place(FRAME_ShopRecipeLine[branch + 1], (x + 0.552) * 0.50, joinY, RMaxBJ(0.0008, RAbsBJ(x - 0.552)), 0.0008)
-        if i < 3 then
-            call WUI_Place(FRAME_ShopRecipeLine[branch + 2], 0.552, joinY - distance * 0.50, 0.0008, distance)
-        else
-            call WUI_Place(FRAME_ShopRecipeLine[branch + 2], 0.552, joinY + distance * 0.50, 0.0008, distance)
-        endif
-        set i = i + 1
-    endloop
-    call WUI_Place(FRAME_ShopCraftUpgradeScroll, 0.637, 0.431, 0.007, 0.047)
-    call WUI_Place(FRAME_ShopCraftComponentScroll, 0.637, 0.324, 0.007, 0.047)
-    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, 0.550, 0.439, 0.160, 0.060)
-    call WUI_Place(FRAME_ShopCraftComponentWheelArea, 0.550, 0.315, 0.160, 0.060)
+    // Wider gold slider (the stock 0.007 bar was hard to see and to grab).
+    call WUI_Place(FRAME_ShopCraftUpgradeScroll, SHOP_TREE_X + 0.115, 0.438, 0.011, 0.070)
+    call WUI_Place(FRAME_ShopCraftComponentScroll, SHOP_TREE_X + 0.115, 0.313, 0.011, 0.070)
+    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, SHOP_TREE_X, 0.438, 0.226, 0.076)
+    call WUI_Place(FRAME_ShopCraftComponentWheelArea, SHOP_TREE_X, 0.313, 0.226, 0.076)
     set i = 0
     loop
         exitwhen i >= 8
-        set x = 0.684 + I2R(ModuloInteger(i, 2)) * 0.052
+        set x = SHOP_INV_X - 0.024 + I2R(ModuloInteger(i, 2)) * 0.048
         set y = 0.429 - I2R(i / 2) * 0.061
         if i >= 6 then
-            set y = 0.223
+            set y = 0.205
         endif
-        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.037, 0.037)
-        call WUI_Place(FRAME_ShopItemInventorySlotCost[i], x, y - 0.026, 0.049, 0.010)
-        call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.88)
-        call BlzFrameSetTextAlignment(FRAME_ShopItemInventorySlotCost[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetEnable(FRAME_ShopItemInventorySlotCost[i], false)
+        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.038, 0.038)
+        call ShopPlacePrice(FRAME_ShopItemInventorySlotCost[i], FRAME_ShopInventoryPricePlate[i], x, y, 0.038)
+        if i < 6 then
+            set FRAME_ShopInventoryItemName[i] = BlzCreateFrameByType("TEXT", "WOSShopInventoryItemName", FRAME_ShopItemInventorySlot[i], "", i)
+            call BlzFrameSetAbsPoint(FRAME_ShopInventoryItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
+            call BlzFrameSetSize(FRAME_ShopInventoryItemName[i], 0.046 / 0.64, 0.020 / 0.64)
+            call BlzFrameSetScale(FRAME_ShopInventoryItemName[i], 0.64)
+            call BlzFrameSetTextAlignment(FRAME_ShopInventoryItemName[i], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetEnable(FRAME_ShopInventoryItemName[i], false)
+        endif
         set i = i + 1
     endloop
 endfunction
@@ -2696,6 +3489,8 @@ function WOS_CreateShopShell takes nothing returns nothing
     local framehandle border
     local integer line = 0
     set FRAME_ShopMAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
+    // Hero overlays step aside while the shop is open (see WUI_RefreshDocks).
+    call WUI_RegisterCover(FRAME_ShopMAIN)
     call WUI_RegisterModal(FRAME_ShopMAIN)
     call WUI_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
     set FRAME_ShopItemList = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
@@ -2714,7 +3509,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     
     set FRAME_ShopCraftUpgradeWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftUpgradeWheelArea", FRAME_ShopItemCraft, "", 5101)
     call BlzFrameSetPoint(FRAME_ShopCraftUpgradeWheelArea, FRAMEPOINT_TOPLEFT, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
-    call BlzFrameSetSize(FRAME_ShopCraftUpgradeWheelArea, 0.174, 0.080)
+    call BlzFrameSetSize(FRAME_ShopCraftUpgradeWheelArea, 0.174, 0.090)
     call BlzFrameSetAlpha(FRAME_ShopCraftUpgradeWheelArea, 0)
     call BlzFrameSetLevel(FRAME_ShopCraftUpgradeWheelArea, 1)
     call BlzFrameSetEnable(FRAME_ShopCraftUpgradeWheelArea, true)
@@ -2722,7 +3517,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopCraftUpgradeWheelArea, FRAMEEVENT_MOUSE_WHEEL)
     set FRAME_ShopCraftComponentWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftComponentWheelArea", FRAME_ShopItemCraft, "", 5102)
     call BlzFrameSetPoint(FRAME_ShopCraftComponentWheelArea, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemCraft, FRAMEPOINT_BOTTOMLEFT, 0.003, 0.003)
-    call BlzFrameSetSize(FRAME_ShopCraftComponentWheelArea, 0.174, 0.065)
+    call BlzFrameSetSize(FRAME_ShopCraftComponentWheelArea, 0.174, 0.085)
     call BlzFrameSetAlpha(FRAME_ShopCraftComponentWheelArea, 0)
     call BlzFrameSetLevel(FRAME_ShopCraftComponentWheelArea, 1)
     call BlzFrameSetEnable(FRAME_ShopCraftComponentWheelArea, true)
@@ -2753,24 +3548,33 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetSize(FRAME_ShopSearchLabel, 0.050, 0.020)
     call BlzFrameSetTextAlignment(FRAME_ShopSearchLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 1.10)
-    call BlzFrameSetText(FRAME_ShopSearchLabel, "|c00FFD700Search:|r")
-    set FRAME_ShopSearchEditBox = BlzCreateFrame("LMPLinkEditTemplate", FRAME_ShopMAIN, 0, 0)
+    call BlzFrameSetText(FRAME_ShopSearchLabel, WUI_GOLD + "SEARCH|r")
+    // Checkpoint 21: inset field in the UI style (the stock LMP edit template
+    // drew broken edge tiles). Falls back to the stock template if needed.
+    set FRAME_ShopSearchEditBox = null
+    if WUI_HasFrameDefinitions() then
+        set FRAME_ShopSearchEditBox = BlzCreateFrame("WOSEditBox", FRAME_ShopMAIN, 0, 0)
+    endif
+    if FRAME_ShopSearchEditBox == null then
+        set FRAME_ShopSearchEditBox = BlzCreateFrame("LMPLinkEditTemplate", FRAME_ShopMAIN, 0, 0)
+        call BlzFrameSetAlpha(FRAME_ShopSearchEditBox, 220)
+    endif
     call BlzFrameSetAbsPoint(FRAME_ShopSearchEditBox, FRAMEPOINT_CENTER, 0.285, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchEditBox, 0.195, 0.030)
-    call BlzFrameSetAlpha(FRAME_ShopSearchEditBox, 220)
+    call WUI_MinimalEdge(FRAME_ShopSearchEditBox)
     call BlzFrameSetText(FRAME_ShopSearchEditBox, "")
     call BlzFrameSetTextSizeLimit(FRAME_ShopSearchEditBox, 48)
     call BlzTriggerRegisterFrameEvent(FrameShopSearch, FRAME_ShopSearchEditBox, FRAMEEVENT_EDITBOX_TEXT_CHANGED)
     
-    set FRAME_ShopSearchClear = BlzCreateFrameByType("BUTTON", "ShopSearchClear", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)
+    set FRAME_ShopSearchClear = BlzCreateFrameByType("BUTTON", "ShopSearchClear", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
     call BlzFrameSetAbsPoint(FRAME_ShopSearchClear, FRAMEPOINT_CENTER, 0.398, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchClear, 0.020, 0.020)
     set FRAME_ShopSearchClearIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchClearIcon", FRAME_ShopSearchClear, "", 0)
     call BlzFrameSetAllPoints(FRAME_ShopSearchClearIcon, FRAME_ShopSearchClear)
-    call BlzFrameSetTexture(FRAME_ShopSearchClearIcon, "Music\\Music_Close.blp", 0, true)
+    call BlzFrameSetTexture(FRAME_ShopSearchClearIcon, "UI\\WOS\\glyph-close.tga", 0, true)
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSearchClear), 0, 405)
     call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSearchClear, FRAMEEVENT_CONTROL_CLICK)
-    set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)
+    set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
     call BlzFrameSetAbsPoint(FRAME_ShopSearchPrevious, FRAMEPOINT_CENTER, 0.278, 0.215)
     call BlzFrameSetSize(FRAME_ShopSearchPrevious, 0.018, 0.018)
     set FRAME_ShopSearchPreviousIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchPreviousIcon", FRAME_ShopSearchPrevious, "", 0)
@@ -2784,7 +3588,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetTextAlignment(FRAME_ShopSearchPageText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.90)
     call BlzFrameSetText(FRAME_ShopSearchPageText, "")
-    set FRAME_ShopSearchNext = BlzCreateFrameByType("BUTTON", "ShopSearchNext", FRAME_ShopMAIN, "ScoreScreenTabButtonTemplate", 0)
+    set FRAME_ShopSearchNext = BlzCreateFrameByType("BUTTON", "ShopSearchNext", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
     call BlzFrameSetAbsPoint(FRAME_ShopSearchNext, FRAMEPOINT_CENTER, 0.342, 0.215)
     call BlzFrameSetSize(FRAME_ShopSearchNext, 0.018, 0.018)
     set FRAME_ShopSearchNextIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchNextIcon", FRAME_ShopSearchNext, "", 0)
@@ -2805,16 +3609,48 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
 
     set border = WUI_OrnateWindow("ShopMainMetal", FRAME_ShopMAIN, 0.027)
-    set border = WUI_OrnateWindow("ShopCatalogueMetal", FRAME_ShopItemList, 0.020)
-    set border = WUI_OrnateWindow("ShopRecipeMetal", FRAME_ShopItemCraft, 0.021)
-    set border = WUI_OrnateWindow("ShopDescriptionMetal", FRAME_ShopItemDescription, 0.018)
-    set border = WUI_OrnateWindow("ShopInventoryMetal", FRAME_ShopItemInventory, 0.021)
+    // Checkpoint 22: close button set into the top rail, right of the tabs.
+    set FRAME_ShopClose = BlzCreateFrameByType("BUTTON", "ShopCloseButton", FRAME_ShopMAIN, "", 0)
+    call WUI_Place(FRAME_ShopClose, 0.768, 0.516, 0.016, 0.016)
+    call BlzFrameSetLevel(FRAME_ShopClose, 30)
+    set border = BlzCreateFrameByType("BACKDROP", "ShopCloseBack", FRAME_ShopClose, "", 0)
+    call BlzFrameSetAllPoints(border, FRAME_ShopClose)
+    call BlzFrameSetTexture(border, WUI_FILL_NORMAL, 0, true)
+    call BlzFrameSetEnable(border, false)
+    set border = BlzCreateFrameByType("BACKDROP", "ShopCloseGlyph", FRAME_ShopClose, "", 0)
+    call BlzFrameSetPoint(border, FRAMEPOINT_TOPLEFT, FRAME_ShopClose, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+    call BlzFrameSetPoint(border, FRAMEPOINT_BOTTOMRIGHT, FRAME_ShopClose, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+    call BlzFrameSetTexture(border, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetEnable(border, false)
+    call WUI_MinimalEdge(FRAME_ShopClose)
+    call WUI_Tooltip(FRAME_ShopClose, "|cffd5b876CLOSE SHOP|r|nOr press the shop key again.")
+    call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopClose), 0, 408)
+    call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopClose, FRAMEEVENT_CONTROL_CLICK)
+    // Checkpoint 26b: inner shop panels/buttons use the quiet divider edge;
+    // only the shop window keeps its ornate frame.
+    call WUI_MinimalEdge(FRAME_ShopItemList)
+    // Checkpoint 26: item tree + description share ONE ornate frame, split by
+    // a horizontal gold divider like the HUD stat columns.
+    set border = WUI_Passive("ShopTreeBlock", FRAME_ShopMAIN)
+    call BlzFrameSetPoint(border, FRAMEPOINT_TOPLEFT, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, 0.00, 0.00)
+    call BlzFrameSetPoint(border, FRAMEPOINT_BOTTOMRIGHT, FRAME_ShopItemDescription, FRAMEPOINT_BOTTOMRIGHT, 0.00, 0.00)
+    call BlzFrameSetEnable(border, false)
+    call BlzFrameSetLevel(border, 3)
+    call WUI_MinimalEdge(border)
+    set border = BlzCreateFrameByType("BACKDROP", "ShopTreeDivider", FRAME_ShopItemDescription, "", 0)
+    call BlzFrameSetTexture(border, "UI\\WOS\\divider-h.tga", 0, true)
+    call BlzFrameSetPoint(border, FRAMEPOINT_LEFT, FRAME_ShopItemDescription, FRAMEPOINT_TOPLEFT, 0.012, 0.00)
+    call BlzFrameSetPoint(border, FRAMEPOINT_RIGHT, FRAME_ShopItemDescription, FRAMEPOINT_TOPRIGHT, -0.012, 0.00)
+    call BlzFrameSetSize(border, 0.00, 0.004)
+    call BlzFrameSetLevel(border, 6)
+    call BlzFrameSetEnable(border, false)
+    call WUI_MinimalEdge(FRAME_ShopItemInventory)
     set FRAME_ShopRecipeTitle = BlzCreateFrameByType("TEXT", "ShopRecipeTitle", FRAME_ShopItemCraft, "", 0)
     call BlzFrameSetTextAlignment(FRAME_ShopRecipeTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopRecipeTitle, 0.82)
     call BlzFrameSetText(FRAME_ShopRecipeTitle, WUI_GOLD + "ITEM TREE|r")
     loop
-        exitwhen line >= 18
+        exitwhen line >= SHOP_TREE_SLOTS * 3
         set FRAME_ShopRecipeLine[line] = BlzCreateFrameByType("BACKDROP", "ShopRecipeEdge", FRAME_ShopItemCraft, "", line)
         call BlzFrameSetTexture(FRAME_ShopRecipeLine[line], "UI\\WOS\\meter.tga", 0, true)
         call BlzFrameSetLevel(FRAME_ShopRecipeLine[line], 2)
@@ -2837,8 +3673,9 @@ function WOS_CreateShopTabs takes nothing returns nothing
     set x = 0.075
     set i = 0
     loop
-        exitwhen i == 7
+        exitwhen i == 8
         set FRAME_ShopSection[i] = WUI_TextButton("ShopCategory" + I2S(i), FRAME_ShopMAIN, "", 0.098, 0.030)
+        call WUI_SetButtonMinimal(FRAME_ShopSection[i])
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSection[i]), 0, 100 + i)
         call BlzFrameSetAbsPoint(FRAME_ShopSection[i], FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(FRAME_ShopSection[i], 0.11, 0.03)
@@ -2854,8 +3691,10 @@ function WOS_CreateShopTabs takes nothing returns nothing
             call WUI_SetButtonCaption(FRAME_ShopSection[i], "Intelligence")
         elseif i == 5 then
             call WUI_SetButtonCaption(FRAME_ShopSection[i], "Universal")
-        else
+        elseif i == 6 then
             call WUI_SetButtonCaption(FRAME_ShopSection[i], "Defensive")
+        else
+            call WUI_SetButtonCaption(FRAME_ShopSection[i], "|cffffd34dVIP|r")
         endif
         call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSection[i], FRAMEEVENT_CONTROL_CLICK)
         set i = i + 1
@@ -2868,11 +3707,19 @@ function WOS_CreateShopTabs takes nothing returns nothing
         call BlzTriggerRegisterFrameEvent(FrameShopCheckbox, FRAME_AutoBuyCheckbox, FRAMEEVENT_CHECKBOX_CHECKED)
         call BlzTriggerRegisterFrameEvent(FrameShopCheckbox, FRAME_AutoBuyCheckbox, FRAMEEVENT_CHECKBOX_UNCHECKED)
         call TriggerAddAction(FrameShopCheckbox, function FrameShopCheckboxCheck)
+        // Checkpoint 23: Autobuy toggle in the HUD inventory header (left of
+        // the INVENTORY title) - green "AUTO ON" / grey "AUTO OFF".
+        set FRAME_AutoBuyToggle = WUI_TextButton("WOSAutoBuyToggle", WUI_GetRoot(), "AUTO OFF", 0.040, 0.012)
+        call WUI_PlaceShift(FRAME_AutoBuyToggle, 0.6465, 0.0862, 0.036, 0.010)
+        call WUI_SetButtonTextScale(FRAME_AutoBuyToggle, 0.62)
+        call ShopShowAutoBuyState(false)
+        call WUI_Tooltip(FRAME_AutoBuyToggle, "|cffd5b876AUTOBUY|r|nBuys the recommended items for your hero automatically.")
+        call BlzTriggerRegisterFrameEvent(FrameShopCheckbox, FRAME_AutoBuyToggle, FRAMEEVENT_CONTROL_CLICK)
         set FRAME_AutoBuyText = BlzCreateFrameByType("TEXT", "MyPlayerName", FRAME_ShopMAIN, "", 0)
         call BlzFrameSetSize(FRAME_AutoBuyText, 0.04, 0.01)
         call BlzFrameSetScale(FRAME_AutoBuyText,1.5)
         call BlzFrameSetPoint(FRAME_AutoBuyText, FRAMEPOINT_CENTER, FRAME_ShopMAIN, FRAMEPOINT_CENTER, -0.225, -0.055)
-        call BlzFrameSetText(FRAME_AutoBuyText, "|c00FFFF00Autobuy|r")
+        call BlzFrameSetText(FRAME_AutoBuyText, WUI_TEXT + "Autobuy|r")
 
 endfunction
 
@@ -2889,14 +3736,23 @@ function WOS_CreateShopCatalogue takes nothing returns nothing
     set y = -0.039
     loop
         exitwhen i == 35
-        set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemList, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemList, "WOSIconButtonTemplate", 0)
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItem[i]), 0, 200 + i)
         set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)
         call BlzFrameSetTexture(FRAME_ShopItemBack[i], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
         call BlzFrameSetAllPoints(FRAME_ShopItemBack[i], FRAME_ShopItem[i])
         call BlzFrameSetPoint(FRAME_ShopItem[i], FRAMEPOINT_LEFT, FRAME_ShopItemList, FRAMEPOINT_TOPLEFT, x + 0.05 * k, y )
         call BlzFrameSetSize(FRAME_ShopItem[i], 0.04, 0.04)
-        set FRAME_ShopItemTooltipText[i] = ShopCreateItemTooltip(FRAME_ShopItem[i])
+        // Checkpoint 23: the name is printed under the icon, no hover tooltip.
+        set FRAME_ShopItemTooltipText[i] = ShopCreateItemTooltip(null)
+        set FRAME_ShopItemName[i] = BlzCreateFrameByType("TEXT", "ShopItemName", FRAME_ShopItem[i], "", i)
+        call BlzFrameSetTextAlignment(FRAME_ShopItemName[i], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetScale(FRAME_ShopItemName[i], 0.64)
+        call BlzFrameSetEnable(FRAME_ShopItemName[i], false)
+        set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopPricePlate", FRAME_ShopItem[i], "", i)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
+        call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
         set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
         call BlzFrameSetPoint(FRAME_ShopItemCost[i], FRAMEPOINT_BOTTOM, FRAME_ShopItemList, FRAMEPOINT_TOPLEFT, (x + 0.02) + 0.05 * k, y - 0.03 )
         call BlzFrameSetText(FRAME_ShopItemCost[i], "|c00FFFF00|r")
@@ -2931,12 +3787,16 @@ function WOS_CreateShopRecipes takes nothing returns nothing
             set x = x + 0.05
             set y = y + 0.05
         endif
-        set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemCraft, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemCraft, "WOSIconButtonTemplate", 0)
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItem[i]), 0, 200 + i)
         set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)
         call BlzFrameSetAllPoints(FRAME_ShopItemBack[i], FRAME_ShopItem[i])
         call BlzFrameSetPoint(FRAME_ShopItem[i], FRAMEPOINT_LEFT, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, x + 0.05 * k, y )
         call BlzFrameSetSize(FRAME_ShopItem[i], 0.04, 0.04)
+        set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopTreePricePlate", FRAME_ShopItem[i], "", i)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
+        call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
         set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
         call BlzFrameSetPoint(FRAME_ShopItemCost[i], FRAMEPOINT_BOTTOM, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, (x + 0.02) + 0.05 * k, y - 0.03 )
         call BlzFrameSetText(FRAME_ShopItemCost[i], "|c00FFFF00|r")
@@ -2946,7 +3806,11 @@ function WOS_CreateShopRecipes takes nothing returns nothing
             call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopItem[i], FRAMEEVENT_MOUSE_WHEEL)
             call BlzFrameSetEnable(FRAME_ShopItem[i], false)
         else
-            call BlzFrameSetEnable(FRAME_ShopItem[i], false)
+            // The tree centre (current item) is clickable too: a double click
+            // buys it with Fast Buy (the click handler already reads slot 42).
+            call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopItem[i], FRAMEEVENT_CONTROL_CLICK)
+            call BlzFrameSetLevel(FRAME_ShopItem[i], 10)
+            call BlzFrameSetEnable(FRAME_ShopItem[i], true)
         endif
         if i != 42 then
             call BlzFrameSetVisible(FRAME_ShopItemBack[i], false)
@@ -2961,7 +3825,38 @@ function WOS_CreateShopRecipes takes nothing returns nothing
         endif
     endloop
 
-    set FRAME_ShopCraftUpgradeScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemCraft, 0, 9150)
+    // Remaining tree slots (checkpoint 24: frames 43..60).
+    set i = 43
+    loop
+        exitwhen i > 60
+        set FRAME_ShopItem[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemCraft, "WOSIconButtonTemplate", 0)
+        call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItem[i]), 0, 200 + i)
+        set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)
+        call BlzFrameSetAllPoints(FRAME_ShopItemBack[i], FRAME_ShopItem[i])
+        call WUI_Place(FRAME_ShopItem[i], 0.552, 0.377, 0.036, 0.036)
+        set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopTreePricePlate", FRAME_ShopItem[i], "", i)
+        call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+        call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
+        call BlzFrameSetVisible(FRAME_ShopItemPricePlate[i], false)
+        set FRAME_ShopItemCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItem[i], "", 0)
+        call BlzFrameSetText(FRAME_ShopItemCost[i], "")
+        call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopItem[i], FRAMEEVENT_CONTROL_CLICK)
+        call BlzFrameSetLevel(FRAME_ShopItem[i], 10)
+        call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopItem[i], FRAMEEVENT_MOUSE_WHEEL)
+        call BlzFrameSetEnable(FRAME_ShopItem[i], false)
+        call BlzFrameSetVisible(FRAME_ShopItemBack[i], false)
+        call BlzFrameSetTexture(FRAME_ShopItemBack[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
+        set i = i + 1
+    endloop
+    set FRAME_ShopCraftUpgradeScroll = null
+    set FRAME_ShopCraftComponentScroll = null
+    if WUI_HasFrameDefinitions() then
+        set FRAME_ShopCraftUpgradeScroll = BlzCreateFrame("WOSVerticalSlider", FRAME_ShopItemCraft, 0, 9150)
+        set FRAME_ShopCraftComponentScroll = BlzCreateFrame("WOSVerticalSlider", FRAME_ShopItemCraft, 0, 9151)
+    endif
+    if FRAME_ShopCraftUpgradeScroll == null then
+        set FRAME_ShopCraftUpgradeScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemCraft, 0, 9150)
+    endif
     call BlzFrameSetPoint(FRAME_ShopCraftUpgradeScroll, FRAMEPOINT_TOPRIGHT, FRAME_ShopItemCraft, FRAMEPOINT_TOPRIGHT, -0.001, -0.012)
     call BlzFrameSetSize(FRAME_ShopCraftUpgradeScroll, 0.010, 0.060)
     call BlzFrameSetMinMaxValue(FRAME_ShopCraftUpgradeScroll, 0.00, 1.00)
@@ -2973,7 +3868,9 @@ function WOS_CreateShopRecipes takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(FrameCraftScroll, FRAME_ShopCraftUpgradeScroll, FRAMEEVENT_SLIDER_VALUE_CHANGED)
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopCraftUpgradeScroll, FRAMEEVENT_MOUSE_WHEEL)
     
-    set FRAME_ShopCraftComponentScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemCraft, 0, 9151)
+    if FRAME_ShopCraftComponentScroll == null then
+        set FRAME_ShopCraftComponentScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemCraft, 0, 9151)
+    endif
     call BlzFrameSetPoint(FRAME_ShopCraftComponentScroll, FRAMEPOINT_BOTTOMRIGHT, FRAME_ShopItemCraft, FRAMEPOINT_BOTTOMRIGHT, -0.001, 0.012)
     call BlzFrameSetSize(FRAME_ShopCraftComponentScroll, 0.010, 0.060)
     call BlzFrameSetMinMaxValue(FRAME_ShopCraftComponentScroll, 0.00, 1.00)
@@ -3002,7 +3899,7 @@ function WOS_CreateShopInventory takes nothing returns nothing
     set k = 0
     loop
         exitwhen i == 8
-        set FRAME_ShopItemInventorySlot[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemInventory, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_ShopItemInventorySlot[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItemInventorySlot[i]), 0, 300 + i)
         set FRAME_ShopItemInventorySlotBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItemInventorySlot[i], "", 0)
         call BlzFrameSetAllPoints(FRAME_ShopItemInventorySlotBack[i], FRAME_ShopItemInventorySlot[i])
@@ -3010,18 +3907,26 @@ function WOS_CreateShopInventory takes nothing returns nothing
         call BlzFrameSetSize(FRAME_ShopItemInventorySlot[i], 0.04, 0.04)
         if i < 6 then
             set FRAME_ShopInventoryTooltipText[i] = ShopCreateItemTooltip(FRAME_ShopItemInventorySlot[i])
+            set FRAME_ShopInventoryTooltipBox[i] = BlzFrameGetParent(FRAME_ShopInventoryTooltipText[i])
             call BlzFrameSetEnable(FRAME_ShopItemInventorySlot[i], false)
         endif
         call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
+        set FRAME_ShopInventoryPricePlate[i] = null
+        if i < 6 then
+            set FRAME_ShopInventoryPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopInventoryPricePlate", FRAME_ShopItemInventorySlot[i], "", i)
+            call BlzFrameSetTexture(FRAME_ShopInventoryPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
+            call BlzFrameSetEnable(FRAME_ShopInventoryPricePlate[i], false)
+            call BlzFrameSetVisible(FRAME_ShopInventoryPricePlate[i], false)
+        endif
         set FRAME_ShopItemInventorySlotCost[i] = BlzCreateFrameByType("TEXT", "MyIconButtonCost", FRAME_ShopItemInventorySlot[i], "", 0)
         call BlzFrameSetPoint(FRAME_ShopItemInventorySlotCost[i], FRAMEPOINT_BOTTOM, FRAME_ShopItemInventory, FRAMEPOINT_TOPLEFT, (x + 0.02) + 0.05 * k, y - 0.032 )
         if i == 6 then
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "")
-            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "Pick\\BuyButton", 0, true)
+            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-buy.tga", 0, true)
             call BlzFrameSetAlpha(FRAME_ShopItemInventorySlotBack[i], 255)
         elseif i == 7 then
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "")
-            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "Pick\\SellButton", 0, true)
+            call BlzFrameSetTexture(FRAME_ShopItemInventorySlotBack[i], "UI\\WOS\\btn-sell.tga", 0, true)
         else
             call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[i], "|c00FFFF00|r")
         endif

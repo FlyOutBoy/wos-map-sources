@@ -196,7 +196,7 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoE_ID)
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoR_ID)
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoT_ID)
-    call UnitAddAbility(Hero_ID4_Dummy[n], GojoG_ID)
+    call UnitAddAbility(Hero_ID4_Dummy[n], GojoF_ID)
     set n = 1
 set MaxHeroes = MaxHeroes + 1
     set Hero_ID4[n] = Kenjaku_ID // Kenjaku

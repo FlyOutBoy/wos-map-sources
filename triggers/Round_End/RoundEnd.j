@@ -530,8 +530,13 @@ library RoundSpells uses GearSystems
             set u = null
             set move = 1
             call MakeSound("war3mapimported\\TrainSound")
+            if GetRandomInt(1,2) == 1 then 
             set d = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h00G', x1, y1, r6 + 180)
             set d2 = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h00G', x2, y2, r7 + 180)
+            else
+            set d = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h02N', x1, y1, r6 + 180)
+            set d2 = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h02N', x2, y2, r7 + 180)
+            endif
             call ColorDummy4(d, 0, 255, 255, 255, 0.3)
             call ColorDummy4(d2, 0, 255, 255, 255, 0.3)
             call SetUnitTimeScale(d, 2)

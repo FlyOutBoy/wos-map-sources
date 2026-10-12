@@ -87,6 +87,11 @@ integer PrepJustStarted = 0
     framehandle FRAME_HeroArmor
     framehandle FRAME_HeroMS
     framehandle FRAME_HeroAS
+    framehandle FRAME_HeroRange = null
+    framehandle FRAME_HeroMagRes = null
+    unit WOS_PickExtraUnit = null
+    integer WOS_PickExtraStat = 0
+    player WOS_PickExtraPlayer = null
     framehandle FRAME_HeroPortraitBorder
     framehandle FRAME_HeroName
     framehandle FRAME_HeroNameBack
@@ -114,6 +119,12 @@ integer PrepJustStarted = 0
     framehandle array FRAME_AbiText
     framehandle array FRAME_PlayerPickText
     framehandle FRAME_PlayerPickDifficultText
+    // Checkpoint 21: difficulty plaque on the portrait (owns the text frame),
+    // stat medallions and the gold underline of the primary attribute.
+    framehandle FRAME_PlayerPickDifficultPlate = null
+    framehandle array WOS_PickStatIcon
+    framehandle array WOS_PickPrimaryMark
+    hashtable WOS_PickStats = InitHashtable()
     framehandle array FRAME_PlayerPickTextUpperBack
     framehandle array FRAME_PlayerPickTextUpper
     framehandle array FRAME_PlayerPick
@@ -189,6 +200,257 @@ endglobals
 // Р В Р’В Р Р†Р вЂљРЎС›Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚ВР В Р’В Р В РІР‚В¦Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р РЋРІР‚СљР В Р’В Р РЋРІР‚вЂќ Р В Р’В Р РЋРІР‚Сњ Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’В°Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В»Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В°Р В Р’В Р РЋР’В Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’ВµР В Р’В Р В РІР‚В .
 // Р В Р’В Р РЋРЎС™Р В Р’В Р РЋРІР‚СћР В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“Р В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р РЋРІР‚вЂњР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р’В Р РЋРІР‚СћР В Р’В Р Р†РІР‚С›РІР‚вЂњ Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р’В Р вЂ™Р’В»Р В Р Р‹Р В Р РЏР В Р’В Р вЂ™Р’ВµР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РЎвЂњР В Р Р‹Р В Р РЏ Р В Р’В Р В РІР‚В  Hero_IDX[slot] Р В Р’В Р РЋРІР‚СњР В Р’В Р вЂ™Р’В°Р В Р’В Р РЋРІР‚Сњ Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р Р‹Р В Р вЂ°Р В Р Р‹Р Р†РІР‚С™Р’В¬Р В Р’В Р вЂ™Р’Вµ, Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚Сћ Р В Р’В Р В РІР‚В Р В Р Р‹Р В РЎвЂњР В Р’В Р вЂ™Р’Вµ Р В Р’В Р РЋРІР‚СћР В Р’В Р вЂ™Р’В±Р В Р Р‹Р Р†Р вЂљР’В°Р В Р’В Р РЋРІР‚ВР В Р’В Р вЂ™Р’Вµ Р В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚ВР В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋР’ВР В Р Р‹Р Р†Р вЂљРІвЂћвЂ“
 // (Р В Р Р‹Р В РЎвЂњР В Р Р‹Р Р†Р вЂљРЎв„ўР В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР’В Р В Р Р‹Р Р†Р вЂљРІвЂћвЂ“, Р В Р Р‹Р В РІР‚С™Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦Р В Р’В Р СћРІР‚ВР В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’В, Р В Р’В Р РЋРІР‚вЂќР В Р’В Р РЋРІР‚ВР В Р’В Р РЋРІР‚Сњ Р В Р’В Р РЋРІР‚В Р В Р’В Р вЂ™Р’В±Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В¦) Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂќР В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РІР‚С™Р В Р Р‹Р В Р вЂ° Р В Р’В Р В РІР‚В¦Р В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљР’В¦Р В Р’В Р РЋРІР‚СћР В Р’В Р СћРІР‚ВР В Р Р‹Р В Р РЏР В Р Р‹Р Р†Р вЂљРЎв„ў Р В Р’В Р вЂ™Р’ВµР В Р’В Р РЋРІР‚вЂњР В Р’В Р РЋРІР‚Сћ Р В Р’В Р вЂ™Р’В°Р В Р’В Р В РІР‚В Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚СћР В Р’В Р РЋР’ВР В Р’В Р вЂ™Р’В°Р В Р Р‹Р Р†Р вЂљРЎв„ўР В Р’В Р РЋРІР‚ВР В Р Р‹Р Р†Р вЂљР Р‹Р В Р’В Р вЂ™Р’ВµР В Р Р‹Р В РЎвЂњР В Р’В Р РЋРІР‚СњР В Р’В Р РЋРІР‚В.
+// ===== Checkpoint 22: ban slots between the two team rows =====
+// Shared by the normal pick, Player Pick Mode and Captain Draft (a library so
+// Captain_Draft.j, which precedes this file, can call it). Frames are allocated
+// once on every client; only textures/text/visibility change afterwards.
+library WOSPickBans requires GearSystems, WOSUI
+    globals
+        constant integer WOS_PICK_BAN_MAX = 8
+        constant real WOS_PICK_BAN_Y = 0.155
+        constant real WOS_PICK_BAN_SIZE = 0.026
+        framehandle WOS_PickBanPlate = null
+        framehandle WOS_PickBanTitle = null
+        framehandle array WOS_PickBanButton
+        framehandle array WOS_PickBanIcon
+        framehandle array WOS_PickBanSlash
+        framehandle array WOS_PickBanEdge
+        framehandle array WOS_PickBanName
+        framehandle array WOS_PickBanFx
+        framehandle array WOS_PickBanTipText
+        integer WOS_PickBanCount = 0
+        boolean WOS_PickBanShowNames = true
+        framehandle WOS_PickTimerPlate = null
+        constant real WOS_PICK_TIMER_X = 0.181
+        constant real WOS_PICK_TIMER_Y = 0.5190
+        constant real WOS_PICK_TIMER_W = 0.156
+        timer WOS_VoiceClock = null
+        real array WOS_VoiceReady
+    endglobals
+
+    // Checkpoint 23: up to 6 bans in one row; more go into two rows so the
+    // row never reaches the team icons.
+    function WOS_PickBanPerRow takes nothing returns integer
+        if WOS_PickBanCount > 6 then
+            return (WOS_PickBanCount + 1) / 2
+        endif
+        return IMaxBJ(WOS_PickBanCount, 1)
+    endfunction
+
+    function WOS_PickBanSize takes nothing returns real
+        if WOS_PickBanCount > 6 then
+            return 0.020
+        endif
+        return WOS_PICK_BAN_SIZE
+    endfunction
+
+    function WOS_PickBanX takes integer index returns real
+        local integer perRow = WOS_PickBanPerRow()
+        local integer column = ModuloInteger(index, perRow)
+        local real step = 0.034
+        if perRow > 1 then
+            set step = RMinBJ(0.034, 0.140 / I2R(perRow - 1))
+        endif
+        return 0.420 + (I2R(column) - I2R(perRow - 1) * 0.5) * step
+    endfunction
+
+    function WOS_PickBanY takes integer index returns real
+        if WOS_PickBanCount > 6 then
+            if index < WOS_PickBanPerRow() then
+                return WOS_PICK_BAN_Y + 0.0115
+            endif
+            return WOS_PICK_BAN_Y - 0.0115
+        endif
+        return WOS_PICK_BAN_Y
+    endfunction
+
+    function WOS_PickBanSet takes integer index, integer heroId, integer proposer returns nothing
+        if index < 0 or index >= WOS_PICK_BAN_MAX or WOS_PickBanIcon[index] == null then
+            return
+        endif
+        if heroId == 0 then
+            call BlzFrameSetTexture(WOS_PickBanIcon[index], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
+            call BlzFrameSetTexture(WOS_PickBanEdge[index], WUI_ICON_FRAME, 0, true)
+            call BlzFrameSetVisible(WOS_PickBanSlash[index], false)
+            call BlzFrameSetText(WOS_PickBanName[index], "")
+            call BlzFrameSetText(WOS_PickBanTipText[index], "")
+        else
+            call BlzFrameSetTexture(WOS_PickBanIcon[index], BlzGetAbilityIcon(heroId), 0, false)
+            call BlzFrameSetTexture(WOS_PickBanEdge[index], WUI_ICON_FRAME_BAN, 0, true)
+            call BlzFrameSetVisible(WOS_PickBanSlash[index], true)
+            call BlzFrameSetText(WOS_PickBanTipText[index], "|cffff7a6aBANNED|r  " + WUI_TEXT + GetObjectName(heroId) + "|r")
+            if WOS_PickBanShowNames and proposer >= 0 and proposer < 12 then
+                call BlzFrameSetText(WOS_PickBanName[index], SplitName(GetPlayerName(Player(proposer))))
+            else
+                call BlzFrameSetText(WOS_PickBanName[index], "")
+            endif
+        endif
+    endfunction
+
+    function WOS_PickBanClear takes nothing returns nothing
+        local integer i = 0
+        loop
+            exitwhen i >= WOS_PICK_BAN_MAX
+            call WOS_PickBanSet(i, 0, -1)
+            set i = i + 1
+        endloop
+    endfunction
+
+    function WOS_PickBanFlash takes integer index returns nothing
+        if index >= 0 and index < WOS_PICK_BAN_MAX and WOS_PickBanFx[index] != null then
+            call BlzFrameSetVisible(WOS_PickBanFx[index], true)
+            call BlzFrameSetSpriteAnimate(WOS_PickBanFx[index], 0, 0)
+        endif
+    endfunction
+
+    function WOS_PickBanHideFx takes nothing returns nothing
+        local integer i = 0
+        loop
+            exitwhen i >= WOS_PICK_BAN_MAX
+            if WOS_PickBanFx[i] != null then
+                call BlzFrameSetVisible(WOS_PickBanFx[i], false)
+            endif
+            set i = i + 1
+        endloop
+    endfunction
+
+    // count = number of ban slots for the current mode; names = show who
+    // proposed each ban (normal / Player Pick Mode), never in Captain Draft.
+    function WOS_PickBanLayout takes integer count, boolean names returns nothing
+        local integer i = 0
+        local real x
+        local real width
+        if WOS_PickBanPlate == null then
+            return
+        endif
+        set WOS_PickBanCount = IMinBJ(IMaxBJ(count, 0), WOS_PICK_BAN_MAX)
+        set WOS_PickBanShowNames = names
+        set width = WOS_PickBanX(WOS_PickBanPerRow() - 1) - WOS_PickBanX(0) + WOS_PickBanSize() + 0.016
+        call WUI_Place(WOS_PickBanPlate, 0.420, 0.1515, RMaxBJ(width, 0.060), 0.046)
+        call BlzFrameSetVisible(WOS_PickBanPlate, WOS_PickBanCount > 0)
+        loop
+            exitwhen i >= WOS_PICK_BAN_MAX
+            set x = WOS_PickBanX(i)
+            call WUI_Place(WOS_PickBanButton[i], x, WOS_PickBanY(i), WOS_PickBanSize(), WOS_PickBanSize())
+            // Proposer name hangs from just below the icon (two short lines max).
+            call BlzFrameClearAllPoints(WOS_PickBanName[i])
+            call BlzFrameSetAbsPoint(WOS_PickBanName[i], FRAMEPOINT_TOP, x, WOS_PickBanY(i) - WOS_PickBanSize() * 0.5 - 0.0015)
+            call BlzFrameSetSize(WOS_PickBanName[i], 0.042 / 0.52, 0.024 / 0.52)
+            call BlzFrameSetVisible(WOS_PickBanButton[i], i < WOS_PickBanCount)
+            call BlzFrameSetVisible(WOS_PickBanName[i], i < WOS_PickBanCount and names)
+            if i >= WOS_PickBanCount then
+                call BlzFrameSetVisible(WOS_PickBanFx[i], false)
+            endif
+            set i = i + 1
+        endloop
+    endfunction
+
+    // Called once from WOS_LayoutHeroPick (parent = the pick window).
+    function WOS_CreatePickBans takes framehandle parent returns nothing
+        local integer i = 0
+        local framehandle part
+        local framehandle tip
+        if WOS_PickBanPlate != null then
+            return
+        endif
+        set WOS_PickBanPlate = BlzCreateFrameByType("BACKDROP", "WOSPickBanPlate", parent, "", 0)
+        call BlzFrameSetTexture(WOS_PickBanPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+        call BlzFrameSetEnable(WOS_PickBanPlate, false)
+        call BlzFrameSetLevel(WOS_PickBanPlate, 2)
+        set part = WUI_GoldFrame("WOSPickBanPlateEdge", WOS_PickBanPlate, 0.0030, 0.0070)
+        set WOS_PickBanTitle = BlzCreateFrameByType("TEXT", "WOSPickBanTitle", WOS_PickBanPlate, "", 0)
+        call BlzFrameSetPoint(WOS_PickBanTitle, FRAMEPOINT_BOTTOM, WOS_PickBanPlate, FRAMEPOINT_TOP, 0.00, 0.002)
+        call BlzFrameSetSize(WOS_PickBanTitle, 0.080, 0.012)
+        call BlzFrameSetTextAlignment(WOS_PickBanTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetScale(WOS_PickBanTitle, 0.80)
+        call BlzFrameSetText(WOS_PickBanTitle, "|cffe0614cB A N S|r")
+        call BlzFrameSetEnable(WOS_PickBanTitle, false)
+        loop
+            exitwhen i >= WOS_PICK_BAN_MAX
+            set WOS_PickBanButton[i] = BlzCreateFrameByType("BUTTON", "WOSPickBanSlot", WOS_PickBanPlate, "", i)
+            call BlzFrameSetLevel(WOS_PickBanButton[i], 3)
+            set WOS_PickBanIcon[i] = BlzCreateFrameByType("BACKDROP", "WOSPickBanIcon", WOS_PickBanButton[i], "", i)
+            call BlzFrameSetAllPoints(WOS_PickBanIcon[i], WOS_PickBanButton[i])
+            call BlzFrameSetEnable(WOS_PickBanIcon[i], false)
+            set WOS_PickBanSlash[i] = BlzCreateFrameByType("BACKDROP", "WOSPickBanSlash", WOS_PickBanButton[i], "", i)
+            call BlzFrameSetPoint(WOS_PickBanSlash[i], FRAMEPOINT_TOPLEFT, WOS_PickBanButton[i], FRAMEPOINT_TOPLEFT, 0.0, 0.0)
+            call BlzFrameSetPoint(WOS_PickBanSlash[i], FRAMEPOINT_BOTTOMRIGHT, WOS_PickBanButton[i], FRAMEPOINT_BOTTOMRIGHT, 0.0, 0.0)
+            call BlzFrameSetTexture(WOS_PickBanSlash[i], "UI\\WOS\\ban-cover.tga", 0, true)
+            call BlzFrameSetAlpha(WOS_PickBanSlash[i], 255)
+            call BlzFrameSetEnable(WOS_PickBanSlash[i], false)
+            set WOS_PickBanEdge[i] = WUI_IconFrame(WOS_PickBanButton[i], WUI_ICON_FRAME)
+            set WOS_PickBanName[i] = BlzCreateFrameByType("TEXT", "WOSPickBanName", WOS_PickBanPlate, "", i)
+            call BlzFrameSetTextAlignment(WOS_PickBanName[i], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetScale(WOS_PickBanName[i], 0.52)
+            call BlzFrameSetEnable(WOS_PickBanName[i], false)
+            set WOS_PickBanFx[i] = BlzCreateFrameByType("SPRITE", "WOSPickBanFx", WOS_PickBanPlate, "WarCraftIIILogo", i)
+            call BlzFrameSetPoint(WOS_PickBanFx[i], FRAMEPOINT_CENTER, WOS_PickBanButton[i], FRAMEPOINT_CENTER, 0.0, 0.0)
+            call BlzFrameSetSize(WOS_PickBanFx[i], 0.01, 0.01)
+            call BlzFrameSetLevel(WOS_PickBanFx[i], 10)
+            call BlzFrameSetScale(WOS_PickBanFx[i], 0.0008)
+            call BlzFrameSetModel(WOS_PickBanFx[i], "war3mapImported\\wos_az_ui_baoji.mdl", 0)
+            call BlzFrameSetEnable(WOS_PickBanFx[i], false)
+            call BlzFrameSetVisible(WOS_PickBanFx[i], false)
+            // Hero-name tooltip; the handle stays attached for the whole game.
+            set tip = WUI_Panel("WOSPickBanTip", WOS_PickBanPlate, 0.110, 0.018)
+            call BlzFrameSetPoint(tip, FRAMEPOINT_BOTTOM, WOS_PickBanButton[i], FRAMEPOINT_TOP, 0.0, 0.004)
+            call BlzFrameSetLevel(tip, 40)
+            set part = WUI_GoldFrame("WOSPickBanTipEdge", tip, 0.0026, 0.0000)
+            set WOS_PickBanTipText[i] = BlzCreateFrameByType("TEXT", "WOSPickBanTipText", tip, "", i)
+            call BlzFrameSetAllPoints(WOS_PickBanTipText[i], tip)
+            call BlzFrameSetTextAlignment(WOS_PickBanTipText[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetScale(WOS_PickBanTipText[i], 0.78)
+            call BlzFrameSetEnable(WOS_PickBanTipText[i], false)
+            call BlzFrameSetTooltip(WOS_PickBanButton[i], tip)
+            call BlzFrameSetVisible(tip, false)
+            set i = i + 1
+        endloop
+        call WOS_PickBanClear()
+        set part = null
+        set tip = null
+    endfunction
+
+    // Captain Draft (and any non-pick owner) moves the round timer here too.
+    // Checkpoint 25b: tall = the hero grid reaches the top of the preview
+    // column (normal modes); Captain Draft keeps the short grid under its
+    // status plate. Buttons stay at the bottom either way.
+    function WOS_PickGridLayout takes boolean tall returns nothing
+        local integer i = 0
+        local real top = 0.477
+        local real step = 0.041
+        if FRAME_MAIN2 == null then
+            return
+        endif
+        if tall then
+            call WUI_Place(FRAME_MAIN2, 0.375, 0.365, 0.222, 0.330)
+            set top = 0.492
+            set step = 0.0435
+        else
+            call WUI_Place(FRAME_MAIN2, 0.375, 0.362, 0.222, 0.304)
+        endif
+        loop
+            exitwhen i >= 30
+            if FRAME_ICON[i] != null then
+                call WUI_Place(FRAME_ICON[i], 0.293 + I2R(ModuloInteger(i, 5)) * 0.041, top - I2R(i / 5) * step, 0.036, 0.036)
+            endif
+            set i = i + 1
+        endloop
+    endfunction
+
+    function WOS_PickTimerPlace takes framehandle plate, framehandle text, real x, real y, real width returns nothing
+        if plate != null then
+            call WUI_Place(plate, x, y, width, 0.020)
+        endif
+        if text != null then
+            call BlzFrameClearAllPoints(text)
+            call BlzFrameSetAbsPoint(text, FRAMEPOINT_CENTER, x, y)
+            call BlzFrameSetSize(text, (width - 0.008) / 0.84, 0.016)
+            call BlzFrameSetScale(text, 0.84)
+            call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        endif
+    endfunction
+endlibrary
+
 function GetHeroId takes integer page, integer slot returns integer
     if page == 1 then
         return Hero_ID0[slot]
@@ -222,6 +484,148 @@ function GetHeroDummy takes integer page, integer slot returns unit
         return Hero_ID5_Dummy[slot]
     endif
     return null
+endfunction
+
+// ===== Checkpoint 21: object-data fallback for the pick stat card =====
+// Field order: 0 STR, 1 AGI, 2 INT, 3-5 gain per level x100, 6 primary
+// (UNIT_IF_PRIMARY_ATTRIBUTE: 1 STR, 2 INT, 3 AGI), 7 melee, 8 damage,
+// 9 armor x100, 10 move speed, 11 attack cooldown x100.
+function WOS_PickStatRow takes integer unitId, integer str, integer agi, integer int, integer strGain, integer agiGain, integer intGain, integer primary, integer melee, integer damage, integer armor, integer speed, integer cooldown returns nothing
+    call SaveInteger(WOS_PickStats, unitId, 0, str)
+    call SaveInteger(WOS_PickStats, unitId, 1, agi)
+    call SaveInteger(WOS_PickStats, unitId, 2, int)
+    call SaveInteger(WOS_PickStats, unitId, 3, strGain)
+    call SaveInteger(WOS_PickStats, unitId, 4, agiGain)
+    call SaveInteger(WOS_PickStats, unitId, 5, intGain)
+    call SaveInteger(WOS_PickStats, unitId, 6, primary)
+    call SaveInteger(WOS_PickStats, unitId, 7, melee)
+    call SaveInteger(WOS_PickStats, unitId, 8, damage)
+    call SaveInteger(WOS_PickStats, unitId, 9, armor)
+    call SaveInteger(WOS_PickStats, unitId, 10, speed)
+    call SaveInteger(WOS_PickStats, unitId, 11, cooldown)
+endfunction
+
+// Regenerate with tools/build_pick_stat_table.py after editing hero units.
+function WOS_PickStatsInit takes nothing returns nothing
+    // BEGIN GENERATED PICK STATS (tools/build_pick_stat_table.py)
+    call WOS_PickStatRow('H000', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150)
+    call WOS_PickStatRow('H01C', 15, 15, 30, 185, 175, 200, 2, 1, 20, 0, 310, 170)
+    call WOS_PickStatRow('H02A', 10, 32, 18, 210, 190, 150, 3, 1, 20, 0, 280, 170)
+    call WOS_PickStatRow('H00U', 15, 35, 10, 200, 200, 150, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H01G', 20, 25, 15, 190, 260, 115, 3, 1, 20, 0, 270, 170)
+    call WOS_PickStatRow('H01P', 15, 25, 20, 180, 265, 120, 3, 1, 20, 0, 290, 150)
+    call WOS_PickStatRow('H01R', 20, 15, 25, 200, 150, 215, 2, 1, 20, 0, 300, 170)
+    call WOS_PickStatRow('H01X', 15, 30, 15, 175, 240, 150, 3, 1, 20, 0, 290, 150)
+    call WOS_PickStatRow('H026', 15, 23, 22, 170, 225, 150, 3, 1, 20, 0, 280, 170)
+    call WOS_PickStatRow('H001', 17, 28, 15, 185, 265, 120, 3, 1, 20, 0, 290, 150)
+    call WOS_PickStatRow('H00H', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150)
+    call WOS_PickStatRow('H02B', 15, 20, 25, 175, 125, 250, 2, 1, 20, 0, 300, 170)
+    call WOS_PickStatRow('H02C', 20, 23, 17, 230, 185, 170, 1, 1, 20, 0, 290, 170)
+    call WOS_PickStatRow('H01A', 20, 30, 10, 200, 225, 130, 3, 1, 20, 0, 280, 170)
+    call WOS_PickStatRow('H02M', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150)
+    call WOS_PickStatRow('H009', 15, 15, 30, 180, 175, 210, 2, 1, 20, 0, 280, 170)
+    call WOS_PickStatRow('H010', 10, 10, 40, 140, 175, 250, 2, 1, 20, 0, 300, 170)
+    call WOS_PickStatRow('H021', 20, 25, 15, 200, 230, 125, 3, 1, 20, 0, 300, 170)
+    call WOS_PickStatRow('H02J', 20, 30, 0, 240, 300, 0, 3, 1, 20, 0, 330, 170)
+    call WOS_PickStatRow('H00A', 15, 25, 20, 175, 225, 175, 3, 1, 20, 0, 310, 150)
+    call WOS_PickStatRow('H00B', 15, 30, 15, 220, 225, 120, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H017', 16, 20, 24, 180, 160, 220, 2, 1, 20, 0, 300, 170)
+    call WOS_PickStatRow('H01B', 15, 15, 30, 160, 155, 250, 2, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H01D', 15, 30, 15, 175, 225, 165, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H01H', 18, 30, 12, 190, 235, 140, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H01K', 15, 25, 20, 190, 240, 135, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H01M', 15, 15, 30, 180, 180, 200, 2, 1, 20, 0, 275, 170)
+    call WOS_PickStatRow('H01Z', 18, 30, 12, 185, 235, 145, 3, 0, 20, 0, 280, 150)
+    call WOS_PickStatRow('H023', 15, 25, 20, 190, 210, 165, 3, 1, 20, 0, 300, 150)
+    call WOS_PickStatRow('H028', 20, 30, 10, 192, 230, 140, 3, 1, 20, 0, 280, 150)
+    call WOS_PickStatRow('H02E', 13, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150)
+    call WOS_PickStatRow('H02H', 15, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150)
+    call WOS_PickStatRow('H02K', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150)
+    // END GENERATED PICK STATS
+endfunction
+
+function WOS_PickStat takes integer unitId, integer field returns integer
+    return LoadInteger(WOS_PickStats, unitId, field)
+endfunction
+
+function WOS_PickHundredths takes integer value returns string
+    return R2SW(I2R(value) / 100.00, 0, 2)
+endfunction
+
+function WOS_StatIconPath takes integer primary returns string
+    if primary == 1 then
+        return "UI\\WOS\\stat-str.tga"
+    elseif primary == 3 then
+        return "UI\\WOS\\stat-agi.tga"
+    endif
+    return "UI\\WOS\\stat-int.tga"
+endfunction
+
+// Stat medallions follow the stat lines; the primary underline is set per pick.
+function WOS_ShowPickStatDecor takes boolean visible returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 3
+        if WOS_PickStatIcon[i] != null then
+            call BlzFrameSetVisible(WOS_PickStatIcon[i], visible)
+            if not visible then
+                call BlzFrameSetVisible(WOS_PickPrimaryMark[i], false)
+            endif
+        endif
+        set i = i + 1
+    endloop
+    if FRAME_HeroRange != null then
+        call BlzFrameSetVisible(FRAME_HeroRange, visible)
+        call BlzFrameSetVisible(FRAME_HeroMagRes, visible)
+    endif
+endfunction
+
+// Resistance shown on the pick card: armor -> % like DamageBlock.
+function WOS_PickResPct takes real armor returns real
+    local real effective = RMaxBJ(0.00, armor) * RMaxBJ(0.00, ARMOR_EFFECTIVENESS_PERCENT) / 100.00
+    return 100.00 * effective / (100.00 + effective)
+endfunction
+
+// Extra pick stats (RANGE, PHYS RES, MAG RES). Runs in its own thread
+// (ExecuteFunc from OnClick) so the huge click handler stays within its
+// operation budget. Input: WOS_PickExtraUnit/Stat/Player.
+function WOS_PickExtraUpdate takes nothing returns nothing
+    local unit d = WOS_PickExtraUnit
+    local integer statId = WOS_PickExtraStat
+    local string phys
+    local string mag
+    local string range
+    if FRAME_HeroRange == null then
+        set d = null
+        return
+    endif
+    if d != null and GetUnitTypeId(d) != 0 then
+        set phys = R2SW(WOS_PickResPct(BlzGetUnitArmor(d) + I2R(BlzGetUnitIntegerField(d, UNIT_IF_AGILITY)) * (WOS_PHYS_RES_PER_AGI - WOS_ARMOR_PER_AGI)), 1, 1)
+        set mag = R2SW(WOS_PickResPct(I2R(BlzGetUnitIntegerField(d, UNIT_IF_INTELLIGENCE)) * WOS_MAG_RES_PER_INT), 1, 1)
+        set range = I2S(R2I(BlzGetUnitWeaponRealField(d, UNIT_WEAPON_RF_ATTACK_RANGE, 0)))
+    else
+        set phys = R2SW(WOS_PickResPct(I2R(WOS_PickStat(statId, 9)) / 100.00 + I2R(WOS_PickStat(statId, 1)) * WOS_PHYS_RES_PER_AGI), 1, 1)
+        set mag = R2SW(WOS_PickResPct(I2R(WOS_PickStat(statId, 2)) * WOS_MAG_RES_PER_INT), 1, 1)
+        if WOS_PickStat(statId, 7) == 1 then
+            set range = "melee"
+        else
+            set range = "ranged"
+        endif
+    endif
+    if GetLocalPlayer() == WOS_PickExtraPlayer then
+        call BlzFrameSetText(FRAME_HeroArmor, "|cffff8a83PR|r  |cffffffff" + phys + "%|r")
+        call BlzFrameSetText(FRAME_HeroMagRes, "|cff7caefaMR|r  |cffffffff" + mag + "%|r")
+        call BlzFrameSetText(FRAME_HeroRange, "|cffd5b876RANGE|r  |cffffffff" + range + "|r")
+    endif
+    set d = null
+endfunction
+
+// Created in its own WUI_OnReady thread after the pick shell.
+function WOS_PickExtraCreate takes nothing returns nothing
+    set FRAME_HeroRange = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)
+    call BlzFrameSetVisible(FRAME_HeroRange, false)
+    set FRAME_HeroMagRes = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)
+    call BlzFrameSetVisible(FRAME_HeroMagRes, false)
 endfunction
 
 function FindHeroPage takes integer heroId returns integer
@@ -412,7 +816,7 @@ function ReloadAfterPick takes player p returns nothing
                     call BlzFrameSetTexture(FRAME_ICON6[6], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
                     call BlzFrameSetVisible(FRAME_ICON5[5], true)
                     call BlzFrameSetVisible(FRAME_ICON5[6], true)
-                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
                     call BlzFrameSetVisible(FRAME_ICON6[5], true)
                     call BlzFrameSetVisible(FRAME_ICON6[6], true)
                     call BlzFrameSetEnable(FRAME_ICON5[5], true)
@@ -421,6 +825,7 @@ function ReloadAfterPick takes player p returns nothing
                     call BlzFrameSetVisible(FRAME_HeroAttribute, false)
                     call BlzFrameSetVisible(FRAME_HeroAttackType, false)
                     call BlzFrameSetVisible(FRAME_HeroStr, false)
+                    call WOS_ShowPickStatDecor(false)
                     call BlzFrameSetVisible(FRAME_HeroAgi, false)
                     call BlzFrameSetVisible(FRAME_HeroInt, false)
                     call BlzFrameSetVisible(FRAME_HeroAtk, false)
@@ -497,13 +902,14 @@ function CaptainDraft_ClearHeroPreview takes integer pid returns nothing
     call BlzFrameSetVisible(FRAME_HeroAttribute, false)
     call BlzFrameSetVisible(FRAME_HeroAttackType, false)
     call BlzFrameSetVisible(FRAME_HeroStr, false)
+    call WOS_ShowPickStatDecor(false)
     call BlzFrameSetVisible(FRAME_HeroAgi, false)
     call BlzFrameSetVisible(FRAME_HeroInt, false)
     call BlzFrameSetVisible(FRAME_HeroAtk, false)
     call BlzFrameSetVisible(FRAME_HeroArmor, false)
     call BlzFrameSetVisible(FRAME_HeroMS, false)
     call BlzFrameSetVisible(FRAME_HeroAS, false)
-    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
     call WUI_SetButtonCaption(FRAME_HeroName, "Hero Name")
 endfunction
 
@@ -610,9 +1016,7 @@ function TestUnit_OpenHeroPicker takes player p, integer mode returns nothing
         call BlzFrameSetVisible(FRAME_MAIN, true)
         call BlzFrameSetVisible(FRAME_StatusHeroMain, false)
         call BlzFrameSetVisible(FRAME_StatusHeroMain2, false)
-        call BlzFrameSetVisible(FRAME_StatusHeroMain3, false)
-        call BlzFrameSetVisible(FRAME_StatusHeroMain4, false)
-        call BlzFrameSetVisible(FRAME_LINK2, false)
+        call BlzFrameSetVisible(FRAME_StatusHeroMain4, true)
         call BlzFrameSetEnable(FRAME_Pick[2], true)
         call BlzFrameSetEnable(FRAME_Pick[3], false)
         call BlzFrameSetEnable(FRAME_Pick[4], false)
@@ -650,7 +1054,9 @@ function TestUnit_ConfigureControl takes player controller, integer ownerId, boo
      call SetPlayerAlliance(owner, controller, ALLIANCE_PASSIVE, allied)
      call SetPlayerAlliance(controller, owner, ALLIANCE_PASSIVE, allied)
      call SetPlayerAlliance(owner, controller, ALLIANCE_SHARED_CONTROL, true)
-     call SetPlayerAlliance(owner, controller, ALLIANCE_SHARED_ADVANCED_CONTROL, true)
+     // Checkpoint 24: plain shared control only - advanced control made the
+     // stock "Team resources" board pop up at the top right.
+     call SetPlayerAlliance(owner, controller, ALLIANCE_SHARED_ADVANCED_CONTROL, false)
 
     if ownerId == TestAllyUnitPlayerId then
         set TestAllyUnitController = controller
@@ -697,8 +1103,10 @@ function TestUnit_CreateSelectedHero takes player controller, integer heroId, in
         if GetUnitTypeId(oldUnit) == Erza_ID then
             call ErzaF_Start(oldUnit)
         endif
+        call WUI_ReleaseHeroMeters(ownerId)
         call RemoveUnit(oldUnit)
     elseif Hero[ownerId] != null then
+        call WUI_ReleaseHeroMeters(ownerId)
         call RemoveUnit(Hero[ownerId])
     endif
 
@@ -938,9 +1346,9 @@ call BlzFrameSetVisible(EmojiToggle, true)
           set PlayerFrameCurrent_ID[pid] = 0
         if PickedOnce[pid] == 1 then
             call AddGold(p, AddRandom, true)
-            call PlayersMsg( GetPlayerColorString(p) + GetPlayerName(p) + "|r randomed |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and gain +1000 gold|r", 1 )
+            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r randomed |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and gain +1000 gold|r", 1 )
         else
-            call PlayersMsg( GetPlayerColorString(p) + GetPlayerName(p) + "|r repicked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and lost -500 gold|r", 1 )
+            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r repicked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and lost -500 gold|r", 1 )
         endif
         call EUTU2_3(EffectSpawn("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", GetUnitX(Hero[pid]), GetUnitY(Hero[pid]), 270, 0.85, 1.45, 0), 2.5, 0, Hero[pid])
         
@@ -975,6 +1383,7 @@ function Repick takes player p returns nothing
     if GetUnitTypeId(Hero[pid]) == Erza_ID then
         call ErzaF_Start(Hero[pid])
     endif
+    call WUI_ReleaseHeroMeters(pid)
     call RemoveUnit(Hero[pid])
     set Hero[pid] = null
     set level_id[pid] = 0
@@ -1002,6 +1411,440 @@ call BlzFrameSetTexture(FRAME_PlayerPickBack[pid],BlzGetAbilityIcon(heroId),0,fa
 endif
 endfunction
 
+// Checkpoint 22: pick voice lines in turn (index 0..4), local to p. Used by
+// the hero name button in the picker and by the HUD portrait toggle.
+function WOS_HeroVoicePath takes integer heroId, integer i returns string
+    // Compared with the hero type constants: the picker replaces a picked
+    // hero's Hero_IDx slot with 12, so those arrays cannot identify it later.
+    if heroId == Raiden_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Raiden_Intro1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Raiden_Intro2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Raiden_Intro3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Raiden_Intro4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Raiden_Intro5"
+        endif
+    elseif heroId == Neuvillette_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Neuvillette_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Neuvillette_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Neuvillette_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Neuvillette_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Neuvillette_Pick5"
+        endif
+    elseif heroId == Patriot_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Patriot_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Patriot_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Patriot_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Patriot_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Patriot_Pick5"
+        endif
+    elseif heroId == Kyoraku_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Kyoraku_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Kyoraku_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Kyoraku_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Kyoraku_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Kyoraku_Pick5"
+        endif
+    elseif heroId == BazzB_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_BazzB_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_BazzB_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_BazzB_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_BazzB_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_BazzB_Pick5"
+        endif
+    elseif heroId == Harribel_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Harribel_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Harribel_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Harribel_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Harribel_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Harribel_Pick5"
+        endif
+    elseif heroId == Barragan_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Barragan_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Barragan_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Barragan_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Barragan_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Barragan_Pick5"
+        endif
+    elseif heroId == Starrk_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Starrk_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Starrk_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Starrk_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Starrk_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Starrk_Pick5"
+        endif
+    elseif heroId == Bambietta_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Bambietta_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Bambietta_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Bambietta_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Bambietta_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Bambietta_TT"
+        endif
+    elseif heroId == Natsu_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Natsu_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Natsu_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Natsu_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Natsu_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Natsu_Pick5"
+        endif
+    elseif heroId == Erza_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Erza_Start"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Erza_Pick1"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Erza_Start2"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Erza_Pick3"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Erza_Pick2"
+        endif
+    elseif heroId == Brandish_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Brandish_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Brandish_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Brandish_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Brandish_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Brandish_Pick5"
+        endif
+    elseif heroId == Laxus_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Laxus_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Laxus_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Laxus_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Laxus_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Laxus_Pick5"
+        endif
+    elseif heroId == Akainu_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Akainu_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Akainu_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Akainu_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Akainu_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Akainu_Pick5"
+        endif
+    elseif heroId == Gojo_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Gojo_E3"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Gojo_E1"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Gojo_R1"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Gojo_RE"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Gojo_RW1"
+        endif
+    elseif heroId == Tomioka_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Tomioka_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Tomioka_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Tomioka_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Tomioka_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Tomioka_Pick5"
+        endif
+    elseif heroId == AlterSaber_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_AlterSaber_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_AlterSaber_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_AlterSaber_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_AlterSaber_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_AlterSaber_Pick5"
+        endif
+    elseif heroId == Kenjaku_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Kenjaku_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Kenjaku_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Kenjaku_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Kenjaku_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Kenjaku_Pick5"
+        endif
+    elseif heroId == Inori_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Inori_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Inori_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Inori_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Inori_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Inori_Pick5"
+        endif
+    elseif heroId == Okarun_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Okarun_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Okarun_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Okarun_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Okarun_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Okarun_Pick5"
+        endif
+    elseif heroId == Tsuna_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Tsuna_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Tsuna_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Tsuna_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Tsuna_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Tsuna_Pick5"
+        endif
+    elseif heroId == Takeshi_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Takeshi_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Takeshi_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Takeshi_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Takeshi_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Takeshi_Pick5"
+        endif
+    elseif heroId == DarkShiki_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_DarkShiki_R01"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_DarkShiki_T"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_DarkShiki_W03"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_DarkShiki_E01"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_DarkShiki_R02"
+        endif
+    elseif heroId == Rimuru_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Rimuru_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Rimuru_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Rimuru_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Rimuru_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Rimuru_Pick5"
+        endif
+    elseif heroId == Alucard_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Alucard_Pick"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Alucard_E2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Alucard_Q05"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Alucard_W01"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Alucard_Q2 01"
+        endif
+    elseif heroId == Mahoraga_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Mahoraga_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Mahoraga_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Mahoraga_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Mahoraga_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Mahoraga_Pick5"
+        endif
+    elseif heroId == Toji_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Toji_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Toji_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Toji_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Toji_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Toji_Pick5"
+        endif
+    elseif heroId == Kirito_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Kirito_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Kirito_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Kirito_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Kirito_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Kirito_Pick5"
+        endif
+    elseif heroId == Asta_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Asta_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Asta_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Asta_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Asta_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Asta_Pick5"
+        endif
+    elseif heroId == Ainz_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Ainz_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Ainz_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Ainz_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Ainz_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Ainz_Pick5"
+        endif
+    elseif heroId == Frieren_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Frieren_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Frieren_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Frieren_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Frieren_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Frieren_Pick5"
+        endif
+    
+    // HERO TRANSFER: Milim / OnClick sounds
+    elseif heroId == Milim_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Milim_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Milim_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Milim_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Milim_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Milim_Pick5"
+        endif
+    // HERO TRANSFER: Crocodile / OnClick sounds
+    elseif heroId == Crocodile_ID then
+        if i == 0 then
+            return "war3mapimported\\Hero_Crocodile_Pick1"
+        elseif i == 1 then
+            return "war3mapimported\\Hero_Crocodile_Pick2"
+        elseif i == 2 then
+            return "war3mapimported\\Hero_Crocodile_Pick3"
+        elseif i == 3 then
+            return "war3mapimported\\Hero_Crocodile_Pick4"
+        elseif i == 4 then
+            return "war3mapimported\\Hero_Crocodile_Pick5"
+        endif
+    endif
+    return ""
+endfunction
+
+// Voice line i (0..4) of a hero, in turn, only for p. A new line can start
+// only when the previous one is almost over (its length - 0.5 s).
+function WOS_PlayNextHeroVoice takes player p, integer heroId returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer i = PlayerSoundCurrent[pid]
+    local string path = WOS_HeroVoicePath(heroId, i)
+    local real now
+    if WOS_VoiceClock == null then
+        set WOS_VoiceClock = CreateTimer()
+        call TimerStart(WOS_VoiceClock, 100000.00, false, null)
+    endif
+    set now = TimerGetElapsed(WOS_VoiceClock)
+    if path == "" or now < WOS_VoiceReady[pid] then
+        return
+    endif
+    set PlayerSoundCurrent[pid] = PlayerSoundCurrent[pid] + 1
+    if PlayerSoundCurrent[pid] > 4 then
+        set PlayerSoundCurrent[pid] = 0
+    endif
+    call MakeSoundLocal(path, p)
+    // DESYNC FIX: GetSoundFileDuration is per client (sound off / not loaded
+    // returns other values). WOS_VoiceReady decides whether MakeSoundLocal
+    // creates a sound handle, so it must be identical everywhere: fixed gap.
+    set WOS_VoiceReady[pid] = now + 2.50
+endfunction
+
 function OnClick takes nothing returns nothing
     local framehandle clicked = BlzGetTriggerFrame()
     local integer i = 0
@@ -1027,6 +1870,7 @@ function OnClick takes nothing returns nothing
     local boolean frameGEnabled
     local boolean heroIsMelee
     local integer heroPrimaryAttribute
+    local integer statId = 0
     local integer id = 0
     local integer end = 0
     local integer k3 = 0
@@ -1095,33 +1939,11 @@ function OnClick takes nothing returns nothing
         call Repick(p)
     endif
     if clicked == FRAME_Swap[pid] then
-        if TestMode == false then
-            if FRAME_SwapActive[pid] == 0 then
-                set FRAME_SwapActive[pid] = 1
-                set k = 0
-                loop
-                    exitwhen k == 10
-                    if IsPlayerAlly(Player(k), p) and Player(k) != p and IsPlaying3(Player(k)) then
-                        if GetLocalPlayer() == p then
-                            call BlzFrameSetVisible(FRAME_SwapSprite[k], true)
-                            call BlzFrameSetVisible(FRAME_SwapSprite2[k], false)
-                        endif
-                    endif
-                    set k = k + 1
-                endloop
-            else
-                set k = 0
-                loop
-                    exitwhen k == 10
-                    if GetLocalPlayer() == p then
-                        call BlzFrameSetVisible(FRAME_SwapSprite[k], false)
-                        call BlzFrameSetVisible(FRAME_SwapSprite2[k], false)
-                    endif
-                    set k = k + 1
-                endloop
-                set SwapRequests[pid] = -1
-                set FRAME_SwapActive[pid] = 0
-            endif
+        // Real flow: a small menu of allies opens under SWAP; the chosen ally
+        // gets an Accept / Decline window. In TestMode a toggle next to SWAP
+        // switches between this flow and the old instant "replace hero".
+        if WOS_SwapUsesMenu(pid) then
+            call WOS_SwapMenuToggle(p)
         else
         // TestMode: return player to pick screen
             if Hero[pid] != null then
@@ -1139,6 +1961,7 @@ function OnClick takes nothing returns nothing
                 if GetUnitTypeId(Hero[pid]) == Erza_ID then
                     call ErzaF_Start(Hero[pid])
                 endif
+                call WUI_ReleaseHeroMeters(pid)
                 call RemoveUnit(Hero[pid])
                 set Hero[pid] = null
                 set level_id[pid] = 0
@@ -1147,9 +1970,7 @@ function OnClick takes nothing returns nothing
                 call BlzFrameSetVisible(FRAME_MAIN, true)
                 call BlzFrameSetVisible(FRAME_StatusHeroMain, false)
                 call BlzFrameSetVisible(FRAME_StatusHeroMain2, false)
-                call BlzFrameSetVisible(FRAME_StatusHeroMain3, false)
-                call BlzFrameSetVisible(FRAME_StatusHeroMain4, false)
-                call BlzFrameSetVisible(FRAME_LINK2, false)
+                call BlzFrameSetVisible(FRAME_StatusHeroMain4, true)
             endif
             call HideBottomUI(Player(pid), true)
             set Shop_Active[pid] = false
@@ -1187,8 +2008,9 @@ function OnClick takes nothing returns nothing
             call BlzFrameSetVisible(FRAME_HeroAttribute, false)
             call BlzFrameSetVisible(FRAME_HeroAttackType, false)
             call BlzFrameSetVisible(FRAME_HeroStr, false)
+            call WOS_ShowPickStatDecor(false)
             call BlzFrameSetVisible(FRAME_HeroAgi, false)
-            call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+            call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
             call BlzFrameSetVisible(FRAME_HeroInt, false)
             call BlzFrameSetVisible(FRAME_HeroAtk, false)
             call BlzFrameSetVisible(FRAME_HeroArmor, false)
@@ -1366,7 +2188,7 @@ endif
             elseif (PlayerFrameCurrentPage_ID[pid] == 5 and Hero_ID4[k3] != 0) or (PlayerFrameCurrentPage_ID[pid] == 6 and Hero_ID5[k3] != 0) then
                 if GetHeroId(PlayerFrameCurrentPage_ID[pid], k3) == Gojo_ID then
                     set s = "Gojo"
-                    set b = 3
+                    set b = 4
                     set s_name = "Satoru Gojo"
                     if GetLocalPlayer() == p then
                         call BlzFrameSetText(FRAME_PlayerPickDifficultText, "|c00FFFC01Difficulty: " + "|c00FF9428Normal|r")
@@ -1516,18 +2338,38 @@ endif
                 set frameGEnabled = true
             elseif b == 4 then
                 set iconF = "ReplaceableTextures\\CommandButtons\\BTNHero_" + s + "_F"
+                // Checkpoint 27b: Gojo's Six Eyes moved from G to F; its icon
+                // file keeps the old _G name.
+                if s == "Gojo" then
+                    set iconF = "ReplaceableTextures\\CommandButtons\\BTNHero_Gojo_G"
+                endif
                 set frameFEnabled = true
             endif
             set heroModelPath = "war3mapimported\\wos_" + s + "_port"
-            set heroStrText = "|cffff0000Str: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_STRENGTH)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_STRENGTH_PER_LEVEL), 0, 2) + "|r"
-            set heroAgiText = "|cff289b1eAgi: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_AGILITY)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_AGILITY_PER_LEVEL), 0, 2) + "|r"
-            set heroIntText = "|cff3737ffInt: " + I2S(BlzGetUnitIntegerField(d, UNIT_IF_INTELLIGENCE)) + "+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_INTELLIGENCE_PER_LEVEL), 0, 2) + "|r"
-            set heroAtkText = "Atk: " + I2S(BlzGetUnitWeaponIntegerField(d, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0))
-            set heroArmorText = "Def: " + R2SW(BlzGetUnitArmor(d), 0, 2)
-            set heroMoveSpeedText = "MS: " + I2S(R2I(GetUnitDefaultMoveSpeed(d)))
-            set heroAttackSpeedText = "AS: " + R2SW(BlzGetUnitWeaponRealField(d, UNIT_WEAPON_RF_ATTACK_BASE_COOLDOWN, 0), 0, 2)
-            set heroIsMelee = IsUnitType(d, UNIT_TYPE_MELEE_ATTACKER)
-            set heroPrimaryAttribute = BlzGetUnitIntegerField(d, UNIT_IF_PRIMARY_ATTRIBUTE)
+            // Live dummy when it exists; object-data table otherwise (a missing
+            // dummy used to show zeros and made every hero look ranged).
+            if d != null and GetUnitTypeId(d) != 0 then
+                set heroIsMelee = IsUnitType(d, UNIT_TYPE_MELEE_ATTACKER)
+                set heroPrimaryAttribute = BlzGetUnitIntegerField(d, UNIT_IF_PRIMARY_ATTRIBUTE)
+                set heroStrText = "|cffff8a83STR|r  |cffffffff" + I2S(BlzGetUnitIntegerField(d, UNIT_IF_STRENGTH)) + "|r  |cff9aa0a8+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_STRENGTH_PER_LEVEL), 0, 2) + " / lvl|r"
+                set heroAgiText = "|cff7cd67cAGI|r  |cffffffff" + I2S(BlzGetUnitIntegerField(d, UNIT_IF_AGILITY)) + "|r  |cff9aa0a8+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_AGILITY_PER_LEVEL), 0, 2) + " / lvl|r"
+                set heroIntText = "|cff7caefaINT|r  |cffffffff" + I2S(BlzGetUnitIntegerField(d, UNIT_IF_INTELLIGENCE)) + "|r  |cff9aa0a8+" + R2SW(BlzGetUnitRealField(d, UNIT_RF_INTELLIGENCE_PER_LEVEL), 0, 2) + " / lvl|r"
+                set heroAtkText = "|cffd5b876ATK|r  |cffffffff" + I2S(BlzGetUnitWeaponIntegerField(d, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0)) + "|r"
+                set heroArmorText = "|cffd5b876DEF|r  |cffffffff" + R2SW(BlzGetUnitArmor(d), 0, 2) + "|r"
+                set heroMoveSpeedText = "|cffd5b876MS|r  |cffffffff" + I2S(R2I(GetUnitDefaultMoveSpeed(d))) + "|r"
+                set heroAttackSpeedText = "|cffd5b876AS|r  |cffffffff" + R2SW(BlzGetUnitWeaponRealField(d, UNIT_WEAPON_RF_ATTACK_BASE_COOLDOWN, 0), 0, 2) + "s|r"
+            else
+                set statId = PlayerFrameCurrent_ID[pid]
+                set heroIsMelee = WOS_PickStat(statId, 7) == 1
+                set heroPrimaryAttribute = WOS_PickStat(statId, 6)
+                set heroStrText = "|cffff8a83STR|r  |cffffffff" + I2S(WOS_PickStat(statId, 0)) + "|r  |cff9aa0a8+" + WOS_PickHundredths(WOS_PickStat(statId, 3)) + " / lvl|r"
+                set heroAgiText = "|cff7cd67cAGI|r  |cffffffff" + I2S(WOS_PickStat(statId, 1)) + "|r  |cff9aa0a8+" + WOS_PickHundredths(WOS_PickStat(statId, 4)) + " / lvl|r"
+                set heroIntText = "|cff7caefaINT|r  |cffffffff" + I2S(WOS_PickStat(statId, 2)) + "|r  |cff9aa0a8+" + WOS_PickHundredths(WOS_PickStat(statId, 5)) + " / lvl|r"
+                set heroAtkText = "|cffd5b876ATK|r  |cffffffff" + I2S(WOS_PickStat(statId, 8)) + "|r"
+                set heroArmorText = "|cffd5b876DEF|r  |cffffffff" + WOS_PickHundredths(WOS_PickStat(statId, 9)) + "|r"
+                set heroMoveSpeedText = "|cffd5b876MS|r  |cffffffff" + I2S(WOS_PickStat(statId, 10)) + "|r"
+                set heroAttackSpeedText = "|cffd5b876AS|r  |cffffffff" + WOS_PickHundredths(WOS_PickStat(statId, 11)) + "s|r"
+            endif
             if GetLocalPlayer() == p then
                 call BlzFrameSetTexture(FRAME_ICON6[0], iconQ, 0, false)
                 call BlzFrameSetTexture(FRAME_ICON6[1], iconW, 0, false)
@@ -1539,13 +2381,14 @@ endif
                 call BlzFrameSetEnable(FRAME_ICON5[5], frameFEnabled)
                 call BlzFrameSetEnable(FRAME_ICON5[6], frameGEnabled)
                 if CaptainDraftMode then
-                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
                 else
-                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, true)
+                    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, true)
                 endif
                 call BlzFrameSetVisible(FRAME_HeroAttribute, true)
                 call BlzFrameSetVisible(FRAME_HeroAttackType, true)
                 call BlzFrameSetVisible(FRAME_HeroStr, true)
+                call WOS_ShowPickStatDecor(true)
                 call BlzFrameSetVisible(FRAME_HeroAgi, true)
                 call BlzFrameSetVisible(FRAME_HeroInt, true)
                 call BlzFrameSetVisible(FRAME_HeroAtk, true)
@@ -1562,18 +2405,20 @@ endif
                 call BlzFrameSetText(FRAME_HeroMS, heroMoveSpeedText)
                 call BlzFrameSetText(FRAME_HeroAS, heroAttackSpeedText)
                 if heroIsMelee then
-                    call BlzFrameSetTexture(FRAME_HeroAttackType, "Pick\\PickButton_Attack_Normal", 0, true)
+                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-melee.tga", 0, true)
                 else
-                    call BlzFrameSetTexture(FRAME_HeroAttackType, "Pick\\PickButton_Attack_Ranged", 0, true)
+                    call BlzFrameSetTexture(FRAME_HeroAttackType, "UI\\WOS\\attack-ranged.tga", 0, true)
                 endif
-                if heroPrimaryAttribute == 1 then
-                    call BlzFrameSetTexture(FRAME_HeroAttribute, "UI\\Widgets\\Console\\Human\\infocard-heroattributes-str", 0, true)
-                elseif heroPrimaryAttribute == 3 then
-                    call BlzFrameSetTexture(FRAME_HeroAttribute, "UI\\Widgets\\Console\\Human\\infocard-heroattributes-agi", 0, true)
-                elseif heroPrimaryAttribute == 2 then
-                    call BlzFrameSetTexture(FRAME_HeroAttribute, "UI\\Widgets\\Console\\Human\\infocard-heroattributes-int", 0, true)
-                endif
+                // Primary attribute: medallion by the name + gold underline on its row.
+                call BlzFrameSetTexture(FRAME_HeroAttribute, WOS_StatIconPath(heroPrimaryAttribute), 0, true)
+                call BlzFrameSetVisible(WOS_PickPrimaryMark[0], false)
+                call BlzFrameSetVisible(WOS_PickPrimaryMark[1], false)
+                call BlzFrameSetVisible(WOS_PickPrimaryMark[2], false)
             endif
+            set WOS_PickExtraUnit = d
+            set WOS_PickExtraStat = PlayerFrameCurrent_ID[pid]
+            set WOS_PickExtraPlayer = p
+            call ExecuteFunc("WOS_PickExtraUpdate")
 
             // Заполняем все семь нативных подсказок один раз при выборе героя.
             // Во время последующего наведения пользовательский код не выполняется.
@@ -1590,411 +2435,7 @@ endif
         set k3 = k3 + 1
     endloop
     if clicked == FRAME_HeroName then
-        set i = PlayerSoundCurrent[pid]
-        set PlayerSoundCurrent[pid] = PlayerSoundCurrent[pid] + 1
-        if PlayerSoundCurrent[pid] > 4 then
-            set PlayerSoundCurrent[pid] = 0
-        endif
-        if PlayerFrameCurrent_ID[pid] == Hero_ID0[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Raiden_Intro1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Raiden_Intro2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Raiden_Intro3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Raiden_Intro4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Raiden_Intro5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID0[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Neuvillette_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Neuvillette_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Neuvillette_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Neuvillette_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Neuvillette_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID0[2] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Patriot_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Patriot_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Patriot_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Patriot_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Patriot_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kyoraku_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kyoraku_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kyoraku_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kyoraku_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kyoraku_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_BazzB_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_BazzB_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_BazzB_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_BazzB_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_BazzB_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[2] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Harribel_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Harribel_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Harribel_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Harribel_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Harribel_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[3] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Barragan_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Barragan_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Barragan_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Barragan_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Barragan_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[4] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Starrk_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Starrk_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Starrk_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Starrk_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Starrk_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID1[5] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Bambietta_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Bambietta_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Bambietta_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Bambietta_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Bambietta_TT", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID2[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Natsu_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Natsu_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Natsu_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Natsu_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Natsu_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID2[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Erza_Start", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Erza_Pick1", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Erza_Start2", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Erza_Pick3", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Erza_Pick2", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID2[2] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Brandish_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Brandish_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Brandish_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Brandish_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Brandish_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID2[3] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Laxus_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Laxus_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Laxus_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Laxus_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Laxus_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID3[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Akainu_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Akainu_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Akainu_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Akainu_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Akainu_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID4[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Gojo_E3", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Gojo_E1", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Gojo_R1", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Gojo_RE", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Gojo_RW1", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[0] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tomioka_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tomioka_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tomioka_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tomioka_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tomioka_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_AlterSaber_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_AlterSaber_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_AlterSaber_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_AlterSaber_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_AlterSaber_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID4[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kenjaku_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kenjaku_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kenjaku_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kenjaku_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kenjaku_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[2] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Inori_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Inori_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Inori_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Inori_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Inori_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[3] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Okarun_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Okarun_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Okarun_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Okarun_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Okarun_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[4] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tsuna_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tsuna_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tsuna_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tsuna_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Tsuna_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[5] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Takeshi_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Takeshi_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Takeshi_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Takeshi_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Takeshi_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[6] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_DarkShiki_R01", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_DarkShiki_T", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_DarkShiki_W03", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_DarkShiki_E01", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_DarkShiki_R02", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[7] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Rimuru_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Rimuru_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Rimuru_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Rimuru_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Rimuru_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[8] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Alucard_Pick", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Alucard_E2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Alucard_Q05", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Alucard_W01", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Alucard_Q2 01", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID4[2] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Mahoraga_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Mahoraga_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Mahoraga_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Mahoraga_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Mahoraga_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID4[3] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Toji_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Toji_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Toji_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Toji_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Toji_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[9] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kirito_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kirito_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kirito_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kirito_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Kirito_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[10] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Asta_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Asta_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Asta_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Asta_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Asta_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[11] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Ainz_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Ainz_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Ainz_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Ainz_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Ainz_Pick5", p)
-            endif
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[12] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Frieren_Pick5", p)
-            endif
-        
-        // HERO TRANSFER: Milim / OnClick sounds
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[13] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Milim_Pick5", p)
-            endif
-        // HERO TRANSFER: Crocodile / OnClick sounds
-        elseif PlayerFrameCurrent_ID[pid] == Hero_ID3[1] then
-            if i == 0 then
-                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick1", p)
-            elseif i == 1 then
-                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick2", p)
-            elseif i == 2 then
-                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick3", p)
-            elseif i == 3 then
-                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick4", p)
-            elseif i == 4 then
-                call MakeSoundLocal("war3mapimported\\Hero_Crocodile_Pick5", p)
-            endif
-        endif
+        call WOS_PlayNextHeroVoice(p, PlayerFrameCurrent_ID[pid])
     endif
     if clicked == FRAME_Pick[3] then
         if TestUnitPickMode[pid] != 0 then
@@ -2170,7 +2611,7 @@ call BlzFrameSetVisible(EmojiToggle, true)
         call ReloadAfterPick(p)
         
         set PlayerFrameCurrent_ID[pid] = 0
-        call PlayersMsg( GetPlayerColorString(p) + GetPlayerName(p) + "|r picked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + "|r", 1 )
+        call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r picked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + "|r", 1 )
     endif
     set s = null
     set d = null
@@ -2475,8 +2916,8 @@ function GuideRefreshAbilityTooltip takes nothing returns nothing
                 set id = GojoR_ID
             elseif hoverSlot == 4 then
                 set id = GojoT_ID
-            elseif hoverSlot == 6 then
-                set id = GojoG_ID
+            elseif hoverSlot == 5 then
+                set id = GojoF_ID
             endif
         elseif PlayerFrameCurrent_ID[pid] == Hero_ID5[0] then
             set i = 0
@@ -2836,7 +3277,7 @@ function GuideCreateAbilityTooltip takes integer slot returns nothing
     call BlzFrameSetLevel(tooltip, 50)
 
     call BlzFrameSetAllPoints(tooltipText, tooltip)
-    call BlzFrameSetTextAlignment(tooltipText, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetTextAlignment(tooltipText, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(tooltipText, 1.00)
     call BlzFrameSetText(tooltipText, "")
 
@@ -2850,97 +3291,230 @@ function GuideCreateAbilityTooltip takes integer slot returns nothing
 endfunction
 
 // Relocate the existing controls only; catalogue IDs, votes and click owners stay intact.
+// Left-aligned stat line inside the preview card.
+function WOS_PickStatLine takes framehandle line, real left, real y, real width returns nothing
+    call BlzFrameClearAllPoints(line)
+    call BlzFrameSetAbsPoint(line, FRAMEPOINT_LEFT, left, y)
+    call BlzFrameSetSize(line, width, 0.013)
+    call BlzFrameSetScale(line, 1.00)
+    call BlzFrameSetTextAlignment(line, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetEnable(line, false)
+    // Above the stat card panel (level 1), otherwise the card hides the text.
+    call BlzFrameSetLevel(line, 6)
+endfunction
+
+// Square icon button (repick/swap): graphite fill, gold glyph, flush gold frame
+// and a caption below. The original BUTTON and its click owner are unchanged.
+function WOS_StylePickIconButton takes framehandle control, framehandle fill, framehandle oldText, string glyph, string caption, real x, real y returns nothing
+    local framehandle part
+    call WUI_Place(control, x, y, 0.026, 0.026)
+    call BlzFrameSetTexture(fill, WUI_FILL_NORMAL, 0, true)
+    call BlzFrameSetAllPoints(fill, control)
+    set part = BlzCreateFrameByType("BACKDROP", "WOSPickIconGlyph", control, "", 0)
+    call BlzFrameSetPoint(part, FRAMEPOINT_TOPLEFT, control, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+    call BlzFrameSetPoint(part, FRAMEPOINT_BOTTOMRIGHT, control, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+    call BlzFrameSetTexture(part, glyph, 0, true)
+    call BlzFrameSetEnable(part, false)
+    set part = WUI_GoldFrame("WOSPickIconEdge", control, 0.0036, 0.0070)
+    call BlzFrameSetTexture(oldText, WUI_EMPTY_TEXTURE, 0, true)
+    call WUI_Place(oldText, x, y - 0.020, 0.001, 0.001)
+    set part = BlzCreateFrameByType("TEXT", "WOSPickIconCaption", control, "", 0)
+    call BlzFrameSetPoint(part, FRAMEPOINT_TOP, control, FRAMEPOINT_BOTTOM, 0.00, -0.002)
+    call BlzFrameSetSize(part, 0.040, 0.010)
+    call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetScale(part, 0.62)
+    call BlzFrameSetText(part, WUI_GOLD + caption + "|r")
+    call BlzFrameSetEnable(part, false)
+    set part = null
+endfunction
+
+function WOS_PickExtraLayout takes nothing returns nothing
+    if FRAME_HeroRange == null then
+        return
+    endif
+    call WOS_PickStatLine(FRAME_HeroRange, 0.6690, 0.3155, 0.058)
+    call WOS_PickStatLine(FRAME_HeroMagRes, 0.6690, 0.2995, 0.058)
+    call BlzFrameSetScale(FRAME_HeroRange, 0.80)
+    call BlzFrameSetScale(FRAME_HeroMagRes, 0.80)
+endfunction
+
 function WOS_LayoutHeroPick takes nothing returns nothing
     local integer i = 0
     local real x
     local real y
+    local framehandle part
     call WUI_Place(FRAME_MAIN, 0.420, 0.331, 0.656, 0.426)
-    call WUI_Place(FRAME_MAIN2, 0.380, 0.362, 0.222, 0.304)
-    call WUI_Place(FRAME_MAIN3, 0.608, 0.362, 0.230, 0.304)
-    call WUI_Place(FRAME_HeroName, 0.608, 0.492, 0.159, 0.024)
+    call WUI_Place(FRAME_MAIN2, 0.375, 0.362, 0.222, 0.304)
+    // Checkpoint 20 preview column (.493-.733): name, large portrait, a framed
+    // two-column stat card, then all seven abilities in one row.
+    call WUI_Place(FRAME_MAIN3, 0.613, 0.365, 0.240, 0.330)
+    // Checkpoint 27b: normal / test pick - name plate a little lower and
+    // flatter, inside the panel's top edge (.530). Captain Draft re-lays this
+    // row level with its timer plates (CaptainDraft_LayoutHeroInfo).
+    call WUI_Place(FRAME_HeroName, 0.613, 0.5145, 0.168, 0.020)
     call BlzFrameSetScale(FRAME_HeroName, 1.00)
-    call WUI_Place(FRAME_HeroAttribute, 0.510, 0.492, 0.022, 0.022)
-    call WUI_Place(FRAME_HeroAttackType, 0.706, 0.492, 0.022, 0.022)
-    call WUI_Place(FRAME_HeroModel, 0.608, 0.413, 0.110, 0.110)
-    call BlzFrameSetScale(FRAME_HeroPortraitBorder, 1.15)
-    call WUI_Pin(FRAME_HeroPortraitBorder, FRAME_HeroModel, 0.000, 0.000, 0.110, 0.110)
+    call WUI_Place(FRAME_HeroAttribute, 0.514, 0.5145, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroAttackType, 0.712, 0.5145, 0.022, 0.022)
+    call WUI_Place(FRAME_HeroModel, 0.613, 0.4180, 0.156, 0.156)
+    call BlzFrameSetScale(FRAME_HeroPortraitBorder, 1.00)
+    call WUI_Pin(FRAME_HeroPortraitBorder, FRAME_HeroModel, 0.000, 0.000, 0.164, 0.164)
     call BlzFrameSetLevel(FRAME_HeroPortraitBorder, 1)
     call BlzFrameSetEnable(FRAME_HeroPortraitBorder, false)
-    call WUI_Place(FRAME_HeroStr, 0.553, 0.338, 0.090, 0.015)
-    call WUI_Place(FRAME_HeroAgi, 0.553, 0.321, 0.090, 0.015)
-    call WUI_Place(FRAME_HeroInt, 0.553, 0.304, 0.090, 0.015)
-    call WUI_Place(FRAME_HeroAtk, 0.663, 0.341, 0.095, 0.015)
-    call WUI_Place(FRAME_HeroArmor, 0.663, 0.326, 0.095, 0.015)
-    call WUI_Place(FRAME_HeroMS, 0.663, 0.311, 0.095, 0.015)
-    call WUI_Place(FRAME_HeroAS, 0.663, 0.296, 0.095, 0.015)
-    call BlzFrameSetScale(FRAME_HeroStr, 0.84)
-    call BlzFrameSetScale(FRAME_HeroAgi, 0.84)
-    call BlzFrameSetScale(FRAME_HeroInt, 0.84)
-    call BlzFrameSetScale(FRAME_HeroAtk, 0.78)
-    call BlzFrameSetScale(FRAME_HeroArmor, 0.78)
-    call BlzFrameSetScale(FRAME_HeroMS, 0.78)
-    call BlzFrameSetScale(FRAME_HeroAS, 0.78)
-    call WUI_Place(FRAME_PlayerPickDifficultText, 0.420, 0.191, 0.240, 0.020)
-    call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 1.10)
-    call BlzFrameSetTextAlignment(FRAME_PlayerPickDifficultText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetEnable(FRAME_PlayerPickDifficultText, false)
-    call WUI_Place(FRAME_TimerToStart, 0.400, 0.526, 0.510, 0.016)
-    call BlzFrameSetTextAlignment(FRAME_TimerToStart, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetScale(FRAME_TimerToStart, 0.94)
+    set part = WUI_Panel("WOSPickStatCard", FRAME_MAIN3, 0.222, 0.054)
+    call WUI_Place(part, 0.613, 0.2995, 0.222, 0.054)
+    call BlzFrameSetLevel(part, 0)
+    call BlzFrameSetEnable(part, false)
+    set part = WUI_GoldFrame("WOSPickStatCardEdge", part, 0.0036, 0.0070)
+    set part = WUI_Divider("WOSPickStatCardDivider", FRAME_MAIN3, 0.6105, 0.2995, 0.044, true)
+    // Left column: medallion + "STR  15  +1.65 / lvl"; the primary attribute
+    // label gets a gold underline with a charcoal glow (replaces the old *).
+    call WOS_PickStatLine(FRAME_HeroStr, 0.5215, 0.3155, 0.088)
+    call WOS_PickStatLine(FRAME_HeroAgi, 0.5215, 0.2995, 0.088)
+    call WOS_PickStatLine(FRAME_HeroInt, 0.5215, 0.2835, 0.088)
     loop
-        exitwhen i >= 30
-        call WUI_Place(FRAME_ICON[i], 0.298 + I2R(ModuloInteger(i, 5)) * 0.041, 0.477 - I2R(i / 5) * 0.041, 0.036, 0.036)
+        exitwhen i >= 3
+        set WOS_PickStatIcon[i] = BlzCreateFrameByType("BACKDROP", "WOSPickStatIcon", FRAME_MAIN3, "", i)
+        call WUI_Place(WOS_PickStatIcon[i], 0.5135, 0.3155 - I2R(i) * 0.016, 0.0115, 0.0115)
+        set WOS_PickPrimaryMark[i] = BlzCreateFrameByType("BACKDROP", "WOSPickPrimaryMark", FRAME_MAIN3, "", i)
+        call WUI_Place(WOS_PickPrimaryMark[i], 0.5305, 0.3155 - I2R(i) * 0.016 - 0.0058, 0.024, 0.0056)
+        call BlzFrameSetTexture(WOS_PickPrimaryMark[i], "UI\\WOS\\stat-underline.tga", 0, true)
+        call BlzFrameSetLevel(WOS_PickStatIcon[i], 6)
+        call BlzFrameSetLevel(WOS_PickPrimaryMark[i], 5)
+        call BlzFrameSetEnable(WOS_PickStatIcon[i], false)
+        call BlzFrameSetEnable(WOS_PickPrimaryMark[i], false)
+        call BlzFrameSetVisible(WOS_PickStatIcon[i], false)
+        call BlzFrameSetVisible(WOS_PickPrimaryMark[i], false)
         set i = i + 1
     endloop
+    set i = 0
+    call BlzFrameSetTexture(WOS_PickStatIcon[0], "UI\\WOS\\stat-str.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickStatIcon[1], "UI\\WOS\\stat-agi.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickStatIcon[2], "UI\\WOS\\stat-int.tga", 0, true)
+    // Right side: three rows, two values per row
+    // (ATK | RANGE, PHYS RES | MAG RES, MS | AS); RANGE/MAG RES in WOS_PickExtraLayout.
+    call WOS_PickStatLine(FRAME_HeroAtk, 0.6150, 0.3155, 0.058)
+    call WOS_PickStatLine(FRAME_HeroArmor, 0.6150, 0.2995, 0.058)
+    call WOS_PickStatLine(FRAME_HeroMS, 0.6150, 0.2835, 0.058)
+    call WOS_PickStatLine(FRAME_HeroAS, 0.6690, 0.2835, 0.058)
+    call BlzFrameSetScale(FRAME_HeroStr, 0.82)
+    call BlzFrameSetScale(FRAME_HeroAgi, 0.82)
+    call BlzFrameSetScale(FRAME_HeroInt, 0.82)
+    call BlzFrameSetScale(FRAME_HeroAtk, 0.80)
+    call BlzFrameSetScale(FRAME_HeroArmor, 0.80)
+    call BlzFrameSetScale(FRAME_HeroMS, 0.80)
+    call BlzFrameSetScale(FRAME_HeroAS, 0.80)
+    // Difficulty is a plaque set into the bottom edge of the hero portrait.
+    set FRAME_PlayerPickDifficultPlate = BlzCreateFrameByType("BACKDROP", "WOSPickDifficultyPlate", FRAME_MAIN3, "", 0)
+    call WUI_Place(FRAME_PlayerPickDifficultPlate, 0.613, 0.3435, 0.112, 0.0165)
+    call BlzFrameSetTexture(FRAME_PlayerPickDifficultPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetLevel(FRAME_PlayerPickDifficultPlate, 7)
+    call BlzFrameSetEnable(FRAME_PlayerPickDifficultPlate, false)
+    set part = WUI_GoldFrame("WOSPickDifficultyEdge", FRAME_PlayerPickDifficultPlate, 0.0030, 0.0060)
+    call BlzFrameSetParent(FRAME_PlayerPickDifficultText, FRAME_PlayerPickDifficultPlate)
+    call BlzFrameClearAllPoints(FRAME_PlayerPickDifficultText)
+    call BlzFrameSetPoint(FRAME_PlayerPickDifficultText, FRAMEPOINT_CENTER, FRAME_PlayerPickDifficultPlate, FRAMEPOINT_CENTER, 0.00, 0.00)
+    call BlzFrameSetSize(FRAME_PlayerPickDifficultText, 0.112, 0.0165)
+    call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 0.82)
+    call BlzFrameSetTextAlignment(FRAME_PlayerPickDifficultText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(FRAME_PlayerPickDifficultText, false)
+    call BlzFrameSetLevel(FRAME_PlayerPickDifficultText, 8)
+    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, true)
+    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
+    // Checkpoint 22: the round timer has its own framed plate in the top-left
+    // corner, above the franchise logos (it used to float in the title row).
+    set WOS_PickTimerPlate = BlzCreateFrameByType("BACKDROP", "WOSPickTimerPlate", FRAME_MAIN, "", 0)
+    call BlzFrameSetTexture(WOS_PickTimerPlate, "UI\\WOS\\panel-soft.tga", 0, true)
+    call BlzFrameSetEnable(WOS_PickTimerPlate, false)
+    call BlzFrameSetLevel(WOS_PickTimerPlate, 6)
+    set part = WUI_GoldFrame("WOSPickTimerEdge", WOS_PickTimerPlate, 0.0030, 0.0070)
+    call BlzFrameSetParent(FRAME_TimerToStart, WOS_PickTimerPlate)
+    call BlzFrameSetLevel(FRAME_TimerToStart, 7)
+    call WOS_PickTimerPlace(WOS_PickTimerPlate, FRAME_TimerToStart, WOS_PICK_TIMER_X, WOS_PICK_TIMER_Y, WOS_PICK_TIMER_W)
+    loop
+        exitwhen i >= 30
+        call WUI_Place(FRAME_ICON[i], 0.293 + I2R(ModuloInteger(i, 5)) * 0.041, 0.477 - I2R(i / 5) * 0.041, 0.036, 0.036)
+        // Gold bevel frame over the hero icon (the stock BTN bevel is hidden).
+        set part = WUI_IconFrame(FRAME_ICON[i], WUI_ICON_FRAME)
+        set i = i + 1
+    endloop
+    call WOS_PickGridLayout(not CaptainDraftMode)
     set i = 0
     loop
         exitwhen i >= 6
-        call WUI_Place(Frame_PageHeroList[i], 0.181, 0.476 - I2R(i) * 0.049, 0.151, 0.040)
+        // New gold franchise plates are 4:1.
+        call WUI_Place(Frame_PageHeroList[i], 0.181, 0.476 - I2R(i) * 0.049, 0.156, 0.039)
         set i = i + 1
     endloop
-    set i = 0
+    call BlzFrameSetTexture(Frame_PageHeroListImage[0], "UI\\WOS\\pick-logo-gacha.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[1], "UI\\WOS\\pick-logo-bleach.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[2], "UI\\WOS\\pick-logo-fairytail.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[3], "UI\\WOS\\pick-logo-onepiece.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[4], "UI\\WOS\\pick-logo-jujutsu.tga", 0, true)
+    call BlzFrameSetTexture(Frame_PageHeroListImage[5], "UI\\WOS\\pick-logo-other.tga", 0, true)
+    // Checkpoint 24: there is never a second hero page, so the page arrows
+    // stay hidden; confirm / random / ban spread over the grid's width.
+    call BlzFrameSetVisible(FRAME_Pick[0], false)
+    call BlzFrameSetVisible(FRAME_Pick[1], false)
+    call WUI_Place(FRAME_Pick[0], -0.50, -0.50, 0.031, 0.031)
+    call WUI_Place(FRAME_Pick[1], -0.50, -0.50, 0.031, 0.031)
+    set i = 2
     loop
         exitwhen i >= 5
-        call WUI_Place(FRAME_Pick[i], 0.298 + I2R(i) * 0.041, 0.236, 0.031, 0.031)
+        call WUI_Place(FRAME_Pick[i], 0.293 + I2R(i - 2) * 0.082, 0.236, 0.034, 0.034)
         set i = i + 1
     endloop
     set i = 0
     loop
         exitwhen i >= 7
-        // Original working pick: QWERT below, F/G in the row above at right.
-        set x = 0.518 + I2R(i) * 0.042
-        set y = 0.236
-        if i >= 5 then
-            set x = 0.644 + I2R(i - 5) * 0.042
-            set y = 0.274
-        endif
-        call WUI_Place(FRAME_ICON5[i], x, y, 0.026, 0.026)
+        // QWERT F G in ONE row under the stat card (same order as the HUD).
+        set x = 0.520 + I2R(i) * 0.031
+        set y = 0.2515
+        call WUI_Place(FRAME_ICON5[i], x, y, 0.027, 0.027)
+        set part = WUI_GoldFrame("WOSPickAbilityEdge", FRAME_ICON5[i], 0.0030, 0.0000)
         call BlzFrameClearAllPoints(FRAME_AbiText[i])
-        call BlzFrameSetPoint(FRAME_AbiText[i], FRAMEPOINT_TOP, FRAME_ICON5[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
+        call BlzFrameSetPoint(FRAME_AbiText[i], FRAMEPOINT_TOP, FRAME_ICON5[i], FRAMEPOINT_BOTTOM, 0.00, -0.002)
         call BlzFrameSetScale(FRAME_AbiText[i], 0.67)
-        call WUI_Place(FRAME_AbilityTooltip[i], 0.608, 0.376, 0.214, 0.220)
+        // Description overlays the portrait + stat card (.214 x .232) with an
+        // inner margin, so long texts have room and never spill outside.
+        call WUI_Place(FRAME_AbilityTooltip[i], 0.613, 0.3925, 0.226, 0.232)
         call BlzFrameSetTexture(FRAME_AbilityTooltip[i], WUI_PANEL_TEXTURE, 0, true)
-        call BlzFrameSetScale(FRAME_AbilityTooltipText[i], 0.78)
+        call BlzFrameSetAlpha(FRAME_AbilityTooltip[i], 250)
+        set part = WUI_GoldFrame("WOSPickTooltipEdge", FRAME_AbilityTooltip[i], 0.0040, 0.0080)
+        call BlzFrameClearAllPoints(FRAME_AbilityTooltipText[i])
+        call BlzFrameSetPoint(FRAME_AbilityTooltipText[i], FRAMEPOINT_TOPLEFT, FRAME_AbilityTooltip[i], FRAMEPOINT_TOPLEFT, 0.009, -0.009)
+        call BlzFrameSetPoint(FRAME_AbilityTooltipText[i], FRAMEPOINT_BOTTOMRIGHT, FRAME_AbilityTooltip[i], FRAMEPOINT_BOTTOMRIGHT, -0.009, 0.009)
+        call BlzFrameSetScale(FRAME_AbilityTooltipText[i], 0.80)
         set i = i + 1
     endloop
     set i = 0
     loop
         exitwhen i >= 10
-        set x = 0.148 + I2R(i) * 0.058
+        // Checkpoint 22: teams hug the window edges; the ban row sits between.
+        // Checkpoint 24: rows sit inside the window's inner frame, a bit
+        // closer to the centre, with a clear gap to the ban plate.
+        set x = 0.124 + I2R(i) * 0.040
         if i >= 5 then
-            set x = x + 0.039
+            set x = 0.556 + I2R(i - 5) * 0.040
         endif
-        call WUI_Place(FRAME_PlayerPick[i], x, 0.155, 0.028, 0.028)
-        call WUI_Place(FRAME_PlayerPickText[i], x, 0.131, 0.055, 0.016)
-        call BlzFrameSetScale(FRAME_PlayerPickText[i], 0.64)
-        call WUI_Place(FRAME_Repick[i], 0.018, 0.552, 0.027, 0.027)
-        call WUI_Place(FRAME_Swap[i], 0.052, 0.552, 0.027, 0.027)
-        call WUI_Place(FRAME_RepickText[i], 0.018, 0.530, 0.028, 0.009)
-        call WUI_Place(FRAME_SwapText[i], 0.052, 0.530, 0.028, 0.009)
-        call WUI_Tooltip(FRAME_Repick[i], "REPICK|nReturn to the existing hero selection.")
-        call WUI_Tooltip(FRAME_Swap[i], "SWAP|nRequest an ally hero swap.")
+        call WUI_Place(FRAME_PlayerPick[i], x, 0.155, 0.030, 0.030)
+        set part = WUI_IconFrame(FRAME_PlayerPick[i], WUI_ICON_FRAME)
+        call BlzFrameSetLevel(part, 2)
+        call BlzFrameClearAllPoints(FRAME_PlayerPickText[i])
+        call BlzFrameSetAbsPoint(FRAME_PlayerPickText[i], FRAMEPOINT_TOP, x, 0.1385)
+        call BlzFrameSetSize(FRAME_PlayerPickText[i], 0.039 / 0.60, 0.024 / 0.60)
+        call BlzFrameSetTextAlignment(FRAME_PlayerPickText[i], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetScale(FRAME_PlayerPickText[i], 0.60)
+        // Docked to the left end of the team strip; when unavailable, the
+        // heroicon library shows disabled plates in the same spots.
+        call WOS_StylePickIconButton(FRAME_Repick[i], FRAME_RepickHover[i], FRAME_RepickText[i], "UI\\WOS\\glyph-repick.tga", "", WOS_REPICK_X, WOS_SWAP_Y)
+        call WOS_StylePickIconButton(FRAME_Swap[i], FRAME_SwapHover[i], FRAME_SwapText[i], "UI\\WOS\\glyph-swap.tga", "", WOS_SWAP_X, WOS_SWAP_Y)
+        call WUI_TooltipBelow(FRAME_Repick[i], "|cffd5b876REPICK|r|nReturn to the hero selection (costs 500 gold).")
+        call WUI_TooltipBelow(FRAME_Swap[i], "|cffd5b876SWAP|r|nChoose an ally; they accept or decline.")
         set i = i + 1
     endloop
+    call WOS_CreatePickBans(FRAME_MAIN)
+    call WOS_PickBanLayout(MaxHeroBans, true)
+    set part = null
 endfunction
 
 function WOS_CreatePickShell takes nothing returns nothing
@@ -2952,6 +3526,7 @@ function WOS_CreatePickShell takes nothing returns nothing
     local framehandle border
     set FrameClick = CreateTrigger()
     set FrameGuideRefresh = CreateTrigger()
+    call WOS_PickStatsInit()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
     set FRAME_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
     call WUI_RegisterModal(FRAME_MAIN)
@@ -2973,7 +3548,7 @@ function WOS_CreatePickShell takes nothing returns nothing
     call BlzFrameSetSize(FRAME_PlayerPickDifficultText, 0.095, 0.055)
     call BlzFrameSetText(FRAME_PlayerPickDifficultText, "")
     call BlzFrameSetScale(FRAME_PlayerPickDifficultText, 2.4)
-    call BlzFrameSetVisible(FRAME_PlayerPickDifficultText, false)
+    call BlzFrameSetVisible(FRAME_PlayerPickDifficultPlate, false)
     call BlzFrameSetLevel(FRAME_PlayerPickDifficultText, 4)
     set FRAME_HeroModel = BlzCreateFrameByType("BACKDROP", "Port", FRAME_MAIN3, "", 0)
     call BlzFrameSetAbsPoint(FRAME_HeroModel, FRAMEPOINT_CENTER, 0.645, 0.39)
@@ -3001,6 +3576,7 @@ function WOS_CreatePickShell takes nothing returns nothing
     call BlzFrameSetAbsPoint(FRAME_HeroStr, FRAMEPOINT_CENTER, 0.5955, 0.245)
     call BlzFrameSetSize(FRAME_HeroStr, 0.1, 0.05)
     call BlzFrameSetVisible(FRAME_HeroStr, false)
+    call WOS_ShowPickStatDecor(false)
     call BlzFrameSetScale(FRAME_HeroStr, 1.4)
     set FRAME_HeroAgi = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)
     call BlzFrameSetAbsPoint(FRAME_HeroAgi, FRAMEPOINT_CENTER, 0.5955, 0.225)
@@ -3053,7 +3629,7 @@ function WOS_CreatePickCatalogue takes nothing returns nothing
     set k = 0
     loop
         exitwhen k == 5
-        set FRAME_Pick[k] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_Pick[k] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "WOSIconButtonTemplate", 0)
         set FRAME_ICON_Pick[k] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Pick[k], "", 0)
         call BlzFrameSetAllPoints(FRAME_ICON_Pick[k], FRAME_Pick[k])
         call BlzFrameSetPoint(FRAME_Pick[k], FRAMEPOINT_LEFT, FRAME_MAIN2, FRAMEPOINT_TOPLEFT, x + 0.05 * k, -0.3525 )// - 0.03 * i)
@@ -3065,15 +3641,15 @@ function WOS_CreatePickCatalogue takes nothing returns nothing
             call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Page_Right", 0, true)
             call BlzFrameSetSize(FRAME_Pick[k], 0.037, 0.037)
         elseif k == 2 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Pick_Manual2", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-confirm-off.tga", 0, true)
         elseif k == 3 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Pick_Random2", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-random-off.tga", 0, true)
             // Keep Random attached to the pick panel itself. This avoids the
             // accumulated TOPLEFT offset moving it on 16:10 resolutions.
             call BlzFrameClearAllPoints(FRAME_Pick[k])
             call BlzFrameSetPoint(FRAME_Pick[k], FRAMEPOINT_BOTTOM, FRAME_MAIN2, FRAMEPOINT_BOTTOM, 0.05, 0.0225)
         elseif k == 4 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Pick_Ban", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-ban.tga", 0, true)
             call BlzFrameSetSize(FRAME_Pick[k], 0.05, 0.05)
         endif
         // disable ALL pick buttons initially, enable after pre-pick
@@ -3098,7 +3674,7 @@ function WOS_CreatePickCatalogue takes nothing returns nothing
     loop
         exitwhen i == 30
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)
-        set FRAME_ICON[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_ICON[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "WOSIconButtonTemplate", 0)
         set FRAME_ICON2[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON[i], "", 0)
         call BlzFrameSetTexture(FRAME_ICON[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
         call BlzFrameSetAllPoints(FRAME_ICON2[i], FRAME_ICON[i])
@@ -3137,7 +3713,7 @@ function WOS_CreatePickCategories takes nothing returns nothing
     loop
         exitwhen i == 6
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)
-        set Frame_PageHeroList[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "ScoreScreenTabButtonTemplate", 0)
+        set Frame_PageHeroList[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN2, "WOSIconButtonTemplate", 0)
         set Frame_PageHeroListImage[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", Frame_PageHeroList[i], "", 0)
         call BlzFrameSetTexture(Frame_PageHeroList[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
         call BlzFrameSetAllPoints(Frame_PageHeroListImage[i], Frame_PageHeroList[i])
@@ -3167,7 +3743,7 @@ function WOS_CreatePickCategories takes nothing returns nothing
     set i = 0
     loop
         exitwhen i == 10
-        set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_Repick[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
         call BlzFrameSetSize(FRAME_Repick[i], 0.05, 0.05)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Repick[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_RepickHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Repick[i], "", 0)
@@ -3180,7 +3756,7 @@ function WOS_CreatePickCategories takes nothing returns nothing
         call BlzFrameSetPoint(FRAME_RepickText[i], FRAMEPOINT_LEFT, FRAME_Repick[i], FRAMEPOINT_TOPLEFT, 0., -0.0575 )
         call BlzFrameSetEnable(FRAME_Repick[i], false)
         call BlzFrameSetVisible(FRAME_Repick[i], false)
-        set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_Swap[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
         call BlzFrameSetSize(FRAME_Swap[i], 0.04, 0.04)
         call BlzTriggerRegisterFrameEvent(FrameClick, FRAME_Swap[i], FRAMEEVENT_CONTROL_CLICK)
         set FRAME_SwapHover[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_Swap[i], "", 0)
@@ -3211,7 +3787,7 @@ function WOS_CreatePickAbilities takes nothing returns nothing
     loop
         exitwhen i == 7
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)
-        set FRAME_ICON5[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN3, "ScoreScreenTabButtonTemplate", 0)
+        set FRAME_ICON5[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN3, "WOSIconButtonTemplate", 0)
         set FRAME_ICON6[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON5[i], "", 0)
         call BlzFrameSetTexture(FRAME_ICON5[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
         call BlzFrameSetAllPoints(FRAME_ICON6[i], FRAME_ICON5[i])
@@ -3344,6 +3920,8 @@ function CreateUI takes nothing returns nothing
     call WUI_OnReady(function WOS_CreatePickAbilities)
     call WUI_OnReady(function WOS_CreatePickPlayers)
     call WUI_OnReady(function WOS_LayoutHeroPick)
+    call WUI_OnReady(function WOS_PickExtraCreate)
+    call WUI_OnReady(function WOS_PickExtraLayout)
     call WUI_OnReady(function CaptainDraft_CreateUI)
 endfunction
 // Captain Mode: функция SetVoteStackTexture перенесена в CaptainMode_Module.j
@@ -3500,8 +4078,12 @@ function LockCaptainBanProposal takes integer pid returns nothing
     set heroId = BanProposalHero[pid]
     if heroId != 0 and not IsHeroBanImmune(heroId) and IsHeroAvailableForPick(heroId) then
         call LockBannedHero(heroId)
+        if BannedHeroCount > 0 and BannedHeroType[BannedHeroCount - 1] == heroId then
+            call WOS_PickBanSet(BannedHeroCount - 1, heroId, pid)
+            call WOS_PickBanFlash(BannedHeroCount - 1)
+        endif
         call UpdateBanProposalSlot(pid)
-        call PlayersMsg("|c00FF0303Captain guaranteed ban:|r " + GetObjectName(heroId), 1)
+        call WUI_Feed("|c00FF0303Captain guaranteed ban:|r " + GetObjectName(heroId), 1)
     endif
 endfunction
 
@@ -3549,6 +4131,7 @@ function EndBanPhase takes nothing returns nothing
     call BlzFrameSetText(FRAME_TimerToStart, "|c00FFFF00Time to pick: " + I2S(time) + "|r")
     set CanPickRandom = 1
     call BlzFrameSetVisible(FRAME_BanSpinSprite, false)
+    call WOS_PickBanHideFx()
 
     // First clear every proposal. ReloadHeroPage checks the complete
     // BanProposalHero array, so refreshing inside this loop would leave
@@ -3568,7 +4151,7 @@ function EndBanPhase takes nothing returns nothing
         set i = i + 1
     endloop
     call RefreshAllPlayersHeroPage()
-    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
+    call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
     call BlzFrameSetEnable(FRAME_Pick[4], false)
     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
 endfunction
@@ -3592,6 +4175,76 @@ endif
 endfunction 
 // Р В РІР‚СћР В РўвЂР В РЎвЂР В Р вЂ¦Р В Р’В°Р РЋР РЏ Р РЋР С“Р В Р’В°Р В РЎВР В РЎвЂўР В РЎвЂ”Р В Р’В»Р В Р’В°Р В Р вЂ¦Р В РЎвЂР РЋР вЂљР РЋРЎвЂњР РЋР вЂ№Р РЋРІР‚В°Р В Р’В°Р РЋР РЏ Р РЋРІР‚С›Р РЋРЎвЂњР В Р вЂ¦Р В РЎвЂќР РЋРІР‚В Р В РЎвЂР РЋР РЏ Р Р†Р вЂљРІР‚Сњ Р В РЎвЂќР РЋР вЂљР РЋРЎвЂњР РЋРІР‚С™Р В РЎвЂР РЋРІР‚С™ Р РЋР С“Р В РЎвЂ”Р РЋР вЂљР В Р’В°Р В РІвЂћвЂ“Р РЋРІР‚С™, Р В РЎвЂ”Р В РЎвЂўР РЋРІР‚С™Р В РЎвЂўР В РЎВ "Р В РЎвЂ”Р РЋР вЂљР В РЎвЂР В Р’В·Р В Р’ВµР В РЎВР В Р’В»Р РЋР РЏР В Р’ВµР РЋРІР‚С™",
 // Р В РўвЂР В Р’ВµР РЋР вЂљР В Р’В¶Р В РЎвЂР РЋРІР‚С™ Р В РЎвЂ”Р В Р’В°Р РЋРЎвЂњР В Р’В·Р РЋРЎвЂњ 3 Р РЋР С“Р В Р’ВµР В РЎвЂќ, Р В РЎвЂ”Р В РЎвЂўР РЋРІР‚С™Р В РЎвЂўР В РЎВ Р В Р’В»Р В РЎвЂР В Р’В±Р В РЎвЂў Р В Р’В·Р В Р’В°Р В РЎвЂ”Р РЋРЎвЂњР РЋР С“Р В РЎвЂќР В Р’В°Р В Р’ВµР РЋРІР‚С™ Р РЋР С“Р В Р’В»Р В Р’ВµР В РўвЂР РЋРЎвЂњР РЋР вЂ№Р РЋРІР‚В°Р В РЎвЂР В РІвЂћвЂ“ Р В Р’В±Р В Р’В°Р В Р вЂ¦, Р В Р’В»Р В РЎвЂР В Р’В±Р В РЎвЂў Р В Р’В·Р В Р’В°Р В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІвЂљВ¬Р В Р’В°Р В Р’ВµР РЋРІР‚С™ Р РЋРІР‚С›Р В Р’В°Р В Р’В·Р РЋРЎвЂњ.
+// Checkpoint 23: when every remaining proposal fits into the free ban slots,
+// all of them are banned at once (no roulette).
+function BanUniqueCandidateCount takes nothing returns integer
+local integer i = 0
+local integer j
+local integer count = 0
+local boolean seen
+loop
+exitwhen i >= BanCandidateCount
+set seen = false
+set j = 0
+loop
+exitwhen j >= i or seen
+set seen = BanCandidateHero[j] == BanCandidateHero[i]
+set j = j + 1
+endloop
+if not seen then
+set count = count + 1
+endif
+set i = i + 1
+endloop
+return count
+endfunction
+
+function BanInstantFinish takes nothing returns nothing
+local integer i = 0
+call DestroyTimer(GetExpiredTimer())
+loop
+exitwhen i >= 10
+call BlzFrameSetVisible(FRAME_BanHighlight[i],false)
+set i = i + 1
+endloop
+call WOS_PickBanHideFx()
+call EndBanPhase()
+endfunction
+
+function BanAllCandidatesNow takes nothing returns boolean
+local integer i = 0
+local integer pid
+local integer heroId
+if BanCandidateCount == 0 or BannedHeroCount + BanUniqueCandidateCount() > MaxHeroBans then
+return false
+endif
+call BlzFrameSetVisible(FRAME_BanSpinSprite,false)
+loop
+exitwhen i >= BanCandidateCount
+set pid = BanCandidatePid[i]
+set heroId = BanCandidateHero[i]
+if IsHeroAvailableForPick(heroId) then
+call LockBannedHero(heroId)
+if BannedHeroCount > 0 and BannedHeroType[BannedHeroCount - 1] == heroId then
+call WOS_PickBanSet(BannedHeroCount - 1, heroId, pid)
+call WOS_PickBanFlash(BannedHeroCount - 1)
+endif
+call WUI_Feed("|c00FF0303Banned hero:|r "+GetObjectName(heroId),1)
+endif
+call BlzFrameSetVisible(FRAME_BanHighlight[pid],true)
+call BlzFrameSetSpriteAnimate(FRAME_BanHighlight[pid],0,0)
+set BanProposalHero[pid] = 0
+call UpdateBanProposalSlot(pid)
+set i = i + 1
+endloop
+set BanCandidateCount = 0
+call RefreshAllPlayersHeroPage()
+call MusicBan()
+call BlzFrameSetText(FRAME_TimerToStart,"|c00FF0303Heroes banned|r")
+call TimerStart(CreateTimer(),2.0,false,function BanInstantFinish)
+return true
+endfunction
+
 function BanPhaseTick takes nothing returns nothing
 local timer t = GetExpiredTimer()
 local integer pid = 0
@@ -3616,10 +4269,14 @@ call BlzFrameSetVisible(FRAME_BanSpinSprite,false)
 call BlzFrameSetVisible(FRAME_BanHighlight[pid],true)
 call BlzFrameSetSpriteAnimate(FRAME_BanHighlight[pid],0,0)
 call LockBannedHero(heroId)
+if BannedHeroCount > 0 and BannedHeroType[BannedHeroCount - 1] == heroId then
+call WOS_PickBanSet(BannedHeroCount - 1, heroId, pid)
+call WOS_PickBanFlash(BannedHeroCount - 1)
+endif
 call UpdateBanProposalSlot(pid)
 call RefreshAllPlayersHeroPage()
 call MusicBan()
-call PlayersMsg("|c00FF0303Banned hero:|r "+GetObjectName(heroId),1)
+call WUI_Feed("|c00FF0303Banned hero:|r "+GetObjectName(heroId),1)
 set BanPhaseStage = 1
 call BlzFrameSetText(FRAME_TimerToStart,"|c00FF0303Banned: "+GetObjectName(heroId)+"|r")
 call TimerStart(CreateTimer(),2.0,false,function BanPhaseTick)
@@ -3631,6 +4288,7 @@ else
 if BanLastBannedPid >= 0 then
 call BlzFrameSetVisible(FRAME_BanHighlight[BanLastBannedPid],false)
 endif
+call WOS_PickBanHideFx()
 loop
 exitwhen i >= 10
 if BanProposalHero[i] == BannedHeroType[BannedHeroCount-1] then
@@ -3641,6 +4299,8 @@ endloop
 call BuildBanCandidateList()
 if BannedHeroCount >= MaxHeroBans or BanCandidateCount == 0 then
 call EndBanPhase()
+elseif BanAllCandidatesNow() then
+// all remaining proposals banned at once
 else
 set BanRevealIndex = GetRandomInt(0,BanCandidateCount-1)
 set BanRevealStep = 0
@@ -3658,6 +4318,7 @@ function StartBanPhase takes nothing returns nothing
     // Сначала фиксируются капитанские предложения. Рулетка разыгрывает только
     // оставшиеся места до общего лимита MaxHeroBans.
     set BannedHeroCount = 0
+    call WOS_PickBanClear()
     call LockCaptainBanProposals()
     call BuildBanCandidateList()
     call RefreshAllPlayersHeroPage()
@@ -3666,11 +4327,14 @@ function StartBanPhase takes nothing returns nothing
         return
     endif
     set BanPhaseActive = true
+    call WUI_Feed("|c00FFFF00Hero ban phase starting!|r", 2)
+    if BanAllCandidatesNow() then
+        return
+    endif
     set BanRevealIndex = GetRandomInt(0, BanCandidateCount - 1)
     set BanRevealStep = 0
     set BanRevealTotalSteps = 14 + GetRandomInt(0, 6)
     set BanPhaseStage = 0
-    call PlayerMsg("|c00FFFF00Hero ban phase starting!|r", 2)
     call ShowBanSpriteOnSlot(BanCandidatePid[BanRevealIndex])
     call TimerStart(CreateTimer(), 0.12, false, function BanPhaseTick)
 endfunction
@@ -3739,7 +4403,7 @@ if PickPhaseActive == false then
         if GetLocalPlayer() == Player(i) then
             call BlzFrameSetEnable(FRAME_Pick[4], false)
             call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
-            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
         endif
         endif
         set i = i + 1
@@ -3750,11 +4414,11 @@ endif
             loop
                 exitwhen i == 10
                 if GetLocalPlayer() == Player(i) then
-                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "Pick\\PickButton_Pick_Random", 0, true)
+                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random.tga", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
                     if (FramePlayerFirstName[i] == "Hansel" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID3[1]) then
-                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual", 0, true)
+                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif
                 endif
@@ -3771,7 +4435,7 @@ endif
                 if GetLocalPlayer() == Player(i) then
                     call BlzFrameSetEnable(FRAME_Pick[4], false)
                     call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)                    
-                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
                 endif
                 set i = i + 1
             endloop
@@ -3785,9 +4449,9 @@ endif
             exitwhen i == 10
             if GetLocalPlayer() == Player(i) then
                 call BlzFrameSetEnable(FRAME_Pick[2], true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "Pick\\PickButton_Pick_Manual", 0, true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "Pick\\PickButton_Pick_Random", 0, true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "Pick\\PickButton_Pick_Ban2", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
                 call BlzFrameSetEnable(FRAME_Pick[3], true)
             endif
             if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
@@ -3952,10 +4616,12 @@ endif
                 set i = 0
                 loop
                     exitwhen i == 10
+                    // Kenjaku curse stacks start at every round start for a hero
+                    // that has not started them yet (picked/replaced/swapped later).
+                    if GetUnitTypeId(Hero[i]) == Kenjaku_ID and not LoadBoolean(hs, GetHandleId(Hero[i]), StringHash("KenjakuF Started")) then
+                        call KenjakuF2_Start(Hero[i])
+                    endif
                     if firstroundinit == 1 then
-                        if GetUnitTypeId(Hero[i]) == Kenjaku_ID then
-                            call KenjakuF2_Start(Hero[i])
-                        endif
                         call BlzFrameSetEnable(FRAME_Repick[i], false)
                         call BlzFrameSetVisible(FRAME_Repick[i], false)
                         call BlzFrameSetVisible(FRAME_SwapSprite[i], false)
@@ -4147,7 +4813,7 @@ endloop
                        // call HideBottomUI(Player(i), true)
                         set i = i + 1
                     endloop
-                    call BlzFrameSetVisible(main_frame,false)
+                    call WUI_LockHeroLayer()
                     call WOS_STATS_ShowFinal()
                     // Один последовательный таймер: сначала полностью закрывает
                     // личный сейв, на следующем тике отдельно пишет бот-файл.
@@ -4157,13 +4823,6 @@ endloop
                 set CurrentRound = CurrentRound + 1
                 set r_ping = 1
                 set r_train   = 1
-                if CurrentRound == 4 then // 14
-                    call PlayerMsg("|c00FFFF00All heroes gain additional|r |c004675FF5%|r |c00FFFF00magic resistance |r ", 2)
-                elseif CurrentRound == 7 then // 26
-                    call PlayerMsg("|c00FFFF00All heroes gain additional|r |c004675FF5%|r |c00FFFF00magic resistance |r ", 2)
-                elseif CurrentRound == 9 then // 35
-                    call PlayerMsg("|c00FFFF00All heroes gain additional|r |c004675FF5%|r |c00FFFF00magic resistance |r ", 2)
-                endif
                 //call BlzFrameSetText(FRAME_Team1Rounds, "|cffff0000" + I2S(Team1Round) + "/" + I2S(MaxRounds) + "|r")
                // call BlzFrameSetText(FRAME_Team2Rounds, "|c002F63FF" + I2S(Team2Round) + "/" + I2S(MaxRounds) + "|r")
                 call BlzFrameSetText(FRAME_RoundCount, "Round: |c00FFFF00" + I2S(CurrentRound) + "|r")
@@ -4357,8 +5016,7 @@ function initmapstart takes nothing returns nothing
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_K, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_S, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_F1, 0, false )
-        call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_F3, 0, false )
-        call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_F4, 0, false )
+        // F3 / F4 are rebindable hotkeys of the statistics window (Scoreboard.j).
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_B, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_TAB, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_0, 0, false )
@@ -4577,11 +5235,15 @@ endif
         endif
         set i = i + 1
     endloop
-    call BlzChangeMinimapTerrainTex("war3mapImported\\war3mapMapTrue.blp")
+    // Disabled: this texture filled only a corner of the minimap; the native map picture is used.
+    //call BlzChangeMinimapTerrainTex("war3mapImported\\war3mapMapTrue.blp")
+    // Per-player base/arena camera bounds are maintained by CamSetup.
 // 0 Red
-    call Emoji_Init()
-    call SaveSystem_Init()
-    call SaveSystem_RegisterChat()
+    // Own threads (normally already done 1 sec into the game): the mode
+    // click thread also opens the pick and must stay under the op limit.
+    call ExecuteFunc("Emoji_Init")
+    call ExecuteFunc("SaveSystem_Init")
+    call ExecuteFunc("SaveSystem_RegisterChat")
     
     
     set PC_R[0] = 255

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "e0a856fac6276b0a20bc0d00f8750f3912fad869ce0724a34e803a5bf78ab267",
+  "source_sha256": "350c5a06330c9b74edcb8f93a2679c249da775a29f06dc35b0d6910a5a653fcf",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -25420,6 +25420,200 @@
         }
       ],
       "display_name": "Crocodile"
+    },
+    {
+      "old_id": {
+        "text": "hpea",
+        "hex": "68706561"
+      },
+      "new_id": {
+        "text": "h02N",
+        "hex": "6830324E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uabs",
+            "hex": "75616273"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uerd",
+            "hex": "75657264"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umxp",
+            "hex": "756D7870"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umxr",
+            "hex": "756D7872"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "Model / Модель",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Model Thomas.mdl",
+            "_original_value": "war3mapImported\\wos_Model Thomas.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Nb2RlbCBUaG9tYXMubWRs"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_219",
+            "_original_value": "TRIGSTR_219",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMTk=",
+            "resolved_value": "Dummy Train Thomas",
+            "_original_resolved_value": "Dummy Train Thomas"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ushu",
+            "hex": "75736875"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNPeon.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNPeon.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5QZW9uLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usca",
+            "hex": "75736361"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 3.1500000953674316,
+            "_original_value": 3.1500000953674316,
+            "_raw_hex": "9A994940"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Dummy Train Thomas"
     }
   ]
 }

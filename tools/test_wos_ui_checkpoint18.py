@@ -72,7 +72,7 @@ class MusicFailure(unittest.TestCase):
                 key = 'edit' if name == 'LMPLinkEditTemplate' else 'seek' if context == 0 else 'volume'
                 created.append(key)
                 return None if key == missing else key
-            vm.g.update(WUI_GetRoot=lambda: 'root', BlzCreateFrame=create,
+            vm.g.update(WUI_GetRoot=lambda: 'root', BlzCreateFrame=create, WUI_HasFrameDefinitions=lambda: False, bj_MAX_PLAYER_SLOTS=28, WUI_TopActionX=lambda i: .638 + i * .036, WUI_TOGGLE_HOTKEY_Y=.0185, BlzFrameSetVisible=lambda *_: None, WUI_TooltipBox=lambda *_: 'tooltip',
                         BlzDestroyFrame=destroyed.append, BJDebugMsg=messages.append,
                         WUI_Window=lambda *a: self.fail('partial window allocated'),
                         LMP_CreateIconButton=lambda *a: self.fail('partial button allocated'))
@@ -138,23 +138,26 @@ class AnchoredLayout(unittest.TestCase):
 
     def test_small_minimap_camera_and_chassis_have_no_large_gap(self):
         vm = self.fixture.vm
+        vm.g.update(ModuloInteger=lambda a, b: a % b)
         vm.run('WUI_CreateHUDChrome')
         calls = self.fixture.calls
-        pos = {a[0]: a[2:] for n,a in calls if n == 'BlzFrameSetAbsPoint'}
-        size = {a[0]: a[1:] for n,a in calls if n == 'BlzFrameSetSize'}
+        points = [a for n,a in calls if n == 'BlzFrameSetAbsPoint']
         mini = 'BACKDROP:WOSMinimapSurface'; hud = 'BACKDROP:WOSHUDSurface'
-        right = pos[mini][0]+size[mini][0]/2
-        left = pos[hud][0]-size[hud][0]/2
-        self.assertAlmostEqual(.004, left-right)
-        self.assertEqual((.140,.140), size[mini])
+        # Checkpoint 20: the chassis starts exactly at the minimap block edge.
+        self.assertIn((mini, 'FRAMEPOINT_TOPRIGHT', .160, .144), points)
+        self.assertIn((hud, 'FRAMEPOINT_BOTTOMLEFT', .160, 0), points)
         source = (ROOT/'triggers/WOS_Start/WoS_Hero_Icons_Init.j').read_text(encoding='utf-8-sig')
-        self.assertIn('WUI_Place(FRAME_CamSlider, 0.1335, 0.067, 0.014, 0.126)', source)
-        self.assertLessEqual(abs(right-(.1335+.014/2)), .00051)
+        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0745, 0.012, 0.087)', source)
+        # The slider lies in the block's own strip, right of the .136 minimap.
+        self.assertGreater(.150-.012/2, .004+vm.g['WUI_MINIMAP_SIZE'])
+        self.assertLess(.150+.012/2, .160)
 
     def test_tabs_grid_and_recipe_header_do_not_overlap(self):
         vm,pos,size = ShopAndPickLayout().layout('WoS_Shop_Init.j','WOS_LayoutShop')
         first = pos[vm.g['FRAME_ShopItem'][0]]
-        self.assertLess(first[1]+.02, pos['FRAME_ShopRecipeTitle'][1]-.006)
+        # Checkpoint 23: the tree title sits right of the (narrower) catalogue.
+        last = pos[vm.g['FRAME_ShopItem'][6]]
+        self.assertLess(last[0]+.019, pos['FRAME_ShopRecipeTitle'][0]-size['FRAME_ShopRecipeTitle'][0]/2)
         self.assertLess(first[1]+.02, pos[vm.g['FRAME_ShopSection'][0]][1]-.027/2)
         for i in range(35):
             x,y = pos[vm.g['FRAME_ShopItem'][i]]

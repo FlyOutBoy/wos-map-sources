@@ -28,6 +28,7 @@
     "WOS_Start/Leave.j": true,
     "WOS_Start/TeamMapPings.j": true,
     "WOS_Start/WOSUI.j": true,
+    "WOS_Start/ArenaMinimap.j": true,
     "Round_End/RoundEnd.j": true,
     "Systems/CastAItems.j": true,
     "Systems/TasBox.j": true,

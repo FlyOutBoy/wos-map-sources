@@ -1,4 +1,5 @@
 UI\WOS\WOSHUD.fdf
 UI\WOS\Music.fdf
 UI\WOS\Charges.fdf
+UI\WOS\WOSControls.fdf
 

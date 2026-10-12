@@ -27,7 +27,7 @@ class RealTransparency(unittest.TestCase):
             base = Path(directory)
             folder = base / 'assets/UI/WOS'
             folder.mkdir(parents=True)
-            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'Music.toc', 'Music.fdf', 'Charges.toc', 'Charges.fdf', 'Templates.toc', 'empty.tga'):
+            for name in ('WOSHUD.toc', 'WOSHUD.fdf', 'Music.toc', 'Music.fdf', 'Charges.toc', 'Charges.fdf', 'WOSControls.fdf', 'Templates.toc', 'empty.tga'):
                 (folder / name).write_bytes((ROOT / 'assets/UI/WOS' / name).read_bytes())
             data = bytearray((folder / 'empty.tga').read_bytes())
             data[18 + data[0] + 3] = 255
@@ -55,12 +55,18 @@ class OrnamentAndControls(unittest.TestCase):
         self.vm = self.fixture.vm
 
     def test_all_square_corners_and_rails_grow_fifteen_percent(self):
+        # Checkpoint 20 superseded the 1.15 growth: corners keep their art size,
+        # rails are centred ON the owner edge (thickness .125c), so the visible
+        # frame is exactly the control/window rectangle.
+        self.vm.g.update(ModuloInteger=lambda a, b: a % b)
         self.vm.run('WUI_OrnateBorder', ('edge', 'owner', .020))
         sizes = {a[0]: a[1:] for n, a in self.fixture.calls if n == 'BlzFrameSetSize'}
+        points = [a for n, a in self.fixture.calls if n == 'BlzFrameSetPoint']
         for suffix in ('tl', 'tr', 'bl', 'br'):
             for size in sizes['BACKDROP:edge' + suffix]:
-                self.assertAlmostEqual(.020 * 1.15, size)
-        self.assertAlmostEqual(.020 * 1.15 * .16, sizes['BACKDROP:edgeTop'][1])
+                self.assertAlmostEqual(.020, size)
+        self.assertAlmostEqual(.020 * .125, sizes['BACKDROP:edgeTop'][1])
+        self.assertIn(('BACKDROP:edgeTop', 'FRAMEPOINT_LEFT', 'owner', 'FRAMEPOINT_TOPLEFT', .020 * .70, 0), points)
 
     def test_top_strip_contains_four_distinct_icons_and_readable_menu(self):
         self.vm.run('WUI_Bootstrap')
@@ -87,7 +93,8 @@ class OrnamentAndControls(unittest.TestCase):
         for shown in (True, False):
             self.fixture.calls.clear()
             self.vm.run('WUI_ShowHeroIndicator', (shown,))
-            self.assertEqual([('visible', ('indicator' + str(i), shown and i == 0)) for i in range(7)], self.fixture.calls)
+            # Checkpoint 27d: WUI_Show queries visibility first; compare the writes.
+            self.assertEqual([('visible', ('indicator' + str(i), shown and i == 0)) for i in range(7)], [c for c in self.fixture.calls if c[0] == 'visible'])
 
 
 if __name__ == '__main__':

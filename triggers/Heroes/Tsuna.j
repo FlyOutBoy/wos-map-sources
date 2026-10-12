@@ -2938,7 +2938,7 @@ library TsunaSpells uses GearSystems
         if IsUnitPaused(c) == false then
             call MUE(c, TsunaF_DodgeDistance, TsunaF_DodgeDuration, GAngle(c, td) + GetRandomReal( -30, 30) * bj_DEGTORAD)
         endif
-        call FakeCD_Start(c, TsunaF_ID, cd, 0, 0)
+        call PassiveCD_Start(c, TsunaF_ID, cd)
     endfunction
     function TsunaQ_Start takes unit c, real x, real y returns nothing
         call TsunaQKS.TsunaQ_Start(c, x, y)

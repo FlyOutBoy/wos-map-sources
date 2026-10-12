@@ -127,6 +127,29 @@ library AAADest uses GearSystems
         framehandle array frame2_pas6 [10]
         framehandle array frame2_pas7 [10]
         framehandle array frame2_pas8 [10]
+        // Checkpoint 27: split bar - red = physical share (Nakagami, left),
+        // blue = magical share (Armadura Fairy, right).
+        framehandle array frame2_red [10]
+        framehandle array frame2_blue [10]
+
+        // value = physical share in % (50 = even). Local presentation only.
+        method SetSplit takes real value returns nothing
+            local real part = RMaxBJ(0.00, RMinBJ(100.00, value)) / 100.00
+            call BlzFrameSetSize(frame2_red[k2], RMaxBJ(0.0002, 0.094 * part), 0.007)
+            call BlzFrameSetSize(frame2_blue[k2], RMaxBJ(0.0002, 0.094 * (1.00 - part)), 0.007)
+            call BlzFrameSetVisible(frame2_red[k2], part > 0.002)
+            call BlzFrameSetVisible(frame2_blue[k2], part < 0.998)
+            // Gold pick glow on the dominating side.
+            call BlzFrameClearAllPoints(frame2_pas8[k2])
+            if value > 50.5 then
+                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_LEFT, frame2_pas4[k2], FRAMEPOINT_LEFT, 0.0000, 0.48)
+            else
+                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_LEFT, frame2_pas5[k2], FRAMEPOINT_LEFT, 0.0000, 0.48)
+            endif
+            if GetLocalPlayer() == Player(k2) then
+                call BlzFrameSetVisible(frame2_pas8[k2], value > 50.5 or value < 49.5)
+            endif
+        endmethod
         private static method Loop_ErzaBar takes nothing returns nothing
             local thistype this
             local integer i = 0
@@ -152,20 +175,15 @@ library AAADest uses GearSystems
                             endif
                             set ErzaG2_Dummy[k2] = CreateUnit(GetOwningPlayer(c), ErzaG2_DummyID, x, y, 0)
                             call MakeSound("war3mapimported\\Hero_Erza_G2_1")
-                            if GetLocalPlayer() == Player(k2) then
-                                call BlzFrameSetVisible(frame2_pas8[k2], true)
-                            endif
                             if mag <= phys then
                                 call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "Nakagami" + "|r")
                                 call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 type"), 1) // nakagami
-                                call BlzFrameSetValue(frame2_pas3[k2], 99)
-                                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas4[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+                                call this.SetSplit(99)
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1", 0, false)
                                 call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Erza_G2_2Pas", 0, false)
                                 call BlzSetAbilityIcon(ErzaG2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1")
                             else
-                                call BlzFrameSetValue(frame2_pas3[k2], 0)
-                                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+                                call this.SetSplit(0)
                                 call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "Armadura Fairy" + "|r")
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Erza_G2_1Pas", 0, false)
                                 call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2", 0, false)
@@ -177,9 +195,9 @@ library AAADest uses GearSystems
                             call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + FormatK(result - 2) + "/" + FormatK(ErzaG2_ActivateDamageCond) + "|r")
                             set result = R2I((I2R(phys) / I2R(phys + mag)) * 100)
                             if phys + mag < 3 then
-                                call BlzFrameSetValue(frame2_pas3[k2], 50)
+                                call this.SetSplit(50)
                             else
-                                call BlzFrameSetValue(frame2_pas3[k2], result)
+                                call this.SetSplit(result)
                             endif
                         endif
                         if CondArena == 0 then
@@ -195,7 +213,7 @@ library AAADest uses GearSystems
                             call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 mag"), 1)
                             set r = 0
                             call RemoveUnit(ErzaG2_Dummy[k2])
-                            call BlzFrameSetValue(frame2_pas3[k2], 50)
+                            call this.SetSplit(50)
                             call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas", 0, false)
                             call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas", 0, false)
                             set check = 2
@@ -244,45 +262,63 @@ library AAADest uses GearSystems
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frame2_pas1[k2], true)
             endif
+            call BlzFrameSetSize(frame2_pas1[k2], 0.160, 0.030)
+            // Checkpoint 27: every piece hangs from the panel (the dock moves it).
             set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginBack", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, 0.5)
-            call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.02)
+            call BlzFrameSetTexture(frame2_pas2[k2], "UI\\WOS\\bar-back.tga", 0, true)
+            call BlzFrameSetPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, -0.0045)
+            call BlzFrameSetSize(frame2_pas2[k2], 0.096, 0.009)
+            call BlzFrameSetEnable(frame2_pas2[k2], false)
+            // Old STATUSBAR kept hidden (nothing reads it any more).
             set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-            call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-            call BlzFrameSetPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.04, -0.01)
-            call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, 100)
-            call BlzFrameSetValue(frame2_pas3[k2], 50)
+            call BlzFrameSetVisible(frame2_pas3[k2], false)
+            set frame2_red[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginPhys", frame2_pas1[k2], "", 0)
+            call BlzFrameSetTexture(frame2_red[k2], "ReplaceableTextures\\TeamColor\\TeamColor00.blp", 0, true)
+            call BlzFrameSetPoint(frame2_red[k2], FRAMEPOINT_LEFT, frame2_pas2[k2], FRAMEPOINT_LEFT, 0.001, 0.000)
+            call BlzFrameSetEnable(frame2_red[k2], false)
+            call BlzFrameSetLevel(frame2_red[k2], 2)
+            set frame2_blue[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginMag", frame2_pas1[k2], "", 0)
+            call BlzFrameSetTexture(frame2_blue[k2], "ReplaceableTextures\\TeamColor\\TeamColor01.blp", 0, true)
+            call BlzFrameSetPoint(frame2_blue[k2], FRAMEPOINT_RIGHT, frame2_pas2[k2], FRAMEPOINT_RIGHT, -0.001, 0.000)
+            call BlzFrameSetEnable(frame2_blue[k2], false)
+            call BlzFrameSetLevel(frame2_blue[k2], 2)
             set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.07, 0.0)
-            call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
+            call BlzFrameSetPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.064, 0.000)
+            call BlzFrameSetSize(frame2_pas4[k2], 0.024, 0.024)
             call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas", 0, false)
+            call BlzFrameSetEnable(frame2_pas4[k2], false)
             set frame2_pas5[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.07, 0.0)
-            call BlzFrameSetSize(frame2_pas5[k2], 0.03, 0.03)
+            call BlzFrameSetPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.064, 0.000)
+            call BlzFrameSetSize(frame2_pas5[k2], 0.024, 0.024)
             call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas", 0, false)
+            call BlzFrameSetEnable(frame2_pas5[k2], false)
             set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, 0.0125)
+            call BlzFrameSetScale(frame2_pas6[k2], 0.70)
+            call BlzFrameSetPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, 0.0075 / 0.70)
+            call BlzFrameSetSize(frame2_pas6[k2], 0.096 / 0.70, 0.011 / 0.70)
+            call BlzFrameSetTextAlignment(frame2_pas6[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
             call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + "Second Origin:" + "|r")
-            call BlzFrameSetScale(frame2_pas6[k2], 0.9)
+            call BlzFrameSetEnable(frame2_pas6[k2], false)
             set frame2_pas7[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas7[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, -0.005)
+            call BlzFrameSetScale(frame2_pas7[k2], 0.62)
+            // Offsets of a scaled frame are scaled too: divide by the scale.
+            call BlzFrameSetPoint(frame2_pas7[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, -0.0045 / 0.62)
+            call BlzFrameSetSize(frame2_pas7[k2], 0.094 / 0.62, 0.009 / 0.62)
+            call BlzFrameSetTextAlignment(frame2_pas7[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
             call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "0/" + FormatK(ErzaG2_ActivateDamageCond) + "|r")
-            call BlzFrameSetScale(frame2_pas7[k2], 1.1)
-            call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas6[k2], frame2_pas7[k2])
-            call WUI_Pin(frame2_pas2[k2], frame2_pas1[k2], 0.000, -0.004, 0.084, 0.007)
-            call WUI_Pin(frame2_pas3[k2], frame2_pas1[k2], 0.000, -0.004, 0.084, 0.007)
-            call WUI_Pin(frame2_pas5[k2], frame2_pas1[k2], 0.055, 0.000, 0.019, 0.019)
-            call WUI_Pin(frame2_pas6[k2], frame2_pas1[k2], 0.000, 0.006, 0.090, 0.011)
-            call WUI_Pin(frame2_pas7[k2], frame2_pas1[k2], 0.000, -0.004, 0.084, 0.009)
+            call BlzFrameSetLevel(frame2_pas7[k2], 4)
+            call BlzFrameSetEnable(frame2_pas7[k2], false)
+            // Gold glow of the pick screen on the dominating icon.
+            set frame2_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", frame2_pas1[k2], "WarCraftIIILogo", 0)
+            call BlzFrameSetSize(frame2_pas8[k2], 1., 1.)
+            call BlzFrameSetScale(frame2_pas8[k2], 0.66)
+            call BlzFrameSetModel(frame2_pas8[k2], "Pick\\wos_IconShine1.mdx", 0)
+            call BlzFrameSetEnable(frame2_pas8[k2], false)
+            call BlzFrameSetLevel(frame2_pas8[k2], 5)
+            call BlzFrameSetVisible(frame2_pas8[k2], false)
+            call this.SetSplit(50)
             call WUI_RegisterMeter(frame2_pas1[k2], k2, "ErzaSecondOrigin:" + I2S(k2))
             call WUI_RefreshDocks()
-            set frame2_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", frame2_pas1[k2], "WarCraftIIILogo", 0)
-            call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
-            call BlzFrameSetSize(frame2_pas8[k2], 1., 1.)
-            call BlzFrameSetScale(frame2_pas8[k2], 0.45)
-            call BlzFrameSetModel(frame2_pas8[k2], "Pick\\selecter5.mdx", 0)
-            call BlzFrameSetVisible(frame2_pas8[k2], false)
             if MUI_3 == 0 then
                 call TimerStart(t_3, 0.05, true, function thistype.Loop_ErzaBar)
             endif

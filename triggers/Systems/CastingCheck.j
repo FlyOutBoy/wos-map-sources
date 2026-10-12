@@ -167,8 +167,8 @@ function InitTrig_CastingCheck takes nothing returns nothing
     local trigger manaFinish = CreateTrigger()
     set gg_trg_CastingCheck = CreateTrigger( )
 
-    call TriggerRegisterAnyUnitEventBJ(manaFinish, EVENT_PLAYER_UNIT_SPELL_ENDCAST)
-    call TriggerAddAction(manaFinish, function ManaFix_Finish)
+    //call TriggerRegisterAnyUnitEventBJ(manaFinish, EVENT_PLAYER_UNIT_SPELL_ENDCAST)
+    //call TriggerAddAction(manaFinish, function ManaFix_Finish)
     call TriggerRegisterAnyUnitEventBJ( gg_trg_CastingCheck, EVENT_PLAYER_UNIT_SPELL_CHANNEL )
     call TriggerRegisterAnyUnitEventBJ( trig2, EVENT_PLAYER_UNIT_SPELL_ENDCAST )
     call TriggerAddAction( gg_trg_CastingCheck, function Trig_CastingCheck_Actions )

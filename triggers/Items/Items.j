@@ -370,7 +370,7 @@ library ItemsSpells uses GearSystems
             call SetUnitAnimation(c, "attack")
             set e = EffectSpawnScale("land_wos\\Barrel Explosive.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG+90, 1, 0.01, 100, 0.15, 0.01, 1.74)
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -464,7 +464,7 @@ library ItemsSpells uses GearSystems
             set r3 = 0
             set k3 = 0
             call SetUnitAnimation(c, "attack")
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -584,7 +584,7 @@ library ItemsSpells uses GearSystems
             call SetUnitAnimation(c, "attack")
             set e = EffectSpawnScale("war3mapImported\\wos_PoopMissile.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 0.01, 100, 0.21, 0.01, 1.5)
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -740,7 +740,7 @@ library ItemsSpells uses GearSystems
             set r = 0
             set rmax = 0.4 
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x,y, a * bj_RADTODEG, 1, 0.01, 100)
@@ -838,7 +838,7 @@ library ItemsSpells uses GearSystems
             set rmax = 0.4
             set k3 = 0
             set a = GAngle2(c,x,y)
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x,y, a * bj_RADTODEG, 1, 0.01, 100)
@@ -939,7 +939,7 @@ library ItemsSpells uses GearSystems
             set r3 = 0
             call SetUnitAnimation(c, "attack")
              set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -1069,7 +1069,7 @@ library ItemsSpells uses GearSystems
             set r3 = 0
             call SetUnitAnimation(c, "attack")
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 200)
@@ -1420,7 +1420,7 @@ library ItemsSpells uses GearSystems
             set r2 = 0
             set r3 = 0
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x, y, a * bj_RADTODEG, 1, 1, 100)
@@ -1568,7 +1568,7 @@ library ItemsSpells uses GearSystems
             set r3 = 0
             call SetUnitAnimation(c, "attack")
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e3 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 250)
@@ -1697,7 +1697,7 @@ library ItemsSpells uses GearSystems
             set e2 = EffectSpawnScale("war3mapImported\\wos_Windwalk Blue Soul.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 0.01, 100, 0.15, 0.01, 1)
             set e4 = EffectSpawnScale("war3mapImported\\wos_Windwalk Blue Soul.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 0.01, 100, 0.15, 0.01, 1)
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e5 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -1869,7 +1869,7 @@ library ItemsSpells uses GearSystems
             set r3 = 0
             call SetUnitAnimation(c, "attack")
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -2004,7 +2004,7 @@ library ItemsSpells uses GearSystems
             call BlzSetSpecialEffectAlpha(e2,185)
             call BlzSetSpecialEffectAlpha(e3,105)
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e4 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x, y, a * bj_RADTODEG, 1, 1, 100)
@@ -2102,7 +2102,7 @@ library ItemsSpells uses GearSystems
                     set check = check + 1
                     set dmg = dmg * (1-(TsuchikageHatEvolve_DamageReducePerBounce/100))
                     set k3 = 0
-                    if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+                    if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e3 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",x,y, a * bj_RADTODEG, 1, 1, 100)
@@ -2159,7 +2159,7 @@ library ItemsSpells uses GearSystems
             set dmg = SacredGearBooster(c,dmg)
             
             call SetUnitAnimation(c, "attack")
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e3 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)
@@ -2284,7 +2284,7 @@ library ItemsSpells uses GearSystems
             call SetUnitAnimation(c, "attack")
             set e = EffectSpawn("war3mapimported\\wos_mh_nanaya_xd.mdl", GetUnitX(c) + 140 * Cos(a), GetUnitY(c) + 140 * Sin(a), a * bj_RADTODEG, 1, 2, 195)
             set k3 = 0
-            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+            if GetUnitTypeId(c) == Bambietta_ID and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
             call BambiettaG_Start(c)
             if  LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) >0 then 
             set e2 = EffectSpawn("war3mapimported\\wos_3yifu_2red.mdx",GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1, 100)

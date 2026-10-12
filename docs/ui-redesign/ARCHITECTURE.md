@@ -1,5 +1,74 @@
 # Existing UI architecture
 
+## Checkpoint 20 — screenshot corrections, source ready, NOT yet built (2026-10-09, Claude)
+
+Request (user screenshots + concept art): fix transparent voids, tiny items with a
+huge item cooldown, small minimap frame, mode buttons whose frame is smaller than
+the real button, restyle repick/swap, Test-help covering the Menu drawer, empty
+unfilled top strip, small pick portrait / crooked stats / overflowing descriptions,
+abilities not on one row, Dota-style Alt+Click learning with level indicators,
+smaller train-kills docked to the time, STR/AGI/INT "with level" display, camera
+slider look, remove the HUD "Dmg taken" line, remove empty space.
+
+Implemented (sources + assets; World Editor/MAIN integration and game check pending):
+- Ornaments: `WUI_OrnateBorder(Ex)` now puts the rail CENTRE on the owner edge
+  (fractions measured from the corner art: rail .293c top/.307c bottom, .207c
+  sides, thickness .125c). Window fills always reach the metal; no gaps. Rails
+  rebuilt from corner exit pixels (old crops had stray red/yellow rows). Optional
+  corner mask (1 tl, 2 tr, 4 bl, 8 br). `WUI_OrnateWindow` = flush border.
+- Buttons: `WUI_TextButton` = gradient fill (fill-normal/hover/selected) + flush
+  `WUI_GoldFrame` hairline + corner gems; frame == clickable rectangle.
+  `WUI_SetButtonTextScale` added. Mode selector: no parent scale, .264x.040 buttons.
+- Bottom HUD (4:3 units): minimap block 0-.160 x 0-.144 (native minimap .004-.140,
+  camera slider strip .140-.160, filled by native surfaces 9051-9054 AROUND the
+  minimap only). One chassis .160-.798 x 0-.094 (native surface 9050, mask 11)
+  with dividers at .2285/.3035/.5910/.6970 (+ horizontal .7470 at y .0655).
+  Portrait .050 at (.1945,.0595) + level plate (badge.tga) below; stats rows
+  ATK/PHYS/MAG/STR/AGI/INT (icon + left text, "base +bonus", main stat gold);
+  HP/MP .272 bars at y .0835/.0697; ONE ability row QWERTFG: X=.327+.040*slot,
+  Y=.042, size .034; pips at Y=.0165; items .030 3x2 at X .612/.644/.676,
+  Y .061/.028 (+ recessed empty cells 9070-9075); gold row y .0795; toolbar
+  .025 cells at .718+.030c / .050-.030r. Orders = small tab (.556,.1015),
+  drawer row y .137. Native/ally tooltips bottom-left (.307,.126).
+- Item cooldown: `WUI_ResizeCooldown` scans ALL children >= .020 wide (item
+  cooldown sprite is not child 0, so it previously stayed .039).
+- Learning (ShowCD.j, AllyHeroAbilityUI): `AHUI_BaseAbility[slot]` = first rawcode
+  (learnable hero skill). Pips (6 max) under QWERT: full/ready/empty textures.
+  Clickable learn strip over the pips when `AHUI_CanLearn` (skill points, level <
+  field 'alev' (fallback 5), next-level requirement when 'alsk' > 0). Alt overlays
+  over icons exist only while synced Alt is down (16 meta combos, keyup or 4 s
+  timeout) AND a level is learnable. Click handler (synced) learns for Hero[pid]
+  via SelectHeroSkill on the base rawcode. Frames allocated once on all clients.
+- Top strip .452x.046 at (.400,.577), translucent panel-soft fill + flush rails;
+  icons y offset .006 (RearrangeTeamUI aligned: -.196/-.074, y .006); score boxes
+  .030 gold frames; time .070x.0135 at .5465 with train kills .062x.0115 docked
+  directly below (.534). FRAME_StatusHeroStringPlayerTakenDamageMag hidden.
+- Camera: `WOSVerticalSlider` (new WOSControls.fdf, loaded LAST in Templates.toc;
+  stock QuestMainListScrollBar fallback) at (.150,.066) .012x.104, glyph-camera.
+- Test help: .188x.205 block below the Menu drawer (toggle .4385, panel .3245),
+  panel-soft + gold frame; drawer rows (.509/.484/.459) are never covered.
+- Pick: preview .240x.330 at (.613,.365); portrait .156 (+.164 frame); framed
+  two-column stat card (STR/AGI/INT "value +gain / lvl", primary marked *;
+  ATK/DEF/MS/AS); all 7 abilities in one row (.027, step .031, y .2515);
+  description overlay .226x.232 with .009 inner margin, text scale .80.
+  Repick/Swap: graphite fill + gold glyph + gold frame + caption (.020/.054, .568).
+- Assets: tools/build_wos_ui_textures_cp20.py (deterministic, chained from
+  build_wos_ui_assets.py). 27 new TGA + 4 rebuilt rails; installer CP20_NAMES.
+
+Verification here: crude vJASS flattening + pjass type check of all edited files:
+no errors on changed lines. Regression suite: 125 checks (14 new in
+test_wos_ui_checkpoint20.py); obsolete geometry asserts of checkpoints 13-19
+updated to the new contract. Only environment import failure test_test_map_workflow.
+NOT verified: JassHelper compile, World Editor push, real Warcraft rendering/input,
+whether the Reforged item cooldown child is now scaled, Alt meta behaviour.
+
+Next: close World Editor, run task "WOS: BUILD + RUN MAIN MAP" (installs 55 UI
+textures + WOSControls.fdf, compiles Main.vj); then push sources to native WTG/WCT
+as in previous checkpoints; check in game: chassis/minimap fill, items+cooldown,
+Alt+Click and learn strip, slider, pick preview, Test Mode Menu drawer.
+
+Checkpoint 19 and older sections below are history where they conflict.
+
 ## Checkpoint 19 — integrated, engine verification pending (2026-10-09)
 
 Latest reference: the original scenario folder
@@ -498,3 +567,100 @@ Ordinary command cards use two rows at Y=.047/.016, size .028, below MP .079.
 Latest MAIN compile/109 identity/30 import/35 archive checks pass. The first slot
 is held by launched Warcraft; final packed artifact is WoS_Test_2.w3x.
 Primary console skin reference: https://www.hiveworkshop.com/threads/customconsoleui.328354/
+
+## ResourceBar tooltip contract — 2026-10-11
+
+ResourceBarFrame children 0..3 are the gold/lumber/upkeep/food mouse listeners,
+not the resource SimpleFontStrings/textures. The source reference is Tasyen's
+[Access Frames by Child table and resource-bar description](https://www.hiveworkshop.com/pastebin/e23909d8468ff4942ccea268fbbcafd1.20598).
+The guide excludes SimpleFrame String/Texture children from child enumeration and
+specifically demonstrates hiding child 2 to disable the upkeep tooltip.
+
+`WUI_CacheResourceMouse` reads only those four slots synchronously in the deferred
+`WUI_CreateControls`; count checks precede each lookup, missing handles stay null.
+`WUI_ParkResourceBar` hides only cached mouse-listener frames and retains the existing
+visible parent/FPS offset. FPS X .360 leaves .005 clearance before
+StatusGameTimeBox's left border (.400 center minus half .070 width = .365),
+with Y .551; the gap prevents the final digit from being covered by the time box.
+Initial native layout and origin-frame restoration reuse
+this operation. No resource text visibility/alpha, child movement/reparenting,
+unknown/FPS child traversal or periodic listener enforcement is performed.
+
+This supersedes the historical blanket prohibition on ResourceBar child visibility
+only for the four documented listeners. It does not prove that the previous loading
+crash was caused by one specific native. Compiler and scripted regression checks
+pass; startup/hover/FPS behavior still needs actual game verification.
+
+## Multiplayer presentation contract — checkpoints 29–30
+
+Local UI actions and polling must not first acquire frame handles. In addition
+to frame creation, native getters can reserve IDs; see Tasyen's
+[Frames and HandleId warning](https://www.hiveworkshop.com/threads/the-big-ui-frame-tutorial.335296/).
+`WUI_CreateControls` synchronously caches the stock system bar, hero/minimap
+buttons and each menu skin's fill/text. Local Menu, Hide UI and restoration use
+these cached references. Never reintroduce runtime enumeration of lazy native
+item cooldown children: their existence depends on each client's selection.
+Scale the cached item wrapper instead. UI-only open/visible state may differ;
+mode selection and pick/random game transitions remain synchronized.
+
+Do not acquire ability handles in local HUD polling either. AHUI_MaxLevel reads
+the generated ability-level table, with fallback 1. Stock escape-menu panels are
+lazy engine frames; WUI_StyleEscMenu and its delayed retry are removed. The asset
+installer supplies CustomSkin EscMenu background/button/border keys before first
+open, avoiding conditional frame allocation. Skin-key/FDF reference:
+[UI: Reading a FDF](https://www.hiveworkshop.com/threads/ui-reading-a-fdf.315850/).
+These source corrections do not establish the exact cause of a reported desync.
+
+The mode selector's frames/events exist for every client, with root visibility
+restricted to Player(0). Reject non-host clicks before the shared transition.
+Restart remains solo Player(0) only.
+
+Stat help uses `war3mapMisc.txt` for HP/STR (35), MP/INT (10), move speed/AGI (1)
+and armor/AGI (.1). The unused `agi_ms` global is not the engine move-speed gain.
+Regen and attack speed descriptions use live `str_hpregen`, `int_mpregen`,
+`agi_as`. Armor resistance gain is the difference of the DamageBlock armor
+formula before/after one AGI, with current armor and ARMOR_EFFECTIVENESS_PERCENT;
+it is not a constant percent or a description of additional hero passives.
+Gold and next-round income use the local player's gold/lumber in one update.
+Behavioral tests live in `test_wos_ui_multiplayer.py` and `test_wos_ui_stat_help.py`;
+multiplayer acceptance and tooltip geometry still require a game run.
+
+Selected HUD reparents the bootstrap-cached native PORTRAIT within the normal
+FRAME family. Stat/portrait hover uses existing screen-coordinate conversion;
+no synced enter/leave events or engine tooltip focus. Cache the tooltip layout
+by stat index/line count and update text independently. Portrait click clears
+focus. F2 preserves top/options/test/camera/swap controls; expanded bottom .148
+is a physical coordinate converted through the configurable UI scale.
+
+WUI_TrackedMeter caches one normal-frame meter per player/key, created only in
+synchronized gameplay paths and registered with the shared minimap dock. Reuse
+existing hero clocks: Kirito's healing timer, Gojo R's elapsed phase, and opt-in
+GearWatchAbilityTime/GearAbilityTimeRemaining backed by KS_RemoveAbility. Starrk
+presentation and Kirito polling subscribe to GearTimer03Listeners. TasBox derives
+Tomioka/Starrk/Inori/Raiden values from existing synced state; selected-HUD/native
+slot overlays consume these values read-only and hide empty counters. No extra
+ability expiration or balance state belongs to the presentation layer.
+
+ShopFastAction remembers the original item for a double click; a recentered tree
+can change the item at the clicked node before the second event. Same original
+item (including center) or same physical buy node within .4s triggers the existing
+validated buy handler. Buy/sell side and per-player state remain separate.
+Checkpoint 30 tests cover these contracts, live effect removal, and full F2 bounds;
+compiled/package equivalence remains separate from visual/multiplayer acceptance.
+
+Camera/minimap ownership (checkpoint 32): existing CamSetup .20s updates per-player
+base/arena camera bounds through SetCameraBoundsToRectForPlayerBJ. Base viewers
+hold the base center; entering arena pans once and retains free movement inside
+the arena bounds. Observers without a hero follow CondArena. TeamMapPings uses
+GetCameraBoundMin/Max for local projection, never full-map constants.
+
+GearSystems registers hero/clone attached native minimapicons synchronously and
+maintains a dense indexed cache. Source hero portrait/tint/fog state is identical
+for originals and illusions; only native icon visibility differs locally after
+alive/hidden/visible/detected checks. Use the SUMMON listener, LearnHeroSpells,
+FixAura2 and Kirito E's two explicit clone paths. Removal destroys icons globally;
+death hides rather than unregisters revivable heroes. No local icon allocation.
+Tests: test_wos_ui_minimap.py and test_team_map_pings.py. Native minimap background
+is still the existing full-map image: SetCameraBounds does not crop its pixels;
+the distinction and texture native are described by
+[Tasyen's minimap terrain guidance](https://www.hiveworkshop.com/threads/possible-to-zoom-into-minimap-via-trigger.320897/).

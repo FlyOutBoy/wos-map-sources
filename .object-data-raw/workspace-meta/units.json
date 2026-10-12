@@ -50928,6 +50928,303 @@
         }
       }
     },
+    "h02N": {
+      "base_id": "hpea",
+      "name_source": {
+        "file": "war3mapSkin.w3u",
+        "group": "custom_objects",
+        "object_index": 96,
+        "modification_index": 5
+      },
+      "fields": {
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 8
+          },
+          "field_id": "uico",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "death_time": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 1
+          },
+          "field_id": "udtm",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "elevation_sample_radius": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 1
+          },
+          "field_id": "uerd",
+          "type": "real",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "hit_points_regeneration_rate": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 6
+          },
+          "field_id": "uhpr",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "hit_points_regeneration_type": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 7
+          },
+          "field_id": "uhrt",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "maximum_pitch_angle_degrees": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 2
+          },
+          "field_id": "umxp",
+          "type": "real",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "maximum_roll_angle_degrees": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 3
+          },
+          "field_id": "umxr",
+          "type": "real",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "move_type": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 4
+          },
+          "field_id": "umvt",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "scaling_value": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 9
+          },
+          "field_id": "usca",
+          "type": "real",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "shadow_image_unit": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 7
+          },
+          "field_id": "ushu",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "turn_rate": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 10
+          },
+          "field_id": "umvr",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "weapon_bf_attacks_enabled": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 2
+          },
+          "field_id": "uaen",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "model": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 4
+          },
+          "field_id": "umdl",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "normal_abilities": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 0
+          },
+          "field_id": "uabi",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uabs": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 0
+          },
+          "field_id": "uabs",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_ubui": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 8
+          },
+          "field_id": "ubui",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_ucol": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 5
+          },
+          "field_id": "ucol",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_umvh": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 12
+          },
+          "field_id": "umvh",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_upgr": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 9
+          },
+          "field_id": "upgr",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_urac": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 11
+          },
+          "field_id": "urac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_usnd": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 6
+          },
+          "field_id": "usnd",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "movement_speed": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 96,
+            "modification_index": 3
+          },
+          "field_id": "umvs",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
     "h0C9": {
       "base_id": "hpea",
       "name_source": {

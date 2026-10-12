@@ -61,6 +61,8 @@ class TeamMapPings(unittest.TestCase):
             'GetPlayerController':lambda p:g['MAP_CONTROL_USER'],
             'bj_mapInitialPlayableArea':'map', 'GetRectMinX':lambda r:-1000, 'GetRectMinY':lambda r:-1000,
             'GetRectMaxX':lambda r:1000, 'GetRectMaxY':lambda r:1000,
+            'GetCameraBoundMinX':lambda:-1000, 'GetCameraBoundMinY':lambda:-1000,
+            'GetCameraBoundMaxX':lambda:1000, 'GetCameraBoundMaxY':lambda:1000,
             'BlzGetTriggerSyncData':lambda:self.data, 'StringLength':len, 'SubString':lambda s,a,b:s[a:b],
             'S2I':lambda s:int(s) if s.lstrip('-').isdigit() else 0, 'S2R':float,
             'R2SW':lambda v,w,p:f'{v:.{p}f}', 'R2S':str, 'I2S':str,
@@ -97,11 +99,15 @@ class TeamMapPings(unittest.TestCase):
             'BlzFrameGetWidth':lambda f:.14, 'BlzFrameGetHeight':lambda f:.14,
             'BlzConvertColor':lambda *a:a, 'BlzFrameSetVertexColor':lambda *a:None,
             'CreateTrigger':lambda:object(), 'CreateTimer':lambda:object(),
-            'TriggerAddAction':lambda *a:None, 'TimerStart':lambda *a:None,
+            'TriggerAddAction':lambda *a:None, 'DestroyTrigger':lambda *a:None, 'TimerStart':lambda *a:None,
             'BlzTriggerRegisterFrameEvent':lambda *a:self.registrations.append(a),
             'BlzTriggerRegisterPlayerKeyEvent':lambda *a:self.registrations.append(a),
             'BlzTriggerRegisterPlayerSyncEvent':lambda *a:self.registrations.append(a),
             'TriggerRegisterPlayerEvent':lambda *a:self.registrations.append(a),
+            # Checkpoint 21: the ping key is a WOSUI rebindable channel (default Z).
+            'WUI_HOTKEY_PING':0, 'WUI_GOLD':'|cffd5b876',
+            'WUI_GetHotkey':lambda channel,pid:'Z', 'WUI_GetHotkeyName':lambda channel,pid:'Z',
+            'WUI_RegisterHotkey':self.register_hotkey,
         })
         for name in ['BlzFrameSetPoint','BlzFrameSetAllPoints','BlzFrameClearAllPoints','BlzFrameSetAbsPoint','BlzFrameSetTextAlignment']:
             g[name] = lambda *a:None
@@ -114,6 +120,14 @@ class TeamMapPings(unittest.TestCase):
         self.assertFalse(self.frames, 'Pings must not create UI during map loading')
         for callback in self.ready_callbacks:
             callback()
+
+    def register_hotkey(self, channel, trigger, key, name, both, owner):
+        # Mirrors WUI_RegisterHotkey: every meta, press and release, per player.
+        for pid in range(16):
+            for meta in range(16):
+                self.registrations.append((trigger, pid, key, meta, True))
+                if both:
+                    self.registrations.append((trigger, pid, key, meta, False))
 
     def create_frame(self,kind,name,*args):
         return f'{name}:{len(self.frames)}:{args[-1]}'
@@ -148,7 +162,7 @@ class TeamMapPings(unittest.TestCase):
         self.assertTrue(self.tags[0].visible)
         self.assertEqual((200,350,240),self.tags[0].point)
         self.assertIn('Attack',self.tags[0].text)
-        self.assertIn('Player 1',self.messages[-1][-1])
+        self.assertIn('Player 1',self.vm.g['TMP_LastMessage'])
         self.assertEqual((200,350),self.pings[0][:2])
 
     def test_enemy_has_same_allocations_but_no_effect_chat_or_ping(self):
@@ -214,16 +228,16 @@ class TeamMapPings(unittest.TestCase):
         self.assertEqual(6,len(self.effects))
 
     def test_cancel_and_hover_do_not_send_or_move_the_point(self):
-        self.vm.run('TMP_OnMouseMove')
         self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         self.assertTrue(self.vm.g['TMP_Open'])
         self.screen_x = 560
         self.vm.run('TMP_Periodic')
         self.frame = self.vm.g['TMP_Button'][2]
-        self.assertEqual((.26,.26),self.frames[self.frame,'size'])
+        self.assertEqual((.17,.17),self.frames[self.frame,'size'])
         self.screen_x = 490
         self.vm.run('TMP_Periodic')
-        self.assertEqual((.208,.208),self.frames[self.frame,'size'])
+        self.assertEqual((.15,.15),self.frames[self.frame,'size'])
         self.key_down = False
         self.vm.run('TMP_OnKey')
         self.assertFalse(self.vm.g['TMP_Open'])
@@ -231,8 +245,8 @@ class TeamMapPings(unittest.TestCase):
         self.assertFalse(self.effects)
 
     def test_button_sends_exact_selected_point_then_receiver_validates(self):
-        self.vm.run('TMP_OnMouseMove')
         self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         self.screen_x,self.screen_y = 449,323
         self.frame = self.vm.g['TMP_Wheel']
         self.vm.run('TMP_OnFrame')
@@ -240,29 +254,51 @@ class TeamMapPings(unittest.TestCase):
         self.assertFalse(self.effects)  # No effect until the sync event arrives.
         self.data = self.sync[0][1]
         self.vm.run('TMP_OnSync')
-        self.assertIn('Need help',self.messages[-1][-1])
+        self.assertIn('Need help',self.vm.g['TMP_LastMessage'])
         self.vm.run('TMP_OnSync')
         self.assertEqual(2,len(self.effects))
 
     def test_five_sectors_grow_and_actions_use_distinct_models(self):
-        self.vm.run('TMP_OnMouseMove')
         self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         for kind in range(1,6):
             angle = math.radians(90-(kind-1)*72)
             x,y = 490+70*math.cos(angle),380+70*math.sin(angle)
             self.screen_x,self.screen_y = x,y
             self.vm.run('TMP_UpdateHover')
             self.assertEqual(kind,self.vm.g['TMP_Hover'])
-            self.assertEqual((.26,.26),self.frames[self.vm.g['TMP_Button'][kind],'size'])
+            self.assertEqual((.17,.17),self.frames[self.vm.g['TMP_Button'][kind],'size'])
         self.vm.run('TMP_Close')
         for kind in range(1,6):
             self.sender = kind-1
             self.send(kind)
         self.assertEqual(5,len({e.model for e in self.effects[::2]}))
 
-    def test_held_key_repeat_does_not_reopen_after_click(self):
-        self.vm.run('TMP_OnMouseMove')
+    def test_mouse_move_exists_only_while_the_key_is_held(self):
+        moves = lambda: [r for r in self.registrations if 'EVENT_PLAYER_MOUSE_MOVE' in r]
+        self.assertFalse(moves())
         self.vm.run('TMP_OnKey')
+        self.assertEqual(1,len(moves()))
+        self.assertIsNotNone(self.vm.g['TMP_MoveTrigger'][self.sender])
+        self.key_down = False
+        self.vm.run('TMP_OnKey')
+        self.assertIsNone(self.vm.g['TMP_MoveTrigger'][self.sender])
+
+    def test_lost_release_does_not_lock_the_wheel(self):
+        self.vm.run('TMP_OnKey')
+        self.key = 'esc'
+        self.vm.run('TMP_OnKey')
+        self.assertFalse(self.vm.g['TMP_Open'])
+        self.key = 'Z'
+        self.vm.run('TMP_OnKey')        # auto-repeat right after Esc: stays closed
+        self.assertFalse(self.vm.g['TMP_Open'])
+        self.ticks(20)                  # release never arrived (chat / focus)
+        self.vm.run('TMP_OnKey')
+        self.assertTrue(self.vm.g['TMP_Open'])
+
+    def test_held_key_repeat_does_not_reopen_after_click(self):
+        self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         self.screen_x = 560
         self.vm.run('TMP_OnMouse')
         self.assertFalse(self.vm.g['TMP_Open'])
@@ -276,8 +312,8 @@ class TeamMapPings(unittest.TestCase):
         self.assertTrue(self.vm.g['TMP_Open'])
 
     def test_release_commits_hover_once_and_sector_labels_stay_hidden(self):
-        self.vm.run('TMP_OnMouseMove')
         self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         self.screen_x = 560
         self.vm.run('TMP_UpdateHover')
         self.assertEqual(2,self.vm.g['TMP_Hover'])
@@ -317,7 +353,7 @@ class TeamMapPings(unittest.TestCase):
         hero = self.enemy(650,350)
         self.send(2)
         self.assertEqual((650,350),(self.effects[0].x,self.effects[0].y))
-        self.assertIn('Attack Crocodile',self.messages[-1][-1])
+        self.assertIn('Attack Crocodile',self.vm.g['TMP_LastMessage'])
         hero.x,hero.y = 900,900
         hero.visible_to.clear()
         self.ticks(10)
@@ -331,7 +367,7 @@ class TeamMapPings(unittest.TestCase):
         self.enemy(701,350)
         self.send(2)
         self.assertEqual((200,350),(self.effects[0].x,self.effects[0].y))
-        self.assertNotIn('Crocodile',self.messages[-1][-1])
+        self.assertNotIn('Crocodile',self.vm.g['TMP_LastMessage'])
 
     def test_illusions_get_identical_priority_and_names(self):
         self.enemy(400,350)
@@ -339,8 +375,8 @@ class TeamMapPings(unittest.TestCase):
         illusion.illusion = True
         self.send(2)
         self.assertEqual((300,350),(self.effects[0].x,self.effects[0].y))
-        self.assertIn('Attack Crocodile',self.messages[-1][-1])
-        self.assertNotIn('illusion',self.messages[-1][-1].lower())
+        self.assertIn('Attack Crocodile',self.vm.g['TMP_LastMessage'])
+        self.assertNotIn('illusion',self.vm.g['TMP_LastMessage'].lower())
 
     def test_blind_ally_receives_the_position_without_target_identity(self):
         self.viewer = 3
@@ -348,15 +384,15 @@ class TeamMapPings(unittest.TestCase):
         self.vm.g['GetUnitName'] = lambda u:(_ for _ in ()).throw(AssertionError('Hidden name queried'))
         self.send(1)
         self.assertEqual((300,350),(self.effects[0].x,self.effects[0].y))
-        self.assertIn('On my way',self.messages[-1][-1])
-        self.assertNotIn('Crocodile',self.messages[-1][-1])
+        self.assertIn('On my way',self.vm.g['TMP_LastMessage'])
+        self.assertNotIn('Crocodile',self.vm.g['TMP_LastMessage'])
 
     def test_move_attack_and_danger_snap_but_help_and_rally_keep_ground_point(self):
         self.enemy(300,350)
         for kind,expected in [(1,'On my way to'),(2,'Attack'),(3,'Beware of'),(4,'Need help'),(5,'Group up here')]:
             self.sender = kind-1
             self.send(kind)
-            self.assertIn(expected,self.messages[-1][-1])
+            self.assertIn(expected,self.vm.g['TMP_LastMessage'])
             self.assertEqual(300 if kind<=3 else 200,self.effects[-2].x)
 
     def test_toggle_mutes_incoming_pings_immediately_while_own_pings_still_work(self):
@@ -374,8 +410,8 @@ class TeamMapPings(unittest.TestCase):
         self.assertEqual(['',''],[e.model for e in self.effects[-2:]])
         self.assertFalse(self.tags[-2].visible)
         self.sender = 0
-        self.vm.run('TMP_OnMouseMove')
         self.vm.run('TMP_OnKey')
+        self.vm.run('TMP_OnMouseMove')
         self.assertTrue(self.vm.g['TMP_Open'])
         self.screen_x = 560
         self.vm.run('TMP_OnMouse')

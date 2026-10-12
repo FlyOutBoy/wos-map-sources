@@ -56,10 +56,9 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
 
     // Spectators can open the shop as a catalogue, while every hero/gameplay
     // hotkey remains disabled because they return before the normal handler.
+    // Checkpoint 27: the shop key is the rebindable WUI_HOTKEY_SHOP (toolbar
+    // badge, HeroUnitPanelStats) for players and spectators alike.
     if IsObserverSlot(id) then
-        if isShopKey then
-            call WOS_ToggleShop(p)
-        endif
         set hero = null
         set p = null
         return
@@ -145,27 +144,6 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
         // K is owned by EmojiStandalone (its registered key-up event).
         endif
 
-        // Магазин обрабатывается отдельно: B может одновременно переключать тестовую ауру.
-        // Защита от двойной регистрации события и автоповтора одного физического нажатия.
-        if isShopKey and LoadInteger(hs, playerHandleId, StringHash("shop key guard")) == 0 then
-            if PlayerShopButton[id] == null then
-                set PlayerShopButton[id] = but
-                if but == OSKEY_B then
-                    set PlayerShopBut[id] = "B"
-                    call DisplayTimedTextToPlayer(p, 0, 0, 1, "Shop button changed to |c00FFFC01'B'|r ")
-                elseif but == OSKEY_TAB then
-                    set PlayerShopBut[id] = "TAB"
-                    call DisplayTimedTextToPlayer(p, 0, 0, 1, "Shop button changed to |c00FFFC01'TAB'|r ")
-                elseif but == OSKEY_I then
-                    set PlayerShopBut[id] = "I"
-                    call DisplayTimedTextToPlayer(p, 0, 0, 1, "Shop button changed to |c00FFFC01'I'|r ")
-                endif
-            endif
-            // Первое нажатие не только назначает клавишу, но и сразу открывает магазин.
-            if PlayerShopButton[id] == but then
-                call WOS_ToggleShop(p)
-            endif
-        endif
     endif
 
     set hero = null

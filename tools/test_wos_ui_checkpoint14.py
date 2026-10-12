@@ -33,7 +33,7 @@ class InputAndNativeGeometry(unittest.TestCase):
         self.vm.g.update(BlzFrameGetParent=lambda _: 'detail-parent',
                          PauseTimer=lambda *_: None, ModuloInteger=lambda a, b: a % b,
                          jass_div=lambda a, b: a // b)
-        self.vm.methods['WUI_InstallNativeLayout'] = self.vm.methods['WUI_InstallNativeLayout'].replace('i / 3', 'jass_div(i, 3)')
+        self.vm.methods['WUI_ItemY'] = self.vm.methods['WUI_ItemY'].replace('index / 3', 'jass_div(index, 3)')
         self.fixture.calls.clear()
         self.vm.run('WUI_StartNativeLayout')
         calls = self.fixture.calls
@@ -43,15 +43,18 @@ class InputAndNativeGeometry(unittest.TestCase):
         bounds = []
         for i in range(6):
             frame = 'named:InventoryButton_' + str(i)
-            self.assertAlmostEqual(.024/.039, scales[frame])
+            # Checkpoint 22: the stock .031 icon (top-left of its .039
+            # wrapper) is scaled to .033 and centred in its cell.
+            self.assertAlmostEqual(.033/.031, scales[frame])
             self.assertEqual((.039, .039), sizes[frame])
             x, y = positions[frame]
-            width = sizes[frame][0] * scales[frame]
+            x, y = x - .004 * scales[frame], y + .004 * scales[frame]
+            width = .031 * scales[frame]
             bounds.append((x - width/2, y - width/2, x + width/2, y + width/2))
-            self.assertGreaterEqual(bounds[-1][0], .534)
-            self.assertLessEqual(bounds[-1][2], .638)
+            self.assertGreaterEqual(bounds[-1][0], .593)
+            self.assertLessEqual(bounds[-1][2], .727)
             self.assertGreaterEqual(bounds[-1][1], .002)
-            self.assertLessEqual(bounds[-1][3], .098)
+            self.assertLessEqual(bounds[-1][3], .092)
         for i, a in enumerate(bounds):
             for b in bounds[i + 1:]:
                 self.assertTrue(a[2] <= b[0] or b[2] <= a[0] or a[3] <= b[1] or b[3] <= a[1])
@@ -60,7 +63,8 @@ class InputAndNativeGeometry(unittest.TestCase):
         self.assertIn(('BlzFrameSetTexture', ('named:WOSNativeHUDTexture', 'UI\\WOS\\panel.tga', 0, True)), self.fixture.calls)
         self.assertIn(('visible', ('SIMPLEFRAME:WOSNativeHUDSurface', True)), self.fixture.calls)
         created = [a for n, a in self.fixture.calls if n == 'create']
-        self.assertEqual(7, sum(a[1] == 'WOSNativeEmptyAbility' for a in created))
+        # Seven ability cells + six recessed item cells (checkpoint 20).
+        self.assertEqual(13, sum(a[1] == 'WOSNativeEmptyAbility' for a in created))
         self.vm.g.update(ModuloInteger=lambda a, b: a % b)
         self.fixture.calls.clear()
         self.vm.run('WUI_LayoutCommands', (True,))
@@ -75,12 +79,14 @@ class InputAndNativeGeometry(unittest.TestCase):
 class RestoredPickAndHUD(unittest.TestCase):
     def test_pick_matches_backup_two_rows_and_centered_difficulty(self):
         vm, pos, sizes = layouts.ShopAndPickLayout().layout('WoS_Pick_Init.j', 'WOS_LayoutHeroPick')
-        qwert = [pos[vm.g['FRAME_ICON5'][i]] for i in range(5)]
-        fg = [pos[vm.g['FRAME_ICON5'][i]] for i in (5, 6)]
-        self.assertEqual(1, len({y for x, y in qwert}))
-        self.assertTrue(all(y > qwert[0][1] for x, y in fg))
-        self.assertEqual(.420, pos['FRAME_PlayerPickDifficultText'][0])
-        self.assertEqual(.159, sizes['FRAME_HeroName'][0])
+        # Checkpoint 20: all seven preview abilities share one row, left to right.
+        row = [pos[vm.g['FRAME_ICON5'][i]] for i in range(7)]
+        self.assertEqual(1, len({y for x, y in row}))
+        self.assertEqual(sorted(x for x, y in row), [x for x, y in row])
+        # Checkpoint 21: difficulty is a plaque centred on the portrait's bottom edge.
+        self.assertEqual(.613, pos['WOSPickDifficultyPlate'][0])
+        self.assertLess(pos['WOSPickDifficultyPlate'][1], pos['FRAME_HeroModel'][1])
+        self.assertEqual(.168, sizes['FRAME_HeroName'][0])
         for i in range(7):
             x, y = pos[vm.g['FRAME_ICON5'][i]]
             self.assertLess(y + .013, pos['FRAME_HeroAS'][1] - .0075)
@@ -92,12 +98,15 @@ class RestoredPickAndHUD(unittest.TestCase):
         for name in re.findall(r'^    private \w+ (\w+) = ', source, re.M):
             vm.g.setdefault(name, None)
         vm.g.update(WUI_GetRoot=lambda: 'root', WUI_GOLD='gold', WUI_TEXT='text',
-                    CreateTrigger=list, CreateTimer=lambda: 'timer', CreateGroup=lambda: 'group',
+                    CreateTrigger=list, TriggerRegisterPlayerUnitEvent=lambda *_: None, EVENT_PLAYER_UNIT_SELECTED='sel', EVENT_PLAYER_UNIT_DESELECTED='desel', Player=lambda i: i, CreateTimer=lambda: 'timer', CreateGroup=lambda: 'group',
                     UNITSTAT_CreateToolbar=lambda: None, UNITSTAT_WidgetCreate=lambda i, t, x, y, w, _: positions.update({i: (x, y, w)}),
                     WUI_Passive=lambda *_: 'stat-root', WUI_Panel=lambda name, *args: name,
-                    WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge', WUI_Pin=lambda *_: None,
+                    WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge', WUI_Divider=lambda *_: 'divider', WUI_CHASSIS_TOP=0.094, WUI_EMPTY_TEXTURE='empty', WUI_SetToggleState=lambda *_: None, WUI_SetToggleGlyph=lambda *_: None, BlzFrameGetChildrenCount=lambda *_: 0, BlzFrameGetWidth=lambda *_: 0.0, bj_MAX_PLAYER_SLOTS=28, WUI_TopActionX=lambda i: .638 + i * .036, WUI_TOGGLE_HOTKEY_Y=.0185, BlzFrameSetVisible=lambda *_: None, WUI_TooltipBox=lambda *_: 'tooltip', WUI_Pin=lambda *_: None,
                     UNITSTAT_Text=lambda *_: 'text', WUI_CreateFill=lambda *_: 'fill', I2R=float,
                     TasAbilityChargeBox_CreatePortraitLabel=lambda *_: 'level-text',
+                    WUI_GoldFrame=lambda *_: 'gold-frame',
+                    WUI_ToggleButton=lambda name, *_: name, WUI_TOGGLE_X=.2885, WUI_TOGGLE_VOICE_Y=.040,
+                    WUI_TOGGLE_SIZE=.018, WUI_Tooltip=lambda *_: None, CaptainDraftMode=False,
                     TimerStart=lambda *_: None, TriggerAddAction=lambda *_: None,
                     WUI_Place=lambda f, x, y, w, h: positions.update({f: (x, y, w, h)}),
                     BlzCreateFrameByType=lambda _, name, *args: name)
@@ -110,7 +119,9 @@ class RestoredPickAndHUD(unittest.TestCase):
         self.assertEqual(1, len({positions[i][0] for i in (3, 4, 5)}))
         self.assertGreater(positions[3][1], positions[4][1])
         self.assertGreater(positions[4][1], positions[5][1])
-        self.assertEqual(positions['WOSSelectedUnitBack'][2:], (.104, .088))
+        # Checkpoint 20: larger .050 portrait with its own level plate below.
+        self.assertEqual(positions['WOSSelectedUnitIcon'][2:], (.050, .050))
+        self.assertLess(positions['WOSSelectedUnitLevelBadge'][1], positions['WOSSelectedUnitIcon'][1] - .025)
         self.assertIn('WOSGoldIcon', positions)
         self.assertIn('UI\\\\Feedback\\\\Resources\\\\ResourceGold.blp', source)
 

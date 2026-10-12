@@ -9,12 +9,13 @@ ROOT = Path(__file__).resolve().parents[1]
 class SharedDefinitions(unittest.TestCase):
     def test_single_manifest_orders_dependencies_without_duplicate_engine_templates(self):
         data = (ROOT/'assets/UI/WOS/Templates.toc').read_bytes()
+        # Checkpoint 20 appends its controls LAST, after all dependencies.
         self.assertEqual([b'UI\\WOS\\WOSHUD.fdf', b'UI\\WOS\\Music.fdf',
-                          b'UI\\WOS\\Charges.fdf', b'', b''], data.split(b'\r\n'))
+                          b'UI\\WOS\\Charges.fdf', b'UI\\WOS\\WOSControls.fdf', b'', b''], data.split(b'\r\n'))
         self.assertNotIn(b'escmenutemplates', data)
         fdf = (ROOT/'assets/UI/WOS/Music.fdf').read_text()
-        for skin in ('EscMenuSliderBackground', 'EscMenuSliderBorder',
-                     'EscMenuSliderThumbButton', 'EscMenuSliderDisabledThumbButton'):
+        # Checkpoint 23: music sliders use the camera-slider art.
+        for skin in ('UI\\WOS\\slider-clean-h.tga', 'UI\\WOS\\slider-thumb.tga'):
             self.assertIn('"'+skin+'"', fdf)
         self.assertNotIn('UI\\WOS\\bar-back.tga', fdf)
 
@@ -23,36 +24,34 @@ class SharedDefinitions(unittest.TestCase):
         self.assertIn('AHUI_ICON_SIZE = WUI_ICON_SIZE', source)
         self.assertIn('return WUI_AbilityY(slot)', source)
         vm = ui.load_source('WOSUI.j')
-        self.assertGreaterEqual(vm.g['WUI_ICON_SIZE'], .036)
-        self.assertEqual(.023, vm.run('WUI_AbilityY', (0,)))
-        self.assertEqual(.044, vm.run('WUI_AbilityY', (5,)))
-        self.assertLess(.044+.036/2, .069-.007/2)
+        # Checkpoint 20: one row for all seven, clear of MP (bottom .0642) and
+        # of the level pips (WUI_PIP_Y) underneath.
+        self.assertGreaterEqual(vm.g['WUI_ICON_SIZE'], .034)
+        for slot in range(7):
+            self.assertEqual(.042, vm.run('WUI_AbilityY', (slot,)))
+        self.assertLess(.042+vm.g['WUI_ICON_SIZE']/2, .0642)
+        self.assertLess(vm.g['WUI_PIP_Y']+.0055, .042-vm.g['WUI_ICON_SIZE']/2)
 
     def test_camera_exact_requested_shift_and_height_reduction(self):
         source = (ROOT/'triggers/WOS_Start/WoS_Hero_Icons_Init.j').read_text(encoding='utf-8-sig')
-        self.assertIn('WUI_Place(FRAME_CamSlider, 0.1335, 0.067, 0.014, 0.126)', source)
-        self.assertAlmostEqual(.0175, .151-.1335)
-        self.assertAlmostEqual(.140*.90, .126)
+        # Checkpoint 20 supersedes: styled slider inside the minimap block strip.
+        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0745, 0.012, 0.087)', source)
+        self.assertIn('BlzCreateFrame("WOSVerticalSlider", FRAME_StatusHeroMain4, 0, 0)', source)
+        self.assertIn('"QuestMainListScrollBar"', source)
 
 
 class NativeCooldowns(unittest.TestCase):
-    def test_late_created_model_scales_but_lone_charge_label_is_untouched(self):
+    def test_native_item_wrapper_scales_without_reading_lazy_children(self):
         vm = ui.load_source('WOSUI.j')
-        children, scales = [], []
-        vm.g.update(BlzFrameGetChildrenCount=lambda _: len(children),
-                    BlzFrameGetChild=lambda _, i: children[i],
-                    BlzFrameGetWidth=lambda f: .039 if f == 'cooldown' else .012,
-                    BlzFrameSetScale=lambda f,s: scales.append((f,s)))
-        vm.run('WUI_ResizeCooldown', ('command', .036))
-        self.assertFalse(scales)
-        children.append('charge')
-        vm.run('WUI_ResizeCooldown', ('command', .036))
-        self.assertFalse(scales)
-        children[0] = 'cooldown'
-        vm.run('WUI_ResizeCooldown', ('command', .036))
-        self.assertEqual([('cooldown', .036/.039)], scales)
-        vm.run('WUI_ResizeCooldown', ('item', .024))
-        self.assertEqual(('cooldown', .024/.039), scales[-1])
+        scales = []
+        def forbid(*_):
+            self.fail('Native cooldown children must not acquire local handles')
+        vm.g.update(BlzFrameGetChildrenCount=forbid, BlzFrameGetChild=forbid,
+                    BlzFrameSetScale=lambda f,s: scales.append((f,s)),
+                    BlzFrameSetSize=lambda *_: None, BlzFrameSetAbsPoint=lambda *_: None,
+                    FRAMEPOINT_CENTER='center')
+        vm.run('WUI_PlaceNativeItem', ('item', .60, .04, .024))
+        self.assertEqual([('item', .024/vm.g['WUI_NATIVE_ITEM_ICON'])], scales)
 
     def test_existing_tracks_do_not_show_a_false_loading_failure(self):
         vm = ui.load_source('MusicPlayer.j')

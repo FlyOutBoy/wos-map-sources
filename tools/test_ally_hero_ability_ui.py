@@ -20,6 +20,16 @@ class AllyAbilityUI(unittest.TestCase):
         wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
         g['WUI_ICON_SIZE'] = float(re.search(r'WUI_ICON_SIZE = ([0-9.]+)', wui)[1])
         g['WUI_AbilityY'] = lambda slot: .044 if slot >= 5 else .023
+        # Checkpoint 24: every configured skill sits in its own slot's cell.
+        def pos(axis):
+            def f(ability):
+                for s in range(7):
+                    if g['AHUI_CurrentAbility'][s] == ability:
+                        return self.vm.run('AHUI_GetSlot' + axis, (s,))
+                return -1
+            return f
+        g['BlzGetAbilityPosX'] = pos('X')
+        g['BlzGetAbilityPosY'] = pos('Y')
         for kind,name,value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?(integer|real|boolean|string) (\w+) = (.*)',source):
             g[name] = eval(value.split('//')[0].strip().replace('false','False').replace('true','True'),{},g)
         for kind,name in re.findall(r'(?m)^\s*private (\w+) array (\w+)',source):
@@ -51,17 +61,35 @@ class AllyAbilityUI(unittest.TestCase):
             'BlzFrameSetVisible':lambda f,v:self.frame(f,'visible',v),
             'BlzFrameSetAlpha':lambda f,v:self.frame(f,'alpha',v),
             'BlzFrameSetText':lambda f,v:self.frame(f,'text',v),
+            'BlzFrameSetTextAlignment':lambda f,v,h:None,
+            'TEXT_JUSTIFY_TOP':'top', 'TEXT_JUSTIFY_CENTER':'center', 'TEXT_JUSTIFY_LEFT':'left',
             'BlzFrameSetTexture':lambda f,v,*_:self.frame(f,'texture',v),
             'BlzFrameSetSize':lambda f,*v:self.frame(f,'size',v),
             'BlzFrameSetPoint':lambda *a:None, 'BlzFrameClearAllPoints':lambda *a:None,
             'BlzFrameSetAbsPoint':lambda *a:None,
             'BlzFrameGetHeight':lambda f:.06,
             'WUI_ShowNativeAbilitySlot': lambda slot, visible: self.frame(('native',slot),'visible',visible),
+            'WUI_NativeCommandsHidden': lambda: False, 'WUI_IsHotkeyEditing': lambda: False,
+            'WUI_SlotKeyLabel': lambda pid, slot: '', 'WUI_SetSlotCustomShown': lambda *_: None,
+            'WUI_SlotShownKey': lambda pid, slot: 'QWERTFG'[slot],
+            'TasAbilityChargeBox_GetValue': lambda *_: '',
+            'TasAbilityChargeBox_CreatePortraitLabel': lambda frame: ('charge', frame),
             'BlzGetAbilityTooltip':lambda a,l:'Title '+a,
             'BlzGetAbilityExtendedTooltip':lambda a,l:f'Description {a} rank {l+1}',
             'BlzGetAbilityManaCost':lambda a,l:50,
             'FRAMEPOINT_TOPLEFT':'tl','FRAMEPOINT_TOPRIGHT':'tr','FRAMEPOINT_BOTTOMRIGHT':'br','FRAMEPOINT_BOTTOMLEFT':'bl',
+            'FRAMEPOINT_CENTER':'c',
+            # Checkpoint 20 learning row: main heroes, skill points and fields.
+            'Hero':defaultdict(lambda:None),'GetHeroSkillPoints':lambda u:getattr(u,'skill_points',0),
+            'WUI_AbilityX':lambda slot:.327+.040*slot,'WUI_PIP_Y':.0165,
+            'ABILITY_IF_LEVELS':'alev','ABILITY_IF_REQUIRED_LEVEL':'arlv','ABILITY_IF_LEVEL_SKIP_REQUIREMENT':'alsk',
+            # Checkpoint 21: object-data level table and unlock labels.
+            'AHUI_LevelData':{},'HaveSavedInteger':lambda h,k,c:(k,c) in h,
+            'WUI_SetText':lambda f,v:self.frame(f,'text',v),
+            'WUI_CHASSIS_LEFT':0.160,'WUI_CHASSIS_RIGHT':0.830,'WUI_CHASSIS_TOP':0.094,
+            'FRAMEPOINT_BOTTOM':'b',
         })
+        self.vm.run('AHUI_InitLevelTable')
         self.c = self.vm.unit(owner=1)
         self.c.type = g['Crocodile_ID']
         for slot in 'Q W E R T F G'.split():
@@ -195,16 +223,20 @@ class AllyAbilityUI(unittest.TestCase):
         self.assertFalse(self.vm.run('AHUI_CanReadCooldown',(self.c,0)))
         self.assertTrue(self.vm.run('AHUI_CanReadCooldown',(self.c,10)))
 
-    def test_own_hero_keeps_native_commands_and_leaves_unlearned_cells_empty(self):
+    def test_own_hero_keeps_native_commands_and_previews_unlearned_cells(self):
         self.c.owner = self.viewer
         del self.c.abilities[self.vm.g['CrocodileW_ID']]
         self.refresh()
         self.assertFalse(self.reads, 'Own commands use the native cooldown renderer')
         for slot in range(7):
-            self.assertFalse(self.value('AHUI_Root',slot,'visible'))
-            self.assertFalse(self.value('AHUI_KeyText',slot,'visible'))
+            # W has its preview; native F/G keep only the stock hotkey letter.
+            self.assertEqual(slot == 1 or slot >= 5, bool(self.value('AHUI_Root',slot,'visible')))
+            if slot >= 5:
+                self.assertFalse(self.value('AHUI_Icon',slot,'visible'))
+                self.assertFalse(self.value('AHUI_KeyText',slot,'visible'))
         self.assertFalse(self.frames[('native',1),'visible'])
-        self.assertFalse(self.value('AHUI_CooldownFill',1,'visible'))
+        self.assertTrue(self.value('AHUI_CooldownFill',1,'visible'))
+        self.assertEqual('DISBTN'+self.vm.g['CrocodileW_ID'],self.value('AHUI_CooldownFill',1,'texture'))
         self.assertFalse(self.value('AHUI_CooldownText',1,'visible'))
         self.assertTrue(self.frames[('native',0),'visible'])
         self.assertFalse(self.value('AHUI_Icon',0,'visible'))

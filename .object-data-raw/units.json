@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "a9b11524e6ca7c04bce49b6edb5a34ebcdf6212d9f61a951a3576cc91e0dcd43",
+  "source_sha256": "d414d7716c89165c4a041149d2e9c0cae89c50fa20f2a7334a8fe70d1256b5f8",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -44941,6 +44941,245 @@
         }
       ],
       "display_name": "Crocodile"
+    },
+    {
+      "old_id": {
+        "text": "hpea",
+        "hex": "68706561"
+      },
+      "new_id": {
+        "text": "h02N",
+        "hex": "6830324E"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uabi",
+            "hex": "75616269"
+          },
+          "field_name": "Normal abilities / Обычные способности",
+          "type": "string",
+          "data": {
+            "value": "Avul,Aloc",
+            "_original_value": "Avul,Aloc",
+            "_encoding": "utf-8",
+            "_raw_base64": "QXZ1bCxBbG9j"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "udtm",
+            "hex": "7564746D"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.10000000149011612,
+            "_original_value": 0.10000000149011612,
+            "_raw_hex": "CDCCCC3D"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uaen",
+            "hex": "7561656E"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvs",
+            "hex": "756D7673"
+          },
+          "field_name": "Movement speed / Скорость движения",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvt",
+            "hex": "756D7674"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "fly",
+            "_original_value": "fly",
+            "_encoding": "utf-8",
+            "_raw_base64": "Zmx5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucol",
+            "hex": "75636F6C"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhpr",
+            "hex": "75687072"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhrt",
+            "hex": "75687274"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "none",
+            "_original_value": "none",
+            "_encoding": "utf-8",
+            "_raw_base64": "bm9uZQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ubui",
+            "hex": "75627569"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upgr",
+            "hex": "75706772"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvr",
+            "hex": "756D7672"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 3.0,
+            "_original_value": 3.0,
+            "_raw_hex": "00004040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urac",
+            "hex": "75726163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "orc",
+            "_original_value": "orc",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvh",
+            "hex": "756D7668"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Dummy Train Thomas"
     }
   ]
 }

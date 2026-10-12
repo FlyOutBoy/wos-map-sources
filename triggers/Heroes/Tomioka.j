@@ -167,7 +167,6 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+Q combo! Target gain stun at the end|r")
             endif
             set aoe = TomiokaQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TomiokaQ_DamageAgiBase + ( TomiokaQ_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaQ_ID) - 1 ) ) )
@@ -318,7 +317,6 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+W combo! enemy additionally pushed away|r")
             endif
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Tomioka_W1")
@@ -473,7 +471,6 @@ library TomiokaSpells uses GearSystems
             set g = CreateGroup()
             set check = R2I(LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))/2)
             set check3 = TomiokaE_AtkCountBase + ( TomiokaE_AtkCountStep * ( GetUnitAbilityLevel( c , TomiokaE_ID) - 1 ) )+check//+ check
-            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FFAdditional attacks: |r"+I2S(check))
             set u = null
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = TomiokaE_DamageAoe
@@ -488,11 +485,9 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+E combo! enemy additionally stuned each hit|r")
             elseif LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
                 set check2 = 2
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+E combo! enemy slowed each hit|r")
             endif
             set check = 0
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
@@ -1060,7 +1055,6 @@ library TomiokaSpells uses GearSystems
                             set r = 0
                             call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), check)
                         endif
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
                     endif
                 else
                     call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))-2)
@@ -1131,7 +1125,6 @@ library TomiokaSpells uses GearSystems
         call  BlzFrameSetValue(frame_pas3[k2], rmax)
         endif
         set r = 0
-            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
             if MUI_TomiokaG == 0 then
                 call TimerStart( t_TomiokaG, 0.1, true, function thistype.Loop_TomiokaG)
             endif

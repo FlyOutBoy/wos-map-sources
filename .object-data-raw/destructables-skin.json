@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3b",
-  "source_sha256": "5aed6596453a0b54c53a617eedbbde53b30d35066ab57f4424a8ed79815c5aba",
+  "source_sha256": "92602a6578afb4e05d7056f974aed41fcf7840d2fca966c3e88042c28e6b3dec",
   "kind": "destructables",
   "record_mode": "simple",
   "format_version": 3,
@@ -9112,10 +9112,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "land_wos\\Train Metro.mdl",
-            "_original_value": "land_wos\\Train Metro.mdl",
+            "value": "war3mapImported\\wos_Model Thomas.mdl",
+            "_original_value": "war3mapImported\\wos_Model Thomas.mdl",
             "_encoding": "utf-8",
-            "_raw_base64": "bGFuZF93b3NcVHJhaW4gTWV0cm8ubWRs"
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Nb2RlbCBUaG9tYXMubWRs"
           },
           "sanity_check": {
             "text": "",
@@ -9265,6 +9265,21 @@
             "_original_value": "land_wos\\naruto_house8_27.tga",
             "_encoding": "utf-8",
             "_raw_base64": "bGFuZF93b3NcbmFydXRvX2hvdXNlOF8yNy50Z2E="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bcpr",
+            "hex": "62637072"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
           },
           "sanity_check": {
             "text": "",
@@ -9508,10 +9523,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": ".mdl .mdl",
-            "_original_value": ".mdl .mdl",
+            "value": " .mdl",
+            "_original_value": " .mdl",
             "_encoding": "utf-8",
-            "_raw_base64": "Lm1kbCAubWRs"
+            "_raw_base64": "IC5tZGw="
           },
           "sanity_check": {
             "text": "",

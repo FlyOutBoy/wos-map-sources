@@ -21,9 +21,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 //--------------------------------------Gojo--------------------------------------------------------------
         integer Gojo_ID = 'H009'
 //---------------G ability-----------------------------------------------------
-        integer GojoG_ID = 'A01U'
-        real Gojo_G_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_G_ManaRestoreTime seconds
-        real Gojo_G_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
+        integer GojoF_ID = 'A01U'
+        real Gojo_F_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_F_ManaRestoreTime seconds
+        real Gojo_F_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
 //---------------Q ability-----------------------------------------------------
         integer GojoQ_ID = 'A01J'
         integer GojoQ2_ID = 'A01L'
@@ -63,8 +63,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         integer GojoE2_ID = 'A01O'
         real GojoE_Duration = 3 // how much sec ability works on lvl 1 - 4, on lvl 5 how much sec before mana drain start
         real GojoE_AddDuration = 0.5 // for each next level
-        real GojoE_MaxDuration = 6 // how much sec ability works on lvl 5 how much sec before ability end
-        real GojoE_Lvl5Manacost = 6 // manacost for each sec at 5 lvl after base duration of ability
+        real GojoE_MaxDuration = 18 // how much sec ability works on lvl 5 how much sec before ability end
+        real GojoE_Lvl5Manacost = 9 // manacost for each sec at 5 lvl after base duration of ability
         real GojoE_DamageAoe = 335
 //---------------R ability-----------------------------------------------------
         integer GojoR_ID = 'A01P'
@@ -1378,6 +1378,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         effect e6
         real a
         real rmax
+        WUI_TrackedMeter domainMeter
 
         public static method Loop_GojoR2 takes nothing returns nothing
             local thistype this
@@ -1473,6 +1474,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 set this = m_GojoR[i]
                 if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("rt end ")) == 0 then
                     set r = RoundReal(r + 0.05, 2)
+                    if domainMeter != 0 then
+                        call domainMeter.update(rmax - r, "Unlimited Void", r >= 1.75)
+                    endif
                     if r == 0.8 then
                         set e = EffectSpawn("war3mapImported\\wos_RT_Cast3.mdl", x, y, 0, 0.3, 0.5, 15)
                         call ScaleEffDummy(e, 0.75, 0.5, 3.25 * scale)
@@ -1624,6 +1628,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     endif
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoR_ID, true)
                     
+                    if domainMeter != 0 then
+                        call domainMeter.close()
+                    endif
                     call SaveInteger(hs, GetHandleId(c), StringHash("rt end "), 0)
                     call SaveInteger(hs, GetHandleId(c), StringHash("rt"), 0)
                     call SaveInteger(hs, GetHandleId(c), StringHash("gojo RR"), 0)
@@ -1680,6 +1687,12 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set dmg2 = GetHeroInt( c , true) * (GojoR_DamageIntFirst * GetUnitAbilityLevel( c , GojoR_ID))
             set dmg = GetHeroInt( c , true) * ( GojoR_DamageIntBase + ( GojoR_DamageIntStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) ) )
             set rmax = 1.75 + GojoR_DurationBase + ( GojoR_DurationStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) )
+            set domainMeter = 0
+            if GetPlayerId(GetOwningPlayer(c)) < 12 and Hero[GetPlayerId(GetOwningPlayer(c))] == c then
+                set domainMeter = WUI_TrackedMeter.get(GetPlayerId(GetOwningPlayer(c)), "GojoDomain")
+                call domainMeter.start(GojoR_ID, "Unlimited Void", rmax - 1.75)
+                call domainMeter.update(rmax - 1.75, "Unlimited Void", false)
+            endif
             if SR3(c, x, y) > aoe - 350 then
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1.8, 0))
                 call PosUnit(c, x - (aoe - 350) * Cos(a), y - (aoe - 350) * Sin(a))
@@ -2238,6 +2251,10 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         set GojoTimer05 = CreateTimer()
         set GojoTimer03Callback = function GojoTimer03Loop
         set GojoTimer05Callback = function GojoTimer05Loop
+        // Checkpoint 27: the Six Eyes passive (former G) sits on the F button
+        // (1:1). Button X is not an editable field in object-data JSON.
+        call BlzSetAbilityPosX(GojoF_ID, 1)
+        call BlzSetAbilityPosY(GojoF_ID, 1)
     endfunction
 
     //----------------------------Gojo-----------------------------------------------
@@ -2256,9 +2273,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
     25 - t start
      */ 
     function GojoPas_Start takes unit c, integer id returns nothing
-        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_G_ManaRestore / 100)
+        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_F_ManaRestore / 100)
         if GetHeroLevel(c) >= 12 then
-            call MPS(c, mana, Gojo_G_ManaRestoreTime)
+            call MPS(c, mana, Gojo_F_ManaRestoreTime)
         endif
     endfunction
     function GojoQ_Start takes unit c, real x, real y returns nothing

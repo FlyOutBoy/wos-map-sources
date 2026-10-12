@@ -25,6 +25,9 @@
 //! import "..\triggers\WOS_Start\TestUnit.j"
 //! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
 //! import "..\triggers\WOS_Start\Leave.j"
+//! import "..\triggers\WOS_Start\TeamMapPings.j"
+//! import "..\triggers\WOS_Start\WOSUI.j"
+//! import "..\triggers\WOS_Start\ArenaMinimap.j"
 //! import "..\triggers\Round_End\RoundEnd.j"
 //! import "..\triggers\Systems\CastAItems.j"
 //! import "..\triggers\Systems\TasBox.j"
@@ -201,6 +204,7 @@ trigger gg_trg_RoundEnd= null
 trigger gg_trg_CastAItems= null
 trigger gg_trg_TasBox= null
 trigger gg_trg_CastCheck= null
+trigger gg_trg_CastingCheck= null
 trigger gg_trg_ClickEvent= null
 trigger gg_trg_DecorDestroy_and_Erza_Debuff= null
 trigger gg_trg_Systems1= null
@@ -228,7 +232,6 @@ trigger gg_trg_ArrowLeft= null
 trigger gg_trg_ArrowUp= null
 trigger gg_trg_ArrowDown= null
 trigger gg_trg_ArrowRight= null
-trigger gg_trg_CastingCheck= null
 trigger gg_trg_ButtonPressed= null
 trigger gg_trg_ButtonPressed_ESC= null
 trigger gg_trg_ButtonUnPressed_ESC= null

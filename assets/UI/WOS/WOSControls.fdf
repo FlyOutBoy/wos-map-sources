@@ -1,0 +1,147 @@
+// Checkpoint 20 controls. Loaded LAST by Templates.toc so a parser problem here
+// can never prevent the HUD, music or charge definitions from loading.
+// Direct bundled textures, no inheritance and no stock string tables.
+Frame "SLIDER" "WOSVerticalSlider" {
+    Width 0.012,
+    Height 0.100,
+    SliderLayoutVertical,
+    SliderMinValue 0,
+    SliderMaxValue 100,
+    SliderStepSize 1,
+    SliderInitialValue 0,
+
+    ControlBackdrop "WOSVerticalSliderTrack",
+    Frame "BACKDROP" "WOSVerticalSliderTrack" {
+        BackdropBackground "UI\WOS\slider-clean-v.tga",
+        BackdropBlendAll,
+    }
+
+    SliderThumbButtonFrame "WOSVerticalSliderThumb",
+    Frame "BUTTON" "WOSVerticalSliderThumb" {
+        Width 0.015,
+        Height 0.015,
+
+        ControlBackdrop "WOSVerticalSliderThumbBack",
+        Frame "BACKDROP" "WOSVerticalSliderThumbBack" {
+            BackdropBackground "UI\WOS\slider-thumb.tga",
+            BackdropBlendAll,
+        }
+    }
+}
+
+// Skin for the stock Menu / Allies / Log drawer buttons. A plain SIMPLEFRAME
+// (no button) drawn above them; mouse input still reaches the stock buttons.
+Frame "SIMPLEFRAME" "WOSNativeMenuSkin" {
+    Width 0.150,
+    Height 0.021,
+    Layer "ARTWORK" {
+        Texture "WOSNativeMenuSkinFill" {
+            File "UI\WOS\fill-normal.tga",
+            AlphaMode "BLEND",
+        }
+        Texture "WOSNativeMenuSkinEdge" {
+            File "UI\WOS\border.tga",
+            AlphaMode "BLEND",
+        }
+        String "WOSNativeMenuSkinText" {
+            Font "Fonts\FRIZQT__.TTF", 0.0105,
+            Anchor CENTER, 0.0, 0.0,
+            Width 0.146,
+            Height 0.019,
+            FontJustificationH JUSTIFYCENTER,
+            FontJustificationV JUSTIFYMIDDLE,
+            FontColor 0.882 0.898 0.922 1.0,
+            Text "",
+        }
+    }
+}
+
+// Checkpoint 21: text button whose hover highlight is drawn by the engine.
+// No FRAMEEVENT_MOUSE_ENTER/LEAVE triggers are needed, so hovering sends no
+// network events (event-driven hover made the cursor stutter over shop tabs).
+Frame "BUTTON" "WOSTextButtonTemplate" {
+    Width 0.100,
+    Height 0.024,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+
+    ControlBackdrop "WOSTextButtonBack",
+    Frame "BACKDROP" "WOSTextButtonBack" {
+        BackdropBackground "UI\WOS\fill-normal.tga",
+        BackdropBlendAll,
+    }
+
+    ControlPushedBackdrop "WOSTextButtonPushed",
+    Frame "BACKDROP" "WOSTextButtonPushed" {
+        BackdropBackground "UI\WOS\fill-pressed.tga",
+        BackdropBlendAll,
+    }
+
+    ControlDisabledBackdrop "WOSTextButtonDisabled",
+    Frame "BACKDROP" "WOSTextButtonDisabled" {
+        BackdropBackground "UI\WOS\fill-disabled.tga",
+        BackdropBlendAll,
+    }
+
+    ControlMouseOverHighlight "WOSTextButtonHover",
+    Frame "HIGHLIGHT" "WOSTextButtonHover" {
+        // Checkpoint 24: exactly the button rectangle (it spilled outside).
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\hover-glow.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+// Checkpoint 21: plain inset input field (no stock edge tiles).
+Frame "EDITBOX" "WOSEditBox" {
+    Width 0.200,
+    Height 0.024,
+    EditBorderSize 0.005,
+    EditCursorColor 0.84 0.72 0.46,
+
+    ControlBackdrop "WOSEditBoxBack",
+    Frame "BACKDROP" "WOSEditBoxBack" {
+        BackdropBackground "UI\WOS\field.tga",
+        BackdropBlendAll,
+    }
+
+    EditTextFrame "WOSEditBoxText",
+    Frame "TEXT" "WOSEditBoxText" {
+        FrameFont "Fonts\FRIZQT__.TTF", 0.0105, "",
+        FontJustificationH JUSTIFYLEFT,
+        FontJustificationV JUSTIFYMIDDLE,
+        FontJustificationOffset 0.0 0.0,
+        FontColor 0.92 0.93 0.95 1.0,
+        FontHighlightColor 1.0 0.90 0.60 1.0,
+    }
+}
+
+// Checkpoint 23: tooltip box with a real edge (gold line + corner gems drawn
+// by the engine at any size, unlike stretched textures).
+Frame "BACKDROP" "WOSTooltipBox" {
+    Width 0.170,
+    Height 0.040,
+    BackdropTileBackground,
+    BackdropBackground "UI\WOS\panel.tga",
+    BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+    BackdropCornerSize 0.010,
+    BackdropBackgroundSize 0.128,
+    BackdropBackgroundInsets 0.003 0.003 0.003 0.003,
+    BackdropEdgeFile "UI\WOS\tooltip-edge.tga",
+    BackdropBlendAll,
+}
+
+// Checkpoint 24: icon button whose hover glow covers exactly the button
+// (the stock ScoreScreenTabButtonTemplate glow is larger than its button).
+Frame "BUTTON" "WOSIconButtonTemplate" {
+    Width 0.030,
+    Height 0.030,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlMouseOverHighlight "WOSIconButtonHover",
+    Frame "HIGHLIGHT" "WOSIconButtonHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\hover-glow.tga",
+        HighlightAlphaMode "ADD",
+    }
+}

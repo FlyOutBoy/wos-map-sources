@@ -1,5 +1,184 @@
 # UI redesign plan
 
+## Checkpoint 22b — round 2 corrections: source compiled, MAIN NOT rebuilt (2026-10-10, Claude)
+
+Compile OK, UI regressions 171/171 (cp22 file: 20 tests). MAIN build was refused:
+World Editor open. When it is closed (without saving): push triggers + build
+-NoLaunch exactly as in checkpoint 22 (adds glyph-allycolor.tga, 32 cp22 TGAs).
+
+- Mode selector: live countdown "Normal in Ns" (`WOS_ModeCountdownTick`, Starts.j).
+- HUD: "INVENTORY" label fits (scale also shrinks the box: size/scale).
+- Top-right panel compacted (.540-.600); Hide UI / Shop Key row .5495; Menu /
+  Allies / Log = one dropdown under it (`WUI_SetMenuDrop`: native surface 9090,
+  rows step .023, no own row edges, ornate rails outside, dividers), Menu icon
+  gets an active glow while open.
+- Portrait voice: `WOS_PlayHeroVoice` compares with the hero `*_ID` constants
+  (the picker replaces a picked hero's Hero_IDx slot with 12 - root cause).
+- Hotkeys reworked: custom-bound skills are drawn by AHUI (stock letter gone,
+  new key shown on the icon) with a click target; key/mouse use
+  `ForceUIKey(stock letter)` for skills, `BlzFrameClick` for items. Edit mode:
+  big key label on every slot ("-" if none), pulsing outline on the slot being
+  edited, chat prompts; success message 1 s; conflicts listed (stock keys,
+  order/shop keys, ping/emote keys, other slots). The stock key itself cannot
+  be disabled by any native (no hotkey field in common.j).
+- Emote wheel: pages of 15 + arrows only if needed, hover glow instead of
+  resizing (the "moving wheel"), VIP check = chat access level / nickname / Test
+  Mode (`CustomChat_GetPlayerAccessLevel`). Chat emoji palette: 5x3 pages,
+  access level falls back to the nickname VIP lists; Captain Draft now shows
+  the chat emoji buttons with the hero.
+- Shop: item-tree prices inside icons on plates (centre item too); close
+  button .016 at the window corner; top panel no longer reaches the shop.
+- FPS/Ping/APM: stock line found by text ("FPS") and re-anchored at
+  (.178, .543) - VERIFY (frame name unknown; scan stops after 40 s).
+- Ally-colour minimap button (stock index 2) kept, skinned (glyph-allycolor),
+  docked under the camera slider (slider now .031-.118).
+
+## Checkpoint 22 — screenshot round 3: source compiled, NOT built into MAIN (2026-10-10, Claude)
+
+MAIN INTEGRATED 2026-10-10 12:18 (World Editor closed): trigger push 109 J,
+1 WTG entry updated (backup backups/trigger-sync/2026-10-10_121723_780952);
+build -NoLaunch BUILD OK, MAIN war3map.j updated (previous script backup
+backups/main-map-build/20261010-121807-119), packed copy _build/WoS_Test.w3x;
+all 31 cp22 TGAs present/byte-identical/imported; verify_wos_ui: source
+identity + traversal + FDF PASS. Game not launched (user opens it in the editor).
+
+Status: all items below are in the sources; full vJASS compile (JassHelper +
+pjass, `.vscode/compile-vjass.ps1`) = COMPILE OK; UI regressions 170/170 OK
+(18 new in `tools/test_wos_ui_checkpoint22.py`). MAIN build was NOT run because
+World Editor was open (the build script refuses). No in-game verification yet.
+
+Done (sources + assets):
+- Pick: new gold franchise logos `pick-logo-*.tga` (from the user's PNGs in
+  `Desktop/Новая папка (13)`, 512x128, 4:1, rebuilt after the user replaced them);
+  gold bevel `icon-frame.tga` over every hero/player icon (`WUI_IconFrame`);
+  round timer in its own framed plate top-left (`WOS_PickTimerPlate`, Captain
+  Draft widens it to the title row); teams pushed to the window edges
+  (x .120+.046i / .536+.046i) with a BANS row between them.
+- Bans: library `WOSPickBans` (top of WoS_Pick_Init.j): 8 allocated slots,
+  `WOS_PickBanLayout(count, showNames)`, `WOS_PickBanSet(i, hero, proposer)`,
+  flash fx, tooltip. Normal / Player Pick Mode: every locked ban (roulette +
+  captain guaranteed) goes to the next slot with the proposer's name below.
+  Captain Draft: same slots, no names; its old floating BANS panel stays hidden
+  and `CaptainDraftBanHighlight[i]` points at the shared fx.
+- Player Pick Mode: `WOS_LayoutCaptainVote` rewritten — compact windows,
+  rows aligned (vote 2x5; draft: 8 free players 2x4 + TEAM 1 / TEAM 2 rows with
+  the captain first, crown glyph), vote counts as corner badges, gold icon
+  frames; removed the extra SetPoint on Frame_Cap1_13/14 that made names drift.
+- Shop: catalogue icons .046 with the price inside, centred above the bottom
+  edge on a translucent plate sized to the digits (`ShopPlacePrice`,
+  `price-plate.tga`; also the 6 inventory slots); close button (code 408) in the
+  top rail, same state change as the shop key.
+- HUD: whole portrait + level plate is one click/hover target
+  (`UNITSTAT_PortraitHit`); learn strip spans pips -> icon bottom; items .033 and
+  scaled by the stock .031 icon (`WUI_PlaceNativeItem`, top-left icon shift
+  .004*scale — VERIFY in game); "I N V E N T O R Y" title with flourishes.
+- Voice toggle (speaker, stats column right side): ON = portrait click plays
+  the own hero's pick lines in turn, local (`WOS_PlayHeroVoice` /
+  `WOS_PlayNextHeroVoice` extracted from OnClick and shared with the picker).
+- Hotkeys (`WOSUI.j`): keyboard toggle under the voice toggle. Edit mode shows
+  gold outlines over the 7 skills + 6 items, a hint plate, key badges; the
+  skill row is drawn by AllyHeroAbilityUI while editing. Click a slot, press a
+  key (Esc cancel, Backspace remove). Bound key (synced key event) ->
+  `BlzFrameClick` of that native button for its owner. Reserved: QWERTFG,
+  A S H M P (orders), B I (shop). Not persisted between games.
+- Pick stage showed only E/R/T: `hook BlzHideOriginFrames` -> while the stock
+  command card is hidden, learned skills are drawn by AHUI too.
+- F2: fill = full window under flush ornate rails (both sizes), always opaque,
+  opacity button hidden, gold-framed expand/close glyphs; big version: DAMAGE
+  DEALT and DAMAGE TAKEN are single columns (total + coloured phys/mag line
+  below); repick/swap parked off-screen while the big F2 is open.
+- Wheels: `wheel-base`/`wheel-ring` without concentric rings, crossed swords
+  for Attack, larger ping glyphs (emote wheel uses `wheel-ring`).
+- Top-right: gold glyphs menu/stats/link/music; Discord toolbar icon =
+  user's `discord icon.png` (circle-masked `discord.tga`).
+- Menu/Allies/Log skins larger + opaque disabled fill; stock F10 menu / end-game
+  window re-skinned by name (`WUI_StyleEscMenu`: background tile + ornate rails,
+  button fills + gold hairline; unknown names skipped) — VERIFY in game.
+- Restart button (top-left, `WUI_CreateRestart`): stock `RestartGame(false)`;
+  created only when Player 1 is the only human player (synced check
+  `WUI_RestartAllowed`), click re-checks. Switch: `WUI_SHOW_RESTART` in WOSUI.j.
+- Tools: Pillow is not installed here; new `tools/png_tga.py` (PNG decode,
+  resize, TGA) and `tools/raster.py` (SDF rasterizer) power
+  `tools/build_wos_ui_textures_cp22.py`. test_cp21 now imports names from the
+  installer (its builder needs Pillow).
+
+Next: close World Editor (without saving), run "WOS: BUILD + RUN MAIN MAP"
+(installs 31 new TGAs), then push sources to WTG/WCT as before. Check in game:
+item icon centring/scale and item cooldown, escape-menu skin, hotkey edit mode
++ BlzFrameClick casting/targeting, ban row with names, Player Pick windows,
+shop price plates, F2 big layout.
+
+Checkpoint 21 and older sections below are history where they conflict.
+
+## Checkpoint 20 — screenshot corrections, source ready, NOT yet built (2026-10-09, Claude)
+
+Request (user screenshots + concept art): fix transparent voids, tiny items with a
+huge item cooldown, small minimap frame, mode buttons whose frame is smaller than
+the real button, restyle repick/swap, Test-help covering the Menu drawer, empty
+unfilled top strip, small pick portrait / crooked stats / overflowing descriptions,
+abilities not on one row, Dota-style Alt+Click learning with level indicators,
+smaller train-kills docked to the time, STR/AGI/INT "with level" display, camera
+slider look, remove the HUD "Dmg taken" line, remove empty space.
+
+Implemented (sources + assets; World Editor/MAIN integration and game check pending):
+- Ornaments: `WUI_OrnateBorder(Ex)` now puts the rail CENTRE on the owner edge
+  (fractions measured from the corner art: rail .293c top/.307c bottom, .207c
+  sides, thickness .125c). Window fills always reach the metal; no gaps. Rails
+  rebuilt from corner exit pixels (old crops had stray red/yellow rows). Optional
+  corner mask (1 tl, 2 tr, 4 bl, 8 br). `WUI_OrnateWindow` = flush border.
+- Buttons: `WUI_TextButton` = gradient fill (fill-normal/hover/selected) + flush
+  `WUI_GoldFrame` hairline + corner gems; frame == clickable rectangle.
+  `WUI_SetButtonTextScale` added. Mode selector: no parent scale, .264x.040 buttons.
+- Bottom HUD (4:3 units): minimap block 0-.160 x 0-.144 (native minimap .004-.140,
+  camera slider strip .140-.160, filled by native surfaces 9051-9054 AROUND the
+  minimap only). One chassis .160-.798 x 0-.094 (native surface 9050, mask 11)
+  with dividers at .2285/.3035/.5910/.6970 (+ horizontal .7470 at y .0655).
+  Portrait .050 at (.1945,.0595) + level plate (badge.tga) below; stats rows
+  ATK/PHYS/MAG/STR/AGI/INT (icon + left text, "base +bonus", main stat gold);
+  HP/MP .272 bars at y .0835/.0697; ONE ability row QWERTFG: X=.327+.040*slot,
+  Y=.042, size .034; pips at Y=.0165; items .030 3x2 at X .612/.644/.676,
+  Y .061/.028 (+ recessed empty cells 9070-9075); gold row y .0795; toolbar
+  .025 cells at .718+.030c / .050-.030r. Orders = small tab (.556,.1015),
+  drawer row y .137. Native/ally tooltips bottom-left (.307,.126).
+- Item cooldown: `WUI_ResizeCooldown` scans ALL children >= .020 wide (item
+  cooldown sprite is not child 0, so it previously stayed .039).
+- Learning (ShowCD.j, AllyHeroAbilityUI): `AHUI_BaseAbility[slot]` = first rawcode
+  (learnable hero skill). Pips (6 max) under QWERT: full/ready/empty textures.
+  Clickable learn strip over the pips when `AHUI_CanLearn` (skill points, level <
+  field 'alev' (fallback 5), next-level requirement when 'alsk' > 0). Alt overlays
+  over icons exist only while synced Alt is down (16 meta combos, keyup or 4 s
+  timeout) AND a level is learnable. Click handler (synced) learns for Hero[pid]
+  via SelectHeroSkill on the base rawcode. Frames allocated once on all clients.
+- Top strip .452x.046 at (.400,.577), translucent panel-soft fill + flush rails;
+  icons y offset .006 (RearrangeTeamUI aligned: -.196/-.074, y .006); score boxes
+  .030 gold frames; time .070x.0135 at .5465 with train kills .062x.0115 docked
+  directly below (.534). FRAME_StatusHeroStringPlayerTakenDamageMag hidden.
+- Camera: `WOSVerticalSlider` (new WOSControls.fdf, loaded LAST in Templates.toc;
+  stock QuestMainListScrollBar fallback) at (.150,.066) .012x.104, glyph-camera.
+- Test help: .188x.205 block below the Menu drawer (toggle .4385, panel .3245),
+  panel-soft + gold frame; drawer rows (.509/.484/.459) are never covered.
+- Pick: preview .240x.330 at (.613,.365); portrait .156 (+.164 frame); framed
+  two-column stat card (STR/AGI/INT "value +gain / lvl", primary marked *;
+  ATK/DEF/MS/AS); all 7 abilities in one row (.027, step .031, y .2515);
+  description overlay .226x.232 with .009 inner margin, text scale .80.
+  Repick/Swap: graphite fill + gold glyph + gold frame + caption (.020/.054, .568).
+- Assets: tools/build_wos_ui_textures_cp20.py (deterministic, chained from
+  build_wos_ui_assets.py). 27 new TGA + 4 rebuilt rails; installer CP20_NAMES.
+
+Verification here: crude vJASS flattening + pjass type check of all edited files:
+no errors on changed lines. Regression suite: 125 checks (14 new in
+test_wos_ui_checkpoint20.py); obsolete geometry asserts of checkpoints 13-19
+updated to the new contract. Only environment import failure test_test_map_workflow.
+NOT verified: JassHelper compile, World Editor push, real Warcraft rendering/input,
+whether the Reforged item cooldown child is now scaled, Alt meta behaviour.
+
+Next: close World Editor, run task "WOS: BUILD + RUN MAIN MAP" (installs 55 UI
+textures + WOSControls.fdf, compiles Main.vj); then push sources to native WTG/WCT
+as in previous checkpoints; check in game: chassis/minimap fill, items+cooldown,
+Alt+Click and learn strip, slider, pick preview, Test Mode Menu drawer.
+
+Checkpoint 19 and older sections below are history where they conflict.
+
 ## Checkpoint 19 — integrated, engine verification pending (2026-10-09)
 
 Latest reference: the original scenario folder
@@ -316,3 +495,24 @@ User addition: hero meters and unit buff timers need one shared dynamic placemen
 system. WOSUI now provides registration, automatic compaction, smooth movement,
 native SIMPLEFRAME-safe buff icons and a WOSHeroMeter constructor for new owners.
 Runtime verification remains pending; implementation is checkpoint 6.
+
+Checkpoint 28 (2026-10-11): resource-hover cleanup for block 4c is implemented in
+WOSUI source and covered by compiler/UI regressions. The overall block and game
+verification remain IN_PROGRESS; MAIN integration is complete (checkpoint 29).
+
+Checkpoint 29: local frame acquisition risks removed from Menu/HUD/restoration;
+host-only selector and stat-help changes integrated into MAIN. Two-player testing
+of pick pages/random, Menu, Hide UI and item cooldown selection remains pending.
+
+Checkpoint 30: stock menu skin moved to CustomSkin; local ability-handle getter
+removed. Native portrait/stable hover, enlarged buffs/shop labels, inventory names,
+tree fast buy, Tas passive counters and shared Starrk/Kirito/Gojo meters integrated.
+F2 retains top/options/camera and reaches minimap edge. MAIN compile/build PASS,
+212 regressions PASS, 164 packed entries match MAIN/assets. Visual/two-client
+acceptance remains IN_PROGRESS; exact contracts and backups are in RESUME.md.
+
+Checkpoint 32: per-player base centering/arena bounds, identical hero/clone native
+minimap portraits and bounds-aware ping overlays integrated in MAIN. Compile,
+218 regressions, four final targeted camera/icon checks and 23 ping checks PASS;
+164 packed entries verified. Native rendering and terrain background alignment
+remain game acceptance work; existing full-map image was not cropped.

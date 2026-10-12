@@ -1,6 +1,12 @@
 library GearSystems initializer Init uses GearSystems2
 
 globals
+    hashtable WOS_MiniUnits = InitHashtable()
+    integer WOS_MiniCount = 0
+    unit array WOS_MiniUnit
+    unit array WOS_MiniSource
+    minimapicon array WOS_MiniIcon
+    string array WOS_MiniTexture
     group TransformCloneEnumGroup = CreateGroup()
     boolexpr TransformCloneFilterExpr = null
     unit TransformFilterHero = null
@@ -49,6 +55,15 @@ endglobals
         //   125.0 = 20.87% физического сопротивления;
         //   150.0 = 24.04% физического сопротивления.
         real ARMOR_EFFECTIVENESS_PERCENT = 105.0
+        // Resistances (all in one place):
+        // WOS_ARMOR_PER_AGI    - armor the engine gives per Agility point (gameplay constant);
+        // WOS_PHYS_RES_PER_AGI - armor counted per Agility for physical resistance (+20%);
+        // WOS_MAG_RES_PER_INT  - armor-equivalent per Intelligence for magic resistance.
+        // Both use the armor formula: effective = value x ARMOR_EFFECTIVENESS_PERCENT / 100,
+        // resistance = effective / (100 + effective).
+        real WOS_ARMOR_PER_AGI = 0.1
+        real WOS_PHYS_RES_PER_AGI = 0.12
+        real WOS_MAG_RES_PER_INT = 0.12
 
         integer LetterCheck = 7
         rect REC     
@@ -108,7 +123,7 @@ function HideUIExceptTopMenu takes player p, boolean b returns nothing
         endif
 
         // Верхняя панель с кнопками меню остаётся видимой.
-        call BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarMenuButton", 0), true)
+        call WUI_ShowNativeMenu.evaluate()
     endif
 endfunction
 function GetStr takes unit c returns integer
@@ -396,6 +411,151 @@ endfunction
 
 
 
+// Register synchronously; only visibility is allowed to differ between clients.
+// Hero portrait minimap icons are disabled: heroes keep the stock minimap
+// markers (the native display is no longer hidden). Kept as a no-op so the
+// existing callers (pick, illusions, Kirito clones, auras) stay valid.
+function WOS_RegisterHeroMinimap takes unit u, unit source returns nothing
+    local integer index
+    local string texture
+    if true then
+        return
+    endif
+    if u == null or source == null or GetUnitTypeId(u) == 0 then
+        return
+    endif
+    set index = LoadInteger(WOS_MiniUnits, GetHandleId(u), 0)
+    set texture = BlzGetAbilityIcon(GetUnitTypeId(source))
+    if texture == null or texture == "" then
+        return
+    endif
+    if index == 0 then
+        set WOS_MiniCount = WOS_MiniCount + 1
+        set index = WOS_MiniCount
+        set WOS_MiniUnit[index] = u
+        call SaveInteger(WOS_MiniUnits, GetHandleId(u), 0, index)
+    endif
+    set WOS_MiniSource[index] = source
+    if WOS_MiniTexture[index] != texture then
+        if WOS_MiniIcon[index] != null then
+            call DestroyMinimapIcon(WOS_MiniIcon[index])
+        endif
+        set WOS_MiniTexture[index] = texture
+        set WOS_MiniIcon[index] = CreateMinimapIconOnUnit(u, 255, 255, 255, texture, FOG_OF_WAR_VISIBLE)
+        call SetMinimapIconOrphanDestroy(WOS_MiniIcon[index], false)
+        call SetMinimapIconVisible(WOS_MiniIcon[index], false)
+    endif
+    call BlzSetUnitBooleanField(u, UNIT_BF_HERO_HIDE_HERO_MINIMAP_DISPLAY, true)
+    call BlzSetUnitBooleanField(u, UNIT_BF_HIDE_MINIMAP_DISPLAY, true)
+endfunction
+
+function WOS_UpdateHeroMinimap takes nothing returns nothing
+    local integer index = 1
+    local unit u
+    local player viewer = GetLocalPlayer()
+    local boolean visible
+    if WOS_MiniCount == 0 then
+        set viewer = null
+        return
+    endif
+    loop
+        exitwhen index > WOS_MiniCount
+        set u = WOS_MiniUnit[index]
+        if GetUnitTypeId(u) == 0 then
+            call DestroyMinimapIcon(WOS_MiniIcon[index])
+            call RemoveSavedInteger(WOS_MiniUnits, GetHandleId(u), 0)
+            set WOS_MiniUnit[index] = WOS_MiniUnit[WOS_MiniCount]
+            set WOS_MiniSource[index] = WOS_MiniSource[WOS_MiniCount]
+            set WOS_MiniIcon[index] = WOS_MiniIcon[WOS_MiniCount]
+            set WOS_MiniTexture[index] = WOS_MiniTexture[WOS_MiniCount]
+            if index < WOS_MiniCount then
+                call SaveInteger(WOS_MiniUnits, GetHandleId(WOS_MiniUnit[index]), 0, index)
+            endif
+            set WOS_MiniUnit[WOS_MiniCount] = null
+            set WOS_MiniSource[WOS_MiniCount] = null
+            set WOS_MiniIcon[WOS_MiniCount] = null
+            set WOS_MiniTexture[WOS_MiniCount] = null
+            set WOS_MiniCount = WOS_MiniCount - 1
+        else
+            // Morphs use the source hero's current portrait for every clone too.
+            call WOS_RegisterHeroMinimap(u, WOS_MiniSource[index])
+            set visible = GetWidgetLife(u) > 0.405 and not IsUnitHidden(u) and IsUnitVisible(u, viewer) and not IsUnitInvisible(u, viewer)
+            call SetMinimapIconVisible(WOS_MiniIcon[index], visible)
+            set index = index + 1
+        endif
+    endloop
+    set u = null
+    set viewer = null
+endfunction
+
+// ===== Desync probe =====
+// After every hero pick each client records, for 3 seconds, the next free
+// handle id and a synced random number (plus game time) and writes them to
+// CustomMapData\save\WOS2_desync_probe.txt. Two players' files diverge at the
+// first step that allocated handles or used randomness differently.
+globals
+    string array WOS_ProbeLine
+    integer WOS_ProbeCount = 0
+    integer WOS_ProbeTicks = 0
+    real WOS_ProbeClock = 0.00
+    string WOS_ProbeLabel = ""
+    timer WOS_ProbeTimer = null
+endglobals
+
+function WOS_ProbeMark takes string label returns nothing
+    local location l = Location(0.00, 0.00)
+    local integer id = GetHandleId(l)
+    local integer i = 0
+    local real sum = 0.00
+    call RemoveLocation(l)
+    set l = null
+    loop
+        exitwhen i >= 10
+        if Hero[i] != null then
+            set sum = sum + GetUnitX(Hero[i]) + GetUnitY(Hero[i]) + GetWidgetLife(Hero[i])
+        endif
+        set i = i + 1
+    endloop
+    if WOS_ProbeCount < 400 then
+        set WOS_ProbeLine[WOS_ProbeCount] = R2SW(WOS_ProbeClock, 1, 2) + " " + label + " h=" + I2S(id) + " r=" + I2S(GetRandomInt(0, 999999)) + " s=" + I2S(R2I(sum))
+        set WOS_ProbeCount = WOS_ProbeCount + 1
+    endif
+endfunction
+
+function WOS_ProbeDump takes nothing returns nothing
+    local integer i = 0
+    call PreloadGenClear()
+    call PreloadGenStart()
+    loop
+        exitwhen i >= WOS_ProbeCount
+        call Preload("\")\n" + WOS_ProbeLine[i] + "\n//")
+        set i = i + 1
+    endloop
+    call PreloadGenEnd("save\\WOS2_desync_probe.txt")
+    call PreloadGenClear()
+endfunction
+
+function WOS_ProbeTick takes nothing returns nothing
+    set WOS_ProbeClock = WOS_ProbeClock + 0.10
+    if WOS_ProbeTicks > 0 then
+        set WOS_ProbeTicks = WOS_ProbeTicks - 1
+        call WOS_ProbeMark(WOS_ProbeLabel + " +" + I2S(30 - WOS_ProbeTicks))
+        if WOS_ProbeTicks == 0 then
+            call WOS_ProbeDump()
+        endif
+    endif
+endfunction
+
+function WOS_ProbeStart takes string label returns nothing
+    if WOS_ProbeTimer == null then
+        set WOS_ProbeTimer = CreateTimer()
+        call TimerStart(WOS_ProbeTimer, 0.10, true, function WOS_ProbeTick)
+    endif
+    set WOS_ProbeLabel = label
+    set WOS_ProbeTicks = 30
+    call WOS_ProbeMark(label + " start")
+endfunction
+
 function LearnHeroSpells takes unit c returns nothing
 local integer id = GetUnitTypeId(c)
 local integer i = 0
@@ -405,6 +565,10 @@ local integer e = 0
 local integer r = 0
 local integer t = 0
 local integer check = 0
+call WOS_ProbeStart("pick p" + I2S(GetPlayerId(GetOwningPlayer(c))) + " " + GetUnitName(c))
+call TasAbilityChargeBox_RegisterHeroCounters(c)
+call WOS_RegisterHeroMinimap(c, c)
+call WOS_ProbeMark("after minimap")
 if id == Raiden_ID then
 set q = RaidenQ_ID
 set w = RaidenW_ID
@@ -1288,8 +1452,6 @@ local integer id = GetUnitTypeId(Hero[i])
     call PauseUnit(Hero[i],true)
     endif
    
-    call BlzFrameSetVisible(lmpOpenButton,true)
-    call BlzFrameSetVisible(lmpLinkButton,true)
 
 // Clear the old hero's queue before writing the six new recommendations.
 set ItemsPage0_ID[i2+0] = 0
@@ -1833,14 +1995,14 @@ endif
 set k = 0
 endif
 else
-if BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID) == 0 then 
+if BlzGetUnitAbilityCooldownRemaining(c,RimuruF_ID) == 0 then 
 set k = 0
 if GetRandomInt(1,2) == 1 then 
 call MakeSound("war3mapimported\\Hero_Rimuru_F")
 else
 call MakeSound("war3mapimported\\Hero_Rimuru_F2")
 endif
-call FakeCD_Start(c, RimuruF_ID, RimuruF_CD, 0, 0)
+call PassiveCD_Start(c, RimuruF_ID, RimuruF_CD)
 endif
 endif
 endif
@@ -2604,6 +2766,10 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
 endif
     
         set armor = BlzGetUnitArmor(td)
+        // Agility counts 20% more for physical resistance than the engine's armor.
+        if IsUnitType(td, UNIT_TYPE_HERO) then
+            set armor = armor + I2R(GetHeroAgi(td, true)) * (WOS_PHYS_RES_PER_AGI - WOS_ARMOR_PER_AGI)
+        endif
 
         if armor < 0.0 then
             set armor = 0.0
@@ -2711,6 +2877,12 @@ endif
 
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р В°РЎРЏ Р Р†Р ВµРЎвЂљР С”Р В°
     if isMagic then
+        // Intelligence resists magic with the armor formula:
+        // effectiveArmor = Int x WOS_MAG_RES_PER_INT x effectiveness.
+        if IsUnitType(td, UNIT_TYPE_HERO) then
+            set armor = I2R(GetHeroInt(td, true)) * WOS_MAG_RES_PER_INT * RMaxBJ(0.0, ARMOR_EFFECTIVENESS_PERCENT) / 10000.0
+            set dmg = dmg / (1.0 + armor)
+        endif
         // Asta G
         if HasCachedItem(td, 'I013') > 0 then
         set dmg = dmg * 0.9
@@ -2751,16 +2923,6 @@ endif
             set itemMagRes = itemMagRes + 4.0
         endif
         
-        set level = GetHeroLevel(td)
-        if TestMode == false or (GetPlayerId(GetOwningPlayer(td)) != TestUnitPlayerId and GetPlayerId(GetOwningPlayer(td)) != TestAllyUnitPlayerId) then  
-        if level >= 35 then
-            set dmg = dmg * 0.85
-        elseif level >= 24 then
-            set dmg = dmg * 0.9
-        elseif level >= 12 then
-            set dmg = dmg * 0.95
-        endif
-        endif
         // Inori E
         if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 then
             set dmg = dmg * (1.0 - InoriE_DmgMagResistFromPas / 100.0)
@@ -3160,6 +3322,9 @@ function FixAura2 takes unit c returns nothing
         return
     endif
     set pid = GetPlayerId(GetOwningPlayer(c))
+    if pid < 15 and Hero[pid] != null then
+        call WOS_RegisterHeroMinimap(c, Hero[pid])
+    endif
     set hid = GetHandleId(c)
     set donatType = ActiveDonatType[pid]
     set variant = ActiveDonatVariant[pid]
