@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "file": "GOLD Parser-LICENSE.txt",
+      "bytes": 879,
+      "sha256": "26e9c7099cf276e04e153fde1806a0f4c248c451b8fc87436ec351ba340a1b5d"
+    },
+    {
+      "file": "jasshelper-LICENSE.txt",
+      "bytes": 1123,
+      "sha256": "fbad89c3da2eeea127dd47a90db262e1d22eef98f70f56009d876cdfa8e8082c"
+    },
+    {
+      "file": "jasshelper.conf",
+      "bytes": 60,
+      "sha256": "af1de5521322aaf3ed6e65ddb30dcc847c51f1efeefce66d096b90e6b2f38bf0"
+    },
+    {
+      "file": "jasshelper.exe",
+      "bytes": 904680,
+      "sha256": "c9a6675f2651cf147804c6de52b726cc06632e4aee0eb323090296056a34c2b4"
+    },
+    {
+      "file": "pjass-readme.txt",
+      "bytes": 787,
+      "sha256": "3d2605c0bd2efbb4ecf270125debcabedf2467800555230d57bb01f5357bc957"
+    },
+    {
+      "file": "pjass.exe",
+      "bytes": 35304,
+      "sha256": "55e4d32ea5e3a783ec0bd1c179f0faf6ce0341775383a6efc826fc8b8e09fba0"
+    },
+    {
+      "file": "sfmpq-LICENSE.txt",
+      "bytes": 1328,
+      "sha256": "8b322a1175ac8128d3fb8206d0fef3c37c03c95db03acc461908800c36904fc0"
+    },
+    {
+      "file": "sfmpq.dll",
+      "bytes": 78312,
+      "sha256": "ee81f0e30458533ca6fe17c2deef5a43db28c0cdbb5d385a824d8cb4d1748d45"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+function PreloadFiles takes nothing returns nothing
+call BlzSetAbilityTooltip(1097690227,"WOS2APP1|A,13,9,769621|H,1211117892,13,9,889368|E,2,768665|",0)
+call BlzSetAbilityTooltip(1098018659,"",0)
+call BlzSetAbilityTooltip(1097689443,"",0)
+call BlzSetAbilityTooltip(1097689452,"",0)
+call BlzSetAbilityTooltip(1097034854,"",0)
+call BlzSetAbilityTooltip(1097035111,"",0)
+call BlzSetAbilityTooltip(1097098598,"",0)
+call BlzSetAbilityTooltip(1097099635,"",0)
+call BlzSetAbilityTooltip(1097228916,"",0)
+call BlzSetAbilityTooltip(1097228907,"",0)
+call PreloadEnd(0.0)
+endfunction
