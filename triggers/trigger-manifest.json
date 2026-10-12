@@ -382,8 +382,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/SaveLoad.j",
-      "source_bytes": 127852,
-      "sha256": "3c956eabd532090c53e83b0051c3b0853351b263874d51004031d610bae32b70",
+      "source_bytes": 127880,
+      "sha256": "9383e3c4cb80dece133ef2cf9cdd92100b6afa03420413ad465abe4104fab767",
       "declarations": {
         "libraries": [
           "AAINIT"
@@ -425,8 +425,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 65873,
-      "sha256": "cede3d1da172ccc3b3585eaa8a8a36b579e9573dabbb92037f83dde5da984499",
+      "source_bytes": 67007,
+      "sha256": "93c55086eae627c4e645f680480c850e4f1a592a18e3629a68daf7c5cfcb4e5a",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -458,8 +458,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Scoreboard.j",
-      "source_bytes": 104106,
-      "sha256": "10bd7f4e3a6cc3727ccf8dfffb87f9456989baf19058017fc64e2bc3013a04dd",
+      "source_bytes": 104312,
+      "sha256": "0c8a103dc64913fdb1b66f63701e48a18d5cc651d2398f1ff871827befd6a749",
       "declarations": {
         "libraries": [
           "WosScoreboard"
@@ -627,8 +627,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 176899,
-      "sha256": "f515fc01d063189345843771c3643177d13624d73e50722afad94e0ed21c2794",
+      "source_bytes": 186638,
+      "sha256": "f91b572c6af9cb5414ecea90e1b2ad9d818b8f121ce74edecf94e3978e1b97c8",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -652,8 +652,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 270108,
-      "sha256": "60188b45d41d66690775c1ed8694125c30d5e51b897d3b7c8b156fc0f863feac",
+      "source_bytes": 275052,
+      "sha256": "4a12fd56850c1b7b0c3498e7a1db75c0059939e30b84eb258a6ed9d2722b07da",
       "declarations": {
         "libraries": [
           "WOSPickBans"
@@ -690,8 +690,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 25344,
-      "sha256": "d1e8ea7a679ab262819ae7da934b93db9db4fc61830192e946945a2f61c28a0f",
+      "source_bytes": 25551,
+      "sha256": "bd174a66a3d34834e616214bde3e37dec29b27dba969fe783c52e0830ca13255",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -790,8 +790,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 118889,
-      "sha256": "6ba2e0985acd8074da1a0b8d559fe910f311b591c975d16deb98c659cd38da26",
+      "source_bytes": 119285,
+      "sha256": "f57320161ceee1e340b883218d86ce4b51b9d717b0b468067e2348376bee01cf",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -901,8 +901,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 190659,
-      "sha256": "c4c771e1a55b379665a4830210cfae2f2123ef7514470e6350f22b0e85fcf5f4",
+      "source_bytes": 194334,
+      "sha256": "5089e3ba6868707decc1797cbbe3f1e3ddd041b856bb2bbd252494c096163186",
       "declarations": {
         "libraries": [
           "WOSUI"
@@ -1172,8 +1172,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 148810,
-      "sha256": "9f47b0908a4907b5786c85e4ed61e7278b8855870da26923d78d5ecc389b5187",
+      "source_bytes": 149785,
+      "sha256": "00316f697fb5d9254ef2820e4b6ca63be6410b10a860419fd7ae9eae078a7eb2",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -2423,8 +2423,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
-      "source_bytes": 96538,
-      "sha256": "543f8193f216336766c17b48bf69292a51977372c72f4acacf4c7c2a79890985",
+      "source_bytes": 99434,
+      "sha256": "ea01dc2a97787610d1305fa2d741ba998f4e354d577db703657847f18cf7e4c3",
       "declarations": {
         "libraries": [
           "PatriotSpells"

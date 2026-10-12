@@ -134,7 +134,8 @@ class HUD(unittest.TestCase):
 
     def test_slot_hotkeys_click_the_native_button_locally(self):
         wui = read('WOSUI.j')
-        self.assertIn('hook BlzHideOriginFrames WUI_OnHideOrigin', wui)
+        self.assertNotIn('hook BlzHideOriginFrames', wui)
+        self.assertIn('function WUI_SetOriginHidden takes player p, boolean hide returns nothing', wui)
         key = body(wui, 'WUI_OnSlotKey')
         self.assertIn('if found >= 0 and GetLocalPlayer() == p then\n        call WUI_UseSlot(found)', key)
         use = body(wui, 'WUI_UseSlot')

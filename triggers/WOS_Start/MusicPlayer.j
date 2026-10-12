@@ -126,6 +126,8 @@ globals
     private integer array lmpDurationMs
     private integer array lmpCurrent
     private integer array lmpListOffset
+    private integer array lmpScrollShown
+    private integer array lmpScrollEcho
     private boolean array lmpPlaying
     private boolean array lmpPaused
     private boolean array lmpLoop
@@ -646,6 +648,32 @@ private function LMP_Stop takes player whichPlayer returns nothing
     call LMP_UpdateHeader(whichPlayer)
 endfunction
 
+// Synced: moves the owner's list slider to the current offset. The change
+// returns as a synced SLIDER_VALUE_CHANGED event (an echo); every client
+// counts it so LMP_OnScroll drops it instead of bouncing the list back.
+private function LMP_ShowScroll takes player whichPlayer returns nothing
+    local integer pid = GetPlayerId(whichPlayer)
+    local integer value = LMP_MaxOffset() - lmpListOffset[pid]
+    if value != lmpScrollShown[pid] then
+        set lmpScrollShown[pid] = value
+        set lmpScrollEcho[pid] = lmpScrollEcho[pid] + 1
+        if GetLocalPlayer() == whichPlayer then
+            call BlzFrameSetValue(lmpScroll, I2R(value))
+        endif
+    endif
+endfunction
+
+// Every client's list slider starts at the top (value = max offset).
+private function LMP_InitScrollShown takes nothing returns nothing
+    local integer pid = 0
+    loop
+        exitwhen pid >= bj_MAX_PLAYER_SLOTS
+        set lmpScrollShown[pid] = LMP_MaxOffset()
+        set lmpScrollEcho[pid] = 0
+        set pid = pid + 1
+    endloop
+endfunction
+
 private function LMP_PlayTrack takes player whichPlayer, integer trackIndex returns nothing
     local integer pid = GetPlayerId(whichPlayer)
     local integer orderPosition
@@ -680,8 +708,8 @@ private function LMP_PlayTrack takes player whichPlayer, integer trackIndex retu
 
     if GetLocalPlayer() == whichPlayer then
         call LMP_SetProgress(whichPlayer, 0.00)
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
     endif
+    call LMP_ShowScroll(whichPlayer)
 
     call LMP_UpdateAll(whichPlayer)
 endfunction
@@ -843,9 +871,7 @@ private function LMP_ToggleShuffle takes player whichPlayer returns nothing
     endif
     set lmpListOffset[pid] = LMP_ClampOffset(lmpListOffset[pid])
 
-    if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
-    endif
+    call LMP_ShowScroll(whichPlayer)
     call LMP_UpdateAll(whichPlayer)
 endfunction
 
@@ -976,6 +1002,13 @@ private function LMP_OnScroll takes nothing returns nothing
     local integer pid = GetPlayerId(p)
     local integer sliderValue = R2I(BlzGetTriggerFrameValue() + 0.50)
 
+    // Echo of our own slider move (LMP_ShowScroll): drop it.
+    if lmpScrollEcho[pid] > 0 then
+        set lmpScrollEcho[pid] = lmpScrollEcho[pid] - 1
+        set p = null
+        return
+    endif
+    set lmpScrollShown[pid] = sliderValue
     set lmpListOffset[pid] = LMP_ClampOffset(LMP_MaxOffset() - sliderValue)
     call LMP_UpdateList(p)
 
@@ -993,9 +1026,7 @@ private function LMP_OnWheel takes nothing returns nothing
         set lmpListOffset[pid] = LMP_ClampOffset(lmpListOffset[pid] - 1)
     endif
 
-    if GetLocalPlayer() == p then
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
-    endif
+    call LMP_ShowScroll(p)
     call LMP_UpdateList(p)
 
     set p = null
@@ -1325,6 +1356,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
     call BlzFrameSetStepSize(lmpScroll, 1.00)
     call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset()))
+    call LMP_InitScrollShown()
     call BlzTriggerRegisterFrameEvent(lmpScrollTrigger, lmpScroll, FRAMEEVENT_SLIDER_VALUE_CHANGED)
 
     // First row: previous, -10, play/pause, +10, next.
@@ -1421,11 +1453,11 @@ private function LMP_FinishTrackScan takes nothing returns nothing
 
         if lmpFramesReady then
             set p = Player(pid)
+            set lmpListOffset[pid] = 0
             if GetLocalPlayer() == p then
-                set lmpListOffset[pid] = 0
                 call BlzFrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
-                call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset()))
             endif
+            call LMP_ShowScroll(p)
             call LMP_UpdateAll(p)
         endif
 

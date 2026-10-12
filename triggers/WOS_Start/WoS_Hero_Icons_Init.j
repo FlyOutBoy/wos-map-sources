@@ -1519,13 +1519,20 @@ endif
         endif
         set clicked = null
     endfunction
+    // Every client moves its own camera slider to its own CameraSetup (direct
+    // frame call only). The resulting value-changed event is synced and just
+    // stores the same value again in SliderCheck.
+    function WOS_SyncCamSlider takes nothing returns nothing
+        if FRAME_CamSlider != null then
+            call BlzFrameSetValue(FRAME_CamSlider, CameraSetup[GetPlayerId(GetLocalPlayer())])
+        endif
+    endfunction
+
     function SliderCheck takes nothing returns nothing
         local real value = BlzGetTriggerFrameValue()
         local integer i = GetPlayerId(GetTriggerPlayer())
         set CameraSetup[i] = value
-        if GetLocalPlayer() == Player(i) then
-            call SetCameraField( CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[i], 0 )
-        endif
+        call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[i], 0)
     endfunction
     function BarCheck takes nothing returns nothing
         set Test_int = Test_int - 1

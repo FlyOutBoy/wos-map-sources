@@ -50,6 +50,7 @@ globals
     private integer WUI_TestOffset = 0
     private framehandle WUI_TestSlider = null
     private boolean WUI_TestSliderUpdating = false
+    private integer WUI_TestEcho = 0
     private integer WUI_TestSliderMax = -1
     private integer WUI_TestSliderValue = -1
     private boolean WUI_TestOpen = true
@@ -152,6 +153,10 @@ globals
     private integer WUI_TextButtonCount = 0
     // Checkpoint 22: stock command card hidden (pick/draft), local.
     private boolean WUI_OriginHidden = false
+    private boolean array WUI_OriginHiddenOf
+    // FRAME copies of the Menu / Allies / Log skins: the SIMPLEFRAME skins are
+    // hidden together with the origin frames during the hero pick / draft.
+    private framehandle array WUI_MenuSkinF
     // Checkpoint 26b: map preview shown where the minimap is while the pick
     // hides the origin frames (no bare hole in the HUD).
     private framehandle WUI_MinimapStub = null
@@ -274,6 +279,9 @@ globals
     real array WUI_RectT
     integer WUI_RectCount = 0
     integer WUI_HudMode = 2
+    // Saved camera distance per player (synced, 0 = none); Starts.j resets the
+    // camera to BaseCam at 10 s and re-applies this right after.
+    real array WUI_SavedCamera
     // Top-right row under the action icons: Game Info | Hide UI | Save Keys
     // (centres measured from the right screen edge; same total width as before).
     constant real WUI_TOP_ROW_W = 0.0572
@@ -1056,6 +1064,26 @@ function WUI_LockHeroLayer takes nothing returns nothing
     endif
 endfunction
 
+// Local. Moves a slider and returns how many SLIDER_VALUE_CHANGED events this
+// produced. Every programmatic change comes back later as a synced event (an
+// "echo"); owners count them and drop that many events, otherwise several
+// echoes in flight keep bouncing the value back and forth forever (FPS fell
+// to zero the longer you scrolled).
+function WUI_SliderSet takes framehandle slider, real low, real high, real value returns integer
+    local integer echoes = 0
+    local real before = BlzFrameGetValue(slider)
+    call BlzFrameSetMinMaxValue(slider, low, high)
+    if R2I(BlzFrameGetValue(slider) + 0.50) != R2I(before + 0.50) then
+        set echoes = 1
+        set before = BlzFrameGetValue(slider)
+    endif
+    if R2I(before + 0.50) != R2I(value + 0.50) then
+        call BlzFrameSetValue(slider, value)
+        set echoes = echoes + 1
+    endif
+    return echoes
+endfunction
+
 function WUI_SetText takes framehandle frame, string value returns nothing
     if BlzFrameGetText(frame) != value then
         call BlzFrameSetText(frame, value)
@@ -1495,7 +1523,7 @@ function WUI_LayoutRightColumn takes nothing returns nothing
         if WUI_TestSlider != null then
             call WUI_Place(WUI_TestSlider, x + 0.081, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5 + 0.009, 0.008, WUI_INFO_HEIGHT - 0.065)
         endif
-        call WUI_Place(WUI_TestPageLabel, x, y - WUI_INFO_HEIGHT + 0.0115, 0.120, 0.012)
+        call WUI_Place(WUI_TestPageLabel, x, y - WUI_INFO_HEIGHT + 0.0115, 0.140 / 0.64, 0.012 / 0.64)
         call WUI_Place(WUI_TestPrevious, x - 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
         call WUI_Place(WUI_TestNext, x + 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
         if testShown then
@@ -1931,11 +1959,12 @@ endfunction
 
 // Local: open/close the dropdown (stock buttons, skins, surface, rails and
 // the "active" look of the Menu icon move together).
-function WUI_ShowNativeMenu takes nothing returns nothing
-    if WUI_SystemBar != null then
+// Synced call; only the given player's client changes its frames.
+function WUI_ShowNativeMenu takes player p returns nothing
+    if WUI_SystemBar != null and GetLocalPlayer() == p then
         call BlzFrameSetVisible(WUI_SystemBar, true)
     endif
-    if WUI_System[0] != null then
+    if WUI_System[0] != null and GetLocalPlayer() == p then
         call BlzFrameSetVisible(WUI_System[0], true)
     endif
 endfunction
@@ -1958,6 +1987,9 @@ private function WUI_SetMenuDrop takes boolean open returns nothing
         endif
         if WUI_MenuSkin[i] != null then
             call BlzFrameSetVisible(WUI_MenuSkin[i], open)
+        endif
+        if WUI_MenuSkinF[i] != null then
+            call BlzFrameSetVisible(WUI_MenuSkinF[i], open and WUI_OriginHidden)
         endif
         set i = i + 1
     endloop
@@ -2426,15 +2458,24 @@ function WUI_RegisterColumnPanel takes framehandle panel, string title, real hei
 endfunction
 
 // ===== Checkpoint 22: toggles, origin-frame state, per-slot hotkeys =====
-private function WUI_OnHideOrigin takes boolean hide returns nothing
-    // Always called locally (HideBottomUI / HideUIExceptTopMenu).
-    set WUI_OriginHidden = hide
-    if WUI_MinimapStub != null then
+// Synced: every client calls this with the same player (HideBottomUI /
+// HideUIExceptTopMenu). Inside the local check only direct frame calls; no
+// hook on BlzHideOriginFrames any more (a hook ran TriggerEvaluate locally).
+function WUI_SetOriginHidden takes player p, boolean hide returns nothing
+    local integer i = 0
+    set WUI_OriginHiddenOf[GetPlayerId(p)] = hide
+    set WUI_OriginHidden = WUI_OriginHiddenOf[GetPlayerId(GetLocalPlayer())]
+    if WUI_MinimapStub != null and GetLocalPlayer() == p then
         call BlzFrameSetVisible(WUI_MinimapStub, hide)
     endif
+    loop
+        exitwhen i >= 3
+        if WUI_MenuSkinF[i] != null and GetLocalPlayer() == p then
+            call BlzFrameSetVisible(WUI_MenuSkinF[i], hide and WUI_MenuOpen)
+        endif
+        set i = i + 1
+    endloop
 endfunction
-
-hook BlzHideOriginFrames WUI_OnHideOrigin
 
 // True while the stock command card is hidden (hero pick / draft): learned
 // skills are then drawn by AllyHeroAbilityUI instead of the native buttons.
@@ -3151,9 +3192,12 @@ endfunction
 
 // Hero-pick/draft owners call BlzHideOriginFrames(false) when returning to play.
 // That engine call restores stock bars too; reapply the compact skin afterwards.
-function WUI_RestoreCompactNative takes nothing returns nothing
+// Synced call (Systems1 HideBottomUI): every client runs it, only the given
+// player's client re-applies its own presentation (cached frames only, no
+// lookups, no handle creation).
+function WUI_RestoreCompactNative takes player p returns nothing
     local integer i = 0
-    if not WUI_NativeReady then
+    if not WUI_NativeReady or GetLocalPlayer() != p then
         return
     endif
     if WUI_Console != null then
@@ -3342,6 +3386,29 @@ private function WUI_CreateControls takes nothing returns nothing
             endif
             call BlzFrameSetVisible(WUI_MenuSkin[i], false)
         endif
+        // FRAME twin (passive: clicks still reach the stock button below).
+        set WUI_MenuSkinF[i] = BlzCreateFrameByType("BACKDROP", "WOSMenuSkinFrame", WUI_Root, "", i)
+        call WUI_Place(WUI_MenuSkinF[i], WUI_ScreenRight() - 0.090, WUI_MenuRowY(i), 0.160, 0.0200)
+        call BlzFrameSetTexture(WUI_MenuSkinF[i], WUI_FILL_NORMAL, 0, true)
+        call BlzFrameSetLevel(WUI_MenuSkinF[i], 45)
+        call BlzFrameSetEnable(WUI_MenuSkinF[i], false)
+        set label = BlzCreateFrameByType("BACKDROP", "WOSMenuSkinFrameEdge", WUI_MenuSkinF[i], "", i)
+        call BlzFrameSetAllPoints(label, WUI_MenuSkinF[i])
+        call BlzFrameSetTexture(label, "UI\\WOS\\menu-row.tga", 0, true)
+        call BlzFrameSetEnable(label, false)
+        set label = BlzCreateFrameByType("TEXT", "WOSMenuSkinFrameText", WUI_MenuSkinF[i], "", i)
+        call BlzFrameSetAllPoints(label, WUI_MenuSkinF[i])
+        call BlzFrameSetTextAlignment(label, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetScale(label, 0.95)
+        call BlzFrameSetEnable(label, false)
+        if i == 0 then
+            call BlzFrameSetText(label, WUI_TEXT + "Menu  |cffd5b876[F10]|r")
+        elseif i == 1 then
+            call BlzFrameSetText(label, WUI_TEXT + "Allies  |cffd5b876[F11]|r")
+        else
+            call BlzFrameSetText(label, WUI_TEXT + "Log  |cffd5b876[F12]|r")
+        endif
+        call BlzFrameSetVisible(WUI_MenuSkinF[i], false)
         set i = i + 1
     endloop
     // One native-family surface under the three rows (native buttons draw
@@ -3506,19 +3573,12 @@ private function WUI_TestRender takes nothing returns nothing
         set i = i + 1
     endloop
     call WUI_SetText(WUI_TestText, text)
-    call WUI_SetText(WUI_TestPageLabel, I2S(page + 1) + " / " + I2S(WUI_TEST_PAGES) + " - wheel scrolls the page")
+    call WUI_SetText(WUI_TestPageLabel, I2S(page + 1) + " / " + I2S(WUI_TEST_PAGES) + "  -  mouse wheel: scroll")
     if WUI_TestSlider != null then
-        set WUI_TestSliderUpdating = true
         call WUI_Show(WUI_TestSlider, maximum > 0)
-        if maximum > 0 and (WUI_TestSliderMax != maximum or WUI_TestSliderValue != maximum - WUI_TestOffset) then
-            if WUI_TestSliderMax != maximum then
-                set WUI_TestSliderMax = maximum
-                call BlzFrameSetMinMaxValue(WUI_TestSlider, 0.00, I2R(maximum))
-            endif
-            set WUI_TestSliderValue = maximum - WUI_TestOffset
-            call BlzFrameSetValue(WUI_TestSlider, I2R(WUI_TestSliderValue))
+        if maximum > 0 then
+            set WUI_TestEcho = WUI_TestEcho + WUI_SliderSet(WUI_TestSlider, 0.00, I2R(maximum), I2R(maximum - WUI_TestOffset))
         endif
-        set WUI_TestSliderUpdating = false
     endif
 endfunction
 
@@ -3535,7 +3595,12 @@ private function WUI_TestScroll takes nothing returns nothing
             // Checkpoint 27e: a programmatic SetValue also fires this (synced)
             // event; ignore it when it does not change the offset, otherwise
             // render -> SetValue -> event looped forever (frame drops).
-            if WUI_TestSliderUpdating or WUI_TestMaxOffset(WUI_TestPageIndex) - R2I(BlzGetTriggerFrameValue() + 0.5) == WUI_TestOffset then
+            if WUI_TestEcho > 0 then
+                set WUI_TestEcho = WUI_TestEcho - 1
+                set source = null
+                return
+            endif
+            if WUI_TestMaxOffset(WUI_TestPageIndex) - R2I(BlzGetTriggerFrameValue() + 0.5) == WUI_TestOffset then
                 set source = null
                 return
             endif
@@ -3574,10 +3639,11 @@ private function WUI_CreateTestHelp takes nothing returns nothing
     call BlzFrameSetText(WUI_TestText, WUI_TestPage[0])
     call BlzFrameSetEnable(WUI_TestText, false)
     set WUI_TestPageLabel = BlzCreateFrameByType("TEXT", "WOSTestPageLabel", WUI_TestPanel, "", 0)
-    call WUI_Place(WUI_TestPageLabel, WUI_ScreenRight() - 0.100, 0.2335, 0.120, 0.012)
+    // Size in scaled units (scale 0.64), otherwise the hint was cut off.
+    call WUI_Place(WUI_TestPageLabel, WUI_ScreenRight() - 0.100, 0.2335, 0.140 / 0.64, 0.012 / 0.64)
     call BlzFrameSetTextAlignment(WUI_TestPageLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(WUI_TestPageLabel, 0.64)
-    call BlzFrameSetText(WUI_TestPageLabel, "1 / 2 - wheel scrolls the page")
+    call BlzFrameSetText(WUI_TestPageLabel, "1 / 2  -  mouse wheel: scroll")
     call BlzFrameSetEnable(WUI_TestPageLabel, false)
     set WUI_TestPrevious = WUI_TextButton("WOSTestPrevious", WUI_TestPanel, "<", 0.014, 0.014)
     call WUI_SetButtonMinimal(WUI_TestPrevious)
@@ -3602,8 +3668,8 @@ private function WUI_CreateTestHelp takes nothing returns nothing
         call BlzFrameSetStepSize(WUI_TestSlider, 1.00)
         call BlzFrameSetLevel(WUI_TestSlider, 20)
         call BlzFrameSetVisible(WUI_TestSlider, false)
+        // The slider handles the wheel itself (value changed); no second wheel handler.
         call BlzTriggerRegisterFrameEvent(scroll, WUI_TestSlider, FRAMEEVENT_SLIDER_VALUE_CHANGED)
-        call BlzTriggerRegisterFrameEvent(scroll, WUI_TestSlider, FRAMEEVENT_MOUSE_WHEEL)
     endif
     call TriggerAddAction(scroll, function WUI_TestScroll)
     call WUI_TestSplit(0)

@@ -219,6 +219,6 @@ test_invalid_objects_block_all_saves (test_test_map_workflow.ValidateBeforeSave.
 test_invalid_triggers_block_all_saves (test_test_map_workflow.ValidateBeforeSave.test_invalid_triggers_block_all_saves) ... ok
 
 ----------------------------------------------------------------------
-Ran 218 tests in 10.806s
+Ran 218 tests in 10.817s
 
 OK (skipped=5)

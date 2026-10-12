@@ -125,6 +125,7 @@ globals
     private framehandle array WOS_STATS_ItemIcon
     private framehandle array WOS_STATS_ItemTooltip
     private framehandle array WOS_STATS_ItemTooltipText
+    private framehandle array WOS_STATS_ItemTooltipBox
     private framehandle array WOS_STATS_CombatTooltip
     private framehandle array WOS_STATS_CombatTooltipText
     private framehandle array WOS_STATS_TotalText
@@ -520,8 +521,10 @@ private function WOS_STATS_VisibleTextLength takes string text returns integer
     return visibleLength
 endfunction
 
-private function WOS_STATS_ResizeItemTooltip takes framehandle tooltipText, string itemName returns nothing
-    local framehandle tooltip = BlzFrameGetParent(tooltipText)
+// Local: the box handle is cached at creation (BlzFrameGetParent here would
+// allocate a new handle on one client only -> desync).
+private function WOS_STATS_ResizeItemTooltip takes integer index, string itemName returns nothing
+    local framehandle tooltip = WOS_STATS_ItemTooltipBox[index]
     local real width = 0.010 + I2R(WOS_STATS_VisibleTextLength(itemName)) * 0.0030
 
     if width < 0.032 then
@@ -551,6 +554,7 @@ private function WOS_STATS_CreateItemTooltip takes framehandle whichFrame, integ
 
     set WOS_STATS_ItemTooltip[index] = tooltip
     set WOS_STATS_ItemTooltipText[index] = tooltipText
+    set WOS_STATS_ItemTooltipBox[index] = tooltip
     set tooltip = null
     set tooltipText = null
 endfunction
@@ -764,7 +768,7 @@ private function WOS_STATS_UpdateItems takes integer row, unit heroUnit returns 
             if WOS_STATS_LastItemId[index] != itemId then
                 set itemName = GetObjectName(itemId)
                 call WOS_STATS_Tex(WOS_STATS_ItemIcon[index], BlzGetAbilityIcon(itemId), 0, false)
-                call WOS_STATS_ResizeItemTooltip(WOS_STATS_ItemTooltipText[index], itemName)
+                call WOS_STATS_ResizeItemTooltip(index, itemName)
                 call WOS_STATS_Text(WOS_STATS_ItemTooltipText[index], "|cffffffff" + itemName + "|r")
             endif
         endif

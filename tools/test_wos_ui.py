@@ -37,6 +37,9 @@ def load_source(filename):
     # Checkpoint 27: string natives used by the TEST COMMANDS line scroller.
     vm.g.setdefault('StringLength', len)
     vm.g.setdefault('BlzFrameGetValue', lambda *_: 0.0)
+    # WUI_SliderSet: a slider value is a number, never a frame name.
+    if not isinstance(vm.g['BlzFrameGetValue'](None), (int, float)):
+        vm.g['BlzFrameGetValue'] = lambda *_: 0.0
     vm.g.setdefault('WUI_TestSliderMax', -1)
     vm.g.setdefault('WUI_TestSliderValue', -1)
     vm.g.setdefault('SubString', lambda text, a, b: text[a:b])
@@ -144,6 +147,8 @@ class DeferredUIStartup(unittest.TestCase):
 
     def native(self, name, *args):
         self.calls.append((name, args))
+        if name in ('BlzFrameGetValue', 'BlzFrameGetWidth', 'BlzFrameGetHeight'):
+            return 0.0
         return name
 
     def create_frame(self, kind, name, parent, *_):
@@ -301,7 +306,8 @@ class ResourceBarTooltips(unittest.TestCase):
         for _ in range(2):
             # Model the engine showing origin frames at the end of pick/draft.
             self.visible.update({frame: True for frame in self.children})
-            self.vm.run('WUI_RestoreCompactNative')
+            self.vm.g.setdefault('GetLocalPlayer', lambda: 'P0')
+            self.vm.run('WUI_RestoreCompactNative', (self.vm.g['GetLocalPlayer'](),))
             self.assertTrue(all(not self.visible[frame] for frame in self.listeners))
             self.assertTrue(self.visible[self.resource])
             self.assertTrue(self.visible['fps-line'])

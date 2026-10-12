@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "e73dbb86cb838f274669175fc8d42cb42a618c814e8ca68651db0e5bd1260368",
+  "source_sha256": "1a2a5c74b1744d65c98572ffe2e927dc667757776afca7f027f2eb419d8ec599",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -1044,10 +1044,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7179",
-            "_original_value": "TRIGSTR_7179",
+            "value": "TRIGSTR_2697",
+            "_original_value": "TRIGSTR_2697",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTc5",
+            "_raw_base64": "VFJJR1NUUl8yNjk3",
             "resolved_value": "Wape Stack",
             "_original_resolved_value": "Wape Stack"
           },
@@ -1136,10 +1136,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7180",
-            "_original_value": "TRIGSTR_7180",
+            "value": "TRIGSTR_2699",
+            "_original_value": "TRIGSTR_2699",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MTgw",
+            "_raw_base64": "VFJJR1NUUl8yNjk5",
             "resolved_value": "Overload  Stack",
             "_original_resolved_value": "Overload  Stack"
           },
@@ -1966,10 +1966,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4406",
-            "_original_value": "TRIGSTR_4406",
+            "value": "TRIGSTR_12658",
+            "_original_value": "TRIGSTR_12658",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NDA2",
+            "_raw_base64": "VFJJR1NUUl8xMjY1OA==",
             "resolved_value": "Void Instability",
             "_original_resolved_value": "Void Instability"
           },
@@ -7666,10 +7666,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7459",
-            "_original_value": "TRIGSTR_7459",
+            "value": "TRIGSTR_7461",
+            "_original_value": "TRIGSTR_7461",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDU5",
+            "_raw_base64": "VFJJR1NUUl83NDYx",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -7778,10 +7778,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7461",
-            "_original_value": "TRIGSTR_7461",
+            "value": "TRIGSTR_7500",
+            "_original_value": "TRIGSTR_7500",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDYx",
+            "_raw_base64": "VFJJR1NUUl83NTAw",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8114,10 +8114,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7500",
-            "_original_value": "TRIGSTR_7500",
+            "value": "TRIGSTR_7535",
+            "_original_value": "TRIGSTR_7535",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NTAw",
+            "_raw_base64": "VFJJR1NUUl83NTM1",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8226,10 +8226,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7535",
-            "_original_value": "TRIGSTR_7535",
+            "value": "TRIGSTR_7540",
+            "_original_value": "TRIGSTR_7540",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NTM1",
+            "_raw_base64": "VFJJR1NUUl83NTQw",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8338,10 +8338,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7540",
-            "_original_value": "TRIGSTR_7540",
+            "value": "TRIGSTR_7542",
+            "_original_value": "TRIGSTR_7542",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NTQw",
+            "_raw_base64": "VFJJR1NUUl83NTQy",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },
@@ -8450,10 +8450,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7542",
-            "_original_value": "TRIGSTR_7542",
+            "value": "TRIGSTR_12659",
+            "_original_value": "TRIGSTR_12659",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NTQy",
+            "_raw_base64": "VFJJR1NUUl8xMjY1OQ==",
             "resolved_value": "Sarkaz Sorcery",
             "_original_resolved_value": "Sarkaz Sorcery"
           },

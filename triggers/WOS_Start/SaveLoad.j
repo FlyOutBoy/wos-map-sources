@@ -1577,9 +1577,8 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
                 set applied = applied + 1
                 if a >= 800 and a <= 6000 then
                     set CameraSetup[pid] = I2R(a)
-                    if GetLocalPlayer() == p then
-                        call SetCameraField(CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[pid], 0)
-                    endif
+                    set WUI_SavedCamera[pid] = I2R(a)
+                    call SetCameraFieldForPlayer(p, CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[pid], 0)
                 endif
             endif
         endif
@@ -1589,6 +1588,7 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
         call DisplayTimedTextToPlayer(p, 0, 0, 6, "|cffffd36b[WoS]|r |cff7cd67cSettings applied|r |cff9aa0a8(" + I2S(applied) + ")|r")
     endif
     call ExecuteFunc("UNITSTAT_ApplySaved")
+    call ExecuteFunc("WOS_SyncCamSlider")
     set p = null
 endfunction
 

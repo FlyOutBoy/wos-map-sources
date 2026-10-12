@@ -599,6 +599,10 @@ set i = 0
 loop
 exitwhen i == 15
 set CameraSetup[i] = BaseCam
+// A camera distance loaded from the player's settings file wins over the default.
+if WUI_SavedCamera[i] > 0 then
+    set CameraSetup[i] = WUI_SavedCamera[i]
+endif
 set Shop_Active[i] = false
 set PlayerShopBut[i] = "TAB"
 set Hero[i] = null
@@ -612,6 +616,7 @@ call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_FARZ, 50000, 0)
 call PanCameraToTimedForPlayer(Player(i),GetRectCenterX(gg_rct_Base),GetRectCenterY(gg_rct_Base),0)
 set i = i + 1
 endloop
+call ExecuteFunc("WOS_SyncCamSlider")
     call TasAbilityChargeBox_Init()
     call TriggerRegisterAnyUnitEventBJ(minimapSummon, EVENT_PLAYER_UNIT_SUMMON)
     call TriggerAddAction(minimapSummon, function WOS_MinimapSummon)

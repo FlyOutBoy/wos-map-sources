@@ -48,7 +48,7 @@ def block(units):
                   round(float(data['intelligence_per_level']) * 100), PRIMARY.get(data['primary_attribute'], 1),
                   1 if float(data['attack_1_range']) <= 200 else 0, int(data['attack_1_base_damage']),
                   round(float(data['base_armor']) * 100), int(data['movement_speed']),
-                  round(float(data['attack_1_cooldown']) * 100)]
+                  round(float(data['attack_1_cooldown']) * 100), int(float(data['attack_1_range']))]
         lines.append(f"    call WOS_PickStatRow('{code}', " + ', '.join(str(v) for v in values) + ')')
     lines.append(END)
     return '\n'.join(lines)

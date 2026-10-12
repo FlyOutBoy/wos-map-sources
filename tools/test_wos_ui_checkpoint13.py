@@ -33,7 +33,8 @@ class NativeChassis(unittest.TestCase):
         vm.g['WUI_NativeDetailParent'] = 'inventory'
         vm.g['ModuloInteger'] = lambda a,b:a % b
         fixture.calls.clear()
-        vm.run('WUI_RestoreCompactNative')
+        vm.g.setdefault('GetLocalPlayer', lambda: 'P0')
+        vm.run('WUI_RestoreCompactNative', (vm.g['GetLocalPlayer'](),))
         for name in ('ConsoleTopBar', 'ConsoleBottomBar'):
             self.assertIn(('visible', ('named:' + name, False)), fixture.calls)
         # The bar stays visible for /fps; its four mouse listeners are hidden
@@ -62,17 +63,23 @@ class ShopTree(unittest.TestCase):
         self.assertGreater(tabs[0][1] - size[vm.g['FRAME_ShopSection'][0]][1]/2, list_top)
 
     def test_recipe_branch_visibility_changes_with_actual_relations(self):
-        # Checkpoint 24b: slots 0-5 upgrades, 6-11 their upgrades, 12-17 components, 18-23 theirs.
+        # Checkpoint 31: four rows shared by need; upgrade rows first (slots
+        # 0-5 nearest the centre), then component rows, 6 slots per row.
         vm = load_source('WoS_Shop_Init.j')
         visible = {}
-        relations = [111,0,222,0,0,0] + [333,0,0,0,0,0]
+        up = {77: [111, 222]}
+        down = {77: [333]}
         vm.g.update({
             'FRAME_ShopRecipeLine': {i:('line',i) for i in range(72)},
             'GetLocalPlayer':lambda:0,'GetPlayerId':lambda p:p,
             'ShopCraftScrollItemId':{0:77},'ShopCraftUpgradeOffset':{0:0},'ShopCraftComponentOffset':{0:0},
             'GetSelectedHeroForPlayer':lambda _:None,'ShopUpdateCraftScrollbars':lambda *_:None,
-            'ResetCraftFrames':lambda *_:None,'WUI_Place':lambda *_:None,'ShopPlacePrice':lambda *_:None,'GetVisibleCraftRelation':lambda id,up,offset,slot:relations[slot if up else slot+6],
-            'GetCraftUpgradeCount':lambda _:3,'GetCraftUpgrade':lambda *_:0,'GetCraftComponent':lambda *_:0,'GetCraftComponentCount':lambda _:1,'HasCraftComponents':lambda _:True,
+            'ResetCraftFrames':lambda *_:None,'WUI_Place':lambda *_:None,'ShopPlacePrice':lambda *_:None,
+            'GetCraftUpgradeCount':lambda i:len(up.get(i,[])),'GetCraftUpgrade':lambda i,j:up[i][j],
+            'GetCraftComponentCount':lambda i:len(down.get(i,[])),'GetCraftComponent':lambda i,j:down[i][j],
+            'HasCraftComponents':lambda _:True,'IntegerTertiaryOp':lambda f,a,b:a if f else b,
+            'IMaxBJ':max,'ModuloInteger':lambda a,b:a % b,'ShopTreeNeedDirect':0,'ShopTreeKid':{},
+            'ShopTreeRowsUp':{},'ShopTreeRowsDown':{},'ShopTreeSlotTopP':{},'ShopTreeTmpId':{},'ShopTreeTmpParent':{},
             'CheckItemsReduceCostCraft':lambda u,c,id,r:c,'GetItemValue':lambda _:100,
             'CheckBanItems':lambda *_:False,'BlzGetAbilityIcon':lambda _:'icon',
             'BlzFrameSetVisible':lambda f,v:visible.update({f:v}),
@@ -84,10 +91,11 @@ class ShopTree(unittest.TestCase):
             'FRAMEPOINT_CENTER':'center','FRAMEPOINT_TOP':'top','GetObjectName':lambda *_:'name','WUI_TEXT':'',
         })
         vm.run('CraftItemCheck',(77,0,0))
-        self.assertEqual([True,False,True] + [False]*9 + [True] + [False]*11, [visible['line',i*3] for i in range(24)])
-        relations[:] = [0,444,0,0,0,0] + [0,555,0,0,0,0]
+        self.assertEqual([True,True] + [False]*4 + [True] + [False]*17, [visible['line',i*3] for i in range(24)])
+        up[77] = [444]
+        down[77] = []
         vm.run('CraftItemCheck',(77,0,0))
-        self.assertEqual([False,True] + [False]*10 + [False,True] + [False]*10, [visible['line',i*3] for i in range(24)])
+        self.assertEqual([True] + [False]*23, [visible['line',i*3] for i in range(24)])
         visible.clear()
         vm.g['GetLocalPlayer'] = lambda:1
         vm.run('CraftItemCheck',(77,0,0))

@@ -105,26 +105,28 @@ function GetSelectedHeroForPlayer takes player p returns unit
     return Hero[pid]
 endfunction
 
-   function HideBottomUI takes player p, boolean b returns nothing
+// Synced: called on every client with the same player. Inside the local
+// check there is only the native frame call; everything else runs on every
+// client and touches only that player's frames internally.
+function HideBottomUI takes player p, boolean b returns nothing
     if GetLocalPlayer() == p then
-    call BlzHideOriginFrames(b)
+        call BlzHideOriginFrames(b)
     endif
-    if b == false and GetLocalPlayer() == p then
-        call WUI_RestoreCompactNative.evaluate()
+    call WUI_SetOriginHidden(p, b)
+    if not b then
+        call WUI_RestoreCompactNative(p)
     endif
 endfunction
 function HideUIExceptTopMenu takes player p, boolean b returns nothing
     if GetLocalPlayer() == p then
-        // Скрывает или возвращает стандартный интерфейс.
         call BlzHideOriginFrames(b)
-
-        if not b then
-            call WUI_RestoreCompactNative.evaluate()
-        endif
-
-        // Верхняя панель с кнопками меню остаётся видимой.
-        call WUI_ShowNativeMenu.evaluate()
     endif
+    call WUI_SetOriginHidden(p, b)
+    if not b then
+        call WUI_RestoreCompactNative(p)
+    endif
+    // The top bar with the menu buttons stays visible.
+    call WUI_ShowNativeMenu(p)
 endfunction
 function GetStr takes unit c returns integer
 local integer i
@@ -497,6 +499,7 @@ globals
     string array WOS_ProbeLine
     integer WOS_ProbeCount = 0
     integer WOS_ProbeTicks = 0
+    group WOS_ProbeGroup = CreateGroup()
     real WOS_ProbeClock = 0.00
     string WOS_ProbeLabel = ""
     timer WOS_ProbeTimer = null
@@ -516,8 +519,10 @@ function WOS_ProbeMark takes string label returns nothing
         endif
         set i = i + 1
     endloop
-    if WOS_ProbeCount < 400 then
-        set WOS_ProbeLine[WOS_ProbeCount] = R2SW(WOS_ProbeClock, 1, 2) + " " + label + " h=" + I2S(id) + " r=" + I2S(GetRandomInt(0, 999999)) + " s=" + I2S(R2I(sum))
+    if WOS_ProbeCount < 1500 then
+        call GroupClear(WOS_ProbeGroup)
+        call GroupEnumUnitsInRect(WOS_ProbeGroup, bj_mapInitialPlayableArea, null)
+        set WOS_ProbeLine[WOS_ProbeCount] = R2SW(WOS_ProbeClock, 1, 2) + " " + label + " h=" + I2S(id) + " r=" + I2S(GetRandomInt(0, 999999)) + " s=" + I2S(R2I(sum)) + " u=" + I2S(CountUnitsInGroup(WOS_ProbeGroup))
         set WOS_ProbeCount = WOS_ProbeCount + 1
     endif
 endfunction
@@ -535,12 +540,15 @@ function WOS_ProbeDump takes nothing returns nothing
     call PreloadGenClear()
 endfunction
 
+// The file is rewritten every second, so it exists even if the game is cut
+// off by a desync a moment later.
 function WOS_ProbeTick takes nothing returns nothing
     set WOS_ProbeClock = WOS_ProbeClock + 0.10
     if WOS_ProbeTicks > 0 then
         set WOS_ProbeTicks = WOS_ProbeTicks - 1
-        call WOS_ProbeMark(WOS_ProbeLabel + " +" + I2S(30 - WOS_ProbeTicks))
-        if WOS_ProbeTicks == 0 then
+        call WOS_ProbeMark(WOS_ProbeLabel + " +" + I2S(150 - WOS_ProbeTicks))
+        // Every 0.1 s during the first 3 s after a pick, then every second.
+        if WOS_ProbeTicks >= 120 or ModuloInteger(WOS_ProbeTicks, 10) == 0 then
             call WOS_ProbeDump()
         endif
     endif
@@ -551,9 +559,18 @@ function WOS_ProbeStart takes string label returns nothing
         set WOS_ProbeTimer = CreateTimer()
         call TimerStart(WOS_ProbeTimer, 0.10, true, function WOS_ProbeTick)
     endif
+    // 15 s window per pick: two players' files from the same game diverge at
+    // the first line where h (next handle), r (synced random) or u (unit
+    // count) differ. Regen re-learns spells at the base every second: the same
+    // label only adds a mark and never restarts the window.
+    if WOS_ProbeTicks > 0 and label == WOS_ProbeLabel then
+        call WOS_ProbeMark(label + " again")
+        return
+    endif
     set WOS_ProbeLabel = label
-    set WOS_ProbeTicks = 30
+    set WOS_ProbeTicks = 150
     call WOS_ProbeMark(label + " start")
+    call WOS_ProbeDump()
 endfunction
 
 function LearnHeroSpells takes unit c returns nothing

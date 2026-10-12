@@ -16,7 +16,7 @@ INFO_ICONS = ['info-fire', 'info-water', 'info-lightning', 'info-firewater', 'in
               'info-train', 'info-hydrant', 'info-gold', 'info-building', 'info-roundend']
 
 NAMES = ['tooltip-edge', 'menu-row', 'btn-buy', 'btn-sell', 'glyph-history', 'glyph-clear', 'glyph-load',
-         'glyph-repick', 'icon-physdmg', 'icon-magdmg', 'ban-cover', 'glyph-trash', 'glyph-prev', 'glyph-next', 'meter-fill', 'pick-confirm', 'pick-confirm-off', 'pick-random', 'pick-random-off', 'pick-ban', 'pick-ban-off', 'fastbuy-on', 'fastbuy-off', 'fastsell-on', 'fastsell-off', 'icon-attackspeed', 'icon-movespeed', 'icon-range', 'portrait-lock', 'hp-dark', 'mp-dark', 'slider-clean-v', 'slider-clean-h', 'fill-hover-blue', 'skill-chains', 'icon-physpen', 'icon-magpen', 'icon-shieldpen', 'icon-hpregen', 'icon-mpregen', 'vip-frame-bronze', 'vip-frame-silver', 'vip-frame-gold', 'glyph-cols1', 'glyph-cols2', 'glyph-cols3', 'menu-edge', 'menu-edge-button'] + INFO_ICONS
+         'glyph-repick', 'icon-physdmg', 'icon-magdmg', 'ban-cover', 'glyph-trash', 'glyph-prev', 'glyph-next', 'meter-fill', 'pick-confirm', 'pick-confirm-off', 'pick-random', 'pick-random-off', 'pick-ban', 'pick-ban-off', 'fastbuy-on', 'fastbuy-off', 'fastsell-on', 'fastsell-off', 'icon-attackspeed', 'icon-movespeed', 'icon-range', 'portrait-lock', 'hp-dark', 'mp-dark', 'slider-clean-v', 'slider-clean-h', 'fill-hover-blue', 'skill-chains', 'icon-physpen', 'icon-magpen', 'icon-shieldpen', 'icon-hpregen', 'icon-mpregen', 'vip-frame-bronze', 'vip-frame-silver', 'vip-frame-gold', 'glyph-cols1', 'glyph-cols2', 'glyph-cols3', 'menu-edge', 'menu-edge-button', 'heart'] + INFO_ICONS
 
 # Checkpoint 24: gold attribute icons supplied by the author (folder 18).
 STAT_SOURCE = Path(r'C:/Users/Gear/Desktop/Новая папка (18)')
@@ -632,6 +632,17 @@ def column_mode_glyphs():
         glyph(lambda n, bars=bars: union(*bars) if len(bars) > 1 else bars[0], f'glyph-cols{count}')
 
 
+def heart():
+    """Red heart with a soft dark outline and a small highlight (VIP thanks)."""
+    n = 64
+    c = Canvas(n, n)
+    shape = union(circle(22, 24, 13), circle(42, 24, 13), polygon([(10.5, 30), (53.5, 30), (32, 54)]))
+    c.fill(offset(shape, 2.2), INK, alpha=0.85)
+    c.fill(shape, lambda x, y: lerp((236, 64, 72), (150, 18, 30), y / n))
+    c.fill(circle(19, 19, 4.5), (255, 255, 255), alpha=0.35)
+    save(c, 'heart')
+
+
 def build():
     tooltip_edge()
     menu_row()
@@ -656,6 +667,7 @@ def build():
     stats_column_icons()
     vip_frames()
     column_mode_glyphs()
+    heart()
     info_icons()
 
 

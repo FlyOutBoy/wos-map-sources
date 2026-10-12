@@ -1240,6 +1240,14 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     private struct PatriotSpells_T
         private static integer array m_PatriotT
         private static integer MUI_PatriotT = -1
+        // Duration meter (WOSHeroMeter window above the minimap, like Toji R), one per player.
+        private static framehandle array meterWindow
+        private static framehandle array meterBack
+        private static framehandle array meterBar
+        private static framehandle array meterIcon
+        private static framehandle array meterLabel
+        private static framehandle array meterTime
+        integer meterPid
 
         unit c
         real x
@@ -1343,6 +1351,17 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     endif
                 endif
 
+                if meterWindow[meterPid] != null then
+                    if remove then
+                        if GetLocalPlayer() == Player(meterPid) then
+                            call BlzFrameSetVisible(meterWindow[meterPid], false)
+                        endif
+                    else
+                        call BlzFrameSetValue(meterBar[meterPid], RMaxBJ(0.0, rmax - r))
+                        call BlzFrameSetText(meterTime[meterPid], "|c00FFFF00" + R2SW(RMaxBJ(0.0, rmax - r), 0, 2) + "|r")
+                    endif
+                endif
+
                 if remove then
                     set k = 0
                     loop
@@ -1376,6 +1395,31 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set u = null
         endmethod
 
+        private static method ShowMeter takes thistype this, unit owner, real duration returns nothing
+            local integer pid = GetPlayerId(GetOwningPlayer(owner))
+            set this.meterPid = pid
+            if meterWindow[pid] == null then
+                set meterWindow[pid] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                call BlzFrameSetVisible(meterWindow[pid], false)
+                set meterBack[pid] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", meterWindow[pid], "", 0)
+                set meterBar[pid] = BlzCreateFrameByType("STATUSBAR", "", meterWindow[pid], "", 0)
+                set meterIcon[pid] = BlzCreateFrameByType("BACKDROP", "SS", meterWindow[pid], "", 0)
+                call BlzFrameSetTexture(meterIcon[pid], "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_T", 0, false)
+                set meterLabel[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", meterWindow[pid], "", 0)
+                call BlzFrameSetText(meterLabel[pid], "|c00FFFF00" + "Surround Them:" + "|r")
+                set meterTime[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", meterWindow[pid], "", 0)
+                call WUI_HeroMeter(meterWindow[pid], meterBack[pid], meterBar[pid], meterIcon[pid], meterLabel[pid], meterTime[pid])
+                call WUI_RegisterMeter(meterWindow[pid], pid, "Heroes/Patriot.j:meterWindow:" + I2S(pid))
+                call WUI_RefreshDocks()
+            endif
+            call BlzFrameSetMinMaxValue(meterBar[pid], 0, duration)
+            call BlzFrameSetValue(meterBar[pid], duration)
+            call BlzFrameSetText(meterTime[pid], "|c00FFFF00" + R2SW(duration, 0, 2) + "|r")
+            if GetLocalPlayer() == Player(pid) then
+                call BlzFrameSetVisible(meterWindow[pid], true)
+            endif
+        endmethod
+
         public static method PatriotT_Start takes unit NewC, real NewX, real NewY returns nothing
             local thistype this = thistype.create()
             local real x1
@@ -1402,6 +1446,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set k3 = 15
 
             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 350.0, rmax + 1.0)
+            call thistype.ShowMeter(this, c, rmax)
             loop
                 exitwhen k == k3
                 set x1 = x + aoe * Cos((360.0 / I2R(k3)) * k * bj_DEGTORAD)

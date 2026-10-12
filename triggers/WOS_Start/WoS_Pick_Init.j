@@ -89,6 +89,10 @@ integer PrepJustStarted = 0
     framehandle FRAME_HeroAS
     framehandle FRAME_HeroRange = null
     framehandle FRAME_HeroMagRes = null
+    framehandle WOS_PickMainHit = null
+    // Small HUD icons in front of the right-side stats: ATK RNG PR MR MS AS.
+    framehandle array WOS_PickCellIcon
+    framehandle WOS_PickMainTipText = null
     unit WOS_PickExtraUnit = null
     integer WOS_PickExtraStat = 0
     player WOS_PickExtraPlayer = null
@@ -490,7 +494,7 @@ endfunction
 // Field order: 0 STR, 1 AGI, 2 INT, 3-5 gain per level x100, 6 primary
 // (UNIT_IF_PRIMARY_ATTRIBUTE: 1 STR, 2 INT, 3 AGI), 7 melee, 8 damage,
 // 9 armor x100, 10 move speed, 11 attack cooldown x100.
-function WOS_PickStatRow takes integer unitId, integer str, integer agi, integer int, integer strGain, integer agiGain, integer intGain, integer primary, integer melee, integer damage, integer armor, integer speed, integer cooldown returns nothing
+function WOS_PickStatRow takes integer unitId, integer str, integer agi, integer int, integer strGain, integer agiGain, integer intGain, integer primary, integer melee, integer damage, integer armor, integer speed, integer cooldown, integer range returns nothing
     call SaveInteger(WOS_PickStats, unitId, 0, str)
     call SaveInteger(WOS_PickStats, unitId, 1, agi)
     call SaveInteger(WOS_PickStats, unitId, 2, int)
@@ -503,44 +507,45 @@ function WOS_PickStatRow takes integer unitId, integer str, integer agi, integer
     call SaveInteger(WOS_PickStats, unitId, 9, armor)
     call SaveInteger(WOS_PickStats, unitId, 10, speed)
     call SaveInteger(WOS_PickStats, unitId, 11, cooldown)
+    call SaveInteger(WOS_PickStats, unitId, 12, range)
 endfunction
 
 // Regenerate with tools/build_pick_stat_table.py after editing hero units.
 function WOS_PickStatsInit takes nothing returns nothing
     // BEGIN GENERATED PICK STATS (tools/build_pick_stat_table.py)
-    call WOS_PickStatRow('H000', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150)
-    call WOS_PickStatRow('H01C', 15, 15, 30, 185, 175, 200, 2, 1, 20, 0, 310, 170)
-    call WOS_PickStatRow('H02A', 10, 32, 18, 210, 190, 150, 3, 1, 20, 0, 280, 170)
-    call WOS_PickStatRow('H00U', 15, 35, 10, 200, 200, 150, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H01G', 20, 25, 15, 190, 260, 115, 3, 1, 20, 0, 270, 170)
-    call WOS_PickStatRow('H01P', 15, 25, 20, 180, 265, 120, 3, 1, 20, 0, 290, 150)
-    call WOS_PickStatRow('H01R', 20, 15, 25, 200, 150, 215, 2, 1, 20, 0, 300, 170)
-    call WOS_PickStatRow('H01X', 15, 30, 15, 175, 240, 150, 3, 1, 20, 0, 290, 150)
-    call WOS_PickStatRow('H026', 15, 23, 22, 170, 225, 150, 3, 1, 20, 0, 280, 170)
-    call WOS_PickStatRow('H001', 17, 28, 15, 185, 265, 120, 3, 1, 20, 0, 290, 150)
-    call WOS_PickStatRow('H00H', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150)
-    call WOS_PickStatRow('H02B', 15, 20, 25, 175, 125, 250, 2, 1, 20, 0, 300, 170)
-    call WOS_PickStatRow('H02C', 20, 23, 17, 230, 185, 170, 1, 1, 20, 0, 290, 170)
-    call WOS_PickStatRow('H01A', 20, 30, 10, 200, 225, 130, 3, 1, 20, 0, 280, 170)
-    call WOS_PickStatRow('H02M', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150)
-    call WOS_PickStatRow('H009', 15, 15, 30, 180, 175, 210, 2, 1, 20, 0, 280, 170)
-    call WOS_PickStatRow('H010', 10, 10, 40, 140, 175, 250, 2, 1, 20, 0, 300, 170)
-    call WOS_PickStatRow('H021', 20, 25, 15, 200, 230, 125, 3, 1, 20, 0, 300, 170)
-    call WOS_PickStatRow('H02J', 20, 30, 0, 240, 300, 0, 3, 1, 20, 0, 330, 170)
-    call WOS_PickStatRow('H00A', 15, 25, 20, 175, 225, 175, 3, 1, 20, 0, 310, 150)
-    call WOS_PickStatRow('H00B', 15, 30, 15, 220, 225, 120, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H017', 16, 20, 24, 180, 160, 220, 2, 1, 20, 0, 300, 170)
-    call WOS_PickStatRow('H01B', 15, 15, 30, 160, 155, 250, 2, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H01D', 15, 30, 15, 175, 225, 165, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H01H', 18, 30, 12, 190, 235, 140, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H01K', 15, 25, 20, 190, 240, 135, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H01M', 15, 15, 30, 180, 180, 200, 2, 1, 20, 0, 275, 170)
-    call WOS_PickStatRow('H01Z', 18, 30, 12, 185, 235, 145, 3, 0, 20, 0, 280, 150)
-    call WOS_PickStatRow('H023', 15, 25, 20, 190, 210, 165, 3, 1, 20, 0, 300, 150)
-    call WOS_PickStatRow('H028', 20, 30, 10, 192, 230, 140, 3, 1, 20, 0, 280, 150)
-    call WOS_PickStatRow('H02E', 13, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150)
-    call WOS_PickStatRow('H02H', 15, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150)
-    call WOS_PickStatRow('H02K', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150)
+    call WOS_PickStatRow('H000', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150, 120)
+    call WOS_PickStatRow('H01C', 15, 15, 30, 185, 175, 200, 2, 1, 20, 0, 310, 170, 100)
+    call WOS_PickStatRow('H02A', 10, 32, 18, 210, 190, 150, 3, 1, 20, 0, 280, 170, 110)
+    call WOS_PickStatRow('H00U', 15, 35, 10, 200, 200, 150, 3, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H01G', 20, 25, 15, 190, 260, 115, 3, 1, 20, 0, 270, 170, 100)
+    call WOS_PickStatRow('H01P', 15, 25, 20, 180, 265, 120, 3, 1, 20, 0, 290, 150, 100)
+    call WOS_PickStatRow('H01R', 20, 15, 25, 200, 150, 215, 2, 1, 20, 0, 300, 170, 120)
+    call WOS_PickStatRow('H01X', 15, 30, 15, 175, 240, 150, 3, 1, 20, 0, 290, 150, 100)
+    call WOS_PickStatRow('H026', 15, 23, 22, 170, 225, 150, 3, 1, 20, 0, 280, 170, 110)
+    call WOS_PickStatRow('H001', 17, 28, 15, 185, 265, 120, 3, 1, 20, 0, 290, 150, 100)
+    call WOS_PickStatRow('H00H', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150, 100)
+    call WOS_PickStatRow('H02B', 15, 20, 25, 175, 125, 250, 2, 1, 20, 0, 300, 170, 100)
+    call WOS_PickStatRow('H02C', 20, 23, 17, 230, 185, 170, 1, 1, 20, 0, 290, 170, 100)
+    call WOS_PickStatRow('H01A', 20, 30, 10, 200, 225, 130, 3, 1, 20, 0, 280, 170, 100)
+    call WOS_PickStatRow('H02M', 15, 30, 15, 165, 225, 175, 3, 1, 20, 0, 310, 150, 120)
+    call WOS_PickStatRow('H009', 15, 15, 30, 180, 175, 210, 2, 1, 20, 0, 280, 170, 100)
+    call WOS_PickStatRow('H010', 10, 10, 40, 140, 175, 250, 2, 1, 20, 0, 300, 170, 100)
+    call WOS_PickStatRow('H021', 20, 25, 15, 200, 230, 125, 3, 1, 20, 0, 300, 170, 100)
+    call WOS_PickStatRow('H02J', 20, 30, 0, 240, 300, 0, 3, 1, 20, 0, 330, 170, 100)
+    call WOS_PickStatRow('H00A', 15, 25, 20, 175, 225, 175, 3, 1, 20, 0, 310, 150, 100)
+    call WOS_PickStatRow('H00B', 15, 30, 15, 220, 225, 120, 3, 1, 20, 0, 300, 150, 120)
+    call WOS_PickStatRow('H017', 16, 20, 24, 180, 160, 220, 2, 1, 20, 0, 300, 170, 100)
+    call WOS_PickStatRow('H01B', 15, 15, 30, 160, 155, 250, 2, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H01D', 15, 30, 15, 175, 225, 165, 3, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H01H', 18, 30, 12, 190, 235, 140, 3, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H01K', 15, 25, 20, 190, 240, 135, 3, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H01M', 15, 15, 30, 180, 180, 200, 2, 1, 20, 0, 275, 170, 110)
+    call WOS_PickStatRow('H01Z', 18, 30, 12, 185, 235, 145, 3, 0, 20, 0, 280, 150, 700)
+    call WOS_PickStatRow('H023', 15, 25, 20, 190, 210, 165, 3, 1, 20, 0, 300, 150, 100)
+    call WOS_PickStatRow('H028', 20, 30, 10, 192, 230, 140, 3, 1, 20, 0, 280, 150, 140)
+    call WOS_PickStatRow('H02E', 13, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150, 700)
+    call WOS_PickStatRow('H02H', 15, 15, 30, 145, 185, 200, 2, 0, 20, 0, 290, 150, 700)
+    call WOS_PickStatRow('H02K', 20, 25, 15, 200, 200, 160, 3, 1, 20, 0, 280, 150, 100)
     // END GENERATED PICK STATS
 endfunction
 
@@ -577,6 +582,12 @@ function WOS_ShowPickStatDecor takes boolean visible returns nothing
     if FRAME_HeroRange != null then
         call BlzFrameSetVisible(FRAME_HeroRange, visible)
         call BlzFrameSetVisible(FRAME_HeroMagRes, visible)
+        set i = 0
+        loop
+            exitwhen i >= 6
+            call BlzFrameSetVisible(WOS_PickCellIcon[i], visible)
+            set i = i + 1
+        endloop
     endif
 endfunction
 
@@ -595,6 +606,9 @@ function WOS_PickExtraUpdate takes nothing returns nothing
     local string phys
     local string mag
     local string range
+    local integer primary
+    local integer mainRow
+    local string mainName
     if FRAME_HeroRange == null then
         set d = null
         return
@@ -606,26 +620,75 @@ function WOS_PickExtraUpdate takes nothing returns nothing
     else
         set phys = R2SW(WOS_PickResPct(I2R(WOS_PickStat(statId, 9)) / 100.00 + I2R(WOS_PickStat(statId, 1)) * WOS_PHYS_RES_PER_AGI), 1, 1)
         set mag = R2SW(WOS_PickResPct(I2R(WOS_PickStat(statId, 2)) * WOS_MAG_RES_PER_INT), 1, 1)
-        if WOS_PickStat(statId, 7) == 1 then
-            set range = "melee"
-        else
-            set range = "ranged"
-        endif
+        set range = I2S(WOS_PickStat(statId, 12))
+    endif
+    if d != null and GetUnitTypeId(d) != 0 then
+        set primary = BlzGetUnitIntegerField(d, UNIT_IF_PRIMARY_ATTRIBUTE)
+    else
+        set primary = WOS_PickStat(statId, 6)
     endif
     if GetLocalPlayer() == WOS_PickExtraPlayer then
+        if primary == 1 then
+            set mainName = "|cffff8a83Strength|r"
+            set mainRow = 0
+        elseif primary == 3 then
+            set mainName = "|cff7cd67cAgility|r"
+            set mainRow = 1
+        else
+            set mainName = "|cff7caefaIntelligence|r"
+            set mainRow = 2
+        endif
+        if WOS_PickMainTipText != null then
+            call BlzFrameSetText(WOS_PickMainTipText, "|cffd5b876MAIN STAT|r|n" + mainName + " is this hero's main stat: it adds attack damage and its growth matters most.")
+        endif
+        if WOS_PickPrimaryMark[mainRow] != null then
+            call BlzFrameSetVisible(WOS_PickPrimaryMark[mainRow], true)
+        endif
         call BlzFrameSetText(FRAME_HeroArmor, "|cffff8a83PR|r  |cffffffff" + phys + "%|r")
         call BlzFrameSetText(FRAME_HeroMagRes, "|cff7caefaMR|r  |cffffffff" + mag + "%|r")
-        call BlzFrameSetText(FRAME_HeroRange, "|cffd5b876RANGE|r  |cffffffff" + range + "|r")
+        call BlzFrameSetText(FRAME_HeroRange, "|cffd5b876RNG|r  |cffffffff" + range + "|r")
     endif
     set d = null
 endfunction
 
 // Created in its own WUI_OnReady thread after the pick shell.
 function WOS_PickExtraCreate takes nothing returns nothing
+    local framehandle box
+    local integer i
     set FRAME_HeroRange = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)
     call BlzFrameSetVisible(FRAME_HeroRange, false)
     set FRAME_HeroMagRes = BlzCreateFrameByType("TEXT", "MyHeroStatButton", FRAME_MAIN3, "ScriptDialogButton", 0)
     call BlzFrameSetVisible(FRAME_HeroMagRes, false)
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set WOS_PickCellIcon[i] = BlzCreateFrameByType("BACKDROP", "WOSPickCellIcon", FRAME_MAIN3, "", i)
+        call BlzFrameSetEnable(WOS_PickCellIcon[i], false)
+        call BlzFrameSetLevel(WOS_PickCellIcon[i], 6)
+        call BlzFrameSetVisible(WOS_PickCellIcon[i], false)
+        set i = i + 1
+    endloop
+    call BlzFrameSetTexture(WOS_PickCellIcon[0], "UI\\WOS\\icon-attack.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[1], "UI\\WOS\\icon-range.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[2], "UI\\WOS\\icon-phys.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[3], "UI\\WOS\\icon-magic.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[4], "UI\\WOS\\icon-movespeed.tga", 0, true)
+    call BlzFrameSetTexture(WOS_PickCellIcon[5], "UI\\WOS\\icon-attackspeed.tga", 0, true)
+    // Hover over the main stat medallion: engine tooltip (no mouse events).
+    set WOS_PickMainHit = BlzCreateFrameByType("BUTTON", "WOSPickMainStatHit", FRAME_HeroAttribute, "", 0)
+    call BlzFrameSetAllPoints(WOS_PickMainHit, FRAME_HeroAttribute)
+    set box = WUI_TooltipBox(WUI_GetRoot(), 0.170, 0.040)
+    call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMLEFT, WOS_PickMainHit, FRAMEPOINT_TOPLEFT, 0.00, 0.006)
+    set WOS_PickMainTipText = BlzCreateFrameByType("TEXT", "WOSPickMainStatTip", box, "", 0)
+    call BlzFrameSetPoint(WOS_PickMainTipText, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
+    call BlzFrameSetSize(WOS_PickMainTipText, 0.158 / 0.70, 0.032 / 0.70)
+    call BlzFrameSetScale(WOS_PickMainTipText, 0.70)
+    call BlzFrameSetTextAlignment(WOS_PickMainTipText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(WOS_PickMainTipText, false)
+    call BlzFrameSetLevel(box, 60)
+    call BlzFrameSetTooltip(WOS_PickMainHit, box)
+    call BlzFrameSetVisible(box, false)
+    set box = null
 endfunction
 
 function FindHeroPage takes integer heroId returns integer
@@ -2583,7 +2646,9 @@ endif
 call BlzFrameSetVisible(EmojiToggle, true)
     endif
         
+        call WOS_ProbeMark("pick: before HideBottomUI")
         call HideBottomUI(Player(pid), false)
+        call WOS_ProbeMark("pick: after HideBottomUI")
         set PlayerVision[pid] = CreateFogModifierRadius(Player(pid), FOG_OF_WAR_VISIBLE, BaseX, BaseY, 1800, true, false)
         call FogModifierStart(PlayerVision[pid])
         call PanCameraToTimedForPlayer(p, BaseX, BaseY, 0.25)
@@ -2601,17 +2666,24 @@ call BlzFrameSetVisible(EmojiToggle, true)
             call BlzFrameSetVisible(FRAME_StatusHeroMain4, true)
             call BlzFrameSetVisible(FRAME_LINK2, true)
         endif
+        call WOS_ProbeMark("pick: after select/camera")
         call RecommenedItems(p)
+        call WOS_ProbeMark("pick: after RecommenedItems")
         call SaveSystem_SetCurrentHero(p, Hero[pid])
+        call WOS_ProbeMark("pick: after SetCurrentHero")
         call EUTU2_3(EffectSpawn("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", GetUnitX(Hero[pid]), GetUnitY(Hero[pid]), 270, 0.85, 1.45, 0), 2.5, 0, Hero[pid])
         call SetHeroLevel(Hero[pid], 2, false)
         call LearnHeroSpells(Hero[pid])
+        call WOS_ProbeMark("pick: after LearnHeroSpells")
         call TojiStartZeroMana(Hero[pid])
         
         call ReloadAfterPick(p)
+        call WOS_ProbeMark("pick: after ReloadAfterPick")
         
         set PlayerFrameCurrent_ID[pid] = 0
         call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r picked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + "|r", 1 )
+        call WOS_ProbeMark("pick: end")
+        call WOS_ProbeDump()
     endif
     set s = null
     set d = null
@@ -3328,14 +3400,31 @@ function WOS_StylePickIconButton takes framehandle control, framehandle fill, fr
     set part = null
 endfunction
 
+// Right-side stat cell: HUD icon, then smaller text; the width is in scaled
+// units so a long value (RNG 600, AS 1.50s) still fits on narrow screens.
+function WOS_PickStatCell takes framehandle line, framehandle icon, real left, real y returns nothing
+    call WOS_PickStatLine(line, left + 0.0080, y, 0.046 / 0.68)
+    call BlzFrameSetScale(line, 0.68)
+    if icon != null then
+        call BlzFrameClearAllPoints(icon)
+        call BlzFrameSetAbsPoint(icon, FRAMEPOINT_CENTER, left + 0.0035, y)
+        call BlzFrameSetSize(icon, 0.0095, 0.0095)
+    endif
+endfunction
+
 function WOS_PickExtraLayout takes nothing returns nothing
     if FRAME_HeroRange == null then
         return
     endif
-    call WOS_PickStatLine(FRAME_HeroRange, 0.6690, 0.3155, 0.058)
-    call WOS_PickStatLine(FRAME_HeroMagRes, 0.6690, 0.2995, 0.058)
-    call BlzFrameSetScale(FRAME_HeroRange, 0.80)
-    call BlzFrameSetScale(FRAME_HeroMagRes, 0.80)
+    call WOS_PickStatCell(FRAME_HeroAtk, WOS_PickCellIcon[0], 0.6150, 0.3155)
+    call WOS_PickStatCell(FRAME_HeroArmor, WOS_PickCellIcon[2], 0.6150, 0.2995)
+    call WOS_PickStatCell(FRAME_HeroMS, WOS_PickCellIcon[4], 0.6150, 0.2835)
+    call WOS_PickStatCell(FRAME_HeroRange, WOS_PickCellIcon[1], 0.6665, 0.3155)
+    call WOS_PickStatCell(FRAME_HeroMagRes, WOS_PickCellIcon[3], 0.6665, 0.2995)
+    call WOS_PickStatCell(FRAME_HeroAS, WOS_PickCellIcon[5], 0.6665, 0.2835)
+    call BlzFrameSetScale(FRAME_HeroStr, 0.77)
+    call BlzFrameSetScale(FRAME_HeroAgi, 0.77)
+    call BlzFrameSetScale(FRAME_HeroInt, 0.77)
 endfunction
 
 function WOS_LayoutHeroPick takes nothing returns nothing
