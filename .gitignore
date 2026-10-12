@@ -46,3 +46,6 @@ backups/test-maps/
 # Файлы локальных бэкапов
 *.bak
 *.tmp
+
+# Local recovery copies stay on this device.
+/backups/
