@@ -307,15 +307,12 @@ endfunction
 function WOS_ModeFrameClick takes nothing returns nothing
     local integer i = 0
     if GetTriggerPlayer() != Player(0) then
+        call WUI_ReleaseClickFocus()
         return
     endif
     loop
         exitwhen i >= 4
         if BlzGetTriggerFrame() == WOS_ModeButton[i] then
-            if GetLocalPlayer() == GetTriggerPlayer() then
-                call BlzFrameSetEnable(WOS_ModeButton[i], false)
-                call BlzFrameSetEnable(WOS_ModeButton[i], true)
-            endif
             if i == 0 then
                 call WOS_SelectMode(1)
             elseif i == 1 then
@@ -325,10 +322,12 @@ function WOS_ModeFrameClick takes nothing returns nothing
             else
                 call WOS_SelectMode(2)
             endif
+            call WUI_ReleaseClickFocus()
             return
         endif
         set i = i + 1
     endloop
+    call WUI_ReleaseClickFocus()
 endfunction
 
 // Checkpoint 20: real sizes (no parent scale), flush gold frames. Every

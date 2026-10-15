@@ -1,0 +1,12 @@
+[
+  {
+    "import": "war3mapImported\\WOSRange\\wos_tx-tsqyuanxing2.mdx",
+    "sha256": "9f2590b759ca535f65dde74681c9c7c67bf1bfb06f8170bd05ad8c2c1993b160",
+    "bytes": 1532
+  },
+  {
+    "import": "war3mapImported\\WOSRange\\wos_tx-tsqyuanxing2_0.blp",
+    "sha256": "fb1dab4f538f74cb1e25ec2d3dbcbc0c46c693003b3bb42e537721ed17538880",
+    "bytes": 83128
+  }
+]

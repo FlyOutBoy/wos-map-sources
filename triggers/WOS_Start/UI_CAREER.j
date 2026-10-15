@@ -735,52 +735,48 @@ private function WCS_SetOpen takes player viewer, boolean open returns nothing
 endfunction
 
 private function WCS_CloseTopWindow takes nothing returns nothing
-    call WCS_SetOpen(GetLocalPlayer(), false)
-endfunction
-
-private function WCS_ResetClickedFrame takes nothing returns nothing
-    if GetLocalPlayer() == GetTriggerPlayer() then
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
-    endif
+    call WCS_SetOpen(WUI_TopClosePlayer, false)
 endfunction
 
 private function WCS_OnOpen takes nothing returns nothing
     local player viewer = GetTriggerPlayer()
     if GetLocalPlayer() != GetTriggerPlayer() then
         set viewer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
-    call WCS_ResetClickedFrame()
     call WCS_SetOpen(viewer, true)
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnClose takes nothing returns nothing
     local player viewer = null
     if GetLocalPlayer() != GetTriggerPlayer() then
+        call WUI_ReleaseClickFocus()
         return
     endif
     set viewer = GetTriggerPlayer()
-    call WCS_ResetClickedFrame()
     call WCS_SetOpen(viewer, false)
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnHome takes nothing returns nothing
     local player viewer = null
     local integer pid = 0
     if GetLocalPlayer() != GetTriggerPlayer() then
+        call WUI_ReleaseClickFocus()
         return
     endif
     set viewer = GetTriggerPlayer()
 set pid = GetPlayerId(viewer)
-    call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         call WCS_SetPage(pid, 0)
         call WCS_UpdateForPlayer(pid)
     endif
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnHeroes takes nothing returns nothing
@@ -789,11 +785,11 @@ private function WCS_OnHeroes takes nothing returns nothing
     local integer heroId = 0
     local integer category
     if GetLocalPlayer() != GetTriggerPlayer() then
+        call WUI_ReleaseClickFocus()
         return
     endif
     set viewer = GetTriggerPlayer()
 set pid = GetPlayerId(viewer)
-    call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         if Hero[pid] != null then
             set heroId = GetUnitTypeId(Hero[pid])
@@ -808,6 +804,7 @@ set pid = GetPlayerId(viewer)
         call WCS_UpdateForPlayer(pid)
     endif
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnCategory takes nothing returns nothing
@@ -816,12 +813,12 @@ private function WCS_OnCategory takes nothing returns nothing
     local framehandle clicked = null
     local integer category = 1
     if GetLocalPlayer() != GetTriggerPlayer() then
+        call WUI_ReleaseClickFocus()
         return
     endif
     set clicked = BlzGetTriggerFrame()
         set viewer = GetTriggerPlayer()
        set pid = GetPlayerId(viewer)
-    call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         loop
             exitwhen category > WCS_CATEGORY_COUNT
@@ -837,6 +834,7 @@ private function WCS_OnCategory takes nothing returns nothing
     endif
     set clicked = null
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnHero takes nothing returns nothing
@@ -845,12 +843,12 @@ private function WCS_OnHero takes nothing returns nothing
     local framehandle clicked = null
     local integer slot = 0
     if GetLocalPlayer() != GetTriggerPlayer() then
+        call WUI_ReleaseClickFocus()
         return
     endif
         set clicked = BlzGetTriggerFrame()
         set viewer = GetTriggerPlayer()
        set pid = GetPlayerId(viewer)
-    call WCS_ResetClickedFrame()
     if pid >= 0 and pid < WCS_PLAYER_COUNT then
         loop
             exitwhen slot >= WCS_HERO_SLOT_COUNT
@@ -866,6 +864,7 @@ private function WCS_OnHero takes nothing returns nothing
     endif
     set clicked = null
     set viewer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WCS_OnHotkey takes nothing returns nothing
@@ -1020,7 +1019,7 @@ private function WCS_CreateUI takes nothing returns nothing
     local integer pid = 0
     set WCS_OpenButton = WCS_CreateIconButton(gameUI, WUI_TopActionX(2), 0.584, WCS_OPEN_SIZE, 8200)
     // Top-bar position is screen space, not the zoomed career window space.
-    call WUI_Place(WCS_OpenButton, WUI_TopActionX(2), 0.584, WCS_OPEN_SIZE, WCS_OPEN_SIZE)
+    call WUI_PlaceRight(WCS_OpenButton, 0.090, 0.584, WCS_OPEN_SIZE, WCS_OPEN_SIZE)
     call WUI_RegisterTopControl(WCS_OpenButton)
     call WUI_RegisterTopClose(function WCS_CloseTopWindow)
     set WCS_OpenIcon = WCS_CreateIcon(WCS_OpenButton, WCS_TEX_OPEN, 8201)
@@ -1029,6 +1028,7 @@ private function WCS_CreateUI takes nothing returns nothing
     call BlzFrameSetLevel(WCS_OpenIcon, 101)
 
     set WCS_Main = WUI_Window("WOSCareerWindow", gameUI, 0, 8210)
+    call WUI_RegisterRangeCover(WCS_Main)
     call BlzFrameSetAbsPoint(WCS_Main, FRAMEPOINT_CENTER, WCS_PANEL_X, WCS_PANEL_Y)
     call BlzFrameSetSize(WCS_Main, WCS_PANEL_WIDTH, WCS_PANEL_HEIGHT)
     set WCS_CloseIcon = WUI_OrnateWindow("WOSCareerMetal", WCS_Main, 0.024)

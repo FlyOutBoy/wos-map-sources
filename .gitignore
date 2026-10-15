@@ -30,6 +30,7 @@ test_map/*
 !test_map/README.md
 !test_map/heroes/
 !test_map/compatibility/
+!test_map/ability_range/
 !test_map/base/
 test_map/base/*
 !test_map/base/test-source-manifest.json

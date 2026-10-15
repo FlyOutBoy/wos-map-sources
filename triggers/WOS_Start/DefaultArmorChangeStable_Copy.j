@@ -53,6 +53,13 @@ globals
     // Checkpoint 26d: last selected unit per player from the synced selection
     // events, so the portrait voice is the selected hero's on every client.
     private unit array UNITSTAT_VoiceUnit
+    // UI-only selection records. No game group, hashtable or handle allocation.
+    private unit array UNITSTAT_Picked
+    private integer array UNITSTAT_PickHead
+    private unit array UNITSTAT_PickUnit
+    private integer array UNITSTAT_PickNext
+    private integer UNITSTAT_PickCount = 0
+    private integer UNITSTAT_PickFree = 0
     private trigger UNITSTAT_ShopKeys = null
     private trigger UNITSTAT_VoiceSelect = null
     private trigger UNITSTAT_VoiceDeselect = null
@@ -63,15 +70,105 @@ globals
     private constant real UNITSTAT_MS_PER_AGI = 1.0
 endglobals
 
+private function UNITSTAT_RemovePick takes integer pid, integer node, integer previous returns nothing
+    if previous == 0 then
+        set UNITSTAT_PickHead[pid] = UNITSTAT_PickNext[node]
+    else
+        set UNITSTAT_PickNext[previous] = UNITSTAT_PickNext[node]
+    endif
+    set UNITSTAT_PickUnit[node] = null
+    set UNITSTAT_PickNext[node] = UNITSTAT_PickFree
+    set UNITSTAT_PickFree = node
+endfunction
+
+private function UNITSTAT_ResolvePicked takes integer pid returns unit
+    local integer node = UNITSTAT_PickHead[pid]
+    local integer previous = 0
+    local integer next
+    local unit u
+    set UNITSTAT_Picked[pid] = null
+    loop
+        exitwhen node == 0
+        set next = UNITSTAT_PickNext[node]
+        set u = UNITSTAT_PickUnit[node]
+        if u == null or GetUnitTypeId(u) == 0 or not IsUnitSelected(u, Player(pid)) then
+            call UNITSTAT_RemovePick(pid, node, previous)
+        else
+            if UNITSTAT_Picked[pid] == null and not IsUnitHidden(u) and not IsUnitType(u, UNIT_TYPE_DEAD) and GetWidgetLife(u) > 0.405 then
+                set UNITSTAT_Picked[pid] = u
+            endif
+            set previous = node
+        endif
+        set node = next
+    endloop
+    set u = null
+    return UNITSTAT_Picked[pid]
+endfunction
+
+// Read-only event cache; no native selection query or handle allocation.
+function UNITSTAT_GetSelected takes integer pid returns unit
+    return UNITSTAT_Picked[pid]
+endfunction
+
 private function UNITSTAT_OnSelectVoice takes nothing returns nothing
-    set UNITSTAT_VoiceUnit[GetPlayerId(GetTriggerPlayer())] = GetTriggerUnit()
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    local unit u = GetTriggerUnit()
+    local integer node = UNITSTAT_PickHead[pid]
+    local integer previous = 0
+    // Preserve the original voice cache independently of multi-selection fallback.
+    set UNITSTAT_VoiceUnit[pid] = u
+    loop
+        exitwhen node == 0 or UNITSTAT_PickUnit[node] == u
+        set previous = node
+        set node = UNITSTAT_PickNext[node]
+    endloop
+    if node == 0 then
+        if UNITSTAT_PickFree != 0 then
+            set node = UNITSTAT_PickFree
+            set UNITSTAT_PickFree = UNITSTAT_PickNext[node]
+        elseif UNITSTAT_PickCount < 8190 then
+            set UNITSTAT_PickCount = UNITSTAT_PickCount + 1
+            set node = UNITSTAT_PickCount
+        endif
+        if node != 0 then
+            set UNITSTAT_PickUnit[node] = u
+            set UNITSTAT_PickNext[node] = UNITSTAT_PickHead[pid]
+            set UNITSTAT_PickHead[pid] = node
+        endif
+    elseif previous != 0 then
+        set UNITSTAT_PickNext[previous] = UNITSTAT_PickNext[node]
+        set UNITSTAT_PickNext[node] = UNITSTAT_PickHead[pid]
+        set UNITSTAT_PickHead[pid] = node
+    endif
+    set UNITSTAT_Picked[pid] = u
+    call ExecuteFunc("QB_RenderLocal")
+    set u = null
 endfunction
 
 private function UNITSTAT_OnDeselectVoice takes nothing returns nothing
     local integer pid = GetPlayerId(GetTriggerPlayer())
-    if UNITSTAT_VoiceUnit[pid] == GetTriggerUnit() then
+    local unit u = GetTriggerUnit()
+    local integer node = UNITSTAT_PickHead[pid]
+    local integer previous = 0
+    if UNITSTAT_VoiceUnit[pid] == u then
         set UNITSTAT_VoiceUnit[pid] = null
     endif
+    loop
+        exitwhen node == 0 or UNITSTAT_PickUnit[node] == u
+        set previous = node
+        set node = UNITSTAT_PickNext[node]
+    endloop
+    if node != 0 then
+        call UNITSTAT_RemovePick(pid, node, previous)
+    endif
+    if UNITSTAT_Picked[pid] == u then
+        set UNITSTAT_Picked[pid] = null
+        if UNITSTAT_PickHead[pid] != 0 then
+            set UNITSTAT_Picked[pid] = UNITSTAT_PickUnit[UNITSTAT_PickHead[pid]]
+        endif
+    endif
+    call ExecuteFunc("QB_RenderLocal")
+    set u = null
 endfunction
 
 private function UNITSTAT_ToolbarClick takes nothing returns nothing
@@ -80,9 +177,10 @@ private function UNITSTAT_ToolbarClick takes nothing returns nothing
     else
         call Emoji_ToggleMenu(GetTriggerPlayer())
     endif
-    if GetLocalPlayer() == GetTriggerPlayer() then
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
+    if BlzGetTriggerFrame() == UNITSTAT_Emotes then
+        call WUI_ResetClickedButtonFocus()
+    else
+        call WUI_ReleaseClickFocus()
     endif
 endfunction
 
@@ -99,7 +197,7 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     local trigger clicks = CreateTrigger()
     local framehandle icon
     local framehandle text
-    set UNITSTAT_Shop = BlzCreateFrameByType("BUTTON", "WOSShopToolbar", WUI_GetRoot(), "", 0)
+    set UNITSTAT_Shop = BlzCreateFrameByType("BUTTON", "WOSShopToolbar", WUI_GetInfoRoot(), "", 0)
     call WUI_PlaceToolbar(UNITSTAT_Shop, 0, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSShopToolbarIcon", UNITSTAT_Shop, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Shop)
@@ -110,7 +208,7 @@ private function UNITSTAT_CreateToolbar takes nothing returns nothing
     set UNITSTAT_ShopKeys = CreateTrigger()
     call TriggerAddAction(UNITSTAT_ShopKeys, function UNITSTAT_OnShopKey)
     call WUI_RegisterHotkeyEx(WUI_HOTKEY_SHOP, UNITSTAT_ShopKeys, OSKEY_TAB, "TAB", false, UNITSTAT_Shop, WUI_GetRoot(), true)
-    set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetRoot(), "", 0)
+    set UNITSTAT_Emotes = BlzCreateFrameByType("BUTTON", "WOSEmotesToolbar", WUI_GetInfoRoot(), "", 0)
     call WUI_PlaceToolbar(UNITSTAT_Emotes, 2, 0)
     set icon = BlzCreateFrameByType("BACKDROP", "WOSEmotesToolbarIcon", UNITSTAT_Emotes, "", 0)
     call BlzFrameSetAllPoints(icon, UNITSTAT_Emotes)
@@ -141,6 +239,7 @@ endfunction
 private function UNITSTAT_WidgetCreate takes integer index, string texture, real x, real y, real width, trigger events returns nothing
     local framehandle icon
     set UNITSTAT_Widget[index] = BlzCreateFrameByType("BUTTON", "WOSStatWidget", UNITSTAT_Root, "", index)
+    call WUI_RegisterPassiveFocus(UNITSTAT_Widget[index])
     set UNITSTAT_WidgetLeft[index] = x - width * 0.50
     set UNITSTAT_WidgetY[index] = y
     set UNITSTAT_WidgetWidth[index] = width
@@ -153,8 +252,9 @@ private function UNITSTAT_WidgetCreate takes integer index, string texture, real
     call BlzFrameSetEnable(icon, false)
     set UNITSTAT_Value[index] = BlzCreateFrameByType("TEXT", "WOSStatValue", UNITSTAT_Widget[index], "", index)
     call BlzFrameSetPoint(UNITSTAT_Value[index], FRAMEPOINT_LEFT, UNITSTAT_Widget[index], FRAMEPOINT_LEFT, 0.0145, 0.00)
-    // Never narrower than "-100%" so three-digit values do not wrap.
-    call BlzFrameSetSize(UNITSTAT_Value[index], RMaxBJ(width - 0.0150, 0.030), 0.012)
+    // Size is expressed before scale: use all physical space up to the divider.
+    // Keep the icon, left anchor and font unchanged. Never extend past the widget.
+    call BlzFrameSetSize(UNITSTAT_Value[index], (width - 0.0150) / 0.76, 0.012)
     call BlzFrameSetTextAlignment(UNITSTAT_Value[index], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
     call BlzFrameSetScale(UNITSTAT_Value[index], 0.76)
     call BlzFrameSetEnable(UNITSTAT_Value[index], false)
@@ -232,8 +332,8 @@ private function UNITSTAT_AttributeHelp takes unit hero, integer index returns s
     return title + "|nTotal: " + I2S(total) + "|nBase (level): " + I2S(base) + "|nBonus (items/effects): " + I2S(total - base) + benefit
 endfunction
 
-private function UNITSTAT_UpdateGold takes nothing returns nothing
-    local player viewer = GetLocalPlayer()
+private function UNITSTAT_UpdateGold takes integer pid returns nothing
+    local player viewer = Player(pid)
     local integer current = GetPlayerState(viewer, PLAYER_STATE_RESOURCE_GOLD)
     local integer next = GetPlayerState(viewer, PLAYER_STATE_RESOURCE_LUMBER)
     call WUI_SetText(UNITSTAT_Gold, "|cffd5b876" + I2S(current) + "|r |cff00ff00+" + I2S(next) + "|r")
@@ -315,21 +415,15 @@ private function UNITSTAT_OnPortraitClick takes nothing returns nothing
     endif
     set p = null
     if GetLocalPlayer() == GetTriggerPlayer() then
-        call GroupClear(UNITSTAT_SelectedGroup)
-        call GroupEnumUnitsSelected(UNITSTAT_SelectedGroup, GetLocalPlayer(), null)
-        set selected = FirstOfGroup(UNITSTAT_SelectedGroup)
-        if selected == null then
-            set selected = Hero[GetPlayerId(GetLocalPlayer())]
+        if Hero[pid] != null then
+            call PanCameraToTimed(GetUnitX(Hero[pid]), GetUnitY(Hero[pid]), 0.15)
         endif
-        if selected != null then
-            call PanCameraToTimed(GetUnitX(selected), GetUnitY(selected), 0.15)
-        endif
-        call BlzFrameSetFocus(BlzGetTriggerFrame(), false)
         call BlzFrameSetVisible(UNITSTAT_PortraitTip, false)
         set UNITSTAT_Hover = -1
         call BlzFrameSetVisible(UNITSTAT_Tooltip, false)
     endif
     set selected = null
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 // Local: shows the columns of the current mode and moves the rest of the HUD.
@@ -367,12 +461,13 @@ private function UNITSTAT_ApplyMode takes nothing returns nothing
 endfunction
 
 private function UNITSTAT_OnModeClick takes nothing returns nothing
-    if GetLocalPlayer() == GetTriggerPlayer() then
-        set WUI_HudMode = ModuloInteger(WUI_HudMode, 3) + 1
-        call UNITSTAT_ApplyMode()
-        call BlzFrameSetEnable(UNITSTAT_ModeButton, false)
-        call BlzFrameSetEnable(UNITSTAT_ModeButton, true)
-    endif
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    set WUI_HudModeOf[pid] = ModuloInteger(WUI_HudModeOf[pid], 3) + 1
+    set WUI_ModeTouched[pid] = true
+    set WUI_HudMode = WUI_HudModeOf[GetPlayerId(GetLocalPlayer())]
+    // Preserve S_MODE: every client reapplies its mode and runs the shift hooks.
+    call UNITSTAT_ApplyMode()
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 // What the unit pierces right now: passive item penetration only; on-hit
@@ -426,6 +521,7 @@ function UNITSTAT_ApplySaved takes nothing returns nothing
     if UNITSTAT_VoiceToggle != null then
         call WUI_SetToggleState(UNITSTAT_VoiceToggle, UNITSTAT_VoiceOn[GetPlayerId(GetLocalPlayer())])
     endif
+    set WUI_HudMode = WUI_HudModeOf[GetPlayerId(GetLocalPlayer())]
     if UNITSTAT_ModeButton != null then
         call UNITSTAT_ApplyMode()
     endif
@@ -438,6 +534,7 @@ private function UNITSTAT_OnVoiceToggle takes nothing returns nothing
     if GetLocalPlayer() == GetTriggerPlayer() then
         call WUI_SetToggleState(UNITSTAT_VoiceToggle, UNITSTAT_VoiceOn[pid])
     endif
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 // Geometry polling cannot retain a button's clicked/focused hover state.
@@ -455,7 +552,7 @@ private function UNITSTAT_PollHover takes nothing returns nothing
         if i != 7 then
             set left = left + WUI_HudLeft
         endif
-        if (i == 7 or readable) and UNITSTAT_WidgetWidth[i] > 0.0 and x >= left and x <= left + UNITSTAT_WidgetWidth[i] and y >= UNITSTAT_WidgetY[i] - UNITSTAT_WidgetHeight[i] * 0.5 and y <= UNITSTAT_WidgetY[i] + UNITSTAT_WidgetHeight[i] * 0.5 then
+        if ((i == 7 and WUI_InfoShown()) or (i != 7 and readable)) and UNITSTAT_WidgetWidth[i] > 0.0 and x >= left and x <= left + UNITSTAT_WidgetWidth[i] and y >= UNITSTAT_WidgetY[i] - UNITSTAT_WidgetHeight[i] * 0.5 and y <= UNITSTAT_WidgetY[i] + UNITSTAT_WidgetHeight[i] * 0.5 then
             set UNITSTAT_Hover = i
             exitwhen true
         endif
@@ -467,34 +564,38 @@ private function UNITSTAT_PollHover takes nothing returns nothing
     endif
 endfunction
 
-private function UNITSTAT_Update takes nothing returns nothing
-    local unit selected
+private function UNITSTAT_Render takes unit selected, integer pid returns nothing
     local integer i = 0
     local integer heroType
     local boolean hero
     local boolean readable
     local boolean blocked
+    local real physRes
+    local real magRes
     local real maximum
     local real value
     local string damage
     local string color
-    call GroupClear(UNITSTAT_SelectedGroup)
-    call GroupEnumUnitsSelected(UNITSTAT_SelectedGroup, GetLocalPlayer(), null)
-    set selected = FirstOfGroup(UNITSTAT_SelectedGroup)
     set readable = selected != null
     if readable then
-        set readable = IsPlayerAlly(GetOwningPlayer(selected), GetLocalPlayer()) or IsUnitVisible(selected, GetLocalPlayer())
+        set readable = IsPlayerAlly(GetOwningPlayer(selected), Player(pid)) or IsUnitVisible(selected, Player(pid))
     endif
     call WUI_Show(UNITSTAT_Root, readable)
     if readable then
         call WUI_SetPortraitIcon(BlzGetAbilityIcon(GetUnitTypeId(selected)))
     endif
     call WUI_ShowNativePortrait(readable)
-    call WUI_ShowHeroIndicator(readable and selected == Hero[GetPlayerId(GetLocalPlayer())] and GetHeroSkillPoints(selected) > 0)
+    call WUI_ShowHeroIndicator(readable and selected == Hero[pid] and GetHeroSkillPoints(selected) > 0)
     call WUI_ShowNativeBuffs(readable)
-    call UNITSTAT_UpdateGold()
+    call UNITSTAT_UpdateGold(pid)
     call UNITSTAT_PollHover()
     if not readable then
+        if UNITSTAT_LastSelected != null then
+            call WUI_LayoutCommands(false)
+            set UNITSTAT_LastSelected = null
+            set UNITSTAT_LastType = 0
+        endif
+        set UNITSTAT_Compact = false
         if UNITSTAT_Hover == 7 then
             call UNITSTAT_ShowTooltip(7)
         else
@@ -511,18 +612,18 @@ private function UNITSTAT_Update takes nothing returns nothing
         set UNITSTAT_LastType = heroType
     endif
     set UNITSTAT_Compact = hero
-    if UNITSTAT_VoiceOn[GetPlayerId(GetLocalPlayer())] then
+    if UNITSTAT_VoiceOn[pid] then
         set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r|n|cff9aa0a8Click: camera + hero voice|r"
     else
-        set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r|n|cff9aa0a8Click: camera to this unit|r"
+        set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r|n|cff9aa0a8Click: camera to own hero|r"
     endif
     // Engine-drawn tooltip (no hover events: those made the cursor stutter).
     call WUI_SetText(UNITSTAT_PortraitTipText, UNITSTAT_Help[6])
     // Outgoing damage bonus (same modifiers the damage system applies).
-    set value = DamageCheck(selected, null, 100.00, 2) - 100.00
+    set value = DamageCheckModifiers(selected, null, 100.00, 2) - 100.00
     call WUI_SetText(UNITSTAT_Value[8], UNITSTAT_Signed(value))
     set UNITSTAT_Help[8] = "|cffff8a73PHYSICAL DAMAGE BONUS|r|n" + R2SW(value, 1, 2) + "%|nExtra physical damage dealt (items, buffs, passives)."
-    set value = DamageCheck(selected, null, 100.00, 1) - 100.00
+    set value = DamageCheckModifiers(selected, null, 100.00, 1) - 100.00
     call WUI_SetText(UNITSTAT_Value[9], UNITSTAT_Signed(value))
     set UNITSTAT_Help[9] = "|cff7caefaMAGICAL DAMAGE BONUS|r|n" + R2SW(value, 1, 2) + "%|nExtra magical damage dealt (items, buffs, passives)."
     call WUI_Show(UNITSTAT_LevelBadge, hero)
@@ -537,17 +638,19 @@ private function UNITSTAT_Update takes nothing returns nothing
         set damage = R2SW(GetAttack(selected), 0, 0)
     endif
     call WUI_SetText(UNITSTAT_Value[0], "|cffe1e5eb" + damage + "|r")
-    set UNITSTAT_Help[0] = "|cffd5b876ATTACK|r|nDamage: " + damage
+    set UNITSTAT_Help[0] = "|cffd5b876ATTACK|r|nDamage: " + damage + "|nEach point of the primary attribute|ngrants +1 Attack Damage."
     set blocked = GetUnitAbilityLevel(selected, 'Avul') > 0 and not CheckCoordsInRect(gg_rct_Base, GetUnitX(selected), GetUnitY(selected))
+    set physRes = GetPhysRes(selected)
+    set magRes = GetMagRes(selected)
     if blocked then
         call WUI_SetText(UNITSTAT_Value[1], "|cffff4040Invul|r")
         call WUI_SetText(UNITSTAT_Value[2], "|cffff4040Invul|r")
     else
-        call WUI_SetText(UNITSTAT_Value[1], "|cffff8a83" + UNITSTAT_Pct(GetPhysRes(selected)) + "|r")
-        call WUI_SetText(UNITSTAT_Value[2], "|cff7caefa" + UNITSTAT_Pct(GetMagRes(selected)) + "|r")
+        call WUI_SetText(UNITSTAT_Value[1], "|cffff8a83" + UNITSTAT_Pct(physRes) + "|r")
+        call WUI_SetText(UNITSTAT_Value[2], "|cff7caefa" + UNITSTAT_Pct(magRes) + "|r")
     endif
-    set UNITSTAT_Help[1] = "|cffff8a83PHYSICAL RESISTANCE|r|n" + R2SW(GetPhysRes(selected), 0, 2) + "%"
-    set UNITSTAT_Help[2] = "|cff7caefaMAGICAL RESISTANCE|r|n" + R2SW(GetMagRes(selected), 0, 2) + "%"
+    set UNITSTAT_Help[1] = "|cffff8a83PHYSICAL RESISTANCE|r|n" + R2SW(physRes, 0, 2) + "%"
+    set UNITSTAT_Help[2] = "|cff7caefaMAGICAL RESISTANCE|r|n" + R2SW(magRes, 0, 2) + "%"
     // Attack speed / move speed / range rows (heroes and units alike).
     set value = GetAS(selected)
     set maximum = BlzGetUnitWeaponRealField(selected, UNIT_WEAPON_RF_ATTACK_BASE_COOLDOWN, 0)
@@ -606,6 +709,22 @@ private function UNITSTAT_Update takes nothing returns nothing
     if UNITSTAT_Hover >= 0 and UNITSTAT_Hover != 6 then
         call UNITSTAT_ShowTooltip(UNITSTAT_Hover)
     endif
+    set selected = null
+endfunction
+
+private function UNITSTAT_Update takes nothing returns nothing
+    local integer i = 0
+    local unit selected = null
+    loop
+        exitwhen i >= bj_MAX_PLAYER_SLOTS
+        if GetPlayerSlotState(Player(i)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(i)) == MAP_CONTROL_USER then
+            set selected = UNITSTAT_ResolvePicked(i)
+            if GetLocalPlayer() == Player(i) then
+                call UNITSTAT_Render(selected, i)
+            endif
+        endif
+        set i = i + 1
+    endloop
     set selected = null
 endfunction
 
@@ -754,7 +873,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     call TriggerAddAction(voiceClick, function UNITSTAT_OnVoiceToggle)
     set UNITSTAT_ModeButton = WUI_ToggleButton("WOSStatsMode", 0.2085, 0.0870, 0.012, "UI\\WOS\\glyph-cols2.tga")
     call WUI_PlaceShiftLeft(UNITSTAT_ModeButton, 0.2085, 0.0870, 0.012, 0.012)
-    call WUI_Tooltip(UNITSTAT_ModeButton, "|cffd5b876STATS COLUMNS|r|nClick: 1 column / 2 columns / 3 columns.|nThe third column shows penetration and regeneration; the rest of the HUD moves with it.")
+    call WUI_TooltipSized(UNITSTAT_ModeButton, "|cffd5b876STATS COLUMNS|r|nClick: 1 column / 2 columns / 3 columns.|nThe third column shows penetration and regeneration; the rest of the HUD moves with it.", 0.190, 0.070, 0.007, 0.007, 0.018)
     set voiceClick = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(voiceClick, UNITSTAT_ModeButton, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(voiceClick, function UNITSTAT_OnModeClick)
@@ -787,7 +906,8 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
         set i = i + 1
     endloop
     // Gold: top row of the right block (.697-.798).
-    set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetRoot(), "", 0)
+    set UNITSTAT_Widget[7] = BlzCreateFrameByType("BUTTON", "WOSGoldHover", WUI_GetInfoRoot(), "", 0)
+    call WUI_RegisterPassiveFocus(UNITSTAT_Widget[7])
     call WUI_PlaceShift(UNITSTAT_Widget[7], 0.7795, 0.0795, 0.094, 0.020)
     set UNITSTAT_WidgetLeft[7] = 0.7325
     set UNITSTAT_WidgetY[7] = 0.0795

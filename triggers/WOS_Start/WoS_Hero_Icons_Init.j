@@ -522,6 +522,8 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
     local unit heroA
     local unit heroB
     local integer typeA
+    local integer qbHeroA
+    local integer qbHeroB
     local integer k = 0
     local integer typeB   
     local integer i = 0
@@ -540,6 +542,8 @@ local integer countB = 0
     if SwapRequests[pid2] == pid then
         set heroA = Hero[pid]
         set heroB = Hero[pid2]
+        set qbHeroA = QB_Hero[pid]
+        set qbHeroB = QB_Hero[pid2]
         set Hero[pid] = heroB
         set Hero[pid2] = heroA
         call SetFlyInit(Hero[pid])
@@ -591,6 +595,14 @@ endloop
         call SaveSystem_SetCurrentHero(p2, Hero[pid2])
         set typeA = GetUnitTypeId(heroA)
         set typeB = GetUnitTypeId(heroB)
+        if qbHeroA == 0 then
+            set qbHeroA = typeA
+        endif
+        if qbHeroB == 0 then
+            set qbHeroB = typeB
+        endif
+        call QB_OnHero.evaluate(pid, qbHeroB)
+        call QB_OnHero.evaluate(pid2, qbHeroA)
         call BlzFrameSetTexture(FRAME_PlayerPickBack[pid], BlzGetAbilityIcon(typeB), 0, false)
         call BlzFrameSetTexture(FRAME_PlayerPickBack[pid2], BlzGetAbilityIcon(typeA), 0, false)
         if GetLocalPlayer() == p then
@@ -618,7 +630,7 @@ endloop
         if GetLocalPlayer() == p or GetLocalPlayer() == p2 then 
         call BlzFrameSetVisible(FRAME_SwapSprite[k],false)
         call BlzFrameSetVisible(FRAME_SwapSprite2[k],false)
-        if not CaptainDraftPreRoundUnlimitedSwap then
+        if not CaptainDraftPreRoundUnlimitedSwap and not TestMode then
             call BlzFrameSetEnable(FRAME_Swap[k], false)
             call BlzFrameSetVisible(FRAME_Swap[k], false)
         endif
@@ -627,7 +639,7 @@ endloop
         endloop
         // Captain Draft players may immediately start another swap request.
         // Only each local player's own button is restored.
-        if CaptainDraftPreRoundUnlimitedSwap then
+        if CaptainDraftPreRoundUnlimitedSwap or TestMode then
             if GetLocalPlayer() == p then
                 call BlzFrameSetEnable(FRAME_Swap[pid], true)
                 call BlzFrameSetVisible(FRAME_Swap[pid], true)
@@ -728,12 +740,9 @@ endfunction
                 endif
             endif
         endif
-        if GetLocalPlayer() == p then
-            call BlzFrameSetEnable(clicked, false)
-            call BlzFrameSetEnable(clicked, true)
-        endif
         set clicked = null
         set p = null
+        call WUI_ReleaseClickFocus()
     endfunction
 
     // Local presentation tick: gold pulse of the offer window and the
@@ -773,6 +782,7 @@ endfunction
         // A BUTTON without click handlers: it only carries the hover tooltip.
         local framehandle plate = BlzCreateFrameByType("BUTTON", name, WUI_GetRoot(), "", 0)
         local framehandle part
+        call WUI_RegisterPassiveFocus(plate)
         call WUI_Place(plate, x, WOS_SWAP_Y, 0.026, 0.026)
         call BlzFrameSetLevel(plate, 40)
         set part = BlzCreateFrameByType("BACKDROP", name + "Fill", plate, "", 0)
@@ -952,6 +962,7 @@ endfunction
         set s_name = null
         set p = null
         set temp_item = null
+        call WUI_ResetClickedButtonFocus()
     endfunction
     function FormatK takes integer value returns string
         local integer thousands
@@ -1460,6 +1471,23 @@ endif
         set border = null
     endfunction
 
+    // Presentation only. The synchronized event updates flags and dispatches
+    // close listeners before entering here. No trigger dispatch or handles.
+    private function WOS_ApplyTopHidden takes player viewer, boolean hidden returns nothing
+        if GetLocalPlayer() != viewer then
+            return
+        endif
+        if hidden then
+            call WUI_CollapseAllPanels()
+            call WUI_PlaceRight(FRAME_TopCheckbox, 0.034, 0.586, 0.056, 0.015)
+            call BlzFrameSetVisible(FRAME_StatsMain, false)
+        else
+            call WUI_PlaceRight(FRAME_TopCheckbox, WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
+        endif
+        call WUI_ShowTopControls(not hidden)
+        call WUI_SetButtonSelected(FRAME_TopCheckbox, hidden)
+    endfunction
+
     function CheckBoxCheck takes nothing returns nothing
         local framehandle clicked = BlzGetTriggerFrame()
         local integer i = GetPlayerId(GetTriggerPlayer())
@@ -1468,6 +1496,7 @@ endif
                 call BlzFrameSetVisible(FRAME_StatsMain, false)
             endif
             set clicked = null
+            call WUI_ResetClickedButtonFocus()
             return
         endif
         if clicked == FRAME_ShopButtonCheck then
@@ -1495,29 +1524,14 @@ endif
         endif
         if clicked == FRAME_TopCheckbox then
             set StatusHeroesHidden[i] = not StatusHeroesHidden[i]
-            if GetLocalPlayer() == GetTriggerPlayer() then
-                if StatusHeroesHidden[i] then
-                    call WUI_CollapseAllPanels()
-                    // While hidden, the button waits in the top-right corner.
-                    call WUI_Place(FRAME_TopCheckbox, WUI_ScreenRight() - 0.034, 0.586, 0.056, 0.015)
-                else
-                    call WUI_Place(FRAME_TopCheckbox, WUI_ScreenRight() - WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
-                endif
-                call WUI_ShowTopControls(not StatusHeroesHidden[i])
-                call LocalMp3Player_SetTopVisible(GetTriggerPlayer(), not StatusHeroesHidden[i])
-                if StatusHeroesHidden[i] then
-                    call BlzFrameSetVisible(FRAME_StatsMain, false)
-                endif
-                call WUI_SetButtonSelected(FRAME_TopCheckbox, StatusHeroesHidden[i])
+            if StatusHeroesHidden[i] then
+                call WUI_CloseTopFor(GetTriggerPlayer())
             endif
-        endif
-        if clicked == FRAME_TopCheckbox or clicked == FRAME_ShopButtonCheck then
-            if GetLocalPlayer() == GetTriggerPlayer() then
-                call BlzFrameSetEnable(clicked, false)
-                call BlzFrameSetEnable(clicked, true)
-            endif
+            call LocalMp3Player_SetTopVisible(GetTriggerPlayer(), not StatusHeroesHidden[i])
+            call WOS_ApplyTopHidden(GetTriggerPlayer(), StatusHeroesHidden[i])
         endif
         set clicked = null
+        call WUI_ResetClickedButtonFocus()
     endfunction
     // Every client moves its own camera slider to its own CameraSetup (direct
     // frame call only). The resulting value-changed event is synced and just
@@ -1565,7 +1579,6 @@ function OnClickFrameLink takes nothing returns nothing
         call BlzFrameSetVisible(FRAME_LINK3,true)
         // Same as the music link: caret inside, text ready for Ctrl+A/C.
         call BlzFrameSetEnable(FRAME_LINK, true)
-        call BlzFrameSetFocus(FRAME_LINK, true)
         call BlzFrameSetText(FRAME_LINK,"discord.gg/wos2")
         endif
     endif
@@ -1604,6 +1617,10 @@ function OnClickFrameLink takes nothing returns nothing
     endif
     set clicked = null
     set p = null
+    call WUI_ReleaseClickFocus()
+    if BlzGetTriggerFrame() == FRAME_LINK2 and GetLocalPlayer() == GetTriggerPlayer() then
+        call BlzFrameSetFocus(FRAME_LINK, true)
+    endif
 endfunction
     function CreateStatusHeroUI takes nothing returns nothing
         local integer i = 0
@@ -1669,17 +1686,16 @@ endfunction
         set FRAME_StatusHeroMain3 = BlzCreateFrameByType("FRAME", "WOSTopOptions", WUI_GetRoot(), "", 0)
         // Checkpoint 24: covers only Hide UI + Shop Key; a wider container sat
         // over the Game Info button and swallowed its clicks.
-        call BlzFrameSetAbsPoint(FRAME_StatusHeroMain3, FRAMEPOINT_CENTER, WUI_ScreenRight() - WUI_TOP_ROW_X2, 0.5495)
-        call BlzFrameSetSize(FRAME_StatusHeroMain3, WUI_TOP_ROW_W, 0.015)
+        call WUI_PlaceRight(FRAME_StatusHeroMain3, WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
         // Checkpoint 23: three equal buttons (Hide UI | Shop Key | Game Info).
         set FRAME_TopCheckbox = WUI_TextButton("WOSHideHeroes", FRAME_StatusHeroMain3, "Hide UI", WUI_TOP_ROW_W, 0.015)
         // Checkpoint 27: right half of the row (Game Info sits on the left).
-        call WUI_Place(FRAME_TopCheckbox, WUI_ScreenRight() - WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
+        call WUI_PlaceRight(FRAME_TopCheckbox, WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)
         call WUI_SetButtonTextScale(FRAME_TopCheckbox, WUI_TOP_ROW_TEXT)
         call WUI_SetButtonMinimal(FRAME_TopCheckbox)
         call BlzTriggerRegisterFrameEvent(FrameBoxCheck, FRAME_TopCheckbox, FRAMEEVENT_CONTROL_CLICK)
         call TriggerAddAction(FrameBoxCheck, function CheckBoxCheck)
-        set FRAME_StatusHeroMain4 = BlzCreateFrameByType("FRAME", "WOSCameraControls", WUI_GetRoot(), "", 0)
+        set FRAME_StatusHeroMain4 = BlzCreateFrameByType("FRAME", "WOSCameraControls", WUI_GetMinimapRoot(), "", 0)
         call BlzFrameSetPoint(FRAME_StatusHeroMain4, FRAMEPOINT_CENTER, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_CENTER, -0.30, -0.2225)//0.39 - 0, 215
         call BlzFrameSetSize(FRAME_StatusHeroMain4, 0.29, 0.0225 )
         // Gold/graphite vertical slider (WOSControls.fdf); stock scrollbar only
@@ -1710,7 +1726,7 @@ endfunction
         call BlzFrameSetEnable(FRAME_CamSliderStringBack, false)
         // Inside the minimap block's right strip (.140-.160).
         // Shorter (.031-.118): the ally-colour button sits below it.
-        call WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0745, 0.012, 0.087)
+        call WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0860, 0.012, 0.066)
         call WUI_PlaceShiftLeft(FRAME_CamSliderStringBack, 0.150, 0.130, 0.0135, 0.0135)
         call WUI_Tooltip(FRAME_CamSlider, "|cffd5b876CAMERA DISTANCE|r|nDrag to zoom the camera in or out.")
         set i = 0
@@ -1931,11 +1947,11 @@ endfunction
         set y = 0.060
         
         set FrameLinkMain2 = CreateTrigger()
-        set FRAME_LINK2 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
+        set FRAME_LINK2 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetInfoRoot(), "WOSIconButtonTemplate", 0)
         call BlzFrameSetTexture(FRAME_LINK2, "UI\\WOS\\toolbar-community.tga", 0, false)
         call WUI_PlaceToolbar(FRAME_LINK2, 1, 0)
         call WUI_ReleaseGhost(1)
-        set FRAME_LINK4 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
+        set FRAME_LINK4 = BlzCreateFrameByType("BUTTON", "MyIconButton", WUI_GetInfoRoot(), "WOSIconButtonTemplate", 0)
         call BlzFrameSetTexture(FRAME_LINK4, "UI\\WOS\\toolbar-community.tga", 0, false)
         call WUI_PlaceToolbar(FRAME_LINK4, 1, 0)
         call BlzFrameSetVisible(FRAME_LINK4,false)
@@ -1957,10 +1973,10 @@ endfunction
     // drew broken edge tiles around the text).
     set FRAME_LINK = null
     if WUI_HasFrameDefinitions() then
-        set FRAME_LINK = BlzCreateFrame("WOSEditBox", WUI_GetRoot(), 0, 0)
+        set FRAME_LINK = BlzCreateFrame("WOSEditBox", WUI_GetInfoRoot(), 0, 0)
     endif
     if FRAME_LINK == null then
-        set FRAME_LINK = BlzCreateFrame("LMPLinkEditTemplate", WUI_GetRoot(), 0, 0)
+        set FRAME_LINK = BlzCreateFrame("LMPLinkEditTemplate", WUI_GetInfoRoot(), 0, 0)
     endif
     // Directly above the Discord toolbar button (it used to open far away).
     call BlzFrameClearAllPoints(FRAME_LINK)

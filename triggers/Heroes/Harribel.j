@@ -595,14 +595,9 @@ library HarribelSpells uses GearSystems
                             if GetHeroLevel(c)<12 then 
                             set tmp_y = 0
                             endif
-                            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17+tmp_y)
                                                
                             
+                            call WUI_RefreshDocks()
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e"), 1)
                             set r = 0
                             set d = CreateUnit(Player(k2), HarribelE_IdDummy, 1, 1, 1)

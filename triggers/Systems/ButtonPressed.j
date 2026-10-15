@@ -17,6 +17,9 @@ function WOS_ToggleShop takes player p returns nothing
     call MyFlush(playerHandleId, StringHash("shop key guard"), 0, 0.15)
     if Shop_Active[id] then
         set Shop_Active[id] = false
+        if GetLocalPlayer() == p then
+            call QB_CancelDrag()
+        endif
         if ShopUICreated and FRAME_ShopMAIN != null and GetLocalPlayer() == p then
             call BlzFrameSetVisible(FRAME_ShopMAIN, false)
         endif

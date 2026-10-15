@@ -90,9 +90,9 @@ class Checkpoint24(unittest.TestCase):
 
     def test_game_info_is_clickable_and_history_sits_on_the_bar(self):
         icons = read('WoS_Hero_Icons_Init.j')
-        self.assertIn('call BlzFrameSetSize(FRAME_StatusHeroMain3, WUI_TOP_ROW_W, 0.015)', icons)
+        self.assertIn('call WUI_PlaceRight(FRAME_StatusHeroMain3, WUI_TOP_ROW_X2, 0.5495, WUI_TOP_ROW_W, 0.015)', icons)
         career = read('UI_CAREER.j')
-        self.assertIn('call WUI_Place(WCS_OpenButton, WUI_TopActionX(2), 0.584, WCS_OPEN_SIZE, WCS_OPEN_SIZE)', career)
+        self.assertIn('call WUI_PlaceRight(WCS_OpenButton, 0.090, 0.584, WCS_OPEN_SIZE, WCS_OPEN_SIZE)', career)
 
     def test_statistics_keys_are_rebindable(self):
         sb = read('Scoreboard.j')
@@ -140,7 +140,7 @@ class Checkpoint24b(unittest.TestCase):
 
     def test_pick_buttons_leavers_and_shared_control(self):
         pick = read('WoS_Pick_Init.j')
-        self.assertIn('pick-confirm-off.tga', pick)
+        self.assertRegex(pick, r'pick-confirm(?:-wide)?-off\.tga')
         self.assertNotIn('PickButton_Pick_', pick)
         self.assertIn('ALLIANCE_SHARED_ADVANCED_CONTROL, false)', pick)
         icons = read('WoS_Hero_Icons_Init.j')

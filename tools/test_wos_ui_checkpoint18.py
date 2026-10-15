@@ -127,6 +127,7 @@ class AnchoredLayout(unittest.TestCase):
         vm.run('WUI_RegisterTopControl', ('team-border',))
         vm.run('WUI_RegisterTopClose', (lambda: closed.append(True),))
         vm.run('WUI_ShowTestHelp', (True,))
+        vm.run('WUI_CloseTopFor', (0,))
         vm.run('WUI_ShowTopControls', (False,))
         vm.run('WUI_RefreshHelpVisibility')
         self.assertFalse(visible[vm.g['WUI_TestPanel']])
@@ -147,7 +148,7 @@ class AnchoredLayout(unittest.TestCase):
         self.assertIn((mini, 'FRAMEPOINT_TOPRIGHT', .160, .144), points)
         self.assertIn((hud, 'FRAMEPOINT_BOTTOMLEFT', .160, 0), points)
         source = (ROOT/'triggers/WOS_Start/WoS_Hero_Icons_Init.j').read_text(encoding='utf-8-sig')
-        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0745, 0.012, 0.087)', source)
+        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0860, 0.012, 0.066)', source)
         # The slider lies in the block's own strip, right of the .136 minimap.
         self.assertGreater(.150-.012/2, .004+vm.g['WUI_MINIMAP_SIZE'])
         self.assertLess(.150+.012/2, .160)

@@ -2389,6 +2389,7 @@ endfunction
         endif
         set p = null
         set clicked = null
+        call WUI_ReleaseClickFocus()
     endfunction
     function InoriG_Start takes unit c returns nothing
         local real x = 0

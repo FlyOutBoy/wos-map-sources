@@ -22,6 +22,15 @@ class MultiplayerFrames(unittest.TestCase):
             vm.g[name] = get
         vm.run('WUI_Bootstrap')
         visible = {args[0]: args[1] for name, args in fixture.calls if name == 'visible'}
+        # Engine template instances have distinct handles/context. The base
+        # recording fixture collapses template names, so separate column frames
+        # before exercising live reflow (otherwise their points overwrite Menu).
+        for key in ('WUI_TestToggle', 'WUI_TestPanel', 'WUI_TestText', 'WUI_TestSlider',
+                    'WUI_TestPageLabel', 'WUI_TestPrevious', 'WUI_TestNext'):
+            old = vm.g.get(key)
+            if old is not None:
+                vm.g[key] = 'instance:' + key
+                visible[vm.g[key]] = visible.get(old, False)
 
         def visibility(frame, shown):
             fixture.visibility(frame, shown)

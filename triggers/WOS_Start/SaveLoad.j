@@ -7,10 +7,10 @@ library AAINIT initializer SaveSystem_EarlyInit requires WOS2BotCodec, WOSUI, Lo
 // - the owner's profile is read once by a shared startup timer;
 // - opening Career is an idempotent fallback if startup has not run yet;
 // - career data is never sent between players; only the owner's own UI
-//   settings file (hotkeys, camera, track; checkpoint 27b) is synced once, so
+//   settings file (hotkeys, camera, track, shop action modes) is synced once, so
 //   every client registers the same restored key events;
 // - match end adds to the cached profile and overwrites the same owner file;
-// - loaded values are never used by gameplay, selection, timers or synchronized UI;
+// - career values never feed gameplay; settings apply only through agreed UI sync;
 // - the match export is built only from already synchronized current-match state;
 // - the old WOS2_v1/WOS2_v3/VIP files are never opened or overwritten.
 //==============================================================================
@@ -193,6 +193,9 @@ globals
     trigger ss_SettingsSync = null
     timer ss_SettingsLoadTimer = null
     boolean ss_SettingsWritten = false
+    // Local file-read guard: automatic finish must not replace an unread profile.
+    boolean ss_SettingsReadReady = false
+    string ss_SettingsLastPacket = ""
     // Career parsing runs in chunks of fresh threads (operation limit).
     constant integer SAVE_PARSE_CHUNK = 160
     trigger ss_ParseTrigger = null
@@ -1435,7 +1438,7 @@ function SaveSystem_WriteSettingsFile takes nothing returns nothing
     if not IsGamePlayerSlot(pid) then
         return
     endif
-    set data = WUI_SavedSettingsString(pid) + "C," + I2S(R2I(CameraSetup[pid])) + "|M," + I2S(LocalMp3Player_GetCurrent(pid)) + "|S," + I2S(WUI_HudMode) + "|V," + I2S(IntegerTertiaryOp(WUI_VoiceOff[pid], 0, 1)) + "|"
+    set data = WUI_SavedSettingsString(pid) + "C," + I2S(R2I(CameraSetup[pid])) + "|M," + I2S(LocalMp3Player_GetCurrent(pid)) + "|S," + I2S(WUI_HudModeOf[pid]) + "|V," + I2S(IntegerTertiaryOp(WUI_VoiceOff[pid], 0, 1)) + "|" + WUI_SettingsUIRecord(pid) + "F," + I2S(IntegerTertiaryOp(ShopFastBuy[pid], 1, 0) + IntegerTertiaryOp(ShopFastSell[pid], 2, 0)) + "|"
     call PreloadGenClear()
     call PreloadGenStart()
     call SaveSystem_ChunkBegin(SAVE_SETTINGS_FORMAT)
@@ -1452,7 +1455,7 @@ function SaveSystem_WriteSettingsFile takes nothing returns nothing
 endfunction
 
 function SaveSystem_WriteSettings takes nothing returns nothing
-    if ss_SettingsWritten then
+    if ss_SettingsWritten or not ss_SettingsReadReady then
         return
     endif
     call SaveSystem_WriteSettingsFile()
@@ -1461,11 +1464,13 @@ endfunction
 
 //==============================================================================
 // SAVE SETTINGS BUTTON (top-right row, right of Hide UI)
-// The click is a synced frame event: every client creates the same cooldown
-// timer; only the clicking player's client writes its local file and greys
+// The frame click sends a request; the existing sync event creates cooldown
+// timers on every client. Only the requesting client writes its file and greys
 // its own button for SAVE_BUTTON_COOLDOWN seconds.
 //==============================================================================
 globals
+    framehandle ss_ResetButton = null
+    boolean array ss_HotkeysReset
     framehandle ss_SaveButton = null
     boolean array ss_SaveButtonBusy
     timer array ss_SaveButtonTimer
@@ -1491,8 +1496,7 @@ function SaveSystem_SaveButtonReady takes nothing returns nothing
     set t = null
 endfunction
 
-function SaveSystem_OnSaveButton takes nothing returns nothing
-    local player p = GetTriggerPlayer()
+function SaveSystem_SaveButtonRequest takes player p returns nothing
     local integer pid = GetPlayerId(p)
     if pid < 0 or pid >= 16 or ss_SaveButtonBusy[pid] then
         set p = null
@@ -1505,6 +1509,9 @@ function SaveSystem_OnSaveButton takes nothing returns nothing
     call TimerStart(ss_SaveButtonTimer[pid], SAVE_BUTTON_COOLDOWN, false, function SaveSystem_SaveButtonReady)
     if GetLocalPlayer() == p then
         call SaveSystem_WriteSettingsFile()
+        if IsGamePlayerSlot(pid) then
+            set ss_SettingsReadReady = true
+        endif
         call BlzFrameSetEnable(ss_SaveButton, false)
         call WUI_SetButtonCaption(ss_SaveButton, "Saved")
         call DisplayTimedTextToPlayer(p, 0, 0, 4, "|cffffd36b[WoS]|r |cff7cd67cSettings saved|r")
@@ -1512,15 +1519,36 @@ function SaveSystem_OnSaveButton takes nothing returns nothing
     set p = null
 endfunction
 
+// UI event performs no agreed writes and allocates no gameplay handles.
+function SaveSystem_OnSaveButton takes nothing returns nothing
+    local player p = GetTriggerPlayer()
+    if GetLocalPlayer() == p then
+        if BlzGetTriggerFrame() == ss_ResetButton then
+            call BlzSendSyncData("WOS2SAVE", "R")
+        else
+            call BlzSendSyncData("WOS2SAVE", "1")
+        endif
+    endif
+    set p = null
+    call WUI_ResetClickedButtonFocus()
+endfunction
+
 function SaveSystem_CreateSaveButton takes nothing returns nothing
     local trigger click = CreateTrigger()
     set ss_SaveButton = WUI_TextButton("WOSSaveSettingsButton", WUI_GetRoot(), "Save Keys", WUI_TOP_ROW_W, 0.015)
-    call WUI_Place(ss_SaveButton, WUI_ScreenRight() - WUI_TOP_ROW_X3, 0.5495, WUI_TOP_ROW_W, 0.015)
+    call WUI_PlaceRight(ss_SaveButton, WUI_TOP_ROW_X3, 0.5495, WUI_TOP_ROW_W, 0.015)
     call WUI_SetButtonTextScale(ss_SaveButton, WUI_TOP_ROW_TEXT)
     call WUI_SetButtonMinimal(ss_SaveButton)
     call WUI_RegisterTopControl(ss_SaveButton)
-    call WUI_TooltipBelowLeft(ss_SaveButton, "|cffd5b876SAVE SETTINGS|r|nSaves hotkeys, camera, music, voice and stats columns now (they are also saved at the end of the match).")
+    call WUI_TooltipBelowLeft(ss_SaveButton, "|cffd5b876SAVE SETTINGS|r|nSaves Q/W/E/R/T/F/G ability aliases, 6 item hotkeys, Shop, Pings, Emotes, Stats, Clear/Load Stats bindings.|nAlso saves Fast Buy/Fast Sell, camera, music, voice, HUD and panel preferences. Settings are also saved at match end.")
     call BlzTriggerRegisterFrameEvent(click, ss_SaveButton, FRAMEEVENT_CONTROL_CLICK)
+    set ss_ResetButton = WUI_TextButton("WOSResetSettingsButton", WUI_GetRoot(), "Reset Keys", WUI_TOP_ROW_W, 0.015)
+    call WUI_PlaceRight(ss_ResetButton, WUI_TOP_ROW_X4, 0.5495, WUI_TOP_ROW_W, 0.015)
+    call WUI_SetButtonTextScale(ss_ResetButton, WUI_TOP_ROW_TEXT)
+    call WUI_SetButtonMinimal(ss_ResetButton)
+    call WUI_RegisterTopControl(ss_ResetButton)
+    call WUI_TooltipBelowLeft(ss_ResetButton, "|cffd5b876RESET KEYS|r|nRestore all map hotkeys to their defaults for you. Press Save Keys to keep them.")
+    call BlzTriggerRegisterFrameEvent(click, ss_ResetButton, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(click, function SaveSystem_OnSaveButton)
     set click = null
 endfunction
@@ -1553,6 +1581,16 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
         set p = null
         return
     endif
+    if BlzGetTriggerSyncPrefix() == "WOS2SAVE" then
+        if data == "1" then
+            call SaveSystem_SaveButtonRequest(p)
+        elseif data == "R" then
+            set ss_HotkeysReset[pid] = true
+            call WUI_ResetHotkeys(p)
+        endif
+        set p = null
+        return
+    endif
     loop
         exitwhen index >= StringLength(data)
         if SubString(data, index, index + 1) == "|" then
@@ -1560,7 +1598,7 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
             set start = index + 1
             set kind = SubString(record, 0, 1)
             set ss_LocalPayloadPos = 2
-            if kind == "H" or kind == "K" then
+            if (kind == "H" or kind == "K") and not ss_HotkeysReset[pid] then
                 set a = S2I(SaveSystem_SettingsField(record))
                 set label = SaveSystem_SettingsField(record)
                 set applied = applied + 1
@@ -1568,6 +1606,41 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
                     call WUI_ApplySavedHotkey(p, a, label)
                 else
                     call WUI_ApplySavedSlotKey(p, a, label)
+                endif
+            elseif kind == "S" then
+                set a = S2I(SaveSystem_SettingsField(record))
+                if a >= 1 and a <= 3 and not WUI_ModeTouched[pid] then
+                    set WUI_HudModeOf[pid] = a
+                endif
+                set applied = applied + 1
+            elseif kind == "U" then
+                call WUI_ApplySettingsUIRecord(pid, S2I(SaveSystem_SettingsField(record)))
+                set applied = applied + 1
+            elseif kind == "F" then
+                // Owner file arrives through the existing agreed settings sync.
+                // Two UI action modes, never a queue or an automatic purchase.
+                set label = SaveSystem_SettingsField(record)
+                if (label == "0" or label == "1" or label == "2" or label == "3") and record == "F," + label then
+                    set a = S2I(label)
+                    set ShopFastBuy[pid] = ModuloInteger(a, 2) == 1
+                    set ShopFastSell[pid] = a >= 2
+                    if GetLocalPlayer() == p then
+                        if FRAME_FastBuyIcon != null then
+                            if ShopFastBuy[pid] then
+                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+                            else
+                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
+                            endif
+                        endif
+                        if FRAME_FastSellIcon != null then
+                            if ShopFastSell[pid] then
+                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+                            else
+                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
+                            endif
+                        endif
+                    endif
+                    set applied = applied + 1
                 endif
             elseif kind == "V" then
                 set WUI_VoiceOff[pid] = S2I(SaveSystem_SettingsField(record)) == 0
@@ -1584,10 +1657,16 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
         endif
         set index = index + 1
     endloop
+    call WUI_ValidateRestoredHotkeys(p)
+    if GetLocalPlayer() == p and data == ss_SettingsLastPacket and data != "" then
+        // File-only local acknowledgement: automatic write requires the final packet.
+        set ss_SettingsReadReady = true
+    endif
     if GetLocalPlayer() == p then
         call DisplayTimedTextToPlayer(p, 0, 0, 6, "|cffffd36b[WoS]|r |cff7cd67cSettings applied|r |cff9aa0a8(" + I2S(applied) + ")|r")
     endif
     call ExecuteFunc("UNITSTAT_ApplySaved")
+    call WUI_ApplyPanelPreferences()
     call ExecuteFunc("WOS_SyncCamSlider")
     set p = null
 endfunction
@@ -1600,6 +1679,7 @@ function SaveSystem_LoadSettings takes nothing returns nothing
     local integer index
     local integer start
     local string record
+    local string packet = ""
     local timer expired = GetExpiredTimer()
     if expired != null and expired == ss_SettingsLoadTimer then
         call PauseTimer(expired)
@@ -1617,6 +1697,7 @@ function SaveSystem_LoadSettings takes nothing returns nothing
         call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 6, "|cffffd36b[WoS]|r |cff9aa0a8No saved settings yet|r")
         return
     endif
+    set ss_SettingsReadReady = false
     set buffer = SubString(buffer, StringLength(SAVE_SETTINGS_FORMAT), StringLength(buffer))
     // The last track is local presentation only: restore it right here.
     set index = 0
@@ -1626,17 +1707,22 @@ function SaveSystem_LoadSettings takes nothing returns nothing
         if SubString(buffer, index, index + 1) == "|" then
             set record = SubString(buffer, start, index)
             set start = index + 1
+            // Send whole records in bounded packets; no truncation of old hotkeys.
+            if StringLength(packet) + StringLength(record) + 1 > 250 then
+                call BlzSendSyncData(SAVE_SETTINGS_SYNC, packet)
+                set packet = ""
+            endif
+            set packet = packet + record + "|"
             if SubString(record, 0, 2) == "M," then
                 call LocalMp3Player_SetCurrent(pid, S2I(SubString(record, 2, StringLength(record))))
-            elseif SubString(record, 0, 2) == "S," then
-                // Stats columns mode is local presentation; applied on the settings sync.
-                set WUI_HudMode = IMaxBJ(1, IMinBJ(3, S2I(SubString(record, 2, StringLength(record)))))
+
             endif
         endif
         set index = index + 1
     endloop
-    if StringLength(buffer) <= 250 then
-        call BlzSendSyncData(SAVE_SETTINGS_SYNC, buffer)
+    if StringLength(packet) > 0 then
+        set ss_SettingsLastPacket = packet
+        call BlzSendSyncData(SAVE_SETTINGS_SYNC, packet)
     endif
 endfunction
 
@@ -3041,6 +3127,7 @@ function SaveSystem_Init takes nothing returns nothing
     loop
         exitwhen pid >= 10
         call BlzTriggerRegisterPlayerSyncEvent(ss_SettingsSync, Player(pid), SAVE_SETTINGS_SYNC, false)
+        call BlzTriggerRegisterPlayerSyncEvent(ss_SettingsSync, Player(pid), "WOS2SAVE", false)
         set pid = pid + 1
     endloop
     call TriggerAddAction(ss_SettingsSync, function SaveSystem_OnSettingsSync)

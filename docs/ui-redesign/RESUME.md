@@ -961,3 +961,199 @@ full build evidence separately; actual Main.vj and sync metadata must stay updat
   standard trigger push succeeded. Build Main -NoLaunch PASS; 164 packed entries
   match MAIN and UI assets. Backups: trigger-sync/2026-10-11_180037_690499 and
   main-map-build/20261011-180111-833. Game not launched; TEST untouched.
+
+
+## Quick Buy FIX3 — external candidate and Save Keys control (2026-10-14)
+
+User reports Save Keys still desyncs on FIX2 without Hide UI. New SAVE_KEYS_NOQB_TEST removes ONLY ExecuteFunc("QB_SaveLocal") from SaveSystem_WriteSettingsFile; compiled diff exactly one function, all other source/resource bytes preserved. No engine result yet. FIX3 repeats this deletion and adds user BTNPAS TGA HUD border, darker price plate, .62 price text and versioned owner-only HUD minus; omitted part cost flows to nearest retained assembly, other components buy sequentially. Right-edge frame registry reflows existing top bar/dropdown on aspect changes via existing .10 WUI_DockTimer. Three global sound aliases reuse UpkeepRing/ReceiveGold/Transmute for accepted add/remove/clear. 315 mock/static checks, JassHelper/pjass and real MPQ/WCT/hash audit PASS; actual multiplayer/input/visual behavior pending. MAIN game code is unchanged; only requested BTNPAS PNG/TGA + map import added. Save Keys no longer writes QB profile; explicit Save Build does. Full code/report/diffs/control maps: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix3/REPORT_QUICKBUY_FIX3.md. Do not infer desync cause from compilation or parameter count 8->10.
+
+## Quick Buy FIX4 — external build, recommendations contract (2026-10-14)
+
+User confirmed WOS2_SAVE_KEYS_NOQB_TEST has no desync. FIX4 retains the exact Save Keys implementation without QB_SaveLocal; cause inside the engine remains unproven. Queue and AutoBuy state are no longer persisted. Explicit Save Build now writes only the current Recommended list per original hero id and player identity in WosHeroes, and four versioned bounded REC sync packets apply file loads atomically. Missing initial file uses the map's first six recommendations; invalid files preserve current list and reject overwrite. Recommended only: fifth row actions Reset/Load Build/Save Build/Add to QB, upper-left removal with compaction, horizontal one-item reorder. AutoBuy reads current agreed ItemsPage0_ID first six; Add to QB appends/deduplicates within six target limit, preserving current queue.
+
+Latest user permits RMB instead of LMB: implemented RMB drag with frame leave/enter/up fallback and active-only checks on existing .50 scheduler; no new timer or MouseMove subscription. Shop QB minuses are sibling controls below icons, HUD minuses below both native inventory rows (two per column), plus is top-right, bolt centered/enlarged. DisplayCost is separate from charge; manual inventory changes refresh catalogue prices even with empty QB. Earlier omitted-component accounting remains unchanged. 298 mock/static checks + JassHelper/pjass + MPQ/WCT audit PASS. Only Shop source changed versus FIX3; 4087 protected compiled functions and all resources unchanged. MAIN code/map and previous maps preserved; native multiplayer, Save Build filesystem, drag/hit-testing and appearance await user test. Map/report/source exact diff: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix4/REPORT_QUICKBUY_FIX4.md. Deploy: Documents/Warcraft III/Maps/WoS/WOS2_QUICKBUY_FIX4_TEST.w3x.
+
+## Quick Buy FIX5 — screenshot/input/full-inventory follow-up (2026-10-14)
+
+User confirms FIX4 Save Keys no desync. FIX5 preserves SaveLoad and all previous maps/Main. New rec-add diskette (4 PNG/TGA states) on catalogue/tree sends agreed REC A to current Recommended; explicit Save Build remains separate. LMB QB icons now send versioned V and populate Item Tree after sync. QB item names are passive between icon and minus; row step .065, footer .126, shop/panel bottom .110. HUD minuses are own SIMPLEBUTTONs under cached simple root at each slot bottom rim (.014×.0035), using dedicated 64×24 states; hide+disable for occupied slots/other selection/no preview and on pickup/drop. Generic QB button now AUTOTRACK; tooltip owned by enter/leave, not automatic SetTooltip. Actual native cursor/hit testing awaits user acceptance.
+
+QB_TryFullAssembly on full inventory folds missing parts into one assembly only when agreed UsedSlot proves an owned part frees a slot and gold covers remaining price; otherwise retains queue/gold/inventory. REC_RemoveSound=BattleNetTick, QB_AddSound=UpkeepRing, QB_RemoveSound=ReceiveGold, REC_AddSound=Swap, QB_ClearSound=Transmute; all reuse existing 2D handles and accepted-owner feedback. 313 applicable tests, compile, MPQ/WCT/hash audit PASS; only Shop J, expanded FDF and eight TGA imports changed. New functions QB_Inspect/QB_TryFullAssembly; 4101 compiled protected functions unchanged. Old full FIX2 suite expects obsolete persistence/geometry and is not current acceptance. Native multiplayer/new Save Build/hit-testing not run. Map/report/diffs: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix5/REPORT_QUICKBUY_FIX5.md; deployed WOS2_QUICKBUY_FIX5_TEST.w3x in Documents/Warcraft III/Maps/WoS.
+
+## Quick Buy FIX6 — HUD/sale/preferences/ability chat (2026-10-14)
+
+External-only candidate: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix6/REPORT_QUICKBUY_FIX6.md. FIX5 preserved; MAIN unchanged this turn. HUD QB preview reduced to .028 with .026 icon; individual minus moved to WUI_ItemY-.0190, .014x.0035, keeping occupied native inventory controls unchanged. ShopClearItemTree clears selected/back-up/bag/scroll/recipe/description caches agreed after sale, paints only owner, and zero-id/delayed-scroll guards prevent stale Default string restoration. Passive Recommended/QB drag hints; Need space/base label suppressed without changing purchase gates.
+
+Save Keys gains canonical F,0..3 flags (bit1 Fast Buy, bit2 Fast Sell) in the existing settings file/packet flow. No queue/AutoBuy persistence or nested QB_SaveLocal. Settings sync applies both flags agreed and paints owner only, with initialization restoring flags loaded before shop controls exist. Older records keep defaults. Prior user no-desync confirmation covers FIX4/FIX5, not the new F field.
+
+RMB on own Hero pips or cached custom tooltip sends bounded P command-slot request via existing QB sync trigger/sequence; sender/hero identity checks remain, chat has independent per-player 10sec gate. Ability identity/name/remaining native CD are resolved agreed only. Existing allied chat recipient=1 and ready/unlearned messages; legacy J chat source byte-identical. Existing mouse handler plus .05 AHUI timer fallback dedupe held presses; tooltip keeps .4sec travel grace. No new timer/trigger/sound handle. 349 applicable mock/static checks, JassHelper/pjass, check/save/build and real MPQ/WCT/hash audit PASS; only Shop/SaveLoad/ShowCD sources changed, 4133 protected compiled functions and all resources unchanged. Engine input, hover, team chat delivery and multiplayer preference load still require user test. Deployed WOS2_QUICKBUY_FIX6_TEST.w3x.
+
+## Quick Buy FIX7 — native-state stability, prices and MAIN ping models (2026-10-15)
+
+External candidate/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-quickbuy-fix7/REPORT_QUICKBUY_FIX7.md. FIX6 preserved. Recommended minus now inside top-left (+.001/-.001), matching plus. HUD minus .014x.00525, centre ItemY-.0175, native SIMPLEBUTTON hover AUTOTRACK|HIGHLIGHTONMOUSEOVER + existing UseHighlight. REC_Render sets catalogue/REC minus visibility only on actual change to avoid periodic parent reset. No new frame/trigger/timer/sound. Ability messages English, per-player interval5sec; actual ability CD unchanged. ShowTextCD remains disabled and unchanged.
+
+Deferred assembly display subtracts current remaining cost of nearest scheduled descendants from current actual remaining price, using structural keys despite reorder; manual purchase/sale of omitted parts updates the price. Normal recipes keep prior total display. Gameplay charge and sequential retained-child execution unchanged. 389 test runs including overlapping targeted/runner suites, compile/build and MPQ/WCT audit PASS; 4145 other executable functions protected; native appearance/input/network untested. Deployed WOS2_QUICKBUY_FIX7_TEST.w3x.
+
+MAIN separately integrates only TeamMapPings source plus five user MDX and six BLP (assets/TeamPings/models); installer CLI validates/registers exact paths. Normalize doubled TEXS separators, user originals untouched; built-in UI/MiniMap/ping6 retained. All effects/rings scale1 at spawn and update; no Danger/Help x5 or size pulse. MAIN compile/build/assets/WCT audit PASS, 4060 other compiled functions unchanged. MAIN has no Quick Buy UI integration. Verified packed MAIN copy: external output/WOS2_PINGS_MAIN_BUILD.w3x. Report includes hashes, diffs, backup locations and native testing limits.
+
+## Quick Buy FIX8 — remove native hover callbacks and immediate step prices (2026-10-15)
+
+User reports FIX7 still flickers/warps cursor on catalogue/QB hover and HUD minus invisible. FIX8 removes ALL item FRAMEEVENT_MOUSE_ENTER/LEAVE registration/branches from Shop, restores engine-owned QB tooltip (same pattern as catalogue) and native button highlights. REC afforances retain click, no hover sync/focus/allocations. Right drag uses shared QB_BeginRightDrag global down/up plus existing .50 ShopAutoBuy fallback only while RMB held; no new timer/MouseMove, coordinate query only held edge/active drag. Swallowed down can require .5sec hold; native behavior unconfirmed.
+
+HUD keeps SIMPLEBUTTON input, adds6 cached normal-frame faces using existing64x24 HUD state textures and same code/version/owner/free-slot guard. Centre ItemY-.0140 partially overlaps price-plate edge, size .014x.00525, level80; both families hidden+disabled on occupancy/selection/pickup. No native handlers/parents touched. QB_ShowPreviewRemove changes state only on transitions. Pool745, triggers4. QB_DisplayCost is net price of each operation from initial queue, not just after omissions; closest retained structural parents cache on rebuild/reorder, price refresh linear and respects actual manually owned components. Hirai4500 test shows500/750/1000/2000/250 immediately; debit/gameplay untouched.
+
+Updated user5 MDX exact bytes installed in repo + test, same imports/scale1 and6 BLP; MAIN map and all MAIN sources unchanged this turn.386 overlapping test runs, JassHelper/pjass, BUILD OK, exact MPQ/WCT/hash audit PASS;4143 other compiled functions unchanged. Native hover/cursor/visible input/new model size still require game test. Deployed WOS2_QUICKBUY_FIX8_TEST.w3x. Report/source/diffs: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-quickbuy-fix8/REPORT_QUICKBUY_FIX8.md.
+
+## Reset Keys FIX9 — external candidate (2026-10-15)
+
+External FIX9 adds Reset Keys matching Save Keys skin in Game Info/Hide UI/Save Keys/Reset Keys row. All4 width.042025, height.015, gap.0035; edges exactly old3-row offsets.17925/.00065 and span.1786, font.66 unchanged. PlaceRight/RegisterTopControl preserve responsive/hide behavior.
+
+RegisterHotkeyEx retains owner defaults, ResetHotkeys restores6 channels and clears13 slot aliases agreed for sender, preserving stale-key event history and current other preferences. Capture disabled only sender; owner UI paint/pulse pause. Reset local click sendsR on existing WOS2SAVE, same click/sync triggers; no handles/timers/registrations on reset. Late startup H/K cannot undo reset; direct edits unaffected. Reset does not write disk; Save Keys persists immediately, match-end save unchanged. MAIN/FIX8 preserved.350 overlapping test runs + JassHelper/pjass/build/MPQ/WCT/hash audit PASS;4152 other compiled functions unchanged, all resources byte-identical FIX8. Native layout/resize/hotkey/multiplayer pending. Deployed WOS2_QUICKBUY_FIX9_TEST.w3x; report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-quickbuy-fix9/REPORT_RESET_KEYS_FIX9.md.
+
+## UI focus FIX10 — project source and external candidate (2026-10-15)
+
+Source patch applied to18 J files without replacing earlier project edits: WUI_ReleaseClickFocus (local live button event, post-logic/early exits), 43 project handlers/78 sites,45/80 in FIX9-based test including QB/extra panel toggles.15 passive BUTTON families share one idempotent trigger.26 enabled-toggle focus workarounds removed; EDITBOX/link focus transfer, sliders/listboxes, native F2 and existing bindings preserved. No design/hierarchy change or new focus timer. Full file/handler list: FRAME_INVENTORY.md → Button focus audit.
+
+Project/candidate compile PASS;238 UI tests each,101 QB /13 Reset /9 Fast-settings PASS. Historical test_quickbuy.py/test_crocodile.py failures reproduced against pre-audit code (see external report); no false all-suite PASS claim. BUILD OK/NoLaunch; extracted WCT matches all sources, only j/wct payload changed,4097 other compiled functions and resources preserved. MAIN map and FIX9 remain byte-identical; MAIN source focus patch is not saved to the MAIN map. Deployed WOS2_UI_FOCUS_FIX10_TEST.w3x; report/diffs/verification: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix10/REPORT_UI_FOCUS_FIX10.md. Engine focus recovery, interrupted clicks and two-client behavior require manual game acceptance.
+
+## UI focus FIX11 — targeted input transfer experiment (2026-10-15)
+
+User game test of FIX10: F2, normal shop/QB/add-to-REC, Z/K, History and music close work; spoken portrait, ten top portraits, REC remove, Menu, open emoji palette/show-chat checkbox, Auto Buy, Game Info/Hide UI/Save/Reset, HUD columns/minimap/voice/width toggles, stats F3/F4 buttons still leave keyboard blocked. Discord interaction recovers it. Therefore the direct SetFocus(button,false) experiment is NOT a complete engine fix.
+
+FIX11 adds an experimental second path WUI_ReleaseStuckClickFocus for reported failures only. It runs the original button cleanup, then locally shows a preallocated alpha0 offscreen private EDITBOX, focuses it true/false and hides it, in the same event callback. WUI_CreateFocusSink allocates exactly one frame on agreed bootstrap before UI owners; WOSEditBox preferred, bare EDITBOX fallback. No user editbox content is read/written, no input handlers, new triggers or timers, no enabled toggle. Explicit Discord/music link focus transfer and ordinary release helper unchanged. Toolbar uses this only for Emotes; QB uses it only for REC remove codes600..<600+REC_CAPACITY. Normal shop OnClickItem, F2 stats callback, Z/K/pings, music close and settings writer are byte-identical in the compiled map. Native effectiveness of this transfer remains untested; never describe it as proven. If engine reclaims focus after the callback, this experiment can still fail; do not silently reintroduce SetEnable or permanent timers.
+
+8 J source files changed in project/candidate;14 selected project callbacks,16 in latest candidate (extra panel toggles and REC-remove branch). Compile and242 UI tests per version PASS;101 QB /13 Reset /9 Fast-settings PASS. BUILD OK/NoLaunch; extracted WCT/source and compiler script match; only j/wct payload changed.4142 other compiled functions, resources, MAIN map and previous FIX10 preserved. New map WOS2_UI_FOCUS_FIX11_TEST.w3x deployed. Report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix11/REPORT_UI_FOCUS_FIX11.md. Need user game test first on spoken portrait, Menu and REC minus without closing shop/clicking Discord.
+
+## UI focus FIX12 — direct button toggle candidate (2026-10-15)
+
+User confirmed FIX11 sink also did not help. FIX12 explicitly authorizes direct enable false/true on the clicked interactive control. Remove sink/global/bootstrap and WUI_ReleaseStuckClickFocus entirely; do not delete real inputs. New WUI_ResetClickedButtonFocus accepts real click/check/uncheck events only, guarded by nonnull current event frame, event owner local client and post-business BlzFrameGetEnable(frame). Disabled controls stay disabled. No SetFocus or ordinary-release call inside this helper, no parent/icon substitution. No existing click path destroys/yields; future owners must release before destruction. Menu's extra direct old SetFocus removed; toolbar/QB mixed dispatch is mutually exclusive by frame/code (Emotes / REC removal only). Native key events do not toggle frames. Shop open/close/F2 key source and real Discord/music inputs preserved.
+
+8 J files;14 project /16 latest candidate handlers.243 UI tests each,101 QB /13 Reset /9 Fast-settings PASS; compile/check/save/build PASS. Real extracted WCT/script match, only j/wct payload changed,4142 other functions/resources and MAIN/FIX11 preserved. No new timers/triggers/frames or SIMPLEBUTTON conversion. Map deployed WOS2_UI_FOCUS_FIX12_TEST.w3x. Engine result pending user game test. Complete handler list/comparison/facts vs hypotheses: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix12/REPORT_UI_FOCUS_FIX12.md.
+
+## Ability Range — TEST-only integration and MAIN resources (2026-10-15)
+
+User describes FIX12 as working; its handlers remain byte-for-byte unchanged.
+New TEST derives from the complete external FIX12 workspace, not the older root
+MAIN gameplay sources. Repo source: test_map/ability_range/AbilityRangePreview.j;
+tools/prepare_ability_range_test.py installs its eight source hooks only into an
+isolated full workspace. AAUniversalTooltips shares ReadCastRange with ListRealField
+and GetDisplayedRange (live registered instance/level/form). AHUI existing .05 tick
+reconciles synced Hero[]/TestUnit/TestAllyUnit before local hover/render; no new
+events/timers. One deduplicated precreated effect per hero, no local allocation,
+owner-only alpha/scale/position, terrain Z, radius/512, hide outside (0,2500].
+Native/custom ability hover uses existing AHUI coordinates; old tooltip/chat grace
+never retains the ring after leaving the ability. Five persistent covering windows
+register only with a TEST presentation registry; shop/modal/menu/info/hotkey editing
+also suppress the ring. No click changes.
+
+User model basename already belongs to Inori/Kenjaku effects: preserve those original
+MDX/BLP bytes. New static derivative is imported under war3mapImported/WOSRange/,
+texture reference corrected to that namespace. Source backup: assets/AbilityRange/original;
+runtime assets/manifest checked by install_ability_range_assets.py. It keeps the
+radius-512 textured plane, removes birth/death/global alpha/scale pulse and duplicate
+plane, preserves supplied BLP bytes; no particles/ribbons/lights.
+MAIN scenario full backup and verification: diagnostics/20261015-ability-range.
+MAIN changed only war3map.imp plus two new resources; 6550 other files preserved.
+MAIN archive WOS2_MAIN_RANGE_RESOURCES.w3x and TEST WOS2_ABILITY_RANGE_TEST.w3x
+are in Maps/WoS. Both archives reopened/extracted: 6552/6601 payloads; exact resource
+SHA256/path/import entries verified. TEST WCT matches sources and compiled script.
+Report and verification-report.json in external diagnostics. JassHelper/pjass,
+check/save/build, 15 Range and existing UI/QB/Reset/Fast suites pass. Native visual
+alpha, moving ring, tooltip overlap, hotkeys/focus and multiplayer still require game tests.
+
+### Range2: instant AoE, held preview, live hero range and wide Pick/Random
+
+Isolated candidate: diagnostics/20261015-ability-range2/workspace; output
+WOS2_ABILITY_RANGE2_TEST.w3x. MAIN gameplay/source imports remain untouched.
+`prepare_ability_range_hold_test.py` extends the Range1 installer; it inlines the
+pure TEST component `test_map/ability_range/HeroRangeRules.j` into UniversalTooltips
+to preserve its existing library ordering. A separate late rules-library dependency
+breaks heroes calling SetUnitForm; do not reintroduce that dependency.
+
+Actual Channel object metadata marks instant skills; damage/HP-heal with a real
+mechanic Radius shows AoE. No area means no circle (Kenjaku Q, Mahoraga R); Inori R
+shares its level-35 area bonus with the tooltip. Pure level-tag parsing avoids
+writing the tooltip cache from owner-local rendering. Existing .25 tooltip polling
+also invalidates radius-only changes. V is the default new saved/rebindable hold
+channel, using existing WUI key registration and the existing AHUI render timer.
+Leaving a skill retains the last preview only while held; another hover replaces
+it, release clears the latch, modal/invalid hero boundaries cancel it.
+
+Audit: 40 hero sources including nested Erza armor files, 209 range/distance
+definitions, 37 explicit live ability
+rules. Starrk EQ +100, Harribel E fixed reduced Q, Alucard reductions, Barragan/Tsuna
+bonuses and current forms are included; untouched abilities fall back to the live
+native cast field. Bambietta random projectiles use their maximum possible envelope
+without invoking RNG; values over 2500 remain hidden. Audit and per-source evidence:
+`tools/audit_hero_range_sources.py`, external range-audit-final.json.
+
+`prepare_range_ui_followup.py` applies TEST-only Menu label scale compensation,
+larger passive Menu glyph, smaller Stats/F2 and wide Pick/Random. New supplied art
+uses four unique `UI/WOS/pick-{confirm,random}-wide[-off].tga` imports, RGBA 512x256;
+old textures remain byte-identical. Two grid cells span .036+.041=.077; buttons align
+columns 0-1 and 2-3, Ban stays column 4. Conversion: convert_pick_button_art.py;
+source hashes/crops/output hashes: assets/UI/WOS/pick-wide-manifest.json.
+Native visual alignment, held key persistence/rebinding, current-form radius,
+focus and multiplayer safety still require testing in Warcraft III.
+
+### Range3: follow-up candidate (2026-10-15)
+
+Isolated full TEST `WOS2_ABILITY_RANGE3_TEST.w3x`; enabled MAIN sources/map logic
+remain unchanged. `prepare_ability_range_fixes_test.py` extends the installer.
+Channel targeting comes from exported real object levels (unused editor fields do
+not count); utility Radius now includes mana burn/restore/immunity. Inori T uses
+final 2000, Tsuna W2 final 675 including hit-query padding. Source audit inventories
+all 388 HUD abilities across 40 hero files; 58 cast formulas and 12 form aliases,
+209 range/distance definitions, zero missing object metadata. This is source
+verification, not proof of every ability's native visual footprint. Patriot T1
+1400 shows; T2 4000 stays hidden under the user-confirmed 2500 limit.
+
+Held preview uses accepted key down/up, without an unreliable physical-key poll
+overriding the latch; client deactivation cancels it. Tooltip is larger; unlearned
+description leave grace is 10 existing .05 ticks, with no self-renewal on description
+hover. Pick/Random width .0785 (+1.95%), height .034 equals Ban; their real click
+exits use FIX12. TestMode repeat/random pick now re-enables Swap independently of
+the first-pick-only Repick condition. Shop uses one common horizontal translation,
+including canonical drag hit coordinates and cached resize placement.
+
+Takeshi F/G HUD variants match their actual hotkeys; Cambio disabled art follows
+the real 6000 damage requirement. Kyoraku third-act finisher KyorakuT4 belongs to G
+after Skip Stage, not T; tests cover transition, initial CD, ready and return.
+Harribel morph meter no longer overwrites the shared dock/child anchors with six
+legacy absolute positions; refresh also runs on reuse. Hero gameplay is untouched.
+
+TEST -killme uses per-player one-shot death timers (1s TestMode/10s match) and a
+passive bar above HUD HP, cancels on base/death/replacement; no BTLF timed life.
+Duplicate interface/slot bindings are rejected with Key taken. Saved bindings are
+validated after the complete packet, allowing valid F3/F4 permutations. Scoreboard
+key vs frame dispatch uses triggering-trigger identity, not stale trigger frame.
+Attack help states +1 damage per primary attribute. 306 UI regression checks and
+JassHelper/pjass pass. Final payload/source/resource evidence is in external
+diagnostics/20261015-ability-range3. All native input, meter alignment, range shape,
+Swap across both teams, -killme cancellation and multiplayer need game acceptance.
+
+### Range3 promoted to MAIN; Hold retired (2026-10-15)
+
+User accepted Range3 as stable and explicitly authorized transferring all changes
+to the main project, with removal of the nonworking Hold/V button. MAIN now owns
+`triggers/WOS_Start/AbilityRangePreview.j` and all Range3/FIX12/QB/HUD fixes above.
+No Hold control, key trigger, latch or seventh hotkey channel remains. Hover-only
+circles hide on leave; old H,6 settings are ignored by the six-channel loader.
+Save Keys lists the remaining six UI channels and ability/item aliases/preferences.
+The original Range3 archive is preserved for comparison, including its historical
+Hold experiment. Isolated installer templates also now use the hover-only source.
+
+Current project desync-probe additions in Systems1 were preserved. Transferred
+the approved candidate's missing minimap/QuickBuy art, WOSControls.fdf, current
+test fixtures and asset registration. Shared asset installer now installs the
+QuickBuy TGA set automatically on MAIN builds; original Pick/Random art stays.
+Full pre-transfer project/MAIN backup and reports:
+external diagnostics/20261015-range-main. Recompile/check/save/build and archive
+verification are required; engine acceptance is limited to the user's Range3
+feedback, not a new automated Warcraft or multiplayer run.
+
+Completed: MAIN JassHelper/pjass, check/save/build, 426 regression checks all pass;
+final check has zero object/source differences. Reopened 6605 archive payloads and
+112 WCT sources match MAIN/project; all ring/ping/Pick/QB resources verified.
+Playable output `Maps/WoS/WOS2_MAIN_STABLE.w3x`, SHA256
+f9eb57be0a2ff3f8b3adb557ec9e27275285bd71be9467285d0652bb211b75f0.
+Original Range3 archive preserved. No Warcraft launch this promotion turn.

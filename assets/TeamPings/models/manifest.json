@@ -1,0 +1,68 @@
+[
+  {
+    "source": "wos_ping_ground_help_0.blp",
+    "import": "war3mapimported\\wos_ping_ground_help_0.blp",
+    "sha256": "ccb47908b030fbcdb9d697747ffb51a25d719f6f2b1aabd93e9052493c7dac67",
+    "size": 16880
+  },
+  {
+    "source": "wos_01_swords.blp",
+    "import": "war3mapimported\\wos_01_swords.blp",
+    "sha256": "6ab5463c4a4899827be8945f9ebd51d2a903cdb76b567ff152f5e18398846613",
+    "size": 85714
+  },
+  {
+    "source": "wos_ping_attack.mdx",
+    "import": "war3mapImported\\wos_ping_attack.mdx",
+    "sha256": "e0bcfab44148e237c429e4a5aa50335d67d249c7aff392d088f03e221ec5bea8",
+    "size": 3282
+  },
+  {
+    "source": "wos_04_warning.blp",
+    "import": "war3mapimported\\wos_04_warning.blp",
+    "sha256": "ded0d7aeca435c56d8aae73ff4cdd91ae607f700c22dae2162322e4b9836d2e5",
+    "size": 61341
+  },
+  {
+    "source": "wos_ping_danger.mdx",
+    "import": "war3mapImported\\wos_ping_danger.mdx",
+    "sha256": "17d11c58855670cbece283b13b1bbdbcca26abbb3dff0658e6ca406915a90080",
+    "size": 3282
+  },
+  {
+    "source": "wos_02_flag.blp",
+    "import": "war3mapimported\\wos_02_flag.blp",
+    "sha256": "b0c654d9518a9d077e52aefd79759cb154c4d7ffb704801b236ffc1456681fec",
+    "size": 67651
+  },
+  {
+    "source": "wos_ping_groupuphere.mdx",
+    "import": "war3mapImported\\wos_ping_groupuphere.mdx",
+    "sha256": "7b733fda47ba30410a341e5a8d5a4430ade7567be043cd740081f75ea5ec9050",
+    "size": 3282
+  },
+  {
+    "source": "wos_03_plus.blp",
+    "import": "war3mapimported\\wos_03_plus.blp",
+    "sha256": "bd0a0c2a6e7144b9a3361a523d7c12413d4ad972a87efd5afd9a5ef5eadb1720",
+    "size": 59776
+  },
+  {
+    "source": "wos_ping_needhelp.mdx",
+    "import": "war3mapImported\\wos_ping_needhelp.mdx",
+    "sha256": "2eaf4da307404b4900adf2528ba58577c63b7710f65d3e384dd0b9a70f2cef6a",
+    "size": 3282
+  },
+  {
+    "source": "wos_05_chevrons.blp",
+    "import": "war3mapimported\\wos_05_chevrons.blp",
+    "sha256": "bceb4ee556be8d24339ff29c4ea44fbd548275adc1c8692be9effc4c866020c1",
+    "size": 66870
+  },
+  {
+    "source": "wos_ping_onmyway.mdx",
+    "import": "war3mapImported\\wos_ping_onmyway.mdx",
+    "sha256": "6a728e21c837167b93672a5dce20bf6d7592a0280aef3b70723a1ca7c6a36f72",
+    "size": 3282
+  }
+]

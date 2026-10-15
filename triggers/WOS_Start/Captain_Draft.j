@@ -203,10 +203,6 @@ function CaptainDraft_OnFirstSideVote takes nothing returns nothing
     local integer pid = GetPlayerId(GetTriggerPlayer())
     local framehandle clicked = BlzGetTriggerFrame()
     local integer side = 0
-    if GetLocalPlayer() == GetTriggerPlayer() then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
-    endif
     if CaptainDraftVoteActive and CaptainDraft_IsPlaying(pid) then
         set side = 0
         if clicked == CaptainDraftVoteButton1 then
@@ -237,6 +233,7 @@ function CaptainDraft_OnFirstSideVote takes nothing returns nothing
         endif
     endif
     set clicked = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function CaptainDraft_CreateVoteWindow takes nothing returns nothing
@@ -733,6 +730,7 @@ function CaptainDraft_CreateUI takes nothing returns nothing
     loop
         exitwhen i >= CaptainDraftBanTotal
         set CaptainDraftBanButton[i] = BlzCreateFrameByType("BUTTON", "CaptainDraftBanButton", CaptainDraftPanel, "WOSIconButtonTemplate", 9510 + i)
+        call WUI_RegisterPassiveFocus(CaptainDraftBanButton[i])
         call BlzFrameSetPoint(CaptainDraftBanButton[i], FRAMEPOINT_CENTER, CaptainDraftPanel, FRAMEPOINT_LEFT, CaptainDraftBanFirstIconOffsetX + I2R(i) * CaptainDraftBanIconStepX, CaptainDraftBanIconOffsetY)
         call BlzFrameSetSize(CaptainDraftBanButton[i], CaptainDraftBanIconSize, CaptainDraftBanIconSize)
         set CaptainDraftBanIcon[i] = BlzCreateFrameByType("BACKDROP", "CaptainDraftBanIcon", CaptainDraftBanButton[i], "", 9520 + i)
@@ -1222,6 +1220,7 @@ function CaptainDraft_CreateHero takes integer pid, integer heroId returns nothi
     // Recommended items and intelligence recalculation can rebuild max mana.
     // Reapply Toji's permanent zero-mana state after those changes as well.
     call SaveSystem_SetCurrentHero(Player(pid), u)
+    call QB_OnHero.evaluate(pid, heroId)
     call SelectUnitForPlayerSingle(u, Player(pid))
     set FRAME_PlayerPickString[pid] = GetObjectName(heroId)
         if heroId == Hero_ID2[0] then

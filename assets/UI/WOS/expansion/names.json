@@ -1,0 +1,16 @@
+[
+  "minimap-terrain",
+  "minimap-hide-off",
+  "minimap-hide-on",
+  "info-panel-hide-off",
+  "info-panel-hide-on",
+  "minimap-background-black",
+  "minimap-frame-tl",
+  "minimap-frame-tr",
+  "minimap-frame-bl",
+  "minimap-frame-br",
+  "minimap-frame-top",
+  "minimap-frame-bottom",
+  "minimap-frame-left",
+  "minimap-frame-right"
+]

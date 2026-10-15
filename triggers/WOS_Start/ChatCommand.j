@@ -481,13 +481,10 @@ private function OnEmojiFrameClick takes nothing returns nothing
         endloop
     endif
 
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
-    endif
 
     set clicked = null
     set p = null
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 private function OnTypedEmoji takes nothing returns nothing
@@ -688,7 +685,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     local real x
     local real y
 
-    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetRoot(), "", 0)
+    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetInfoRoot(), "", 0)
     call WUI_PlaceToolbar(EmojiToggle, 1, 1)
     // Checkpoint 26e: toolbar buttons are visible from UI startup on.
     set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)
@@ -697,7 +694,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     call BlzFrameSetAlpha(EmojiToggleIcon, 255)
     call BlzFrameSetEnable(EmojiToggleIcon, false)
     call WUI_Tooltip(EmojiToggle, "CHAT EMOJIS|nOpen the chat emoji palette.")
-    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetRoot(), "", 0)
+    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetInfoRoot(), "", 0)
     call WUI_PlaceToolbar(EmojiMuteButton, 2, 1)
     set EmojiMuteIcon = WUI_Panel("WOSChatMuteButtonBack", EmojiMuteButton, 0.023, 0.023)
     call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
@@ -712,6 +709,7 @@ private function CreateEmojiPalette takes nothing returns nothing
     call WUI_Tooltip(EmojiMuteButton, "SHOW CHAT EMOJIS|nChecked: enabled. Unchecked: muted.")
 
     set EmojiPanel = WUI_Window("WOSChatEmojiWindow", WUI_GetRoot(), 1, 0)
+    call WUI_RegisterRangeCover(EmojiPanel)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_BOTTOMLEFT, EMOJI_PANEL_X, EMOJI_PANEL_Y)
     call BlzFrameSetSize(EmojiPanel, 0.172, 0.106)
     call BlzFrameSetTexture(EmojiPanel, WUI_PANEL_TEXTURE, 0, true)

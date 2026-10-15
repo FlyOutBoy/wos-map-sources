@@ -145,3 +145,225 @@ Frame "BUTTON" "WOSIconButtonTemplate" {
         HighlightAlphaMode "ADD",
     }
 }
+
+// Quick Buy: native hover only, no Mouse Enter/Leave trigger callbacks.
+Frame "BUTTON" "WOSQBaddTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBaddBack",
+    Frame "BACKDROP" "WOSQBaddBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBaddPushed",
+    Frame "BACKDROP" "WOSQBaddPushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBaddDisabled",
+    Frame "BACKDROP" "WOSQBaddDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-add-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBaddHover",
+    Frame "HIGHLIGHT" "WOSQBaddHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-add-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+// Quick Buy: native hover only, no Mouse Enter/Leave trigger callbacks.
+Frame "BUTTON" "WOSQBremoveTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBremoveBack",
+    Frame "BACKDROP" "WOSQBremoveBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBremovePushed",
+    Frame "BACKDROP" "WOSQBremovePushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBremoveDisabled",
+    Frame "BACKDROP" "WOSQBremoveDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-remove-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBremoveHover",
+    Frame "HIGHLIGHT" "WOSQBremoveHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-remove-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+Frame "BUTTON" "WOSQBhudremoveTemplate" {
+    Width 0.014,
+    Height 0.00525,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBhudremoveBack",
+    Frame "BACKDROP" "WOSQBhudremoveBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBhudremovePushed",
+    Frame "BACKDROP" "WOSQBhudremovePushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBhudremoveDisabled",
+    Frame "BACKDROP" "WOSQBhudremoveDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-hud-remove-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBhudremoveHover",
+    Frame "HIGHLIGHT" "WOSQBhudremoveHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-hud-remove-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+// Quick Buy: native hover only, no Mouse Enter/Leave trigger callbacks.
+Frame "BUTTON" "WOSQBclearTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBclearBack",
+    Frame "BACKDROP" "WOSQBclearBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBclearPushed",
+    Frame "BACKDROP" "WOSQBclearPushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBclearDisabled",
+    Frame "BACKDROP" "WOSQBclearDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-clear-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBclearHover",
+    Frame "HIGHLIGHT" "WOSQBclearHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-clear-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+// Quick Buy: native hover only, no Mouse Enter/Leave trigger callbacks.
+Frame "BUTTON" "WOSQBprevTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBprevBack",
+    Frame "BACKDROP" "WOSQBprevBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBprevPushed",
+    Frame "BACKDROP" "WOSQBprevPushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBprevDisabled",
+    Frame "BACKDROP" "WOSQBprevDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-prev-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBprevHover",
+    Frame "HIGHLIGHT" "WOSQBprevHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-prev-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+// Quick Buy: native hover only, no Mouse Enter/Leave trigger callbacks.
+Frame "BUTTON" "WOSQBnextTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBnextBack",
+    Frame "BACKDROP" "WOSQBnextBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBnextPushed",
+    Frame "BACKDROP" "WOSQBnextPushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBnextDisabled",
+    Frame "BACKDROP" "WOSQBnextDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-next-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBnextHover",
+    Frame "HIGHLIGHT" "WOSQBnextHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-next-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+Frame "BUTTON" "WOSQBrec-addTemplate" {
+    Width 0.012,
+    Height 0.012,
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    ControlBackdrop "WOSQBrec-addBack",
+    Frame "BACKDROP" "WOSQBrec-addBack" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-normal.tga",
+        BackdropBlendAll,
+    }
+    ControlPushedBackdrop "WOSQBrec-addPushed",
+    Frame "BACKDROP" "WOSQBrec-addPushed" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-active.tga",
+        BackdropBlendAll,
+    }
+    ControlDisabledBackdrop "WOSQBrec-addDisabled",
+    Frame "BACKDROP" "WOSQBrec-addDisabled" {
+        BackdropBackground "UI\WOS\QuickBuy\qb-rec-add-disabled.tga",
+        BackdropBlendAll,
+    }
+    ControlMouseOverHighlight "WOSQBrec-addHover",
+    Frame "HIGHLIGHT" "WOSQBrec-addHover" {
+        SetAllPoints,
+        HighlightType "FILETEXTURE",
+        HighlightAlphaFile "UI\WOS\QuickBuy\qb-rec-add-hover.tga",
+        HighlightAlphaMode "ADD",
+    }
+}
+
+
+// Stable item hitbox; all icon/name/tooltip art is passive.
+Frame "BUTTON" "WOSQBslotTemplate" {
+    ControlStyle "AUTOTRACK",
+}
+
+Texture "WOSQBHUDRemoveNormal" { File "UI\WOS\QuickBuy\qb-hud-remove-normal.tga", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveActive" { File "UI\WOS\QuickBuy\qb-hud-remove-active.tga", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveDisabled" { File "UI\WOS\QuickBuy\qb-hud-remove-disabled.tga", AlphaMode "BLEND", }
+Texture "WOSQBHUDRemoveHover" { File "UI\WOS\QuickBuy\qb-hud-remove-hover.tga", AlphaMode "ADD", }
+Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {
+    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
+    Width 0.014,
+    Height 0.00525,
+    NormalTexture "WOSQBHUDRemoveNormal",
+    PushedTexture "WOSQBHUDRemoveActive",
+    DisabledTexture "WOSQBHUDRemoveDisabled",
+    UseHighlight "WOSQBHUDRemoveHover",
+}
+

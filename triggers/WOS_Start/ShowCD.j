@@ -1,4 +1,4 @@
-library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI, TasAbilityChargeBox
+library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI, TasAbilityChargeBox, AbilityRangePreview
 
 // Descriptions for selected heroes and seven passive placeholders for own heroes.
 // Learned available own commands remain native; enemy cooldowns remain private.
@@ -33,6 +33,8 @@ endglobals
 globals
     // Checkpoint 27d: 0.05 s hover / 0.15 s full refresh (was 0.03 / 0.09).
     private constant real AHUI_UPDATE_PERIOD = 0.05
+    // 10 existing hover ticks: descriptions expire .50 s after icon/pip leave.
+    private constant integer AHUI_TOOLTIP_LEAVE_TICKS = 10
     private constant integer AHUI_REFRESH_TICKS = 3
     private string array AHUI_TooltipKey
     private framehandle array AHUI_PausedText
@@ -118,6 +120,8 @@ globals
     private framehandle array AHUI_LearnButton
     private framehandle array AHUI_LearnGlow
     private framehandle array AHUI_ReqText
+    private integer array AHUI_PingHoverGrace
+    private boolean array AHUI_PingRmbHeld
     private boolean array AHUI_HoverPips
     private trigger AHUI_LearnTrigger = null
 endglobals
@@ -170,6 +174,13 @@ endfunction
 
 
 
+private function AHUI_RequirementLocked takes unit hero, integer abilityId returns boolean
+    if abilityId == TakeshiG_ID then
+        return LoadReal(hs, GetHandleId(hero), StringHash("takeshi dmg")) < TakeshiG_TakenDamageToEnter
+    endif
+    return false
+endfunction
+
 private function AHUI_IsActiveSlotCandidate takes unit whichHero, player owner, integer abilityId returns boolean
     if whichHero == null or owner == null or abilityId == 0 then
         return false
@@ -179,7 +190,7 @@ private function AHUI_IsActiveSlotCandidate takes unit whichHero, player owner, 
         return false
     endif
 
-    if not AHUI_IsAbilityAvailable(owner, abilityId) then
+    if AHUI_RequirementLocked(whichHero, abilityId) or not AHUI_IsAbilityAvailable(owner, abilityId) then
         return false
     endif
 
@@ -433,10 +444,10 @@ private function AHUI_ConfigureHeroAbilities takes unit whichHero returns nothin
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, KyorakuT1_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, KyorakuT2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, KyorakuT3_ID)
-        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, KyorakuT4_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, KyorakuT5_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, KyorakuF_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, KyorakuTSkip_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, KyorakuT4_ID)
     elseif heroId == BazzB_ID then
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, BazzBQ_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_W, BazzBW_ID)
@@ -693,10 +704,10 @@ private function AHUI_ConfigureHeroAbilities takes unit whichHero returns nothin
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, TakeshiR2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, TakeshiGR_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_T, TakeshiT_ID)
-        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, TakeshiF_ID)
-        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, TakeshiGF_ID)
-        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, TakeshiG_ID)
-        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, TakeshiG2_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, TakeshiG_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_F, TakeshiG2_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, TakeshiF_ID)
+        call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_G, TakeshiGF_ID)
     elseif heroId == DarkShiki_ID then
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, DarkShikiQ_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_Q, DarkShikiQ2_ID)
@@ -1312,13 +1323,10 @@ private function AHUI_OnLearnClick takes nothing returns nothing
             set slot = slot + 1
         endloop
     endif
-    if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
-    endif
     set clicked = null
     set whichPlayer = null
     set hero = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function AHUI_HideLearning takes nothing returns nothing
@@ -1449,6 +1457,7 @@ private function AHUI_FormatCooldown takes real remaining returns string
 endfunction
 
 private function AHUI_HideTooltip takes integer pid returns nothing
+    call AR_Hide(pid)
     // Checkpoint 27d: called every tick while nothing is hovered - only act
     // when the tooltip is actually shown.
     set AHUI_TooltipKey[pid] = ""
@@ -1542,7 +1551,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         if abilityId != 0 then
             set level = GetUnitAbilityLevel(AHUI_SelectedHero[pid], abilityId)
         endif
-        if level > 0 and AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) then
+        if level > 0 and (AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) or AHUI_RequirementLocked(AHUI_SelectedHero[pid], abilityId)) then
             set level = 0
         endif
         // Checkpoint 22: while the stock command card is hidden (hero pick /
@@ -1589,7 +1598,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     endif
 
     set level = GetUnitAbilityLevel(AHUI_SelectedHero[pid], abilityId)
-    if level > 0 and AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) then
+    if level > 0 and (AHUI_PassiveLocked(AHUI_SelectedHero[pid], slot, abilityId) or AHUI_RequirementLocked(AHUI_SelectedHero[pid], abilityId)) then
         set level = 0
     endif
     set iconPath = BlzGetAbilityIcon(abilityId)
@@ -1759,6 +1768,10 @@ if slot < AHUI_LEARN_SLOTS and AHUI_IsLearnableSkill(AHUI_BaseAbility[slot]) the
     endif
 endif
 
+if AHUI_SelectedHero[pid] == Hero[pid] and GetOwningPlayer(Hero[pid]) == Player(pid) then
+    set description = description + "|n|cff9aa0a8RMB: report ability CD to allies (5 sec interval)|r"
+endif
+
 // Flame Dash [Level 5] (Q)
 set title = title + " (" + AHUI_GetKeyText(slot) + ")"
 
@@ -1874,6 +1887,98 @@ endfunction
 
 // Hover определяется только чтением локальной позиции мыши. Никакие BUTTON,
 // SIMPLEBUTTON, hitbox-frame или frame mouse events не используются.
+// Pure local hit test using cached tooltip handle and existing HUD geometry.
+function AHUI_CooldownTooltipContains takes integer pid, real x, real y returns boolean
+    local integer slot = AHUI_HoveredSlot[pid]
+    local real width
+    local real height
+    local real centre
+    local real bottom = WUI_CHASSIS_TOP + 0.024
+    if GetLocalPlayer() != Player(pid) or slot < 0 or slot >= AHUI_SLOT_COUNT or AHUI_TooltipRoot[pid] == null then
+        return false
+    endif
+    if not BlzFrameIsVisible(AHUI_TooltipRoot[pid]) then
+        return false
+    endif
+    set width = BlzFrameGetWidth(AHUI_TooltipRoot[pid])
+    set height = BlzFrameGetHeight(AHUI_TooltipRoot[pid])
+    set centre = RMinBJ(RMaxBJ(WUI_AbilityX(slot), WUI_CHASSIS_LEFT + width * 0.50), WUI_CHASSIS_RIGHT - width * 0.50)
+    return x >= centre - width * 0.50 and x <= centre + width * 0.50 and y >= bottom and y <= bottom + height
+endfunction
+
+function AHUI_CooldownPingCommandAt takes integer pid, real x, real y returns integer
+    local integer slot = 0
+    local real centre
+    if GetLocalPlayer() != Player(pid) or pid < 0 or pid >= 10 or Hero[pid] == null or AHUI_SelectedHero[pid] != Hero[pid] then
+        return -1
+    endif
+    if GetOwningPlayer(Hero[pid]) != Player(pid) or WUI_IsHotkeyEditing() then
+        return -1
+    endif
+    if AHUI_CooldownTooltipContains(pid, x, y) then
+        return AHUI_GetOriginSlot(AHUI_HoveredSlot[pid])
+    endif
+    loop
+        exitwhen slot >= AHUI_LEARN_SLOTS
+        set centre = AHUI_GetSlotCenterX(slot)
+        if AHUI_PipMax[slot] > 0 and RAbsBJ(x - centre) <= AHUI_ICON_SIZE * 0.50 and y >= WUI_PIP_Y - 0.010 and y < AHUI_GetSlotCenterY(slot) - AHUI_ICON_SIZE * 0.50 then
+            return AHUI_GetOriginSlot(slot)
+        endif
+        set slot = slot + 1
+    endloop
+    return -1
+endfunction
+
+// Input selects a command slot only. Ability identity/CD/name are resolved after sync.
+function AHUI_RequestCooldownPing takes integer pid, real x, real y returns nothing
+    local integer slot
+    if GetLocalPlayer() != Player(pid) or pid < 0 or pid >= 10 or AHUI_PingRmbHeld[pid] then
+        return
+    endif
+    set AHUI_PingRmbHeld[pid] = true
+    if QB_SyncTrigger == null or QB_Hero[pid] == 0 then
+        return
+    endif
+    set slot = AHUI_CooldownPingCommandAt(pid, x, y)
+    if slot < 0 then
+        return
+    endif
+    set QB_LocalSequence = QB_LocalSequence + 1
+    call BlzSendSyncData(QB_SYNC, "P," + I2S(QB_Hero[pid]) + "," + I2S(QB_Version[pid]) + "," + I2S(QB_LocalSequence) + "," + I2S(slot) + "," + I2S(GetHandleId(Hero[pid])))
+endfunction
+
+function AHUI_ReleaseCooldownPing takes integer pid returns nothing
+    if GetLocalPlayer() == Player(pid) then
+        set AHUI_PingRmbHeld[pid] = false
+    endif
+endfunction
+
+// No world-click listener: sample RMB only over a pingable pip/description.
+// Entering while RMB is already held must not report a cooldown accidentally.
+globals
+    private boolean array AHUI_PingInputInside
+endglobals
+private function AHUI_PollCooldownMouse takes integer pid, real x, real y returns nothing
+    if GetLocalPlayer() != Player(pid) then
+        return
+    endif
+    if AHUI_CooldownPingCommandAt(pid, x, y) < 0 then
+        set AHUI_PingInputInside[pid] = false
+        call AHUI_ReleaseCooldownPing(pid)
+        return
+    endif
+    if not AHUI_PingInputInside[pid] then
+        set AHUI_PingInputInside[pid] = true
+        set AHUI_PingRmbHeld[pid] = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
+        return
+    endif
+    if BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+        call AHUI_RequestCooldownPing(pid, x, y)
+    else
+        call AHUI_ReleaseCooldownPing(pid)
+    endif
+endfunction
+
 private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
     local integer slot = 0
     local integer index = 0
@@ -1882,9 +1987,15 @@ private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
     local real centerX = 0.00
     local real centerY = 0.00
     local real halfSize = AHUI_ICON_SIZE * 0.50
+    local integer previousSlot = AHUI_HoveredSlot[pid]
+    local boolean previousPips = AHUI_HoverPips[pid]
 
     if GetLocalPlayer() != Player(pid) then
         return
+    endif
+    if WUI_RangePreviewBlocked() then
+        call AR_Hide(pid)
+        // Preserve existing tooltip/chat behavior; only the new ring is gated.
     endif
     if not AHUI_IsEligibleHero(AHUI_SelectedHero[pid], pid) then
         set AHUI_HoveredSlot[pid] = -1
@@ -1892,8 +2003,10 @@ private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
         return
     endif
 
+    call AR_Request(pid, null, 0)
     set mouseX = BlzPixelToFrameX(BlzGetMouseScreenPosX())
     set mouseY = BlzPixelToFrameY(BlzGetMouseScreenPosY())
+    call AHUI_PollCooldownMouse(pid, mouseX, mouseY)
     set AHUI_HoveredSlot[pid] = -1
     set AHUI_HoverPips[pid] = false
 
@@ -1903,9 +2016,21 @@ private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
         set centerX = AHUI_GetSlotCenterX(slot)
         set centerY = AHUI_GetSlotCenterY(slot)
         if mouseX >= centerX - halfSize and mouseX <= centerX + halfSize then
+            // Learned own abilities use native buttons, with no custom tooltip.
+            if not AHUI_SlotVisible[index] and GetOwningPlayer(AHUI_SelectedHero[pid]) == Player(pid) and mouseY >= centerY - halfSize and mouseY <= centerY + halfSize and WUI_RangeNativeSlotVisible(slot) then
+                if BlzFrameIsVisible(AHUI_TooltipRoot[pid]) then
+                    call AHUI_HideTooltip(pid)
+                endif
+                call AR_Request(pid, AHUI_SelectedHero[pid], AHUI_CurrentAbility[slot])
+                return
+            endif
             if AHUI_SlotVisible[index] and mouseY >= centerY - halfSize and mouseY <= centerY + halfSize then
                 set AHUI_HoveredSlot[pid] = slot
+                set AHUI_PingHoverGrace[pid] = AHUI_TOOLTIP_LEAVE_TICKS
                 call AHUI_RefreshTooltip(pid)
+                if BlzFrameIsVisible(AHUI_TooltipRoot[pid]) then
+                    call AR_Request(pid, AHUI_SelectedHero[pid], AHUI_CurrentAbility[slot])
+                endif
                 return
             endif
             // Pip strip under QWERT: level schedule (also for learned skills,
@@ -1913,6 +2038,7 @@ private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
             if slot < AHUI_LEARN_SLOTS and AHUI_PipMax[slot] > 0 and mouseY >= WUI_PIP_Y - 0.010 and mouseY < centerY - halfSize then
                 set AHUI_HoveredSlot[pid] = slot
                 set AHUI_HoverPips[pid] = true
+                set AHUI_PingHoverGrace[pid] = AHUI_TOOLTIP_LEAVE_TICKS
                 call AHUI_RefreshTooltip(pid)
                 return
             endif
@@ -1920,6 +2046,19 @@ private function AHUI_UpdateHoveredSlot takes integer pid returns nothing
         set slot = slot + 1
     endloop
 
+    if AHUI_SelectedHero[pid] == Hero[pid] and previousSlot >= 0 and AHUI_PingHoverGrace[pid] > 0 then
+        set AHUI_PingHoverGrace[pid] = AHUI_PingHoverGrace[pid] - 1
+        if AHUI_PingHoverGrace[pid] > 0 then
+            set AHUI_HoveredSlot[pid] = previousSlot
+            set AHUI_HoverPips[pid] = previousPips
+            // Keep RMB-on-description usable during the short leave window.
+            // The description itself never renews that window.
+            if AHUI_CooldownTooltipContains(pid, mouseX, mouseY) then
+                call AHUI_RefreshTooltip(pid)
+            endif
+            return
+        endif
+    endif
     call AHUI_HideTooltip(pid)
 endfunction
 
@@ -1928,8 +2067,11 @@ private function AHUI_ClearSelection takes integer pid returns nothing
         return
     endif
 
+    call AR_Cancel(pid)
     set AHUI_SelectedHero[pid] = null
     set AHUI_HoveredSlot[pid] = -1
+    set AHUI_PingHoverGrace[pid] = 0
+    set AHUI_PingRmbHeld[pid] = false
     set AHUI_AllowCooldownRead = false
     call AHUI_ClearResolvedAbilities()
     call AHUI_HideAll(pid)
@@ -1970,9 +2112,13 @@ private function AHUI_Periodic takes nothing returns nothing
     local integer pid = 0
     local boolean refreshAbilities = AHUI_UpdateTick == 0
 
+    call AR_Reconcile()
     loop
         exitwhen pid >= bj_MAX_PLAYER_SLOTS
         if GetLocalPlayer() == Player(pid) then
+            if Shop_Active[pid] or QB_DragFrom >= 0 or REC_DragFrom >= 0 then
+                call QB_CheckDrag.evaluate()
+            endif
             if AHUI_SelectedHero[pid] != null then
                 if refreshAbilities then
                     call AHUI_Refresh(pid)
@@ -1984,6 +2130,7 @@ private function AHUI_Periodic takes nothing returns nothing
                 set AHUI_HoveredSlot[pid] = -1
                 call AHUI_HideTooltip(pid)
             endif
+            call AR_Render(pid)
         endif
         set pid = pid + 1
     endloop
@@ -2281,9 +2428,18 @@ private function AHUI_CreateLearnFrames takes nothing returns nothing
         call BlzFrameSetVisible(AHUI_LearnButton[slot], false)
         // "Lv 6": hero level that unlocks the next skill level.
         set AHUI_ReqText[slot] = BlzCreateFrameByType("TEXT", "AHUIReqText", root, "", slot)
-        call WUI_PlaceShift(AHUI_ReqText[slot], WUI_AbilityX(slot) - WUI_HudShift, WUI_PIP_Y - 0.0085, 0.040, 0.008)
+        if slot == 0 then
+            // Reserve a separate footer row under Q for the new hold binding.
+            call WUI_PlaceShift(AHUI_ReqText[slot], WUI_AbilityX(slot) - WUI_HudShift, WUI_PIP_Y - 0.0060, 0.040, 0.006)
+        else
+            call WUI_PlaceShift(AHUI_ReqText[slot], WUI_AbilityX(slot) - WUI_HudShift, WUI_PIP_Y - 0.0085, 0.040, 0.008)
+        endif
         call BlzFrameSetTextAlignment(AHUI_ReqText[slot], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetScale(AHUI_ReqText[slot], 0.62)
+        if slot == 0 then
+            call BlzFrameSetScale(AHUI_ReqText[slot], 0.52)
+        else
+            call BlzFrameSetScale(AHUI_ReqText[slot], 0.62)
+        endif
         call BlzFrameSetLevel(AHUI_ReqText[slot], 126)
         call BlzFrameSetEnable(AHUI_ReqText[slot], false)
         call BlzFrameSetVisible(AHUI_ReqText[slot], false)

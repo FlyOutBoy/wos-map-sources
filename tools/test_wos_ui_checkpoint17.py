@@ -120,7 +120,9 @@ class SharedGeometry(unittest.TestCase):
         self.vm.run('WUI_CreateHUDChrome')
         points = [a for n,a in self.fixture.calls if n == 'BlzFrameSetAbsPoint']
         self.assertIn(('BACKDROP:WOSHUDSurface', 'FRAMEPOINT_BOTTOMLEFT', .160, 0), points)
-        self.assertIn(('BACKDROP:WOSHUDSurface', 'FRAMEPOINT_TOPRIGHT', .830, .094), points)
+        self.assertIn(('BACKDROP:WOSHUDSurface', 'FRAMEPOINT_TOPRIGHT', .729, .094), points)
+        self.assertIn(('BACKDROP:WOSInfoChrome', 'FRAMEPOINT_BOTTOMLEFT', .729, .000), points)
+        self.assertIn(('BACKDROP:WOSInfoChrome', 'FRAMEPOINT_TOPRIGHT', .830, .094), points)
         self.assertIn(('BACKDROP:WOSMinimapSurface', 'FRAMEPOINT_TOPRIGHT', .160, .144), points)
         # Shifted dividers are placed once more when registered with WUI_PlaceShift.
         dividers = sorted(set(a[2] for a in points if a[0] == 'BACKDROP:WOSHUDDivider' and a[1] == 'FRAMEPOINT_CENTER'))

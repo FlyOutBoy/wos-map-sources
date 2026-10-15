@@ -44,7 +44,7 @@ globals
     private real EmojiCenterY = 0.32
     private framehandle EmojiHotkeyOwner = null
     private boolean EmojiHotkeyRegistered = false
-    private trigger EmojiMouseTrigger = null
+    private boolean EmojiRightWasDown = false
     // Checkpoint 22: pages of 15 emotes, page arrows only when needed, a
     // glow ring marks the hovered emote (icons no longer change size).
     private constant integer EMOJI_PAGE_SIZE = 15
@@ -391,6 +391,7 @@ function Emoji_ShowMenu takes player p, boolean flag returns nothing
     if GetLocalPlayer() == p then
         set EmojiPanelOpen[pid] = flag
         if flag then
+            set EmojiRightWasDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
             call ApplyPaletteForPlayer(p)
             call UpdateCooldownText()
         else
@@ -476,13 +477,10 @@ private function OnEmojiClick takes nothing returns nothing
         endloop
     endif
 
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
-    endif
 
     set clicked = null
     set p = null
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 private function OnEmojiKey takes nothing returns nothing
@@ -528,12 +526,18 @@ private function OnEmojiKey takes nothing returns nothing
     set p = null
 endfunction
 
-private function OnEmojiMouse takes nothing returns nothing
-    if GetLocalPlayer() == GetTriggerPlayer() and EmojiPanelOpen[GetPlayerId(GetTriggerPlayer())] then
-        if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
-            call Emoji_ShowMenu(GetTriggerPlayer(), false)
+// Owner-local and inactive while the palette is closed; no world click events.
+private function Emoji_PollMouse takes nothing returns nothing
+    local player p = GetLocalPlayer()
+    local boolean rightDown
+    if EmojiPanelOpen[GetPlayerId(p)] then
+        set rightDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
+        if rightDown and not EmojiRightWasDown then
+            call Emoji_ShowMenu(p, false)
         endif
+        set EmojiRightWasDown = rightDown
     endif
+    set p = null
 endfunction
 
 // The toolbar button owns the key badge; registration runs once both the
@@ -565,6 +569,9 @@ private function Periodic takes nothing returns nothing
         set i = i + 1
     endloop
 
+    if EmojiPanelOpen[localPid] then
+        call Emoji_PollMouse()
+    endif
     if EmojiPanelOpen[localPid] then
         call UpdateEmojiHover()
         call UpdateCooldownText()
@@ -610,6 +617,7 @@ private function CreatePanel takes nothing returns nothing
 
     // Same graphite + gold wheel as the team pings.
     set EmojiPanel = BlzCreateFrameByType("BACKDROP", "WOSEmoteWheel", WUI_GetRoot(), "", 0)
+    call WUI_RegisterRangeCover(EmojiPanel)
     call BlzFrameSetSize(EmojiPanel, EMOJI_WHEEL_SIZE, EMOJI_WHEEL_SIZE)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EMOJI_PANEL_CENTER_X, EMOJI_PANEL_CENTER_Y)
     call BlzFrameSetTexture(EmojiPanel, "UI\\WOS\\wheel-ring.tga", 0, true)
@@ -701,7 +709,6 @@ private function RegisterKeys takes nothing returns nothing
     loop
         exitwhen pid >= bj_MAX_PLAYERS
         call BlzTriggerRegisterPlayerKeyEvent(EmojiKeyTrigger, Player(pid), OSKEY_ESCAPE, 0, true)
-        call TriggerRegisterPlayerEvent(EmojiMouseTrigger, Player(pid), EVENT_PLAYER_MOUSE_DOWN)
 
         set i = 1
         loop
@@ -730,7 +737,6 @@ function Emoji_Init takes nothing returns nothing
     set EmojiFrameTrigger = CreateTrigger()
     set EmojiSyncTrigger = CreateTrigger()
     set EmojiKeyTrigger = CreateTrigger()
-    set EmojiMouseTrigger = CreateTrigger()
     set EmojiTimer = CreateTimer()
     set EmojiSearchGroup = CreateGroup()
     set EmojiSearchFilter = Condition(function IsLivingHero)
@@ -747,7 +753,6 @@ function Emoji_Init takes nothing returns nothing
     call TriggerAddAction(EmojiFrameTrigger, function OnEmojiClick)
     call TriggerAddAction(EmojiSyncTrigger, function OnEmojiSync)
     call TriggerAddAction(EmojiKeyTrigger, function OnEmojiKey)
-    call TriggerAddAction(EmojiMouseTrigger, function OnEmojiMouse)
     call Emoji_TryRegisterHotkey()
     call TimerStart(EmojiTimer, EMOJI_PERIOD, true, function Periodic)
 endfunction

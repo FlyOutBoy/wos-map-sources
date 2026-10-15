@@ -35,7 +35,7 @@ class SharedDefinitions(unittest.TestCase):
     def test_camera_exact_requested_shift_and_height_reduction(self):
         source = (ROOT/'triggers/WOS_Start/WoS_Hero_Icons_Init.j').read_text(encoding='utf-8-sig')
         # Checkpoint 20 supersedes: styled slider inside the minimap block strip.
-        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0745, 0.012, 0.087)', source)
+        self.assertIn('WUI_PlaceShiftLeft(FRAME_CamSlider, 0.150, 0.0860, 0.012, 0.066)', source)
         self.assertIn('BlzCreateFrame("WOSVerticalSlider", FRAME_StatusHeroMain4, 0, 0)', source)
         self.assertIn('"QuestMainListScrollBar"', source)
 

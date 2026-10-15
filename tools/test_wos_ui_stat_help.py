@@ -56,12 +56,12 @@ class StatHelp(unittest.TestCase):
         def resource(player, kind):
             self.assertEqual(1, player)
             return amounts[kind]
-        self.vm.g.update(GetLocalPlayer=lambda: 1, GetPlayerState=resource,
+        self.vm.g.update(Player=lambda pid: pid, GetPlayerState=resource,
                          PLAYER_STATE_RESOURCE_GOLD='gold', PLAYER_STATE_RESOURCE_LUMBER='lumber',
                          UNITSTAT_Gold='gold-number', WUI_SetText=lambda f, t: text.update({f: t}))
         for income in (3210, 9876, 0):
             amounts['lumber'] = income
-            self.vm.run('UNITSTAT_UpdateGold')
+            self.vm.run('UNITSTAT_UpdateGold', (1,))
             self.assertEqual(f'|cffd5b876999999|r |cff00ff00+{income}|r', text['gold-number'])
             self.assertIn(f'Next round: {income}', self.vm.g['UNITSTAT_Help'][7])
 

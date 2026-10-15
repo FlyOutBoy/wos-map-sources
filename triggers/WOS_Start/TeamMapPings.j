@@ -53,6 +53,8 @@ globals
     // Mouse-move is a synced event: it exists only for a player holding the
     // ping key (created on press, destroyed on release / Esc).
     private trigger array TMP_MoveTrigger
+    private boolean TMP_LeftWasDown = false
+    private boolean TMP_RightWasDown = false
     private boolean TMP_Open = false
     private integer TMP_Hover = 0
     private real TMP_PointX = 0.00
@@ -172,6 +174,8 @@ private function TMP_ShowWheel takes nothing returns nothing
     endif
     // Checkpoint 27: on cooldown the wheel still opens and shows the time in
     // its centre (like the emote wheel) instead of a chat line.
+    set TMP_LeftWasDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_LEFT)
+    set TMP_RightWasDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
     set TMP_Open = true
     // Keep the entire wheel and its labels in the playable screen area.
     set TMP_CenterX = RMaxBJ(0.13, RMinBJ(0.67, BlzPixelToFrameX(BlzGetMouseScreenPosX())))
@@ -261,7 +265,7 @@ function TeamPing_Send takes player sender, integer kind, real x, real y returns
     local boolean visible = TMP_IsRecipient(sender, GetLocalPlayer()) and (not TMP_Muted or sender == GetLocalPlayer())
     local string message
     local string action
-    local real scale = 1.25
+    local real scale = 1.00
     if not TMP_CanSend(sender) or kind < 1 or kind > TMP_KINDS then
         return
     endif
@@ -282,9 +286,6 @@ function TeamPing_Send takes player sender, integer kind, real x, real y returns
     endif
     // Snapshot the visible target's position; never follow it into fog later.
     set action = TMP_ActionText(kind, target)
-    if kind == 3 or kind == 4 then
-        set scale = scale * 5.00
-    endif
     if TMP_Count >= TMP_MAX_EFFECTS then
         call TMP_Remove(1)
     endif
@@ -307,7 +308,7 @@ function TeamPing_Send takes player sender, integer kind, real x, real y returns
     call BlzSetSpecialEffectColor(TMP_Effect[TMP_Count], TMP_Red[kind], TMP_Green[kind], TMP_Blue[kind])
     call BlzSetSpecialEffectColor(TMP_Ring[TMP_Count], TMP_Red[kind], TMP_Green[kind], TMP_Blue[kind])
     call BlzSetSpecialEffectScale(TMP_Effect[TMP_Count], scale)
-    call BlzSetSpecialEffectScale(TMP_Ring[TMP_Count], 1.60)
+    call BlzSetSpecialEffectScale(TMP_Ring[TMP_Count], 1.00)
     set label = CreateTextTag()
     call SetTextTagText(label, action + " · " + GetPlayerName(sender), 0.017)
     if kind == 3 or kind == 4 then
@@ -454,6 +455,7 @@ private function TMP_OnFrame takes nothing returns nothing
     if GetLocalPlayer() != GetTriggerPlayer() then
         set frame = null
         set ev = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     if frame == TMP_Toggle and ev == FRAMEEVENT_CONTROL_CLICK then
@@ -468,12 +470,9 @@ private function TMP_OnFrame takes nothing returns nothing
     elseif frame == TMP_Wheel and ev == FRAMEEVENT_CONTROL_CLICK then
         call TMP_Commit()
     endif
-    if ev == FRAMEEVENT_CONTROL_CLICK then
-        call BlzFrameSetEnable(frame, false)
-        call BlzFrameSetEnable(frame, true)
-    endif
     set frame = null
     set ev = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function TMP_OnMouseMove takes nothing returns nothing
@@ -535,17 +534,22 @@ private function TMP_OnKey takes nothing returns nothing
     endif
 endfunction
 
-private function TMP_OnMouse takes nothing returns nothing
-    local real x = BlzGetTriggerPlayerMouseX()
-    local real y = BlzGetTriggerPlayerMouseY()
-    if GetLocalPlayer() != GetTriggerPlayer() then
+// No player mouse-down subscription. Poll only while this client's wheel is open.
+private function TMP_PollMouse takes nothing returns nothing
+    local boolean leftDown
+    local boolean rightDown
+    if not TMP_Open then
         return
     endif
-    if BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_RIGHT then
+    set leftDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_LEFT)
+    set rightDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
+    if rightDown and not TMP_RightWasDown then
         call TMP_Close()
-    elseif TMP_Open and BlzGetTriggerPlayerMouseButton() == MOUSE_BUTTON_TYPE_LEFT then
+    elseif leftDown and not TMP_LeftWasDown then
         call TMP_Commit()
     endif
+    set TMP_LeftWasDown = leftDown
+    set TMP_RightWasDown = rightDown
 endfunction
 
 private function TMP_Periodic takes nothing returns nothing
@@ -579,14 +583,17 @@ private function TMP_Periodic takes nothing returns nothing
         if age >= TMP_DURATION then
             call TMP_Remove(i)
         else
-            // A short expanding pulse settles into a smaller visible beacon.
-            call BlzSetSpecialEffectScale(TMP_Ring[i], 1.30 + 0.30 * Sin(age * 8.00))
-            call BlzSetSpecialEffectScale(TMP_Effect[i], TMP_BaseScale[i] * (1.00 + 0.10 * Sin(age * 8.00)))
+            // User models retain identical scale throughout their lifetime.
+            call BlzSetSpecialEffectScale(TMP_Ring[i], 1.00)
+            call BlzSetSpecialEffectScale(TMP_Effect[i], 1.00)
             call TMP_RenderMark(i)
             set i = i + 1
         endif
     endloop
     set pid = GetPlayerId(GetLocalPlayer())
+    if TMP_Open then
+        call TMP_PollMouse()
+    endif
     if TMP_Open then
         call TMP_UpdateHover()
     endif
@@ -612,7 +619,6 @@ private function TMP_StartUI takes nothing returns nothing
     local framehandle ui = WUI_GetRoot()
     local trigger frames = CreateTrigger()
     local trigger keys = CreateTrigger()
-    local trigger mouse = CreateTrigger()
     local trigger sync = CreateTrigger()
     local integer kind = 1
     local integer pid = 0
@@ -649,11 +655,11 @@ private function TMP_StartUI takes nothing returns nothing
     set TMP_Texture[3] = "UI\\TeamPings\\danger.tga"
     set TMP_Texture[4] = "UI\\TeamPings\\help.tga"
     set TMP_Texture[5] = "UI\\TeamPings\\rally.tga"
-    set TMP_Model[1] = "war3mapImported\\wos_SpellMarkerBlue.mdx"
-    set TMP_Model[2] = "war3mapImported\\wos_OuterCircleRed.mdx"
-    set TMP_Model[3] = "Abilities\\Spells\\Other\\TalkToMe\\TalkToMe.mdl"
-    set TMP_Model[4] = "war3mapImported\\wos_HealGreen.mdx"
-    set TMP_Model[5] = "Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl"
+    set TMP_Model[1] = "war3mapImported\\wos_ping_onmyway.mdx"
+    set TMP_Model[2] = "war3mapImported\\wos_ping_attack.mdx"
+    set TMP_Model[3] = "war3mapImported\\wos_ping_danger.mdx"
+    set TMP_Model[4] = "war3mapImported\\wos_ping_needhelp.mdx"
+    set TMP_Model[5] = "war3mapImported\\wos_ping_groupuphere.mdx"
     set TMP_Symbol[1] = ">>"
     set TMP_Symbol[2] = "X"
     set TMP_Symbol[3] = "!"
@@ -706,7 +712,7 @@ private function TMP_StartUI takes nothing returns nothing
         call BlzFrameSetVisible(TMP_Name[kind], false)
         set kind = kind + 1
     endloop
-    set TMP_Toggle = BlzCreateFrameByType("BUTTON", "TeamPingToggle", ui, "", 0)
+    set TMP_Toggle = BlzCreateFrameByType("BUTTON", "TeamPingToggle", WUI_GetInfoRoot(), "", 0)
     call WUI_PlaceToolbar(TMP_Toggle, 0, 1)
     set TMP_ToggleIcon = BlzCreateFrameByType("BACKDROP", "TeamPingToggleIcon", TMP_Toggle, "", 0)
     call BlzFrameSetAllPoints(TMP_ToggleIcon, TMP_Toggle)
@@ -736,7 +742,6 @@ private function TMP_StartUI takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(frames, TMP_Toggle, FRAMEEVENT_MOUSE_LEAVE)
     call TriggerAddAction(frames, function TMP_OnFrame)
     call TriggerAddAction(keys, function TMP_OnKey)
-    call TriggerAddAction(mouse, function TMP_OnMouse)
     call TriggerAddAction(sync, function TMP_OnSync)
     loop
         exitwhen pid >= 10
@@ -762,7 +767,6 @@ private function TMP_StartUI takes nothing returns nothing
         call BlzFrameSetEnable(TMP_MiniName[pid], false)
         call BlzFrameSetVisible(TMP_MiniNameRoot[pid], false)
         call BlzTriggerRegisterPlayerKeyEvent(keys, Player(pid), OSKEY_ESCAPE, 0, false)
-        call TriggerRegisterPlayerEvent(mouse, Player(pid), EVENT_PLAYER_MOUSE_DOWN)
         call BlzTriggerRegisterPlayerSyncEvent(sync, Player(pid), TMP_SYNC, false)
         set pid = pid + 1
     endloop
@@ -777,7 +781,6 @@ private function TMP_StartUI takes nothing returns nothing
     set ui = null
     set frames = null
     set keys = null
-    set mouse = null
     set sync = null
 endfunction
 

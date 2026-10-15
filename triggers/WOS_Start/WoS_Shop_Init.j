@@ -6,6 +6,8 @@
 // Адресные звуки запускаются вне локальных веток через StartSoundForPlayerBJ.
 
 globals
+    constant real QB_ABILITY_CHAT_COOLDOWN = 5.00
+    real array QB_AbilityChatNext
     trigger FrameClick2 
     trigger FrameShopCheckbox
     trigger FrameCraftScroll
@@ -221,6 +223,219 @@ integer array ItemsSearchAll_Index
     // Пока новый текст является его продолжением — искать бессмысленно.
     string array ShopSearchDeadQuery
 endglobals
+globals
+    hashtable QB_Data = null
+    hashtable QB_Frames = null
+    unit array QB_AssignedUnit
+    integer array QB_Hero
+    integer array QB_Version
+    integer array QB_Sequence
+    integer QB_LocalSequence = 0
+    boolean QB_AnyFirstDeferred = false
+    boolean array QB_FirstDeferred
+    boolean array QB_Awaiting
+    integer array QB_Count
+    integer array QB_GoalSerial
+    integer array QB_NextSerial
+    integer array QB_Token
+    integer array QB_Order
+    integer array QB_OrderCount
+    integer array QB_Target
+    integer array QB_StepCount
+    integer array QB_Step
+    integer array QB_Group
+    integer array QB_Cost
+    integer array QB_StepKey
+    boolean array QB_StepMissing
+    boolean array QB_AnyMissing
+    integer array QB_SubtreeStart
+    integer QB_DeferredCost = 0
+    sound QB_AddSound = null
+    sound QB_RemoveSound = null
+    sound QB_ClearSound = null
+    // Feedback aliases: change assignments in QB_CreateUI; handles already exist.
+    sound REC_AddSound = null
+    sound REC_RemoveSound = null
+    boolean array QB_Excluded
+    integer QB_BuildNode = 0
+    boolean QB_ExpansionMissing = false
+    string array QB_Error
+    integer array QB_Status
+    integer array QB_Lock
+    integer array QB_Inventory
+    boolean array QB_Used
+    integer array QB_Stack
+    integer QB_BuildPid = 0
+    integer QB_BuildGroup = 0
+    boolean QB_BuildError = false
+    integer QB_DragAge = 0
+    boolean QB_AddAvailable = true
+    boolean QB_LastShopOpen = false
+    integer array QB_AddId
+    boolean array QB_AddBanned
+    boolean array QB_AddShown
+    integer QB_Page = 0
+    constant integer REC_CAPACITY = 28
+    constant string REC_SYNC = "WOSREC1"
+    integer array REC_Item
+    integer array REC_Default
+    integer array REC_Count
+    integer array REC_Version
+    integer array REC_Sequence
+    integer array REC_LoadBase
+    integer array REC_Lock
+    integer array REC_LoadMask
+    integer array REC_Pending
+    integer array REC_LocalItem
+    integer REC_LocalSequence = 0
+    boolean REC_FileWritable = true
+    framehandle array REC_AddButton
+    boolean array REC_AddShown
+    framehandle REC_Hint = null
+    framehandle array REC_Action
+    framehandle array REC_Remove
+    framehandle REC_DragLight = null
+    framehandle REC_DropLine = null
+    integer REC_DragFrom = -1
+    integer REC_DragTo = -1
+    integer REC_DragVersion = 0
+    integer QB_DragTo = -1
+    integer array QB_PriceParent
+    integer array QB_PriceRemaining
+    integer array QB_PriceQueued
+    integer array QB_DisplayCost
+    integer array ShopRenderedPrice
+    integer array ShopPriceInventory
+    integer QB_DragFrom = -1
+    integer QB_DragVersion = 0
+    real QB_DragX = 0.00
+    integer QB_LastViewVersion = -1
+    integer QB_LastViewStatus = -1
+    integer QB_LastViewPage = -1
+    integer array QB_LastPreview
+    integer array QB_LastIcon
+    boolean array QB_LastSlotShown
+    integer array QB_LastCost
+    real QB_Right = 0.00
+    real QB_Left = 0.665
+    real QB_Width = 0.00
+    real QB_Size = 0.032
+    real QB_InventorySize = 0.028
+    integer QB_ViewCount = 12
+    integer QB_Columns = 3
+    framehandle QB_Panel = null
+    framehandle QB_Title = null
+    framehandle QB_Hint = null
+    framehandle QB_StateText = null
+    framehandle QB_First = null
+    framehandle QB_StateIcon = null
+    framehandle QB_DragLight = null
+    framehandle QB_DropLine = null
+    framehandle QB_Clear = null
+    framehandle QB_Previous = null
+    framehandle QB_Next = null
+    framehandle array QB_Slot
+    framehandle array QB_Icon
+    framehandle array QB_SlotEdge
+    framehandle array QB_SlotBolt
+    framehandle array QB_StepPlate
+    framehandle array QB_PriceText
+    framehandle array QB_Tip
+    framehandle array QB_TipBox
+    framehandle array QB_Name
+    boolean QB_RightWasDown = false
+    framehandle array QB_Remove
+    framehandle array QB_Preview
+    integer array QB_PreviewStep
+    integer array QB_PreviewVersion
+    framehandle array QB_PreviewIcon
+    framehandle array QB_PreviewPlate
+    framehandle array QB_PreviewMinusFace
+    framehandle array QB_PreviewRemove
+    framehandle array QB_PreviewPrice
+    framehandle array QB_PreviewEdge
+    framehandle array QB_PreviewBolt
+    framehandle array QB_Add
+    trigger QB_ClickTrigger = null
+    trigger QB_MouseTrigger = null
+    trigger QB_SyncTrigger = null
+    constant string QB_SYNC = "WOSQB1"
+    constant string QB_TEXTURE = "UI\\WOS\\QuickBuy\\qb-"
+    constant integer QB_MAX_STEPS = 128
+    constant integer QB_VISIBLE = 15
+endglobals
+
+
+
+// Inlined into TEST WoS_Shop_Init.j. Cache only passive UI geometry, never game
+// data. Reapply existing frames on a viewport change without creating handles.
+globals
+    hashtable Shop_Position = InitHashtable()
+    integer Shop_PositionCount = 0
+    framehandle array Shop_Frame
+    framepointtype array Shop_Point
+    boolean array Shop_PlaceMode
+    real array Shop_X
+    real array Shop_Y
+    real array Shop_W
+    real array Shop_H
+endglobals
+
+function Shop_Shift takes nothing returns real
+    return 0.400 - (0.022 + RMinBJ(0.910, WUI_ScreenRight() - 0.012)) * 0.50
+endfunction
+
+function Shop_PositionIndex takes framehandle frame returns integer
+    local integer index = LoadInteger(Shop_Position, GetHandleId(frame), 0)
+    if index == 0 then
+        set Shop_PositionCount = Shop_PositionCount + 1
+        set index = Shop_PositionCount
+        set Shop_Frame[index] = frame
+        call SaveInteger(Shop_Position, GetHandleId(frame), 0, index)
+    endif
+    return index
+endfunction
+
+function Shop_Place takes framehandle frame, real x, real y, real width, real height returns nothing
+    local integer index
+    if frame == null then
+        return
+    endif
+    set index = Shop_PositionIndex(frame)
+    set Shop_PlaceMode[index] = true
+    set Shop_X[index] = x
+    set Shop_Y[index] = y
+    set Shop_W[index] = width
+    set Shop_H[index] = height
+    call WUI_Place(frame, x + Shop_Shift(), y, width, height)
+endfunction
+
+function Shop_SetAbsPoint takes framehandle frame, framepointtype point, real x, real y returns nothing
+    local integer index
+    if frame == null then
+        return
+    endif
+    set index = Shop_PositionIndex(frame)
+    set Shop_PlaceMode[index] = false
+    set Shop_Point[index] = point
+    set Shop_X[index] = x
+    set Shop_Y[index] = y
+    call BlzFrameSetAbsPoint(frame, point, x + Shop_Shift(), y)
+endfunction
+
+function Shop_Recenter takes nothing returns nothing
+    local integer index = 1
+    local real shift = Shop_Shift()
+    loop
+        exitwhen index > Shop_PositionCount
+        if Shop_PlaceMode[index] then
+            call WUI_Place(Shop_Frame[index], Shop_X[index] + shift, Shop_Y[index], Shop_W[index], Shop_H[index])
+        else
+            call BlzFrameSetAbsPoint(Shop_Frame[index], Shop_Point[index], Shop_X[index] + shift, Shop_Y[index])
+        endif
+        set index = index + 1
+    endloop
+endfunction
 
 function ShopSearchStartsWith takes string text, string prefix returns boolean
     local integer prefixLength = StringLength(prefix)
@@ -381,14 +596,15 @@ endfunction
 function ShopCreateDescScroll takes nothing returns nothing
     local trigger scroll = CreateTrigger()
     set FRAME_ShopDescWheel = BlzCreateFrameByType("BUTTON", "ShopDescWheel", FRAME_ShopItemDescription, "", 0)
-    call WUI_Place(FRAME_ShopDescWheel, SHOP_TREE_X, 0.1905, 0.236, 0.052)
+    call WUI_RegisterPassiveFocus(FRAME_ShopDescWheel)
+    call Shop_Place(FRAME_ShopDescWheel, SHOP_TREE_X, 0.1905, 0.236, 0.052)
     if WUI_HasFrameDefinitions() then
         set FRAME_ShopDescScroll = BlzCreateFrame("WOSVerticalSlider", FRAME_ShopItemDescription, 0, 9152)
     endif
     if FRAME_ShopDescScroll == null then
         set FRAME_ShopDescScroll = BlzCreateFrame("QuestMainListScrollBar", FRAME_ShopItemDescription, 0, 9152)
     endif
-    call WUI_Place(FRAME_ShopDescScroll, SHOP_TREE_X + 0.117, 0.1905, 0.009, 0.048)
+    call Shop_Place(FRAME_ShopDescScroll, SHOP_TREE_X + 0.117, 0.1905, 0.009, 0.048)
     call BlzFrameSetStepSize(FRAME_ShopDescScroll, 1.00)
     call BlzFrameSetLevel(FRAME_ShopDescScroll, 20)
     call BlzFrameSetVisible(FRAME_ShopDescScroll, false)
@@ -791,75 +1007,79 @@ endfunction
 function ShopPlacePrice takes framehandle cost, framehandle plate, real x, real y, real size returns nothing
     local real py = y - size * 0.5 + 0.0068
     call BlzFrameClearAllPoints(cost)
-    call BlzFrameSetAbsPoint(cost, FRAMEPOINT_CENTER, x, py)
+    call Shop_SetAbsPoint(cost, FRAMEPOINT_CENTER, x, py)
     call BlzFrameSetSize(cost, size / 0.78, 0.010 / 0.78)
     call BlzFrameSetScale(cost, 0.78)
     call BlzFrameSetTextAlignment(cost, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(cost, false)
     call BlzFrameSetLevel(cost, 4)
     if plate != null then
-        call WUI_Place(plate, x, py, 0.020, 0.0105)
+        call Shop_Place(plate, x, py, 0.020, 0.0105)
         call BlzFrameSetLevel(plate, 3)
     endif
 endfunction
 
-function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned, player p returns nothing
-    local integer cacheIndex = GetPlayerId(p) * SHOP_SEARCH_PAGE_SIZE + slot
-    local integer price = 0
-    local boolean fullRefresh = not ShopRenderedInitialized[cacheIndex] or ShopRenderedItemId[cacheIndex] != id
-    local boolean banRefresh = ShopRenderedBanned[cacheIndex] != banned
-    local string costStr = ""
-    local string tooltipNameStr = ""
-    local string itemName = ""
-    local string iconPath = "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder"
-    local real tooltipWidth = ShopGetItemTooltipWidth("")
-    local framehandle tooltip = FRAME_ShopItemTooltipBox[slot]
-    local real plateWidth = 0.020
-    
-    if id != 0 then
-        set price = GetItemValue(id)
-        set plateWidth = ShopPricePlateWidth(price)
-        // Строки собираются глобально для избежания десинка
-        set costStr = "|c00FFFF00" + I2S(price) + "|r"
-        set itemName = GetObjectName(id)
-        set tooltipNameStr = "|cffffffff" + itemName + "|r"
-        set tooltipWidth = ShopGetItemTooltipWidth(itemName)
-        set iconPath = BlzGetAbilityIcon(id)
-        if banned then
-            set iconPath = ConvertBTNtoDISBTN(iconPath)
+// Local presentation cache, fed by the actual catalogue/tree renderers.
+// Called only from agreed paths; local templates never feed gameplay directly.
+
+
+function QB_SetAddFrame takes integer index, integer id, boolean banned returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local boolean shown = false
+    local integer targetIndex = 0
+    set QB_AddId[index] = id
+    set QB_AddBanned[index] = banned
+    if REC_AddButton[index] != null then
+        set shown = IsGamePlayerSlot(pid) and id != 0 and not banned and LoadBoolean(QB_Data, id, 0) and QB_Hero[pid] != 0 and not QB_Awaiting[pid] and REC_Count[pid] < REC_CAPACITY
+        if index < 35 and ItemsFrameCurrentPage_ID[pid] == 0 and not ShopSearchActive[pid] then
+            set shown = false
         endif
-    endif
-    
-    if GetLocalPlayer() == p then
-        if fullRefresh then
-            if id == 0 then
-                call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], "")
-                call BlzFrameSetText(FRAME_ShopItemName[slot], "")
-                call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
-                call BlzFrameSetTexture(FRAME_ShopItemBack[slot], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
-                call BlzFrameSetText(FRAME_ShopItemCost[slot], "")
-                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], false)
-                call BlzFrameSetEnable(FRAME_ShopItem[slot], false)
-            else
-                call BlzFrameSetSize(FRAME_ShopItemPricePlate[slot], plateWidth, 0.0105)
-                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], true)
-                call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
-                call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], tooltipNameStr)
-                call BlzFrameSetText(FRAME_ShopItemName[slot], WUI_TEXT + itemName + "|r")
-                call BlzFrameSetTexture(FRAME_ShopItemBack[slot], iconPath, 0, false)
-                call BlzFrameSetText(FRAME_ShopItemCost[slot], costStr)
-                call BlzFrameSetEnable(FRAME_ShopItem[slot], not banned)
+        set targetIndex = 0
+        loop
+            exitwhen not shown or targetIndex >= REC_Count[pid]
+            if REC_Item[pid * REC_CAPACITY + targetIndex] == id then
+                set shown = false
             endif
-        elseif banRefresh then
-            call BlzFrameSetTexture(FRAME_ShopItemBack[slot], iconPath, 0, false)
-            call BlzFrameSetEnable(FRAME_ShopItem[slot], not banned)
+            set targetIndex = targetIndex + 1
+        endloop
+        if REC_AddShown[index] != shown then
+            set REC_AddShown[index] = shown
+            call BlzFrameSetVisible(REC_AddButton[index], shown)
         endif
     endif
-    set ShopRenderedItemId[cacheIndex] = id
-    set ShopRenderedBanned[cacheIndex] = banned
-    set ShopRenderedInitialized[cacheIndex] = true
-    set tooltip = null
+    set shown = false
+    set targetIndex = 0
+    if QB_Add[index] == null then
+        return
+    endif
+    if IsGamePlayerSlot(pid) and QB_Data != null then
+        set shown = id != 0 and not banned and LoadBoolean(QB_Data, id, 0) and QB_Hero[pid] != 0 and not QB_Awaiting[pid] and QB_Count[pid] < 6
+    endif
+    loop
+        exitwhen not shown or targetIndex >= QB_Count[pid]
+        if QB_Target[pid * 6 + targetIndex] == id then
+            set shown = false
+        endif
+        set targetIndex = targetIndex + 1
+    endloop
+    if QB_AddShown[index] != shown then
+        set QB_AddShown[index] = shown
+        call BlzFrameSetVisible(QB_Add[index], shown)
+    endif
 endfunction
+
+function QB_RefreshAdds takes nothing returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 61
+        if QB_Add[i] != null then
+            call QB_SetAddFrame(i, QB_AddId[i], QB_AddBanned[i])
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
+
 
 function ShopGetPageItem takes integer page, integer slot returns integer
     return ShopGetStaticPageItem(page, slot)
@@ -1503,6 +1723,7 @@ function ResetCraftFrames takes player p returns nothing
         if GetLocalPlayer() == p then
             call BlzFrameSetEnable(FRAME_ShopItem[frameIndex], false)
             call BlzFrameSetVisible(FRAME_ShopItemBack[frameIndex], false)
+            call QB_SetAddFrame(frameIndex, 0, true)
             call BlzFrameSetTexture(FRAME_ShopItemBack[frameIndex], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
             call BlzFrameSetText(FRAME_ShopItemCost[frameIndex], "")
             call BlzFrameSetVisible(FRAME_ShopItemPricePlate[frameIndex], false)
@@ -1802,6 +2023,66 @@ function ShopTreeRowY takes integer index returns real
     return 0.455 - I2R(index) * 0.0490
 endfunction
 
+// Agreed selection reset; only the owner's existing frames are painted below.
+function ShopClearItemTree takes player p returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer slot = 0
+    local integer fr
+    set ItemsCurrentItem_ID[pid] = 0
+    set ItemsCurrentItem_ID_BACKUP[pid] = 0
+    set ItemsCurrentItemBag_ID[pid] = 0
+    set ItemsCurrentItemCraft_ID[pid] = 0
+    set ItemsFrameCurrentItem_ID[pid] = 0
+    set ItemsCraftPlayerDebug_ID[pid] = -1
+    set ItemsCraftPlayerDebug2_ID[pid] = -1
+    set ShopCraftScrollItemId[pid] = 0
+    set ShopCraftUpgradeOffset[pid] = 0
+    set ShopCraftComponentOffset[pid] = 0
+    set ShopCraftUpgradeMaxPage[pid] = 0
+    set ShopCraftComponentMaxPage[pid] = 0
+    set ShopTreeRowsUp[pid] = 0
+    set ShopTreeRowsDown[pid] = 0
+    set ShopLastClickItem[pid] = 0
+    set ShopLastClickCode[pid] = 0
+    set ShopLastClickTime[pid] = 0.00
+    loop
+        exitwhen slot >= SHOP_TREE_SLOTS
+        call SetPlayerCraftSlot(pid, slot, 0)
+        set ShopTreeSlotTopP[pid * SHOP_TREE_SLOTS + slot] = 0
+        set slot = slot + 1
+    endloop
+    call ResetCraftFrames(p)
+    if GetLocalPlayer() == p then
+        set slot = 0
+        loop
+            exitwhen slot >= SHOP_TREE_SLOTS
+            set fr = ShopTreeFrame(slot)
+            call BlzFrameSetVisible(FRAME_ShopItem[fr], false)
+            call ShopShowRecipeBranch(slot, false)
+            set slot = slot + 1
+        endloop
+        call QB_SetAddFrame(42, 0, true)
+        call BlzFrameSetEnable(FRAME_ShopItem[42], false)
+        call BlzFrameSetVisible(FRAME_ShopItem[42], false)
+        call BlzFrameSetTexture(FRAME_ShopItemBack[42], WUI_EMPTY_TEXTURE, 0, true)
+        call BlzFrameSetText(FRAME_ShopItemCost[42], "")
+        call BlzFrameSetText(FRAME_ShopItemName[42], "")
+        call BlzFrameSetText(FRAME_ShopItemTooltipText[42], "")
+        call BlzFrameSetVisible(FRAME_ShopItemTooltipBox[42], false)
+        call BlzFrameSetVisible(FRAME_ShopItemPricePlate[42], false)
+        call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, false)
+        call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
+        call BlzFrameSetVisible(FRAME_ShopCraftUpgradeScroll, false)
+        call BlzFrameSetVisible(FRAME_ShopCraftComponentScroll, false)
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[6], false)
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[7], false)
+        call BlzFrameSetText(FRAME_ShopItemDescriptionName, "")
+        set ShopDescCount = 0
+        set ShopDescOffset = 0
+        call ShopDescRender()
+    endif
+endfunction
+
 function CraftItemCheck takes integer id, player p, integer page returns nothing
     local integer pid = GetPlayerId(p)
     local integer slot = 0
@@ -1816,6 +2097,7 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
     local string costStr = ""
     local string relatedIconPath = ""
     local boolean relatedBanned = false
+    local boolean centreBanned = false
     local boolean top
     local real size
     local real x
@@ -1837,6 +2119,12 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
     local real centreY
     local integer slotRow
     local integer parentRow
+    if id == 0 then
+        call ShopClearItemTree(p)
+        set selectedUnit = null
+        return
+    endif
+    set centreBanned = CheckBanItems(id, selectedUnit)
     if ShopCraftScrollItemId[pid] != id then
         call ShopSaveCraftScrollState(pid, ShopCraftScrollItemId[pid])
         set ShopCraftScrollItemId[pid] = id
@@ -1879,16 +2167,20 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
     // The centre sits right below the upgrade rows (top when there are none).
     set centreY = ShopTreeRowY(rowsUp)
     if GetLocalPlayer() == p then
+        call BlzFrameSetVisible(FRAME_ShopItem[42], true)
+        call BlzFrameSetEnable(FRAME_ShopItem[42], not centreBanned)
+        call BlzFrameSetVisible(FRAME_ShopItemPricePlate[42], true)
+        call BlzFrameSetText(FRAME_ShopItemTooltipText[42], WUI_TEXT + GetObjectName(id) + "|r")
         call BlzFrameClearAllPoints(FRAME_ShopItem[42])
-        call BlzFrameSetAbsPoint(FRAME_ShopItem[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY)
+        call Shop_SetAbsPoint(FRAME_ShopItem[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY)
         call BlzFrameSetSize(FRAME_ShopItem[42], 0.030, 0.030)
         call BlzFrameClearAllPoints(FRAME_ShopItemCost[42])
-        call BlzFrameSetAbsPoint(FRAME_ShopItemCost[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY - 0.015 + 0.0068)
+        call Shop_SetAbsPoint(FRAME_ShopItemCost[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY - 0.015 + 0.0068)
         call BlzFrameClearAllPoints(FRAME_ShopItemPricePlate[42])
-        call BlzFrameSetAbsPoint(FRAME_ShopItemPricePlate[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY - 0.015 + 0.0068)
+        call Shop_SetAbsPoint(FRAME_ShopItemPricePlate[42], FRAMEPOINT_CENTER, SHOP_TREE_X, centreY - 0.015 + 0.0068)
         call BlzFrameSetSize(FRAME_ShopItemPricePlate[42], 0.0305, 0.0105)
         call BlzFrameClearAllPoints(FRAME_ShopItemName[42])
-        call BlzFrameSetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, centreY - 0.015 - 0.0012)
+        call Shop_SetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, centreY - 0.015 - 0.0012)
         call BlzFrameSetSize(FRAME_ShopItemName[42], 0.080 / 0.56, 0.014 / 0.56)
     endif
     loop
@@ -1954,35 +2246,37 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
             endif
             if GetLocalPlayer() == p then
                 call BlzFrameClearAllPoints(FRAME_ShopItem[frameIndex])
-                call BlzFrameSetAbsPoint(FRAME_ShopItem[frameIndex], FRAMEPOINT_CENTER, x, y)
+                call Shop_SetAbsPoint(FRAME_ShopItem[frameIndex], FRAMEPOINT_CENTER, x, y)
                 call BlzFrameSetSize(FRAME_ShopItem[frameIndex], size, size)
                 call BlzFrameClearAllPoints(FRAME_ShopItemCost[frameIndex])
-                call BlzFrameSetAbsPoint(FRAME_ShopItemCost[frameIndex], FRAMEPOINT_CENTER, x, costY)
+                call Shop_SetAbsPoint(FRAME_ShopItemCost[frameIndex], FRAMEPOINT_CENTER, x, costY)
                 call BlzFrameSetScale(FRAME_ShopItemCost[frameIndex], priceScale)
                 call BlzFrameSetSize(FRAME_ShopItemCost[frameIndex], 0.036 / priceScale, 0.010 / priceScale)
                 call BlzFrameSetLevel(FRAME_ShopItemCost[frameIndex], 4)
                 call BlzFrameClearAllPoints(FRAME_ShopItemPricePlate[frameIndex])
-                call BlzFrameSetAbsPoint(FRAME_ShopItemPricePlate[frameIndex], FRAMEPOINT_CENTER, x, costY)
+                call Shop_SetAbsPoint(FRAME_ShopItemPricePlate[frameIndex], FRAMEPOINT_CENTER, x, costY)
                 call BlzFrameSetSize(FRAME_ShopItemPricePlate[frameIndex], plateWidth, 0.0105 * priceScale / 0.78)
                 call BlzFrameSetLevel(FRAME_ShopItemPricePlate[frameIndex], 3)
                 call BlzFrameSetVisible(FRAME_ShopItemPricePlate[frameIndex], true)
                 // Segment 0: from the icon to its rail; 1: along the rail to the
                 // parent's x; 2: (second level only) down/up into the parent.
                 call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3])
-                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3], FRAMEPOINT_CENTER, x, (edgeY + joinY) * 0.50)
+                call Shop_SetAbsPoint(FRAME_ShopRecipeLine[slot * 3], FRAMEPOINT_CENTER, x, (edgeY + joinY) * 0.50)
                 call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3], 0.0008, RAbsBJ(edgeY - joinY))
                 call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3 + 1])
-                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 1], FRAMEPOINT_CENTER, (x + parentX) * 0.50, joinY)
+                call Shop_SetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 1], FRAMEPOINT_CENTER, (x + parentX) * 0.50, joinY)
                 call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3 + 1], RMaxBJ(0.0008, RAbsBJ(x - parentX)), 0.0008)
                 call BlzFrameClearAllPoints(FRAME_ShopRecipeLine[slot * 3 + 2])
-                call BlzFrameSetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 2], FRAMEPOINT_CENTER, parentX, (joinY + parentEdge) * 0.50)
+                call Shop_SetAbsPoint(FRAME_ShopRecipeLine[slot * 3 + 2], FRAMEPOINT_CENTER, parentX, (joinY + parentEdge) * 0.50)
                 call BlzFrameSetSize(FRAME_ShopRecipeLine[slot * 3 + 2], 0.0008, RMaxBJ(0.0008, RAbsBJ(joinY - parentEdge)))
                 call BlzFrameSetEnable(FRAME_ShopItem[frameIndex], not relatedBanned)
+                call QB_SetAddFrame(frameIndex, relatedId, relatedBanned)
                 call BlzFrameSetTexture(FRAME_ShopItemBack[frameIndex], relatedIconPath, 0, false)
+                call BlzFrameSetVisible(FRAME_ShopItem[frameIndex], true)
                 call BlzFrameSetVisible(FRAME_ShopItemBack[frameIndex], true)
                 call BlzFrameSetText(FRAME_ShopItemCost[frameIndex], costStr)
                 call BlzFrameClearAllPoints(FRAME_ShopItemName[frameIndex])
-                call BlzFrameSetAbsPoint(FRAME_ShopItemName[frameIndex], FRAMEPOINT_TOP, x, y - size * 0.50 - 0.0012)
+                call Shop_SetAbsPoint(FRAME_ShopItemName[frameIndex], FRAMEPOINT_TOP, x, y - size * 0.50 - 0.0012)
                 call BlzFrameSetSize(FRAME_ShopItemName[frameIndex], (ShopTreeStep(rowCount) - 0.002) / 0.56, 0.014 / 0.56)
                 call BlzFrameSetText(FRAME_ShopItemName[frameIndex], WUI_TEXT + GetObjectName(relatedId) + "|r")
             endif
@@ -1990,6 +2284,9 @@ function CraftItemCheck takes integer id, player p, integer page returns nothing
         set slot = slot + 1
     endloop
 
+    if GetLocalPlayer() == p then
+        call QB_SetAddFrame(42, id, centreBanned)
+    endif
     // Checkpoint 25b: the selected (centre) item is named like the others.
     if GetLocalPlayer() == p and FRAME_ShopItemName[42] != null then
         call BlzFrameSetText(FRAME_ShopItemName[42], WUI_TEXT + GetObjectName(id) + "|r")
@@ -2130,6 +2427,121 @@ function ShopCraftOnWheel takes nothing returns nothing
     set p = null
 endfunction
 
+function QB_Valid takes integer id returns boolean
+    return id != 0 and LoadBoolean(QB_Data, id, 0)
+endfunction
+
+function REC_Active takes integer pid returns boolean
+    return ItemsFrameCurrentPage_ID[pid] == 0 and not ShopSearchActive[pid] and not ShopVipOpen[pid]
+endfunction
+
+function REC_Render takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local integer i = 0
+    local boolean shown
+    local boolean slotShown
+    if REC_Action[0] == null or not IsGamePlayerSlot(pid) then
+        return
+    endif
+    set shown = REC_Active(pid)
+    if REC_Hint != null then
+        call BlzFrameSetVisible(REC_Hint, shown)
+    endif
+    loop
+        exitwhen i >= 4
+        call BlzFrameSetVisible(REC_Action[i], shown)
+        call BlzFrameSetEnable(REC_Action[i], QB_Hero[pid] != 0 and not QB_Awaiting[pid])
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 35
+        set slotShown = not shown or i < REC_CAPACITY
+        if BlzFrameIsVisible(FRAME_ShopItem[i]) != slotShown then
+            call BlzFrameSetVisible(FRAME_ShopItem[i], slotShown)
+        endif
+        if i < REC_CAPACITY then
+            if BlzFrameIsVisible(REC_Remove[i]) != (shown and i < REC_Count[pid]) then
+                call BlzFrameSetVisible(REC_Remove[i], shown and i < REC_Count[pid])
+            endif
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
+function ShopRenderCatalogueSlot takes integer slot, integer id, boolean banned, player p returns nothing
+    local integer cacheIndex = GetPlayerId(p) * SHOP_SEARCH_PAGE_SIZE + slot
+    local integer price = 0
+    local boolean fullRefresh = not ShopRenderedInitialized[cacheIndex] or ShopRenderedItemId[cacheIndex] != id
+    local boolean banRefresh = ShopRenderedBanned[cacheIndex] != banned
+    local string costStr = ""
+    local string tooltipNameStr = ""
+    local string itemName = ""
+    local string iconPath = "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder"
+    local real tooltipWidth = ShopGetItemTooltipWidth("")
+    local framehandle tooltip = FRAME_ShopItemTooltipBox[slot]
+    local real plateWidth = 0.020
+    
+    if id != 0 then
+        if QB_Data != null and QB_Valid(id) then
+            set price = LoadInteger(QB_Data, id, 1)
+        else
+            set price = GetItemValue(id)
+        endif
+        if Hero[GetPlayerId(p)] != null then
+            set price = IMaxBJ(0, CheckItemsReduceCostCraft(Hero[GetPlayerId(p)], price, id, false))
+        endif
+        set plateWidth = ShopPricePlateWidth(price)
+        // Строки собираются глобально для избежания десинка
+        set costStr = "|c00FFFF00" + I2S(price) + "|r"
+        set itemName = GetObjectName(id)
+        set tooltipNameStr = "|cffffffff" + itemName + "|r"
+        set tooltipWidth = ShopGetItemTooltipWidth(itemName)
+        set iconPath = BlzGetAbilityIcon(id)
+        if banned then
+            set iconPath = ConvertBTNtoDISBTN(iconPath)
+        endif
+    endif
+    
+    if GetLocalPlayer() == p then
+        if fullRefresh then
+            if id == 0 then
+                call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], "")
+                call BlzFrameSetText(FRAME_ShopItemName[slot], "")
+                call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
+                call BlzFrameSetTexture(FRAME_ShopItemBack[slot], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
+                call BlzFrameSetText(FRAME_ShopItemCost[slot], "")
+                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], false)
+                call BlzFrameSetEnable(FRAME_ShopItem[slot], false)
+            else
+                call BlzFrameSetSize(FRAME_ShopItemPricePlate[slot], plateWidth, 0.0105)
+                call BlzFrameSetVisible(FRAME_ShopItemPricePlate[slot], true)
+                call BlzFrameSetSize(tooltip, tooltipWidth, 0.020)
+                call BlzFrameSetText(FRAME_ShopItemTooltipText[slot], tooltipNameStr)
+                call BlzFrameSetText(FRAME_ShopItemName[slot], WUI_TEXT + itemName + "|r")
+                call BlzFrameSetTexture(FRAME_ShopItemBack[slot], iconPath, 0, false)
+                call BlzFrameSetText(FRAME_ShopItemCost[slot], costStr)
+                call BlzFrameSetEnable(FRAME_ShopItem[slot], not banned)
+            endif
+        elseif banRefresh then
+            call BlzFrameSetTexture(FRAME_ShopItemBack[slot], iconPath, 0, false)
+            call BlzFrameSetEnable(FRAME_ShopItem[slot], not banned)
+        endif
+        if id != 0 and ShopRenderedPrice[cacheIndex] != price then
+            call BlzFrameSetText(FRAME_ShopItemCost[slot], costStr)
+            call BlzFrameSetSize(FRAME_ShopItemPricePlate[slot], plateWidth, 0.0105)
+        endif
+    endif
+    if GetLocalPlayer() == p then
+        call QB_SetAddFrame(slot, id, banned)
+    endif
+    set ShopRenderedPrice[cacheIndex] = price
+    set ShopRenderedItemId[cacheIndex] = id
+    set ShopRenderedBanned[cacheIndex] = banned
+    set ShopRenderedInitialized[cacheIndex] = true
+    set tooltip = null
+endfunction
+
 function ReloadItemPageCore takes integer page, player p, boolean showControls returns nothing
     local integer tab = 0
     local integer pid = GetPlayerId(p)
@@ -2153,6 +2565,7 @@ function ReloadItemPageCore takes integer page, player p, boolean showControls r
     endloop
     set selectedUnit = null
     if GetLocalPlayer() == p then
+        call REC_Render()
         loop
             exitwhen tab >= 8
             if FRAME_ShopSection[tab] != null then
@@ -2429,7 +2842,7 @@ endfunction
 // ===== VIP tab: promotion page =====
 function ShopVipText takes framehandle parent, string text, real x, real y, real width, real height, real scale returns framehandle
     local framehandle frame = BlzCreateFrameByType("TEXT", "ShopVipText", parent, "", 0)
-    call WUI_Place(frame, x, y, width / scale, height / scale)
+    call Shop_Place(frame, x, y, width / scale, height / scale)
     call BlzFrameSetScale(frame, scale)
     call BlzFrameSetText(frame, text)
     call BlzFrameSetEnable(frame, false)
@@ -2459,9 +2872,9 @@ function ShopVipIcons takes integer tier, real x, real y returns nothing
         if path != null and path != "" then
             set icon = BlzCreateFrameByType("BACKDROP", "ShopVipEmoji", FRAME_ShopVipPage, "", tier * 16 + shown)
             if tier == 3 then
-                call WUI_Place(icon, x + (I2R(ModuloInteger(shown, 7)) - 3.0) * 0.022, y + 0.011 - I2R(shown / 7) * 0.022, 0.0195, 0.0195)
+                call Shop_Place(icon, x + (I2R(ModuloInteger(shown, 7)) - 3.0) * 0.022, y + 0.011 - I2R(shown / 7) * 0.022, 0.0195, 0.0195)
             else
-                call WUI_Place(icon, x + (I2R(shown) - 3.5) * step, y, 0.0175, 0.0175)
+                call Shop_Place(icon, x + (I2R(shown) - 3.5) * step, y, 0.0175, 0.0175)
             endif
             call BlzFrameSetTexture(icon, path, 0, true)
             call BlzFrameSetLevel(icon, 5)
@@ -2483,13 +2896,13 @@ function ShopVipCard takes integer tier, real x, real y, real width, real height
     local real top = y + height * 0.5
     local real bottom = y - height * 0.5
     set card = BlzCreateFrameByType("BACKDROP", "ShopVipCard", FRAME_ShopVipPage, "", tier)
-    call WUI_Place(card, x, y, width, height)
+    call Shop_Place(card, x, y, width, height)
     call BlzFrameSetTexture(card, "UI\\WOS\\panel-soft.tga", 0, true)
     call BlzFrameSetLevel(card, 2)
     call BlzFrameSetEnable(card, false)
     // Bronze / silver / gold metal frame per tier.
     set part = BlzCreateFrameByType("BACKDROP", "ShopVipCardFrame", FRAME_ShopVipPage, "", tier)
-    call WUI_Place(part, x, y, width + 0.004, height + 0.004)
+    call Shop_Place(part, x, y, width + 0.004, height + 0.004)
     if tier == 1 then
         call BlzFrameSetTexture(part, "UI\\WOS\\vip-frame-bronze.tga", 0, true)
     elseif tier == 2 then
@@ -2508,14 +2921,14 @@ function ShopVipCard takes integer tier, real x, real y, real width, real height
     call ShopVipIcons(tier, x, bottom + 0.052)
     // Owner plate at the bottom: gold PURCHASED, thanks line with a heart.
     set FRAME_ShopVipOwned[tier] = BlzCreateFrameByType("FRAME", "ShopVipOwned", FRAME_ShopVipPage, "", tier)
-    call WUI_Place(FRAME_ShopVipOwned[tier], x, bottom + 0.016, width - 0.010, 0.026)
+    call Shop_Place(FRAME_ShopVipOwned[tier], x, bottom + 0.016, width - 0.010, 0.026)
     call BlzFrameSetLevel(FRAME_ShopVipOwned[tier], 6)
     set part = ShopVipText(FRAME_ShopVipOwned[tier], "|cffffd34dPURCHASED|r", x, bottom + 0.023, width - 0.010, 0.014, 1.15)
     call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     set part = ShopVipText(FRAME_ShopVipOwned[tier], "|cffff9aa2Thank you for your support!|r", x - 0.006, bottom + 0.009, width - 0.030, 0.012, 0.78)
     call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     set part = BlzCreateFrameByType("BACKDROP", "ShopVipHeart", FRAME_ShopVipOwned[tier], "", tier)
-    call WUI_Place(part, x + 0.062, bottom + 0.009, 0.0115, 0.0115)
+    call Shop_Place(part, x + 0.062, bottom + 0.009, 0.0115, 0.0115)
     call BlzFrameSetTexture(part, "UI\\WOS\\heart.tga", 0, true)
     call BlzFrameSetEnable(part, false)
     call BlzFrameSetVisible(FRAME_ShopVipOwned[tier], false)
@@ -2569,7 +2982,7 @@ function ShopCreateVipPage takes nothing returns nothing
         return
     endif
     set FRAME_ShopVipPage = BlzCreateFrameByType("BACKDROP", "ShopVipPage", FRAME_ShopMAIN, "", 0)
-    call WUI_Place(FRAME_ShopVipPage, 0.3485, 0.319, 0.617, 0.328)
+    call Shop_Place(FRAME_ShopVipPage, 0.3485, 0.319, 0.617, 0.328)
     call BlzFrameSetTexture(FRAME_ShopVipPage, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetLevel(FRAME_ShopVipPage, 30)
     call BlzFrameSetEnable(FRAME_ShopVipPage, false)
@@ -2590,7 +3003,7 @@ function ShopCreateVipPage takes nothing returns nothing
         set FRAME_ShopVipLink = BlzCreateFrame("WOSEditBox", FRAME_ShopVipPage, 0, 9171)
     endif
     if FRAME_ShopVipLink != null then
-        call WUI_Place(FRAME_ShopVipLink, 0.3485, 0.1735, 0.500, 0.022)
+        call Shop_Place(FRAME_ShopVipLink, 0.3485, 0.1735, 0.500, 0.022)
         call BlzFrameSetLevel(FRAME_ShopVipLink, 8)
         call BlzFrameSetText(FRAME_ShopVipLink, SHOP_VIP_URL)
         set ShopVipLinkTrigger = CreateTrigger()
@@ -2658,10 +3071,6 @@ function OnClickItem takes nothing returns nothing
     local string iconPath = ""
     if frameCode == 408 then
         // Same state change as the shop key (ButtonPressed.j WOS_ToggleShop).
-        if GetLocalPlayer() == p then
-            call BlzFrameSetEnable(clicked, false)
-            call BlzFrameSetEnable(clicked, true)
-        endif
         if Shop_Active[pid] then
             set Shop_Active[pid] = false
             if GetLocalPlayer() == p then
@@ -2671,6 +3080,7 @@ function OnClickItem takes nothing returns nothing
         set clicked = null
         set d = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     if frameCode == 405 then
@@ -2678,6 +3088,7 @@ function OnClickItem takes nothing returns nothing
         set clicked = null
         set d = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     if frameCode == 406 or frameCode == 407 then
@@ -2705,6 +3116,7 @@ function OnClickItem takes nothing returns nothing
         set clicked = null
         set d = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
 
@@ -2713,6 +3125,7 @@ if frameCode == 107 then
         set clicked = null
         set d = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
 
@@ -2743,6 +3156,7 @@ if frameCode >= 100 and frameCode <= 106 then
         set clicked = null
         set d = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
 
@@ -2871,7 +3285,7 @@ if frameCode >= 100 and frameCode <= 106 then
     if frameCode == 307 and not IsObserverSlot(pid) and ItemsCurrentItemBag_ID[pid] != 0 and UnitItemInSlot(d, ItemsCurrentItemBag_ID[pid] - 1) != null then
         set id = ItemsCurrentItem_ID[pid]
         set baseCost = GetItemValue(id)
-        set value = GetItemValue(ItemsCurrentItem_ID_BACKUP[pid])
+
         call SaveInteger(hs, GetHandleId(d), StringHash("sold cd"), 1)
         call MyFlush(GetHandleId(d), StringHash("sold cd"), 1, 0.1)
         set refundSlot = ItemsCurrentItemBag_ID[pid] - 1
@@ -2884,25 +3298,15 @@ if frameCode >= 100 and frameCode <= 106 then
         endif
         call RemoveItem(UnitItemInSlot(d, refundSlot))
         call RefreshItemCache2(d)
-        set ItemsCurrentItem_ID[pid] = ItemsCurrentItem_ID_BACKUP[pid]
-        set costStr = "|c00FFFF00" + I2S(value) + "|r"
-        set iconPath = BlzGetAbilityIcon(ItemsCurrentItem_ID[pid])
-        if GetLocalPlayer() == p then
-            call BlzFrameSetTexture(FRAME_ShopItemBack[42], iconPath, 0, false)
-            call BlzFrameSetText(FRAME_ShopItemCost[42], costStr)
-            call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[7], false)
-            call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[6], true)
-            call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, true)
-        endif
+        call ShopClearItemTree(p)
         call StartSoundForPlayerBJ(p, gg_snd_ReceiveGold)
-        call ShopShowItemDescription(ItemsCurrentItem_ID[pid], p)
-        call CraftItemCheck(ItemsCurrentItem_ID[pid], p, ItemsFrameCurrentPage_ID[pid])
         call ReloadItemPage2(ItemsFrameCurrentPage_ID[pid], p)
     endif
 
     set clicked = null
     set d = null
     set p = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function BuyAuto takes unit c, integer id returns nothing
@@ -3009,11 +3413,2016 @@ function BuyAutoLimited takes unit c, integer id, integer remaining returns inte
     return remaining
 endfunction
 
+function QB_Field takes string text, integer field returns string
+    local integer i = 0
+    local integer start = 0
+    local integer n = 0
+    loop
+        exitwhen i > StringLength(text)
+        if i == StringLength(text) or SubString(text, i, i + 1) == "," then
+            if n == field then
+                return SubString(text, start, i)
+            endif
+            set n = n + 1
+            set start = i + 1
+        endif
+        set i = i + 1
+    endloop
+    return ""
+endfunction
+
+function QB_Int takes string text returns integer
+    local integer value = S2I(text)
+    if I2S(value) != text or value < 0 then
+        return -1
+    endif
+    return value
+endfunction
+
+
+
+// Called only during agreed bootstrap. Price getter may use the game's seller.
+function QB_CacheItem takes integer id, integer depth returns nothing
+    local integer i = 0
+    if id == 0 or depth > 32 or LoadBoolean(QB_Data, id, 0) then
+        return
+    endif
+    call SaveBoolean(QB_Data, id, 0, true)
+    call SaveInteger(QB_Data, id, 1, GetItemValue(id))
+    call SaveStr(QB_Data, id, 2, BlzGetAbilityIcon(id))
+    call SaveStr(QB_Data, id, 3, GetObjectName(id))
+    loop
+        exitwhen i >= GetCraftComponentCount(id)
+        call QB_CacheItem(GetCraftComponent(id, i), depth + 1)
+        set i = i + 1
+    endloop
+endfunction
+
+// Stable postorder keys include owned subtrees, so manual deletion cannot be
+// resurrected by inventory changes or a group's move to another position.
+function QB_ClearExcluded takes integer pid, integer goalIndex returns nothing
+    local integer node = 0
+    loop
+        exitwhen node >= QB_MAX_STEPS
+        set QB_Excluded[pid * 768 + goalIndex * QB_MAX_STEPS + node] = false
+        set node = node + 1
+    endloop
+endfunction
+
+function QB_CopyExcluded takes integer pid, integer sourceIndex, integer dest returns nothing
+    local integer node = 0
+    loop
+        exitwhen node >= QB_MAX_STEPS
+        set QB_Excluded[pid * 768 + dest * QB_MAX_STEPS + node] = QB_Excluded[pid * 768 + sourceIndex * QB_MAX_STEPS + node]
+        set node = node + 1
+    endloop
+endfunction
+
+
+
+function QB_RemoveTarget takes integer pid, integer index returns nothing
+    local integer i = index
+    if index < 0 or index >= QB_Count[pid] then
+        return
+    endif
+    loop
+        exitwhen i + 1 >= QB_Count[pid]
+        set QB_GoalSerial[pid * 6 + i] = QB_GoalSerial[pid * 6 + i + 1]
+        set QB_Target[pid * 6 + i] = QB_Target[pid * 6 + i + 1]
+        call QB_CopyExcluded(pid, i + 1, i)
+        set i = i + 1
+    endloop
+    set QB_Count[pid] = QB_Count[pid] - 1
+    set QB_Target[pid * 6 + QB_Count[pid]] = 0
+    set QB_GoalSerial[pid * 6 + QB_Count[pid]] = 0
+    call QB_ClearExcluded(pid, QB_Count[pid])
+endfunction
+
+function QB_SkipOwnedNodes takes integer id, integer depth returns nothing
+    local integer i = 0
+    if depth >= 32 or QB_BuildNode >= QB_MAX_STEPS or QB_BuildError then
+        set QB_BuildError = true
+        return
+    endif
+    loop
+        exitwhen i >= depth
+        if QB_Stack[i] == id then
+            set QB_BuildError = true
+            return
+        endif
+        set i = i + 1
+    endloop
+    set QB_Stack[depth] = id
+    set i = 0
+    loop
+        exitwhen i >= GetCraftComponentCount(id) or QB_BuildError
+        call QB_SkipOwnedNodes(GetCraftComponent(id, i), depth + 1)
+        set i = i + 1
+    endloop
+    set QB_BuildNode = QB_BuildNode + 1
+endfunction
+
+function QB_Expand takes integer id, integer depth returns nothing
+    local integer i = 0
+    local integer n = GetCraftComponentCount(id)
+    local integer slot = 0
+    local integer node
+    local integer startNode = QB_BuildNode
+    local integer endNode
+    local integer cost = LoadInteger(QB_Data, id, 1)
+    local integer offset = QB_BuildPid * QB_MAX_STEPS
+    local boolean missing = false
+    set QB_ExpansionMissing = false
+    set QB_DeferredCost = 0
+    if QB_BuildError then
+        return
+    endif
+    if not QB_Valid(id) or depth >= 32 then
+        set QB_BuildError = true
+        return
+    endif
+    // Reserve owned copies for retained occurrences, not deleted duplicates.
+    // Count structural nodes with the existing validated walker; no handles.
+    call QB_SkipOwnedNodes(id, depth)
+    set endNode = QB_BuildNode - 1
+    set QB_BuildNode = startNode
+    if QB_BuildError then
+        return
+    endif
+    loop
+        exitwhen slot >= 6
+        if not QB_Excluded[QB_BuildPid * 768 + QB_BuildGroup * QB_MAX_STEPS + endNode] and not QB_Used[slot] and QB_Inventory[QB_BuildPid * 6 + slot] == id then
+            set QB_Used[slot] = true
+            call QB_SkipOwnedNodes(id, depth)
+            return
+        endif
+        set slot = slot + 1
+    endloop
+    loop
+        exitwhen i >= depth
+        if QB_Stack[i] == id then
+            set QB_BuildError = true
+            return
+        endif
+        set i = i + 1
+    endloop
+    set QB_Stack[depth] = id
+    set i = 0
+    loop
+        exitwhen i >= n or QB_BuildError
+        call QB_Expand(GetCraftComponent(id, i), depth + 1)
+        set missing = missing or QB_ExpansionMissing
+        set cost = cost - LoadInteger(QB_Data, GetCraftComponent(id, i), 1) + QB_DeferredCost
+        set i = i + 1
+    endloop
+    set node = QB_BuildNode
+    set QB_BuildNode = QB_BuildNode + 1
+    if QB_BuildError or node >= QB_MAX_STEPS then
+        set QB_BuildError = true
+        return
+    endif
+    if QB_Excluded[QB_BuildPid * 768 + QB_BuildGroup * QB_MAX_STEPS + node] then
+        set QB_ExpansionMissing = true
+        set QB_DeferredCost = IMaxBJ(0, cost)
+        return
+    endif
+    if QB_StepCount[QB_BuildPid] >= QB_MAX_STEPS then
+        set QB_BuildError = true
+        return
+    endif
+    set offset = offset + QB_StepCount[QB_BuildPid]
+    set QB_Step[offset] = id
+    set QB_Group[offset] = QB_BuildGroup
+    set QB_Cost[offset] = IMaxBJ(0, cost)
+    set QB_StepKey[offset] = node
+    set QB_SubtreeStart[offset] = startNode
+    set QB_Token[offset] = QB_GoalSerial[QB_BuildPid * 6 + QB_BuildGroup] * QB_MAX_STEPS + node
+    set QB_StepMissing[offset] = missing
+    set QB_AnyMissing[QB_BuildPid] = QB_AnyMissing[QB_BuildPid] or missing
+    // Retained steps pay their own deferred portion; ancestors must not count it twice.
+    set QB_ExpansionMissing = false
+    set QB_DeferredCost = 0
+    set QB_StepCount[QB_BuildPid] = QB_StepCount[QB_BuildPid] + 1
+endfunction
+
+// Move one agreed purchase step. Its group/dependency/key stay attached.
+function QB_MoveStep takes integer pid, integer sourceIndex, integer dest returns nothing
+    local integer off = pid * QB_MAX_STEPS
+    local integer i = sourceIndex
+    local integer nextIndex
+    local integer id = QB_Step[off + i]
+    local integer cost = QB_Cost[off + i]
+    local integer groupIndex = QB_Group[off + i]
+    local integer key = QB_StepKey[off + i]
+    local integer token = QB_Token[off + i]
+    local integer subtreeStart = QB_SubtreeStart[off + i]
+    local boolean missing = QB_StepMissing[off + i]
+    loop
+        exitwhen i == dest
+        if i < dest then
+            set nextIndex = i + 1
+        else
+            set nextIndex = i - 1
+        endif
+        set QB_Step[off + i] = QB_Step[off + nextIndex]
+        set QB_Cost[off + i] = QB_Cost[off + nextIndex]
+        set QB_Group[off + i] = QB_Group[off + nextIndex]
+        set QB_StepKey[off + i] = QB_StepKey[off + nextIndex]
+        set QB_Token[off + i] = QB_Token[off + nextIndex]
+        set QB_SubtreeStart[off + i] = QB_SubtreeStart[off + nextIndex]
+        set QB_StepMissing[off + i] = QB_StepMissing[off + nextIndex]
+        set i = nextIndex
+    endloop
+    set QB_Step[off + dest] = id
+    set QB_Cost[off + dest] = cost
+    set QB_Group[off + dest] = groupIndex
+    set QB_StepKey[off + dest] = key
+    set QB_Token[off + dest] = token
+    set QB_SubtreeStart[off + dest] = subtreeStart
+    set QB_StepMissing[off + dest] = missing
+endfunction
+
+function QB_CaptureOrder takes integer pid returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        set QB_Order[pid * QB_MAX_STEPS + i] = QB_Token[pid * QB_MAX_STEPS + i]
+        set i = i + 1
+    endloop
+    set QB_OrderCount[pid] = QB_StepCount[pid]
+endfunction
+
+function QB_ApplyOrder takes integer pid returns nothing
+    local integer i = 0
+    local integer j
+    local integer dest = 0
+    local integer off = pid * QB_MAX_STEPS
+    if QB_OrderCount[pid] == 0 then
+        return
+    endif
+    loop
+        exitwhen i >= QB_OrderCount[pid]
+        set j = dest
+        loop
+            exitwhen j >= QB_StepCount[pid] or QB_Token[off + j] == QB_Order[off + i]
+            set j = j + 1
+        endloop
+        if j < QB_StepCount[pid] then
+            call QB_MoveStep(pid, j, dest)
+            set dest = dest + 1
+        endif
+        set i = i + 1
+    endloop
+    call QB_CaptureOrder(pid)
+endfunction
+
+// Current inventory discounts minus retained child operations for deferred steps.
+// Parent search uses structural keys, so reorder does not change the price.
+// Structural parents change on rebuild/reorder, not on every UI refresh.
+function QB_CachePriceParents takes integer pid returns nothing
+    local integer off = pid * QB_MAX_STEPS
+    local integer i = 0
+    local integer j
+    local integer parent
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        set parent = -1
+        set j = 0
+        loop
+            exitwhen j >= QB_StepCount[pid]
+            if QB_Group[off + j] == QB_Group[off + i] and QB_StepKey[off + i] >= QB_SubtreeStart[off + j] and QB_StepKey[off + i] < QB_StepKey[off + j] then
+                if parent < 0 or QB_StepKey[off + j] < QB_StepKey[off + parent] then
+                    set parent = j
+                endif
+            endif
+            set j = j + 1
+        endloop
+        set QB_PriceParent[off + i] = parent
+        set i = i + 1
+    endloop
+endfunction
+
+function QB_RefreshPrices takes integer pid returns boolean
+    local integer i = 0
+    local integer parent
+    local integer off = pid * QB_MAX_STEPS
+    local integer id
+    local integer price
+    local boolean changed = false
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        set id = QB_Step[off + i]
+        set QB_PriceRemaining[off + i] = IMaxBJ(0, CheckItemsReduceCostCraft(Hero[pid], LoadInteger(QB_Data, id, 1), id, false))
+        set QB_PriceQueued[off + i] = 0
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        set parent = QB_PriceParent[off + i]
+        if parent >= 0 then
+            set QB_PriceQueued[off + parent] = QB_PriceQueued[off + parent] + QB_PriceRemaining[off + i]
+        endif
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        set price = IMaxBJ(0, QB_PriceRemaining[off + i] - QB_PriceQueued[off + i])
+        if QB_DisplayCost[off + i] != price then
+            set QB_DisplayCost[off + i] = price
+            set changed = true
+        endif
+        set i = i + 1
+    endloop
+    return changed
+endfunction
+
+function QB_Rebuild takes integer pid returns nothing
+    local integer i = 0
+    local integer id
+    local integer start
+    local item it
+    set QB_StepCount[pid] = 0
+    set QB_AnyMissing[pid] = false
+    set QB_BuildPid = pid
+    set QB_BuildError = false
+    loop
+        exitwhen i >= 6
+        set it = UnitItemInSlot(Hero[pid], i)
+        set QB_Inventory[pid * 6 + i] = GetItemTypeId(it)
+        set QB_Used[i] = false
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= QB_Count[pid]
+        set id = QB_Target[pid * 6 + i]
+        if IsItemInInventory(Hero[pid], id) > 0 then
+            call QB_RemoveTarget(pid, i)
+        else
+            set i = i + 1
+        endif
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= QB_Count[pid] or QB_BuildError
+        if QB_GoalSerial[pid * 6 + i] == 0 then
+            set QB_NextSerial[pid] = QB_NextSerial[pid] + 1
+            set QB_GoalSerial[pid * 6 + i] = QB_NextSerial[pid]
+        endif
+        set QB_BuildGroup = i
+        set QB_BuildNode = 0
+        set start = QB_StepCount[pid]
+        call QB_Expand(QB_Target[pid * 6 + i], 0)
+        if not QB_BuildError and start == QB_StepCount[pid] then
+            call QB_RemoveTarget(pid, i)
+        else
+            set i = i + 1
+        endif
+    endloop
+    if QB_BuildError then
+        set QB_Status[pid] = 3
+        set QB_Error[pid] = "Invalid or cyclic recipe"
+    else
+        set QB_Status[pid] = 0
+    endif
+    call QB_ApplyOrder(pid)
+    call QB_CachePriceParents(pid)
+    call QB_RefreshPrices(pid)
+    set QB_Version[pid] = QB_Version[pid] + 1
+    set it = null
+endfunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Recommended is agreed per-player data. File buffers and mouse paint are local only.
+
+
+function REC_Apply takes integer pid returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= SHOP_SEARCH_PAGE_SIZE
+        if i < REC_CAPACITY then
+            set ItemsPage0_ID[pid * SHOP_SEARCH_PAGE_SIZE + i] = REC_Item[pid * REC_CAPACITY + i]
+        else
+            set ItemsPage0_ID[pid * SHOP_SEARCH_PAGE_SIZE + i] = 0
+        endif
+        set i = i + 1
+    endloop
+    set AutoBuyRecommendedIndex[pid] = 0
+    set AutoBuyRecommendedDone[pid] = false
+    set AutoBuyRecommendedUnitId[pid] = GetHandleId(Hero[pid])
+    set REC_Lock[pid] = 0
+    set REC_Version[pid] = REC_Version[pid] + 1
+endfunction
+
+
+
+function REC_FilePath takes integer pid, integer heroId returns string
+    local string name = GetObjectName(heroId)
+    local string safe = ""
+    local string ch
+    local integer i = 0
+    loop
+        exitwhen i >= StringLength(name) or i >= 48
+        set ch = SubString(name, i, i + 1)
+        if ch == "" then
+            // Empty characters cannot become path separators.
+        elseif ShopTextContains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", ch) then
+            set safe = safe + ch
+        else
+            set safe = safe + "_"
+        endif
+        set i = i + 1
+    endloop
+    if safe == "" then
+        set safe = "Hero"
+    endif
+    return "WosHeroes\\" + safe + "_" + I2S(heroId) + "_" + I2S(ss_IdentityKeyA[pid]) + "_" + I2S(ss_IdentityKeyB[pid]) + ".txt"
+endfunction
+
+function REC_Send takes string op, string data returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    if QB_Hero[pid] == 0 then
+        return
+    endif
+    set REC_LocalSequence = REC_LocalSequence + 1
+    call BlzSendSyncData(REC_SYNC, op + "," + I2S(QB_Hero[pid]) + "," + I2S(REC_Version[pid]) + "," + I2S(REC_LocalSequence) + "," + data)
+endfunction
+
+// All file IO is explicit, owner-only; never called from Save Keys or QB queue edits.
+function REC_SaveLocal takes integer pid returns nothing
+    local integer i = 0
+    local string record = "WOSR1|" + I2S(QB_Hero[pid]) + "|"
+    if not REC_FileWritable then
+        call DisplayTimedTextToPlayer(Player(pid), 0, 0, 5, "[WoS] Invalid build file preserved; restore it before saving.")
+        return
+    endif
+    loop
+        exitwhen i >= REC_CAPACITY
+        if i > 0 then
+            set record = record + ","
+        endif
+        set record = record + I2S(REC_Item[pid * REC_CAPACITY + i])
+        set i = i + 1
+    endloop
+    call PreloadGenClear()
+    call PreloadGenStart()
+    call SaveSystem_ChunkBegin(record + "|")
+    call SaveSystem_ChunkFlush(REC_FilePath(pid, QB_Hero[pid]))
+    call PreloadGenClear()
+    call DisplayTimedTextToPlayer(Player(pid), 0, 0, 4, "[WoS] Hero's Recommended build saved.")
+endfunction
+
+function REC_LoadLocal takes integer pid, boolean initial returns nothing
+    local string buffer = SaveSystem_ChunkRead(REC_FilePath(pid, QB_Hero[pid]))
+    local string record = ""
+    local string text
+    local integer i = 0
+    local integer start = 6
+    local integer split = 6
+    local integer chunk = 0
+    local integer id
+    local boolean valid = true
+    if buffer == "" then
+        set REC_FileWritable = true
+        if not initial then
+            call DisplayTimedTextToPlayer(Player(pid), 0, 0, 4, "[WoS] No personal build for this hero.")
+            return
+        endif
+        loop
+            exitwhen i >= REC_CAPACITY
+            set REC_LocalItem[i] = REC_Default[pid * REC_CAPACITY + i]
+            set i = i + 1
+        endloop
+    else
+        loop
+            exitwhen split >= StringLength(buffer) or SubString(buffer, split, split + 1) == "|"
+            set split = split + 1
+        endloop
+        set valid = SubString(buffer, 0, 6) == "WOSR1|" and QB_Int(SubString(buffer, start, split)) == QB_Hero[pid] and SubString(buffer, StringLength(buffer) - 1, StringLength(buffer)) == "|" and StringLength(buffer) <= 1024
+        set record = SubString(buffer, split + 1, StringLength(buffer) - 1)
+        if QB_Field(record, REC_CAPACITY) != "" then
+            set valid = false
+        endif
+        loop
+            exitwhen i >= REC_CAPACITY
+            set id = QB_Int(QB_Field(record, i))
+            if QB_Field(record, i) == "" or id < 0 or (id != 0 and not QB_Valid(id)) then
+                set valid = false
+            endif
+            set REC_LocalItem[i] = id
+            set i = i + 1
+        endloop
+        set REC_FileWritable = valid
+        if not valid then
+            call DisplayTimedTextToPlayer(Player(pid), 0, 0, 5, "[WoS] Invalid hero build ignored; current Recommended kept.")
+            call REC_Send("X", "0")
+            return
+        endif
+    endif
+    // Four bounded packets, applied atomically. Queue/version never enters this protocol.
+    loop
+        exitwhen chunk >= 4
+        set text = I2S(chunk)
+        set i = 0
+        loop
+            exitwhen i >= 7
+            set text = text + "," + I2S(REC_LocalItem[chunk * 7 + i])
+            set i = i + 1
+        endloop
+        call REC_Send("L", text)
+        set chunk = chunk + 1
+    endloop
+endfunction
+
+function REC_InitHero takes integer pid returns nothing
+    local integer i = 0
+    local integer count = 0
+    local integer id
+    call SaveSystem_EnsureIdentity(pid)
+    loop
+        exitwhen i >= REC_CAPACITY
+        set id = 0
+        if i < SHOP_RECOMMENDED_COUNT then
+            set id = ItemsPage0_ID[pid * SHOP_SEARCH_PAGE_SIZE + i]
+        endif
+        if id != 0 and QB_Valid(id) then
+            set REC_Default[pid * REC_CAPACITY + count] = id
+            set REC_Item[pid * REC_CAPACITY + count] = id
+            set count = count + 1
+        endif
+        set i = i + 1
+    endloop
+    set REC_Count[pid] = count
+    loop
+        exitwhen count >= REC_CAPACITY
+        set REC_Default[pid * REC_CAPACITY + count] = 0
+        set REC_Item[pid * REC_CAPACITY + count] = 0
+        set count = count + 1
+    endloop
+    set REC_LoadMask[pid] = 0
+    call REC_Apply(pid)
+    if GetLocalPlayer() == Player(pid) then
+        call REC_LoadLocal(pid, true)
+    endif
+endfunction
+
+
+
+function QB_Send takes string operation, string data returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    if QB_Hero[pid] == 0 then
+        return
+    endif
+    set QB_LocalSequence = QB_LocalSequence + 1
+    call BlzSendSyncData(QB_SYNC, operation + "," + I2S(QB_Hero[pid]) + "," + I2S(QB_Version[pid]) + "," + I2S(QB_LocalSequence) + "," + data)
+endfunction
+
+function QB_OnHero takes integer pid, integer originalId returns nothing
+    local integer goalIndex = 0
+    if QB_Data == null or pid < 0 or pid >= 10 or originalId == 0 or (QB_Hero[pid] == originalId and QB_AssignedUnit[pid] == Hero[pid]) then
+        return
+    endif
+    loop
+        exitwhen goalIndex >= 6
+        call QB_ClearExcluded(pid, goalIndex)
+        set QB_GoalSerial[pid * 6 + goalIndex] = 0
+        set goalIndex = goalIndex + 1
+    endloop
+    set QB_AssignedUnit[pid] = Hero[pid]
+    set QB_Hero[pid] = originalId
+    set QB_Count[pid] = 0
+    set QB_OrderCount[pid] = 0
+    set QB_Lock[pid] = 0
+    set QB_Awaiting[pid] = true
+    call QB_Rebuild(pid)
+    call REC_InitHero(pid)
+    if GetLocalPlayer() == Player(pid) then
+        set QB_DragFrom = -1
+        set REC_DragFrom = -1
+        set QB_Page = 0
+    endif
+endfunction
+
+function QB_SlotX takes integer slot returns real
+    return QB_Left + (I2R(ModuloInteger(slot, QB_Columns)) + 0.50) * QB_Width / I2R(QB_Columns)
+endfunction
+function QB_SlotY takes integer slot returns real
+    return 0.312 - I2R(slot / QB_Columns) * 0.065
+endfunction
+
+// Preserve native hover/focus while data changes but the hitbox stays visible.
+function QB_ShowSlot takes integer index, boolean shown returns nothing
+    if QB_LastSlotShown[index] != shown then
+        set QB_LastSlotShown[index] = shown
+        call BlzFrameSetVisible(QB_Slot[index], shown)
+        call BlzFrameSetVisible(QB_Remove[index], shown)
+        call BlzFrameSetVisible(QB_Name[index], shown)
+        if not shown then
+            call BlzFrameSetVisible(QB_TipBox[index], false)
+        endif
+    endif
+endfunction
+
+function QB_DragPreview takes nothing returns boolean
+    local integer slot = QB_DragFrom - QB_Page * QB_ViewCount
+    local integer target = QB_DragTo - QB_Page * QB_ViewCount
+    local real edge
+    if slot < 0 or slot >= QB_ViewCount then
+        return false
+    endif
+    call Shop_Place(QB_DragLight, QB_SlotX(slot), QB_SlotY(slot), QB_Size, QB_Size)
+    if target >= 0 and target < QB_ViewCount then
+        set edge = QB_SlotX(target) - QB_Size * 0.55
+        if QB_DragTo > QB_DragFrom then
+            set edge = QB_SlotX(target) + QB_Size * 0.55
+        endif
+        call Shop_Place(QB_DropLine, edge, QB_SlotY(target), 0.006, QB_Size)
+    endif
+    return true
+endfunction
+
+function QB_DragRender takes nothing returns nothing
+    local boolean sourceVisible = false
+    local real edge
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    if QB_DragFrom >= 0 then
+        set sourceVisible = QB_DragPreview()
+    endif
+    call BlzFrameSetVisible(QB_DragLight, sourceVisible)
+    call BlzFrameSetVisible(QB_DropLine, sourceVisible and QB_DragTo != QB_DragFrom)
+    set sourceVisible = REC_DragFrom >= 0 and REC_Active(pid)
+    if sourceVisible then
+        call Shop_Place(REC_DragLight, SHOP_LIST_X + I2R(ModuloInteger(REC_DragFrom, 7) - 3) * 0.049, 0.4565 - I2R(REC_DragFrom / 7) * 0.056, 0.038, 0.038)
+        set edge = SHOP_LIST_X + I2R(ModuloInteger(REC_DragTo, 7) - 3) * 0.049 - 0.022
+        if REC_DragTo > REC_DragFrom then
+            set edge = edge + 0.044
+        endif
+        call Shop_Place(REC_DropLine, edge, 0.4565 - I2R(REC_DragTo / 7) * 0.056, 0.006, 0.038)
+    endif
+    call BlzFrameSetVisible(REC_DragLight, sourceVisible)
+    call BlzFrameSetVisible(REC_DropLine, sourceVisible and REC_DragTo != REC_DragFrom)
+endfunction
+
+function QB_StringChoice takes boolean choice, string yes, string no returns string
+    if choice then
+        return yes
+    endif
+    return no
+endfunction
+
+// Existing 0.50s render checks the viewport only; geometry is reapplied on change.
+function QB_Layout takes nothing returns nothing
+    local real right = RMinBJ(0.910, WUI_ScreenRight() - 0.012)
+    local real tabWidth
+    local real width
+    local real invSize
+    local real invStep
+    local real invX
+    local real invY
+    local real iconSize
+    local real buttonSize
+    local integer i = 0
+    if RAbsBJ(right - QB_Right) < 0.0001 then
+        return
+    endif
+    call Shop_Recenter()
+    set QB_Right = right
+    set QB_Width = right - QB_Left
+    set QB_Columns = 5
+    set QB_ViewCount = QB_VISIBLE
+    set QB_Size = RMinBJ(0.036, QB_Width / 5.00 - 0.004)
+    call Shop_Place(FRAME_ShopMAIN, (0.022 + right) * 0.50, 0.312, right - 0.022, 0.428)
+    set tabWidth = (right - 0.062) / 8.00
+    loop
+        exitwhen i >= 8
+        call Shop_Place(FRAME_ShopSection[i], 0.033 + (I2R(i) + 0.50) * tabWidth, 0.505, tabWidth, 0.027)
+        set i = i + 1
+    endloop
+    call Shop_Place(FRAME_ShopClose, right - 0.013, 0.513, 0.018, 0.018)
+    call Shop_Place(FRAME_ShopItemInventory, QB_Left + QB_Width * 0.50, 0.422, QB_Width, 0.120)
+    call Shop_Place(FRAME_ShopItemInventoryName, QB_Left + QB_Width * 0.32, 0.473, QB_Width * 0.60, 0.016)
+    set invStep = QB_Width * 0.19
+    set invSize = RMinBJ(0.035, invStep - 0.003)
+    set QB_InventorySize = invSize
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set invX = QB_Left + QB_Width * 0.28 + I2R(ModuloInteger(i, 3)) * invStep
+        set invY = 0.431 - I2R(i / 3) * 0.044
+        call Shop_Place(FRAME_ShopItemInventorySlot[i], invX, invY, invSize, invSize)
+        // Reset the icon's constraints too: its art must share the real hitbox.
+        call BlzFrameClearAllPoints(FRAME_ShopItemInventorySlotBack[i])
+        call BlzFrameSetAllPoints(FRAME_ShopItemInventorySlotBack[i], FRAME_ShopItemInventorySlot[i])
+        call ShopPlacePrice(FRAME_ShopItemInventorySlotCost[i], FRAME_ShopInventoryPricePlate[i], invX, invY, invSize)
+        call BlzFrameSetScale(FRAME_ShopItemInventorySlotCost[i], 0.65)
+        call BlzFrameSetSize(FRAME_ShopItemInventorySlotCost[i], invSize / 0.65, 0.016)
+        call BlzFrameSetVisible(FRAME_ShopInventoryItemName[i], false)
+        set i = i + 1
+    endloop
+    set buttonSize = RMinBJ(0.0253, QB_Width * 0.13)
+    call Shop_Place(FRAME_ShopItemInventorySlot[6], QB_Left + QB_Width * 0.065, 0.440, buttonSize, buttonSize)
+    call Shop_Place(FRAME_ShopItemInventorySlot[7], QB_Left + QB_Width * 0.065, 0.397, buttonSize, buttonSize)
+    set i = 6
+    loop
+        exitwhen i >= 8
+        call BlzFrameClearAllPoints(FRAME_ShopItemInventorySlotBack[i])
+        call BlzFrameSetAllPoints(FRAME_ShopItemInventorySlotBack[i], FRAME_ShopItemInventorySlot[i])
+        set i = i + 1
+    endloop
+    set buttonSize = RMinBJ(0.0161, QB_Width * 0.083)
+    call Shop_Place(FRAME_FastBuyToggle, right - QB_Width * 0.075, 0.429, buttonSize, buttonSize)
+    call Shop_Place(FRAME_FastSellToggle, right - QB_Width * 0.075, 0.389, buttonSize, buttonSize)
+    call Shop_Place(QB_Panel, QB_Left + QB_Width * 0.50, 0.2255, QB_Width, 0.255)
+    call Shop_Place(QB_Title, QB_Left + QB_Width * 0.50, 0.342, (QB_Width - 0.052) / 0.72, 0.012 / 0.72)
+    call Shop_Place(QB_StateText, QB_Left + QB_Width * 0.50, 0.107, (QB_Width - 0.046) / 0.60, 0.010 / 0.60)
+    call Shop_Place(QB_Hint, QB_Left + QB_Width * 0.50, 0.126, (QB_Width - 0.046) / 0.52, 0.013 / 0.52)
+    call Shop_Place(QB_StateIcon, QB_Left + 0.010, 0.342, 0.014, 0.014)
+    call Shop_Place(QB_Clear, right - 0.012, 0.342, 0.018, 0.018)
+    call Shop_Place(QB_Previous, QB_Left + 0.011, 0.126, 0.016, 0.016)
+    call Shop_Place(QB_Next, right - 0.011, 0.126, 0.016, 0.016)
+    set i = 0
+    loop
+        exitwhen i >= QB_VISIBLE
+        call Shop_Place(QB_Slot[i], QB_SlotX(i), QB_SlotY(i), QB_Size, QB_Size)
+        call BlzFrameSetSize(QB_Name[i], (QB_Width / I2R(QB_Columns) - 0.003) / 0.52, 0.013 / 0.52)
+        call BlzFrameSetSize(QB_Icon[i], QB_Size - 0.004, QB_Size - 0.004)
+        call BlzFrameSetSize(QB_StepPlate[i], RMinBJ(0.030, QB_Size), 0.010)
+        call BlzFrameSetSize(QB_PriceText[i], QB_Size / 0.57, 0.010 / 0.57)
+        set i = i + 1
+    endloop
+    call Shop_Place(QB_First, QB_SlotX(0), QB_SlotY(0), QB_Size + 0.004, QB_Size + 0.004)
+    if QB_DragFrom >= 0 then
+        set QB_DragFrom = -1
+        call QB_Send("U", "0")
+        call QB_DragRender()
+    endif
+    set QB_LastViewVersion = -1
+endfunction
+
+// Both cached controls refer to one versioned preview operation.
+function QB_ShowPreviewRemove takes integer index, boolean shown returns nothing
+    if BlzFrameIsVisible(QB_PreviewRemove[index]) != shown then
+        call BlzFrameSetVisible(QB_PreviewRemove[index], shown)
+    endif
+    if BlzFrameGetEnable(QB_PreviewRemove[index]) != shown then
+        call BlzFrameSetEnable(QB_PreviewRemove[index], shown)
+    endif
+    if BlzFrameIsVisible(QB_PreviewMinusFace[index]) != shown then
+        call BlzFrameSetVisible(QB_PreviewMinusFace[index], shown)
+    endif
+    if BlzFrameGetEnable(QB_PreviewMinusFace[index]) != shown then
+        call BlzFrameSetEnable(QB_PreviewMinusFace[index], shown)
+    endif
+endfunction
+
+function QB_RenderLocal takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local integer i = 0
+    local integer k
+    local integer id
+    local integer cost
+    local integer future = 0
+    local boolean canAdd
+    local boolean dirty
+    local boolean queueChanged
+    local string label = "Empty"
+    if QB_Panel == null or not IsGamePlayerSlot(pid) then
+        return
+    endif
+    call QB_Layout()
+    call REC_Render()
+    if QB_LastShopOpen != Shop_Active[pid] then
+        set QB_LastShopOpen = Shop_Active[pid]
+        call QB_RefreshAdds()
+    endif
+    if QB_Page * QB_ViewCount >= QB_StepCount[pid] then
+        set QB_Page = 0
+    endif
+    set queueChanged = QB_LastViewVersion != QB_Version[pid]
+    set dirty = queueChanged or QB_LastViewStatus != QB_Status[pid] or QB_LastViewPage != QB_Page
+    if dirty then
+        set QB_LastViewVersion = QB_Version[pid]
+        set QB_LastViewStatus = QB_Status[pid]
+        set QB_LastViewPage = QB_Page
+        loop
+            exitwhen i >= QB_VISIBLE
+            set k = QB_Page * QB_ViewCount + i
+            set id = 0
+            set cost = 0
+            if i < QB_ViewCount and k < QB_StepCount[pid] then
+                set id = QB_Step[pid * QB_MAX_STEPS + k]
+                set cost = QB_DisplayCost[pid * QB_MAX_STEPS + k]
+            endif
+            call QB_ShowSlot(i, id != 0)
+            if id != 0 then
+                call BlzFrameSetText(QB_Name[i], WUI_TEXT + LoadStr(QB_Data, id, 3) + "|r")
+                call BlzFrameSetText(QB_Tip[i], WUI_GOLD + LoadStr(QB_Data, id, 3) + "|r|nTarget: " + LoadStr(QB_Data, QB_Target[pid * 6 + QB_Group[pid * QB_MAX_STEPS + k]], 3) + "|nCost of this step: " + I2S(cost) + "|nPlanned charge: " + I2S(QB_Cost[pid * QB_MAX_STEPS + k]) + "|n" + QB_StringChoice(QB_Status[pid] == 3, QB_Error[pid], QB_StringChoice(QB_StepMissing[pid * QB_MAX_STEPS + k], "Skipped portion paid during assembly; other components buy normally", "Right-drag horizontally; release to reorder")))
+                if QB_LastIcon[i] != id then
+                    call BlzFrameSetTexture(QB_Icon[i], LoadStr(QB_Data, id, 2), 0, true)
+                    set QB_LastIcon[i] = id
+                endif
+                call BlzFrameSetAlpha(QB_Icon[i], 255)
+                if QB_LastCost[i] != cost + 1 then
+                    call BlzFrameSetText(QB_PriceText[i], WUI_GOLD + I2S(cost) + "|r")
+                    set QB_LastCost[i] = cost + 1
+                endif
+            endif
+            set i = i + 1
+        endloop
+        call BlzFrameSetVisible(QB_First, QB_StepCount[pid] > 0 and QB_Page == 0)
+        set canAdd = QB_Hero[pid] != 0 and not QB_Awaiting[pid] and QB_Count[pid] < 6
+        if QB_AddAvailable != canAdd or queueChanged then
+            set QB_AddAvailable = canAdd
+            if Shop_Active[pid] then
+                call QB_RefreshAdds()
+            endif
+        endif
+        call BlzFrameSetEnable(QB_Clear, QB_Count[pid] > 0)
+        call BlzFrameSetEnable(QB_Previous, QB_Page > 0)
+        call BlzFrameSetEnable(QB_Next, (QB_Page + 1) * QB_ViewCount < QB_StepCount[pid])
+        if QB_Awaiting[pid] then
+            set label = "Sync pending"
+        elseif QB_Count[pid] > 0 then
+            set label = QB_StringChoice(QB_AnyMissing[pid], "Deferred portion active", "Quick Buy active")
+            if QB_Status[pid] == 1 then
+                set label = "Need gold"
+            elseif QB_Status[pid] == 2 then
+                set label = ""
+            elseif QB_Status[pid] == 4 then
+                set label = "Waiting for deferred portion"
+            elseif QB_Status[pid] == 3 then
+                set label = "Unavailable item"
+            endif
+        endif
+        call BlzFrameSetText(QB_StateText, WUI_TEXT + label + "|r")
+        call BlzFrameSetVisible(QB_StateIcon, QB_Status[pid] == 1 or QB_Status[pid] == 3)
+        if QB_Status[pid] == 1 then
+            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "gold.tga", 0, true)
+        else
+            call BlzFrameSetTexture(QB_StateIcon, QB_TEXTURE + "error.tga", 0, true)
+        endif
+    endif
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set id = 0
+        set k = -1
+        if Hero[pid] != null and UNITSTAT_GetSelected(pid) == Hero[pid] and UnitItemInSlot(Hero[pid], i) == null then
+            if future < QB_StepCount[pid] then
+                set k = future
+                set id = QB_Step[pid * QB_MAX_STEPS + future]
+                set cost = QB_DisplayCost[pid * QB_MAX_STEPS + future]
+                set future = future + 1
+            endif
+        endif
+        set QB_PreviewStep[i] = k
+        set QB_PreviewVersion[i] = QB_Version[pid]
+        if id != QB_LastPreview[i] or dirty then
+            set QB_LastPreview[i] = id
+            call BlzFrameSetVisible(QB_Preview[i], id != 0)
+            call QB_ShowPreviewRemove(i, id != 0)
+            if id != 0 then
+                call BlzFrameSetTexture(QB_PreviewIcon[i], LoadStr(QB_Data, id, 2), 0, true)
+                call BlzFrameSetText(QB_PreviewPrice[i], WUI_GOLD + I2S(cost) + "|r")
+            endif
+        endif
+        set i = i + 1
+    endloop
+    if QB_DragFrom >= 0 and (not Shop_Active[pid] or not WUI_TopShown() or QB_DragVersion != QB_Version[pid]) then
+        set QB_DragFrom = -1
+        set QB_LastViewVersion = -1
+        call QB_Send("U", "0")
+        call QB_DragRender()
+    endif
+endfunction
+
+function REC_OnSync takes nothing returns nothing
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    local string text = BlzGetTriggerSyncData()
+    local string op = QB_Field(text, 0)
+    local integer heroId = QB_Int(QB_Field(text, 1))
+    local integer packetVersion = QB_Int(QB_Field(text, 2))
+    local integer seq = QB_Int(QB_Field(text, 3))
+    local integer value = QB_Int(QB_Field(text, 4))
+    local integer dest = QB_Int(QB_Field(text, 5))
+    local integer i = 0
+    local integer id
+    local integer count = 0
+    local integer targetIndex
+    local boolean present
+    if not IsGamePlayerSlot(pid) or Hero[pid] == null or GetOwningPlayer(Hero[pid]) != Player(pid) or heroId != QB_Hero[pid] or seq <= REC_Sequence[pid] or StringLength(text) > 220 then
+        return
+    endif
+    set REC_Sequence[pid] = seq
+    if packetVersion != REC_Version[pid] then
+        if op == "L" then
+            set REC_LoadMask[pid] = 0
+            set QB_Awaiting[pid] = false
+            set REC_Lock[pid] = 0
+        endif
+        return
+    endif
+    if op == "L" and value >= 0 and value < 4 then
+        if value == 0 then
+            set REC_LoadMask[pid] = 0
+            set REC_LoadBase[pid] = seq
+            set REC_Lock[pid] = 60
+        endif
+        if REC_LoadMask[pid] != value or seq != REC_LoadBase[pid] + value or QB_Field(text, 12) != "" then
+            set REC_LoadMask[pid] = 0
+            set QB_Awaiting[pid] = false
+            set REC_Lock[pid] = 0
+            return
+        endif
+        loop
+            exitwhen i >= 7
+            set id = QB_Int(QB_Field(text, i + 5))
+            if QB_Field(text, i + 5) == "" or id < 0 or (id != 0 and not QB_Valid(id)) then
+                set REC_LoadMask[pid] = 0
+                set QB_Awaiting[pid] = false
+            set REC_Lock[pid] = 0
+                return
+            endif
+            set REC_Pending[pid * REC_CAPACITY + value * 7 + i] = id
+            set i = i + 1
+        endloop
+        set REC_LoadMask[pid] = value + 1
+        if value != 3 then
+            return
+        endif
+        set i = 0
+        loop
+            exitwhen i >= REC_CAPACITY
+            set id = REC_Pending[pid * REC_CAPACITY + i]
+            if id != 0 then
+                set REC_Item[pid * REC_CAPACITY + count] = id
+                set count = count + 1
+            endif
+            set i = i + 1
+        endloop
+        set REC_Count[pid] = count
+        loop
+            exitwhen count >= REC_CAPACITY
+            set REC_Item[pid * REC_CAPACITY + count] = 0
+            set count = count + 1
+        endloop
+        set REC_LoadMask[pid] = 0
+        set QB_Awaiting[pid] = false
+            set REC_Lock[pid] = 0
+        call REC_Apply(pid)
+    elseif op == "X" then
+        set REC_LoadMask[pid] = 0
+        set QB_Awaiting[pid] = false
+            set REC_Lock[pid] = 0
+        return
+    elseif op == "A" and QB_Valid(value) and REC_Count[pid] < REC_CAPACITY and not QB_Awaiting[pid] and not CheckBanItems(value, Hero[pid]) then
+        loop
+            exitwhen i >= REC_Count[pid]
+            if REC_Item[pid * REC_CAPACITY + i] == value then
+                return
+            endif
+            set i = i + 1
+        endloop
+        set REC_Item[pid * REC_CAPACITY + REC_Count[pid]] = value
+        set REC_Count[pid] = REC_Count[pid] + 1
+        call REC_Apply(pid)
+        call StartSoundForPlayerBJ(Player(pid), REC_AddSound)
+    elseif op == "D" and value >= 0 and value < REC_Count[pid] and not QB_Awaiting[pid] then
+        set i = value
+        loop
+            exitwhen i + 1 >= REC_Count[pid]
+            set REC_Item[pid * REC_CAPACITY + i] = REC_Item[pid * REC_CAPACITY + i + 1]
+            set i = i + 1
+        endloop
+        set REC_Count[pid] = REC_Count[pid] - 1
+        set REC_Item[pid * REC_CAPACITY + REC_Count[pid]] = 0
+        call REC_Apply(pid)
+        call StartSoundForPlayerBJ(Player(pid), REC_RemoveSound)
+    elseif op == "M" and value >= 0 and value < REC_Count[pid] and dest >= 0 and dest < REC_Count[pid] and not QB_Awaiting[pid] then
+        set id = REC_Item[pid * REC_CAPACITY + value]
+        set i = value
+        loop
+            exitwhen i == dest
+            if i < dest then
+                set REC_Item[pid * REC_CAPACITY + i] = REC_Item[pid * REC_CAPACITY + i + 1]
+                set i = i + 1
+            else
+                set REC_Item[pid * REC_CAPACITY + i] = REC_Item[pid * REC_CAPACITY + i - 1]
+                set i = i - 1
+            endif
+        endloop
+        set REC_Item[pid * REC_CAPACITY + dest] = id
+        call REC_Apply(pid)
+    elseif op == "R" and not QB_Awaiting[pid] then
+        loop
+            exitwhen i >= REC_CAPACITY
+            set REC_Item[pid * REC_CAPACITY + i] = REC_Default[pid * REC_CAPACITY + i]
+            if REC_Item[pid * REC_CAPACITY + i] != 0 then
+                set count = count + 1
+            endif
+            set i = i + 1
+        endloop
+        set REC_Count[pid] = count
+        call REC_Apply(pid)
+    elseif op == "Q" and not QB_Awaiting[pid] then
+        // Append the first six current recommendations without clearing user steps.
+        loop
+            exitwhen i >= IMinBJ(6, REC_Count[pid]) or QB_Count[pid] >= 6
+            set id = REC_Item[pid * REC_CAPACITY + i]
+            set targetIndex = 0
+            set present = false
+            loop
+                exitwhen targetIndex >= QB_Count[pid]
+                set present = present or QB_Target[pid * 6 + targetIndex] == id
+                set targetIndex = targetIndex + 1
+            endloop
+            if not present then
+                call QB_ClearExcluded(pid, QB_Count[pid])
+                set QB_GoalSerial[pid * 6 + QB_Count[pid]] = 0
+                set QB_Target[pid * 6 + QB_Count[pid]] = id
+                set QB_Count[pid] = QB_Count[pid] + 1
+                set count = count + 1
+            endif
+            set i = i + 1
+        endloop
+        set QB_Lock[pid] = 0
+        if count > 0 then
+            call QB_Rebuild(pid)
+            call StartSoundForPlayerBJ(Player(pid), QB_AddSound)
+        elseif GetLocalPlayer() == Player(pid) then
+            call DisplayTimedTextToPlayer(Player(pid), 0, 0, 4, "[WoS] Quick Buy is full or these targets are already queued.")
+        endif
+    elseif op == "B" and not QB_Awaiting[pid] then
+        set REC_Lock[pid] = 60
+        return
+    elseif op == "U" then
+        set REC_Lock[pid] = 0
+        return
+    elseif op == "S" and not QB_Awaiting[pid] then
+        if GetLocalPlayer() == Player(pid) then
+            call REC_SaveLocal(pid)
+        endif
+        return
+    else
+        return
+    endif
+    if Shop_Active[pid] and REC_Active(pid) then
+        call ReloadItemPage2(0, Player(pid))
+    endif
+    if GetLocalPlayer() == Player(pid) then
+        call QB_RefreshAdds()
+    endif
+    call QB_RenderLocal()
+endfunction
+
+// Agreed inspection command. No local recipe lookup or gameplay cache mutation.
+function QB_Inspect takes integer pid, integer id returns nothing
+    local player p = Player(pid)
+    local integer cost = IMaxBJ(0, CheckItemsReduceCostCraft(Hero[pid], LoadInteger(QB_Data, id, 1), id, false))
+    set ItemsCurrentItemBag_ID[pid] = 0
+    set ItemsCraftPlayerDebug_ID[pid] = 42
+    set ItemsCurrentItem_ID[pid] = id
+    set ItemsCurrentItem_ID_BACKUP[pid] = id
+    if GetLocalPlayer() == p then
+        call BlzFrameSetVisible(FRAME_ShopItemCraftSprite2, false)
+        call BlzFrameSetVisible(FRAME_ShopItemCraftSprite, true)
+        call BlzFrameSetTexture(FRAME_ShopItemBack[42], LoadStr(QB_Data, id, 2), 0, false)
+        call BlzFrameSetText(FRAME_ShopItemCost[42], "|c00FFFF00" + I2S(cost) + "|r")
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[6], CondArena == 0 or TestMode)
+        call BlzFrameSetVisible(FRAME_ShopItemInventorySlot[7], false)
+    endif
+    call ShopShowItemDescription(id, p)
+    call CraftItemCheck(id, p, ItemsFrameCurrentPage_ID[pid])
+    set p = null
+endfunction
+
+// Called only from the agreed versioned UI request. No ability handle lookup.
+function QB_AnnounceHeroCooldown takes player sender, integer commandSlot returns nothing
+    local integer pid = GetPlayerId(sender)
+    local unit u = Hero[pid]
+    local integer id
+    local integer level
+    local real now
+    local string name
+    local real cooldown
+    local string duration
+    if pid < 0 or pid >= 10 or u == null or GetUnitTypeId(u) == 0 or GetOwningPlayer(u) != sender or commandSlot < 0 or commandSlot > 11 then
+        set u = null
+        return
+    endif
+    set now = TimerGetElapsed(ShopClock)
+    if now < QB_AbilityChatNext[pid] then
+        set u = null
+        return
+    endif
+    set id = AHUI_GetAbilityAtCommandSlot(u, commandSlot)
+    if id == 0 then
+        set u = null
+        return
+    endif
+    set level = GetUnitAbilityLevel(u, id)
+    set name = BlzGetAbilityTooltip(id, IMaxBJ(0, level - 1))
+    if name == "" then
+        set name = GetObjectName(id)
+    endif
+    set QB_AbilityChatNext[pid] = now + QB_ABILITY_CHAT_COOLDOWN
+    if level <= 0 then
+        call BlzDisplayChatMessage(sender, 1, "Ability |cffffffff" + name + "|r is not learned.")
+    else
+        set cooldown = BlzGetUnitAbilityCooldownRemaining(u, id)
+        if cooldown <= 0.05 then
+            call BlzDisplayChatMessage(sender, 1, "Ability |cffffffff" + name + "|r is |cff40ff40ready|r.")
+        else
+            if cooldown >= 10.00 then
+                set duration = I2S(R2I(cooldown + 0.99))
+            else
+                set duration = R2SW(cooldown, 1, 1)
+            endif
+            call BlzDisplayChatMessage(sender, 1, "Ability |cffffffff" + name + "|r - CD: |cffffcc00" + duration + " sec.|r")
+        endif
+    endif
+    set u = null
+    set name = null
+endfunction
+
+function QB_OnSync takes nothing returns nothing
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    local string text = BlzGetTriggerSyncData()
+    local string op = QB_Field(text, 0)
+    local integer heroId = QB_Int(QB_Field(text, 1))
+    local integer packetVersion = QB_Int(QB_Field(text, 2))
+    local integer sequence = QB_Int(QB_Field(text, 3))
+    local integer value = QB_Int(QB_Field(text, 4))
+    local integer to = QB_Int(QB_Field(text, 5))
+    local integer i = 0
+    local integer goalIndex
+    local integer node
+    if BlzGetTriggerSyncPrefix() == REC_SYNC then
+        call REC_OnSync()
+        return
+    endif
+    if not IsGamePlayerSlot(pid) or Hero[pid] == null or GetOwningPlayer(Hero[pid]) != Player(pid) or heroId != QB_Hero[pid] or sequence <= QB_Sequence[pid] or StringLength(text) > 220 then
+        return
+    endif
+    set QB_Sequence[pid] = sequence
+    // Chat has its own cooldown; purchases must not stale this non-queue request.
+    if op == "P" then
+        if value >= 0 and value < 12 and to == GetHandleId(Hero[pid]) and QB_Field(text, 6) == "" then
+            call QB_AnnounceHeroCooldown(Player(pid), value)
+        endif
+        return
+    endif
+    if packetVersion != QB_Version[pid] then
+        if op == "U" then
+            set QB_Lock[pid] = 0
+        endif
+        return
+    endif
+    if op == "A" and QB_Valid(value) and QB_Count[pid] < 6 and not QB_Awaiting[pid] then
+        loop
+            exitwhen i >= QB_Count[pid]
+            if QB_Target[pid * 6 + i] == value then
+                return
+            endif
+            set i = i + 1
+        endloop
+        call QB_ClearExcluded(pid, QB_Count[pid])
+        set QB_GoalSerial[pid * 6 + QB_Count[pid]] = 0
+        set QB_Target[pid * 6 + QB_Count[pid]] = value
+        set QB_Count[pid] = QB_Count[pid] + 1
+        call QB_Rebuild(pid)
+        call StartSoundForPlayerBJ(Player(pid), QB_AddSound)
+    elseif op == "V" and value >= 0 and value < QB_StepCount[pid] and Shop_Active[pid] and not QB_Awaiting[pid] then
+        call QB_Inspect(pid, QB_Step[pid * QB_MAX_STEPS + value])
+    elseif op == "D" and value >= 0 and value < QB_StepCount[pid] then
+        set goalIndex = QB_Group[pid * QB_MAX_STEPS + value]
+        set node = QB_StepKey[pid * QB_MAX_STEPS + value]
+        set QB_Excluded[pid * 768 + goalIndex * QB_MAX_STEPS + node] = true
+        set QB_Lock[pid] = 0
+        call QB_Rebuild(pid)
+        call StartSoundForPlayerBJ(Player(pid), QB_RemoveSound)
+    elseif op == "C" and QB_Count[pid] > 0 then
+        set i = 0
+        loop
+            exitwhen i >= 6
+            call QB_ClearExcluded(pid, i)
+            set i = i + 1
+        endloop
+        set QB_Lock[pid] = 0
+        set QB_Count[pid] = 0
+        set QB_OrderCount[pid] = 0
+        set QB_Awaiting[pid] = false
+        call QB_Rebuild(pid)
+        call StartSoundForPlayerBJ(Player(pid), QB_ClearSound)
+    elseif op == "B" then
+        set QB_Lock[pid] = 60
+    elseif op == "U" then
+        set QB_Lock[pid] = 0
+    elseif op == "M" and value >= 0 and value < QB_StepCount[pid] and to >= 0 and to < QB_StepCount[pid] then
+        call QB_MoveStep(pid, value, to)
+        call QB_CaptureOrder(pid)
+        call QB_CachePriceParents(pid)
+        call QB_RefreshPrices(pid)
+        set QB_Lock[pid] = 0
+        set QB_Version[pid] = QB_Version[pid] + 1
+    endif
+    call QB_RenderLocal()
+endfunction
+// Only invoked while an item is actually being dragged. No idle mouse polling.
+function QB_UpdateDragTarget takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local real dx = (BlzPixelToFrameX(BlzGetMouseScreenPosX()) - Shop_Shift()) - QB_DragX
+    local real step
+    local integer target
+    if QB_DragFrom >= 0 then
+        set step = QB_Width / I2R(QB_Columns)
+        if dx > 0.00 then
+            set target = QB_DragFrom + R2I(dx / step + 0.50)
+        else
+            set target = QB_DragFrom - R2I(-dx / step + 0.50)
+        endif
+        set QB_DragTo = IMinBJ(QB_StepCount[pid] - 1, IMaxBJ(0, target))
+    endif
+    if REC_DragFrom >= 0 then
+        if dx > 0.00 then
+            set target = REC_DragFrom + R2I(dx / 0.049 + 0.50)
+        else
+            set target = REC_DragFrom - R2I(-dx / 0.049 + 0.50)
+        endif
+        set REC_DragTo = IMinBJ(REC_Count[pid] - 1, IMaxBJ(0, target))
+    endif
+    call QB_DragRender()
+endfunction
+
+// Press/release snapshots are local input; only bounded commands cross sync.
+function QB_FinishDrag takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local integer dest
+    local real dx = (BlzPixelToFrameX(BlzGetMouseScreenPosX()) - Shop_Shift()) - QB_DragX
+    local real step
+    if QB_DragFrom >= 0 then
+        set step = QB_Width / I2R(QB_Columns)
+        if dx > 0.00 then
+            set dest = QB_DragFrom + R2I(dx / step + 0.50)
+        else
+            set dest = QB_DragFrom - R2I(-dx / step + 0.50)
+        endif
+        set dest = IMinBJ(QB_StepCount[pid] - 1, IMaxBJ(0, dest))
+        if dest != QB_DragFrom and QB_DragVersion == QB_Version[pid] and Shop_Active[pid] and WUI_TopShown() then
+            call QB_Send("M", I2S(QB_DragFrom) + "," + I2S(dest))
+        else
+            call QB_Send("U", "0")
+        endif
+        set QB_DragFrom = -1
+    endif
+    if REC_DragFrom >= 0 then
+        if dx > 0.00 then
+            set dest = REC_DragFrom + R2I(dx / 0.049 + 0.50)
+        else
+            set dest = REC_DragFrom - R2I(-dx / 0.049 + 0.50)
+        endif
+        set dest = IMinBJ(REC_Count[pid] - 1, IMaxBJ(0, dest))
+        if dest != REC_DragFrom and REC_DragVersion == REC_Version[pid] and Shop_Active[pid] and WUI_TopShown() and REC_Active(pid) then
+            call REC_Send("M", I2S(REC_DragFrom) + "," + I2S(dest))
+        else
+            call REC_Send("U", "0")
+        endif
+        set REC_DragFrom = -1
+    endif
+    set QB_LastViewVersion = -1
+    call QB_DragRender()
+endfunction
+
+function QB_CancelDrag takes nothing returns nothing
+    if QB_DragFrom >= 0 then
+        set QB_DragFrom = -1
+        call QB_Send("U", "0")
+    endif
+    if REC_DragFrom >= 0 then
+        set REC_DragFrom = -1
+        call REC_Send("U", "0")
+    endif
+    set QB_LastViewVersion = -1
+    call QB_DragRender()
+endfunction
+
+function QB_ButtonEvent takes nothing returns nothing
+    local player p = GetTriggerPlayer()
+    local integer pid = GetPlayerId(p)
+    local framehandle fr = BlzGetTriggerFrame()
+    local integer codeId = LoadInteger(QB_Frames, GetHandleId(fr), 0)
+    local integer i
+    local integer id = 0
+    if GetLocalPlayer() != p then
+        set p = null
+        set fr = null
+        call WUI_ReleaseClickFocus()
+        return
+    endif
+    if BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_UP then
+        if not BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+            set QB_RightWasDown = false
+        endif
+        if (QB_DragFrom >= 0 or REC_DragFrom >= 0) and not BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+            call QB_FinishDrag()
+        endif
+    elseif BlzGetTriggerFrameEvent() == FRAMEEVENT_CONTROL_CLICK then
+        if codeId < 500 or codeId >= 600 then
+            call QB_CancelDrag()
+        endif
+        if codeId >= 100 and codeId <= 160 then
+            set i = codeId - 100
+            set id = QB_AddId[i]
+            if QB_Valid(id) then
+                call QB_Send("A", I2S(id))
+            endif
+        elseif codeId >= 200 and codeId < 200 + QB_VISIBLE then
+            set i = QB_Page * QB_ViewCount + codeId - 200
+            if i < QB_StepCount[pid] then
+                call QB_Send("D", I2S(i))
+            endif
+        elseif codeId >= 400 and codeId < 406 then
+            set i = codeId - 400
+            if Hero[pid] != null and UNITSTAT_GetSelected(pid) == Hero[pid] and QB_PreviewVersion[i] == QB_Version[pid] and QB_PreviewStep[i] >= 0 and QB_PreviewStep[i] < QB_StepCount[pid] and UnitItemInSlot(Hero[pid], i) == null then
+                call QB_Send("D", I2S(QB_PreviewStep[i]))
+            endif
+        elseif codeId == 300 then
+            call QB_Send("C", "0")
+        elseif codeId >= 500 and codeId < 500 + QB_VISIBLE and QB_DragFrom < 0 and REC_DragFrom < 0 then
+            set i = QB_Page * QB_ViewCount + codeId - 500
+            if i < QB_StepCount[pid] then
+                call QB_Send("V", I2S(i))
+            endif
+        elseif codeId >= 800 and codeId <= 860 then
+            set id = QB_AddId[codeId - 800]
+            if QB_Valid(id) then
+                call REC_Send("A", I2S(id))
+            endif
+        elseif codeId >= 600 and codeId < 600 + REC_CAPACITY and REC_Active(pid) then
+            call REC_Send("D", I2S(codeId - 600))
+        elseif codeId == 700 then
+            call REC_Send("R", "0")
+        elseif codeId == 701 then
+            call REC_LoadLocal(pid, false)
+        elseif codeId == 702 then
+            call REC_Send("S", "0")
+        elseif codeId == 703 then
+            call REC_Send("Q", "0")
+        elseif codeId == 301 and QB_Page > 0 then
+            set QB_Page = QB_Page - 1
+        elseif codeId == 302 and (QB_Page + 1) * QB_ViewCount < QB_StepCount[pid] then
+            set QB_Page = QB_Page + 1
+        endif
+        call QB_RenderLocal()
+    endif
+    set fr = null
+    set p = null
+    if codeId >= 600 and codeId < 600 + REC_CAPACITY then
+        call WUI_ResetClickedButtonFocus()
+    else
+        call WUI_ReleaseClickFocus()
+    endif
+endfunction
+
+function QB_Decor takes string name, framehandle parent, string texture returns framehandle
+    local framehandle fr = BlzCreateFrameByType("BACKDROP", name, parent, "", 0)
+    call BlzFrameSetTexture(fr, texture, 0, true)
+    call BlzFrameSetEnable(fr, false)
+    return fr
+endfunction
+
+function QB_Text takes string name, framehandle parent, real size returns framehandle
+    local framehandle fr = BlzCreateFrameByType("TEXT", name, parent, "", 0)
+    call BlzFrameSetEnable(fr, false)
+    call BlzFrameSetScale(fr, size)
+    call BlzFrameSetTextAlignment(fr, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    return fr
+endfunction
+
+function QB_CreateTip takes integer index returns nothing
+    set QB_TipBox[index] = WUI_TooltipBox(WUI_GetRoot(), 0.190, 0.075)
+    set QB_Tip[index] = QB_Text("WOSQuickBuyTooltipText", QB_TipBox[index], 0.62)
+    call BlzFrameSetPoint(QB_TipBox[index], FRAMEPOINT_BOTTOMRIGHT, QB_Slot[index], FRAMEPOINT_TOPRIGHT, 0.00, 0.010)
+    call BlzFrameSetPoint(QB_Tip[index], FRAMEPOINT_CENTER, QB_TipBox[index], FRAMEPOINT_CENTER, 0.00, 0.00)
+    call BlzFrameSetSize(QB_Tip[index], 0.178 / 0.62, 0.067 / 0.62)
+    // Engine-owned tooltip, matching the catalogue; no hover trigger callbacks.
+    call BlzFrameSetTooltip(QB_Slot[index], QB_TipBox[index])
+    call BlzFrameSetLevel(QB_TipBox[index], 60)
+    call BlzFrameSetVisible(QB_TipBox[index], false)
+endfunction
+
+function QB_Button takes string name, framehandle parent, string glyph, integer codeId returns framehandle
+    local framehandle fr = BlzCreateFrameByType("BUTTON", name, parent, "WOSQB" + glyph + "Template", codeId)
+    call BlzFrameSetLevel(fr, 30)
+    call SaveInteger(QB_Frames, GetHandleId(fr), 0, codeId)
+    call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, fr, FRAMEEVENT_CONTROL_CLICK)
+    return fr
+endfunction
+
+
+
+// Right press/release; native item hover has no scripted events.
+// Called only for a pressed RMB, never for cursor ENTER/LEAVE.
+function QB_BeginRightDrag takes integer pid, real x, real y returns nothing
+    local integer i = 0
+    local integer k
+    set x = x - Shop_Shift()
+    if GetLocalPlayer() != Player(pid) or not IsGamePlayerSlot(pid) then
+        return
+    endif
+    if not Shop_Active[pid] or not WUI_TopShown() or QB_DragFrom >= 0 or REC_DragFrom >= 0 or QB_Awaiting[pid] then
+        return
+    endif
+    loop
+        exitwhen i >= QB_ViewCount
+        set k = QB_Page * QB_ViewCount + i
+        if k < QB_StepCount[pid] and QB_StepCount[pid] > 1 and RAbsBJ(x - QB_SlotX(i)) <= QB_Size * 0.50 and RAbsBJ(y - QB_SlotY(i)) <= QB_Size * 0.50 then
+            set QB_DragFrom = k
+            set QB_DragTo = k
+            set QB_DragX = x
+            set QB_DragAge = 0
+            set QB_DragVersion = QB_Version[pid]
+            call BlzFrameSetVisible(QB_TipBox[i], false)
+            call QB_Send("B", "0")
+            call QB_DragRender()
+            return
+        endif
+        set i = i + 1
+    endloop
+    if not REC_Active(pid) or REC_Count[pid] < 2 then
+        return
+    endif
+    set i = 0
+    loop
+        exitwhen i >= REC_Count[pid]
+        if RAbsBJ(x - (SHOP_LIST_X + I2R(ModuloInteger(i, 7) - 3) * 0.049)) <= 0.019 and RAbsBJ(y - (0.4565 - I2R(i / 7) * 0.056)) <= 0.019 then
+            set REC_DragFrom = i
+            set REC_DragTo = i
+            set REC_DragVersion = REC_Version[pid]
+            set QB_DragX = x
+            set QB_DragAge = 0
+            call REC_Send("B", "0")
+            call QB_DragRender()
+            return
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
+// Inventory events only. World mouse clicks are not registered by the shop.
+function QB_OnMouse takes nothing returns nothing
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    local integer i = 0
+    if GetLocalPlayer() != GetTriggerPlayer() or not IsGamePlayerSlot(pid) then
+        return
+    endif
+    if GetTriggerEventId() == EVENT_PLAYER_UNIT_PICKUP_ITEM or GetTriggerEventId() == EVENT_PLAYER_UNIT_DROP_ITEM then
+        if GetTriggerUnit() == Hero[pid] then
+            loop
+                exitwhen i >= 6
+                call BlzFrameSetVisible(QB_Preview[i], false)
+                call QB_ShowPreviewRemove(i, false)
+                set QB_LastPreview[i] = -1
+                set QB_PreviewStep[i] = -1
+                set i = i + 1
+            endloop
+        endif
+        return
+    endif
+endfunction
+
+// Owner-local input; called by the existing .05 AHUI tick only when needed.
+function QB_CheckDrag takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    if QB_DragFrom < 0 and REC_DragFrom < 0 then
+        if not Shop_Active[pid] or not WUI_TopShown() then
+            return
+        endif
+        if not BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+            set QB_RightWasDown = false
+            return
+        endif
+        if QB_RightWasDown then
+            return
+        endif
+        set QB_RightWasDown = true
+        call QB_BeginRightDrag(pid, BlzPixelToFrameX(BlzGetMouseScreenPosX()), BlzPixelToFrameY(BlzGetMouseScreenPosY()))
+        if QB_DragFrom < 0 and REC_DragFrom < 0 then
+            return
+        endif
+    endif
+    set QB_DragAge = QB_DragAge + 1
+    if QB_DragAge >= 600 or not Shop_Active[pid] or not WUI_TopShown() or (REC_DragFrom >= 0 and (not REC_Active(pid) or REC_DragVersion != REC_Version[pid])) or (QB_DragFrom >= 0 and QB_DragVersion != QB_Version[pid]) then
+        call QB_CancelDrag()
+    elseif not BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+        // Swallowed player/UI release: read final X only for an active drag.
+        set QB_RightWasDown = false
+        call QB_FinishDrag()
+    else
+        call QB_UpdateDragTarget()
+    endif
+endfunction
+
+function QB_CloseTop takes nothing returns nothing
+    if GetLocalPlayer() == WUI_TopClosePlayer then
+        call QB_CancelDrag()
+    endif
+endfunction
+
+function QB_CreateUI takes nothing returns nothing
+    local integer i = 0
+    local integer id
+    local integer slot
+    local framehandle text
+    local framehandle fr
+    // Reuse existing agreed sound handles. No local sound allocation.
+    set QB_AddSound = gg_snd_UpkeepRing
+    set QB_RemoveSound = gg_snd_ReceiveGold
+    set QB_ClearSound = gg_snd_AlchemistTransmuteDeath1
+    set REC_AddSound = gg_snd_Swap
+    set REC_RemoveSound = gg_snd_BattleNetTick
+    set QB_Data = InitHashtable()
+    set QB_Frames = InitHashtable()
+    loop
+        exitwhen i >= ShopSearchIndexCount
+        call QB_CacheItem(ShopSearchIndex_ID[i], 0)
+        set i = i + 1
+    endloop
+    set QB_ClickTrigger = CreateTrigger()
+    set QB_MouseTrigger = CreateTrigger()
+    set QB_SyncTrigger = CreateTrigger()
+    call TriggerAddAction(QB_ClickTrigger, function QB_ButtonEvent)
+    call TriggerAddAction(QB_MouseTrigger, function QB_OnMouse)
+    call TriggerAddAction(QB_SyncTrigger, function QB_OnSync)
+    set i = 0
+    loop
+        exitwhen i >= 10
+        call BlzTriggerRegisterPlayerSyncEvent(QB_SyncTrigger, Player(i), QB_SYNC, false)
+        call BlzTriggerRegisterPlayerSyncEvent(QB_SyncTrigger, Player(i), REC_SYNC, false)
+        call TriggerRegisterPlayerUnitEvent(QB_MouseTrigger, Player(i), EVENT_PLAYER_UNIT_PICKUP_ITEM, null)
+        call TriggerRegisterPlayerUnitEvent(QB_MouseTrigger, Player(i), EVENT_PLAYER_UNIT_DROP_ITEM, null)
+        set i = i + 1
+    endloop
+    call WUI_RegisterTopClose(function QB_CloseTop)
+    // A reserved row in Recommended, never in other catalogue categories.
+    set i = 0
+    loop
+        exitwhen i >= 4
+        set REC_Action[i] = WUI_TextButton("WOSRecommendedAction", FRAME_ShopItemList, "", 0.077, 0.022)
+        call WUI_SetButtonMinimal(REC_Action[i])
+        call WUI_SetButtonTextScale(REC_Action[i], 0.62)
+        call Shop_Place(REC_Action[i], SHOP_LIST_X - 0.126 + I2R(i) * 0.084, 0.2325, 0.077, 0.022)
+        call SaveInteger(QB_Frames, GetHandleId(REC_Action[i]), 0, 700 + i)
+        call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, REC_Action[i], FRAMEEVENT_CONTROL_CLICK)
+        call BlzFrameSetVisible(REC_Action[i], false)
+        set i = i + 1
+    endloop
+    call WUI_SetButtonCaption(REC_Action[0], "Reset")
+    call WUI_SetButtonCaption(REC_Action[1], "Load Build")
+    call WUI_SetButtonCaption(REC_Action[2], "Save Build")
+    call WUI_SetButtonCaption(REC_Action[3], "Add to QB")
+    call WUI_Tooltip(REC_Action[0], "Restore this hero's original map recommendations.")
+    call WUI_Tooltip(REC_Action[1], "Load your personal recommendations for this hero.")
+    call WUI_Tooltip(REC_Action[2], "Save the current Recommended list for this hero. Quick Buy is not saved.")
+    call WUI_Tooltip(REC_Action[3], "Add the first six current recommendations, up to six active targets. Existing steps are kept.")
+    set REC_Hint = QB_Text("WOSRecommendedDragHint", FRAME_ShopItemList, 0.54)
+    call Shop_Place(REC_Hint, SHOP_LIST_X, 0.2115, 0.334 / 0.54, 0.012 / 0.54)
+    call BlzFrameSetText(REC_Hint, WUI_TEXT + "Hold RMB on an item: drag left/right|r")
+    call BlzFrameSetVisible(REC_Hint, false)
+    set i = 0
+    loop
+        exitwhen i >= REC_CAPACITY
+        set REC_Remove[i] = QB_Button("WOSRecommendedRemove", FRAME_ShopItemList, "remove", 600 + i)
+        call BlzFrameSetPoint(REC_Remove[i], FRAMEPOINT_TOPLEFT, FRAME_ShopItem[i], FRAMEPOINT_TOPLEFT, 0.001, -0.001)
+        call BlzFrameSetSize(REC_Remove[i], 0.010, 0.010)
+        call BlzFrameSetLevel(REC_Remove[i], 55)
+        call BlzFrameSetVisible(REC_Remove[i], false)
+        call WUI_Tooltip(REC_Remove[i], "Remove this recommendation; the remaining items shift left.")
+        call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, FRAME_ShopItem[i], FRAMEEVENT_MOUSE_UP)
+        set i = i + 1
+    endloop
+    set REC_DragLight = QB_Decor("WOSRecommendedDrag", FRAME_ShopItemList, QB_TEXTURE + "drag.tga")
+    set REC_DropLine = QB_Decor("WOSRecommendedDrop", FRAME_ShopItemList, QB_TEXTURE + "drop.tga")
+    call BlzFrameSetLevel(REC_DragLight, 50)
+    call BlzFrameSetLevel(REC_DropLine, 50)
+    call BlzFrameSetVisible(REC_DragLight, false)
+    call BlzFrameSetVisible(REC_DropLine, false)
+    set QB_Panel = WUI_Window("WOSQuickBuyPanel", FRAME_ShopMAIN, 92, 0)
+    call WUI_MinimalEdge(QB_Panel)
+    call Shop_Place(QB_Panel, QB_Left + QB_Width * 0.50, 0.2255, QB_Width, 0.255)
+    set QB_Title = QB_Text("WOSQuickBuyTitle", QB_Panel, 0.72)
+    call Shop_Place(QB_Title, QB_Left + QB_Width * 0.50, 0.328, (QB_Width - 0.052) / 0.72, 0.012 / 0.72)
+    call BlzFrameSetText(QB_Title, WUI_GOLD + "QUICK BUY|r")
+    set QB_Hint = QB_Text("WOSQuickBuyDragHint", QB_Panel, 0.52)
+    call Shop_Place(QB_Hint, QB_Left + QB_Width * 0.50, 0.126, (QB_Width - 0.046) / 0.52, 0.013 / 0.52)
+    call BlzFrameSetText(QB_Hint, WUI_TEXT + "Hold RMB: drag left/right|r")
+    set QB_StateText = QB_Text("WOSQuickBuyState", QB_Panel, 0.60)
+    call Shop_Place(QB_StateText, QB_Left + QB_Width * 0.50, 0.107, (QB_Width - 0.046) / 0.60, 0.010 / 0.60)
+    set QB_StateIcon = QB_Decor("WOSQuickBuyStateIcon", QB_Panel, QB_TEXTURE + "gold.tga")
+    call Shop_Place(QB_StateIcon, QB_Left + 0.010, 0.328, 0.014, 0.014)
+    set QB_Clear = QB_Button("WOSQuickBuyClear", QB_Panel, "clear", 300)
+    call Shop_Place(QB_Clear, QB_Right - 0.012, 0.328, 0.018, 0.018)
+    call WUI_Tooltip(QB_Clear, "Clear the active Quick Buy queue. The saved build is kept.")
+    set QB_Previous = QB_Button("WOSQuickBuyPrevious", QB_Panel, "prev", 301)
+    set QB_Next = QB_Button("WOSQuickBuyNext", QB_Panel, "next", 302)
+    call Shop_Place(QB_Previous, QB_Left + 0.011, 0.126, 0.016, 0.016)
+    call Shop_Place(QB_Next, QB_Right - 0.011, 0.126, 0.016, 0.016)
+    set i = 0
+    loop
+        exitwhen i >= QB_VISIBLE
+        set QB_Slot[i] = BlzCreateFrameByType("BUTTON", "WOSQuickBuySlot", QB_Panel, "WOSQBslotTemplate", i)
+        call Shop_Place(QB_Slot[i], QB_SlotX(i), QB_SlotY(i), QB_Size, QB_Size)
+        set QB_Icon[i] = QB_Decor("WOSQuickBuyIcon", QB_Slot[i], WUI_EMPTY_TEXTURE)
+        call BlzFrameSetPoint(QB_Icon[i], FRAMEPOINT_CENTER, QB_Slot[i], FRAMEPOINT_CENTER, 0.00, 0.00)
+        set QB_SlotEdge[i] = QB_Decor("WOSQuickBuySlotEdge", QB_Slot[i], QB_TEXTURE + "rim.tga")
+        call BlzFrameSetAllPoints(QB_SlotEdge[i], QB_Slot[i])
+        set QB_SlotBolt[i] = QB_Decor("WOSQuickBuySlotBolt", QB_Slot[i], QB_TEXTURE + "bolt.tga")
+        call BlzFrameSetPoint(QB_SlotBolt[i], FRAMEPOINT_CENTER, QB_Slot[i], FRAMEPOINT_CENTER, 0.00, 0.00)
+        call BlzFrameSetSize(QB_SlotBolt[i], 0.018, 0.018)
+        call BlzFrameSetAlpha(QB_SlotBolt[i], 180)
+        set QB_StepPlate[i] = QB_Decor("WOSQuickBuyPricePlate", QB_Slot[i], "UI\\WOS\\price-plate.tga")
+        call BlzFrameSetPoint(QB_StepPlate[i], FRAMEPOINT_BOTTOM, QB_Slot[i], FRAMEPOINT_BOTTOM, 0.00, 0.001)
+        call BlzFrameSetSize(QB_StepPlate[i], RMinBJ(0.034, QB_Size), 0.010)
+        set QB_PriceText[i] = QB_Text("WOSQuickBuyPrice", QB_Slot[i], 0.57)
+        call BlzFrameSetPoint(QB_PriceText[i], FRAMEPOINT_BOTTOM, QB_Slot[i], FRAMEPOINT_BOTTOM, 0.00, 0.001)
+        call BlzFrameSetSize(QB_PriceText[i], 0.050, 0.018)
+        set QB_Name[i] = QB_Text("WOSQuickBuyItemName", QB_Panel, 0.52)
+        call BlzFrameSetPoint(QB_Name[i], FRAMEPOINT_TOP, QB_Slot[i], FRAMEPOINT_BOTTOM, 0.00, -0.001)
+        call BlzFrameSetSize(QB_Name[i], (QB_Width / I2R(QB_Columns) - 0.003) / 0.52, 0.013 / 0.52)
+        call BlzFrameSetVisible(QB_Name[i], false)
+        set QB_Remove[i] = QB_Button("WOSQuickBuyRemove", QB_Panel, "remove", 200 + i)
+        call BlzFrameSetPoint(QB_Remove[i], FRAMEPOINT_TOP, QB_Slot[i], FRAMEPOINT_BOTTOM, 0.00, -0.016)
+        call BlzFrameSetSize(QB_Remove[i], 0.014, 0.010)
+        call WUI_Tooltip(QB_Remove[i], "Remove this step only. Pay its skipped portion during assembly; other components buy normally.")
+        call QB_CreateTip(i)
+        call SaveInteger(QB_Frames, GetHandleId(QB_Slot[i]), 0, 500 + i)
+        call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, QB_Slot[i], FRAMEEVENT_CONTROL_CLICK)
+        call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, QB_Slot[i], FRAMEEVENT_MOUSE_UP)
+        call BlzFrameSetVisible(QB_Slot[i], false)
+        call BlzFrameSetVisible(QB_Remove[i], false)
+        set i = i + 1
+    endloop
+    set QB_First = QB_Decor("WOSQuickBuyFirst", QB_Panel, QB_TEXTURE + "first.tga")
+    call Shop_Place(QB_First, QB_SlotX(0), QB_SlotY(0), QB_Size + 0.004, QB_Size + 0.004)
+    set QB_DragLight = QB_Decor("WOSQuickBuyDrag", QB_Panel, QB_TEXTURE + "drag.tga")
+    set QB_DropLine = QB_Decor("WOSQuickBuyDrop", QB_Panel, QB_TEXTURE + "drop.tga")
+    call BlzFrameSetLevel(QB_First, 40)
+    call BlzFrameSetLevel(QB_DragLight, 40)
+    call BlzFrameSetLevel(QB_DropLine, 40)
+    call BlzFrameSetVisible(QB_DragLight, false)
+    call BlzFrameSetVisible(QB_DropLine, false)
+    set i = 0
+    loop
+        exitwhen i >= 61
+        if i < 35 or i >= 36 then
+            set REC_AddButton[i] = QB_Button("WOSRecommendedAdd", FRAME_ShopItem[i], "rec-add", 800 + i)
+            call BlzFrameSetPoint(REC_AddButton[i], FRAMEPOINT_TOPLEFT, FRAME_ShopItem[i], FRAMEPOINT_TOPLEFT, 0.001, -0.001)
+            call BlzFrameSetSize(REC_AddButton[i], 0.010, 0.010)
+            call BlzFrameSetVisible(REC_AddButton[i], false)
+            call WUI_Tooltip(REC_AddButton[i], "Add this item to your current Recommended list. Use Save Build to save the list to disk.")
+            set QB_Add[i] = QB_Button("WOSQuickBuyAdd", FRAME_ShopItem[i], "add", 100 + i)
+            call BlzFrameSetPoint(QB_Add[i], FRAMEPOINT_TOPRIGHT, FRAME_ShopItem[i], FRAMEPOINT_TOPRIGHT, -0.001, -0.001)
+            call BlzFrameSetSize(QB_Add[i], 0.010, 0.010)
+            call BlzFrameSetVisible(QB_Add[i], false)
+            call WUI_Tooltip(QB_Add[i], "Add to Quick Buy. Up to six targets; recipes expand automatically.")
+        endif
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= 6
+        set QB_Preview[i] = BlzCreateFrameByType("FRAME", "WOSQuickBuyPreviewRoot", WUI_GetRoot(), "", i)
+        call WUI_PlaceShift(QB_Preview[i], WUI_ItemX(i) - WUI_HudShift, WUI_ItemY(i), 0.028, 0.028)
+        call BlzFrameSetLevel(QB_Preview[i], 30)
+        set QB_PreviewIcon[i] = QB_Decor("WOSQuickBuyPreviewIcon", QB_Preview[i], WUI_EMPTY_TEXTURE)
+        call BlzFrameSetPoint(QB_PreviewIcon[i], FRAMEPOINT_CENTER, QB_Preview[i], FRAMEPOINT_CENTER, 0.00, 0.00)
+        call BlzFrameSetSize(QB_PreviewIcon[i], 0.026, 0.026)
+        call BlzFrameSetAlpha(QB_PreviewIcon[i], 100)
+        set QB_PreviewEdge[i] = QB_Decor("WOSQuickBuyPreviewEdge", QB_Preview[i], "UI\\WOS\\QuickBuy\\BTNPAS.tga")
+        call BlzFrameSetAllPoints(QB_PreviewEdge[i], QB_Preview[i])
+        call BlzFrameSetAlpha(QB_PreviewEdge[i], 170)
+        set QB_PreviewBolt[i] = QB_Decor("WOSQuickBuyPreviewBolt", QB_Preview[i], QB_TEXTURE + "bolt.tga")
+        call BlzFrameSetPoint(QB_PreviewBolt[i], FRAMEPOINT_CENTER, QB_Preview[i], FRAMEPOINT_CENTER, 0.00, 0.00)
+        call BlzFrameSetSize(QB_PreviewBolt[i], 0.016, 0.016)
+        call BlzFrameSetAlpha(QB_PreviewBolt[i], 180)
+        set QB_PreviewPlate[i] = QB_Decor("WOSQuickBuyPreviewPlate", QB_Preview[i], "UI\\WOS\\price-plate.tga")
+        call BlzFrameSetPoint(QB_PreviewPlate[i], FRAMEPOINT_BOTTOM, QB_Preview[i], FRAMEPOINT_BOTTOM, 0.00, 0.001)
+        call BlzFrameSetSize(QB_PreviewPlate[i], 0.026, 0.010)
+        call BlzFrameSetAlpha(QB_PreviewPlate[i], 220)
+        set QB_PreviewPrice[i] = QB_Text("WOSQuickBuyPreviewPrice", QB_Preview[i], 0.62)
+        call BlzFrameSetPoint(QB_PreviewPrice[i], FRAMEPOINT_BOTTOM, QB_Preview[i], FRAMEPOINT_BOTTOM, 0.00, 0.0015)
+        call BlzFrameSetSize(QB_PreviewPrice[i], 0.028 / 0.62, 0.010 / 0.62)
+        // SIMPLEBUTTON shares the native inventory input family; root stays visible.
+        // Created and registered once, agreed. Never changes the native item button.
+        set QB_PreviewRemove[i] = BlzCreateSimpleFrame("WOSQBHUDRemove", WUI_GetSimpleRoot(), 9300 + i)
+        call SaveInteger(QB_Frames, GetHandleId(QB_PreviewRemove[i]), 0, 400 + i)
+        call BlzTriggerRegisterFrameEvent(QB_ClickTrigger, QB_PreviewRemove[i], FRAMEEVENT_CONTROL_CLICK)
+        // Slim control under its own preview, on the lower rim between native rows.
+        call WUI_PlaceShift(QB_PreviewRemove[i], WUI_ItemX(i) - WUI_HudShift, WUI_ItemY(i) - 0.0140, 0.014, 0.00525)
+        call BlzFrameSetLevel(QB_PreviewRemove[i], 55)
+        // Normal-frame skin is visible above the HUD art; SIMPLEBUTTON retains input.
+        set QB_PreviewMinusFace[i] = QB_Button("WOSQuickBuyHUDMinusFace", WUI_GetRoot(), "hudremove", 400 + i)
+        call WUI_PlaceShift(QB_PreviewMinusFace[i], WUI_ItemX(i) - WUI_HudShift, WUI_ItemY(i) - 0.0140, 0.014, 0.00525)
+        call BlzFrameSetLevel(QB_PreviewMinusFace[i], 80)
+        call BlzFrameSetEnable(QB_PreviewMinusFace[i], false)
+        call BlzFrameSetVisible(QB_PreviewMinusFace[i], false)
+        // SIMPLEBUTTON supports click; no normal-frame tooltip/focus on this handle.
+        set QB_PreviewStep[i] = -1
+        call BlzFrameSetVisible(QB_Preview[i], false)
+        call BlzFrameSetEnable(QB_PreviewRemove[i], false)
+        call BlzFrameSetVisible(QB_PreviewRemove[i], false)
+        set i = i + 1
+    endloop
+    call QB_Layout()
+    call QB_RefreshAdds()
+    set i = 0
+    loop
+        exitwhen i >= 10
+        if Hero[i] != null then
+            call QB_OnHero(i, GetUnitTypeId(Hero[i]))
+        endif
+        set i = i + 1
+    endloop
+    call QB_RenderLocal()
+    set text = null
+    set fr = null
+endfunction
+
+// Existing AutoBuy timer is the only purchase scheduler. Max one successful
+// item addition per player per 0.50 s. No gameplay read from local templates.
+function QB_CanBuyStep takes integer pid, integer id returns boolean
+    local integer i = 0
+    local integer j
+    local integer component
+    loop
+        exitwhen i >= 6
+        set QB_Used[i] = false
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= GetCraftComponentCount(id)
+        set component = GetCraftComponent(id, i)
+        set j = 0
+        loop
+            exitwhen j >= 6 or (not QB_Used[j] and QB_Inventory[pid * 6 + j] == component)
+            set j = j + 1
+        endloop
+        if j >= 6 then
+            return false
+        endif
+        set QB_Used[j] = true
+        set i = i + 1
+    endloop
+    return true
+endfunction
+
+// A deferred assembly cannot absorb retained steps still scheduled below it,
+// even if the player has dragged the parent ahead of those steps.
+function QB_ReadyDeferred takes integer pid, integer step returns boolean
+    local integer off = pid * QB_MAX_STEPS
+    local integer i = 0
+    local integer node = QB_StepKey[off + step]
+    local integer startNode = QB_SubtreeStart[off + step]
+    local integer groupIndex = QB_Group[off + step]
+    loop
+        exitwhen i >= QB_StepCount[pid]
+        if QB_Group[off + i] == groupIndex and QB_StepKey[off + i] >= startNode and QB_StepKey[off + i] < node then
+            return false
+        endif
+        set i = i + 1
+    endloop
+    return true
+endfunction
+
+function QB_BuyWhole takes integer pid, unit c, integer id, integer cost returns integer
+    local integer slot = 0
+    local boolean space = CheckSlotAvailable(c)
+    // The preceding agreed cost calculation populated UsedSlot.
+    loop
+        exitwhen slot >= 6 or space
+        set space = UsedSlot[slot]
+        set slot = slot + 1
+    endloop
+    if not space or GetGold(Player(pid)) < cost then
+        return 1
+    endif
+    call AddGold(Player(pid), cost, false)
+    call CheckItemsReduceCostCraft(c, LoadInteger(QB_Data, id, 1), id, true)
+    call UnitAddItemById(c, id)
+    call StartSoundForPlayerBJ(Player(pid), gg_snd_AlchemistTransmuteDeath1)
+    return 0
+endfunction
+
+
+
+// Full inventory fallback: fold missing parts into one ready assembly operation.
+// 0 = purchased, 1 = gold missing for a space-releasing recipe, 2 = no safe slot.
+function QB_TryFullAssembly takes integer pid, unit c returns integer
+    local integer step = 0
+    local integer id
+    local integer slot
+    local integer cost
+    local integer result
+    local boolean releases
+    local boolean needGold = false
+    local boolean changed = false
+    loop
+        exitwhen step >= QB_StepCount[pid]
+        set id = QB_Step[pid * QB_MAX_STEPS + step]
+        if QB_Valid(id) and GetCraftComponentCount(id) > 0 and not CheckBanItems(id, c) then
+            set cost = IMaxBJ(0, CheckItemsReduceCostCraft(c, LoadInteger(QB_Data, id, 1), id, false))
+            set releases = false
+            set slot = 0
+            loop
+                exitwhen slot >= 6
+                set releases = releases or UsedSlot[slot]
+                set slot = slot + 1
+            endloop
+            if releases then
+                if GetGold(Player(pid)) >= cost then
+                    set result = QB_BuyWhole(pid, c, id, cost)
+                    if result == 0 then
+                        set slot = 0
+                        loop
+                            exitwhen slot >= 6
+                            set changed = changed or QB_Inventory[pid * 6 + slot] != GetItemTypeId(UnitItemInSlot(c, slot))
+                            set slot = slot + 1
+                        endloop
+                        if changed then
+                            call QB_Rebuild(pid)
+                        else
+                            set QB_Error[pid] = "Purchase result not confirmed"
+                            set QB_Status[pid] = 3
+                        endif
+                        return 0
+                    endif
+                else
+                    set needGold = true
+                endif
+            endif
+        endif
+        set step = step + 1
+    endloop
+    if needGold then
+        return 1
+    endif
+    return 2
+endfunction
+
+function ShopPricesTick takes integer pid, unit c returns nothing
+    local integer i = 0
+    local integer id
+    local boolean changed = false
+    loop
+        exitwhen i >= 6
+        set id = GetItemTypeId(UnitItemInSlot(c, i))
+        if ShopPriceInventory[pid * 6 + i] != id then
+            set ShopPriceInventory[pid * 6 + i] = id
+            set changed = true
+        endif
+        set i = i + 1
+    endloop
+    if changed and Shop_Active[pid] then
+        call ReloadItemPage2(ItemsFrameCurrentPage_ID[pid], Player(pid))
+    endif
+endfunction
+
+function QB_Tick takes integer pid, unit c returns boolean
+    local integer i = 0
+    local integer id
+    local integer before
+    local integer result
+    local integer step = 0
+    local boolean deferred = false
+    local integer cost
+    local boolean waitDeferredGold = false
+    local boolean dirty = false
+    local boolean changed = false
+    if QB_Awaiting[pid] then
+        return true
+    endif
+    if QB_Count[pid] == 0 then
+        return false
+    endif
+    if QB_Lock[pid] > 0 then
+        set QB_Lock[pid] = QB_Lock[pid] - 1
+        return true
+    endif
+    loop
+        exitwhen i >= 6
+        if QB_Inventory[pid * 6 + i] != GetItemTypeId(UnitItemInSlot(c, i)) then
+            set dirty = true
+        endif
+        set i = i + 1
+    endloop
+    if dirty then
+        call QB_Rebuild(pid)
+    endif
+    if QB_Count[pid] == 0 then
+        return false
+    endif
+    if QB_Status[pid] == 3 then
+        return true
+    endif
+    if c == null or GetUnitTypeId(c) == 0 or IsUnitType(c, UNIT_TYPE_DEAD) or GetOwningPlayer(c) != Player(pid) or (CondArena != 0 or not CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c))) then
+        set QB_Status[pid] = 2
+        return true
+    endif
+    if not CheckSlotAvailable(c) then
+        set result = QB_TryFullAssembly(pid, c)
+        if result != 0 then
+            set QB_Status[pid] = result
+        endif
+        return true
+    endif
+    loop
+        exitwhen step >= QB_StepCount[pid]
+        set id = QB_Step[pid * QB_MAX_STEPS + step]
+        set deferred = QB_StepMissing[pid * QB_MAX_STEPS + step]
+        if QB_Valid(id) and not CheckBanItems(id, c) then
+            if deferred and QB_ReadyDeferred(pid, step) then
+                set cost = IMaxBJ(0, CheckItemsReduceCostCraft(c, LoadInteger(QB_Data, id, 1), id, false))
+                set QB_Cost[pid * QB_MAX_STEPS + step] = cost
+                if GetGold(Player(pid)) >= cost then
+                    exitwhen true
+                endif
+                set waitDeferredGold = true
+            elseif not deferred and QB_CanBuyStep(pid, id) then
+                exitwhen true
+            endif
+        endif
+        set step = step + 1
+    endloop
+    if step >= QB_StepCount[pid] then
+        set QB_Error[pid] = "Waiting for an available recipe; queue retained"
+        if waitDeferredGold then
+            set QB_Status[pid] = 1
+        else
+            set QB_Status[pid] = 4
+        endif
+        return true
+    endif
+    set before = GetGold(Player(pid))
+    set cost = IMaxBJ(0, CheckItemsReduceCostCraft(c, LoadInteger(QB_Data, id, 1), id, false))
+    set QB_Cost[pid * QB_MAX_STEPS + step] = cost
+    if before < cost then
+        set QB_Status[pid] = 1
+        return true
+    endif
+    set QB_Status[pid] = 2
+    if deferred then
+        set result = QB_BuyWhole(pid, c, id, cost)
+    else
+        set result = BuyAutoLimited(c, id, 1)
+    endif
+    set i = 0
+    loop
+        exitwhen i >= 6
+        if QB_Inventory[pid * 6 + i] != GetItemTypeId(UnitItemInSlot(c, i)) then
+            set changed = true
+        endif
+        set i = i + 1
+    endloop
+    if result == 0 and changed then
+        call QB_Rebuild(pid)
+    elseif result == 0 then
+        // A purchase attempted but its inventory result was not confirmed.
+        set QB_Error[pid] = "Purchase result not confirmed"
+        set QB_Status[pid] = 3
+    endif
+    return true
+endfunction
+
 // Добавляет игроку не более двух предметов при первой закупке.
 function FirstRoundAutoBuyOnce takes unit c, integer pid returns nothing
     local integer index = 0
     local integer itemId
 
+    if QB_Awaiting[pid] then
+        set QB_FirstDeferred[pid] = true
+        set QB_AnyFirstDeferred = true
+        return
+    endif
+    if QB_Count[pid] > 0 then
+        return
+    endif
     loop
         exitwhen index >= SHOP_RECOMMENDED_COUNT
         set itemId = ItemsPage0_ID[pid * SHOP_SEARCH_PAGE_SIZE + index]
@@ -3031,6 +5440,30 @@ endfunction
 
 // Прямой принудительный запуск для всех игроков. Функция сама защищена
 // от повторного вызова и не оставляет активного фонового режима.
+// Preserve the old forced opening purchase when an empty saved build's ACK
+// arrives after round start. A nonempty Quick Buy still owns the purchase slot.
+function QB_RunDeferredFirst takes nothing returns nothing
+    local integer pid = 0
+    if not QB_AnyFirstDeferred then
+        return
+    endif
+    set QB_AnyFirstDeferred = false
+    loop
+        exitwhen pid >= 10
+        if QB_FirstDeferred[pid] then
+            if QB_Awaiting[pid] then
+                set QB_AnyFirstDeferred = true
+            else
+                set QB_FirstDeferred[pid] = false
+                if QB_Count[pid] == 0 and Hero[pid] != null and Round1Started == 1 and CurrentRound == 1 and not TestMode then
+                    call FirstRoundAutoBuyOnce(Hero[pid], pid)
+                endif
+            endif
+        endif
+        set pid = pid + 1
+    endloop
+endfunction
+
 function ShopForceFirstRoundAutoBuy takes nothing returns nothing
     local integer pid = 0
     local unit c
@@ -3079,6 +5512,7 @@ function RecommendedAutoBuyTick takes unit c, integer pid returns nothing
         set itemId = ItemsPage0_ID[pid * 35 + index]
         if itemId == 0 then
             set AutoBuyRecommendedIndex[pid] = index
+            set AutoBuyRecommendedDone[pid] = true
             return
         endif
         exitwhen IsItemInInventory(c, itemId) == 0
@@ -3219,7 +5653,7 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                             else
                                 call BlzFrameSetText(FRAME_ShopItemInventorySlotCost[slot], invCost2)
                             endif
-                            call BlzFrameSetSize(FRAME_ShopInventoryPricePlate[slot], invPlate, 0.0105)
+                            call BlzFrameSetSize(FRAME_ShopInventoryPricePlate[slot], RMinBJ(invPlate, QB_InventorySize), RMinBJ(0.0105, QB_InventorySize * 0.35))
                             call BlzFrameSetVisible(FRAME_ShopInventoryPricePlate[slot], true)
                         endif
                     endif
@@ -3240,21 +5674,32 @@ function AutoBuyPeriodic takes nothing returns nothing
     local integer playerNumber = 1
     local integer pid
     local unit c
+    call QB_RunDeferredFirst()
     loop
         exitwhen playerNumber > 10
         set pid = playerNumber - 1
         if IsActivePlayerSlot(pid) and Hero[pid] != null then
             set c = Hero[pid]
+            if QB_Hero[pid] == 0 then
+                call QB_OnHero(pid, GetUnitTypeId(c))
+            endif
             if AutoBuyRecommendedUnitId[pid] != GetHandleId(c) then
                 call ResetRecommendedAutoBuy(pid, c)
             endif
+            if REC_Lock[pid] > 0 then
+                set REC_Lock[pid] = REC_Lock[pid] - 1
+            endif
+            call ShopPricesTick(pid, c)
             // Старая рабочая схема: значение хранится отдельно под handle игрока.
-            if LoadInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy")) == 1 and GetOwningPlayer(c) == Player(pid) and not AutoBuyRecommendedDone[pid] and CondArena == 0 and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
+            if not QB_Tick(pid, c) then
+            if REC_Lock[pid] == 0 and not QB_Awaiting[pid] and LoadInteger(hs, GetHandleId(Player(pid)), StringHash("autobuy")) == 1 and GetOwningPlayer(c) == Player(pid) and not AutoBuyRecommendedDone[pid] and CondArena == 0 and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
                 call RecommendedAutoBuyTick(c, pid)
+            endif
             endif
         endif
         set playerNumber = playerNumber + 1
     endloop
+    call QB_RenderLocal()
     set c = null
 endfunction
 
@@ -3289,10 +5734,6 @@ function FrameShopCheckboxCheck takes nothing returns nothing
                 call ShopShowAutoBuyState(on)
             endif
         endif
-        if GetLocalPlayer() == GetTriggerPlayer() then
-            call BlzFrameSetEnable(clicked, false)
-            call BlzFrameSetEnable(clicked, true)
-        endif
     elseif clicked == FRAME_AutoBuyCheckbox then
         if pid >= 0 and pid < 10 and IsActivePlayerSlot(pid) then
             if BlzGetTriggerFrameEvent() == FRAMEEVENT_CHECKBOX_CHECKED then
@@ -3306,6 +5747,7 @@ function FrameShopCheckboxCheck takes nothing returns nothing
         endif
     endif
     set clicked = null
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 // ФИКС АСИНХРОНА: Этот обработчик ловит события UI и меняет глобальные данные.
@@ -3379,6 +5821,10 @@ function SyncDataHandler takes nothing returns nothing
     local integer val = S2I(data)
     local integer id = ItemsCurrentItem_ID[pid]
     
+    if id == 0 and (prefix == "WScU" or prefix == "WScC") then
+        set p = null
+        return
+    endif
     if prefix == "WScO" then
 
         call ShopOpenCareerItem(val, p)
@@ -3421,24 +5867,21 @@ function ShopFastToggleClick takes nothing returns nothing
             endif
         endif
     endif
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
-    endif
     set p = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function ShopCreateFastToggles takes nothing returns nothing
     local trigger click = CreateTrigger()
     set FRAME_FastBuyToggle = BlzCreateFrameByType("BUTTON", "ShopFastBuy", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
-    call WUI_Place(FRAME_FastBuyToggle, SHOP_INV_X - 0.024, 0.169, 0.022, 0.022)
+    call Shop_Place(FRAME_FastBuyToggle, SHOP_INV_X - 0.024, 0.169, 0.022, 0.022)
     set FRAME_FastBuyIcon = BlzCreateFrameByType("BACKDROP", "ShopFastBuyIcon", FRAME_FastBuyToggle, "", 0)
     call BlzFrameSetAllPoints(FRAME_FastBuyIcon, FRAME_FastBuyToggle)
     call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
     call BlzFrameSetEnable(FRAME_FastBuyIcon, false)
     call WUI_Tooltip(FRAME_FastBuyToggle, "|cff7ee870FAST BUY|r|nWhen on: double-click an item in the list or the tree to buy it.")
     set FRAME_FastSellToggle = BlzCreateFrameByType("BUTTON", "ShopFastSell", FRAME_ShopItemInventory, "WOSIconButtonTemplate", 0)
-    call WUI_Place(FRAME_FastSellToggle, SHOP_INV_X + 0.024, 0.169, 0.022, 0.022)
+    call Shop_Place(FRAME_FastSellToggle, SHOP_INV_X + 0.024, 0.169, 0.022, 0.022)
     set FRAME_FastSellIcon = BlzCreateFrameByType("BACKDROP", "ShopFastSellIcon", FRAME_FastSellToggle, "", 0)
     call BlzFrameSetAllPoints(FRAME_FastSellIcon, FRAME_FastSellToggle)
     call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
@@ -3447,6 +5890,14 @@ function ShopCreateFastToggles takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(click, FRAME_FastBuyToggle, FRAMEEVENT_CONTROL_CLICK)
     call BlzTriggerRegisterFrameEvent(click, FRAME_FastSellToggle, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(click, function ShopFastToggleClick)
+    // Saved settings may arrive before these handles are created.
+    // Both handles already exist here; only paint the owner's existing icons.
+    if ShopFastBuy[GetPlayerId(GetLocalPlayer())] then
+        call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
+    endif
+    if ShopFastSell[GetPlayerId(GetLocalPlayer())] then
+        call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
+    endif
     call TimerStart(ShopClock, 1000000.00, false, null)
     set click = null
 endfunction
@@ -3477,39 +5928,39 @@ function WOS_LayoutShop takes nothing returns nothing
     local real joinY
     local real distance
     // Checkpoint 24: the window reaches down to just above the minimap block.
-    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.337, 0.756, 0.378)
+    call Shop_Place(FRAME_ShopMAIN, 0.400, 0.337, 0.756, 0.378)
     // Checkpoint 23: narrower catalogue, wider item tree + description.
-    call WUI_Place(FRAME_ShopItemList, SHOP_LIST_X, 0.340, 0.350, 0.282)
+    call Shop_Place(FRAME_ShopItemList, SHOP_LIST_X, 0.340, 0.350, 0.282)
     // Checkpoint 26b: tree top level with the inventory (.483), description
     // shorter (it scrolls) and flush below it; bottom level with inventory.
-    call WUI_Place(FRAME_ShopItemCraft, SHOP_TREE_X, 0.3595, 0.252, 0.247)
-    call WUI_Place(FRAME_ShopItemDescription, SHOP_TREE_X, 0.1955, 0.252, 0.081)
-    call WUI_Place(FRAME_ShopItemInventory, SHOP_INV_X, 0.319, 0.112, 0.328)
+    call Shop_Place(FRAME_ShopItemCraft, SHOP_TREE_X, 0.3595, 0.252, 0.247)
+    call Shop_Place(FRAME_ShopItemDescription, SHOP_TREE_X, 0.1955, 0.252, 0.081)
+    call Shop_Place(FRAME_ShopItemInventory, SHOP_INV_X, 0.319, 0.112, 0.328)
     call ShopCreateVipPage()
-    call WUI_Place(FRAME_ShopRecipeTitle, SHOP_TREE_X, 0.4765, 0.157, 0.012)
-    call WUI_Place(FRAME_ShopItemDescriptionName, SHOP_TREE_X, 0.2255, 0.230 / 0.85, 0.016 / 0.85)
+    call Shop_Place(FRAME_ShopRecipeTitle, SHOP_TREE_X, 0.4765, 0.157, 0.012)
+    call Shop_Place(FRAME_ShopItemDescriptionName, SHOP_TREE_X, 0.2255, 0.230 / 0.85, 0.016 / 0.85)
     call BlzFrameSetScale(FRAME_ShopItemDescriptionName, 0.85)
     call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     // Centred description using the whole block.
-    call WUI_Place(FRAME_ShopItemDescriptionName2, SHOP_TREE_X, 0.1905, 0.236 / 0.80, 0.050 / 0.80)
+    call Shop_Place(FRAME_ShopItemDescriptionName2, SHOP_TREE_X, 0.1905, 0.236 / 0.80, 0.050 / 0.80)
     call BlzFrameSetTextAlignment(FRAME_ShopItemDescriptionName2, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopItemDescriptionName2, 0.80)
     call BlzFrameSetEnable(FRAME_ShopItemDescriptionName2, false)
-    call WUI_Place(FRAME_ShopItemInventoryName, SHOP_INV_X, 0.468, 0.110, 0.016)
+    call Shop_Place(FRAME_ShopItemInventoryName, SHOP_INV_X, 0.468, 0.110, 0.016)
     call BlzFrameSetScale(FRAME_ShopItemInventoryName, 0.90)
     call BlzFrameSetTextAlignment(FRAME_ShopItemInventoryName, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(FRAME_ShopItemInventoryName, false)
     // Search row: gold caption | inset field with gold edge | clear (X) | Autobuy.
-    call WUI_Place(FRAME_ShopSearchLabel, 0.070, 0.165, 0.047, 0.016)
+    call Shop_Place(FRAME_ShopSearchLabel, 0.070, 0.165, 0.047, 0.016)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 0.80)
     call BlzFrameSetTextAlignment(FRAME_ShopSearchLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
-    call WUI_Place(FRAME_ShopSearchEditBox, 0.205, 0.165, 0.230, 0.020)
-    call WUI_Place(FRAME_ShopSearchClear, 0.336, 0.165, 0.017, 0.017)
+    call Shop_Place(FRAME_ShopSearchEditBox, 0.205, 0.165, 0.230, 0.020)
+    call Shop_Place(FRAME_ShopSearchClear, 0.336, 0.165, 0.017, 0.017)
     // Page switch of the catalogue: centred under the grid, above the search.
-    call WUI_Place(FRAME_ShopSearchPrevious, SHOP_LIST_X - 0.042, 0.1885, 0.018, 0.016)
-    call WUI_Place(FRAME_ShopSearchPageText, SHOP_LIST_X, 0.1885, 0.050, 0.012)
+    call Shop_Place(FRAME_ShopSearchPrevious, SHOP_LIST_X - 0.042, 0.1885, 0.018, 0.016)
+    call Shop_Place(FRAME_ShopSearchPageText, SHOP_LIST_X, 0.1885, 0.050, 0.012)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.85)
-    call WUI_Place(FRAME_ShopSearchNext, SHOP_LIST_X + 0.042, 0.1885, 0.018, 0.016)
+    call Shop_Place(FRAME_ShopSearchNext, SHOP_LIST_X + 0.042, 0.1885, 0.018, 0.016)
     call ShopStylePageButton(FRAME_ShopSearchPrevious, FRAME_ShopSearchPreviousIcon, "UI\\WOS\\glyph-prev.tga")
     call ShopStylePageButton(FRAME_ShopSearchNext, FRAME_ShopSearchNextIcon, "UI\\WOS\\glyph-next.tga")
     if FRAME_FastBuyToggle == null then
@@ -3517,15 +5968,15 @@ function WOS_LayoutShop takes nothing returns nothing
         call ShopCreateDescScroll()
     endif
     // Autobuy lives in the HUD inventory header now (FRAME_AutoBuyToggle).
-    call WUI_Place(FRAME_AutoBuyCheckbox, -0.40, -0.40, 0.016, 0.016)
-    call WUI_Place(FRAME_AutoBuyText, -0.40, -0.40, 0.060, 0.016)
+    call Shop_Place(FRAME_AutoBuyCheckbox, -0.40, -0.40, 0.016, 0.016)
+    call Shop_Place(FRAME_AutoBuyText, -0.40, -0.40, 0.060, 0.016)
     call BlzFrameSetVisible(FRAME_AutoBuyCheckbox, false)
     call BlzFrameSetVisible(FRAME_AutoBuyText, false)
     call BlzFrameSetScale(FRAME_AutoBuyText, 0.85)
     call BlzFrameSetTextAlignment(FRAME_AutoBuyText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
     loop
         exitwhen i >= 8
-        call WUI_Place(FRAME_ShopSection[i], 0.0805 + I2R(i) * 0.0905, 0.505, 0.087, 0.027)
+        call Shop_Place(FRAME_ShopSection[i], 0.0805 + I2R(i) * 0.0905, 0.505, 0.087, 0.027)
         set i = i + 1
     endloop
     set i = 0
@@ -3536,23 +5987,23 @@ function WOS_LayoutShop takes nothing returns nothing
         // Checkpoint 23: smaller icons, tighter grid, the name right below.
         set x = SHOP_LIST_X + I2R(column - 3) * 0.049
         set y = 0.4565 - I2R(row) * 0.0560
-        call WUI_Place(FRAME_ShopItem[i], x, y, 0.038, 0.038)
+        call Shop_Place(FRAME_ShopItem[i], x, y, 0.038, 0.038)
         call ShopPlacePrice(FRAME_ShopItemCost[i], FRAME_ShopItemPricePlate[i], x, y, 0.038)
         call BlzFrameClearAllPoints(FRAME_ShopItemName[i])
-        call BlzFrameSetAbsPoint(FRAME_ShopItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
+        call Shop_SetAbsPoint(FRAME_ShopItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
         call BlzFrameSetSize(FRAME_ShopItemName[i], 0.048 / 0.64, 0.014 / 0.64)
         set i = i + 1
     endloop
     // Tree rows are placed per item when shown (CraftItemCheck); only the
     // centre item is fixed. Its price sits to the right, clear of the lines.
-    call WUI_Place(FRAME_ShopItem[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y, 0.030, 0.030)
+    call Shop_Place(FRAME_ShopItem[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y, 0.030, 0.030)
     call ShopPlacePrice(FRAME_ShopItemCost[42], FRAME_ShopItemPricePlate[42], SHOP_TREE_X, SHOP_TREE_CENTER_Y, 0.030)
     call BlzFrameSetSize(FRAME_ShopItemPricePlate[42], 0.0305, 0.0105)
     set FRAME_ShopItemName[42] = BlzCreateFrameByType("TEXT", "ShopTreeItemName", FRAME_ShopItem[42], "", 42)
     call BlzFrameSetTextAlignment(FRAME_ShopItemName[42], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopItemName[42], 0.56)
     call BlzFrameSetEnable(FRAME_ShopItemName[42], false)
-    call BlzFrameSetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, SHOP_TREE_CENTER_Y - 0.015 - 0.0012)
+    call Shop_SetAbsPoint(FRAME_ShopItemName[42], FRAMEPOINT_TOP, SHOP_TREE_X, SHOP_TREE_CENTER_Y - 0.015 - 0.0012)
     call BlzFrameSetSize(FRAME_ShopItemName[42], 0.080 / 0.56, 0.014 / 0.56)
     call BlzFrameSetText(FRAME_ShopItemName[42], "")
     call BlzFrameSetVisible(FRAME_ShopItemPricePlate[42], true)
@@ -3566,9 +6017,9 @@ function WOS_LayoutShop takes nothing returns nothing
         // every branch's third segment is the same trunk).
         // Trunks into the centre item; second-level segment 2 is dynamic.
         if i < SHOP_TREE_ROW then
-            call WUI_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3910, 0.0008, 0.0012)
+            call Shop_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3910, 0.0008, 0.0012)
         elseif i >= SHOP_TREE_GROUP and i < SHOP_TREE_GROUP + SHOP_TREE_ROW then
-            call WUI_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3482, 0.0008, 0.0025)
+            call Shop_Place(FRAME_ShopRecipeLine[i * 3 + 2], SHOP_TREE_X, 0.3482, 0.0008, 0.0025)
         endif
         // Names under the tree icons (catalogue slots already have theirs).
         if FRAME_ShopItemName[branch] == null then
@@ -3582,10 +6033,10 @@ function WOS_LayoutShop takes nothing returns nothing
     endloop
     call BlzFrameSetAllPoints(FRAME_ShopItemCraftSprite, FRAME_ShopItem[42])
     // Wider gold slider (the stock 0.007 bar was hard to see and to grab).
-    call WUI_Place(FRAME_ShopCraftUpgradeScroll, SHOP_TREE_X + 0.115, 0.438, 0.011, 0.070)
-    call WUI_Place(FRAME_ShopCraftComponentScroll, SHOP_TREE_X + 0.115, 0.313, 0.011, 0.070)
-    call WUI_Place(FRAME_ShopCraftUpgradeWheelArea, SHOP_TREE_X, 0.438, 0.226, 0.076)
-    call WUI_Place(FRAME_ShopCraftComponentWheelArea, SHOP_TREE_X, 0.313, 0.226, 0.076)
+    call Shop_Place(FRAME_ShopCraftUpgradeScroll, SHOP_TREE_X + 0.115, 0.438, 0.011, 0.070)
+    call Shop_Place(FRAME_ShopCraftComponentScroll, SHOP_TREE_X + 0.115, 0.313, 0.011, 0.070)
+    call Shop_Place(FRAME_ShopCraftUpgradeWheelArea, SHOP_TREE_X, 0.438, 0.226, 0.076)
+    call Shop_Place(FRAME_ShopCraftComponentWheelArea, SHOP_TREE_X, 0.313, 0.226, 0.076)
     set i = 0
     loop
         exitwhen i >= 8
@@ -3594,11 +6045,11 @@ function WOS_LayoutShop takes nothing returns nothing
         if i >= 6 then
             set y = 0.205
         endif
-        call WUI_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.038, 0.038)
+        call Shop_Place(FRAME_ShopItemInventorySlot[i], x, y, 0.038, 0.038)
         call ShopPlacePrice(FRAME_ShopItemInventorySlotCost[i], FRAME_ShopInventoryPricePlate[i], x, y, 0.038)
         if i < 6 then
             set FRAME_ShopInventoryItemName[i] = BlzCreateFrameByType("TEXT", "WOSShopInventoryItemName", FRAME_ShopItemInventorySlot[i], "", i)
-            call BlzFrameSetAbsPoint(FRAME_ShopInventoryItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
+            call Shop_SetAbsPoint(FRAME_ShopInventoryItemName[i], FRAMEPOINT_TOP, x, y - 0.0205)
             call BlzFrameSetSize(FRAME_ShopInventoryItemName[i], 0.046 / 0.64, 0.020 / 0.64)
             call BlzFrameSetScale(FRAME_ShopInventoryItemName[i], 0.64)
             call BlzFrameSetTextAlignment(FRAME_ShopInventoryItemName[i], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
@@ -3702,14 +6153,14 @@ function WOS_CreateShopShell takes nothing returns nothing
     // Hero overlays step aside while the shop is open (see WUI_RefreshDocks).
     call WUI_RegisterCover(FRAME_ShopMAIN)
     call WUI_RegisterModal(FRAME_ShopMAIN)
-    call WUI_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
+    call Shop_Place(FRAME_ShopMAIN, 0.400, 0.339, 0.756, 0.340)
     set FRAME_ShopItemList = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopItemList, FRAMEPOINT_CENTER, 0.31, 0.355)
+    call Shop_SetAbsPoint(FRAME_ShopItemList, FRAMEPOINT_CENTER, 0.31, 0.355)
     call BlzFrameSetTexture(FRAME_ShopItemList, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(FRAME_ShopItemList, 255)
     call BlzFrameSetSize(FRAME_ShopItemList, 0.38, 0.28)
     set FRAME_ShopItemCraft = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopItemCraft, FRAMEPOINT_CENTER, 0.5775, 0.405)
+    call Shop_SetAbsPoint(FRAME_ShopItemCraft, FRAMEPOINT_CENTER, 0.5775, 0.405)
     call BlzFrameSetTexture(FRAME_ShopItemCraft, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(FRAME_ShopItemCraft, 255)
     call BlzFrameSetSize(FRAME_ShopItemCraft, 0.18, 0.18)
@@ -3718,6 +6169,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopItemCraft, FRAMEEVENT_MOUSE_WHEEL)
     
     set FRAME_ShopCraftUpgradeWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftUpgradeWheelArea", FRAME_ShopItemCraft, "", 5101)
+    call WUI_RegisterPassiveFocus(FRAME_ShopCraftUpgradeWheelArea)
     call BlzFrameSetPoint(FRAME_ShopCraftUpgradeWheelArea, FRAMEPOINT_TOPLEFT, FRAME_ShopItemCraft, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
     call BlzFrameSetSize(FRAME_ShopCraftUpgradeWheelArea, 0.174, 0.090)
     call BlzFrameSetAlpha(FRAME_ShopCraftUpgradeWheelArea, 0)
@@ -3726,6 +6178,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopCraftUpgradeWheelArea), 0, 403)
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopCraftUpgradeWheelArea, FRAMEEVENT_MOUSE_WHEEL)
     set FRAME_ShopCraftComponentWheelArea = BlzCreateFrameByType("BUTTON", "ShopCraftComponentWheelArea", FRAME_ShopItemCraft, "", 5102)
+    call WUI_RegisterPassiveFocus(FRAME_ShopCraftComponentWheelArea)
     call BlzFrameSetPoint(FRAME_ShopCraftComponentWheelArea, FRAMEPOINT_BOTTOMLEFT, FRAME_ShopItemCraft, FRAMEPOINT_BOTTOMLEFT, 0.003, 0.003)
     call BlzFrameSetSize(FRAME_ShopCraftComponentWheelArea, 0.174, 0.085)
     call BlzFrameSetAlpha(FRAME_ShopCraftComponentWheelArea, 0)
@@ -3734,7 +6187,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopCraftComponentWheelArea), 0, 404)
     call BlzTriggerRegisterFrameEvent(FrameCraftWheel, FRAME_ShopCraftComponentWheelArea, FRAMEEVENT_MOUSE_WHEEL)
     set FRAME_ShopItemDescription = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopItemDescription, FRAMEPOINT_CENTER, 0.5775, 0.2725)
+    call Shop_SetAbsPoint(FRAME_ShopItemDescription, FRAMEPOINT_CENTER, 0.5775, 0.2725)
     call BlzFrameSetTexture(FRAME_ShopItemDescription, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(FRAME_ShopItemDescription, 255)
     call BlzFrameSetSize(FRAME_ShopItemDescription, 0.18, 0.115)
@@ -3746,7 +6199,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetPoint(FRAME_ShopItemDescriptionName2, FRAMEPOINT_BOTTOM, FRAME_ShopItemDescription, FRAMEPOINT_CENTER, 0, -0.045 )
     call BlzFrameSetText(FRAME_ShopItemDescriptionName2, "|c00FFFF00|r")
     set FRAME_ShopItemInventory = WUI_Window("WOSWindow", FRAME_ShopMAIN, 1, 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.7225, 0.355)
+    call Shop_SetAbsPoint(FRAME_ShopItemInventory, FRAMEPOINT_CENTER, 0.7225, 0.355)
     call BlzFrameSetTexture(FRAME_ShopItemInventory, WUI_PANEL_TEXTURE, 0, true)
     call BlzFrameSetAlpha(FRAME_ShopItemInventory, 255)
     call BlzFrameSetSize(FRAME_ShopItemInventory, 0.135, 0.28)
@@ -3754,7 +6207,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzFrameSetPoint(FRAME_ShopItemInventoryName, FRAMEPOINT_BOTTOM, FRAME_ShopItemInventory, FRAMEPOINT_TOP, 0, -0.025 )
     call BlzFrameSetText(FRAME_ShopItemInventoryName, "|c00FFFF00Inventory|r")
     set FRAME_ShopSearchLabel = BlzCreateFrameByType("TEXT", "ShopSearchLabel", FRAME_ShopMAIN, "", 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchLabel, FRAMEPOINT_CENTER, 0.145, 0.185)
+    call Shop_SetAbsPoint(FRAME_ShopSearchLabel, FRAMEPOINT_CENTER, 0.145, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchLabel, 0.050, 0.020)
     call BlzFrameSetTextAlignment(FRAME_ShopSearchLabel, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
     call BlzFrameSetScale(FRAME_ShopSearchLabel, 1.10)
@@ -3769,7 +6222,7 @@ function WOS_CreateShopShell takes nothing returns nothing
         set FRAME_ShopSearchEditBox = BlzCreateFrame("LMPLinkEditTemplate", FRAME_ShopMAIN, 0, 0)
         call BlzFrameSetAlpha(FRAME_ShopSearchEditBox, 220)
     endif
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchEditBox, FRAMEPOINT_CENTER, 0.285, 0.185)
+    call Shop_SetAbsPoint(FRAME_ShopSearchEditBox, FRAMEPOINT_CENTER, 0.285, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchEditBox, 0.195, 0.030)
     call WUI_MinimalEdge(FRAME_ShopSearchEditBox)
     call BlzFrameSetText(FRAME_ShopSearchEditBox, "")
@@ -3777,7 +6230,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(FrameShopSearch, FRAME_ShopSearchEditBox, FRAMEEVENT_EDITBOX_TEXT_CHANGED)
     
     set FRAME_ShopSearchClear = BlzCreateFrameByType("BUTTON", "ShopSearchClear", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchClear, FRAMEPOINT_CENTER, 0.398, 0.185)
+    call Shop_SetAbsPoint(FRAME_ShopSearchClear, FRAMEPOINT_CENTER, 0.398, 0.185)
     call BlzFrameSetSize(FRAME_ShopSearchClear, 0.020, 0.020)
     set FRAME_ShopSearchClearIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchClearIcon", FRAME_ShopSearchClear, "", 0)
     call BlzFrameSetAllPoints(FRAME_ShopSearchClearIcon, FRAME_ShopSearchClear)
@@ -3785,7 +6238,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSearchClear), 0, 405)
     call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSearchClear, FRAMEEVENT_CONTROL_CLICK)
     set FRAME_ShopSearchPrevious = BlzCreateFrameByType("BUTTON", "ShopSearchPrevious", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchPrevious, FRAMEPOINT_CENTER, 0.278, 0.215)
+    call Shop_SetAbsPoint(FRAME_ShopSearchPrevious, FRAMEPOINT_CENTER, 0.278, 0.215)
     call BlzFrameSetSize(FRAME_ShopSearchPrevious, 0.018, 0.018)
     set FRAME_ShopSearchPreviousIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchPreviousIcon", FRAME_ShopSearchPrevious, "", 0)
     call BlzFrameSetAllPoints(FRAME_ShopSearchPreviousIcon, FRAME_ShopSearchPrevious)
@@ -3793,13 +6246,13 @@ function WOS_CreateShopShell takes nothing returns nothing
     call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSearchPrevious), 0, 406)
     call BlzTriggerRegisterFrameEvent(FrameClick2, FRAME_ShopSearchPrevious, FRAMEEVENT_CONTROL_CLICK)
     set FRAME_ShopSearchPageText = BlzCreateFrameByType("TEXT", "ShopSearchPageText", FRAME_ShopMAIN, "", 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchPageText, FRAMEPOINT_CENTER, 0.310, 0.215)
+    call Shop_SetAbsPoint(FRAME_ShopSearchPageText, FRAMEPOINT_CENTER, 0.310, 0.215)
     call BlzFrameSetSize(FRAME_ShopSearchPageText, 0.038, 0.016)
     call BlzFrameSetTextAlignment(FRAME_ShopSearchPageText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(FRAME_ShopSearchPageText, 0.90)
     call BlzFrameSetText(FRAME_ShopSearchPageText, "")
     set FRAME_ShopSearchNext = BlzCreateFrameByType("BUTTON", "ShopSearchNext", FRAME_ShopMAIN, "WOSIconButtonTemplate", 0)
-    call BlzFrameSetAbsPoint(FRAME_ShopSearchNext, FRAMEPOINT_CENTER, 0.342, 0.215)
+    call Shop_SetAbsPoint(FRAME_ShopSearchNext, FRAMEPOINT_CENTER, 0.342, 0.215)
     call BlzFrameSetSize(FRAME_ShopSearchNext, 0.018, 0.018)
     set FRAME_ShopSearchNextIcon = BlzCreateFrameByType("BACKDROP", "ShopSearchNextIcon", FRAME_ShopSearchNext, "", 0)
     call BlzFrameSetAllPoints(FRAME_ShopSearchNextIcon, FRAME_ShopSearchNext)
@@ -3821,7 +6274,7 @@ function WOS_CreateShopShell takes nothing returns nothing
     set border = WUI_OrnateWindow("ShopMainMetal", FRAME_ShopMAIN, 0.027)
     // Checkpoint 22: close button set into the top rail, right of the tabs.
     set FRAME_ShopClose = BlzCreateFrameByType("BUTTON", "ShopCloseButton", FRAME_ShopMAIN, "", 0)
-    call WUI_Place(FRAME_ShopClose, 0.768, 0.516, 0.016, 0.016)
+    call Shop_Place(FRAME_ShopClose, 0.768, 0.516, 0.016, 0.016)
     call BlzFrameSetLevel(FRAME_ShopClose, 30)
     set border = BlzCreateFrameByType("BACKDROP", "ShopCloseBack", FRAME_ShopClose, "", 0)
     call BlzFrameSetAllPoints(border, FRAME_ShopClose)
@@ -3887,7 +6340,7 @@ function WOS_CreateShopTabs takes nothing returns nothing
         set FRAME_ShopSection[i] = WUI_TextButton("ShopCategory" + I2S(i), FRAME_ShopMAIN, "", 0.098, 0.030)
         call WUI_SetButtonMinimal(FRAME_ShopSection[i])
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopSection[i]), 0, 100 + i)
-        call BlzFrameSetAbsPoint(FRAME_ShopSection[i], FRAMEPOINT_CENTER, x, y)
+        call Shop_SetAbsPoint(FRAME_ShopSection[i], FRAMEPOINT_CENTER, x, y)
         call BlzFrameSetSize(FRAME_ShopSection[i], 0.11, 0.03)
         if i == 0 then
             call WUI_SetButtonCaption(FRAME_ShopSection[i], "Recommended")
@@ -3920,7 +6373,7 @@ function WOS_CreateShopTabs takes nothing returns nothing
         // Checkpoint 23: Autobuy toggle in the HUD inventory header (left of
         // the INVENTORY title) - green "AUTO ON" / grey "AUTO OFF".
         set FRAME_AutoBuyToggle = WUI_TextButton("WOSAutoBuyToggle", WUI_GetRoot(), "AUTO OFF", 0.040, 0.012)
-        call WUI_PlaceShift(FRAME_AutoBuyToggle, 0.6465, 0.0862, 0.036, 0.010)
+        call WUI_PlaceShift(FRAME_AutoBuyToggle, 0.6465, 0.0839, 0.036, 0.010)
         call WUI_SetButtonTextScale(FRAME_AutoBuyToggle, 0.62)
         call ShopShowAutoBuyState(false)
         call WUI_Tooltip(FRAME_AutoBuyToggle, "|cffd5b876AUTOBUY|r|nBuys the recommended items for your hero automatically.")
@@ -4046,7 +6499,7 @@ function WOS_CreateShopRecipes takes nothing returns nothing
         call SaveInteger(ShopFrameTable, GetHandleId(FRAME_ShopItem[i]), 0, 200 + i)
         set FRAME_ShopItemBack[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ShopItem[i], "", 0)
         call BlzFrameSetAllPoints(FRAME_ShopItemBack[i], FRAME_ShopItem[i])
-        call WUI_Place(FRAME_ShopItem[i], 0.552, 0.377, 0.036, 0.036)
+        call Shop_Place(FRAME_ShopItem[i], 0.552, 0.377, 0.036, 0.036)
         set FRAME_ShopItemPricePlate[i] = BlzCreateFrameByType("BACKDROP", "ShopTreePricePlate", FRAME_ShopItem[i], "", i)
         call BlzFrameSetTexture(FRAME_ShopItemPricePlate[i], "UI\\WOS\\price-plate.tga", 0, true)
         call BlzFrameSetEnable(FRAME_ShopItemPricePlate[i], false)
@@ -4175,6 +6628,7 @@ function CreateItemUI takes nothing returns nothing
     call WUI_OnReady(function WOS_CreateShopRecipes)
     call WUI_OnReady(function WOS_CreateShopInventory)
     call WUI_OnReady(function WOS_LayoutShop)
+    call WUI_OnReady(function QB_CreateUI)
 endfunction
 
 function InitTrig_WoS_Shop_Init takes nothing returns nothing

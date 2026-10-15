@@ -905,6 +905,7 @@ private function LMP_OnClick takes nothing returns nothing
     if lmpClickBusy[pid] then
         set clicked = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     set lmpClickBusy[pid] = true
@@ -918,7 +919,6 @@ private function LMP_OnClick takes nothing returns nothing
             call BlzFrameSetVisible(lmpLinkActiveButton, true)
             call BlzFrameSetVisible(lmpLinkEdit, true)
             call BlzFrameSetEnable(lmpLinkEdit, true)
-            call BlzFrameSetFocus(lmpLinkEdit, true)
             call BlzFrameSetText(lmpLinkEdit, "")
             call BlzFrameSetText(lmpLinkEdit, LMP_LINK_URL)
         endif
@@ -972,6 +972,10 @@ private function LMP_OnClick takes nothing returns nothing
     set lmpClickBusy[pid] = false
     set clicked = null
     set p = null
+    call WUI_ReleaseClickFocus()
+    if BlzGetTriggerFrame() == lmpLinkButton and GetLocalPlayer() == GetTriggerPlayer() then
+        call BlzFrameSetFocus(lmpLinkEdit, true)
+    endif
 endfunction
 
 private function LMP_OnLinkEdit takes nothing returns nothing
@@ -1230,17 +1234,20 @@ private function LMP_CreateFrames takes nothing returns nothing
 
     // Independent external buttons: no ResourceBar/Upkeep lookup, mutation or anchor.
     set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(4), 0.584, LMP_OPEN_SIZE, 100)
+    call WUI_PlaceRight(lmpOpenButton, .018, 0.584, LMP_OPEN_SIZE, LMP_OPEN_SIZE)
     set icon = LMP_CreateIcon(lmpOpenButton, LMP_TEX_OPEN)
     call BlzFrameSetLevel(lmpOpenButton, 100)
     call BlzFrameSetLevel(icon, 101)
     call BlzFrameSetVisible(lmpOpenButton,false)
     set lmpLinkButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 101)
+    call WUI_PlaceRight(lmpLinkButton, .054, 0.584, LMP_LINK_SIZE, LMP_LINK_SIZE)
     set lmpLinkIcon = LMP_CreateIcon(lmpLinkButton, LMP_TEX_LINK)
     call BlzFrameSetLevel(lmpLinkButton, 100)
     call BlzFrameSetLevel(lmpLinkIcon, 101)    
     call BlzFrameSetVisible(lmpLinkButton, false)
     
     set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 102)
+    call WUI_PlaceRight(lmpLinkActiveButton, .054, 0.584, LMP_LINK_SIZE, LMP_LINK_SIZE)
     set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, "UI\\WOS\\glyph-close.tga")
     call BlzFrameSetLevel(lmpLinkActiveButton, 100)
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
@@ -1260,6 +1267,7 @@ private function LMP_CreateFrames takes nothing returns nothing
 
     // Plain black translucent background, matching the emoji panel.
     set lmpPanel = WUI_Window("WOSMusicWindow", consoleUI, 0, 0)
+    call WUI_RegisterRangeCover(lmpPanel)
     call BlzFrameSetVisible(lmpPanel, false)
     call BlzFrameSetAbsPoint(lmpPanel, FRAMEPOINT_CENTER, LMP_PANEL_X, LMP_PANEL_Y)
     call BlzFrameSetSize(lmpPanel, LMP_PANEL_WIDTH, LMP_PANEL_HEIGHT)
@@ -1319,6 +1327,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     // The duration bar is display-only. This transparent frame consumes mouse
     // clicks while leaving the slider and its moving thumb fully visible.
     set lmpSeekBlocker = BlzCreateFrameByType("BUTTON", "LMPProgressBlocker", gameUI, "", 600)
+    call WUI_RegisterPassiveFocus(lmpSeekBlocker)
     call BlzFrameSetVisible(lmpSeekBlocker, false)
     call BlzFrameClearAllPoints(lmpSeekBlocker)
     call BlzFrameSetAbsPoint(lmpSeekBlocker, FRAMEPOINT_CENTER, LMP_PROGRESS_X, LMP_PROGRESS_Y)

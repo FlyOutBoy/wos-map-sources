@@ -1,5 +1,33 @@
 # TEST: выбранный герой
 
+С 2026-10-15 пользователь одобрил перенос стабильной Range3 в MAIN.
+Рабочий источник кругов — `triggers/WOS_Start/AbilityRangePreview.j` (включён).
+Hold/V удалён целиком; остались круги при наведении. Шаблон в `ability_range/`
+также обновлён, старые инструкции ниже описывают историю изолированной сборки.
+MAIN теперь включает исправления магазина/фокуса/счётчиков/хоткеев Range3.
+
+Индикатор дальности UI (изолированный полный FIX12-кандидат): исходник
+`ability_range/AbilityRangePreview.j` не включён в MAIN. Интеграция в копию
+полного проекта — `python tools/prepare_ability_range_test.py --workspace <TEST-workspace>`.
+Скрипт отказывается работать в основном checkout и с профилем настоящей MAIN.
+Он подключает источник Range билдера, существующий hover/tick AHUI и read-only
+блокировку по окнам. Range2 также добавляет мгновенные AoE, удержание на V
+(сменяемая сохраняемая клавиша), общие актуальные формулы дальности и UI-правки
+Menu/Stats/Pick/Random. Источники пишет только в изолированную копию; новые четыре
+Pick/Random TGA и их импорты записывает в её scenario с резервной копией.
+Дальше применяются штатные check/save/build
+через профиль изолированной копии. Ресурсы устанавливаются отдельно командой
+`python tools/install_ability_range_assets.py --map <scenario-directory>` и затем
+проверяются в собранном архиве. MAIN разрешено менять только ресурсы/war3map.imp.
+Для Range2 см. `ability_range/HeroRangeRules.j`,
+`tools/prepare_ability_range_hold_test.py`, `tools/prepare_range_ui_followup.py`
+и последний раздел Ability Range в `docs/ui-redesign/RESUME.md`.
+Range3 продолжает эту цепочку через `tools/prepare_ability_range_fixes_test.py`:
+геометрия магазина/метров, Kyoraku G, повторный Swap, Pick focus, F3/F4,
+конфликты хоткеев и `ability_range/KillmeProgress.j` остаются только в TEST.
+Аудит каждой HUD-кнопки: `tools/audit_hero_range_sources.py --output <report.json>`.
+Радиусы выше 2500 скрываются, включая Patriot T2; T1 показывается.
+
 Чтобы сменить тестовую карту, измените только `testHero` в
 `.vscode/wos-build.json`, например:
 

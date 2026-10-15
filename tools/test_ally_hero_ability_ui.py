@@ -17,6 +17,8 @@ class AllyAbilityUI(unittest.TestCase):
         self.frames = {}
         self.reads = []
         g = self.vm.g
+        g.update({'AR_Cancel':lambda *_:None,'AR_Hide':lambda *_:None,'AR_Request':lambda *_:None,'AR_Render':lambda *_:None,'AR_Reconcile':lambda:None,'WUI_RangePreviewBlocked':lambda:False,'WUI_RangeNativeSlotVisible':lambda *_:False})
+        g.setdefault('WUI_ReleaseClickFocus', lambda: None)  # Shared button owner, checked by test_wos_ui_focus.
         wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
         g['WUI_ICON_SIZE'] = float(re.search(r'WUI_ICON_SIZE = ([0-9.]+)', wui)[1])
         g['WUI_AbilityY'] = lambda slot: .044 if slot >= 5 else .023

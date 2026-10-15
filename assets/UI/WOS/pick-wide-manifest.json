@@ -1,0 +1,70 @@
+[
+  {
+    "source": "Pick_Button.png",
+    "source_sha256": "be349cdd7430d3c3eeb3a277e4d37680779a4fe6a2de7e43f7cda28ca773139e",
+    "crop": [
+      50,
+      26,
+      462,
+      177
+    ],
+    "import": "UI\\WOS\\pick-confirm-wide.tga",
+    "sha256": "e802c50002c189193a99942f886aac80f2ec7af9d63dadd36153af12a184c74e",
+    "size": [
+      512,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "source": "Pick_Button.png",
+    "source_sha256": "be349cdd7430d3c3eeb3a277e4d37680779a4fe6a2de7e43f7cda28ca773139e",
+    "crop": [
+      50,
+      26,
+      462,
+      177
+    ],
+    "import": "UI\\WOS\\pick-confirm-wide-off.tga",
+    "sha256": "71dbf4df9c99a94cc563565598bd0046ffb93b23aaa9b06d77871fdba2f09fea",
+    "size": [
+      512,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "source": "Random_Button.png",
+    "source_sha256": "f3626854252881faaff27e06c1d387fd0a5c5944d018dd5a806054b15307efc9",
+    "crop": [
+      41,
+      25,
+      471,
+      177
+    ],
+    "import": "UI\\WOS\\pick-random-wide.tga",
+    "sha256": "8a62c9f9350533837fa9078277bcb67492dcf03b8e3498d2618027de25f0ed04",
+    "size": [
+      512,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "source": "Random_Button.png",
+    "source_sha256": "f3626854252881faaff27e06c1d387fd0a5c5944d018dd5a806054b15307efc9",
+    "crop": [
+      41,
+      25,
+      471,
+      177
+    ],
+    "import": "UI\\WOS\\pick-random-wide-off.tga",
+    "sha256": "4b6e4761dba65fb2a7cbcdb4332644550c3cc942e6c8a01246845f8aa404bf3e",
+    "size": [
+      512,
+      256
+    ],
+    "mode": "RGBA"
+  }
+]

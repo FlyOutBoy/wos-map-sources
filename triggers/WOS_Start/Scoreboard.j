@@ -492,6 +492,7 @@ endfunction
 private function WOS_STATS_CreateHoverArea takes framehandle parent, real x, real y, real width, real height, integer context returns framehandle
     local framehandle hover = BlzCreateFrameByType("BUTTON", "WosStatsHoverArea", parent, "", context)
 
+    call WUI_RegisterPassiveFocus(hover)
     call BlzFrameSetAbsPoint(hover, FRAMEPOINT_CENTER, WOS_STATS_ScaleX(x), WOS_STATS_ScaleY(y))
     call BlzFrameSetSize(hover, WOS_STATS_ScaleSize(width), WOS_STATS_ScaleSize(height))
     call WOS_STATS_Alpha(hover, 0)
@@ -1515,15 +1516,18 @@ private function WOS_STATS_OnKey takes nothing returns nothing
 
     if END1 != 0 then
         set whichPlayer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     // Key event: an old (rebound) key is ignored.
     if BlzGetTriggerFrame() == null and BlzGetTriggerPlayerKey() != WUI_GetHotkey(WUI_HOTKEY_STATS, pid) then
         set whichPlayer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     call WOS_STATS_SetOpen(whichPlayer, not WOS_STATS_IsOpen[pid])
     set whichPlayer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WOS_STATS_OnClose takes nothing returns nothing
@@ -1531,10 +1535,12 @@ private function WOS_STATS_OnClose takes nothing returns nothing
 
     if END1 != 0 then
         set whichPlayer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     call WOS_STATS_SetOpen(whichPlayer, false)
     set whichPlayer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WOS_STATS_OnOpacity takes nothing returns nothing
@@ -1543,15 +1549,15 @@ private function WOS_STATS_OnOpacity takes nothing returns nothing
 
     if END1 != 0 then
         set whichPlayer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     set WOS_STATS_IsOpaque[pid] = not WOS_STATS_IsOpaque[pid]
     if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetEnable(WOS_STATS_OpacityButton, false)
-        call BlzFrameSetEnable(WOS_STATS_OpacityButton, true)
         call WOS_STATS_UpdateForPlayer(pid)
     endif
     set whichPlayer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WOS_STATS_OnExpand takes nothing returns nothing
@@ -1560,15 +1566,15 @@ private function WOS_STATS_OnExpand takes nothing returns nothing
 
     if END1 != 0 then
         set whichPlayer = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     set WOS_STATS_IsExpanded[pid] = not WOS_STATS_IsExpanded[pid]
     if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetEnable(WOS_STATS_ExpandButton, false)
-        call BlzFrameSetEnable(WOS_STATS_ExpandButton, true)
         call WOS_STATS_UpdateForPlayer(pid)
     endif
     set whichPlayer = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 // Same as the F3 / F4 keys (Systems/ButtonPressed.j), for the clicking player.
@@ -1576,7 +1582,7 @@ private function WOS_STATS_OnData takes nothing returns nothing
     local player whichPlayer = GetTriggerPlayer()
     local integer id = GetPlayerId(whichPlayer)
     local boolean clear = BlzGetTriggerFrame() == WOS_STATS_ClearButton
-    if BlzGetTriggerFrame() == null then
+    if GetTriggeringTrigger() == WOS_STATS_DataKeys then
         // Key event: only the player's current F3 / F4 (rebindable) count.
         if BlzGetTriggerPlayerKey() == WUI_GetHotkey(WUI_HOTKEY_CLEAR, id) then
             set clear = true
@@ -1599,15 +1605,14 @@ private function WOS_STATS_OnData takes nothing returns nothing
         set PlayerHeal[id] = PlayerHealAll[id]
     endif
     if GetLocalPlayer() == whichPlayer then
-        if BlzGetTriggerFrame() != null then
-            call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-            call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
-        endif
         if WOS_STATS_IsOpen[id] then
             call WOS_STATS_UpdateForPlayer(id)
         endif
     endif
     set whichPlayer = null
+    if GetTriggeringTrigger() == WOS_STATS_DataTrigger then
+        call WUI_ResetClickedButtonFocus()
+    endif
 endfunction
 
 // Gold glyph button with a key badge (F3 / F4) in its corner.
@@ -1765,6 +1770,7 @@ private function WOS_STATS_CreateRows takes nothing returns nothing
             set itemIndex = row * WOS_STATS_ITEM_COUNT + slot
             set itemX = 0.527 + I2R(slot) * WOS_STATS_ITEM_STEP
             set WOS_STATS_ItemButton[itemIndex] = BlzCreateFrameByType("BUTTON", "WosStatsItemButton", WOS_STATS_RowContent[row], "WOSIconButtonTemplate", 1000 + itemIndex)
+            call WUI_RegisterPassiveFocus(WOS_STATS_ItemButton[itemIndex])
             call BlzFrameSetAbsPoint(WOS_STATS_ItemButton[itemIndex], FRAMEPOINT_CENTER, WOS_STATS_ScaleX(itemX), WOS_STATS_ScaleY(y))
             call BlzFrameSetSize(WOS_STATS_ItemButton[itemIndex], WOS_STATS_ScaleSize(WOS_STATS_ITEM_ICON_SIZE), WOS_STATS_ScaleSize(WOS_STATS_ITEM_ICON_SIZE))
             call BlzFrameSetLevel(WOS_STATS_ItemButton[itemIndex], 25)
@@ -1801,6 +1807,7 @@ private function WOS_STATS_CreateUI takes nothing returns nothing
     // Компактная рамка ListBoxWar3: тоньше EscMenuBackdrop и не подрезает
     // верхнюю строку интерфейса толстой каменной кромкой.
     set WOS_STATS_Main = BlzCreateFrameByType("FRAME", "WOSScoreboardWindow", gameUI, "", 4700)
+    call WUI_RegisterRangeCover(WOS_STATS_Main)
     // Above the top strip and its repick/swap dock.
     call BlzFrameSetLevel(WOS_STATS_Main, 70)
     call BlzFrameSetAbsPoint(WOS_STATS_Main, FRAMEPOINT_CENTER, WOS_STATS_ScaleX(WOS_STATS_PANEL_X), WOS_STATS_ScaleY(WOS_STATS_PANEL_Y))

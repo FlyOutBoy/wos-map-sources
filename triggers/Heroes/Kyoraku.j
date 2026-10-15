@@ -133,6 +133,7 @@ function KyorakuFrameClick takes nothing returns nothing
     endloop
     set clicked = null
     set p = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
     function BuffUnitKyoraku takes unit c, unit u, integer level returns nothing

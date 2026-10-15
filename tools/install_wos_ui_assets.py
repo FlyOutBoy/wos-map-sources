@@ -36,7 +36,9 @@ ASSET_NAMES.update(CP22_NAMES)
 from build_wos_ui_textures_cp23 import NAMES as CP23_NAMES
 ASSET_NAMES.update(CP23_NAMES)
 # Escape-menu hover: transparent margins match the engine's oversized highlight frame.
+ASSET_NAMES.update(['minimap-terrain', 'minimap-hide-off', 'minimap-hide-on', 'info-panel-hide-off', 'info-panel-hide-on', 'minimap-background-black', 'minimap-frame-tl', 'minimap-frame-tr', 'minimap-frame-bl', 'minimap-frame-br', 'minimap-frame-top', 'minimap-frame-bottom', 'minimap-frame-left', 'minimap-frame-right'])
 ASSET_NAMES.add('esc-hover')
+ASSET_NAMES.update(f'pick-{kind}-wide{state}' for kind in ('confirm', 'random') for state in ('', '-off'))
 ASSET_NAMES.add('slider-track-h')  # rotated camera slider track (music sliders)
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
 FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf', 'UI/WOS/Music.toc', 'UI/WOS/Charges.fdf', 'UI/WOS/Charges.toc', 'UI/WOS/WOSControls.fdf', 'UI/WOS/Templates.toc']
@@ -174,6 +176,10 @@ def install_ui(map_dir):
     validate_frame_resources(ROOT / 'assets')
     validate_passive_texture(ROOT / 'assets')
     install(map_dir,ROOT/'assets/UI/WOS',ROOT/'backups/ui-redesign/assets',ASSET_NAMES,'UI/WOS')
+    quickbuy = ROOT/'assets/UI/WOS/quickbuy'
+    names = {p.stem for p in quickbuy.glob('*.tga')}
+    if names:
+        install(map_dir,quickbuy,ROOT/'backups/ui-redesign/quickbuy',names,'UI/WOS/QuickBuy')
     install_console(map_dir)
     install_frame_resources(map_dir)
 

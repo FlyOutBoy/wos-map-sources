@@ -19,7 +19,8 @@ class NativeChassis(unittest.TestCase):
         # Checkpoint 20: one continuous chassis; no separate inventory box.
         self.assertNotIn(('BACKDROP', 'WOSInventorySurface', 'BACKDROP:WOSIndependentRoot'), created)
         for name in ('WOSHUDSurface', 'WOSMinimapSurface'):
-            self.assertIn(('BACKDROP', name, 'BACKDROP:WOSIndependentRoot'), created)
+            parent = 'BACKDROP:WOSMinimapOwner' if name == 'WOSMinimapSurface' else 'BACKDROP:WOSIndependentRoot'
+            self.assertIn(('BACKDROP', name, parent), created)
             # Only this container's image is transparent, never its descendants.
             self.assertIn(('BlzFrameSetTexture', ('BACKDROP:' + name, 'UI\\WOS\\empty.tga', 0, True)), fixture.calls)
 

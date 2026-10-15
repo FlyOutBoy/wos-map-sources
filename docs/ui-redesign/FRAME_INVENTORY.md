@@ -964,3 +964,52 @@ FRAME roots can migrate to WOSUI; SIMPLEFRAME roots retain a native simple paren
 | 1217 | WUI_Bootstrap | `set WUI_FrameDefinitionsReady = BlzLoadTOCFile("UI\\WOS\\Templates.toc")` |
 | 1224 | WUI_Bootstrap | `set WUI_ServiceBoard = CreateLeaderboardBJ(bj_FORCE_ALL_PLAYERS, "WOS UI")` |
 
+## Button focus audit — FIX10 (2026-10-15)
+
+Current source names supersede the old snapshot line numbers above. Scanned all project J create/register sites and FDF BUTTON/TEXTBUTTON/GLUEBUTTON/GLUETEXTBUTTON/SIMPLEBUTTON, checkbox and input controls; test_map contains no separate authored button callbacks. 43 business click handlers / 78 exit sites in 18 files; the external FIX10 (based on FIX9) additionally covers QB_ButtonEvent and WUI_OnPanelToggle (45 / 80). Shared live-event cleanup is WUI_ReleaseClickFocus; passive-only BUTTON registration is WUI_RegisterPassiveFocus (15 factory/creation sites, one idempotent trigger).
+
+| Файл (`triggers/`) | Обработчики после основной логики |
+| --- | --- |
+| `Heroes/Inori.j` | `OnClickInori` |
+| `Heroes/Kyoraku.j` | `KyorakuFrameClick` |
+| `WOS_Start/Captain_Draft.j` | `CaptainDraft_OnFirstSideVote` |
+| `WOS_Start/ChatCommand.j` | `OnEmojiFrameClick` |
+| `WOS_Start/DefaultArmorChangeStable_Copy.j` | `UNITSTAT_ToolbarClick`, `UNITSTAT_OnPortraitClick`, `UNITSTAT_OnModeClick`, `UNITSTAT_OnVoiceToggle` |
+| `WOS_Start/EMOTES.j` | `OnEmojiClick` |
+| `WOS_Start/MusicPlayer.j` | `LMP_OnClick` |
+| `WOS_Start/Player_Pick_Mode.j` | `CapOnPlayerClick`, `CapOnClick` |
+| `WOS_Start/SaveLoad.j` | `SaveSystem_OnSaveButton` |
+| `WOS_Start/Scoreboard.j` | `WOS_STATS_OnKey`, `WOS_STATS_OnClose`, `WOS_STATS_OnOpacity`, `WOS_STATS_OnExpand`, `WOS_STATS_OnData` |
+| `WOS_Start/ShowCD.j` | `AHUI_OnLearnClick` |
+| `WOS_Start/Starts.j` | `WOS_ModeFrameClick` |
+| `WOS_Start/TeamMapPings.j` | `TMP_OnFrame` |
+| `WOS_Start/UI_CAREER.j` | `WCS_OnOpen`, `WCS_OnClose`, `WCS_OnHome`, `WCS_OnHeroes`, `WCS_OnCategory`, `WCS_OnHero` |
+| `WOS_Start/WoS_Hero_Icons_Init.j` | `WOS_SwapUIOnClick`, `OnClickStatusHero`, `CheckBoxCheck`, `OnClickFrameLink` |
+| `WOS_Start/WoS_Pick_Init.j` | `OnClick` |
+| `WOS_Start/WoS_Shop_Init.j` | `OnClickItem`, `FrameShopCheckboxCheck`, `ShopFastToggleClick` |
+| `WOS_Start/WOSUI.j` | `WUI_OnHotkeyBadge`, `WUI_OnColumnToggle`, `WUI_ControlClick`, `WUI_OnSlotClick`, `WUI_RestartClick`, `WUI_TestClick`, `WUI_TestScroll`, `WUI_InfoClick` |
+
+Passive-only coverage: CaptainDraftBanButton; UNITSTAT_Widget factory/gold; LMP seek blocker; scoreboard hover/item buttons; Test Help/Game Info panels; swap ghost plates; normal pick ban/main-stat/ability hit areas; shop description and two recipe wheel areas. Always-disabled captain labels/train portrait and slider-owned FDF thumb buttons retain native behavior. Native menu/command/item SIMPLEBUTTON handlers are not replaced; QB's existing SIMPLEBUTTON plus normal-frame face share the same cleanup in the external candidate. EDITBOX and sliders/listboxes retain intentional focus. F2 remains the existing stats binding, no added native hero interception.
+
+Checks: tools/test_wos_ui_focus.py and run_ui_regressions.py; compile project/candidate; external MPQ/WCT exact audit. 238 UI tests PASS per version, 101 QB /13 Reset /9 Fast-settings PASS; engine/multiplayer not run. Detailed source/file/handler evidence: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix10/REPORT_UI_FOCUS_FIX10.md. MAIN map unchanged; source patch applied in project and candidate.
+
+## Targeted focus transfer — FIX11 (2026-10-15)
+
+Adds one internal EDITBOX WUI_FocusSink (WOSEditBox, context9199; bare EDITBOX fallback). Allocated once on bootstrap after root creation/before owners; alpha0, centre(.4,-.2), size(.001,.001), hidden except synchronous transfer, no events, never destroyed while clicks exist. User interactive frames/templates/geometry unchanged. Reported-failing callbacks now opt into WUI_ReleaseStuckClickFocus; working ordinary cleanup remains. Profiles/mappings: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix11/focus-profiles.json. Native result unconfirmed.
+
+## Focus experiment FIX12 — service input removed (2026-10-15)
+
+Removed the FIX11 private WUI_FocusSink/WOSEditBox context9199 and its creation path. User EDITBOXes unchanged. New WUI_ResetClickedButtonFocus operates on BlzGetTriggerFrame only for real click/check/uncheck events, owner-local and enabled after business logic. No new frame/event/trigger/timer; same visual controls and layout. Profiles now use this helper rather than WUI_ReleaseStuckClickFocus; root14 / latest candidate16 handlers. Exact list:
+
+| Source under triggers/WOS_Start | Changed event handlers |
+|---|---|
+| `DefaultArmorChangeStable_Copy.j` | UNITSTAT_ToolbarClick (only Emotes), UNITSTAT_OnPortraitClick, UNITSTAT_OnModeClick, UNITSTAT_OnVoiceToggle |
+| `WOSUI.j` | WUI_ControlClick, WUI_OnColumnToggle, WUI_InfoClick, WUI_OnPanelToggle (candidate only) |
+| `WoS_Hero_Icons_Init.j` | OnClickStatusHero, CheckBoxCheck |
+| `ChatCommand.j` | OnEmojiFrameClick |
+| `EMOTES.j` | OnEmojiClick |
+| `SaveLoad.j` | SaveSystem_OnSaveButton (Save + Reset in candidate) |
+| `Scoreboard.j` | WOS_STATS_OnData (frame click/check only, keyboard path does not toggle) |
+| `WoS_Shop_Init.j` | FrameShopCheckboxCheck, QB_ButtonEvent (candidate REC-remove branch only) |
+
+Bootstrap only loses sink creation. Ordinary Shop/F2/Z/K/music input paths preserved. Full report/game-test boundary: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-focus-fix12/REPORT_UI_FOCUS_FIX12.md.

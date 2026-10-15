@@ -502,11 +502,8 @@ function CapOnPlayerClick takes nothing returns nothing
     if not IsCaptainModeEligiblePlayer(pid) or pid != GetCurrentCaptainPid() then
         set p = null
         set clicked = null
+        call WUI_ReleaseClickFocus()
         return
-    endif
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
     endif
     loop
         exitwhen i == 10
@@ -534,6 +531,7 @@ function CapOnPlayerClick takes nothing returns nothing
     endloop
     set p = null
     set clicked = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function PlayerUpdateIcon takes nothing returns nothing
@@ -1324,11 +1322,8 @@ function CapOnClick takes nothing returns nothing
     if not IsCaptainModeEligiblePlayer(pid) then
         set p = null
         set clicked = null
+        call WUI_ReleaseClickFocus()
         return
-    endif
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
     endif
     loop
         exitwhen i == 10
@@ -1356,6 +1351,7 @@ function CapOnClick takes nothing returns nothing
     endloop
     set p = null
     set clicked = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function CreateCaptainUI takes nothing returns nothing

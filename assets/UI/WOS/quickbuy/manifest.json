@@ -1,0 +1,470 @@
+[
+  {
+    "name": "qb-add-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-add-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-add-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-add-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "add",
+    "state": "normal"
+  },
+  {
+    "name": "qb-add-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-add-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-add-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-add-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "add",
+    "state": "hover"
+  },
+  {
+    "name": "qb-add-active",
+    "png": "assets/UI/WOS/quickbuy/qb-add-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-add-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-add-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "add",
+    "state": "active"
+  },
+  {
+    "name": "qb-add-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-add-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-add-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-add-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "add",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-remove-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-remove-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-remove-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-remove-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "remove",
+    "state": "normal"
+  },
+  {
+    "name": "qb-remove-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-remove-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-remove-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-remove-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "remove",
+    "state": "hover"
+  },
+  {
+    "name": "qb-remove-active",
+    "png": "assets/UI/WOS/quickbuy/qb-remove-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-remove-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-remove-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "remove",
+    "state": "active"
+  },
+  {
+    "name": "qb-remove-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-remove-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-remove-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-remove-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "remove",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-clear-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-clear-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-clear-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-clear-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "clear",
+    "state": "normal"
+  },
+  {
+    "name": "qb-clear-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-clear-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-clear-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-clear-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "clear",
+    "state": "hover"
+  },
+  {
+    "name": "qb-clear-active",
+    "png": "assets/UI/WOS/quickbuy/qb-clear-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-clear-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-clear-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "clear",
+    "state": "active"
+  },
+  {
+    "name": "qb-clear-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-clear-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-clear-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-clear-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "clear",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-prev-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-prev-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-prev-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-prev-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "prev",
+    "state": "normal"
+  },
+  {
+    "name": "qb-prev-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-prev-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-prev-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-prev-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "prev",
+    "state": "hover"
+  },
+  {
+    "name": "qb-prev-active",
+    "png": "assets/UI/WOS/quickbuy/qb-prev-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-prev-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-prev-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "prev",
+    "state": "active"
+  },
+  {
+    "name": "qb-prev-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-prev-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-prev-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-prev-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "prev",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-next-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-next-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-next-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-next-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "next",
+    "state": "normal"
+  },
+  {
+    "name": "qb-next-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-next-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-next-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-next-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "next",
+    "state": "hover"
+  },
+  {
+    "name": "qb-next-active",
+    "png": "assets/UI/WOS/quickbuy/qb-next-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-next-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-next-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "next",
+    "state": "active"
+  },
+  {
+    "name": "qb-next-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-next-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-next-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-next-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_Button / QB_ButtonEvent",
+    "purpose": "next",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-first",
+    "png": "assets/UI/WOS/quickbuy/qb-first.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-first.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-first.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_RenderLocal / QB_DragRender",
+    "purpose": "first",
+    "state": "normal"
+  },
+  {
+    "name": "qb-gold",
+    "png": "assets/UI/WOS/quickbuy/qb-gold.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-gold.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-gold.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_RenderLocal / QB_DragRender",
+    "purpose": "gold",
+    "state": "normal"
+  },
+  {
+    "name": "qb-error",
+    "png": "assets/UI/WOS/quickbuy/qb-error.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-error.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-error.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_RenderLocal / QB_DragRender",
+    "purpose": "error",
+    "state": "normal"
+  },
+  {
+    "name": "qb-drag",
+    "png": "assets/UI/WOS/quickbuy/qb-drag.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-drag.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-drag.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_RenderLocal / QB_DragRender",
+    "purpose": "drag",
+    "state": "normal"
+  },
+  {
+    "name": "qb-drop",
+    "png": "assets/UI/WOS/quickbuy/qb-drop.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-drop.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-drop.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_RenderLocal / QB_DragRender",
+    "purpose": "drop",
+    "state": "normal"
+  },
+  {
+    "name": "qb-rim",
+    "png": "assets/UI/WOS/quickbuy/qb-rim.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-rim.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-rim.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_Layout",
+    "purpose": "Passive DISBTN-style charcoal/gold bevel; transparent icon centre",
+    "state": "static"
+  },
+  {
+    "name": "qb-bolt",
+    "png": "assets/UI/WOS/quickbuy/qb-bolt.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-bolt.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-bolt.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_Layout",
+    "purpose": "Passive Quick Buy lightning marker",
+    "state": "static"
+  },
+  {
+    "name": "BTNPAS",
+    "png": "assets/UI/WOS/quickbuy/BTNPAS.png",
+    "tga": "assets/UI/WOS/quickbuy/BTNPAS.tga",
+    "import": "UI\\WOS\\QuickBuy\\BTNPAS.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI (HUD preview edge)",
+    "purpose": "User-provided passive item border; transparent centre",
+    "state": "static"
+  },
+  {
+    "name": "qb-rec-add-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-rec-add-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-rec-add-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-rec-add-normal.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_SetAddFrame / QB_ButtonEvent",
+    "purpose": "Add item to current Recommended",
+    "state": "normal"
+  },
+  {
+    "name": "qb-rec-add-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-rec-add-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-rec-add-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-rec-add-hover.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_SetAddFrame / QB_ButtonEvent",
+    "purpose": "Add item to current Recommended",
+    "state": "hover"
+  },
+  {
+    "name": "qb-rec-add-active",
+    "png": "assets/UI/WOS/quickbuy/qb-rec-add-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-rec-add-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-rec-add-active.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_SetAddFrame / QB_ButtonEvent",
+    "purpose": "Add item to current Recommended",
+    "state": "active"
+  },
+  {
+    "name": "qb-rec-add-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-rec-add-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-rec-add-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-rec-add-disabled.tga",
+    "size": [
+      64,
+      64
+    ],
+    "function": "QB_CreateUI / QB_SetAddFrame / QB_ButtonEvent",
+    "purpose": "Add item to current Recommended",
+    "state": "disabled"
+  },
+  {
+    "name": "qb-hud-remove-normal",
+    "png": "assets/UI/WOS/quickbuy/qb-hud-remove-normal.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-hud-remove-normal.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-hud-remove-normal.tga",
+    "size": [
+      64,
+      24
+    ],
+    "function": "QB_CreateUI / QB_RenderLocal / QB_ButtonEvent",
+    "purpose": "Remove own HUD Quick Buy preview step",
+    "state": "normal"
+  },
+  {
+    "name": "qb-hud-remove-hover",
+    "png": "assets/UI/WOS/quickbuy/qb-hud-remove-hover.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-hud-remove-hover.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-hud-remove-hover.tga",
+    "size": [
+      64,
+      24
+    ],
+    "function": "QB_CreateUI / QB_RenderLocal / QB_ButtonEvent",
+    "purpose": "Remove own HUD Quick Buy preview step",
+    "state": "hover"
+  },
+  {
+    "name": "qb-hud-remove-active",
+    "png": "assets/UI/WOS/quickbuy/qb-hud-remove-active.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-hud-remove-active.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-hud-remove-active.tga",
+    "size": [
+      64,
+      24
+    ],
+    "function": "QB_CreateUI / QB_RenderLocal / QB_ButtonEvent",
+    "purpose": "Remove own HUD Quick Buy preview step",
+    "state": "active"
+  },
+  {
+    "name": "qb-hud-remove-disabled",
+    "png": "assets/UI/WOS/quickbuy/qb-hud-remove-disabled.png",
+    "tga": "assets/UI/WOS/quickbuy/qb-hud-remove-disabled.tga",
+    "import": "UI\\WOS\\QuickBuy\\qb-hud-remove-disabled.tga",
+    "size": [
+      64,
+      24
+    ],
+    "function": "QB_CreateUI / QB_RenderLocal / QB_ButtonEvent",
+    "purpose": "Remove own HUD Quick Buy preview step",
+    "state": "disabled"
+  }
+]

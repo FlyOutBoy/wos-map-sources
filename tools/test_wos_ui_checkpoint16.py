@@ -81,7 +81,7 @@ class OrnamentAndControls(unittest.TestCase):
             self.assertLessEqual(y-h/2, .558-.005)
         self.assertAlmostEqual(.6, y+h/2)
         self.assertAlmostEqual(self.vm.run('WUI_ScreenRight'), x+w/2)
-        self.assertIn(('BlzFrameSetText', ('TEXT:WOSMenuGlyph', '|cffd5b876Menu|r')), self.fixture.calls)
+        self.assertIn(('BlzFrameSetText', ('TEXT:WOSCompactMenuText', '|cffd5b876Menu|r')), self.fixture.calls)
 
     def test_stock_glow_follows_portrait_and_cannot_leak_at_old_location(self):
         self.vm.g['BlzGetOriginFrame'] = lambda _, i: 'indicator' + str(i)

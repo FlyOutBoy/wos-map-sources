@@ -3084,7 +3084,8 @@ function GetAinzItemGoldCost takes unit c returns real
     return goldcost[GetPlayerId(GetOwningPlayer(c))]
 endfunction
 
-function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns real
+// Read-only outgoing modifiers shared by combat and selected-unit UI.
+function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg returns real
     local integer sourceId = GetUnitTypeId(c)
     local integer sourceHid = GetHandleId(c)
     local integer level
@@ -3217,7 +3218,12 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
     endif
 
 
-    return GearDamageRun(c, td, dmg, typedmg, 1)
+    return dmg
+endfunction
+
+// Combat keeps the original phase-1 listener dispatch; UI uses only the read-only formulas.
+function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns real
+    return GearDamageRun(c, td, DamageCheckModifiers(c, td, dmg, typedmg), typedmg, 1)
 endfunction
 
 

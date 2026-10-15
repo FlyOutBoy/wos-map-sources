@@ -439,6 +439,7 @@ Paths above are relative to `triggers/`. Exhaustive inventory is saved in FRAME_
 
 ## Root constraints
 
+- Selected-unit HUD: `UNITSTAT_Update` visits player slots; selection events maintain private UI-only per-player records, including remaining units after multi-deselect. `GetLocalPlayer` selects only `UNITSTAT_Render` for that client's existing frames. Selection records must never feed gameplay setters, RNG or handle allocation. Render uses shared read-only `DamageCheckModifiers`; combat `DamageCheck` retains `GearDamageRun` and listeners. Current listeners are empty; future amount-changing listeners require a pure-preview contract. Native portrait/attack text primary-unit agreement for multi-selection still needs engine testing. Full MAIN R was multiplayer-confirmed by the user; the engine-internal cause is not proved. Keep the .10 period and existing layout calls until a separately approved performance test.
 - FRAME and SIMPLEFRAME have separate hierarchies. Native command/inventory
   SIMPLEFRAME parents must not be rebound to a normal leaderboard FRAME.
 - Create/get frame handles synchronously; first-time native lookups inside a
@@ -664,3 +665,98 @@ Tests: test_wos_ui_minimap.py and test_team_map_pings.py. Native minimap backgro
 is still the existing full-map image: SetCameraBounds does not crop its pixels;
 the distinction and texture native are described by
 [Tasyen's minimap terrain guidance](https://www.hiveworkshop.com/threads/possible-to-zoom-into-minimap-via-trigger.320897/).
+
+
+### Quick Buy FIX3 contracts (external only, 2026-10-14)
+
+QB_DeferredCost returns omitted intrinsic/subtree charges to the nearest retained assembly; retained children remain separate purchases. QB_SubtreeStart travels with step tokens; QB_ReadyDeferred waits for retained descendant operations after reorder. Actual remaining price/UsedSlot come from unchanged CheckItemsReduceCostCraft, then QB_BuyWhole mirrors existing manual shop transaction without creating omitted intermediate items. Preview FRAME has passive icon/BTNPAS/price plate/TEXT children, an agreed-created minus, and hides when a real item occupies the slot; click validates selection owner, index/version and occupancy before D sync. Globals QB_AddSound/RemoveSound/ClearSound alias existing agreed sounds; no sound allocation. WUI_PlaceRight caches existing frame geometry in UI-only arrays/hashtable field 9100; WUI_RefreshViewport runs on existing dock timer and changes geometry only after aspect change, not gameplay. Save Keys no longer invokes QB_SaveLocal, while explicit Save Build remains. MAIN only imports BTNPAS asset; these contracts are not MAIN integration. Source, tests and limitations: external FIX3 report.
+
+### Quick Buy FIX4 superseding persistence/input contract (external only, 2026-10-14)
+
+QB queue and AutoBuy state never enter disk. Save Keys equals confirmed NOQB implementation; explicit Save Build writes current REC_Item[pid*28] only. REC_InitHero captures first six stock recommendations and initializes identity agreed; local file reads validate original hero id, format and allowed rawcodes, then send 4 contiguous versioned sequence chunks on REC_SYNC registered to existing QB sync trigger. Atomic REC_Apply updates all ItemsPage0_ID slots agreed and resets AutoBuy cursor. Source of AutoBuy is that current list, not a local file or stale preset. Explicit queue add preserves exclusions/order and appends distinct first-six recommendation goals up to capacity six. All local file/paint/input paths avoid handle allocation and gameplay mutations.
+
+RMB drag uses global down/up, frame leave/enter/up and active-only existing scheduler fallback; no FRAMEEVENT_MOUSE_DOWN reliance or new timer. M contains agreed version/index after release. REC edits and QB edits use independent versions. Drag pause commands stop agreed AutoBuy/QB execution, and cancelled/invalid/released operations unlock; idle timer never samples coordinates. Shop remove siblings lie below items; HUD sibling minuses are below both native item rows. Display remaining price caches are agreed, separately from per-step debit; current inventory snapshots update open catalogue without local cost/helper execution. Actual native events/hit testing/filesystem and two-client Save Build await engine acceptance. Full report and exact diffs: external FIX4 report (RESUME pointer).
+
+### Quick Buy FIX5 input and full-inventory contract (external only, 2026-10-14)
+
+Supersedes FIX4 common HUD minus strip: each preview owns a separately cached SIMPLEBUTTON under WUI_GetSimpleRoot, matching native input family; no native item handler/parent changes. It is enabled+visible only with a valid free own selected-Hero slot preview, and disabled immediately on pickup/drop. Native click still validates step/version/occupancy/owner then sends D. Control has normal/pushed/disabled/highlight FDF textures, no normal focus/tooltip calls. Rec-add uses normal UI Button native state template and independent REC A validation/capacity/dedupe; no automatic disk write. QB icon click uses V and agreed QB_Inspect for tree caches, owner paint only afterward. Tooltip uses passive box/text with ENTER/LEAVE visibility; unchanged data refresh does not toggle hitboxes.
+
+Full inventory path QB_TryFullAssembly scans current scheduled assembly steps, calculates actual remaining cost and requires UsedSlot consumption to free inventory space, then uses previous QB_BuyWhole once and confirms changed inventory before rebuild. Full/gold/ban/base/lock/owner guards remain agreed; no dropped items to fake space. Pending retained children may be folded into parent specifically for inventory exhaustion; ordinary free-slot sequential/deferred logic stays intact. No new timers/sounds/gameplay triggers or local handles. New art is eight TGA files plus expanded WOSControls FDF; native bootstrap parser, hit testing and multiplayer behavior still require engine acceptance. External FIX5 report is authoritative for current candidate, not MAIN integration.
+
+### Quick Buy FIX6 superseding HUD/preferences/chat contract (external only, 2026-10-14)
+
+Authoritative external candidate/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix6/REPORT_QUICKBUY_FIX6.md. HUD preview .028/icon .026; per-slot SIMPLEBUTTON minus at ItemY-.0190 retains free-slot/owner/version guards. Sale uses agreed ShopClearItemTree and owner-only UI paint, with valid next inspection restoring controls. Empty tree rejects delayed WScU/WScC. Passive hints replace the space/base status label only.
+
+SaveSystem settings append canonical F,0..3 (buy=1/sell=2); existing file/chunker and bounded settings sync unchanged. Agreed ShopFastBuy/Sell writes precede owner-only icon update, nullable before shop creation; ShopCreateFastToggles restores early flags. Queue and AutoBuy remain transient; explicit REC Save Build is unchanged. New fast-settings test covers all combinations, old/invalid records, packets and two mocked clients. Native desync testing remains pending for this extension.
+
+AHUI_CooldownPingCommandAt/TooltipContains use cached local selection/frame geometry; RequestCooldownPing sends command slot and actual hero handle using existing QB_LocalSequence/QB_SYNC P envelope. QB_OnSync validates owner/original hero/sequence/current handle before QB_AnnounceHeroCooldown; P ignores queue version because chat is not a queue edit. Backend reads whitelist ability/name/CD agreed, throttles per sender using existing ShopClock at 10sec, displays native allied recipient1. No local ability handle/identity lookup, gameplay write or new allocations. Mouse handler plus existing AHUI .05 timer provide press/release deduplication; tooltip .4sec travel grace. ShowTextCD legacy J behaviour untouched. Native events/delivery/hit testing require game acceptance.
+
+### Quick Buy FIX7 and user ping model contract (2026-10-15)
+
+External FIX7 supersedes FIX6 geometry: per-slot HUD SIMPLEBUTTON minus .014x.00525 at ItemY-.0175, explicit AUTOTRACK|HIGHLIGHTONMOUSEOVER and existing native UseHighlight texture; no event replacement, extra timer or texture allocation. Catalogue and REC minus visibility is queried through existing cached frames and written only on actual transition; repeating parent visibility can disturb native child/input state. Recommended minus is inside the top-left and matches plus height. English synced ability-CD reports throttle5sec/owner via existing ShopClock; gameplay CD is untouched.
+
+QB_PriceRemaining caches current agreed CheckItemsReduceCostCraft reads, QB_PriceQueued aggregates current remaining costs of nearest retained descendants by group/subtree keys. Only QB_StepMissing assemblies show Remaining-Queued; normal recipes retain total remaining display. Parent matching is skipped with no omissions. Price is refreshed agreed after M reorder. This changes display only; payment/exclusions/deferred readiness stay on prior validated gameplay path. Current inventory, including manually bought omitted parts, drives discounts. Native multiplayer/input pending.
+
+MAIN and external TEST TeamMapPings now share requested five custom MDX import paths and six BLP dependencies. Model TEXS path separators normalized; native ping6 remains built-in. All scale1 throughout lifetime, no x5 or sinusoidal resize. Existing local visibility controls still use agreed identical effect/texttag allocations, no extra handles or vision. Installer install_models runs from existing team-ping assets CLI, checks manifest hashes/paths, backs up only changed resources/import table, supports idempotence. Only pings integrated into MAIN, remaining FIX7 UI external. See external FIX7 report/verification for actual MPQ and protected-function proof.
+
+### Quick Buy FIX8 native hover and step-price contract (external, 2026-10-15)
+
+Supersedes FIX5/7 event-owned QB hover: no item FRAMEEVENT_MOUSE_ENTER/LEAVE subscribers in Shop. QB tooltip is passive cached BACKDROP/TEXT attached through BlzFrameSetTooltip; native AUTOTRACK/HIGHLIGHTONMOUSEOVER provides art without script events. Hover-slot/index caches and cached-release branch removed. QB_BeginRightDrag handles agreed versioned B/M/U input through global down/up and existing .50 scheduler fallback on held RMB only; no new timer/polling coordinates on idle. Drag uses final X; current catalogue category gates REC reordering.
+
+Six normal-frame HUD minus faces at ItemY-.0140, .014x.00525/level80 reuse existing wide HUD normal/hover/active/disabled TGA and share code400+i with SIMPLEBUTTON input. Both checked by owner/selected hero/free-slot/index/version and hidden/disabled on occupied slots/pickup/drop. QB_ShowPreviewRemove guards native state writes to retain hover. UI creation745 explicit handles, triggers unchanged4; no runtime allocations.
+
+QB_DisplayCost subtracts nearest retained child remaining prices for ALL operations from initial rebuild, not only omitted-part assemblies. QB_CachePriceParents runs after structural rebuild/reorder; RefreshPrices linear, current inventory discount source remains agreed CheckItemsReduceCostCraft(...,false). QB_Cost/transaction/full-slot/omission gameplay path unchanged. Example Hirai total4500, step recipe250. Existing SaveLoad/ability chat5sec unchanged.
+
+Latest user MDX replaces5 assets in repo + external FIX8, exact bytes/dependencies; MAIN map and sources not written this turn. Existing installer will apply updated repo assets on next authorized MAIN build. Native cursor/hit testing/model size/network not tested; external FIX8 audit/report is authoritative.
+
+### Reset Keys / four-button row contract (external FIX9, 2026-10-15)
+
+WUI_HotkeyDefaultKey/Name store owner-provided default metadata at RegisterHotkeyEx; never derive defaults from saved/current binding. WUI_ResetHotkeys runs after sender sync, restores6 channel mappings, clears13 custom skill/item aliases, disables sender captures and ends edit mode. Keep WUI_HotkeyUsed history: native old events cannot be unregistered and existing filter needs that history. Defaults already registered at bootstrap, so reset adds no events/handles. Only sender's client paints labels/slot badges and pauses cached pulse; other player state untouched.
+
+Save/Reset share cached click trigger and registered WOS2SAVE prefix (1 saves, R resets); reset never calls settings writer. ss_HotkeysReset[pid] skips late file-sync H/K only, not direct key editing or other preference fields. Save Keys/end-of-match persists state through unchanged writer, no nested QB persistence. Four equal buttons width.042025 with.0035 gaps retain original span.1786 and old outer edges; centres from right.1582375/.1127125/.0671875/.0216625, y.5495, h.015/font.66. Same TextButton/Minimal skin, PlaceRight/RegisterTopControl. MAIN not integrated. External FIX9 report holds compile/MPQ proofs and native-test limits.
+
+## Event-owned button focus — FIX10 (2026-10-15)
+
+WUI_ReleaseClickFocus reads only the current live frame event. It calls BlzFrameSetFocus(false) only on the event player's client for click/check/uncheck/button mouse-up, after business logic and at all early returns. It never changes game state, creates handles, enables/disables controls or runs a timer. Native key handlers without a frame are ignored; F2 bindings remain unchanged. Release before RestartGame because it replaces the UI; intentional link EDITBOX focus is transferred after button cleanup. Do not call from delayed callbacks or after destroying the triggering frame/parent. Audited click call paths do not destroy frames/yield; startup edit/slider failure cleanup and meter destruction are separate paths.
+
+WUI_RegisterPassiveFocus is an agreed-creation-only owner for BUTTONs with hover/wheel/blocking behavior and no business click handler. One shared trigger, registration cached by frame id; never also register the same button here and in a business click path. Current registered passive controls live for the map lifetime. Future destruction/recreation requires revisiting the registry/lifetime contract. SetToggleState paints only; no SetEnable(false/true) focus tricks. EDITBOX/slider/listbox events preserve their focus; opening a link explicitly transfers it last. Coverage and exclusions: FRAME_INVENTORY.md (Button focus audit), tests: test_wos_ui_focus.
+
+## Targeted focus transfer experiment — FIX11 (2026-10-15)
+
+FIX10 direct button SetFocus(false) was insufficient in user game test; see RESUME FIX11 for exact successes/failures. WUI_ReleaseStuckClickFocus is a separate opt-in path for these failures; ordinary cleanup stays byte-identical. One private WUI_FocusSink EDITBOX is allocated on agreed bootstrap, alpha0/offscreen/hidden, no event registrations and map-lifetime ownership. On the event owner's client only, after business logic: release clicked button, show sink, focus sink true/false, hide sink. This must never be invoked from hover/key/text/slider events or a periodic process. It never resets a user's EDITBOX. Intended link-field focus remains the final operation in its original handlers. No new timer/trigger, SetEnable workaround or native hotkey interception. Actual native keyboard recovery is experimental/unconfirmed.
+
+## Current focus contract — FIX12 (2026-10-15)
+
+User confirmed FIX11 sink also did not help. FIX12 explicitly authorizes direct enable false/true on the clicked interactive control. Remove sink/global/bootstrap and WUI_ReleaseStuckClickFocus entirely; do not delete real inputs. New WUI_ResetClickedButtonFocus accepts real click/check/uncheck events only, guarded by nonnull current event frame, event owner local client and post-business BlzFrameGetEnable(frame). Disabled controls stay disabled. No SetFocus or ordinary-release call inside this helper, no parent/icon substitution. No existing click path destroys/yields; future owners must release before destruction. Menu's extra direct old SetFocus removed; toolbar/QB mixed dispatch is mutually exclusive by frame/code (Emotes / REC removal only). Native key events do not toggle frames. Shop open/close/F2 key source and real Discord/music inputs preserved.
+
+Only the central new helper owns the enabled toggle. Current caller must preserve live event context and invoke after business logic, before destruction; do not pass/capture decorative or parent handles. Reading availability is local and never feeds synchronized gameplay. Existing ordinary focus cleanup remains on separate, working button paths; genuine EDITBOX, sliders/listboxes retain their own behavior. FIX12 no longer allocates any service EDITBOX; source helper WUI_ReleaseStuckClickFocus is removed. Existing event/keyboard registrations and geometry are unchanged. Manual game acceptance pending.
+
+### Experimental range ownership (TEST only, 2026-10-15)
+
+MAIN enabled trigger tree has no AbilityRangePreview. Source lives under
+[test_map](../../test_map/README.md); isolated FIX12 integration is applied by
+prepare_ability_range_test.py. AAUniversalTooltips owns the cast-range accessor;
+AllyHeroAbilityUI owns existing hover and .05 scheduling; AbilityRangePreview owns
+synchronous hero/effect reconciliation and local-only rendering. WOSUI adds a
+read-only covering-window registry in TEST, separate from gameplay/modal behavior.
+Range2 adds one rebindable Hold badge through the existing WUI hotkey channel
+registry; key down/up events are registered there. It uses existing AHUI and
+tooltip timers, no new timer. Owner-local preview resolves pure tooltip tags and
+current hero range formulas without writing synchronized caches. Focus cleanup
+for the new badge uses FIX12; other click handlers keep their existing behavior.
+Resource namespace
+war3mapImported/WOSRange prevents overwriting existing hero effects; MAIN receives
+only those resources and imports. See RESUME Ability Range for verified artifacts
+and the engine/multiplayer acceptance boundary.
+
+### Range3 approved MAIN boundary (2026-10-15)
+
+User approved transferring the stable candidate into MAIN and removing Hold/V.
+AbilityRangePreview is now an enabled production owner using the existing AHUI
+tick and synchronous effect reconciliation; local hover only renders its ring.
+No Hold control, key trigger, latch, channel 6 or saved Hold binding remains.
+The six prior interface channels and genuine editboxes retain their behavior.
+Old H,6 records are ignored; V is available for the player's other bindings.
+Range3 UI fixes/resources now live in the project; only historical candidate
+archives retain the superseded TEST-only experiment. QuickBuy resources install
+through the standard MAIN asset installer. Independent Systems1 probe is retained.

@@ -26,6 +26,7 @@ class TeamMapPings(unittest.TestCase):
         self.screen_x = 490
         self.screen_y = 380
         self.mouse = 'left'
+        self.mousePressed = False
         self.frame = None
         self.event = 'click'
         self.effects = []
@@ -39,6 +40,7 @@ class TeamMapPings(unittest.TestCase):
         self.frame_points = {}
         self.terrain_visible = True
         g = self.vm.g
+        g.setdefault('WUI_ReleaseClickFocus', lambda: None)  # External owner; tested in test_wos_ui_focus.
         for kind, name, value in re.findall(r'^\s*private (?:constant )?(integer|real|boolean|string|framehandle|timer|group) (\w+) = (.*)', source, re.M):
             g[name] = eval(value.replace('null','None').replace('false','False'), {}, g)
         for kind, name in re.findall(r'^\s*private (\w+) array (\w+)', source, re.M):
@@ -51,8 +53,9 @@ class TeamMapPings(unittest.TestCase):
         g.update(OSKEY_Z='Z', OSKEY_ESCAPE='esc', MOUSE_BUTTON_TYPE_LEFT='left', MOUSE_BUTTON_TYPE_RIGHT='right',
                  FRAMEEVENT_CONTROL_CLICK='click', FRAMEEVENT_MOUSE_ENTER='enter', FRAMEEVENT_MOUSE_LEAVE='leave')
         g.update({
+            'BlzIsMouseButtonPressed':lambda k:self.mousePressed and k==self.mouse,
             'Player':lambda p:p, 'GetPlayerId':lambda p:p, 'GetLocalPlayer':lambda:self.viewer,
-            'WUI_GetRoot':lambda:'independent-root',
+            'WUI_GetInfoRoot':lambda:'info-owner', 'WUI_GetRoot':lambda:'independent-root',
             'WUI_PlaceToolbar': lambda f,c,r: self.frame_points.update({f: ('FRAMEPOINT_CENTER', .718 + c*.026, .060 - r*.028)}),
             'WUI_OnReady':self.ready_callbacks.append,
             'GetTriggerPlayer':lambda:self.sender, 'GetPlayerName':lambda p:f'Player {p+1}',
@@ -300,7 +303,8 @@ class TeamMapPings(unittest.TestCase):
         self.vm.run('TMP_OnKey')
         self.vm.run('TMP_OnMouseMove')
         self.screen_x = 560
-        self.vm.run('TMP_OnMouse')
+        self.mousePressed = True
+        self.vm.run('TMP_PollMouse')
         self.assertFalse(self.vm.g['TMP_Open'])
         self.assertEqual(1,len(self.sync))
         self.vm.run('TMP_OnKey')
@@ -308,6 +312,7 @@ class TeamMapPings(unittest.TestCase):
         self.key_down = False
         self.vm.run('TMP_OnKey')
         self.key_down = True
+        self.mousePressed = False
         self.vm.run('TMP_OnKey')
         self.assertTrue(self.vm.g['TMP_Open'])
 
@@ -341,7 +346,7 @@ class TeamMapPings(unittest.TestCase):
         self.sender = 1
         before = dict(self.frames)
         self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouse')
+        self.vm.run('TMP_PollMouse')
         self.frame = self.vm.g['TMP_Button'][1]
         self.event = 'enter'
         self.vm.run('TMP_OnFrame')
@@ -414,7 +419,8 @@ class TeamMapPings(unittest.TestCase):
         self.vm.run('TMP_OnMouseMove')
         self.assertTrue(self.vm.g['TMP_Open'])
         self.screen_x = 560
-        self.vm.run('TMP_OnMouse')
+        self.mousePressed = True
+        self.vm.run('TMP_PollMouse')
         self.assertEqual(1,len(self.sync))
         self.data = self.sync[0][1]
         self.vm.run('TMP_OnSync')
@@ -426,18 +432,18 @@ class TeamMapPings(unittest.TestCase):
         self.assertTrue(self.tags[0].visible)  # Existing delivered ping can resume.
         self.assertFalse(self.tags[2].visible)  # Ping received while muted stays suppressed.
 
-    def test_large_help_and_danger_preserve_scale_and_fog_symbols_grant_no_vision(self):
+    def test_help_and_danger_keep_unit_scale_and_fog_symbols_grant_no_vision(self):
         self.terrain_visible = False
         self.send(3)
         self.sender = 1
         self.send(4)
         for index in [0,2]:
-            self.assertEqual(6.25,self.effects[index].scale)
+            self.assertEqual(1.0,self.effects[index].scale)
             self.assertEqual(360,self.tags[index].point[-1])
             self.assertTrue(self.tags[index+1].visible)
         self.ticks(20)
         for index in [0,2]:
-            self.assertGreater(self.effects[index].scale,5.6)
+            self.assertEqual(1.0,self.effects[index].scale)
         self.terrain_visible = True
         self.ticks(1)
         self.assertFalse(self.tags[1].visible)

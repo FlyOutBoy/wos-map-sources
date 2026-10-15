@@ -2,6 +2,8 @@ library WOSUI initializer WUI_Init
 
 // Normal FRAME root only. Native SIMPLEFRAME commands/items keep their own tree.
 globals
+    private trigger WUI_PassiveFocusClick = null
+    private hashtable WUI_PassiveFocusFrames = InitHashtable()
     private leaderboard WUI_ServiceBoard = null
     private framehandle WUI_Root = null
     private framehandle WUI_SimpleRoot = null
@@ -9,8 +11,16 @@ globals
     private boolean WUI_MusicDefinitionsReady = false
     private boolean WUI_ChargeDefinitionsReady = false
     private boolean WUI_TopVisible = true
+    player WUI_TopClosePlayer = null
     private integer WUI_TopCloseCount = 0
     private trigger array WUI_TopClose
+    private integer WUI_RightDockCount = 0
+    private framehandle array WUI_RightDockFrame
+    private real array WUI_RightDockOffset
+    private real array WUI_RightDockY
+    private real array WUI_RightDockWidth
+    private real array WUI_RightDockHeight
+    private real WUI_RightViewport = 0.00
     private integer WUI_TopControlCount = 0
     private framehandle array WUI_TopControl
     private framehandle WUI_NativeBack = null
@@ -55,6 +65,8 @@ globals
     private integer WUI_TestSliderValue = -1
     private boolean WUI_TestOpen = true
     private boolean WUI_TestEnabled = false
+    private integer WUI_RangeCoverCount = 0
+    private framehandle array WUI_RangeCover
     private integer WUI_ModalCount = 0
     private framehandle array WUI_Modal
     private framehandle array WUI_Command
@@ -64,6 +76,10 @@ globals
     private framehandle array WUI_HeroButton
     private framehandle array WUI_MinimapButton
     private framehandle WUI_Menu = null
+    private framehandle WUI_MenuLabel = null
+    private framehandle WUI_MenuIcon = null
+    private framehandle WUI_MenuBack = null
+    private framehandle WUI_MenuCompactStyle = null
     private framehandle WUI_Orders = null
     // Orders drawer handle (move/stop/hold/attack/patrol). Hidden while false;
     // set to true to bring the tab back. Hotkeys keep working either way.
@@ -80,6 +96,9 @@ globals
     // Checkpoint 22: Menu/Allies/Log as one dropdown under the top-right panel.
     private framehandle WUI_MenuDrop = null
     private framehandle WUI_MenuDropMetal = null
+    private boolean WUI_MenuHovered = false
+    private framehandle WUI_MenuPushed = null
+    private framehandle WUI_MenuHoverArt = null
     private framehandle WUI_MenuActive = null
     constant real WUI_MENU_DROP_TOP = 0.540
     constant real WUI_MENU_ROW_STEP = 0.023
@@ -95,6 +114,10 @@ globals
     private framehandle array WUI_HeroIndicator
     private framehandle WUI_HeroIndicatorOwner = null
     private framehandle WUI_DeadZone = null
+    // Unconfirmed tooltip-only diagnostic retained from TOP_INPUT; independent
+    // of the ConsoleTopBar experiment. Set false for a separate tooltip test.
+    private constant boolean WUI_TEST_CLOCK_TOOLTIP = true
+    private framehandle WUI_ClockListener = null
     private framehandle WUI_HiddenDetails = null
     private framehandle WUI_Buffs = null
     private framehandle WUI_CommandBar = null
@@ -119,6 +142,7 @@ globals
     private hashtable WUI_MeterEdges = InitHashtable()
     private boolean WUI_DockPlacing = false
     private integer WUI_DockTick = 0
+    private boolean WUI_DockMinimapHidden = false
     private integer array WUI_NativeSlotState
     private integer array WUI_NativeSlotAge
     // Checkpoint 21: in-game hotkey rebinding. A channel is one rebindable
@@ -133,6 +157,8 @@ globals
     constant integer WUI_HOTKEY_SHOP = 5
     private constant integer WUI_HOTKEY_CHANNELS = 6
     private boolean array WUI_HotkeyOnRelease
+    private oskeytype array WUI_HotkeyDefaultKey
+    private string array WUI_HotkeyDefaultName
     private oskeytype array WUI_HotkeyKey
     private string array WUI_HotkeyName
     private trigger array WUI_HotkeyTrigger
@@ -279,15 +305,35 @@ globals
     real array WUI_RectT
     integer WUI_RectCount = 0
     integer WUI_HudMode = 2
+    // Synced preferences; the singleton above is only this client's render mirror.
+    integer array WUI_HudModeOf
+    boolean array WUI_ModeTouched
+    boolean array WUI_MinimapHiddenOf
+    boolean array WUI_InfoHiddenOf
+    boolean array WUI_MinimapTouched
+    boolean array WUI_InfoTouched
+    private framehandle array WUI_MinimapPart
+    private integer WUI_MinimapPartCount = 0
+    private framehandle array WUI_InfoPart
+    private integer WUI_InfoPartCount = 0
+    private framehandle WUI_MinimapNative = null
+    private framehandle WUI_Terrain = null
+    private framehandle WUI_MinimapToggle = null
+    private framehandle WUI_InfoToggle = null
+    private framehandle WUI_InfoOwner = null
+    private framehandle WUI_MinimapOwner = null
+    private framehandle WUI_InfoBack = null
+    private framehandle WUI_InfoChrome = null
     // Saved camera distance per player (synced, 0 = none); Starts.j resets the
     // camera to BaseCam at 10 s and re-applies this right after.
     real array WUI_SavedCamera
-    // Top-right row under the action icons: Game Info | Hide UI | Save Keys
+    // Top-right row: Game Info | Hide UI | Save Keys | Reset Keys
     // (centres measured from the right screen edge; same total width as before).
-    constant real WUI_TOP_ROW_W = 0.0572
-    constant real WUI_TOP_ROW_X1 = 0.15065
-    constant real WUI_TOP_ROW_X2 = 0.08995
-    constant real WUI_TOP_ROW_X3 = 0.02925
+    constant real WUI_TOP_ROW_W = 0.042025
+    constant real WUI_TOP_ROW_X1 = 0.1582375
+    constant real WUI_TOP_ROW_X2 = 0.1127125
+    constant real WUI_TOP_ROW_X3 = 0.0671875
+    constant real WUI_TOP_ROW_X4 = 0.0216625
     constant real WUI_TOP_ROW_TEXT = 0.66
     // Saved setting mirror (SaveLoad <-> HeroUnitPanelStats): hero voice muted.
     boolean array WUI_VoiceOff
@@ -317,6 +363,247 @@ globals
     constant string WUI_GOLD = "|cffd5b876"
     constant string WUI_TEXT = "|cffe1e5eb"
 endglobals
+
+// Event-only cleanup for a LIVE button: owners must not destroy the triggering
+// button (or its parent) before this call. Never pass cached/deferred handles.
+// EDITBOX/slider/listbox callbacks deliberately do not call this helper.
+// Mouse-up is used only by the Quick Buy button drag handler.
+function WUI_ReleaseClickFocus takes nothing returns nothing
+    local framehandle frame = BlzGetTriggerFrame()
+    local frameeventtype ev = BlzGetTriggerFrameEvent()
+    if frame != null and GetLocalPlayer() == GetTriggerPlayer() then
+        if ev == FRAMEEVENT_CONTROL_CLICK or ev == FRAMEEVENT_CHECKBOX_CHECKED or ev == FRAMEEVENT_CHECKBOX_UNCHECKED or ev == FRAMEEVENT_MOUSE_UP then
+            call BlzFrameSetFocus(frame, false)
+        endif
+    endif
+    set frame = null
+    set ev = null
+endfunction
+
+// FIX12: only the LIVE interactive frame which delivered a real click.
+// Call after business logic, before any destruction; never from deferred work.
+// A deliberately disabled control stays disabled. No focus sink or SetFocus mix.
+function WUI_ResetClickedButtonFocus takes nothing returns nothing
+    local framehandle frame = BlzGetTriggerFrame()
+    local frameeventtype ev = BlzGetTriggerFrameEvent()
+    if frame != null and GetLocalPlayer() == GetTriggerPlayer() then
+        if ev == FRAMEEVENT_CONTROL_CLICK or ev == FRAMEEVENT_CHECKBOX_CHECKED or ev == FRAMEEVENT_CHECKBOX_UNCHECKED then
+            if BlzFrameGetEnable(frame) then
+                call BlzFrameSetEnable(frame, false)
+                call BlzFrameSetEnable(frame, true)
+            endif
+        endif
+    endif
+    set frame = null
+    set ev = null
+endfunction
+
+// Agreed creation path only; ONE shared handler for passive BUTTON hit areas.
+// Do not register a button here if its normal click handler already cleans up.
+function WUI_RegisterPassiveFocus takes framehandle frame returns nothing
+    local integer key
+    if frame == null then
+        return
+    endif
+    set key = GetHandleId(frame)
+    if HaveSavedBoolean(WUI_PassiveFocusFrames, key, 0) then
+        return
+    endif
+    if WUI_PassiveFocusClick == null then
+        set WUI_PassiveFocusClick = CreateTrigger()
+        call TriggerAddAction(WUI_PassiveFocusClick, function WUI_ReleaseClickFocus)
+    endif
+    call SaveBoolean(WUI_PassiveFocusFrames, key, 0, true)
+    call BlzTriggerRegisterFrameEvent(WUI_PassiveFocusClick, frame, FRAMEEVENT_CONTROL_CLICK)
+endfunction
+
+
+// Geometry helpers precede the cached preference/menu presentation paths.
+function WUI_ScreenRight takes nothing returns real
+    return 0.400 + 0.300 * I2R(BlzGetLocalClientWidth()) / RMaxBJ(1.00, I2R(BlzGetLocalClientHeight()))
+endfunction
+
+function WUI_TopActionX takes integer index returns real
+    return WUI_ScreenRight() - 0.162 + I2R(index) * 0.036
+endfunction
+
+function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
+    if frame != null then
+        call BlzFrameClearAllPoints(frame)
+        call BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, x, y)
+        call BlzFrameSetSize(frame, width, height)
+    endif
+endfunction
+
+
+// UI cache only. Every frame already exists; field 9100 is reserved for docking.
+function WUI_PlaceRight takes framehandle frame, real offset, real y, real width, real height returns nothing
+    local integer slot
+    if frame == null then
+        return
+    endif
+    set slot = LoadInteger(WUI_ButtonStyle, GetHandleId(frame), 9100)
+    if slot == 0 then
+        set WUI_RightDockCount = WUI_RightDockCount + 1
+        set slot = WUI_RightDockCount
+        call SaveInteger(WUI_ButtonStyle, GetHandleId(frame), 9100, slot)
+        set WUI_RightDockFrame[slot] = frame
+    endif
+    set WUI_RightDockOffset[slot] = offset
+    set WUI_RightDockY[slot] = y
+    set WUI_RightDockWidth[slot] = width
+    set WUI_RightDockHeight[slot] = height
+    call WUI_Place(frame, WUI_ScreenRight() - offset, y, width, height)
+endfunction
+
+function WUI_SetToggleState takes framehandle control, boolean on returns nothing
+    local integer key = GetHandleId(control)
+    if on then
+        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), WUI_FILL_SELECTED, 0, true)
+        call BlzFrameSetAlpha(LoadFrameHandle(WUI_ButtonStyle, key, 1), 255)
+    else
+        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), WUI_FILL_NORMAL, 0, true)
+        call BlzFrameSetAlpha(LoadFrameHandle(WUI_ButtonStyle, key, 1), 140)
+    endif
+endfunction
+
+function WUI_SetToggleGlyph takes framehandle control, string glyph returns nothing
+    local framehandle icon = LoadFrameHandle(WUI_ButtonStyle, GetHandleId(control), 1)
+    if icon != null then
+        call BlzFrameSetTexture(icon, glyph, 0, true)
+    endif
+    set icon = null
+endfunction
+
+function WUI_GetInfoRoot takes nothing returns framehandle
+    return WUI_InfoOwner
+endfunction
+
+function WUI_GetMinimapRoot takes nothing returns framehandle
+    return WUI_MinimapOwner
+endfunction
+
+function WUI_MinimapShown takes nothing returns boolean
+    return not WUI_MinimapHiddenOf[GetPlayerId(GetLocalPlayer())]
+endfunction
+
+function WUI_TopShown takes nothing returns boolean
+    return WUI_TopVisible
+endfunction
+
+function WUI_InfoShown takes nothing returns boolean
+    return not WUI_InfoHiddenOf[GetPlayerId(GetLocalPlayer())]
+endfunction
+
+function WUI_RegisterMinimapPart takes framehandle part returns nothing
+    if part != null then
+        set WUI_MinimapPart[WUI_MinimapPartCount] = part
+        set WUI_MinimapPartCount = WUI_MinimapPartCount + 1
+        call BlzFrameSetVisible(part, WUI_MinimapShown())
+    endif
+endfunction
+
+function WUI_RegisterInfoPart takes framehandle part returns nothing
+    if part != null then
+        set WUI_InfoPart[WUI_InfoPartCount] = part
+        set WUI_InfoPartCount = WUI_InfoPartCount + 1
+        call BlzFrameSetVisible(part, WUI_InfoShown())
+    endif
+endfunction
+
+function WUI_ApplyPanelPreferences takes nothing returns nothing
+    local integer i = 0
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local boolean minimap = WUI_MinimapShown()
+    local boolean info = WUI_InfoShown()
+    loop
+        exitwhen i >= WUI_MinimapPartCount
+        call BlzFrameSetVisible(WUI_MinimapPart[i], minimap)
+        set i = i + 1
+    endloop
+    if WUI_MinimapNative != null then
+        call BlzFrameSetVisible(WUI_MinimapNative, minimap and not WUI_OriginHidden)
+    endif
+    if WUI_MinimapStub != null then
+        call BlzFrameSetVisible(WUI_MinimapStub, minimap and WUI_OriginHidden)
+    endif
+    if WUI_AllyColor != null then
+        call BlzFrameSetVisible(WUI_AllyColor, minimap and not WUI_OriginHidden)
+    endif
+    if WUI_Terrain != null then
+        call BlzFrameSetVisible(WUI_Terrain, minimap and not WUI_OriginHidden)
+    endif
+    set i = 0
+    loop
+        exitwhen i >= WUI_InfoPartCount
+        call BlzFrameSetVisible(WUI_InfoPart[i], info)
+        set i = i + 1
+    endloop
+    if WUI_MinimapToggle != null then
+        call BlzFrameSetVisible(WUI_MinimapToggle, true)
+        call WUI_SetToggleState(WUI_MinimapToggle, WUI_MinimapHiddenOf[pid])
+        if WUI_MinimapHiddenOf[pid] then
+            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-on.tga")
+        else
+            call WUI_SetToggleGlyph(WUI_MinimapToggle, "UI\\WOS\\minimap-hide-off.tga")
+        endif
+    endif
+    if WUI_InfoToggle != null then
+        call BlzFrameSetVisible(WUI_InfoToggle, true)
+        // Reuse one cached control. Clear the disappearing block when folded.
+        if WUI_InfoHiddenOf[pid] then
+            call WUI_Place(WUI_InfoToggle, 0.7355 + WUI_HudShift, 0.0055, 0.010, 0.010)
+        else
+            call WUI_Place(WUI_InfoToggle, 0.8290 + WUI_HudShift, 0.0055, 0.010, 0.010)
+        endif
+        call WUI_SetToggleState(WUI_InfoToggle, WUI_InfoHiddenOf[pid])
+        if WUI_InfoHiddenOf[pid] then
+            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-on.tga")
+        else
+            call WUI_SetToggleGlyph(WUI_InfoToggle, "UI\\WOS\\info-panel-hide-off.tga")
+        endif
+    endif
+endfunction
+
+private function WUI_OnPanelToggle takes nothing returns nothing
+    local integer pid = GetPlayerId(GetTriggerPlayer())
+    if BlzGetTriggerFrame() == WUI_MinimapToggle then
+        set WUI_MinimapHiddenOf[pid] = not WUI_MinimapHiddenOf[pid]
+        set WUI_MinimapTouched[pid] = true
+    elseif BlzGetTriggerFrame() == WUI_InfoToggle then
+        set WUI_InfoHiddenOf[pid] = not WUI_InfoHiddenOf[pid]
+        set WUI_InfoTouched[pid] = true
+    endif
+    // All clients apply their own presentation; no listener execution here.
+    call WUI_ApplyPanelPreferences()
+    call WUI_ResetClickedButtonFocus()
+endfunction
+
+function WUI_SettingsUIRecord takes integer pid returns string
+    local integer flags = 0
+    if WUI_MinimapHiddenOf[pid] then
+        set flags = flags + 1
+    endif
+    if WUI_InfoHiddenOf[pid] then
+        set flags = flags + 2
+    endif
+    return "U," + I2S(flags) + "|"
+endfunction
+
+function WUI_ApplySettingsUIRecord takes integer pid, integer flags returns nothing
+    if flags < 0 or flags > 3 then
+        return
+    endif
+    if not WUI_MinimapTouched[pid] then
+        set WUI_MinimapHiddenOf[pid] = ModuloInteger(flags, 2) == 1
+    endif
+    if not WUI_InfoTouched[pid] then
+        set WUI_InfoHiddenOf[pid] = flags >= 2
+    endif
+endfunction
+
+
+
 
 // Library initializers register owners only. No frame native may run until the
 // bootstrap timer fires in game time; every client allocates the same handles.
@@ -366,6 +653,210 @@ function WUI_RegisterTopClose takes code callback returns nothing
     call TriggerAddAction(WUI_TopClose[WUI_TopCloseCount], callback)
 endfunction
 
+// All clients dispatch the existing close listeners with the same player.
+// This function must not be called from a local presentation branch.
+function WUI_CloseTopFor takes player viewer returns nothing
+    local integer i = 1
+    set WUI_TopClosePlayer = viewer
+    loop
+        exitwhen i > WUI_TopCloseCount
+        call TriggerExecute(WUI_TopClose[i])
+        set i = i + 1
+    endloop
+    set WUI_TopClosePlayer = null
+endfunction
+
+// Cached frames only; called by the local presentation path.
+// Cached native paint only. Pressed lasts for the press, Selected for the drawer.
+private function WUI_RefreshMenuState takes nothing returns nothing
+    if WUI_MenuActive != null then
+        call BlzFrameSetVisible(WUI_MenuActive, WUI_MenuOpen and WUI_TopVisible)
+    endif
+    if WUI_MenuPushed != null then
+        call BlzFrameSetVisible(WUI_MenuPushed, false)
+    endif
+    if WUI_MenuHoverArt != null then
+        call BlzFrameSetVisible(WUI_MenuHoverArt, WUI_MenuHovered)
+    endif
+endfunction
+
+private function WUI_LayoutPersistentMenu takes boolean expanded returns nothing
+    if WUI_Menu == null then
+        return
+    endif
+    set WUI_MenuHovered = false
+    call BlzFrameSetVisible(WUI_Menu, true)
+    call BlzFrameClearAllPoints(WUI_MenuLabel)
+    call BlzFrameSetPoint(WUI_MenuLabel, FRAMEPOINT_CENTER, WUI_Menu, FRAMEPOINT_CENTER, 0.00, 0.00)
+    call BlzFrameSetSize(WUI_MenuLabel, 0.035 / 0.62, 0.010 / 0.62)
+    call BlzFrameSetVisible(WUI_MenuIcon, expanded)
+    call BlzFrameSetVisible(WUI_MenuBack, not expanded)
+    call BlzFrameSetVisible(WUI_MenuCompactStyle, not expanded)
+    call BlzFrameSetVisible(WUI_MenuActive, expanded and WUI_MenuOpen)
+    call SaveBoolean(WUI_ButtonStyle, GetHandleId(WUI_Menu), 2, not expanded)
+    if expanded then
+        call BlzFrameSetText(WUI_MenuLabel, WUI_GOLD + "Menu|r")
+        call BlzFrameSetScale(WUI_MenuLabel, 0.62)
+        call WUI_PlaceRight(WUI_Menu, 0.162, 0.578, 0.035, 0.034)
+        call BlzFrameSetPoint(WUI_MenuLabel, FRAMEPOINT_CENTER, WUI_Menu, FRAMEPOINT_CENTER, 0.00, -0.0135 / 0.62)
+    else
+        // Identical text-button style and selected fill to active Hide UI.
+        call BlzFrameSetText(WUI_MenuLabel, WUI_TEXT + "Menu|r")
+        call BlzFrameSetScale(WUI_MenuLabel, WUI_TOP_ROW_TEXT)
+        call BlzFrameSetAllPoints(WUI_MenuLabel, WUI_Menu)
+        call BlzFrameSetTexture(WUI_MenuBack, WUI_FILL_SELECTED, 0, true)
+        // Menu, then Hide UI, in the folded top-right row.
+        call WUI_PlaceRight(WUI_Menu, 0.094, 0.586, 0.056, 0.015)
+    endif
+    call WUI_RefreshMenuState()
+endfunction
+
+// Cached listener only. Kept as a separately switchable, unconfirmed test.
+private function WUI_ApplyClockTooltipDiagnostic takes nothing returns nothing
+    if WUI_TEST_CLOCK_TOOLTIP and WUI_ClockListener != null then
+        call BlzFrameSetVisible(WUI_ClockListener, false)
+    endif
+endfunction
+
+// Local cached presentation: folded dropdown shares BOTH button edges.
+private function WUI_MenuDropTop takes nothing returns real
+    if not WUI_TopVisible then
+        return 0.586 - 0.015 * 0.5
+    endif
+    return WUI_MENU_DROP_TOP
+endfunction
+
+private function WUI_MenuDropLeft takes nothing returns real
+    if not WUI_TopVisible then
+        return WUI_ScreenRight() - 0.094 - 0.056 * 0.5
+    endif
+    return WUI_ScreenRight() - 0.180
+endfunction
+
+private function WUI_MenuDropRight takes nothing returns real
+    if not WUI_TopVisible then
+        return WUI_ScreenRight() - 0.034 + 0.056 * 0.5
+    endif
+    return WUI_ScreenRight()
+endfunction
+
+private function WUI_MenuDropX takes nothing returns real
+    return (WUI_MenuDropLeft() + WUI_MenuDropRight()) * 0.5
+endfunction
+
+private function WUI_MenuButtonWidth takes nothing returns real
+    return WUI_MenuDropRight() - WUI_MenuDropLeft() - 0.030
+endfunction
+
+function WUI_MenuRowY takes integer row returns real
+    return WUI_MenuDropTop() - 0.0115 - I2R(row) * WUI_MENU_ROW_STEP
+endfunction
+
+// Existing native buttons and both skin families must move as one. No getters,
+// new controls or event registrations in this runtime layout.
+private function WUI_LayoutMenuDrop takes nothing returns nothing
+    local integer i = 0
+    local real left = WUI_MenuDropLeft()
+    local real right = WUI_MenuDropRight()
+    local real bottom = WUI_MenuRowY(2) - 0.0145
+    loop
+        exitwhen i >= 3
+        if WUI_MenuOpen then
+            call WUI_Place(WUI_System[i], WUI_MenuDropX(), WUI_MenuRowY(i), WUI_MenuButtonWidth(), 0.0185)
+        endif
+        call WUI_Place(WUI_MenuSkin[i], WUI_MenuDropX(), WUI_MenuRowY(i), right - left - 0.020, 0.0200)
+        call WUI_Place(WUI_MenuSkinF[i], WUI_MenuDropX(), WUI_MenuRowY(i), right - left - 0.020, 0.0200)
+        set i = i + 1
+    endloop
+    if WUI_MenuDrop != null then
+        call BlzFrameClearAllPoints(WUI_MenuDrop)
+        call BlzFrameSetAbsPoint(WUI_MenuDrop, FRAMEPOINT_BOTTOMLEFT, left, bottom)
+        call BlzFrameSetAbsPoint(WUI_MenuDrop, FRAMEPOINT_TOPRIGHT, right, WUI_MenuDropTop())
+    endif
+    if WUI_MenuDropMetal != null then
+        call BlzFrameClearAllPoints(WUI_MenuDropMetal)
+        call BlzFrameSetAbsPoint(WUI_MenuDropMetal, FRAMEPOINT_BOTTOMLEFT, left, bottom)
+        call BlzFrameSetAbsPoint(WUI_MenuDropMetal, FRAMEPOINT_TOPRIGHT, right, WUI_MenuDropTop())
+    endif
+endfunction
+
+function WUI_MenuDropBottom takes nothing returns real
+    if WUI_MenuOpen then
+        return WUI_MenuRowY(2) - 0.0145
+    endif
+    return WUI_MenuDropTop()
+endfunction
+
+function WUI_LayoutRightColumn takes nothing returns nothing
+    local real top = WUI_MenuDropBottom()
+    local real x = WUI_ScreenRight() - 0.090
+    local real leftX = WUI_ScreenRight() - 0.274
+    local real y = top
+    local real leftY = top
+    local real need
+    local real px
+    local real py
+    local integer i = 1
+    local boolean testShown = WUI_TestToggle != null and BlzFrameIsVisible(WUI_TestToggle)
+    local boolean testOpen = testShown and WUI_TestOpen
+    // Checkpoint 25: header + body of TEST COMMANDS = exactly the Game Info
+    // height, so the two blocks line up when they stand side by side.
+    if WUI_TestToggle != null then
+        call WUI_Place(WUI_TestToggle, x, y - 0.009, 0.180, 0.018)
+        call WUI_Place(WUI_TestPanel, x, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5, 0.180, WUI_INFO_HEIGHT - 0.018)
+        call WUI_Place(WUI_TestText, x - 0.005, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5 + 0.009, 0.156, WUI_INFO_HEIGHT - 0.055)
+        if WUI_TestSlider != null then
+            call WUI_Place(WUI_TestSlider, x + 0.081, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5 + 0.009, 0.008, WUI_INFO_HEIGHT - 0.065)
+        endif
+        call WUI_Place(WUI_TestPageLabel, x, y - WUI_INFO_HEIGHT + 0.0115, 0.140 / 0.64, 0.012 / 0.64)
+        call WUI_Place(WUI_TestPrevious, x - 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
+        call WUI_Place(WUI_TestNext, x + 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
+        if testShown then
+            set y = y - 0.018
+            if testOpen then
+                set y = y - (WUI_INFO_HEIGHT - 0.018)
+            endif
+        endif
+    endif
+    if WUI_InfoPanel != null then
+        // Side by side only while the Menu dropdown is open (no room below
+        // it); otherwise Game Info stacks under the test commands.
+        if testOpen and WUI_MenuOpen then
+            call WUI_Place(WUI_InfoPanel, leftX, leftY - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
+            if WUI_InfoOpen then
+                set leftY = leftY - WUI_INFO_HEIGHT
+            endif
+        else
+            call WUI_Place(WUI_InfoPanel, x, y - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
+            if WUI_InfoOpen then
+                set y = y - WUI_INFO_HEIGHT
+            endif
+        endif
+        call BlzFrameSetVisible(WUI_InfoPanel, WUI_InfoOpen and WUI_TopVisible)
+    endif
+    loop
+        exitwhen i > WUI_ColCount
+        if WUI_ColActive[i] then
+            set need = 0.018
+            if WUI_ColOpen[i] then
+                set need = need + WUI_ColHeight[i]
+            endif
+            if y - need >= 0.165 then
+                set px = x
+                set py = y
+                set y = y - need
+            else
+                set px = leftX
+                set py = leftY
+                set leftY = leftY - need
+            endif
+            call WUI_Place(WUI_ColToggle[i], px, py - 0.009, 0.180, 0.018)
+            call WUI_Place(WUI_ColPanel[i], px, py - 0.018 - WUI_ColHeight[i] * 0.5, 0.180, WUI_ColHeight[i])
+        endif
+        set i = i + 1
+    endloop
+endfunction
+
 function WUI_ShowTopControls takes boolean visible returns nothing
     local integer i = 1
     set WUI_TopVisible = visible
@@ -375,12 +866,6 @@ function WUI_ShowTopControls takes boolean visible returns nothing
         set i = i + 1
     endloop
     if not visible then
-        set i = 1
-        loop
-            exitwhen i > WUI_TopCloseCount
-            call TriggerExecute(WUI_TopClose[i])
-            set i = i + 1
-        endloop
         set WUI_MenuOpen = false
         set i = 0
         loop
@@ -416,18 +901,17 @@ function WUI_ShowTopControls takes boolean visible returns nothing
         call BlzFrameSetVisible(WUI_ColPanel[i], WUI_ColActive[i] and WUI_ColOpen[i] and visible)
         set i = i + 1
     endloop
+    call WUI_ApplyPanelPreferences()
+    call WUI_LayoutPersistentMenu(visible)
+    call WUI_LayoutMenuDrop()
+    call WUI_LayoutRightColumn()
+    call WUI_ApplyClockTooltipDiagnostic()
 endfunction
 
 // Normal FRAME coordinates extend beyond the 4:3 safe area on wide displays.
 // These are presentation-only values; frame allocation stays identical on clients.
-function WUI_ScreenRight takes nothing returns real
-    return 0.400 + 0.300 * I2R(BlzGetLocalClientWidth()) / RMaxBJ(1.00, I2R(BlzGetLocalClientHeight()))
-endfunction
 
 // Checkpoint 23: five slots - Menu, Stats (F2), History, Link, Music.
-function WUI_TopActionX takes integer index returns real
-    return WUI_ScreenRight() - 0.162 + I2R(index) * 0.036
-endfunction
 
 function WUI_GetStatsButton takes nothing returns framehandle
     return WUI_StatsButton
@@ -486,13 +970,6 @@ function WUI_ShowHeroIndicator takes boolean visible returns nothing
     endloop
 endfunction
 
-function WUI_Place takes framehandle frame, real x, real y, real width, real height returns nothing
-    if frame != null then
-        call BlzFrameClearAllPoints(frame)
-        call BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, x, y)
-        call BlzFrameSetSize(frame, width, height)
-    endif
-endfunction
 
 // Cooldown children are created lazily for the local selection. Do not enumerate
 // them here: the first getter would reserve a handle on only that client.
@@ -671,51 +1148,60 @@ endfunction
 // horizontal rail centre .293c (top) / .307c (bottom), vertical .207c (sides),
 // rail texture thickness .125c. Corners overhang outward, never the hit area.
 // mask bits: 1 top-left, 2 top-right, 4 bottom-left, 8 bottom-right corner.
-function WUI_OrnateBorderEx takes string name, framehandle owner, real corner, integer mask returns framehandle
+function WUI_OrnateBorderPathEx takes string name, framehandle owner, real corner, integer mask, string prefix returns framehandle
     local framehandle edge = WUI_Passive(name, owner)
     local framehandle piece
     local real c = corner * WUI_ORNAMENT_SCALE
     local real rail = c * 0.125
     call BlzFrameSetAllPoints(edge, owner)
     call BlzFrameSetEnable(edge, false)
-    set piece = WUI_Piece(name + "Top", edge, "UI\\WOS\\ornate-top.tga")
+    set piece = WUI_Piece(name + "Top", edge, prefix + "top.tga")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_TOPLEFT, c * 0.70, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_TOPRIGHT, -c * 0.70, 0.00)
     call BlzFrameSetSize(piece, 0.00, rail)
-    set piece = WUI_Piece(name + "Bottom", edge, "UI\\WOS\\ornate-bottom.tga")
+    set piece = WUI_Piece(name + "Bottom", edge, prefix + "bottom.tga")
     call BlzFrameSetPoint(piece, FRAMEPOINT_LEFT, owner, FRAMEPOINT_BOTTOMLEFT, c * 0.70, 0.00)
     call BlzFrameSetPoint(piece, FRAMEPOINT_RIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, -c * 0.70, 0.00)
     call BlzFrameSetSize(piece, 0.00, rail)
-    set piece = WUI_Piece(name + "Left", edge, "UI\\WOS\\ornate-left.tga")
-    call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPLEFT, 0.00, -c * 0.66)
-    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, c * 0.66)
-    call BlzFrameSetSize(piece, rail, 0.00)
-    set piece = WUI_Piece(name + "Right", edge, "UI\\WOS\\ornate-right.tga")
-    call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPRIGHT, 0.00, -c * 0.66)
-    call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, c * 0.66)
-    call BlzFrameSetSize(piece, rail, 0.00)
+    // Mask bits 16/32 omit internal left/right rails of split HUD owners.
+    if ModuloInteger(mask, 32) < 16 then
+        set piece = WUI_Piece(name + "Left", edge, prefix + "left.tga")
+        call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPLEFT, 0.00, -c * 0.66)
+        call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, c * 0.66)
+        call BlzFrameSetSize(piece, rail, 0.00)
+    endif
+    if ModuloInteger(mask, 64) < 32 then
+        set piece = WUI_Piece(name + "Right", edge, prefix + "right.tga")
+        call BlzFrameSetPoint(piece, FRAMEPOINT_TOP, owner, FRAMEPOINT_TOPRIGHT, 0.00, -c * 0.66)
+        call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOM, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, c * 0.66)
+        call BlzFrameSetSize(piece, rail, 0.00)
+    endif
     if ModuloInteger(mask, 2) == 1 then
-        set piece = WUI_Piece(name + "tl", edge, "UI\\WOS\\ornate-tl.tga")
+        set piece = WUI_Piece(name + "tl", edge, prefix + "tl.tga")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOPLEFT, owner, FRAMEPOINT_TOPLEFT, -c * 0.207, c * 0.293)
         call BlzFrameSetSize(piece, c, c)
     endif
     if ModuloInteger(mask, 4) >= 2 then
-        set piece = WUI_Piece(name + "tr", edge, "UI\\WOS\\ornate-tr.tga")
+        set piece = WUI_Piece(name + "tr", edge, prefix + "tr.tga")
         call BlzFrameSetPoint(piece, FRAMEPOINT_TOPRIGHT, owner, FRAMEPOINT_TOPRIGHT, c * 0.207, c * 0.293)
         call BlzFrameSetSize(piece, c, c)
     endif
     if ModuloInteger(mask, 8) >= 4 then
-        set piece = WUI_Piece(name + "bl", edge, "UI\\WOS\\ornate-bl.tga")
+        set piece = WUI_Piece(name + "bl", edge, prefix + "bl.tga")
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMLEFT, owner, FRAMEPOINT_BOTTOMLEFT, -c * 0.207, -c * 0.307)
         call BlzFrameSetSize(piece, c, c)
     endif
     if mask >= 8 then
-        set piece = WUI_Piece(name + "br", edge, "UI\\WOS\\ornate-br.tga")
+        set piece = WUI_Piece(name + "br", edge, prefix + "br.tga")
         call BlzFrameSetPoint(piece, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, c * 0.207, -c * 0.307)
         call BlzFrameSetSize(piece, c, c)
     endif
     set piece = null
     return edge
+endfunction
+
+function WUI_OrnateBorderEx takes string name, framehandle owner, real corner, integer mask returns framehandle
+    return WUI_OrnateBorderPathEx(name, owner, corner, mask, "UI\\WOS\\ornate-")
 endfunction
 
 function WUI_OrnateBorder takes string name, framehandle owner, real corner returns framehandle
@@ -1047,6 +1533,40 @@ function WUI_RegisterModal takes framehandle panel returns nothing
 endfunction
 
 // The shop window (or any covering window) whose visibility hides hero overlays.
+// TEST presentation-only registry; these persistent frames are created on all clients.
+function WUI_RegisterRangeCover takes framehandle panel returns nothing
+    set WUI_RangeCoverCount = WUI_RangeCoverCount + 1
+    set WUI_RangeCover[WUI_RangeCoverCount] = panel
+endfunction
+
+// Read-only local gate shared with TEST range presentation. No new frames.
+
+function WUI_RangePreviewBlocked takes nothing returns boolean
+    local integer i = 1
+    if WUI_OriginHidden or WUI_HeroLayerLocked or WUI_InfoOpen or WUI_MenuOpen or WUI_HotkeyEdit[GetPlayerId(GetLocalPlayer())] then
+        return true
+    endif
+    if WUI_CoverWatch != null and BlzFrameIsVisible(WUI_CoverWatch) then
+        return true
+    endif
+    loop
+        exitwhen i > WUI_ModalCount
+        if WUI_Modal[i] != null and BlzFrameIsVisible(WUI_Modal[i]) then
+            return true
+        endif
+        set i = i + 1
+    endloop
+    set i = 1
+    loop
+        exitwhen i > WUI_RangeCoverCount
+        if BlzFrameIsVisible(WUI_RangeCover[i]) then
+            return true
+        endif
+        set i = i + 1
+    endloop
+    return false
+endfunction
+
 function WUI_RegisterCover takes framehandle watched returns nothing
     set WUI_CoverWatch = watched
 endfunction
@@ -1111,13 +1631,13 @@ function WUI_TooltipBox takes framehandle parent, real width, real height return
     return box
 endfunction
 
-function WUI_Tooltip takes framehandle owner, string label returns nothing
-    local framehandle box = WUI_TooltipBox(WUI_Root, 0.170, 0.038)
+function WUI_TooltipSized takes framehandle owner, string label, real width, real height, real padX, real padY, real offset returns nothing
+    local framehandle box = WUI_TooltipBox(WUI_Root, width, height)
     local framehandle text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)
     local framehandle edge = null
-    call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_TOPRIGHT, 0.00, 0.010)
+    call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_TOPRIGHT, 0.00, offset)
     call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
-    call BlzFrameSetSize(text, 0.158 / 0.66, 0.030 / 0.66)
+    call BlzFrameSetSize(text, (width - 2.00 * padX) / 0.66, (height - 2.00 * padY) / 0.66)
     call BlzFrameSetScale(text, 0.66)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(text, WUI_TEXT + label + "|r")
@@ -1130,9 +1650,21 @@ function WUI_Tooltip takes framehandle owner, string label returns nothing
     set edge = null
 endfunction
 
+function WUI_Tooltip takes framehandle owner, string label returns nothing
+    call WUI_TooltipSized(owner, label, 0.170, 0.038, 0.006, 0.004, 0.010)
+endfunction
+
 function WUI_TooltipBelowEx takes framehandle owner, string label, boolean leftward returns nothing
-    local framehandle box = WUI_TooltipBox(WUI_Root, 0.170, 0.038)
-    local framehandle text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)
+    local real width = 0.170
+    local real height = 0.038
+    local framehandle box
+    local framehandle text
+    if owner == WUI_Restart then
+        set width = 0.210
+        set height = 0.056
+    endif
+    set box = WUI_TooltipBox(WUI_Root, width, height)
+    set text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)
     if leftward then
         // Checkpoint 26: top-right controls open their tooltip down-left so
         // it never runs past the right screen edge.
@@ -1141,7 +1673,7 @@ function WUI_TooltipBelowEx takes framehandle owner, string label, boolean leftw
         call BlzFrameSetPoint(box, FRAMEPOINT_TOPLEFT, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, -0.010)
     endif
     call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
-    call BlzFrameSetSize(text, 0.158 / 0.66, 0.030 / 0.66)
+    call BlzFrameSetSize(text, (width - 0.012) / 0.66, (height - 0.008) / 0.66)
     call BlzFrameSetScale(text, 0.66)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(text, WUI_TEXT + label + "|r")
@@ -1212,6 +1744,17 @@ endfunction
 // Checkpoint 27b: the key cap grows with the key name (K / F2 / TAB).
 private function WUI_SizeHotkeyBadge takes integer channel, string name returns nothing
     if WUI_HotkeyButton[channel] == null then
+        return
+    endif
+
+    if channel == WUI_HOTKEY_STATS then
+        if StringLength(name) >= 3 then
+            call BlzFrameSetSize(WUI_HotkeyButton[channel], 0.0170, 0.0080)
+        elseif StringLength(name) == 2 then
+            call BlzFrameSetSize(WUI_HotkeyButton[channel], 0.0130, 0.0080)
+        else
+            call BlzFrameSetSize(WUI_HotkeyButton[channel], 0.0100, 0.0080)
+        endif
         return
     endif
     if StringLength(name) >= 3 then
@@ -1289,6 +1832,42 @@ private function WUI_RegisterKeyFor takes integer channel, player p, oskeytype k
 endfunction
 
 // Synced: a key was pressed while this player was choosing a new hotkey.
+private function WUI_BindingConflict takes integer pid, integer channel, integer slot, oskeytype key, string name returns string
+    local integer other = 0
+    local string title
+    loop
+        exitwhen other >= WUI_HOTKEY_CHANNELS
+        if other != channel and WUI_HotkeyKey[other * 16 + pid] == key then
+            if other == WUI_HOTKEY_SHOP then
+                set title = "Shop"
+            elseif other == WUI_HOTKEY_PING then
+                set title = "Pings"
+            elseif other == WUI_HOTKEY_EMOTE then
+                set title = "Emotes"
+            elseif other == WUI_HOTKEY_STATS then
+                set title = "Stats"
+            else
+                set title = "Stats Clear/Load"
+            endif
+            return name + " is already used by " + title
+        endif
+        set other = other + 1
+    endloop
+    set other = 0
+    loop
+        exitwhen other >= WUI_SLOT_KEYS
+        if other != slot then
+            if WUI_SlotKey[pid * WUI_SLOT_KEYS + other] == key then
+                return name + " is already used by skill/item slot " + I2S(other + 1)
+            elseif other < 7 and name == SubString("QWERTFG", other, other + 1) then
+                return name + " is already used by a stock skill"
+            endif
+        endif
+        set other = other + 1
+    endloop
+    return ""
+endfunction
+
 private function WUI_OnCapture takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer pid = GetPlayerId(p)
@@ -1296,6 +1875,7 @@ private function WUI_OnCapture takes nothing returns nothing
     local oskeytype key = BlzGetTriggerPlayerKey()
     local integer i = 1
     local string name = ""
+    local string conflict = ""
     call DisableTrigger(GetTriggeringTrigger())
     set WUI_CaptureChannel[pid] = -1
     if channel >= 0 and key != OSKEY_ESCAPE then
@@ -1307,12 +1887,17 @@ private function WUI_OnCapture takes nothing returns nothing
             set i = i + 1
         endloop
         if name != "" then
+            set conflict = WUI_BindingConflict(pid, channel, -1, key, name)
+            if conflict == "" then
             set WUI_HotkeyKey[channel * 16 + pid] = key
             set WUI_HotkeyName[channel * 16 + pid] = name
             // The new key starts firing the owner's trigger for this player;
             // old keys are dropped by WUI_HotkeyFilter (checkpoint 27).
             call WUI_RegisterKeyFor(channel, p, key)
             call DisplayTimedTextToPlayer(p, 0, 0, 3.00, WUI_GOLD + "Hotkey changed to " + name + "|r")
+            else
+                call DisplayTimedTextToPlayer(p, 0, 0, 4.00, "|cffff7a6aKey taken: " + conflict + ". Hotkey unchanged.|r")
+            endif
         endif
     endif
     if channel >= 0 and GetLocalPlayer() == p then
@@ -1354,11 +1939,9 @@ private function WUI_OnHotkeyBadge takes nothing returns nothing
         endif
         call DisplayTimedTextToPlayer(p, 0, 0, 4.00, WUI_GOLD + "Press a new hotkey (letter, digit or F1-F9). Esc keeps the current one.|r")
     endif
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
-    endif
     set p = null
+    call WUI_ReleaseClickFocus()
+
 endfunction
 
 // Owner side (synchronous, once): its key trigger, default key, whether key
@@ -1380,6 +1963,8 @@ function WUI_RegisterHotkeyEx takes integer channel, trigger keyTrigger, oskeyty
         call TriggerAddCondition(keyTrigger, Condition(function WUI_HotkeyFilter))
     endif
     set pid = 0
+    set WUI_HotkeyDefaultKey[channel] = defaultKey
+    set WUI_HotkeyDefaultName[channel] = defaultName
     set WUI_HotkeyTrigger[channel] = keyTrigger
     set WUI_HotkeyBothEdges[channel] = bothEdges
     set WUI_HotkeyOnRelease[channel] = onRelease
@@ -1396,6 +1981,9 @@ function WUI_RegisterHotkeyEx takes integer channel, trigger keyTrigger, oskeyty
         call TriggerAddAction(WUI_HotkeyClick, function WUI_OnHotkeyBadge)
     endif
     // Small key-cap badge over the owner's bottom-right corner.
+    if channel == WUI_HOTKEY_SHOP or channel == WUI_HOTKEY_EMOTE or channel == WUI_HOTKEY_PING then
+        set parent = WUI_InfoOwner
+    endif
     set WUI_HotkeyButton[channel] = BlzCreateFrameByType("BUTTON", "WOSHotkeyBadge", parent, "", channel)
     if channel == WUI_HOTKEY_STATS then
         // Off the Stats icon: a click on the icon must open F2, not rebind.
@@ -1418,6 +2006,7 @@ function WUI_RegisterHotkeyEx takes integer channel, trigger keyTrigger, oskeyty
     call BlzFrameSetAllPoints(WUI_HotkeyLabel[channel], WUI_HotkeyButton[channel])
     call BlzFrameSetTextAlignment(WUI_HotkeyLabel[channel], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(WUI_HotkeyLabel[channel], 0.62)
+
     call BlzFrameSetText(WUI_HotkeyLabel[channel], WUI_GOLD + defaultName + "|r")
     call BlzFrameSetEnable(WUI_HotkeyLabel[channel], false)
     call BlzTriggerRegisterFrameEvent(WUI_HotkeyClick, WUI_HotkeyButton[channel], FRAMEEVENT_CONTROL_CLICK)
@@ -1456,7 +2045,7 @@ private function WUI_RefreshMenuSkins takes nothing returns nothing
             if enabled then
                 // Checkpoint 25b: local mouse test (no network events) gives
                 // the rows the blue hover of the stock game menu.
-                if RAbsBJ(BlzPixelToFrameX(BlzGetMouseScreenPosX()) - (WUI_ScreenRight() - 0.090)) <= 0.075 and RAbsBJ(BlzPixelToFrameY(BlzGetMouseScreenPosY()) - (WUI_MENU_DROP_TOP - 0.0115 - I2R(i) * WUI_MENU_ROW_STEP)) <= 0.00925 then
+                if RAbsBJ(BlzPixelToFrameX(BlzGetMouseScreenPosX()) - WUI_MenuDropX()) <= WUI_MenuButtonWidth() * 0.5 and RAbsBJ(BlzPixelToFrameY(BlzGetMouseScreenPosY()) - WUI_MenuRowY(i)) <= 0.00925 then
                     call BlzFrameSetTexture(fill, "UI\\WOS\\fill-hover-blue.tga", 0, true)
                 else
                     call BlzFrameSetTexture(fill, WUI_FILL_NORMAL, 0, true)
@@ -1485,16 +2074,7 @@ private function WUI_RefreshMenuSkins takes nothing returns nothing
     set text = null
 endfunction
 
-function WUI_MenuRowY takes integer row returns real
-    return WUI_MENU_DROP_TOP - 0.0115 - I2R(row) * WUI_MENU_ROW_STEP
-endfunction
 
-function WUI_MenuDropBottom takes nothing returns real
-    if WUI_MenuOpen then
-        return WUI_MenuRowY(2) - 0.0145
-    endif
-    return WUI_MENU_DROP_TOP
-endfunction
 
 // Local: Game Info dropdown, then Test commands, each flush under the block
 // above it (Menu dropdown when open, else the top-right panel).
@@ -1502,75 +2082,6 @@ endfunction
 // TEST COMMANDS, Game Info, then hero panels. Whatever does not fit above the
 // HUD goes into a second column on its left (Game Info always does when the
 // test commands are open, so the two stand side by side).
-function WUI_LayoutRightColumn takes nothing returns nothing
-    local real top = WUI_MenuDropBottom()
-    local real x = WUI_ScreenRight() - 0.090
-    local real leftX = WUI_ScreenRight() - 0.274
-    local real y = top
-    local real leftY = top
-    local real need
-    local real px
-    local real py
-    local integer i = 1
-    local boolean testShown = WUI_TestToggle != null and BlzFrameIsVisible(WUI_TestToggle)
-    local boolean testOpen = testShown and WUI_TestOpen
-    // Checkpoint 25: header + body of TEST COMMANDS = exactly the Game Info
-    // height, so the two blocks line up when they stand side by side.
-    if WUI_TestToggle != null then
-        call WUI_Place(WUI_TestToggle, x, y - 0.009, 0.180, 0.018)
-        call WUI_Place(WUI_TestPanel, x, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5, 0.180, WUI_INFO_HEIGHT - 0.018)
-        call WUI_Place(WUI_TestText, x - 0.005, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5 + 0.009, 0.156, WUI_INFO_HEIGHT - 0.055)
-        if WUI_TestSlider != null then
-            call WUI_Place(WUI_TestSlider, x + 0.081, y - 0.018 - (WUI_INFO_HEIGHT - 0.018) * 0.5 + 0.009, 0.008, WUI_INFO_HEIGHT - 0.065)
-        endif
-        call WUI_Place(WUI_TestPageLabel, x, y - WUI_INFO_HEIGHT + 0.0115, 0.140 / 0.64, 0.012 / 0.64)
-        call WUI_Place(WUI_TestPrevious, x - 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
-        call WUI_Place(WUI_TestNext, x + 0.080, y - WUI_INFO_HEIGHT + 0.0115, 0.014, 0.014)
-        if testShown then
-            set y = y - 0.018
-            if testOpen then
-                set y = y - (WUI_INFO_HEIGHT - 0.018)
-            endif
-        endif
-    endif
-    if WUI_InfoPanel != null then
-        // Side by side only while the Menu dropdown is open (no room below
-        // it); otherwise Game Info stacks under the test commands.
-        if testOpen and WUI_MenuOpen then
-            call WUI_Place(WUI_InfoPanel, leftX, leftY - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
-            if WUI_InfoOpen then
-                set leftY = leftY - WUI_INFO_HEIGHT
-            endif
-        else
-            call WUI_Place(WUI_InfoPanel, x, y - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
-            if WUI_InfoOpen then
-                set y = y - WUI_INFO_HEIGHT
-            endif
-        endif
-        call BlzFrameSetVisible(WUI_InfoPanel, WUI_InfoOpen and WUI_TopVisible)
-    endif
-    loop
-        exitwhen i > WUI_ColCount
-        if WUI_ColActive[i] then
-            set need = 0.018
-            if WUI_ColOpen[i] then
-                set need = need + WUI_ColHeight[i]
-            endif
-            if y - need >= 0.165 then
-                set px = x
-                set py = y
-                set y = y - need
-            else
-                set px = leftX
-                set py = leftY
-                set leftY = leftY - need
-            endif
-            call WUI_Place(WUI_ColToggle[i], px, py - 0.009, 0.180, 0.018)
-            call WUI_Place(WUI_ColPanel[i], px, py - 0.018 - WUI_ColHeight[i] * 0.5, 0.180, WUI_ColHeight[i])
-        endif
-        set i = i + 1
-    endloop
-endfunction
 
 private function WUI_ColumnApply takes integer i returns nothing
     call BlzFrameSetVisible(WUI_ColToggle[i], WUI_ColActive[i] and WUI_TopVisible)
@@ -1596,9 +2107,8 @@ private function WUI_OnColumnToggle takes nothing returns nothing
         set WUI_ColOpen[i] = not WUI_ColOpen[i]
         call WUI_ColumnApply(i)
         call WUI_LayoutRightColumn()
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
     endif
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 
@@ -1619,6 +2129,26 @@ private function WUI_RefreshHelpVisibility takes nothing returns nothing
     endif
 endfunction
 
+private function WUI_RefreshViewport takes nothing returns nothing
+    local real right
+    local integer i = 1
+    if WUI_RightDockCount == 0 then
+        return
+    endif
+    set right = WUI_ScreenRight()
+    if RAbsBJ(right - WUI_RightViewport) < 0.0001 then
+        return
+    endif
+    set WUI_RightViewport = right
+    loop
+        exitwhen i > WUI_RightDockCount
+        call WUI_Place(WUI_RightDockFrame[i], right - WUI_RightDockOffset[i], WUI_RightDockY[i], WUI_RightDockWidth[i], WUI_RightDockHeight[i])
+        set i = i + 1
+    endloop
+    call WUI_LayoutMenuDrop()
+    call WUI_LayoutRightColumn()
+endfunction
+
 function WUI_RefreshDocks takes nothing returns nothing
     local integer playerId = GetPlayerId(GetLocalPlayer())
     local integer index = 1
@@ -1633,6 +2163,10 @@ function WUI_RefreshDocks takes nothing returns nothing
     local boolean covered = WUI_CoverWatch != null and BlzFrameIsVisible(WUI_CoverWatch)
     local integer publicTotal = 0
     local integer heroButton = 0
+    local boolean minimapHidden = not WUI_MinimapShown()
+    local boolean meterAnchorChanged = minimapHidden != WUI_DockMinimapHidden
+    call WUI_RefreshViewport()
+    set WUI_DockMinimapHidden = minimapHidden
     call WUI_RefreshHelpVisibility()
     set WUI_DockPlacing = true
     // Checkpoint 24: shared control re-shows stock hero buttons (a stray green
@@ -1683,8 +2217,17 @@ function WUI_RefreshDocks takes nothing returns nothing
                 endif
             elseif BlzFrameIsVisible(WUI_DockFrame[index]) then
                 if WUI_DockKind[index] == 0 then
-                    set x = 0.075 + WUI_HudLeft
-                    set y = 0.162 + I2R(meterSlot) * 0.030
+                    if minimapHidden then
+                        set x = 0.085 + WUI_HudLeft
+                        set y = 0.016 + I2R(meterSlot) * 0.030
+                    else
+                        set x = 0.075 + WUI_HudLeft
+                        set y = 0.162 + I2R(meterSlot) * 0.030
+                    endif
+                    if meterAnchorChanged then
+                        // Snap both directions; repin cached children, not new frames.
+                        set WUI_DockPlaced[index] = false
+                    endif
                     set meterSlot = meterSlot + 1
                 elseif WUI_DockKind[index] == 1 then
                     // Timed buffs match the enlarged stock icons. Seven fit
@@ -1882,7 +2425,33 @@ function WUI_StyleButton takes framehandle control returns nothing
     call BlzFrameSetAlpha(BlzFrameGetChild(control, 4), 110)
 endfunction
 
+private function WUI_CacheClockListener takes nothing returns nothing
+    local framehandle gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    local framehandle cluster = null
+    local framehandle clock = null
+    local framehandle listener = null
+    if gameUI != null and BlzFrameGetChildrenCount(gameUI) > 5 then
+        set cluster = BlzFrameGetChild(gameUI, 5)
+        if cluster != null and cluster != WUI_Resource and cluster != WUI_SystemBar and BlzFrameGetChildrenCount(cluster) == 2 then
+            if BlzFrameGetChild(cluster, 1) == WUI_MinimapNative and BlzFrameGetParent(WUI_MinimapNative) == cluster then
+                set clock = BlzFrameGetChild(cluster, 0)
+                if clock != null and clock != WUI_MinimapNative and clock != WUI_Resource and BlzFrameGetChildrenCount(clock) == 1 then
+                    set listener = BlzFrameGetChild(clock, 0)
+                    if listener != null and listener != WUI_MinimapNative and listener != WUI_Resource and BlzFrameGetParent(listener) == clock then
+                        set WUI_ClockListener = listener
+                    endif
+                endif
+            endif
+        endif
+    endif
+    set gameUI = null
+    set cluster = null
+    set clock = null
+    set listener = null
+endfunction
+
 function WUI_HideNativeDeadZone takes nothing returns nothing
+    call WUI_ApplyClockTooltipDiagnostic()
     if WUI_DeadZone != null then
         call BlzFrameSetVisible(WUI_DeadZone, false)
     endif
@@ -1961,6 +2530,9 @@ endfunction
 // the "active" look of the Menu icon move together).
 // Synced call; only the given player's client changes its frames.
 function WUI_ShowNativeMenu takes player p returns nothing
+    if GetLocalPlayer() == p then
+        call WUI_ApplyClockTooltipDiagnostic()
+    endif
     if WUI_SystemBar != null and GetLocalPlayer() == p then
         call BlzFrameSetVisible(WUI_SystemBar, true)
     endif
@@ -1972,13 +2544,13 @@ endfunction
 private function WUI_SetMenuDrop takes boolean open returns nothing
     local integer i = 0
     set WUI_MenuOpen = open
+    call WUI_ApplyClockTooltipDiagnostic()
     if open and WUI_SystemBar != null then
         call BlzFrameSetVisible(WUI_SystemBar, true)
     endif
     loop
         exitwhen i >= 3
         if open then
-            call WUI_Place(WUI_System[i], WUI_ScreenRight() - 0.090, WUI_MenuRowY(i), 0.150, 0.0185)
             // Hero pick / draft hide the origin frames (stock menu buttons
             // included); the dropdown must still work there (leave the lobby).
             call BlzFrameSetVisible(WUI_System[i], true)
@@ -2000,23 +2572,34 @@ private function WUI_SetMenuDrop takes boolean open returns nothing
         call BlzFrameSetVisible(WUI_MenuDropMetal, open)
     endif
     if WUI_MenuActive != null then
-        call BlzFrameSetVisible(WUI_MenuActive, open)
+        call BlzFrameSetVisible(WUI_MenuActive, open and WUI_TopVisible)
     endif
+    call WUI_LayoutMenuDrop()
     call WUI_LayoutRightColumn()
+    call WUI_RefreshMenuState()
 endfunction
 
 private function WUI_ControlClick takes nothing returns nothing
     local integer i = 0
     if GetLocalPlayer() == GetTriggerPlayer() then
         if BlzGetTriggerFrame() == WUI_Menu then
-            call WUI_SetMenuDrop(not WUI_MenuOpen)
+            if BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_ENTER then
+                set WUI_MenuHovered = true
+                call WUI_RefreshMenuState()
+            elseif BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_LEAVE then
+                set WUI_MenuHovered = false
+                call WUI_RefreshMenuState()
+            else
+                call WUI_SetMenuDrop(not WUI_MenuOpen)
+
+                call WUI_RefreshMenuState()
+            endif
         else
             set WUI_OrdersOpen = not WUI_OrdersOpen
             call WUI_LayoutCommands(WUI_CompactCommands)
         endif
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
     endif
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 private function WUI_CacheNativeSlots takes nothing returns nothing
@@ -2222,6 +2805,9 @@ function WUI_InstallNativeLayout takes nothing returns nothing
             set WUI_AllyColor = cover
             call BlzFrameSetVisible(cover, true)
             call WUI_Place(cover, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
+        elseif cover != null and i == 1 then
+            call WUI_Place(cover, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
+            call BlzFrameSetVisible(cover, true)
         elseif cover != null then
             call BlzFrameSetVisible(cover, false)
         endif
@@ -2235,6 +2821,7 @@ function WUI_InstallNativeLayout takes nothing returns nothing
     set cover = null
     set minimap = null
     set systemBar = null
+    call WUI_ApplyPanelPreferences()
 endfunction
 
 
@@ -2321,6 +2908,7 @@ private function WUI_WatchCover takes nothing returns nothing
         call WUI_CloseTopPanels()
     endif
     set WUI_CoverClosed = covered
+
 endfunction
 
 
@@ -2457,6 +3045,7 @@ function WUI_RegisterColumnPanel takes framehandle panel, string title, real hei
     call WUI_LayoutRightColumn()
 endfunction
 
+
 // ===== Checkpoint 22: toggles, origin-frame state, per-slot hotkeys =====
 // Synced: every client calls this with the same player (HideBottomUI /
 // HideUIExceptTopMenu). Inside the local check only direct frame calls; no
@@ -2466,7 +3055,7 @@ function WUI_SetOriginHidden takes player p, boolean hide returns nothing
     set WUI_OriginHiddenOf[GetPlayerId(p)] = hide
     set WUI_OriginHidden = WUI_OriginHiddenOf[GetPlayerId(GetLocalPlayer())]
     if WUI_MinimapStub != null and GetLocalPlayer() == p then
-        call BlzFrameSetVisible(WUI_MinimapStub, hide)
+        call BlzFrameSetVisible(WUI_MinimapStub, hide and WUI_MinimapShown())
     endif
     loop
         exitwhen i >= 3
@@ -2514,27 +3103,10 @@ function WUI_ToggleButton takes string name, real x, real y, real size, string g
 endfunction
 
 // Local presentation only.
-function WUI_SetToggleState takes framehandle control, boolean on returns nothing
-    local integer key = GetHandleId(control)
-    if on then
-        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), WUI_FILL_SELECTED, 0, true)
-        call BlzFrameSetAlpha(LoadFrameHandle(WUI_ButtonStyle, key, 1), 255)
-    else
-        call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, key, 0), WUI_FILL_NORMAL, 0, true)
-        call BlzFrameSetAlpha(LoadFrameHandle(WUI_ButtonStyle, key, 1), 140)
-    endif
-    call BlzFrameSetEnable(control, false)
-    call BlzFrameSetEnable(control, true)
-endfunction
+
 
 // Local presentation only: swaps the glyph of a WUI_ToggleButton.
-function WUI_SetToggleGlyph takes framehandle control, string glyph returns nothing
-    local framehandle icon = LoadFrameHandle(WUI_ButtonStyle, GetHandleId(control), 1)
-    if icon != null then
-        call BlzFrameSetTexture(icon, glyph, 0, true)
-    endif
-    set icon = null
-endfunction
+
 
 // Slots 0..6 = QWERTFG ability row, 7..12 = inventory 1..6.
 private function WUI_SlotX takes integer slot returns real
@@ -2563,6 +3135,10 @@ private function WUI_SlotTarget takes integer slot returns framehandle
         return WUI_Command[WUI_CommandSlot(slot)]
     endif
     return WUI_Item[slot - 7]
+endfunction
+
+function WUI_RangeNativeSlotVisible takes integer slot returns boolean
+    return WUI_Command[WUI_CommandSlot(slot)] != null and BlzFrameIsVisible(WUI_Command[WUI_CommandSlot(slot)])
 endfunction
 
 function WUI_SlotKeyLabel takes integer pid, integer slot returns string
@@ -2725,6 +3301,10 @@ endfunction
 // Why a key cannot be used ("" = free).
 private function WUI_SlotKeyConflict takes integer pid, integer slot, oskeytype key, string name returns string
     local integer other = 0
+    local string conflict = WUI_BindingConflict(pid, -1, slot, key, name)
+    if conflict != "" then
+        return conflict
+    endif
     if name == "" then
         return "only letters and digits can be used"
     elseif name == "Q" or name == "W" or name == "E" or name == "R" or name == "T" or name == "F" or name == "G" then
@@ -2882,7 +3462,74 @@ function WUI_ApplySavedSlotKey takes player p, integer slot, string label return
     set key = null
 endfunction
 
+// Agreed owner-only reset. Default events were registered at bootstrap;
+// retain used-key history so old custom events remain filtered as stale.
+function WUI_ResetHotkeys takes player p returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer channel = 0
+    local integer slot = 0
+    if pid < 0 or pid >= 10 then
+        return
+    endif
+    if WUI_CaptureTrigger[pid] != null then
+        call DisableTrigger(WUI_CaptureTrigger[pid])
+    endif
+    if WUI_SlotCaptureTrigger[pid] != null then
+        call DisableTrigger(WUI_SlotCaptureTrigger[pid])
+    endif
+    set WUI_CaptureChannel[pid] = -1
+    set WUI_SlotCapture[pid] = -1
+    set WUI_HotkeyEdit[pid] = false
+    loop
+        exitwhen channel >= WUI_HOTKEY_CHANNELS
+        if WUI_HotkeyTrigger[channel] != null and WUI_HotkeyDefaultKey[channel] != null then
+            set WUI_HotkeyKey[channel * 16 + pid] = WUI_HotkeyDefaultKey[channel]
+            set WUI_HotkeyName[channel * 16 + pid] = WUI_HotkeyDefaultName[channel]
+            if GetLocalPlayer() == p and WUI_HotkeyLabel[channel] != null then
+                call BlzFrameSetText(WUI_HotkeyLabel[channel], WUI_GOLD + WUI_HotkeyDefaultName[channel] + "|r")
+                call WUI_SizeHotkeyBadge(channel, WUI_HotkeyDefaultName[channel])
+            endif
+        endif
+        set channel = channel + 1
+    endloop
+    loop
+        exitwhen slot >= WUI_SLOT_KEYS
+        set WUI_SlotKey[pid * WUI_SLOT_KEYS + slot] = null
+        set WUI_SlotKeyName[pid * WUI_SLOT_KEYS + slot] = ""
+        set slot = slot + 1
+    endloop
+    if GetLocalPlayer() == p then
+        if WUI_PulseTimer != null then
+            call PauseTimer(WUI_PulseTimer)
+        endif
+        if WUI_HotkeyToggle != null then
+            call WUI_RefreshSlotBadges()
+        endif
+        call DisplayTimedTextToPlayer(p, 0, 0, 3.00, WUI_GOLD + "Hotkeys restored to defaults.|r " + WUI_TEXT + "Press Save Keys to keep them.|r")
+    endif
+endfunction
+
 // Local: "H,channel,label|" per hotkey and "K,slot,label|" per custom slot key.
+// Validate the complete restored packet, not each record against temporary
+// defaults: a valid F3/F4 permutation must survive loading.
+function WUI_ValidateRestoredHotkeys takes player p returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer channel = 0
+    local oskeytype key
+    loop
+        exitwhen channel >= WUI_HOTKEY_CHANNELS
+        set key = WUI_HotkeyKey[channel * 16 + pid]
+        if key != null and WUI_BindingConflict(pid, channel, -1, key, WUI_HotkeyName[channel * 16 + pid]) != "" then
+            call WUI_ResetHotkeys(p)
+            call DisplayTimedTextToPlayer(p, 0, 0, 6.00, "|cffff7a6aDuplicate hotkeys in saved settings. Hotkeys reset to defaults; other settings kept.|r")
+            set key = null
+            return
+        endif
+        set channel = channel + 1
+    endloop
+    set key = null
+endfunction
+
 function WUI_SavedSettingsString takes integer pid returns string
     local string result = ""
     local integer i = 0
@@ -2945,6 +3592,7 @@ private function WUI_OnSlotClick takes nothing returns nothing
     if pid >= 16 then
         set p = null
         set clicked = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     if clicked == WUI_HotkeyToggle then
@@ -2978,12 +3626,11 @@ private function WUI_OnSlotClick takes nothing returns nothing
         endif
     endif
     if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
         call WUI_RefreshSlotBadges()
     endif
     set p = null
     set clicked = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 // Allocated once on every client (WUI_OnReady). Toggle sits in the free right
@@ -3092,6 +3739,21 @@ endfunction
 // Layout (4:3 units). Left to right: minimap block | portrait | stats | vitals +
 // one ability row + pips | 3x2 items | gold + 3x2 toolbar. No transparent gaps:
 // every section sits on the same graphite chassis, separated by thin dividers.
+
+private function WUI_CreatePanelToggles takes nothing returns nothing
+    local trigger events = CreateTrigger()
+    set WUI_MinimapToggle = WUI_ToggleButton("WOSHideMinimap", 0.1805, 0.0870, 0.012, "UI\\WOS\\minimap-hide-off.tga")
+    call WUI_PlaceShiftLeft(WUI_MinimapToggle, 0.1805, 0.0870, 0.012, 0.012)
+    call WUI_TooltipSized(WUI_MinimapToggle, "|cffd5b876HIDE MINIMAP|r|nHide or show the minimap and its controls.", 0.170, 0.047, 0.007, 0.007, 0.018)
+    set WUI_InfoToggle = WUI_ToggleButton("WOSHideInfoPanel", 0.8290, 0.0055, 0.010, "UI\\WOS\\info-panel-hide-off.tga")
+    call WUI_PlaceShift(WUI_InfoToggle, 0.8290, 0.0055, 0.010, 0.010)
+    call WUI_TooltipSized(WUI_InfoToggle, "|cffd5b876HIDE INFO PANEL|r|nHide the right-side gold and utility buttons. Inventory stays visible. Click again to restore it.", 0.190, 0.070, 0.007, 0.007, 0.090)
+    call BlzTriggerRegisterFrameEvent(events, WUI_MinimapToggle, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(events, WUI_InfoToggle, FRAMEEVENT_CONTROL_CLICK)
+    call TriggerAddAction(events, function WUI_OnPanelToggle)
+    set events = null
+endfunction
+
 private function WUI_CreateHUDChrome takes nothing returns nothing
     local framehandle panel
     local framehandle edge
@@ -3099,17 +3761,28 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     // Normal FRAMEs draw over native SIMPLEFRAME buttons. Their ornament center
     // must remain empty; opaque surfaces are created in the native family.
     if WUI_SimpleRoot != null and WUI_FrameDefinitionsReady then
-        set WUI_NativeBack = WUI_NativeSurface(9050, WUI_CHASSIS_LEFT, 0.000, WUI_CHASSIS_RIGHT, WUI_CHASSIS_TOP)
+        set WUI_NativeBack = WUI_NativeSurface(9050, WUI_CHASSIS_LEFT, 0.000, 0.7290 + WUI_HudShift, WUI_CHASSIS_TOP)
+        set WUI_InfoBack = WUI_NativeSurface(9056, 0.7290 + WUI_HudShift, 0.000, WUI_CHASSIS_RIGHT + WUI_HudShift, WUI_CHASSIS_TOP)
+        call WUI_RegisterInfoPart(WUI_InfoBack)
+        set edge = WUI_NativeSurface(9055, 0.000, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
+        call BlzFrameSetTexture(BlzGetFrameByName("WOSNativeHUDTexture", 9055), "UI\\WOS\\minimap-background-black.tga", 0, true)
+        call BlzFrameSetLevel(edge, 0)
+        call WUI_RectShiftLeft(edge, 0.000, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
+        call WUI_RegisterMinimapPart(edge)
         // Minimap block: fill only around the native minimap (never under it),
         // so the stock minimap keeps its own draw level.
         set edge = WUI_NativeSurface(9051, 0.004 + WUI_MINIMAP_SIZE, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
         call WUI_RectShiftLeft(edge, 0.004 + WUI_MINIMAP_SIZE, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
+        call WUI_RegisterMinimapPart(edge)
         set edge = WUI_NativeSurface(9052, 0.000, 0.004 + WUI_MINIMAP_SIZE, 0.004 + WUI_MINIMAP_SIZE, WUI_MINIMAP_TOP)
         call WUI_RectShiftLeft(edge, 0.000, 0.004 + WUI_MINIMAP_SIZE, 0.004 + WUI_MINIMAP_SIZE, WUI_MINIMAP_TOP)
+        call WUI_RegisterMinimapPart(edge)
         set edge = WUI_NativeSurface(9053, 0.000, 0.000, 0.004, 0.004 + WUI_MINIMAP_SIZE)
         call WUI_RectShiftLeft(edge, 0.000, 0.000, 0.004, 0.004 + WUI_MINIMAP_SIZE)
+        call WUI_RegisterMinimapPart(edge)
         set edge = WUI_NativeSurface(9054, 0.004, 0.000, 0.004 + WUI_MINIMAP_SIZE, 0.004)
         call WUI_RectShiftLeft(edge, 0.004, 0.000, 0.004 + WUI_MINIMAP_SIZE, 0.004)
+        call WUI_RegisterMinimapPart(edge)
         loop
             exitwhen slot >= 7
             set WUI_EmptyAbility[slot] = WUI_NativeSlot(9060 + slot, WUI_AbilityX(slot), WUI_AbilityY(slot), WUI_ICON_SIZE)
@@ -3121,7 +3794,6 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
         loop
             exitwhen slot >= 6
             set edge = WUI_NativeSlot(9070 + slot, WUI_ItemX(slot), WUI_ItemY(slot), WUI_ITEM_SIZE)
-            call BlzFrameSetVisible(edge, true)
             set slot = slot + 1
         endloop
     endif
@@ -3129,33 +3801,40 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     set panel = WUI_Passive("WOSHUDSurface", WUI_Root)
     call BlzFrameClearAllPoints(panel)
     call BlzFrameSetAbsPoint(panel, FRAMEPOINT_BOTTOMLEFT, WUI_CHASSIS_LEFT, 0.000)
-    call BlzFrameSetAbsPoint(panel, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT, WUI_CHASSIS_TOP)
+    call BlzFrameSetAbsPoint(panel, FRAMEPOINT_TOPRIGHT, 0.7290, WUI_CHASSIS_TOP)
     call BlzFrameSetEnable(panel, false)
-    set edge = WUI_OrnateBorderEx("WOSHUDMetal", panel, 0.022, 11)
+    set edge = WUI_OrnateBorderEx("WOSHUDMetal", panel, 0.022, 33)
     set edge = WUI_Divider("WOSHUDDivider", panel, 0.2285, 0.047, 0.078, true)
     call WUI_PlaceShiftLeft(edge, 0.2285, 0.047, 0.004, 0.078)
     set WUI_HudPanel = panel
+    set WUI_InfoChrome = WUI_Passive("WOSInfoChrome", WUI_Root)
+    call BlzFrameSetEnable(WUI_InfoChrome, false)
+    call BlzFrameSetAbsPoint(WUI_InfoChrome, FRAMEPOINT_BOTTOMLEFT, 0.7290, 0.000)
+    call BlzFrameSetAbsPoint(WUI_InfoChrome, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT, WUI_CHASSIS_TOP)
+    set edge = WUI_OrnateBorderEx("WOSInfoMetal", WUI_InfoChrome, 0.022, 26)
+    call WUI_RegisterInfoPart(WUI_InfoChrome)
     set edge = WUI_Divider("WOSHUDDivider", panel, 0.3355, 0.047, 0.078, true)
     call WUI_PlaceShift(edge, 0.3355, 0.047, 0.004, 0.078)
     set edge = WUI_Divider("WOSHUDDivider", panel, 0.6230, 0.047, 0.078, true)
     call WUI_PlaceShift(edge, 0.6230, 0.047, 0.004, 0.078)
     set edge = WUI_Divider("WOSHUDDivider", panel, 0.7290, 0.047, 0.078, true)
     call WUI_PlaceShift(edge, 0.7290, 0.047, 0.004, 0.078)
-    set edge = WUI_Divider("WOSHUDDivider", panel, 0.7790, 0.0655, 0.084, false)
+    set edge = WUI_Divider("WOSHUDDivider", WUI_InfoChrome, 0.7790, 0.0655, 0.084, false)
     call WUI_PlaceShift(edge, 0.7790, 0.0655, 0.084, 0.004)
     // "INVENTORY" title with gold flourishes above the 3x2 item grid.
     set edge = BlzCreateFrameByType("TEXT", "WOSInventoryTitle", panel, "", 0)
     // Scale also shrinks the box, so size / scale keeps a .068 wide label.
     // Right part of the header: the Autobuy toggle sits on the left.
-    call WUI_PlaceShift(edge, WUI_ITEM_X + 0.0245, 0.0858, 0.054 / 0.66, 0.011 / 0.66)
-    call BlzFrameSetScale(edge, 0.66)
+    call WUI_PlaceShift(edge, WUI_ITEM_X + 0.0215, 0.0835, 0.052 / 0.58, 0.011 / 0.58)
+    call BlzFrameSetScale(edge, 0.58)
     call BlzFrameSetTextAlignment(edge, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(edge, "|cffe9cf8fINVENTORY|r")
     call BlzFrameSetEnable(edge, false)
-    set panel = WUI_Passive("WOSMinimapSurface", WUI_Root)
+    set panel = WUI_Passive("WOSMinimapSurface", WUI_MinimapOwner)
     call WUI_RectShiftLeft(panel, 0.000, 0.000, WUI_MINIMAP_RIGHT, WUI_MINIMAP_TOP)
     call BlzFrameSetEnable(panel, false)
-    set edge = WUI_OrnateBorderEx("WOSMinimapMetal", panel, 0.024, 7)
+    call WUI_RegisterMinimapPart(panel)
+    set edge = WUI_OrnateBorderPathEx("WOSMinimapMetal", panel, 0.024, 7, "UI\\WOS\\minimap-frame-")
     set WUI_MinimapStub = BlzCreateFrameByType("BACKDROP", "WOSMinimapStub", panel, "", 0)
     call WUI_RectShiftLeft(WUI_MinimapStub, 0.004, 0.004, 0.004 + WUI_MINIMAP_SIZE, 0.004 + WUI_MINIMAP_SIZE)
     call BlzFrameSetTexture(WUI_MinimapStub, "war3mapMap.blp", 0, true)
@@ -3171,6 +3850,18 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
     call BlzFrameSetEnable(edge, false)
     set edge = WUI_GoldFrame("WOSAllyColorEdge", edge, 0.0026, 0.0050)
+    set edge = WUI_Piece("WOSTerrainFill", panel, WUI_FILL_NORMAL)
+    call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
+    set edge = WUI_Piece("WOSTerrainGlyph", panel, "UI\\WOS\\minimap-terrain.tga")
+    call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE - 0.004, WUI_ALLY_COLOR_SIZE - 0.004)
+    set edge = WUI_Passive("WOSTerrainEdgeOwner", panel)
+    call WUI_Place(edge, WUI_ALLY_COLOR_X, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
+    set edge = WUI_GoldFrame("WOSTerrainEdge", edge, 0.0026, 0.0050)
+    if WUI_Terrain != null then
+        call WUI_Tooltip(WUI_Terrain, "|cffd5b876MINIMAP TERRAIN|r|nToggle terrain background on the minimap.")
+    endif
+    call WUI_CreatePanelToggles()
+    call WUI_ApplyPanelPreferences()
     set panel = null
     set edge = null
 endfunction
@@ -3226,17 +3917,21 @@ function WUI_RestoreCompactNative takes player p returns nothing
     loop
         exitwhen i >= 5
         if WUI_MinimapButton[i] != null then
-            call BlzFrameSetVisible(WUI_MinimapButton[i], i == WUI_ALLY_COLOR_BUTTON)
+            call BlzFrameSetVisible(WUI_MinimapButton[i], i == WUI_ALLY_COLOR_BUTTON or i == 1)
         endif
         set i = i + 1
     endloop
     if WUI_AllyColor != null then
         call WUI_Place(WUI_AllyColor, WUI_ALLY_COLOR_X + WUI_HudLeft, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
     endif
+    if WUI_Terrain != null then
+        call WUI_Place(WUI_Terrain, WUI_ALLY_COLOR_X + WUI_HudLeft, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
+    endif
     if WUI_NativeBack != null then
         call BlzFrameSetVisible(WUI_NativeBack, true)
     endif
     call WUI_LayoutCommands(WUI_CompactCommands)
+    call WUI_ApplyPanelPreferences()
 endfunction
 
 private function WUI_CreateControls takes nothing returns nothing
@@ -3245,6 +3940,14 @@ private function WUI_CreateControls takes nothing returns nothing
     local framehandle back
     local framehandle label
     local trigger events = CreateTrigger()
+    set WUI_InfoOwner = WUI_Passive("WOSInfoOwner", WUI_Root)
+    call WUI_Place(WUI_InfoOwner, 0.00, 0.00, 0.0001, 0.0001)
+    call BlzFrameSetEnable(WUI_InfoOwner, true)
+    call WUI_RegisterInfoPart(WUI_InfoOwner)
+    set WUI_MinimapOwner = WUI_Passive("WOSMinimapOwner", WUI_Root)
+    call WUI_Place(WUI_MinimapOwner, 0.00, 0.00, 0.0001, 0.0001)
+    call BlzFrameSetEnable(WUI_MinimapOwner, true)
+    call WUI_RegisterMinimapPart(WUI_MinimapOwner)
     set WUI_Console = BlzGetFrameByName("ConsoleUIBackdrop", 0)
     set WUI_TopConsole = BlzGetFrameByName("ConsoleTopBar", 0)
     set WUI_BottomConsole = BlzGetFrameByName("ConsoleBottomBar", 0)
@@ -3270,6 +3973,8 @@ private function WUI_CreateControls takes nothing returns nothing
         set WUI_MinimapButton[i] = BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP_BUTTON, i)
         set i = i + 1
     endloop
+    set WUI_MinimapNative = BlzGetOriginFrame(ORIGIN_FRAME_MINIMAP, 0)
+    set WUI_Terrain = WUI_MinimapButton[1]
     set WUI_Buffs = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR, 0)
     // A native SimpleFontString cannot safely receive visibility/alpha calls.
     set label = BlzGetOriginFrame(ORIGIN_FRAME_UNIT_PANEL_BUFF_BAR_LABEL, 0)
@@ -3288,31 +3993,49 @@ private function WUI_CreateControls takes nothing returns nothing
         set WUI_System[i] = BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, i)
         set i = i + 1
     endloop
+    call WUI_CacheClockListener()
+    call WUI_ApplyClockTooltipDiagnostic()
     // One passive graphite strip integrates menu, stats, link and music.
     set back = WUI_Panel("WOSTopActionsPanel", WUI_Root, 0.180, 0.072)
-    call WUI_Place(back, WUI_ScreenRight() - 0.090, 0.570, 0.180, 0.060)
+    call WUI_PlaceRight(back, 0.090, 0.570, 0.180, 0.060)
     call BlzFrameSetEnable(back, false)
     call WUI_RegisterTopControl(back)
     // Checkpoint 26b: quiet edge like the text buttons below it.
     call WUI_MinimalEdge(back)
-    set WUI_Menu = BlzCreateFrameByType("BUTTON", "WOSCompactMenu", WUI_Root, "WOSIconButtonTemplate", 0)
-    call WUI_RegisterTopControl(WUI_Menu)
-    call WUI_Place(WUI_Menu, WUI_TopActionX(0), 0.578, 0.035, 0.034)
-    set text = BlzCreateFrameByType("TEXT", "WOSMenuGlyph", WUI_Menu, "", 0)
-    call WUI_Place(text, WUI_TopActionX(0), 0.5645, 0.035, 0.010)
+    set WUI_Menu = WUI_TextButton("WOSCompactMenu", WUI_Root, "Menu", 0.056, 0.015)
+    if WUI_FrameDefinitionsReady then
+        set WUI_MenuPushed = BlzGetFrameByName("WOSTextButtonPushed", 7000 + WUI_TextButtonCount)
+        set WUI_MenuHoverArt = BlzGetFrameByName("WOSTextButtonHover", 7000 + WUI_TextButtonCount)
+    endif
+    set WUI_MenuBack = LoadFrameHandle(WUI_ButtonStyle, GetHandleId(WUI_Menu), 0)
+    call BlzFrameSetVisible(WUI_MenuBack, false)
+    call BlzFrameSetVisible(LoadFrameHandle(WUI_ButtonStyle, GetHandleId(WUI_Menu), 2), false)
+    set WUI_MenuCompactStyle = WUI_Passive("WOSCompactMenuStyle", WUI_Menu)
+    call BlzFrameSetAllPoints(WUI_MenuCompactStyle, WUI_Menu)
+    call BlzFrameSetEnable(WUI_MenuCompactStyle, false)
+    call WUI_MinimalEdge(WUI_MenuCompactStyle)
+    call BlzFrameSetVisible(WUI_MenuCompactStyle, false)
+    call WUI_PlaceRight(WUI_Menu, 0.162, 0.578, 0.035, 0.034)
+    set text = LoadFrameHandle(WUI_ButtonStyle, GetHandleId(WUI_Menu), 1)
+    set WUI_MenuLabel = text
+    call BlzFrameClearAllPoints(text)
+    call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, WUI_Menu, FRAMEPOINT_CENTER, 0.00, -0.0135 / 0.62)
+    call BlzFrameSetSize(text, 0.035 / 0.62, 0.010 / 0.62)
     call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetText(text, WUI_GOLD + "Menu|r")
     call BlzFrameSetScale(text, 0.62)
     call BlzFrameSetEnable(text, false)
     // Active (open) look: warm gold plate behind the glyph + label.
     set WUI_MenuActive = BlzCreateFrameByType("BACKDROP", "WOSMenuActive", WUI_Menu, "", 0)
-    call WUI_Place(WUI_MenuActive, WUI_TopActionX(0), 0.5765, 0.038, 0.034)
+    call BlzFrameSetAllPoints(WUI_MenuActive, WUI_Menu)
     call BlzFrameSetTexture(WUI_MenuActive, "UI\\WOS\\learn-glow.tga", 0, true)
     call BlzFrameSetEnable(WUI_MenuActive, false)
     call BlzFrameSetVisible(WUI_MenuActive, false)
     // Checkpoint 22: gold glyph like Stats / Link / Music next to it.
     set back = BlzCreateFrameByType("BACKDROP", "WOSMenuGlyphIcon", WUI_Menu, "", 0)
-    call WUI_Place(back, WUI_TopActionX(0), 0.584, 0.020, 0.020)
+    set WUI_MenuIcon = back
+    call BlzFrameSetPoint(back, FRAMEPOINT_CENTER, WUI_Menu, FRAMEPOINT_CENTER, 0.00, 0.006)
+    call BlzFrameSetSize(back, 0.024, 0.024)
     call BlzFrameSetTexture(back, "UI\\WOS\\glyph-menu.tga", 0, true)
     call BlzFrameSetEnable(back, false)
     set i = 0
@@ -3320,7 +4043,7 @@ private function WUI_CreateControls takes nothing returns nothing
         exitwhen i >= 4
         set text = BlzCreateFrameByType("TEXT", "WOSTopActionLabel", WUI_Root, "", i)
         call WUI_RegisterTopControl(text)
-        call WUI_Place(text, WUI_TopActionX(i + 1), 0.5645, 0.034 / 0.62, 0.010 / 0.62)
+        call WUI_PlaceRight(text, 0.162 - I2R(i + 1) * 0.036, 0.5645, 0.034 / 0.62, 0.010 / 0.62)
         call BlzFrameSetScale(text, 0.62)
         call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         call BlzFrameSetEnable(text, false)
@@ -3338,7 +4061,7 @@ private function WUI_CreateControls takes nothing returns nothing
     // Stats = the F2 statistics window (Scoreboard registers the click).
     set WUI_StatsButton = BlzCreateFrameByType("BUTTON", "WOSTopStatsButton", WUI_Root, "WOSIconButtonTemplate", 0)
     call WUI_RegisterTopControl(WUI_StatsButton)
-    call WUI_Place(WUI_StatsButton, WUI_TopActionX(1), 0.584, 0.022, 0.022)
+    call WUI_PlaceRight(WUI_StatsButton, 0.126, 0.584, 0.020, 0.017)
     set back = BlzCreateFrameByType("BACKDROP", "WOSTopStatsIcon", WUI_StatsButton, "", 0)
     call BlzFrameSetAllPoints(back, WUI_StatsButton)
     call BlzFrameSetTexture(back, "UI\\WOS\\glyph-stats.tga", 0, true)
@@ -3352,6 +4075,8 @@ private function WUI_CreateControls takes nothing returns nothing
     call WUI_SetButtonCaption(WUI_Orders, WUI_GOLD + "Orders")
     call BlzFrameSetVisible(WUI_Orders, WUI_SHOW_ORDERS)
     call BlzTriggerRegisterFrameEvent(events, WUI_Menu, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(events, WUI_Menu, FRAMEEVENT_MOUSE_ENTER)
+    call BlzTriggerRegisterFrameEvent(events, WUI_Menu, FRAMEEVENT_MOUSE_LEAVE)
     call BlzTriggerRegisterFrameEvent(events, WUI_Orders, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(events, function WUI_ControlClick)
     set i = 0
@@ -3426,6 +4151,9 @@ private function WUI_CreateControls takes nothing returns nothing
     // Same quiet edge as the top-right action block above it.
     call WUI_MinimalEdge(WUI_MenuDropMetal)
     call BlzFrameSetVisible(WUI_MenuDropMetal, false)
+    // Clear inherited text-button anchors before the first visible frame.
+    // Use the same cached renderer as subsequent Hide UI transitions.
+    call WUI_LayoutPersistentMenu(WUI_TopVisible)
     set text = null
     set back = null
     set label = null
@@ -3451,11 +4179,14 @@ endfunction
 // Restart the map (stock RestartGame, no score screen).
 private function WUI_RestartClick takes nothing returns nothing
     if GetTriggerPlayer() != Player(0) or not WUI_RestartAllowed() then
+        call WUI_ReleaseClickFocus()
         return
     endif
     if GetLocalPlayer() == GetTriggerPlayer() then
         call BlzFrameSetEnable(WUI_Restart, false)
     endif
+    // Restart replaces the entire UI: release the live button before handing off.
+    call WUI_ReleaseClickFocus()
     call RestartGame(false)
 endfunction
 
@@ -3472,8 +4203,8 @@ private function WUI_CreateRestart takes nothing returns nothing
     call WUI_Place(WUI_Restart, left + 0.040, 0.585, 0.062, 0.020)
     call WUI_SetButtonTextScale(WUI_Restart, 0.80)
     call WUI_SetButtonCaption(WUI_Restart, WUI_GOLD + "Restart")
-    call WUI_TooltipBelow(WUI_Restart, "|cffd5b876RESTART|r|nRestart map.")
-    call WUI_RegisterTopControl(WUI_Restart)
+    call WUI_TooltipBelow(WUI_Restart, "|cffd5b876RESTART|r|nRestart map.|nRestart works only in single-player mode.")
+    // Solo Restart remains available when the top UI is folded.
     set click = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(click, WUI_Restart, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(click, function WUI_RestartClick)
@@ -3485,9 +4216,8 @@ private function WUI_TestClick takes nothing returns nothing
         set WUI_TestOpen = not WUI_TestOpen
         call BlzFrameSetVisible(WUI_TestPanel, WUI_TestOpen)
         call WUI_LayoutRightColumn()
-        call BlzFrameSetEnable(WUI_TestToggle, false)
-        call BlzFrameSetEnable(WUI_TestToggle, true)
     endif
+    call WUI_ReleaseClickFocus()
 endfunction
 
 function WUI_ShowTestHelp takes boolean enabled returns nothing
@@ -3598,10 +4328,12 @@ private function WUI_TestScroll takes nothing returns nothing
             if WUI_TestEcho > 0 then
                 set WUI_TestEcho = WUI_TestEcho - 1
                 set source = null
+                call WUI_ReleaseClickFocus()
                 return
             endif
             if WUI_TestMaxOffset(WUI_TestPageIndex) - R2I(BlzGetTriggerFrameValue() + 0.5) == WUI_TestOffset then
                 set source = null
+                call WUI_ReleaseClickFocus()
                 return
             endif
             set WUI_TestOffset = WUI_TestMaxOffset(WUI_TestPageIndex) - R2I(BlzGetTriggerFrameValue() + 0.5)
@@ -3613,6 +4345,7 @@ private function WUI_TestScroll takes nothing returns nothing
         call WUI_TestRender()
     endif
     set source = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
 private function WUI_CreateTestHelp takes nothing returns nothing
@@ -3625,6 +4358,7 @@ private function WUI_CreateTestHelp takes nothing returns nothing
     // Checkpoint 20: the block starts BELOW the Menu drawer (lowest drawer row
     // bottom is .4485), so opening Menu in Test Mode is never covered.
     set WUI_TestPanel = BlzCreateFrameByType("BUTTON", "WOSTestHelpPanel", WUI_Root, "", 0)
+    call WUI_RegisterPassiveFocus(WUI_TestPanel)
     call WUI_Place(WUI_TestPanel, WUI_ScreenRight() - 0.100, 0.3245, 0.188, 0.205)
     set back = WUI_Panel("WOSTestHelpBack", WUI_TestPanel, 0.188, 0.205)
     call BlzFrameSetAllPoints(back, WUI_TestPanel)
@@ -3801,9 +4535,8 @@ private function WUI_InfoClick takes nothing returns nothing
         endif
         call WUI_InfoShowPage()
         call WUI_LayoutRightColumn()
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), false)
-        call BlzFrameSetEnable(BlzGetTriggerFrame(), true)
     endif
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 // ===== Checkpoint 23: pick / ban feed (top-left) =====
@@ -3880,13 +4613,14 @@ private function WUI_CreateGameInfo takes nothing returns nothing
     local real x = WUI_ScreenRight() - 0.090
     local framehandle part
     set WUI_InfoButton = WUI_TextButton("WOSGameInfoButton", WUI_Root, "Game Info", WUI_TOP_ROW_W, 0.015)
-    // Three buttons share the row (Game Info | Hide UI | Save Keys).
-    call WUI_Place(WUI_InfoButton, WUI_ScreenRight() - WUI_TOP_ROW_X1, 0.5495, WUI_TOP_ROW_W, 0.015)
+    // Four buttons preserve the old row edges and 0.0035 gaps.
+    call WUI_PlaceRight(WUI_InfoButton, WUI_TOP_ROW_X1, 0.5495, WUI_TOP_ROW_W, 0.015)
     call WUI_SetButtonTextScale(WUI_InfoButton, WUI_TOP_ROW_TEXT)
     call WUI_SetButtonMinimal(WUI_InfoButton)
     call WUI_RegisterTopControl(WUI_InfoButton)
     call WUI_TooltipBelowLeft(WUI_InfoButton, "|cffd5b876GAME INFO|r|nElements, destructible decor and round end.")
     set WUI_InfoPanel = BlzCreateFrameByType("BUTTON", "WOSGameInfoPanel", WUI_Root, "", 0)
+    call WUI_RegisterPassiveFocus(WUI_InfoPanel)
     call WUI_Place(WUI_InfoPanel, x, 0.430, 0.180, WUI_INFO_HEIGHT)
     call BlzFrameSetLevel(WUI_InfoPanel, 20)
     set part = BlzCreateFrameByType("BACKDROP", "WOSGameInfoBack", WUI_InfoPanel, "", 0)
@@ -3944,7 +4678,7 @@ endfunction
 // input and are hidden by WUI_ReleaseGhost when the real control exists.
 private function WUI_GhostIcon takes string name, string texture, real x, real y, real size returns framehandle
     local framehandle icon = BlzCreateFrameByType("BACKDROP", name, WUI_Root, "", 0)
-    call WUI_Place(icon, x, y, size, size)
+    call WUI_PlaceRight(icon, WUI_ScreenRight() - x, y, size, size)
     call BlzFrameSetTexture(icon, texture, 0, true)
     call BlzFrameSetEnable(icon, false)
     return icon
@@ -3953,7 +4687,7 @@ endfunction
 private function WUI_GhostText takes string name, string caption, real x returns framehandle
     local framehandle back = BlzCreateFrameByType("BACKDROP", name, WUI_Root, "", 0)
     local framehandle text = BlzCreateFrameByType("TEXT", name + "Text", back, "", 0)
-    call WUI_Place(back, x, 0.5495, 0.056, 0.015)
+    call WUI_PlaceRight(back, WUI_ScreenRight() - x, 0.5495, 0.056, 0.015)
     call BlzFrameSetTexture(back, WUI_FILL_NORMAL, 0, true)
     call BlzFrameSetEnable(back, false)
     call BlzFrameSetAllPoints(text, back)
@@ -3995,12 +4729,25 @@ function WUI_SetHud takes real shift, real left returns nothing
     if WUI_NativeBack != null then
         call BlzFrameClearAllPoints(WUI_NativeBack)
         call BlzFrameSetAbsPoint(WUI_NativeBack, FRAMEPOINT_BOTTOMLEFT, WUI_CHASSIS_LEFT + left, 0.000)
-        call BlzFrameSetAbsPoint(WUI_NativeBack, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT + shift, WUI_CHASSIS_TOP)
+        call BlzFrameSetAbsPoint(WUI_NativeBack, FRAMEPOINT_TOPRIGHT, 0.7290 + shift, WUI_CHASSIS_TOP)
     endif
     if WUI_HudPanel != null then
         call BlzFrameClearAllPoints(WUI_HudPanel)
         call BlzFrameSetAbsPoint(WUI_HudPanel, FRAMEPOINT_BOTTOMLEFT, WUI_CHASSIS_LEFT + left, 0.000)
-        call BlzFrameSetAbsPoint(WUI_HudPanel, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT + shift, WUI_CHASSIS_TOP)
+        call BlzFrameSetAbsPoint(WUI_HudPanel, FRAMEPOINT_TOPRIGHT, 0.7290 + shift, WUI_CHASSIS_TOP)
+    endif
+    if WUI_InfoBack != null then
+        call BlzFrameClearAllPoints(WUI_InfoBack)
+        call BlzFrameSetAbsPoint(WUI_InfoBack, FRAMEPOINT_BOTTOMLEFT, 0.7290 + shift, 0.000)
+        call BlzFrameSetAbsPoint(WUI_InfoBack, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT + shift, WUI_CHASSIS_TOP)
+    endif
+    if WUI_InfoChrome != null then
+        call BlzFrameClearAllPoints(WUI_InfoChrome)
+        call BlzFrameSetAbsPoint(WUI_InfoChrome, FRAMEPOINT_BOTTOMLEFT, 0.7290 + shift, 0.000)
+        call BlzFrameSetAbsPoint(WUI_InfoChrome, FRAMEPOINT_TOPRIGHT, WUI_CHASSIS_RIGHT + shift, WUI_CHASSIS_TOP)
+    endif
+    if WUI_Terrain != null then
+        call WUI_Place(WUI_Terrain, WUI_ALLY_COLOR_X + left, 0.0390, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
     endif
     if WUI_NativeTooltip != null then
         call BlzFrameClearAllPoints(WUI_NativeTooltip)
@@ -4022,6 +4769,7 @@ function WUI_SetHud takes real shift, real left returns nothing
         call TriggerExecute(WUI_ShiftHook[i])
         set i = i + 1
     endloop
+    call WUI_ApplyPanelPreferences()
 endfunction
 
 function WUI_SetHudShift takes real shift returns nothing
@@ -4033,6 +4781,8 @@ private function WUI_CreateGhostControls takes nothing returns nothing
     set WUI_Ghost[0] = WUI_GhostIcon("WOSGhostLink", "UI\\WOS\\glyph-link.tga", WUI_TopActionX(3), 0.584, 0.022)
     set WUI_Ghost[1] = WUI_GhostIcon("WOSGhostMusic", "UI\\WOS\\glyph-music.tga", WUI_TopActionX(4), 0.584, 0.022)
     set WUI_Ghost[2] = WUI_GhostIcon("WOSGhostDiscord", "UI\\WOS\\toolbar-community.tga", 0.780, 0.050, 0.025)
+    // Inherit panel preferences without re-showing an already released ghost.
+    call BlzFrameSetParent(WUI_Ghost[2], WUI_InfoOwner)
     set part = BlzCreateFrameByType("BACKDROP", "WOSGhostDiscordIcon", WUI_Ghost[2], "", 0)
     call BlzFrameSetAllPoints(part, WUI_Ghost[2])
     call BlzFrameSetTexture(part, "UI\\WOS\\discord.tga", 0, true)
@@ -4119,6 +4869,12 @@ private function WUI_Bootstrap takes nothing returns nothing
 endfunction
 
 private function WUI_Init takes nothing returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= bj_MAX_PLAYER_SLOTS
+        set WUI_HudModeOf[i] = 2
+        set i = i + 1
+    endloop
     call TimerStart(WUI_BootTimer, 0.10, false, function WUI_Bootstrap)
 endfunction
 

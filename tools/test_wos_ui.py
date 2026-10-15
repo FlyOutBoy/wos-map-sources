@@ -16,11 +16,27 @@ def load_source(filename):
     # Comments include retired implementations, which are not compiled by Warcraft.
     source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
     vm = JassState(source)
+    # UI-only fixture boundaries; WOSUI's own functions override these stubs.
+    # test_wos_ui_focus executes the real helper with explicit event/owner natives.
+    vm.g.setdefault('WUI_RegisterRangeCover', lambda *_: None)
+    vm.g.setdefault('WUI_ReleaseClickFocus', lambda: None)
+    vm.g.setdefault('WUI_ResetClickedButtonFocus', lambda: None)
+    vm.g.setdefault('WUI_RegisterPassiveFocus', lambda frame: None)
+    vm.g.setdefault('WUI_ScreenRight', lambda: .8)
+    vm.g.setdefault('WUI_PassiveFocusFrames', {})
+    vm.g.setdefault('WUI_PassiveFocusClick', None)
+    vm.g.setdefault('HaveSavedBoolean', lambda table, key, child: (key, child) in table)
+    vm.g.setdefault('BlzGetTriggerFrame', lambda: None)
+    vm.g.setdefault('BlzGetTriggerFrameEvent', lambda: None)
+    for event in ('CONTROL_CLICK', 'CHECKBOX_CHECKED', 'CHECKBOX_UNCHECKED', 'MOUSE_UP'):
+        vm.g.setdefault('FRAMEEVENT_' + event, 'FRAMEEVENT_' + event)
     # Import literal production constants/default flags for dependent helpers.
     for name, value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?(?:real|boolean) (\w+) = ([0-9.]+|true|false)\s*$', source):
         vm.g[name] = value == 'true' if value in ('true', 'false') else float(value)
-    for name, value in re.findall(r'(?m)^\s*(?:private )?constant integer (\w+) = ([0-9]+)\s*$', source):
+    for name, value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?integer (\w+) = ([0-9]+)\s*$', source):
         vm.g[name] = int(value)
+    for name in re.findall(r'(?m)^\s*(?:private )?hashtable (\w+) = InitHashtable\(\)\s*$', source):
+        vm.g.setdefault(name, {})
     # Checkpoint 24: plain framehandle globals start as null.
     for name in re.findall(r'(?m)^\s*(?:private )?framehandle (\w+) = null\s*$', source):
         vm.g.setdefault(name, None)
@@ -51,6 +67,24 @@ def load_source(filename):
         vm.g[name] = defaultdict(lambda v=default: v)
         if kind == 'framehandle':
             vm.g[name].update({i: (name, i) for i in range(24)})
+    # New presentation owners and synced preference declarations.
+    for name, value in re.findall(r'(?m)^\s*(?:private )?integer (\w+) = ([0-9]+)\s*$', source):
+        vm.g.setdefault(name, int(value))
+    vm.g.setdefault('bj_MAX_PLAYER_SLOTS', 24)
+    vm.g.setdefault('GetLocalPlayer', lambda: 0)
+    vm.g.setdefault('GetPlayerId', lambda p: p[1] if isinstance(p, tuple) else p)
+    vm.g.setdefault('Player', lambda i: i)
+    vm.g.setdefault('WUI_HudModeOf', defaultdict(lambda: 2))
+    vm.g.setdefault('WUI_ModeTouched', defaultdict(bool))
+    if filename != 'WOSUI.j':
+        # WOSUI owns the complete-packet validator; exercised in range fixes.
+        vm.g.setdefault('WUI_ValidateRestoredHotkeys', lambda *_: None)
+        vm.g.setdefault('WUI_InfoShown', lambda: True)
+        vm.g.setdefault('WUI_GetInfoRoot', lambda: 'info-owner')
+        vm.g.setdefault('WUI_GetMinimapRoot', lambda: 'minimap-owner')
+        vm.g.setdefault('WUI_RegisterTopControl', lambda *_: None)
+        vm.g.setdefault('WUI_RegisterMinimapPart', lambda *_: None)
+        vm.g.setdefault('WUI_TooltipSized', lambda *_: None)
     return vm
 
 
@@ -355,10 +389,9 @@ class HiddenEnemyData(unittest.TestCase):
         self.configure(vm)
         selected = vm.unit(owner=5)
         vm.g.update({
-            'UNITSTAT_SelectedGroup': [], 'UNITSTAT_Root': 'selected-hud',
+            'UNITSTAT_Root': 'selected-hud', 'UNITSTAT_LastSelected': None,
             'UNITSTAT_Gold': 'gold', 'UNITSTAT_Hover': -1,
-            'UNITSTAT_Tooltip': 'tooltip', 'GroupClear': lambda *_: None,
-            'GroupEnumUnitsSelected': lambda *_: None, 'FirstOfGroup': lambda *_: selected,
+            'UNITSTAT_Tooltip': 'tooltip', 'Player': lambda pid: pid,
             'WUI_SetText': lambda f, v: self.frames.update({(f, 'text'): v}),
             'WUI_ShowNativeBuffs': lambda v: self.frames.update({('buffs', 'visible'): v}),
             'WUI_ShowHeroIndicator': lambda v: self.frames.update({('skill-glow', 'visible'): v}),
@@ -366,7 +399,9 @@ class HiddenEnemyData(unittest.TestCase):
             'PLAYER_STATE_RESOURCE_LUMBER': 'lumber',
             'GetPlayerState': lambda p, s: 120 if s == 'gold' else 45,
         })
-        vm.run('UNITSTAT_Update')
+        # Exercise the visibility boundary with an explicitly cached unit.
+        # Selection validity reads are tested separately from hidden-data rendering.
+        vm.run('UNITSTAT_Render', (selected, 0))
         self.assertFalse(self.frames['selected-hud', 'visible'])
         self.assertFalse(self.frames['skill-glow', 'visible'])
         self.assertIn('120', self.frames['gold', 'text'])
@@ -393,6 +428,8 @@ class SharedShopControls(unittest.TestCase):
             'SaveInteger': lambda *_: setattr(self, 'guard', 1), 'MyFlush': lambda *_: None,
             'ReloadItemPage': lambda page, p: self.reloads.append((page, p)),
             'ShopUpdateCatalogueNavigation': lambda *_: None,
+            'QB_CancelDrag': lambda: None, # Quick Buy cancellation is tested in test_quickbuy.
+
             'DisplayTimedTextToPlayer': lambda *_: None,
             'BlzFrameSetVisible': lambda f, v: self.visibility.append((f, v)),
             'BlzFrameSetEnable': lambda *_: None,
@@ -434,13 +471,17 @@ class SharedImports(unittest.TestCase):
             imp.write_bytes(struct.pack('<II', 1, 1) + old_entry)
             install_ui(scenario)
             first = imp.read_bytes()
-            self.assertEqual(2 + len(ASSET_NAMES) + len(FRAME_RESOURCES), struct.unpack_from('<II', first)[1])
+            quickbuy = list((ROOT / 'assets/UI/WOS/quickbuy').glob('*.tga'))
+            self.assertEqual(2 + len(ASSET_NAMES) + len(FRAME_RESOURCES) + len(quickbuy), struct.unpack_from('<II', first)[1])
             self.assertEqual(old_entry, first[8:8 + len(old_entry)])
             install_ui(scenario)
             self.assertEqual(first, imp.read_bytes())
             for name in ASSET_NAMES:
                 self.assertEqual((ROOT / 'assets/UI/WOS' / (name + '.tga')).read_bytes(),
                                  (scenario / 'UI/WOS' / (name + '.tga')).read_bytes())
+            for path in quickbuy:
+                self.assertEqual(path.read_bytes(), (scenario / 'UI/WOS/QuickBuy' / path.name).read_bytes())
+                self.assertIn(('UI\\WOS\\QuickBuy\\' + path.name).encode() + b'\0', first)
 
 
 class DynamicHeroAndBuffDocks(unittest.TestCase):

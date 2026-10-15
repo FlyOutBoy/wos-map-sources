@@ -28,6 +28,7 @@
 //! import "..\triggers\WOS_Start\TeamMapPings.j"
 //! import "..\triggers\WOS_Start\WOSUI.j"
 //! import "..\triggers\WOS_Start\ArenaMinimap.j"
+//! import "..\triggers\WOS_Start\AbilityRangePreview.j"
 //! import "..\triggers\Round_End\RoundEnd.j"
 //! import "..\triggers\Systems\CastAItems.j"
 //! import "..\triggers\Systems\TasBox.j"

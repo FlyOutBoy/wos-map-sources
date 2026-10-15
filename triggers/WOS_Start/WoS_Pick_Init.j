@@ -372,6 +372,7 @@ library WOSPickBans requires GearSystems, WOSUI
         loop
             exitwhen i >= WOS_PICK_BAN_MAX
             set WOS_PickBanButton[i] = BlzCreateFrameByType("BUTTON", "WOSPickBanSlot", WOS_PickBanPlate, "", i)
+            call WUI_RegisterPassiveFocus(WOS_PickBanButton[i])
             call BlzFrameSetLevel(WOS_PickBanButton[i], 3)
             set WOS_PickBanIcon[i] = BlzCreateFrameByType("BACKDROP", "WOSPickBanIcon", WOS_PickBanButton[i], "", i)
             call BlzFrameSetAllPoints(WOS_PickBanIcon[i], WOS_PickBanButton[i])
@@ -676,6 +677,7 @@ function WOS_PickExtraCreate takes nothing returns nothing
     call BlzFrameSetTexture(WOS_PickCellIcon[5], "UI\\WOS\\icon-attackspeed.tga", 0, true)
     // Hover over the main stat medallion: engine tooltip (no mouse events).
     set WOS_PickMainHit = BlzCreateFrameByType("BUTTON", "WOSPickMainStatHit", FRAME_HeroAttribute, "", 0)
+    call WUI_RegisterPassiveFocus(WOS_PickMainHit)
     call BlzFrameSetAllPoints(WOS_PickMainHit, FRAME_HeroAttribute)
     set box = WUI_TooltipBox(WUI_GetRoot(), 0.170, 0.040)
     call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMLEFT, WOS_PickMainHit, FRAMEPOINT_TOPLEFT, 0.00, 0.006)
@@ -1396,15 +1398,16 @@ call BlzFrameSetVisible(EmojiToggle, true)
             if PickedOnce[pid] == 1 then
                 call BlzFrameSetEnable(FRAME_Repick[pid], true)
                 call BlzFrameSetVisible(FRAME_Repick[pid], true)
-                if canShowSwap then
-                    call BlzFrameSetEnable(FRAME_Swap[pid], true)
-                    call BlzFrameSetVisible(FRAME_Swap[pid], true)
-                endif
+            endif
+            if canShowSwap and (PickedOnce[pid] == 1 or TestMode) then
+                call BlzFrameSetEnable(FRAME_Swap[pid], true)
+                call BlzFrameSetVisible(FRAME_Swap[pid], true)
             endif
         endif
         call RecommenedItems(p)
         
         call SaveSystem_SetCurrentHero(p, Hero[pid])
+        call QB_OnHero(pid, PlayerFrameCurrent_ID[pid])
          call ReloadAfterPick(p)
           set PlayerFrameCurrent_ID[pid] = 0
         if PickedOnce[pid] == 1 then
@@ -1908,6 +1911,16 @@ function WOS_PlayNextHeroVoice takes player p, integer heroId returns nothing
     set WOS_VoiceReady[pid] = now + 2.50
 endfunction
 
+function WOS_FinishPickerClick takes nothing returns nothing
+    local framehandle frame = BlzGetTriggerFrame()
+    if frame == FRAME_Pick[2] or frame == FRAME_Pick[3] then
+        call WUI_ResetClickedButtonFocus()
+    else
+        call WUI_ReleaseClickFocus()
+    endif
+    set frame = null
+endfunction
+
 function OnClick takes nothing returns nothing
     local framehandle clicked = BlzGetTriggerFrame()
     local integer i = 0
@@ -1954,6 +1967,7 @@ function OnClick takes nothing returns nothing
     if IsObserverSlot(pid) and (clicked == FRAME_Repick[pid] or clicked == FRAME_Swap[pid] or clicked == FRAME_Pick[2] or clicked == FRAME_Pick[3] or clicked == FRAME_Pick[4]) then
         set clicked = null
         set p = null
+        call WOS_FinishPickerClick()
         return
     endif
     if CaptainDraftMode then
@@ -1962,6 +1976,7 @@ function OnClick takes nothing returns nothing
     if CaptainDraftMode and CaptainDraftStage == 0 and (clicked == FRAME_Pick[2] or clicked == FRAME_Pick[3] or clicked == FRAME_Pick[4]) then
         set clicked = null
         set p = null
+        call WOS_FinishPickerClick()
         return
     endif
     // The separate Dota-style captain draft owns the confirm button and the
@@ -1972,6 +1987,7 @@ function OnClick takes nothing returns nothing
         call CaptainDraft_ApplyPending()
         set clicked = null
         set p = null
+        call WOS_FinishPickerClick()
         return
     endif
     if CaptainDraftMode and CaptainDraftStage == 2 and clicked == FRAME_Pick[2] then
@@ -1979,6 +1995,7 @@ function OnClick takes nothing returns nothing
         call CaptainDraft_ApplyPending()
         set clicked = null
         set p = null
+        call WOS_FinishPickerClick()
         return
     endif
     if CaptainDraftMode and CaptainDraftStage == 3 then
@@ -1993,6 +2010,7 @@ function OnClick takes nothing returns nothing
                 call CaptainDraft_ApplyPending()
                 set clicked = null
                 set p = null
+                call WOS_FinishPickerClick()
                 return
             endif
             set k = k + 1
@@ -2523,6 +2541,7 @@ endif
             set PlayerFrameCurrent_ID[pid] = 0
             call ReloadHeroPage(PlayerFrameCurrentPage_ID[pid], p)
             call DisplayTimedTextToPlayer(p, 0, 0, 2, "This hero has already been picked")
+            call WOS_FinishPickerClick()
             return
         endif
         set BaseX = GetRectCenterX(gg_rct_Pick)
@@ -2645,10 +2664,7 @@ endif
     call BlzFrameSetVisible(EmojiMuteButton, true)
 call BlzFrameSetVisible(EmojiToggle, true)
     endif
-        
-        call WOS_ProbeMark("pick: before HideBottomUI")
         call HideBottomUI(Player(pid), false)
-        call WOS_ProbeMark("pick: after HideBottomUI")
         set PlayerVision[pid] = CreateFogModifierRadius(Player(pid), FOG_OF_WAR_VISIBLE, BaseX, BaseY, 1800, true, false)
         call FogModifierStart(PlayerVision[pid])
         call PanCameraToTimedForPlayer(p, BaseX, BaseY, 0.25)
@@ -2666,29 +2682,24 @@ call BlzFrameSetVisible(EmojiToggle, true)
             call BlzFrameSetVisible(FRAME_StatusHeroMain4, true)
             call BlzFrameSetVisible(FRAME_LINK2, true)
         endif
-        call WOS_ProbeMark("pick: after select/camera")
         call RecommenedItems(p)
-        call WOS_ProbeMark("pick: after RecommenedItems")
         call SaveSystem_SetCurrentHero(p, Hero[pid])
-        call WOS_ProbeMark("pick: after SetCurrentHero")
+        call QB_OnHero(pid, id)
         call EUTU2_3(EffectSpawn("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", GetUnitX(Hero[pid]), GetUnitY(Hero[pid]), 270, 0.85, 1.45, 0), 2.5, 0, Hero[pid])
         call SetHeroLevel(Hero[pid], 2, false)
         call LearnHeroSpells(Hero[pid])
-        call WOS_ProbeMark("pick: after LearnHeroSpells")
         call TojiStartZeroMana(Hero[pid])
         
         call ReloadAfterPick(p)
-        call WOS_ProbeMark("pick: after ReloadAfterPick")
         
         set PlayerFrameCurrent_ID[pid] = 0
         call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r picked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + "|r", 1 )
-        call WOS_ProbeMark("pick: end")
-        call WOS_ProbeDump()
     endif
     set s = null
     set d = null
     set s_name = null
     set p = null
+    call WOS_FinishPickerClick()
 endfunction
 function GuideRefreshAbilityTooltip takes nothing returns nothing
     local integer i = 0
@@ -3549,7 +3560,12 @@ function WOS_LayoutHeroPick takes nothing returns nothing
     set i = 2
     loop
         exitwhen i >= 5
-        call WUI_Place(FRAME_Pick[i], 0.293 + I2R(i - 2) * 0.082, 0.236, 0.034, 0.034)
+        if i < 4 then
+            // Two-cell centers, +2% width; all three controls share .034 height.
+            call WUI_Place(FRAME_Pick[i], 0.293 + 0.0205 + I2R(i - 2) * 0.082, 0.236, 0.0785, 0.034)
+        else
+            call WUI_Place(FRAME_Pick[i], 0.293 + I2R(i - 2) * 0.082, 0.236, 0.034, 0.034)
+        endif
         set i = i + 1
     endloop
     set i = 0
@@ -3730,9 +3746,9 @@ function WOS_CreatePickCatalogue takes nothing returns nothing
             call BlzFrameSetTexture(FRAME_ICON_Pick[k], "Pick\\PickButton_Page_Right", 0, true)
             call BlzFrameSetSize(FRAME_Pick[k], 0.037, 0.037)
         elseif k == 2 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-confirm-wide-off.tga", 0, true)
         elseif k == 3 then
-            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-random-off.tga", 0, true)
+            call BlzFrameSetTexture(FRAME_ICON_Pick[k], "UI\\WOS\\pick-random-wide-off.tga", 0, true)
             // Keep Random attached to the pick panel itself. This avoids the
             // accumulated TOPLEFT offset moving it on 16:10 resolutions.
             call BlzFrameClearAllPoints(FRAME_Pick[k])
@@ -3877,6 +3893,7 @@ function WOS_CreatePickAbilities takes nothing returns nothing
         exitwhen i == 7
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)
         set FRAME_ICON5[i] = BlzCreateFrameByType("BUTTON", "MyIconButton", FRAME_MAIN3, "WOSIconButtonTemplate", 0)
+        call WUI_RegisterPassiveFocus(FRAME_ICON5[i])
         set FRAME_ICON6[i] = BlzCreateFrameByType("BACKDROP", "MyIconButtonIcon", FRAME_ICON5[i], "", 0)
         call BlzFrameSetTexture(FRAME_ICON5[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
         call BlzFrameSetAllPoints(FRAME_ICON6[i], FRAME_ICON5[i])
@@ -4503,11 +4520,11 @@ endif
             loop
                 exitwhen i == 10
                 if GetLocalPlayer() == Player(i) then
-                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random.tga", 0, true)
+                    call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.tga", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
                     if (FramePlayerFirstName[i] == "Hansel" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID3[1]) then
-                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                        call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.tga", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif
                 endif
@@ -4538,8 +4555,8 @@ endif
             exitwhen i == 10
             if GetLocalPlayer() == Player(i) then
                 call BlzFrameSetEnable(FRAME_Pick[2], true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm.tga", 0, true)
-                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.tga", 0, true)
+                call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.tga", 0, true)
                 call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
                 call BlzFrameSetEnable(FRAME_Pick[3], true)
             endif
