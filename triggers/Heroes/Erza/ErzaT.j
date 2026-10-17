@@ -1586,27 +1586,36 @@ library ErzaTSpells uses GearSystems
             call SaveReal(hs, GetHandleId(c), StringHash("add spell dmg erza4 f"), r5 / 100)
             call SaveInteger(hs, GetHandleId(c), StringHash("type sword"), check2)
             if frame_pas1[check] == null then
-                                set frame_pas1[check] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame_pas1[check] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas1[check], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                call BlzFrameSetSize(frame_pas1[check], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame_pas1[check], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame_pas1[check], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[check], true)
                                 endif
-                                set frame_pas2[check] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[check], "", 0)
-
+                                set frame_pas2[check] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[check], 0, 0)
+                                call BlzFrameSetAbsPoint(frame_pas2[check], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                call BlzFrameSetSize(frame_pas2[check], 0.1, 0.019)
                                 set frame_pas3[check] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[check], "", 0)
+                                call BlzFrameSetSize(frame_pas3[check], 0.1, 0.035)
+                                call BlzFrameSetScale(frame_pas3[check], 0.5)
+                                call BlzFrameSetModel(frame_pas3[check], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame_pas3[check], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame_pas3[check], 0, rmax)
                                 call BlzFrameSetValue(frame_pas3[check], rmax)
                                 set frame_pas4[check] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[check], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame_pas4[check], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                call BlzFrameSetSize(frame_pas4[check], 0.025, 0.025)
                                 call BlzFrameSetTexture(frame_pas4[check], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza5_Icon", 0, false)
                                 set frame_pas5[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas5[check], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetText(frame_pas5[check], "|c00FFFF00" + "Elemental infusion:" + "|r")
+                                call BlzFrameSetScale(frame_pas5[check], 0.9)
                                 set frame_pas6[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas6[check], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame_pas6[check], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame_pas1[check], frame_pas2[check], frame_pas3[check], frame_pas4[check], frame_pas5[check], frame_pas6[check])
-                                call WUI_RegisterMeter(frame_pas1[check], check, "Heroes/Erza/ErzaT.j:frame_pas1:" + I2S(check))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame_pas6[check], 0.9)
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[check], true)

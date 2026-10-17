@@ -40,6 +40,18 @@ class Break(Exception):
     pass
 
 
+def _sh_keys():
+    """SH_* keys pre-hashed in triggers/ (StringHash is identity in these tests)."""
+    keys = {}
+    for path in (ROOT / "triggers").rglob("*.j"):
+        for name, literal in re.findall(r'\bSH_(\w+) = StringHash\("([^"]*)"\)', path.read_text(encoding="utf-8", errors="replace")):
+            keys.setdefault("SH_" + name, literal)
+    return keys
+
+
+SH_KEYS = _sh_keys()
+
+
 class JassState:
     def __init__(self, text=None):
         self.text = text if text is not None else SOURCE.read_text(encoding="utf-8")
@@ -68,6 +80,7 @@ class JassState:
         self.fade_history = []
         self.scan_calls = []
         self.vision_calls = []
+        self.progress_calls = []
         self.decor_calls = []
         self.clock_users = 0
         self.elapsed = 0.0
@@ -109,6 +122,8 @@ class JassState:
             "StartSpellUnit": lambda u: (self.add_ability(u,'Avul'),self.spell_pause(u,True)),
             "StopSpellUnit": lambda u: (self.remove_ability(u,'Avul'),self.spell_pause(u,False)),
             "R2I": int,
+            # External attribution API; collector tests load its real body.
+            "DamageSource": lambda source:self.g.update(GearDamageNextSource=source),
             "GetRandomInt": lambda a,b:a,
             "GetRandomReal": lambda a,b:(a+b)/2,
             "SetUnitTimeScale": lambda u,s:setattr(u,"timescale",s),
@@ -203,11 +218,21 @@ class JassState:
             "GearTimer03Acquire": lambda: setattr(self,"clock_users",self.clock_users+1),
             "GearTimer03Release": lambda: setattr(self,"clock_users",self.clock_users-1),
             "NoDecor_Cond": None,
+            # Pre-hashed SH_* keys: identity keeps hashtable keys readable in tests.
+            "StringHash": lambda s: s,
+            # Local selection enumeration (tests model a single selected unit).
+            "GroupClear": lambda g: g.clear() if hasattr(g, "clear") else None,
+            "GroupEnumUnitsSelected": lambda *a: None,
+            **SH_KEYS,
+            # Sand spatial grid (rect enumeration of the live sand box).
+            "InitHashtable": dict, "Rect": lambda a,b,c,d: [a,b,c,d],
+            "SetRect": lambda r,a,b,c,d: r.__setitem__(slice(None),[a,b,c,d]) if isinstance(r,list) else self.g.update(CrocodileSand_ScanRect=[a,b,c,d]),
+            "GroupEnumUnitsInRect": self.enum_rect,
         }
         for name in re.findall(r"\b(?:UNIT_WEAPON_\w+|ABILITY_[RI]LF_\w+|ABILITY_IF_\w+|UNIT_TYPE_\w+|PATHING_TYPE_\w+)\b",self.text):
             self.g[name] = name
         # Constants and rawcodes are read from the implementation, not copied.
-        for name, value in re.findall(r"^        (?:private )?(?:constant )?(?:integer|real|string|group|unit|player|trigger) (\w+) = ([^\n]+)",self.text,re.M):
+        for name, value in re.findall(r"^        (?:private )?(?:constant )?(?:integer|real|string|group|unit|player|trigger|hashtable|rect) (\w+) = ([^\n]+)",self.text,re.M):
             self.g[name] = eval(value.split(" //")[0].replace("null","None"), {}, self.g)
         self.g["thistype"] = self
         self.structs = {}
@@ -220,6 +245,8 @@ class JassState:
                 self.method_classes[meth] = ns
         # Checkpoint 27d: shared UI helpers used by many owners (real
         # implementations in the loaded source still override these).
+        self.g.setdefault("WUI_HeroProgress", lambda *a: self.progress_calls.append(a))
+        self.g.setdefault("WUI_HeroDuration", lambda *a: self.progress_calls.append(a))
         self.g.setdefault("WUI_Show", lambda f, v: self.g.get("BlzFrameSetVisible", lambda *a: None)(f, v))
         self.g.setdefault("WUI_SetText", lambda f, v: self.g.get("BlzFrameSetText", lambda *a: None)(f, v))
         self.g.setdefault("BlzFrameIsVisible", lambda f: True)
@@ -365,6 +392,11 @@ class JassState:
     def enum(self,g,x,y,r,*args):
         self.scan_calls.append((g,x,y,r))
         g[:] = [u for u in self.units if math.hypot(u.x-x,u.y-y) <= r]
+
+    def enum_rect(self,g,r,*args):
+        x0,y0,x1,y1 = r
+        self.scan_calls.append((g,(x0+x1)/2,(y0+y1)/2,max(x1-x0,y1-y0)/2))
+        g[:] = [u for u in self.units if x0 <= u.x <= x1 and y0 <= u.y <= y1]
 
     def flush(self,table,key):
         for k in list(table):

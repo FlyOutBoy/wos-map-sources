@@ -128,8 +128,9 @@ class RetiredHoldSettings(unittest.TestCase):
         from test_wos_ui import load_source
         self.vm=load_source('WOSUI.j')
 
-    def test_six_channels_ignore_legacy_hold_save_record(self):
-        self.assertIn('WUI_HOTKEY_CHANNELS = 6',self.source)
+    def test_retired_channel_six_ignores_legacy_hold_save_record(self):
+        # Channel 6 stays unused; Damage Stats took channel 7.
+        self.assertIn('WUI_HOTKEY_DAMAGE = 7',self.source);self.assertIn('WUI_HOTKEY_CHANNELS = 8',self.source)
         self.assertNotIn('WUI_HOTKEY_RANGE',self.source)
         g=self.vm.g
         g.update(GetPlayerId=lambda p:p,WUI_KeyByLabel=lambda s:s)

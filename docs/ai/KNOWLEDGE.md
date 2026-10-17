@@ -174,3 +174,473 @@ All Range3/FIX12/QB fixes and their missing UI resources are now transferred to
 the main project; retain independent Systems1 desync probe. QuickBuy textures must
 be installed by install_wos_ui_assets on every build, not exist only in a candidate
 scenario. Historical TEST-only restriction above is superseded by this approval.
+
+
+### UI windows and spell progress — 2026-10-15
+
+CP42 supersedes the local-close/deferred-state contract from CP35.
+WUI_EnterExclusiveWindow(kind, viewer) must run on every client, outside local
+guards, from agreed key/frame/unit/sync events. Registered callbacks use the
+explicit WUI_WindowPlayer, close Shop_Active/IsOpen/lmpVisible/guide arrays on all
+clients, and guard cached rendering only. Do not change shared flags locally
+and reconcile them with a later packet: a replay of the CP41 baseline produces
+IsOpen[0]=false/true on the two clients between those events. Local TriggerExecute
+also executed the callback chain on only one peer. Its engine-internal desync
+mechanism is not proven. Escape's local capture guard sends WUIWCLOSE -1; its
+agreed handler dispatches the same transition. No separate state callbacks or
+follow-up close packets. Frame/trigger registration stays shared at startup.
+Initialize both CaptureChannel and SlotCapture to -1 in WUI_Init, even when the
+optional hotkey editor is never created. JASS defaults them to0; the old Esc
+guard then silently treated every player as capturing slot0. Register all16
+modifier masks. Checkpoint35 runs actual initialization before testing Esc;
+manually setting -1 in an input fixture misses this failure. Save Keys at the
+top toolbar needs WUI_TooltipBelowSized, not the above-owner sized helper.
+
+WUI_HeroProgress must be called synchronously with actual spell-loop remaining/
+maximum values; its first call creates handles identically on all clients.
+Do not drive it with owner-local file/profile/hover state. Presentation/freshness
+is owner-only; .10 HUD refresh expires interrupted/dead/replaced panels. Fixed
+WUI_HeroDuration windows are UI-only and may check a real buff/key/subject.
+Crocodile natural T expiry clears channelActive, not channelFinished: use the
+former to switch from cast to T2-window progress. Erza indefinite E shield and
+Nakagami R show resources, not a fictitious time. Newcomer guide lives in AAINIT; CP40 removes its separate .help.txt/Chunk
+read/write path. All guide handles are created at shared bootstrap; its local
+open/tick now change cached presentation only, with a once-per-map flag.
+Technical watchdogs are not visible durations: Patriot W ends on pulse count
+before its15s cap; Harribel EW charge is MaxCastDuration+.12 before the dash;
+Akainu T ends on fist count/.03 tick cadence; Inori W uses native Channel
+FOLLOW_THROUGH_TIME (read once during shared start, currently7.5), not99s.
+New progress titles use cleaned object ability tooltips; long-title geometry
+is saved in MeterEdges real key6 and retained by WUI_RepinMeter.
+CP38 removes bespoke hero FRAME meters (including Erza4 E in DecorDestroy).
+WUI_HeroProgressText shares the same keyed panel for percentages and time+stacks;
+WUI_HeroProgressCounter is only for event-driven resources with an explicit close.
+Zero resources allocate synchronously and remain visible; ordinary loop meters
+retain freshness expiry. WUI_HeroProgressPublic preserves public Kyoraku/Kenjaku
+events and validates Hero[owner] when expiring on a different client. Direct
+updates cancel any previous WUI_HeroDuration clock for the same key. Caption
+geometry changes only when its text changes. Keep SIMPLEFRAME buff/charge badges
+and Erza Second Origin's non-bar card outside this normal FRAME meter API.
+
+Frieren T's clone used to run player-wide ability-slot cleanup when it expired,
+so the real hero lost T2/TF/W2 before her independent timer ended. Only the real
+hero's instance (b = FrierenCloneCheck(c)) may restore those player-wide slots.
+Toji W's tether r clock advances only when its target is not IsUnitPaused, in
+both attached/pulling states; the panel reads that clock and closes on dispel.
+Takeshi Cambio accumulation/dummy creation must run independently of UI creation;
+the old first-frame branch skipped the first damage update. The shared counter
+now consumes the clamped gameplay total. Shiki and Rimuru boxes register in shared
+activation callbacks; TasBox.GetValue reads real stacks/buffs and never reserves
+handles in its local paint path. Removing Inori's E bar also requires removing
+the cloned copy from Systems1.FixHeroPas.
+
+Sukuna's shared location is chosen once at Time_Sukuna-15, cached for the public
+15s minimap warning, and reused by SukunaEnd_Start. Reset the cache at round start;
+direct summons without warning prepare it on demand. Do not reroll at summon.
+CP38 production checks: tools/test_hero_progress.py and the UI runner. These are
+script/native-mock checks; visual placement and Warcraft pause behavior still
+require engine acceptance.
+
+Guide arrows
+anchor to published existing owner controls, so HUD shifts cannot point them
+at the minimap slider. Checkpoint35 evidence:488 UI checks, compile/save/build,
+6609 archive payloads/112 WCT sources, external20261016-ui-corrections report;
+native appearance, input delivery and multiplayer still need engine testing.
+Screenshot refinement (CP36): top guide targets must be Menu/Stats text handles,
+not icon hit rectangles. Use both TOP/BOTTOM endpoints, one on the target and
+one on the callout edge; fixed-height arrows leave visible gaps when callouts
+move. Account for transparent image margins with small endpoint overlap.
+Game Info round damage now snapshots only at WUI_GameInfoRoundStart from the
+round-start branch (CondArena=1), not by polling CurrentRound in WUI_FeedTick.
+Always check generated cursor alpha: a dim-looking opaque black disc obscures
+terrain. The accepted TGA has clear interior alpha1, a small central cross/glow,
+and roughly25% lower radial rim alpha; exact QA in20261016-help-polish.
+Do not use technical CurrentRound directly for environment scaling in training:
+TestMode's empty team1 arena check restarts phases and increments it even at0:0.
+EnvironmentRoundRules in Map_Header.j provides GetEnvironmentRoundNumber (1 in
+training, max(1,CurrentRound) in normal matches). Decor, train and the Game Info
+round snapshot share this pure rule; do not reset the global counter to fix a
+display, since it also drives rewards/round flow. CP37 verifies training counter3/
+20 and normal rounds1/2/3 via production damage expressions and the real UI helper.
+
+UI-only mouse hooks now capture one world point per Z press and destroy that
+synced listener on all clients. Hero MouseOn/MouseOff is a different owner and
+is unchanged. UI mouse button polling is limited to its active panels/hit areas.
+Evidence: 450 UI tests, 5 real Crocodile T/T2 tests, compile/save/build and 6606
+archive payloads verified. High-Hz ping/focus/visual/multiplayer acceptance is
+still external; details in UI RESUME checkpoint33 and external diagnostics
+20261015-ui-followup/REPORT_UI_FOLLOWUP.md. Legacy Crocodile E/F/G expectation
+mismatches reproduce on the before-task backup, not caused by these UI hooks.
+
+
+### Item range source and hover lifecycle — 2026-10-15
+
+Item CD-only Channel abilities often carry a fake cast range900. Never infer
+preview from the first item ability or its tooltip text. Explicit item->mechanic
+rules in ItemsSpells are audited against all150 objects in
+assets/AbilityRange/item-rules.json: real native cast/aura fields or script globals.
+Grails/Frozen Heart use aura AREA_OF_EFFECT; projectile/movement globals override
+stale object values. Cache BlzGetItemAbility synchronously in AR_Reconcile on
+inventory changes; local hover only reads existing handles, validates occupancy
+and reuses the hero's existing circle. No local allocations or new input events.
+AHUI_HideTooltip also hides AR: calling it unconditionally on each item hover
+would flicker the circle; hide a previous visible tooltip once, then request the
+item without concealing each tick. 470 UI tests/compile/save/build/archive hashes
+verify sources/lifecycle/packaging, not native rendering or multiplayer. See UI
+checkpoint34 and external diagnostics/20261015-item-range/REPORT_ITEM_RANGE.md.
+
+
+CP39 follow-up: Rimuru evolution removes base spells, so ability-level pips must
+read the displayed AHUI_CurrentAbility. Q2/F3 dodge counts now belong to the
+shared progress panel, driven until the actual buff disappears (with short native
+application grace), rather than a fixed window or Tas badge. WUI_HeroProgressDual
+uses a single keyed panel, .0375 height and two fill/value rows; docking sums
+real heights instead of slot*.030. Repin both the bar and its cached real fill.
+BuffUnit01 returns native duration for the applied rank and target type; Toji W
+uses it and freezes its clock while the target is paused. Do not assume the old
+5s constant equals object data, which may inherit native base-ability fields.
+
+Votes: decide only inside WOSVOTE sync/shared ticks; keep local MV_View out of
+membership/results. Snapshot active human voters; kick excludes target, FF uses
+captain-aware IsInTeam1. Any NO/timeout/eligible departure rejects. Kick cleanup
+must use GetGold(p), not GetTriggerPlayer(), because the sync sender can differ
+from the removed target. WOS_HandlePlayerLeave is guarded by Leave to prevent
+native leave after CustomDefeat from redistributing items/gold twice. FF queues
+one team id and the round owner awards10 once before normal end-round cleanup.
+Evidence: tools/test_match_votes.py, tools/test_ui_vote_followup.py and UI runner;
+actual rendering, native buff expiry and two-client behavior need engine testing.
+
+
+CP40 corrects CP39's invis assumption: querying IsUnitInvisible(unit, owner) and
+Binv/BOwk missed permanent invisibility grants. Check Apiv (Toji R), A03W (Erza
+water) and A0HZ (Evolved Cup of Tea), all object-data base Apiv. Test ability
+presence with the native query false and no buff. Discord ghost drift came from
+using RightDock while its real control used the moving HUD toolbar; share the
+same WUI_PlaceToolbar placement and avoid two competing position caches.
+
+A two-player kick cannot accept the initiator alone: enforce max(2, eligible
+others) in evaluation and UI. Timeout must unconditionally finish an unresolved
+vote, even with no pending eligible voter (1/2 quorum). Wheels have a dedicated
+shared-registered local cancellation contract; key-held/repeat latches keep the
+cancelled wheel from reopening or sending on release. Preserve the synchronized
+owner of ping mouse-trigger activation (CP44 preallocates the handles). tools/test_startup_followup.py covers
+both switch orders, repeated keydown, release and toolbar opens.
+
+Reported newcomer-guide desync: removed its extra local Preloader/file marker
+read/write and tooltip carrier, leaving a once-per-map local flag and existing
+career-games check. Guide bootstrap still creates all handles synchronously.
+The regression executes open/close/countdown for both local client IDs with
+file, tooltip and handle-allocation natives forbidden. It does not confirm the
+Warcraft engine root cause; two-client testing remains necessary.
+
+
+CP41 supersedes CP40's once-per-map/zero-career guide decision. A dedicated
+CustomMapData/Wos2/playedonce.txt decoded marker1 now suppresses auto-help.
+Read once after shared UI startup with the existing Save Keys carrier; send
+WOS2GUIDE N/P. Shared arrays per authenticated sender and a pid0..9 tick own
+open/handled/remaining; GetLocalPlayer guards only cached rendering/local marker
+writes. Manual help gets the same countdown (40s since CP49); closes synchronize C.
+Do not call the exclusive-window callback chain when opening the guide. A
+GetLocalPlayer read or local UI scalar alone is not proof of desync; trace shared
+consumers and allocations. Mixed new/existing clients now have identical guide
+arrays in the interpreter. Native two-client acceptance is still required.
+
+Hero catalogue forms must read actual ability icons/tooltips. Rimuru R A0A0
+points to BTNHero_Rimuru_T; T A09Z points to BTNHero_Rimuru_R, so constructing
+icons from suffixes swaps them. WOS_PreviewTable covers32 kits, existing imported
+portraits and local-only form tabs. Reset Toji Q1/Q2/Q3 labels on every base/hero
+change. Never reuse these local preview values for gameplay picking.
+
+Quick Buy grid drag must use both X and Y, with the same bounded destination on
+preview and release. Keep the versioned M sync authority and create direction
+pointers only in shared QB_CreateUI (pool753 frames,8 more). Reordering neither
+purchases nor mutates inventory directly. UI settings bit4 persists collapsed
+Kyoraku/hero-stage text without changing existing minimap/info bits; bit2 must
+use modulo4 rather than flags>=2 after adding bit4. Evidence: test_guide_forms,
+test_ui_followup, updated Quick Buy suites and the544-check UI runner.
+
+
+### Picker local dispatch regression — CP43, 2026-10-16
+
+User reports CP42 desync after a pick category click and moving the mouse.
+CP41 forms inserted four ExecuteFunc("WOS_PreviewClear") calls, including inside
+owner-local category/clear branches. CP42 audited windows but missed this path.
+The prior category regression neither forbade ExecuteFunc nor enabled the new
+preview. It could not detect this asymmetric dispatch. Enable PreviewReady,
+execute actual OnClick for all six categories on both mocked clients, and forbid
+ExecuteFunc/TriggerExecute/TriggerEvaluate/handle allocation. The saved CP42
+source fails at WOS_PreviewClear; direct-call CP43 passes. Move Render/Select/Clear
+before their first callers rather than adding a local forward-call wrapper.
+Compiled traversal of Clear/Select/Render and slot-badge rendering finds no
+thread dispatch, ability handles or allocation (9 reachable functions).
+
+Also replace owner-local ExecuteFunc(SCOPE_PRIVATE+"WUI_RefreshSlotBadges") with
+a direct call; place badge/key helpers before capture handlers. If optional
+slot-overlay/hint frames do not exist, return without rendering. No focus or
+new timer changes. Do not claim the native disconnect mechanism established by
+this interpreter; a category click is the reproduced code-path regression,
+not a Warcraft network execution. Native two-client acceptance remains required.
+
+One-level Erza T/G1/G2 QWER were registered maxLv5 in UniversalTooltips, causing
+ListCooldown/ListMana/ListRealField to read unused levels and append zeroes.
+Set registration count1 from actual object data. Tsuna form Q/W/E/R metadata
+also becomes1; Takeshi Cambio already has1 and is regression-checked. Do not
+strip arbitrary slash-separated values: hero-level bonuses may legitimately
+have lists. These changes affect tooltip metadata, not ability object levels.
+
+
+### Runtime UI dispatch audit — CP44, 2026-10-16
+
+User reported Z desync after previous window/picker changes. CP43 compiled
+baseline still contains TMP_OnKey -> TMP_ShowWheel -> WUI_EnterWheel ->
+TriggerExecute and Emoji_ShowMenu -> the same callback dispatcher. HUD expansion
+also reaches WUI_SetHud -> TriggerExecute. Thus moving window callbacks to a
+shared event in CP42 did not remove the separate owner-local wheel/HUD thread
+paths. Native frame value hooks additionally compile into evaluate trampolines.
+The precise Warcraft disconnect mechanism is not established by this evidence.
+
+Replace runtime registries with direct cached frame setters/passive state in
+WOSUI. Preserve Z/K cancellation/repeat/release semantics, preallocate ping mouse
+triggers once, move dependent helpers before callers and remove native value
+hooks in favor of explicit wrappers. Reuse existing shop/HUD timers for revision
+consumption; drain shared hero requests before purchase/sync processing. Career
+open now renders its already-loaded cache; bounded startup file parsing remains
+separate. Shared startup UI allocation is intentionally retained.
+
+Verification: check_wos_ui.py integrates tools/audit_wos_ui_dispatch.py, auditing
+all31 enabled frame sources /387 compiled direct frame functions and27 critical
+roots, including implicit JassHelper dispatch. Explicit GetLocalPlayer branches
+are traced for allocation/dispatch too. The final packed script must pass the
+same audit. Existing mock tests plus new direct setters/revision/queue/wheel and
+asymmetric minimap/info/stat-mode tests exercise production functions. These
+checks are not native multiplayer acceptance. Architecture contract and latest
+checkpoint are in docs/ui-redesign/ARCHITECTURE.md and RESUME.md.
+
+
+### Required mode startup and mouse subscriptions — CP45, 2026-10-16
+
+CP44's initial slider sync became a direct call before scheduling the mode/pick
+phase; optional native UI failure could abort the required startup thread.
+CP48 adds a requested5s shared delay: InitTrig_ModeDialog schedules its one-shot
+first; WOS_ModeDelayExpired destroys it and calls WOS_BeginModeSelection. The
+20s choice countdown starts after the delay, preserving full response time.
+WOS_BeginModeSelection schedules timeout/countdown and selector before optional
+setup; initial slider sync moves to the existing camera tick. A failure-injection
+regression confirms fallback launch survives. This is boundary evidence, not a
+native reproduction of the user's stalled game.
+
+CP54 supersedes the following CP45 input design: TeamMapPings has no MOVE registration at all. Do not restore either permanent or demand-created MOVE.
+Historical CP45 rationale: do not register permanent EVENT_PLAYER_MOUSE_MOVE just to disable its trigger.
+The user reports idle ping overhead with that CP44 design. Restore demand
+registration/destruction in agreed Z events; first captured world point ends it.
+Local close requests synchronize an epoch before destroying any handle. K has no
+network mouse subscription; it stops ping tracking and uses local polling only
+while its wheel is open. Preserve direct mutual wheel closing and cancelled-key
+latches. The new narrow compiled-audit allocation exception applies only to
+shared TMP_TrackMouse from TMP_OnKey; local-frame paths still reject allocation.
+
+
+### Input lifecycle and initialization completion — CP46, 2026-10-16
+
+QB_OnMouse is an inventory pickup/drop owner, not a world-RMB subscription.
+RMB sampling was in QB_CheckDrag under the existing debounce callback. Requested
+physical activation is now a separate disabled trigger per player, attached to
+that same timer expiration; only agreed shop transitions enable it. Keep passive
+revision work on the original callback so closing a disabled input still cancels
+drag/render safely. No local trigger enable or Execute dispatch.
+
+Missing F2 badge/click indicates registration may not have been reached, because
+CP46 only moved row allocation; binding still followed shell, F3/F4 setup and
+headers. User confirmed this did not restore F2. CP47 starts a finite agreed
+17-tick builder from the ready callback: F2 binding first, shell, headers,
+action controls, F3, F4, ten separate rows and final window binding. Ready gates
+opening until completion. No runtime construction/Execute was added. Regression
+now executes the real builders AND WUI hotkey helpers, mocking native boundaries
+only, and verifies all60 item controls,3 badges and input entry points. This
+removes remaining combined startup-budget exposure; the exact engine abort
+cause has not been reproduced or proved. Do not call the earlier hypothesis a
+confirmed cause. Native F2/click/multiplayer acceptance still requires game testing.
+
+Placeholder docking: WUI_PlaceRight stores width for later viewport reflow.
+A subsequent BlzFrameSetSize cannot fix a stale stored width: Hide UI was .056
+in the dock but .042025 onscreen until the next viewport refresh. Register its
+final WUI_TOP_ROW_W and offset directly, matching the final Hide UI control.
+
+Dead native heroes can have nonzero corpse life after transformations: use death
+status to render0 HP. Keep dead HP/MP bars; for hidden dead units retain cached
+mana without reading hidden resources. Burner moves to common charge progress;
+continuous display must remain separate from Tsuna's discrete gameplay check2.
+Surrender must be permitted on base as explicitly requested: queue one result
+and route base through the existing round-end owner instead of parallel scoring.
+
+### Numeric damage attribution (CP50)
+
+A shared damage event can run nested procs/reflection; a single mutable "current
+spell" read after those procs misattributes the original hit. DamageSource(id)
+in Systems2 sets a one-shot rawcode. Damage wrappers consume it before their
+native call, restore the previous active source afterwards, and consume even
+when a target is dead/null. DmgSys snapshots active source at event entry.
+DmgPTime/NextDmg capture it on the instance and reapply before each deferred hit;
+Erza elemental effects carry the creating ability/item, with fixed Kurikara and
+Murasame item IDs. Generic AOE helpers capture once and reapply per target.
+
+The optional DamageStats collector receives the final post-shield value at the
+existing F2 hero-target boundary. Storage is numeric hashtables, no new per-hit
+strings or handles. UI-only source names/icons and local sorting never feed
+combat. F3/F4 preserve real Round/Game history and operate on Counter.
+`tools/audit_damage_sources.py`, `test_damage_stats.py` and compiled UI dispatch
+audit verify coverage, nested restoration, invalid targets, numeric totals,
+reset/load, round snapshots, ranking, visibility and disabled compilation.
+Native effects without a script tag are shown explicitly as Other/native;
+ordinary controlled summon attacks map to the summoning ability. Modifiers added
+to an existing attack stay within that attack's source; the collector does not
+change combat to split multiplicative bonuses. Runtime multiplayer is untested.
+
+CP51 presentation follow-up: DamageStats used SetScale followed by SetSize with
+width/scale and height/scale, unlike the working Scoreboard text constructor.
+User screenshots showed names, amounts and headings outside rows; the shared
+source tooltip was also pinned to an unrelated screen coordinate. Physical
+text bounds + F2 setter order, separate aligned header cells, owner-relative
+source tooltip/AllPoints text replaced that path. CP52 supersedes the icon shades
+and flat stripes after actual engine screenshots exposed white overlays.
+Native bounds/constructor tests are in test_damage_stats_layout.py; screenshot
+acceptance still requires Warcraft. Collector/round/reset/sort code is unchanged.
+
+
+CP52 DamageStats: the compact view was still registered in the right-hand WUI
+column. It now has an independent upper-left toggle under TopActionOwner, with
+collapsed state preserved by Hide UI. The white number background used white.blp
+and vertex tint; user engine screenshots showed an opaque white block over the
+art. Removed it: full-square source artwork, separate dark textured number line
+below, larger rounded k/m labels. No white-tint dependency remains in this owner.
+Player rows are WUI_CreateFill/WUI_SetValue bars over bar-back.tga, with ten
+precolored textured fills matching slot colors. Normalize to the leader, or to
+player total in the source detail view. Names are on the bars; heroes use portraits.
+Shared startup caches fixed icon paths for 268 scripted abilities from editable
+objects, in addition to the 31 item entries. No per-hit strings/handles were added.
+All 298 imported artworks decode; BTNBarrel is a stock-game path. Constructor
+bounds/source/reset tests and compiled dispatch audit pass; native font/texture
+appearance and multiplayer still need engine acceptance. Asset generator:
+tools/build_damage_stats_assets.py; catalogue regeneration: audit_damage_sources.py
+--write-icons. Source: triggers/WOS_Start/DamageStats.j and CP52 in RESUME.md.
+
+
+CP53 DamageStats: engine screenshots still showed totals outside bars and hover
+instability despite CP52 geometry passing. Runtime reanchoring/resizing + scaling
+TEXT and competing BlzFrameSetTooltip/manual ownership were removed. Fixed font
+height (BlzFrameSetFont, unit frame scale), value RIGHT-to-fixed-bar RIGHT anchor,
+constructor-only row geometry and count-only window sizing replace that path.
+One manual tooltip anchors on enter and hides on matching owner leave; source
+artwork and digits share one hit rectangle. Hover pins displayed source slots
+until leave, while recording and tooltip amounts continue; mouse leave only hides
+the tooltip/marks dirty, and the .25s timer flushes pending rows. Click handlers use
+one ResetClickedButtonFocus, never RegisterPassiveFocus plus another cleanup.
+No mouse/focus setter runs in enter/leave. Native cursor behavior still needs
+engine acceptance; these changes remove the conflicting paths, not prove a
+physical cursor-warp cause.
+
+Dealt pages0..3 and Taken pages4..7 share numeric storage, but collection never
+reads local UI direction. DamageStatsRecordHit mirrors a final hero-target hit
+to attacker/victim buckets. It uses F2 per-hit R2I precision before splitting,
+so accumulated fractions cannot cross the display rounding threshold ahead of
+F2. Source shares can remain fractional; the actual combat hit is untouched.
+7038 ->7.0k,7051 ->7.1k,7501 ->7.5k. Compose decimal labels with integer digits,
+not float R2SW again. F3/F4 and round snapshots operate on both directions.
+Quincy Cross's existing flat addition captures its ratio before DamageCheck;
+only the final statistic is proportionally split into I023 and the original
+source after mitigation. No second damage event and no balance/HP logic change.
+This attribution convention distributes later flat reductions proportionally.
+Test_damage_stats covers mirrors, neutral attackers, F2 precision, Quincy shares,
+reset/load, snapshots, sorting and no hit-time strings/handles.
+
+### Idle UI stalls and frame-only Z input — CP54, 2026-10-17
+
+Cause/evidence: Systems1's enabled desync probe was called by LearnHeroSpells,
+which base regeneration repeats. Each active15s probe performs whole-map group
+enumeration and repeated full Preload file rewrites; when a window finishes the
+next base refresh starts another. Its1500-line cap never stopped the writes.
+Disable via WOS_DESYNC_PROBE_ENABLED=false at all entry points and statically
+exclude learning-call sites; do not enable diagnostics in normal builds. This
+removes demonstrated work, but does not establish the engine FPS stall cause.
+
+CP54 replaces both old MOVE listener variants with five fixed BUTTON events and
+one terrain click. Shared precreated disabled click triggers are armed only by
+agreed choice events; owner click/RMB/Esc/newZ/K/modal/timeout disable them.
+Timer liveness depends on shared pending/cooldown/effect state only. No mouse
+position/button polling in TeamMapPings. Keep Z/K mutual exclusion.
+
+Other confirmed waste: AHUI hid and alpha-reset native placeholders repeatedly;
+AR scanned14 heroes/inventories20Hz while the ownership cache needs4Hz; closed
+F2 still had an always-running clock; shop formatted every open player's six
+unchanged item cells. CP54 adds changed-only setters/metadata, slower data polls
+and inactive F2/ping timers, preserving .05 hover and purchase/search behavior.
+Production tests live in test_ui_performance.py, test_team_map_pings.py and
+updated DamageStats geometry tests; compiled dispatch audit includes target
+click. Operation counts prove removed calls/lifetime, not native FPS or network
+acceptance. See RESUME CP54 and its diagnostics report for packed-build evidence.
+
+### Native unit-message layout regression — CP55, 2026-10-17
+
+Reported trigger: Patriot creates enemy/allied Raiden in Test Mode. Compare
+recent changes before refactoring spawn: CP53 added generic frame layout calls
+on ORIGIN_FRAME_UNIT_MSG, CP54 changed its size from .180 to .290. Both local
+03:46/13:12 minidumps have the same native chain and a corrupted object vtable
+(zero low DWORD); RDI/RCX object field+0x9c matches the respective assigned width.
+The previous mock treated it as FRAME, which hid this native-type risk. This
+is strong evidence for the introduced unsafe path, without symbols identifying
+the exact setter or an engine reproduction proving the fix.
+
+Remove that origin lookup/layout entirely. Move WUI_CreateFeed's custom TEXT
+frames instead (+.240 X/-.020 Y from CP54). No spawn timer workaround or hero
+gameplay changes. Test_damage_stats_layout guards against the native path and
+executes the real custom-feed constructor at four aspect ratios. See RESUME
+CP55 and diagnostics 20261017-native-message-crash/crash-evidence.json for
+dump details and source provenance. Fresh game validation remains necessary.
+
+### Missing environmental damage and repeated key forwarding — CP56
+
+CP55 crash removal is user-confirmed. Keep the engine unit-message region alone.
+
+Direct SetHpCurrent losses from train collision/explosion and end-round Sukuna
+never enter DmgSys. RoundSpells.EnvironmentHpLoss observes actual before/after HP
+around the same setter, then optionally records it. Do not replace these paths
+with UnitDamageTarget: that would introduce resistances/procs/death-credit changes.
+Car/barrel/transformer/hydrant explosion helpers and elemental reaction instances
+now carry separate numeric source tags. Native unknown nonattacks use their unit
+type instead of grouping every untagged event as Other/native.
+
+Taken sources previously merged all attackers. DamageStatsTakenSource interns
+numeric (source, owner, unit type) identities into precreated tables and stores
+integer metadata. UI resolves names/icons on demand, including hero portraits for
+attacks and owner tooltips/subtitles for spells. Snapshot/copy retains those IDs.
+No per-hit strings or handle creation. Actual mitigation/combat hits are unchanged.
+
+Custom slot forwarding previously accepted repeated downs and could reenter via
+ForceUIKey. WUI_AcceptKeyDown runs as a condition before actions, latches until
+key-up and caps synthetic alternating edges at10 Hz. Both edges are essential;
+use one monotonic timer, never allocate or send sync for rejected repeats. A local
+WUI_UseSlot guard prevents recursive synthetic forwarding. Existing test fixtures
+need Condition/TriggerAddCondition boundaries; real gate lifetime/limits are
+executed in test_ui_performance.py. These prove operation counts, not engine FPS.
+
+See RESUME CP56 and diagnostics 20261017-damage-sources-input for source/map
+backups, geometry previews and final build verification. Native source hover,
+smartcast physical behavior and multiplayer need Warcraft testing.
+
+### Resize drift and missing Saber G identity — CP57
+
+DamageStats used an aspect-derived absolute point only in its constructor, so
+it drifted after a Warcraft window resize. Cache WUI_ScreenRight and reanchor
+compact/toggle on the existing .50 clock before checking whether views are open.
+Feed reflows on its existing .25 clock, with its own TEXT-only positions. An
+unchanged viewport must do no frame setters; do not restore native unit-message
+layout or create resize polling triggers/timers. Shared Game Info environment
+icons are now WUI_InfoSourceIcon; stats must not invent alternate generic art.
+
+Saber G's charging loop was started only by EnterBase, while test creation is
+outside base. LvlUpCheck now starts it as well. AlterSaberW_Start must remain
+idempotent per unit, and cleanup must clear that marker. The charged autoattack
+used a W2 damage tag A05F; replace only that proc's tag with A02F, not all W2 hits.
+NextDmg route0/delay .06, raw damage and charge/cooldown remain unchanged. Tests
+run the actual public guard/proc for original/test owners and all passive tiers;
+native game acceptance still requires testing. See RESUME CP57 for build proof.

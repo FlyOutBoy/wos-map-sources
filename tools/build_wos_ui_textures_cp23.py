@@ -16,7 +16,7 @@ INFO_ICONS = ['info-fire', 'info-water', 'info-lightning', 'info-firewater', 'in
               'info-train', 'info-hydrant', 'info-gold', 'info-building', 'info-roundend']
 
 NAMES = ['tooltip-edge', 'menu-row', 'btn-buy', 'btn-sell', 'glyph-history', 'glyph-clear', 'glyph-load',
-         'glyph-repick', 'icon-physdmg', 'icon-magdmg', 'ban-cover', 'glyph-trash', 'glyph-prev', 'glyph-next', 'meter-fill', 'pick-confirm', 'pick-confirm-off', 'pick-random', 'pick-random-off', 'pick-ban', 'pick-ban-off', 'fastbuy-on', 'fastbuy-off', 'fastsell-on', 'fastsell-off', 'icon-attackspeed', 'icon-movespeed', 'icon-range', 'portrait-lock', 'hp-dark', 'mp-dark', 'slider-clean-v', 'slider-clean-h', 'fill-hover-blue', 'skill-chains', 'icon-physpen', 'icon-magpen', 'icon-shieldpen', 'icon-hpregen', 'icon-mpregen', 'vip-frame-bronze', 'vip-frame-silver', 'vip-frame-gold', 'glyph-cols1', 'glyph-cols2', 'glyph-cols3', 'menu-edge', 'menu-edge-button', 'heart'] + INFO_ICONS
+         'glyph-repick', 'icon-physdmg', 'icon-magdmg', 'ban-cover', 'glyph-trash', 'glyph-prev', 'glyph-next', 'meter-fill', 'meter-fill-red', 'pick-confirm', 'pick-confirm-off', 'pick-random', 'pick-random-off', 'pick-ban', 'pick-ban-off', 'fastbuy-on', 'fastbuy-off', 'fastsell-on', 'fastsell-off', 'icon-attackspeed', 'icon-movespeed', 'icon-range', 'portrait-lock', 'hp-dark', 'mp-dark', 'slider-clean-v', 'slider-clean-h', 'fill-hover-blue', 'skill-chains', 'icon-physpen', 'icon-magpen', 'icon-shieldpen', 'icon-hpregen', 'icon-mpregen', 'vip-frame-bronze', 'vip-frame-silver', 'vip-frame-gold', 'glyph-cols1', 'glyph-cols2', 'glyph-cols3', 'menu-edge', 'menu-edge-button', 'heart'] + INFO_ICONS
 
 # Checkpoint 24: gold attribute icons supplied by the author (folder 18).
 STAT_SOURCE = Path(r'C:/Users/Gear/Desktop/Новая папка (18)')
@@ -296,6 +296,14 @@ def meter_fill():
     save(c, 'meter-fill')
 
 
+def meter_fill_red():
+    """Warm crimson second row, with readable ivory digits."""
+    w, h = 256, 32
+    c = Canvas(w, h)
+    c.fill(box(w / 2, h / 2, w / 2, h / 2), lambda x, y: lerp((240, 96, 78), (140, 28, 44), y / h))
+    save(c, 'meter-fill-red')
+
+
 def pick_buttons():
     """Hero pick actions on a graphite plate with a gold bevel: confirm (green
     check on a red box), random (gold die), ban (red circle-slash). *-off =
@@ -455,7 +463,6 @@ def hover_blue():
     w, h = 256, 32
     c = Canvas(w, h)
     c.fill(box(w / 2, h / 2, w / 2, h / 2), lambda x, y: lerp((52, 86, 150), (18, 30, 62), y / h))
-    c.fill(box(w / 2, h / 2, w / 2 - 2, 2.2), (150, 190, 255), alpha=0.25)
     save(c, 'fill-hover-blue')
 
 
@@ -660,6 +667,7 @@ def build():
     fast_toggles()
     pick_buttons()
     meter_fill()
+    meter_fill_red()
     page_glyphs()
     stat_icons()
     ban_cover()

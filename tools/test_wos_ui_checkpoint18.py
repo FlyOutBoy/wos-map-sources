@@ -125,7 +125,7 @@ class AnchoredLayout(unittest.TestCase):
         visible, closed = {}, []
         vm.g['BlzFrameSetVisible'] = lambda f,v: visible.update({f:v})
         vm.run('WUI_RegisterTopControl', ('team-border',))
-        vm.run('WUI_RegisterTopClose', (lambda: closed.append(True),))
+        vm.g['WCS_IsOpen'][0]=True
         vm.run('WUI_ShowTestHelp', (True,))
         vm.run('WUI_CloseTopFor', (0,))
         vm.run('WUI_ShowTopControls', (False,))
@@ -133,7 +133,7 @@ class AnchoredLayout(unittest.TestCase):
         self.assertFalse(visible[vm.g['WUI_TestPanel']])
         self.assertFalse(visible[vm.g['WUI_TestToggle']])
         self.assertFalse(visible['team-border'])
-        self.assertEqual([True], closed)
+        self.assertFalse(vm.g['WCS_IsOpen'][0])
         vm.run('WUI_ShowTopControls', (True,))
         self.assertTrue(visible['team-border'])
 

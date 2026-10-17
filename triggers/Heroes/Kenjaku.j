@@ -1058,7 +1058,7 @@ library KenjakuSpells uses GearSystems
                 set tmp_x = 0.26875 + check * 0.0225
                 set tmp_y = 0.17
                 if frame0_pas1[k2] == null then 
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                 if GetLocalPlayer() == Player(k2) then 
@@ -1071,7 +1071,6 @@ library KenjakuSpells uses GearSystems
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
                 call BlzFrameSetSize(frame0_pas1[k2], 0.0225, 0.0225)
-                call WUI_SimpleBorder(frame0_pas1[k2])
                 else
                  if GetLocalPlayer() == Player(k2) then 
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
@@ -1087,8 +1086,7 @@ library KenjakuSpells uses GearSystems
                 elseif check == 3 then
                     call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Stack3.blp", 0, false)
                 endif
-                call WUI_RegisterBuff(frame0_pas1[k2], null, k2, "KenjakuBarrier:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
             endif            
             if check == 4 then
                 set rmax = KenjakuR_BarrierBase + (KenjakuR_BarrierStep * (GetUnitAbilityLevel(c, KenjakuR_ID) - 1))
@@ -1596,8 +1594,6 @@ library KenjakuSpells uses GearSystems
                 if GetLocalPlayer() == Player(k2) then
                     call BlzFrameSetVisible(frame_pas1[k2], false)
                 endif
-                // The next round start may restart the passive for this unit.
-                call RemoveSavedBoolean(hs, GetHandleId(c), StringHash("KenjakuF Started"))
                 set c = null
                 set m_KenjakuF[i] = m_KenjakuF[ MUI_KenjakuF]
                 set MUI_KenjakuF = MUI_KenjakuF - 1
@@ -1615,7 +1611,6 @@ library KenjakuSpells uses GearSystems
         set m_KenjakuF[ MUI_KenjakuF] = this
         set c = NewC
         call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), 0)
-        call SaveBoolean(hs, GetHandleId(c), StringHash("KenjakuF Started"), true)
         set check = 1
         set check2 = GetUnitTypeId(c)
         set k3 = KenjakuF_BaseStacksAmount
@@ -1632,27 +1627,36 @@ library KenjakuSpells uses GearSystems
         set r2 = KenjakuF_StackTimeReplenish0
         endif
         if frame_pas1[k2] == null then
-            set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+            set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+            call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+            call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+            call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
             call BlzFrameSetVisible(frame_pas1[k2], false)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frame_pas1[k2], true)
             endif
-            set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+            set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+            call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+            call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
             set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+            call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+            call BlzFrameSetScale(frame_pas3[k2], 0.5)
+            call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+            call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
             call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r2)
             call BlzFrameSetValue(frame_pas3[k2], 0)
             set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+            call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+            call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
             call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_F4", 0, false)
             set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+            call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
             call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Curse count:" + I2S(check) + "|r")
+            call BlzFrameSetScale(frame_pas5[k2], 0.9)
             set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+            call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
             call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real, 0, 2) + "|r")
-
-            call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-            call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Kenjaku.j:frame_pas1:" + I2S(k2))
-            call WUI_RefreshDocks()
+            call BlzFrameSetScale(frame_pas6[k2], 0.9)
         else
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1781,24 +1785,33 @@ library KenjakuSpells uses GearSystems
                         call UnitMakeAbilityPermanent(td,true,KenjakuF2_Prison_Abi_ID)
                         call SetUnitPosition(td, GetRectCenterX(gg_rct_Cage), GetRectCenterY(gg_rct_Cage))
                         if frame2_pas1[ k2] == null then
-                            set frame2_pas1[ k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                            set frame2_pas1[ k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                            call BlzFrameSetAbsPoint( frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.525, 0.49)
+                            call BlzFrameSetSize( frame2_pas1[ k2], 0.135, 0.035)
+                            call BlzFrameSetTexture( frame2_pas1[ k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                             call BlzFrameSetVisible( frame2_pas1[ k2], true)
-                            set frame2_pas2[ k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[ k2], "", 0)
-
+                            set frame2_pas2[ k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[ k2], 0, 0)
+                            call BlzFrameSetPoint( frame2_pas2[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0, 0.5)
+                            call BlzFrameSetSize( frame2_pas2[ k2], 0.1, 0.019)
                             set frame2_pas3[ k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[ k2], "", 0)
+                            call BlzFrameSetSize( frame2_pas3[ k2], 0.1, 0.035)
+                            call BlzFrameSetScale( frame2_pas3[ k2], 0.5)
+                            call BlzFrameSetModel( frame2_pas3[ k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                            call BlzFrameSetPoint( frame2_pas3[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, -0.015, 0)
                             call BlzFrameSetMinMaxValue( frame2_pas3[ k2], 0, rmax)
                             call BlzFrameSetValue( frame2_pas3[ k2], rmax )
                             set frame2_pas4[ k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[ k2], "", 0)
-
+                            call BlzFrameSetPoint( frame2_pas4[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, -0.048, 0)
+                            call BlzFrameSetSize( frame2_pas4[ k2], 0.0275, 0.0275)
                             call BlzFrameSetTexture( frame2_pas4[ k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_F3", 0, false)
                             set frame2_pas5[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)
+                            call BlzFrameSetPoint( frame2_pas5[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.0175, 0.01)
                             call BlzFrameSetText( frame2_pas5[ k2], "|c00FFFF00" + "Prison Realm:" + "|r")
+                            call BlzFrameSetScale( frame2_pas5[ k2], 0.9)
                             set frame2_pas6[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)
+                            call BlzFrameSetPoint( frame2_pas6[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.0175, -0.005)
                             call BlzFrameSetText( frame2_pas6[ k2], "|c00FFFF00" + R2SW(rmax , 0, 2) + "|r")
-
-                            call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
-                            call WUI_RegisterPublicMeter(frame2_pas1[k2], "Heroes/Kenjaku.j:frame2_pas1:" + I2S(k2))
-                            call WUI_RefreshDocks()
+                            call BlzFrameSetScale( frame2_pas6[ k2], 0.9)
                         else
                             call BlzFrameSetVisible( frame2_pas1[ k2], true)
                             call BlzFrameSetMinMaxValue( frame2_pas3[ k2], 0, rmax)

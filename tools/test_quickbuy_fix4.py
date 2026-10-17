@@ -130,12 +130,18 @@ class Fix4(unittest.TestCase):
   g=self.vm.g;paint=[];g.update(WUI_TEXT='',GetLocalPlayer=lambda:0,ShopPricePlateWidth=lambda _: .02,ShopGetItemTooltipWidth=lambda _: .15,ConvertBTNtoDISBTN=lambda x:x,BlzFrameSetText=lambda *a:paint.append(a),BlzFrameSetSize=lambda *_:None,BlzFrameSetVisible=lambda *_:None,BlzFrameSetTexture=lambda *_:None,BlzFrameSetEnable=lambda *_:None)
   for name in ['FRAME_ShopItemCost','FRAME_ShopItemName','FRAME_ShopItemTooltipText','FRAME_ShopItemTooltipBox','FRAME_ShopItemBack','FRAME_ShopItemPricePlate','FRAME_ShopItem']:g[name]=defaultdict(lambda:name)
   g['QB_SetAddFrame']=lambda *_:None;self.vm.run('ShopRenderCatalogueSlot',(0,3,False,0));paint.clear();self.units[0]['inv'][0]=1;self.vm.run('ShopRenderCatalogueSlot',(0,3,False,0));self.assertTrue(any('250' in str(x[1]) for x in paint))
- def test_drop_indicator_uses_right_or_left_edge_of_target(self):
-  g=self.vm.g;moves=[];g.update(WUI_Place=lambda *a:moves.append(a),QB_DragLight='drag',QB_DropLine='drop',QB_Page=0,QB_ViewCount=15,QB_Columns=5,QB_Left=.665,QB_Width=.245,QB_Size=.036,QB_DragFrom=1,QB_DragTo=3)
-  self.vm.run('QB_DragPreview');self.assertEqual(moves[-1][0],'drop');self.assertAlmostEqual(moves[-1][1],self.vm.run('QB_SlotX',(3,))+.036*.55+self.vm.run('Shop_Shift'))
-  g['QB_DragFrom']=3;g['QB_DragTo']=1;self.vm.run('QB_DragPreview');self.assertAlmostEqual(moves[-1][1],self.vm.run('QB_SlotX',(1,))-.036*.55+self.vm.run('Shop_Shift'))
+ def test_drop_pointers_surround_target_in_both_directions(self):
+  g=self.vm.g;moves=[];visible={};g.update(WUI_Place=lambda *a:moves.append(a),BlzFrameSetVisible=lambda f,v:visible.update({f:v}),QB_DragLight='drag',QB_DropLine='drop',QB_Page=0,QB_ViewCount=15,QB_Columns=5,QB_Left=.665,QB_Width=.245,QB_Size=.036,QB_DragFrom=1,QB_DragTo=3)
+  for i in range(4):g['QB_DragArrow'][i]='arrow'+str(i)
+  for start,dest in [(1,3),(3,1)]:
+   g.update(QB_DragFrom=start,QB_DragTo=dest);moves.clear();self.vm.run('QB_DragPreview')
+   x=self.vm.run('QB_SlotX',(dest,))+self.vm.run('Shop_Shift');y=self.vm.run('QB_SlotY',(dest,))
+   arrows={v[0]:v[1:3] for v in moves[1:]}
+   self.assertAlmostEqual(x-.036*.64,arrows['arrow0'][0]);self.assertAlmostEqual(x+.036*.64,arrows['arrow1'][0])
+   self.assertAlmostEqual(y-.036*.64,arrows['arrow2'][1]);self.assertAlmostEqual(y+.036*.64,arrows['arrow3'][1])
+   self.assertTrue(all(visible['arrow'+str(i)] for i in range(4)))
  def test_right_drag_commits_once_and_left_drag_is_ignored(self):
-  self.goals([1,2,6]);g=self.vm.g;pos=[.6895,.270];pressed=[False]
+  self.goals([1,2,6]);g=self.vm.g;pos=[.6895,.312];pressed=[False]
   g.update(QB_Left=.665,QB_Width=.245,QB_Columns=5,QB_Size=.036,QB_ViewCount=15,QB_Page=0,WUI_TopShown=lambda:True,WUI_ScreenRight=lambda:.790,BlzGetMouseScreenPosX=lambda:pos[0],BlzGetMouseScreenPosY=lambda:pos[1],BlzPixelToFrameX=lambda x:x,BlzPixelToFrameY=lambda y:y,MOUSE_BUTTON_TYPE_RIGHT='right',BlzIsMouseButtonPressed=lambda k:pressed[0],QB_DragRender=lambda:None,BlzFrameSetVisible=lambda *_:None)
   g['Shop_Active'][0]=True;self.vm.run('QB_CheckDrag');self.assertFalse(self.messages)
   pressed[0]=True;self.vm.run('QB_CheckDrag');self.assertEqual(g['QB_DragFrom'],0)

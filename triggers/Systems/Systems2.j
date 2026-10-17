@@ -1,4 +1,4 @@
-library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox, WOSUI
+library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox
 globals
     framehandle array FrameCD_Icon
     framehandle array FrameCD_Cooldown
@@ -2189,22 +2189,6 @@ endif
             endloop
         endmethod
 
-        // Strongest active heal reduction on the unit (0..1); read-only.
-        public static method HealCut takes unit u returns real
-            local integer i = 0
-            local real cut = 0.00
-            local thistype this
-            loop
-                exitwhen i > MUI_13
-                set this = m_13[i]
-                if c == u and 1.00 - r5 > cut then
-                    set cut = 1.00 - r5
-                endif
-                set i = i + 1
-            endloop
-            return cut
-        endmethod
-
         public static method BlockHpRegen_Start takes unit NewC, real NewR, real NewBlockHeal returns nothing
             local thistype this = thistype.create()
             set MUI_13 = MUI_13 + 1
@@ -2233,7 +2217,6 @@ endif
         integer check2
         integer k
         unit c
-        integer uiTimeKey
 
         public static method Loop_RemoveAbility takes nothing returns nothing
             local thistype this
@@ -2256,13 +2239,7 @@ endif
                     else
                      set r = r + 0.1
                     endif
-                    if uiTimeKey != 0 then
-                        call SaveReal(hs, GetHandleId(c), uiTimeKey, RMaxBJ(0.0, rmax - r))
-                    endif
                 else
-                    if uiTimeKey != 0 then
-                        call RemoveSavedReal(hs, GetHandleId(c), uiTimeKey)
-                    endif
                     if k == 0 then
                     if id == 'A07Q' then 
                     if GetUnitAbilityLevel(c,'A01W')>0  then 
@@ -2305,11 +2282,6 @@ endif
             set id = NewId
             set k = NewAdd_or_delete
             set rmax = NewRmax
-            set uiTimeKey = 0
-            if LoadBoolean(hs, GetHandleId(c), StringHash("watch ability time " + I2S(id))) then
-                set uiTimeKey = StringHash("ability time " + I2S(id))
-                call SaveReal(hs, GetHandleId(c), uiTimeKey, rmax)
-            endif
             set b = false
             set b2= true 
             set check2 = GetUnitAbilityLevel(c, id)
@@ -3122,6 +3094,113 @@ else
 
     endstruct
 
+    private struct KS_FakeCooldown
+        private static integer array m_25
+        private static integer MUI_25 = -1
+        real r
+        boolean b
+        real r4
+        real rmax
+        integer check
+        integer check2
+        integer k2
+        integer k3
+        integer count
+        unit c
+
+         public static method Loop_NextFakeCD takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            loop
+                exitwhen i > MUI_25
+                set this = m_25[i]
+                if check2 != 0 then 
+                set b = LoadInteger(hs,GetHandleId(c),check2) != k2
+                else
+                set b = true
+                endif
+                if r < rmax and BlzGetUnitAbilityCooldownRemaining(c,k3)>0 and b and GetUnitAbilityLevel(c,k3)>0 then
+                    set r = RoundReal(r + 0.05, 3)
+                else                
+                if check2 != 0 then 
+                call SaveInteger(hs,GetHandleId(c),check2,k2)
+                if LoadInteger(hs,GetHandleId(c),StringHash("pas cd")) == 0 then 
+                endif
+                endif             
+                   if check == InoriE_ID and LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+                   
+                   elseif check == AlterSaberW_ID and LoadInteger(hs, GetHandleId(c), StringHash("mode r")) == 1 then
+                  
+                  else
+                  // decrement counter
+call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) - 1)
+
+// only remove FakeAbi if no other instance is using it
+if LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) <= 0 then
+    call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), 0)
+    call UnitRemoveAbility(c, k3)
+    call SetPlayerAbilityAvailable(GetOwningPlayer(c), check, true)
+else
+    // another instance still running, just restore this ability
+    //call SetPlayerAbilityAvailable(GetOwningPlayer(c), check, true)
+endif
+                      endif
+                      set c = null
+                        set m_25[i] = m_25[MUI_25]
+                        set MUI_25 = MUI_25 - 1
+                        if MUI_25 == -1 then
+                            call GearTimer05Release()
+                        endif
+                        call destroy()
+                    set i = i - 1
+                    endif
+                set i = i + 1
+            endloop
+        endmethod   
+
+        public static method FakeCD_Start1 takes unit NewC,integer NewAbi,real NewCd, integer NewStringHash, integer NewValue returns nothing
+            local thistype this = thistype.create()
+            set MUI_25 = MUI_25 + 1
+            set m_25[MUI_25] = this
+            set c = NewC
+           //  if GetUnitAbilityLevel(NewC, FakeAbi_ID) > 0 then
+           // set k3 = FakeAbi2_ID
+       // else
+            set k3 = FakeAbi_ID
+          //  endif
+            set rmax = NewCd
+            set r = 0.05
+            set b = true
+            set check2 = NewStringHash
+            set k2 = NewValue
+            set r4 = NewCd
+            set check = NewAbi
+            // In FakeCD_Start1, before adding FakeAbi:
+call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) + 1)
+if LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) == 1 then
+call UnitAddAbility(NewC, k3)
+endif
+// ... rest of setup
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c),check,false)
+            if GetLocalPlayer() == GetOwningPlayer(c) then
+            call BlzSetAbilityPosX(k3,BlzGetAbilityPosX(check))
+            call BlzSetAbilityPosY(k3,BlzGetAbilityPosY(check))
+            call BlzSetAbilityIcon(k3, BlzGetAbilityIcon(check))
+            call BlzSetAbilityTooltip(k3,BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, check), ABILITY_SLF_TOOLTIP_NORMAL, GetUnitAbilityLevel(c,check)-1),0)
+            call BlzSetAbilityExtendedTooltip(k3,BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, check), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, GetUnitAbilityLevel(c,check)-1),0)
+            endif
+            if  HasCachedItem(c,'I011')>0 and  BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+             call BlzStartUnitAbilityCooldown(c,k3,r4*(1-OkarunEggReduceCD/100))
+            else
+             call BlzStartUnitAbilityCooldown(c,k3,r4)
+            endif
+            if MUI_25 == 0 then
+                call GearTimer05Acquire()
+            endif
+        endmethod
+
+    endstruct
+
     private struct KS_EffectHeight
         private static integer array m_26
         private static integer MUI_26 = -1
@@ -3371,7 +3450,7 @@ else
             set tmp_x = 0.26875 +(0.0265*k3) //* 0.0225
                 set tmp_y = 0.17
                 if frame0_pas1[k2] == null then 
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                 if GetLocalPlayer() == Player(k) then 
@@ -3383,15 +3462,14 @@ else
                 call BlzFrameClearAllPoints(frame0_pas3[k2])
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
-                call BlzFrameSetSize(frame0_pas1[k2], 0.0264, 0.0264)
-                call WUI_SimpleBorder(frame0_pas1[k2])
-                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", WUI_GetRoot(), "", 0)
+                call BlzFrameSetSize(frame0_pas1[k2], 0.025, 0.025)
+                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_TOP, frame0_pas1[k2], FRAMEPOINT_BOTTOM, 0, -0.005)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_BOTTOMLEFT,frame0_pas1[k2],FRAMEPOINT_BOTTOMLEFT, tmp_x-0.0265, tmp_y-0.335)
                 
-                call BlzFrameSetScale(frame0_pas4[k2], 0.66)
-                call BlzFrameSetSize(frame0_pas4[k2], 0.025, 0.010)
-                call BlzFrameSetTextAlignment(frame0_pas4[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+                call BlzFrameSetAbsPoint(frame0_pas4[k2], FRAMEPOINT_CENTER, tmp_x+0.0925, tmp_y-0.075)
+                call BlzFrameSetScale(frame0_pas4[k2], 1)
+                call BlzFrameSetSize(frame0_pas4[k2], 0.2, 0.2)
                  call BlzFrameSetVisible(frame0_pas4[k2],false)
                 if GetLocalPlayer() == Player(k) then 
                     call BlzFrameSetVisible(frame0_pas4[k2],true)
@@ -3406,6 +3484,7 @@ else
                 call BlzFrameSetValue(frame0_pas2[k2], 100)
                 call BlzFrameSetValue(frame0_pas3[k2], 0)
                 call BlzFrameSetText(frame0_pas4[k2], "" + R2SW(rmax,0,1) + "|r")
+                call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
                 call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\"+s+".blp", 0, false)
                 call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DIS"+s+".blp", 0, false)
                 
@@ -3413,8 +3492,6 @@ else
                     call BlzFrameSetEnable(frame0_pas2[k2],false)
                     call BlzFrameSetEnable(frame0_pas3[k2],false)
                     call BlzFrameSetEnable(frame0_pas4[k2],false)
-                call WUI_RegisterBuff(frame0_pas1[k2], frame0_pas4[k2], k, "GearBuff:" + I2S(k2))
-                call WUI_RefreshDocks()
                 set r = 0
             if MUI_28 == 0 then
                 call GearTimer10Acquire()
@@ -4109,7 +4186,7 @@ endmethod
     // Backward-compatible Bambietta wrapper. Hero-specific IDs stay outside
     // KS_SpellStacks, so the structure itself remains reusable.
     function MySpellStacks takes unit c, integer stack_amount, real rechargeTime returns nothing
-        call KS_SpellStacks.MyAddSpellStacks_Start(c, BambiettaG_ID, BambiettaG_ID, stack_amount, rechargeTime)
+        call KS_SpellStacks.MyAddSpellStacks_Start(c, BambiettaG_ID, FakeAbi_ID, stack_amount, rechargeTime)
     endfunction
 
     // Generic entry point for every other hero.
@@ -4300,39 +4377,6 @@ endfunction
     // щитов обычные резисты применятся ниже по цепочке, для поздних уже учтены.
     return shieldDmg * pierce / 100.0
 endfunction
-    // Stats panel preview of LustSin: same sources, but no minimum damage, no
-    // charge / cooldown use and no effects; partial piercing is counted.
-    function GetShieldPiercePreview takes unit c returns real
-    local real pierce = 0.0
-    local integer itemSlot
-    if c == null then
-        return 0.0
-    endif
-    if GetUnitTypeId(c) == Frieren_ID or GetUnitTypeId(c) == FrierenTR_unitid then
-        set pierce = pierce + FrierenTF_PierceShield
-    endif
-    if GetUnitAbilityLevel(c, 'B01R') > 0 then
-        set pierce = pierce + WrathSin_IgnoreAmountAdd
-    endif
-    if LoadInteger(hs, GetHandleId(c), StringHash("toji q3")) > 0 then
-        set pierce = pierce + 100.0
-    endif
-    if HasCachedItem(c, 'I02E') > 0 then
-        set pierce = pierce + WrathSin_IgnoreAmount
-    elseif HasCachedItem(c, 'I02D') > 0 then
-        set pierce = pierce + EnvySin_IgnoreAmount
-    endif
-    if pierce < 100.0 and GetUnitAbilityLevel(c, 'A07O') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A07O') == 0.0 then
-        set itemSlot = IsItemInInventory3(c, 'I01W')
-        if itemSlot < 0 or GetItemCharges(UnitItemInSlot(c, itemSlot)) > 0 then
-            set pierce = pierce + LustSin_IgnoreAmount
-        endif
-    endif
-    if pierce > 100.0 then
-        set pierce = 100.0
-    endif
-    return pierce
-    endfunction
 
 function DamageShieldAllowsType takes integer typedmg, integer allowedType returns boolean
     if allowedType == DAMAGE_SHIELD_TYPE_ALL then
@@ -4378,13 +4422,8 @@ endfunction
     function MyAnimDest takes destructable ds, real r returns nothing
         call KS_RemoveDestructable.MyRemoveDest_Start(ds, r, 1, -1, -1, "")
     endfunction
-    // Passive cooldown on the ability itself (Aexh copies of Patriot G); returns the started time.
-    function PassiveCD_Start takes unit c, integer abi, real cd returns real
-        if HasCachedItem(c, 'I011') > 0 and BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
-            set cd = cd * (1 - OkarunEggReduceCD / 100)
-        endif
-        call BlzStartUnitAbilityCooldown(c, abi, cd)
-        return cd
+    function FakeCD_Start takes unit NewC,integer NewAbi,real NewCD, integer New_Sh, integer New_Value returns nothing
+        call KS_FakeCooldown.FakeCD_Start1(NewC,NewAbi,NewCD,New_Sh,New_Value)
     endfunction
     function CD_Start takes unit NewC, real NewRmax,integer NewAbi,real NewCD returns nothing
         call KS_Cooldown.CD_Start(NewC,NewRmax,NewAbi,NewCD)
@@ -4436,23 +4475,8 @@ endfunction
     function MyRemoveAbility takes unit c, real r, integer id, integer add_or_delete returns nothing
         call KS_RemoveAbility.RemoveAbility_Start(c, r, id, add_or_delete)
     endfunction
-
-    // Opt-in tracking uses the actual remover's clock, including early removal.
-    function GearWatchAbilityTime takes unit u, integer id returns nothing
-        call SaveBoolean(hs, GetHandleId(u), StringHash("watch ability time " + I2S(id)), true)
-    endfunction
-
-    function GearAbilityTimeRemaining takes unit u, integer id returns real
-        if GetUnitAbilityLevel(u, id) == 0 then
-            return 0.0
-        endif
-        return LoadReal(hs, GetHandleId(u), StringHash("ability time " + I2S(id)))
-    endfunction
     function MyRemoveAbility2 takes unit c,  integer id, integer add_or_delete, integer abilitycheckid returns nothing
         call KS_RemoveAbility2.RemoveAbility_Start(c, id, add_or_delete,abilitycheckid)
-    endfunction
-    function GetHealCut takes unit u returns real
-        return KS_BlockRegen.HealCut(u)
     endfunction
     function BlockRegen takes unit c, real rmax, real blockheal returns nothing
         call KS_BlockRegen.BlockHpRegen_Start(c, rmax, blockheal)
@@ -4848,6 +4872,7 @@ private function GearTimer05Loop takes nothing returns nothing
     call KS_HealOverTime.Loop_HpS()
     call KS_TextTagDelay.Loop_TT_DELAY()
     call KS_Cooldown.Loop_NextCD()
+    call KS_FakeCooldown.Loop_NextFakeCD()
     call KS_ItemStacks.Loop_AddStacks()
     call KS_SpellStacks.Loop_AddSpellStacks()
 endfunction

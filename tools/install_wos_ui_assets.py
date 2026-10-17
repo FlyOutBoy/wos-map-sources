@@ -38,6 +38,11 @@ ASSET_NAMES.update(CP23_NAMES)
 # Escape-menu hover: transparent margins match the engine's oversized highlight frame.
 ASSET_NAMES.update(['minimap-terrain', 'minimap-hide-off', 'minimap-hide-on', 'info-panel-hide-off', 'info-panel-hide-on', 'minimap-background-black', 'minimap-frame-tl', 'minimap-frame-tr', 'minimap-frame-bl', 'minimap-frame-br', 'minimap-frame-top', 'minimap-frame-bottom', 'minimap-frame-left', 'minimap-frame-right'])
 ASSET_NAMES.add('esc-hover')
+from build_wos_drag_arrows import NAMES as DRAG_ARROW_NAMES
+ASSET_NAMES.update(DRAG_ARROW_NAMES)
+from build_damage_stats_assets import NAMES as DAMAGE_FILL_NAMES
+ASSET_NAMES.update(DAMAGE_FILL_NAMES)
+ASSET_NAMES.update(['invis-label', 'vote-ff', 'vote-kick', 'wos-app-link', 'help-arrow-up', 'help-arrow-down', 'cast-range-red'])
 ASSET_NAMES.update(f'pick-{kind}-wide{state}' for kind in ('confirm', 'random') for state in ('', '-off'))
 ASSET_NAMES.add('slider-track-h')  # rotated camera slider track (music sliders)
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
@@ -45,7 +50,8 @@ FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf',
 BLANK_TEXTURE = r'UI\Widgets\EscMenu\Human\blank-background.blp'
 EMPTY_ICON = r'UI\WOS\empty.tga'
 SKIN_VALUES = {f'ConsoleTexture{i:02}': BLANK_TEXTURE for i in range(1, 7)}
-SKIN_VALUES.update(ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overlay=BLANK_TEXTURE,
+SKIN_VALUES.update(PlacementCursor=r'UI\WOS\cast-range-red.tga',
+                   ConsoleTexture05Overlay=BLANK_TEXTURE, ConsoleTexture06Overlay=BLANK_TEXTURE,
                    ConsoleInventoryCoverTexture=BLANK_TEXTURE,
                    # Checkpoint 27e: resource bar stays visible for /fps /ping; its icons are transparent.
                    GoldIcon=EMPTY_ICON, LumberIcon=EMPTY_ICON, SupplyIcon=EMPTY_ICON, UpkeepIcon=EMPTY_ICON,

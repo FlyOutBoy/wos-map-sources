@@ -152,7 +152,8 @@ class ScoreboardKeys(unittest.TestCase):
     def test_keyboard_source_ignores_last_clicked_frame_and_does_not_reset_focus(self):
         s=(ROOT/'triggers/WOS_Start/Scoreboard.j').read_text(encoding='utf-8-sig')
         if 'if GetTriggeringTrigger() == WOS_STATS_DataKeys then' not in s:s=statistics_keys(s)
-        vm=JassState(s);key=['F3'];focus=[]
+        vm=JassState(s.replace('static if LIBRARY_DamageStats then','if LIBRARY_DamageStats then'));key=['F3'];focus=[]
+        vm.g['LIBRARY_DamageStats']=False
         g=vm.g
         for n in ('PlayerDamageTakenMag','PlayerDamageTakenPhys','PlayerDamagePhys','PlayerDamageMag','PlayerHeal'):
             g[n]={0:42};g[n+'All']={0:100}
@@ -191,17 +192,12 @@ class HeroRequirements(unittest.TestCase):
         availability(final,False);availability(skip,True)
         f.refresh();self.assertEqual(g['AHUI_CurrentAbility'][6],skip)
 
-    def test_harribel_morph_meter_keeps_shared_geometry_on_create_and_reuse(self):
+    def test_harribel_morph_meter_uses_shared_progress_and_spell_clock(self):
         s=(ROOT/'triggers/Heroes/Harribel.j').read_text(encoding='utf-8-sig')
-        if 'BlzFrameSetAbsPoint(frame2_pas1[k2]' in s:s=harribel_meter(s)
-        begin=s.index('if frame2_pas1[k2] == null then')
-        end=s.index('StringHash("morph e"), 1)',begin)
-        body=s[begin:end]
-        self.assertIn('call WUI_HeroMeter(',body)
-        self.assertIn('call WUI_RegisterMeter(',body)
-        self.assertNotRegex(body,r'BlzFrameSetAbsPoint\(frame2_pas')
-        # Refresh must also be outside the creation-only branch for reuse.
-        self.assertRegex(body,r'endif\s+call WUI_RefreshDocks\(\)\s+call SaveInteger')
+        self.assertNotIn('WUI_HeroMeter(',s)
+        self.assertNotIn('frame2_pas1',s)
+        self.assertRegex(s,r'WUI_HeroProgress\(c, HarribelE_ID, "[^"]+", rmax - r, rmax, true\)')
+        self.assertIn('SH_MORPH_E, 1)',s)
 
     def test_cambio_disabled_until_real_counter_reaches_threshold(self):
         s=(ROOT/'triggers/WOS_Start/ShowCD.j').read_text(encoding='utf-8-sig')

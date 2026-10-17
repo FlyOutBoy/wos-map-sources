@@ -18,6 +18,8 @@ class AllyAbilityUI(unittest.TestCase):
         self.reads = []
         g = self.vm.g
         g.update({'AR_Cancel':lambda *_:None,'AR_Hide':lambda *_:None,'AR_Request':lambda *_:None,'AR_Render':lambda *_:None,'AR_Reconcile':lambda:None,'WUI_RangePreviewBlocked':lambda:False,'WUI_RangeNativeSlotVisible':lambda *_:False})
+        g.update(AHUI_SelGroup=[],AHUI_MultiShown=False)
+        g.setdefault('AHUI_DeselectPending', __import__('collections').defaultdict(bool))
         g.setdefault('WUI_ReleaseClickFocus', lambda: None)  # Shared button owner, checked by test_wos_ui_focus.
         wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
         g['WUI_ICON_SIZE'] = float(re.search(r'WUI_ICON_SIZE = ([0-9.]+)', wui)[1])
@@ -125,6 +127,7 @@ class AllyAbilityUI(unittest.TestCase):
     def test_enemy_selection_and_hover_show_descriptions_without_cooldown_reads(self):
         self.allies.clear()
         self.vm.g.update(GetTriggerUnit=lambda:self.c,GetTriggerPlayer=lambda:0)
+        self.vm.g['AHUI_SelectedHero'][0]=None  # A new selection (re-selecting the same hero rebuilds nothing).
         self.vm.run('AHUI_OnSelect')
         self.assertIs(self.c,self.vm.g['AHUI_SelectedHero'][0])
         self.assertFalse(self.reads)
@@ -231,11 +234,11 @@ class AllyAbilityUI(unittest.TestCase):
         self.refresh()
         self.assertFalse(self.reads, 'Own commands use the native cooldown renderer')
         for slot in range(7):
-            # W has its preview; native F/G keep only the stock hotkey letter.
+            # W has its preview; native F/G get the WOS key badge over the stock button.
             self.assertEqual(slot == 1 or slot >= 5, bool(self.value('AHUI_Root',slot,'visible')))
             if slot >= 5:
                 self.assertFalse(self.value('AHUI_Icon',slot,'visible'))
-                self.assertFalse(self.value('AHUI_KeyText',slot,'visible'))
+                self.assertTrue(self.value('AHUI_KeyText',slot,'visible'))
         self.assertFalse(self.frames[('native',1),'visible'])
         self.assertTrue(self.value('AHUI_CooldownFill',1,'visible'))
         self.assertEqual('DISBTN'+self.vm.g['CrocodileW_ID'],self.value('AHUI_CooldownFill',1,'texture'))

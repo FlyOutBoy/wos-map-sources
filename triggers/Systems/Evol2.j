@@ -3,7 +3,7 @@ function Trig_Evol2_Actions takes nothing returns nothing
   local integer k = LoadInteger(hs,GetHandleId(Player(i)),StringHash("nevi sound"))
   local integer id = GetUnitTypeId(Hero[i])
   if TestMode == true then 
-if id == Rimuru_ID and  LoadInteger(hs, GetHandleId(Hero[i]), StringHash("evol kill")) <= RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(Hero[i]),StringHash("rimuru evol 2")) == 0 and LoadInteger(hs,GetHandleId(Hero[i]),StringHash("rimuru evol 1")) == 1 then 
+if id == Rimuru_ID and  LoadInteger(hs, GetHandleId(Hero[i]), StringHash("evol kill")) <= RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(Hero[i]),StringHash("rimuru evol 2")) == 0 then 
 call SaveInteger(hs,GetHandleId(Hero[i]),StringHash("rimuru evol 2"),1)
 call RimuruEvol2_Start(Hero[i],false)
             call BlzFrameSetText(frameRimuru2_pas6[i], "|c00FFFF00" + I2S(RimuruEvol2_Counter)+"/" + I2S(RimuruEvol2_Counter) + "|r")

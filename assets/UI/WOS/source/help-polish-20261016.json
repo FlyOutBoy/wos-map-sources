@@ -1,0 +1,37 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "assets/AbilityRange/war3mapImported/WOSRange/wos_tx-tsqyuanxing2_0.blp (PNG conversion)",
+  "asset": "UI/WOS/cast-range-red.tga",
+  "source": "assets\\UI\\WOS\\source\\cast-range-red-soft-20261016.png",
+  "prompts": [
+    "EDIT the provided existing 512x512 white Warcraft III range indicator. Preserve the original geometry EXACTLY: a mathematically round circle touching all four canvas edges, a hairline rim, very smooth subtle inward fade, clear transparent middle. Change ONLY white/grey to dark desaturated red, and make the rim fainter, then add a tiny red + at the EXACT centre with a slight soft red centre glow. The original has the CORRECT faint diffuse glow towards the inside: KEEP it. No thick ring, no opaque red band, no hard glowing outline, no extra circles. Do not redraw the circle, do not inset its radius or change size. Preserve transparency. We want the SAME original delicate ghostlike disk texture, tinted faintly red with a small centre cross, NOT a bright red donut.",
+    "Background extraction / alpha correction of the supplied game decal. Keep the exact thin red circular outline, soft faint inward haze, small red plus sign at the exact centre and centre glow. Remove ALL black and near-black background INSIDE and OUTSIDE the circle to genuine transparency, including the interior of the disc. Absolutely NO black filled disc. Red haze must be represented by low alpha (roughly 5 to 10 percent), not opaque dark RGB. Circle outline should have about 30 percent alpha, centre plus about 65 percent alpha. Preserve thin circular geometry touching all four canvas edges and the tiny centre cross. Final RGBA texture must let terrain show through its entire inside, except only the faint thin rim, haze and tiny cross. Do not thicken the ring or add any other shapes."
+  ],
+  "packaging": "RGBA resize to512x512 / uncompressed32bit TGA; generated alpha preserved",
+  "qa": {
+    "size": [
+      512,
+      512
+    ],
+    "old_mean_peak_rim_alpha": 221.15277777777777,
+    "new_mean_peak_rim_alpha": 166.52777777777777,
+    "centre_rgba": [
+      243,
+      33,
+      33,
+      114
+    ],
+    "clear_interior_rgba": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "inward_haze_rgba": [
+      234,
+      40,
+      40,
+      25
+    ]
+  }
+}

@@ -33,7 +33,6 @@ globals
     timer FrameCapTimer = CreateTimer()
     timer FrameCapTimer2 = CreateTimer()
     boolean PlayerPickUICreated = false
-    hashtable WOS_CaptainFramed = InitHashtable()
     framehandle Frame_Cap1_MAIN
     framehandle Frame_Cap1_1
     framehandle Frame_Cap1_2
@@ -121,10 +120,10 @@ function RearrangeTeamUI takes nothing returns nothing
     local integer slot = 0
     // Те же шаг и крайние позиции, что у обычной компактной панели heroicon.
     local real r = 0.030
-    // Same columns and row as CreateStatusHeroUI (left -.196, right +.076, y .006).
-    local real xBase1 = -0.196
-    local real xBase2 = -0.074
-    local real y = 0.006
+    local real xBase1 = -0.188
+    // При slot = 5 первая иконка правой команды получает X = 0.068.
+    local real xBase2 = -0.082
+    local real y = 0.0
     local real xpos = 0.0
     local real rkek3 = 1.0 // Р РЋРІР‚С™Р В Р’В°Р В РЎвЂќР В РЎвЂўР В Р’Вµ Р В Р’В¶Р В Р’Вµ Р В Р’В·Р В Р вЂ¦Р В Р’В°Р РЋРІР‚РЋР В Р’ВµР В Р вЂ¦Р В РЎвЂР В Р’Вµ Р В РЎвЂќР В Р’В°Р В РЎвЂќ Р В Р вЂ  CreateStatusHeroUI
 
@@ -502,8 +501,11 @@ function CapOnPlayerClick takes nothing returns nothing
     if not IsCaptainModeEligiblePlayer(pid) or pid != GetCurrentCaptainPid() then
         set p = null
         set clicked = null
-        call WUI_ReleaseClickFocus()
         return
+    endif
+    if GetLocalPlayer() == p then
+        call BlzFrameSetEnable(clicked, false)
+        call BlzFrameSetEnable(clicked, true)
     endif
     loop
         exitwhen i == 10
@@ -531,7 +533,6 @@ function CapOnPlayerClick takes nothing returns nothing
     endloop
     set p = null
     set clicked = null
-    call WUI_ReleaseClickFocus()
 endfunction
 
 function PlayerUpdateIcon takes nothing returns nothing
@@ -598,148 +599,6 @@ function PlayerUpdateIcon takes nothing returns nothing
     endloop
 endfunction
 
-// Reposition the existing vote/team-pick handles, never allocate a second picker.
-// Checkpoint 22: compact windows, rows aligned one under another, captain
-// slots labelled with a crown, vote counts as small corner badges, gold icon
-// frames. Every text is anchored ONCE here; later code only changes its text
-// (the old extra SetPoint calls made the names drift away from their icons).
-function WOS_CaptainSlot takes framehandle control, framehandle label, real x, real y, real size returns nothing
-    local framehandle edge
-    call WUI_Place(control, x, y, size, size)
-    if label != null then
-        call BlzFrameClearAllPoints(label)
-        call BlzFrameSetAbsPoint(label, FRAMEPOINT_TOP, x, y - size * 0.5 - 0.0015)
-        call BlzFrameSetSize(label, 0.046 / 0.55, 0.024 / 0.55)
-        call BlzFrameSetTextAlignment(label, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetScale(label, 0.55)
-    endif
-    if control != null and not LoadBoolean(WOS_CaptainFramed, GetHandleId(control), 0) then
-        call SaveBoolean(WOS_CaptainFramed, GetHandleId(control), 0, true)
-        set edge = WUI_IconFrame(control, WUI_ICON_FRAME)
-        call BlzFrameSetLevel(edge, 4)
-    endif
-    set edge = null
-endfunction
-
-// Vote counter. Checkpoint 26: the digit covers the whole icon.
-function WOS_CaptainVoteBadge takes framehandle badge, framehandle control returns nothing
-    if badge != null and control != null then
-        call BlzFrameClearAllPoints(badge)
-        call BlzFrameSetPoint(badge, FRAMEPOINT_TOPLEFT, control, FRAMEPOINT_TOPLEFT, 0.0025, -0.0025)
-        call BlzFrameSetPoint(badge, FRAMEPOINT_BOTTOMRIGHT, control, FRAMEPOINT_BOTTOMRIGHT, -0.0025, 0.0025)
-        call BlzFrameSetLevel(badge, 6)
-    endif
-endfunction
-
-function WOS_CaptainCaption takes framehandle text, real x, real y, real width, real scale, string value returns nothing
-    call BlzFrameClearAllPoints(text)
-    call BlzFrameSetAbsPoint(text, FRAMEPOINT_CENTER, x, y)
-    call BlzFrameSetSize(text, width / scale, 0.014 / scale)
-    call BlzFrameSetScale(text, scale)
-    call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetEnable(text, false)
-    if value != "" then
-        call BlzFrameSetText(text, value)
-    endif
-endfunction
-
-function WOS_CaptainCrown takes framehandle parent, real x, real y returns nothing
-    local framehandle crown = BlzCreateFrameByType("BACKDROP", "WOSCaptainCrown", parent, "", 0)
-    call WUI_Place(crown, x, y, 0.010, 0.010)
-    call BlzFrameSetTexture(crown, "UI\\WOS\\glyph-crown.tga", 0, true)
-    call BlzFrameSetEnable(crown, false)
-    call BlzFrameSetLevel(crown, 6)
-    set crown = null
-endfunction
-
-function WOS_LayoutCaptainVote takes boolean teamSelection returns nothing
-    local integer i = 0
-    local integer k = 0
-    local real x
-    local real y
-    local framehandle part
-    if teamSelection then
-        // Team draft: title | 8 free players (2 x 4) | divider | TEAM 1 row |
-        // TEAM 2 row. Captain first in each team row, picks to its right.
-        call WUI_Place(Frame_Cap2_MAIN, 0.400, 0.340, 0.400, 0.272)
-        set part = WUI_OrnateWindow("WOSTeamDraftMetal", Frame_Cap2_MAIN, 0.022)
-        call WOS_CaptainCaption(Frame_Cap2_6, 0.400, 0.457, 0.300, 0.82, "")
-        call WOS_CaptainCaption(Frame_Cap2_8, 0.400, 0.441, 0.300, 0.62, "|cffa0a4abCaptain on turn: click a player to draft him|r")
-        loop
-            exitwhen i >= 10
-            if Frame_Cap2_3[i] != null then
-                set x = 0.325 + I2R(ModuloInteger(k, 4)) * 0.050
-                set y = 0.410 - I2R(k / 4) * 0.048
-                call WOS_CaptainSlot(Frame_Cap2_3[i], Frame_Cap2_5[i], x, y, 0.028)
-                set k = k + 1
-            endif
-            set i = i + 1
-        endloop
-        set part = WUI_Divider("WOSTeamDraftDivider", Frame_Cap2_MAIN, 0.400, 0.336, 0.340, false)
-        call WOS_CaptainCaption(Frame_Cap2_10, 0.236, 0.306, 0.050, 0.66, "|cffff6a5aTEAM 1|r")
-        call WOS_CaptainCaption(Frame_Cap2_11, 0.236, 0.246, 0.050, 0.66, "|cff5aa9ffTEAM 2|r")
-        call WOS_CaptainSlot(Frame_Cap2_3[11], Frame_Cap2_13, 0.290, 0.306, 0.028)
-        call WOS_CaptainSlot(Frame_Cap2_3[12], Frame_Cap2_14, 0.290, 0.246, 0.028)
-        // Checkpoint 26: crown centred above the captain icon (as in the vote).
-        call WOS_CaptainCrown(Frame_Cap2_MAIN, 0.290, 0.3245)
-        call WOS_CaptainCrown(Frame_Cap2_MAIN, 0.290, 0.2645)
-        set part = WUI_Divider("WOSTeamDraftCaptainDivider", Frame_Cap2_MAIN, 0.318, 0.276, 0.100, true)
-        // Horizontal line between the two team rows.
-        set part = WUI_Divider("WOSTeamDraftRowDivider", Frame_Cap2_MAIN, 0.400, 0.2745, 0.340, false)
-        set i = 20
-        loop
-            exitwhen i >= 28
-            if i < 24 then
-                set x = 0.348 + I2R(i - 20) * 0.046
-                set y = 0.306
-            else
-                set x = 0.348 + I2R(i - 24) * 0.046
-                set y = 0.246
-            endif
-            call WOS_CaptainSlot(Frame_Cap2_3[i], Frame_Cap2_5[i], x, y, 0.028)
-            set i = i + 1
-        endloop
-        call WOS_CaptainVoteBadge(Frame_Cap2_7[11], Frame_Cap2_3[11])
-        call WOS_CaptainVoteBadge(Frame_Cap2_7[12], Frame_Cap2_3[12])
-    else
-        // Captain vote: title | 2 x 5 players | Captain 1 / Captain 2 results.
-        call WUI_Place(Frame_Cap1_MAIN, 0.400, 0.332, 0.340, 0.224)
-        set part = WUI_OrnateWindow("WOSCaptainVoteMetal", Frame_Cap1_MAIN, 0.022)
-        call WOS_CaptainCaption(Frame_Cap1_6, 0.400, 0.427, 0.300, 0.82, "")
-        call WOS_CaptainCaption(Frame_Cap1_8, 0.400, 0.411, 0.300, 0.62, "|cffa0a4abClick a player to vote for him|r")
-        loop
-            exitwhen i >= 10
-            set x = 0.300 + I2R(ModuloInteger(i, 5)) * 0.050
-            set y = 0.382
-            if i >= 5 then
-                set y = 0.334
-            endif
-            call WOS_CaptainSlot(Frame_Cap1_3[i], Frame_Cap1_5[i], x, y, 0.028)
-            call WOS_CaptainVoteBadge(Frame_Cap1_7[i], Frame_Cap1_3[i])
-            set i = i + 1
-        endloop
-        set part = WUI_Divider("WOSCaptainVoteDivider", Frame_Cap1_MAIN, 0.400, 0.3035, 0.300, false)
-        // Checkpoint 26: captain icons lower, crown centred above each icon
-        // (clear of the CAPTAIN caption), guaranteed-ban note between them.
-        call WOS_CaptainCaption(Frame_Cap1_10, 0.345, 0.2945, 0.080, 0.66, "|cffd5b876CAPTAIN 1|r")
-        call WOS_CaptainCaption(Frame_Cap1_11, 0.455, 0.2945, 0.080, 0.66, "|cffd5b876CAPTAIN 2|r")
-        call WOS_CaptainSlot(Frame_Cap1_3[11], Frame_Cap1_13, 0.345, 0.2595, 0.026)
-        call WOS_CaptainSlot(Frame_Cap1_3[12], Frame_Cap1_14, 0.455, 0.2595, 0.026)
-        call WOS_CaptainCrown(Frame_Cap1_MAIN, 0.345, 0.2785)
-        call WOS_CaptainCrown(Frame_Cap1_MAIN, 0.455, 0.2785)
-        set part = BlzCreateFrameByType("TEXT", "WOSCaptainBanNote", Frame_Cap1_MAIN, "", 0)
-        call BlzFrameSetAbsPoint(part, FRAMEPOINT_CENTER, 0.400, 0.2595)
-        call BlzFrameSetSize(part, 0.064 / 0.56, 0.030 / 0.56)
-        call BlzFrameSetScale(part, 0.56)
-        call BlzFrameSetTextAlignment(part, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        call BlzFrameSetText(part, "|cff9aa0a8Each captain gets a|r|n|cffd5b876guaranteed ban|r")
-        call BlzFrameSetEnable(part, false)
-        call WOS_CaptainVoteBadge(Frame_Cap1_7[11], Frame_Cap1_3[11])
-        call WOS_CaptainVoteBadge(Frame_Cap1_7[12], Frame_Cap1_3[12])
-    endif
-    set part = null
-endfunction
-
 function CreatePlayerPickUI takes nothing returns nothing
     local integer i = 0
     local integer i2 = 0
@@ -803,7 +662,7 @@ set PicksPerTurn[7] = 1
     endif
     set FrameCapClick2 = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
-    set Frame_Cap2_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
+    set Frame_Cap2_MAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
     call BlzFrameSetAbsPoint(Frame_Cap2_MAIN, FRAMEPOINT_CENTER, 0.40, 0.33)
     call BlzFrameSetSize(Frame_Cap2_MAIN, 0.45, 0.35)
   // set CaptainPid1 = 0 
@@ -829,7 +688,7 @@ set PicksPerTurn[7] = 1
         exitwhen i == 10
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)  
         if i != CaptainPid1 and i != CaptainPid2 then
-            set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "WOSIconButtonTemplate", 0)
+            set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)
             call BlzFrameSetSize(Frame_Cap2_3[i], 0.035, 0.035)
             call BlzTriggerRegisterFrameEvent(FrameCapClick2, Frame_Cap2_3[i], FRAMEEVENT_CONTROL_CLICK)
             call BlzFrameSetTexture(Frame_Cap2_3[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
@@ -884,7 +743,7 @@ set PicksPerTurn[7] = 1
     endloop
     set y = 0.09
     set x = -0.24
-    set Frame_Cap2_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "WOSIconButtonTemplate", 0)
+    set Frame_Cap2_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)
     call BlzFrameSetSize(Frame_Cap2_3[11], 0.035, 0.035)
     call BlzFrameSetEnable(Frame_Cap2_3[11], false)
     call BlzFrameSetPoint(Frame_Cap2_3[11], FRAMEPOINT_LEFT, Frame_Cap2_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.3 + x, 0.05 + y )// - 0.03 * i)
@@ -900,9 +759,9 @@ set PicksPerTurn[7] = 1
     endif
         //call BlzFrameSetLevel(Frame_Cap2_3[i], 3)
     set Frame_Cap2_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(Frame_Cap2_9[11], FRAMEPOINT_LEFT, Frame_Cap2_3[11], FRAMEPOINT_LEFT, 0.0000, 0.48 )
+    call BlzFrameSetPoint(Frame_Cap2_9[11], FRAMEPOINT_LEFT, Frame_Cap2_3[11], FRAMEPOINT_LEFT, -0.0012, 0.48 )
     call BlzFrameSetSize(Frame_Cap2_9[11], 1., 1.)
-    call BlzFrameSetScale(Frame_Cap2_9[11], 0.72)
+    call BlzFrameSetScale(Frame_Cap2_9[11], 1)
     call BlzFrameSetModel(Frame_Cap2_9[11], "Pick\\wos_IconShine1.mdx", 0)
     call BlzFrameSetEnable(Frame_Cap2_9[11], false)
     call BlzFrameSetVisible(Frame_Cap2_9[11], true)
@@ -923,7 +782,7 @@ set PicksPerTurn[7] = 1
     call BlzFrameSetSize(Frame_Cap2_13, 0.2, 0.1)
     call BlzFrameSetScale(Frame_Cap2_13, 1)
         
-    set Frame_Cap2_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "WOSIconButtonTemplate", 0)
+    set Frame_Cap2_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)
     call BlzFrameSetSize(Frame_Cap2_3[12], 0.035, 0.035)
     call BlzFrameSetEnable(Frame_Cap2_3[12], false)
     call BlzFrameSetPoint(Frame_Cap2_3[12], FRAMEPOINT_LEFT, Frame_Cap2_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.3 + x, 0.05 + y - 0.07 )// - 0.03 * i)
@@ -939,9 +798,9 @@ set PicksPerTurn[7] = 1
     endif
         //call BlzFrameSetLevel(Frame_Cap2_3[i], 3)
     set Frame_Cap2_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap2_MAIN, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(Frame_Cap2_9[12], FRAMEPOINT_LEFT, Frame_Cap2_3[12], FRAMEPOINT_LEFT, 0.0000, 0.48 )
+    call BlzFrameSetPoint(Frame_Cap2_9[12], FRAMEPOINT_LEFT, Frame_Cap2_3[12], FRAMEPOINT_LEFT, -0.0012, 0.48 )
     call BlzFrameSetSize(Frame_Cap2_9[12], 1., 1.)
-    call BlzFrameSetScale(Frame_Cap2_9[12], 0.72)
+    call BlzFrameSetScale(Frame_Cap2_9[12], 1)
     call BlzFrameSetModel(Frame_Cap2_9[12], "Pick\\wos_IconShine1.mdx", 0)
     call BlzFrameSetEnable(Frame_Cap2_9[12], false)
     call BlzFrameSetVisible(Frame_Cap2_9[12], false)
@@ -1002,7 +861,7 @@ set PicksPerTurn[7] = 1
         exitwhen i == 28
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)  
         if i != CaptainPid1 and i != CaptainPid2 then
-            set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "WOSIconButtonTemplate", 0)
+            set Frame_Cap2_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap2_MAIN, "ScoreScreenTabButtonTemplate", 0)
             call BlzFrameSetSize(Frame_Cap2_3[i], 0.035, 0.035)
             // Слоты 20..27 только показывают уже выбранных игроков.
             call BlzFrameSetEnable(Frame_Cap2_3[i], false)
@@ -1048,7 +907,6 @@ set PicksPerTurn[7] = 1
         endif
     endloop
 
-call WOS_LayoutCaptainVote(true)
 set CapPickPhase = 3
 
 call BlzFrameSetVisible(FRAME_StatusHeroMain, true)
@@ -1196,7 +1054,11 @@ else
 endif
         // === Р В РІР‚вЂќР В Р’В°Р В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІвЂљВ¬Р В РЎвЂР В Р’В»Р В РЎвЂ Р В Р вЂ Р РЋРІР‚в„–Р В Р’В±Р В РЎвЂўР РЋР вЂљ Р В РЎвЂќР В Р’В°Р В РЎвЂ”Р В РЎвЂР РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В Р’В° 2 ===
     set CaptainPid2 = chosen
-    // Name position is fixed by WOS_LayoutCaptainVote (no second anchor).
+    if SplitNameCheck(GetPlayerName(Player(chosen))) then
+        call BlzFrameSetPoint(Frame_Cap1_14, FRAMEPOINT_BOTTOM, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.35 + 0.05, 0.01 + 0.02 - 0.01 - 0.08)
+    else
+        call BlzFrameSetPoint(Frame_Cap1_14, FRAMEPOINT_BOTTOM, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.35 + 0.05, 0.01 + 0.02 - 0.095)
+    endif    
     call MakeSound("war3mapimported\\Hero_Kyoraku_T16_1")
     call BlzFrameSetVisible(Frame_Cap1_9[12], false)
     call BlzFrameSetText(Frame_Cap1_14, SplitName(GetPlayerName(Player(chosen))) )
@@ -1274,7 +1136,11 @@ function DetermineCaptain takes nothing returns nothing
 
         // === Р В РІР‚вЂќР В Р’В°Р В Р вЂ Р В Р’ВµР РЋР вЂљР РЋРІвЂљВ¬Р В РЎвЂР В Р’В»Р В РЎвЂ Р В Р вЂ Р РЋРІР‚в„–Р В Р’В±Р В РЎвЂўР РЋР вЂљ Р В РЎвЂќР В Р’В°Р В РЎвЂ”Р В РЎвЂР РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В Р’В° 1 ===
     set CaptainPid1 = chosen
-    // Name position is fixed by WOS_LayoutCaptainVote (no second anchor).
+    if SplitNameCheck(GetPlayerName(Player(chosen))) then
+        call BlzFrameSetPoint(Frame_Cap1_13, FRAMEPOINT_BOTTOM, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.35, 0.01 + 0.02 - 0.01 - 0.08)
+    else
+        call BlzFrameSetPoint(Frame_Cap1_13, FRAMEPOINT_BOTTOM, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.35, 0.01 + 0.02 - 0.095)
+    endif
     call BlzFrameSetText(Frame_Cap1_13, SplitName(GetPlayerName(Player(chosen))) )
 
     // Р В Р Р‹Р РЋРІР‚С™Р В Р’В°Р В Р вЂ Р В РЎвЂР В РЎВ Р В РЎвЂР В РЎвЂќР В РЎвЂўР В Р вЂ¦Р В РЎвЂќР В Р’Вµ Р В РЎвЂќР В Р’В°Р В РЎвЂ”Р В РЎвЂР РЋРІР‚С™Р В Р’В°Р В Р вЂ¦Р В Р’В° 1 Р РЋРІР‚С™Р В Р’ВµР В РЎвЂќР РЋР С“Р РЋРІР‚С™Р РЋРЎвЂњР РЋР вЂљР РЋРЎвЂњ Р РЋР С“ Р В Р’ВµР В РЎвЂ“Р В РЎвЂў Р В РЎвЂР РЋРІР‚С™Р В РЎвЂўР В РЎвЂ“Р В РЎвЂўР В Р вЂ Р РЋРІР‚в„–Р В РЎВ Р РЋРІР‚РЋР В РЎвЂР РЋР С“Р В Р’В»Р В РЎвЂўР В РЎВ Р В РЎвЂ“Р В РЎвЂўР В Р’В»Р В РЎвЂўР РЋР С“Р В РЎвЂўР В Р вЂ 
@@ -1322,8 +1188,11 @@ function CapOnClick takes nothing returns nothing
     if not IsCaptainModeEligiblePlayer(pid) then
         set p = null
         set clicked = null
-        call WUI_ReleaseClickFocus()
         return
+    endif
+    if GetLocalPlayer() == p then
+        call BlzFrameSetEnable(clicked, false)
+        call BlzFrameSetEnable(clicked, true)
     endif
     loop
         exitwhen i == 10
@@ -1351,7 +1220,6 @@ function CapOnClick takes nothing returns nothing
     endloop
     set p = null
     set clicked = null
-    call WUI_ReleaseClickFocus()
 endfunction
 
 function CreateCaptainUI takes nothing returns nothing
@@ -1363,13 +1231,13 @@ function CreateCaptainUI takes nothing returns nothing
     local framehandle border
     set FrameCapClick = CreateTrigger()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
-    set Frame_Cap1_MAIN = WUI_Window("WOSWindow", WUI_GetRoot(), 0, 0)
+    set Frame_Cap1_MAIN = BlzCreateFrame("EscMenuBackdrop", BlzGetFrameByName("ConsoleUIBackdrop", 0), 0, 0)
     call BlzFrameSetAbsPoint(Frame_Cap1_MAIN, FRAMEPOINT_CENTER, 0.40, 0.32)
     call BlzFrameSetSize(Frame_Cap1_MAIN, 0.45, 0.2)
-    //set Frame_Cap1_1 = WUI_Window("WOSWindow", Frame_Cap1_MAIN, 1, 0)
+    //set Frame_Cap1_1 = BlzCreateFrame("EscMenuBackdrop", Frame_Cap1_MAIN, 1, 0)
     //call BlzFrameSetAbsPoint(Frame_Cap1_1, FRAMEPOINT_CENTER, 0.35, 0.35)
     //call BlzFrameSetSize(Frame_Cap1_1, 0.25, 0.4)
-    //set Frame_Cap1_2 = WUI_Window("WOSWindow", Frame_Cap1_MAIN, 1, 0)
+    //set Frame_Cap1_2 = BlzCreateFrame("EscMenuBackdrop", Frame_Cap1_MAIN, 1, 0)
     //call BlzFrameSetAbsPoint(Frame_Cap1_2, FRAMEPOINT_CENTER, 0.625, 0.35)
     //call BlzFrameSetSize(Frame_Cap1_2, 0.3, 0.4)
     
@@ -1389,7 +1257,7 @@ function CreateCaptainUI takes nothing returns nothing
     loop
         exitwhen i == 10
         // Р В РЎв„ўР В Р’В»Р В РЎвЂР В РЎвЂќР В Р’В°Р В Р’В±Р В Р’ВµР В Р’В»Р РЋР Р‰Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р РЋРІР‚С›Р РЋР вЂљР В Р’ВµР В РІвЂћвЂ“Р В РЎВ (Р В РЎвЂќР В Р вЂ¦Р В РЎвЂўР В РЎвЂ”Р В РЎвЂќР В Р’В°)        
-        set Frame_Cap1_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "WOSIconButtonTemplate", 0)
+        set Frame_Cap1_3[i] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetSize(Frame_Cap1_3[i], 0.035, 0.035)
         call BlzTriggerRegisterFrameEvent(FrameCapClick, Frame_Cap1_3[i], FRAMEEVENT_CONTROL_CLICK)
         call BlzFrameSetTexture(Frame_Cap1_3[i], "ReplaceableTextures\\CommandButtons\\BTNSelectHeroOn", 0, false)
@@ -1442,7 +1310,7 @@ function CreateCaptainUI takes nothing returns nothing
         endif
     endloop
     set y = 0.02
-    set Frame_Cap1_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "WOSIconButtonTemplate", 0)
+    set Frame_Cap1_3[11] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)
     call BlzFrameSetSize(Frame_Cap1_3[11], 0.035, 0.035)
     call BlzFrameSetEnable(Frame_Cap1_3[11], false)
     call BlzFrameSetPoint(Frame_Cap1_3[11], FRAMEPOINT_LEFT, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.3, 0.05 + y )// - 0.03 * i)
@@ -1454,9 +1322,9 @@ function CreateCaptainUI takes nothing returns nothing
     call BlzFrameSetTexture(Frame_Cap1_4[11], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
         //call BlzFrameSetLevel(Frame_Cap1_3[i], 3)
     set Frame_Cap1_9[11] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(Frame_Cap1_9[11], FRAMEPOINT_LEFT, Frame_Cap1_3[11], FRAMEPOINT_LEFT, 0.0000, 0.48 )
+    call BlzFrameSetPoint(Frame_Cap1_9[11], FRAMEPOINT_LEFT, Frame_Cap1_3[11], FRAMEPOINT_LEFT, -0.0012, 0.48 )
     call BlzFrameSetSize(Frame_Cap1_9[11], 1., 1.)
-    call BlzFrameSetScale(Frame_Cap1_9[11], 0.72)
+    call BlzFrameSetScale(Frame_Cap1_9[11], 1)
     call BlzFrameSetModel(Frame_Cap1_9[11], "Pick\\wos_IconShine1.mdx", 0)
     call BlzFrameSetEnable(Frame_Cap1_9[11], false)
     call BlzFrameSetVisible(Frame_Cap1_9[11], true)
@@ -1477,7 +1345,7 @@ function CreateCaptainUI takes nothing returns nothing
     call BlzFrameSetSize(Frame_Cap1_13, 0.2, 0.1)
     call BlzFrameSetScale(Frame_Cap1_13, 1.2)
         
-    set Frame_Cap1_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "WOSIconButtonTemplate", 0)
+    set Frame_Cap1_3[12] = BlzCreateFrameByType("BUTTON", "rrr", Frame_Cap1_MAIN, "ScoreScreenTabButtonTemplate", 0)
     call BlzFrameSetSize(Frame_Cap1_3[12], 0.035, 0.035)
     call BlzFrameSetEnable(Frame_Cap1_3[12], false)
     call BlzFrameSetPoint(Frame_Cap1_3[12], FRAMEPOINT_LEFT, Frame_Cap1_MAIN, FRAMEPOINT_BOTTOMLEFT, 0.3 + 0.06, 0.05 + y )// - 0.03 * i)
@@ -1489,9 +1357,9 @@ function CreateCaptainUI takes nothing returns nothing
     call BlzFrameSetTexture(Frame_Cap1_4[12], "ReplaceableTextures\\CommandButtons\\BTNHero_Placeholder", 0, false)
         //call BlzFrameSetLevel(Frame_Cap1_3[i], 3)
     set Frame_Cap1_9[12] = BlzCreateFrameByType("SPRITE", "justAName", Frame_Cap1_MAIN, "WarCraftIIILogo", 0)
-    call BlzFrameSetPoint(Frame_Cap1_9[12], FRAMEPOINT_LEFT, Frame_Cap1_3[12], FRAMEPOINT_LEFT, 0.0000, 0.48 )
+    call BlzFrameSetPoint(Frame_Cap1_9[12], FRAMEPOINT_LEFT, Frame_Cap1_3[12], FRAMEPOINT_LEFT, -0.0012, 0.48 )
     call BlzFrameSetSize(Frame_Cap1_9[12], 1., 1.)
-    call BlzFrameSetScale(Frame_Cap1_9[12], 0.72)
+    call BlzFrameSetScale(Frame_Cap1_9[12], 1)
     call BlzFrameSetModel(Frame_Cap1_9[12], "Pick\\wos_IconShine1.mdx", 0)
     call BlzFrameSetEnable(Frame_Cap1_9[12], false)
     call BlzFrameSetVisible(Frame_Cap1_9[12], false)
@@ -1522,7 +1390,6 @@ function CreateCaptainUI takes nothing returns nothing
     call BlzFrameSetText(Frame_Cap1_8, "Click on button to vote|r")  
     call BlzFrameSetSize(Frame_Cap1_8, 0.2, 0.005)
     call BlzFrameSetScale(Frame_Cap1_8, 1.1)
-    call WOS_LayoutCaptainVote(false)
     call TriggerAddAction(FrameCapClick, function CapOnClick)
     call TimerStart(FrameCapTimer, 1, true, function CapPickTime)
 endfunction

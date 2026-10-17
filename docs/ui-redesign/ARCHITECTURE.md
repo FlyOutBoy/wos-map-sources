@@ -426,20 +426,23 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
 | WOS_Start/WoS_Pick_Init.j (`AAINIT`) | Actual category/page/hero preview/confirm/random/ban/repick/swap UI; normal/captain/draft bindings; map-start initialization. |
 | WOS_Start/WoS_Shop_Init.j | Actual shop tabs/search, recipes/craft, auto-buy, inventory; existing input/event handlers. |
 | WOS_Start/Scoreboard.j (`WosScoreboard`) | Graphite style reference; team/player stats, saved hero records; requires heroicon. |
+| WOS_Start/DamageStats.j (`DamageStats`) | Optional numeric damage collector and independent upper-left collapsed colored-bar leaderboard; Dealt/Taken x Round/Game/Session/Previous plus paged per-source details. `DAMAGE_STATS_ENABLED`; local UI reads shared numeric buckets. Cached WindowPart12/13/14 (details/compact/tooltip), TopActionOwner parent, shared staged startup. |
 | WOS_Start/Starts.j | TestMode and mode dialog, combat/system setup; mode handlers; TestComm now shows the scrollable help panel (permanent instructional tags removed). |
-| WOS_Start/TeamMapPings.j | Physical Z and synced ally pings, target snapshots, minimap projection, no fog modifiers. Local wheel/mute state. |
+| WOS_Start/TeamMapPings.j | CP54 Z frame buttons + one-shot terrain click; no MOVE/screen polling. Shared disabled click listeners/timer lifetime, ally pings, snapshots/minimap/fog privacy unchanged. |
 | WOS_Start/ChatCommand.j | Emoji palette, local enable/disable; frame toggles and sync commands. |
 | WOS_Start/EMOTES.j | Existing emote palette/sync/effects; K key-up and toolbar share Emoji_ToggleMenu. Obsolete K key-down/null FRAME_Chat0 handler removed. |
 | WOS_Start/Player_Pick_Mode.j, Captain_Draft.j | Mode-specific selection/vote interfaces and handlers. |
 | WOS_Start/UI_CAREER.j, MusicPlayer.j, UniversalTooltips.j | Career UI/music controls/shared tooltips. |
 | Systems/Systems2.j, TasBox.j | Hero ability/counter bars, charge box library; some SIMPLEFRAME children under native Console. |
-| Heroes/*.j | Hero-specific state bars; retain mechanics and refresh paths, migrate normal FRAME parents only. |
+| Heroes/*.j | Spell loops publish authoritative remaining time/resources through WUI_HeroProgress/Text/Counter; public spells use WUI_HeroProgressPublic. WOSUI owns keyed FRAME creation, captions, formatting, visibility and expiry. |
 
 Paths above are relative to `triggers/`. Exhaustive inventory is saved in FRAME_INVENTORY.md; inspect only affected files in subsequent sessions.
 
 ## Root constraints
 
-- Selected-unit HUD: `UNITSTAT_Update` visits player slots; selection events maintain private UI-only per-player records, including remaining units after multi-deselect. `GetLocalPlayer` selects only `UNITSTAT_Render` for that client's existing frames. Selection records must never feed gameplay setters, RNG or handle allocation. Render uses shared read-only `DamageCheckModifiers`; combat `DamageCheck` retains `GearDamageRun` and listeners. Current listeners are empty; future amount-changing listeners require a pure-preview contract. Native portrait/attack text primary-unit agreement for multi-selection still needs engine testing. Full MAIN R was multiplayer-confirmed by the user; the engine-internal cause is not proved. Keep the .10 period and existing layout calls until a separately approved performance test.
+- Selected-unit HUD: `UNITSTAT_Update` visits player slots; selection events maintain private UI-only per-player records, including remaining units after multi-deselect. `GetLocalPlayer` selects only `UNITSTAT_Render` for that client's existing frames. Selection records must never feed gameplay setters, RNG or handle allocation. Render uses shared read-only `DamageCheckModifiers`; combat `DamageCheck` retains `GearDamageRun` and listeners. Current listeners are empty; future amount-changing listeners require a pure-preview contract. Native portrait/attack text primary-unit agreement for multi-selection still needs engine testing. Full MAIN R was multiplayer-confirmed by the user; the engine-internal cause is not proved. CP54 user-requested performance pass uses .20 HUD refresh; selection ownership and pure outgoing preview stay unchanged.
+- CP54 scheduling/input: see RESUME CP54. WUI_StopPingTarget is agreed-event-only; frame hover never enables/disables shared listeners. F2/ping timers stop from shared state; local visibility may gate rendering only. WOS_DESYNC_PROBE_ENABLED defaults false.
+- TEXT geometry follows the working Scoreboard constructor: anchor and physical width/height first, alignment and font scale last. Do not set inverse-scaled dimensions after font scale. Cached tooltip text can use AllPoints like F2; anchor the box to its source. CP52 geometry tests catch outside-owner text and icon values, but cannot certify native font rasterization. DamageStats source digits sit BELOW the full-square art; never use white.blp + vertex tint for their backing. Its WUI_CreateFill bars use precolored textures and WUI_SetValue, not STATUSBAR or WUI_FrameSetValue. CP53 uses BlzFrameSetFont at unit frame scale for DamageStats, anchoring totals to the fixed bar RIGHT edge. Hover cells include art and digits; one manual tooltip owner, no engine tooltip binding or duplicate passive-focus cleanup.
 - FRAME and SIMPLEFRAME have separate hierarchies. Native command/inventory
   SIMPLEFRAME parents must not be rebound to a normal leaderboard FRAME.
 - Create/get frame handles synchronously; first-time native lookups inside a
@@ -760,3 +763,400 @@ Old H,6 records are ignored; V is available for the player's other bindings.
 Range3 UI fixes/resources now live in the project; only historical candidate
 archives retain the superseded TEST-only experiment. QuickBuy resources install
 through the standard MAIN asset installer. Independent Systems1 probe is retained.
+
+
+## Hero progress ownership — checkpoint 38 (2026-10-16)
+
+All active large hero time/resource bars use WUI_HeroProgress's renderer, including
+Erza4 E's stack window in DecorDestroy_and_Erza_Debuff. Timers show one decimal
+and `s`; percentages, time+stacks and event resources reuse that same panel.
+WUI_HeroProgressText accepts custom value text from synchronized state. Use
+WUI_HeroProgressCounter only for event resources which close explicitly on form
+change; ordinary spell-loop counters retain the three-feed-tick freshness guard.
+Zero-valued resources allocate on all clients and remain visible. Public Kyoraku
+and Prison Realm meters allocate/register publicly and expire against their
+actual owner, independent of the rendering client's player id. Direct refresh
+cancels a previous fixed-duration clock. Dynamic captions retain dock geometry.
+The obsolete WUI_TrackedMeter and disabled Kirito heal poll were removed; Kirito
+retains his existing ability cooldown. SIMPLEFRAME buff/charge badges and the
+Erza Second Origin text card retain their existing ownership.
+
+Source-of-truth fixes: Frieren clone expiry cannot reset player-wide slots;
+Toji W both tether states pause their clock with the target; Takeshi accumulation
+and threshold dummy are independent of frame creation. TasBox's read-only live
+state covers Shiki passive stacks and registered Rimuru Q2/F3 dodge windows.
+Sukuna warning and summon consume one cached shared RNG location, reset each
+round, with the minimap warning exactly15s before Time_Sukuna. No new UI timer
+or local gameplay state was introduced. Engine rendering/pause acceptance is
+outside the compile/static regression evidence.
+
+
+## Match votes, invisibility and dual meters — checkpoint 39 (2026-10-16)
+
+WOS_Start/MatchVotes.j owns synchronized unanimous vote state (WOSVOTE sync),
+30-second deadlines, membership snapshots and the local open/closed vote view.
+Buttons sit to the left of swap/repick. Recipients see a pulsing gold prompt and
+feed notifications; dialogs open only on click and answer/timeout clears the
+prompt. Kick excludes its target and requires every other active human across
+both teams. Any NO, missing response or eligible departure rejects the vote.
+WOSPlayerLeave centralizes idempotent leave cleanup; vote kick calls it with the
+actual target, then defeats only that player. WOSTeamMembership exports existing
+captain-mode-aware IsInTeam1. FF uses actual teammates, queues WOS_ForfeitTeam
+once, and the existing round-end branch awards exactly10 wins to the enemy,
+records one round result and executes normal cleanup/end-match logic. No chat
+commands were added. Shared results never consume MV_View or local frame state.
+
+WUI_HeroProgressDual reuses one keyed panel/dock entry. Height .0375 replaces
+.025; red resource/stack row is above a purple duration row. MeterEdges real7
+stores height, handle20/21/22 stores the upper back/fill/value. Dock accumulation
+uses actual heights plus .005 gaps, including compaction and minimap changes.
+Tsuna G1 and Shiki F supply their actual spell time and resource/stack values.
+Rimuru Q2/F3 instead use normal count bars (remaining/max), driven by real buff
+presence, not a fixed deadline; pause extension cannot expire the display early.
+His evolution pips read AHUI_CurrentAbility instead of removed base abilities.
+
+Selected readable unit invisibility uses Binv/BOwk or native IsUnitInvisible,
+not merely possession of an ability. WOSUI sets portrait alpha135 and displays
+the generated INVIS asset; selection/invis end restores255. Cup of Tea Evolved,
+Toji R and Erza W use native invisibility abilities. All frame allocation remains
+synchronous; selected-unit alpha/label changes are local presentation only.
+BuffUnit01 now returns the applied ability's native duration at its actual rank
+and target type (normal/hero). Existing callers may ignore it. Toji W consumes
+that returned duration and pauses its clock with its target in both tether states;
+its tooltip no longer advertises the obsolete independent5-second constant.
+
+
+## Startup corrections and exclusive wheels — checkpoint40 (2026-10-16)
+
+WUI_RegisterWheelClose registers two owner cancellation callbacks synchronously;
+WUI_EnterWheel(0 ping /1 emote) invokes only the other local close callback.
+It never commits a selection. Emoji_ShowMenu(false) clears EmojiHold/hover;
+TMP_CancelForWheel closes the ping UI and blocks key repeats until release.
+EmojiKeyHeld similarly prevents cancelled emotes reopening on repeated key-down.
+Do not destroy TMP's shared mouse-tracking trigger from a local wheel callback;
+its existing synchronized key-release/timeout owns destruction. These callbacks
+are separate from exclusive shop/stats/music/help windows.
+
+WUI_UnitHasInvisibility explicitly reads the granted Apiv, A03W and A0HZ abilities
+(confirmed from Toji R, Erza2 W, Systems1 item callback and object base_id Apiv),
+plus native buffs/query as fallback. Presence is the requested UI indicator even
+when the engine query for the owner returns false. No changes to combat invis.
+Discord's passive ghost uses WUI_PlaceToolbar(1,0), exactly like its real owner;
+it is not registered with the screen-edge RightDock cache. Shiki F returns an
+empty badge when target stacks are zero.
+
+Kick quorum is max(2, eligible others); the target still cannot vote. A two-human
+lobby may open the UI for testing but cannot pass with a single YES. Deadline
+always rejects an unresolved proposal even if every actual voter answered YES
+but the minimum quorum is impossible. The displayed denominator uses that quorum.
+Automatic settings load/sync is silent; manual Save Settings feedback remains.
+
+The guide's owner-local open/automatic tick no longer reads/writes a .help.txt
+Preloader marker or mutates the tooltip carrier. All its frames and countdown
+timer are created at shared startup; opening changes cached presentation only.
+Automatic newcomer help is once per current map (ss_HelpChecked) while local
+career games are zero; manual -help remains repeatable. Cross-game .help.txt
+suppression is retired. This removes an unnecessary asynchronous preload path
+from the reported desync trigger; static/native-mock evidence cannot prove the
+specific engine desync root cause or substitute for two-client acceptance.
+
+
+## Synchronized newcomer guide and catalogue kits — checkpoint41 (2026-10-16)
+
+The guide no longer infers first visit from ss_LocalGames and no longer enters
+WUI_EnterExclusiveWindow or registers as a modal. On its first shared.25 tick,
+every client reads Wos2/playedonce.txt with the same local Chunk carrier used by
+Save Keys, then sends authenticated WOS2GUIDE N (missing/not1) or P (marker1).
+The handler uses GetTriggerPlayer, never a supplied pid. Only synchronized
+ss_HelpEligible/Handled/Open/Left arrays decide whether a given player opens it.
+HelpTick iterates pid0..9 on every client. Show and close update those arrays
+outside GetLocalPlayer guards; owner-only branches paint cached frames and write
+marker1. Manual -help is a shared chat event; button/escape close sends C. Every
+opening, manual or automatic, gets the same20-second countdown, advanced by the
+shared tick. All guide frames, sync trigger and timer allocate at shared startup.
+No shop/stats/music callback is executed when opening the guide. Existing Save
+Keys loading, settings packet and career statistics remain separate.
+
+The marker is a Warcraft Preload script whose decoded payload is the single
+string1, under CustomMapData/Wos2/playedonce.txt; it is not raw text. It is written
+on first show using the existing Save Keys serializer. Missing/invalid markers
+allow auto-help after a hero exists; marker1 skips it regardless of career games.
+Shared file status and guide requests are UI metadata only, never combat data.
+The audit found WUI_RangePreviewBlocked consumers in presentation paths; local
+frame visibility itself does not prove the engine desync. Mixed-client mock
+coverage validates identical guide state, not Warcraft network acceptance.
+
+WOS_PreviewData/Init in WoS_Pick_Init own a read-only table of32 kits for11 heroes.
+Eight reusable form buttons allocate in a separate WUI_OnReady callback. Local
+form selection changes portrait, rawcode-derived icons, native research tooltip
+text and QWERTFG labels only; it never changes PlayerFrameCurrent_ID, dummy units
+or learned spells. Toji's Q variants use Q1/Q2/Q3 and restore normal labels on
+base/other hero selection. Alternate portraits use existing map imports; kits
+without an actual skin change retain the corresponding real portrait. Rimuru's
+R/T icons come from object data (their filename suffixes are opposite), not
+constructed _R/_T paths. Anime caption width expands from.112 to portrait.164
+before text scaling. Erza has base plus Q/W/E/R/T/G1/G2, Rimuru three forms,
+Takeshi Kit1/Kit2/Cambio; other requested kits are explicit table entries.
+
+Votes keep the shared quorum/serial/deadline contract, with a local compact
+.260-wide panel,.135-.210 high and two-column live player rows. Solo kick shows
+an empty-state explanation; FF lists teammates and always has its proposal
+control (disabled outside normal arena rounds). YES/NO appear only for pending
+eligible voters. Tests construct the real owner and validate every control.
+
+Quick Buy/recommended reorder computes independent grid columns/rows from RMB
+start X/Y. QB_GridDragTarget is shared by preview/release, bounded to real steps;
+only existing versioned M sync commands change order. Eight cached passive
+pointers surround the insertion target, replacing the thin stripe; four small
+RGBA TGAs are generated by tools/build_wos_drag_arrows.py. No idle mouse poll,
+new drag timer or runtime frame allocation. WUI settings U gains bit4 for hidden
+hero-stage text; bits1/2 keep minimap/info meaning and older0..3 packets work.
+
+
+## Agreed window transitions — checkpoint42 (2026-10-16)
+
+Shop Tab/toolbar/region/career-item, F2 and music open events dispatch
+WUI_EnterExclusiveWindow(kind, viewer) before their local drawing branches.
+The agreed dispatcher publishes/restores WUI_WindowPlayer around preallocated
+callbacks. Callbacks update the explicit viewer's shared state on every peer;
+only cached frame setters and local drag cancellation are owner-local. Guide
+exclusive close clears shared Open/Left directly. Its manual close still uses
+WOS2GUIDE C; automatic/manual guide opening retains the CP41 independent flow.
+Escape checks local capture state and sends WUIWCLOSE -1. Only that exact payload
+is accepted, using authenticated GetTriggerPlayer; it dispatches on every client.
+The old WUI_RegisterExclusiveState/WUI_RequestExclusiveClose contract is removed.
+Never execute this dispatcher from a GetLocalPlayer guard or local timer branch.
+
+Baseline CP41 replay demonstrates a concrete transient shared IsOpen mismatch
+when F2 is closed by the shop and asymmetric TriggerExecute calls. The first Tab
+with all other windows closed does not exercise the flag-write example; the
+precise Warcraft engine cause of the user's immediate disconnect remains
+unconfirmed. Mock equality, source audit and compilation cannot establish it.
+
+Quick Buy arrows must be children of QB_Panel (level92), not its shop-root
+siblings at level60. Recommended arrows belong to FRAME_ShopItemList. Cached
+passive children retain level60 within their own panels. Form tabs are.034 wide
+(previous.041), centred at.7165 to preserve the old right edge and vertical gap.
+
+
+## Picker direct presentation calls — checkpoint43 (2026-10-16)
+
+WOS_PreviewRender/Select/Clear are defined before ReloadAfterPick and every other
+caller. All four clears use direct calls; no owner-local ExecuteFunc, .evaluate
+or .execute wrapper. The same ordering applies to WUI_RefreshSlotBadges and its
+key helpers before capture cancellation. Optional slot UI must exist before
+badge rendering. This preserves cached local rendering without dispatching new
+JASS threads. Review generated JASS call graphs as well as source ordering.
+
+The category regression executes actual OnClick with PreviewReady=true and
+forbids dispatch/allocations. Saved CP42 fails at the newly introduced clear;
+CP43 passes all six categories for two modeled clients. Actual hover runs the
+cached WUI_ButtonHover/SetButtonSelected path only. This demonstrates the
+removed asymmetric call path, not the Warcraft engine cause of a disconnect.
+
+Form buttons now have width.030 and centre.714. Portrait ornate right edge
+.695 and preview panel right edge.733 give that exact midpoint; the.002 button
+edge leaves equal clearance on both sides. Native tooltip registrations for
+requested one-level form abilities must agree with object-data levels.
+
+
+## Direct runtime UI calls — checkpoint44 (2026-10-16)
+
+Supersedes the runtime callback registries in checkpoints40/42. WUI_EnterWheel
+is the common ping/emote cancellation path: direct cached setters and passive
+flags only. It never executes an owner callback. Keep cancelled-key/repeat
+latches; the old held key's release cannot commit the cancelled wheel. Ping
+mouse triggers allocate once per slot at shared startup, then enable/disable
+in agreed key/mouse paths. Local wheel cancellation never owns those handles.
+
+WUI_EnterExclusiveWindow(kind, viewer) directly updates the explicit player's
+shared Shop/Stats/Music/Help flags on all clients, then hides cached frames only
+for viewer. WUI_RegisterWindowPart caches handles, not callbacks; F2 refreshes
+the legacy panel cache because it may allocate after scoreboard bootstrap.
+Career standalone tips use a passive cached list. Escape retains authenticated
+WUIWCLOSE -1. WUI_CloseTopFor directly hides career/tips and requests local drag
+cleanup; it does not execute registered functions.
+
+Existing timers consume passive revisions: WUI_HudRevision invalidates AHUI
+pip textures; WUI_SettingsRevision refreshes UNITSTAT; WUI_ShopCloseSerial and
+WUI_ShopRenderSerial are consumed by direct QB_CheckDrag in the existing .05s
+shop debounce timer. No new timer is introduced. Agreed hero assignment queues
+WUI_ShopHeroRequest[pid]; QB_ApplyHeroRequests drains it before shop debounce,
+purchase sync validation and AutoBuy. Gameplay never consumes local revisions.
+Shop key/button handlers live beside their earlier-defined direct toggle helper.
+Hero voice helpers live in WOSPickBans before the HUD caller, avoiding generated
+forward-evaluate trampolines. Emoji registers its UI owner through WUI_OnReady.
+
+Frame value/minmax hooks are removed. Every legacy statusbar/slider call uses
+WUI_FrameSetValue/MinMaxValue; these directly update optional meter-fill metadata
+and the native value. WUI_SetValue's legacy fallback uses the same wrapper.
+Order helpers before callers: removing an explicit ExecuteFunc alone is not
+enough when JassHelper synthesizes TriggerEvaluate for a forward dependency.
+
+check_wos_ui.py now runs audit_wos_ui_dispatch.py on generated JASS. It inventories
+all enabled frame sources and direct frame functions, traces27 runtime roots,
+and checks explicit local frame branches transitively for dispatch/allocation.
+It rejects new runtime ExecuteFunc/TriggerExecute/TriggerEvaluate, including
+compiler wrappers. The complete frame-function inventory reports the remaining
+shared startup allocation calls and shared gameplay ability-availability hook.
+These exceptions are not local runtime UI dispatch. Career file chunk parsing
+keeps its old operation-budget trigger outside frame-open paths; WCS_SetOpen
+renders the startup-loaded cache rather than invoking the loader again.
+
+Call-graph/static/interpreter checks do not simulate the engine event scheduler,
+operation budget or native multiplayer. Two-client Z/K/Tab/F2/pick/resize tests
+remain necessary; do not claim an engine desync reproduced or eliminated.
+
+
+## Mode startup and wheel input — checkpoint45 (2026-10-16)
+
+User reports CP44 mode selector and subsequent pick never appear, and idle mouse
+movement affects ping. CP44 had inlined the initial camera slider setter before
+mode UI/countdown scheduling in InitTrig_ModeDialog; optional native/UI failure
+could therefore prevent both. WOS_BeginModeSelection now starts the authoritative
+20s timeout and1s countdown first, idempotently, then registers the selector. The
+initial camera-slider synchronization runs once in existing CamSetup periodic
+work, outside the required mode-launch thread. Late selector creation hides it
+if a mode is already selected. Actual native fault/operation-budget cause is
+unconfirmed; a production-function regression injects a failing optional frame
+native and verifies that Normal fallback still reaches Map_Start.
+
+Supersedes CP44 ping preallocation. No EVENT_PLAYER_MOUSE_MOVE registration at
+startup: TMP_TrackMouse creates its dedicated subscription only in agreed Z-down
+processing, before any local-player branch. First valid world sample, key-up,
+Escape or K activation destroys and nulls it on every client. Local right-click/
+close/toolbar wheel switch sends authenticated WOSPMOUSE with a shared epoch;
+stale cancellation cannot destroy a newer subscription. K blocks cancelled-Z
+repeat tracking until release. Emotes retain local-only pixel/button polling,
+strictly while open, with no network mouse subscription. Common WUI_EnterWheel
+still owns direct mutual visual cancellation. No handle mutation inside local
+presentation. Existing hero MouseOn/Off and mouse-down owner are unchanged.
+
+The compiled audit explicitly records the agreed TMP_OnKey -> TMP_TrackMouse
+CreateTrigger path, while continuing to forbid local allocation/dispatch across
+all frame roots AND strict runtime roots. This narrow exception implements the
+requested lifecycle rather than relaxing frame-render safety. Tests verify zero
+startup MOVE registrations, destruction/recreation, stale epochs, matching
+owner/other-client lifecycles, both wheel switch orders and optional-UI failure.
+
+
+## Input activation, bounded stats and charge style — checkpoint46 (2026-10-16)
+
+WUI_ShopRmbTrigger[pid] is a shared cached trigger handle. QB_CreateUI attaches
+it to the existing search timer expiration, disables it, and restores agreed
+Shop_Active. WUI_SetShopRmb is called only in agreed transitions; no local branch
+may enable/disable it. The engine invokes QB_OnRmbTick; it paints/sends input for
+the corresponding local client only. ShopSearchDebounceTick retains passive
+revision consumption, not RMB sampling. Ordinary hero MouseOn/Off stays separate.
+
+Stats creation has a finite shared row builder. Input registration precedes
+row allocation; WOS_STATS_Ready gates opening and starts update only after10 rows.
+Every client allocates identical rows, one per .01s tick; the builder destroys
+its timer on completion. No creation path is reached from F2/click runtime.
+
+Hero meter metadata key8 optionally holds value font scale (default.66); key7
+is still panel height. WUI_HeroProgressCharge repins font geometry on style change,
+updates native/fill textures and restores default style on reuse. Tsuna's charge
+presentation does not change gameplay damage percentage or overcharge timing.
+
+Top-strip hidden living vitals remain unread. Public death status permits0 HP
+and cached MP to remain visible for dead hidden units; do not query their hidden
+resource/type values. Surrender phase is not an eligibility condition: normal
+and test base votes use the existing queued round owner, not local scoring.
+Right-edge vote status marks are passive and survive outcome for4 seconds.
+
+## Stats startup and vote settings — checkpoint47 (2026-10-16)
+
+CP46 row-only staging did not restore F2 in the user test. CP47 moves all
+remaining construction out of the ready callback into a finite shared .01s
+builder. First tick binds F2/Stats, before shell or headers; subsequent ticks
+build shell, headers, actions, F3, F4,10 rows and final window handlers. Ready
+then permits opening. All gameplay/input callbacks remain direct and allocate
+nothing. The regression uses actual Scoreboard builders and WOSUI key helpers;
+its native stubs cannot prove the specific engine failure or game acceptance.
+
+Hide UI ghost registers the same final width and offset as the real control;
+viewport refresh no longer restores its older wider placeholder geometry.
+Learn pip click uses WUI_ResetClickedButtonFocus on the actual event control.
+Its five cached SPRITEs use Pick/wos_IconShine1.mdx from Player Pick captain
+controls; no hover/click allocation. Kenjaku Curse count keeps its KenjakuF_ID
+meter key but overrides cached icon with BTNHero_Kenjaku_F2; Prison Realm's F2
+key remains separate. Game Info page1 adds -help. Mode title/hint/button scales
+are1.45/1.05/1.35.
+
+MatchVotes.j exposes WOS_FF_ENABLED=true at the top. False hides the FF toolbar
+button/glow, closes its panel, rejects proposals/answers/forfeit bridge and
+cancels active FF ballots on the existing agreed tick. Kick remains available.
+Change this shared setting identically on all clients, never in a local block.
+MV_COOLDOWN=30s starts after vote completion; MV_RetryLeft is per kick lobby / FF
+team. Both UI enable state and shared proposal handler enforce it. The existing
+.24s tick decrements it; open panel title shows READY IN Ns. The30s ballot
+response deadline remains separate. No timer or input handler was added.
+
+## Top actions, vote Escape and guide forms — checkpoint49 (2026-10-16)
+
+WUI_GetTopActionOwner returns a cached passive FRAME created in shared bootstrap
+under WUI_Root and registered as ONE top control. Repick/swap buttons, swap
+menus/offers/test toggle and FF/kick controls/window use it. Hide UI hides the
+ancestor; per-player child enabled/visible flags stay intact, so restoring UI
+cannot show another player's buttons. MV_Render also gates on WUI_TopShown.
+No native SIMPLEFRAME is reparented. No owner allocation from click/hover.
+
+WUI_WindowPart[11] caches the vote panel (10 remains Career). MV_View is exposed
+in the central declarations purely for local presentation; shared vote decisions
+do not read it. Existing authenticated WUIWCLOSE/-1 Escape handler closes the
+local vote view/panel directly, in addition to the existing MV_Escape key handler.
+Only the triggering player's local view changes; vote serial/choices stay intact.
+MV_Click, picker repick/swap and swap menu clicks use the existing event-scoped
+ResetClickedButtonFocus; disabled controls stay disabled. No new key subscription.
+
+Guide timeout is40s for automatic and manual help. Ability learning returns its
+old passive BACKDROP learn-glow.tga; the vote captain SPRITEs remain unchanged.
+Compact scoreboard shifts hero/name left, widens name. MVP text/hover shift with
+it to preserve the gutter; expanded layout is unchanged.
+
+Preview adds Natsu F Kit (R/T only) and Starrk T Kit. Starrk reuses Q/W rawcodes:
+only the local preview substitutes TQ/TW art and GetFormGuide's readonly alt-form2
+text. GetFormGuide reads existing SpellData fields and formats strings; it does
+not allocate TooltipBuilder/struct/native handles or mutate live unit form.
+
+Tsuna T stores real chargePct from the same DisplayCharge curve as UI. Lv35
+partial overcharge1.5..4s now scales damage continuously100..125%; damage is
+multiplied once on fire; below100 the legacy rounded damage is retained.
+check2 keeps legacy availability/cooldown thresholds;
+max-colour uses actual charge, not rounded check2. During fire the keyed panel
+shows elapsed / configured duration seconds, retaining remaining-time fill and
+normal interruption cleanup. No new timer/input. The previous125-only damage
+jump is removed; ranges/targeting and full-charge effect threshold stay unchanged.
+
+- CP55 message boundary: never lay out ORIGIN_FRAME_UNIT_MSG with generic frame
+  setters. CP53/54 introduced that path; both local crash dumps contain a
+  corrupted object's vtable and its matching .180/.290 size field. Pick/ban
+  announcements belong to WUI_CreateFeed's own TEXT frames, with X relative to
+  the real screen edge. Mock FRAME geometry cannot certify engine-owned types.
+  Test hero creation/selection remains the existing shared transaction.
+
+- CP56 damage attribution: DmgSys calls DamageStatsRecordHitFrom with the actual
+  source unit after final modifiers. Taken uses numeric source/owner/type keys
+  and saved integer metadata; Dealt stays aggregated. Never build strings,
+  retain unit handles or allocate per-hit handles. Direct HP hazards are observed
+  only by RoundSpells.EnvironmentHpLoss after the unchanged setter; optional
+  DamageStats preserves the original gameplay path when disabled.
+- CP56 input: WUI_AcceptKeyDown is a condition on slot-key and Esc-sync triggers.
+  Both edges must be registered: key-up clears the per-trigger/player/key latch.
+  Do not move the gate after ForceUIKey or BlzSendSyncData. Its elapsed clock has
+  no periodic callback. WUI_UseSlot's local recursion guard never selects gameplay.
+- CP56 source cells have hover events only (GLUEBUTTON), no click cleanup or
+  engine tooltip binding; manual tooltips are outside the panel rows. Background
+  alpha belongs to a passive child, not the parent/text. heroicon owns visibility
+  of game-time/train-kill boxes; WOSUI exposes only cached details visibility.
+
+- CP57 viewport boundary: DS_LayoutViewport reanchors the compact panel/toggle
+  before the closed-view return, on the existing .50 timer. WUI_LayoutFeed uses
+  its existing .25 timer. Both cache the screen edge and perform frame setters
+  only after a change; neither creates handles or feeds gameplay decisions.
+- WUI_InfoSourceIcon owns shared Game Info/Damage Stats environment artwork.
+  Keep actual ability/item artwork in the generated DamageStats catalogue.
+- Saber G charging starts from base entry and LvlUpCheck through the same
+  idempotent AlterSaberW_Start; the unit flag is cleared in loop cleanup. Its
+  autoattack proc is magic NextDmg route0 and numeric source A02F, not W2/A05F.

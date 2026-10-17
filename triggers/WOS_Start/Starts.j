@@ -1,10 +1,4 @@
 globals
-    framehandle WOS_ModeRoot = null
-    // Checkpoint 22: live countdown in the mode selector hint.
-    framehandle WOS_ModeHint = null
-    integer WOS_ModeSecondsLeft = 20
-    timer WOS_ModeCountdown = null
-    framehandle array WOS_ModeButton
     dialog udg_ModeDialog
     button udg_TestButton
     button udg_NormalButton
@@ -23,7 +17,6 @@ globals
     boolean ModeSystemsInitialized = false
     group MeraMeraEnumGroup = null
     timer CamSetupTimer = null
-    integer array WOS_CameraArea
     framehandle main_frame 
     timer RegenTimer = null
     timer FullShieldEffectTimer = null
@@ -226,12 +219,53 @@ function UpdateFullShieldEffects takes nothing returns nothing
     set u = null
 endfunction
 
-function TestComm takes nothing returns nothing
-    if ModeSystemsInitialized then
-        return
-    endif
-    set ModeSystemsInitialized = true
-    call WUI_ShowTestHelp(TestMode)
+function TestComm takes nothing returns nothing 
+local real x 
+local real y 
+local real r = 200
+local real r2 = 235
+local real a = 270 *bj_DEGTORAD
+local real fly = 300
+local real scale = 20
+if ModeSystemsInitialized then
+return
+endif
+set ModeSystemsInitialized = true
+set x = (GetRectCenterX(gg_rct_TestMode))
+set y = (GetRectCenterY(gg_rct_TestMode))
+call CreateTT_perm(x,y,fly,scale,"|c00FFFC01Arrow Left - create enemy on left side |r")
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Right button - create hurt ally |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Down button - self root for 2 sec |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Arrow Up button - self stun 2 sec |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01ESC button - (fast press) restore cd, hp and mp (longpress 0.15sec+) give max lvl |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-lvl X' pick your hero or enemy and write -lvl 35(for example)  |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-X' to play animation of your hero( -0 to play first animation )  |r")
+set r = r + r2 
+set r = 0
+set x = (GetRectCenterX(gg_rct_TestMode2))
+set y = (GetRectCenterY(gg_rct_TestMode2))
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-slow' take self slow 50% for 4 sec  |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-silence' take self silence for 3 sec  |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-sukuna' summon round ender sukuna on center instantly  |r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-killme' kill  your hero after few sec|r")
+set r = r + r2 +50
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-pr x'  pick your hero or enemy and write -pr 35(for example) to set 35% physical resistance|r")
+set r = r + r2 +90
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-mr x'  pick your hero or enemy and write -mr 35(for example) to set 35% magical resistance|r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-hp x'  pick your hero or enemy and write -hp 3500(for example) to set current life to this amount|r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'-mp x'  pick your hero or enemy and write -mp 3500(for example) to set current mana to this amount|r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01 You can pick enemy hero and open shop to buy any items to it |r")
 endfunction
 
 function MusicInit takes nothing returns nothing
@@ -244,7 +278,7 @@ function MusicInit takes nothing returns nothing
         return
     endif
 
-    // РЎРЅР°С‡Р°Р»Р° СЃС‚Р°РЅРґР°СЂС‚РЅР°СЏ РјСѓР·С‹РєР° РєР°СЂС‚С‹ РґР»СЏ РІСЃРµС… РєР»РёРµРЅС‚РѕРІ.
+    // Сначала стандартная музыка карты для всех клиентов.
     call StopMusic(false)
     call ClearMapMusic()
     call SetMapMusic("war3mapImported\\King Gnu - SPECIALZ.mp3", false, 0)
@@ -253,141 +287,66 @@ function MusicInit takes nothing returns nothing
     set musicenabled = true
     set expired = null
 endfunction
-// The frame selector and timeout use one authoritative mode transition.
-function WOS_SelectMode takes integer mode returns nothing
-    if PickedMode != 0 or mode < 1 or mode > 4 then
-        return
+function CheckPickedMode takes nothing returns nothing
+call DestroyTimer(GetExpiredTimer())
+if PickedMode == 0 then 
+call PlayersMsg("Normal Mode activated",1)
+        set PickedMode = 1
+        set TestMode = false
+        call Map_Start()
+    call DialogDisplay(Player(0), udg_ModeDialog, false)
+    call DialogDestroy(udg_ModeDialog)
+    if PlayersAmount <2 then
+call TimerStart(CreateTimer(),1,false,function MusicInit)
     endif
-    set PickedMode = mode
-    set TestMode = mode == 2
-    set CaptainMode = mode == 3
-    set CaptainDraftMode = mode == 4
-    set CaptainDraftPreRoundUnlimitedSwap = CaptainDraftMode
-    if TestMode then
+endif
+endfunction
+function OnModeButton takes nothing returns nothing
+    local button b = GetClickedButton()
+    local integer k = 0
+    if b == udg_TestButton then
+        set PickedMode = 2
+        set TestMode = true
+        set CaptainMode = false
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
         call TestComm()
-    elseif CaptainMode then
-        call PlayersMsg("Player Pick Mode activated", 1)
-    elseif CaptainDraftMode then
-        call PlayersMsg("Captain Draft Mode activated", 1)
+        call PlayersMsg("Test Mode activated",1)
+    elseif b == udg_NormalButton then
+        call PlayersMsg("Normal Mode activated",1)
+        set PickedMode = 1
+        set TestMode = false
+        set CaptainMode = false
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
+    elseif b == udg_CaptainButton then
+        call PlayersMsg("Player Pick Mode activated",1)
+        set PickedMode = 3
+        set TestMode = false
+        set CaptainMode = true
+        set CaptainDraftMode = false
+        set CaptainDraftPreRoundUnlimitedSwap = false
+    elseif b == udg_CaptainDraftButton then
+        call PlayersMsg("Captain Draft Mode activated",1)
+        set PickedMode = 4
+        set TestMode = false
+        set CaptainMode = false
+        set CaptainDraftMode = true
+        set CaptainDraftPreRoundUnlimitedSwap = true
         call CaptainDraft_PlayConfiguredSound(CaptainDraftSoundModeStart)
-    else
     endif
-    if WOS_ModeRoot != null then
-        call BlzFrameSetVisible(WOS_ModeRoot, false)
-    endif
-    if PlayersAmount < 2 then
-        call TimerStart(CreateTimer(), 1.00, false, function MusicInit)
+    if PlayersAmount <2 then
+call TimerStart(CreateTimer(),1,false,function MusicInit)
     endif
     call SetFloatGameState(GAME_STATE_TIME_OF_DAY, 8.00)
     call Map_Start()
+    call DialogDisplay(Player(0), udg_ModeDialog, false)
+    call DialogDestroy(udg_ModeDialog)
     if CaptainDraftMode then
         call CaptainDraft_StartFirstSideVote()
     endif
+    set b = null
 endfunction
-
-function WOS_ModeHintText takes nothing returns string
-    return WUI_TEXT + "Host selects a mode - Normal in |r" + WUI_GOLD + I2S(WOS_ModeSecondsLeft) + "s|r"
-endfunction
-
-function WOS_ModeCountdownTick takes nothing returns nothing
-    set WOS_ModeSecondsLeft = IMaxBJ(0, WOS_ModeSecondsLeft - 1)
-    if PickedMode != 0 or WOS_ModeSecondsLeft <= 0 then
-        call PauseTimer(WOS_ModeCountdown)
-    endif
-    if WOS_ModeHint != null then
-        call BlzFrameSetText(WOS_ModeHint, WOS_ModeHintText())
-    endif
-endfunction
-
-function CheckPickedMode takes nothing returns nothing
-    call DestroyTimer(GetExpiredTimer())
-    call WOS_SelectMode(1)
-endfunction
-
-function WOS_ModeFrameClick takes nothing returns nothing
-    local integer i = 0
-    if GetTriggerPlayer() != Player(0) then
-        call WUI_ReleaseClickFocus()
-        return
-    endif
-    loop
-        exitwhen i >= 4
-        if BlzGetTriggerFrame() == WOS_ModeButton[i] then
-            if i == 0 then
-                call WOS_SelectMode(1)
-            elseif i == 1 then
-                call WOS_SelectMode(3)
-            elseif i == 2 then
-                call WOS_SelectMode(4)
-            else
-                call WOS_SelectMode(2)
-            endif
-            call WUI_ReleaseClickFocus()
-            return
-        endif
-        set i = i + 1
-    endloop
-    call WUI_ReleaseClickFocus()
-endfunction
-
-// Checkpoint 20: real sizes (no parent scale), flush gold frames. Every
-// button's visible frame is exactly its clickable rectangle.
-function WOS_CreateModeSelector takes nothing returns nothing
-    local integer i = 0
-    local string caption
-    local framehandle panel
-    local framehandle title
-    local trigger events = CreateTrigger()
-    set WOS_ModeRoot = WUI_Passive("WOSModeSelector", WUI_GetRoot())
-    call WUI_RegisterModal(WOS_ModeRoot)
-    call BlzFrameSetLevel(WOS_ModeRoot, 30)
-    set panel = WUI_Window("WOSModePanel", WOS_ModeRoot, 1, 0)
-    call WUI_Place(panel, 0.400, 0.330, 0.330, 0.300)
-    set title = WUI_OrnateBorder("WOSModeMetal", panel, 0.030)
-    set title = BlzCreateFrameByType("TEXT", "WOSModeTitle", panel, "", 0)
-    call WUI_Place(title, 0.400, 0.452, 0.280, 0.022)
-    call BlzFrameSetScale(title, 1.20)
-    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetText(title, WUI_GOLD + "CHOOSE GAME MODE|r")
-    call BlzFrameSetEnable(title, false)
-    set title = BlzCreateFrameByType("TEXT", "WOSModeHint", panel, "", 0)
-    set WOS_ModeHint = title
-    call WUI_Place(title, 0.400, 0.431, 0.280, 0.016)
-    call BlzFrameSetScale(title, 0.80)
-    call BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetText(title, WOS_ModeHintText())
-    call BlzFrameSetEnable(title, false)
-    set title = WUI_Divider("WOSModeDivider", panel, 0.400, 0.418, 0.240, false)
-    loop
-        exitwhen i >= 4
-        if i == 0 then
-            set caption = "Normal Mode"
-        elseif i == 1 then
-            set caption = "Player Pick Mode"
-        elseif i == 2 then
-            set caption = "Captain Draft Mode"
-        else
-            set caption = "Test Mode"
-        endif
-        set WOS_ModeButton[i] = WUI_TextButton("WOSModeButton" + I2S(i), panel, caption, 0.264, 0.040)
-        call WUI_Place(WOS_ModeButton[i], 0.400, 0.386 - I2R(i) * 0.054, 0.264, 0.040)
-        call WUI_SetButtonTextScale(WOS_ModeButton[i], 1.00)
-        call BlzTriggerRegisterFrameEvent(events, WOS_ModeButton[i], FRAMEEVENT_CONTROL_CLICK)
-        if GetLocalPlayer() != Player(0) then
-            call BlzFrameSetEnable(WOS_ModeButton[i], false)
-        endif
-        set i = i + 1
-    endloop
-    call TriggerAddAction(events, function WOS_ModeFrameClick)
-    // Allocate/register on every client; only Player 1 sees the selector.
-    if GetLocalPlayer() != Player(0) then
-        call BlzFrameSetVisible(WOS_ModeRoot, false)
-    endif
-    set panel = null
-    set title = null
-    set events = null
-endfunction
-
 function MeraMeraNoMi takes unit hero returns nothing
 local unit target = null
 local player owner = null
@@ -492,48 +451,6 @@ function Regen takes nothing returns nothing
    
     set u = null
 endfunction
-function WOS_MinimapSummon takes nothing returns nothing
-    local unit u = GetSummonedUnit()
-    local integer pid = GetPlayerId(GetOwningPlayer(u))
-    if pid < 15 and IsUnitIllusion(u) and Hero[pid] != null then
-        call WOS_RegisterHeroMinimap(u, Hero[pid])
-    endif
-    set u = null
-endfunction
-
-function WOS_UpdateArenaCamera takes integer pid returns nothing
-    local unit u = Hero[pid]
-    local boolean atBase = CondArena == 0
-    local integer area = 2
-    if u != null and GetUnitTypeId(u) != 0 then
-        set atBase = CheckCoordsInRect(gg_rct_Base, GetUnitX(u), GetUnitY(u))
-    endif
-    if atBase then
-        set area = 1
-    endif
-    if WOS_CameraArea[pid] != area then
-        set WOS_CameraArea[pid] = area
-        // Base: no lock, the usual map camera and minimap. Arena: camera
-        // locked to the arena and the Arena.png minimap overlay.
-        // ARENA LOCK DISABLED (test): minimap overlay + camera bounds on gg_rct_Arena.
-        //call ArenaMinimap_SetArena(Player(pid), not atBase, gg_rct_Arena)
-        if atBase then
-            call SetCameraBoundsToRectForPlayerBJ(Player(pid), bj_mapInitialCameraBounds)
-            if u != null and GetUnitTypeId(u) != 0 then
-                call PanCameraToTimedForPlayer(Player(pid), GetUnitX(u), GetUnitY(u), 0.0)
-            endif
-        else
-            //call SetCameraBoundsToRectForPlayerBJ(Player(pid), gg_rct_Arena)
-            if u != null and GetUnitTypeId(u) != 0 then
-                call PanCameraToTimedForPlayer(Player(pid), GetUnitX(u), GetUnitY(u), 0.0)
-            else
-                call PanCameraToTimedForPlayer(Player(pid), GetRectCenterX(gg_rct_Arena), GetRectCenterY(gg_rct_Arena), 0.0)
-            endif
-        endif
-    endif
-    set u = null
-endfunction
-
 function CamSetup takes nothing returns nothing
     local integer i = 0
     local unit u
@@ -542,7 +459,6 @@ function CamSetup takes nothing returns nothing
     loop
         exitwhen i == 15
         if IsActivePlayerSlot(i) or IsActiveObserverSlot(i) then
-            call WOS_UpdateArenaCamera(i)
             set u = Hero[i]
             if u != null and Leave[i] == 0 and CondArena != 0 and not IsUnitType(u, UNIT_TYPE_DEAD) then
                 set x = GetUnitX(u)
@@ -573,12 +489,10 @@ function CamSetup takes nothing returns nothing
         endif
         set i = i + 1
     endloop
-    call WOS_UpdateHeroMinimap()
     set u = null
 endfunction
 function InitTrig_ModeDialog takes nothing returns nothing
     local trigger t = CreateTrigger()
-    local trigger minimapSummon = CreateTrigger()
     local real x  
     local real y 
     local real z  = 650
@@ -589,19 +503,53 @@ local real r2 = 265
 local real a = 270 *bj_DEGTORAD
 local real fly = 300
 local real scale = 20
-                set main_frame = BlzCreateFrameByType("BACKDROP", "SS", WUI_GetRoot(), "", 0)
-                call WUI_RegisterHeroLayer(main_frame)
+                set main_frame = BlzCreateFrameByType("BACKDROP", "SS", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
              //   call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
             //    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-// Permanent instruction texttags are now in the scrollable TestMode panel.
-set i = 0
+set x = (GetRectCenterX(gg_rct_Evergreen)+700*Cos(180*bj_DEGTORAD)-115*Cos(90*bj_DEGTORAD))
+set y = (GetRectCenterY(gg_rct_Evergreen)+700*Sin(180*bj_DEGTORAD)-115*Sin(90*bj_DEGTORAD))
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01Elemental debuffs + combo:|r")
+set x = (GetRectCenterX(gg_rct_Evergreen)+1450*Cos(180*bj_DEGTORAD)-415*Cos(90*bj_DEGTORAD))
+set y = (GetRectCenterY(gg_rct_Evergreen)+1450*Sin(180*bj_DEGTORAD)-415*Sin(90*bj_DEGTORAD))
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'- deal 40 magic dmg per sec, duration 5 sec|r")
+set r = r + 110 + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Water'- 100 dmg when apply, slow 10%, duration 5 sec|r")
+set r = r + r2+60 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Lightning'- duration 5 sec, after expires stun for 0.6 sec and burn 120 mana|r")
+set x = (GetRectCenterX(gg_rct_Evergreen)+100*Cos(180*bj_DEGTORAD)-475*Cos(90*bj_DEGTORAD))
+set y = (GetRectCenterY(gg_rct_Evergreen)+100*Sin(180*bj_DEGTORAD)-475*Sin(90*bj_DEGTORAD))
+set r = 200
+set r2 = 285
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'+'Water'- deal 1.5* Main stat dmg,duration 8 sec, increase taken physical damage by 10%|r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Fire'+'Lightning'- deal 1.5* Main stat dmg,stun 1.25, duration 2.5 sec(cant reapplied till exist)|r")
+set r = r + r2 
+call CreateTT_perm(x+r*Cos(a),y+r*Sin(a),fly,scale,"|c00FFFC01'Lightning + Water'- duration 5 sec, slow 10% and deal 0.4* Main stat dmg per sec|r")
+
+    set i = 0
+    set x = (GetRectCenterX(gg_rct_Chest)+300*Cos(180*bj_DEGTORAD)+150*Cos(270*bj_DEGTORAD))
+    set y = (GetRectCenterY(gg_rct_Chest)+300*Sin(180*bj_DEGTORAD)+150*Sin(270*bj_DEGTORAD))
+    call CreateTT_perm(x,y,650,20,"|c00FFFC01Press 'F2' to open/close statistics|r")
+    set x = (GetRectCenterX(gg_rct_Evergreen)+210*Cos(180*bj_DEGTORAD)+150*Cos(90*bj_DEGTORAD))
+    set y = (GetRectCenterY(gg_rct_Evergreen)+210*Sin(180*bj_DEGTORAD)+150*Sin(90*bj_DEGTORAD))
+    call CreateTT_perm(x,y,650,20,"|c00FFFC01'F3'/'F4' clear/load dmg stat|r")
+    set x = (GetRectCenterX(gg_rct_Evergreen)+1400*Cos(180*bj_DEGTORAD)-450*Cos(90*bj_DEGTORAD))
+    set y = (GetRectCenterY(gg_rct_Evergreen)+1400*Sin(180*bj_DEGTORAD)-450*Sin(90*bj_DEGTORAD))
+    set k2 = 2500
+    
+    set x = (GetRectCenterX(gg_rct_Shop)+150*Cos(180*bj_DEGTORAD)+45*Cos(270*bj_DEGTORAD))
+    set y = (GetRectCenterY(gg_rct_Shop)+150*Sin(180*bj_DEGTORAD)+45*Sin(270*bj_DEGTORAD))
+     set ShopInfo = CreateTextTag()
+    call SetTextTagPos(ShopInfo, x,y, z) 
+    
+     call SetTextTagText(ShopInfo, "|c00FFFC01Press 'TAB' to open/close shop, USE AUTOBUY in shop if  you NEW|r", 0.02)
+     call SetTextTagVisibility(ShopInfo,true)
+     call SetTextTagPermanent(ShopInfo, true)
+  // call SetTextTagLifespan(ShopInfo, 1)
+    call SetTextTagVelocity(ShopInfo, 0, 0)
 loop
 exitwhen i == 15
 set CameraSetup[i] = BaseCam
-// A camera distance loaded from the player's settings file wins over the default.
-if WUI_SavedCamera[i] > 0 then
-    set CameraSetup[i] = WUI_SavedCamera[i]
-endif
 set Shop_Active[i] = false
 set PlayerShopBut[i] = "TAB"
 set Hero[i] = null
@@ -615,19 +563,21 @@ call SetCameraFieldForPlayer(Player(i), CAMERA_FIELD_FARZ, 50000, 0)
 call PanCameraToTimedForPlayer(Player(i),GetRectCenterX(gg_rct_Base),GetRectCenterY(gg_rct_Base),0)
 set i = i + 1
 endloop
-call ExecuteFunc("WOS_SyncCamSlider")
     call TasAbilityChargeBox_Init()
-    call TriggerRegisterAnyUnitEventBJ(minimapSummon, EVENT_PLAYER_UNIT_SUMMON)
-    call TriggerAddAction(minimapSummon, function WOS_MinimapSummon)
-    set minimapSummon = null
     if PlayersAmount >1 then 
     call MusicInit()
     endif
+    set udg_ModeDialog = DialogCreate()
     set AAADestNoDecorCond = Condition(function NoDecor_Filter)
-    call WUI_OnReady(function WOS_CreateModeSelector)
+    call DialogSetMessage(udg_ModeDialog, "Pick Game Mode")
+    set udg_NormalButton = DialogAddButton(udg_ModeDialog, "Normal Mode", 0)
+    set udg_CaptainButton = DialogAddButton(udg_ModeDialog, "Player Pick Mode", 0)
+    set udg_CaptainDraftButton = DialogAddButton(udg_ModeDialog, "Captain Draft Mode", 0)
+    set udg_TestButton = DialogAddButton(udg_ModeDialog, "Test Mode", 0)
+    call TriggerRegisterDialogEvent(t, udg_ModeDialog)
+    call TriggerAddAction(t, function OnModeButton)
+    call DialogDisplay(Player(0), udg_ModeDialog, true)
     call TimerStart(CreateTimer(),20,false,function CheckPickedMode )
-    set WOS_ModeCountdown = CreateTimer()
-    call TimerStart(WOS_ModeCountdown, 1.00, true, function WOS_ModeCountdownTick)
     set CamSetupTimer = CreateTimer()
     set RegenTimer = CreateTimer()
     call TimerStart(CamSetupTimer,0.20,true,function CamSetup )

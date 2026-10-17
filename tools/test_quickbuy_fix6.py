@@ -56,7 +56,7 @@ class Fix6(prior.Fix5):
  def test_recommended_drag_hint_only_shows_in_recommended(self):
   g=self.vm.g;g['REC_Action'][0]='action';g['REC_Hint']='rec-hint';self.rec([1,2]);self.vm.run('REC_Render');self.assertTrue(self.visible['rec-hint']);g['ItemsFrameCurrentPage_ID'][0]=1;self.vm.run('REC_Render');self.assertFalse(self.visible['rec-hint']);g['ItemsFrameCurrentPage_ID'][0]=0;g['ShopSearchActive'][0]=True;self.vm.run('REC_Render');self.assertFalse(self.visible['rec-hint'])
  def test_missing_space_label_removed_and_visible_instructions_are_passive(self):
-  s=(ui.ROOT/'triggers/WOS_Start/WoS_Shop_Init.j').read_text(encoding='utf-8');self.assertNotIn('Need space/base',s);self.assertIn('WOSRecommendedDragHint',s);self.assertIn('WOSQuickBuyDragHint',s);self.assertIn('Hold RMB: drag left/right',s)
+  s=(ui.ROOT/'triggers/WOS_Start/WoS_Shop_Init.j').read_text(encoding='utf-8');self.assertNotIn('Need space/base',s);self.assertIn('WOSRecommendedDragHint',s);self.assertIn('WOSQuickBuyDragHint',s);self.assertIn('Hold RMB: drag left / right / up / down',s)
   body=s.split('function ShopClearItemTree takes',1)[1].split('endfunction',1)[0]
   for token in ['GetItemValue','GetObjectName','CreateItem','CreateUnit','CreateGroup','CreateTimer','TimerStart','BlzCreate','BlzGetFrameByName','GetRandom']:self.assertNotIn(token,body)
 class SaveRequest(prior.SaveRequest):pass

@@ -107,10 +107,10 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     // Прок пассивной способности F (Lv. 35)
     //===========================================================================
     function AkainuF_Start takes unit c, unit td returns nothing
-        if BlzGetUnitAbilityCooldownRemaining(c, AkainuF_ID) == 0 then
+        if BlzGetUnitAbilityCooldownRemaining(c, FakeAbi_ID) == 0 or GetUnitAbilityLevel(c, FakeAbi_ID) == 0 then
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_GZ_jntxn (11)_R1-200.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 2, 1))
             call NextDmg(c, td, AkainuF_Damage * GetHeroAgi(c, true), 1, 0.03)
-            call PassiveCD_Start(c, AkainuF_ID, AkainuF_CD)
+            call FakeCD_Start(c, AkainuF_ID, AkainuF_CD, 0, 0)
         endif
     endfunction
 

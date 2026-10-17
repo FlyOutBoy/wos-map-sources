@@ -52,7 +52,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileQ_EffectStopDistance = 550.0
         real CrocodileQ_ExplosionSpacing = 350.0
         real CrocodileQ_ScanOverlap = 5.0 // AoE 300 -> scan every 295 distance.
-        real CrocodileQ_Aoe = 285.0
+        real CrocodileQ_Aoe = 255.0
         real CrocodileQ_DamageAgiBase = 1.0
         real CrocodileQ_DamageAgiStep = 1.0
         integer CrocodileQ_Slow = 30
@@ -73,7 +73,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileW_CastTime = 0.45
         integer CrocodileW_Hits = 6
         real CrocodileW_Aoe = 600.0
-        real CrocodileW_PullSpeed = 210
+        real CrocodileW_PullSpeed = 187.5
         real CrocodileW_EdgePullMultiplier = 0.50
         real CrocodileW_DecorDamage = 20.0
         real CrocodileW_DecorPeriod = 1.0
@@ -87,19 +87,19 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 //================================ Crocodile E ========================================
         integer CrocodileE_ID = 'A0I9'
         private constant integer CrocodileE_DataKey = 1
-        real CrocodileE_Distance = 850.0
-        real CrocodileE_Duration = 0.21
-        real CrocodileE_MoveDelay = 0.03
+        real CrocodileE_Distance = 750.0
+        real CrocodileE_Duration = 0.24
+        real CrocodileE_MoveDelay = 0.09
         real CrocodileE_AnimationSpeed = 0.46
         real CrocodileE_SlashScale = 0.4025
         real CrocodileE_Aoe = 375.0
         real CrocodileE_SandAoe = 515.0 // Previous E sand radius 415 + 100.
-        real CrocodileE_HitDelay = 0.09
+        real CrocodileE_HitDelay = 0.12
         integer CrocodileE_HitTicks = 5
         real CrocodileE_HitOffset = 150.0
         real CrocodileE_HitAnimationSpeed = 0.01
         real CrocodileE_HitSlowTime = 0.51 // Seconds from cast start; affects animation only during E damage.
-        real CrocodileE_DamageAgiBase = 1.5
+        real CrocodileE_DamageAgiBase = 2.0
         real CrocodileE_DamageAgiStep = 0.5
         integer CrocodileE_ThirdChargeHeroLevel = 25
         real CrocodileE_UseCD = 1.5
@@ -111,11 +111,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileR_Speed = 750.0
         real CrocodileR_SandSpacing = 100.0
         real CrocodileR_Duration = 2.5
-        real CrocodileR_StartScale = 0.15
-        real CrocodileR_EndScale = 0.95
+        real CrocodileR_StartScale = 0.10
+        real CrocodileR_EndScale = 0.85
         real CrocodileR_CastTime = 0.45
         real CrocodileR_StartAoe = 200.0
-        real CrocodileR_EndAoe = 475.0
+        real CrocodileR_EndAoe = 400.0
         real CrocodileR_DamageAgi = 0.5
         real CrocodileR_DamageStep = 0.2
         integer CrocodileR_Hits = 6
@@ -134,7 +134,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileWR_ComboEffectScale = 1.0
         real CrocodileWR_ComboEffectHeight = 30.0
         real CrocodileWR_ComboEffectPeriod = 0.12
-        real CrocodileWR_DurationBonus = 1.5
+        real CrocodileWR_DurationBonus = 1.0
         integer CrocodileSandColorR = 255
         integer CrocodileSandColorG = 205
         integer CrocodileSandColorB = 120
@@ -179,7 +179,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileT2_UnlockTime = 1.0
         real CrocodileT2_CheckPeriod = 0.1
         real CrocodileT2_Window = 10.0
-        real CrocodileT2_DamageAgi = 10.0
+        real CrocodileT2_DamageAgi = 11.0
         real CrocodileT2_MergeDistance = 450.0
         integer CrocodileT2_MergeMaxPatches = 32
         real CrocodileT2_ExplosionBaseRadius = 50.0
@@ -1263,7 +1263,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             call FlushChildHashtable(CrocodileDecorHits,decorKey)
             if castPauseHeld then
                 set castPauseHeld = false
-                call StopSpellUnit2(c)
+                call StopSpellUnit(c)
             endif
             if LoadInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey) == 0 then
                 call SetUnitTimeScale(c,1.0)
@@ -1597,7 +1597,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set e2 = null
             set e3 = null
             set castPauseHeld = true
-            call StartSpellUnit2(c)
+            call StartSpellUnit(c)
 //---------------- E effect --------------------------------------------------
             //set e = AddSpecialEffectTarget("war3mapImported\\wos_Death_Spell2.mdl",c,"hand right")
             set e = AddSpecialEffectTarget("war3mapImported\\wos_[DoFT]CrocodileSandSekiro.mdl",c,"hand right")
@@ -1747,7 +1747,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 set damageTick = hits < maxHits and r+0.001 >= (hits+1)*baseDuration/maxHits
                 if castPauseHeld and (r + 0.001 >= CrocodileR_CastTime or endNow or not SpellBoolCaster(c)) then
                     set castPauseHeld = false
-                    call StopSpellUnit(c)
+                    call StopSpellUnit2(c)
                 endif
                 if not endNow and SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 then
                     set step = 0.0
@@ -1884,7 +1884,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 if endNow or r + 0.001 >= rmax or not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
                     if castPauseHeld then
                         set castPauseHeld = false
-                        call StopSpellUnit(c)
+                        call StopSpellUnit2(c)
                     endif
                     call CrocodileR_ReleaseAll()
                     call DestroyEffect(e)
@@ -1949,7 +1949,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set g = CreateGroup()
             set captured = 0
             set castPauseHeld = true
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
             set endNow = false
 //---------------- R effect --------------------------------------------------
             set e = EffectSpawn("war3mapImported\\wos_file00000867.mdl",x,y,0,1,CrocodileR_StartScale,0)

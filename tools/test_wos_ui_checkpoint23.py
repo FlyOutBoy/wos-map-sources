@@ -112,10 +112,12 @@ class Checkpoint24(unittest.TestCase):
 class Checkpoint24b(unittest.TestCase):
     def test_meters_fill_through_hooks_and_dock_above_minimap(self):
         wui = read('WOSUI.j')
-        self.assertIn('hook BlzFrameSetValue WUI_OnSetBarValue', wui)
-        self.assertIn('hook BlzFrameSetMinMaxValue WUI_OnSetMinMax', wui)
+        self.assertNotIn('hook BlzFrameSetValue', wui)
+        self.assertIn('function WUI_FrameSetValue takes', wui)
+        self.assertNotIn('hook BlzFrameSetMinMaxValue', wui)
+        self.assertIn('function WUI_FrameSetMinMaxValue takes', wui)
         self.assertIn('meter-fill.tga', wui)
-        self.assertIn('call WUI_RegisterMeter(frame1[pid], pid', (WOS.parent / 'Heroes/Milim.j').read_text(encoding='utf-8-sig'))
+        self.assertIn('call WUI_HeroProgressCounter(c, MilimG_ID', (WOS.parent / 'Heroes/Milim.j').read_text(encoding='utf-8-sig'))
 
     def test_right_column_panels_and_fps(self):
         wui = read('WOSUI.j')

@@ -1,6 +1,7 @@
 """Bounded compilation of the production source tree using bundled JassHelper."""
 from pathlib import Path
 import json,subprocess
+from audit_wos_ui_dispatch import audit
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,6 +25,15 @@ def check():
     if log.exists():
         print(log.read_text(errors='replace')[-1800:])
     print('UI compile:',result.returncode,'enabled production sources:',len(files)-1)
+    if result.returncode == 0:
+        report = audit(build/'compiled.j')
+        (build/'dispatch-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+        print('UI dispatch audit:',len(report['frame_sources']),'sources;',report['frame_functions'],
+              'frame functions;',len(report['critical_roots']),'strict roots;',len(report['errors']),'errors')
+        for error in report['errors'][:8]:
+            print(json.dumps(error,ensure_ascii=False))
+        if report['errors']:
+            raise SystemExit(1)
     raise SystemExit(result.returncode)
 
 if __name__ == '__main__':

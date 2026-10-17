@@ -2044,7 +2044,7 @@ library TsunaSpells uses GearSystems
             set tmp_x = 0.29875
             set tmp_y = 0.17
             if frame0_pas1[k2] == null then
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                 call BlzFrameSetVisible(frame0_pas1[k2], false)
                 if GetLocalPlayer() == Player(k2) then
@@ -2057,12 +2057,11 @@ library TsunaSpells uses GearSystems
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
                 call BlzFrameSetSize(frame0_pas1[k2], 0.025, 0.025)
-                call WUI_SimpleBorder(frame0_pas1[k2])
                 set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", main_frame, "", 0)
+                call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_BOTTOMLEFT, frame0_pas1[k2], FRAMEPOINT_BOTTOMLEFT, tmp_x - 0.295, tmp_y - 0.335)
                 call BlzFrameSetText(frame0_pas4[k2], "" + I2S(0) + "%|r")
-                call BlzFrameSetScale(frame0_pas4[k2], 0.66)
-                call BlzFrameSetSize(frame0_pas4[k2], 0.025, 0.010)
-                call BlzFrameSetTextAlignment(frame0_pas4[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+                call BlzFrameSetScale(frame0_pas4[k2], 1)
+                call BlzFrameSetSize(frame0_pas4[k2], 0.2, 0.2)
                 call BlzFrameSetVisible(frame0_pas4[k2], false)
                 if GetLocalPlayer() == Player(k2) then
                     call BlzFrameSetVisible(frame0_pas4[k2], true)
@@ -2077,8 +2076,7 @@ library TsunaSpells uses GearSystems
             call BlzFrameSetValue(frame0_pas2[k2], 100)
             call BlzFrameSetValue(frame0_pas3[k2], 0)
             call BlzFrameSetText(frame0_pas4[k2], "" + I2S(0) + "%|r")
-            call WUI_RegisterBuff(frame0_pas1[k2], frame0_pas4[k2], k2, "TsunaBeam:" + I2S(k2))
-            call WUI_RefreshDocks()
+            call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
             call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_T.blp", 0, false)
             call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Tsuna_T.blp", 0, false)
             set r = 0
@@ -2426,27 +2424,36 @@ library TsunaSpells uses GearSystems
             set r3 = TsunaF_Chance12
             set k2 = GetPlayerId(GetOwningPlayer(c))
             if frame_pas1[k2] == null then
-                set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frame_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)
                 endif
-                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                 call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, 100)
                 call BlzFrameSetValue(frame_pas3[k2], 0)
                 set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
                 call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_F", 0, false)
                 set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                 call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Hyperintuition:" + "|r")
+                call BlzFrameSetScale(frame_pas5[k2], 0.9)
                 set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Tsuna.j:frame_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frame_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -2586,27 +2593,36 @@ library TsunaSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Tsuna_G3")
             endif
             if frame1_pas1[k2] == null then
-                set frame1_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frame1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frame1_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
+                call BlzFrameSetSize(frame1_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frame1_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frame1_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame1_pas1[k2], true)
                 endif
-                set frame1_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1_pas1[k2], "", 0)
-
+                set frame1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frame1_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
+                call BlzFrameSetSize(frame1_pas2[k2], 0.1, 0.019)
                 set frame1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[k2], "", 0)
+                call BlzFrameSetSize(frame1_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frame1_pas3[k2], 0.5)
+                call BlzFrameSetModel(frame1_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frame1_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
                 call BlzFrameSetMinMaxValue(frame1_pas3[k2], 0, I2R(k3))
                 call BlzFrameSetValue(frame1_pas3[k2], 0)
                 set frame1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frame1_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
+                call BlzFrameSetSize(frame1_pas4[k2], 0.03, 0.03)
                 call BlzFrameSetTexture(frame1_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_G", 0, false)
                 set frame1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame1_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
                 call BlzFrameSetText(frame1_pas5[k2], "|c00FFFF00" + "Flame absorbed:|r")
+                call BlzFrameSetScale(frame1_pas5[k2], 0.9)
                 set frame1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame1_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
                 call BlzFrameSetText(frame1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-
-                call WUI_HeroMeter(frame1_pas1[k2], frame1_pas2[k2], frame1_pas3[k2], frame1_pas4[k2], frame1_pas5[k2], frame1_pas6[k2])
-                call WUI_RegisterMeter(frame1_pas1[k2], k2, "Heroes/Tsuna.j:frame1_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frame1_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame1_pas1[k2], true)
@@ -2711,27 +2727,36 @@ library TsunaSpells uses GearSystems
                             call StopSpellUnit(c)
                             set r = 0
                             if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
+                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame2_pas1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
                                 endif
-                                set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)
-
+                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
+                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
                                 set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
                                 call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
                                 call BlzFrameSetValue(frame2_pas3[k2], rmax)
                                 set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
+                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_G2", 0, false)
                                 set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
                                 call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
+                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
                                 set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
                                 call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
-                                call WUI_RegisterMeter(frame2_pas1[k2], k2, "Heroes/Tsuna.j:frame2_pas1:" + I2S(k2))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
@@ -2938,7 +2963,7 @@ library TsunaSpells uses GearSystems
         if IsUnitPaused(c) == false then
             call MUE(c, TsunaF_DodgeDistance, TsunaF_DodgeDuration, GAngle(c, td) + GetRandomReal( -30, 30) * bj_DEGTORAD)
         endif
-        call PassiveCD_Start(c, TsunaF_ID, cd)
+        call FakeCD_Start(c, TsunaF_ID, cd, 0, 0)
     endfunction
     function TsunaQ_Start takes unit c, real x, real y returns nothing
         call TsunaQKS.TsunaQ_Start(c, x, y)

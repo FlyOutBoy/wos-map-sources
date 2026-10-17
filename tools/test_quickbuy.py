@@ -133,9 +133,12 @@ class QuickBuy(unittest.TestCase):
   for frame in re.findall(r'(?m)^    framehandle (FRAME_\w+)\s*$',source):g.setdefault(frame,'existing:'+frame)
   for constant in set(re.findall(r'\bEVENT_PLAYER_\w+',source)):g[constant]=constant
   for name in set(re.findall(r'\b(Blz\w+)\s*\(',source)):g[name]=lambda *_:None
-  g.update(BlzCreateFrameByType=create,BlzCreateFrame=create,BlzCreateSimpleFrame=create,BlzFrameSetEnable=lambda fr,v:enabled.update({fr:v}),BlzGetLocalClientWidth=lambda:1920,BlzGetLocalClientHeight=lambda:1080,RMaxBJ=max,RMinBJ=min,RAbsBJ=abs,I2R=lambda n:float(int(n)),R2I=int,ModuloInteger=lambda a,b:a%b,SaveFrameHandle=lambda t,k,c,v:t.update({(k,c):v}),LoadFrameHandle=lambda t,k,c:t.get((k,c)),CreateTrigger=lambda:triggers.append(object()) or triggers[-1],InitHashtable=dict,GetHandleId=lambda x:hash(str(x)),TriggerAddAction=lambda *_:None,TriggerRegisterPlayerEvent=event,TriggerRegisterPlayerUnitEvent=event,BlzTriggerRegisterPlayerSyncEvent=event,BlzTriggerRegisterFrameEvent=event,QB_LoadLocal=lambda:None,Hero=defaultdict(lambda:None),WUI_Root='root',WUI_FrameDefinitionsReady=True,ShopSearchIndexCount=0,WUI_ShiftTable={},Shop_Active=defaultdict(bool),UNITSTAT_GetSelected=lambda _:None)
+  g.update(BlzCreateFrameByType=create,BlzCreateFrame=create,BlzCreateSimpleFrame=create,BlzFrameSetEnable=lambda fr,v:enabled.update({fr:v}),BlzGetLocalClientWidth=lambda:1920,BlzGetLocalClientHeight=lambda:1080,RMaxBJ=max,RMinBJ=min,RAbsBJ=abs,I2R=lambda n:float(int(n)),R2I=int,ModuloInteger=lambda a,b:a%b,SaveFrameHandle=lambda t,k,c,v:t.update({(k,c):v}),LoadFrameHandle=lambda t,k,c:t.get((k,c)),CreateTrigger=lambda:triggers.append(object()) or triggers[-1],InitHashtable=dict,GetHandleId=lambda x:hash(str(x)),TriggerAddAction=lambda *_:None,TriggerRegisterPlayerEvent=event,TriggerRegisterPlayerUnitEvent=event,BlzTriggerRegisterPlayerSyncEvent=event,BlzTriggerRegisterFrameEvent=event,QB_LoadLocal=lambda:None,Hero=defaultdict(lambda:None),WUI_Root='root',WUI_FrameDefinitionsReady=True,ShopSearchIndexCount=0,WUI_RegisterHotkeyEx=lambda *_:None,OSKEY_TAB='TAB',UNITSTAT_Shop='toolbar-shop',WUI_ShiftTable={},Shop_Active=defaultdict(bool),UNITSTAT_GetSelected=lambda _:None)
   g['BlzGetFrameByName']=lambda *_:'existing-native-child'
-  self.vm.run('QB_CreateUI');self.assertEqual(len(created),745);self.assertEqual(len(triggers),4)
+  self.vm.run('QB_CreateUI');self.assertEqual(len(created),753);self.assertEqual(len(triggers),15)
+  parents={frame:args[2] for frame,args in created}
+  for i in range(8):
+   self.assertEqual(g['QB_Panel'] if i<4 else g['FRAME_ShopItemList'],parents[g['QB_DragArrow'][i]])
   for i in range(6):
    for child in ['QB_PreviewIcon','QB_PreviewPrice','QB_PreviewPlate','QB_PreviewEdge']:self.assertFalse(enabled[g[child][i]])
    self.assertFalse(enabled[g['QB_PreviewRemove'][i]])

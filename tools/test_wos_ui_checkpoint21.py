@@ -147,7 +147,7 @@ class Hotkeys(unittest.TestCase):
         self.registered = []
         self.messages = []
         self.state = {'player': 3, 'key': 'L'}
-        self.vm.g.update(TriggerAddCondition=lambda *_: None, Condition=lambda f: f, OSKEY_TAB=('oskey', 9))
+        self.vm.g.update(PauseTimer=lambda *_: None, ExecuteFunc=lambda *_: None, SCOPE_PRIVATE='', TriggerAddCondition=lambda *_: None, Condition=lambda f: f, OSKEY_TAB=('oskey', 9))
         self.vm.g.update(
             ConvertOsKeyType=lambda code: chr(code), SubString=lambda s, a, b: s[a:b], StringLength=len,
             Player=lambda i: i, GetPlayerId=lambda p: p, GetLocalPlayer=lambda: 3,

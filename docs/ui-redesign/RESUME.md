@@ -1157,3 +1157,1117 @@ final check has zero object/source differences. Reopened 6605 archive payloads a
 Playable output `Maps/WoS/WOS2_MAIN_STABLE.w3x`, SHA256
 f9eb57be0a2ff3f8b3adb557ec9e27275285bd71be9467285d0652bb211b75f0.
 Original Range3 archive preserved. No Warcraft launch this promotion turn.
+
+
+## Checkpoint 33 — MAIN UI follow-up and ability progress (2026-10-15)
+
+Supersedes the pre-follow-up MAIN_STABLE artifact above. User authorized the
+stable MAIN branch; all changes below are saved into the editor scenario and
+rebuilt playable `Maps/WoS/WOS2_MAIN_STABLE.w3x`. 450 UI regressions and 5 real
+Crocodile T/T2 paths pass; full MAIN JassHelper/pjass/check/save/build PASS.
+Final check: zero object/source differences. Reopened 6606 archive payloads and
+112 WCT sources exactly match MAIN/project; added `UI/WOS/wos-app-link.tga` and
+its import entry. Binary objects are unchanged. SHA256:
+1f5843454ae987286db8ed5d764d6ea1cd607ee33e39efefc74ecebf27f62a3f.
+
+WOSUI restores cached empty native cell visibility in its existing HUD tick
+(respects Hide UI), expands Menu to Y=.600, centralizes exclusive shop/stats/music
+and Esc close, and cancels both pending key-capture families before choosing a
+new one. Real capture clicks use FIX12; keyboard events never reset a stale frame.
+Shop local close does not mutate Shop_Active: immediate visual hide + one-shot
+WUIWCLOSE sync reconciles shared flags, because shop validation/search reads them.
+The same boundary reconciles stats/music flags; closed windows do not send repeat
+Esc packets. Shop region/search/key entries all take part. Repick/Swap disabled
+ghosts are hidden; available TestMode hero replacement remains.
+
+Music is centered at .400; shop Buy/Sell/fast buttons enlarged and inventory
+shifted right; Save Keys tooltip expanded. Generated WOS App TGA/PNG preserved,
+caption WOS App and old URL retained. Hero pick has a matching top anime plaque,
+33 mappings and source URLs in assets/UI/WOS/hero-anime.json; user confirmed
+Genshin Impact for Raiden/Neuvillette. AAINIT owns the English beginner guide:
+shared UI-ready allocation, owner-local marker/read/write, auto after hero pick
+for 0 games/no marker, 20s countdown, Close/Esc, manual -help without timeout.
+Marker is SettingsFilePath(pid)+.help.txt. Added -help to Test Commands.
+
+WUI_HeroProgress has 45 call sites in 24 hero sources. Spell loops provide their
+real phase clocks/counters; cache key is owner+ability, synchronous allocation,
+owner-only presentation, stale/dead/replaced bars hide within .30. Fixed windows
+use existing .10 HUD clock plus buff/key/subject guards, never gameplay setters.
+Crocodile uses channelActive (channelFinished does not become true on natural
+expiry) to switch to the actual 10s T2 window. Erza E-shield/Nakagami R are
+indefinite resources, so show shield/mana instead of fabricated durations.
+Rimuru R3 invul is separated from F2 FullDamageShield; dodge chat became Tas
+remaining charges. Natsu enhanced-Q chat became a 5s meter, G shows G2 CD.
+RMB pip hit-test now includes F/G/passives with native CDs. Ainz Knights caption
+capitalized. All hero MouseOn/MouseOff call sequences preserved.
+
+UI mouse down/up listeners were already removed in the preceding demand-driven
+pass (test_ui_mouse_demand); Z world-move tracking now destroys its synced
+listener after one valid point. Wheel sector/palette polling stays at existing
+.05 cadence. This does not prove ping improvement on high-Hz hardware.
+
+Requested hazard balance: barrel100/car250/vending300; train125+50*round,
+wreck250+62.5*round; Sukuna1% target max HP +.5pp/s to15%, Game Info updated.
+Full report, exact progress hooks, diffs, source/resource hashes and backup:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-ui-followup.
+Full MAIN-before backup is in sibling 20261015-ui-mouse-demand/backup/MAIN-before.
+Old playable is backup/deployed/WOS2_MAIN_STABLE.w3x. The old Range3 TEST was
+already absent at its former Maps/WoS path; this task did not touch/restore it.
+Additional legacy Crocodile E/F/G suite has 7 pre-existing expectation mismatches,
+reproduced on the before-task backup; no new failures were introduced there.
+Native rendering, focus recovery, high-Hz ping behavior and multiplayer require
+in-game acceptance; no game launch performed for this build.
+
+
+## Checkpoint 34 — item hover range in MAIN (2026-10-15)
+
+MAIN scenario and WOS2_MAIN_STABLE.w3x rebuilt with item hover circles, sharing
+AbilityRangePreview's precreated per-hero effect. Hover-only, previous (0,2500]
+limit, owner hero only, same overlay/death/selection gates. No new mouse events,
+keys, timer or frames; actual item mechanics/hotkeys unchanged. Runtime uses
+ItemsSpells_GetPreviewAbility/GetItemPreviewRadius; full 150-item ability audit
+is assets/AbilityRange/item-rules.json (27 explicit rules, never runtime JSON).
+15 real native cast fields, 3 aura fields, 9 script globals. Holy Grail A09X=1200,
+Dark Grail A0CY/A0CZ=1500, Frozen Heart A07M=1500. Script projectile/movement and
+passive radii override stale editor ranges. CD-only Channel fake900/stat/self
+buff/no independent caster-centred area items deliberately return zero. Sakura
+native8000 remains hidden under the existing user-confirmed2500 cap.
+
+AR_Reconcile caches item ability handles synchronously, only changed slots call
+BlzGetItemAbility. Local hover/read/render never acquires an ability handle.
+Render verifies the cached item still occupies the slot, so move/drop/sale can't
+show a stale radius. WUI exposes visibility of already-cached native item buttons.
+Inventory hit-test lives in the existing AHUI .05 pass. AHUI_HideTooltip also
+conceals the ring: call it for item hover only when an old tooltip is visible,
+otherwise a stationary hover would cycle alpha0/255 every tick (regression test).
+
+JassHelper/pjass, check/save/build PASS; 470 UI regressions include20 item/range
+checks and the prior lifecycle tests against MAIN. Final check0 differences.
+Reopened6606 payloads/112 WCT sources exactly match MAIN/project. Only map J/WCT
+changed; imports, all models/textures and binary objects match pre-task backup.
+Playable SHA256:
+1926a0b36eadfb0762799d078a07a31dc76611d9a8cb488681fc2d782d94a36a.
+Reports/diff/verification/full MAIN + old playable backup:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261015-item-range.
+Old isolated TEST templates unchanged. Native appearance and two-client input/
+inventory lifecycle need in-game acceptance; no game launch performed.
+
+## Checkpoint 35 — Esc, framed guide and live spell windows (2026-10-16)
+
+MAIN scenario and WOS2_MAIN_STABLE.w3x updated. WUI_Init initializes both capture
+sentinels to -1 for every player; previously SlotCapture stayed at JASS's zero
+default until the optional editor was created, silently rejecting window Esc.
+Esc registers all 16 modifier masks and calls the existing exclusive close
+callbacks. Shop/scoreboard/music retain local immediate hide + synchronized
+owner-state cleanup; guide remains local. Close buttons explain Close window /
+Hotkey: ESC. Save Keys uses a sized tooltip anchored below the toolbar.
+
+- Guide uses four separate gold callout frames and generated arrow textures,
+  anchored to the actual Menu/F2/Stats Columns/Auto Buy controls. Owners publish
+  existing handles with WUI_RegisterHelpTarget; showing the guide only changes
+  points/visibility. Its 20-second first-game marker/manual -help behavior stays.
+- Added meter captions use cleaned ability tooltips from object-data, including
+  Uriel Protection (also corrected its native/research/tooltip proxy names).
+  Adaptive caption size survives WUI_RepinMeter through MeterEdges real key6.
+- Patriot W previews remaining .99-second pulses/cast gate instead of the 15s
+  watchdog. Harribel EW previews its 3+.12s charge gate and stops refreshing on
+  the dash. Akainu T follows first .21s / following .18s fist ticks and count.
+  Inori W reads native FOLLOW_THROUGH_TIME once during shared start (7.5s),
+  instead of showing the technical 99s cap. Spell mechanics unchanged.
+- First-round decor bases barrel100/vending150/car250/hydrant0; all +25 per
+  subsequent round. Train push100/explosion200, both +50 per subsequent round.
+  Game Info uses matching formulas and refreshes on round change via its existing
+  feed clock. Water/knockback preserved. Normal train60s, Sukuna phase30s;
+  round start resets its interval. One shared RNG choice selects Sukuna centre
+  or radius3000 at 45/135/215/315 degrees; all effects retain that shared origin.
+- AutoBuy/limited opening purchase prioritize the I007 (Boots of Speed, Sonic
+  icon) dependency branch and wait if it is unaffordable. Owned upgrades satisfy
+  that branch. Manual recipes, saved Quick Buy occurrence order and queues stay.
+- Skin PlacementCursor now uses UI/WOS/cast-range-red.tga. Existing hover model
+  and texture unchanged; old WOS/AOE_AIM_Orc.blp retained. WOS App uses the user's
+  monitor icon edited toward muted gold. Generated RGBA sources/prompts and
+  original user art retained in assets/UI/WOS/source; TGA imports are build-owned.
+
+JassHelper/pjass + 488 UI checks PASS, save/build/final check0 differences.
+Independently reopened6609 archive payloads and112 WCT sources match MAIN/project;
+only expected J/WCT/imports/skin/ability-name/UI textures changed. Previous range
+models/textures verified byte-identical. Playable SHA256:
+ef34b8f380e8b49e6ce443ab66c556cff9900526bfa0291179bd3c77e6ea45e3.
+Full MAIN-before + previous playable, diff, caption audit, logs and verification:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-ui-corrections.
+No game launch: native Esc delivery, typography, targeting texture and multiplayer
+window state require in-game acceptance. No separate TEST map was changed.
+
+## Checkpoint 36 — connected help arrows / round-start damage / softer cursor (2026-10-16)
+
+Screenshot follow-up in MAIN. Help target0 is now MenuLabel, target1 is the
+published Stats text; icon hit boxes were above the words and visually pointed
+at Game Info. Each arrow uses TOP/BOTTOM endpoints attached to its real target
+and callout edge; width only is fixed. Small end overlap compensates the artwork's
+transparent padding. Upper callout right edges no longer cross the next arrow.
+Bottom arrows similarly connect card edges to Stats Columns/Auto Buy controls.
+
+Game Info's six flat damage entries end with a separate gold `(Current damage:
+N)` line: barrel/vending/car/hydrant/train push/train wreck. The cached round is
+updated only by WUI_GameInfoRoundStart at CondArena=1, once per new round;
+WUI_FeedTick no longer checks/recalculates it. Opening/page changes render the
+cached round. Gameplay damage formulas unchanged from CP35.
+
+UI/WOS/cast-range-red.tga regenerated from the original hover disc reference:
+thin softened red edge, faint inward fade, small central plus/glow. RGBA alpha
+QA after512x512 TGA conversion: mean radial peak rim166.53 vs221.15 before
+(about25% lower opacity), clear interior alpha1/255, centre marker114/255.
+Hover MDX/BLP and help arrow textures unchanged. Source PNGs/exact prompts:
+assets/UI/WOS/source/help-polish-20261016.json.
+
+JassHelper/pjass,490 UI checks, targeted20 checks after final suffix formatting,
+save/build/final check0 differences PASS. Reopened6609 archive payloads and112
+WCT sources match MAIN/project; only J/WCT/cursor TGA payloads changed.
+WOS2_MAIN_STABLE.w3x SHA256:
+21b66cd8aca206a5b7ebe5f181cdc30a41c262b3f4b98be26aa9fcb064a496a6.
+Backup/report/diff/texture QA/full verification:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-help-polish.
+No game launch; final native arrow placement, cursor appearance and multiplayer
+acceptance remain in-engine checks. Separate TEST map unchanged.
+
+## Checkpoint 37 — environment bases and training round counter (2026-10-16)
+
+Vending base100, car base200; barrel100/hydrant0 retained. Decor +25 starts
+only on match round2. Screenshot showed barrel150 at0:0 because TestMode's
+PrepareStart ends/restarts training phases when team1 has no arena hero; the
+technical CurrentRound increments although team scores do not. Reading it
+directly accidentally scaled training decor/train damage.
+
+Pure EnvironmentRoundRules in Map_Header.j exposes GetEnvironmentRoundNumber:
+training returns1; normal matches use max(1,CurrentRound). Actual four decor
+damage sites, both train values and WUI_GameInfoRoundStart share it. Technical
+round progression/rewards/hero replacement unchanged. Dependencies/index updated.
+Normal rounds1/2/3: barrel100/125/150, vending100/125/150, car200/225/250,
+hydrant0/25/50; train bases100/200 with existing +50 from round2. Training stays
+at these first-round bases despite technical counter3/20. No texture changes.
+
+Compile +492 UI checks (including production damage expressions, shared helper,
+and Game Info under training counter3/20), save/build/final check0 PASS.
+Reopened6609 payloads/112 WCT sources match MAIN/project; only J/WCT changed.
+WOS2_MAIN_STABLE.w3x SHA256:
+5b23e427111e29eded3f1649ba72714785738160dde6a2c28b63c155e9981603.
+Backup/diff/logs/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-environment-rounds.
+No game launch; separate TEST archive unchanged.
+
+
+## Checkpoint 38 — unified hero progress, live stacks and Sukuna warning (2026-10-16)
+
+MAIN and WOS2_MAIN_STABLE.w3x integrated. All active large hero time/resource
+FRAME bars now use WUI_HeroProgress's renderer, including Erza4 E in DecorDestroy.
+Timers share one decimal + `s`; text/percent and event-counter wrappers reuse the
+same keyed panel. Public Kyoraku/Prison Realm visibility and Kyoraku's stage guide
+are retained. Zero counters allocate synchronously. Direct refresh cancels old
+fixed clocks; persistent event resources close on form/death/hero replacement.
+Old per-hero six-frame constructions and WUI_TrackedMeter are removed. Existing
+SIMPLEFRAME buff/beam badges and Second Origin's text card retain their owners.
+
+- Tsuna G2 has one Cambio panel (removed duplicate Morph Time Left); F uses the
+  common custom percentage value, G combines remaining time and absorbed flame.
+- Frieren clone expiry no longer resets the real player's T2/TF/W2 availability;
+  the real hero's loop owns slot restoration and Height of Magic's timer.
+- Shiki's attached counter model removed; F stacks use TasBox and the progress
+  value (time + current stacks /4). Target mark/clock effects remain.
+- Rimuru Q2/F3 register their TasBox keys on activation and reset spent dodges;
+  the existing read-only buff/state getter supplies remaining dodges. Removed
+  Counterattack begin chat. Evolution resources use shared event counters.
+- Inori's E bar removed from both the real hero and Systems1.FixHeroPas clones;
+  active hand crystal effects retained. Toji W shows the actual tether clock,
+  paused with its target in attached/pulling states and closed on dispel/death.
+- Takeshi Cambio resource accumulation/threshold dummy no longer depend on UI
+  creation. Kirito keeps his native G cooldown; the disabled heal-meter poll is
+  removed. First post-pick window extended by30s; later round preparation stays60.
+- Sukuna's location is selected once at Time_Sukuna-15 for a public15s minimap
+  ping, then reused by the actual spawn. Each new round resets the cache;
+  direct summon without a warning resolves it on demand. No extra UI timer.
+
+JassHelper/pjass +504 UI checks PASS. After save, focused81 checks PASS; final
+clone-effect cleanup also passed the full504 runner. Final sync check:
+111 WTG triggers,0 source differences,0 new J files. Independently reopened6609
+archive payloads and112 WCT sources match MAIN/project; only war3map.j/WCT changed
+from the pre-save MAIN snapshot. The stable playable is byte-identical to the
+verified build. SHA256:
+059da71faeccb454a6e6cbaacab9a38fc49aa7c210d27eb34e02f2b962ec5fc4.
+Backup/changes/full logs/verification report:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-hero-progress.
+No game launch. Actual UI placement, Warcraft pause/native buff timing and
+multiplayer presentation require engine acceptance. Separate TEST map unchanged.
+
+
+## Checkpoint 39 — match votes, invisibility and dual hero meters (2026-10-16)
+
+MAIN and WOS2_MAIN_STABLE.w3x integrated. Previous working-tree changes preserved.
+New WOSMatchVotes module provides button-only vote kick and team surrender to the
+left of swap/repick. Kick requires all other active humans across both teams;
+FF requires every active teammate. Initiator votes YES. Any NO, departure of a
+voter or unanswered30s deadline rejects. Local buttons pulse gold until answered,
+feed messages name initiator/YES/NO, and the panel opens only by click. Sync
+packets validate actor, target, eligibility, duplicate answers and vote serial.
+FF queues exactly one round result; the round owner awards10 wins to the enemy
+and executes normal cleanup/end-match flow. Vote kick uses guarded target leave
+cleanup then defeats only the target. No chat commands or automatic popups.
+
+- Rimuru's evolution pips use the displayed replacement's real level. Q2/F3
+  dodges use a remaining/max HeroProgress bar while the actual buff exists;
+  removed the old Tas charge count. Pause extensions do not end the panel early.
+- Tsuna G1 and Shiki F use one1.5-height panel each: red resource/stacks on top,
+  purple time below. Docking sums true heights and compacts without overlap.
+- Native selected-unit invisibility dims the portrait and shows generated INVIS
+  inside its lower edge; restores on invis end/selection change. Cup of Tea
+  Evolved, Toji R and Erza W are covered by their native invisibility state.
+- Toji W uses the applied buff ability's native rank/target duration returned by
+  BuffUnit01, including inherited object fields. Removed the separate5s constant
+  and stale tooltip number; both tether states still freeze with a paused target.
+- Tsuna E2 adds the missing point-blank damage sample and retains its far end.
+  Crocodile Q extends the final damage pass by200, leaving flight/effect end alone;
+  per-target hit groups still prevent duplicate damage.
+- Generated alpha assets: INVIS, FF and kick; red upper fill. Menu hover retains
+  its blue gradient and removes the bright horizontal stripe. Sources, prompt
+  specifications and built-in image_gen provenance: assets/UI/WOS/source/
+  votes-invis-20261016.json; conversion: tools/build_wos_vote_assets.py.
+
+JassHelper/pjass,528 UI regressions and final10 focused checks PASS. Final sync:
+112 WTG triggers,0 source differences,0 new J files. Independently reopened6613
+archive payloads match MAIN and113 WCT sources match the project. Only expected
+J/WCT/WTG/imports/hover and four new TGAs changed from the MAIN backup. Packed
+war3map.j equals MAIN and the compiled output. Stable playable equals the build.
+SHA256: 25daf02d524847efd6596d78483423cfd5c0451d42c23822166217d29694bad6.
+Backup, exact changes, logs, asset QA and verification report:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-votes-invis.
+No game launch. Native visuals, Warcraft buff/pause timing and multiplayer input
+still require engine acceptance; this evidence is compile/archive/mock coverage.
+
+
+## Checkpoint40 — startup ghost, invisibility, guide isolation and wheels (2026-10-16)
+
+MAIN and WOS2_MAIN_STABLE.w3x integrated; previous changes retained.
+Discord's passive startup ghost now uses the real button's HUD toolbar slot1/0,
+not a second screen-edge docking cache. Settings applied / No saved settings yet
+startup messages removed; loading and manual Settings saved feedback retained.
+Shiki F badge is empty at zero stacks and shows digits only above zero.
+
+Invis indicator now checks granted abilities Apiv (Toji R), A03W (Erza water),
+A0HZ (Evolved Cup of Tea), confirmed from hero/item code and object base_id Apiv.
+Native buffs/query remain fallbacks. This intentionally recognizes ability
+presence even when IsUnitInvisible(unit, owner) is false. Actual grant/removal
+restores portrait alpha/INVIS at the existing selected-unit refresh.
+
+Kick requires max(2, eligible others), including in a two-human test lobby.
+Proposals can still open there but one initiator cannot remove the opponent;
+the target remains excluded. UI denominator matches the minimum. Deadline also
+rejects impossible1/2 quorums rather than leaving them active indefinitely.
+
+Ping and emote wheels register separate cancellation callbacks in WOSUI at shared
+startup. Last opened closes the other for both toolbar and key opens, clears
+its hover/commit state, and blocks old held-key repeats until release. Releasing
+the cancelled wheel sends nothing. Ping mouse-trigger destruction stays in its
+synchronized existing key/timeout owner, not the local cancellation callback.
+
+Guide -help and auto-newcomer open no longer read/write a .help.txt Preloader
+marker or mutate ability-tooltip carrier data. All frames/countdown timer are
+still created synchronously at startup; show/close/countdown only update cached
+presentation. Auto guide is once per current map for a zero-game local career;
+manual -help remains repeatable. The extra local preload path was removed after
+the reported desync, but the engine root cause is not proved without two clients.
+
+JassHelper/pjass and535 UI checks PASS, including both wheel switch orders,
+release/repeat/toolbar behavior, minimum2 kick votes, native-query-false invis
+abilities and file/allocation-forbidden guide paths for both local client IDs.
+Final sync:112 WTG triggers,0 source differences,0 new J files. Reopened6613
+archive payloads match MAIN,113 WCT sources match the project, and war3map.j
+matches MAIN plus final compilation. Only expected J/WCT payloads changed from
+the backup. WOS2_MAIN_STABLE.w3x is byte-identical to the verified build.
+SHA256: 4c6fd438ce9da9cec667fb22b258023a9a1517c3e70e222548f30d59d4ee628a.
+Backup, exact source diff, logs and verification report:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-startup-invis.
+No game launch; actual UI/invisibility and two-client desync acceptance pending.
+
+
+## Checkpoint41 — synchronized guide, compact votes, catalogue forms and grid drag (2026-10-16)
+
+MAIN and WOS2_MAIN_STABLE.w3x integrated, all earlier changes preserved.
+First-visit guide no longer depends on career ss_LocalGames. Read the dedicated
+Wos2/playedonce.txt decoded payload once after shared UI startup, and synchronize
+N/P through WOS2GUIDE with actual sender identity. Per-player shared arrays and
+pid0..9 ticks own open/handled/20-second remaining state. Manual -help uses the
+same countdown; Close/Esc sends authenticated C. GetLocalPlayer branches paint
+cached UI or write marker1 via the existing Save Keys writer; guide open does
+not execute exclusive-window callbacks and is not registered as a modal. The
+file is a Warcraft Preload script carrying1, under CustomMapData/Wos2. Career
+counts/settings sync remain unchanged. Missing/invalid marker shows once after
+hero selection; marker1 skips auto-help, manual -help remains available.
+
+Vote window is.260 wide,.135-.210 high, with two-column compact player rows,
+explicit solo empty state and always-present FF proposal/teammate list. Existing
+quorum, serial, cooldown/timeout and authoritative round/leave logic retained.
+All elements were constructed through the actual owner in regression tests for
+solo, full lobby, FF and unanswered eligible ballots.
+
+32 read-only catalogue kits across11 requested heroes use eight reusable styled
+form buttons below the attack icon. Erza has Q/W/E/R/T/G1/G2 plus base; Rimuru
+Form1/2/3; Takeshi Kit1/Kit2/Cambio; Tsuna Form2; Ainz T; Kenjaku Kit2/Summon
+Abilities; Kyoraku W; Toji Q variants; Inori E/T2; Frieren T; Gojo R. Existing
+alternate portrait imports are reused; unchanged-skin kits retain their real
+portrait. Icons and native research tooltips read actual ability rawcodes.
+Rimuru R/T filename suffixes are inverted in object data, so this fixes preview
+order without changing gameplay abilities. Toji Q1/Q2/Q3 labels restore on every
+base/other-hero selection. Anime captions grow up to the portrait border width
+before scaling. Local catalogue state never selects/mutates a gameplay unit.
+
+Quick Buy and recommended reorder now resolve bounded2D grid destinations;
+preview and release share QB_GridDragTarget, existing versioned M sync applies
+order. Four small gold passive arrows surround a target instead of a thin line;
+eight frame handles allocate once at startup (pool753). No new runtime frame
+allocation, idle mouse listener, timer or purchase path. Collapsed Kyoraku stage
+text persists through Save Keys U bit4, preserving minimap/info bits1/2 and old
+settings packets. Arrow generator: tools/build_wos_drag_arrows.py.
+
+JassHelper/pjass and544 UI checks PASS, including mixed-marker two-client mock
+state,20-second expiry, all32 kits' real objects/imports, Toji label reset,
+Rimuru R/T, compact vote controls, grid directions and release-once. Final sync:
+112 WTG triggers,0 source differences,0 new J files. Reopened6617 archive
+payloads equal MAIN,113 WCT sources equal the project; war3map.j equals MAIN and
+final compilation. Expected changed payloads are J/WCT/imports plus4 new arrow
+TGAs. Stable playable is byte-identical to the verified build.
+SHA256: 06cb5cd9bdc706b71d72961e33cd48a0ada3a9f9ff97edf9e4600452dfa4696a.
+Backups, source diff, logs and verification report:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-guide-forms.
+No game launch. Native appearance/input and the reported desync still require
+acceptance in two Warcraft clients; mock equality is not engine verification.
+
+
+## Checkpoint42 — agreed window dispatch and visible Quick Buy cues (2026-10-16)
+
+User reports CP41 startup without desync, immediate disconnect on Tab shop open.
+Inspected actual Tab/toolbar/region/career-item, F2, music and guide callback
+paths, including compiled JASS and prior snapshots. Replaced owner-local
+TriggerExecute chain + delayed state-close packets with agreed explicit-viewer
+transitions. Shared close callbacks update every peer immediately; only cached
+rendering/drag state is local. Escape requests authenticated WUIWCLOSE -1.
+Removed three redundant state-registration triggers. Guide CP41 marker and
+Save Keys loading/writing retained. A baseline replay proves old IsOpen[0]
+false/true divergence when closing F2 into shop, and asymmetric callback counts;
+it does not prove the engine cause of first Tab with F2 already closed.
+
+QB four arrows now parent to QB_Panel level92 instead of root siblings level60;
+Recommended four parent to catalogue panel. Form tabs narrow.041 ->.034,
+right edge unchanged. All753 existing cached frames remain; no new assets.
+
+547 regressions PASS, including actual Tab -> F2 -> music -> another player's
+shop -> Escape on two mocked clients, identical shared state and callback order
+without follow-up close packets; real QB_CreateUI parent/pool assertions,
+malformed Escape packet rejection and no local-guarded window dispatch.
+JassHelper/pjass PASS (110 enabled sources). MAIN check/save:112 WTG,8 expected
+source changes,0 new J,0 object-binary changes. Build/archive results below.
+Diagnostics/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-window-desync.
+No game launch; Warcraft multiplayer acceptance remains required.
+
+CP42 build/verification complete: all6617 archive payloads equal MAIN,113 WCT
+sources equal project, compiled war3map.j identical. Changed only J/WCT;
+final sync0 differences/0 new sources. Stable copied from verified build.
+SHA256: b549a3cdb46d5630550a9226e531a730cfebc1eb4aad1fc508e357f75173df5b.
+Detailed Russian cause/evidence/limits report: external diagnostics REPORT.md.
+
+
+## Checkpoint43 — picker direct calls and one-level form tips (2026-10-16)
+
+User reports a category click on the hero picker, then mouse motion, desyncs in
+CP42. CP42 window changes did not cover the four owner-local ExecuteFunc clears
+inserted with CP41 form tabs. Moved preview globals/Data/Render/Select/Clear
+before ReloadAfterPick and replaced all four calls with direct Clear(). Moved
+slot-badge/key helpers before capture handlers and replaced the other local
+ExecuteFunc with a direct call; guard absent optional slot-overlay/hint UI and
+normalize empty key labels. No new handles/timers/focus operations.
+
+Category regression now enables PreviewReady and forbids dispatch plus fresh
+handles. Saved CP42 reproduces the forbidden WOS_PreviewClear call; CP43 passes
+actual six-category OnClick for two clients. Added live preview select/clear/form
+click and actual cached hover checks. Compiled traversal of four roots / nine
+functions rejects ExecuteFunc/TriggerExecute/TriggerEvaluate/handle allocation.
+This is code-path evidence; the exact Warcraft disconnect mechanism is unproven.
+
+Form width.034 ->.030, centre.7165 ->.714, the midpoint between portrait ornate
+right edge.695 and panel right edge.733. Existing styles, heights and gaps stay.
+Erza T/G1/G2 QWER maxLv5 ->1 in tooltip registrations; Tsuna form Q/W/E/R likewise
+5 ->1. All match actual object levels; Takeshi Cambio already1 and checked.
+No object-data or gameplay ability-level changes, no blanket slash stripping.
+
+Diagnostics/source backups/report:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-picker-desync.
+Validation/build results appended after final artifact verification.
+
+CP43 final validation:552 UI checks PASS (17 focused form/picker checks),
+JassHelper/pjass PASS (110 enabled sources). MAIN final check112 WTG /0 source
+differences /0 new sources. All6617 extracted payloads match MAIN,113 WCT
+sources match project; packed war3map.j equals MAIN/final compiler output.
+Compiled call-graph audit PASS on the packed script as well. Changed only
+J/WCT. Stable copied from verified build; SHA256:
+2842aee35d18c1b059743dc2dceaffef7b8234a5f8b456da0f2f86e4329f3c62.
+No game launch; native multiplayer result remains unconfirmed.
+
+
+## Checkpoint44 — frame call audit and direct wheel/window paths (2026-10-16)
+
+Preserve the existing working tree and CP43 source/map backups. Audited generated
+JASS as well as source: old Z/K reached owner-local WUI_EnterWheel TriggerExecute;
+HUD shift had another callback chain. Frame minmax/value hooks and cross-library
+forward calls generated evaluate trampolines. CP42 shared-window correction and
+CP43 picker correction did not cover these separate paths.
+
+Removed runtime wheel/window/top-close/HUD callback registries. WOSUI now owns
+passive shared flags and cached panel handles; direct central wheel cancellation
+preserves both switch orders, held-key cancellation, repeat and release behavior.
+Ping mouse triggers allocate only at shared startup. Native frame setters use
+direct fill-aware wrappers; guide, shop, voice and saved-setting refresh paths
+avoid forward dispatch. Existing timers consume local presentation revisions;
+shared hero requests drain before sync/purchase. No new timer. Career open reads
+cache; startup parser's existing bounded chunk trigger is kept outside UI-open.
+
+New compiled audit is part of check_wos_ui.py:31 enabled frame owners,387 compiled
+frame functions,27 strict runtime roots; explicit local branches checked too.
+Only shared startup construction and shared gameplay ability hooks remain as
+reported frame-call-graph exceptions. See ARCHITECTURE checkpoint44 for contracts.
+Diagnostics/backups/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-ui-dispatch-audit.
+Validation/build results appended after final artifact verification.
+No game launch; Warcraft two-client acceptance remains required.
+
+CP44 final validation:560 UI regressions PASS, including13 startup/wheel/direct-call
+checks. JassHelper/pjass PASS (110 enabled production sources). Compiled audit PASS
+on both check output and packed script:31 frame sources,387 frame functions,
+27 strict roots;0 errors. MAIN check/save complete; final112 WTG /0 source
+differences /0 new sources /0 object-binary changes. All6617 packed payloads equal
+MAIN, all113 WCT sources equal project and war3map.j equals the final MAIN build.
+Only J/WCT changed against CP43. Stable copied from verified build; SHA256:
+8407b8072540304e38be640670a75924e17959584dc1e172848d3a7e36f9e55f.
+No game launch. Native two-client/input/layout acceptance remains pending.
+
+
+## Checkpoint45 — mode startup isolation and demanded mouse subscription (2026-10-16)
+
+User reports CP44 mode selector and subsequent pick never appear, and idle mouse
+movement affects ping. CP44 had inlined the initial camera slider setter before
+mode UI/countdown scheduling in InitTrig_ModeDialog; optional native/UI failure
+could therefore prevent both. WOS_BeginModeSelection now starts the authoritative
+20s timeout and1s countdown first, idempotently, then registers the selector. The
+initial camera-slider synchronization runs once in existing CamSetup periodic
+work, outside the required mode-launch thread. Late selector creation hides it
+if a mode is already selected. Actual native fault/operation-budget cause is
+unconfirmed; a production-function regression injects a failing optional frame
+native and verifies that Normal fallback still reaches Map_Start.
+
+Supersedes CP44 ping preallocation. No EVENT_PLAYER_MOUSE_MOVE registration at
+startup: TMP_TrackMouse creates its dedicated subscription only in agreed Z-down
+processing, before any local-player branch. First valid world sample, key-up,
+Escape or K activation destroys and nulls it on every client. Local right-click/
+close/toolbar wheel switch sends authenticated WOSPMOUSE with a shared epoch;
+stale cancellation cannot destroy a newer subscription. K blocks cancelled-Z
+repeat tracking until release. Emotes retain local-only pixel/button polling,
+strictly while open, with no network mouse subscription. Common WUI_EnterWheel
+still owns direct mutual visual cancellation. No handle mutation inside local
+presentation. Existing hero MouseOn/Off and mouse-down owner are unchanged.
+
+The compiled audit explicitly records the agreed TMP_OnKey -> TMP_TrackMouse
+CreateTrigger path, while continuing to forbid local allocation/dispatch across
+all frame roots AND strict runtime roots. This narrow exception implements the
+requested lifecycle rather than relaxing frame-render safety. Tests verify zero
+startup MOVE registrations, destruction/recreation, stale epochs, matching
+owner/other-client lifecycles, both wheel switch orders and optional-UI failure.
+
+CP45 validation/build complete:563 UI checks PASS, including25 ping tests and14
+startup/direct-call tests. Compile and packaged audit PASS (110 production sources,
+31 frame sources,387 compiled frame functions,27 critical roots). Agreed mouse
+subscription allocation is reported separately; local paths retain strict guards.
+MAIN final sync112 WTG /0 source differences /0 new J /0 object-binary changes.
+All6617 payloads and113 WCT sources verified; final war3map.j matches MAIN/build.
+Only J/WCT changed. Stable updated; SHA256:e1cc022cb4180ab15955b3da5ff7d08f3a2a41b722647ed9cc831224020d4645.
+No game launch; native appearance/startup and multiplayer remain unverified.
+
+
+## Checkpoint46 — shop RMB, staged F2, dead vitals, Burner and base surrender (2026-10-16)
+
+Shop RMB input now uses ten agreed preallocated triggers attached to expiration
+of the existing .05s ShopSearchDebounceTimer. All start disabled; WUI_SetShopRmb
+and agreed shop/window transitions enable only the relevant slot, like the hero
+MouseOn/Off lifecycle. QB_OnRmbTick samples only its local owner. Closed shops
+have no active input handler. The existing debounce callback processes passive
+local revisions/search/hero requests only. No new world mouse registration,
+Execute/Evaluate or input timer; pickup/drop QB_OnMouse remains inventory-only.
+Close, Escape/window switch, repick/start reset and leaving shop disable the
+input trigger. HUD hide preserves shared shop state but gates local reads.
+
+User reports missing F2 badge and no click/key action. Stats hotkey/click binding
+was after monolithic ten-row construction. CreateUI now constructs the shell,
+hides it immediately and registers input before a finite shared .01s builder
+creates one row per tick. Ready becomes true only after all10 rows; only then
+does the .25s update begin. Runtime F2 allocates nothing. Regression executes
+actual shell registration/build completion and both input entry points. This
+addresses startup failure/operation-budget exposure, not a native reproduction.
+
+Team-strip death status is public. Dead heroes always render0 HP despite corpse
+life values, and retain HP/MP bars. For hidden dead enemies, mana remains cached;
+no hidden life/mana/type query is added. Living hidden enemies remain private.
+
+TsunaTKS removes its private SIMPLEFRAME buff tile. X-Burner uses the common
+HeroProgress charge panel, updated by the existing .05s spell loop. Display is
+continuous0->100, then100->125 for level35; gameplay check2/damage thresholds
+unchanged. At actual125 charge the fill becomes red and text.66->.92. New casts
+restore purple/default scale. Meter metadata key8 stores value scale so reflow
+keeps the enlarged text centered; key7 remains dual-meter height.
+
+Surrender is now allowed on base and arena in Normal/Test. Only the agreed vote
+queues WOS_ForfeitTeam; PrepareStart bypasses preparation when queued and uses
+the same ten-win scoring/end-round cleanup as arena surrender, once. FF player
+rows are passive. FF/kick rows have cached right-edge check/cross marks, with
+four-second result retention using the existing vote tick. No new assets.
+
+Diagnostics/backups/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-rmb-stats-burner.
+Native rendering, event timing and multiplayer need Warcraft testing.
+
+CP46 final validation:570 UI checks PASS (15 startup/direct-call,14 hero-progress,
+18 voting,17 guide/form checks); compile110 enabled production sources PASS.
+Compiled audit PASS on check and actual packed script:30 frame sources,388 frame
+functions,28 strict roots. MAIN check/save:112 WTG /0 final source differences /
+0 new J /0 object-binary changes. All6617 packed payloads equal MAIN,113 WCT
+sources equal project; war3map.j equals MAIN/final build. Only J/WCT changed.
+Stable updated; SHA256:1685a2cc285c3e5787ad69180f0bc9770fd7cc28faeaf1e67a2a15d59cc3ffe8.
+No game launch. Native F2/input/visuals and multiplayer acceptance remain pending.
+
+## Checkpoint47 — complete F2 startup, placeholders, learn glow and vote cooldown (2026-10-16)
+
+CP46 did not fix F2 in the user test. Registration still followed shell,
+headers and F3/F4 setup. It is now the first step of a finite shared17-tick
+builder; all construction stays outside runtime key/click callbacks. Regression
+runs real Scoreboard builders + WOSUI hotkey registration, replacing native
+boundaries only. Exact native abort cause remains unproved; game acceptance is
+pending.
+
+Hide UI ghost now uses final stored dock width (viewport reflow previously
+restored .056 after direct size shrink). Game Info page1 includes -help.
+Kenjaku Curse count uses BTNHero_Kenjaku_F2 artwork without changing its F meter
+key or Prison Realm. Learn clicks reset pressed state; five preallocated gold
+SPRITEs use the Player Pick captain-control model. Mode text is larger.
+
+FF top-level WOS_FF_ENABLED true shows/enables; false hides/closes/rejects FF
+without changing kick. Reproposal cooldown30s after completion, per kick lobby /
+FF team, enforced in shared begin and UI. Open window title shows remaining
+seconds using existing vote tick. Reply timeout remains30s separately.
+
+Diagnostics/backups: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-stats-pips-vote.
+
+CP47 validation:577 UI checks PASS; compile110 sources PASS; compiled audit
+30 sources/390 frame functions/28 roots PASS. MAIN check/save112 WTG with0
+final source differences/0 new J/0 object binaries changed. All113 WCT sources
+and6617 packed payloads verified; only J/WCT changed against CP46. Stable map
+updated without game launch. SHA256:222517ce3205445a4772960b7bea78e60b2701fa29b2ed431bf87a4c0f1f3571.
+
+## Checkpoint48 — vote model and selection timing (2026-10-16)
+
+User clarified the requested captain model belongs on FF/votekick notifications,
+not on ability learning. MatchVotes replaces its two diffuse BACKDROP glow-gold
+plates with two preallocated SPRITEs using the exact captain-slot model/transform:
+Pick/wos_IconShine1.mdx, size1/1, scale.72, LEFT anchor to same-size .026 button,
+Y offset.48. No alpha pulse; the model animates. Both are passive. Visibility
+still means an eligible local player has an unanswered active ballot; answering
+hides the glow and disabled FF remains hidden. No runtime allocation/input change.
+ShowCD was not changed in CP48.
+
+InitTrig_ModeDialog schedules a5s one-shot before optional UI/camera setup.
+Its callback starts the existing full20s mode selection/fallback and destroys
+the delay timer. Required startup remains independent of optional frame failure.
+Player Pick TimeToPickCaptain10->15 for each captain. Shared Normal/Player Pick
+PrePickTime15->20 extends bans5s; the final5s handoff and3s ban lock are unchanged.
+Captain Draft uses its separate timing owner; Test retains its bypass.
+
+Focused regressions exercise delayed mode startup despite optional UI failure,
+actual vote model type/transform and unanswered/answered notification state.
+Diagnostics/backups: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-pick-timing-glow.
+
+CP48 follow-up: -help has a fifth WOS App callout (global match statistics and
+custom game music), with an upward arrow to the existing WOS App label registered
+as help target4. Card uses a third staggered top position below Stats and stays
+inside the toolbar right edge; endpoints share the same target/card X. Frames
+are preallocated in the shared help builder. MusicPlayer's real app button gets
+a matching hover tooltip. Guide timeout, playedonce and shared-state ownership
+remain unchanged; no input subscription, runtime allocation or dispatch added.
+
+CP48 final:577 UI checks PASS, compile110 sources PASS; packed audit30/390/28
+PASS. All113 WCT sources/6617 MPQ payloads verified against MAIN; only J/WCT
+changed from CP47. Stable map updated without game launch. SHA256:
+23a8a75407520e824567e25cec65487d4c9b1a9ef1dd2679311900890bac5757.
+
+## Checkpoint49 — compact names, UI actions, Burner and two hero kits (2026-10-16)
+
+Compact scoreboard heroX.224/nameX.270, name width.082/scale.50. MVP gutter follows
+left; expanded mode unchanged. Help automatic/manual timeout40s, countdown and
+Game Info text updated. Restored old learning BACKDROP (no floating skill-point
+SPRITEs); FF/kick captain-model notifications remain.
+
+Shared bootstrap creates cached passive WOSTopActions FRAME. Repick/swap and
+swap UI, vote controls/panel use it as ancestor; Hide UI preserves child state
+while hiding the group. MV_Render gates on top visibility. Existing shared Esc
+sync closes local MV_View and cached WindowPart11 (10 reserved for Career).
+Click reset enabled for FF/kick, repick/swap and swap menu; no new input listener.
+
+TsunaTKS real chargePct tracks UI's continuous curve. Every partial overcharge
+above100 on level35 scales damage, not just125. Fire phase shows0.0/2.0s (duration
+from TsunaT_Duration) instead of percent, with remaining-time fill. Existing
+cleanup/charging sounds/full effect/cooldown threshold retained.
+
+Natsu F Kit exposes FR/FT in R/T; Starrk T Kit includes active wolf abilities.
+TQ/TW use their changed art and readonly form2 SpellData text because rawcodes
+are reused. No live hero form or global ability icon is changed by preview.
+Tests extend real preview metadata to36 forms across13 heroes; partial Burner
+charge/damage/fire timer and owner-only Escape/focus paths are executed.
+Diagnostics/backups: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261016-hud-burner-kits.
+
+CP49 final validation:580 checks PASS; compile110 sources PASS; packed UI audit
+30/391/28 PASS. MAIN0 final source differences /0 new J /0 object binaries.
+All113 WCT sources and6617 packed payloads verified; only J/WCT changed.
+Stable map updated; no game launch. SHA256:
+98f14d2d02b12ea438f6c1223956a1ac692ca70a9986e95b0b76e4d65de83d44.
+
+## Checkpoint50 — optional damage source leaderboard (2026-10-17)
+
+`WOS_Start/DamageStats.j` is independently disabled with `DAMAGE_STATS_ENABLED`
+or its trigger-settings entry. Both disabled configurations compile. Compact
+DAMAGE STATS and TEST COMMANDS start collapsed. Restart is flush left of Vote
+Kick (0.003 UI-unit gap); existing single-player availability is retained.
+
+DamageSource(rawcode) is a one-shot numeric tag before a scripted hit/effect.
+Systems2 damage wrappers consume it even for invalid targets, push/restore the
+active source around UnitDamageTarget, and delayed/DOT instances capture their
+own source. DmgSys snapshots the source at event entry before nested procs and
+records the final damage after shields/modifiers at the same hero/nonillusion
+target boundary as F2. Scripted attacks belong to their ability/item; controlled
+summon attacks map to their summoning ability. Untagged native damage has an
+explicit fallback. No per-hit strings, frames, timers or extra gameplay dispatch.
+Existing damage amounts, native types and hit scheduling are preserved.
+
+Four numeric buckets: Round, Game, Counter, Previous. Round rollover snapshots
+Previous and clears Round; Game remains cumulative. F3 clears only the actor's
+Counter, F4 copies Game into it. Both select Counter on that actor's UI; actual
+round/game history is preserved. Zero buckets flush their source list.
+
+UI: active slots only, descending totals, player colours and hero names. Ten
+newest distinct source icons per player, amount overlay and hover name/share.
+Open details provides a compact table; click a player for all sources sorted
+by damage and paged by ten. Source sorting is O(n log n), recent selection O(10n),
+only on dirty visible views, at most four updates/sec. Handles are built on the
+shared ready path, one row per startup tick. Runtime hover/click/render only
+uses cached frames. Large window is cached WindowPart12 and a child of the top
+actions owner, so Escape/exclusive windows and Hide UI preserve visibility.
+The generic column API now has an explicit remember flag: DamageStats collapse
+never overwrites the saved Kyoraku guide preference.
+
+`tools/audit_damage_sources.py` checks enabled damage call coverage and item
+icons from object-data. `--write-icons` refreshes only the generated icon block.
+Diagnostics/backups: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-damage-stats.
+Validation: 601 regression checks, production compilation, 427 damage calls in
+47 files, 32 strict UI roots; no in-game or multiplayer claim. Packed verification
+and final map hash are recorded in that directory's verification-report.json.
+
+CP50 final: MAIN compile111 sources;601 checks; damage audit427/47; packed UI
+31/399/32 PASS. All114 WCT sources and6617 MPQ payloads match MAIN. Only
+J/WCT/WTG changed. Stable SHA256: b323ea6d3ee746399d49c3bec7b16084ee0a87a4bf660aa67ca6948a11a8be1d.
+No game launch.
+
+## Checkpoint51 — DamageStats scoreboard layout correction (2026-10-17)
+
+User screenshots exposed text/amount/header frames outside their owners and a
+remote fixed-position source tooltip. DS_Text applied font scale before setting
+inverse-scaled dimensions. Replaced with the working F2 order and physical bounds:
+anchor, width/height, middle alignment, font scale. Runtime column resizing also
+reapplies the final font scale, as Scoreboard.ResizeText does.
+
+Player rows use transparent BUTTON hit areas and a separate white/low-alpha
+stripe; text/icons retain full opacity. No beveled text-button background in rows.
+Separate header cells align with player/hero, damage and recent icons. Values are
+right-aligned; source numbers sit inside icon bottom bounds on a dark passive
+shade. Compact rows reserve two font lines for player/hero. Open details sits at
+the compact panel bottom. Main table width.500 (was.560), top.530, height
+.082+.027*visible rows; source pagination uses its actual visible row count.
+Source details widen the source-name/share columns; returning to Players restores
+all column/icon positions. Header captions remain English.
+
+Source tooltip follows the hovered cached icon: compact to its upper left,
+large above its right edge. Text uses AllPoints and F2 alignment/scale; hide on
+leave, vanished source or hidden view. No fixed screen-space tooltip location.
+Restart width.042/height.013, center(.082,.556), beside Test: replace with.004 gap.
+Damage collection, F3/F4, round buckets and source sorting functions unchanged.
+
+`tools/test_damage_stats_layout.py` executes real constructors/render/hover,
+checks physical bounds, header/column alignment, icon-number containment,
+1/3/10-player and paged-source heights, two-line font budget, restoration of
+player columns, passive focus and actor-only allocation-free hover/leave.
+Geometry previews use those recorded calls and real panel/icon assets; they are
+not Warcraft renders. Diagnostics/backups:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-damage-stats-layout.
+
+CP51 final:612 regressions PASS (21 data +11 geometry); compile111 PASS; packed
+UI audit31/401/32 PASS. All114 WCT sources and6617 MPQ payloads match MAIN.
+Only J/WCT changed, no assets/objects. Stable SHA256:
+d1a7371f0ffebb767dcdff3dfe60fb1218a557a064f2f88dac3d552ea1a918af. No game launch; native rendering unverified.
+
+
+## Checkpoint52 — DamageStats upper-left colored bars and intact icons (2026-10-17)
+
+User engine screenshots supersede CP51 geometry-only acceptance: compact stayed
+in the right WUI column, labels were too small, grey stripes were not damage bars,
+and white.blp/vertex-tinted number backings obscured the bottom of source art.
+
+DamageStats.j now owns a separate upper-left toggle and transparent FRAME content,
+anchored to aspect-correct left edge .809-WUI_ScreenRight(), toggle top.542,
+content top.521. Both are children of TopActionOwner, so Hide UI preserves child
+collapse state. Default collapsed; no WUI column registration or saved-guide state.
+Rows use WUI_CreateFill + WUI_SetValue over bar-back.tga. Ten precolored textured
+fills follow the Systems1 slot palette, with bright palettes darkened for readable
+text. No STATUSBAR, white tint or runtime handle creation. Normalized to leader's
+page damage; source detail bars show share of that player's total.
+
+Compact width.228, step.039; detail width.620, top.535, step.038, height
+.085+.038*visible rows. Up to ten players and ten source icons per row. Hero
+portraits replace hero-name text. Nicknames sit on the bars; compact label1.00,
+detail1.15, amounts1.10/1.15, headings1.10. Source numbers .90 in a separate dark
+textured line UNDER each square art; no overlay on icon. Values round to nearest
+whole/short k/m; real collected totals are unchanged. Tooltip keeps decimal damage.
+Source pages widen name/share columns and restore player layout when returning.
+
+DS_BuildIconCatalogue caches 268 ability paths from object-data during shared
+startup. DS_SourceIcon uses those fixed paths plus the 31-item catalogue, matching
+the scoreboard's non-blended art setter. Vorpal Strike A0D3 has an imported,
+decodable BTNHero_Kirito_Q.blp. All298 imported source artworks decode; BTNBarrel
+is a stock path. Regenerate both catalogues with audit_damage_sources.py --write-icons.
+The ten fill textures are generated by tools/build_damage_stats_assets.py and
+included through install_wos_ui_assets.py. No damage/core/sort/reset changes.
+
+Tests execute production constructors/render/toggle/hover, verify 10x10 bounds,
+number lines below icons, leader-relative width/color, portraits/nicknames,
+source-page restoration, 1/3/10-player sizing, closed default, actor-only callbacks,
+rounded labels, catalogue/object equality and reproducible opaque colored assets.
+Diagnostics: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-damage-stats-bars.
+Geometry previews are not Warcraft renders. No game launch; native appearance and
+multiplayer remain unverified. Final compile/build/archive results appended below.
+
+
+CP52 final:614 regressions PASS (23 data/catalogue +11 geometry/assets). Compile111
+PASS; packed dispatch audit31/401/32,0 errors. All114 WCT sources and6627 MPQ
+payloads match MAIN; source delta is DamageStats.j only. Against CP51, payload
+changes are J/WCT/imports plus ten new fill textures; object binaries unchanged.
+298 source artwork payloads match validated files. MAIN final check:113 WTG,
+0 source differences,0 new J. Save first encountered a transient metadata replace
+WinError5; a fresh check and retry passed. No game launch.
+
+STABLE remains CP51 because Windows denies replacement while Warcraft is running
+(two game processes observed; neither was stopped). The verified CP52 copy is:
+C:/Users/Gear/Documents/Warcraft III/Maps/WoS/WOS2_MAIN_DAMAGE_CP52.w3x
+SHA256:d62bbcfcc208f82d6e6c756f4f5786a41f5b68122dc069de59bf2e074912333b.
+The locked STABLE hash still matches the pre-task backup. Use the new CP52 map;
+STABLE replacement can be done after the game releases its file. Native visual
+and multiplayer acceptance remain open. Verification report and source/task
+backups are in the diagnostics folder above.
+
+
+## Checkpoint53 — DamageStats dealt/taken, stable hover and two-row layout (2026-10-17)
+
+CP52 engine screenshots showed mouse/hover instability and totals outside the
+bar; user clarified the cursor-leave behavior and rounding threshold7051, not7501.
+Only DamageStats.j, DmgSys.j and WOSUI.j change gameplay sources in this task.
+
+Numeric contract: pages0..3 remain Dealt; pages4..7 are Taken, with their own
+Round/Game/Counter/Previous buckets. DamageStatsRecordHit mirrors attacker/victim,
+including neutral attackers for Taken. Use F2's per-hit integer precision before
+splitting, correcting the earlier real-vs-integer total mismatch. Public primitive
+recording still accepts real shares. Quincy Cross's existing bonus captures
+bonus/(old hit+bonus); final post-mitigation statistic is proportionally split into
+I023 and original source. Combat arithmetic/events/setters remain unchanged.
+Later flat shields/reductions are distributed proportionally for attribution.
+F3/F4 clear/load both directions; rollover snapshots both. Integer-composed labels:
+7038 ->7.0k,7051 ->7.1k,7501 ->7.5k;9.95k shortens to10k to keep source
+labels within four characters. No strings/handles on hit paths.
+
+Presentation: compact width.190, top toggle.598 at .802-WUI_ScreenRight(); expanded
+content top.540 leaves room for native timed messages at x.806-WUI_ScreenRight(),
+top.574,width.180,height.027. Message origin retrieved once in shared native cache.
+Detailed width.480,top.550. Both views use two rows: bar/name/right-aligned amount,
+then up to ten source icon/value cells. Portrait spans both rows (.037/.042).
+Compact step.039; detail step.044,height.093+.044*visible rows. Separate direction
+tabs Dealt/Taken in both views; page selection is shared. Source breakdown uses
+a large source icon and a second-line share caption; all bounds are fixed.
+
+DamageStats TEXT uses explicit FRIZQT font height at frame scale1; no SetScale.
+Value anchors to RIGHT of the fixed background with.003 padding, never to a
+scaled TOPLEFT offset or the changing fill. No runtime point/scale setters in
+RenderView; only fill widths and count-changed window heights can change.
+Source cell hit bounds include art+digits. Only manual tooltip ownership remains:
+anchor on enter, update text on ticks, hide on matching owner leave; remove
+BlzFrameSetTooltip. Pin the displayed ordering while hovered; on leave only hide the tooltip and
+mark dirty, then flush on the normal .25s timer. Hover never sets focus/enable. Source/row buttons have one click cleanup;
+remove duplicate RegisterPassiveFocus from buttons already handled by DS_Click.
+These remove conflicting paths; physical native cursor behavior is unverified.
+
+WindowPart12/13/14 are details/compact/tooltip. WUI_OnWindowEscape hides these
+immediately when no key capture is active, then uses the existing authenticated
+sync to close shared modal state. Capturing a hotkey still consumes Escape.
+Thin transparent outline TGA assets replace the large panel fill and source-number
+plates: damage-row-edge256x64,damage-icon-edge64x64,damage-window-edge512x512.
+Generated by build_damage_stats_assets.py; installer includes all three. Existing
+ten player-fill textures unchanged. Dealt/Taken captions and all new UI are English.
+
+Tests: production numeric hit split/mirrors/F2 precision/round/reset/load and
+constructor/render/hover/click/direction/Escape/message-region paths. All10x10
+cells contain art+numbers, portraits span both rows, totals remain inside bars,
+repeat hits do not reanchor or resize controls, hover does no focus/alloc work,
+source pages restore player state. Compiled strict audit adds WUI_OnWindowEscape.
+Diagnostics/backups: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-damage-stats-dealt-taken.
+Geometry previews are not Warcraft renders. Final build evidence appended below.
+
+Final CP53 evidence: 626 regressions and46 focused checks PASS;111-source compile
+PASS;31 owners/404 frame functions/33 strict roots/0 audit errors. MAIN check113
+WTG,0 differences,0new J,0object binaries. Packed114 sources/6630 payloads
+verified; only j/wct/imp changed and3 outlines added against CP52. Published
+WOS2_MAIN_DAMAGE_CP53.w3x and STABLE, SHA256
+440313e000e5ba59b567dfa7c5dd6d4d2aa0b472dc84deb73733c55ce1ecaf72.
+No game launch; native FPS/input/multiplayer acceptance remains pending.
+
+## Checkpoint54 — frame ping input, quiet idle UI and compact alignment (2026-10-17)
+
+User reported permanent FPS loss after Z and recurring idle stalls with the new
+UI. CP53 screenshots additionally show a reserved message gap and oversized
+portraits. This checkpoint keeps CP53 numeric/statistics contracts and adjusts
+input, scheduling and presentation. Source backups and final evidence:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-ping-frame-input.
+
+Z: press toggles a fixed-centre frame panel; five fixed nonoverlapping BUTTON
+hit areas select an order, then one native terrain click sends it. No MOVE
+registration, screen-position reads or mouse-button polling in TeamMapPings.
+Ten click triggers are created disabled at shared startup; agreed order clicks
+enable only the sender's trigger. Left terrain click disables before delivery;
+UI0/0 clicks keep waiting; RMB/Esc/new Z/K/another modal/8s timeout cancel.
+WUI_StopPingTarget owns shared cancellation. K key and toolbar still close Z;
+Z closes K. Key auto-repeat cannot reopen/cancel a selected order. Public WOSP
+receiver remains compatible; native target clicks deliver directly from the
+already-agreed event. No runtime ExecuteFunc/TriggerExecute/TriggerEvaluate.
+One precreated ping timer starts for targeting or accepted pings, and pauses
+after pending requests/cooldowns/marks expire. Effects/texttags still have the
+same3s bounded cleanup, ally delivery, fog privacy and target snapshots.
+
+A concrete heavy idle path was enabled in Systems1: WOS_ProbeStart from
+LearnHeroSpells repeatedly opens15s windows, enumerates the whole map/uses RNG
+and rewrites an accumulating Preload diagnostic file at.1s then1s intervals.
+WOS_DESYNC_PROBE_ENABLED=false now gates all four probe entries, and static
+guards remove its calls from LearnHeroSpells. When explicitly enabled, its
+timer also pauses at window completion. This is source evidence of unnecessary
+work, not proof of the reported five-second engine stall.
+
+Scheduling: F2 timer is created inactive, starts once on shared opening/final
+results, updates at.50s, and pauses when every shared open flag is false.
+A closed local F2 does no rendering while someone else views it. DamageStats
+refresh .50s, unchanged text/portraits/visibility cached. HUD stats .20s; range
+inventory ownership .25s instead of.05s; ability kit/learn refresh .25s instead
+of.15s while hover/range movement stays.05s. Already-hidden native command
+placeholders avoid repeated visibility/alpha invalidation. Tooltip numeric/range
+poll .50s; spell/item/level events retain the existing deferred immediate path.
+Shop inventory shares the existing.50s autobuy timer; metadata/name/icon/price
+strings are built only for changed local inventory cells. Search/drag .05s,
+autobuy decisions and purchase transactions unchanged. WUI cover/docks use one
+.10s core timer. Swap offer/emote/feed tick .10s with matching time deltas.
+Music considers only the local viewer; programmatic seek/time setters only
+while its panel is visible at.50s, playback elapsed/switching stay.10s. Startup
+mode/pick countdowns and gameplay spell/shield/fog timers are unchanged.
+
+Layout: WOS_SWAP_Y=.585 makes .026 action buttons' top=.598, matching the
+DamageStats toggle. Restart/Test replace y=.560. CP55 REMOVES the native
+unit-message layout introduced in CP53 and changed here: crash dump evidence
+implicates that engine-owned object. Actual pick/ban text uses WUI_Feed.
+Compact content top=.579 immediately
+below toggle; no reserved gap. Portraits .0315/.034 (15–19% smaller), compact
+row step.035/detail.038. First-line fill height.015 compact/.011 detailed; second-line source art
+and numbers have separate nonoverlapping boxes within each row.
+
+Tests execute production no-work probe, shared F2 timer lifetime, .05/.25
+reconciliation cadence, repeated hidden-slot setters, music progress cadence,
+changed-only shop metadata, Z event/cancel/lifetime cycles and updated two-row
+geometry. Full compile/regression/packed-build results are appended below.
+Engine FPS, physical cursor behavior and multiplayer still require game testing.
+
+Final CP54:634 regressions PASS, including6 operation/lifetime tests. Compile
+111 enabled sources PASS; strict audit31 owners/400 frame functions/34 roots,
+0 errors. Source audit427 calls/47 files/0 errors. Final MAIN check113 WTG,
+0source differences,0new J,0object binaries. Independently extracted packed
+114 sources/6630 payloads match project/scenario; against CP53 only
+war3map.j/war3map.wct changed (13 source files), no assets/objects changed.
+Published WOS2_MAIN_UI_OPT_CP54.w3x and STABLE; SHA256
+518b3a03643e4abe649e7c759b32e26027f44978263fc1727f6183731be10686.
+Full report, task diff and pre-change backup are in the diagnostics folder above.
+No game launch; actual idle/active FPS, physical input and multiplayer remain
+engine verification. One transient manifest-write error was resolved by a normal
+retry and final source/packed verification; no manual metadata override.
+
+## Checkpoint55 — remove native message regression; move actual WUI feed (2026-10-17)
+
+User reports Warcraft crashing when Patriot creates an enemy or allied Raiden
+through the arrow-key test picker. Audit compared verified CP48..CP54 sources
+and the local 03:46/13:12 minidumps, rather than changing the spawn transaction.
+The same native return chain is present in both dumps. At the failing object's
+address (RDI=RCX), the vtable's low DWORD is zero and field+0x9c is .180 in the
+night dump and .290 in the later dump: exactly the sizes assigned to
+ORIGIN_FRAME_UNIT_MSG by CP53 and CP54 respectively. CP53 introduced generic
+ClearAllPoints/SetAbsPoint/SetSize on this engine-owned region. This is strong
+native evidence against that recent path; there are no engine symbols proving
+which individual setter performs the corrupting write.
+
+Removed the whole native unit-message lookup/layout block. WUI_CreateFeed now
+places its own TEXT frames at screen-left+.252, .540-i*.015, instead of
+screen-left+.012, .560-i*.015: +.240 X (one feed width), -.020 Y. Text width,
+font, aging and queue stay unchanged. Test spawn, selection, damage, hero data,
+timers and CP54 optimizations are unchanged; no speculative deferred spawn.
+
+The previous message geometry mock treated the native object as a generic FRAME
+and could not catch memory corruption. Replaced it with a guard against that
+native layout and actual WUI_CreateFeed constructor tests for six lines at four
+aspect ratios. Native reproduction still requires a fresh game run.
+
+Diagnostics: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-native-message-crash
+contains source/map backups, both dump/log sets, crash-evidence.json and the
+small CP54-to-CP55 source diff. Publish only WOS2_MAIN_STABLE.w3x; no CP55 sibling.
+Compile: 111 enabled sources; dispatch audit: 31 owners/400 functions/34 strict
+roots, zero errors. Full UI regression suite: 635 passed. Final packed-build
+verification follows below. No game launch or claim of runtime confirmation.
+
+Final CP55: MAIN save/build -NoLaunch PASS. Check:113 WTG,0 source differences,
+0 new J/objects. Independently extracted114 sources/6630 payloads match project
+and scenario. Against CP54 only war3map.j/war3map.wct changed, and the only
+changed source is WOS_Start/WOSUI.j. Published ONLY WOS2_MAIN_STABLE.w3x.
+SHA256 80d6e688467c95dae09585f53ab0fb55d259c5c08aa7aa2bec5e299471b503ac.
+No engine run; recheck Patriot -> enemy/allied Raiden on a fresh launch.
+
+## Checkpoint56 — owned damage sources, compact panels and key repeat gate (2026-10-17)
+
+User confirms CP55 removed the Patriot -> Raiden crash. No native origin-message
+layout is reintroduced. This follow-up changes six production sources; only
+WOS2_MAIN_STABLE.w3x is to be published. Diagnostics/source/map backups:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-damage-sources-input.
+
+Taken now keys hits by numeric (base source, owner, hero/unit type), so attacks
+from different heroes use separate hero icons. DmgSys passes its actual source
+unit to DamageStatsRecordHitFrom after final modifiers. Metadata snapshots only
+integers in precreated tables; repeated hits reuse identities, with no strings,
+frames, unit handles, timers or sorting allocated per hit. Owned dummy spells
+use their player's hero identity. Source tooltips show owner and hero/unit name;
+source-detail subtitles also show the owner. Dealt stays aggregated by ability
+or item. Quincy bonus still splits only the statistic, not the actual hit.
+Round/Game/Session/Previous and F3/F4 copy/clear both directions as before.
+
+Counter is renamed Session, with a tooltip explaining F3 reset / F4 load Game.
+Dealt attack art uses the HUD icon-attack.tga with alpha blending. Taken attacks
+use the saved attacker hero's icon. Native untagged nonattacks fall back to their
+actual unit type/name instead of one Other/native bucket. Explicit sources:
+Fire/Water/Lightning debuffs, Vaporize, Overload, Electro-Charged, barrel/car
+explosions, transformer and fire hydrant. Kurikara/Murasame keep item identities.
+These labels describe the actual effect rather than the initiating ability.
+
+Train impact/explosion and Sukuna's end-round aura used direct HP setters and
+never generated a normal damage event. RoundSpells' EnvironmentHpLoss keeps the
+same SetHpCurrent call and measures actual HP loss afterward. An optional
+DamageStats call records that loss; it does not create another damage event or
+change mitigation, death credit, train kills or HP arithmetic. F2's old totals
+are unchanged; DamageStats now additionally includes those direct losses.
+RoundSpells has optional DamageStats dependency so disabling that trigger keeps
+the HP change. Ground fire has a dedicated native-unit identity as well.
+
+UI: details width .480 -> .360; row steps .038 -> .031, compact .035 -> .028.
+Portraits and source art shrink another20%; digits retain their own boxes below
+art. Both panels have a passive alpha205 textured backdrop, separate from opaque
+text/icons, plus existing thin outlines. Ten source icons remain in each row.
+Source hover controls are GLUEBUTTONs with no registered click handler/focus
+cleanup; one manual passive tooltip sits beside/below the panel, away from rows.
+Hover never changes mouse position, focus or enable state. Native cursor
+behavior remains an engine check; mock geometry cannot prove it.
+
+heroicon owns hide/restore of its existing game-time/train-kill boxes. Its local
+presentation pass reads the cached details visibility, including Esc/X/other
+modal/HideUI close paths, while the actual clocks keep running.
+
+Input: one precreated elapsed timer and per-trigger/player/key numeric gate.
+The gate is a TriggerAddCondition, before slot-forwarding and Esc-sync actions:
+key-up clears the latch; repeated key-down returns before action execution.
+Even synthetic alternating edges are capped at10 Hz/key. WUI_UseSlot also guards
+reentrant ForceUIKey forwarding. Both key edges are registered, including all
+modifier combinations. No repeat-triggered timer, allocation or sync. Existing
+key-up toggles and Z/J hold semantics are unchanged.
+
+Invisibility: portrait alpha135 ->85 (~33% opacity), restored to255 on exit.
+A separate passive black backing (alpha115) sits below the existing Invis
+texture at the same bounds; lettering remains crisp, with the same visibility
+predicate as the label. No raster asset or object edit is needed.
+
+Tests execute numeric identity reuse, two attackers/hero art, ownership tooltip,
+history/reset/load, direct HP clamping,2000 held events,1000 synthetic cycles,
+recursive forwarding, status restoration and constructor geometry for10 players
+and source pages. Geometry previews are diagnostic renders, not Warcraft shots.
+Final compile/regression/packed-build results follow below.
+
+Final CP56:643 regressions PASS. Compile111 enabled sources PASS; dispatch
+audit31 owners/402 frame functions/34 strict roots,0 errors. Damage source audit
+427 calls/47 files/0 errors. MAIN check113 WTG,0 source differences,0 new J/objects.
+Independent MPQ extraction verifies114 source files and6630 payloads. Compared
+with CP55, only war3map.j/war3map.wct change (six J sources); assets/objects stay
+identical. ONLY WOS2_MAIN_STABLE.w3x published. SHA256
+ceaf90afe32c18b81efd7cd82446ebd885799477765aacd7871ef50992b13163.
+No game launch; native cursor/smartcast/FPS/multiplayer acceptance is pending.
+
+## Checkpoint57 — responsive damage dock, shared guide icons and Saber G (2026-10-17)
+
+User screenshots show the Damage Stats toggle remaining at the old screen edge
+after resizing the Warcraft window, pick feed overlapping centre clocks/FPS,
+and Saber G missing as a distinct source. Backups and final evidence:
+C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261017-responsive-damage-saber.
+
+DS_LayoutViewport caches WUI_ScreenRight and reanchors compact panel + toggle
+only when the aspect ratio changes. It runs before the hidden-view early return
+on the existing .50 timer, so a collapsed toggle still follows the screen edge.
+No extra timer, frame creation or setters at an unchanged size. The expanded
+panel stays centred. Compact portrait .0252 -> .026334 (+4.5%), X+.0015; bar/
+source cells move right to preserve a gap. Expanded portrait stays unchanged.
+
+WUI_LayoutFeed uses the existing .25 feed timer and the same changed-only cache.
+Own TEXT frames now start at min(.560,screen-right-.250), Y=.540-i*.015: right
+of centre clocks even on a very wide client, clamped on narrow windows. Before
+the feed exists it returns without reading client geometry. Width/font/aging
+remain unchanged. The native engine message region stays untouched (CP55).
+
+WUI_InfoSourceIcon is the one presentation catalogue for Game Info and Damage
+Stats: Fire/Water/Lightning/Vape/Overload/Electrized and Barrel/Vending/Car/
+Hydrant/Train/Time limit. All existing Game Info row captions/descriptions stay;
+the icon argument calls the catalogue instead of duplicating a literal path.
+Taken attacker hero icons and Dealt HUD sword keep their existing meanings.
+The old Transformer label is corrected to Vending machine, matching the guide.
+
+Saber G: AlterSaberW_KS was started only from EnterBase. Test heroes created
+outside base could reach level35 without starting its charging loop. The Saber
+branch in LvlUpCheck now calls the same public starter; its per-unit active flag
+prevents repeated levels/base entries from creating duplicate instances. Loop
+cleanup clears the flag before releasing the unit. The extra autoattack magic
+hit in AlterSaberW_PasTrigger was tagged A05F (W2); it now uses A02F (G), and the
+fixed ability icon catalogue is regenerated from editable objects. Damage,
+delay .06, magic route0, charge consumption and cooldown are unchanged. Main
+and test owners use exactly the same path. This does not reclassify the separate
+F current-mana addition or the Q combo as a new combat hit.
+
+Production tests exercise G start idempotence and the charged magic proc for
+owners0/6 and passive tiers1/2/3, separate source attribution/consumption, shared
+guide art, changed-only viewport updates while collapsed, and feed resizing
+at four client aspect ratios. No game launch; runtime visual/physical input
+acceptance remains external. Final compile/regression/build evidence follows.
+
+Final CP57:647 regressions PASS; compile111 enabled sources PASS. Dispatch
+audit31 owners/404 frame functions/34 strict roots,0 errors. Source audit427
+calls/47 files/0 errors. MAIN check113 WTG,0 source differences,0 new J/objects.
+Independently verified114 WCT sources and6630 MPQ payloads. Only war3map.j and
+war3map.wct differ from CP56 (four source files), no asset/object changes.
+Published ONLY WOS2_MAIN_STABLE.w3x; SHA256
+4b320526c19a7a7068494f518e761972578b7df669c050ba38c7c28b617c3892. No game launch.

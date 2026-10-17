@@ -1,0 +1,22 @@
+{
+  "mode": "built-in image_gen",
+  "date": "2026-10-16",
+  "assets": [
+    {
+      "source": "invis-label-20261016.png",
+      "output": "../invis-label.tga",
+      "prompt": "Generate the exact word INVIS in a bold fantasy serif lettering, muted antique gold and silver with a subtle glow. A transparent background; no badge or frame. Wide 4:1 composition, readable at 70 by 16 pixels."
+    },
+    {
+      "source": "vote-ff-20261016.png",
+      "output": "../vote-ff.tga",
+      "prompt": "A single ivory white surrender flag on an antique gold pole, a fantasy game HUD icon. Strong clear silhouette readable at 32 by 32 pixels. Transparent background, no frame and no text."
+    },
+    {
+      "source": "vote-kick-20261016.png",
+      "output": "../vote-kick.tga",
+      "prompt": "Fantasy game HUD vote-kick icon: antique gold heraldic helmet with a red X at its lower right, dark graphite and muted gold shading. Readable at 32 by 32 pixels. Transparent background, no frame and no text."
+    }
+  ],
+  "conversion": "tools/build_wos_vote_assets.py crops alpha bounds, preserves aspect ratio and alpha, pads to Warcraft TGA power-of-two dimensions."
+}

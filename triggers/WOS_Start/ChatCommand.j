@@ -1,4 +1,4 @@
-library CustomImageChat initializer Init uses GearSystems, WOSUI
+library CustomImageChat initializer Init uses GearSystems
 globals
     private integer array PlayerEmojiAccessLevel
 endglobals
@@ -6,8 +6,12 @@ globals
     // -------------------------------------------------------------------------
     // LAYOUT: change only these values if the palette/feed overlaps another UI.
     // Warcraft UI coordinates normally use X = 0.00..0.80 and Y = 0.00..0.60.
-    private constant real EMOJI_PANEL_X  = 0.615
-    private constant real EMOJI_PANEL_Y  = 0.121
+    private constant real EMOJI_TOGGLE_X = 0.22
+    private constant real EMOJI_TOGGLE_Y = 0.1325
+    private constant real EMOJI_MUTE_X   = 0.25
+    private constant real EMOJI_MUTE_Y   = 0.1325
+    private constant real EMOJI_PANEL_X  = 0.390
+    private constant real EMOJI_PANEL_Y  = 0.215
     private constant real EMOJI_FEED_X   = 0.12
     private constant real EMOJI_FEED_Y   = 0.20
 
@@ -18,6 +22,7 @@ globals
     private constant integer EMOJI_COLUMNS   = 5
 
     // Both the main button and palette buttons are 20% smaller than before.
+    private constant real EMOJI_TOGGLE_SIZE = 0.0224
     // Palette emojis are 20% larger: 0.0240 -> 0.0288.
     private constant real EMOJI_BUTTON_SIZE = 0.0288
     private constant real EMOJI_BUTTON_STEP = 0.0324
@@ -59,7 +64,6 @@ globals
     private integer array FeedEmojiId
     private real array FeedAge
     private integer FeedCount = 0
-    private boolean FeedRenderedEmpty = false
 
     private trigger EmojiClickTrig = null
     private trigger EmojiSyncTrig = null
@@ -67,33 +71,9 @@ globals
     private timer EmojiTimer = null
     private boolean EmojiPanelOpen = false
     private boolean array PlayerEmojiEnabled
-    // Checkpoint 22: 15 emojis (5 x 3) per page, arrows only with 2+ pages.
-    private constant integer EMOJI_PAGE_SIZE = 15
-    private integer EmojiPage = 0
-    private integer EmojiPageCount = 1
-    private framehandle EmojiPrev = null
-    private framehandle EmojiNext = null
-    private framehandle EmojiPageText = null
 endglobals
  function CustomChat_SetPlayerAccessLevel takes player p, integer level returns nothing
     set PlayerEmojiAccessLevel[GetPlayerId(p)] = level
-endfunction
-
-// Checkpoint 22: shared with the emote wheel. Falls back to the nickname VIP
-// lists if map start has not stored a level for this player.
-function CustomChat_GetPlayerAccessLevel takes player p returns integer
-    local integer pid = GetPlayerId(p)
-    local integer level = PlayerEmojiAccessLevel[pid]
-    if level <= 0 then
-        if VIPCheckLvl3(FramePlayerFirstName[pid]) then
-            set level = 3
-        elseif VIPCheckLvl2(FramePlayerFirstName[pid]) then
-            set level = 2
-        elseif VIPCheckLvl1(FramePlayerFirstName[pid]) then
-            set level = 1
-        endif
-    endif
-    return level
 endfunction
 private function GetColoredPlayerName takes player p returns string
     local integer id = GetPlayerId(p)
@@ -130,7 +110,7 @@ endfunction
 // VIP3 is the highest level, then VIP2, VIP1 and finally the free list.
 // If one nickname is present in several VIPCheck functions, the highest level wins.
 private function GetEmojiAccessLevel takes player p returns integer
-    return CustomChat_GetPlayerAccessLevel(p)
+    return PlayerEmojiAccessLevel[GetPlayerId(p)]
 endfunction
 
 private function GetEmojiAccessCount takes integer accessLevel returns integer
@@ -155,16 +135,6 @@ private function GetEmojiAccessId takes integer accessLevel, integer slot return
     endif
 
     return EmojiAccessFree[slot]
-endfunction
-
-// Shop VIP page: icon of the n-th emoji from the end of a tier list (the
-// emojis that tier adds). "" when the tier has fewer.
-function CustomChat_GetTierEmojiPath takes integer level, integer fromEnd returns string
-    local integer slot = GetEmojiAccessCount(level) - fromEnd
-    if slot < 1 then
-        return ""
-    endif
-    return EmojiPath[GetEmojiAccessId(level, slot)]
 endfunction
 
 private function IsEmojiAllowed takes player p, integer emojiId returns boolean
@@ -307,11 +277,6 @@ private function EmojiPeriodic takes nothing returns nothing
         call ShiftFeedLeft()
     endloop
 
-    // Checkpoint 27d: an empty feed is rendered once, not every 0.05 s.
-    if FeedCount == 0 and FeedRenderedEmpty then
-        return
-    endif
-    set FeedRenderedEmpty = FeedCount == 0
     call RenderFeed()
 endfunction
 
@@ -370,23 +335,15 @@ private function ApplyEmojiPaletteForPlayer takes player p returns nothing
         return
     endif
 
-    set EmojiPageCount = IMaxBJ(1, (visibleCount + EMOJI_PAGE_SIZE - 1) / EMOJI_PAGE_SIZE)
-    if EmojiPage >= EmojiPageCount then
-        set EmojiPage = 0
+    set columnsUsed = visibleCount
+    if columnsUsed > EMOJI_COLUMNS then
+        set columnsUsed = EMOJI_COLUMNS
     endif
-    set columnsUsed = IMinBJ(visibleCount, EMOJI_COLUMNS)
-    set rowsUsed = (IMinBJ(visibleCount, EMOJI_PAGE_SIZE) + EMOJI_COLUMNS - 1) / EMOJI_COLUMNS
+
+    set rowsUsed = (visibleCount + EMOJI_COLUMNS - 1) / EMOJI_COLUMNS
     set panelWidth = 0.010 + EMOJI_BUTTON_SIZE + I2R(columnsUsed - 1) * EMOJI_BUTTON_STEP
     set panelHeight = 0.010 + EMOJI_BUTTON_SIZE + I2R(rowsUsed - 1) * EMOJI_BUTTON_STEP
-    if EmojiPageCount > 1 then
-        // Bottom strip for the page arrows.
-        set panelHeight = panelHeight + 0.018
-    endif
     call BlzFrameSetSize(EmojiPanel, panelWidth, panelHeight)
-    call BlzFrameSetVisible(EmojiPrev, EmojiPageCount > 1)
-    call BlzFrameSetVisible(EmojiNext, EmojiPageCount > 1)
-    call BlzFrameSetVisible(EmojiPageText, EmojiPageCount > 1)
-    call BlzFrameSetText(EmojiPageText, WUI_GOLD + I2S(EmojiPage + 1) + " / " + I2S(EmojiPageCount) + "|r")
 
     set i = 1
     loop
@@ -394,18 +351,15 @@ private function ApplyEmojiPaletteForPlayer takes player p returns nothing
         set emojiId = GetEmojiAccessId(accessLevel, i)
 
         if emojiId > 0 and emojiId <= ChatImageCommandCount and EmojiPath[emojiId] != "" then
-            if visibleSlot >= EmojiPage * EMOJI_PAGE_SIZE and visibleSlot < (EmojiPage + 1) * EMOJI_PAGE_SIZE then
-                set column = ModuloInteger(visibleSlot - EmojiPage * EMOJI_PAGE_SIZE, EMOJI_COLUMNS)
-                set row = (rowsUsed - 1) - (visibleSlot - EmojiPage * EMOJI_PAGE_SIZE) / EMOJI_COLUMNS
-                set x = 0.005 + I2R(column) * EMOJI_BUTTON_STEP
-                set y = 0.005 + I2R(row) * EMOJI_BUTTON_STEP
-                if EmojiPageCount > 1 then
-                    set y = y + 0.018
-                endif
-                call BlzFrameClearAllPoints(EmojiButton[emojiId])
-                call BlzFrameSetPoint(EmojiButton[emojiId], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
-                call BlzFrameSetVisible(EmojiButton[emojiId], true)
-            endif
+            set column = ModuloInteger(visibleSlot, EMOJI_COLUMNS)
+            set row = visibleSlot / EMOJI_COLUMNS
+            set x = 0.005 + I2R(column) * EMOJI_BUTTON_STEP
+            set y = 0.005 + I2R(row) * EMOJI_BUTTON_STEP
+
+            call BlzFrameClearAllPoints(EmojiButton[emojiId])
+            call BlzFrameSetPoint(EmojiButton[emojiId], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
+            call BlzFrameSetVisible(EmojiButton[emojiId], true)
+
             set visibleSlot = visibleSlot + 1
         endif
 
@@ -426,29 +380,19 @@ private function OnEmojiFrameClick takes nothing returns nothing
                 call ApplyEmojiPaletteForPlayer(p)
             else
                 call HideEmojiPaletteButtons()
-                call BlzFrameSetVisible(EmojiPrev, false)
-                call BlzFrameSetVisible(EmojiNext, false)
-                call BlzFrameSetVisible(EmojiPageText, false)
             endif
             call BlzFrameSetVisible(EmojiPanel, EmojiPanelOpen)
-        endif
-    elseif clicked == EmojiPrev or clicked == EmojiNext then
-        if GetLocalPlayer() == p then
-            if clicked == EmojiNext then
-                set EmojiPage = ModuloInteger(EmojiPage + 1, IMaxBJ(1, EmojiPageCount))
-            else
-                set EmojiPage = ModuloInteger(EmojiPage - 1 + EmojiPageCount, IMaxBJ(1, EmojiPageCount))
-            endif
-            call ApplyEmojiPaletteForPlayer(p)
         endif
     elseif clicked == EmojiMuteButton then
         if GetLocalPlayer() == p then
             set PlayerEmojiEnabled[pid] = not PlayerEmojiEnabled[pid]
 
             if PlayerEmojiEnabled[pid] then
-                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
+                // The button now offers the "block emojis" action.
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\TeamPings\\button-emoji-block.tga", 0, true)
             else
-                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\unchecked.tga", 0, true)
+                // The button now offers the "enable emojis" action.
+                call BlzFrameSetTexture(EmojiMuteIcon, "UI\\TeamPings\\button-emoji-allow.tga", 0, true)
                 set FeedCount = 0
                 call HideFeedFrames()
             endif
@@ -468,9 +412,6 @@ private function OnEmojiFrameClick takes nothing returns nothing
                     set EmojiPanelOpen = false
                     call BlzFrameSetVisible(EmojiPanel, false)
                     call HideEmojiPaletteButtons()
-                    call BlzFrameSetVisible(EmojiPrev, false)
-                    call BlzFrameSetVisible(EmojiNext, false)
-                    call BlzFrameSetVisible(EmojiPageText, false)
                 endif
 
                 set i = ChatImageCommandCount + 1
@@ -481,10 +422,13 @@ private function OnEmojiFrameClick takes nothing returns nothing
         endloop
     endif
 
+    if GetLocalPlayer() == p then
+        call BlzFrameSetEnable(clicked, false)
+        call BlzFrameSetEnable(clicked, true)
+    endif
 
     set clicked = null
     set p = null
-    call WUI_ResetClickedButtonFocus()
 endfunction
 
 private function OnTypedEmoji takes nothing returns nothing
@@ -662,14 +606,14 @@ private function CreateEmojiFeed takes nothing returns nothing
 
         // These output frames are attached directly to Game UI. There is no
         // sized parent FRAME, so no invisible 0.145 x 0.150 mouse-blocking box.
-        set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", WUI_GetRoot(), "", 0)
+        set EmojiFeedName[i] = BlzCreateFrameByType("TEXT", "NativeEmojiFeedName", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
         call BlzFrameSetSize(EmojiFeedName[i], 0.102, 0.018)
         call BlzFrameSetFont(EmojiFeedName[i], "Fonts\\FRIZQT__.TTF", 0.011, 0)
         call BlzFrameSetTextAlignment(EmojiFeedName[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_RIGHT)
         call BlzFrameSetEnable(EmojiFeedName[i], false)
         call BlzFrameSetVisible(EmojiFeedName[i], false)
 
-        set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", WUI_GetRoot(), "", 0)
+        set EmojiFeedIcon[i] = BlzCreateFrameByType("BACKDROP", "NativeEmojiFeedIcon", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
         call BlzFrameSetSize(EmojiFeedIcon[i], 0.027, 0.027)
         call BlzFrameSetEnable(EmojiFeedIcon[i], false)
         call BlzFrameSetVisible(EmojiFeedIcon[i], false)
@@ -685,34 +629,30 @@ private function CreateEmojiPalette takes nothing returns nothing
     local real x
     local real y
 
-    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", WUI_GetInfoRoot(), "", 0)
-    call WUI_PlaceToolbar(EmojiToggle, 1, 1)
-    // Checkpoint 26e: toolbar buttons are visible from UI startup on.
+    set EmojiToggle = BlzCreateFrameByType("BUTTON", "NativeEmojiToggle", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+    call BlzFrameSetAbsPoint(EmojiToggle, FRAMEPOINT_CENTER, EMOJI_TOGGLE_X, EMOJI_TOGGLE_Y)
+    call BlzFrameSetSize(EmojiToggle, EMOJI_TOGGLE_SIZE, EMOJI_TOGGLE_SIZE)
+    call BlzFrameSetVisible(EmojiToggle, false)
     set EmojiToggleIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiToggleIcon", EmojiToggle, "", 0)
     call BlzFrameSetAllPoints(EmojiToggleIcon, EmojiToggle)
-    call BlzFrameSetTexture(EmojiToggleIcon, "UI\\WOS\\toolbar-chat.tga", 0, true)
-    call BlzFrameSetAlpha(EmojiToggleIcon, 255)
+    call BlzFrameSetTexture(EmojiToggleIcon, "UI\\TeamPings\\button-emoji.tga", 0, true)
+    call BlzFrameSetAlpha(EmojiToggleIcon, 190)
     call BlzFrameSetEnable(EmojiToggleIcon, false)
-    call WUI_Tooltip(EmojiToggle, "CHAT EMOJIS|nOpen the chat emoji palette.")
-    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", WUI_GetInfoRoot(), "", 0)
-    call WUI_PlaceToolbar(EmojiMuteButton, 2, 1)
-    set EmojiMuteIcon = WUI_Panel("WOSChatMuteButtonBack", EmojiMuteButton, 0.023, 0.023)
-    call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
-    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\button.tga", 0, true)
+    set EmojiMuteButton = BlzCreateFrameByType("BUTTON", "NativeEmojiMuteButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
+    call BlzFrameSetAbsPoint(EmojiMuteButton, FRAMEPOINT_CENTER, EMOJI_MUTE_X, EMOJI_MUTE_Y)
+    call BlzFrameSetSize(EmojiMuteButton, EMOJI_TOGGLE_SIZE, EMOJI_TOGGLE_SIZE)
 
     set EmojiMuteIcon = BlzCreateFrameByType("BACKDROP", "NativeEmojiMuteIcon", EmojiMuteButton, "", 0)
-    call BlzFrameSetPoint(EmojiMuteIcon, FRAMEPOINT_CENTER, EmojiMuteButton, FRAMEPOINT_CENTER, 0.00, 0.00)
-    call BlzFrameSetSize(EmojiMuteIcon, 0.022, 0.022)
-    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\WOS\\checked.tga", 0, true)
-    call BlzFrameSetAlpha(EmojiMuteIcon, 255)
+    call BlzFrameSetAllPoints(EmojiMuteIcon, EmojiMuteButton)
+    call BlzFrameSetTexture(EmojiMuteIcon, "UI\\TeamPings\\button-emoji-block.tga", 0, true)
+    call BlzFrameSetAlpha(EmojiMuteIcon, 190)
     call BlzFrameSetEnable(EmojiMuteIcon, false)
-    call WUI_Tooltip(EmojiMuteButton, "SHOW CHAT EMOJIS|nChecked: enabled. Unchecked: muted.")
-
-    set EmojiPanel = WUI_Window("WOSChatEmojiWindow", WUI_GetRoot(), 1, 0)
-    call WUI_RegisterRangeCover(EmojiPanel)
+    
+    call BlzFrameSetVisible(EmojiMuteButton, false)
+    set EmojiPanel = BlzCreateFrameByType("BACKDROP", "NativeEmojiPanel", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_BOTTOMLEFT, EMOJI_PANEL_X, EMOJI_PANEL_Y)
     call BlzFrameSetSize(EmojiPanel, 0.172, 0.106)
-    call BlzFrameSetTexture(EmojiPanel, WUI_PANEL_TEXTURE, 0, true)
+    call BlzFrameSetTexture(EmojiPanel, "Textures\\black32.blp", 0, true)
     call BlzFrameSetAlpha(EmojiPanel, 190)
     call BlzFrameSetLevel(EmojiPanel, 1)
     // Disable the semi-transparent backdrop itself. EmojiButton frames are
@@ -729,7 +669,7 @@ private function CreateEmojiPalette takes nothing returns nothing
 
         // Parent buttons directly to Game UI. EmojiPanel has alpha 190;
         // keeping buttons outside it prevents inherited transparency.
-        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "NativeEmojiButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
+        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "NativeEmojiButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
         call BlzFrameSetSize(EmojiButton[i], EMOJI_BUTTON_SIZE, EMOJI_BUTTON_SIZE)
         call BlzFrameSetAlpha(EmojiButton[i], 255)
@@ -747,30 +687,12 @@ private function CreateEmojiPalette takes nothing returns nothing
         set i = i + 1
     endloop
 
-    set EmojiPrev = WUI_TextButton("WOSChatEmojiPrev", WUI_GetRoot(), "<", 0.016, 0.014)
-    call BlzFrameSetPoint(EmojiPrev, FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, 0.006, 0.004)
-    call BlzFrameSetLevel(EmojiPrev, 3)
-    set EmojiNext = WUI_TextButton("WOSChatEmojiNext", WUI_GetRoot(), ">", 0.016, 0.014)
-    call BlzFrameSetPoint(EmojiNext, FRAMEPOINT_BOTTOMRIGHT, EmojiPanel, FRAMEPOINT_BOTTOMRIGHT, -0.006, 0.004)
-    call BlzFrameSetLevel(EmojiNext, 3)
-    set EmojiPageText = BlzCreateFrameByType("TEXT", "WOSChatEmojiPage", WUI_GetRoot(), "", 0)
-    call BlzFrameSetPoint(EmojiPageText, FRAMEPOINT_BOTTOM, EmojiPanel, FRAMEPOINT_BOTTOM, 0.00, 0.005)
-    call BlzFrameSetSize(EmojiPageText, 0.040 / 0.70, 0.012 / 0.70)
-    call BlzFrameSetScale(EmojiPageText, 0.70)
-    call BlzFrameSetTextAlignment(EmojiPageText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-    call BlzFrameSetEnable(EmojiPageText, false)
-    call BlzFrameSetLevel(EmojiPageText, 3)
-    call BlzFrameSetVisible(EmojiPrev, false)
-    call BlzFrameSetVisible(EmojiNext, false)
-    call BlzFrameSetVisible(EmojiPageText, false)
-    call BlzTriggerRegisterFrameEvent(EmojiClickTrig, EmojiPrev, FRAMEEVENT_CONTROL_CLICK)
-    call BlzTriggerRegisterFrameEvent(EmojiClickTrig, EmojiNext, FRAMEEVENT_CONTROL_CLICK)
     call BlzTriggerRegisterFrameEvent(EmojiClickTrig, EmojiToggle, FRAMEEVENT_CONTROL_CLICK)
     call BlzTriggerRegisterFrameEvent(EmojiClickTrig, EmojiMuteButton, FRAMEEVENT_CONTROL_CLICK)
     call BlzFrameSetVisible(EmojiPanel, false)
 endfunction
 
-private function Emoji_StartUI takes nothing returns nothing
+private function Init takes nothing returns nothing
     local integer i = 0
 
     call RegisterDefaultEmojis()
@@ -807,10 +729,6 @@ private function Emoji_StartUI takes nothing returns nothing
     call TimerStart(EmojiTimer, 0.05, true, function EmojiPeriodic)
 
     // Native chat is never cleared or replaced by this emoji system.
-endfunction
-
-private function Init takes nothing returns nothing
-    call WUI_OnReady(function Emoji_StartUI)
 endfunction
 
 endlibrary

@@ -15,10 +15,50 @@ def load_source(filename):
     source = (ROOT / 'triggers/WOS_Start' / filename).read_text(encoding='utf-8-sig')
     # Comments include retired implementations, which are not compiled by Warcraft.
     source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
-    vm = JassState(source)
+    vm = JassState(source.replace('static if LIBRARY_DamageStats then','if LIBRARY_DamageStats then'))
+    vm.g.setdefault('LIBRARY_DamageStats', False)
+    shared=(ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig').split('// CP44_SHARED_UI:',1)[1].split('// CP44_SHARED_UI_END',1)[0]
+    for kind,array,name,value in re.findall(r'(?m)^\s*(boolean|integer|real|framehandle|trigger)( array)? (\w+)(?: = ([^\n]+))?\s*$',shared):
+        if name in vm.g:continue
+        default=False if kind=='boolean' else 0 if kind in ('integer','real') else None
+        vm.g[name]=defaultdict(lambda v=default:v) if array else default
+    if filename != 'WOSUI.j':
+        central=(ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
+        for helper_name in ['WUI_StopPingTarget','WUI_SetShopRmb']:
+            helper=central.split('function '+helper_name+' ',1)[1].split('endfunction',1)[0]
+            method=JassState('function '+helper_name+' '+helper+'endfunction')
+            vm.text+='\n'+method.text
+            vm.methods[helper_name]=method.methods[helper_name]
+            vm.g[helper_name]=lambda *a,n=helper_name:vm.run(n,a)
     # UI-only fixture boundaries; WOSUI's own functions override these stubs.
     # test_wos_ui_focus executes the real helper with explicit event/owner natives.
+    vm.g.setdefault('WUI_GetTopActionOwner', lambda: 'top-actions')
+    vm.g.setdefault('WUI_TopShown', lambda: True)
     vm.g.setdefault('WUI_RegisterRangeCover', lambda *_: None)
+    vm.g.setdefault('HaveSavedHandle',lambda t,k,c:(k,c) in t)
+    vm.g.setdefault('HaveSavedReal',lambda t,k,c:(k,c) in t)
+    vm.g.setdefault('Shop_Active',defaultdict(bool))
+    vm.g.setdefault('FRAME_CamSlider',None)
+    vm.g.setdefault('FRAME_Swap',defaultdict(lambda:None))
+    vm.g.setdefault('FRAME_Repick',defaultdict(lambda:None))
+    vm.g.setdefault('WOS_SWAP_X',.712)
+    vm.g.setdefault('WOS_REPICK_X',.682)
+    vm.g.setdefault('WOS_SWAP_Y',.55)
+    vm.g.setdefault('EnableTrigger',lambda *_:None)
+    vm.g.setdefault('DisableTrigger',lambda *_:None)
+    vm.g.setdefault('TriggerAddCondition', lambda *_: None)
+    vm.g.setdefault('Condition', lambda callback: callback)
+    vm.g.setdefault('TriggerRegisterTimerExpireEvent',lambda *_:None)
+    vm.g.setdefault('ShopSearchDebounceTimer',None)
+    vm.g.setdefault('WUI_RegisterWindowPart', lambda *_: None)
+    vm.g.setdefault('WUI_RegisterCareerTip', lambda *_: None)
+    vm.g.setdefault('WUI_EnterWheel', lambda *_: None)
+    vm.g.setdefault('WUI_FrameSetValue',lambda *a:vm.g['BlzFrameSetValue'](*a))
+    vm.g.setdefault('WUI_FrameSetMinMaxValue',lambda *a:vm.g['BlzFrameSetMinMaxValue'](*a))
+    vm.g.setdefault('WUI_UnitHasInvisibility', lambda *_: False)
+    vm.g.setdefault('WUI_RegisterHelpTarget', lambda *_: None)
+    vm.g.setdefault('WUI_GetHelpTarget', lambda *_: None)
+    vm.g.setdefault('WUI_TooltipBelowSized', lambda *_: None)
     vm.g.setdefault('WUI_ReleaseClickFocus', lambda: None)
     vm.g.setdefault('WUI_ResetClickedButtonFocus', lambda: None)
     vm.g.setdefault('WUI_RegisterPassiveFocus', lambda frame: None)
@@ -45,6 +85,7 @@ def load_source(filename):
     vm.g.setdefault('BlzFrameClearAllPoints', lambda *_: None)
     # External native-portrait owner; tests that exercise it install real helpers.
     vm.g.setdefault('WUI_ShowNativePortrait', lambda *_: None)
+    vm.g.setdefault('WUI_SetPortraitInvisible', lambda *_: None)
     vm.g.setdefault('WUI_BindNativePortrait', lambda *_: 'native-portrait')
     vm.g.setdefault('BlzGetMouseScreenPosX', lambda: 2.0)
     vm.g.setdefault('BlzGetMouseScreenPosY', lambda: 2.0)
@@ -52,6 +93,7 @@ def load_source(filename):
     vm.g.setdefault('BlzPixelToFrameY', lambda value: value)
     # Checkpoint 27: string natives used by the TEST COMMANDS line scroller.
     vm.g.setdefault('StringLength', len)
+    vm.g.setdefault('CurrentRound', 1)
     vm.g.setdefault('BlzFrameGetValue', lambda *_: 0.0)
     # WUI_SliderSet: a slider value is a number, never a frame name.
     if not isinstance(vm.g['BlzFrameGetValue'](None), (int, float)):
@@ -65,7 +107,7 @@ def load_source(filename):
     for kind, name in re.findall(r'(?m)^\s*(?:private )?(\w+) array (\w+)', source):
         default = False if kind == 'boolean' else 0 if kind in ('integer', 'real') else None
         vm.g[name] = defaultdict(lambda v=default: v)
-        if kind == 'framehandle':
+        if kind == 'framehandle' and name not in ['WUI_WindowPart','WUI_CareerTip']:
             vm.g[name].update({i: (name, i) for i in range(24)})
     # New presentation owners and synced preference declarations.
     for name, value in re.findall(r'(?m)^\s*(?:private )?integer (\w+) = ([0-9]+)\s*$', source):
@@ -119,11 +161,15 @@ class NativeCommandLayout(unittest.TestCase):
         for index in range(5):
             self.assertEqual(.137, self.positions[g['WUI_Command'][index]][1])
 
-    def test_switch_to_ordinary_unit_preserves_all_twelve_commands(self):
+    def test_switch_to_ordinary_unit_hides_orders_and_keeps_other_seven_commands(self):
         self.vm.run('WUI_LayoutCommands', (True,))
         self.vm.run('WUI_LayoutCommands', (False,))
-        for frame in self.vm.g['WUI_Command'].values():
-            if frame in self.positions:
+        commands = self.vm.g['WUI_Command']
+        for i in range(5):
+            if commands[i] in self.positions:
+                self.assertLess(self.positions[commands[i]][0], 0)  # Stock orders parked off-screen.
+        for i, frame in commands.items():
+            if i >= 5 and frame in self.positions:
                 x, y = self.positions[frame]
                 self.assertGreater(x, 0)
                 self.assertGreaterEqual(y, .015)
@@ -233,11 +279,11 @@ class DeferredUIStartup(unittest.TestCase):
         self.assertEqual(0, self.vm.g['WUI_ReadyCount'])
         # Two test owners + HUD chrome (the hotkey editor is switched off,
         # WUI_ENABLE_HOTKEYS = false, checkpoint 23).
-        self.assertEqual(3, len(self.destroyed))
+        self.assertEqual(4, len(self.destroyed))
         # Late owners execute once without replaying the initial queue.
         self.vm.run('WUI_OnReady', (callback,))
         self.assertEqual(3, len(observed))
-        self.assertEqual(4, len(self.destroyed))
+        self.assertEqual(5, len(self.destroyed))
 
     def test_native_strings_and_short_console_tree_are_safe(self):
         self.vm.run('WUI_Bootstrap')
@@ -366,7 +412,7 @@ class HiddenEnemyData(unittest.TestCase):
             'IsUnitDetected': lambda *_: self.detected, 'IsUnitInvisible': lambda *_: not self.detected,
             'BlzFrameSetVisible': lambda f, v: self.frames.update({(f, 'visible'): v}),
             'BlzFrameSetAlpha': lambda f, v: self.frames.update({(f, 'alpha'): v}),
-            'GetUnitTypeId': self.fail_read, 'IsUnitType': self.fail_read,
+            'GetUnitTypeId': self.fail_read, 'IsUnitType': lambda u,t: False,
             'GetWidgetLife': self.fail_read, 'BlzGetUnitMaxHP': self.fail_read,
             'GetUnitState': self.fail_read, 'BlzGetUnitMaxMana': self.fail_read,
         })
@@ -378,6 +424,15 @@ class HiddenEnemyData(unittest.TestCase):
         vm.run('UpdateStatusHeroSlotOptimized', (5,))
         self.assertFalse(self.frames[vm.g['StatusHpBar'][5], 'visible'])
         self.assertFalse(self.frames[vm.g['StatusMpBar'][5], 'visible'])
+
+    def test_dead_hidden_enemy_keeps_zero_hp_and_cached_mana_without_vitals_reads(self):
+        vm=load_source('WoS_Hero_Icons_Init.j');self.configure(vm);values={}
+        vm.g.update(Hero={5:vm.unit(owner=5)},CaptainMode=False,CapPickPhase=2,Leave={5:0},
+            IsUnitType=lambda u,t:True,WUI_SetValue=lambda f,v:values.update({f:v}))
+        vm.run('UpdateStatusHeroSlotOptimized',(5,))
+        self.assertTrue(self.frames[vm.g['StatusHpBar'][5],'visible'])
+        self.assertTrue(self.frames[vm.g['StatusMpBar'][5],'visible'])
+        self.assertEqual(0.,values[vm.g['StatusHpBar'][5]])
 
     def test_visible_but_undetected_enemy_is_also_private(self):
         # Checkpoint 25: a visible enemy is inspectable (portrait, stats and
@@ -410,7 +465,7 @@ class HiddenEnemyData(unittest.TestCase):
 
 class SharedShopControls(unittest.TestCase):
     def setUp(self):
-        self.vm = JassState((ROOT / 'triggers/Systems/ButtonPressed.j').read_text(encoding='utf-8-sig'))
+        self.vm = load_source('WoS_Shop_Init.j')
         self.guard = 0
         self.reloads = []
         self.visibility = []
@@ -428,6 +483,7 @@ class SharedShopControls(unittest.TestCase):
             'SaveInteger': lambda *_: setattr(self, 'guard', 1), 'MyFlush': lambda *_: None,
             'ReloadItemPage': lambda page, p: self.reloads.append((page, p)),
             'ShopUpdateCatalogueNavigation': lambda *_: None,
+            'WUI_EnterExclusiveWindow': lambda *_: None,
             'QB_CancelDrag': lambda: None, # Quick Buy cancellation is tested in test_quickbuy.
 
             'DisplayTimedTextToPlayer': lambda *_: None,

@@ -68,6 +68,8 @@ class TestHelpVisibility(unittest.TestCase):
                          BlzFrameSetVisible=lambda f, v: self.visible.update({f: v}))
 
     def test_help_is_hidden_during_modals_then_restored_without_reopening(self):
+        self.assertFalse(self.vm.g['WUI_TestOpen'])
+        self.vm.g['WUI_TestOpen'] = True
         self.vm.run('WUI_ShowTestHelp', (True,))
         self.assertTrue(self.visible[self.vm.g['WUI_TestPanel']])
         self.vm.run('WUI_RegisterModal', ('shop',))
@@ -83,6 +85,7 @@ class TestHelpVisibility(unittest.TestCase):
         self.assertTrue(self.visible[self.vm.g['WUI_TestToggle']])
 
     def test_scroll_pages_remain_bounded_without_toggling_panel(self):
+        self.vm.g['WUI_TestOpen'] = True
         # Checkpoint 27: the wheel scrolls lines inside a page; only the < / >
         # buttons change the page (bounded to 2 pages, panel stays open).
         # Template buttons share one name in the simulator: make them distinct.

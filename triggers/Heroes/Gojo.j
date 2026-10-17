@@ -21,9 +21,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 //--------------------------------------Gojo--------------------------------------------------------------
         integer Gojo_ID = 'H009'
 //---------------G ability-----------------------------------------------------
-        integer GojoF_ID = 'A01U'
-        real Gojo_F_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_F_ManaRestoreTime seconds
-        real Gojo_F_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
+        integer GojoG_ID = 'A01U'
+        real Gojo_G_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_G_ManaRestoreTime seconds
+        real Gojo_G_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
 //---------------Q ability-----------------------------------------------------
         integer GojoQ_ID = 'A01J'
         integer GojoQ2_ID = 'A01L'
@@ -63,8 +63,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         integer GojoE2_ID = 'A01O'
         real GojoE_Duration = 3 // how much sec ability works on lvl 1 - 4, on lvl 5 how much sec before mana drain start
         real GojoE_AddDuration = 0.5 // for each next level
-        real GojoE_MaxDuration = 18 // how much sec ability works on lvl 5 how much sec before ability end
-        real GojoE_Lvl5Manacost = 9 // manacost for each sec at 5 lvl after base duration of ability
+        real GojoE_MaxDuration = 6 // how much sec ability works on lvl 5 how much sec before ability end
+        real GojoE_Lvl5Manacost = 6 // manacost for each sec at 5 lvl after base duration of ability
         real GojoE_DamageAoe = 335
 //---------------R ability-----------------------------------------------------
         integer GojoR_ID = 'A01P'
@@ -1310,14 +1310,22 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 call MakeSound("war3mapImported\\Hero_Gojo_E1")
             endif
             if frame_pas1[k2] == null then
-                set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frame_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)
                 endif
-                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                 if GetUnitAbilityLevel(c, GojoE_ID) >= 5 then
                     call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r7)
                     call BlzFrameSetValue(frame_pas3[k2], r7)
@@ -1326,16 +1334,17 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     call BlzFrameSetValue(frame_pas3[k2], rmax)
                 endif
                 set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
                 call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Gojo_E", 0, false)
                 set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                 call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Eternity Time Left:" + "|r")
+                call BlzFrameSetScale(frame_pas5[k2], 0.9)
                 set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Gojo.j:frame_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frame_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1378,7 +1387,6 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         effect e6
         real a
         real rmax
-        WUI_TrackedMeter domainMeter
 
         public static method Loop_GojoR2 takes nothing returns nothing
             local thistype this
@@ -1474,9 +1482,6 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 set this = m_GojoR[i]
                 if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("rt end ")) == 0 then
                     set r = RoundReal(r + 0.05, 2)
-                    if domainMeter != 0 then
-                        call domainMeter.update(rmax - r, "Unlimited Void", r >= 1.75)
-                    endif
                     if r == 0.8 then
                         set e = EffectSpawn("war3mapImported\\wos_RT_Cast3.mdl", x, y, 0, 0.3, 0.5, 15)
                         call ScaleEffDummy(e, 0.75, 0.5, 3.25 * scale)
@@ -1628,9 +1633,6 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     endif
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoR_ID, true)
                     
-                    if domainMeter != 0 then
-                        call domainMeter.close()
-                    endif
                     call SaveInteger(hs, GetHandleId(c), StringHash("rt end "), 0)
                     call SaveInteger(hs, GetHandleId(c), StringHash("rt"), 0)
                     call SaveInteger(hs, GetHandleId(c), StringHash("gojo RR"), 0)
@@ -1687,12 +1689,6 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set dmg2 = GetHeroInt( c , true) * (GojoR_DamageIntFirst * GetUnitAbilityLevel( c , GojoR_ID))
             set dmg = GetHeroInt( c , true) * ( GojoR_DamageIntBase + ( GojoR_DamageIntStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) ) )
             set rmax = 1.75 + GojoR_DurationBase + ( GojoR_DurationStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) )
-            set domainMeter = 0
-            if GetPlayerId(GetOwningPlayer(c)) < 12 and Hero[GetPlayerId(GetOwningPlayer(c))] == c then
-                set domainMeter = WUI_TrackedMeter.get(GetPlayerId(GetOwningPlayer(c)), "GojoDomain")
-                call domainMeter.start(GojoR_ID, "Unlimited Void", rmax - 1.75)
-                call domainMeter.update(rmax - 1.75, "Unlimited Void", false)
-            endif
             if SR3(c, x, y) > aoe - 350 then
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1.8, 0))
                 call PosUnit(c, x - (aoe - 350) * Cos(a), y - (aoe - 350) * Sin(a))
@@ -2193,27 +2189,36 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set check2 = 0
             set k3 = 0
             if frame2_pas1[k2] == null then
-                set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.2175)
+                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frame2_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame2_pas1[k2], true)
                 endif
-                set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)
-
+                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
+                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
                 set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
+                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
+                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.2125)
                 call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
                 call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
                 set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.2175)
+                call BlzFrameSetSize(frame2_pas4[k2], 0.0275, 0.0275)
                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Gojo_T2", 0, false)
                 set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
                 call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Purple prepare:" + "|r")
+                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
                 set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.2075)
                 call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
-
-                call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
-                call WUI_RegisterMeter(frame2_pas1[k2], k2, "Heroes/Gojo.j:frame2_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame2_pas1[k2], true)
@@ -2251,10 +2256,6 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         set GojoTimer05 = CreateTimer()
         set GojoTimer03Callback = function GojoTimer03Loop
         set GojoTimer05Callback = function GojoTimer05Loop
-        // Checkpoint 27: the Six Eyes passive (former G) sits on the F button
-        // (1:1). Button X is not an editable field in object-data JSON.
-        call BlzSetAbilityPosX(GojoF_ID, 1)
-        call BlzSetAbilityPosY(GojoF_ID, 1)
     endfunction
 
     //----------------------------Gojo-----------------------------------------------
@@ -2273,9 +2274,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
     25 - t start
      */ 
     function GojoPas_Start takes unit c, integer id returns nothing
-        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_F_ManaRestore / 100)
+        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_G_ManaRestore / 100)
         if GetHeroLevel(c) >= 12 then
-            call MPS(c, mana, Gojo_F_ManaRestoreTime)
+            call MPS(c, mana, Gojo_G_ManaRestoreTime)
         endif
     endfunction
     function GojoQ_Start takes unit c, real x, real y returns nothing

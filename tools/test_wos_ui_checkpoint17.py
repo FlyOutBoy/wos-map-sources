@@ -147,7 +147,7 @@ class SharedGeometry(unittest.TestCase):
         self.assertLessEqual(ty + .018/2, .540 + 1e-9)
         self.assertLessEqual(y + (self.vm.g['WUI_INFO_HEIGHT'] - .018)/2, ty - .018/2 + 1e-9)
         text = self.vm.g['WUI_TestPage'][0]
-        for key in ('Arrow Left', 'Arrow Right', 'Arrow Down', 'Arrow Up', 'Esc', 'Tab', 'F2', 'F3 / F4', 'Hold Z', 'K'):
+        for key in ('Arrow Left', 'Arrow Right', 'Arrow Down', 'Arrow Up', 'Esc', 'Tab', 'F2', 'F3 / F4', 'Z', 'K'):
             self.assertIn('|cffd5b876'+key, text)
         self.assertGreaterEqual(text.count('|cffe1e5eb'), 10)
 

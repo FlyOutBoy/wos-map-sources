@@ -9,7 +9,7 @@ Windows PowerShell. Компилятор уже поставлен в `utility/J
 
 | Изменение | Команда/процесс | Что подтверждает и что записывает |
 | --- | --- | --- |
-| MAIN vJASS | `python tools/check_wos_ui.py` | JassHelper/pjass, только включённые записи `trigger-settings.json` + Map Header и `gg_*`; пишет `_build/ui-redesign/` и логи компилятора, карту не сохраняет |
+| MAIN vJASS | `python tools/check_wos_ui.py` | JassHelper/pjass, только включённые записи `trigger-settings.json` + Map Header и `gg_*`; пишет `_build/ui-redesign/` и логи компилятора, затем проверяет compiled UI call graph через `audit_wos_ui_dispatch.py`; карту не сохраняет |
 | Конкретная система | `python -B -m unittest discover -s tools -p "test_<name>.py"` | выбрать существующий файл теста; изучить его побочные эффекты, особенно обращения к настоящей карте |
 | UI/синхронизация | `python tools/run_ui_regressions.py` | набор из `SUITES` внутри runner; пишет краткий отчёт в `_build/ui-redesign/`; не включает автоматически каждый новый `test_*.py` |
 | Объектный кодек MAIN | `python -B tools/war3_object_data.py --config object-data.config.json roundtrip` | побайтный binary → JSON → binary, без записи карты; не подтверждает корректность несохранённых editable JSON |

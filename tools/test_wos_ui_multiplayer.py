@@ -128,6 +128,7 @@ class MultiplayerFrames(unittest.TestCase):
                         GetPlayerId=lambda p: p, Player=lambda p: p,
                         IsAllyExist=lambda _: False, IsObserverSlot=lambda _: False,
                         TestMode=True, CaptainMode=False, CaptainDraftMode=False,
+                        WOS_PreviewReady=True, Toji_ID='toji',
                         CaptainDraftPreRoundUnlimitedSwap=False,
                         TestUnitPickMode=defaultdict(int),
                         MakeSoundLocal=lambda *args: events.append(('sound', args)),
@@ -138,7 +139,8 @@ class MultiplayerFrames(unittest.TestCase):
             def forbid(*args):
                 self.fail(f'Pick presentation attempted a handle lookup: {args}')
             for name in ('BlzGetFrameByName', 'BlzGetOriginFrame', 'BlzFrameGetChild',
-                         'BlzFrameGetParent', 'BlzCreateFrameByType'):
+                         'BlzFrameGetParent', 'BlzCreateFrameByType', 'ExecuteFunc',
+                         'TriggerExecute', 'TriggerEvaluate', 'CreateTrigger', 'CreateTimer'):
                 vm.g[name] = forbid
             for page in range(6):
                 vm.g['BlzGetTriggerFrame'] = lambda page=page: vm.g['Frame_PageHeroList'][page]

@@ -26,9 +26,6 @@
 //! import "..\triggers\WOS_Start\WoS_Hero_Icons_Init.j"
 //! import "..\triggers\WOS_Start\Leave.j"
 //! import "..\triggers\WOS_Start\TeamMapPings.j"
-//! import "..\triggers\WOS_Start\WOSUI.j"
-//! import "..\triggers\WOS_Start\ArenaMinimap.j"
-//! import "..\triggers\WOS_Start\AbilityRangePreview.j"
 //! import "..\triggers\Round_End\RoundEnd.j"
 //! import "..\triggers\Systems\CastAItems.j"
 //! import "..\triggers\Systems\TasBox.j"
@@ -1205,6 +1202,8 @@ function main takes nothing returns nothing
     call InitSounds()
     call CreateRegions()
     call InitBlizzard()
+
+
 
 
     call InitGlobals()

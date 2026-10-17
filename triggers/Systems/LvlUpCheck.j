@@ -119,9 +119,9 @@ if Laxus_ID == id then
     endif
     endif
     if Gojo_ID == id then 
-    if GetUnitAbilityLevel(c,GojoF_ID) == 0 then 
-    call UnitAddAbility(c,GojoF_ID)
-    call UnitMakeAbilityPermanent(c,true,GojoF_ID)
+    if GetUnitAbilityLevel(c,GojoG_ID) == 0 then 
+    call UnitAddAbility(c,GojoG_ID)
+    call UnitMakeAbilityPermanent(c,true,GojoG_ID)
     endif
     if GetHeroLevel(c)>=35 then 
     call BlzSetAbilityRealLevelField(BlzGetUnitAbility(c, GojoR_ID),ABILITY_RLF_AREA_OF_EFFECT, 4, 1250)

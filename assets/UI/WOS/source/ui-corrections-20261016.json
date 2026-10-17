@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-16",
+  "assets": [
+    "cast-range-red",
+    "help-arrow-down",
+    "help-arrow-up",
+    "wos-app-link"
+  ],
+  "prompts": {
+    "cast-range-red": "Precise color replacement edit of source range.png. This is an existing game texture and its alpha/geometry must be preserved. Preserve the EXACT original thin one-pixel circular outline and its very faint translucent inward fade. Change white outline to red. Do NOT make the fade wider, brighter or more opaque. The entire interior remains almost completely transparent, with just a subtle narrow tint very close to the boundary. Outer rim must be RED (not white). No glow outside, no thick red donut. Source disc is centred and touches four edges. Output transparent texture.",
+    "help-arrow-down": "Use case: ui-mockup. Game UI texture asset, Warcraft III dark charcoal and antique muted gold style. Generate ONE clean elegant large DOWNWARD ARROW with long gently tapered shaft and broad clearly recognizable arrowhead, gold bevel and subtle soft dark outline for contrast over bright green terrain. Perfectly centred, vertical, all arrow parts contained with 5 percent padding. Transparent background. No text, no labels, no panel, no other elements. This will be used at small size to point at HUD controls in a tutorial.",
+    "help-arrow-up": "Use case: ui-mockup. Game UI texture asset, Warcraft III dark charcoal and antique muted champagne gold #d5b876 style. Generate ONE clean elegant large UPWARD ARROW, long tapered shaft, broad recognizable arrowhead, gold bevel, subtle dark outline for contrast over green terrain. Perfectly centred, vertical, all parts contained in 5 percent padding. Transparent background, no text, no labels, no panel, no other objects. Used at small size to point upward at HUD controls in a tutorial.",
+    "wos-app-link": "Edit target: supplied WOS APP.png gold WOS monitor icon. Preserve exactly the monitor silhouette, WOS lettering, compass logo, charcoal inside, transparent background. Change only the gold palette from vivid bright yellow to restrained desaturated antique champagne gold (#d5b876), to match neighbouring Warcraft III minimal gold UI glyphs. Keep legibility at small scale. Crop excess transparent padding so icon fills 90 percent of canvas. No extra lettering, no extra objects."
+  },
+  "processing": "RGBA conversion and resize to power-of-two TGA; alpha preserved; original user asset retained."
+}

@@ -38,7 +38,6 @@ call ClearSelection()
 call SelectUnit(c,true)
 call PanCameraToTimed(GetUnitX(c),GetUnitY(c),0.5)
 endif
-call KM_Cancel(c)
 call UnitRemoveAbility(c,'BTLF')
 set c = null
 endfunction

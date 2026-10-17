@@ -18,7 +18,7 @@ class PassiveCounters(unittest.TestCase):
         # These libraries are all enabled in MAIN; execute those static branches.
         self.vm = JassState(source.replace('static if LIBRARY_', 'if LIBRARY_'))
         g = self.vm.g
-        for name in ('Tomioka', 'Starrk', 'Inori', 'Raiden'):
+        for name in ('Tomioka', 'Starrk', 'Inori', 'Raiden', 'Rimuru', 'Natsu', 'DarkShiki'):
             g['LIBRARY_' + name + 'Spells'] = True
             hero = (ROOT / f'triggers/Heroes/{name}.j').read_text(encoding='utf-8-sig')
             for key, code in re.findall(r'\binteger (\w+)\s*=\s*\'([^\']+)\'', hero):
@@ -26,6 +26,7 @@ class PassiveCounters(unittest.TestCase):
             for key, value in re.findall(r'\breal (Tomioka_G_AddDamage\w+) = ([0-9.]+)', hero):
                 g[key] = float(value)
         g.update(hs={}, Hash={}, StringHash=lambda key: key, I2S=str, R2I=int,
+                 LoadUnitHandle=lambda table,parent,key:table.get((parent,key)),
                  GetHeroAgi=lambda u, _: 100, Raiden_F_Dummy=None)
         self.u = self.vm.unit(owner=0)
 
@@ -225,27 +226,14 @@ class SharedMeterClocks(unittest.TestCase):
         self.assertNotIn((id(u), 'ability time buff'), vm.g['hs'])
         self.assertEqual([], clock_users)
 
-    def test_kirito_meter_reads_existing_heal_clock_and_hides_after_death(self):
+    def test_kirito_passive_uses_existing_cooldown_without_a_second_ui_clock(self):
         source = (ROOT / 'triggers/Heroes/Kirito.j').read_text(encoding='utf-8-sig')
         begin = source.index('    private struct KiritoSpells_G\n')
         end = source.index('    endstruct', begin) + len('    endstruct')
-        vm = JassState(source[begin:end])
-        u, updates = vm.unit(owner=0), []
-        kirito = vm.structs['KiritoSpells_G']
-        data = kirito.create()
-        data.c = u
-        data.healMeter = SimpleNamespace(update=lambda *args: updates.append(args))
-        kirito.statics.update(MUI_KiritoG=0, m_KiritoG={0: data}, uiTick=0.0, t_KiritoG='heal-clock')
-        vm.g.update(GetPlayerId=lambda p: p, Hero={0: u}, UNIT_TYPE_DEAD='dead',
-                    IsUnitType=lambda hero, _: hero.life <= 0,
-                    TimerGetRemaining=lambda timer: .7 if timer == 'heal-clock' else -1)
-        for _ in range(4):
-            vm.run('Loop_KiritoGMeter')
-        self.assertEqual([(.7, 'Next heal', True)], updates)
-        u.life = 0
-        for _ in range(4):
-            vm.run('Loop_KiritoGMeter')
-        self.assertEqual((.7, 'Next heal', False), updates[-1])
+        self.assertNotIn('WUI_TrackedMeter', source[begin:end])
+        self.assertNotIn('Loop_KiritoGMeter', source[begin:end])
+        self.assertIn('call BlzStartUnitAbilityCooldown(c, KiritoG_ID, TimerGetRemaining(t_KiritoG))', source[begin:end])
+
 
 
 if __name__ == '__main__':

@@ -1640,27 +1640,36 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             set rmax = AstaT_Duration
             call DecorRemove(c, x, y, 450, AstaT_DecorDamage)
             if frameAsta_pas1[k2] == null then
-                set frameAsta_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frameAsta_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frameAsta_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
+                call BlzFrameSetSize(frameAsta_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frameAsta_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frameAsta_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frameAsta_pas1[k2], true)
                 endif
-                set frameAsta_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frameAsta_pas1[k2], "", 0)
-
+                set frameAsta_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameAsta_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frameAsta_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
+                call BlzFrameSetSize(frameAsta_pas2[k2], 0.1, 0.019)
                 set frameAsta_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameAsta_pas1[k2], "", 0)
+                call BlzFrameSetSize(frameAsta_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frameAsta_pas3[k2], 0.5)
+                call BlzFrameSetModel(frameAsta_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frameAsta_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
                 call BlzFrameSetMinMaxValue(frameAsta_pas3[k2], 0, rmax + 1)
                 call BlzFrameSetValue(frameAsta_pas3[k2], rmax)
                 set frameAsta_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameAsta_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frameAsta_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
+                call BlzFrameSetSize(frameAsta_pas4[k2], 0.03, 0.03)
                 call BlzFrameSetTexture(frameAsta_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Asta_T", 0, false)
                 set frameAsta_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frameAsta_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
                 call BlzFrameSetText(frameAsta_pas5[k2], "|c00FFFF00" + "Divider Time Left:" + "|r")
+                call BlzFrameSetScale(frameAsta_pas5[k2], 0.9)
                 set frameAsta_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frameAsta_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
                 call BlzFrameSetText(frameAsta_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                call WUI_HeroMeter(frameAsta_pas1[k2], frameAsta_pas2[k2], frameAsta_pas3[k2], frameAsta_pas4[k2], frameAsta_pas5[k2], frameAsta_pas6[k2])
-                call WUI_RegisterMeter(frameAsta_pas1[k2], k2, "Heroes/Asta.j:frameAsta_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frameAsta_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frameAsta_pas1[k2], true)

@@ -533,7 +533,6 @@ library KiritoSpells uses GearSystems
                         loop
                             exitwhen k > 3
                             set dd[k] = CreateUnit(GetOwningPlayer(c), KiritoE_DummyId, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG + (90 * k))
-                            call WOS_RegisterHeroMinimap(dd[k], c)
                             call PauseUnit(dd[k], true)
                             call MyRemoveUnit(dd[k], rmax + 1)
                             call SaveUnitHandle(hs, GetHandleId(c), StringHash("dummy" + I2S(k)), dd[k])
@@ -607,7 +606,6 @@ library KiritoSpells uses GearSystems
                                             call ColorDummy3(dd[k], 0, 255, 255, 255, 0.75)
                                             set dd[k] = null
                                             set dd[k] = CreateUnit(GetOwningPlayer(c), KiritoE_DummyId2, GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359))
-                                            call WOS_RegisterHeroMinimap(dd[k], c)
                                             call MUTU2(dd[k], rmax - r, 65, u)                                            
                             call SaveUnitHandle(hs, GetHandleId(c), StringHash("dummy" + I2S(k)), dd[k])
                                             call MyRemoveUnit(dd[k], rmax - r)
@@ -812,27 +810,36 @@ library KiritoSpells uses GearSystems
             call SetPlayerAbilityAvailable(GetOwningPlayer(c),KiritoR2_ID,true)
             call UnitAddAbility(c,KiritoR2_ID)
             if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame_pas1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
                                 endif
-                                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
                                 call BlzFrameSetValue(frame_pas3[k2], rmax)
                                 set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
                                 call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kirito_R", 0, false)
                                 set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Starburst Stream:" + "|r")
+                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
                                 set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Kirito.j:frame_pas1:" + I2S(k2))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
                             else
                                 if GetLocalPlayer() == Player(k2) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1390,32 +1397,6 @@ library KiritoSpells uses GearSystems
         group g
         effect e
         effect e2
-        WUI_TrackedMeter healMeter
-        private static real uiTick = 0.0
-
-        private static method Loop_KiritoGMeter takes nothing returns nothing
-            local thistype this
-            local integer i = 0
-            local integer pid
-            set uiTick = uiTick + 0.03
-            if uiTick < 0.12 then
-                return
-            endif
-            set uiTick = 0.0
-            loop
-                exitwhen i > MUI_KiritoG
-                set this = m_KiritoG[i]
-                set pid = GetPlayerId(GetOwningPlayer(c))
-                if healMeter != 0 then
-                    call healMeter.update(TimerGetRemaining(t_KiritoG), "Next heal", GetUnitTypeId(c) != 0 and Hero[pid] == c and not IsUnitType(c, UNIT_TYPE_DEAD))
-                endif
-                set i = i + 1
-            endloop
-        endmethod
-
-        private static method onInit takes nothing returns nothing
-            call TriggerAddAction(GearTimer03Listeners, function thistype.Loop_KiritoGMeter)
-        endmethod
 
         private static method Loop_KiritoG takes nothing returns nothing
             local integer this
@@ -1424,18 +1405,13 @@ library KiritoSpells uses GearSystems
             loop
                 exitwhen i > MUI_KiritoG
                 set this = m_KiritoG[i]
-                if c != null and GetUnitTypeId(c) != 0 then
-                    // The passive button shows the time to the next heal.
-                    call BlzStartUnitAbilityCooldown(c, KiritoG_ID, KiritoG_Time)
+                if c != null then
                     if IsUnitType(c,UNIT_TYPE_DEAD)==false and GetUnitState(c, UNIT_STATE_LIFE) < GetUnitState(c, UNIT_STATE_MAX_LIFE) then
                         set r5 = GetHeroAgi(c, true)*KiritoG_Heal
                         call SetHpCurrent2(c,c, r5)
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_e_buffgreen2a.mdx", c, "origin"))
                     endif
                 else
-                    if healMeter != 0 then
-                        call healMeter.close()
-                    endif
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
                     set c = null
@@ -1447,7 +1423,6 @@ library KiritoSpells uses GearSystems
                     set MUI_KiritoG = MUI_KiritoG - 1
                     if MUI_KiritoG == -1 then
                         call PauseTimer( t_KiritoG)
-                        call GearTimer03Release()
                     endif
                     call deallocate(this)
                 endif
@@ -1461,13 +1436,9 @@ library KiritoSpells uses GearSystems
             set m_KiritoG[ MUI_KiritoG] = this
             set c = NewC
             set r2 = 0
-            // No separate "Next heal" meter: the G button cooldown shows it.
-            set healMeter = 0
             if MUI_KiritoG == 0 then
-                call GearTimer03Acquire()
                 call TimerStart( t_KiritoG, KiritoG_Time, true, function thistype.Loop_KiritoG)
             endif
-            call BlzStartUnitAbilityCooldown(c, KiritoG_ID, TimerGetRemaining(t_KiritoG))
         endmethod
 
     endstruct

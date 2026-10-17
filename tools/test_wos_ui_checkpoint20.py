@@ -21,6 +21,7 @@ class Learning(unittest.TestCase):
         ally.AllyAbilityUI.setUp(self)
         g = self.vm.g
         self.learned = []
+        self.vm.g['WUI_ResetClickedButtonFocus']=lambda:None
         g.update(SelectHeroSkill=lambda hero, ability: self.learned.append((hero, ability)),
                  BlzFrameSetEnable=lambda *_: None, GetTriggerPlayer=lambda: 0)
         # The selected Crocodile is the viewer's OWN main hero with points.
@@ -37,6 +38,29 @@ class Learning(unittest.TestCase):
         g = self.vm.g
         g['BlzGetTriggerFrame'] = lambda: g['AHUI_LearnButton'][slot]
         self.vm.run('AHUI_OnLearnClick')
+
+    def test_learn_glow_restores_cached_backdrop_without_hitbox(self):
+        vm=ui.load_source('ShowCD.j');created=[];enabled={};visible={};textures={}
+        def frame(kind,name,*args):created.append((kind,name));return len(created)
+        vm.g.update(AHUI_LearnTrigger=None,WUI_GetRoot=lambda:'root',CreateTrigger=lambda:'learn',BlzCreateFrameByType=frame,
+            WUI_Place=lambda *_:None,WUI_PlaceShift=lambda *_:None,WUI_AbilityX=lambda n:n*.04,
+            WUI_HudShift=0.,WUI_HUD_Y=.07,WUI_COMMAND_STEP=.04,WUI_ICON_SIZE=.035,WUI_PIP_Y=.025,
+            BlzFrameSetEnable=lambda f,v:enabled.update({f:v}),BlzFrameSetVisible=lambda f,v:visible.update({f:v}),
+            BlzFrameSetTexture=lambda f,t,*_:textures.update({f:t}),BlzTriggerRegisterFrameEvent=lambda *_:None,TriggerAddAction=lambda *_:None)
+        for name in ['Level','AllPoints','Size','Scale','TextAlignment']:vm.g['BlzFrameSet'+name]=lambda *_:None
+        for name in ['TEXT_JUSTIFY_MIDDLE','TEXT_JUSTIFY_CENTER','FRAMEEVENT_CONTROL_CLICK']:vm.g[name]=name
+        vm.run('AHUI_CreateLearnFrames')
+        for i in range(5):
+            f=vm.g['AHUI_LearnGlow'][i]
+            self.assertEqual(('BACKDROP','AHUILearnGlow'),created[f-1])
+            self.assertEqual('UI\\WOS\\learn-glow.tga',textures[f])
+            self.assertFalse(enabled[f]);self.assertFalse(visible[f])
+
+    def test_learning_click_clears_pressed_state_after_learning(self):
+        resets=[]
+        self.vm.g['WUI_ResetClickedButtonFocus']=lambda:resets.append(len(self.learned))
+        self.click(0)
+        self.assertEqual([1],resets)
 
     def test_pip_count_matches_object_data_levels(self):
         self.refresh()

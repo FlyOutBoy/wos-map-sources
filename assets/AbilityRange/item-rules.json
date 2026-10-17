@@ -1,0 +1,2499 @@
+[
+  {
+    "item": "I000",
+    "name": "Necklace +500",
+    "abilities": [
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I001",
+    "name": "Jade",
+    "abilities": [
+      {
+        "id": "A00B",
+        "name": "Item INT + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I002",
+    "name": "Hollow Soul",
+    "abilities": [
+      {
+        "id": "A009",
+        "name": "Item ALST + 3",
+        "base": "AIx1"
+      },
+      {
+        "id": "A00B",
+        "name": "Item INT + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I003",
+    "name": "Horn of Strength",
+    "abilities": [
+      {
+        "id": "A009",
+        "name": "Item ALST + 3",
+        "base": "AIx1"
+      },
+      {
+        "id": "A00A",
+        "name": "Item STR + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I004",
+    "name": "Talisman",
+    "abilities": [
+      {
+        "id": "A00A",
+        "name": "Item STR + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I005",
+    "name": "Tome of Strength +20",
+    "abilities": [
+      {
+        "id": "A04W",
+        "name": "Item STR +20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I006",
+    "name": "Tome of Agility +20",
+    "abilities": [
+      {
+        "id": "A04V",
+        "name": "Item Agi + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I007",
+    "name": "Boots of Speed",
+    "abilities": [
+      {
+        "id": "A009",
+        "name": "Item ALST + 3",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I008",
+    "name": "Rune",
+    "abilities": [
+      {
+        "id": "A00C",
+        "name": "Item Agi + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I009",
+    "name": "Cape of Agility",
+    "abilities": [
+      {
+        "id": "A009",
+        "name": "Item ALST + 3",
+        "base": "AIx1"
+      },
+      {
+        "id": "A00C",
+        "name": "Item Agi + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00A",
+    "name": "Tome of Intelligence +20",
+    "abilities": [
+      {
+        "id": "A04U",
+        "name": "Item INT + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00B",
+    "name": "Oken",
+    "abilities": [
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A020",
+        "name": "hp +250",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00C",
+    "name": "Seal +5",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00D",
+    "name": "Urahara Hat +2",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00E",
+    "name": "Incursio",
+    "abilities": [
+      {
+        "id": "A00Y",
+        "name": "Item Incursio",
+        "base": "Absk"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "Incursio_Range"
+  },
+  {
+    "item": "I00F",
+    "name": "Shinigami Certificate",
+    "abilities": [
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00G",
+    "name": "Funny Barrel",
+    "abilities": [
+      {
+        "id": "A00Z",
+        "name": "Item Funny Barrel",
+        "base": "ANcl"
+      },
+      {
+        "id": "A007",
+        "name": "Item ALST + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A00Z",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1300.0
+  },
+  {
+    "item": "I00H",
+    "name": "Black Heart",
+    "abilities": [
+      {
+        "id": "A01I",
+        "name": "CD Black Heart",
+        "base": "ANcl"
+      },
+      {
+        "id": "A071",
+        "name": "Item INT + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      },
+      {
+        "id": "A0G8",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00I",
+    "name": "Midnight Cloak",
+    "abilities": [
+      {
+        "id": "A016",
+        "name": "Item Armor",
+        "base": "AId2"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00J",
+    "name": "Kansho and Bakuya",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00K",
+    "name": "Mizukage Hat",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00L",
+    "name": "Witch Sin",
+    "abilities": [
+      {
+        "id": "A01D",
+        "name": "CD Witch SIn",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04R",
+        "name": "mp",
+        "base": "AI2m"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00M",
+    "name": "Cup of Tea",
+    "abilities": [
+      {
+        "id": "A01W",
+        "name": "CD Cup of Tea",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A07Q",
+        "name": "Item Cup OF Tea",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00N",
+    "name": "Urahara Cane",
+    "abilities": [
+      {
+        "id": "A04P",
+        "name": "Item ALST + 7",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00O",
+    "name": "Urahara Set",
+    "abilities": [
+      {
+        "id": "A01B",
+        "name": "Item Urahara Set",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "UraharaSet_Range"
+  },
+  {
+    "item": "I00P",
+    "name": "Tsuchikage Hat",
+    "abilities": [
+      {
+        "id": "A01Z",
+        "name": "Item Tsuchikage Set",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04P",
+        "name": "Item ALST + 7",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A01Z",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1100.0
+  },
+  {
+    "item": "I00Q",
+    "name": "Hungry Sin",
+    "abilities": [
+      {
+        "id": "A02E",
+        "name": "CD Hungry Sin",
+        "base": "ANcl"
+      },
+      {
+        "id": "A020",
+        "name": "hp +250",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00R",
+    "name": "Kazekage Hat",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00S",
+    "name": "Funny Present",
+    "abilities": [
+      {
+        "id": "A02G",
+        "name": "Item Funny Present",
+        "base": "ANcl"
+      },
+      {
+        "id": "A009",
+        "name": "Item ALST + 3",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A02G",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1400.0
+  },
+  {
+    "item": "I00T",
+    "name": "Raikage Hat",
+    "abilities": [
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04U",
+        "name": "Item INT + 20",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04V",
+        "name": "Item Agi + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00U",
+    "name": "Hokage Hat",
+    "abilities": [
+      {
+        "id": "A06S",
+        "name": "Item Hokage Hat",
+        "base": "ANcl"
+      },
+      {
+        "id": "A02H",
+        "name": "Item Armor",
+        "base": "AId2"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A06S",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1250.0
+  },
+  {
+    "item": "I00V",
+    "name": "Bunshin Scroll",
+    "abilities": [
+      {
+        "id": "A02I",
+        "name": "Item Bunshin",
+        "base": "AOmi"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00W",
+    "name": "Kurikara",
+    "abilities": [
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00X",
+    "name": "Emperor's Blue Armor",
+    "abilities": [
+      {
+        "id": "A04Q",
+        "name": "Item Blue Emperor armor",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0I6",
+        "name": "Item Armor",
+        "base": "AId2"
+      },
+      {
+        "id": "A09R",
+        "name": "hp +750",
+        "base": "AIlf"
+      },
+      {
+        "id": "A04R",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00Y",
+    "name": "Angel's Blessing",
+    "abilities": [
+      {
+        "id": "A02U",
+        "name": "Item Angel's Blessing",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I00Z",
+    "name": "Naofumi Shield",
+    "abilities": [
+      {
+        "id": "A02T",
+        "name": "Item Naofumi Shield",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I010",
+    "name": "Pochita",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A073",
+        "name": "Item Agi + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I011",
+    "name": "Okarun Egg",
+    "abilities": [
+      {
+        "id": "A0G5",
+        "name": "Item INT + 30",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I012",
+    "name": "Fairy Tail Emblem",
+    "abilities": [
+      {
+        "id": "A04Y",
+        "name": "CD Fairy Tail Emblem",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0D2",
+        "name": "mp",
+        "base": "AI2m"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I013",
+    "name": "Black Clover",
+    "abilities": [
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A016",
+        "name": "Item Armor",
+        "base": "AId2"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I014",
+    "name": "Rock Lee Weights",
+    "abilities": [
+      {
+        "id": "A06Q",
+        "name": "Item Rock Lee Weight",
+        "base": "ANcl"
+      },
+      {
+        "id": "A007",
+        "name": "Item ALST + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "RockleeWeights_Range"
+  },
+  {
+    "item": "I015",
+    "name": "Raijin's Wrath",
+    "abilities": [
+      {
+        "id": "A06O",
+        "name": "Item Raijins Wrath",
+        "base": "ANcl"
+      },
+      {
+        "id": "A074",
+        "name": "Item Agi + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A06O",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1750.0
+  },
+  {
+    "item": "I016",
+    "name": "Shark Trail",
+    "abilities": [
+      {
+        "id": "A06P",
+        "name": "Item Shark Trail",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A074",
+        "name": "Item Agi + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A06P",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1400.0
+  },
+  {
+    "item": "I017",
+    "name": "Chogurt",
+    "abilities": [
+      {
+        "id": "A06R",
+        "name": "Item Chogurt",
+        "base": "ANcl"
+      },
+      {
+        "id": "A007",
+        "name": "Item ALST + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A06R",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1450.0
+  },
+  {
+    "item": "I018",
+    "name": "Itachi Apron +250",
+    "abilities": [
+      {
+        "id": "A0CQ",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I019",
+    "name": "Earth Power",
+    "abilities": [
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01A",
+    "name": "Itachi Ring",
+    "abilities": [
+      {
+        "id": "A071",
+        "name": "Item INT + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01B",
+    "name": "Itachi Set",
+    "abilities": [
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04U",
+        "name": "Item INT + 20",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04V",
+        "name": "Item Agi + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01C",
+    "name": "Gokon Tekko",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A071",
+        "name": "Item INT + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01D",
+    "name": "Patch Kenpachi",
+    "abilities": [
+      {
+        "id": "A06T",
+        "name": "Item STR +15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01E",
+    "name": "Forehead Protector",
+    "abilities": [
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01F",
+    "name": "Elucidator",
+    "abilities": [
+      {
+        "id": "A073",
+        "name": "Item Agi + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01G",
+    "name": "Raiden Hand",
+    "abilities": [
+      {
+        "id": "A074",
+        "name": "Item Agi + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01H",
+    "name": "Sanrei Glove",
+    "abilities": [
+      {
+        "id": "A075",
+        "name": "Item INT + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01I",
+    "name": "Sword of Dracule Mihawk",
+    "abilities": [
+      {
+        "id": "A07E",
+        "name": "CD Mihawk Sword",
+        "base": "ANcl"
+      },
+      {
+        "id": "A073",
+        "name": "Item Agi + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      },
+      {
+        "id": "A0G8",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01J",
+    "name": "Pakkun +5",
+    "abilities": [
+      {
+        "id": "A007",
+        "name": "Item ALST + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01K",
+    "name": "Frozen Heart",
+    "abilities": [
+      {
+        "id": "A07N",
+        "name": "CD Frozen Heart",
+        "base": "ANcl"
+      },
+      {
+        "id": "A07M",
+        "name": "Frozen Heart Aura",
+        "base": "AOae"
+      },
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "aura",
+    "ability": "A07M",
+    "source": "object-data/abilities.json",
+    "field": "area_of_effect level 1",
+    "fallback": 1500.0
+  },
+  {
+    "item": "I01L",
+    "name": "True Zangetsu",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01M",
+    "name": "Nichirin Sword Whip",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01N",
+    "name": "Hiraishin",
+    "abilities": [
+      {
+        "id": "A076",
+        "name": "Item Hiraishin",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A076",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1100.0
+  },
+  {
+    "item": "I01O",
+    "name": "Lust Sin",
+    "abilities": [
+      {
+        "id": "A07O",
+        "name": "CD Lust SIn",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01P",
+    "name": "Sogyo no Kotowari",
+    "abilities": [
+      {
+        "id": "A09O",
+        "name": "CD Sogyo no Kotowari",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01Q",
+    "name": "Ryujin Jakka",
+    "abilities": [
+      {
+        "id": "A080",
+        "name": "CD Ryujin Jakka",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01R",
+    "name": "Pokeball",
+    "abilities": [
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01S",
+    "name": "Red Cup",
+    "abilities": [
+      {
+        "id": "A09L",
+        "name": "Item Red Cup",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A075",
+        "name": "Item INT + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "RedCup_Range"
+  },
+  {
+    "item": "I01T",
+    "name": "Red Feather",
+    "abilities": [
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01U",
+    "name": "Red Flower",
+    "abilities": [
+      {
+        "id": "A09M",
+        "name": "Item Red Flower",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A075",
+        "name": "Item INT + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A09M",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1400.0
+  },
+  {
+    "item": "I01V",
+    "name": "Tusk Barrel",
+    "abilities": [
+      {
+        "id": "A09N",
+        "name": "Item Tusk Barrel",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0ER",
+        "name": "Item ALST + 12",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "TuskBarrel_Range"
+  },
+  {
+    "item": "I01W",
+    "name": "Lust Sin Evolved",
+    "abilities": [
+      {
+        "id": "A07O",
+        "name": "CD Lust SIn",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01X",
+    "name": "Nejibana",
+    "abilities": [
+      {
+        "id": "A09P",
+        "name": "CD Nejibana",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01Y",
+    "name": "Gonryomaru",
+    "abilities": [
+      {
+        "id": "A081",
+        "name": "CD Gonryomaru",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I01Z",
+    "name": "Red Hourglass",
+    "abilities": [
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I020",
+    "name": "The Jewel of Four Souls",
+    "abilities": [
+      {
+        "id": "A09U",
+        "name": "CD Jewel Of Four Souls",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A020",
+        "name": "hp +250",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I021",
+    "name": "Holy Grail",
+    "abilities": [
+      {
+        "id": "A09X",
+        "name": "Holy Grail Aura",
+        "base": "AUau"
+      },
+      {
+        "id": "A020",
+        "name": "hp +250",
+        "base": "AIlf"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "aura",
+    "ability": "A09X",
+    "source": "object-data/abilities.json",
+    "field": "area_of_effect level 1",
+    "fallback": 1200.0
+  },
+  {
+    "item": "I022",
+    "name": "Future Diary",
+    "abilities": [
+      {
+        "id": "A0AL",
+        "name": "Item Future Diary",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00X",
+        "name": "Hero ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I023",
+    "name": "Quincy Cross",
+    "abilities": [
+      {
+        "id": "A0BY",
+        "name": "CD Quincy Cross",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0I5",
+        "name": "Item ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I024",
+    "name": "Prison Realm (Active)",
+    "abilities": [
+      {
+        "id": "A0BZ",
+        "name": "CD Prison Realm",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0G3",
+        "name": "Item Agi + 30",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I025",
+    "name": "Prison Realm (Disabled)",
+    "abilities": [
+      {
+        "id": "A0BZ",
+        "name": "CD Prison Realm",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0G3",
+        "name": "Item Agi + 30",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I026",
+    "name": "School Skirt",
+    "abilities": [
+      {
+        "id": "A0CQ",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I027",
+    "name": "School Shirt",
+    "abilities": [
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I028",
+    "name": "School Uniform",
+    "abilities": [
+      {
+        "id": "A0CR",
+        "name": "hp +600",
+        "base": "AIlf"
+      },
+      {
+        "id": "A04R",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I029",
+    "name": "Cat Girl",
+    "abilities": [
+      {
+        "id": "A0CP",
+        "name": "Item ALST + 8",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02A",
+    "name": "Turbo Neko",
+    "abilities": [
+      {
+        "id": "A0CX",
+        "name": "Item EUL",
+        "base": "ANcl"
+      },
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A0CX",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1250.0
+  },
+  {
+    "item": "I02B",
+    "name": "Dark Holy Grail",
+    "abilities": [
+      {
+        "id": "A0CZ",
+        "name": "Dark Grail Enemy Debuff",
+        "base": "AOae"
+      },
+      {
+        "id": "A0CY",
+        "name": "Dark Holy Grail Aura Friend",
+        "base": "AUau"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "aura",
+    "ability": "A0CY",
+    "source": "object-data/abilities.json",
+    "field": "area_of_effect level 1",
+    "fallback": 1500.0
+  },
+  {
+    "item": "I02C",
+    "name": "Tsuchikage Hat Evolved",
+    "abilities": [
+      {
+        "id": "A0DD",
+        "name": "Item Tsuchikage Set",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A0DD",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1400.0
+  },
+  {
+    "item": "I02D",
+    "name": "Envy Sin",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02E",
+    "name": "Wrath Sin",
+    "abilities": [
+      {
+        "id": "A0E4",
+        "name": "Item Wrath Sin",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02F",
+    "name": "Hell Blaze",
+    "abilities": [
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02G",
+    "name": "Mera Mera no Mi",
+    "abilities": [
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "MeraMera_Aoe"
+  },
+  {
+    "item": "I02H",
+    "name": "Mirror of Yata",
+    "abilities": [
+      {
+        "id": "A06T",
+        "name": "Item STR +15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A0G8",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "YataMirror_Range"
+  },
+  {
+    "item": "I02I",
+    "name": "Paper Talisman",
+    "abilities": [
+      {
+        "id": "A0ER",
+        "name": "Item ALST + 12",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02J",
+    "name": "Guts Armor",
+    "abilities": [
+      {
+        "id": "A0F4",
+        "name": "CD Guts Armor",
+        "base": "ANcl"
+      },
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02K",
+    "name": "Avalon",
+    "abilities": [
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02L",
+    "name": "Rhitta",
+    "abilities": [
+      {
+        "id": "A0F5",
+        "name": "Item Rhitta",
+        "base": "ANcl"
+      },
+      {
+        "id": "A0G7",
+        "name": "Item STR +30",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A0F5",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1400.0
+  },
+  {
+    "item": "I02M",
+    "name": "Sacred Gear Booster",
+    "abilities": [
+      {
+        "id": "A0GB",
+        "name": "CD Sacred Gear Boost",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02N",
+    "name": "Susanoo Shield",
+    "abilities": [
+      {
+        "id": "A0F7",
+        "name": "CD Susanoo Shield",
+        "base": "ANcl"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A016",
+        "name": "Item Armor",
+        "base": "AId2"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02O",
+    "name": "Elixir of Life",
+    "abilities": [
+      {
+        "id": "A0F9",
+        "name": "CD Elixir of Life",
+        "base": "ANcl"
+      },
+      {
+        "id": "A071",
+        "name": "Item INT + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02P",
+    "name": "Shiki Knife",
+    "abilities": [
+      {
+        "id": "A0FA",
+        "name": "CD Shiki Knife",
+        "base": "ANcl"
+      },
+      {
+        "id": "A073",
+        "name": "Item Agi + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "ShikiKnife_RangeCheck"
+  },
+  {
+    "item": "I02Q",
+    "name": "Adamantine Armor",
+    "abilities": [
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      },
+      {
+        "id": "A016",
+        "name": "Item Armor",
+        "base": "AId2"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02R",
+    "name": "Sea God Shield",
+    "abilities": [
+      {
+        "id": "A0FB",
+        "name": "CD Sea God Shield",
+        "base": "ANcl"
+      },
+      {
+        "id": "A06T",
+        "name": "Item STR +15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02S",
+    "name": "Tachikaze",
+    "abilities": [
+      {
+        "id": "A0FC",
+        "name": "CD Tachikaze",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02T",
+    "name": "Electro Slime",
+    "abilities": [
+      {
+        "id": "A0FD",
+        "name": "CD Orb Lightning",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04P",
+        "name": "Item ALST + 7",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02U",
+    "name": "Tome of Intelligence +5",
+    "abilities": [
+      {
+        "id": "A00B",
+        "name": "Item INT + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02V",
+    "name": "Tome of Intelligence +10",
+    "abilities": [
+      {
+        "id": "A075",
+        "name": "Item INT + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02W",
+    "name": "Tome of Intelligence +15",
+    "abilities": [
+      {
+        "id": "A071",
+        "name": "Item INT + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02X",
+    "name": "Tome of Strength +15",
+    "abilities": [
+      {
+        "id": "A06T",
+        "name": "Item STR +15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02Y",
+    "name": "Tome of Strength +10",
+    "abilities": [
+      {
+        "id": "A072",
+        "name": "Item STR + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I02Z",
+    "name": "Tome of Strength +5",
+    "abilities": [
+      {
+        "id": "A00A",
+        "name": "Item STR + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I030",
+    "name": "Tome of Agility +15",
+    "abilities": [
+      {
+        "id": "A073",
+        "name": "Item Agi + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I031",
+    "name": "Tome of Agility +10",
+    "abilities": [
+      {
+        "id": "A074",
+        "name": "Item Agi + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I032",
+    "name": "Tome of Agility +5",
+    "abilities": [
+      {
+        "id": "A00C",
+        "name": "Item Agi + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I033",
+    "name": "Pakkun +8",
+    "abilities": [
+      {
+        "id": "A0CP",
+        "name": "Item ALST + 8",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I034",
+    "name": "Pakkun +10",
+    "abilities": [
+      {
+        "id": "A07X",
+        "name": "Item ALST + 10",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I035",
+    "name": "Pakkun +12",
+    "abilities": [
+      {
+        "id": "A0ER",
+        "name": "Item ALST + 12",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I036",
+    "name": "Pakkun +15",
+    "abilities": [
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I037",
+    "name": "Pakkun +20",
+    "abilities": [
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A007",
+        "name": "Item ALST + 5",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I038",
+    "name": "Necklace +750",
+    "abilities": [
+      {
+        "id": "A09R",
+        "name": "hp +750",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I039",
+    "name": "Necklace +1000",
+    "abilities": [
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03A",
+    "name": "Necklace +1250",
+    "abilities": [
+      {
+        "id": "A020",
+        "name": "hp +250",
+        "base": "AIlf"
+      },
+      {
+        "id": "A04S",
+        "name": "hp +1000",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03B",
+    "name": "Necklace +1500",
+    "abilities": [
+      {
+        "id": "A0FE",
+        "name": "hp +1500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03C",
+    "name": "Tome of Agility +25",
+    "abilities": [
+      {
+        "id": "A00R",
+        "name": "Item Agi + 25",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03D",
+    "name": "Tome of Agility +30",
+    "abilities": [
+      {
+        "id": "A074",
+        "name": "Item Agi + 10",
+        "base": "AIx1"
+      },
+      {
+        "id": "A04V",
+        "name": "Item Agi + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03E",
+    "name": "Piro Slime",
+    "abilities": [
+      {
+        "id": "A0G0",
+        "name": "CD Orb Fire",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04P",
+        "name": "Item ALST + 7",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03F",
+    "name": "Hydro Slime",
+    "abilities": [
+      {
+        "id": "A0G1",
+        "name": "CD Orb Water",
+        "base": "ANcl"
+      },
+      {
+        "id": "A04P",
+        "name": "Item ALST + 7",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03G",
+    "name": "Tome of Intelligence +25",
+    "abilities": [
+      {
+        "id": "A00T",
+        "name": "Item INT + 25",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03H",
+    "name": "Tome of Intelligence +30",
+    "abilities": [
+      {
+        "id": "A0G5",
+        "name": "Item INT + 30",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03I",
+    "name": "Seal +10",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03J",
+    "name": "Seal +15",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03K",
+    "name": "Urahara Hat +4",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03L",
+    "name": "Urahara Hat +6",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03M",
+    "name": "Urahara Hat +8",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03N",
+    "name": "Urahara Hat +10",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03O",
+    "name": "Seal +20",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03P",
+    "name": "Seal +25",
+    "abilities": [],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03Q",
+    "name": "Itachi Apron +500",
+    "abilities": [
+      {
+        "id": "A0G8",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03R",
+    "name": "Itachi Apron +750",
+    "abilities": [
+      {
+        "id": "A0G9",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03S",
+    "name": "Itachi Apron +1000",
+    "abilities": [
+      {
+        "id": "A0GA",
+        "name": "mp",
+        "base": "AI2m"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03T",
+    "name": "Hogyoku",
+    "abilities": [
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03U",
+    "name": "Chogurt Evolved",
+    "abilities": [
+      {
+        "id": "A06R",
+        "name": "Item Chogurt",
+        "base": "ANcl"
+      },
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A06R",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1450.0
+  },
+  {
+    "item": "I03V",
+    "name": "Hokage Hat Evolved",
+    "abilities": [
+      {
+        "id": "A0GX",
+        "name": "Item Hokage Hat Evolved",
+        "base": "ANcl"
+      },
+      {
+        "id": "A02H",
+        "name": "Item Armor",
+        "base": "AId2"
+      },
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A0GX",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 1250.0
+  },
+  {
+    "item": "I03W",
+    "name": "Sakura Sesshou",
+    "abilities": [
+      {
+        "id": "A0HE",
+        "name": "Sakura Sesshou",
+        "base": "AOfs"
+      },
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "cast",
+    "ability": "A0HE",
+    "source": "object-data/abilities.json",
+    "field": "cast_range level 1",
+    "fallback": 8000.0
+  },
+  {
+    "item": "I03X",
+    "name": "Demon Sword Lostvayne",
+    "abilities": [
+      {
+        "id": "A0HT",
+        "name": "CD Lostvayne",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03Y",
+    "name": "Murasame",
+    "abilities": [
+      {
+        "id": "A0I4",
+        "name": "Item Atk ",
+        "base": "AItg"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I03Z",
+    "name": "Katana",
+    "abilities": [
+      {
+        "id": "A0HU",
+        "name": "Item Atk ",
+        "base": "AItg"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I040",
+    "name": "Philosopher's Stone",
+    "abilities": [
+      {
+        "id": "A0HV",
+        "name": "CD Philosopher Stone",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I041",
+    "name": "Demon-Dweller Sword",
+    "abilities": [
+      {
+        "id": "A0HW",
+        "name": "CD Demon Dweller Sword",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I042",
+    "name": "Shiki Knife Evolved",
+    "abilities": [
+      {
+        "id": "A0HY",
+        "name": "Item Shiki Knife Evolved",
+        "base": "ANcl"
+      },
+      {
+        "id": "A07Y",
+        "name": "Item ALST + 15",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "script",
+    "source": "triggers/Items/Items.j",
+    "expression": "ShikiKnifeEvolved_Range"
+  },
+  {
+    "item": "I043",
+    "name": "Cup of Tea Evolved",
+    "abilities": [
+      {
+        "id": "A01W",
+        "name": "CD Cup of Tea",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00M",
+        "name": "Hero ALST + 15",
+        "base": "AIx1"
+      },
+      {
+        "id": "A07Q",
+        "name": "Item Cup OF Tea",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I044",
+    "name": "Death Note",
+    "abilities": [
+      {
+        "id": "A0I1",
+        "name": "CD Death Note",
+        "base": "ANcl"
+      },
+      {
+        "id": "A00W",
+        "name": "Hero ALST + 20",
+        "base": "AIx1"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  },
+  {
+    "item": "I045",
+    "name": "Avalon Evolved",
+    "abilities": [
+      {
+        "id": "A02H",
+        "name": "Item Armor",
+        "base": "AId2"
+      },
+      {
+        "id": "A09R",
+        "name": "hp +750",
+        "base": "AIlf"
+      },
+      {
+        "id": "A01Y",
+        "name": "hp +500",
+        "base": "AIlf"
+      }
+    ],
+    "mode": "none",
+    "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+  }
+]

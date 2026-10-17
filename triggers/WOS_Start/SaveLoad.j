@@ -1,16 +1,14 @@
-library AAINIT initializer SaveSystem_EarlyInit requires WOS2BotCodec, WOSUI, LocalMp3Player
+library AAINIT requires WOS2BotCodec
 
 //==============================================================================
 // WOS2 LOCAL-ONLY SAVE
 //
 // Safety model:
-// - the owner's profile is read once by a shared startup timer;
-// - opening Career is an idempotent fallback if startup has not run yet;
-// - career data is never sent between players; only the owner's own UI
-//   settings file (hotkeys, camera, track, shop action modes) is synced once, so
-//   every client registers the same restored key events;
-// - match end adds to the cached profile and overwrites the same owner file;
-// - career values never feed gameplay; settings apply only through agreed UI sync;
+// - no save file is read during map initialization or mode selection;
+// - the owner's profile may be read on that owner's explicit Career UI open;
+// - no BlzSendSyncData and no transfer of saved data between players;
+// - only the local owner's cumulative profile is read again at match end;
+// - loaded values are never used by gameplay, selection, timers or synchronized UI;
 // - the match export is built only from already synchronized current-match state;
 // - the old WOS2_v1/WOS2_v3/VIP files are never opened or overwritten.
 //==============================================================================
@@ -27,11 +25,10 @@ private function IsActiveObserverSlot takes integer pid returns boolean
     return IsObserverSlot(pid) and GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING and GetPlayerController(Player(pid)) == MAP_CONTROL_USER
 endfunction
 globals
-    // Visual tooltip carrier. Saved files never call a map function while
-    // Preloader runs; the returned buffer is parsed by the map afterwards.
+    // The standard FileIO carrier. Saved files may touch only this visual
+    // tooltip native; they never call a map function while Preloader runs.
     constant integer SAVE_ABILITY = 'ANdc'
     constant string  SAVE_LOCAL_FORMAT = "WOS2L5|"
-    constant string  SAVE_LOCAL_VERSION = "V,6|"
     constant string  SAVE_LOCAL_EMPTY = "WOS2L5_EMPTY"
     constant string  SAVE_FOLDER = "save\\"
     constant string  SAVE_LOCAL_PREFIX = "WOS2_local4_"
@@ -47,41 +44,15 @@ globals
     string array ss_Identity
     integer array ss_IdentityKeyA
     integer array ss_IdentityKeyB
-    string array ss_Nickname
-    integer array ss_LegacyKeyA
-    integer array ss_LegacyKeyB
-    boolean ss_LocalImportLegacyKeys = false
-
-    // Независимый снимок WOSApp: только локальный интерфейс, без влияния на матч.
-    boolean ss_AppLoaded = false
-    boolean ss_AppInvalid = false
-    boolean ss_AppHeader = false
-    boolean ss_AppFooter = false
-    integer ss_AppGames = 0
-    integer ss_AppWins = 0
-    integer ss_AppHeroCount = 0
-    integer ss_AppRecordCount = 0
-    integer array ss_AppHeroId
-    integer array ss_AppHeroGames
-    integer array ss_AppHeroWins
-    integer array ss_AppCarrier
-    string array ss_AppOriginalTooltip
 
     // Deliberately divergent LOCAL scalars. They may only be consumed by local
     // file output, local text or local frame rendering.
     integer ss_LocalOwnerPid = -1
     integer ss_LocalGames = 0
     integer ss_LocalWins = 0
-    integer ss_LocalTrainDeaths = 0
     boolean ss_LocalResultPending = false
     boolean ss_LocalPendingWin = false
     boolean ss_LocalLoadFinished = false
-    boolean ss_LocalHeaderLoaded = false
-    boolean ss_LocalFooterLoaded = false
-    boolean ss_LocalFooterRequired = false
-    boolean ss_LocalLoadFailed = false
-    boolean ss_LocalImportZeroKeys = false
-    boolean ss_LocalLegacyImported = false
     boolean ss_LocalSaveWritten = false
     integer ss_LocalLoadedRecordCount = 0
     integer ss_LocalRejectedRecordCount = 0
@@ -180,29 +151,9 @@ globals
     integer array ss_IgnoredItem
 
     timer ss_DeferredSaveTimer = null
-    timer ss_StartupLoadTimer = null
     integer ss_DeferredSavePhase = 0
     boolean ss_Initialized = false
     trigger ss_ChatTrigger = null
-    // Checkpoint 27b: UI settings beside the local4 career (own file, so the
-    // career parser never sees an unknown record type).
-    constant string  SAVE_SETTINGS_PREFIX = "WOS2_local4set_"
-    constant string  SAVE_SETTINGS_FORMAT = "WOS2S1|"
-    constant string  SAVE_SETTINGS_EMPTY = "WOS2S1_EMPTY"
-    constant string  SAVE_SETTINGS_SYNC = "WOS2SET"
-    trigger ss_SettingsSync = null
-    timer ss_SettingsLoadTimer = null
-    boolean ss_SettingsWritten = false
-    // Local file-read guard: automatic finish must not replace an unread profile.
-    boolean ss_SettingsReadReady = false
-    string ss_SettingsLastPacket = ""
-    // Career parsing runs in chunks of fresh threads (operation limit).
-    constant integer SAVE_PARSE_CHUNK = 160
-    trigger ss_ParseTrigger = null
-    string ss_ParseBuffer = ""
-    integer ss_ParseIndex = 0
-    integer ss_ParseStart = 0
-    integer ss_ParseLength = 0
 endglobals
 
 //==============================================================================
@@ -217,106 +168,34 @@ function SaveSystem_PositiveModulo takes integer value, integer base returns int
     return result
 endfunction
 
-// Одинаковый ник использует один профиль: цвета, VIP и BattleTag не входят в ключ.
-function SaveSystem_NormalizeNickname takes string value returns string
-    local string result = ""
-    local string character
-    local integer index = 0
-    local integer length = StringLength(value)
-    loop
-        exitwhen index >= length
-        set character = SubString(value, index, index + 1)
-        if character == "#" then
-            set index = length
-        elseif SubString(value, index, index + 2) == "|c" or SubString(value, index, index + 2) == "|C" then
-            set index = index + 10
-        elseif SubString(value, index, index + 2) == "|r" or SubString(value, index, index + 2) == "|R" then
-            set index = index + 2
-        else
-            set result = result + character
-            set index = index + 1
-        endif
-    endloop
-    loop
-        exitwhen StringLength(result) == 0 or SubString(result, 0, 1) != " "
-        set result = SubString(result, 1, StringLength(result))
-    endloop
-    loop
-        exitwhen StringLength(result) == 0 or SubString(result, StringLength(result) - 1, StringLength(result)) != " "
-        set result = SubString(result, 0, StringLength(result) - 1)
-    endloop
-    set result = StringCase(result, false)
-    if StringLength(result) >= 5 and SubString(result, StringLength(result) - 5, StringLength(result)) == "[vip]" then
-        set result = SubString(result, 0, StringLength(result) - 5)
-    endif
-    loop
-        exitwhen StringLength(result) == 0 or SubString(result, StringLength(result) - 1, StringLength(result)) != " "
-        set result = SubString(result, 0, StringLength(result) - 1)
-    endloop
-    return result
-endfunction
-
 function SaveSystem_EnsureIdentity takes integer pid returns nothing
     local string stableName
     if pid < 0 or pid >= 16 then
         return
     endif
-    if ss_Identity[pid] == null or ss_Identity[pid] == "" then
+    if ss_Identity[pid] == "" then
         set stableName = GetPlayerName(Player(pid))
-        if stableName == null or stableName == "" then
+        if stableName == "" then
             set stableName = "Player" + I2S(pid)
         endif
         set ss_Identity[pid] = stableName
     endif
-    if ss_Nickname[pid] == null or ss_Nickname[pid] == "" then
-        set ss_Nickname[pid] = SaveSystem_NormalizeNickname(ss_Identity[pid])
-        if ss_Nickname[pid] == "" then
-            set ss_Nickname[pid] = "player" + I2S(pid)
-        endif
-        set ss_LegacyKeyA[pid] = StringHash("WOS2:LOCAL4:A:" + ss_Identity[pid])
-        set ss_LegacyKeyB[pid] = StringHash("WOS2:LOCAL4:B:" + ss_Identity[pid])
-        if ss_LegacyKeyA[pid] == 0 then
-            set ss_LegacyKeyA[pid] = 19001
-        endif
-        if ss_LegacyKeyB[pid] == 0 then
-            set ss_LegacyKeyB[pid] = 29001
-        endif
-    endif
     if ss_IdentityKeyA[pid] == 0 then
-        set ss_IdentityKeyA[pid] = StringHash("WOS2:LOCAL4:A:" + ss_Nickname[pid])
+        set ss_IdentityKeyA[pid] = StringHash("WOS2:LOCAL4:A:" + ss_Identity[pid])
         if ss_IdentityKeyA[pid] == 0 then
-            set ss_IdentityKeyA[pid] = 19001
+            set ss_IdentityKeyA[pid] = 19001 + pid
         endif
     endif
     if ss_IdentityKeyB[pid] == 0 then
-        set ss_IdentityKeyB[pid] = StringHash("WOS2:LOCAL4:B:" + ss_Nickname[pid])
+        set ss_IdentityKeyB[pid] = StringHash("WOS2:LOCAL4:B:" + ss_Identity[pid])
         if ss_IdentityKeyB[pid] == 0 then
-            set ss_IdentityKeyB[pid] = 29001
+            set ss_IdentityKeyB[pid] = 29001 + pid
         endif
     endif
 endfunction
 
-function SaveSystem_ProfileKeyA takes integer pid returns integer
-    if ss_LocalImportLegacyKeys then
-        return ss_LegacyKeyA[pid]
-    endif
-    return ss_IdentityKeyA[pid]
-endfunction
-
-function SaveSystem_ProfileKeyB takes integer pid returns integer
-    if ss_LocalImportLegacyKeys then
-        return ss_LegacyKeyB[pid]
-    endif
-    return ss_IdentityKeyB[pid]
-endfunction
-
-function SaveSystem_LocalRawFilePath takes integer pid returns string
-    call SaveSystem_EnsureIdentity(pid)
-    return SAVE_FOLDER + SAVE_LOCAL_PREFIX + I2S(ss_LegacyKeyA[pid]) + "_" + I2S(ss_LegacyKeyB[pid]) + ".txt"
-endfunction
-
 function SaveSystem_LocalChecksum takes integer pid, integer games, integer wins returns integer
-    return SaveSystem_PositiveModulo(games*37 + wins*61 + SaveSystem_ProfileKeyA(pid)*3 + SaveSystem_ProfileKeyB(pid)*5 + 17041, 999983)
+    return SaveSystem_PositiveModulo(games*37 + wins*61 + ss_IdentityKeyA[pid]*3 + ss_IdentityKeyB[pid]*5 + 17041, 999983)
 endfunction
 
 function SaveSystem_LocalFilePath takes integer pid returns string
@@ -325,15 +204,15 @@ function SaveSystem_LocalFilePath takes integer pid returns string
 endfunction
 
 function SaveSystem_LocalHeroChecksum takes integer pid, integer heroId, integer games, integer wins, integer roundWins, integer roundLosses, integer combatGames, integer kills, integer deaths, integer bestKills, integer bestDeaths, integer bestKd100 returns integer
-    return SaveSystem_PositiveModulo(heroId*7 + games*11 + wins*13 + roundWins*17 + roundLosses*19 + combatGames*23 + kills*29 + deaths*31 + bestKills*37 + bestDeaths*41 + bestKd100*43 + SaveSystem_ProfileKeyA(pid) + SaveSystem_ProfileKeyB(pid) + 27011, 999983)
+    return SaveSystem_PositiveModulo(heroId*7 + games*11 + wins*13 + roundWins*17 + roundLosses*19 + combatGames*23 + kills*29 + deaths*31 + bestKills*37 + bestDeaths*41 + bestKd100*43 + ss_IdentityKeyA[pid] + ss_IdentityKeyB[pid] + 27011, 999983)
 endfunction
 
 function SaveSystem_LocalItemChecksum takes integer pid, integer heroId, integer itemId, integer finalGames, integer finalWins, integer usedGames, integer usedWins returns integer
-    return SaveSystem_PositiveModulo(heroId*7 + itemId*11 + finalGames*17 + finalWins*19 + usedGames*23 + usedWins*29 + SaveSystem_ProfileKeyA(pid) + SaveSystem_ProfileKeyB(pid) + 37003, 999983)
+    return SaveSystem_PositiveModulo(heroId*7 + itemId*11 + finalGames*17 + finalWins*19 + usedGames*23 + usedWins*29 + ss_IdentityKeyA[pid] + ss_IdentityKeyB[pid] + 37003, 999983)
 endfunction
 
 function SaveSystem_LocalBuildChecksum takes integer pid, integer heroId, integer slot, integer itemId returns integer
-    return SaveSystem_PositiveModulo(heroId*13 + slot*31 + itemId*17 + SaveSystem_ProfileKeyA(pid) + SaveSystem_ProfileKeyB(pid) + 47017, 999983)
+    return SaveSystem_PositiveModulo(heroId*13 + slot*31 + itemId*17 + ss_IdentityKeyA[pid] + ss_IdentityKeyB[pid] + 47017, 999983)
 endfunction
 
 function SaveSystem_LocalFindHero takes integer heroId returns integer
@@ -426,14 +305,10 @@ endfunction
 function SaveSystem_LocalResetProfile takes nothing returns nothing
     set ss_LocalGames = 0
     set ss_LocalWins = 0
-    set ss_LocalTrainDeaths = 0
     set ss_LocalHeroCount = 0
     set ss_LocalItemCount = 0
     set ss_LocalLoadedRecordCount = 0
     set ss_LocalRejectedRecordCount = 0
-    set ss_LocalHeaderLoaded = false
-    set ss_LocalFooterLoaded = false
-    set ss_LocalFooterRequired = false
 endfunction
 
 // Header loader. The second checksum is accepted only to import the already
@@ -441,29 +316,24 @@ endfunction
 function SaveSystem_LocalCareerApply takes integer games, integer wins, integer checksum returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local integer zeroKeyChecksum = SaveSystem_PositiveModulo(games*37 + wins*61 + 17041, 999983)
-    if ss_LocalHeaderLoaded or games < 0 or wins < 0 or wins > games or (not ss_LocalImportZeroKeys and checksum != SaveSystem_LocalChecksum(pid, games, wins)) or (ss_LocalImportZeroKeys and checksum != zeroKeyChecksum) then
+    if games < 0 or wins < 0 or wins > games or (checksum != SaveSystem_LocalChecksum(pid, games, wins) and checksum != zeroKeyChecksum) then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
     set ss_LocalOwnerPid = pid
     set ss_LocalGames = games
     set ss_LocalWins = wins
-    set ss_LocalHeaderLoaded = true
     set ss_LocalLoadedRecordCount = ss_LocalLoadedRecordCount + 1
 endfunction
 
 function SaveSystem_LocalCareerHeroApply takes integer heroId, integer games, integer wins, integer roundWins, integer roundLosses, integer combatGames, integer kills, integer deaths, integer bestKills, integer bestDeaths, integer bestKd100, integer checksum returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local integer record
-    local integer expected = SaveSystem_LocalHeroChecksum(pid, heroId, games, wins, roundWins, roundLosses, combatGames, kills, deaths, bestKills, bestDeaths, bestKd100)
     if heroId == 0 or games < 0 or wins < 0 or wins > games or roundWins < 0 or roundLosses < 0 or combatGames < 0 or kills < 0 or deaths < 0 or bestKills < 0 or bestDeaths < 0 or bestKd100 < 0 then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
-    if ss_LocalImportZeroKeys then
-        set expected = SaveSystem_PositiveModulo(heroId*7 + games*11 + wins*13 + roundWins*17 + roundLosses*19 + combatGames*23 + kills*29 + deaths*31 + bestKills*37 + bestDeaths*41 + bestKd100*43 + 27011, 999983)
-    endif
-    if not ss_LocalHeaderLoaded or checksum != expected then
+    if checksum != SaveSystem_LocalHeroChecksum(pid, heroId, games, wins, roundWins, roundLosses, combatGames, kills, deaths, bestKills, bestDeaths, bestKd100) then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
@@ -488,15 +358,11 @@ endfunction
 function SaveSystem_LocalCareerItemApply takes integer heroId, integer itemId, integer finalGames, integer finalWins, integer usedGames, integer usedWins, integer checksum returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local integer record
-    local integer expected = SaveSystem_LocalItemChecksum(pid, heroId, itemId, finalGames, finalWins, usedGames, usedWins)
     if heroId == 0 or itemId == 0 or finalGames < 0 or finalWins < 0 or finalWins > finalGames or usedGames < 0 or usedWins < 0 or usedWins > usedGames then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
-    if ss_LocalImportZeroKeys then
-        set expected = SaveSystem_PositiveModulo(heroId*7 + itemId*11 + finalGames*17 + finalWins*19 + usedGames*23 + usedWins*29 + 37003, 999983)
-    endif
-    if not ss_LocalHeaderLoaded or checksum != expected then
+    if checksum != SaveSystem_LocalItemChecksum(pid, heroId, itemId, finalGames, finalWins, usedGames, usedWins) then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
@@ -515,11 +381,7 @@ endfunction
 function SaveSystem_LocalCareerBuildApply takes integer heroId, integer slot, integer itemId, integer checksum returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local integer record
-    local integer expected = SaveSystem_LocalBuildChecksum(pid, heroId, slot, itemId)
-    if ss_LocalImportZeroKeys then
-        set expected = SaveSystem_PositiveModulo(heroId*13 + slot*31 + itemId*17 + 47017, 999983)
-    endif
-    if not ss_LocalHeaderLoaded or heroId == 0 or slot < 0 or slot >= 6 or itemId == 0 or checksum != expected then
+    if heroId == 0 or slot < 0 or slot >= 6 or itemId == 0 or checksum != SaveSystem_LocalBuildChecksum(pid, heroId, slot, itemId) then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
@@ -530,29 +392,6 @@ function SaveSystem_LocalCareerBuildApply takes integer heroId, integer slot, in
     endif
     set ss_LocalLastBuild[record*6 + slot] = itemId
     set ss_LocalLoadedRecordCount = ss_LocalLoadedRecordCount + 1
-endfunction
-
-// S2I silently converts missing/malformed fields to zero. Validate the complete
-// record before any profile mutation, including its exact number of integers.
-function SaveSystem_LocalPayloadHasFields takes string payload, integer fields returns boolean
-    local integer index = 2
-    local integer start = 2
-    local integer count = 0
-    local integer length = StringLength(payload)
-    local string token
-    loop
-        exitwhen index > length
-        if index == length or SubString(payload, index, index + 1) == "," then
-            set token = SubString(payload, start, index)
-            if token == "" or StringLength(token) > 11 or I2S(S2I(token)) != token then
-                return false
-            endif
-            set count = count + 1
-            set start = index + 1
-        endif
-        set index = index + 1
-    endloop
-    return count == fields
 endfunction
 
 function SaveSystem_LocalPayloadNextInt takes string payload returns integer
@@ -582,36 +421,13 @@ function SaveSystem_LocalCareerApplyPayload takes string payload returns nothing
     local integer v9
     local integer v10
     local integer v11
-    if ss_LocalFooterLoaded or StringLength(payload) < 3 or StringLength(payload) > 240 or SubString(payload, 1, 2) != "," then
+    if StringLength(payload) < 3 or StringLength(payload) > 240 or SubString(payload, 1, 2) != "," then
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
         return
     endif
     set recordType = SubString(payload, 0, 1)
-    if (recordType == "A" and not SaveSystem_LocalPayloadHasFields(payload, 3)) or (recordType == "H" and not SaveSystem_LocalPayloadHasFields(payload, 12)) or (recordType == "B" and not SaveSystem_LocalPayloadHasFields(payload, 4)) or (recordType == "I" and not SaveSystem_LocalPayloadHasFields(payload, 7)) or (recordType == "E" and not SaveSystem_LocalPayloadHasFields(payload, 2)) or (recordType == "V" and not SaveSystem_LocalPayloadHasFields(payload, 1)) or (recordType == "T" and not SaveSystem_LocalPayloadHasFields(payload, 2)) then
-        set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
-        return
-    endif
     set ss_LocalPayloadPos = 2
-    if recordType == "N" then
-        // Nickname of the profile (for WOS App file matching); not checked.
-        return
-    elseif recordType == "T" then
-        set v0 = SaveSystem_LocalPayloadNextInt(payload)
-        set v1 = SaveSystem_LocalPayloadNextInt(payload)
-        if not ss_LocalHeaderLoaded or v0 < 0 or v1 != SaveSystem_LocalChecksum(GetPlayerId(GetLocalPlayer()), v0, 7) then
-            set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
-        else
-            set ss_LocalTrainDeaths = v0
-            set ss_LocalLoadedRecordCount = ss_LocalLoadedRecordCount + 1
-        endif
-    elseif recordType == "V" then
-        set v0 = SaveSystem_LocalPayloadNextInt(payload)
-        if v0 != 6 or ss_LocalHeaderLoaded or ss_LocalFooterRequired then
-            set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
-        else
-            set ss_LocalFooterRequired = true
-        endif
-    elseif recordType == "A" then
+    if recordType == "A" then
         set v0 = SaveSystem_LocalPayloadNextInt(payload)
         set v1 = SaveSystem_LocalPayloadNextInt(payload)
         set v2 = SaveSystem_LocalPayloadNextInt(payload)
@@ -645,634 +461,68 @@ function SaveSystem_LocalCareerApplyPayload takes string payload returns nothing
         set v5 = SaveSystem_LocalPayloadNextInt(payload)
         set v6 = SaveSystem_LocalPayloadNextInt(payload)
         call SaveSystem_LocalCareerItemApply(v0, v1, v2, v3, v4, v5, v6)
-    elseif recordType == "E" then
-        set v0 = SaveSystem_LocalPayloadNextInt(payload)
-        set v1 = SaveSystem_LocalPayloadNextInt(payload)
-        if not ss_LocalHeaderLoaded or v0 != ss_LocalLoadedRecordCount or v1 != SaveSystem_LocalChecksum(GetPlayerId(GetLocalPlayer()), v0, 0) then
-            set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
-        else
-            set ss_LocalFooterLoaded = true
-        endif
     else
         set ss_LocalRejectedRecordCount = ss_LocalRejectedRecordCount + 1
     endif
 endfunction
 
-// One chunk of the career buffer per fresh thread (TriggerEvaluate), so a big
-// career can never hit the operation limit while it is being read.
-function SaveSystem_LocalCareerParseChunk takes nothing returns boolean
-    local integer stop = IMinBJ(ss_ParseLength, ss_ParseIndex + SAVE_PARSE_CHUNK)
+function SaveSystem_LocalCareerParseBuffer takes string buffer returns nothing
+    local integer length = StringLength(buffer)
+    local integer start = StringLength(SAVE_LOCAL_FORMAT)
+    local integer index = start
     local string payload
+    if length < start or SubString(buffer, 0, start) != SAVE_LOCAL_FORMAT then
+        return
+    endif
     loop
-        exitwhen ss_ParseIndex >= stop
-        if SubString(ss_ParseBuffer, ss_ParseIndex, ss_ParseIndex + 1) == "|" then
-            set payload = SubString(ss_ParseBuffer, ss_ParseStart, ss_ParseIndex)
+        exitwhen index >= length
+        if SubString(buffer, index, index + 1) == "|" then
+            set payload = SubString(buffer, start, index)
             if payload != "" then
                 call SaveSystem_LocalCareerApplyPayload(payload)
             endif
-            set ss_ParseStart = ss_ParseIndex + 1
+            set start = index + 1
         endif
-        set ss_ParseIndex = ss_ParseIndex + 1
+        set index = index + 1
     endloop
-    return false
-endfunction
-
-function SaveSystem_LocalCareerParseBuffer takes string buffer returns nothing
-    local string payload
-    set ss_ParseLength = StringLength(buffer)
-    set ss_ParseStart = StringLength(SAVE_LOCAL_FORMAT)
-    set ss_ParseIndex = ss_ParseStart
-    if ss_ParseLength < ss_ParseStart or SubString(buffer, 0, ss_ParseStart) != SAVE_LOCAL_FORMAT then
-        return
-    endif
-    set ss_ParseBuffer = buffer
-    loop
-        exitwhen ss_ParseIndex >= ss_ParseLength
-        if ss_ParseTrigger != null then
-            call TriggerEvaluate(ss_ParseTrigger)
-        else
-            call SaveSystem_LocalCareerParseChunk()
-        endif
-    endloop
-    if ss_ParseStart < ss_ParseLength then
-        set payload = SubString(buffer, ss_ParseStart, ss_ParseLength)
+    if start < length then
+        set payload = SubString(buffer, start, length)
         if payload != "" then
             call SaveSystem_LocalCareerApplyPayload(payload)
         endif
     endif
-    set ss_ParseBuffer = ""
-endfunction
-
-
-//==============================================================================
-// CHUNKED PRELOAD STORAGE
-// The Preloader runs only simple calls: a line like
-//   BlzSetAbilityTooltip(id, BlzGetAbilityTooltip(id,0) + "...", 0)
-// is not executed, so only the first record of a file was ever read back.
-// Data is now cut into SAVE_CHUNK_SIZE pieces and each piece is written as a
-// plain literal into the tooltip of its own stock item ability ('AIxx').
-// Reading clears those tooltips, runs the file, joins the pieces in order and
-// restores the original tooltips. Only abilities whose tooltip can really be
-// written and read back are used (checked once, identical on every run).
-//==============================================================================
-globals
-    integer array ss_ChunkId
-    string array ss_ChunkCode
-    string array ss_ChunkSaved
-    integer ss_ChunkCount = 0
-    boolean ss_ChunkReady = false
-    string ss_ChunkBuffer = ""
-    constant integer SAVE_CHUNK_SIZE = 180
-    constant string SAVE_CHUNK_FREE = "~wos~"
-endglobals
-
-function SaveSystem_ChunkInit takes nothing returns nothing
-    local integer i = 0
-    local integer kept = 0
-    local string original
-    if ss_ChunkReady then
-        return
-    endif
-    set ss_ChunkReady = true
-    set ss_ChunkId[0] = 'AIa1'
-    set ss_ChunkCode[0] = "AIa1"
-    set ss_ChunkId[1] = 'AIa2'
-    set ss_ChunkCode[1] = "AIa2"
-    set ss_ChunkId[2] = 'AIa6'
-    set ss_ChunkCode[2] = "AIa6"
-    set ss_ChunkId[3] = 'AIaa'
-    set ss_ChunkCode[3] = "AIaa"
-    set ss_ChunkId[4] = 'AIad'
-    set ss_ChunkCode[4] = "AIad"
-    set ss_ChunkId[5] = 'AIae'
-    set ss_ChunkCode[5] = "AIae"
-    set ss_ChunkId[6] = 'AIam'
-    set ss_ChunkCode[6] = "AIam"
-    set ss_ChunkId[7] = 'AIan'
-    set ss_ChunkCode[7] = "AIan"
-    set ss_ChunkId[8] = 'AIar'
-    set ss_ChunkCode[8] = "AIar"
-    set ss_ChunkId[9] = 'AIas'
-    set ss_ChunkCode[9] = "AIas"
-    set ss_ChunkId[10] = 'AIat'
-    set ss_ChunkCode[10] = "AIat"
-    set ss_ChunkId[11] = 'AIau'
-    set ss_ChunkCode[11] = "AIau"
-    set ss_ChunkId[12] = 'AIav'
-    set ss_ChunkCode[12] = "AIav"
-    set ss_ChunkId[13] = 'AIaz'
-    set ss_ChunkCode[13] = "AIaz"
-    set ss_ChunkId[14] = 'AIba'
-    set ss_ChunkCode[14] = "AIba"
-    set ss_ChunkId[15] = 'AIbb'
-    set ss_ChunkCode[15] = "AIbb"
-    set ss_ChunkId[16] = 'AIbd'
-    set ss_ChunkCode[16] = "AIbd"
-    set ss_ChunkId[17] = 'AIbf'
-    set ss_ChunkCode[17] = "AIbf"
-    set ss_ChunkId[18] = 'AIbg'
-    set ss_ChunkCode[18] = "AIbg"
-    set ss_ChunkId[19] = 'AIbh'
-    set ss_ChunkCode[19] = "AIbh"
-    set ss_ChunkId[20] = 'AIbk'
-    set ss_ChunkCode[20] = "AIbk"
-    set ss_ChunkId[21] = 'AIbl'
-    set ss_ChunkCode[21] = "AIbl"
-    set ss_ChunkId[22] = 'AIbm'
-    set ss_ChunkCode[22] = "AIbm"
-    set ss_ChunkId[23] = 'AIbr'
-    set ss_ChunkCode[23] = "AIbr"
-    set ss_ChunkId[24] = 'AIbs'
-    set ss_ChunkCode[24] = "AIbs"
-    set ss_ChunkId[25] = 'AIbt'
-    set ss_ChunkCode[25] = "AIbt"
-    set ss_ChunkId[26] = 'AIbx'
-    set ss_ChunkCode[26] = "AIbx"
-    set ss_ChunkId[27] = 'AIcb'
-    set ss_ChunkCode[27] = "AIcb"
-    set ss_ChunkId[28] = 'AIcd'
-    set ss_ChunkCode[28] = "AIcd"
-    set ss_ChunkId[29] = 'AIcf'
-    set ss_ChunkCode[29] = "AIcf"
-    set ss_ChunkId[30] = 'AIcl'
-    set ss_ChunkCode[30] = "AIcl"
-    set ss_ChunkId[31] = 'AIcm'
-    set ss_ChunkCode[31] = "AIcm"
-    set ss_ChunkId[32] = 'AIco'
-    set ss_ChunkCode[32] = "AIco"
-    set ss_ChunkId[33] = 'AIcs'
-    set ss_ChunkCode[33] = "AIcs"
-    set ss_ChunkId[34] = 'AIct'
-    set ss_ChunkCode[34] = "AIct"
-    set ss_ChunkId[35] = 'AIcy'
-    set ss_ChunkCode[35] = "AIcy"
-    set ss_ChunkId[36] = 'AId0'
-    set ss_ChunkCode[36] = "AId0"
-    set ss_ChunkId[37] = 'AId1'
-    set ss_ChunkCode[37] = "AId1"
-    set ss_ChunkId[38] = 'AId3'
-    set ss_ChunkCode[38] = "AId3"
-    set ss_ChunkId[39] = 'AId5'
-    set ss_ChunkCode[39] = "AId5"
-    set ss_ChunkId[40] = 'AId7'
-    set ss_ChunkCode[40] = "AId7"
-    set ss_ChunkId[41] = 'AId8'
-    set ss_ChunkCode[41] = "AId8"
-    set ss_ChunkId[42] = 'AIda'
-    set ss_ChunkCode[42] = "AIda"
-    set ss_ChunkId[43] = 'AIdb'
-    set ss_ChunkCode[43] = "AIdb"
-    set ss_ChunkId[44] = 'AIdc'
-    set ss_ChunkCode[44] = "AIdc"
-    set ss_ChunkId[45] = 'AIdd'
-    set ss_ChunkCode[45] = "AIdd"
-    set ss_ChunkId[46] = 'AIde'
-    set ss_ChunkCode[46] = "AIde"
-    set ss_ChunkId[47] = 'AIdf'
-    set ss_ChunkCode[47] = "AIdf"
-    set ss_ChunkId[48] = 'AIdg'
-    set ss_ChunkCode[48] = "AIdg"
-    set ss_ChunkId[49] = 'AIdi'
-    set ss_ChunkCode[49] = "AIdi"
-    set ss_ChunkId[50] = 'AIdm'
-    set ss_ChunkCode[50] = "AIdm"
-    set ss_ChunkId[51] = 'AIdn'
-    set ss_ChunkCode[51] = "AIdn"
-    set ss_ChunkId[52] = 'AIdp'
-    set ss_ChunkCode[52] = "AIdp"
-    set ss_ChunkId[53] = 'AIds'
-    set ss_ChunkCode[53] = "AIds"
-    set ss_ChunkId[54] = 'AIdv'
-    set ss_ChunkCode[54] = "AIdv"
-    set ss_ChunkId[55] = 'AIe2'
-    set ss_ChunkCode[55] = "AIe2"
-    set ss_ChunkId[56] = 'AIem'
-    set ss_ChunkCode[56] = "AIem"
-    set ss_ChunkId[57] = 'AIes'
-    set ss_ChunkCode[57] = "AIes"
-    set ss_ChunkId[58] = 'AIev'
-    set ss_ChunkCode[58] = "AIev"
-    set ss_ChunkId[59] = 'AIf2'
-    set ss_ChunkCode[59] = "AIf2"
-    set ss_ChunkId[60] = 'AIfa'
-    set ss_ChunkCode[60] = "AIfa"
-    set ss_ChunkId[61] = 'AIfb'
-    set ss_ChunkCode[61] = "AIfb"
-    set ss_ChunkId[62] = 'AIfc'
-    set ss_ChunkCode[62] = "AIfc"
-    set ss_ChunkId[63] = 'AIfd'
-    set ss_ChunkCode[63] = "AIfd"
-    set ss_ChunkId[64] = 'AIfe'
-    set ss_ChunkCode[64] = "AIfe"
-    set ss_ChunkId[65] = 'AIff'
-    set ss_ChunkCode[65] = "AIff"
-    set ss_ChunkId[66] = 'AIfg'
-    set ss_ChunkCode[66] = "AIfg"
-    set ss_ChunkId[67] = 'AIfh'
-    set ss_ChunkCode[67] = "AIfh"
-    set ss_ChunkId[68] = 'AIfi'
-    set ss_ChunkCode[68] = "AIfi"
-    set ss_ChunkId[69] = 'AIfl'
-    set ss_ChunkCode[69] = "AIfl"
-    set ss_ChunkId[70] = 'AIfm'
-    set ss_ChunkCode[70] = "AIfm"
-    set ss_ChunkId[71] = 'AIfn'
-    set ss_ChunkCode[71] = "AIfn"
-    set ss_ChunkId[72] = 'AIfo'
-    set ss_ChunkCode[72] = "AIfo"
-    set ss_ChunkId[73] = 'AIfr'
-    set ss_ChunkCode[73] = "AIfr"
-    set ss_ChunkId[74] = 'AIfs'
-    set ss_ChunkCode[74] = "AIfs"
-    set ss_ChunkId[75] = 'AIft'
-    set ss_ChunkCode[75] = "AIft"
-    set ss_ChunkId[76] = 'AIfu'
-    set ss_ChunkCode[76] = "AIfu"
-    set ss_ChunkId[77] = 'AIfw'
-    set ss_ChunkCode[77] = "AIfw"
-    set ss_ChunkId[78] = 'AIfx'
-    set ss_ChunkCode[78] = "AIfx"
-    set ss_ChunkId[79] = 'AIfz'
-    set ss_ChunkCode[79] = "AIfz"
-    set ss_ChunkId[80] = 'AIg2'
-    set ss_ChunkCode[80] = "AIg2"
-    set ss_ChunkId[81] = 'AIga'
-    set ss_ChunkCode[81] = "AIga"
-    set ss_ChunkId[82] = 'AIgd'
-    set ss_ChunkCode[82] = "AIgd"
-    set ss_ChunkId[83] = 'AIgf'
-    set ss_ChunkCode[83] = "AIgf"
-    set ss_ChunkId[84] = 'AIgm'
-    set ss_ChunkCode[84] = "AIgm"
-    set ss_ChunkId[85] = 'AIgo'
-    set ss_ChunkCode[85] = "AIgo"
-    set ss_ChunkId[86] = 'AIgu'
-    set ss_ChunkCode[86] = "AIgu"
-    set ss_ChunkId[87] = 'AIgx'
-    set ss_ChunkCode[87] = "AIgx"
-    set ss_ChunkId[88] = 'AIh1'
-    set ss_ChunkCode[88] = "AIh1"
-    set ss_ChunkId[89] = 'AIh2'
-    set ss_ChunkCode[89] = "AIh2"
-    set ss_ChunkId[90] = 'AIh3'
-    set ss_ChunkCode[90] = "AIh3"
-    set ss_ChunkId[91] = 'AIha'
-    set ss_ChunkCode[91] = "AIha"
-    set ss_ChunkId[92] = 'AIhb'
-    set ss_ChunkCode[92] = "AIhb"
-    set ss_ChunkId[93] = 'AIhe'
-    set ss_ChunkCode[93] = "AIhe"
-    set ss_ChunkId[94] = 'AIhl'
-    set ss_ChunkCode[94] = "AIhl"
-    set ss_ChunkId[95] = 'AIhs'
-    set ss_ChunkCode[95] = "AIhs"
-    set ss_ChunkId[96] = 'AIhw'
-    set ss_ChunkCode[96] = "AIhw"
-    set ss_ChunkId[97] = 'AIhx'
-    set ss_ChunkCode[97] = "AIhx"
-    set ss_ChunkId[98] = 'AIi1'
-    set ss_ChunkCode[98] = "AIi1"
-    set ss_ChunkId[99] = 'AIi2'
-    set ss_ChunkCode[99] = "AIi2"
-    set ss_ChunkId[100] = 'AIi6'
-    set ss_ChunkCode[100] = "AIi6"
-    set ss_ChunkId[101] = 'AIim'
-    set ss_ChunkCode[101] = "AIim"
-    set ss_ChunkId[102] = 'AIin'
-    set ss_ChunkCode[102] = "AIin"
-    set ss_ChunkId[103] = 'AIir'
-    set ss_ChunkCode[103] = "AIir"
-    set ss_ChunkId[104] = 'AIl2'
-    set ss_ChunkCode[104] = "AIl2"
-    set ss_ChunkId[105] = 'AIlb'
-    set ss_ChunkCode[105] = "AIlb"
-    set ss_ChunkId[106] = 'AIll'
-    set ss_ChunkCode[106] = "AIll"
-    set ss_ChunkId[107] = 'AIlm'
-    set ss_ChunkCode[107] = "AIlm"
-    set ss_ChunkId[108] = 'AIlp'
-    set ss_ChunkCode[108] = "AIlp"
-    set ss_ChunkId[109] = 'AIls'
-    set ss_ChunkCode[109] = "AIls"
-    set ss_ChunkId[110] = 'AIlu'
-    set ss_ChunkCode[110] = "AIlu"
-    set ss_ChunkId[111] = 'AIlx'
-    set ss_ChunkCode[111] = "AIlx"
-    set ss_ChunkId[112] = 'AIm1'
-    set ss_ChunkCode[112] = "AIm1"
-    set ss_ChunkId[113] = 'AIm2'
-    set ss_ChunkCode[113] = "AIm2"
-    set ss_ChunkId[114] = 'AIma'
-    set ss_ChunkCode[114] = "AIma"
-    set ss_ChunkId[115] = 'AImb'
-    set ss_ChunkCode[115] = "AImb"
-    set ss_ChunkId[116] = 'AImh'
-    set ss_ChunkCode[116] = "AImh"
-    set ss_ChunkId[117] = 'AImi'
-    set ss_ChunkCode[117] = "AImi"
-    set ss_ChunkId[118] = 'AImm'
-    set ss_ChunkCode[118] = "AImm"
-    set ss_ChunkId[119] = 'AImn'
-    set ss_ChunkCode[119] = "AImn"
-    loop
-        exitwhen i >= 120
-        set original = BlzGetAbilityTooltip(ss_ChunkId[i], 0)
-        call BlzSetAbilityTooltip(ss_ChunkId[i], "wos#chunk", 0)
-        if BlzGetAbilityTooltip(ss_ChunkId[i], 0) == "wos#chunk" then
-            set ss_ChunkId[kept] = ss_ChunkId[i]
-            set ss_ChunkCode[kept] = ss_ChunkCode[i]
-            set kept = kept + 1
-        endif
-        call BlzSetAbilityTooltip(ss_ChunkId[i], original, 0)
-        set i = i + 1
-    endloop
-    set ss_ChunkCount = kept
-    set original = null
-endfunction
-
-function SaveSystem_ChunkBegin takes string text returns nothing
-    set ss_ChunkBuffer = text
-endfunction
-
-function SaveSystem_ChunkAdd takes string text returns nothing
-    set ss_ChunkBuffer = ss_ChunkBuffer + text
-endfunction
-
-// Writes the collected text (between PreloadGenStart and this call) and ends the file.
-function SaveSystem_ChunkFlush takes string path returns nothing
-    local integer k = 0
-    local integer pos = 0
-    local integer length = StringLength(ss_ChunkBuffer)
-    call SaveSystem_ChunkInit()
-    loop
-        exitwhen pos >= length or k >= ss_ChunkCount
-        call Preload("\")\ncall BlzSetAbilityTooltip('" + ss_ChunkCode[k] + "',\"" + SubString(ss_ChunkBuffer, pos, IMinBJ(length, pos + SAVE_CHUNK_SIZE)) + "\",0)\n//")
-        set pos = pos + SAVE_CHUNK_SIZE
-        set k = k + 1
-    endloop
-    call PreloadGenEnd(path)
-    set ss_ChunkBuffer = ""
-endfunction
-
-// Local: "" when the file does not exist or holds nothing readable.
-function SaveSystem_ChunkRead takes string path returns string
-    local integer k = 0
-    local string piece
-    local string result = ""
-    call SaveSystem_ChunkInit()
-    loop
-        exitwhen k >= ss_ChunkCount
-        set ss_ChunkSaved[k] = BlzGetAbilityTooltip(ss_ChunkId[k], 0)
-        // An empty string is not stored by the engine: mark unused slots instead.
-        call BlzSetAbilityTooltip(ss_ChunkId[k], SAVE_CHUNK_FREE, 0)
-        set k = k + 1
-    endloop
-    call Preloader(path)
-    set k = 0
-    loop
-        exitwhen k >= ss_ChunkCount
-        set piece = BlzGetAbilityTooltip(ss_ChunkId[k], 0)
-        exitwhen piece == null or piece == "" or piece == SAVE_CHUNK_FREE
-        set result = result + piece
-        set k = k + 1
-    endloop
-    set k = 0
-    loop
-        exitwhen k >= ss_ChunkCount
-        call BlzSetAbilityTooltip(ss_ChunkId[k], ss_ChunkSaved[k], 0)
-        set k = k + 1
-    endloop
-    set piece = null
-    return result
 endfunction
 
 function SaveSystem_WriteLocalHeader takes nothing returns nothing
-    // Keep the L5 prefix for older maps; their parser skips the V/E extensions
-    // and can still read A/H/B/I instead of resetting the career to zero.
-    call SaveSystem_ChunkBegin(SAVE_LOCAL_FORMAT + SAVE_LOCAL_VERSION)
+    call Preload("\")\ncall BlzSetAbilityTooltip(" + I2S(SAVE_ABILITY) + ",\"" + SAVE_LOCAL_FORMAT + "\",0)\n//")
 endfunction
 
 function SaveSystem_WriteLocalPayload takes string payload returns nothing
-    call SaveSystem_ChunkAdd(payload + "|")
-endfunction
-
-function SaveSystem_AppFilePath takes integer pid returns string
-    call SaveSystem_EnsureIdentity(pid)
-    return SAVE_FOLDER + "WOS2_app1_" + I2S(ss_IdentityKeyA[pid]) + "_" + I2S(ss_IdentityKeyB[pid]) + ".txt"
-endfunction
-
-function SaveSystem_AppFindHero takes integer heroId returns integer
-    local integer index = 0
-    loop
-        exitwhen index >= ss_AppHeroCount
-        if ss_AppHeroId[index] == heroId then
-            return index
-        endif
-        set index = index + 1
-    endloop
-    return -1
-endfunction
-
-function SaveSystem_AppHeroChecksum takes integer pid, integer heroId, integer games, integer wins returns integer
-    return SaveSystem_PositiveModulo(heroId*7 + games*11 + wins*13 + ss_IdentityKeyA[pid] + ss_IdentityKeyB[pid] + 57031, 999983)
-endfunction
-
-function SaveSystem_AppApplyPayload takes integer pid, string payload returns nothing
-    local string kind = SubString(payload, 0, 1)
-    local integer v0
-    local integer v1
-    local integer v2
-    local integer v3
-    if ss_AppInvalid then
-        return
-    endif
-    if ss_AppFooter or SubString(payload, 1, 2) != "," or (kind == "A" and not SaveSystem_LocalPayloadHasFields(payload, 3)) or (kind == "H" and not SaveSystem_LocalPayloadHasFields(payload, 4)) or (kind == "E" and not SaveSystem_LocalPayloadHasFields(payload, 2)) then
-        set ss_AppInvalid = true
-        return
-    endif
-    set ss_LocalPayloadPos = 2
-    set v0 = SaveSystem_LocalPayloadNextInt(payload)
-    set v1 = SaveSystem_LocalPayloadNextInt(payload)
-    if kind == "A" then
-        set v2 = SaveSystem_LocalPayloadNextInt(payload)
-        if ss_AppHeader or v0 < 0 or v0 > 10000000 or v1 < 0 or v1 > v0 or v2 != SaveSystem_LocalChecksum(pid, v0, v1) then
-            set ss_AppInvalid = true
-            return
-        endif
-        set ss_AppGames = v0
-        set ss_AppWins = v1
-        set ss_AppHeader = true
-        set ss_AppRecordCount = 1
-    elseif kind == "H" then
-        set v2 = SaveSystem_LocalPayloadNextInt(payload)
-        set v3 = SaveSystem_LocalPayloadNextInt(payload)
-        if not ss_AppHeader or ss_AppHeroCount >= SAVE_LOCAL_MAX_HEROES or v0 <= 0 or v1 <= 0 or v1 > 10000000 or v2 < 0 or v2 > v1 or SaveSystem_AppFindHero(v0) >= 0 or v3 != SaveSystem_AppHeroChecksum(pid, v0, v1, v2) then
-            set ss_AppInvalid = true
-            return
-        endif
-        set ss_AppHeroId[ss_AppHeroCount] = v0
-        set ss_AppHeroGames[ss_AppHeroCount] = v1
-        set ss_AppHeroWins[ss_AppHeroCount] = v2
-        set ss_AppHeroCount = ss_AppHeroCount + 1
-        set ss_AppRecordCount = ss_AppRecordCount + 1
-    elseif kind == "E" then
-        if not ss_AppHeader or v0 != ss_AppRecordCount or v1 != SaveSystem_LocalChecksum(pid, v0, 0) then
-            set ss_AppInvalid = true
-            return
-        endif
-        set ss_AppFooter = true
-    else
-        set ss_AppInvalid = true
-    endif
-endfunction
-
-function SaveSystem_LoadAppProfile takes integer pid returns nothing
-    local integer index = 0
-    local integer position = 9
-    local integer start = 9
-    local integer totalGames = 0
-    local integer totalWins = 0
-    local string buffer = ""
-    local string part
-    // Простые setter-носители FileIO. Все исходные tooltip возвращаются до разбора.
-    set ss_AppCarrier[0] = 'Amls'
-    set ss_AppCarrier[1] = 'Aroc'
-    set ss_AppCarrier[2] = 'Amic'
-    set ss_AppCarrier[3] = 'Amil'
-    set ss_AppCarrier[4] = 'Aclf'
-    set ss_AppCarrier[5] = 'Acmg'
-    set ss_AppCarrier[6] = 'Adef'
-    set ss_AppCarrier[7] = 'Adis'
-    set ss_AppCarrier[8] = 'Afbt'
-    set ss_AppCarrier[9] = 'Afbk'
-    loop
-        exitwhen index >= 10
-        set ss_AppOriginalTooltip[index] = BlzGetAbilityTooltip(ss_AppCarrier[index], 0)
-        call BlzSetAbilityTooltip(ss_AppCarrier[index], "WOS2APP_EMPTY", 0)
-        set index = index + 1
-    endloop
-    call Preloader(SaveSystem_AppFilePath(pid))
-    set index = 0
-    loop
-        exitwhen index >= 10
-        set part = BlzGetAbilityTooltip(ss_AppCarrier[index], 0)
-        if part != "WOS2APP_EMPTY" then
-            set buffer = buffer + part
-        endif
-        call BlzSetAbilityTooltip(ss_AppCarrier[index], ss_AppOriginalTooltip[index], 0)
-        set ss_AppOriginalTooltip[index] = null
-        set index = index + 1
-    endloop
-    if buffer == "" then
-        return
-    endif
-    if StringLength(buffer) > 2400 or SubString(buffer, 0, 9) != "WOS2APP1|" or SubString(buffer, StringLength(buffer) - 1, StringLength(buffer)) != "|" then
-        set ss_AppInvalid = true
-        return
-    endif
-    loop
-        exitwhen position >= StringLength(buffer)
-        if SubString(buffer, position, position + 1) == "|" then
-            call SaveSystem_AppApplyPayload(pid, SubString(buffer, start, position))
-            set start = position + 1
-        endif
-        set position = position + 1
-    endloop
-    set index = 0
-    loop
-        exitwhen index >= ss_AppHeroCount
-        set totalGames = totalGames + ss_AppHeroGames[index]
-        set totalWins = totalWins + ss_AppHeroWins[index]
-        set index = index + 1
-    endloop
-    if not ss_AppHeader or not ss_AppFooter or totalGames != ss_AppGames or totalWins != ss_AppWins then
-        set ss_AppInvalid = true
-    endif
-    set ss_AppLoaded = not ss_AppInvalid and ss_AppGames > 0
-    if not ss_AppLoaded then
-        set ss_AppHeroCount = 0
-        set ss_AppGames = 0
-        set ss_AppWins = 0
-    endif
-endfunction
-
-function SaveSystem_HasAppProfile takes nothing returns boolean
-    return ss_AppLoaded
-endfunction
-
-function SaveSystem_CareerSource takes nothing returns string
-    if ss_AppLoaded then
-        return "WOSApp"
-    endif
-    return "Local"
-endfunction
-
-function SaveSystem_HeroCareerSource takes integer heroId returns string
-    if ss_AppLoaded and SaveSystem_AppFindHero(heroId) >= 0 then
-        return "WOSApp"
-    endif
-    return "Local"
-endfunction
-
-function SaveSystem_GetLocalGames takes nothing returns integer
-    return ss_LocalGames
-endfunction
-
-function SaveSystem_GetLocalTrainDeaths takes nothing returns integer
-    return ss_LocalTrainDeaths
-endfunction
-
-function SaveSystem_GetLocalWins takes nothing returns integer
-    return ss_LocalWins
-endfunction
-
-function SaveSystem_GetLocalHeroGames takes integer heroId returns integer
-    local integer record = SaveSystem_LocalFindHero(heroId)
-    if record >= 0 then
-        return ss_LocalHeroGames[record]
-    endif
-    return 0
-endfunction
-
-function SaveSystem_GetLocalHeroWins takes integer heroId returns integer
-    local integer record = SaveSystem_LocalFindHero(heroId)
-    if record >= 0 then
-        return ss_LocalHeroWins[record]
-    endif
-    return 0
+    call Preload("\")\ncall BlzSetAbilityTooltip(" + I2S(SAVE_ABILITY) + ",BlzGetAbilityTooltip(" + I2S(SAVE_ABILITY) + ",0)+\"" + payload + "|\",0)\n//")
 endfunction
 
 function SaveSystem_LoadOwnCareerAtFinish takes nothing returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
     local string originalTooltip = BlzGetAbilityTooltip(SAVE_ABILITY, 0)
     local string buffer
-    local integer rejected
-    if not IsGamePlayerSlot(pid) or ss_LocalLoadFinished then
+    if not IsGamePlayerSlot(pid) then
         return
     endif
     set ss_LocalOwnerPid = pid
     call SaveSystem_EnsureIdentity(pid)
     call SaveSystem_LocalResetProfile()
-    set buffer = SaveSystem_ChunkRead(SaveSystem_LocalFilePath(pid))
-    if buffer == "" then
-        set buffer = SAVE_LOCAL_EMPTY
+    call BlzSetAbilityTooltip(SAVE_ABILITY, SAVE_LOCAL_EMPTY, 0)
+    call Preloader(SaveSystem_LocalFilePath(pid))
+    set buffer = BlzGetAbilityTooltip(SAVE_ABILITY, 0)
+    if StringLength(buffer) < StringLength(SAVE_LOCAL_FORMAT) or SubString(buffer, 0, StringLength(SAVE_LOCAL_FORMAT)) != SAVE_LOCAL_FORMAT then
+        // One-time recovery of the file shown as WOS2_local4_0_0.txt.
+        call BlzSetAbilityTooltip(SAVE_ABILITY, SAVE_LOCAL_EMPTY, 0)
+        call Preloader(SAVE_FOLDER + SAVE_LOCAL_PREFIX + "0_0.txt")
+        set buffer = BlzGetAbilityTooltip(SAVE_ABILITY, 0)
     endif
     // Restore the shared object-data field before parsing any local payload.
     call BlzSetAbilityTooltip(SAVE_ABILITY, originalTooltip, 0)
     call SaveSystem_LocalCareerParseBuffer(buffer)
-    if buffer != SAVE_LOCAL_EMPTY and (not ss_LocalHeaderLoaded or ss_LocalRejectedRecordCount > 0 or (ss_LocalFooterRequired and not ss_LocalFooterLoaded)) then
-        // Preserve a damaged/unreadable existing file instead of overwriting it
-        // with a one-game profile. Never expose a partially loaded career.
-        set rejected = ss_LocalRejectedRecordCount + 1
-        call SaveSystem_LocalResetProfile()
-        set ss_LocalRejectedRecordCount = rejected
-        set ss_LocalLoadFailed = true
-    else
-        set ss_LocalLegacyImported = (ss_LocalImportZeroKeys or ss_LocalImportLegacyKeys) and ss_LocalHeaderLoaded
-    endif
-    set ss_LocalImportZeroKeys = false
-    set ss_LocalImportLegacyKeys = false
-    call SaveSystem_LoadAppProfile(pid)
     set ss_LocalLoadFinished = true
 endfunction
 
@@ -1288,7 +538,6 @@ function SaveSystem_LocalApplyPendingMatch takes nothing returns nothing
     if ss_LocalPendingWin then
         set ss_LocalWins = ss_LocalWins + 1
     endif
-    set ss_LocalTrainDeaths = ss_LocalTrainDeaths + ss_MatchTrainDeaths[GetPlayerId(GetLocalPlayer())]
     if ss_LocalMatchHeroId == 0 then
         return
     endif
@@ -1362,11 +611,8 @@ function SaveSystem_WriteOwnCareerAtFinish takes nothing returns nothing
         return
     endif
 
-    // Idempotent fallback only: do not re-read an already cached Preloader path.
+    // Reading happens here, after gameplay is already over, never at startup.
     call SaveSystem_LoadOwnCareerAtFinish()
-    if ss_LocalLoadFailed then
-        return
-    endif
     call SaveSystem_LocalApplyPendingMatch()
     set checksum = SaveSystem_LocalChecksum(pid, ss_LocalGames, ss_LocalWins)
 
@@ -1375,9 +621,6 @@ function SaveSystem_WriteOwnCareerAtFinish takes nothing returns nothing
     call SaveSystem_WriteLocalHeader()
     call SaveSystem_WriteLocalPayload("A," + I2S(ss_LocalGames) + "," + I2S(ss_LocalWins) + "," + I2S(checksum))
     set ss_LocalSavedRecordCount = 1
-    call SaveSystem_WriteLocalPayload("N," + ss_Nickname[pid])
-    call SaveSystem_WriteLocalPayload("T," + I2S(ss_LocalTrainDeaths) + "," + I2S(SaveSystem_LocalChecksum(pid, ss_LocalTrainDeaths, 7)))
-    set ss_LocalSavedRecordCount = 2
     loop
         exitwhen record >= ss_LocalHeroCount
         set checksum = SaveSystem_LocalHeroChecksum(pid, ss_LocalHeroId[record], ss_LocalHeroGames[record], ss_LocalHeroWins[record], ss_LocalHeroRoundWins[record], ss_LocalHeroRoundLosses[record], ss_LocalHeroCombatGames[record], ss_LocalHeroTotalKills[record], ss_LocalHeroTotalDeaths[record], ss_LocalHeroBestKills[record], ss_LocalHeroBestDeaths[record], ss_LocalHeroBestKd100[record])
@@ -1403,10 +646,7 @@ function SaveSystem_WriteOwnCareerAtFinish takes nothing returns nothing
         set ss_LocalSavedRecordCount = ss_LocalSavedRecordCount + 1
         set record = record + 1
     endloop
-    // Version 6 requires an end marker, so a truncated tooltip/file cannot silently
-    // replace a complete career with just its surviving first records.
-    call SaveSystem_WriteLocalPayload("E," + I2S(ss_LocalSavedRecordCount) + "," + I2S(SaveSystem_LocalChecksum(pid, ss_LocalSavedRecordCount, 0)))
-    call SaveSystem_ChunkFlush(SaveSystem_LocalFilePath(pid))
+    call PreloadGenEnd(SaveSystem_LocalFilePath(pid))
     call PreloadGenClear()
 
     set ss_LocalSaveWritten = true
@@ -1418,315 +658,8 @@ function SaveSystem_WriteOwnCareerAtFinish takes nothing returns nothing
     set ss_LocalMatchRoundLosses = 0
 endfunction
 
-// ===== Checkpoint 27b: UI settings (hotkeys, camera, last track) =====
-function SaveSystem_SettingsFilePath takes integer pid returns string
-    call SaveSystem_EnsureIdentity(pid)
-    return SAVE_FOLDER + SAVE_SETTINGS_PREFIX + I2S(ss_IdentityKeyA[pid]) + "_" + I2S(ss_IdentityKeyB[pid]) + ".txt"
-endfunction
-
-function SaveSystem_WriteSettingsRecord takes string record returns nothing
-    call SaveSystem_ChunkAdd(record + "|")
-endfunction
-
-// Local file write (match end, or the Save Settings button). Local only:
-// PreloadGen touches no handles and nothing synced.
-function SaveSystem_WriteSettingsFile takes nothing returns nothing
-    local integer pid = GetPlayerId(GetLocalPlayer())
-    local string data
-    local integer index = 0
-    local integer start = 0
-    if not IsGamePlayerSlot(pid) then
-        return
-    endif
-    set data = WUI_SavedSettingsString(pid) + "C," + I2S(R2I(CameraSetup[pid])) + "|M," + I2S(LocalMp3Player_GetCurrent(pid)) + "|S," + I2S(WUI_HudModeOf[pid]) + "|V," + I2S(IntegerTertiaryOp(WUI_VoiceOff[pid], 0, 1)) + "|" + WUI_SettingsUIRecord(pid) + "F," + I2S(IntegerTertiaryOp(ShopFastBuy[pid], 1, 0) + IntegerTertiaryOp(ShopFastSell[pid], 2, 0)) + "|"
-    call PreloadGenClear()
-    call PreloadGenStart()
-    call SaveSystem_ChunkBegin(SAVE_SETTINGS_FORMAT)
-    loop
-        exitwhen index >= StringLength(data)
-        if SubString(data, index, index + 1) == "|" then
-            call SaveSystem_WriteSettingsRecord(SubString(data, start, index))
-            set start = index + 1
-        endif
-        set index = index + 1
-    endloop
-    call SaveSystem_ChunkFlush(SaveSystem_SettingsFilePath(pid))
-    call PreloadGenClear()
-endfunction
-
-function SaveSystem_WriteSettings takes nothing returns nothing
-    if ss_SettingsWritten or not ss_SettingsReadReady then
-        return
-    endif
-    call SaveSystem_WriteSettingsFile()
-    set ss_SettingsWritten = true
-endfunction
-
-//==============================================================================
-// SAVE SETTINGS BUTTON (top-right row, right of Hide UI)
-// The frame click sends a request; the existing sync event creates cooldown
-// timers on every client. Only the requesting client writes its file and greys
-// its own button for SAVE_BUTTON_COOLDOWN seconds.
-//==============================================================================
-globals
-    framehandle ss_ResetButton = null
-    boolean array ss_HotkeysReset
-    framehandle ss_SaveButton = null
-    boolean array ss_SaveButtonBusy
-    timer array ss_SaveButtonTimer
-    constant real SAVE_BUTTON_COOLDOWN = 3.00
-endglobals
-
-function SaveSystem_SaveButtonReady takes nothing returns nothing
-    local timer t = GetExpiredTimer()
-    local integer pid = 0
-    loop
-        exitwhen pid >= 16 or ss_SaveButtonTimer[pid] == t
-        set pid = pid + 1
-    endloop
-    if pid >= 16 then
-        set t = null
-        return
-    endif
-    set ss_SaveButtonBusy[pid] = false
-    if GetLocalPlayer() == Player(pid) then
-        call BlzFrameSetEnable(ss_SaveButton, true)
-        call WUI_SetButtonCaption(ss_SaveButton, "Save Keys")
-    endif
-    set t = null
-endfunction
-
-function SaveSystem_SaveButtonRequest takes player p returns nothing
-    local integer pid = GetPlayerId(p)
-    if pid < 0 or pid >= 16 or ss_SaveButtonBusy[pid] then
-        set p = null
-        return
-    endif
-    set ss_SaveButtonBusy[pid] = true
-    if ss_SaveButtonTimer[pid] == null then
-        set ss_SaveButtonTimer[pid] = CreateTimer()
-    endif
-    call TimerStart(ss_SaveButtonTimer[pid], SAVE_BUTTON_COOLDOWN, false, function SaveSystem_SaveButtonReady)
-    if GetLocalPlayer() == p then
-        call SaveSystem_WriteSettingsFile()
-        if IsGamePlayerSlot(pid) then
-            set ss_SettingsReadReady = true
-        endif
-        call BlzFrameSetEnable(ss_SaveButton, false)
-        call WUI_SetButtonCaption(ss_SaveButton, "Saved")
-        call DisplayTimedTextToPlayer(p, 0, 0, 4, "|cffffd36b[WoS]|r |cff7cd67cSettings saved|r")
-    endif
-    set p = null
-endfunction
-
-// UI event performs no agreed writes and allocates no gameplay handles.
-function SaveSystem_OnSaveButton takes nothing returns nothing
-    local player p = GetTriggerPlayer()
-    if GetLocalPlayer() == p then
-        if BlzGetTriggerFrame() == ss_ResetButton then
-            call BlzSendSyncData("WOS2SAVE", "R")
-        else
-            call BlzSendSyncData("WOS2SAVE", "1")
-        endif
-    endif
-    set p = null
-    call WUI_ResetClickedButtonFocus()
-endfunction
-
-function SaveSystem_CreateSaveButton takes nothing returns nothing
-    local trigger click = CreateTrigger()
-    set ss_SaveButton = WUI_TextButton("WOSSaveSettingsButton", WUI_GetRoot(), "Save Keys", WUI_TOP_ROW_W, 0.015)
-    call WUI_PlaceRight(ss_SaveButton, WUI_TOP_ROW_X3, 0.5495, WUI_TOP_ROW_W, 0.015)
-    call WUI_SetButtonTextScale(ss_SaveButton, WUI_TOP_ROW_TEXT)
-    call WUI_SetButtonMinimal(ss_SaveButton)
-    call WUI_RegisterTopControl(ss_SaveButton)
-    call WUI_TooltipBelowLeft(ss_SaveButton, "|cffd5b876SAVE SETTINGS|r|nSaves Q/W/E/R/T/F/G ability aliases, 6 item hotkeys, Shop, Pings, Emotes, Stats, Clear/Load Stats bindings.|nAlso saves Fast Buy/Fast Sell, camera, music, voice, HUD and panel preferences. Settings are also saved at match end.")
-    call BlzTriggerRegisterFrameEvent(click, ss_SaveButton, FRAMEEVENT_CONTROL_CLICK)
-    set ss_ResetButton = WUI_TextButton("WOSResetSettingsButton", WUI_GetRoot(), "Reset Keys", WUI_TOP_ROW_W, 0.015)
-    call WUI_PlaceRight(ss_ResetButton, WUI_TOP_ROW_X4, 0.5495, WUI_TOP_ROW_W, 0.015)
-    call WUI_SetButtonTextScale(ss_ResetButton, WUI_TOP_ROW_TEXT)
-    call WUI_SetButtonMinimal(ss_ResetButton)
-    call WUI_RegisterTopControl(ss_ResetButton)
-    call WUI_TooltipBelowLeft(ss_ResetButton, "|cffd5b876RESET KEYS|r|nRestore all map hotkeys to their defaults for you. Press Save Keys to keep them.")
-    call BlzTriggerRegisterFrameEvent(click, ss_ResetButton, FRAMEEVENT_CONTROL_CLICK)
-    call TriggerAddAction(click, function SaveSystem_OnSaveButton)
-    set click = null
-endfunction
-
-// Next "a,b,c" field of a settings record starting at ss_LocalPayloadPos.
-function SaveSystem_SettingsField takes string record returns string
-    local integer start = ss_LocalPayloadPos
-    loop
-        exitwhen ss_LocalPayloadPos >= StringLength(record) or SubString(record, ss_LocalPayloadPos, ss_LocalPayloadPos + 1) == ","
-        set ss_LocalPayloadPos = ss_LocalPayloadPos + 1
-    endloop
-    set ss_LocalPayloadPos = ss_LocalPayloadPos + 1
-    return SubString(record, start, ss_LocalPayloadPos - 1)
-endfunction
-
-// Synced: one client sent its own saved settings; all clients apply them for
-// that player (key events must be registered identically everywhere).
-function SaveSystem_OnSettingsSync takes nothing returns nothing
-    local player p = GetTriggerPlayer()
-    local integer pid = GetPlayerId(p)
-    local string data = BlzGetTriggerSyncData()
-    local string record
-    local string kind
-    local integer index = 0
-    local integer start = 0
-    local integer a
-    local string label
-    local integer applied = 0
-    if pid < 0 or pid >= 10 then
-        set p = null
-        return
-    endif
-    if BlzGetTriggerSyncPrefix() == "WOS2SAVE" then
-        if data == "1" then
-            call SaveSystem_SaveButtonRequest(p)
-        elseif data == "R" then
-            set ss_HotkeysReset[pid] = true
-            call WUI_ResetHotkeys(p)
-        endif
-        set p = null
-        return
-    endif
-    loop
-        exitwhen index >= StringLength(data)
-        if SubString(data, index, index + 1) == "|" then
-            set record = SubString(data, start, index)
-            set start = index + 1
-            set kind = SubString(record, 0, 1)
-            set ss_LocalPayloadPos = 2
-            if (kind == "H" or kind == "K") and not ss_HotkeysReset[pid] then
-                set a = S2I(SaveSystem_SettingsField(record))
-                set label = SaveSystem_SettingsField(record)
-                set applied = applied + 1
-                if kind == "H" then
-                    call WUI_ApplySavedHotkey(p, a, label)
-                else
-                    call WUI_ApplySavedSlotKey(p, a, label)
-                endif
-            elseif kind == "S" then
-                set a = S2I(SaveSystem_SettingsField(record))
-                if a >= 1 and a <= 3 and not WUI_ModeTouched[pid] then
-                    set WUI_HudModeOf[pid] = a
-                endif
-                set applied = applied + 1
-            elseif kind == "U" then
-                call WUI_ApplySettingsUIRecord(pid, S2I(SaveSystem_SettingsField(record)))
-                set applied = applied + 1
-            elseif kind == "F" then
-                // Owner file arrives through the existing agreed settings sync.
-                // Two UI action modes, never a queue or an automatic purchase.
-                set label = SaveSystem_SettingsField(record)
-                if (label == "0" or label == "1" or label == "2" or label == "3") and record == "F," + label then
-                    set a = S2I(label)
-                    set ShopFastBuy[pid] = ModuloInteger(a, 2) == 1
-                    set ShopFastSell[pid] = a >= 2
-                    if GetLocalPlayer() == p then
-                        if FRAME_FastBuyIcon != null then
-                            if ShopFastBuy[pid] then
-                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-on.tga", 0, true)
-                            else
-                                call BlzFrameSetTexture(FRAME_FastBuyIcon, "UI\\WOS\\fastbuy-off.tga", 0, true)
-                            endif
-                        endif
-                        if FRAME_FastSellIcon != null then
-                            if ShopFastSell[pid] then
-                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-on.tga", 0, true)
-                            else
-                                call BlzFrameSetTexture(FRAME_FastSellIcon, "UI\\WOS\\fastsell-off.tga", 0, true)
-                            endif
-                        endif
-                    endif
-                    set applied = applied + 1
-                endif
-            elseif kind == "V" then
-                set WUI_VoiceOff[pid] = S2I(SaveSystem_SettingsField(record)) == 0
-                set applied = applied + 1
-            elseif kind == "C" then
-                set a = S2I(SaveSystem_SettingsField(record))
-                set applied = applied + 1
-                if a >= 800 and a <= 6000 then
-                    set CameraSetup[pid] = I2R(a)
-                    set WUI_SavedCamera[pid] = I2R(a)
-                    call SetCameraFieldForPlayer(p, CAMERA_FIELD_TARGET_DISTANCE, CameraSetup[pid], 0)
-                endif
-            endif
-        endif
-        set index = index + 1
-    endloop
-    call WUI_ValidateRestoredHotkeys(p)
-    if GetLocalPlayer() == p and data == ss_SettingsLastPacket and data != "" then
-        // File-only local acknowledgement: automatic write requires the final packet.
-        set ss_SettingsReadReady = true
-    endif
-    if GetLocalPlayer() == p then
-        call DisplayTimedTextToPlayer(p, 0, 0, 6, "|cffffd36b[WoS]|r |cff7cd67cSettings applied|r |cff9aa0a8(" + I2S(applied) + ")|r")
-    endif
-    call ExecuteFunc("UNITSTAT_ApplySaved")
-    call WUI_ApplyPanelPreferences()
-    call ExecuteFunc("WOS_SyncCamSlider")
-    set p = null
-endfunction
-
-// Local read; the owner then sends the settings once (BlzSendSyncData).
-function SaveSystem_LoadSettings takes nothing returns nothing
-    local integer pid = GetPlayerId(GetLocalPlayer())
-    local string originalTooltip
-    local string buffer
-    local integer index
-    local integer start
-    local string record
-    local string packet = ""
-    local timer expired = GetExpiredTimer()
-    if expired != null and expired == ss_SettingsLoadTimer then
-        call PauseTimer(expired)
-        call DestroyTimer(expired)
-        set ss_SettingsLoadTimer = null
-    endif
-    set expired = null
-    if not IsGamePlayerSlot(pid) then
-        return
-    endif
-    set originalTooltip = BlzGetAbilityTooltip(SAVE_ABILITY, 0)
-    set buffer = SaveSystem_ChunkRead(SaveSystem_SettingsFilePath(pid))
-    call BlzSetAbilityTooltip(SAVE_ABILITY, originalTooltip, 0)
-    if StringLength(buffer) <= StringLength(SAVE_SETTINGS_FORMAT) or SubString(buffer, 0, StringLength(SAVE_SETTINGS_FORMAT)) != SAVE_SETTINGS_FORMAT then
-        call DisplayTimedTextToPlayer(GetLocalPlayer(), 0, 0, 6, "|cffffd36b[WoS]|r |cff9aa0a8No saved settings yet|r")
-        return
-    endif
-    set ss_SettingsReadReady = false
-    set buffer = SubString(buffer, StringLength(SAVE_SETTINGS_FORMAT), StringLength(buffer))
-    // The last track is local presentation only: restore it right here.
-    set index = 0
-    set start = 0
-    loop
-        exitwhen index >= StringLength(buffer)
-        if SubString(buffer, index, index + 1) == "|" then
-            set record = SubString(buffer, start, index)
-            set start = index + 1
-            // Send whole records in bounded packets; no truncation of old hotkeys.
-            if StringLength(packet) + StringLength(record) + 1 > 250 then
-                call BlzSendSyncData(SAVE_SETTINGS_SYNC, packet)
-                set packet = ""
-            endif
-            set packet = packet + record + "|"
-            if SubString(record, 0, 2) == "M," then
-                call LocalMp3Player_SetCurrent(pid, S2I(SubString(record, 2, StringLength(record))))
-
-            endif
-        endif
-        set index = index + 1
-    endloop
-    if StringLength(packet) > 0 then
-        set ss_SettingsLastPacket = packet
-        call BlzSendSyncData(SAVE_SETTINGS_SYNC, packet)
-    endif
-endfunction
-
-// Public compatibility API. Startup and Career open use the same one-shot load.
+// Old public entry points remain as no-ops for map compatibility. They must not
+// be used to load a profile during initialization.
 function SaveSystem_FilePath takes integer pid returns string
     return SaveSystem_LocalFilePath(pid)
 endfunction
@@ -1743,16 +676,6 @@ function SaveSystem_LoadLocalPlayer takes integer pid returns nothing
 endfunction
 
 function SaveSystem_InitLoad takes nothing returns nothing
-    // Every client creates/destroys the same handle. Only the profile scalars
-    // and restored tooltip contents differ locally; gameplay never reads them.
-    local timer expired = GetExpiredTimer()
-    if expired != null and expired == ss_StartupLoadTimer then
-        call PauseTimer(expired)
-        call DestroyTimer(expired)
-        set ss_StartupLoadTimer = null
-    endif
-    set expired = null
-    call SaveSystem_LoadLocalPlayer(GetPlayerId(GetLocalPlayer()))
 endfunction
 
 function SaveSystem_WriteFile takes integer pid returns nothing
@@ -2335,7 +1258,6 @@ function SaveSystem_DeferredSaveTick takes nothing returns nothing
         set ss_DeferredSavePhase = 1
         set expired = null
         call SaveSystem_WriteOwnCareerAtFinish()
-        call SaveSystem_WriteSettings()
         return
     endif
     call PauseTimer(expired)
@@ -2462,7 +1384,7 @@ function SaveSystem_OnGameEndDetailed takes player whichPlayer, unit whichHero, 
     endif
     // This branch changes only local scalars. It creates no handles and performs
     // no disk I/O. The synchronized final scheduler does the actual write later.
-    if GetLocalPlayer() == whichPlayer and not ss_LocalResultPending and not ss_LocalSaveWritten then
+    if GetLocalPlayer() == whichPlayer and not ss_LocalResultPending then
         set ss_LocalOwnerPid = pid
         set ss_LocalPendingWin = isWin
         if whichHero != null then
@@ -2507,9 +1429,6 @@ endfunction
 
 function SaveSystem_GetGamesPlayed takes player whichPlayer returns integer
     if whichPlayer == GetLocalPlayer() then
-        if ss_AppLoaded then
-            return ss_AppGames
-        endif
         return ss_LocalGames
     endif
     return 0
@@ -2517,9 +1436,6 @@ endfunction
 
 function SaveSystem_GetGamesWon takes player whichPlayer returns integer
     if whichPlayer == GetLocalPlayer() then
-        if ss_AppLoaded then
-            return ss_AppWins
-        endif
         return ss_LocalWins
     endif
     return 0
@@ -2562,12 +1478,6 @@ function SaveSystem_GetHeroGames takes player whichPlayer, integer heroId return
     if whichPlayer != GetLocalPlayer() then
         return 0
     endif
-    if ss_AppLoaded then
-        set record = SaveSystem_AppFindHero(heroId)
-        if record >= 0 then
-            return ss_AppHeroGames[record]
-        endif
-    endif
     set record = SaveSystem_LocalFindHero(heroId)
     if record < 0 then
         return 0
@@ -2576,39 +1486,16 @@ function SaveSystem_GetHeroGames takes player whichPlayer, integer heroId return
 endfunction
 
 function SaveSystem_GetRecordedHeroId takes player whichPlayer, integer rank returns integer
-    local integer index = 0
-    if whichPlayer != GetLocalPlayer() or rank < 1 then
+    if whichPlayer != GetLocalPlayer() or rank < 1 or rank > ss_LocalHeroCount then
         return 0
     endif
-    if rank <= ss_LocalHeroCount then
-        return ss_LocalHeroId[rank - 1]
-    endif
-    set rank = rank - ss_LocalHeroCount
-    if ss_AppLoaded then
-        loop
-            exitwhen index >= ss_AppHeroCount
-            if SaveSystem_LocalFindHero(ss_AppHeroId[index]) < 0 then
-                set rank = rank - 1
-                if rank == 0 then
-                    return ss_AppHeroId[index]
-                endif
-            endif
-            set index = index + 1
-        endloop
-    endif
-    return 0
+    return ss_LocalHeroId[rank - 1]
 endfunction
 
 function SaveSystem_GetHeroWins takes player whichPlayer, integer heroId returns integer
     local integer record
     if whichPlayer != GetLocalPlayer() then
         return 0
-    endif
-    if ss_AppLoaded then
-        set record = SaveSystem_AppFindHero(heroId)
-        if record >= 0 then
-            return ss_AppHeroWins[record]
-        endif
     endif
     set record = SaveSystem_LocalFindHero(heroId)
     if record < 0 then
@@ -2947,11 +1834,7 @@ function SaveSystem_IsLocalSaveWritten takes nothing returns boolean
 endfunction
 
 function SaveSystem_IsLocalLegacyImported takes nothing returns boolean
-    return ss_LocalLegacyImported
-endfunction
-
-function SaveSystem_IsLocalLoadFailed takes nothing returns boolean
-    return ss_LocalLoadFailed
+    return false
 endfunction
 
 function SaveSystem_Percent takes integer wins, integer games returns integer
@@ -2966,10 +1849,7 @@ endfunction
 //==============================================================================
 
 function SaveSystem_PrintStats takes player whichPlayer returns nothing
-    call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Карьера " + SaveSystem_CareerSource() + ": игр " + I2S(SaveSystem_GetGamesPlayed(whichPlayer)) + ", побед " + I2S(SaveSystem_GetGamesWon(whichPlayer)) + ".")
-    if whichPlayer == GetLocalPlayer() then
-        call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Локально: игр " + I2S(ss_LocalGames) + ", побед " + I2S(ss_LocalWins) + ".")
-    endif
+    call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Локальная карьера: игр " + I2S(SaveSystem_GetGamesPlayed(whichPlayer)) + ", побед " + I2S(SaveSystem_GetGamesWon(whichPlayer)) + ".")
 endfunction
 
 function SaveSystem_PrintHeroStats takes player whichPlayer returns nothing
@@ -2992,34 +1872,6 @@ function SaveSystem_PrintItemStatsEnglish takes player whichPlayer returns nothi
     call SaveSystem_PrintItemStats(whichPlayer)
 endfunction
 
-function SaveSystem_PrintLoadInfo takes player whichPlayer returns nothing
-    local integer pid
-    local string status
-    if whichPlayer == null or whichPlayer != GetLocalPlayer() then
-        return
-    endif
-    set pid = GetPlayerId(whichPlayer)
-    if not IsGamePlayerSlot(pid) then
-        return
-    endif
-    call SaveSystem_LoadLocalPlayer(pid)
-    if ss_LocalLoadFailed then
-        set status = "|cffff7777Ошибка чтения; прежний файл сохранён.|r"
-    elseif ss_LocalSaveWritten then
-        set status = "|cff76d7a8Профиль сохранён.|r"
-    elseif ss_LocalHeaderLoaded then
-        set status = "|cff76d7a8Профиль загружен.|r"
-    else
-        set status = "Новый профиль: сохранение будет после завершения матча."
-    endif
-    call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, status + " Файл: " + SaveSystem_LocalFilePath(pid))
-    call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Источник: " + SaveSystem_CareerSource() + "; файл WOSApp: " + SaveSystem_AppFilePath(pid))
-    if ss_AppInvalid then
-        call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Профиль WOSApp отклонён; используется локальная карьера.")
-    endif
-    call DisplayTextToPlayer(whichPlayer, 0.00, 0.00, "Игры: " + I2S(ss_LocalGames) + "; победы: " + I2S(ss_LocalWins) + "; записей загружено: " + I2S(ss_LocalLoadedRecordCount) + "; отклонено: " + I2S(ss_LocalRejectedRecordCount))
-endfunction
-
 function SaveSystem_OnChat takes nothing returns nothing
     local player whichPlayer = GetTriggerPlayer()
     local string message = GetEventPlayerChatString()
@@ -3029,8 +1881,6 @@ function SaveSystem_OnChat takes nothing returns nothing
         call SaveSystem_PrintHeroStats(whichPlayer)
     elseif message == "-istats" then
         call SaveSystem_PrintItemStats(whichPlayer)
-    elseif message == "-saveinfo" then
-        call SaveSystem_PrintLoadInfo(whichPlayer)
     endif
     set whichPlayer = null
 endfunction
@@ -3046,14 +1896,13 @@ function SaveSystem_RegisterChat takes nothing returns nothing
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-stats", true)
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-hstats", true)
         call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-istats", true)
-        call TriggerRegisterPlayerChatEvent(ss_ChatTrigger, Player(pid), "-saveinfo", true)
         set pid = pid + 1
     endloop
     call TriggerAddAction(ss_ChatTrigger, function SaveSystem_OnChat)
 endfunction
 
 //==============================================================================
-// INITIALIZATION: FREEZE LOBBY IDENTITIES, THEN LOAD FROM A SHARED TIMER
+// INITIALIZATION: IDENTITIES ONLY, ZERO FILE I/O
 //==============================================================================
 
 function SaveSystem_SetIdentity takes player whichPlayer, string stableName returns nothing
@@ -3065,31 +1914,20 @@ function SaveSystem_SetIdentity takes player whichPlayer, string stableName retu
     if not IsGamePlayerSlot(pid) then
         return
     endif
-    if ss_Identity[pid] != null and ss_Identity[pid] != "" and ss_IdentityKeyA[pid] != 0 and ss_IdentityKeyB[pid] != 0 then
+    if ss_Identity[pid] != "" and ss_IdentityKeyA[pid] != 0 and ss_IdentityKeyB[pid] != 0 then
         return
     endif
-    if stableName == null or stableName == "" then
-        if ss_Identity[pid] != null and ss_Identity[pid] != "" then
+    if stableName == "" then
+        if ss_Identity[pid] != "" then
             set stableName = ss_Identity[pid]
         else
             set stableName = GetPlayerName(whichPlayer)
         endif
     endif
-    if stableName == null or stableName == "" then
-        set stableName = "Player" + I2S(pid)
-    endif
     set ss_Identity[pid] = stableName
-    set ss_IdentityKeyA[pid] = 0
-    set ss_IdentityKeyB[pid] = 0
+    set ss_IdentityKeyA[pid] = StringHash("WOS2:LOCAL4:A:" + stableName)
+    set ss_IdentityKeyB[pid] = StringHash("WOS2:LOCAL4:B:" + stableName)
     call SaveSystem_EnsureIdentity(pid)
-endfunction
-
-// UI ready: read the settings file 0.5 sec later (hotkey owners are registered).
-function SaveSystem_ScheduleSettings takes nothing returns nothing
-    if ss_SettingsLoadTimer == null then
-        set ss_SettingsLoadTimer = CreateTimer()
-        call TimerStart(ss_SettingsLoadTimer, 0.50, false, function SaveSystem_LoadSettings)
-    endif
 endfunction
 
 function SaveSystem_Init takes nothing returns nothing
@@ -3100,7 +1938,7 @@ function SaveSystem_Init takes nothing returns nothing
     set ss_Initialized = true
     loop
         exitwhen pid >= SAVE_BOT_MAX_PLAYERS
-        if ss_Identity[pid] == null or ss_Identity[pid] == "" then
+        if ss_Identity[pid] == "" then
             call SaveSystem_SetIdentity(Player(pid), GetPlayerName(Player(pid)))
         endif
         call SaveSystem_EnsureIdentity(pid)
@@ -3115,25 +1953,7 @@ function SaveSystem_Init takes nothing returns nothing
         set pid = pid + 1
     endloop
     call TriggerAddAction(ss_MatchLeaveTrigger, function SaveSystem_OnMatchPlayerLeave)
-    // Career file first (before the UI is built), settings only after the UI
-    // owners registered their hotkeys - the two never overlap the UI creation.
-    set ss_StartupLoadTimer = CreateTimer()
-    call TimerStart(ss_StartupLoadTimer, 0.01, false, function SaveSystem_InitLoad)
-    // Checkpoint 27b: created on every client (same handles everywhere).
-    set ss_ParseTrigger = CreateTrigger()
-    call TriggerAddCondition(ss_ParseTrigger, Condition(function SaveSystem_LocalCareerParseChunk))
-    set ss_SettingsSync = CreateTrigger()
-    set pid = 0
-    loop
-        exitwhen pid >= 10
-        call BlzTriggerRegisterPlayerSyncEvent(ss_SettingsSync, Player(pid), SAVE_SETTINGS_SYNC, false)
-        call BlzTriggerRegisterPlayerSyncEvent(ss_SettingsSync, Player(pid), "WOS2SAVE", false)
-        set pid = pid + 1
-    endloop
-    call TriggerAddAction(ss_SettingsSync, function SaveSystem_OnSettingsSync)
-    // Settings after the UI owners registered their hotkeys (bootstrap 0.10).
-    call WUI_OnReady(function SaveSystem_ScheduleSettings)
-    call WUI_OnReady(function SaveSystem_CreateSaveButton)
+    // Intentionally no Preloader, no load timer and no item/history trigger.
 endfunction
 
 //==============================================================================
@@ -3257,20 +2077,6 @@ endfunction
 
 function SaveSystem_QueueLegacy takes integer pid, string value returns boolean
     return false
-endfunction
-
-
-// Start the save system 1 sec into the game - well before the mode window -
-// so loading the career / settings never runs while the pick UI is built
-// (Map_Start's later SaveSystem_Init call then does nothing).
-private function SaveSystem_EarlyTick takes nothing returns nothing
-    call DestroyTimer(GetExpiredTimer())
-    call ExecuteFunc("Emoji_Init")
-    call ExecuteFunc("SaveSystem_Init")
-endfunction
-
-private function SaveSystem_EarlyInit takes nothing returns nothing
-    call TimerStart(CreateTimer(), 1.00, false, function SaveSystem_EarlyTick)
 endfunction
 
 endlibrary

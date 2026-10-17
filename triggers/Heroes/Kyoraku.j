@@ -112,7 +112,7 @@ function KyorakuFrameClick takes nothing returns nothing
     exitwhen k == 10 
     if clicked == frame_KyorBankai8[k] then 
         if GetLocalPlayer() == p then
-        call WUI_ColumnShow(frame_KyorBankai12[k], false)
+        call BlzFrameSetVisible(frame_KyorBankai12[k], false)
         call BlzFrameSetVisible(frame_KyorBankai8[k],false)
         call BlzFrameSetVisible(frame_KyorBankai10[k],false)
         call BlzFrameSetVisible(frame_KyorBankai9[k],true)
@@ -121,7 +121,7 @@ function KyorakuFrameClick takes nothing returns nothing
         call SaveInteger(hs,GetHandleId(Player(pid)),StringHash("desc t off"),1)
     elseif clicked == frame_KyorBankai9[k] then
         if GetLocalPlayer() == p then    
-        call WUI_ColumnShow(frame_KyorBankai12[k], true)
+        call BlzFrameSetVisible(frame_KyorBankai12[k], true)
         call BlzFrameSetVisible(frame_KyorBankai8[k],true)
         call BlzFrameSetVisible(frame_KyorBankai10[k],true)
         call BlzFrameSetVisible(frame_KyorBankai9[k],false)
@@ -133,7 +133,6 @@ function KyorakuFrameClick takes nothing returns nothing
     endloop
     set clicked = null
     set p = null
-    call WUI_ReleaseClickFocus()
 endfunction
 
     function BuffUnitKyoraku takes unit c, unit u, integer level returns nothing
@@ -550,27 +549,36 @@ endfunction
             if GetUnitAbilityLevel(.c, KyorakuW_ID) >= 3 then
                 set .rmax = KyorakuW_ShadowDuration
                 if frame_pas1[k2] == null then
-                    set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                    set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                    call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                    call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                     call BlzFrameSetVisible(frame_pas1[k2], false)
                     if GetLocalPlayer() == GetOwningPlayer(.c) then
                         call BlzFrameSetVisible(frame_pas1[k2], true)
                     endif
-                    set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                    set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                    call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                    call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                     set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                    call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                    call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                    call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                    call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                     call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, .rmax)
                     call BlzFrameSetValue(frame_pas3[k2], .rmax - (.r + 0.1))
                     set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                    call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                    call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
                     call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_W", 0, false)
                     set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                    call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                     call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Shadow Time Left:" + "|r")
+                    call BlzFrameSetScale(frame_pas5[k2], 0.9)
                     set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                    call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                     call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
-
-                    call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                    call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Kyoraku.j:frame_pas1:" + I2S(k2))
-                    call WUI_RefreshDocks()
+                    call BlzFrameSetScale(frame_pas6[k2], 0.9)
                 else
                     if GetLocalPlayer() == GetOwningPlayer(.c) then
                         call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1510,38 +1518,43 @@ endfunction
                             call StopSpellUnit(.c)
                             call MakeSound3("war3mapimported\\Hero_Kyoraku_T5")
                             if frame_KyorBankai1[k2] == null then
-                                set frame_KyorBankai1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame_KyorBankai1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.39, 0.49)
+                                call BlzFrameSetSize(frame_KyorBankai1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame_KyorBankai1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame_KyorBankai1[k2], true)
-                                set frame_KyorBankai12[k2] = WUI_Window("WOSKyorakuHelp", main_frame, 0, 0)
-                                // Checkpoint 24: right-column panel under the top-right menu,
-                                // collapsible with its own header (like TEST COMMANDS).
-                                call WUI_RegisterColumnPanel(frame_KyorBankai12[k2], "BANKAI STAGES", 0.190)
-                                call WUI_ColumnShow(frame_KyorBankai12[k2], true)
-                                set frame_KyorBankai2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_KyorBankai1[k2], "", 0)
-
+                                set frame_KyorBankai12[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame_KyorBankai12[k2], FRAMEPOINT_CENTER, 0, 0)
+                                call BlzFrameSetSize(frame_KyorBankai12[k2], 0, 0)
+                                call BlzFrameSetVisible(frame_KyorBankai12[k2], true)
+                                set frame_KyorBankai2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_KyorBankai1[k2], 0, 0)
+                                call BlzFrameSetPoint(frame_KyorBankai2[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0, 0.5)
+                                call BlzFrameSetSize(frame_KyorBankai2[k2], 0.1, 0.019)
                                 set frame_KyorBankai3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_KyorBankai1[k2], "", 0)
+                                call BlzFrameSetSize(frame_KyorBankai3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame_KyorBankai3[k2], 0.5)
+                                call BlzFrameSetModel(frame_KyorBankai3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetPoint(frame_KyorBankai3[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, -0.015, 0)
                                 call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, preparetime-3.75)
                                 call BlzFrameSetValue(frame_KyorBankai3[k2],0 )
                                 set frame_KyorBankai4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_KyorBankai1[k2], "", 0)
-
+                                call BlzFrameSetPoint(frame_KyorBankai4[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, -0.048, 0.0)
+                                call BlzFrameSetSize(frame_KyorBankai4[k2], 0.0275, 0.0275)
                                 call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T0", 0, false)
                                 set frame_KyorBankai5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)
+                                call BlzFrameSetPoint(frame_KyorBankai5[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0175, 0.01)
                                 call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "Karamatsu Shinju:" + "|r")
+                                call BlzFrameSetScale(frame_KyorBankai5[k2], 0.9)
                                 set frame_KyorBankai6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)
+                                call BlzFrameSetPoint(frame_KyorBankai6[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0175, -0.005)
                                 call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(preparetime - .r, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame_KyorBankai1[k2], frame_KyorBankai2[k2], frame_KyorBankai3[k2], frame_KyorBankai4[k2], frame_KyorBankai5[k2], frame_KyorBankai6[k2])
-                                call WUI_RegisterPublicMeter(frame_KyorBankai1[k2], "Heroes/Kyoraku.j:frame_KyorBankai1:" + I2S(k2))
-                                call WUI_RefreshDocks()
-                                set frame_KyorBankai7[k2] = BlzCreateFrameByType("TEXT", "WOSKyorakuHelpText", frame_KyorBankai12[k2], "", 0)
-                                call BlzFrameSetPoint(frame_KyorBankai7[k2], FRAMEPOINT_TOP, frame_KyorBankai12[k2], FRAMEPOINT_TOP, 0.000, -0.008)
-                                call BlzFrameSetSize(frame_KyorBankai7[k2], 0.164 / 0.88, 0.174 / 0.88)
-                                call BlzFrameSetScale(frame_KyorBankai7[k2], 0.88)
-                                call BlzFrameSetTextAlignment(frame_KyorBankai7[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
-                                call BlzFrameSetEnable(frame_KyorBankai7[k2], false)
-                                // The old open/close icons are replaced by the column header.
-                                set xxx = -1.00
-                                set yyy = -1.00
+                                call BlzFrameSetScale(frame_KyorBankai6[k2], 0.9)
+                                set frame_KyorBankai7[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", frame_KyorBankai12[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame_KyorBankai7[k2], FRAMEPOINT_CENTER, 0.83, 0.34)
+                                call BlzFrameSetSize(frame_KyorBankai7[k2], 0.19, 0.17 )
+                                call BlzFrameSetAlpha(frame_KyorBankai7[k2], 225)
+                                set xxx = 0.9
+                                set yyy = 0.4
         set frame_KyorBankai8[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetAbsPoint(frame_KyorBankai8[k2],FRAMEPOINT_CENTER, xxx,yyy )// - 0.03 * i)
         call BlzFrameSetSize(frame_KyorBankai8[k2], 0.02, 0.02)
@@ -1573,7 +1586,7 @@ endfunction
                                 endif
                                 if LoadInteger(hs,GetHandleId(Player(k)),StringHash("desc t off"))== 0 then 
                                 if GetLocalPlayer() == Player(k) then 
-                                call WUI_ColumnShow(frame_KyorBankai12[k2], true)
+                                call BlzFrameSetVisible(frame_KyorBankai12[k2], true)
                                 call BlzFrameSetVisible(frame_KyorBankai8[k2],true)
                                 call BlzFrameSetVisible(frame_KyorBankai10[k2],true)
                                 call BlzFrameSetVisible(frame_KyorBankai9[k2],false)
@@ -1581,7 +1594,7 @@ endfunction
                                 endif
                                 else
                                 if GetLocalPlayer() == Player(k) then 
-                                call WUI_ColumnShow(frame_KyorBankai12[k2], false)
+                                call BlzFrameSetVisible(frame_KyorBankai12[k2], false)
                                 call BlzFrameSetVisible(frame_KyorBankai8[k2],false)
                                 call BlzFrameSetVisible(frame_KyorBankai10[k2],false)
                                 call BlzFrameSetVisible(frame_KyorBankai9[k2],true)
@@ -1926,7 +1939,7 @@ endfunction
                         set .k = .k + 1
                     endloop                            
                     call BlzFrameSetVisible(frame_KyorBankai1[k2], false)
-                    call WUI_ColumnShow(frame_KyorBankai12[k2], false)
+                    call BlzFrameSetVisible(frame_KyorBankai12[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai8[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai9[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai10[k2], false)

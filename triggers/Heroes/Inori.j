@@ -1120,27 +1120,36 @@ library InoriSpells uses GearSystems
                                 call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
                                 set rmax = InoriE_Duration
                                 if frame_pas1[k2] == null then
-                                    set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                    set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                    call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                                    call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                     call BlzFrameSetVisible(frame_pas1[k2], false)
                                     if GetLocalPlayer() == GetOwningPlayer(c) then
                                         call BlzFrameSetVisible(frame_pas1[k2], true)
                                     endif
-                                    set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                                    set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                                    call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                    call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                                     set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                                    call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                                    call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                                    call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                    call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                     call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
                                     call BlzFrameSetValue(frame_pas3[k2], 0)
                                     set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                                    call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                    call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
                                     call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E", 0, false)
                                     set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                    call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                     call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Void Absorbation:" + "|r")
+                                    call BlzFrameSetScale(frame_pas5[k2], 0.9)
                                     set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                    call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                     call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax, 0, 2) + "|r")
-
-                                    call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                                    call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Inori.j:frame_pas1:" + I2S(k2))
-                                    call WUI_RefreshDocks()
+                                    call BlzFrameSetScale(frame_pas6[k2], 0.9)
                                 else
                                     if GetLocalPlayer() == GetOwningPlayer(c) then
                                         call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1189,7 +1198,7 @@ library InoriSpells uses GearSystems
                             call SaveInteger(hs, GetHandleId(c), StringHash("e activated2"), 0)
                             call SaveInteger(hs, GetHandleId(c), StringHash("pas cd"), 1)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
-                            call MyFlush(GetHandleId(c), StringHash("pas cd"), 0, PassiveCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1)))
+                            call FakeCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1), StringHash("pas cd"), 0)
                             call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), 0)
                             call SaveInteger(hs, GetHandleId(c), StringHash("Inori E Active"), 0)
                             if GetLocalPlayer() == GetOwningPlayer(c) then
@@ -2013,7 +2022,8 @@ library InoriSpells uses GearSystems
                             call SetPlayerAbilityAvailable(Player(k2), InoriE_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriT2_ID, false)
-                                                        call DecorRemove(c, x, y, 800, 50)
+                            call SetPlayerAbilityAvailable(Player(k2), FakeAbi_ID, false)
+                            call DecorRemove(c, x, y, 800, 50)
                             call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                             call BlzSetUnitSkin(c, Inori2_ID)
                             call FixAura(c)
@@ -2023,27 +2033,36 @@ library InoriSpells uses GearSystems
                             call ColorEffDummy3(e2, 0, 255, 255, 255, 0.35)
                             call ColorDummy4(c, 0, 255, 255, 255, 1.2)
                             if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame2_pas1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
                                 endif
-                                set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)
-
+                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
                                 set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
                                 call BlzFrameSetValue(frame2_pas3[k2], rmax)
                                 set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_TE", 0, false)
                                 set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
+                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
                                 set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
-                                call WUI_RegisterMeter(frame2_pas1[k2], k2, "Heroes/Inori.j:frame2_pas1:" + I2S(k2))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
@@ -2092,7 +2111,7 @@ library InoriSpells uses GearSystems
                     call FixAura(c)
                     call UnitRemoveAbility(c,InoriEE_ID)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
-                    call BlzEndUnitAbilityCooldown(c, InoriE_ID)
+                    call UnitRemoveAbility(c,FakeAbi_ID)
                     call SaveInteger(hs, GetHandleId(c), StringHash("cancel t"), 0)
                     call BlzSetAbilityIcon(Inori_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_Icon.blp")
                     call SetPlayerAbilityAvailable(Player(k2), InoriQ_ID, true)
@@ -2105,7 +2124,8 @@ library InoriSpells uses GearSystems
                     call SetPlayerAbilityAvailable(Player(k2), InoriE2_ID, false)
                     call SetPlayerAbilityAvailable(Player(k2), InoriR2_ID, false)
                     call SetPlayerAbilityAvailable(Player(k2), InoriT3_ID, false)
-                                        call SetUnitVertexColor(c, 255, 255, 255, 255)
+                    call SetPlayerAbilityAvailable(Player(k2), FakeAbi_ID, true)
+                    call SetUnitVertexColor(c, 255, 255, 255, 255)
                     call ColorDummy4(c, 0, 255, 255, 255, 0.3)
                     call SaveInteger(hs, GetHandleId(c), StringHash("pas cd"), 0)
                     call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 0)
@@ -2353,21 +2373,21 @@ endfunction
         local integer k2 = GetPlayerId(p)
         if clicked == inori_frame_pas5[k2] then
             call SaveInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"), InoriT_ID)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, -0.11, -0.1)
             if GetLocalPlayer() == p then
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                call BlzFrameSetVisible(inori_frame_pas8[k2], true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
-            // Checkpoint 25: a click on the weapon confirms it right away.
-            set clicked = inori_frame_pas10[k2]
         endif
         if clicked == inori_frame_pas7[k2] then
             call SaveInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"), InoriT2_ID)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.11, -0.1)
             if GetLocalPlayer() == p then
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
+                call BlzFrameSetVisible(inori_frame_pas8[k2], true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
-            // Checkpoint 25: a click on the weapon confirms it right away.
-            set clicked = inori_frame_pas10[k2]
         endif
         if clicked == inori_frame_pas10[k2] then
             set k = LoadInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"))
@@ -2389,7 +2409,6 @@ endfunction
         endif
         set p = null
         set clicked = null
-        call WUI_ReleaseClickFocus()
     endfunction
     function InoriG_Start takes unit c returns nothing
         local real x = 0
@@ -2408,7 +2427,7 @@ endfunction
                 set InoriFrameDebug = InoriFrameDebug + 10
                 call TriggerAddAction(InoriFrameTrig1, function OnClickInori)
             endif
-            set inori_frame_pas1[k2] = WUI_Window("WOSInoriWeapons", main_frame, 0, 0)
+            set inori_frame_pas1[k2] = BlzCreateFrame("EscMenuBackdrop", main_frame, 0, 0)
             call BlzFrameSetAbsPoint(inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.4, 0.35)
             call BlzFrameSetSize(inori_frame_pas1[k2], 0.5, 0.35)
             call BlzFrameSetVisible(inori_frame_pas1[k2], false)
@@ -2418,11 +2437,11 @@ endfunction
             set inori_frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas2[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, 0.135, 0.215)
             call BlzFrameSetSize(inori_frame_pas2[k2], 0.19, 0.19)
-            call BlzFrameSetTexture(inori_frame_pas2[k2], WUI_PANEL_TEXTURE, 0, true)
+            call BlzFrameSetTexture(inori_frame_pas2[k2], "Textures\\black32.blp", 0, false)
             set inori_frame_pas3[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas3[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, 0.365, 0.215)
             call BlzFrameSetSize(inori_frame_pas3[k2], 0.19, 0.19)
-            call BlzFrameSetTexture(inori_frame_pas3[k2], WUI_PANEL_TEXTURE, 0, true)
+            call BlzFrameSetTexture(inori_frame_pas3[k2], "Textures\\black32.blp", 0, false)
             set x = 0.135
             set y = 0.07
             set inori_frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)
@@ -2444,7 +2463,7 @@ endfunction
             set inori_frame_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", inori_frame_pas1[k2], "WarCraftIIILogo", 0)
             call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.11, -0.1)
             call BlzFrameSetSize(inori_frame_pas8[k2], 1, 1)
-            call BlzFrameSetScale(inori_frame_pas8[k2], 0.70)
+            call BlzFrameSetScale(inori_frame_pas8[k2], 1.05)
             call BlzFrameSetModel(inori_frame_pas8[k2], "Pick\\selecter5.mdx", 0)
             call BlzFrameSetVisible(inori_frame_pas8[k2], false)
             set x = 0.25
@@ -2452,7 +2471,7 @@ endfunction
             set inori_frame_pas9[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas9[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x + 0.0025, y)
             call BlzFrameSetSize(inori_frame_pas9[k2], 0.045, 0.045)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual2", 0, true)
             set inori_frame_pas10[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)
             call BlzFrameSetPoint(inori_frame_pas10[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas10[k2], 0.04, 0.04)
@@ -2467,69 +2486,18 @@ endfunction
             call BlzFrameSetSize(inori_frame_pas12[k2], 0.02, 0.02)
             set x = 0.135
             set y = 0.2
-            set inori_frame_pas13[k2] = BlzCreateFrameByType("TEXT", "WOSInoriWeaponText", inori_frame_pas1[k2], "", 0)
+            set inori_frame_pas13[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)
             call BlzFrameSetPoint(inori_frame_pas13[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas13[k2], 0.175, 0.19)
             call BlzFrameSetScale(inori_frame_pas13[k2], 1)
             call BlzFrameSetText(inori_frame_pas13[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id1), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id1), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
             set x = 0.365
             set y = 0.2
-            set inori_frame_pas14[k2] = BlzCreateFrameByType("TEXT", "WOSInoriWeaponText", inori_frame_pas1[k2], "", 1)
+            set inori_frame_pas14[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)
             call BlzFrameSetPoint(inori_frame_pas14[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas14[k2], 0.175, 0.19)
             call BlzFrameSetScale(inori_frame_pas14[k2], 1)
             call BlzFrameSetText(inori_frame_pas14[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id2), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id2), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
-            // Checkpoint 25: compact window; each weapon = description + icon.
-            // Hover enlarges the icon (engine tooltip), a click picks it; no
-            // confirm button, no selection model; styled close X.
-            call WUI_Place(inori_frame_pas1[k2], 0.400, 0.345, 0.300, 0.214)
-            call WUI_Place(inori_frame_pas2[k2], 0.327, 0.364, 0.138, 0.150)
-            call WUI_Place(inori_frame_pas3[k2], 0.473, 0.364, 0.138, 0.150)
-            call WUI_Place(inori_frame_pas4[k2], 0.327, 0.265, 0.030, 0.030)
-            call WUI_Place(inori_frame_pas5[k2], 0.327, 0.265, 0.030, 0.030)
-            call WUI_Place(inori_frame_pas6[k2], 0.473, 0.265, 0.030, 0.030)
-            call WUI_Place(inori_frame_pas7[k2], 0.473, 0.265, 0.030, 0.030)
-            call WUI_Place(inori_frame_pas9[k2], -0.50, -0.50, 0.032, 0.032)
-            call WUI_Place(inori_frame_pas10[k2], -0.50, -0.50, 0.032, 0.032)
-            call BlzFrameSetVisible(inori_frame_pas9[k2], false)
-            call BlzFrameSetVisible(inori_frame_pas10[k2], false)
-            call WUI_Place(inori_frame_pas11[k2], 0.537, 0.439, 0.016, 0.016)
-            call WUI_Place(inori_frame_pas12[k2], 0.537, 0.439, 0.016, 0.016)
-            call BlzFrameSetTexture(inori_frame_pas11[k2], WUI_FILL_NORMAL, 0, true)
-            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriCloseGlyph", inori_frame_pas11[k2], "", 0)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_TOPLEFT, inori_frame_pas11[k2], FRAMEPOINT_TOPLEFT, 0.003, -0.003)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMRIGHT, inori_frame_pas11[k2], FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
-            call BlzFrameSetTexture(inori_frame_pas8[k2], "UI\\WOS\\glyph-close.tga", 0, true)
-            call BlzFrameSetEnable(inori_frame_pas8[k2], false)
-            set inori_frame_pas8[k2] = WUI_GoldFrame("WOSInoriCloseEdge", inori_frame_pas11[k2], 0.0024, 0.0000)
-            set inori_frame_pas8[k2] = WUI_IconFrame(inori_frame_pas4[k2], WUI_ICON_FRAME)
-            set inori_frame_pas8[k2] = WUI_IconFrame(inori_frame_pas6[k2], WUI_ICON_FRAME)
-            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriZoom", inori_frame_pas1[k2], "", 0)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_CENTER, inori_frame_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
-            call BlzFrameSetSize(inori_frame_pas8[k2], 0.038, 0.038)
-            call BlzFrameSetTexture(inori_frame_pas8[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T", 0, false)
-            call BlzFrameSetLevel(inori_frame_pas8[k2], 12)
-            call BlzFrameSetTooltip(inori_frame_pas5[k2], inori_frame_pas8[k2])
-            call BlzFrameSetVisible(inori_frame_pas8[k2], false)
-            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriZoom", inori_frame_pas1[k2], "", 1)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_CENTER, inori_frame_pas7[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
-            call BlzFrameSetSize(inori_frame_pas8[k2], 0.038, 0.038)
-            call BlzFrameSetTexture(inori_frame_pas8[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2", 0, false)
-            call BlzFrameSetLevel(inori_frame_pas8[k2], 12)
-            call BlzFrameSetTooltip(inori_frame_pas7[k2], inori_frame_pas8[k2])
-            call BlzFrameSetVisible(inori_frame_pas8[k2], false)
-            call BlzFrameClearAllPoints(inori_frame_pas13[k2])
-            call BlzFrameClearAllPoints(inori_frame_pas14[k2])
-            call BlzFrameSetScale(inori_frame_pas13[k2], 0.66)
-            call BlzFrameSetScale(inori_frame_pas14[k2], 0.66)
-            call BlzFrameSetAbsPoint(inori_frame_pas13[k2], FRAMEPOINT_CENTER, 0.327, 0.364)
-            call BlzFrameSetAbsPoint(inori_frame_pas14[k2], FRAMEPOINT_CENTER, 0.473, 0.364)
-            call BlzFrameSetSize(inori_frame_pas13[k2], 0.126 / 0.66, 0.140 / 0.66)
-            call BlzFrameSetSize(inori_frame_pas14[k2], 0.126 / 0.66, 0.140 / 0.66)
-            call BlzFrameSetTextAlignment(inori_frame_pas13[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
-            call BlzFrameSetTextAlignment(inori_frame_pas14[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
-            call BlzFrameSetEnable(inori_frame_pas13[k2], false)
-            call BlzFrameSetEnable(inori_frame_pas14[k2], false)
     
             call BlzTriggerRegisterFrameEvent(InoriFrameTrig1, inori_frame_pas5[k2], FRAMEEVENT_CONTROL_CLICK)
             call BlzTriggerRegisterFrameEvent(InoriFrameTrig1, inori_frame_pas7[k2], FRAMEEVENT_CONTROL_CLICK)
@@ -2540,7 +2508,7 @@ endfunction
         else
             call BlzFrameSetVisible(inori_frame_pas8[k2], false)
             call BlzFrameSetEnable(inori_frame_pas10[k2], false)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual2", 0, true)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(inori_frame_pas1[k2], true)
             endif

@@ -148,6 +148,14 @@ class FocusContract(unittest.TestCase):
         self.assertEqual(self.calls, [('business-disabled', self.frame)])
         self.assertFalse(self.enabled)
 
+    def test_vote_open_resets_the_actual_clicked_button(self):
+        self.reset_fixture();vm=load_source('MatchVotes.j');vm.g.update(self.vm.g)
+        vm.g.update(GetPlayerId=lambda p:p,MV_View=-1,MV_Button={0:self.frame,1:'ff'},
+            MV_Render=lambda:None,WUI_ResetClickedButtonFocus=lambda:self.vm.run('WUI_ResetClickedButtonFocus'))
+        vm.run('MV_Click')
+        self.assertEqual(0,vm.g['MV_View'])
+        self.assertEqual([('enabled',self.frame,False),('enabled',self.frame,True)],self.calls)
+
     def test_passive_dynamic_controls_register_once_and_share_one_trigger(self):
         registry, registrations, triggers, actions = {}, [], [], []
         self.vm.g.update({
@@ -166,14 +174,14 @@ class FocusContract(unittest.TestCase):
         self.assertEqual(registrations, [("passive", "a", "click"), ("passive", "b", "click")])
 
     def test_toolbar_logic_precedes_cleanup(self):
-        vm = load_source("DefaultArmorChangeStable_Copy.j")
+        vm = load_source("WoS_Shop_Init.j")
         vm.g.update(self.vm.g)
         vm.g.update({
             "UNITSTAT_Shop": "button",
-            "WOS_ToggleShop": SimpleNamespace(evaluate=lambda p: self.calls.append(("shop", p))),
+            "WOS_ToggleShop": lambda p: self.calls.append(("shop", p)),
             "WUI_ReleaseClickFocus": lambda: self.vm.run("WUI_ReleaseClickFocus"),
         })
-        vm.run("UNITSTAT_ToolbarClick")
+        vm.run("QB_ShopButton")
         self.assertEqual(self.calls, [("shop", 0), ("button", False)])
 
     def test_shop_close_early_return_hides_then_releases_live_button(self):

@@ -1017,27 +1017,36 @@ library StarrkSpells uses GearSystems
                             set r2 = 9999
                             set check = 1
                             if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame_pas1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
                                 endif
-                                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
                                 call BlzFrameSetValue(frame_pas3[k2], rmax)
                                 set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
                                 call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_E", 0, false)
                                 set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
+                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
                                 set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Starrk.j:frame_pas1:" + I2S(k2))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1989,27 +1998,36 @@ library StarrkSpells uses GearSystems
                         set r5 = 0
                         set kek1 = 0.0375
                         if frame1_pas1[check2] == null then
-                            set frame1_pas1[check2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                            set frame1_pas1[check2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                            call BlzFrameSetAbsPoint(frame1_pas1[check2], FRAMEPOINT_CENTER, 0.055, 0.18 + kek1)
+                            call BlzFrameSetSize(frame1_pas1[check2], 0.135, 0.035)
+                            call BlzFrameSetTexture(frame1_pas1[check2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                             call BlzFrameSetVisible(frame1_pas1[check2], false)
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame1_pas1[check2], true)
                             endif
-                            set frame1_pas2[check2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1_pas1[check2], "", 0)
-
+                            set frame1_pas2[check2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[check2], 0, 0)
+                            call BlzFrameSetAbsPoint(frame1_pas2[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
+                            call BlzFrameSetSize(frame1_pas2[check2], 0.1, 0.019)
                             set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)
+                            call BlzFrameSetSize(frame1_pas3[check2], 0.1, 0.035)
+                            call BlzFrameSetScale(frame1_pas3[check2], 0.5)
+                            call BlzFrameSetModel(frame1_pas3[check2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                            call BlzFrameSetAbsPoint(frame1_pas3[check2], FRAMEPOINT_CENTER, 0.05, 0.175 + kek1)
                             call BlzFrameSetMinMaxValue(frame1_pas3[check2], 0, rmax + 2)
                             call BlzFrameSetValue(frame1_pas3[check2], rmax)
                             set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)
-
+                            call BlzFrameSetAbsPoint(frame1_pas4[check2], FRAMEPOINT_CENTER, 0.005, 0.18 + kek1)
+                            call BlzFrameSetSize(frame1_pas4[check2], 0.03, 0.03)
                             call BlzFrameSetTexture(frame1_pas4[check2], "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_T", 0, false)
                             set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
+                            call BlzFrameSetAbsPoint(frame1_pas5[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
                             call BlzFrameSetText(frame1_pas5[check2], "|c00FFFF00" + "Wolfs Time Left:" + "|r")
+                            call BlzFrameSetScale(frame1_pas5[check2], 0.9)
                             set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
+                            call BlzFrameSetAbsPoint(frame1_pas6[check2], FRAMEPOINT_CENTER, 0.07, 0.17 + kek1)
                             call BlzFrameSetText(frame1_pas6[check2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                            call WUI_HeroMeter(frame1_pas1[check2], frame1_pas2[check2], frame1_pas3[check2], frame1_pas4[check2], frame1_pas5[check2], frame1_pas6[check2])
-                            call WUI_RegisterMeter(frame1_pas1[check2], check2, "Heroes/Starrk.j:frame1_pas1:" + I2S(check2))
-                            call WUI_RefreshDocks()
+                            call BlzFrameSetScale(frame1_pas6[check2], 0.9)
                         else
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame1_pas1[check2], true)
@@ -2415,72 +2433,6 @@ endloop
     1 - move
     6 - atk bite
      */ 
-
-    // UI clock follows the actual six independently expiring stat abilities.
-    private struct Starrk_StackMeter
-        private static unit array tracked
-        private static WUI_TrackedMeter array meter
-        private static integer count = 0
-        private static real uiTick = 0.0
-
-        private static method loopUI takes nothing returns nothing
-            local integer pid = 0
-            local unit u
-            local real remaining
-            local string stacks
-            set uiTick = uiTick + 0.03
-            if uiTick < 0.12 then
-                return
-            endif
-            set uiTick = 0.0
-            loop
-                exitwhen pid >= 12
-                set u = tracked[pid]
-                if u != null then
-                    set stacks = TasAbilityChargeBox_GetValue(u, StarrkG_ID)
-                    if GetUnitTypeId(u) == 0 or Hero[pid] != u or stacks == "" then
-                        call meter[pid].close()
-                        set tracked[pid] = null
-                        set count = count - 1
-                        if count == 0 then
-                            call GearTimer03Release()
-                        endif
-                    else
-                        set remaining = GearAbilityTimeRemaining(u, Starrk_Pas1ID)
-                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas2ID))
-                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas3ID))
-                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas4ID))
-                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas5ID))
-                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas6ID))
-                        call meter[pid].update(remaining, "Agility: " + stacks + " stacks", true)
-                    endif
-                endif
-                set pid = pid + 1
-            endloop
-            set u = null
-        endmethod
-
-        static method track takes unit u returns nothing
-            local integer pid = GetPlayerId(GetOwningPlayer(u))
-            if pid >= 12 or Hero[pid] != u then
-                return
-            endif
-            if tracked[pid] == null then
-                set count = count + 1
-                if count == 1 then
-                    call GearTimer03Acquire()
-                endif
-            endif
-            set tracked[pid] = u
-            set meter[pid] = WUI_TrackedMeter.get(pid, "StarrkAgility")
-            call meter[pid].start(StarrkG_ID, "Agility stacks", StarkG_TimeStatAdd)
-        endmethod
-
-        private static method onInit takes nothing returns nothing
-            call TriggerAddAction(GearTimer03Listeners, function thistype.loopUI)
-        endmethod
-    endstruct
-
     function StarrkPas takes unit c returns nothing
         local group g = CreateGroup()
         local unit u = null
@@ -2518,30 +2470,23 @@ endloop
             if b == true then
                 if GetUnitAbilityLevel(c, Starrk_Pas1ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas1ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas1ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas1ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas2ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas2ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas2ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas2ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas3ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas3ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas3ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas3ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas4ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas4ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas4ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas4ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas5ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas5ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas5ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas5ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas6ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas6ID)
-                    call GearWatchAbilityTime(c, Starrk_Pas6ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas6ID, 1)
                 endif
-                call Starrk_StackMeter.track(c)
                 call SetHpCurrent2(c, c, hp*scale)
                 call SetMpCurrent(c, mp*scale)
                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_longskill_point_39.mdx", c, "origin"))

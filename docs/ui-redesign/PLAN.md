@@ -1,5 +1,13 @@
 # UI redesign plan
 
+Current follow-up: RESUME CP57 (responsive Damage Stats/feed, shared Game Info
+icons and distinct Saber G proc initialization/attribution). CP56 remains the
+base for owned sources and input repeat gating. User confirms CP55 crash is gone. DamageStats
+adds numeric Taken ownership and explicit environmental/direct HP sources,
+compact translucent panels, condition-level key repeat gating and clearer Invis.
+Only STABLE is published. Cursor, smartcast/FPS and visual acceptance need game
+verification; the previous native message layout must stay removed.
+
 ## Checkpoint 22b — round 2 corrections: source compiled, MAIN NOT rebuilt (2026-10-10, Claude)
 
 Compile OK, UI regressions 171/171 (cp22 file: 20 tests). MAIN build was refused:
@@ -481,7 +489,7 @@ IN_PROGRESS; do not equate source tests or process survival with game acceptance
 | 6. Hero selection | Existing categories/pages/preview/players, all normal/captain/draft modes; depends 2,3 | P1 | IN_PROGRESS | Compact 5x6 catalogue, preview, draft, captain vote/team selection and shared tooltip surfaces compiled; all phase transitions still need runtime verification. Real handlers retained |
 | 7. Shops | Existing tabs/search/auto-buy/recipes/craft/item info; depends 2,3 | P1 | IN_PROGRESS | Existing seven tabs/search/recipes/inventory relaid and skinned; compile passed, runtime pending. All tabs and purchases preserved, consistent textures/spacing |
 | 8. Other UI | Scoreboard/career/votes/hero bars/music/emotes/tooltips; depends 2,3 | P1 | IN_PROGRESS | Secondary surfaces, 46 hero meters, unit-buff docks, special hero windows, captain votes and ability overlays/tooltips compiled. OWNER_STATUS.md accounts for all 45 active owners; native/game verification pending |
-| 9a. Z wheel | Existing TeamMapPings: no segment labels, center hover, release commits valid sector | P0 | IN_PROGRESS | Code compiled; 21 production tests pass including release-once; in-game key/frame behavior pending |
+| 9a. Z input | CP54 fixed frame buttons and one terrain click; no MOVE/polling; shared cancellation with K | P0 | IN_PROGRESS | Production lifetime/cancel tests and compile; in-game FPS/input still pending |
 | 9b. Test panel | Replace permanent help texttags, right scrollable collapse panel | P1 | IN_PROGRESS | Code TEXT pages replace blank lazy-template panel; scroll/collapse runtime pending. TestMode-only; original commands documented, working commands unchanged |
 | 9c. Menu/camera | Functional native system buttons in compact menu, existing camera slider | P1 | IN_PROGRESS | Native menu drawer and camera placement compiled; runtime pending. Critical menus/hotkeys stay reachable; local camera only |
 | 10a. Native integration | MAIN push/build, native WTG/WCT identities/order, imports and packed bytes | P0 | DONE | Guarded MAIN push and full build PASS, 109 source identities/order verified, 40 resources registered and all 45 extracted archive entries byte-equal |
@@ -516,3 +524,45 @@ minimap portraits and bounds-aware ping overlays integrated in MAIN. Compile,
 218 regressions, four final targeted camera/icon checks and 23 ping checks PASS;
 164 packed entries verified. Native rendering and terrain background alignment
 remain game acceptance work; existing full-map image was not cropped.
+
+
+Checkpoint39: two-row hero panels, buff-owned Rimuru dodges/evolution pips,
+invisible portrait and button-only unanimous kick/FF implemented. Native assembly,
+assets and regression evidence are recorded in RESUME.md; visual and multiplayer
+engine acceptance remains open.
+
+
+Checkpoint40 integrates startup Discord docking, silent automatic settings,
+ability-based invis indication, positive-only Shiki badge, minimum2 kick quorum,
+local guide without extra Preloader IO and mutually exclusive ping/emote wheels.
+Compile/regression/archive evidence in RESUME; two-client engine acceptance of
+-help, wheel input and invisibility remains open.
+
+
+Checkpoint41: dedicated first-visit marker plus synchronized guide state/countdown,
+compact populated votes,32 catalogue kits, bounded2D reorder with four-direction
+pointers and persisted hero-stage collapse are integrated in MAIN. Compile,
+544 regressions and full archive/source equality PASS. Native visuals and the
+reported multiplayer desync remain an engine acceptance boundary in RESUME.
+
+
+Checkpoint52: DamageStats upper-left independent toggle and transparent compact
+owner; ten-player colored WUI bars, hero portraits, enlarged captions, ten source
+icons per player with larger rounded values beneath. Detailed columns use gold
+and blue role accents. Fixed object artwork catalogue and ten reproducible TGA
+fills installed by the normal asset pipeline. Implementation complete; native
+visual/multiplayer acceptance remains open. Evidence and build results: RESUME CP52.
+
+
+Checkpoint53: DamageStats Dealt/Taken sources and F2-consistent hit precision;
+Quincy Cross contributes its own source without changing the combat hit. Fixed
+font/anchors, pinned hover, single tooltip/focus owner, narrow two-row layouts,
+large portraits, transparent hairline outlines, immediate Escape and timed-message
+dock implemented. Native appearance/cursor and multiplayer acceptance remain open;
+verification and playable map details are in RESUME CP53.
+
+CP54: replace CP45 demand-created MOVE with frame selection/one-shot click.
+Remove diagnostic probe IO by default, quiet closed F2/pings, merge same-period
+UI timers and cache repeated native setters/metadata. Align actions at.598,
+remove compact gap and move messages below Restart. See RESUME CP54 for exact
+periods and verification boundary; no game FPS claim from operation tests.

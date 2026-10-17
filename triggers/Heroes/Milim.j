@@ -1,7 +1,7 @@
 // @ignore-file-errors
 // VS Code jass.jass 1.9.21 incorrectly reports valid vJASS `local thistype this`
 // declarations as keyword conflicts. JassHelper remains the source of truth.
-library MilimSpells uses GearSystems, WOSUI
+library MilimSpells uses GearSystems
     globals
 //--------------------------------------Milim--------------------------------------------------------------
         integer Milim_ID = 'H02K'
@@ -1317,7 +1317,7 @@ private struct MilimTKS
                             set r = 0
                             
                             if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", WUI_GetRoot(), "", 0)
+                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
                                 call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
                                 call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
                                 call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
@@ -1325,11 +1325,13 @@ private struct MilimTKS
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
                                 endif
-                                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
+                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
                                 call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
                                 call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
                                 call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
                                 call BlzFrameSetValue(frame_pas3[k2], rmax)
@@ -1345,10 +1347,6 @@ private struct MilimTKS
                                 call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
                                 call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                                // Checkpoint 24: shared meter look + docking above the minimap.
-                                call BlzFrameSetTexture(frame_pas1[k2], WUI_PANEL_TEXTURE, 0, true)
-                                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Milim.j:frame_pas1:" + I2S(k2))
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame_pas1[k2], true)
@@ -1853,12 +1851,14 @@ private struct MilimGKS
             call BlzFrameSetTexture(frame1[pid], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
             call BlzFrameSetVisible(frame1[pid], false)
 
-            set frame2[pid] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame1[pid], "", 0)
+            set frame2[pid] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1[pid], 0, 0)
             call BlzFrameSetAbsPoint(frame2[pid], FRAMEPOINT_CENTER, 0.07, 0.185 + tmpY)
             call BlzFrameSetSize(frame2[pid], 0.1, 0.019)
 
             set frame3[pid] = BlzCreateFrameByType("STATUSBAR", "", frame1[pid], "", 0)
             call BlzFrameSetSize(frame3[pid], 0.1, 0.035)
+            call BlzFrameSetScale(frame3[pid], 0.5)
+            call BlzFrameSetModel(frame3[pid], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
             call BlzFrameSetAbsPoint(frame3[pid], FRAMEPOINT_CENTER, 0.05, 0.175 + tmpY)
             call BlzFrameSetMinMaxValue(frame3[pid], 0.00, maxDamage+10)
             call BlzFrameSetValue(frame3[pid], 0.00)
@@ -1876,10 +1876,6 @@ private struct MilimGKS
             set frame6[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1[pid], "", 0)
             call BlzFrameSetAbsPoint(frame6[pid], FRAMEPOINT_CENTER, 0.07, 0.17 + tmpY)
             call BlzFrameSetScale(frame6[pid], 0.9)
-            // Checkpoint 24: shared meter look + docking above the minimap.
-            call BlzFrameSetTexture(frame1[pid], WUI_PANEL_TEXTURE, 0, true)
-            call WUI_HeroMeter(frame1[pid], frame2[pid], frame3[pid], frame4[pid], frame5[pid], frame6[pid])
-            call WUI_RegisterMeter(frame1[pid], pid, "Heroes/Milim.j:frame1:" + I2S(pid))
         endif
 
         if GetLocalPlayer() == GetOwningPlayer(c) then

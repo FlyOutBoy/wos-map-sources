@@ -167,6 +167,7 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
                 set check2 = 1
+                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+Q combo! Target gain stun at the end|r")
             endif
             set aoe = TomiokaQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TomiokaQ_DamageAgiBase + ( TomiokaQ_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaQ_ID) - 1 ) ) )
@@ -317,6 +318,7 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
                 set check2 = 1
+                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+W combo! enemy additionally pushed away|r")
             endif
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Tomioka_W1")
@@ -471,6 +473,7 @@ library TomiokaSpells uses GearSystems
             set g = CreateGroup()
             set check = R2I(LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))/2)
             set check3 = TomiokaE_AtkCountBase + ( TomiokaE_AtkCountStep * ( GetUnitAbilityLevel( c , TomiokaE_ID) - 1 ) )+check//+ check
+            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FFAdditional attacks: |r"+I2S(check))
             set u = null
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = TomiokaE_DamageAoe
@@ -485,9 +488,11 @@ library TomiokaSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
                 set check2 = 1
+                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+E combo! enemy additionally stuned each hit|r")
             elseif LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
                 call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
                 set check2 = 2
+                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+E combo! enemy slowed each hit|r")
             endif
             set check = 0
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
@@ -1055,6 +1060,7 @@ library TomiokaSpells uses GearSystems
                             set r = 0
                             call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), check)
                         endif
+                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
                     endif
                 else
                     call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))-2)
@@ -1097,27 +1103,36 @@ library TomiokaSpells uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set rmax = Tomioka_G_BuffDuration
             if frame_pas1[k2] == null then 
-        set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+        set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS",main_frame, "", 0)
+        call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+        call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+        call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
         call BlzFrameSetVisible(frame_pas1[k2],false)
         if GetLocalPlayer() == GetOwningPlayer(c) then 
         call BlzFrameSetVisible(frame_pas1[k2],true)
         endif
-        set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+        set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+        call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+        call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
         set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+        call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+        call BlzFrameSetScale(frame_pas3[k2], 0.5)
+        call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+        call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
         call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
         call  BlzFrameSetValue(frame_pas3[k2], rmax)
         set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)
-
+        call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+        call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
         call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tomioka_G", 0, false)
         set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+        call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
         call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "1 Stack" + "|r")
+        call BlzFrameSetScale(frame_pas5[k2],0.9)
         set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+        call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
         call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real,0,2) + "|r")
-
-        call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-        call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Tomioka.j:frame_pas1:" + I2S(k2))
-        call WUI_RefreshDocks()
+        call BlzFrameSetScale(frame_pas6[k2],0.9)
         else
         if GetLocalPlayer() == GetOwningPlayer(c) then 
         call BlzFrameSetVisible(frame_pas1[k2],true)
@@ -1125,6 +1140,7 @@ library TomiokaSpells uses GearSystems
         call  BlzFrameSetValue(frame_pas3[k2], rmax)
         endif
         set r = 0
+            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
             if MUI_TomiokaG == 0 then
                 call TimerStart( t_TomiokaG, 0.1, true, function thistype.Loop_TomiokaG)
             endif

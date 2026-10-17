@@ -210,6 +210,8 @@ class HoverIntegration(unittest.TestCase):
             'AHUI_RefreshTooltip':lambda *a:None,'AHUI_HideTooltip':lambda *a:self.hides.append(a),
             'BlzFrameIsVisible':lambda f:self.visible,
             'WUI_RangeNativeSlotVisible':lambda s:self.native,
+            'WUI_ItemX':lambda s:-1.0,'WUI_ItemY':lambda s:-1.0,'WUI_ITEM_SIZE':.033,
+            'WUI_RangeNativeItemVisible':lambda s:False,
             'AR_Hide':lambda *a:self.hides.append(a),'AR_Request':lambda *a:self.requests.append(a),
         })
 

@@ -10,19 +10,20 @@ def source(name):return (ROOT/'triggers/WOS_Start'/name).read_text(encoding='utf
 
 class Registration(unittest.TestCase):
     def test_ui_has_no_world_mouse_down_or_up_registration(self):
-        for name in ('EMOTES.j','TeamMapPings.j','WoS_Shop_Init.j'):
+        for name in ('EMOTES.j','WoS_Shop_Init.j'):
             with self.subTest(name=name):
                 self.assertNotRegex(source(name),r'TriggerRegisterPlayerEvent\([^\n]*EVENT_PLAYER_MOUSE_(?:DOWN|UP)')
         self.assertIn('EVENT_PLAYER_UNIT_PICKUP_ITEM',source('WoS_Shop_Init.j'))
         self.assertIn('EVENT_PLAYER_UNIT_DROP_ITEM',source('WoS_Shop_Init.j'))
 
     def test_shop_input_uses_existing_fast_local_tick_and_preserves_30s_timeout(self):
-        body=source('ShowCD.j').split('private function AHUI_Periodic takes',1)[1].split('endfunction',1)[0]
-        self.assertIn('if GetLocalPlayer() == Player(pid) then',body)
-        self.assertIn('if Shop_Active[pid] or QB_DragFrom >= 0 or REC_DragFrom >= 0 then',body)
-        self.assertIn('call QB_CheckDrag.evaluate()',body)
-        self.assertEqual(source('ShowCD.j').count('call QB_CheckDrag.evaluate()'),1)
-        self.assertNotIn('call QB_CheckDrag()',source('WoS_Shop_Init.j'))
+        body=source('WoS_Shop_Init.j').split('function ShopSearchDebounceTick takes',1)[1].split('endfunction',1)[0]
+        self.assertIn('call QB_ApplyLocalUIChanges()',body)
+        self.assertNotIn('call QB_CheckDrag()',body)
+        self.assertIn('call TriggerRegisterTimerExpireEvent(WUI_ShopRmbTrigger[i], ShopSearchDebounceTimer)',source('WoS_Shop_Init.j'))
+        self.assertIn('call DisableTrigger(WUI_ShopRmbTrigger[i])',source('WoS_Shop_Init.j'))
+        self.assertNotIn('QB_CheckDrag.evaluate()',source('ShowCD.j'))
+        self.assertIn('SHOP_SEARCH_DEBOUNCE_PERIOD = 0.05',source('WoS_Shop_Init.j'))
         self.assertIn('QB_DragAge >= 600 or',source('WoS_Shop_Init.j'))
 
     def test_closed_shop_does_not_sample_or_send_for_idle_clicks(self):
@@ -35,6 +36,22 @@ class Registration(unittest.TestCase):
         for _ in range(500):f.vm.run('QB_CheckDrag')
         self.assertFalse(f.messages)
 
+
+class ShopRmbLifecycle(unittest.TestCase):
+    def test_real_trigger_enables_only_for_its_shop_and_closes_on_other_windows(self):
+        import test_wos_ui as ui
+        vm=ui.load_source('WOSUI.j');enabled=set()
+        vm.g['WUI_ShopRmbTrigger'][0]='p0';vm.g['WUI_ShopRmbTrigger'][1]='p1'
+        vm.g.update(EnableTrigger=lambda t:enabled.add(t),DisableTrigger=lambda t:enabled.discard(t),
+            GetLocalPlayer=lambda:9)
+        vm.run('WUI_SetShopRmb',(0,False));self.assertEqual(set(),enabled)
+        vm.g['Shop_Active'][0]=True;vm.run('WUI_EnterExclusiveWindow',(0,0))
+        self.assertEqual({'p0'},enabled)
+        vm.run('WUI_EnterExclusiveWindow',(1,0));self.assertEqual(set(),enabled)
+        self.assertFalse(vm.g['Shop_Active'][0])
+        vm.g['Shop_Active'][1]=True;vm.run('WUI_EnterExclusiveWindow',(0,1))
+        self.assertEqual({'p1'},enabled)
+        vm.run('WUI_EnterExclusiveWindow',(-1,1));self.assertEqual(set(),enabled)
 
 class Pollers(unittest.TestCase):
     def setUp(self):
@@ -58,31 +75,20 @@ class Pollers(unittest.TestCase):
         for _ in range(5):vm.run('Emoji_PollMouse')
         self.assertEqual(self.actions,[('emoji',0,False)])
 
-    def ping(self):
-        vm=JassState(source('TeamMapPings.j'));g=vm.g
-        g.update(TMP_Open=False,TMP_LeftWasDown=False,TMP_RightWasDown=False,
-                 MOUSE_BUTTON_TYPE_LEFT='left',MOUSE_BUTTON_TYPE_RIGHT='right',BlzIsMouseButtonPressed=self.read)
-        def close():self.actions.append('cancel');g['TMP_Open']=False
-        def commit():self.actions.append('commit');g['TMP_Open']=False
-        g.update(TMP_Close=close,TMP_Commit=commit)
-        return vm
+    def test_ping_source_has_no_mouse_move_or_button_polling(self):
+        text=source('TeamMapPings.j')
+        self.assertNotIn('EVENT_PLAYER_MOUSE_MOVE',text)
+        self.assertNotIn('BlzGetMouseScreenPos',text)
+        self.assertNotIn('BlzIsMouseButtonPressed',text)
+        self.assertNotIn('TMP_PollMouse',text)
+        for fn in ['TMP_OnFrame','TMP_OnKey','TMP_OnTargetClick']:
+            body=text.split('function '+fn+' ',1)[1].split('endfunction',1)[0]
+            self.assertNotIn('CreateTrigger',body);self.assertNotIn('DestroyTrigger',body)
+        self.assertIn('call DisableTrigger(TMP_TargetTrigger[pid])',text)
 
-    def test_ping_closed_never_reads_and_click_or_cancel_only_when_open(self):
-        vm=self.ping()
-        for _ in range(500):vm.run('TMP_PollMouse')
-        self.assertFalse(self.reads);self.assertFalse(self.actions)
-        vm.g['TMP_Open']=True;self.down.add('left');vm.run('TMP_PollMouse');vm.run('TMP_PollMouse')
-        self.assertEqual(self.actions,['commit'])
-        vm.g['TMP_Open']=True;self.down={'right'};vm.run('TMP_PollMouse')
-        self.assertEqual(self.actions,['commit','cancel'])
-
-    def test_mouse_already_held_before_open_does_not_commit_or_close(self):
-        vm=self.ping();g=vm.g;g.update(TMP_Open=True,TMP_LeftWasDown=True,TMP_RightWasDown=True)
-        self.down={'left','right'};vm.run('TMP_PollMouse');self.assertFalse(self.actions)
-        self.down.clear();vm.run('TMP_PollMouse');self.down.add('left');vm.run('TMP_PollMouse')
-        self.assertEqual(self.actions,['commit'])
+    def test_emoji_mouse_already_held_before_open_is_ignored(self):
         vm=self.emoji();vm.g.update(EmojiPanelOpen={0:True},EmojiRightWasDown=True)
-        self.actions.clear();self.down={'right'};vm.run('Emoji_PollMouse');self.assertFalse(self.actions)
+        self.down={'right'};vm.run('Emoji_PollMouse');self.assertFalse(self.actions)
         self.down.clear();vm.run('Emoji_PollMouse');self.down.add('right');vm.run('Emoji_PollMouse')
         self.assertEqual(self.actions,[('emoji',0,False)])
 

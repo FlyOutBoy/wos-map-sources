@@ -564,27 +564,36 @@ library HarribelSpells uses GearSystems
                            endif
                            endif
                             if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
+                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                                 call BlzFrameSetVisible(frame2_pas1[k2], false)
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
                                 endif
-                                set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame2_pas1[k2], "", 0)
-
+                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
+                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
                                 set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
+                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
+                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                                 call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax+2)
                                 call BlzFrameSetValue(frame2_pas3[k2], rmax)
                                 set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-
+                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_E", 0, false)
                                 set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                                 call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
+                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
                                 set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
+                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                                 call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                                call WUI_HeroMeter(frame2_pas1[k2], frame2_pas2[k2], frame2_pas3[k2], frame2_pas4[k2], frame2_pas5[k2], frame2_pas6[k2])
-                                call WUI_RegisterMeter(frame2_pas1[k2], k2, "Heroes/Harribel.j:frame2_pas1:" + I2S(k2))
-                                call WUI_RefreshDocks()
+                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
                             else
                                 if GetLocalPlayer() == GetOwningPlayer(c) then
                                     call BlzFrameSetVisible(frame2_pas1[k2], true)
@@ -595,9 +604,14 @@ library HarribelSpells uses GearSystems
                             if GetHeroLevel(c)<12 then 
                             set tmp_y = 0
                             endif
+                            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18+tmp_y)
+                            call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
+                            call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175+tmp_y)
+                            call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18+tmp_y)
+                            call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
+                            call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17+tmp_y)
                                                
                             
-                            call WUI_RefreshDocks()
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e"), 1)
                             set r = 0
                             set d = CreateUnit(Player(k2), HarribelE_IdDummy, 1, 1, 1)
@@ -1327,27 +1341,36 @@ library HarribelSpells uses GearSystems
             set r2 = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             if frame_pas1[k2] == null then
-                set frame_pas1[k2] = WUI_Window("WOSHeroMeter", main_frame, 0, 0)
+                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
+                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
+                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
+                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
                 call BlzFrameSetVisible(frame_pas1[k2], false)
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)
                 endif
-                set frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSMeterBack", frame_pas1[k2], "", 0)
-
+                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
+                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
+                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
                 set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
+                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
+                call BlzFrameSetScale(frame_pas3[k2], 0.5)
+                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
+                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
                 call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, 3000+50)
                 call BlzFrameSetValue(frame_pas3[k2], 0)
                 set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-
+                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
+                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
                 call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_G", 0, false)
                 set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
                 call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Sacrifice:" + "|r")
+                call BlzFrameSetScale(frame_pas5[k2], 0.9)
                 set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
+                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
                 call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-
-                call WUI_HeroMeter(frame_pas1[k2], frame_pas2[k2], frame_pas3[k2], frame_pas4[k2], frame_pas5[k2], frame_pas6[k2])
-                call WUI_RegisterMeter(frame_pas1[k2], k2, "Heroes/Harribel.j:frame_pas1:" + I2S(k2))
-                call WUI_RefreshDocks()
+                call BlzFrameSetScale(frame_pas6[k2], 0.9)
             else
                 if GetLocalPlayer() == GetOwningPlayer(c) then
                     call BlzFrameSetVisible(frame_pas1[k2], true)

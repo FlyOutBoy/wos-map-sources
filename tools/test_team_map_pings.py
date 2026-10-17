@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import unittest
 
 from test_crocodile import JassState
+import test_wos_ui as ui
 from install_team_ping_assets import install, ASSET_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 class TeamMapPings(unittest.TestCase):
     def setUp(self):
         source = (ROOT/'triggers/WOS_Start/TeamMapPings.j').read_text(encoding='utf-8-sig')
-        self.vm = JassState(source)
+        self.vm = ui.load_source('TeamMapPings.j')
+        self.control_sync=[]
         self.viewer = 0
         self.sender = 0
         self.data = ''
@@ -27,6 +29,10 @@ class TeamMapPings(unittest.TestCase):
         self.screen_y = 380
         self.mouse = 'left'
         self.mousePressed = False
+        self.enabled=set()
+        self.timer_running=False
+        self.world_x,self.world_y=200,350
+        self.focus_resets=0
         self.frame = None
         self.event = 'click'
         self.effects = []
@@ -40,6 +46,8 @@ class TeamMapPings(unittest.TestCase):
         self.frame_points = {}
         self.terrain_visible = True
         g = self.vm.g
+        g.setdefault('WUI_EnterWheel', lambda *_: None)
+        g.setdefault('WUI_RegisterWheelClose', lambda *_: None)
         g.setdefault('WUI_ReleaseClickFocus', lambda: None)  # External owner; tested in test_wos_ui_focus.
         for kind, name, value in re.findall(r'^\s*private (?:constant )?(integer|real|boolean|string|framehandle|timer|group) (\w+) = (.*)', source, re.M):
             g[name] = eval(value.replace('null','None').replace('false','False'), {}, g)
@@ -91,18 +99,22 @@ class TeamMapPings(unittest.TestCase):
             'BlzSetSpecialEffectAlpha':lambda e,a:setattr(e,'alpha',a),
             'PingMinimapEx':lambda *a:self.pings.append(a),
             'DisplayTimedTextToPlayer':lambda *a:self.messages.append(a),
-            'BlzSendSyncData':lambda *a:self.sync.append(a),
+            'BlzSendSyncData':self.send_ui_sync,
             'BlzGetTriggerFrame':lambda:self.frame, 'BlzGetTriggerFrameEvent':lambda:self.event,
             'BlzGetTriggerPlayerKey':lambda:self.key, 'BlzGetTriggerPlayerMouseButton':lambda:self.mouse,
             'BlzGetTriggerPlayerIsKeyDown':lambda:self.key_down,
-            'BlzGetTriggerPlayerMouseX':lambda:200, 'BlzGetTriggerPlayerMouseY':lambda:350,
+            'BlzGetTriggerPlayerMouseX':lambda:self.world_x, 'BlzGetTriggerPlayerMouseY':lambda:self.world_y,
             'BlzPixelToFrameX':lambda p:p/1000, 'BlzPixelToFrameY':lambda p:p/1000,
             'BlzGetMouseScreenPosX':lambda:self.screen_x, 'BlzGetMouseScreenPosY':lambda:self.screen_y,
             'BlzGetOriginFrame':lambda kind,*a:kind, 'BlzCreateFrameByType':self.create_frame,
             'BlzFrameGetWidth':lambda f:.14, 'BlzFrameGetHeight':lambda f:.14,
             'BlzConvertColor':lambda *a:a, 'BlzFrameSetVertexColor':lambda *a:None,
             'CreateTrigger':lambda:object(), 'CreateTimer':lambda:object(),
-            'TriggerAddAction':lambda *a:None, 'DestroyTrigger':lambda *a:None, 'TimerStart':lambda *a:None,
+            'EnableTrigger':lambda t:self.enabled.add(t),'DisableTrigger':lambda t:self.enabled.discard(t),
+            'TriggerAddAction':lambda *a:None, 'DestroyTrigger':lambda *a:None, 'TimerStart':lambda *a:setattr(self,'timer_running',True),
+            'PauseTimer':lambda *a:setattr(self,'timer_running',False),
+            'ResumeTimer':lambda *a:setattr(self,'timer_running',True),
+            'WUI_ResetClickedButtonFocus':lambda:setattr(self,'focus_resets',self.focus_resets+1),
             'BlzTriggerRegisterFrameEvent':lambda *a:self.registrations.append(a),
             'BlzTriggerRegisterPlayerKeyEvent':lambda *a:self.registrations.append(a),
             'BlzTriggerRegisterPlayerSyncEvent':lambda *a:self.registrations.append(a),
@@ -230,105 +242,101 @@ class TeamMapPings(unittest.TestCase):
         self.send(3)
         self.assertEqual(6,len(self.effects))
 
-    def test_cancel_and_hover_do_not_send_or_move_the_point(self):
-        self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
-        self.assertTrue(self.vm.g['TMP_Open'])
-        self.screen_x = 560
-        self.vm.run('TMP_Periodic')
-        self.frame = self.vm.g['TMP_Button'][2]
-        self.assertEqual((.17,.17),self.frames[self.frame,'size'])
-        self.screen_x = 490
-        self.vm.run('TMP_Periodic')
-        self.assertEqual((.15,.15),self.frames[self.frame,'size'])
-        self.key_down = False
-        self.vm.run('TMP_OnKey')
-        self.assertFalse(self.vm.g['TMP_Open'])
-        self.assertFalse(self.sync)
-        self.assertFalse(self.effects)
-
-    def test_button_sends_exact_selected_point_then_receiver_validates(self):
-        self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
-        self.screen_x,self.screen_y = 449,323
-        self.frame = self.vm.g['TMP_Wheel']
+    def choose(self,kind):
+        self.frame=self.vm.g['TMP_Button'][kind];self.event='click'
         self.vm.run('TMP_OnFrame')
-        self.assertEqual([('WOSP','4;200;350')],self.sync)
-        self.assertFalse(self.effects)  # No effect until the sync event arrives.
-        self.data = self.sync[0][1]
-        self.vm.run('TMP_OnSync')
-        self.assertIn('Need help',self.vm.g['TMP_LastMessage'])
-        self.vm.run('TMP_OnSync')
-        self.assertEqual(2,len(self.effects))
 
-    def test_five_sectors_grow_and_actions_use_distinct_models(self):
+    def send_ui_sync(self,channel,data):
+        self.sync.append((channel,data))
+
+    def test_startup_has_only_ten_disabled_click_listeners_and_paused_timer(self):
+        clicks=[r for r in self.registrations if 'EVENT_PLAYER_MOUSE_DOWN' in r]
+        self.assertEqual(10,len(clicks));self.assertEqual(set(),self.enabled)
+        self.assertFalse(any('EVENT_PLAYER_MOUSE_MOVE' in r for r in self.registrations))
+        self.assertFalse(self.timer_running)
+        self.assertEqual(10,len({id(self.vm.g['TMP_TargetTrigger'][p]) for p in range(10)}))
+
+    def test_hover_and_key_release_do_not_send_or_arm_and_bounds_stay_fixed(self):
         self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
         for kind in range(1,6):
-            angle = math.radians(90-(kind-1)*72)
-            x,y = 490+70*math.cos(angle),380+70*math.sin(angle)
-            self.screen_x,self.screen_y = x,y
-            self.vm.run('TMP_UpdateHover')
-            self.assertEqual(kind,self.vm.g['TMP_Hover'])
-            self.assertEqual((.17,.17),self.frames[self.vm.g['TMP_Button'][kind],'size'])
-        self.vm.run('TMP_Close')
-        for kind in range(1,6):
-            self.sender = kind-1
-            self.send(kind)
+            self.frame=self.vm.g['TMP_Button'][kind];self.event='enter'
+            before=self.frames[self.frame,'size'];anchor=self.frame_points[self.frame]
+            self.vm.run('TMP_OnFrame');self.assertEqual(kind,self.vm.g['TMP_Hover'])
+            self.assertEqual(255,self.frames[self.vm.g['TMP_Art'][kind],'alpha'])
+            self.event='leave';self.vm.run('TMP_OnFrame')
+            self.assertEqual(120,self.frames[self.vm.g['TMP_Art'][kind],'alpha'])
+            self.assertEqual(before,self.frames[self.frame,'size']);self.assertEqual(anchor,self.frame_points[self.frame])
+        self.key_down=False;self.vm.run('TMP_OnKey')
+        self.assertTrue(self.vm.g['TMP_Open']);self.assertFalse(self.effects)
+        self.assertFalse(self.sync);self.assertFalse(self.enabled);self.assertEqual(0,self.focus_resets)
+
+    def test_frame_choice_then_one_world_click_sends_once_and_disables_listener(self):
+        self.vm.run('TMP_OnKey');self.choose(4)
+        target=self.vm.g['TMP_TargetTrigger'][0]
+        self.assertEqual({target},self.enabled);self.assertFalse(self.vm.g['TMP_Open'])
+        self.assertTrue(self.timer_running);self.assertEqual(1,self.focus_resets)
+        self.vm.run('TMP_OnTargetClick')
+        self.assertEqual(2,len(self.effects));self.assertIn('Need help',self.vm.g['TMP_LastMessage'])
+        self.assertEqual((200,350),(self.effects[0].x,self.effects[0].y))
+        self.assertFalse(self.enabled);self.assertEqual(0,self.vm.g['TMP_TargetKind'][0])
+        self.assertFalse(self.frames[self.vm.g['TMP_Hint'],'visible'])
+        self.vm.run('TMP_OnTargetClick');self.assertEqual(2,len(self.effects));self.assertFalse(self.sync)
+
+    def test_ui_click_does_not_consume_target_and_right_click_cancels(self):
+        self.choose(2);self.world_x=self.world_y=0
+        self.vm.run('TMP_OnTargetClick');self.assertEqual(2,self.vm.g['TMP_TargetKind'][0])
+        self.mouse='right';self.vm.run('TMP_OnTargetClick')
+        self.assertEqual(0,self.vm.g['TMP_TargetKind'][0]);self.assertFalse(self.enabled);self.assertFalse(self.effects)
+
+    def test_escape_new_z_and_timeout_cancel_only_the_requesting_player(self):
+        self.choose(2);self.sender=1;self.choose(3)
+        self.sender=0;self.key='esc';self.vm.run('TMP_OnKey')
+        self.assertEqual(0,self.vm.g['TMP_TargetKind'][0]);self.assertEqual(3,self.vm.g['TMP_TargetKind'][1])
+        self.ticks(162);self.assertFalse(self.enabled);self.assertFalse(self.timer_running)
+        self.sender=0;self.choose(4);self.key='Z';self.key_down=True;self.vm.run('TMP_OnKey')
+        self.assertEqual(0,self.vm.g['TMP_TargetKind'][0]);self.assertFalse(self.effects)
+
+    def test_auto_repeat_does_not_cancel_an_armed_choice_or_reopen_cancelled_wheel(self):
+        self.vm.run('TMP_OnKey');self.choose(1)
+        for _ in range(20):self.vm.run('TMP_OnKey')
+        self.assertEqual(1,self.vm.g['TMP_TargetKind'][0]);self.assertFalse(self.vm.g['TMP_Open'])
+        self.key='esc';self.vm.run('TMP_OnKey');self.key='Z'
+        self.vm.run('TMP_OnKey');self.assertFalse(self.vm.g['TMP_Open'])
+        self.key_down=False;self.vm.run('TMP_OnKey');self.key_down=True;self.vm.run('TMP_OnKey')
+        self.assertTrue(self.vm.g['TMP_Open'])
+
+    def test_target_state_and_click_delivery_match_on_owner_ally_and_enemy(self):
+        states=[]
+        for viewer in (0,1,5):
+            f=TeamMapPings();f.setUp();f.viewer=viewer;f.sender=0
+            f.choose(2);self.assertEqual(2,f.vm.g['TMP_TargetKind'][0]);self.assertEqual(1,len(f.enabled))
+            f.vm.run('TMP_OnTargetClick');f.ticks(62)
+            states.append((f.vm.g['TMP_Count'],f.vm.g['TMP_TargetKind'][0],f.vm.g['TMP_Remaining'][0],f.timer_running))
+            self.assertFalse(f.enabled);self.assertTrue(all(e.destroyed for e in f.effects))
+        self.assertEqual([states[0]]*3,states)
+
+    def test_repeated_pings_return_to_idle_without_new_trigger_or_timer_handles(self):
+        handles=tuple(self.vm.g['TMP_TargetTrigger'][p] for p in range(10));registrations=len(self.registrations)
+        def no_alloc(*a):self.fail('Input allocated a persistent handle')
+        self.vm.g.update(CreateTrigger=no_alloc,DestroyTrigger=no_alloc,CreateTimer=no_alloc)
+        for _ in range(60):
+            self.choose(2);self.vm.run('TMP_OnTargetClick');self.ticks(62)
+            self.assertFalse(self.timer_running);self.assertFalse(self.enabled)
+            self.assertEqual(0,self.vm.g['TMP_Count']);self.assertEqual(0,self.vm.g['TMP_Remaining'][0])
+        self.assertEqual(handles,tuple(self.vm.g['TMP_TargetTrigger'][p] for p in range(10)))
+        self.assertEqual(registrations,len(self.registrations))
+        self.assertTrue(all(e.destroyed for e in self.effects));self.assertTrue(all(t.destroyed for t in self.tags))
+
+    def test_no_mouse_sampling_for_open_frames_or_active_marks(self):
+        def forbidden(*a):self.fail('Z sampled the cursor/buttons')
+        self.vm.g.update(BlzGetMouseScreenPosX=forbidden,BlzGetMouseScreenPosY=forbidden,BlzIsMouseButtonPressed=forbidden)
+        self.vm.run('TMP_OnKey');self.choose(1);self.vm.run('TMP_OnTargetClick');self.ticks(62)
+        self.assertFalse(self.timer_running)
+
+    def test_cooldown_prevents_arming_but_all_five_orders_keep_distinct_models(self):
+        self.send(1);self.choose(2);self.assertFalse(self.enabled)
+        for kind in range(2,6):self.sender=kind-1;self.send(kind)
         self.assertEqual(5,len({e.model for e in self.effects[::2]}))
-
-    def test_mouse_move_exists_only_while_the_key_is_held(self):
-        moves = lambda: [r for r in self.registrations if 'EVENT_PLAYER_MOUSE_MOVE' in r]
-        self.assertFalse(moves())
-        self.vm.run('TMP_OnKey')
-        self.assertEqual(1,len(moves()))
-        self.assertIsNotNone(self.vm.g['TMP_MoveTrigger'][self.sender])
-        self.key_down = False
-        self.vm.run('TMP_OnKey')
-        self.assertIsNone(self.vm.g['TMP_MoveTrigger'][self.sender])
-
-    def test_lost_release_does_not_lock_the_wheel(self):
-        self.vm.run('TMP_OnKey')
-        self.key = 'esc'
-        self.vm.run('TMP_OnKey')
-        self.assertFalse(self.vm.g['TMP_Open'])
-        self.key = 'Z'
-        self.vm.run('TMP_OnKey')        # auto-repeat right after Esc: stays closed
-        self.assertFalse(self.vm.g['TMP_Open'])
-        self.ticks(20)                  # release never arrived (chat / focus)
-        self.vm.run('TMP_OnKey')
-        self.assertTrue(self.vm.g['TMP_Open'])
-
-    def test_held_key_repeat_does_not_reopen_after_click(self):
-        self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
-        self.screen_x = 560
-        self.mousePressed = True
-        self.vm.run('TMP_PollMouse')
-        self.assertFalse(self.vm.g['TMP_Open'])
-        self.assertEqual(1,len(self.sync))
-        self.vm.run('TMP_OnKey')
-        self.assertFalse(self.vm.g['TMP_Open'])
-        self.key_down = False
-        self.vm.run('TMP_OnKey')
-        self.key_down = True
-        self.mousePressed = False
-        self.vm.run('TMP_OnKey')
-        self.assertTrue(self.vm.g['TMP_Open'])
-
-    def test_release_commits_hover_once_and_sector_labels_stay_hidden(self):
-        self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
-        self.screen_x = 560
-        self.vm.run('TMP_UpdateHover')
-        self.assertEqual(2,self.vm.g['TMP_Hover'])
-        self.assertTrue(all(not self.frames[self.vm.g['TMP_Name'][k],'visible'] for k in range(1,6)))
-        self.key_down = False
-        self.vm.run('TMP_OnKey')
-        self.assertEqual([('WOSP','2;200;350')],self.sync)
-        self.vm.run('TMP_OnKey')
-        self.assertEqual(1,len(self.sync))
-        self.assertFalse(self.vm.g['TMP_Open'])
 
     def test_invalid_action_point_and_observer_are_rejected(self):
         for kind,x,y in [(0,200,350),(6,200,350),(1,1001,350),(1,200,-1001)]:
@@ -346,7 +354,6 @@ class TeamMapPings(unittest.TestCase):
         self.sender = 1
         before = dict(self.frames)
         self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_PollMouse')
         self.frame = self.vm.g['TMP_Button'][1]
         self.event = 'enter'
         self.vm.run('TMP_OnFrame')
@@ -416,17 +423,12 @@ class TeamMapPings(unittest.TestCase):
         self.assertFalse(self.tags[-2].visible)
         self.sender = 0
         self.vm.run('TMP_OnKey')
-        self.vm.run('TMP_OnMouseMove')
         self.assertTrue(self.vm.g['TMP_Open'])
-        self.screen_x = 560
-        self.mousePressed = True
-        self.vm.run('TMP_PollMouse')
-        self.assertEqual(1,len(self.sync))
-        self.data = self.sync[0][1]
-        self.vm.run('TMP_OnSync')
+        self.choose(2);self.vm.run('TMP_OnTargetClick')
         self.assertTrue(self.effects[-2].model)
         self.assertTrue(self.tags[-2].visible)
         self.assertTrue(self.frames[self.vm.g['TMP_MiniIcon'][0],'visible'])
+        self.frame=self.vm.g['TMP_Toggle'];self.event='click'
         self.vm.run('TMP_OnFrame')
         self.assertFalse(self.vm.g['TMP_Muted'])
         self.assertTrue(self.tags[0].visible)  # Existing delivered ping can resume.

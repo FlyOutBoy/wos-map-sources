@@ -13,7 +13,6 @@ call RemoveUnit(atbase_cond[i])
 set atbase_cond[i] = null
     endif
 call UnitResetCooldown(c)
-call KM_Cancel(c)
 call UnitRemoveAbility(c,'BTLF')
 set c = null
 endfunction
