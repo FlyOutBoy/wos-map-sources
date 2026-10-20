@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
-    [string]$MapDirectory
+    [string]$MapDirectory,
+    [switch]$ValidateOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -108,6 +109,18 @@ try {
         Require-File -Path (Join-Path $temporaryObjects $expectedOutput) -Description "Converted $expectedOutput"
     }
     Require-File -Path (Join-Path $temporaryRaw "workspace-meta\manifest.json") -Description "Converted object metadata"
+
+    if ($ValidateOnly) {
+        Write-Host "OBJECT DATA IMPORT VALIDATION OK (project unchanged)" -ForegroundColor Green
+        exit 0
+    }
+
+    # Keep project-only allocation/catalog JSON files; these are not map objects.
+    foreach ($file in (Get-ChildItem -LiteralPath $objectDataDirectory -File -ErrorAction SilentlyContinue)) {
+        if ($file.Name -notin $expectedOutputs) {
+            Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $temporaryObjects $file.Name)
+        }
+    }
 
     $backupDirectory = Join-Path $backupRoot "import-$stamp"
     New-Item -ItemType Directory -Path $backupDirectory -Force | Out-Null

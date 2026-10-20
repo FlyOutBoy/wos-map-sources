@@ -1,80 +1,170 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_CastCheck_AHK_PIDOR = StringHash("ahk pidor")
+        integer SH_CastCheck_HARI_G_3 = StringHash("hari g 3")
+        integer SH_CastCheck_MANA_FIX_ABILITY = StringHash("mana fix ability")
+        integer SH_CastCheck_MANA_FIX_BEFORE = StringHash("mana fix before")
+        integer SH_CastCheck_MANA_FIX_COST = StringHash("mana fix cost")
+        integer SH_CastCheck_MANA_FIX_SLOT = StringHash("mana fix slot")
+        integer SH_CastCheck_MORPH_T = StringHash("morph t")
+endglobals
 globals 
 real ahk_delay = 0.06
 endglobals
 globals
-    timer ManaFixTimer = CreateTimer()
     integer ManaFixCount = 0
-
+    boolean ManaFixListenerOn = false
     unit array ManaFixUnit
-    integer array ManaFixId
-    integer array ManaFixCost
+    real array ManaFixCost
     real array ManaFixBefore
+    integer array ManaFixTicks
 endglobals
 
-function ManaFix_Check takes nothing returns nothing
-    local integer i = 1
-    local unit c
-    local real mana
-    local real before
-    local real spent
-    local real cost
-
-    loop
-        exitwhen i > ManaFixCount
-
-        set c = ManaFixUnit[i]
-
-        if c != null and GetUnitTypeId(c) != 0 then
-
-            set mana   = GetUnitState(c,UNIT_STATE_MANA)
-            set before = ManaFixBefore[i]
-            set cost   = I2R(ManaFixCost[i])
-
-            set spent = before - mana
-
-            // Warcraft вообще не снял нужную ману
-            if spent < cost - 1.00 then
-                call SetUnitState(c,UNIT_STATE_MANA,mana-(cost-spent))
-            endif
-
-        endif
-
-        set ManaFixUnit[i] = null
-        set ManaFixId[i] = 0
-        set ManaFixCost[i] = 0
-        set ManaFixBefore[i] = 0.
-
-        set i = i + 1
-    endloop
-
-    set ManaFixCount = 0
-    set c = null
+function ManaFix_ClearSnapshot takes unit c returns nothing
+    local integer h = GetHandleId(c)
+    call RemoveSavedInteger(hs,h,SH_CastCheck_MANA_FIX_ABILITY)
+    call RemoveSavedInteger(hs,h,SH_CastCheck_MANA_FIX_COST)
+    call RemoveSavedReal(hs,h,SH_CastCheck_MANA_FIX_BEFORE)
 endfunction
 
+// SPELL_CAST is after preparation, immediately before the native payment.
+// CHANNEL is too early: mana can regenerate during a long cast point.
+function ManaFix_Snapshot takes nothing returns boolean
+    local unit c = GetSpellAbilityUnit()
+    local integer id = GetSpellAbilityId()
+    local integer level
+    local integer cost = 0
+    if not IsUnitType(c,UNIT_TYPE_HERO) then
+        set c = null
+        return false
+    endif
+    set level = GetUnitAbilityLevel(c,id)-1
+    call ManaFix_ClearSnapshot(c)
+    if level >= 0 then
+        set cost = BlzGetAbilityIntegerLevelField(GetSpellAbility(),ABILITY_ILF_MANA_COST,level)
+        if cost > 0 then
+            call SaveInteger(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_ABILITY,id)
+            call SaveInteger(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_COST,cost)
+            call SaveReal(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_BEFORE,GetUnitState(c,UNIT_STATE_MANA))
+        endif
+    endif
+    set c = null
+    return false
+endfunction
+
+function ManaFix_EndCast takes nothing returns boolean
+    call ManaFix_ClearSnapshot(GetSpellAbilityUnit())
+    return false
+endfunction
+
+function ManaFix_ObserveScripts takes unit c, integer slot returns nothing
+    set ManaFixBefore[slot] = ManaFixBefore[slot]+LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
+    call RemoveSavedReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
+endfunction
+
+function ManaFix_Check takes nothing returns boolean
+    local integer i = ManaFixCount
+    local integer last
+    local unit c
+    local real mana
+    local real spent
+    local real missing
+    loop
+        exitwhen i <= 0
+        set ManaFixTicks[i] = ManaFixTicks[i]-1
+        if ManaFixTicks[i] <= 0 then
+            set c = ManaFixUnit[i]
+            call ManaFix_ObserveScripts(c,i)
+            if GetUnitTypeId(c) != 0 and GetWidgetLife(c) > 0.405 then
+                set mana = GetUnitState(c,UNIT_STATE_MANA)
+                set spent = RMaxBJ(0.0,ManaFixBefore[i]-mana)
+                set missing = RMaxBJ(0.0,ManaFixCost[i]-spent)
+                // Allow one mana of regen/float noise after a delayed payment.
+                if spent > 0.01 and missing <= 1.00 then
+                    set missing = 0.0
+                endif
+                // Never charge more than the unpaid cost, even after mana gain.
+                if missing > 0.01 then
+                    call SetUnitState(c,UNIT_STATE_MANA,RMaxBJ(0.0,mana-missing))
+                endif
+            endif
+            call RemoveSavedInteger(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_SLOT)
+            call RemoveSavedReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
+            set last = ManaFixCount
+            if i != last then
+                set ManaFixUnit[i] = ManaFixUnit[last]
+                set ManaFixCost[i] = ManaFixCost[last]
+                set ManaFixBefore[i] = ManaFixBefore[last]
+                set ManaFixTicks[i] = ManaFixTicks[last]
+                call SaveInteger(hs,GetHandleId(ManaFixUnit[i]),SH_CastCheck_MANA_FIX_SLOT,i)
+            endif
+            set ManaFixUnit[last] = null
+            set ManaFixCost[last] = 0.0
+            set ManaFixBefore[last] = 0.0
+            set ManaFixTicks[last] = 0
+            set ManaFixCount = last-1
+            if ManaFixCount == 0 then
+                call GearTimer03Release()
+            endif
+        endif
+        set i = i-1
+    endloop
+    set c = null
+    return false
+endfunction
+
+// Called at SPELL_EFFECT, before ItemsCast and all hero handlers/refunds.
 function ManaFix_Add takes unit c, integer id returns nothing
     local integer h = GetHandleId(c)
-    local integer cost
-
-    // Snapshot должен относиться именно к этой способности
-    if LoadInteger(hs,h,StringHash("mana fix ability")) != id then
+    local integer slot = LoadInteger(hs,h,SH_CastCheck_MANA_FIX_SLOT)
+    local real mana = GetUnitState(c,UNIT_STATE_MANA)
+    local real cost
+    local real spent
+    local real missing
+    if slot > 0 then
+        call ManaFix_ObserveScripts(c,slot)
+    endif
+    if LoadInteger(hs,h,SH_CastCheck_MANA_FIX_ABILITY) != id then
         return
     endif
-
-    set cost = LoadInteger(hs,h,StringHash("mana fix cost"))
-
-    if cost <= 0 then
+    set cost = I2R(LoadInteger(hs,h,SH_CastCheck_MANA_FIX_COST))
+    set spent = RMaxBJ(0.0,LoadReal(hs,h,SH_CastCheck_MANA_FIX_BEFORE)-mana)
+    call ManaFix_ClearSnapshot(c)
+    if slot > 0 then
+        // Payment of another spell cannot also pay an earlier missing cost.
+        set ManaFixCost[slot] = RMaxBJ(0.0,ManaFixCost[slot]-RMaxBJ(0.0,ManaFixBefore[slot]-spent-mana))
+        set ManaFixBefore[slot] = mana
+    endif
+    set missing = RMaxBJ(0.0,cost-spent)
+    if missing <= 0.01 then
         return
     endif
+    if slot == 0 then
+        set ManaFixCount = ManaFixCount+1
+        set slot = ManaFixCount
+        set ManaFixUnit[slot] = c
+        set ManaFixCost[slot] = 0.0
+        set ManaFixBefore[slot] = mana
+        call RemoveSavedReal(hs,h,SH_MANA_FIX_SCRIPT_DELTA)
+        call SaveInteger(hs,h,SH_CastCheck_MANA_FIX_SLOT,slot)
+        if not ManaFixListenerOn then
+            set ManaFixListenerOn = true
+            call TriggerAddCondition(GearTimer03Listeners,Condition(function ManaFix_Check))
+        endif
+        if ManaFixCount == 1 then
+            call GearTimer03Acquire()
+        endif
+    endif
+    set ManaFixCost[slot] = ManaFixCost[slot]+missing
+    // Two boundaries ensure at least 0.03 s even when added just before a tick.
+    set ManaFixTicks[slot] = 2
+endfunction
 
-    set ManaFixCount = ManaFixCount + 1
-
-    set ManaFixUnit[ManaFixCount] = c
-    set ManaFixId[ManaFixCount] = id
-    set ManaFixCost[ManaFixCount] = cost
-    set ManaFixBefore[ManaFixCount] = LoadReal(hs,h,StringHash("mana fix before"))
-
-    if ManaFixCount == 1 then
-        call TimerStart(ManaFixTimer,0.01,false,function ManaFix_Check)
+function ManaFix_AfterEffects takes unit c, real before, real scriptedBefore returns nothing
+    local integer slot = LoadInteger(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_SLOT)
+    if slot > 0 then
+        // Preserve synchronous ability refunds and scripted costs.
+        set ManaFixBefore[slot] = ManaFixBefore[slot]+GetUnitState(c,UNIT_STATE_MANA)-before-(LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)-scriptedBefore)
     endif
 endfunction
 function DisableMoveRoot takes unit c, integer id returns boolean 
@@ -101,7 +191,7 @@ endif
 if id == DarkShikiQ2_ID or id == Erza4W_ID or id == RimuruW2_ID or id == AstaW2_ID or id == AstaW_ID  or id == TojiE_ID or id == AstaE_ID or id == BarraganE2_ID or id == StarrkE2_ID  then 
  set b = false
 endif
-if (id == BambiettaW_ID and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) > 0) then 
+if (id == BambiettaW_ID and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_CastCheck_MORPH_T) > 0) then 
  set b = false
 endif
 if idc == Raiden_ID then 
@@ -121,6 +211,10 @@ if GetUnitTypeId(c) == Kenjaku_ID and id == KenjakuG_ID then
 set check = 1
 endif
 if GetUnitTypeId(c) == Patriot_ID and id == PatriotE_ID then
+set check = 1
+endif
+// Alter Saber F is a toggle: must switch in base too, otherwise the On glow never goes off.
+if id == AlterSaberF_ID or id == AlterSaberF_Active_ID then
 set check = 1
 endif
 if id == 'A0BZ' then
@@ -149,26 +243,33 @@ function CastHero_Conditions takes nothing returns boolean
     local integer id = GetSpellAbilityId()
     local real rr = 0
     local real cdReduce = 0
-    local boolean b = DisableMoveRoot(c,id)
+    local boolean b = true
+    local integer heroType = GetUnitTypeId(c)
     local integer i2 = 0
+    local real manaBeforeEffects = 0.0
+    local real manaScriptBeforeEffects = 0.0
     local integer i = GetPlayerId(GetOwningPlayer(c))
-    local integer cd = LoadInteger(hs,GetHandleId(Player(i)),StringHash("ahk pidor"))    
+    // Dummy casters (stun/slow/silence dummies...) belong to players too: leave at once.
+    if not IsUnitType(c, UNIT_TYPE_HERO) then
+        set c = null
+        set td = null
+        return false
+    endif
+    set b = DisableMoveRoot(c,id)
 if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
 //call SaveInteger(hs,GetHandleId(Player(i)),StringHash("ahk pidor"),1)
 //call MyFlush(GetHandleId(Player(i)),StringHash("ahk pidor"),0,ahk_delay )
     if (CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and CheckCoordsInRect(gg_rct_Cage,GetUnitX(c),GetUnitY(c)) == false) or SpellExtension(c,id) then 
-    call ItemsCast(c,td,x,y,id)
-/*set rr = BlzGetUnitAbilityCooldownRemaining(c,id)
-if rr <= 0.001 then
     call ManaFix_Add(c,id)
-endif
-*/
+    set manaBeforeEffects = GetUnitState(c,UNIT_STATE_MANA)
+    set manaScriptBeforeEffects = LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
+    call ItemsCast(c,td,x,y,id)
 call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1))
 
     if GearSpellDispatch() then
         set check = 1
     else
-    if GetUnitTypeId(c) == Raiden_ID then 
+    if heroType == Raiden_ID then 
     if id == RaidenQ_ID then 
     call RaidenQ_Start(c,x,y)
     set check = 1
@@ -192,7 +293,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set check = 1
     endif
     endif
-    if GetUnitTypeId(c) == Natsu_ID then 
+    if heroType == Natsu_ID then 
     if id == NatsuQ_ID then
     set check = 1
     call NatsuQ_Start(c,x,y)
@@ -222,7 +323,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call NatsuFR_Start(c,td)
     endif
     endif
-     if GetUnitTypeId(c) == Gojo_ID then 
+     if heroType == Gojo_ID then 
     if id == GojoQ_ID then  
     set check = 1
     call GojoQ_Start(c,x,y)
@@ -263,7 +364,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call GojoRR_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Tomioka_ID then 
+    if heroType == Tomioka_ID then 
     if id == TomiokaQ_ID then 
     set check = 1
     call TomiokaQ_Start(c,td)
@@ -284,7 +385,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call TomiokaF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == AlterSaber_ID then 
+    if heroType == AlterSaber_ID then 
     if id == AlterSaberQ_ID then 
     set check = 1
     call AlterSaberQ_Start(c,x,y)
@@ -306,12 +407,14 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     elseif id == AlterSaberT_ID then 
     set check = 1
     call AlterSaberT_Start(c,x,y)
+    elseif id == AlterSaberF_ID or id == AlterSaberF_Active_ID then
+    call AlterSaberF_Toggle(c)
     elseif id == AlterSaberRR_ID then 
     set check = 1
     call AlterSaberRR_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Erza_ID then 
+    if heroType == Erza_ID then 
     if id == ErzaQ_ID then 
     call ErzaQ_Start(c)
     elseif id == ErzaW_ID then 
@@ -437,7 +540,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call Erza7T_Start(c,td)
     endif
     endif
-    if GetUnitTypeId(c) == Kyoraku_ID then 
+    if heroType == Kyoraku_ID then 
     if id == KyorakuQ_ID then 
     set check = 1
     call KyorakuQ_Start(c,x,y)
@@ -453,6 +556,9 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     elseif id == KyorakuE_ID then 
     set check = 1
     call KyorakuE_Start(c,x,y)
+    elseif id == KyorakuE4_ID then
+    set check = 1
+    call KyorakuE4_Start(c)
     elseif id == KyorakuE2_ID then 
     set check = 1
     call KyorakuWE_Start(c,td)
@@ -477,7 +583,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     
     endif
     endif
-    if GetUnitTypeId(c) == Kenjaku_ID then 
+    if heroType == Kenjaku_ID then 
     if id == KenjakuQ_ID then 
     set check = 1
     call KenjakuQ_Start(c)
@@ -524,7 +630,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call KenjakuG_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Inori_ID then 
+    if heroType == Inori_ID then 
     if id == InoriQ_ID then 
     call InoriQ_Start(c,x,y)
     set check = 1
@@ -572,7 +678,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call InoriF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Akainu_ID then 
+    if heroType == Akainu_ID then 
     if id == AkainuQ_ID then 
     call AkainuQ_Start(c,td)
     set check = 1
@@ -590,7 +696,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call AkainuT_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Okarun_ID then 
+    if heroType == Okarun_ID then 
     if id == OkarunQ_ID then 
     call OkarunQ_Start(c,x,y)
     set check = 1
@@ -608,7 +714,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call OkarunT_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Neuvillette_ID then 
+    if heroType == Neuvillette_ID then 
     if id == NeuvilletteQ_ID then 
     call NeuvilletteQ_Start(c,x,y)
     set check = 1
@@ -626,7 +732,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call NeuvilletteT_Start(c)
     endif
     endif
-     if GetUnitTypeId(c) == Tsuna_ID then 
+     if heroType == Tsuna_ID then 
     if id == TsunaQ_ID then 
     call TsunaQ_Start(c,x,y)
     set check = 1
@@ -674,7 +780,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set check = 1
     endif
     endif
-    if GetUnitTypeId(c) == BazzB_ID then 
+    if heroType == BazzB_ID then 
     if id == BazzBQ_ID then 
     call BazzBQ_Start(c,x,y)
     set check = 1
@@ -692,7 +798,8 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set check = 1
     endif
     endif
-    if GetUnitTypeId(c) == Takeshi_ID then 
+    if heroType == Takeshi_ID then 
+    call TakeshiCambio_MarkCast(c)
     if id == TakeshiQ_ID then 
     set check = 1
     call TakeshiQ_Start(c,x,y)
@@ -745,7 +852,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call TakeshiF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == DarkShiki_ID then 
+    if heroType == DarkShiki_ID then 
     if id == DarkShikiQ_ID then 
     set check = 1
     call DarkShikiQ_Start(c,x,y)
@@ -763,13 +870,13 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call DarkShikiR_Start(c,x,y)
     elseif id == DarkShikiT_ID then 
     set check = 1
-    call DarkShikiT_Start(c,td)
+    call DarkShikiT_Start(c,x,y)
     elseif id == DarkShikiG_ID then 
     set check = 1
     call DarkShikiG_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Rimuru_ID then 
+    if heroType == Rimuru_ID then 
     if id == RimuruQ_ID then 
     call RimuruQ_Start(c,x,y)
     set check = 1
@@ -830,9 +937,12 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     elseif id == RimuruG3_ID then 
     set check = 1
     call Rimuru3G_Start(c,x,y)
+    elseif id == RimuruG3_2_ID then
+    set check = 1
+    call Rimuru2R_Start(c,x,y)
     endif
     endif    
-     if GetUnitTypeId(c) == Harribel_ID then 
+     if heroType == Harribel_ID then 
     if id == HarribelQ_ID then 
     set check = 1
     call HarribelQ_Start(c,x,y)
@@ -856,7 +966,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call HarribelR2_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Barragan_ID then 
+    if heroType == Barragan_ID then 
     if id == BarraganQ_ID then 
     set check = 1
     call BarraganQ_Start(c,x,y)
@@ -883,7 +993,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call BarraganT2_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Starrk_ID then 
+    if heroType == Starrk_ID then 
     if id == StarrkQ_ID then 
     set check = 1
     call StarrkQ_Start(c,x,y)
@@ -915,7 +1025,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call StarrkF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Alucard_ID then 
+    if heroType == Alucard_ID then 
     if id == AlucardQ_ID then 
     set check = 1
     call AlucardQ_Start(c,x,y)
@@ -942,7 +1052,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call AlucardT2_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Mahoraga_ID then 
+    if heroType == Mahoraga_ID then 
     if id == MahoragaQ_ID then // Barragan T2 Ability
     set check = 1
     call MahoragaQ_Start(c,td)
@@ -975,7 +1085,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call MahoragaF_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Kirito_ID then 
+    if heroType == Kirito_ID then 
     if id == KiritoQ_ID then // Barragan T2 Ability
     set check = 1
     call KiritoQ_Start(c,x,y)
@@ -1008,7 +1118,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call KiritoG2_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Bambietta_ID then 
+    if heroType == Bambietta_ID then 
     if id == BambiettaQ_ID then // Barragan T2 Ability
     set check = 1
     call BambiettaQ_Start(c,x,y)
@@ -1029,7 +1139,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call BambiettaT2_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Asta_ID then 
+    if heroType == Asta_ID then 
     if id == AstaQ_ID then // Barragan T2 Ability
     set check = 1
     call AstaQ_Start(c,x,y)
@@ -1062,7 +1172,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call AstaF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Patriot_ID then 
+    if heroType == Patriot_ID then 
     if id == PatriotQ_ID then // Barragan T2 Ability
     set check = 1
     call PatriotQ_Start(c,x,y)
@@ -1086,7 +1196,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call PatriotF_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Brandish_ID then 
+    if heroType == Brandish_ID then 
     if id == BrandishQ_ID then // Barragan T2 Ability
     set check = 1
     call BrandishQ_Start(c,x,y)
@@ -1108,7 +1218,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     endif
     
-    if GetUnitTypeId(c) == Laxus_ID then 
+    if heroType == Laxus_ID then 
     if id == LaxusQ_ID then // Barragan T2 Ability
     set check = 1
     call LaxusQ_Start(c,x,y)
@@ -1138,7 +1248,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call LaxusG_Start(c)
     endif
     endif
-    if GetUnitTypeId(c) == Ainz_ID then 
+    if heroType == Ainz_ID then 
     if id == AinzQ_ID then // Barragan T2 Ability
     set check = 1
     call AinzQ_Start(c,x,y)
@@ -1186,7 +1296,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call AinzTR_Start(c,x,y)
     endif
     endif
-    if GetUnitTypeId(c) == Frieren_ID then 
+    if heroType == Frieren_ID then 
     if id == FrierenQ_ID then // Barragan T2 Ability
     set check = 1
     call FrierenQ_Start(c,x,y)
@@ -1222,7 +1332,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     call FrierenT2_Start(c,x,y)
     endif
     endif
-     if GetUnitTypeId(c) == Toji_ID then 
+     if heroType == Toji_ID then 
     if id == TojiQ_ID then // Barragan T2 Ability
     set check = 1
     call TojiQ_Start(c,td)
@@ -1256,7 +1366,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     endif
     
-     if GetUnitTypeId(c) == Milim_ID then 
+     if heroType == Milim_ID then 
     if id == MilimQ_ID then // Barragan T2 Ability
     set check = 1
     call MilimQ_Start(c,x,y)
@@ -1284,7 +1394,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     
     
     static if LIBRARY_CrocodileSpells then
-    if GetUnitTypeId(c) == Crocodile_ID then
+    if heroType == Crocodile_ID then
     if id == CrocodileQ_ID then
     if CrocodileQ_Start(c,x,y) then
     set check = 1
@@ -1318,8 +1428,29 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     endif
     endif
+    static if LIBRARY_FrostnovaSpells then
+    if heroType == Frostnova_ID then
+    if id == FrostnovaQ_ID then
+    if FrostnovaQ_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == FrostnovaW_ID then
+    set check = 1
+    call FrostnovaW_Start(c,x,y)
+    elseif id == FrostnovaE_ID then
+    set check = 1
+    call FrostnovaE_Start(c)
+    elseif id == FrostnovaR_ID then
+    set check = 1
+    call FrostnovaR_Start(c,x,y)
+    elseif id == FrostnovaT_ID then
+    set check = 1
+    call FrostnovaT_Start(c)
+    endif
+    endif
+    endif
     endif // shared dispatch
-    if GetUnitTypeId(c) == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then
+    if heroType == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then
     call StarrkPas(c)
     endif
     if id != FrierenG_ID and check == 1 then
@@ -1329,30 +1460,40 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set i2 = 0
     set cdReduce = 0
     set rr = BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)
-    if check == 1 and GetUnitTypeId(c) == Toji_ID and GetHeroLevel(c) >= 35 then
+    if check == 1 and heroType == Toji_ID and GetHeroLevel(c) >= 35 then
     set cdReduce = cdReduce + TojiG_CdReduce/100
     set i2 = 1
     endif
-    if check == 1 and IsItemInInventory(c,'I011') > 0 and GetMainStatInt(c) then
+    if check == 1 and HasCachedItem(c,'I011') > 0 and GetMainStatInt(c) then
     set cdReduce = cdReduce + OkarunEggReduceCD/100
     set i2 = 1
     endif
-    if check == 1 and rr >= 3 and BlzGetUnitAbilityCooldownRemaining(c,'A0BZ') == 0 and GetMainStatAgi(c) and IsItemInInventory(c,'I024') > 0 then
+    if check == 1 and rr >= 3 and BlzGetUnitAbilityCooldownRemaining(c,'A0BZ') == 0 and GetMainStatAgi(c) and HasCachedItem(c,'I024') > 0 then
     set cdReduce = cdReduce + PrisonRealmReduceCD/100
     set i2 = 1
     call BlzStartUnitAbilityCooldown(c,'A0BZ',PrisonRealmCD)
     endif
-    if check == 1 and LoadInteger(hs,GetHandleId(c),StringHash("hari g 3")) == 1 then
+    if check == 1 and LoadInteger(hs,GetHandleId(c),SH_CastCheck_HARI_G_3) == 1 then
     set cdReduce = cdReduce + 0.10
     set i2 = 1
     endif
     if cdReduce > 1 then
     set cdReduce = 1
     endif
-    if check == 1 and i2 == 1 then
+    // Brandish instant orders may cancel the native cooldown after SPELL_EFFECT.
+    // Commit it on the existing delayed CD path, including item/passive CDR.
+    if check == 1 and heroType == Brandish_ID then
+    call CD_EnsureStart(c,0.03,id,rr*(1-cdReduce))
+    elseif check == 1 and i2 == 1 then
     call CD_Start(c,0.03,id,rr*(1-cdReduce))
     endif
-    if check == 1 and IsItemInInventory(c,'I01K')>0  then
+    // Sacred Gear Booster: прок во время каста предмета (не способности героя) — КД этого предмета -N сек.
+    if check == 0 and SacredGearBooster_Proc then
+    call CD_Start(c,0.03,id,RMaxBJ(0.01,rr-SacredGearBooster_ItemCDReduce))
+    endif
+    call ManaFix_AfterEffects(c,manaBeforeEffects,manaScriptBeforeEffects)
+    set SacredGearBooster_Proc = false
+    if check == 1 and HasCachedItem(c,'I01K')>0  then
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_ice.mdl",c,"chest"))
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_a (396).mdl",c,"origin"))    
     call DecorRemove(c,GetUnitX(c),GetUnitY(c),650,50)
@@ -1364,7 +1505,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     set i2 = BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(c,id),ABILITY_ILF_MANA_COST,GetUnitAbilityLevel(c,id)-1)
     
     call MyAddMana(c,I2R(i2),0.03)
-    if b == false and IntegerCd(c,"cancel tooltip",3) then 
+    if b == false and IntegerCdKey(c, SH_ICD_CANCEL_TOOLTIP,3) then 
     call DisplayTimedTextToPlayer(Player(i),0,0,0.01,"|c00FF0000Can't use this ability while rooted!|r")
     endif
     endif
@@ -1377,6 +1518,14 @@ endfunction
 //===========================================================================
 function InitTrig_CastCheck takes nothing returns nothing
     local integer index = 0
+    local trigger manaCast = CreateTrigger()
+    local trigger manaEnd = CreateTrigger()
+    call TriggerRegisterAnyUnitEventBJ(manaCast,EVENT_PLAYER_UNIT_SPELL_CAST)
+    call TriggerAddCondition(manaCast,Condition(function ManaFix_Snapshot))
+    call TriggerRegisterAnyUnitEventBJ(manaEnd,EVENT_PLAYER_UNIT_SPELL_ENDCAST)
+    call TriggerAddCondition(manaEnd,Condition(function ManaFix_EndCast))
+    set manaCast = null
+    set manaEnd = null
     set gg_trg_CastCheck = CreateTrigger()
     call TriggerAddCondition( gg_trg_CastCheck, Condition( function CastHero_Conditions ) )
 endfunction

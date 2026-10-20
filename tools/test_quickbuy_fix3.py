@@ -27,9 +27,10 @@ class Fix3(previous.Fix2):
  def test_manual_component_restores_dependency_without_rebuying_removed_step(self):
   self.goals([5]);self.sync('D','0');self.tick();self.units[0]['inv'][1]=1;self.tick(3)
   self.assertEqual(self.adds,[(0,2),(0,3),(0,4),(0,5)]);self.assertEqual(self.gold[0],2630)
- def test_ready_second_group_runs_while_first_waits(self):
+ def test_queue_order_strict_second_group_waits_for_first(self):
+  # Strict queue: a later (cheaper) item never jumps ahead of a ready step waiting for gold.
   self.units[0]['inv'][0]=2;self.goals([3,6]);self.sync('D','0');self.gold[0]=100;self.tick(2)
-  self.assertEqual(self.adds,[(0,6)]);self.assertEqual(self.steps(),[3]);self.assertEqual(self.gold[0],40);self.assertEqual(self.vm.g['QB_Status'][0],1)
+  self.assertEqual(self.adds,[]);self.assertEqual(self.steps(),[3,6]);self.assertEqual(self.gold[0],100);self.assertEqual(self.vm.g['QB_Status'][0],1)
  def test_two_deleted_levels_do_not_double_charge(self):
   self.goals([5]);self.sync('D','0');self.sync('D','1');self.assertEqual(self.steps(),[2,4,5]);self.assertEqual(self.costs(),[200,80,190])
   self.tick(3);self.assertEqual(self.adds,[(0,2),(0,4),(0,5)]);self.assertEqual(self.gold[0],2530)

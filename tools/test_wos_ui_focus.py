@@ -156,6 +156,21 @@ class FocusContract(unittest.TestCase):
         self.assertEqual(0,vm.g['MV_View'])
         self.assertEqual([('enabled',self.frame,False),('enabled',self.frame,True)],self.calls)
 
+    def test_scoreboard_expand_opacity_and_close_reset_clicked_control(self):
+        for handler in ('WOS_STATS_OnExpand', 'WOS_STATS_OnOpacity', 'WOS_STATS_OnClose'):
+            with self.subTest(handler=handler):
+                self.calls.clear()
+                self.reset_fixture()
+                vm = load_source('Scoreboard.j')
+                vm.g.update(self.vm.g)
+                vm.g.update(END1=0, GetPlayerId=lambda p:p,
+                    WOS_STATS_UpdateForPlayer=lambda *a:None,
+                    WOS_STATS_SetOpen=lambda *a:None,
+                    WUI_ResetClickedButtonFocus=lambda:self.vm.run('WUI_ResetClickedButtonFocus'))
+                self.frame = handler + '-button'
+                vm.run(handler)
+                self.assertEqual([('enabled',self.frame,False),('enabled',self.frame,True)],self.calls)
+
     def test_passive_dynamic_controls_register_once_and_share_one_trigger(self):
         registry, registrations, triggers, actions = {}, [], [], []
         self.vm.g.update({

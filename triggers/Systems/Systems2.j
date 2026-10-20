@@ -1,4 +1,81 @@
-library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox
+library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox, WOSUI
+    globals
+        constant real HellBlaze_HealCutPerStack = 5.5
+        // VisionTimed dedupe: projectiles called it every 0.03 s, keeping ~60 live fog
+        // modifiers per ability. One shared game clock; last reveal per player.
+        private timer GearVisionClock = CreateTimer()
+        private boolean GearVisionClockStarted = false
+        private real array GearVisionX
+        private real array GearVisionY
+        private real array GearVisionRadius
+        private real array GearVisionExpire
+        private real array GearVisionMade
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_AHK_PIDOR = StringHash("ahk pidor")
+        private integer SH_ALUCARD_BULLET = StringHash("alucard bullet")
+        private integer SH_ASNODT_PAS = StringHash("AsNodt pas")
+        private integer SH_BRANDISH_E = StringHash("brandish e")
+        private integer SH_BRANDISH_G_ALLY = StringHash("brandish g ally")
+        private integer SH_CC_PROTECTION_OWNERS = StringHash("cc protection owners")
+        private integer SH_KS_SPELLSTACKS_RESETABILITY = StringHash("KS_SpellStacks_ResetAbility")
+        private integer SH_KS_SPELLSTACKS_RESETCOOLDOWN = StringHash("KS_SpellStacks_ResetCooldown")
+        private integer SH_KS_SPELLSTACKS_RESETUNIT = StringHash("KS_SpellStacks_ResetUnit")
+        private integer SH_MORPH_END = StringHash("morph_end")
+        private integer SH_STACK_COUNT = StringHash("stack_count")
+        private integer SH_TOJI_Q3 = StringHash("toji q3")
+        // Dynamic keys StringHash(prefix + I2S(n)) cached per (slot, n): see GearKey.
+        private hashtable GearKeyCache = InitHashtable()
+        constant integer GEAR_KEY_I2S = 0
+        constant integer GEAR_KEY_AHUI_SWAP = 1
+        constant integer GEAR_KEY_ABILITY_TIME = 2
+        constant integer GEAR_KEY_WATCH_ABILITY_TIME = 3
+        constant integer GEAR_KEY_SPELL_AND = 4
+        constant integer GEAR_KEY_DUMMY = 5
+        constant integer GEAR_KEY_FRIEREN_E_X = 6
+        constant integer GEAR_KEY_FRIEREN_E_Y = 7
+        constant integer GEAR_KEY_FULLREFUND = 8
+        constant integer GEAR_KEY_2ND_DAN = 9
+        constant integer GEAR_KEY_AINZ_PENDING_SWAP = 10
+        // IntegerCdKey keys (were StringHash(literal) inside IntegerCd on every call).
+        integer SH_ICD_CANCEL_TOOLTIP = StringHash("cancel tooltip")
+        integer SH_ICD_CD_ATK_SS = StringHash("cd atk ss")
+        integer SH_ICD_CD_EXP = StringHash("cd exp")
+        integer SH_ICD_CD_R_BUT = StringHash("cd r but")
+        integer SH_ICD_CD_S = StringHash("cd s")
+        integer SH_ICD_CD_SOG = StringHash("cd sog")
+        integer SH_ICD_CD_SOUND = StringHash("cd sound")
+        integer SH_ICD_CD_SOUND_TRAIN = StringHash("cd sound train")
+        integer SH_ICD_CD_START = StringHash("cd start")
+        integer SH_ICD_CD_WARNING = StringHash("cd warning")
+        integer SH_ICD_DMG_STOP_PUNCH = StringHash("dmg stop punch")
+        integer SH_ICD_ELEM_GAIN_CD = StringHash("elem gain cd")
+        integer SH_ICD_I02H_REFLECT_SFX = StringHash("I02H reflect sfx")
+        integer SH_ICD_MOVE_CD = StringHash("move cd")
+        integer SH_ICD_NATSU_MODE_RAIEN = StringHash("natsu mode raien")
+        integer SH_ICD_PAS_F = StringHash("pas f")
+        integer SH_ICD_RAIDEN_PAS = StringHash("raiden pas")
+        integer SH_ICD_RAIDEN_W_ATK_CD = StringHash("raiden w atk cd")
+        integer SH_ICD_RAIDEN_W_CD = StringHash("raiden w cd")
+        integer SH_ICD_RIMURU_F_CD = StringHash("rimuru f cd")
+        integer SH_ICD_ROUND_INSTANT_START_CD = StringHash("round instant start cd")
+        integer SH_ICD_R_SOUND = StringHash("r sound")
+        integer SH_ICD_SOUND_E = StringHash("sound e")
+        integer SH_ICD_SOUND_E_CD = StringHash("sound e cd")
+        integer SH_ICD_SOUND_F_ERZA_CD = StringHash("sound f erza cd")
+        integer SH_ICD_SOUND_T_CD = StringHash("sound t cd")
+        integer SH_ICD_T_CD = StringHash("t cd")
+    endglobals
+
+    // = StringHash(prefix + I2S(n)); the string is built and hashed once per (slot, n).
+    // One slot per prefix: never pass two different prefixes with the same slot.
+    function GearKey takes integer slot, string prefix, integer n returns integer
+        local integer v = LoadInteger(GearKeyCache, slot, n)
+        if v == 0 then
+            set v = StringHash(prefix + I2S(n))
+            call SaveInteger(GearKeyCache, slot, n, v)
+        endif
+        return v
+    endfunction
 globals
     framehandle array FrameCD_Icon
     framehandle array FrameCD_Cooldown
@@ -8,6 +85,7 @@ globals
     integer array SlotPosY
     timer AllyCD_Timer = CreateTimer()
 
+    integer SH_CROCODILE_T_CHANNEL = StringHash("crocodile t channel")
     integer ItemProcDamageDepth = 0
 
     // Перед входом в DamageBlock значение копируется в его локальную переменную.
@@ -32,8 +110,17 @@ globals
     // Optional listeners use the existing clock; no per-instance timers.
     trigger GearTimer03Listeners = CreateTrigger()
     trigger GearSpellListeners = CreateTrigger()
+    boolean GearSpellHasListeners = false
     boolean GearSpellHandled = false
+    integer GearDamageNextSource = 0
+    integer GearDamageActiveSource = 0
+    // Damage Stats instances of one ability (Q / EQ / TQ): key -> (0 base ability, 1 caption).
+    hashtable GearDamageVariants = InitHashtable()
+    // Local selection scan after a hero spell (StopSpellUnit*); contents never used synced.
+    group GearSelectScan = CreateGroup()
+    integer GearDamageVariantCount = 0
     trigger GearDamageListeners = CreateTrigger()
+    boolean GearDamageHasListeners = false
     unit GearDamageSource = null
     unit GearDamageTarget = null
     real GearDamageAmount = 0.0
@@ -42,6 +129,8 @@ globals
 
 
     hashtable hs = InitHashtable()
+    integer SH_MANA_FIX_ACTIVE = StringHash("mana fix slot")
+    integer SH_MANA_FIX_SCRIPT_DELTA = StringHash("mana fix script delta")
     unit array DummyPlayer
     integer FakeAbi_ID = 'A06H'
 endglobals
@@ -96,18 +185,82 @@ endfunction
         return count
     endfunction
 
-function MakeSound takes string s returns nothing
-        local sound snd
-        set s = s + ".mp3"
-        set snd = CreateSound(s, false, false, false, 0, 0, "DefaultEAXON")
-        if BankaiActive  then 
-        call SetSoundVolume( snd, 40 )
+    globals
+        // Sound pool: CreateSound decoded the mp3 on every cast (frame hitch per press).
+        // Each path keeps up to GEAR_SOUND_POOL handles reused round-robin. The choice
+        // never depends on playback state, so handle creation is identical on all clients.
+        private constant integer GEAR_SOUND_POOL = 3
+        private constant integer GEAR_SOUND_MAX = 8190
+        private hashtable GearSoundTable = InitHashtable()
+        private sound array GearSoundHandle
+        private integer array GearSoundNext
+        private integer GearSoundCount = 0
+    endglobals
+
+    // Returns a reusable stopped handle, or null (pool full / hash collision) -> caller creates one.
+    function GearSoundAcquire takes string path returns sound
+        local integer h = StringHash(path)
+        local integer base = LoadInteger(GearSoundTable, h, 0) - 1
+        local integer slot
+        if base < 0 then
+            if GearSoundCount + GEAR_SOUND_POOL > GEAR_SOUND_MAX then
+                return null
+            endif
+            set base = GearSoundCount
+            set GearSoundCount = GearSoundCount + GEAR_SOUND_POOL
+            call SaveInteger(GearSoundTable, h, 0, base + 1)
+            call SaveStr(GearSoundTable, h, 1, path)
+        elseif LoadStr(GearSoundTable, h, 1) != path then
+            return null
+        endif
+        set slot = base + GearSoundNext[base]
+        set GearSoundNext[base] = GearSoundNext[base] + 1
+        if GearSoundNext[base] >= GEAR_SOUND_POOL then
+            set GearSoundNext[base] = 0
+        endif
+        if GearSoundHandle[slot] == null then
+            set GearSoundHandle[slot] = CreateSound(path, false, false, false, 0, 0, "DefaultEAXON")
         else
-        call SetSoundVolume( snd, 127 )
+            call StopSound(GearSoundHandle[slot], false, false)
+        endif
+        return GearSoundHandle[slot]
+    endfunction
+
+    // Plays path (with extension) at volume 0..127; local volume handled by callers.
+    function GearSoundPlay takes string path, integer volume, boolean silentForOthers, player p returns nothing
+        local sound snd = GearSoundAcquire(path)
+        local boolean pooled = snd != null
+        if not pooled then
+            set snd = CreateSound(path, false, false, false, 0, 0, "DefaultEAXON")
+        endif
+        if silentForOthers then
+            call SetSoundVolume(snd, 0)
+            if GetLocalPlayer() == p then
+                call SetSoundVolume(snd, volume)
+            endif
+        else
+            call SetSoundVolume(snd, volume)
         endif
         call StartSound(snd)
-        call KillSoundWhenDone(snd)
+        if not pooled then
+            call KillSoundWhenDone(snd)
+        endif
         set snd = null
+    endfunction
+
+function MakeSound takes string s returns nothing
+        if BankaiActive  then
+            call GearSoundPlay(s + ".mp3", 40, false, null)
+        else
+            call GearSoundPlay(s + ".mp3", 127, false, null)
+        endif
+    endfunction
+    // Same as MakeSound with an explicit volume (0..127), for loud / bass-heavy files.
+    function MakeSoundVolume takes string s, integer volume returns nothing
+        if BankaiActive then
+            set volume = volume * 40 / 127
+        endif
+        call GearSoundPlay(s + ".mp3", volume, false, null)
     endfunction
 
  function AinzF_GetBuffStage takes unit whichUnit returns integer
@@ -134,13 +287,52 @@ function MakeSound takes string s returns nothing
         return AinzF_GetBuffStage(whichUnit) >= 4
     endfunction
 
+    // Sum of HP healing amplifiers (active heals in SetHpCurrent2, passive regen in HealAmp_Tick).
+    function GetHealAmp takes unit u returns real
+        local real amp = 0.00
+        if AinzF_HasActiveHealBuff(u) then
+            set amp = amp + 0.10
+        endif
+        if GetUnitAbilityLevel(u, ShunShunRikka_Buff_ID) > 0 then
+            set amp = amp + ShunShunRikka_HealAmp / 100.0
+        endif
+        return amp
+    endfunction
+
+    // Hell Blaze stacks (B01S..B02F): -5.5% healing per stack, also applied to passive HP regen.
+    function GetHellBlazeCut takes unit u returns real
+        if GetUnitAbilityLevel(u, 'B02F') > 0 then
+            return HellBlaze_HealCutPerStack * 7.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B02E') > 0 then
+            return HellBlaze_HealCutPerStack * 6.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B01W') > 0 then
+            return HellBlaze_HealCutPerStack * 5.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B01V') > 0 then
+            return HellBlaze_HealCutPerStack * 4.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B01U') > 0 then
+            return HellBlaze_HealCutPerStack * 3.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B01T') > 0 then
+            return HellBlaze_HealCutPerStack * 2.00 / 100.00
+        elseif GetUnitAbilityLevel(u, 'B01S') > 0 then
+            return HellBlaze_HealCutPerStack * 1.00 / 100.00
+        endif
+        return 0.00
+    endfunction
+
+    // Sum of mana restoration amplifiers (SetMpCurrent and passive mana regen).
+    function GetManaAmp takes unit u returns real
+        if GetUnitAbilityLevel(u, FrozenHeart_Buff_ID) > 0 then
+            return FrozenHeart_ManaAmp / 100.0
+        endif
+        return 0.00
+    endfunction
+
     function HealTT takes unit c,unit td, real r, real start_height returns nothing
     local real random1 = 80
     local real scale = 0.018
     local integer k = 0
     local real x = GetUnitX(td)
     local real y = GetUnitY(td)
-    local real random2 = GetRandomReal(0, 359) * bj_DEGTORAD
     local texttag t
     local boolean b = false 
     
@@ -187,7 +379,6 @@ function MakeSound takes string s returns nothing
     local integer k = 0
     local real x = GetUnitX(td)+75*Cos(180*bj_DEGTORAD)
     local real y = GetUnitY(td)+75*Sin(180*bj_DEGTORAD)
-    local real random2 = GetRandomReal(0, 359) * bj_DEGTORAD
     local texttag t
     local boolean b = false 
     if GetUnitState(td, UNIT_STATE_MANA) + r < GetUnitState(td, UNIT_STATE_MAX_MANA) then 
@@ -207,7 +398,7 @@ function MakeSound takes string s returns nothing
     call SetTextTagFadepoint(t, 0.45) // Р С”Р С•Р С–Р Т‘Р В° Р Р…Р В°РЎвЂЎР Р…Р ВµРЎвЂљ Р С—Р В»Р В°Р Р†Р Р…Р С• Р С‘РЎРѓРЎвЂЎР ВµР В·Р В°РЎвЂљРЎРЉ
     call SetTextTagPos(t, x , y, start_height) // Р С—Р С•Р В·Р С‘РЎвЂ Р С‘РЎРЏ (Р Р…Р В°Р С—РЎР‚Р С‘Р СР ВµРЎР‚ Р Р…Р В° РЎР‹Р Р…Р С‘РЎвЂљР Вµ)
     if r<0 then 
-    call SetTextTagText(t,"|c004272FF-" + I2S(R2I(r+0.5)), scale) // РЎРѓР В°Р С РЎвЂљР ВµР С”РЎРѓРЎвЂљ Р С‘ РЎР‚Р В°Р В·Р СР ВµРЎР‚
+    call SetTextTagText(t,"|c004272FF-" + I2S(R2I(-r+0.5)), scale) // РЎРѓР В°Р С РЎвЂљР ВµР С”РЎРѓРЎвЂљ Р С‘ РЎР‚Р В°Р В·Р СР ВµРЎР‚
     else
     call SetTextTagText(t,"|c004272FF+" + I2S(R2I(r+0.5)), scale) // РЎРѓР В°Р С РЎвЂљР ВµР С”РЎРѓРЎвЂљ Р С‘ РЎР‚Р В°Р В·Р СР ВµРЎР‚
     endif
@@ -236,30 +427,19 @@ function MakeSound takes string s returns nothing
 function SetHpCurrent2 takes unit c,unit td, real r returns nothing
     local integer i = GetPlayerId(GetOwningPlayer(c))
     local real hp
+    if td == null or IsUnitType(td, UNIT_TYPE_DEAD) then // no heals (or heal stats) on dead heroes
+        return
+    endif
     if GetUnitAbilityLevel(td,'B01Q')> 0 then 
         set r = r * (1-(DarkHolyGrail_HpRegenReduce/100))
     endif
-    if AinzF_HasActiveHealBuff(td) then
-            set r = r * 1.1
-        endif
+    if r > 0 then
+        set r = r * (1.00 + GetHealAmp(td))
+    endif
     if GetUnitAbilityLevel(td,'B00K')>0 then  // inori T virus
         set r = r *0.6
         endif
-    if GetUnitAbilityLevel(td,'B02F')> 0 then 
-    set r =r * 0.51
-    elseif GetUnitAbilityLevel(td,'B02E')> 0 then 
-    set r =r * 0.58
-    elseif GetUnitAbilityLevel(td,'B01W')> 0 then 
-    set r =r * 0.65
-    elseif GetUnitAbilityLevel(td,'B01V')> 0 then
-    set r =r * 0.72
-    elseif GetUnitAbilityLevel(td,'B01U')> 0 then
-    set r =r * 0.79
-    elseif GetUnitAbilityLevel(td,'B01T')> 0 then
-    set r =r * 0.86
-    elseif GetUnitAbilityLevel(td,'B01S')> 0 then
-    set r =r * 0.93
-    endif
+    set r = r * (1.00 - GetHellBlazeCut(td))
     // РЎР‚Р ВµР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р С—РЎР‚Р С‘РЎР‚Р С•РЎРѓРЎвЂљ РІР‚вЂќ Р Р…Р Вµ Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎР‹РЎвЂ°Р ВµР С–Р С• HP
     set hp = RMinBJ(r, GetUnitState(td, UNIT_STATE_MAX_LIFE) - GetUnitState(td, UNIT_STATE_LIFE))
     if CheckCoordsInRect(gg_rct_Base,GetUnitX(td),GetUnitY(td)) == false and hp> 0 then 
@@ -270,8 +450,20 @@ function SetHpCurrent2 takes unit c,unit td, real r returns nothing
     call SetUnitState(td, UNIT_STATE_LIFE, GetUnitState(td, UNIT_STATE_LIFE) + r)
 endfunction
 
+// Pending cast checks must distinguish scripted mana changes from native payment.
+function GearManaScriptChange takes unit c, real before returns nothing
+    local integer h = GetHandleId(c)
+    if LoadInteger(hs,h,SH_MANA_FIX_ACTIVE) > 0 then
+        call SaveReal(hs,h,SH_MANA_FIX_SCRIPT_DELTA,LoadReal(hs,h,SH_MANA_FIX_SCRIPT_DELTA)+GetUnitState(c,UNIT_STATE_MANA)-before)
+    endif
+endfunction
+
 function SetMpCurrent takes unit c, real r returns nothing
     local real mp
+    local real before = GetUnitState(c,UNIT_STATE_MANA)
+    if r > 0 then
+        set r = r * (1.00 + GetManaAmp(c))
+    endif
     if GetUnitAbilityLevel(c,'B00K')>0 then  // inori T virus
         set r = r *0.75
         endif
@@ -281,6 +473,7 @@ function SetMpCurrent takes unit c, real r returns nothing
         call HealMpTT(c,c,mp,150)
     endif
     call SetUnitState(c, UNIT_STATE_MANA, GetUnitState(c, UNIT_STATE_MANA) + r)
+    call GearManaScriptChange(c,before)
 endfunction
 
     function EffVision takes effect e, unit c returns nothing
@@ -342,8 +535,8 @@ function CreateAllyCDFrame_Slot takes integer pid, integer slot returns nothing
         set FrameCD_Cooldown[ctx] = BlzCreateFrameByType("SIMPLEFRAME", "AllyCD", origin, "2Cooldown", 0)
         call BlzFrameClearAllPoints(FrameCD_Cooldown[ctx])
         call BlzFrameSetAllPoints(FrameCD_Cooldown[ctx], origin)
-        call BlzFrameSetMinMaxValue(FrameCD_Cooldown[ctx], 0, 1)
-        call BlzFrameSetValue(FrameCD_Cooldown[ctx], 0)
+        call WUI_FrameSetMinMaxValue(FrameCD_Cooldown[ctx], 0, 1)
+        call WUI_FrameSetValue(FrameCD_Cooldown[ctx], 0)
         call BlzFrameSetVisible(FrameCD_Cooldown[ctx], false)
     endif
 endfunction
@@ -391,9 +584,9 @@ function Timer_UpdateAllyCD takes nothing returns nothing
                 set full = BlzGetUnitAbilityCooldown(u, FrameCD_AbilId[ctx], GetUnitAbilityLevel(u, FrameCD_AbilId[ctx]) - 1)
                 set left = BlzGetUnitAbilityCooldownRemaining(u, FrameCD_AbilId[ctx])
                 if full > 0 and left > 0 then
-                    call BlzFrameSetValue(FrameCD_Cooldown[ctx], left / full)
+                    call WUI_FrameSetValue(FrameCD_Cooldown[ctx], left / full)
                 else
-                    call BlzFrameSetValue(FrameCD_Cooldown[ctx], 0)
+                    call WUI_FrameSetValue(FrameCD_Cooldown[ctx], 0)
                 endif
             endif
             set slot = slot + 1
@@ -458,23 +651,31 @@ endfunction
 
 // Shared timer scheduler
 function GearCCProtected takes unit u returns boolean
-    return LoadInteger(hs, GetHandleId(u), StringHash("cc protection owners")) > 0
+    return LoadInteger(hs, GetHandleId(u), SH_CC_PROTECTION_OWNERS) > 0
 endfunction
 
 function GearCCProtect takes unit u, boolean add returns nothing
     local integer hid = GetHandleId(u)
-    local integer count = LoadInteger(hs, hid, StringHash("cc protection owners"))
+    local integer count = LoadInteger(hs, hid, SH_CC_PROTECTION_OWNERS)
     if add then
         set count = count + 1
     else
         set count = IMaxBJ(0, count - 1)
     endif
-    call SaveInteger(hs, hid, StringHash("cc protection owners"), count)
+    call SaveInteger(hs, hid, SH_CC_PROTECTION_OWNERS, count)
+endfunction
+
+function GearSpellAddListener takes code callback returns triggeraction
+    set GearSpellHasListeners = true
+    return TriggerAddAction(GearSpellListeners, callback)
 endfunction
 
 function GearSpellDispatch takes nothing returns boolean
     local boolean previous = GearSpellHandled
     local boolean handled
+    if not GearSpellHasListeners then
+        return false
+    endif
     set GearSpellHandled = false
     call TriggerExecute(GearSpellListeners)
     set handled = GearSpellHandled
@@ -484,13 +685,26 @@ endfunction
 
 // Reflected/nested damage must not overwrite the context of its caller.
 // Phase 1 is pure: it runs for both shield preview and final damage.
+function GearDamageAddListener takes code callback returns triggeraction
+    set GearDamageHasListeners = true
+    return TriggerAddAction(GearDamageListeners, callback)
+endfunction
+
 function GearDamageRun takes unit c, unit td, real amount, integer kind, integer phase returns real
-    local unit oldSource = GearDamageSource
-    local unit oldTarget = GearDamageTarget
-    local real oldAmount = GearDamageAmount
-    local integer oldType = GearDamageType
-    local integer oldPhase = GearDamagePhase
+    local unit oldSource
+    local unit oldTarget
+    local real oldAmount
+    local integer oldType
+    local integer oldPhase
     local real result
+    if not GearDamageHasListeners then
+        return amount
+    endif
+    set oldSource = GearDamageSource
+    set oldTarget = GearDamageTarget
+    set oldAmount = GearDamageAmount
+    set oldType = GearDamageType
+    set oldPhase = GearDamagePhase
     set GearDamageSource = c
     set GearDamageTarget = td
     set GearDamageAmount = amount
@@ -555,6 +769,9 @@ endfunction
 private struct KS_Flush
     private static integer array m
     private static integer MUI = -1
+    // Pending instance per (id, child_id): a repeat with the same value is redundant
+    // (the first one to fire sets it; the rest cancel on their next tick).
+    private static hashtable pending = InitHashtable()
     real r
     real rmax
     integer child_id
@@ -568,7 +785,7 @@ private struct KS_Flush
             exitwhen i > MUI
             set this = m[i]
             if r < rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0 // = RoundReal(r + 0.03, 3), r >= 0; no call per instance tick
                 if LoadInteger(hs, id, child_id) == value then
                     set r = 9999
                 endif
@@ -576,8 +793,12 @@ private struct KS_Flush
                 if r != 9999 then
                     call SaveInteger(hs, id, child_id, value)
                 endif
+                if LoadInteger(pending, id, child_id) == this then
+                    call RemoveSavedInteger(pending, id, child_id)
+                endif
                 set m[i] = m[MUI]
                 set MUI = MUI - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI == -1 then
                     call GearTimer03Release()
                 endif
@@ -588,7 +809,17 @@ private struct KS_Flush
     endmethod
 
     public static method Start takes integer NewId, integer NewChild_Id, integer NewValue, real NewRmax returns nothing
-        local thistype this = thistype.create()
+        local thistype this = LoadInteger(pending, NewId, NewChild_Id)
+        if this != 0 and value == NewValue and r != 9999 then
+            // Same reset already pending: only an earlier deadline matters.
+            if rmax - r > NewRmax then
+                set r = 0
+                set rmax = NewRmax
+            endif
+            return
+        endif
+        set this = thistype.create()
+        call SaveInteger(pending, NewId, NewChild_Id, this)
         set MUI = MUI + 1
         set m[MUI] = this
         set r = 0
@@ -609,6 +840,8 @@ endstruct
 private struct KS_FlushBuff
     private static integer array m
     private static integer MUI = -1
+    // Identical pending (id, child_id, value, unit, buff) instances fire on the same tick: keep one.
+    private static hashtable pending = InitHashtable()
     unit c
     integer check
     integer child_id
@@ -625,7 +858,7 @@ private struct KS_FlushBuff
             set this = m[i]
             set b = GetUnitAbilityLevel(c, check) > 0
             if b then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0 // = RoundReal(r + 0.03, 3), r >= 0; no call per instance tick
                 if LoadInteger(hs, id, child_id) == value then
                     set r = 9999
                 endif
@@ -636,9 +869,13 @@ private struct KS_FlushBuff
                 if check == RimuruQ2_Buff_ID then
                     call MakeSound("war3mapimported\\Hero_Rimuru2_Q3")
                 endif
+                if LoadInteger(pending, id, child_id) == this then
+                    call RemoveSavedInteger(pending, id, child_id)
+                endif
                 set c = null
                 set m[i] = m[MUI]
                 set MUI = MUI - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI == -1 then
                     call GearTimer03Release()
                 endif
@@ -649,7 +886,12 @@ private struct KS_FlushBuff
     endmethod
 
     public static method Start takes integer NewId, integer NewChild_Id, integer NewValue, unit NewC, integer NewAbiId returns nothing
-        local thistype this = thistype.create()
+        local thistype this = LoadInteger(pending, NewId, NewChild_Id)
+        if this != 0 and value == NewValue and c == NewC and check == NewAbiId and r != 9999 then
+            return
+        endif
+        set this = thistype.create()
+        call SaveInteger(pending, NewId, NewChild_Id, this)
         set MUI = MUI + 1
         set m[MUI] = this
         set r = 0
@@ -680,17 +922,21 @@ private struct KS_AddMana
     public static method Loop takes nothing returns nothing
         local thistype this
         local integer i = 0
+        local real before
         loop
             exitwhen i > MUI
             set this = m[i]
-            set r = RoundReal(r + 0.03, 3)
+            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0 // = RoundReal(r + 0.03, 3), r >= 0; no call per instance tick
             set b = r < rmax
             if b then
             else
-                call SetUnitState(c, UNIT_STATE_MANA, GetUnitState(c, UNIT_STATE_MANA) + r2)
+                set before = GetUnitState(c,UNIT_STATE_MANA)
+                call SetUnitState(c, UNIT_STATE_MANA, before + r2)
+                call GearManaScriptChange(c,before)
                 set c = null
                 set m[i] = m[MUI]
                 set MUI = MUI - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI == -1 then
                     call GearTimer03Release()
                 endif
@@ -721,6 +967,9 @@ endstruct
 private struct KS_FlushReal
     private static integer array m
     private static integer MUI = -1
+    // Pending instance per (id, child_id): a repeat with the same value is redundant
+    // (the first one to fire sets it; the rest cancel on their next tick).
+    private static hashtable pending = InitHashtable()
     integer id
     integer child_id
     real r
@@ -734,7 +983,7 @@ private struct KS_FlushReal
             exitwhen i > MUI
             set this = m[i]
             if r < rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0 // = RoundReal(r + 0.03, 3), r >= 0; no call per instance tick
                 if LoadReal(hs, id, child_id) == r2 then
                     set r = 9999
                 endif
@@ -742,8 +991,12 @@ private struct KS_FlushReal
                 if r != 9999 then
                     call SaveReal(hs, id, child_id, r2)
                 endif
+                if LoadInteger(pending, id, child_id) == this then
+                    call RemoveSavedInteger(pending, id, child_id)
+                endif
                 set m[i] = m[MUI]
                 set MUI = MUI - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI == -1 then
                     call GearTimer03Release()
                 endif
@@ -754,7 +1007,17 @@ private struct KS_FlushReal
     endmethod
 
     public static method Start takes integer NewId, integer NewChild_Id, real NewValue, real NewRmax returns nothing
-        local thistype this = thistype.create()
+        local thistype this = LoadInteger(pending, NewId, NewChild_Id)
+        if this != 0 and r2 == NewValue and r != 9999 then
+            // Same reset already pending: only an earlier deadline matters.
+            if rmax - r > NewRmax then
+                set r = 0
+                set rmax = NewRmax
+            endif
+            return
+        endif
+        set this = thistype.create()
+        call SaveInteger(pending, NewId, NewChild_Id, this)
         set MUI = MUI + 1
         set m[MUI] = this
         set r = 0
@@ -803,27 +1066,56 @@ endfunction
         call SetUnitTimeScale(c, 1)
         call BlzPauseUnitEx(c, true)
     endfunction
+    // After a hero's spell the owner keeps only that hero selected (summons, clicked
+    // targets and other units leave the selection). Untouched when already sole.
+    function GearSelectOnlyHero takes unit c returns nothing
+        local integer pid = GetPlayerId(GetOwningPlayer(c))
+        local unit u
+        local boolean other = false
+        if pid >= 10 or Hero[pid] != c or c == null then
+            return
+        endif
+        if GetLocalPlayer() == Player(pid) then
+            call GroupEnumUnitsSelected(GearSelectScan, Player(pid), null)
+            loop
+                set u = FirstOfGroup(GearSelectScan)
+                exitwhen u == null
+                call GroupRemoveUnit(GearSelectScan, u)
+                if u != c then
+                    set other = true
+                endif
+            endloop
+            if other or not IsUnitSelected(c, Player(pid)) then
+                call ClearSelection()
+                call SelectUnit(c, true)
+            endif
+        endif
+        set u = null
+    endfunction
     function StopSpellUnit takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call UnitRemoveAbility(c, 'Avul')
         call PauseUnit(c, false)
-        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),1)
-        call MyFlush(GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),0,ahk_delay )
+        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
+        call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
+        call GearSelectOnlyHero(c)
     endfunction
     function StopSpellUnit2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call PauseUnit(c, false)
-        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),1)
-        call MyFlush(GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),0,ahk_delay )
+        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
+        call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
+        call GearSelectOnlyHero(c)
     endfunction
     function StopSpellUnit2_2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call BlzPauseUnitEx(c, false)
-        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),1)
-        call MyFlush(GetHandleId(GetOwningPlayer(c)),StringHash("ahk pidor"),0,ahk_delay )
+        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
+        call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
+        call GearSelectOnlyHero(c)
     endfunction
     function SpeedToLevel takes real r returns integer
     local real min = 0.05
@@ -859,12 +1151,57 @@ endfunction
             call IssueTargetOrder(DummyPlayer[i], "bloodlust", u)
         endif
     endfunction
+    // One-shot numeric attribution. Consumed even when the target is invalid.
+    function DamageSource takes integer sourceId returns nothing
+        set GearDamageNextSource = sourceId
+    endfunction
+    // Separate Damage Stats row for a morph/combo form of one ability. Call on cast, not per hit.
+    // Variant 0 is the ability itself; keys lie above every rawcode, so gameplay checks
+    // against ability ids (A000..Azzz) never match them.
+    function DamageSourceVariant takes integer baseId, integer variant, string caption returns integer
+        local integer key
+        if variant <= 0 then
+            return baseId
+        endif
+        set key = LoadInteger(GearDamageVariants, baseId, variant)
+        if key == 0 then
+            set GearDamageVariantCount = GearDamageVariantCount + 1
+            set key = 2100000000 + GearDamageVariantCount
+            call SaveInteger(GearDamageVariants, baseId, variant, key)
+            call SaveInteger(GearDamageVariants, key, 0, baseId)
+            call SaveStr(GearDamageVariants, key, 1, caption)
+        endif
+        return key
+    endfunction
+    // Ability behind a Damage Stats instance (gameplay hooks compare ability ids).
+    function DamageSourceBase takes integer sourceId returns integer
+        if sourceId > 2100000000 then
+            return LoadInteger(GearDamageVariants, sourceId, 0)
+        endif
+        return sourceId
+    endfunction
+    // Spell structs with a mode field (0 base, 1 morph, 2 morph + T): one lookup, no strings built.
+    function DamageSourceMode takes integer baseId, integer mode, string caption1, string caption2 returns integer
+        if mode == 1 then
+            return DamageSourceVariant(baseId, 1, caption1)
+        elseif mode == 2 then
+            return DamageSourceVariant(baseId, 2, caption2)
+        endif
+        return baseId
+    endfunction
     function dmgmag takes unit c, unit td , real dmg returns nothing
+        local integer previousSource = GearDamageActiveSource
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
     if c != null and td != null and GetWidgetLife(td)>1 then 
     call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_MAGIC, DAMAGE_TYPE_NORMAL, null)
     endif
+        set GearDamageActiveSource = previousSource
     endfunction
     function dmgmag2 takes unit c, unit td , real dmg,string s returns nothing
+        local integer previousSource = GearDamageActiveSource
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
     if c != null and td != null and GetWidgetLife(td)>1 then 
     if s == "kurikara" then 
     set KurikaraTrigger = true 
@@ -874,21 +1211,34 @@ endfunction
     set KurikaraTrigger = false 
     endif
     endif
+        set GearDamageActiveSource = previousSource
     endfunction
     function dmgphys takes unit c, unit td , real dmg returns nothing
+        local integer previousSource = GearDamageActiveSource
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
     if c != null and td != null and GetWidgetLife(td)>1 then 
     call UnitDamageTarget(c,td,dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)
     endif
+        set GearDamageActiveSource = previousSource
     endfunction
     function dmgatk takes unit c, unit td , real dmg returns nothing
+        local integer previousSource = GearDamageActiveSource
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
     if c != null and td != null and GetWidgetLife(td)>1 then 
     call UnitDamageTarget(c,td,dmg, true, false, ATTACK_TYPE_MELEE, DAMAGE_TYPE_NORMAL, null)
     endif
+        set GearDamageActiveSource = previousSource
     endfunction
     function spelldmg takes unit c , unit td, real dmg returns nothing
+        local integer previousSource = GearDamageActiveSource
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
         if c != null and td != null and GetWidgetLife(td)>1 then 
         call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_UNIVERSAL, null)
    endif
+        set GearDamageActiveSource = previousSource
    endfunction
     function PathableCheck takes real x , real y returns boolean
         return CheckCoordsInRect(gg_rct_Arena,x,y)
@@ -1246,7 +1596,7 @@ endstruct
                 exitwhen i > MUI_1
                 set this = m_1[i]
                 if c != null and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 else
                     if c != null then 
                     if check == 0 then
@@ -1312,7 +1662,7 @@ endstruct
                 exitwhen i > MUI_2
                 set this = m_2[i]
                 if e != null and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 else
                     if e != null then 
                     if check == 0 then
@@ -1377,7 +1727,7 @@ endstruct
                 exitwhen i > MUI_3
                 set this = m_3[i]
                 if c != null and r <= rmax and not GearCCProtected(c) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if check == 0 then
                             call MoveUnit3(c, move, a)
                           
@@ -1444,7 +1794,7 @@ endstruct
             loop
                 exitwhen i > MUI_4
                 set this = m_4[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 and c != null then
                     if r2 > r5 then
                        if check3 == 0 then 
@@ -1461,7 +1811,7 @@ endstruct
                     endif
                  
                     if r <= rmax then
-                           set r = RoundReal(r + 0.03, 3)
+                           set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             if check2 == 0 then
                                 set f = GetUnitFlyHeight(c) + r4
                             else
@@ -1530,6 +1880,7 @@ endstruct
         integer k
         unit td
         unit c
+        integer damageSource
 
         public static method Loop_DmgPTime takes nothing returns nothing
     local thistype this
@@ -1538,7 +1889,7 @@ endstruct
         exitwhen i > MUI_5
         set this = m_5[i]
         if r < rmax and GetWidgetLife(td) > 0.405 then
-            set r3 = RoundReal(r3 + 0.05, 3)
+            set r3 = I2R(R2I((r3 + 0.05) * 1000.0 + 0.5)) / 1000.0
             if r3 >= r2 - 0.001 then  // small epsilon avoids float comparison miss
                 set r3 = 0
                 set r = r + 1          // count ticks as integer
@@ -1550,11 +1901,13 @@ endstruct
                     set dmg = 0
                     endif
                     endif
+                    call DamageSource(damageSource)
                     call dmgphys(c, td, dmg)
                 if s == "murasume" then 
                     set MurasameTrigger = false
                     endif
                 elseif k == 1 then
+                    call DamageSource(damageSource)
                     call dmgmag(c, td, dmg)
                 else
                     if s == "murasume" then 
@@ -1564,6 +1917,7 @@ endstruct
                     set dmg = 0
                     endif
                     endif
+                    call DamageSource(damageSource)
                     call dmgatk(c, td, dmg)
                     if s == "murasume" then 
                     set MurasameTrigger = false
@@ -1593,6 +1947,8 @@ public static method DmgPTime_Start takes unit NewC, unit NewTd, real NewDmg, re
     local integer totalTicks
     set MUI_5 = MUI_5 + 1
     set m_5[MUI_5] = this
+    set damageSource = GearDamageNextSource
+    set GearDamageNextSource = 0
     set c = NewC
     set td = NewTd
     set r = 0        // elapsed time * 100 as integer to avoid float drift
@@ -1633,17 +1989,22 @@ endmethod
         public static method LoopSpellTimer takes nothing returns nothing
             local thistype this
             local integer i = 0
+            local boolean ownsSlot
             loop
                 exitwhen i > MUI_6
                 set this = m_6[i]
                 if k3 != 0 then 
-                set b =   LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(k2))) == 0 and GetUnitAbilityLevel(c, k1) > 0 and GetUnitAbilityLevel(c, k3) > 0
+                set b =   LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_I2S, "", k2)) == 0 and GetUnitAbilityLevel(c, k1) > 0 and GetUnitAbilityLevel(c, k3) > 0
                 else
-                set b =  r < rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(k2))) == 0 and GetUnitAbilityLevel(c, k1) > 0
+                set b =  r < rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_I2S, "", k2)) == 0 and GetUnitAbilityLevel(c, k1) > 0
                 endif
+                // A newer stage owns the slot; an older timer must only retire.
+                set ownsSlot = LoadInteger(hs, GetHandleId(p), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", k2)) == k1
+                set b = b and ownsSlot
                 if b then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                 else
+                    if ownsSlot then
                     if GetUnitAbilityLevel(c, k1) > 0 then
                     call SetPlayerAbilityAvailable(p, k2, true)
                     call SetPlayerAbilityAvailable(p, k1, false)
@@ -1656,8 +2017,9 @@ endmethod
                     call IssueImmediateOrder(c,"stop")                   
                     endif
                     endif
-                    call SaveInteger(hs, GetHandleId(p), StringHash("AHUI swap " + I2S(k2)), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(k2)), 0)
+                    call SaveInteger(hs, GetHandleId(p), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", k2), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_I2S, "", k2), 0)
+                    endif
                     set c = null
                     set p = null
                     set m_6[i] = m_6[MUI_6]
@@ -1683,7 +2045,7 @@ endmethod
             set k2 = NewInt2
             set k3 = NewBuff
             set p = GetOwningPlayer(c)
-            call SaveInteger(hs, GetHandleId(p), StringHash("AHUI swap " + I2S(k2)), k1)
+            call SaveInteger(hs, GetHandleId(p), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", k2), k1)
             set rmax = NewR
             call SetPlayerAbilityAvailable(p, k2, false)
             if GetUnitAbilityLevel(c, k1) == 0 then
@@ -1723,12 +2085,12 @@ endmethod
             loop
                 exitwhen i > MUI_7
                 set this = m_7[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 and c!= null then
                     if r2 > r3 then
                         if r < rmax then
                             set r = r + 0.03
-                            set r = S2R( R2SW( r , 0, 3 ) )
+                            set r = RoundReal(r, 3)
                             set check2 = check2 + R2I(r4)
                             if check2 > k then
                                 set check2 = k
@@ -1808,11 +2170,11 @@ endmethod
             loop
                 exitwhen i > MUI_8
                 set this = m_8[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 then
                     if r2 > r3 then
                         if r < rmax then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             set check2 = check2 + R2I(r4)
                             if check2 > k then
                                 set check2 = k
@@ -1884,7 +2246,7 @@ endmethod
                 exitwhen i > MUI_9
                 set this = m_9[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                 else
                     call FogModifierStop(fg)
                     call DestroyFogModifier(fg)
@@ -1941,8 +2303,8 @@ endmethod
                 set this = m_10[i]
                 if check2 == 0 then
                     set b = r < rmax and IsUnitType(d, UNIT_TYPE_DEAD) == false
-                    if check == StringHash("alucard bullet") then
-                        set b = r < rmax and e != null and LoadInteger(hs, GetHandleId(d), StringHash("alucard bullet")) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
+                    if check == SH_ALUCARD_BULLET then
+                        set b = r < rmax and e != null and LoadInteger(hs, GetHandleId(d), SH_ALUCARD_BULLET) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
                 
                     endif
                    /* if check == Harribel_Pas1ID then
@@ -1951,11 +2313,11 @@ endmethod
                     if check == StarrkG_Cap1LvlDamageFrom then
                         set b = r < rmax and GetUnitAbilityLevel(d, StarrkG_Cap1LvlDamageFrom) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
                     endif
-                    if check == LoadInteger(hs, GetHandleId(d), StringHash("brandish e")) and LoadInteger(hs, GetHandleId(d), StringHash("brandish e")) > 0 then
-                        set b = r < rmax and LoadInteger(hs, GetHandleId(d), StringHash("brandish e")) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
+                    if check == LoadInteger(hs, GetHandleId(d), SH_BRANDISH_E) and LoadInteger(hs, GetHandleId(d), SH_BRANDISH_E) > 0 then
+                        set b = r < rmax and LoadInteger(hs, GetHandleId(d), SH_BRANDISH_E) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
                     endif
-                    if check == StringHash("alucard bullet") then
-                        set b = r < rmax and LoadInteger(hs, GetHandleId(d), StringHash("alucard bullet")) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
+                    if check == SH_ALUCARD_BULLET then
+                        set b = r < rmax and LoadInteger(hs, GetHandleId(d), SH_ALUCARD_BULLET) > 0 and IsUnitType(d, UNIT_TYPE_DEAD) == false
                 
                     endif
                     if check == AskinGShield_ID then
@@ -1965,13 +2327,13 @@ endmethod
                     set b = r < rmax and e != null 
                 endif
                 if b then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check2 == 1 then
                         call BlzSetSpecialEffectPosition(e, GetEffX(e2), GetEffY(e2), BlzGetLocalSpecialEffectZ(e2) + f + rr)
                     else
                       //  call BlzSetSpecialEffectYaw(e, GetUnitFacing(d) * bj_DEGTORAD)
                         if true then // GetUnitTypeId(d) == Brandish_ID and check == LoadInteger(hs, GetHandleId(d), StringHash("brandish e")) then
-                            if LoadInteger(hs, GetHandleId(d), StringHash("brandish g ally")) > 0 then
+                            if LoadInteger(hs, GetHandleId(d), SH_BRANDISH_G_ALLY) > 0 then
                                 set rr = 30
                                // call BlzSetSpecialEffectScale(e, 1.65 * (BrandishG_DamageOutputIncreaseScale / 100) )
                             else
@@ -2044,7 +2406,7 @@ endmethod
                 exitwhen i > MUI_11
                 set this = m_11[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call SetUnitX(c, GetUnitX(d))
                     call SetUnitY(c, GetUnitY(d))
                     call SetFly(c, GetUnitFlyHeight(d) + f)
@@ -2090,6 +2452,7 @@ endmethod
         integer check
         unit td
         unit c
+        integer damageSource
 
         public static method Loop_NextDmg takes nothing returns nothing
             local thistype this
@@ -2098,23 +2461,28 @@ endmethod
                 exitwhen i > MUI_12
                 set this = m_12[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 else
                     if check == 0 then
+    call DamageSource(damageSource)
     call dmgmag(c, td, dmg)
 elseif check == 1 then
+    call DamageSource(damageSource)
     call dmgphys(c, td, dmg)
 elseif check == 3 then
     set ItemProcDamageDepth = ItemProcDamageDepth + 1
     set QuincyCrossDamageActive = true
+    call DamageSource(damageSource)
     call dmgphys(c, td, dmg)
     set QuincyCrossDamageActive = false
     set ItemProcDamageDepth = ItemProcDamageDepth - 1
 elseif check == 4 then
     set ItemProcDamageDepth = ItemProcDamageDepth + 1
+    call DamageSource(damageSource)
     call dmgmag(c, td, dmg)
     set ItemProcDamageDepth = ItemProcDamageDepth - 1
 else
+    call DamageSource(damageSource)
     call dmgatk(c, td, dmg)
 endif
                     set c = null
@@ -2135,7 +2503,9 @@ endif
             local thistype this = thistype.create()
             set MUI_12 = MUI_12 + 1
             set m_12[MUI_12] = this
-            set c = NewC
+            set damageSource = GearDamageNextSource
+    set GearDamageNextSource = 0
+    set c = NewC
             set dmg = NewDmg
             set rmax = NewR
             set r = 0
@@ -2166,7 +2536,7 @@ endif
                 exitwhen i > MUI_13
                 set this = m_13[i]
                 if r < rmax and IsUnitType(c, UNIT_TYPE_DEAD) == false then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     set r3 = GetUnitState(c, UNIT_STATE_LIFE)            
                     if r3 > r4 then
                         set r2 = (r3 - r4) * r5
@@ -2187,6 +2557,22 @@ endif
                 endif
                 set i = i + 1
             endloop
+        endmethod
+
+        // Strongest active heal reduction on the unit (0..1); read-only.
+        public static method HealCut takes unit u returns real
+            local integer i = 0
+            local real cut = 0.00
+            local thistype this
+            loop
+                exitwhen i > MUI_13
+                set this = m_13[i]
+                if c == u and 1.00 - r5 > cut then
+                    set cut = 1.00 - r5
+                endif
+                set i = i + 1
+            endloop
+            return cut
         endmethod
 
         public static method BlockHpRegen_Start takes unit NewC, real NewR, real NewBlockHeal returns nothing
@@ -2217,6 +2603,7 @@ endif
         integer check2
         integer k
         unit c
+        integer uiTimeKey
 
         public static method Loop_RemoveAbility takes nothing returns nothing
             local thistype this
@@ -2239,7 +2626,13 @@ endif
                     else
                      set r = r + 0.1
                     endif
+                    if uiTimeKey != 0 then
+                        call SaveReal(hs, GetHandleId(c), uiTimeKey, RMaxBJ(0.0, rmax - r))
+                    endif
                 else
+                    if uiTimeKey != 0 then
+                        call RemoveSavedReal(hs, GetHandleId(c), uiTimeKey)
+                    endif
                     if k == 0 then
                     if id == 'A07Q' then 
                     if GetUnitAbilityLevel(c,'A01W')>0  then 
@@ -2282,6 +2675,11 @@ endif
             set id = NewId
             set k = NewAdd_or_delete
             set rmax = NewRmax
+            set uiTimeKey = 0
+            if LoadBoolean(hs, GetHandleId(c), GearKey(GEAR_KEY_WATCH_ABILITY_TIME, "watch ability time ", id)) then
+                set uiTimeKey = GearKey(GEAR_KEY_ABILITY_TIME, "ability time ", id)
+                call SaveReal(hs, GetHandleId(c), uiTimeKey, rmax)
+            endif
             set b = false
             set b2= true 
             set check2 = GetUnitAbilityLevel(c, id)
@@ -2472,10 +2870,10 @@ endstruct
             loop
                 exitwhen i > MUI_16
                 set this = m_16[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 then
     if r2 > r3 then
-        set r = RoundReal(r + 0.03, 3)
+        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
         if r <= rmax then
             if check2 == 0 then
                 set scale = scale + r4
@@ -2550,7 +2948,7 @@ else
                 exitwhen i > MUI_17
                 set this = m_17[i]
                 if r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call MoveEff2(e, move , a)
                 else
                     set e = null
@@ -2608,11 +3006,11 @@ else
             loop
                 exitwhen i > MUI_18
                 set this = m_18[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 then
                     if r2 > r3 then
                         if r <= rmax then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             if check2 == 0 then
                                 set scale = scale + r4
                             else
@@ -2686,7 +3084,7 @@ else
                 exitwhen i > MUI_19
                 set this = m_19[i]
                 if r <= rmax  then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     if r2>0.95 then 
                     set r2 = 0.05
                     if check == 0 then
@@ -2759,11 +3157,11 @@ else
             loop
                 exitwhen i > MUI_20
                 set this = m_20[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 then
                     if r2 > r3 then
                         if r < rmax then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             set r5 = r5 + r4
                             if r5 > 1 then
                                 set r5 = 1
@@ -2839,7 +3237,7 @@ else
                 exitwhen i > MUI_21
                 set this = m_21[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                 else
                     set l__txt = CreateTextTag()
                     call SetTextTagVisibility(l__txt, false)
@@ -2915,7 +3313,7 @@ else
                 exitwhen i > MUI_22
                 set this = m_22[i]
                 if r < rmax and GetWidgetLife(c) > 1 and GetUnitAbilityLevel(c, 'A15H') == 0 and not GearCCProtected(c) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call EffVision(e, c)
                     call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
                     if r2 > 0.12 then
@@ -2936,7 +3334,7 @@ else
                     call UnitRemoveAbility(c, 'Abun')
                     call UnitRemoveAbility(c, 'B0A5')
                     call DestroyEffect(e)
-                    call SaveInteger(hs, GetHandleId(c) , StringHash("AsNodt pas"), 0)
+                    call SaveInteger(hs, GetHandleId(c) , SH_ASNODT_PAS, 0)
                     set c = null
                     set e = null
                     set m_22[i] = m_22[MUI_22]
@@ -2961,7 +3359,7 @@ else
             set r2 = 0
             set rmax = NewMax
             call UnitAddAbility(c, 'Abun')
-            set e = AddSpecialEffect("war3mapimported\\Gear_0233.mdl", GetUnitX(c), GetUnitY(c))
+            set e = AddSpecialEffect("war3mapImported\\wos_0233.mdl", GetUnitX(c), GetUnitY(c))
             call BlzSetSpecialEffectTimeScale(e, 1)
             call BlzSetSpecialEffectZ(e, 0)
             call BlzSetSpecialEffectScale(e, 2)
@@ -2993,7 +3391,7 @@ else
                 exitwhen i > MUI_23
                 set this = m_23[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.1, 3)
+                    set r = I2R(R2I((r + 0.1) * 1000.0 + 0.5)) / 1000.0
                 else
                     if b == true then
                         set check = GetUnitAbilityLevel(c, id) - 1
@@ -3001,7 +3399,7 @@ else
                     call SetUnitAbilityLevel(c, id, check)
                     if b == true and GetUnitAbilityLevel(c, id) == 1 then
                         set b = false
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("spell and " + I2S(id)), 0)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_SPELL_AND, "spell and ", id), 0)
                     endif
                     if b == false then
                         set c = null
@@ -3053,6 +3451,8 @@ else
         integer check
         unit c
 
+        boolean ensureStart
+
         public static method Loop_NextCD takes nothing returns nothing
             local thistype this
             local integer i = 0
@@ -3060,9 +3460,11 @@ else
                 exitwhen i > MUI_24
                 set this = m_24[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.05, 3)                  
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0                  
                 else
-                    if BlzGetUnitAbilityCooldownRemaining(c,check)>r4 then 
+                    if ensureStart and c != null and GetUnitTypeId(c) != 0 and GetUnitAbilityLevel(c, check) > 0 and BlzGetUnitAbilityCooldownRemaining(c, check) <= 0.00 and r4 > 0.00 then
+                        call BlzStartUnitAbilityCooldown(c, check, RMaxBJ(0.01, r4 - r - 0.05))
+                    elseif BlzGetUnitAbilityCooldownRemaining(c,check)>r4 then
                    call BlzStartUnitAbilityCooldown(c,check,r4)
                    endif
                         set c = null
@@ -3086,119 +3488,19 @@ else
             set rmax = NewRmax
             set r = 0
             set r4 = NewCd
+            set ensureStart = false
             set check = NewAbi
             if MUI_24 == 0 then
                 call GearTimer05Acquire()
             endif
         endmethod
 
-    endstruct
-
-    private struct KS_FakeCooldown
-        private static integer array m_25
-        private static integer MUI_25 = -1
-        real r
-        boolean b
-        real r4
-        real rmax
-        integer check
-        integer check2
-        integer k2
-        integer k3
-        integer count
-        unit c
-
-         public static method Loop_NextFakeCD takes nothing returns nothing
+        public static method EnsureStart takes unit c, real delay, integer abi, real cd returns nothing
             local thistype this
-            local integer i = 0
-            loop
-                exitwhen i > MUI_25
-                set this = m_25[i]
-                if check2 != 0 then 
-                set b = LoadInteger(hs,GetHandleId(c),check2) != k2
-                else
-                set b = true
-                endif
-                if r < rmax and BlzGetUnitAbilityCooldownRemaining(c,k3)>0 and b and GetUnitAbilityLevel(c,k3)>0 then
-                    set r = RoundReal(r + 0.05, 3)
-                else                
-                if check2 != 0 then 
-                call SaveInteger(hs,GetHandleId(c),check2,k2)
-                if LoadInteger(hs,GetHandleId(c),StringHash("pas cd")) == 0 then 
-                endif
-                endif             
-                   if check == InoriE_ID and LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
-                   
-                   elseif check == AlterSaberW_ID and LoadInteger(hs, GetHandleId(c), StringHash("mode r")) == 1 then
-                  
-                  else
-                  // decrement counter
-call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) - 1)
-
-// only remove FakeAbi if no other instance is using it
-if LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) <= 0 then
-    call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), 0)
-    call UnitRemoveAbility(c, k3)
-    call SetPlayerAbilityAvailable(GetOwningPlayer(c), check, true)
-else
-    // another instance still running, just restore this ability
-    //call SetPlayerAbilityAvailable(GetOwningPlayer(c), check, true)
-endif
-                      endif
-                      set c = null
-                        set m_25[i] = m_25[MUI_25]
-                        set MUI_25 = MUI_25 - 1
-                        if MUI_25 == -1 then
-                            call GearTimer05Release()
-                        endif
-                        call destroy()
-                    set i = i - 1
-                    endif
-                set i = i + 1
-            endloop
-        endmethod   
-
-        public static method FakeCD_Start1 takes unit NewC,integer NewAbi,real NewCd, integer NewStringHash, integer NewValue returns nothing
-            local thistype this = thistype.create()
-            set MUI_25 = MUI_25 + 1
-            set m_25[MUI_25] = this
-            set c = NewC
-           //  if GetUnitAbilityLevel(NewC, FakeAbi_ID) > 0 then
-           // set k3 = FakeAbi2_ID
-       // else
-            set k3 = FakeAbi_ID
-          //  endif
-            set rmax = NewCd
-            set r = 0.05
-            set b = true
-            set check2 = NewStringHash
-            set k2 = NewValue
-            set r4 = NewCd
-            set check = NewAbi
-            // In FakeCD_Start1, before adding FakeAbi:
-call SaveInteger(hs, GetHandleId(c), StringHash("fake cd count"), LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) + 1)
-if LoadInteger(hs, GetHandleId(c), StringHash("fake cd count")) == 1 then
-call UnitAddAbility(NewC, k3)
-endif
-// ... rest of setup
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c),check,false)
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-            call BlzSetAbilityPosX(k3,BlzGetAbilityPosX(check))
-            call BlzSetAbilityPosY(k3,BlzGetAbilityPosY(check))
-            call BlzSetAbilityIcon(k3, BlzGetAbilityIcon(check))
-            call BlzSetAbilityTooltip(k3,BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, check), ABILITY_SLF_TOOLTIP_NORMAL, GetUnitAbilityLevel(c,check)-1),0)
-            call BlzSetAbilityExtendedTooltip(k3,BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, check), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, GetUnitAbilityLevel(c,check)-1),0)
-            endif
-            if  HasCachedItem(c,'I011')>0 and  BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
-             call BlzStartUnitAbilityCooldown(c,k3,r4*(1-OkarunEggReduceCD/100))
-            else
-             call BlzStartUnitAbilityCooldown(c,k3,r4)
-            endif
-            if MUI_25 == 0 then
-                call GearTimer05Acquire()
-            endif
+            call thistype.CD_Start(c, delay, abi, cd)
+            set this = m_24[MUI_24]
+            set ensureStart = true
         endmethod
-
     endstruct
 
     private struct KS_EffectHeight
@@ -3222,7 +3524,7 @@ endif
             loop
                 exitwhen i > MUI_26
                 set this = m_26[i]
-                set r2 = RoundReal(r2 + 0.03, 3)
+                set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if check == 0 then
                     if r2 > r5 then
                     if check3 == 0 then 
@@ -3238,7 +3540,7 @@ endif
             endif
                     endif
                         if r <= rmax then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             if check2 == 0 then
                                 set f = BlzGetLocalSpecialEffectZ(e) + r4
                             else
@@ -3310,7 +3612,7 @@ endif
                 exitwhen i > MUI_27
                 set this = m_27[i]
                 if r < rmax and  GetDestructableLife(ds)>2 then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if CondArena == 0 then 
                     set r = 99999
                     endif
@@ -3395,14 +3697,14 @@ endif
                 endif
                 if b2 then
                     if b == false or IsUnitPaused(c)== false then 
-                    set r = RoundReal(r + 0.1, 3)
+                    set r = I2R(R2I((r + 0.1) * 1000.0 + 0.5)) / 1000.0
                     endif
-                    call BlzFrameSetValue(frame0_pas3[k2], r)
+                    call WUI_FrameSetValue(frame0_pas3[k2], r)
                     call BlzFrameSetText(frame0_pas4[k2], "" + R2SW(rmax+0.1-r,0,1) + "|r")
                     if check != 0 then 
                     
                     endif
-                  //  call BlzFrameSetValue(frame0_pas2[k2], rmax-r)
+                  //  call WUI_FrameSetValue(frame0_pas2[k2], rmax-r)
                     if CondArena == 0 then 
                     set r = 99999
                     endif
@@ -3450,7 +3752,7 @@ endif
             set tmp_x = 0.26875 +(0.0265*k3) //* 0.0225
                 set tmp_y = 0.17
                 if frame0_pas1[k2] == null then 
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                 if GetLocalPlayer() == Player(k) then 
@@ -3462,14 +3764,15 @@ endif
                 call BlzFrameClearAllPoints(frame0_pas3[k2])
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
-                call BlzFrameSetSize(frame0_pas1[k2], 0.025, 0.025)
-                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
+                call BlzFrameSetSize(frame0_pas1[k2], 0.0264, 0.0264)
+                call WUI_SimpleBorder(frame0_pas1[k2])
+                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", WUI_GetRoot(), "", 0)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_TOP, frame0_pas1[k2], FRAMEPOINT_BOTTOM, 0, -0.005)
                 //call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_BOTTOMLEFT,frame0_pas1[k2],FRAMEPOINT_BOTTOMLEFT, tmp_x-0.0265, tmp_y-0.335)
                 
-                call BlzFrameSetAbsPoint(frame0_pas4[k2], FRAMEPOINT_CENTER, tmp_x+0.0925, tmp_y-0.075)
-                call BlzFrameSetScale(frame0_pas4[k2], 1)
-                call BlzFrameSetSize(frame0_pas4[k2], 0.2, 0.2)
+                call BlzFrameSetScale(frame0_pas4[k2], 0.66)
+                call BlzFrameSetSize(frame0_pas4[k2], 0.025, 0.010)
+                call BlzFrameSetTextAlignment(frame0_pas4[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
                  call BlzFrameSetVisible(frame0_pas4[k2],false)
                 if GetLocalPlayer() == Player(k) then 
                     call BlzFrameSetVisible(frame0_pas4[k2],true)
@@ -3480,11 +3783,10 @@ endif
                     call BlzFrameSetVisible(frame0_pas4[k2],true)
                     endif
                 endif
-                call BlzFrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame0_pas2[k2], 100)
-                call BlzFrameSetValue(frame0_pas3[k2], 0)
+                call WUI_FrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
+                call WUI_FrameSetValue(frame0_pas2[k2], 100)
+                call WUI_FrameSetValue(frame0_pas3[k2], 0)
                 call BlzFrameSetText(frame0_pas4[k2], "" + R2SW(rmax,0,1) + "|r")
-                call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
                 call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\"+s+".blp", 0, false)
                 call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DIS"+s+".blp", 0, false)
                 
@@ -3492,6 +3794,8 @@ endif
                     call BlzFrameSetEnable(frame0_pas2[k2],false)
                     call BlzFrameSetEnable(frame0_pas3[k2],false)
                     call BlzFrameSetEnable(frame0_pas4[k2],false)
+                call WUI_RegisterBuff(frame0_pas1[k2], frame0_pas4[k2], k, "GearBuff:" + I2S(k2))
+                call WUI_RefreshDocks()
                 set r = 0
             if MUI_28 == 0 then
                 call GearTimer10Acquire()
@@ -3517,7 +3821,7 @@ endif
                 exitwhen i > MUI_29
                 set this = m_29[i]
                 if r < rmax and GetUnitAbilityLevel(c,id)>0 then
-                    set r = RoundReal(r + 0.1, 3)
+                    set r = I2R(R2I((r + 0.1) * 1000.0 + 0.5)) / 1000.0
                     else
                     call DestroyEffect(e)
                     set e = null
@@ -3572,9 +3876,9 @@ endif
                 set this = m_30[i]
                 if r < rmax then
                     if b == true then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     elseif IsUnitPaused(c) == false then 
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
                     if LoadInteger(hs, id, child_id) == value then
                         set r = 9999
@@ -3637,7 +3941,7 @@ endif
                 exitwhen i > MUI_31
                 set this = m_31[i]
                 if r < rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                 else
                     // За время таймера предмет могли выбросить или передать.
                     set itemSlot = -1
@@ -3760,7 +4064,7 @@ endif
 
             if stackNum <= 0 then
                 set stackNum = 0
-                call SaveInteger(hs, hid, StringHash("stack_count"), 0)
+                call SaveInteger(hs, hid, SH_STACK_COUNT, 0)
                 call TasAbilityChargeBox_Clear(cu)
                 if data.frameAbilityId != 0 then
                     // Нулевой счётчик скрываем, но саму кнопку не выключаем.
@@ -3770,7 +4074,7 @@ endif
             else
                 if stackNum > data.maxStacks then
                     set stackNum = data.maxStacks
-                    call SaveInteger(hs, hid, StringHash("stack_count"), stackNum)
+                    call SaveInteger(hs, hid, SH_STACK_COUNT, stackNum)
                 endif
                 if data.frameAbilityId != 0 then
                     call BlzUnitDisableAbility(cu, data.frameAbilityId, false, false)
@@ -3790,7 +4094,7 @@ endif
             local thistype data = instances[index]
 
             call data.DestroyStackFrame()
-            call SaveInteger(hs, GetHandleId(data.c), StringHash("stack_count"), 0)
+            call SaveInteger(hs, GetHandleId(data.c), SH_STACK_COUNT, 0)
             set data.c = null
 
             set instances[index] = instances[lastInstance]
@@ -3810,11 +4114,11 @@ endif
                 exitwhen i > lastInstance
                 set this = instances[i]
 
-                if GetUnitTypeId(c) == 0 or LoadInteger(hs, GetHandleId(c), StringHash("morph_end")) == 1 then
+                if GetUnitTypeId(c) == 0 or LoadInteger(hs, GetHandleId(c), SH_MORPH_END) == 1 then
                     call thistype.RemoveAt(i)
                     set i = i - 1
                 else
-                    set curStack = LoadInteger(hs, GetHandleId(c), StringHash("stack_count"))
+                    set curStack = LoadInteger(hs, GetHandleId(c), SH_STACK_COUNT)
 
                     if not regenEnabled then
                         set r = 0.00
@@ -3823,20 +4127,20 @@ endif
                         // навсегда с нулевым счётчиком: сразу возвращаем 1 заряд.
                         set r = 0.00
                         set curStack = 1
-                        call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                        call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
                         call thistype.UpdateStackFrame(c, curStack)
                     elseif curStack < maxStacks then
                         if instantRecharge then
                             set r = 0.00
                             set curStack = maxStacks
-                            call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                            call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
                             call thistype.UpdateStackFrame(c, curStack)
                         else
-                            set r = RoundReal(r + 0.05, 3)
+                            set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                             if r >= rmax then
                                 set r = r - rmax
                                 set curStack = curStack + 1
-                                call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                                call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
                                 if cooldownAbilityId != 0 then
                                     call BlzStartUnitAbilityCooldown(c, cooldownAbilityId, 0.2)
                                 endif
@@ -3853,7 +4157,7 @@ endif
                         set r = 0.00
                         if curStack != maxStacks then
                             set curStack = maxStacks
-                            call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                            call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
                         endif
                     endif
 
@@ -3896,13 +4200,13 @@ endif
                 set regenEnabled = true
                 set frameSuppressed = false
                 call this.DestroyStackFrame()
-                set curStack = LoadInteger(hs, GetHandleId(c), StringHash("stack_count"))
+                set curStack = LoadInteger(hs, GetHandleId(c), SH_STACK_COUNT)
                 if instantRecharge and curStack < maxStacks then
                     set curStack = maxStacks
-                    call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                    call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
                 endif
                 call thistype.UpdateStackFrame(c, curStack)
-                call SaveInteger(hs, GetHandleId(c), StringHash("morph_end"), 0)
+                call SaveInteger(hs, GetHandleId(c), SH_MORPH_END, 0)
                 return
             endif
 
@@ -3928,15 +4232,15 @@ endif
             set lastInstance = lastInstance + 1
             set instances[lastInstance] = this
 
-            call SaveInteger(hs, GetHandleId(c), StringHash("morph_end"), 0)
-            set curStack = LoadInteger(hs, GetHandleId(c), StringHash("stack_count"))
+            call SaveInteger(hs, GetHandleId(c), SH_MORPH_END, 0)
+            set curStack = LoadInteger(hs, GetHandleId(c), SH_STACK_COUNT)
             // Новая система зарядов начинает работу заполненной.
             if curStack <= 0 then
                 set curStack = maxStacks
-                call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
             elseif curStack > maxStacks then
                 set curStack = maxStacks
-                call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), curStack)
+                call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, curStack)
             endif
             call thistype.UpdateStackFrame(c, curStack)
 
@@ -3948,13 +4252,13 @@ endif
         private static method DelayedCooldownResetCallback takes nothing returns nothing
             local timer resetTimer = GetExpiredTimer()
             local integer timerId = GetHandleId(resetTimer)
-            local unit resetUnit = LoadUnitHandle(hs, timerId, StringHash("KS_SpellStacks_ResetUnit"))
-            local integer abilityId = LoadInteger(hs, timerId, StringHash("KS_SpellStacks_ResetAbility"))
-            local real cooldown = LoadReal(hs, timerId, StringHash("KS_SpellStacks_ResetCooldown"))
+            local unit resetUnit = LoadUnitHandle(hs, timerId, SH_KS_SPELLSTACKS_RESETUNIT)
+            local integer abilityId = LoadInteger(hs, timerId, SH_KS_SPELLSTACKS_RESETABILITY)
+            local real cooldown = LoadReal(hs, timerId, SH_KS_SPELLSTACKS_RESETCOOLDOWN)
 
             // Движок назначает cooldown после spell-event, поэтому меняем его с задержкой.
             if resetUnit != null and GetUnitTypeId(resetUnit) != 0 and abilityId != 0 then
-                if LoadInteger(hs, GetHandleId(resetUnit), StringHash("stack_count")) > 0 then
+                if LoadInteger(hs, GetHandleId(resetUnit), SH_STACK_COUNT) > 0 then
                     // cooldown > 0 означает паузу между двумя оставшимися зарядами.
                     // cooldown == 0 используется при выдаче/полном сбросе зарядов.
                     if cooldown > 0.00 then
@@ -3981,9 +4285,9 @@ endif
             local timer resetTimer = CreateTimer()
             local integer timerId = GetHandleId(resetTimer)
 
-            call SaveUnitHandle(hs, timerId, StringHash("KS_SpellStacks_ResetUnit"), cu)
-            call SaveInteger(hs, timerId, StringHash("KS_SpellStacks_ResetAbility"), abilityId)
-            call SaveReal(hs, timerId, StringHash("KS_SpellStacks_ResetCooldown"), cooldown)
+            call SaveUnitHandle(hs, timerId, SH_KS_SPELLSTACKS_RESETUNIT, cu)
+            call SaveInteger(hs, timerId, SH_KS_SPELLSTACKS_RESETABILITY, abilityId)
+            call SaveReal(hs, timerId, SH_KS_SPELLSTACKS_RESETCOOLDOWN, cooldown)
             call TimerStart(resetTimer, 0.03, false, function thistype.DelayedCooldownResetCallback)
             set resetTimer = null
         endmethod
@@ -3991,7 +4295,7 @@ endif
         public static method MyRemoveStack takes unit cu returns nothing
             local thistype data = thistype.FindByUnit(cu)
             local integer hid = GetHandleId(cu)
-            local integer curStack = LoadInteger(hs, hid, StringHash("stack_count"))
+            local integer curStack = LoadInteger(hs, hid, SH_STACK_COUNT)
 
             if data == 0 or curStack <= 0 then
                 return
@@ -4002,7 +4306,7 @@ endif
                 set curStack = curStack + 1
                 set data.r = 0.00
             endif
-            call SaveInteger(hs, hid, StringHash("stack_count"), curStack)
+            call SaveInteger(hs, hid, SH_STACK_COUNT, curStack)
             call thistype.UpdateStackFrame(cu, curStack)
 
             // Пока остались заряды, ставим короткую общую паузу между применениями.
@@ -4017,7 +4321,7 @@ endif
         endmethod
 
         public static method GetStackCount takes unit cu returns integer
-            return LoadInteger(hs, GetHandleId(cu), StringHash("stack_count"))
+            return LoadInteger(hs, GetHandleId(cu), SH_STACK_COUNT)
         endmethod
 
         public static method GetMaxStackCount takes unit cu returns integer
@@ -4032,7 +4336,7 @@ endif
         public static method SetStackCount takes unit cu, integer newAmount returns nothing
             local thistype data = thistype.FindByUnit(cu)
             local integer hid = GetHandleId(cu)
-            local integer oldAmount = LoadInteger(hs, hid, StringHash("stack_count"))
+            local integer oldAmount = LoadInteger(hs, hid, SH_STACK_COUNT)
 
             if data == 0 then
                 return
@@ -4043,7 +4347,7 @@ endif
                 set newAmount = data.maxStacks
             endif
 
-            call SaveInteger(hs, hid, StringHash("stack_count"), newAmount)
+            call SaveInteger(hs, hid, SH_STACK_COUNT, newAmount)
             call thistype.UpdateStackFrame(cu, newAmount)
 
             // Первый выданный заряд снимает ожидание восстановления. Добавление
@@ -4145,7 +4449,7 @@ endif
     if clearCurrent then
         call thistype.SetStackCount(cu, 0)
     else
-        set curStack = LoadInteger(hs, GetHandleId(cu), StringHash("stack_count"))
+        set curStack = LoadInteger(hs, GetHandleId(cu), SH_STACK_COUNT)
         call data.RefreshStackFrameVisibility(curStack)
     endif
 endmethod
@@ -4163,7 +4467,7 @@ endmethod
     if restoreFull then
         call thistype.SetStackCount(cu, data.maxStacks)
     else
-        set curStack = LoadInteger(hs, GetHandleId(cu), StringHash("stack_count"))
+        set curStack = LoadInteger(hs, GetHandleId(cu), SH_STACK_COUNT)
         call thistype.UpdateStackFrame(cu, curStack)
     endif
 endmethod
@@ -4186,7 +4490,7 @@ endmethod
     // Backward-compatible Bambietta wrapper. Hero-specific IDs stay outside
     // KS_SpellStacks, so the structure itself remains reusable.
     function MySpellStacks takes unit c, integer stack_amount, real rechargeTime returns nothing
-        call KS_SpellStacks.MyAddSpellStacks_Start(c, BambiettaG_ID, FakeAbi_ID, stack_amount, rechargeTime)
+        call KS_SpellStacks.MyAddSpellStacks_Start(c, BambiettaG_ID, BambiettaG_ID, stack_amount, rechargeTime)
     endfunction
 
     // Generic entry point for every other hero.
@@ -4286,7 +4590,7 @@ function SpellStacksShowAndResume takes unit c returns nothing
 endfunction
 
 function GetStackCount takes unit c returns integer
-    return LoadInteger(hs, GetHandleId(c), StringHash("stack_count"))
+    return LoadInteger(hs, GetHandleId(c), SH_STACK_COUNT)
 endfunction
 
 
@@ -4313,7 +4617,7 @@ endfunction
     if GetUnitAbilityLevel(c, 'B01R') > 0 then
         set pierce = pierce + WrathSin_IgnoreAmountAdd
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("toji q3")) > 0 then
+    if LoadInteger(hs,GetHandleId(c),SH_TOJI_Q3) > 0 then
         set pierce = pierce + 100.0
     endif
     
@@ -4377,6 +4681,39 @@ endfunction
     // щитов обычные резисты применятся ниже по цепочке, для поздних уже учтены.
     return shieldDmg * pierce / 100.0
 endfunction
+    // Stats panel preview of LustSin: same sources, but no minimum damage, no
+    // charge / cooldown use and no effects; partial piercing is counted.
+    function GetShieldPiercePreview takes unit c returns real
+    local real pierce = 0.0
+    local integer itemSlot
+    if c == null then
+        return 0.0
+    endif
+    if GetUnitTypeId(c) == Frieren_ID or GetUnitTypeId(c) == FrierenTR_unitid then
+        set pierce = pierce + FrierenTF_PierceShield
+    endif
+    if GetUnitAbilityLevel(c, 'B01R') > 0 then
+        set pierce = pierce + WrathSin_IgnoreAmountAdd
+    endif
+    if LoadInteger(hs, GetHandleId(c), SH_TOJI_Q3) > 0 then
+        set pierce = pierce + 100.0
+    endif
+    if HasCachedItem(c, 'I02E') > 0 then
+        set pierce = pierce + WrathSin_IgnoreAmount
+    elseif HasCachedItem(c, 'I02D') > 0 then
+        set pierce = pierce + EnvySin_IgnoreAmount
+    endif
+    if pierce < 100.0 and GetUnitAbilityLevel(c, 'A07O') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A07O') == 0.0 then
+        set itemSlot = IsItemInInventory3(c, 'I01W')
+        if itemSlot < 0 or GetItemCharges(UnitItemInSlot(c, itemSlot)) > 0 then
+            set pierce = pierce + LustSin_IgnoreAmount
+        endif
+    endif
+    if pierce > 100.0 then
+        set pierce = 100.0
+    endif
+    return pierce
+    endfunction
 
 function DamageShieldAllowsType takes integer typedmg, integer allowedType returns boolean
     if allowedType == DAMAGE_SHIELD_TYPE_ALL then
@@ -4422,8 +4759,18 @@ endfunction
     function MyAnimDest takes destructable ds, real r returns nothing
         call KS_RemoveDestructable.MyRemoveDest_Start(ds, r, 1, -1, -1, "")
     endfunction
-    function FakeCD_Start takes unit NewC,integer NewAbi,real NewCD, integer New_Sh, integer New_Value returns nothing
-        call KS_FakeCooldown.FakeCD_Start1(NewC,NewAbi,NewCD,New_Sh,New_Value)
+    // Passive cooldown on the ability itself (Aexh copies of Patriot G); returns the started time.
+    function PassiveCD_Start takes unit c, integer abi, real cd returns real
+        if HasCachedItem(c, 'I011') > 0 and BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 2 then
+            set cd = cd * (1 - OkarunEggReduceCD / 100)
+        endif
+        call BlzStartUnitAbilityCooldown(c, abi, cd)
+        return cd
+    endfunction
+    // Unlike a cooldown reduction, this also repairs an instant Channel cast
+    // whose follow-up order cleared the native cooldown during SPELL_EFFECT.
+    function CD_EnsureStart takes unit c, real delay, integer abi, real cd returns nothing
+        call KS_Cooldown.EnsureStart(c, delay, abi, cd)
     endfunction
     function CD_Start takes unit NewC, real NewRmax,integer NewAbi,real NewCD returns nothing
         call KS_Cooldown.CD_Start(NewC,NewRmax,NewAbi,NewCD)
@@ -4475,8 +4822,40 @@ endfunction
     function MyRemoveAbility takes unit c, real r, integer id, integer add_or_delete returns nothing
         call KS_RemoveAbility.RemoveAbility_Start(c, r, id, add_or_delete)
     endfunction
+
+    // Opt-in tracking uses the actual remover's clock, including early removal.
+    function GearWatchAbilityTime takes unit u, integer id returns nothing
+        call SaveBoolean(hs, GetHandleId(u), GearKey(GEAR_KEY_WATCH_ABILITY_TIME, "watch ability time ", id), true)
+    endfunction
+
+    function GearAbilityTimeRemaining takes unit u, integer id returns real
+        if GetUnitAbilityLevel(u, id) == 0 then
+            return 0.0
+        endif
+        return LoadReal(hs, GetHandleId(u), GearKey(GEAR_KEY_ABILITY_TIME, "ability time ", id))
+    endfunction
     function MyRemoveAbility2 takes unit c,  integer id, integer add_or_delete, integer abilitycheckid returns nothing
         call KS_RemoveAbility2.RemoveAbility_Start(c, id, add_or_delete,abilitycheckid)
+    endfunction
+    function GetHealCut takes unit u returns real
+        return KS_BlockRegen.HealCut(u)
+    endfunction
+    // Final multiplier of healing received (as SetHpCurrent2 applies it, plus BlockRegen cuts).
+    // Read-only, used by the stats panel.
+    // Same without BlockRegen cuts (BlockRegen already reverts part of every HP gain itself).
+    function GetHealMultiplierNoBlock takes unit u returns real
+        local real m = 1.00 + GetHealAmp(u)
+        if GetUnitAbilityLevel(u, 'B01Q') > 0 then // Dark Holy Grail aura
+            set m = m * (1.00 - DarkHolyGrail_HpRegenReduce / 100.0)
+        endif
+        if GetUnitAbilityLevel(u, 'B00K') > 0 then // Inori T virus
+            set m = m * 0.60
+        endif
+        set m = m * (1.00 - GetHellBlazeCut(u))
+        return m
+    endfunction
+    function GetHealMultiplier takes unit u returns real
+        return GetHealMultiplierNoBlock(u) * (1.00 - GetHealCut(u)) // Kirito T, Rimuru 3Q / 2Q and other BlockRegen cuts
     endfunction
     function BlockRegen takes unit c, real rmax, real blockheal returns nothing
         call KS_BlockRegen.BlockHpRegen_Start(c, rmax, blockheal)
@@ -4511,7 +4890,29 @@ endfunction
         call KS_RemoveFog.MyRemoveFogModifier_Start(fg, r)
     endfunction
     function VisionTimed takes player p, real x, real y, real vision, real time returns nothing
-        local fogmodifier fm = CreateFogModifierRadius(p, FOG_OF_WAR_VISIBLE, x, y, vision, true, false)
+        local fogmodifier fm
+        local integer pid = GetPlayerId(p)
+        local real now
+        local real dx
+        local real dy
+        if not GearVisionClockStarted then
+            set GearVisionClockStarted = true
+            call TimerStart(GearVisionClock, 1000000.0, false, null)
+        endif
+        set now = TimerGetElapsed(GearVisionClock)
+        // Skip when the previous reveal of this player (made < 0.12 s ago, same or larger
+        // radius, centre within a quarter radius) already lasts as long as this one would.
+        set dx = x - GearVisionX[pid]
+        set dy = y - GearVisionY[pid]
+        if now - GearVisionMade[pid] < 0.12 and vision <= GearVisionRadius[pid] and now + time <= GearVisionExpire[pid] + 0.15 and dx * dx + dy * dy <= vision * vision * 0.0625 then
+            return
+        endif
+        set GearVisionX[pid] = x
+        set GearVisionY[pid] = y
+        set GearVisionRadius[pid] = vision
+        set GearVisionExpire[pid] = now + time
+        set GearVisionMade[pid] = now
+        set fm = CreateFogModifierRadius(p, FOG_OF_WAR_VISIBLE, x, y, vision, true, false)
         call FogModifierStart(fm)
         call MyRemoveFog(fm, time)
         set fm = null
@@ -4673,8 +5074,8 @@ endfunction
     endfunction
     function MyRemoveLevelAbility takes unit c, real r, integer id returns nothing
     if c != null then 
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("spell and " + I2S(id))) == 0 then
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("spell and " + I2S(id)), 1)
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_SPELL_AND, "spell and ", id)) == 0 then
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_SPELL_AND, "spell and ", id), 1)
             call KS_AbilityLevel.SetAbilityLevel_Start(c, r, id, GetUnitAbilityLevel(c, id), true)
         endif
         endif
@@ -4829,14 +5230,25 @@ endfunction
         call BlzStartUnitAbilityCooldown(u, abilId, cd2)
         endif
     endfunction
-    function IntegerCd takes unit c, string s, real cd returns boolean
-    local boolean b = false
-    if LoadInteger(hs,GetHandleId(c),StringHash(s)) == 0 then
-    set b = true
-    call SaveInteger(hs,GetHandleId(c),StringHash(s),1)
-    call MyFlush(GetHandleId(c),StringHash(s),0,cd)
+    // Same as IntegerCd with a key hashed once at map load (SH_ICD_* globals).
+    function IntegerCdKey takes unit c, integer key, real cd returns boolean
+    local integer hid = GetHandleId(c)
+    if LoadInteger(hs,hid,key) == 0 then
+    call SaveInteger(hs,hid,key,1)
+    call MyFlush(hid,key,0,cd)
+    return true
     endif
-    return b
+    return false
+    endfunction
+    function IntegerCd takes unit c, string s, real cd returns boolean
+    local integer hid = GetHandleId(c)
+    local integer key = StringHash(s) // hashed once (was three times per hit)
+    if LoadInteger(hs,hid,key) == 0 then
+    call SaveInteger(hs,hid,key,1)
+    call MyFlush(hid,key,0,cd)
+    return true
+    endif
+    return false
     endfunction
 
 private function GearTimer03Loop takes nothing returns nothing
@@ -4861,7 +5273,8 @@ private function GearTimer03Loop takes nothing returns nothing
     call KS_EffectHeight.ELoopHeightSet()
     call KS_RemoveDestructable.Loop_MyRemoveDest()
     call KS_FlushInteger.Loop_MyFlushIntegerC()
-    call TriggerExecute(GearTimer03Listeners)
+    // Listeners are conditions: evaluated in this thread, no new action thread per tick.
+    call TriggerEvaluate(GearTimer03Listeners)
 endfunction
 
 private function GearTimer05Loop takes nothing returns nothing
@@ -4872,7 +5285,6 @@ private function GearTimer05Loop takes nothing returns nothing
     call KS_HealOverTime.Loop_HpS()
     call KS_TextTagDelay.Loop_TT_DELAY()
     call KS_Cooldown.Loop_NextCD()
-    call KS_FakeCooldown.Loop_NextFakeCD()
     call KS_ItemStacks.Loop_AddStacks()
     call KS_SpellStacks.Loop_AddSpellStacks()
 endfunction

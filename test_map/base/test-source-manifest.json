@@ -8,9 +8,6 @@
                                        "Erza"
                                    ],
     "overrides":  {
-                      "Map_Header.j":  {
-                                           "reason":  "Empty TEST map header; MAIN loan defaults are resolved separately if required."
-                                       },
                       "Systems/Starts_Copy.j":  {
                                                     "reason":  "TEST startup: initializes keys without MAIN mode dialog and game loops.",
                                                     "overrideOf":  "WOS_Start/Starts.j"
@@ -59,11 +56,7 @@
                       "WOS_Start/TestUnit.j":  {
                                                    "reason":  "TEST selection helper, currently disabled in WTG; MAIN implementation requires the full MAIN hero picker.",
                                                    "overrideOf":  "WOS_Start/TestUnit.j"
-                                               },
-                      "Systems/CastCheck.j":  {
-                                                  "overrideOf":  "Systems/CastCheck.j",
-                                                  "reason":  "TEST Crocodile T verifies ambush at cast; T2 grants F stack only on successful detonation."
-                                              }
+                                               }
                   },
     "sharedMappings":  {
                            "Systems/ErzaDebuff_Copy.j":  "Systems/DecorDestroy_and_Erza_Debuff.j",
@@ -104,8 +97,8 @@
 
                                          ],
                         "origin":  {
-                                       "kind":  "test",
-                                       "reason":  "Empty TEST map header; MAIN loan defaults are resolved separately if required."
+                                       "kind":  "shared",
+                                       "path":  "Map_Header.j"
                                    }
                     },
                     {
@@ -853,9 +846,8 @@
 
                                          ],
                         "origin":  {
-                                       "kind":  "test",
-                                       "overrideOf":  "Systems/CastCheck.j",
-                                       "reason":  "TEST Crocodile T verifies ambush at cast; T2 grants F stack only on successful detonation."
+                                       "kind":  "shared",
+                                       "path":  "Systems/CastCheck.j"
                                    }
                     },
                     {

@@ -1,9 +1,21 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_ESC_KENJAKU_STACKS = StringHash("Kenjaku Stacks")
+endglobals
 function Trig_ESC_ACT takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer pid = GetPlayerId(p)
     local integer stacks = 0
     local unit selected = GetSelectedHeroForPlayer(p)
 
+    // A dead hero cannot stay selected: Test ESC still revives the own (or test) hero.
+    if selected == null and TestMode then
+        if pid < 10 and Hero[pid] != null and IsUnitType(Hero[pid], UNIT_TYPE_DEAD) then
+            set selected = Hero[pid]
+        elseif TestUnit != null and IsUnitType(TestUnit, UNIT_TYPE_DEAD) then
+            set selected = TestUnit
+        endif
+    endif
     if selected == null then
         if GetLocalPlayer() == p then
             call ClearTextMessages()
@@ -16,8 +28,8 @@ if GetLocalPlayer() == p then
         endif
     if TestMode == true then
         if GetUnitTypeId(selected) == Kenjaku_ID then
-            set stacks = LoadInteger(hs, GetHandleId(selected), StringHash("Kenjaku Stacks"))
-            call SaveInteger(hs, GetHandleId(selected), StringHash("Kenjaku Stacks"), stacks + 2)
+            set stacks = LoadInteger(hs, GetHandleId(selected), SH_ESC_KENJAKU_STACKS)
+            call SaveInteger(hs, GetHandleId(selected), SH_ESC_KENJAKU_STACKS, stacks + 2)
         endif
 
         

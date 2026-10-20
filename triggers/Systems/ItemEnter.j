@@ -80,6 +80,18 @@ local real r = 0
 local integer owner = GetItemUserData(ti)
 local integer p = i+1
 local integer check = 0
+// Scroll of Mastery: permanent +2 Str/Agi/Int, the scroll itself is consumed.
+// Only the player's own hero: the shop price probe (pricesell) must keep the scroll to read its value.
+if id == 'I04D' and i < 10 and c == Hero[i] then
+    call SetHeroStr(c, GetHeroStr(c, false) + 2, true)
+    call SetHeroAgi(c, GetHeroAgi(c, false) + 2, true)
+    call SetHeroInt(c, GetHeroInt(c, false) + 2, true)
+    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIam\\AIamTarget.mdl", c, "origin"))
+    call RemoveItem(ti)
+    set c = null
+    set ti = null
+    return
+endif
 if id == 'I00C' then
 call AddHpRegen(c,5,true) 
 endif
@@ -96,7 +108,7 @@ if id == 'I03P' then
 call AddHpRegen(c,25,true) 
 endif
 if debugcditem(id) then 
-set r = LoadReal(hs,GetHandleId(c),StringHash(I2S(id)))
+set r = LoadReal(hs,GetHandleId(c),GearKey(GEAR_KEY_I2S, "", id))
 set k = getdebugcditem_abi_id(id)
 if r > 0 then 
 if k == 'A01W' then 
@@ -107,6 +119,9 @@ call BlzStartUnitAbilityCooldown(c,k,r)
 endif
 endif
 
+if id == HashiramaCells_ID then
+call AddHpRegen(c,HashiramaCells_HpRegen,true)
+endif
 if id == 'I00Y' then
 call AddHpRegen(c,20,true) 
 endif
@@ -195,7 +210,8 @@ endif
 if id == 'I00M'  then 
 set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')))
     if k== 0 then 
-    set k = 1000
+    // Cup of Tea starts at 500 damage threshold (stacks).
+    set k = 500
     endif
     if k> 9999 then 
     set k = 9999
@@ -205,7 +221,12 @@ set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I00M')
     if id == 'I043' then 
 set k = GetItemCharges(UnitItemInSlot(Hero[i],IsItemInInventory3(Hero[i],'I043')))
     if k== 0 then 
+    // Crafted from a Cup of Tea: keep its stacks.
     set k = 1000
+    if ShopCraftTeaCharges > 0 then
+        set k = ShopCraftTeaCharges
+        set ShopCraftTeaCharges = 0
+    endif
     endif
     if k> 9999 then 
     set k = 9999
@@ -233,6 +254,7 @@ call IsItemInInventory42(c,'I00E','I00O','I01N')
 call IsItemInInventory42(c,'I00J','I01M','ZZZZ')
 call IsItemInInventory42(c,'I00R','I01L','ZZZZ')
 call IsItemInInventory42(c,'I02T','I03F','I03E')
+call IsItemInInventory42(c,KusanagiFire_ID,KusanagiWater_ID,KusanagiElectro_ID) // one elemental Kusanagi
 
  call AddAinzItemGoldCost(c, ti)
 endif

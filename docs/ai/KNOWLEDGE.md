@@ -7,7 +7,7 @@
 | --- | --- | --- |
 | TEST собирает старую систему/не того героя | shared-источники берутся из MAIN, TEST имеет свои overrides и замыкание зависимостей; перенос героя не переносит объекты/ассеты | [test_map/README](../../test_map/README.md), [hero workflow](../../.claude/skills/wos-new-hero/SKILL.md), `tools/test_test_map_workflow.py`, `test_hero_transfer.py` |
 | Добавление триггера меняет чужой текст в редакторе | WTG traversal и WCT payload должны сохранять соответствие идентичностей и порядка; не склеивать их по случайному индексу | `tools/sync_war3_triggers.py`: `validate_editor_order`; `tools/test_sync_war3_triggers.py`: `test_main_push_inserts_new_start_trigger_before_later_categories` |
-| Пропали уровни/описания Channel | явные поля каждого уровня и `Ncl5`; описания строятся из реальных TooltipBuilder/UniversalTooltips, а не независимой копии формул | [MAIN_ABILITY_LEVEL_REPAIR](../../MAIN_ABILITY_LEVEL_REPAIR.md), `tools/test_main_ability_levels.py` |
+| Пропали поля рангов / двойное списание маны | `repair_main_ability_levels.py --levels-only` восстанавливает все ранги без перезапекания текста; ManaFix использует GearTimer03 и учитывает scripted delta SetMpCurrent/MyAddMana | [MAIN_ABILITY_LEVEL_REPAIR](../../MAIN_ABILITY_LEVEL_REPAIR.md), `tools/test_main_ability_levels.py`, `tools/test_cast_mana_fix.py` |
 | Неправильная сила/длительность контроля | ранг принадлежит служебной способности, не buff; таблица рангов должна соответствовать формулам Systems1 | [CUSTOM_BUFF_LEVEL_AUDIT](../../CUSTOM_BUFF_LEVEL_AUDIT.md), `tools/test_custom_buff_levels.py` |
 | Сейв не загрузился/статистика удвоилась/кеш Preloader | стартовая загрузка и локальный кеш, идемпотентность конца матча, нормализация ника, проверки целостности | [SaveLoad-разбор](../SAVELOAD_CHANGELOG_2026-10-09.md), `triggers/WOS_Start/SaveLoad.j`, `UI_CAREER.j`, `tools/test_saveload.py` |
 | Неверные родители фреймов, bootstrap, TOC | общие владельцы через WOSUI; FRAME/SIMPLEFRAME и локальные операции имеют разные ограничения; байты TOC существенны | [UI-правила](../../.claude/rules/ui-frames.md), разделы владельцев/корней [UI architecture](../ui-redesign/ARCHITECTURE.md), `.gitattributes` |
@@ -154,6 +154,116 @@ Description hover must not renew its own leave grace (10 existing .05 ticks).
 Range audit covers 388 HUD abilities, 58 source cast formulas/12 aliases; retain
 the explicit >2500 hide rule (Patriot T1 1400 visible, T2 4000 hidden).
 
+Kyoraku Takaoni (player-facing E2, code KyorakuE4_ID/A114) replaces E/A052 via
+SwapAbility at hero level25; A058/KyorakuE2_ID is the separate shadow E.
+A114 presentation is self-contained in base ability data, E cell(2,2), explicit
+five tooltip levels, and BTNHero_Kyoraku_E2 (including disabled icon). Its own
+queued callback481 avoids sharing callback333; Rimuru G-copy uses callback482.
+CP62 supersedes the initial E2 timing: slash scale3.2, both damage cuts occur
+on the same tick within100 of the cage center; flight continues650 beyond it
+without a post-flight pause. Two extra blue effects use scale1/height175/pitch
+±45. Cage expiry restores E immediately; the swap expiry retires harmlessly.
+ShowCD has A114 metadata; Rimuru A113 is a one-level copied spell, uses native
+G cell(2,1), and preserves maximum copied 2R damage in its single tooltip level.
+stage_hero_packet_2026_10_18.apply_packet is idempotent and is called by the item
+stager too. Registered F/G objects must use native F(1,1)/G(2,1); mismatches make
+native cooldown overlays appear away from their relocated buttons. Fix objects,
+without periodic UI rebuilding. Convenient ability JSON omits level fields above
+actual alev; raw objects retain these fields for lossless roundtrip.
+See RESUME CP61 and `_build/hero-packet-20261018/publication.json`.
+Native rendering still needs Warcraft verification.
+
+Central targeted debuffs (Systems1 BuffUnit01/02, Silence/Armor/Stun/Doom/Root/
+Slow/Curse variants, BuffUnit1/2) and Erza debuff helpers select/create their
+existing dummy from the TARGET owner's player index. Keep c as damage source.
+No extra dummy pool, visibility timer or per-cast teleport is needed. Target-owned
+Slow dummies require ally/self-capable filters in A1OT/A03U/A108; otherwise changing
+the array index alone silently rejects their orders. Tests cover owners2/23 and
+reuse. Crocodile channel resistance preview reads the shared scalar
+SH_CROCODILE_T_CHANNEL; local UI getters must not use TriggerEvaluate/struct
+dispatch or write synchronized state. Hashirama Cells uses TimedStr's existing
+buff loop to restore charges15 once after Warcraft's post-SPELL_EFFECT debit,
+then clears them on expiry; no new timer or repeated charge writes. Shun Shun
+Rikka aura text is18%; Ashisogi poison .4AGI, physical spell damage only and
+explicitly excludes native attack events (including physical-tagged attacks).
+
+CP62 range geometry: UniversalTooltips.GetPreviewRadius and GetDisplayedRange
+share ARules_GetImpactReach; RefreshSkill prints the same value in Range.
+Fixed-flight rules include launch offsets, last damage sampling and collision
+radius. DarkShiki T is140+2100+250=2490. Point-target fallback adds actual impact
+radius; unit-target secondary search/jump/aura radii do not extend acquisition.
+Bounded pure numeric helpers allocate nothing and change no game state. The
+existing >2500 renderer limit remains. Audit MAIN rules, not TEST's older copy:
+tools/audit_hero_range_sources.py; 390 HUD buttons have object metadata,28 fixed
+flight examples have source-probe assertions in test_hero_impact_reach.py.
+
+TestUnit_FastStartReady counts active humans plus each test hero once, using
+current coordinates in gg_rct_Go. Test owners already have Hero[] entries;
+counting both double-counts the RightArrow ally and blocks fast start. Native
+shared vision follows both test heroes for their controller; sight radius1800.
+Saber F uses permanent Channel pair A02C/A115, explicit player availability and
+AHUI swap metadata, no swap timer. Off2.5% current MP free; on15% with equal raw
+MP cost per attack. Initialize first grant to clear stale replacement state.
+See RESUME CP62 and `_build/hero-refinement-20261018/publication.json`.
+
+CP64 supersedes CP63's added attack-type icon: it is removed from the HUD and
+the original number inset.0145 restored. WUI_AttackDamageColor reads live weapon0
+UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE;4 means blue magical, all other current types
+red physical, matching DmgSys native magic detection. WUI_AttackDamageText strips
+embedded stock white/green codes before coloring the complete number, including
+bonus/penalty. HUD and pick preview share this formatter, no extra timer or state
+writes; missing pick dummy uses red (all current base hero objects use hero type).
+Raiden/Starrk form weapon changes are reflected on the existing render clock.
+Tomioka E is0.9 Attack per hit with base2/3/4/5/5; G bonus is deliberately added
+AFTER the base cap, one hit per3 stacks. Keep runtime and object tooltips aligned
+through TomiokaE_AtkCountMax and stage_hero_packet_2026_10_18.py.
+Windows watchers may reject direct truncation or replacement of unchanged
+metadata. war3_object_data.dump_text/dump_json skip byte-identical content and
+replace a fully written sibling atomically; extract_war3_triggers uses this for
+the dependency JSON and README too. Replace failure preserves the previous file
+and removes the temporary sibling; test_war3_object_data covers this contract.
+
+CP65 common performance (2026-10-19): ordinary casts no longer subscribe to
+TooltipBuilder's whole-hero rebuild. Formula-only damage text removes all
+DamageCheck calls and changing evaluated totals from UniversalTooltips, including
+its poll. Poll5s; level/skill/item/form events remain explicit. applyToAbility,
+Learn and Item compare final native text before writing. Milim threshold bonuses
+modify the displayed coefficient, preserving their meaning without computed HP
+damage. DamageStats collects every hit immediately, but redraws/hover values use
+ten existing.5s ticks; opening/paging/roster bypass the gate. Source-kind lookup is
+once per record rather than once per bucket. Empty shared event dispatch skips
+context copying/TriggerExecute; new listeners MUST use GearDamageAddListener or
+GearSpellAddListener. Active/nested callbacks retain previous context semantics.
+
+HUD non-vital stats use five existing.2s ticks (user chose1s), while HP/MP stay
+fast. Custom CD text uses integer seconds and reads ongoing cooldowns once per
+four existing.25s refreshes; ready slots and ability/permission changes reset the
+gate. Availability/Swap resolution retains.25s, hover.05s. Unit/type/column/hover
+changes force a new stat read; a repeated F1
+selection does not invalidate the timer. Selection handlers skip same-unit work;
+TestUnit only reconfigures alliances when the controller actually changes.
+Portrait camera resolves the currently selected portrait rather than Hero[pid].
+Tomioka lower +damage plate was a separate native TasBox frame, now removed along
+with its creation/polling; corner stack count/gameplay remain. Dark Grail B01P
+text now20 HP/sec (heroes),6 MP/sec,20% MS,1500 radius; B01Q30% less active healing.
+Stationary range hover skips terrain/effect positioning until XY/visible effect
+changes. There are no terrain-deformation writers in current MAIN. Native RNG
+sequence, hit frequency and gameplay setters were preserved. Tests count skipped
+operations, not Warcraft FPS; an A/B game profile is still needed to attribute
+remaining action/cast drops. Evidence/report: `_build/performance-20261019/audit.md`
+and RESUME CP65.
+
+Custom ability tooltip presentation uses a fixed cache of seven slots x two
+modes/player, not extra frames. Keys: unit/type, ability/level, hero level/skill
+points, settings, TooltipTextRevision and a5s epoch for native writers outside
+TooltipBuilder. Title/raw text/mana and decorated text are reused; same native
+values do not rebuild or reset layout even on epoch/revision revalidation.
+TooltipBuilder increments revision only after an actual ability/research text
+write. Never let the cache bypass visibility/native-command/privacy checks.
+Changing slots applies ready strings to the same existing tooltip frames.
+Tests cover200 identical hovers (one metadata read), returning to a cached slot,
+unchanged epoch no writes, changed native description and integer1s CD cadence.
+
 Kyoraku third-act final ability A059/KyorakuT4 has G, replacing A0DY/Skip Stage;
 mapping it to T hides the enabled real G and its initial CD. Register both variants
 in G, retain gameplay availability hooks. Harribel's morph code still had six old
@@ -210,6 +320,8 @@ Technical watchdogs are not visible durations: Patriot W ends on pulse count
 before its15s cap; Harribel EW charge is MaxCastDuration+.12 before the dash;
 Akainu T ends on fist count/.03 tick cadence; Inori W uses native Channel
 FOLLOW_THROUGH_TIME (read once during shared start, currently7.5), not99s.
+InoriW_GetHealTotal includes +2x INT at hero level35+ for the allied branch
+before the existing29-pulse split; enemy and active-E branches stay separate.
 New progress titles use cleaned object ability tooltips; long-title geometry
 is saved in MeterEdges real key6 and retained by WUI_RepinMeter.
 CP38 removes bespoke hero FRAME meters (including Erza4 E in DecorDestroy).
@@ -644,3 +756,209 @@ used a W2 damage tag A05F; replace only that proc's tag with A02F, not all W2 hi
 NextDmg route0/delay .06, raw damage and charge/cooldown remain unchanged. Tests
 run the actual public guard/proc for original/test owners and all passive tiers;
 native game acceptance still requires testing. See RESUME CP57 for build proof.
+
+### Hero mana costs and attack tooltip type — CP58
+
+SetMpCurrent modifies negative as well as positive deltas under Inori's B00K.
+Do not use it for an exact percentage-of-maximum-mana upkeep: Gojo E5 now uses
+SetUnitState with the paid fraction of each .03 tick. The free window is2 sec
+(user correction); after it,10% maximum mana/sec, no time cap,
+and cancellation below100 current mana. Tests execute the production condition/
+drain and confirm30% spent over3 paid seconds at different mana pool sizes.
+
+TooltipBuilder damage type4 means Attack Damage; UniversalTooltips maps it to
+DamageCheck kind0 (the same route as dmgatk). Attribute scaling is independent:
+Tomioka E remains AGI-scaled but applies attack damage and attack effects.
+Milim T2's level35 passive bonus is aggregate beam damage, divided by its tick
+count; the charge label snapshots the same bonus as gameplay. Keep the tooltip
+preview's threshold additions consistent. WUI_HeroProgressThresholds receives
+the numeric damage thresholds and supports the dual meter's damage row.
+
+See `tools/test_hero_balance_followup.py` and RESUME CP58/CP59. The35 errors seen
+during CP58 came from restoring stale WCT implementations, not an acceptable
+existing baseline. CP59 recovers working sources and the full regression suite
+passes. Compilation still does not prove native rendering or multiplayer.
+
+### Stale WCT inside a working STABLE — CP59 (2026-10-17)
+
+The user-confirmed `STABLE/WOS2_MAIN_STABLE.w3x`, SHA256
+`bdec96e8788f00f5b6282d6b3f99cf5af97a99162b59a68502de6c4a3b03362a`,
+contains a newer playable script and an older embedded WCT. Importing that WCT
+regressed75 source implementations: feed X=.560 instead of working.442, old
+DamageStats contracts, lost cached SH_* keys and startup/ability hooks. Matching
+a broken build to that same WCT and reproducing its failures did not validate it.
+
+Actual source was recovered from
+`backups/source-import/import-20261017-191315-821/triggers/`. Its independent
+compile matches all2437 shared gameplay/UI functions and common global values
+in the working script, normalizing JassHelper private names/code whitespace.
+Regenerate native initialization from the working compiled script with
+create-main-mapscript.ps1. All6630 reference payloads were compared; preserve
+only requested ability differences and intentional pre-task Shiki/Milim edits.
+Reference STABLE is read-only evidence, never a publication target.
+
+Import now recompiles incoming WCT in a temporary workspace; the new
+check_main_source_parity.py rejects disagreement with compiled code before
+replacing project files. The supplied stale archive is confirmed rejected.
+MAIN build requires WCT/source identity, compiles the full external source with
+--scriptonly, independently verifies functions/globals, and only then packs that
+exact script. It extracts the packed script and checks its SHA256. A trial legacy
+map-mode invocation omitted imports despite exit0; parity blocked publication.
+Do not rely on BUILD OK, a familiar archive name/date, or a failing old baseline.
+
+Keep triggers, scenario WCT and root native snapshots synchronized after a
+verified save/build. See RESUME CP59 for final tests/publication. Native visual,
+physical input and multiplayer acceptance still need the user's Warcraft run.
+
+## Chained ability swaps and late tooltip registration — CP60
+
+An expired KS_SpellTimer must verify that its new ability still owns the
+`AHUI swap <oldId>` marker before restoring availability or clearing the marker.
+Otherwise an older Q2 window can expose Q1 during a newer Q3 window. Its timer
+instance still retires/releases normally when superseded. Frieren's finisher
+also clears the consumed-stage signal and explicitly uses Q3 object level1.
+Production-body replay and expiry cases: `tools/test_hero_balance_followup.py`.
+
+Missing previews for late heroes may be unregistered SpellData rather than a
+bad radius formula. All builder startup groups now use480 small jobs, one ability
+or one form per fresh ExecuteFunc budget, one job every0.01 sec (about4.8 sec
+overall). Preserve global WOS_UTB_Init_* names used by queued strings; compiler
+output must contain every target. This prevents an aggregate thread cutoff;
+static tests cannot establish the actual engine cutoff or prove native rendering.
+Keep F/G key-badge visibility separate from native tooltip ownership (ShowCD,
+RESUME CP60); a visible badge does not mean a custom ability button is drawn.
+
+
+## 0.33c instant cooldown and movement completion (2026-10-20)
+
+KS_Cooldown/CD_Start only shortens a positive native cooldown; it cannot repair
+an instant Channel cooldown cleared by a follow-up order. Brandish now requests
+explicit CD_EnsureStart after shared CDR calculation. Its demanded05 timer alone
+may restart a zero cooldown, subtracting elapsed delay; ordinary CD_Start keeps
+its previous reduction-only contract. Production tests: test_followup_033c.py.
+
+Laxus Q's final StopSpellUnit2 issued stop and set a .06s AHK gate; floating-point
+subtraction could also defer impact completion. Q now completes with an epsilon
+on total elapsed time, directly unpauses and restores the recorded order. Q2 releases the caster at lightning launch. Its casterReleased guard prevents
+retraction/cleanup from re-pausing or unpausing a subsequent cast.
+
+Okarun F repeatedly reissued point/target/spell orders while adding speed, resetting
+native movement/cast windups. It now retries approach orders at most once per .75s, skips active casts,
+samples actual native travel since its previous post-boost position and adds
+the missing distance. T tackle scans use a per-target/per-caster .75s cooldown
+with450 knockback over the unchanged .35s duration (CP68).
+The T speed formula is shared by grant/movement/meter: cap*1.25-200, floored at
+native speed. VM cases cover native travel0/300/522, movement/attack/skill orders,
+stop/hold/root, and all passive speed tiers. Engine pathing/turning/cast timing
+still require real Warcraft verification; see RESUME CP67.
+
+
+## Hell Blaze healing reduction (2026-10-20)
+
+HellBlaze_HealCutPerStack=5.5 in Systems2 is the shared source for all seven
+ranks (max38.5%). SetHpCurrent2 calls GetHellBlazeCut rather than maintaining
+its own multiplier ladder; passive regeneration uses that same helper through
+GetHealMultiplierNoBlock. This avoids drift between active heals and regen.
+I02F text, A0E6 rank tooltips, B01S/B01T/B01U/B01V/B01W/B02E/B02F descriptions,
+and the October18 staging generator match5.5%. Native rank text also reflects
+the existing 10s duration. Full-stack mana burn is now 1.35% maximum mana per second.
+The HP heal-amplification tooltip preserves one decimal place. Production VM
+coverage in test_followup_033c.py tests0..7 stacks, active heal/regen agreement,
+remaining lower-rank buff priority and object text.755 regressions PASS (5 skips)
+and compile/parity PASS. Native gameplay remains an engine acceptance boundary.
+
+## Frostnova and current TEST shared sources (2026-10-20)
+
+Cause: new TEST profiles inherited the frozen Crocodile CastCheck override.
+It lacked Frostnova dispatch and called the old DarkShiki T signature. Current
+WOSUI also requires EnvironmentRoundRules and a few absent shop/picker globals.
+The formerly empty TEST header collided with MAIN's required Map_Header source.
+
+Solution: the recorded source policy now maps CastCheck and Map_Header directly
+to MAIN. MAIN already contains the old Crocodile override's T order/stack fixes.
+Keep arena startup/keys as TEST overrides and supply the missing UI globals in
+TEST Start. Do not resolve this by disabling dependency or WTG/WCT validation.
+Hero Transfer now recognizes WOS_HeroVoicePath after the picker voice refactor.
+
+Frostnova's MAIN source is triggers/Heroes/Frostnova.j; the selected local TEST
+copy is test_map/heroes/Frostnova.j. IDs and reproducible object staging live in
+object-data/frostnova-ids.json and tools/stage_frostnova.py. Its single shared
+0.03 callback uses active lists; Cold/Frostbite use dedicated reusable Slow
+casters because DummyPlayer already owns another Slow with the same order ID.
+Using that shared dummy would cast the wrong ability. Native debuff disappearance
+clears stacks/DoT. The native Jaina model is an intentional placeholder.
+
+TEST builds now extract the import table when needed, install prebuilt project
+assets, and pack the import table plus staged asset files. Previously Update
+only packed script/editor/object entries, silently omitting newly staged icons.
+Button Manager Clear supports opening an image on its command line; AutoBorder,
+AndSave and AutoCreateDis in a private settings copy generate paired BLP icons
+without UI automation or changes to the user's installed settings.
+
+Verification: test_frostnova.py executes production state methods; existing
+hero-transfer, TEST-profile/workflow, trigger-sync and hero-progress suites pass.
+Full MAIN and TEST builds and packed payload checks are separate from gameplay.
+Native rendering, dispel timing, crystal collision and multiplayer remain manual
+Warcraft III checks. See test_map/README.md for the profile and balance contract.
+
+## Native TEST UI and task compiler audit (2026-10-20)
+
+Cause: TEST's shared dependency closure now includes WOSUI, whose initializer
+bootstrapped MAIN HUD/menu chrome in the arena. The user reported green panels
+and requested stock Warcraft UI for TEST. The generated TestHero adapter now
+provides WOSTestNativeUI by default (testNativeUI=true). WUI_Init sets its input
+sentinels, then returns before bootstrap; gameplay APIs and charge storage remain
+available. Custom frame owners never run. MAIN has no marker and retains its
+existing behavior. Setting testNativeUI=false explicitly restores UI testing.
+Frostnova TEST costs are zero at all ranks; MAIN costs stay unchanged.
+
+The VS Code task audit also found that the old compile task indexed recovery
+backups and unrelated TEST snapshots. Restrict provider discovery to live MAIN
+and explicitly requested roots. Library-topological ordering alone then exposed
+19 plain-JASS forward-reference errors (CaptainDraft/QB/picker/shop contracts).
+After validating dependencies, use the same enabled MAIN import order as the
+known-good check_wos_ui.py. Add a 30-second compiler timeout so an error dialog
+cannot leave the task waiting indefinitely. MAIN Save now uses check-save;
+all tasks set workspace cwd and distinguish their MAIN/TEST direction.
+
+Evidence: full task compile passes112 sources; test_vscode_tasks.py audits task routes/arguments and
+PowerShell scripts without executing imports or game launches. Native
+TEST UI VM tests preserve capture sentinels and start no custom frames/timers.
+The rebuilt packed TEST script returns before WUI bootstrap, Q/W/E/R/T object
+costs are zero, and a repeated WCT/WTG save is byte-identical. MAIN WCT/source
+identity and compiled/source parity remain PASS5284 functions. Visual acceptance
+still requires restarting the TEST map in Warcraft III.
+
+## Combined VS Code map workflows (2026-10-20)
+
+Cause: TEST build/run packed previously saved objects, so editing JSON required
+an easily missed separate save. MAIN imports required two separate tasks and
+mixed labels obscured their direction. There are now six primary TEST/MAIN
+tasks: receive everything, save/build/run, and save/build without launch.
+COMMON holds individual code/object imports and distinct maintenance actions.
+Ctrl+Shift+B builds the selected TEST profile without launching the game.
+
+The shared wos_map_workflow.py calls check-save before build/run. TEST uses
+--no-build to prevent recursive/double compilation; direct TEST check-save
+keeps its original save/build behavior. MAIN receives from configured mainMap,
+TEST from the selected saved hero archive. Other MAIN folders can be selected
+once through a COMMON task. Imports cannot read unsaved editor memory.
+Incoming MAIN code parity and object decoding must both pass before replacement;
+a complete project backup restores code, native snapshots and object workspaces
+if applying either importer fails. Project-only allocation JSON survives object
+imports. Existing conflict/parity/editor-open guards remain in force.
+
+Evidence: test_wos_map_workflow.py covers validation-before-write, rollback of a
+partial import and absence restoration, save-before-build and launch blocking.
+test_test_map_workflow.py covers deferred TEST compilation; test_vscode_tasks.py
+checks unique command routes, six primary tasks, default build and script syntax.
+Real MAIN/TEST import validation runs without replacing project files; game UI
+and multiplayer behavior still require a Warcraft III playtest.
+
+Full MAIN workflow validation also exposed an environment-dependent build failure:
+Get-FileHash was unavailable in the task's inherited PowerShell module setup.
+Packed-script identity now uses streaming .NET SHA256 with disposed handles;
+the verification is retained. test_vscode_tasks.py tests actual digest values
+for different payloads with PSModulePath cleared. Battle.net helper startup is
+hidden. Real TEST and MAIN no-launch builds are verified separately from game
+launch/UI acceptance; TEST compiles once in the combined workflow.

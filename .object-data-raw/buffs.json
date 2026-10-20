@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "dc16b6cdfeff0d0d7ca791ae189e714e2c7123fe661659028e30a5a496b8ac07",
+  "source_sha256": "629d57cd1e4e331d1bd136704f10275ef61e1d746bc16c9fdaff363be29b99f3",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3524,6 +3524,323 @@
       ],
       "modifications": [],
       "display_name": "Suna Suna no Mi: Sand Speed"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03F",
+        "hex": "42303346"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B040",
+        "hex": "42303430"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B041",
+        "hex": "42303431"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B042",
+        "hex": "42303432"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Cold"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters."
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Cold"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "feft",
+            "hex": "66656674"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "ftac",
+            "hex": "66746163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B043",
+        "hex": "42303433"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostbite"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters."
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostbite"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "feft",
+            "hex": "66656674"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "ftac",
+            "hex": "66746163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        }
+      ],
+      "display_name": ""
     }
   ]
 }

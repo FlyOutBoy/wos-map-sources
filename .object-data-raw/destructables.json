@@ -4749,6 +4749,206 @@
         }
       ],
       "display_name": "Здание_3_zesu"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B044",
+        "hex": "42303434"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "btil",
+            "hex": "6274696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "*"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bhps",
+            "hex": "62687073"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 500.0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "boch",
+            "hex": "626F6368"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bflh",
+            "hex": "62666C68"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bfvi",
+            "hex": "62667669"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "bnam",
+            "hex": "626E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostnova Ice Crystal"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bfil",
+            "hex": "6266696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Doodads\\Icecrown\\Terrain\\Icecrown_Crystal\\Icecrown_Crystal0.mdl"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bptx",
+            "hex": "62707478"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PathTextures\\4x4SimpleSolid.tga"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "btxf",
+            "hex": "62747866"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bvar",
+            "hex": "62766172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bmis",
+            "hex": "626D6973"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 1.0
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bmas",
+            "hex": "626D6173"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 1.0
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        }
+      ],
+      "display_name": "Дерево_1"
     }
   ]
 }

@@ -45,7 +45,7 @@ class MusicResources(unittest.TestCase):
             return True
         fixture.vm.g['BlzLoadTOCFile'] = load
         vm = ui.load_source('MusicPlayer.j')
-        vm.g.update(lmpTocLoaded=False, BJDebugMsg=messages.append,
+        vm.g.update(lmpTocLoaded=False, BJDebugMsg=messages.append, TimerStart=lambda *_: None, lmpScanTimer='scan',
                     WUI_HasMusicDefinitions=lambda: fixture.vm.run('WUI_HasMusicDefinitions'))
         fixture.vm.run('WUI_OnReady', (lambda: observed.append(list(loads)),))
         fixture.vm.run('WUI_OnReady', (lambda: vm.run('LMP_LoadTemplates'),))

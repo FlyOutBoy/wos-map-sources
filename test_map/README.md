@@ -1,5 +1,109 @@
 # TEST: выбранный герой
 
+## Standard Warcraft UI and current VS Code tasks (2026-10-20)
+
+TEST defaults to `testNativeUI: true` in the local build configuration.
+The generated TestHero adapter provides `WOSTestNativeUI`; shared WOSUI keeps
+its input defaults and gameplay-facing APIs, then returns before starting the
+custom HUD/menu bootstrap. The stock console, command grid, inventory and
+tooltips keep their native layout. Charge values remain stored for hero logic,
+while custom counters/bars are not rendered. This policy applies to existing
+and newly selected TEST profiles and does not change MAIN UI behavior.
+Set `testNativeUI: false` explicitly only when testing the custom UI itself.
+
+Frostnova's TEST Q/W/E/R/T mana costs are zero at every rank. MAIN keeps its
+25/80/100/120/150 costs. `stage_frostnova.py` preserves this distinction.
+Both hero sources group IDs and tuning globals under COMMON/Q/W/E/R/T/F/G
+headings; G is unassigned. Public spell entry points have matching section labels.
+
+В меню **Terminal → Run Task** основные действия находятся под `TEST:` и `MAIN:`.
+Для обоих профилей нумерация одинакова:
+
+| Задача | Когда запускать | Результат |
+| --- | --- | --- |
+| `1. Карта → проект — получить ВСЁ из World Editor` | После Ctrl+S в World Editor | Импортирует J, WCT/WTG и все объекты в проект с бэкапом локальных файлов |
+| `2. Проект → карта — сохранить ВСЁ, собрать и ЗАПУСТИТЬ` | После изменений J/JSON в VS Code | Проверяет и сохраняет объекты и код, собирает карту с ассетами и запускает Warcraft III |
+| `3. Проект → карта — сохранить ВСЁ и собрать без запуска` | Нужна готовая карта без игры | Тот же полный процесс без запуска игры |
+
+`Ctrl+Shift+B` запускает TEST: 3. TEST выбирается через `testHero` в локальном
+`.vscode/wos-build.json`; MAIN — через `mainMap`. Импорт читает сохранённые
+файлы на диске: несохранённые изменения из памяти World Editor недоступны.
+Перед направлением проект → карта закройте World Editor без повторного сохранения.
+После импорта из World Editor повторно импортировать перед сборкой не требуется.
+
+`COMMON | ...` — вспомогательные задачи: импорт только кода/триггеров, только
+объектов, выбор другой папки MAIN, проверки без записи, подготовка TEST-профиля,
+Hero Transfer, копирование J и обслуживание импортов. Отдельный экспорт MAIN
+дублировал импорт объектов и удалён из меню; прямой CLI `export` остаётся доступен.
+Подготовка TEST-профиля создаёт отсутствующий профиль, а существующий не перечитывает.
+
+`tools/wos_map_workflow.py` объединяет существующие импорт/синхронизацию/сборку.
+При сборке TEST `--no-build` откладывает внутреннюю сборку `check-save`, после
+чего общий build/run собирает ровно один раз. Ошибка проверки/сохранения блокирует
+сборку и запуск. Основной импорт MAIN сначала проверяет оба набора данных,
+включая compiled/source parity, затем сохраняет полный бэкап и применяет их;
+ошибка применения восстанавливает весь выбранный набор файлов проекта.
+Проектные JSON с выделенными ID сохраняются при импорте объектов.
+
+MAIN Compile indexes live source roots instead of scanning project backups and
+TEST snapshots. It validates library dependencies, then preserves the enabled
+MAIN import order from trigger-settings.json, matching check_wos_ui.py. Legacy
+plain JASS functions depend on this order without library declarations.
+Compiler failures are bounded to 30 seconds instead of waiting indefinitely on
+a hidden JassHelper error dialog. `test_vscode_tasks.py` audits task paths, CLI
+entry points, MAIN/TEST routes, PowerShell syntax/parameters and source closure.
+
+## Frostnova profile (2026-10-20)
+
+The active local `testHero` is `Frostnova`. All three generic TEST tasks select
+`Heroes/Frostnova.w3x`; the initial arena was copied from Crocodile without
+changing Crocodile's archive. Its startup and editable objects are independent
+under `test_map/profiles/Frostnova/`. Startup creates `H002`, equips A116-A11B
+(Q/W/E/R/T/F), and calls `Frostnova_Register`. The model is a native Jaina
+placeholder; replace the Frostnova unit's model field in the profile JSON when
+the real model is ready.
+
+`test_map/heroes/Frostnova.j` and `triggers/Heroes/Frostnova.j` currently match.
+The selected TEST source is the former; transfer its changes into MAIN with
+Hero Transfer. Shared CastCheck and Map Header now come from current MAIN.
+The old Crocodile CastCheck override is obsolete: MAIN already contains its T
+order/stack fixes, while the frozen override missed new hero dispatch and the
+new DarkShiki T signature. MAIN's header now supplies EnvironmentRoundRules.
+TEST startup provides only the missing shop/picker globals required by current
+shared systems; it does not start the MAIN picker or shop.
+
+Frostnova uses one lazy `GearTimer03Listeners` callback and balanced timer
+acquire/release calls. Charges, missiles, debuffs and fields use active lists;
+there is no private timer. Q capacities are 2/2/4/4/6 at **ability ranks** 1-5,
+with one charge restored per 6 seconds. Cold caps at five 5% slow stacks for
+4 seconds; Frostbite uses 8% per stack for 6 seconds and Int x 0.12 per stack
+each second. Debuffs can be dispelled. E grants 0.6 seconds of invulnerability;
+T lasts 12 seconds and fully restores Q. Enhanced R grows up to eight blocking
+crystals, with occupied positions skipped; all are removed with the field.
+Ground fields survive caster death, but end if the caster unit is removed.
+The first balance has no damage amplification, damage reduction, crystal
+immolation or HP drain.
+
+Object staging is reproducible with `python tools/stage_frostnova.py` after
+the COMMON TEST preparation task has created the Frostnova profile. Allocated IDs are recorded in
+`object-data/frostnova-ids.json`; the lossless object API preserves other objects.
+The stager also refreshes TEST's shared stun/slow/root/silence/doom ranks.
+
+Seven icons use official PERISH IN FROST stills; crops and URLs are recorded in
+`assets/frostnova_icons_src/sources.json`. Rebuild with a Python environment
+containing Pillow:
+`python tools/build_frostnova_icons.py --button-manager <installed-directory>`.
+This runs the installed Button Manager Clear using a private configuration copy
+and verifies all fourteen 64x64 BTN/DISBTN BLP outputs. The user's settings stay
+untouched. TEST builds now install project assets and package their imports with
+WTG/WCT, so TEST: 2 and TEST: 3 retain the icons after subsequent builds.
+
+Verification: `test_frostnova.py` executes the JASS methods with the existing
+deterministic harness. MAIN and TEST compilation, WCT/WTG parsing/order/counts,
+object round trips, packed source/icon identity and repeated TEST saves are
+checked separately. Native buff timing, projectile visuals, pathing and
+multiplayer still require a Warcraft III playtest.
+
 С 2026-10-15 пользователь одобрил перенос стабильной Range3 в MAIN.
 Рабочий источник кругов — `triggers/WOS_Start/AbilityRangePreview.j` (включён).
 Hold/V удалён целиком; остались круги при наведении. Шаблон в `ability_range/`
@@ -35,17 +139,10 @@ Range3 продолжает эту цепочку через `tools/prepare_abil
 "testHero": "Beluga"
 ```
 
-Затем запустите одну из задач:
-
-1. `TEST: 1. Подготовить карту и JSON выбранного героя` — выбирает/создаёт карту и подготавливает редактируемые данные.
-2. `TEST: 2. Проверить, сохранить и собрать выбранную карту` — сохраняет JSON и текущие J, собирает карту без запуска игры.
-3. `TEST: 3. Собрать и запустить выбранную карту` — собирает текущий код и запускает Warcraft III.
-
-Для чтения текущей сохранённой карты из `Heroes/<testHero>.w3x` есть три задачи:
-
-- `TEST: Получить из карты код и данные` — обновляет TEST-код, код выбранного героя и JSON объектов.
-- `TEST: Получить из карты только код` — обновляет триггеры, Start.j и код выбранного героя; JSON объектов сохраняется.
-- `TEST: Получить из карты только данные` — обновляет JSON объектов и их метаданные; J-код сохраняется.
+Затем используйте основные `TEST: 1/2/3` из таблицы выше. После изменений
+в World Editor запускайте TEST: 1; после изменений в VS Code — TEST: 2 или TEST: 3.
+Раздельный импорт доступен в `COMMON | TEST: Карта → проект — только код и триггеры
+(J, WCT/WTG)` и `COMMON | TEST: Карта → проект — только объекты (JSON)`.
 
 Перед импортом сохраните карту в World Editor. Задачи читают архив на диске,
 поэтому несохранённые изменения не импортируются. Перед заменой файлов сохраняются
@@ -53,19 +150,18 @@ Range3 продолжает эту цепочку через `tools/prepare_abil
 Обновление из карты намеренно заменяет локальные файлы выбранного типа.
 Изменения общих триггеров сохраняются как TEST overrides; MAIN не перезаписывается.
 После редактирования кода/JSON закройте редактор без повторного сохранения карты
-и используйте TEST 2 для сборки проекта обратно в карту.
+и используйте TEST: 2 для сборки с запуском или TEST: 3 без запуска.
 
 После импорта кода выбранный герой берётся из
 `test_map/heroes/<Hero>.j`; задача выводит полный путь этого файла и подтверждает,
 что он выбран для сборки. Он имеет приоритет перед MAIN-кодом в
 `triggers/Heroes/<Hero>.j` и прежней копией в `profiles/<Hero>/imported-hero`.
 Для переноса в MAIN откройте актуальный `test_map/heroes/<Hero>.j` и запустите
-`Hero Transfer`. Задача покажет исходный файл и MAIN-путь, скопирует выбранный код
+`COMMON | Герой: Перенести открытый J из TEST в MAIN (Hero Transfer)`. Задача покажет исходный файл и MAIN-путь, скопирует выбранный код
 в `triggers/Heroes/<Hero>.j`, зарегистрирует героя и включит MAIN-триггер.
 Старый MAIN-код и изменённые файлы сохраняются в `backups/hero-transfer`.
 Повторный перенос обновляет код без дублирования регистрации. После переноса
-задача `WOS Objects: 3. Save JSON and J into map folder` сохраняет его в WTG/WCT
-основной карты. Hero Transfer переносит J-код и регистрацию; данные объектов
+задача MAIN: 2 или MAIN: 3 сохраняет его в WTG/WCT и собирает основную карту. Hero Transfer переносит J-код и регистрацию; данные объектов
 и импортированные модели/звуки должны быть подготовлены отдельно в MAIN.
 Импорт TEST без указанного пути каждый раз читает сохранённый архив `.w3x`,
 а не старую папку `unpacked`. При отсутствии J выбранного героя в архиве задача

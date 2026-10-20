@@ -1,0 +1,407 @@
+==============================================================
+            WAR OF SOULS 2 - PATCH 0.33b CHANGELOG
+==============================================================
+
+
+--------------------------------------------------------------
+ I. GENERAL BALANCE AND MECHANICS
+--------------------------------------------------------------
+
+ 1. AgiMoveBonus: 1.0 -> 0.6.
+    Agility now gives less movement speed.
+
+ 2. All heroes +25 attack range.
+    Melee 100 -> 125; Raiden / Alter / Crocodile 120 -> 145;
+    Alucard / Ainz / Frieren 700 -> 725.
+
+ 3. Removed passive damage reduction by hero level
+    (was -5% at lvl 12, -10% at lvl 24, -15% at lvl 35).
+
+ 4. Agility gives 20% more physical resistance than regular armor
+    (0.12 per Agi instead of 0.1).
+
+ 5. Intelligence now gives magic resistance
+    (armor formula, 0.12 per Int).
+
+ 6. Healing reductions now also reduce HP regeneration
+    (Dark Holy Grail, Inori T, Hell Blaze, Kirito T, Rimuru Q, etc).
+
+ 7. Added healing and mana restoration amplification
+    (used by Shun Shun Rikka and Frozen Heart).
+
+ 8. Dead heroes no longer gain HP from healing or lifesteal.
+
+ 9. When your hero takes damage, selection returns to the hero
+    (max once per 2 sec).
+
+10. Damage numbers are merged per player and damage type
+    over 0.1 sec - less clutter on screen.
+
+
+--------------------------------------------------------------
+ II. ARENA AND ROUNDS
+--------------------------------------------------------------
+
+ 1. Decoration explosions scale with the round number:
+    were a flat 300 / 200 / 500,
+    now 100 / 100 / 200 + 25 per round.
+
+ 2. Train damage:
+    was 250 + 100 x round / 500 + 125 x round,
+    now 200 / 400 + 50 per round.
+
+ 3. Sukuna: the arena shatter deals % of max HP per tick,
+    from 1% up to 15%, ramping up after 7 sec.
+
+ 4. Sukuna spawns at 1 of 5 random points (center or 4 points
+    3000 away from it). A minimap ping warns you beforehand.
+    New hint: "move closer to Sukuna".
+
+ 5. Sometimes "Thomas" arrives instead of the train.
+
+ 6. Test mode: the round starts instantly once everyone stands
+    in the start zone.
+
+ 7. Captain pick time: 10 -> 15 sec.
+
+ 8. The first window after the pick is 30 sec longer (once).
+
+
+--------------------------------------------------------------
+ III. NEW SYSTEMS AND COMMANDS
+--------------------------------------------------------------
+
+ 1. Votes:
+    - "-ff" starts a team surrender vote. All teammates must
+      agree. Retry after 30 sec. No answer counts as "no".
+    - Kick vote requires all other players to agree.
+    - The host can disable FF.
+
+ 2. Team pings: hold Z, choose an order, click the map.
+    Shown in the world and on the minimap. 2.5 sec cooldown.
+    Incoming pings can be muted.
+
+ 3. Damage Stats: damage dealt and taken by source for the
+    round, the game and the previous round.
+    F3 resets the game counter, F4 restores it.
+
+ 4. Range preview: hovering an ability or item shows its
+    range / area circle.
+
+ 5. Career and ranks:
+    - Rank ladder from NOOB to SOUL KING.
+    - A match counts only with more than 4 players.
+    - Saves are written in parts; profile import from WOS App.
+    - New commands: "-careerinfo", "-saveinfo".
+
+ 6. "-killme" shows progress and is cancelled if the hero
+    returns to base (1 sec in Test mode).
+
+ 7. "-help" opens a guide window for new players.
+
+ 8. Ability hotkeys can be rebound right on the buttons
+    (key badges). Added a hotkey reset button.
+
+ 9. Hero guide with tabs for forms and ability kits.
+
+10. Heroes appear on the minimap as portrait icons.
+    Kirito clones look like the hero.
+
+
+--------------------------------------------------------------
+ IV. INTERFACE
+--------------------------------------------------------------
+
+ 1. Brand new HUD: console, HP/MP bars, hero panel, buff dock
+    with timers, shared meters (stacks, charges, bankai, etc).
+
+ 2. Ally ability cooldowns are visible; enemy ability tooltips
+    can be read.
+
+ 3. Reworked: pick and Captain Draft screens, top scoreboard,
+    toolbar, minimap, ESC menu, emotes (now with pages).
+
+ 4. Shop:
+    - Tabs: Base / Strength / Agility / Intelligence /
+      Universal / Attack.
+    - Quick Buy: recipe-based auto-buy queue that saves
+      your build.
+
+
+--------------------------------------------------------------
+ V. ITEMS - NEW
+--------------------------------------------------------------
+
+ 1. KUSANAGI (Katana + Pakkun +12), 5000 gold
+    +40 ATK, +15 all stats.
+    Active: dashes to every enemy within 700 range of the
+    target point, hitting each for 2x ATK. Cooldown 20 sec.
+
+ 2. KUSANAGI: BLAZE RELEASE / WATER RELEASE / CHIDORI KUSANAGI
+    (Kusanagi + Piro / Hydro / Electro Slime)
+    +60 ATK, +20 all stats.
+    Strikes deal 3x ATK and apply the element's debuff.
+    Only one elemental Kusanagi can be carried.
+    All Kusanagi share one cooldown.
+
+ 3. HASHIRAMA CELLS (Avalon + Tome of Strength +10)
+    +15 Str, +10 all stats, +10 HP regen.
+    Passive: allied heroes within 700 heal for 15% of the
+    damage you take.
+    Active: sacrifice 10% current HP to gain +15 Str for 10 sec.
+
+ 4. SHUN SHUN RIKKA (Necklace +500 + Pakkun +15)
+    +15 all stats, +500 HP.
+    Aura (1200): +18% healing and HP regen; stuns, silences
+    and roots last 0.5 sec shorter.
+
+ 5. ASHISOGI JIZO (Tome of Agility +10 + Pakkun +10)
+    +10 Agi, +10 all stats.
+    Physical ability damage of 100+ poisons the target:
+    0.4x Agi per sec for 5 sec.
+
+ 6. SCROLL OF MASTERY - 5000 gold, available from round 15.
+    Permanently grants +2 all stats. Takes no inventory slot.
+
+
+--------------------------------------------------------------
+ V. ITEMS - CHANGES
+--------------------------------------------------------------
+
+ 7. Rhitta: +30 Str -> +10 Str and +10 all stats.
+    Each enemy hit grants +5 Str for 10 sec (up to +35).
+
+ 8. Frozen Heart: new aura (1200) - +20% mana regen and
+    mana restoration.
+
+ 9. Philosopher's Stone: was 35% heal from hits of 600+
+    (cooldown 3 sec). Now heals 15% of all damage dealt to
+    enemies, no threshold, no cooldown.
+
+10. Hell Blaze:
+    - Duration 15 -> 10 sec.
+    - Reduces both healing and HP regen.
+    - At 7 stacks burns 1.5% max mana per sec
+      (was 10 mana per sec).
+
+11. Murasame: bleed 0.45x ATK per sec for 5 sec
+    (was 50 + 0.6x ATK). Each new attack adds its damage to the
+    next tick and shortens the bleed by 1 sec.
+
+12. Sakura Sesshou: places a totem that reveals invisible units
+    in a 3000 area. Every 2 sec lightning hits a random enemy
+    within 1100 (invisible first) for 1.25x main stat.
+
+13. Sacred Gear Booster: using an active item cuts that item's
+    cooldown by 5 sec.
+
+14. Death Note: threshold 800 -> 600, now also works with
+    physical damage.
+
+15. Demon-Dweller Sword: bonus 30% -> 33%, threshold 500 -> 250.
+
+16. Mera Mera no Mi: 25 + 1% HP (max 300) -> 40 + 1.15% HP
+    (max 250).
+
+17. Hokage Hat Evolved: root 2.5 -> 3 sec, radius 550 -> 600.
+
+18. Susanoo Shield: cooldown 10 -> 8 sec.
+
+19. Ryujin Jakka / Nejibana / Gonryomaru: cooldown 7 -> 6 sec.
+
+20. Nichirin Sword Whip / True Zangetsu: resistance reduction
+    14% -> 16%.
+
+21. Okarun Egg: cooldown reduction 12.5% -> 14%.
+
+22. Prison Realm: cooldown reduction 25% -> 22.5%.
+
+23. Cup of Tea: default threshold 1000 -> 500.
+
+24. Tachikaze: cooldown 1 -> 0.95 sec.
+
+25. Fixed item names: Necklace (was Neklace), Raijin's Wrath.
+
+
+--------------------------------------------------------------
+ VI. HEROES
+--------------------------------------------------------------
+
+[AINZ]
+  - Q: 1.2 + 0.25/lvl -> 1.25 + 0.4/lvl x Int
+  - TQ: 5 -> 5.5 x Int
+  - W2: per level scaling 0.25 -> 0.35
+  - TE: 5 -> 6 x Int
+  - TR: 4 -> 5 x Int
+
+[AKAINU]
+  - T: damage 1.2 -> 1.4 x Agi, punch radius 425 -> 500
+  - T: the first 5 fists home in on enemies
+
+[ALTER SABER]
+  - F is now an On/Off toggle (On by default)
+  - Always adds 5% of current mana to attack damage
+  - On: each attack burns 5% current mana (3% in R form) and
+    adds 2x the burned mana as damage
+
+[ALUCARD]
+  - T: the first hit of each Q/W/E on a marked target cuts that
+    ability's remaining cooldown by 50%
+
+[ASTA]
+  - T: +110 attack range while active
+  - F: cooldown 40 -> 35 sec, mana 125 -> 63
+
+[BAMBIETTA]
+  - TE: 3 -> 4 x Agi, stun 0.1 -> 0.15 sec
+  - G: always 2x Agi (was 1 / 1.5 / 2 by level)
+  - G: 2 charges from lvl 25, 3 charges in T
+
+[BAZZ-B]
+  - G: cooldown reduction 1.25 / 1.75 / 2.25 -> 1 / 1.5 / 2
+  - R: cast time 2.1 -> 1.2 sec
+  - Lvl 35: every damage source applies Fire
+
+[BRANDISH]
+  - E: duration 2 -> 3 sec
+
+[CROCODILE]
+  - Q: radius 255 -> 285, +150 physical damage at all levels,
+    damage now covers the end of the slash
+  - Q: sand mark also works on allies
+  - W: pull speed 187.5 -> 210
+  - E: distance 750 -> 850, faster dash
+  - E: damage 2 + 0.5/lvl -> 1.25 + 0.25/lvl x Agi
+  - E: reuse cooldown 1.5 -> 2 sec
+  - R: end radius 400 -> 475
+  - WR: duration bonus 1 -> 1.5 sec
+  - T: damage reduction while channeling 20% -> 35%
+  - T: lvl 35 - 70% damage reduction instead of invulnerability
+  - T: max radius 1700 -> 1900
+  - T2: 11 -> 10 x Agi
+  - F: range 800 -> 900, damage 2 -> 1.5 x Agi
+
+[DARK SHIKI]
+  - T is now a point-target skillshot: range 1400 -> 2100,
+    radius 250, damage 9 -> 10 x Agi, grants vision on its path
+  - Q / W / E / R are faster (shorter delays, quicker dashes)
+  - Passive stacks: final hit 5 -> 4 x Agi,
+    lvl 35 bonus 3 -> 2.5, DoT bonus 0.5 -> 0.4
+
+[ERZA]
+  - Fire Q: range 1600 -> 1200
+  - Samurai W: range 800 -> 600 / 650 / 700 / 750
+  - E armor: MP regen per lvl 0.8 -> 0.5,
+    move speed -10 base and -10 per lvl
+  - R armor: +250 HP +150/lvl -> +200 HP +100/lvl,
+    lower move speed bonus
+  - T armor: HP 1000 -> 800
+
+[FRIEREN]
+  - W2: 1.5 -> 1.35 x Int, flat damage 75 -> 67.5;
+    range 1800, speed 850, max 5 hits
+  - R: range 700-1100 -> 900-1300
+  - R: clone cast range 3000 -> 4000
+  - TW: range 2000 at all levels
+  - T2: range capped at 2000
+  - G: duration 1.5 -> 2.5 sec (shield also 2.5 sec)
+  - Q3 in T form unlocks after a Q1 miss or Q2 completion
+
+[GOJO]
+  - E lvl 5: free for 2 sec, then drains 10% max mana per sec
+    with no time limit; ends below 100 mana or on cancel
+    (was 6% after base duration)
+  - Mana restore passive moved to F
+
+[KENJAKU]
+  - T: slow 40% -> 50%
+
+[KIRITO]
+  - E: at lvl 35 you can dash to a clone a second time
+
+[KYORAKU]
+  - NEW E2 "Takaoni" (lvl 25+, while the E cage exists):
+    flies through the cage, ending 650 past its center;
+    2 slashes for 2.5x Agi each; max 2000 range from the cage
+  - E2: shadow pass faster (0.6 -> 0.42 sec)
+  - T: bankai debuff starts 0.5 sec after the cast
+  - T: added a bankai stage meter
+
+[LAXUS]
+  - Immune to other players' Lightning debuffs; instead
+    restores 120 mana and -1 sec cooldown on Q / Q2 / G
+  - G: +40 move speed and +15% attack speed
+    (lvl 35: +60 and +30%)
+  - G: attacks apply Lightning
+  - T: shield instead of invulnerability
+
+[MAHORAGA]
+  - E3: 5 -> 6 x Agi
+  - T: +2% ability damage per adaptation stack on the target
+  - F: cooldown 35 -> 30 sec
+
+[MILIM]
+  - G thresholds: 4000 / 8000 / 12000 -> 3500 / 7000 / 10500
+  - Q: +0.7x Agi per G threshold reached
+  - T2: 10 -> 12 x Agi; lvl 35: +1x Agi per threshold
+  - W: shows a 600 area indicator
+
+[NATSU]
+  - G also absorbs Fire from allies (each flame cuts Q/W/E
+    cooldowns and restores mana)
+
+[NEUVILLETTE]
+  - F: 15% lifesteal vs targets with the Water debuff from
+    lvl 12, 20% at lvl 35
+
+[OKARUN]
+  - T: every 0.1 sec knocks nearby enemies aside
+    (radius 350, distance 400) for 2x Int damage
+  - F: max speed at lvl 35 1000 -> 1500
+  - F: no longer passes through walls
+
+[RIMURU]
+  - 3rd form: G unlocks 3G2 (copy of 2R Black Flame,
+    lvl 5 damage)
+  - R3: 40% lifesteal
+  - Faster evolution
+  - T is learned automatically at lvl 18
+
+[STARRK]
+  - E: attack range bonus 100 -> 125
+
+[TAKESHI]
+  - G: unlock requires 5000 ability damage to enemy heroes
+    (was 6000)
+  - G: with a full gauge each damaging ability extends the
+    form by +1 sec (max +15 sec)
+
+[TOJI]
+  - W: chain lasts as long as the debuff
+  - W: timer freezes while the target is paused;
+    dispel removes the chain
+
+[TOMIOKA]
+  - Q: flat damage 175 -> 150, stun 1 -> 0.7 sec
+  - E: deals 0.9x ATK as an attack (was 1x Agi)
+  - E: radius 875 -> 1050, max 5 strikes,
+    does not hit invulnerable units
+  - G: 0.4 + 0.3 -> 0.25 + 0.25 x Agi
+  - G: every 3 stacks give +1 E strike
+
+[TSUNA]
+  - Cambio form attacks act like W (root + damage)
+  - T: can overcharge above 100% damage at lvl 35
+
+[INORI]
+  - R: heal scaling 0.15 -> 0.1 x Int per level
+  - Ally heals are no longer halved above 50% HP
+
+[PATRIOT, NATSU, AKAINU, TSUNA, ALUCARD, BAMBIETTA, ALTER SABER]
+  - F / G now show their real cooldown on the button and use a
+    real level requirement
+
+
+==============================================================
+                     Thanks for playing!
+==============================================================

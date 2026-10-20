@@ -18,6 +18,8 @@ INFO_ICONS = ['info-fire', 'info-water', 'info-lightning', 'info-firewater', 'in
 NAMES = ['tooltip-edge', 'menu-row', 'btn-buy', 'btn-sell', 'glyph-history', 'glyph-clear', 'glyph-load',
          'glyph-repick', 'icon-physdmg', 'icon-magdmg', 'ban-cover', 'glyph-trash', 'glyph-prev', 'glyph-next', 'meter-fill', 'meter-fill-red', 'pick-confirm', 'pick-confirm-off', 'pick-random', 'pick-random-off', 'pick-ban', 'pick-ban-off', 'fastbuy-on', 'fastbuy-off', 'fastsell-on', 'fastsell-off', 'icon-attackspeed', 'icon-movespeed', 'icon-range', 'portrait-lock', 'hp-dark', 'mp-dark', 'slider-clean-v', 'slider-clean-h', 'fill-hover-blue', 'skill-chains', 'icon-physpen', 'icon-magpen', 'icon-shieldpen', 'icon-hpregen', 'icon-mpregen', 'vip-frame-bronze', 'vip-frame-silver', 'vip-frame-gold', 'glyph-cols1', 'glyph-cols2', 'glyph-cols3', 'menu-edge', 'menu-edge-button', 'heart'] + INFO_ICONS
 
+NAMES += ['icon-attack-physical', 'icon-attack-magical']
+
 # Checkpoint 24: gold attribute icons supplied by the author (folder 18).
 STAT_SOURCE = Path(r'C:/Users/Gear/Desktop/Новая папка (18)')
 STAT_FILES = {'stat-str': 'Strength_Gold_Alpha.png', 'stat-agi': 'Agility_Gold_Alpha.png',
@@ -252,10 +254,15 @@ def build_glyphs():
     save((width, height, rows), 'glyph-repick-off')
 
 
-def damage_icons():
+def damage_icons(attack_types_only=False):
     """Outgoing damage bonus: a weapon + a big upward arrow.
     Physical = red disc with a sword, magical = blue disc with a spark star."""
-    for name, accent, kind in (('icon-physdmg', (226, 84, 60), 'sword'), ('icon-magdmg', (80, 130, 245), 'star')):
+    variants = [('icon-attack-physical', (226, 84, 60), 'sword', False),
+                ('icon-attack-magical', (80, 130, 245), 'star', False)]
+    if not attack_types_only:
+        variants += [('icon-physdmg', (226, 84, 60), 'sword', True),
+                     ('icon-magdmg', (80, 130, 245), 'star', True)]
+    for name, accent, kind, increased in variants:
         n = 64
         c = Canvas(n, n)
         c.fill(circle(32, 32, 30), INK, alpha=0.9)
@@ -274,8 +281,9 @@ def damage_icons():
         arrow = union(polygon([(48, 9), (59, 23), (37, 23)]), box(48, 30, 4.2, 8, 1))
         c.fill(offset(weapon, 2.2), INK, alpha=0.85)
         c.fill(weapon, (250, 244, 230))
-        c.fill(offset(arrow, 2.2), INK, alpha=0.9)
-        c.fill(arrow, lambda x, y: lerp((190, 255, 150), (60, 190, 70), (y - 9) / 30))
+        if increased:
+            c.fill(offset(arrow, 2.2), INK, alpha=0.9)
+            c.fill(arrow, lambda x, y: lerp((190, 255, 150), (60, 190, 70), (y - 9) / 30))
         save(c, name)
 
 

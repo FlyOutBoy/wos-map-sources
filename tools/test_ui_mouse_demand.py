@@ -111,7 +111,7 @@ class Pollers(unittest.TestCase):
         self.assertFalse(self.reads);self.assertFalse(self.actions)
 
     def test_cooldown_enter_held_is_ignored_then_new_press_reports_once(self):
-        vm=self.cooldown();self.slot=0;self.down.add('right')
+        vm=self.cooldown();vm.g['AHUI_ShiftHeld']={0:True};self.slot=0;self.down.add('right')
         vm.run('AHUI_PollCooldownMouse',(0,.5,.5));vm.run('AHUI_PollCooldownMouse',(0,.5,.5))
         self.assertFalse(self.actions)
         self.down.clear();vm.run('AHUI_PollCooldownMouse',(0,.5,.5))

@@ -6,9 +6,9 @@ function Trig_TestUnit_Actions takes nothing returns nothing
     // Запоминаем только собственного героя либо один из двух тестовых героев.
     if IsUnitType(selected, UNIT_TYPE_HERO) and (GetOwningPlayer(selected) == p or (TestMode and (selected == TestUnit or selected == TestAllyUnit))) then
         set HeroChosen[pid] = selected
-        if selected == TestUnit then
+        if selected == TestUnit and TestUnitController != p then
             call TestUnit_ConfigureControl(p, TestUnitPlayerId, false)
-        elseif selected == TestAllyUnit then
+        elseif selected == TestAllyUnit and TestAllyUnitController != p then
             call TestUnit_ConfigureControl(p, TestAllyUnitPlayerId, true)
         endif
     else

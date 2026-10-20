@@ -434,11 +434,17 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
 | WOS_Start/Player_Pick_Mode.j, Captain_Draft.j | Mode-specific selection/vote interfaces and handlers. |
 | WOS_Start/UI_CAREER.j, MusicPlayer.j, UniversalTooltips.j | Career UI/music controls/shared tooltips. |
 | Systems/Systems2.j, TasBox.j | Hero ability/counter bars, charge box library; some SIMPLEFRAME children under native Console. |
-| Heroes/*.j | Spell loops publish authoritative remaining time/resources through WUI_HeroProgress/Text/Counter; public spells use WUI_HeroProgressPublic. WOSUI owns keyed FRAME creation, captions, formatting, visibility and expiry. |
+| Heroes/*.j | Spell loops publish authoritative remaining time/resources through WUI_HeroProgress/Text/Counter; public spells use WUI_HeroProgressPublic. WUI_HeroProgressIcon updates public artwork for all viewers and private artwork only for its owner. Kyoraku supplies act captions/art and measures its description text for WUI_ColumnHeight (CP66). WOSUI owns keyed FRAME creation, captions, formatting, visibility and expiry. |
 
 Paths above are relative to `triggers/`. Exhaustive inventory is saved in FRAME_INVENTORY.md; inspect only affected files in subsequent sessions.
 
 ## Root constraints
+
+- CP59 provenance: playable STABLE's compiled script was newer than its WCT.
+  Current source was recovered from the pre-import project backup and matched
+  against2437 compiled gameplay/UI functions. Import/build parity is mandatory.
+  Working feed X is min(.442,screen-right-.250), on the existing changed-only
+  .25 clock. CP58's .560 and old DamageStats were regressions, not defaults.
 
 - Selected-unit HUD: `UNITSTAT_Update` visits player slots; selection events maintain private UI-only per-player records, including remaining units after multi-deselect. `GetLocalPlayer` selects only `UNITSTAT_Render` for that client's existing frames. Selection records must never feed gameplay setters, RNG or handle allocation. Render uses shared read-only `DamageCheckModifiers`; combat `DamageCheck` retains `GearDamageRun` and listeners. Current listeners are empty; future amount-changing listeners require a pure-preview contract. Native portrait/attack text primary-unit agreement for multi-selection still needs engine testing. Full MAIN R was multiplayer-confirmed by the user; the engine-internal cause is not proved. CP54 user-requested performance pass uses .20 HUD refresh; selection ownership and pure outgoing preview stay unchanged.
 - CP54 scheduling/input: see RESUME CP54. WUI_StopPingTarget is agreed-event-only; frame hover never enables/disables shared listeners. F2/ping timers stop from shared state; local visibility may gate rendering only. WOS_DESYNC_PROBE_ENABLED defaults false.
@@ -596,6 +602,24 @@ crash was caused by one specific native. Compiler and scripted regression checks
 pass; startup/hover/FPS behavior still needs actual game verification.
 
 ## Multiplayer presentation contract — checkpoints 29–30
+
+CP60: AllyHeroAbilityUI tracks native command ownership separately from custom
+frame visibility (`AHUI_NativeCommandShown`). F/G keep a visible custom key badge
+over the native command; that badge must never enable a second ability tooltip.
+Both hover routing and tooltip refresh use this presentation state, before the
+tooltip cache. Unlearned/locked previews, other heroes, actual custom command
+replacements and the QWERT upgrade strip retain their own tooltip paths.
+Tooltip initialization uses480 queued callbacks: one SpellData registration or
+one HeroData form with its addExtra calls per callback. A single startup timer
+executes one job through ExecuteFunc every0.01 sec, finishing in about4.8 sec and
+destroying itself. All former Part1–6 groups are split, preserving source order.
+WOS_UTB_Init_* names must remain callable as compiled ExecuteFunc string targets;
+do not make them private without updating/validating the queued names. Never
+merge the expensive ability registrations back into a shared execution budget.
+CP67: MAIN ability ranges render through32768 instead of hiding above2500;
+global-distance sentinels are rejected. Item previews retain their2500 cap.
+TEST range template retains its historical cap. Frieren TW/T2 ranges resolve
+the same code constants as the builder.
 
 Local UI actions and polling must not first acquire frame handles. In addition
 to frame creation, native getters can reserve IDs; see Tasyen's

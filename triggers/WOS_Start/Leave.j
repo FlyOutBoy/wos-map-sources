@@ -1,14 +1,29 @@
+library WOSPlayerLeave requires AAINIT, heroicon, GearSystems
 globals 
 integer array Leave
 endglobals
-function Trig_Leave_Actions takes nothing returns nothing
-local player p = GetTriggerPlayer()
+function MarkStatusPlayerLeft takes integer leavingPid returns nothing
+    if FRAME_StatusHero[leavingPid] == null then
+        return
+    endif
+
+    call BlzFrameSetEnable(FRAME_StatusHero[leavingPid], false)
+    call BlzFrameSetText(FRAME_StatusHeroStringPlayerName[leavingPid], SplitName(FramePlayerFirstNameBase[leavingPid]))
+
+    if Leave[leavingPid] == 2 then
+        call BlzFrameSetTexture(FRAME_StatusHeroBack[leavingPid], "ReplaceableTextures\\CommandButtons\\BTNleave1.blp", 0, false)
+    else
+        call BlzFrameSetTexture(FRAME_StatusHeroBack[leavingPid], "ReplaceableTextures\\CommandButtons\\BTNleave2.blp", 0, false)
+    endif
+endfunction
+
+function WOS_HandlePlayerLeave takes player p returns nothing
 local integer i = 0
 local integer id = GetPlayerId(p)
-local integer gold = GetGold(GetTriggerPlayer())
+local integer gold = GetGold(p)
 local integer g = 0
 local string leaveName = FramePlayerFirstNameBase[id]
-if id<10 then 
+if id < 10 and Leave[id] == 0 then 
 if Hero[id] != null then
 loop
 exitwhen i == 6 
@@ -36,13 +51,19 @@ call SaveSystem_MatchSetFinalStats(id, false, PlayerKill[id], PlayerDeath[id], P
 call SaveSystem_MarkMatchPlayerLeft(id)
 call SetUnitPosition(Hero[id],GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster))
 call ShowUnit(Hero[id],false)
-call BlzFrameSetAlpha(FRAME_StatusHeroBack2[id], 255)
+// Checkpoint 26d: no extra small icon under a leaver (the slot shows the
+// greyed hero with the ban cross instead).
 if   PlayerDeath[id]- PlayerKill[id] >= 5 then 
 set Leave[id] = 2
 else
 set Leave[id] = 1
 endif
 call MarkStatusPlayerLeft(id)
+endif
+if Leave[id] == 0 then
+    set Leave[id] = 1
+    call SaveSystem_MarkMatchPlayerLeft(id)
+    call MarkStatusPlayerLeft(id)
 endif
 if PlayerVision[id] != null then
 call DestroyFogModifier(PlayerVision[id])
@@ -61,10 +82,14 @@ endloop
 else
 call PlayersMsg(GetPlayerVisualColorString(p)+leaveName+"|r leaves|r",2)
 endif
-call MakeSound("WOS\\Leave")
+call MakeSound("Game\\Player_Left")
 call SetPlayerName(Player(id),FramePlayerFirstNameBase[id])
 endif
 set p = null
+endfunction
+
+function Trig_Leave_Actions takes nothing returns nothing
+    call WOS_HandlePlayerLeave(GetTriggerPlayer())
 endfunction
 
 //===========================================================================
@@ -79,3 +104,5 @@ local integer i = 0
     call TriggerAddAction( gg_trg_Leave, function Trig_Leave_Actions )
 endfunction
 
+
+endlibrary

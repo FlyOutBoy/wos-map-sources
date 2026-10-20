@@ -67,10 +67,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
 
 //---------------T ability (Ryusei Kazan - Meteor Volcano)---------------------
         integer AkainuT_ID = 'A06Z'
-        integer AkainuT_Fists = 30
-        real AkainuT_DamageAgiBase = 1.20
+        integer AkainuT_Fists = 36
+        integer AkainuT_AimedFists = 5
+        real AkainuT_FistPeriod = 0.15
+        real AkainuT_DamageAgiBase = 1.4
         real AkainuT_DamageAoe = 2000.00
-        real AkainuT_DamageAoePunch = 425.00
+        real AkainuT_DamageAoePunch = 500.00
         integer AkainuT_Slow = 40
         integer AkainuT_Duration = 1
         real AkainuT_MaxDuration = 25.00
@@ -107,10 +109,11 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     // Прок пассивной способности F (Lv. 35)
     //===========================================================================
     function AkainuF_Start takes unit c, unit td returns nothing
-        if BlzGetUnitAbilityCooldownRemaining(c, FakeAbi_ID) == 0 or GetUnitAbilityLevel(c, FakeAbi_ID) == 0 then
+        if BlzGetUnitAbilityCooldownRemaining(c, AkainuF_ID) == 0 then
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_GZ_jntxn (11)_R1-200.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 2, 1))
+            call DamageSource('A070')
             call NextDmg(c, td, AkainuF_Damage * GetHeroAgi(c, true), 1, 0.03)
-            call FakeCD_Start(c, AkainuF_ID, AkainuF_CD, 0, 0)
+            call PassiveCD_Start(c, AkainuF_ID, AkainuF_CD)
         endif
     endfunction
 
@@ -149,7 +152,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or td == null or GetUnitTypeId(c) == 0 or GetUnitTypeId(td) == 0 or GetWidgetLife(c) <= 0.405 or GetWidgetLife(td) <= 0.405 or not SpellBoolCaster(c) or not SpellBoolCaster(td) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
 
                     if r == 0.51 then
@@ -176,11 +179,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                             call StunUnit(c, td, AkainuQ_Stun)
                             call MakeSound("war3mapimported\\Hero_Akainu_Q2")
                             call DecorRemove(c, x, y, aoe, AkainuQ_DecorDamage)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource('A06V')
                                     call dmgphys(c, u, dmg)
                                     if GetUnitTypeId(c) == Akainu_ID and GetHeroLevel(c) >= 35 then
                                         call AkainuF_Start(c, u)
@@ -300,7 +304,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call MoveEff(e, move, a)
                     call VisionTimed(GetOwningPlayer(c), GetEffX(e), GetEffY(e), aoe, 1.00)
                     call DecorRemove(c, GetEffX(e), GetEffY(e), aoe, AkainuW_DecorFlightDamage)
@@ -315,11 +319,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_opbr0326 (347).mdl", x, y, 1, 1.00, 1, 1))
 
                     if g != null then
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A06W')
                                 call dmgmag(c, u, dmg)
                                 call SlowUnit(c, u, AkainuW_Slow, AkainuW_Duration)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -417,7 +422,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 or not SpellBoolCaster(c) or r > rmax or check >= AkainuW_Fists then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
 
                     if r == 0.15 then
@@ -540,7 +545,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or td == null or GetUnitTypeId(c) == 0 or GetUnitTypeId(td) == 0 or GetWidgetLife(c) <= 0.405 or GetWidgetLife(td) <= 0.405 or not SpellBoolCaster(c) or not SpellBoolCaster(td) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < AkainuE_CastTime then
                         call DebugUnit(c)
                     endif
@@ -574,11 +579,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                                 call VisionTimed(GetOwningPlayer(c), GetEffX(e3), GetEffY(e3), aoe, 1.00)
                                 call DecorRemove(c, GetEffX(e3), GetEffY(e3), aoe, AkainuE_DecorDamage)
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, GetEffX(e3), GetEffY(e3), aoe, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, GetEffX(e3), GetEffY(e3), aoe, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                        call DamageSource('A06X')
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit(g2, u)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -622,11 +628,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call BlzSetSpecialEffectTimeScale(e3, 5.00)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_opbr0326 (344).mdl", x, y, 1, 2.00, 1, 1))
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                call DamageSource('A06X')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -745,7 +752,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
 
                     if r == AkainuR_CastTime then
@@ -768,11 +775,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 400.00, 2.00)
 
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A06Y')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     if GetUnitTypeId(c) == Akainu_ID and GetHeroLevel(c) >= 35 then
@@ -890,7 +898,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 endif
 
                 if remove then
@@ -902,11 +910,12 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     endif
 
                     if g != null then
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A06Z')
                                 call dmgmag(c, u, dmg)
                                 call SlowUnit(c, u, AkainuT_Slow, AkainuT_Duration)
                             endif
@@ -972,6 +981,8 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         real r2
         real r3
         integer check
+        integer aimed
+        group targets
         real aoe
         real r
         effect e
@@ -985,17 +996,19 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
             local thistype this
             local real rr1 = 0.00
             local real rr2 = 0.00
+            local unit target
             local boolean remove
 
             loop
                 exitwhen i > MUI_AkainuT
                 set this = m_AkainuT[i]
+                call WUI_HeroProgress(c, AkainuT_ID, "Ryusei Kazan", RMinBJ(rmax - r, RMaxBJ(0.00, AkainuT_CastTime - r) + RMaxBJ(0.00, AkainuT_FistPeriod - r2) + I2R(IMaxBJ(0, AkainuT_Fists - check - 1)) * AkainuT_FistPeriod), RMinBJ(rmax, AkainuT_CastTime + I2R(AkainuT_Fists) * AkainuT_FistPeriod), true)
                 set remove = false
 
                 if c == null or GetUnitTypeId(c) == 0 or (not SpellBoolCaster(c) and r <= 3.00) or r > rmax or check >= AkainuT_Fists then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if r == 1.65 then
                         call SetUnitTimeScale(c, 0.15)
@@ -1043,16 +1056,30 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     endif
 
                     if r > AkainuT_CastTime then
-                        if r2 > 0.15 then
-                            set r2 = 0.03
+                        set r2 = r2 + 0.03
+                        if r2 + 0.0001 >= AkainuT_FistPeriod then
+                            set r2 = r2 - AkainuT_FistPeriod
                             set rr1 = GetRandomReal(155.00, aoe / 2.00)
                             set rr2 = GetRandomReal(0.00, 359.00) * bj_DEGTORAD
                             set x1 = x + rr1 * Cos(rr2)
                             set y1 = y + rr1 * Sin(rr2)
+                            if aimed < AkainuT_AimedFists then
+                                call GroupEnumUnitsInRange(targets, x, y, aoe, NoDecor_Cond)
+                                loop
+                                    set target = FirstOfGroup(targets)
+                                    exitwhen target == null
+                                    call GroupRemoveUnit(targets, target)
+                                    if IsUnitEnemy(target, GetOwningPlayer(c)) and SpellBool(target) then
+                                        set x1 = GetUnitX(target)
+                                        set y1 = GetUnitY(target)
+                                        set aimed = aimed + 1
+                                        exitwhen true
+                                    endif
+                                endloop
+                                call GroupClear(targets)
+                            endif
                             call AkainuSpells_T2.AkainuT2_Start(c, x1, y1)
                             set check = check + 1
-                        else
-                            set r2 = r2 + 0.03
                         endif
                     endif
                 endif
@@ -1070,6 +1097,8 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call StopSpellUnit(c)
                         call SetUnitTimeScale(c, 1.00)
                     endif
+                    call DestroyGroup(targets)
+                    set targets = null
                     set c = null
                     set e = null
                     set e2 = null
@@ -1084,6 +1113,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     set i = i + 1
                 endif
             endloop
+            set target = null
         endmethod
 
         public static method AkainuT_Start takes unit NewC, real NewX, real NewY returns nothing
@@ -1098,6 +1128,8 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
             set r2 = 0.00
             set r3 = 0.00
             set check = 0
+            set aimed = 0
+            set targets = CreateGroup()
             call StartSpellUnit(c)
             set a = GAngle2(c, x, y)
             set aoe = AkainuT_DamageAoe

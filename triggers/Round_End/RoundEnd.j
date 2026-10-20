@@ -1,4 +1,53 @@
-library RoundSpells uses GearSystems
+library RoundSpells uses GearSystems, EnvironmentRoundRules, optional DamageStats
+    globals
+        private boolean SukunaSpawnPrepared = false
+        private real SukunaSpawnX = 0.00
+        private real SukunaSpawnY = 0.00
+    endglobals
+
+    function EnvironmentHpLoss takes unit source, unit target, real damage, integer sourceId returns nothing
+        local real before = GetWidgetLife(target)
+        call SetHpCurrent(target,-damage)
+        static if LIBRARY_DamageStats then
+            call DamageStatsRecordDirect(source,target,sourceId,RMaxBJ(0.0,before-GetWidgetLife(target)))
+        endif
+    endfunction
+
+    function SukunaResetSpawn takes nothing returns nothing
+        set SukunaSpawnPrepared = false
+    endfunction
+
+    // Shared RNG is resolved once, before the warning; the summon reuses this point.
+    private function SukunaPrepareSpawn takes nothing returns nothing
+        local integer k
+        local real a
+        if SukunaSpawnPrepared then
+            return
+        endif
+        set k = GetRandomInt(0, 4)
+        set SukunaSpawnX = GetRectCenterX(gg_rct_Arena)
+        set SukunaSpawnY = GetRectCenterY(gg_rct_Arena)
+        if k > 0 then
+            if k == 1 then
+                set a = 45.00
+            elseif k == 2 then
+                set a = 135.00
+            elseif k == 3 then
+                set a = 215.00
+            else
+                set a = 315.00
+            endif
+            set SukunaSpawnX = SukunaSpawnX + 3000.00 * Cos(a * bj_DEGTORAD)
+            set SukunaSpawnY = SukunaSpawnY + 3000.00 * Sin(a * bj_DEGTORAD)
+        endif
+        set SukunaSpawnPrepared = true
+    endfunction
+
+    function SukunaWarnSpawn takes nothing returns nothing
+        call SukunaPrepareSpawn()
+        call PingMinimapEx(SukunaSpawnX, SukunaSpawnY, 15.00, 255, 45, 45, true)
+    endfunction
+
     private struct RoundEnd
         private static timer t_RoundTrain = CreateTimer( )
         private static integer array m_RoundTrain
@@ -106,9 +155,11 @@ library RoundSpells uses GearSystems
                         endloop
                         set k = 0
                         if k2 != 0 then
+                            // At most 12 evenly spaced: k2 starts at 36 and each 1hongse_2red has
+                            // ~590 particles, which was ~21k particles per pulse at round end.
                             loop
-                                exitwhen k >= k2
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_1hongse_2red.mdl", x + (aoe) * Cos(k * (360 / k2) * bj_DEGTORAD), y + (aoe) * Sin(k * (360 / k2) * bj_DEGTORAD), GetRandomReal(0, 359), 0.65, 3, 1))
+                                exitwhen k >= IMinBJ(k2, 12)
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_1hongse_2red.mdl", x + (aoe) * Cos(k * (360 / IMinBJ(k2, 12)) * bj_DEGTORAD), y + (aoe) * Sin(k * (360 / IMinBJ(k2, 12)) * bj_DEGTORAD), GetRandomReal(0, 359), 0.65, 3, 1))
                                 set k = k + 1
                             endloop
                         endif
@@ -126,18 +177,17 @@ library RoundSpells uses GearSystems
                             endif
                         else
                         endif
-                        if dmg < 1300 then
-                            set dmg = dmg + 40
-                        endif
+                        // Percent of each target's max HP; first pulse 1%, +0.5 pp/s, capped at 15%.
+                        set dmg = RMinBJ(15.00, 1.00 + RMaxBJ(0.00, r - 7.00) * 0.50)
                         call DecorRemove2(c, x, y, aoe, 50)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRect(g , gg_rct_Arena , Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRect(g , gg_rct_Arena , NoDecor_Cond)
                         loop
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             set distance = SR3(u, x, y)
                             if SpellBool( u ) and distance > aoe then
-                                call SetHpCurrent(u, -dmg)
+                                call EnvironmentHpLoss(c,u,GetUnitState(u, UNIT_STATE_MAX_LIFE) * dmg / 100.00,-14)
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdl", u, "chest"))
                                 set r5 = GetRandomReal(-0.35, -0.15)
                                 if GetLocalPlayer() == GetOwningPlayer(u) then
@@ -192,15 +242,16 @@ library RoundSpells uses GearSystems
             local thistype this = thistype.create( )
             set MUI_Round1 = MUI_Round1 + 1
             set m_Round1[ MUI_Round1] = this
-            set x = GetRectCenterX(gg_rct_Arena) + 100 * Cos(270 * bj_DEGTORAD)
-            set y = GetRectCenterY(gg_rct_Arena) + 100 * Sin(270 * bj_DEGTORAD)
+            call SukunaPrepareSpawn()
+            set x = SukunaSpawnX
+            set y = SukunaSpawnY
             set g = CreateGroup()
             set u = null
             call StartSound(gg_snd_Round_Sukuna)
             set c = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h005', x, y, 270)
             call BlinkEff2(c)
             set rmax = 180
-            set dmg = 75
+            set dmg = 1.00
             set aoe = 5000
             set k2 = 36
             set a = 270 * bj_DEGTORAD
@@ -214,14 +265,14 @@ library RoundSpells uses GearSystems
             set r = 0
             set r2 = 0
             set r3 = 0
-            call PlayersMsg("|c00FF0303Author:|r Move closer to the center to survive. In a few seconds, Sukuna will shatter the entire arena.", 7)
+            call PlayersMsg("|c00FF0303Author:|r Move closer to Sukuna to survive. In a few seconds, Sukuna will shatter the entire arena.", 7)
             set e3 = EffectSpawn("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", GetUnitX(c) + 45 * Cos(a), GetUnitY(c) + 45 * Sin(a), a * bj_RADTODEG, 1, 2, 125)
             if MUI_Round1 == 0 then
                 call TimerStart( t_Round1, 1, true, function thistype.Loop_SukunaEnd)
             endif
         endmethod
         method soundcheck takes unit c returns nothing
-        if GetUnitTypeId(c) == Natsu_ID and IntegerCd(c,"cd sound train",10) then 
+        if GetUnitTypeId(c) == Natsu_ID and IntegerCdKey(c, SH_ICD_CD_SOUND_TRAIN,10) then 
         if GetRandomInt(1,2) == 1 then 
         call MakeSound("war3mapimported\\wos_NatsuTrain")
         else
@@ -251,7 +302,7 @@ library RoundSpells uses GearSystems
                     call SetUnitAnimation(d, "death")
                     call ColorDummy3(d, 0, 255, 255, 255, 0.75)
                     call GroupClear(g3)
-                    call GroupEnumUnitsInRange(g3 , x, y, 650 , Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g3 , x, y, 650 , NoDecor_Cond)
                     loop
                         set u = FirstOfGroup( g3 )
                         exitwhen u == null
@@ -260,7 +311,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                        call SetHpCurrent(u, -dmg2)
+                        call EnvironmentHpLoss(d,u,dmg2,-13)
                         call soundcheck(u)
                         endif
                         call GroupRemoveUnit( g3 , u )
@@ -283,7 +334,7 @@ library RoundSpells uses GearSystems
                         call GroupClear(g)
                         set x = GetUnitX(d)+550* Cos(a01)
                         set y = GetUnitY(d)+550* Sin(a01)
-                        call GroupEnumUnitsInRange(g , x, y, aoe , Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g , x, y, aoe , NoDecor_Cond)
                         loop
                             set u = FirstOfGroup( g )
                             exitwhen u == null
@@ -295,7 +346,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                                        call SetHpCurrent(u, -dmg)
+                                        call EnvironmentHpLoss(d,u,dmg,-12)
                                         call soundcheck(u)
                                         call StunUnit(u, u, 1.5)
                                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdl", u, "chest"))
@@ -313,7 +364,7 @@ library RoundSpells uses GearSystems
                     call SetUnitAnimation(d2, "death")
                     call ColorDummy3(d2, 0, 255, 255, 255, 0.75)
                     call GroupClear(g3)
-                    call GroupEnumUnitsInRange(g3 , x, y, 650 , Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g3 , x, y, 650 , NoDecor_Cond)
                     loop
                         set u = FirstOfGroup( g3 )
                         exitwhen u == null
@@ -322,7 +373,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                            call SetHpCurrent(u, -dmg2)
+                            call EnvironmentHpLoss(d,u,dmg2,-13)
                             call soundcheck(u)
                         endif
                         call GroupRemoveUnit( g3 , u )
@@ -346,7 +397,7 @@ library RoundSpells uses GearSystems
                         
                         set x = GetUnitX(d2)+550* Cos(a02)
                         set y = GetUnitY(d2)+550* Sin(a02)
-                        call GroupEnumUnitsInRange(g3 , x,y, aoe , Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g3 , x,y, aoe , NoDecor_Cond)
                         loop
                             set u = FirstOfGroup( g3 )
                             exitwhen u == null
@@ -359,7 +410,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                                        call SetHpCurrent(u, -dmg)
+                                        call EnvironmentHpLoss(d,u,dmg,-12)
                                         call soundcheck(u)
                                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdl", u, "chest"))
                                     endif
@@ -385,7 +436,7 @@ library RoundSpells uses GearSystems
                     call SetUnitAnimation(d, "death")
                     call ColorDummy3(d, 0, 255, 255, 255, 0.75)
                     call GroupClear(g3)
-                    call GroupEnumUnitsInRange(g3 , x, y, 650 , Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g3 , x, y, 650 , NoDecor_Cond)
                     loop
                         set u = FirstOfGroup( g3 )
                         exitwhen u == null
@@ -394,7 +445,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                            call SetHpCurrent(u, -dmg2)
+                            call EnvironmentHpLoss(d,u,dmg2,-13)
                             call soundcheck(u)
                         endif
                         call GroupRemoveUnit( g3 , u )
@@ -408,7 +459,7 @@ library RoundSpells uses GearSystems
                     set x = GetUnitX(d2)
                     set y = GetUnitY(d2)
                     call GroupClear(g3)
-                    call GroupEnumUnitsInRange(g3 , x, y, 650 , Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g3 , x, y, 650 , NoDecor_Cond)
                     loop
                         set u = FirstOfGroup( g3 )
                         exitwhen u == null
@@ -417,7 +468,7 @@ library RoundSpells uses GearSystems
                         set TrainKill = TrainKill + 1
                         call SaveSystem_RecordTrainDeath(u)
                         endif
-                            call SetHpCurrent(u, -dmg2)
+                            call EnvironmentHpLoss(d,u,dmg2,-13)
                             call soundcheck(u)
                         endif
                         call GroupRemoveUnit( g3 , u )
@@ -530,8 +581,14 @@ library RoundSpells uses GearSystems
             set u = null
             set move = 1
             call MakeSound("war3mapimported\\TrainSound")
+            if GetRandomInt(1,2) == 1 then 
             set d = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h00G', x1, y1, r6 + 180)
             set d2 = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h00G', x2, y2, r7 + 180)
+            else
+            // Thomas (alt train) model faces the opposite way: no +180 turn.
+            set d = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h02N', x1, y1, r6)
+            set d2 = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), 'h02N', x2, y2, r7)
+            endif
             call ColorDummy4(d, 0, 255, 255, 255, 0.3)
             call ColorDummy4(d2, 0, 255, 255, 255, 0.3)
             call SetUnitTimeScale(d, 2)
@@ -539,8 +596,8 @@ library RoundSpells uses GearSystems
             set des1 = CreateDestructable('B017', GetUnitX(d), GetUnitY(d), 0, 0.01, 0)
             set des2 = CreateDestructable('B017', GetUnitX(d2), GetUnitY(d2), 0, 0.01, 0)
             set rmax = 10
-            set dmg = 250 + CurrentRound*100
-            set dmg2 = 500 + CurrentRound*125
+            set dmg = 200.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 50.00
+            set dmg2 = 400.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 50.00
             set aoe = 275
             call PlayersMsg("|c00FF0303Author:|r Train coming.", 3)
             if MUI_RoundTrain == 0 then

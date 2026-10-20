@@ -1,5 +1,82 @@
 library RaidenSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer RaidenTick05_Timer = CreateTimer()
+        private boolean array RaidenTick05_Active
+        private integer RaidenTick05_Users = 0
+        private code RaidenTick05_Callback = null
+    endglobals
+
+    private function RaidenTick05_On takes integer k returns nothing
+        if not RaidenTick05_Active[k] then
+            set RaidenTick05_Active[k] = true
+            set RaidenTick05_Users = RaidenTick05_Users + 1
+            if RaidenTick05_Users == 1 then
+                call TimerStart(RaidenTick05_Timer, 0.05, true, RaidenTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function RaidenTick05_Off takes integer k returns nothing
+        if RaidenTick05_Active[k] then
+            set RaidenTick05_Active[k] = false
+            set RaidenTick05_Users = RaidenTick05_Users - 1
+            if RaidenTick05_Users <= 0 then
+                set RaidenTick05_Users = 0
+                call PauseTimer(RaidenTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer RaidenTick_Timer = CreateTimer()
+        private boolean array RaidenTick_Active
+        private integer RaidenTick_Users = 0
+        private code RaidenTick_Callback = null
+    endglobals
+
+    private function RaidenTick_On takes integer k returns nothing
+        if not RaidenTick_Active[k] then
+            set RaidenTick_Active[k] = true
+            set RaidenTick_Users = RaidenTick_Users + 1
+            if RaidenTick_Users == 1 then
+                call TimerStart(RaidenTick_Timer, 0.03, true, RaidenTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function RaidenTick_Off takes integer k returns nothing
+        if RaidenTick_Active[k] then
+            set RaidenTick_Active[k] = false
+            set RaidenTick_Users = RaidenTick_Users - 1
+            if RaidenTick_Users <= 0 then
+                set RaidenTick_Users = 0
+                call PauseTimer(RaidenTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ATK_COUNT = StringHash("atk count")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+        private integer SH_Q_ABI = StringHash("q abi")
+        private integer SH_RAIDEN = StringHash("raiden")
+        private integer SH_RAIDEN_T = StringHash("raiden t")
+        private integer SH_RAIDEN_T2 = StringHash("raiden t2")
+        private integer SH_RAIDEN_TT_R = StringHash("raiden tt r")
+        private integer SH_RAIDEN_TT_R_X = StringHash("raiden tt r x")
+        private integer SH_RAIDEN_TT_R_Y = StringHash("raiden tt r y")
+        private integer SH_RAIDEN_T_CAST = StringHash("raiden t cast")
+        private integer SH_RAIDEN_W = StringHash("raiden w")
+        private integer SH_RAIDEN_W_ATK = StringHash("raiden w atk")
+    endglobals
+    globals
         // --------------------------------------------------------------------------
         // Raiden Core
         // --------------------------------------------------------------------------
@@ -138,6 +215,7 @@ library RaidenSpells uses GearSystems
         real RaidenTT_CastTime = 0.90
         real RaidenTT_AddDuration = 15.00
         real RaidenTT_RemoveCd = 10.00
+        real RaidenTT_AttackRangeBonus = 80.0 // attack range bonus while T2 (True God) is active
         integer RaidenT_AdditionalDmg = 150
         boolean RaidenT_IsInvul = false
         boolean RaidenTT_IsInvul = false
@@ -163,10 +241,10 @@ library RaidenSpells uses GearSystems
         local real y = GetUnitY(td)
         local real a = GetRandomReal(0, 359)
         local integer atk_trigger = RaidenG_CountAtkToTrigger
-        local boolean b = LoadInteger(hs, GetHandleId(c), StringHash("q abi")) > 0
+        local boolean b = LoadInteger(hs, GetHandleId(c), SH_Q_ABI) > 0
         local integer lvl = 1
         local real dmg = GetHeroAgi(c, true) * RaidenG_AgiDMG
-        local integer atk = LoadInteger(hs, GetHandleId(c), StringHash("atk count")) + 1
+        local integer atk = LoadInteger(hs, GetHandleId(c), SH_ATK_COUNT) + 1
 
         if GetHeroLevel(c) >= 35 then
             set lvl = 4
@@ -176,7 +254,7 @@ library RaidenSpells uses GearSystems
             set lvl = 2
         endif
 
-        if LoadInteger(hs, GetHandleId(c), StringHash("raiden w atk")) == 1 then
+        if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_W_ATK) == 1 then
             set atk_trigger = 2
         endif
 
@@ -188,20 +266,21 @@ library RaidenSpells uses GearSystems
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-trlightning2.mdl", x, y, GetRandomReal(0, 359), 1, 1, 0))
                 call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_WTW-whitethunder-Zi.mdx", x, y, GetRandomReal(0, 359), 1, 1.1, 0), 0.3, 255, 255, 255, 0.3)
                 call EUTU2(EffectSpawn("war3mapImported\\wos_mei-rsfx-6.mdl", x, y, a, 1.25, 1.45, 100), 0.36, 100, td)
+                call DamageSource('A0GD')
                 call NextDmg(c, td, dmg, 0, 0.1)
             endif
             set atk = 0
         endif
 
         call BuffUnit01(c, c, 'A0GE', "bloodlust", lvl)
-        call SaveInteger(hs, GetHandleId(c), StringHash("atk count"), atk)
+        call SaveInteger(hs, GetHandleId(c), SH_ATK_COUNT, atk)
     endfunction
 
     private struct RaidenQ_KS
-        private static timer t_RaidenQ = CreateTimer()
         private static integer array m_RaidenQ
         private static integer MUI_RaidenQ = -1
 
+        integer src // Damage Stats instance: Q / TQ / TTQ
         unit c
         real x
         real y
@@ -226,7 +305,7 @@ library RaidenSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_RaidenQ takes nothing returns nothing
+        static method Loop_RaidenQ takes nothing returns nothing
             local integer this
             local integer i = 0
 
@@ -339,6 +418,7 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                        call DamageSource(src)
                                         call dmgphys(c, u, dmg)
                                         call RaidenAtk_Start(c, u)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -383,6 +463,7 @@ library RaidenSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                         call GroupAddUnit(g2, u)
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, RaidenQ_StunTime)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -440,6 +521,7 @@ library RaidenSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                         call GroupAddUnit(g2, u)
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, RaidenQ_StunTime)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -466,7 +548,7 @@ library RaidenSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("q abi"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_Q_ABI, 0)
                     call SetUnitAnimation(c, "stand")
                     call StopSpellUnit2(c)
                     call DestroyGroup(g)
@@ -480,7 +562,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenQ = MUI_RaidenQ - 1
                     set i = i - 1
                     if MUI_RaidenQ == -1 then
-                        call PauseTimer(t_RaidenQ)
+                        call RaidenTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -508,18 +590,23 @@ library RaidenSpells uses GearSystems
             endif
             set r_prepare = RaidenQ_CastTime
             set rmax = r_prepare + ((sr / move) * 0.03)
-            call SaveInteger(hs, GetHandleId(c), StringHash("q abi"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_Q_ABI, 1)
             set g = CreateGroup()
             set g2 = CreateGroup()
             set scale = 5.75
             set u = null
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
                 set k2 = 2
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) > 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) > 0 then
                 set k2 = 1
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("raiden w")) > 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_RAIDEN_W) > 0 then
                 set check2 = 1
+            endif
+            if k2 == 2 then
+                set src = DamageSourceVariant(RaidenQ_ID, 2, "TTQ")
+            else
+                set src = DamageSourceVariant(RaidenQ_ID, k2, "TQ")
             endif
             set a = GAngle2(c, x, y)
             set aoe = RaidenQ_DamageAoeCheck
@@ -553,7 +640,7 @@ library RaidenSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             set r5 = 0
             if MUI_RaidenQ == 0 then
-                call TimerStart(t_RaidenQ, 0.03, true, function thistype.Loop_RaidenQ)
+                call RaidenTick_On(0)
             endif
         endmethod
     endstruct
@@ -564,10 +651,10 @@ library RaidenSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if id == Raiden_ID or id == Raiden_Morph_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -580,9 +667,9 @@ library RaidenSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if id == Raiden_ID or id == Raiden_Morph_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -595,7 +682,7 @@ library RaidenSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if id == Raiden_ID or id == Raiden_Morph_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
@@ -603,7 +690,7 @@ library RaidenSpells uses GearSystems
     endfunction
 
     function Raiden_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -612,20 +699,20 @@ library RaidenSpells uses GearSystems
         local unit tu
 
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             // Если до точки назначения больше 75 единиц — продолжаем бег
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -657,7 +744,6 @@ library RaidenSpells uses GearSystems
     endstruct
 
     private struct RaidenW_KS
-        private static timer t_RaidenW = CreateTimer()
         private static integer array m_RaidenW
         private static integer MUI_RaidenW = -1
 
@@ -675,14 +761,14 @@ library RaidenSpells uses GearSystems
         real rmax
         real ms_base
 
-        private static method Loop_RaidenW takes nothing returns nothing
+        static method Loop_RaidenW takes nothing returns nothing
             local integer this
             local integer i = 0
 
             loop
                 exitwhen i > MUI_RaidenW
                 set this = m_RaidenW[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) == 0 then
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) == 0 then
                     if not IsUnitPaused(c) then
                         set r = r + 0.03
                     endif
@@ -704,20 +790,17 @@ library RaidenSpells uses GearSystems
                         set y = GetUnitY(td) - 100 * Sin(a)
                         call BlzSetSpecialEffectPosition(e, x, y, 135)
                     endif
-                    call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                     if rmax - r >= 0 then
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, RaidenW_ID, "Eye of Judgment", rmax - r, rmax, true)
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, RaidenW_ID, "Eye of Judgment", 0.00, 0.00, true)
                     call BlzSetSpecialEffectTimeScale(e, 2)
                     call DestroyEffect(e)
-                    call RemoveSavedHandle(hs, GetHandleId(td), StringHash("raiden"))
-                    call SaveInteger(hs, GetHandleId(td), StringHash("raiden w"), 0)
+                    call RemoveSavedHandle(hs, GetHandleId(td), SH_RAIDEN)
+                    call SaveInteger(hs, GetHandleId(td), SH_RAIDEN_W, 0)
                     call SetUnitMoveSpeed(c, ms_base)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("raiden w atk"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_W_ATK, 0)
                     set c = null
                     set td = null
                     set e = null
@@ -726,7 +809,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenW = MUI_RaidenW - 1
                     set i = i - 1
                     if MUI_RaidenW == -1 then
-                        call PauseTimer(t_RaidenW)
+                        call RaidenTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -751,43 +834,6 @@ library RaidenSpells uses GearSystems
             call SetUnitMoveSpeed(c, ms_base * RaidenW_MoveSpeedBonus)
             call Raiden_RestoreOrder(c, 8)
 
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_W", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Eye of Judgment:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.8)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-            endif
 
             set e = EffectSpawn("war3mapImported\\wos_RaidenEi-41.mdl", x, y, a * bj_RADTODEG + 90, 2, 0.01, 0)
             call ScaleEffDummy(e, 0.18, 0.01, 0.75)
@@ -796,21 +842,21 @@ library RaidenSpells uses GearSystems
             call ScaleEffDummy(e2, 0.18, 0.01, 0.5)
             call ColorEffDummy3(e2, 0.18, 255, 255, 255, 0.39)
 
-            call SaveInteger(hs, GetHandleId(c), StringHash("raiden w atk"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_W_ATK, 1)
             call MakeSound("war3mapimported\\Hero_Raiden_W")
             call MakeSound("war3mapimported\\Hero_Raiden_W_1")
-            call SaveUnitHandle(hs, GetHandleId(td), StringHash("raiden"), c)
-            call SaveInteger(hs, GetHandleId(td), StringHash("raiden w"), 1)
+            call SaveUnitHandle(hs, GetHandleId(td), SH_RAIDEN, c)
+            call SaveInteger(hs, GetHandleId(td), SH_RAIDEN_W, 1)
             if MUI_RaidenW == 0 then
-                call TimerStart(t_RaidenW, 0.03, true, function thistype.Loop_RaidenW)
+                call RaidenTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct RaidenTW_KS
-        private static timer t_RaidenTW = CreateTimer()
         private static integer array m_RaidenTW
         private static integer MUI_RaidenTW = -1
+        integer src // Damage Stats instance: TW / TTW
 
         unit c
         real x
@@ -837,7 +883,7 @@ library RaidenSpells uses GearSystems
         real ms_base
         real dmg_arena
 
-        private static method Loop_RaidenTW takes nothing returns nothing
+        static method Loop_RaidenTW takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kek = 0
@@ -847,7 +893,7 @@ library RaidenSpells uses GearSystems
             loop
                 exitwhen i > MUI_RaidenTW
                 set this = m_RaidenTW[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) == 1 and LoadInteger(hs, GetHandleId(c), StringHash("raiden t cast")) == 0 then
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) == 1 and LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T_CAST) == 0 then
                     if k3 == 0 then
                         if not IsUnitPaused(c) then
                             set r = r + 0.03
@@ -901,6 +947,7 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource(src)
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -910,8 +957,8 @@ library RaidenSpells uses GearSystems
                             set r3 = r3 + 0.03
                         endif
                     elseif k3 == 1 then
-                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), 5)
-                        call BlzSetSpecialEffectPosition(e2, GetUnitX(c), GetUnitY(c), 0)
+                        call BlzSetSpecialEffectPosition(e, GetUnitX(c), GetUnitY(c), BlzGetLocalUnitZ(c) + 5)
+                        call BlzSetSpecialEffectPosition(e2, GetUnitX(c), GetUnitY(c), BlzGetLocalUnitZ(c))
                         if r < RaidenTTW_CastTime then
                             set r = r + 0.03
                             if r4 > 0.09 then
@@ -987,6 +1034,7 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                     endif
                                     call GroupRemoveUnit(g, u)
@@ -1011,6 +1059,7 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource(src)
                                     call dmgmag(c, u, dmg_arena)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -1020,9 +1069,8 @@ library RaidenSpells uses GearSystems
                             set r2 = r2 + 0.03
                         endif
                     endif
-                    call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                     if rmax - r >= 0 then
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, RaidenW_ID, "Eye of Judgment", rmax - r, rmax, true)
                     endif
                     if r == 0.15 then
                         set r9 = BlzGetUnitAbilityCooldown(c, RaidenW_ID, GetUnitAbilityLevel(c, RaidenW_ID) - 1)
@@ -1034,9 +1082,7 @@ library RaidenSpells uses GearSystems
                         set r8 = r8 + 0.03
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, RaidenW_ID, "Eye of Judgment", 0.00, 0.00, true)
                     if k3 == 1 and r < 0.50 then
                         call StopSpellUnit(c)
                     endif
@@ -1047,7 +1093,7 @@ library RaidenSpells uses GearSystems
                         call ColorEffDummy3(e2, 0, 255, 255, 255, 0.36)
                     endif
                     call SetUnitMoveSpeed(c, ms_base)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("raiden w atk"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_W_ATK, 0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     set g = null
@@ -1060,7 +1106,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenTW = MUI_RaidenTW - 1
                     set i = i - 1
                     if MUI_RaidenTW == -1 then
-                        call PauseTimer(t_RaidenTW)
+                        call RaidenTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -1077,6 +1123,11 @@ library RaidenSpells uses GearSystems
             set g = CreateGroup()
             set g2 = CreateGroup()
             set k2 = GetPlayerId(GetOwningPlayer(c))
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
+                set src = DamageSourceVariant(RaidenW_ID, 2, "TTW")
+            else
+                set src = DamageSourceVariant(RaidenW_ID, 1, "TW")
+            endif
             set k3 = 0
             set r3 = 0
             set x = GetUnitX(c)
@@ -1087,45 +1138,8 @@ library RaidenSpells uses GearSystems
             set ms_base = GetUnitDefaultMoveSpeed(c)
             call SetUnitMoveSpeed(c, ms_base * RaidenW_MoveSpeedBonus)
 
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_W", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Eye of Judgment:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.8)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-            endif
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
                 set k3 = 1
                 set e = EffectSpawn("war3mapImported\\wos_blackmoon.mdl", x, y, 1, 1, 0.01, 5)
                 call ScaleEffDummy(e, 0.71, 0.01, 1.3)
@@ -1156,16 +1170,15 @@ library RaidenSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Raiden_TW")
             endif
 
-            call SaveInteger(hs, GetHandleId(c), StringHash("raiden w atk"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_W_ATK, 1)
             call MakeSound("war3mapimported\\Hero_Raiden_TW_2")
             if MUI_RaidenTW == 0 then
-                call TimerStart(t_RaidenTW, 0.03, true, function thistype.Loop_RaidenTW)
+                call RaidenTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct RaidenE_KS
-        private static timer t_RaidenE = CreateTimer()
         private static integer array m_RaidenE
         private static integer MUI_RaidenE = -1
 
@@ -1196,7 +1209,7 @@ library RaidenSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_RaidenE takes nothing returns nothing
+        static method Loop_RaidenE takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rkek = 0
@@ -1233,7 +1246,9 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call dmgmag(c, u, dmg)
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call ErzaPassive(c, u, 3)
                                         call SlowUnit(c, u, RaidenE_Slow, RaidenE_Duration)
                                         call GroupAddUnit(g2, u)
@@ -1326,7 +1341,9 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call dmgmag(c, u, dmg)
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call ErzaPassive(c, u, 3)
                                         call GroupAddUnit(g2, u)
                                         call SlowUnit(c, u, RaidenE_Slow, RaidenE_Duration)
@@ -1400,7 +1417,9 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call dmgmag(c, u, dmg)
+                                        call DamageSource(DamageSourceMode(RaidenE_ID, k2, "TE", "TTE"))
                                         call ErzaPassive(c, u, 3)
                                         call GroupAddUnit(g2, u)
                                         call SlowUnit(c, u, RaidenE_Slow, RaidenE_Duration)
@@ -1445,7 +1464,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenE = MUI_RaidenE - 1
                     set i = i - 1
                     if MUI_RaidenE == -1 then
-                        call PauseTimer(t_RaidenE)
+                        call RaidenTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -1478,7 +1497,7 @@ library RaidenSpells uses GearSystems
             set dmg = GetHeroAgi(c, true) * (RaidenE_DamageAgiBase + (RaidenE_DamageAgiStep * (GetUnitAbilityLevel(c, RaidenE_ID) - 1)))
             set dmg = dmg + RaidenE_Damage2StaticBase + (RaidenE_Damage2StaticStep * (GetUnitAbilityLevel(c, RaidenE_ID) - 1))
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
                 set k2 = 2
                 set r3 = 0.06
                 set rmax = 1.36
@@ -1489,7 +1508,7 @@ library RaidenSpells uses GearSystems
                 set e2 = AddSpecialEffectTarget("war3mapImported\\wos_mei-qsfx-4.mdl", c, "weapon")
                 call SetUnitTimeScale(c, 2.25)
                 set move = 225
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) > 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) > 0 then
                 set k2 = 1
                 set rmax = RaidenTE_Duration
                 set dmg = dmg + GetHeroAgi(c, true) * RaidenTE_DamageAgiBonus
@@ -1507,13 +1526,12 @@ library RaidenSpells uses GearSystems
             endif
 
             if MUI_RaidenE == 0 then
-                call TimerStart(t_RaidenE, 0.03, true, function thistype.Loop_RaidenE)
+                call RaidenTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct RaidenR_KS
-        private static timer t_RaidenR = CreateTimer()
         private static integer array m_RaidenR
         private static integer MUI_RaidenR = -1
 
@@ -1539,7 +1557,7 @@ library RaidenSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_RaidenR takes nothing returns nothing
+        static method Loop_RaidenR takes nothing returns nothing
             local integer this
             local integer i = 0
 
@@ -1564,7 +1582,9 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call ErzaPassive(c, u, 3)
                                     call StunUnit(c, u, RaidenR_StunTime)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1588,7 +1608,9 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call ErzaPassive(c, u, 3)
                                     call StunUnit(c, u, RaidenTR_StunTime)
                                     call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_WTW-whitethunder-Zi.mdx", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 4, 0), 0.3, 255, 255, 255, 0.3)
@@ -1624,7 +1646,7 @@ library RaidenSpells uses GearSystems
                             if SR5(e, x, y) > move then
                                 call MoveEff(e, move, GAngle5(e, x, y))
                             else
-                                call BlzSetSpecialEffectPosition(e, x, y, 3)
+                                call BlzSetSpecialEffectPosition(e, x, y, BlzGetLocalSpecialEffectZ(e))
                             endif
                         endif
                         if r == 1.20 then
@@ -1663,7 +1685,9 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource(DamageSourceMode(RaidenR_ID, k2, "TR", "TTR"))
                                     call ErzaPassive(c, u, 3)
                                     call StunUnit(c, u, RaidenTTR_StunTime)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1683,7 +1707,7 @@ library RaidenSpells uses GearSystems
                         endif
                         call StopSpellUnit(c)
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R, 0)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.21)
                     call DestroyGroup(g)
                     set c = null
@@ -1693,7 +1717,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenR = MUI_RaidenR - 1
                     set i = i - 1
                     if MUI_RaidenR == -1 then
-                        call PauseTimer(t_RaidenR)
+                        call RaidenTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1719,13 +1743,13 @@ library RaidenSpells uses GearSystems
             set dmg = GetHeroAgi(c, true) * (RaidenR_DamageAgiBase + (RaidenR_DamageAgiStep * (GetUnitAbilityLevel(c, RaidenR_ID) - 1)))
             set dmg = dmg + RaidenR_Damage2StaticBase + (RaidenR_Damage2StaticStep * (GetUnitAbilityLevel(c, RaidenR_ID) - 1))
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
                 set k2 = 2
-                call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r x"), x)
-                call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r y"), y)
+                call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R_X, x)
+                call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R_Y, y)
                 set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
                 set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) > 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) > 0 then
                 set k2 = 1
             endif
 
@@ -1740,7 +1764,7 @@ library RaidenSpells uses GearSystems
                 call MouseOn(GetOwningPlayer(c))
                 set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
                 set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
-                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r"), 1)
+                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R, 1)
                 set scale = 2.5
                 set scale2 = 1800
                 set r5 = 0.3
@@ -1780,13 +1804,12 @@ library RaidenSpells uses GearSystems
             endif
             call ScaleEffDummy(e, r5, 0.01, scale)
             if MUI_RaidenR == 0 then
-                call TimerStart(t_RaidenR, 0.03, true, function thistype.Loop_RaidenR)
+                call RaidenTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct RaidenT_KS
-        private static timer t_RaidenT = CreateTimer()
         private static integer array m_RaidenT
         private static integer MUI_RaidenT = -1
 
@@ -1802,7 +1825,7 @@ library RaidenSpells uses GearSystems
         effect e2
         real rmax
 
-        private static method Loop_RaidenT takes nothing returns nothing
+        static method Loop_RaidenT takes nothing returns nothing
             local integer this
             local integer i = 0
 
@@ -1813,7 +1836,7 @@ library RaidenSpells uses GearSystems
                     if check == 0 or not IsUnitPaused(c) then
                         set r = r + 0.05
                     endif
-                    set r = S2R(R2SW(r, 0, 3))
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.25 then
                             call MakeSound("war3mapimported\\Hero_Raiden_T_1")
@@ -1830,44 +1853,6 @@ library RaidenSpells uses GearSystems
                             // Переключение тултипов на Форму 1 (Musou Shinsetsu)
                             call AAUniversalTooltips_SetUnitForm(c, 1)
 
-                            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.2175)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.2125)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.2175)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_T", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Musou Shinsetsu:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.8)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.2075)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
 
                             if GetHeroLevel(c) >= 35 then
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), RaidenTT_ID, true)
@@ -1886,21 +1871,17 @@ library RaidenSpells uses GearSystems
                             call UnitAddAbility(c, RaidenT_AS)
                         endif
                     elseif check == 1 then
-                        if k3 == 0 and LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) == 1 then
+                        if k3 == 0 and LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) == 1 then
                             set k3 = 1
-                            call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_TT", 0, false)
                             set rmax = rmax + RaidenTT_AddDuration
-                            call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
+                            call SetUnitRange(c, BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) + RaidenTT_AttackRangeBonus)
                         endif
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, RaidenT_ID, "Musou Shinsetsu", rmax - r, rmax, true)
                         endif
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, RaidenT_ID, "Musou Shinsetsu", 0.00, 0.00, true)
                     call DestroyEffect(e)
                     if check == 0 then
                         call StopSpellUnit2(c)
@@ -1911,8 +1892,12 @@ library RaidenSpells uses GearSystems
                         endif
                         call UnitRemoveAbility(c, RaidenT_AS)
                         call DestroyEffect(e2)
-                        if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) > 0 then
-                            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t2"), 0)
+                        if k3 == 1 then
+                            set k3 = 0
+                            call SetUnitRange(c, BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) - RaidenTT_AttackRangeBonus)
+                        endif
+                        if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) > 0 then
+                            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T2, 0)
                             call BlzSetUnitSkin(c, Raiden_ID)
                         endif
                         call BlzSetAbilityIcon(Raiden_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_Icon.blp")
@@ -1922,7 +1907,7 @@ library RaidenSpells uses GearSystems
                         call FixAura(c)
                     endif
                     call AddUnitAnimationProperties(c, "alternate", false)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("raiden t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T, 0)
                     call FixAura(c)
 
                     // Сброс тултипов обратно в форму 0
@@ -1935,7 +1920,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenT = MUI_RaidenT - 1
                     set i = i - 1
                     if MUI_RaidenT == -1 then
-                        call PauseTimer(t_RaidenT)
+                        call RaidenTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1966,15 +1951,14 @@ library RaidenSpells uses GearSystems
             call EffectSpawn2("war3mapImported\\wos_mei-qsfx-4.mdl", x, y, 1, 1, 2.25, 35, 1)
             call EffectSpawn2("war3mapImported\\wos_raiden-trarea.mdl", x, y, 1, 1, 1.25, 135, 1)
             call MakeSound("war3mapimported\\Hero_Raiden_T")
-            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T, 1)
             if MUI_RaidenT == 0 then
-                call TimerStart(t_RaidenT, 0.05, true, function thistype.Loop_RaidenT)
+                call RaidenTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct RaidenT2_KS
-        private static timer t_RaidenT2 = CreateTimer()
         private static integer array m_RaidenT2
         private static integer MUI_RaidenT2 = -1
 
@@ -1987,7 +1971,7 @@ library RaidenSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_RaidenT2 takes nothing returns nothing
+        static method Loop_RaidenT2 takes nothing returns nothing
             local integer this
             local integer i = 0
 
@@ -1996,7 +1980,7 @@ library RaidenSpells uses GearSystems
                 set this = m_RaidenT2[i]
                 if SpellBoolCaster(c) and r <= rmax and not CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
                     set r = r + 0.05
-                    set r = S2R(R2SW(r, 0, 3))
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.05 then
                             call HeightSet(c, 0.6, 250)
@@ -2009,10 +1993,10 @@ library RaidenSpells uses GearSystems
                             call ScaleEffDummy(EffectSpawn2("war3mapImported\\wos_raidenei-4.mdl", x, y, a * bj_RADTODEG, 2, 1, 0, 0.56), 0.42, 1, 6)
                         endif
                         if r == 0.65 then
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_1.mdl", x, y, a * bj_RADTODEG, 1.25, 1.2, 375))
+                            // removed: wos_1.mdl is not imported
                         endif
                         if r == 0.75 then
-                            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t cast"), 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T_CAST, 0)
                             call BlzSetUnitSkin(c, Raiden_Morph_ID)
                             call BlzSetAbilityIcon(Raiden_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_Icon2.blp")
                             call BlzSetAbilityIcon(Raiden_Morph_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_Icon2.blp")
@@ -2021,7 +2005,7 @@ library RaidenSpells uses GearSystems
                             call EffectSpawn2("war3mapImported\\wos_raiden-trarea.mdl", x, y, 1, 1, 1.25, 135, 0.5)
                             call DestroyEffect(e)
                             set e = null
-                            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t2"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T2, 1)
                             call StopSpellUnit2(c)
                             call HeightSet(c, 0.35, 0)
                             call FixAura(c)
@@ -2031,7 +2015,7 @@ library RaidenSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("raiden t cast"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T_CAST, 0)
                     call StopSpellUnit2(c)
                     call DestroyEffect(e)
                     set c = null
@@ -2040,7 +2024,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenT2 = MUI_RaidenT2 - 1
                     set i = i - 1
                     if MUI_RaidenT2 == -1 then
-                        call PauseTimer(t_RaidenT2)
+                        call RaidenTick05_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -2067,21 +2051,20 @@ library RaidenSpells uses GearSystems
             call ReduceCooldown(c, RaidenE_ID, RaidenTT_RemoveCd)
             call ReduceCooldown(c, RaidenR_ID, RaidenTT_RemoveCd)
             set e = EffectSpawn("war3mapImported\\wos_Opdef (429).mdl", x, y, 1, 1, 1.35, 1)
-            call ColorEffDummy3(EffectSpawnScale("war3mapImported\\wos_Raiden-17.mdl", x, y, 1, 1, 0.01, 1, 1.1, 0.01, 7.45), 0.9, 255, 255, 255, 0.51)
+            // removed: wos_Raiden-17.mdl is not imported
             call EffectSpawn2("war3mapImported\\wos_mei-qsfx-4.mdl", x, y, 1, 1, 2.25, 35, 2)
             call EffectSpawn2("war3mapImported\\wos_raiden-trarea.mdl", x, y, 1, 1, 1.45, 135, 2)
             call MakeSound("war3mapimported\\Hero_Raiden_TT_0")
             call MakeSound("war3mapimported\\Hero_Raiden_TT_1")
-            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t2"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("raiden t cast"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T2, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RAIDEN_T_CAST, 1)
             if MUI_RaidenT2 == 0 then
-                call TimerStart(t_RaidenT2, 0.05, true, function thistype.Loop_RaidenT2)
+                call RaidenTick05_On(1)
             endif
         endmethod
     endstruct
 
     private struct RaidenPas_KS
-        private static timer t_RaidenPas = CreateTimer()
         private static integer array m_RaidenPas
         private static integer MUI_RaidenPas = -1
 
@@ -2096,7 +2079,7 @@ library RaidenSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_RaidenPas takes nothing returns nothing
+        static method Loop_RaidenPas takes nothing returns nothing
             local integer this
             local integer i = 0
 
@@ -2105,13 +2088,13 @@ library RaidenSpells uses GearSystems
                 set this = m_RaidenPas[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R(R2SW(r, 0, 3))
+                    set r = RoundReal(r, 3)
                     set a = GetUnitFacing(c)
                     set x = GetUnitX(c) + 15 * Cos(a * bj_DEGTORAD)
                     set y = GetUnitY(c) + 15 * Sin(a * bj_DEGTORAD)
                     call BlzSetSpecialEffectPosition(e, x, y, fly)
                     call BlzSetSpecialEffectYaw(e, a * bj_DEGTORAD)
-                    if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) == 1 then
+                    if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) == 1 then
                         set fly = 25
                         set scale = 2.65
                     else
@@ -2133,7 +2116,7 @@ library RaidenSpells uses GearSystems
                     set MUI_RaidenPas = MUI_RaidenPas - 1
                     set i = i - 1
                     if MUI_RaidenPas == -1 then
-                        call PauseTimer(t_RaidenPas)
+                        call RaidenTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -2150,7 +2133,7 @@ library RaidenSpells uses GearSystems
             set y = GetUnitY(c)
             set r = 0
             set r2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("raiden t2")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) == 1 then
                 set fly = 25
                 set scale = 2.65
             else
@@ -2161,13 +2144,13 @@ library RaidenSpells uses GearSystems
             set a = GetUnitFacing(c)
             set e = EffectSpawn("war3mapImported\\wos_ZK_Divine ring333.mdl", x, y, a, 1, scale, fly)
             if MUI_RaidenPas == 0 then
-                call TimerStart(t_RaidenPas, 0.03, true, function thistype.Loop_RaidenPas)
+                call RaidenTick_On(5)
             endif
         endmethod
     endstruct
 
     function RaidenPas_Start takes unit c returns nothing
-        if IntegerCd(c, "raiden pas", RaidenW_ManaRestoreCd) then
+        if IntegerCdKey(c, SH_ICD_RAIDEN_PAS, RaidenW_ManaRestoreCd) then
             call RaidenPas_KS.RaidenPas_Start(c)
         endif
     endfunction
@@ -2182,13 +2165,14 @@ library RaidenSpells uses GearSystems
         local real a = GetRandomReal(0, 359)
         local real dmg = GetHeroAgi(c, true) * (RaidenW_DamageAgiBase + (RaidenW_DamageAgiStep * (GetUnitAbilityLevel(c, RaidenW_ID) - 1)))
 
-        if IntegerCd(c, "raiden w cd", 0.15) then
+        if IntegerCdKey(c, SH_ICD_RAIDEN_W_CD, 0.15) then
             set dmg = dmg + RaidenW_Damage2StaticBase + (RaidenW_Damage2StaticStep * (GetUnitAbilityLevel(c, RaidenW_ID) - 1))
             call EUTU2(EffectSpawn("war3mapImported\\wos_ld2209 (199).mdl", x, y, a, 0.85, 2.5, 90), 0.36, 90, td)
             if typeatk == 0 then
                 call EUTU2(EffectSpawn("war3mapImported\\wos_mei-rsfx-6.mdl", x, y, a, 1.25, 1.45, 100), 0.36, 100, td)
                 call EUTU2(EffectSpawn("war3mapImported\\wos_mh_tx-ba-symh-hit11Purple.mdl", x, y, a, 2, 1.0, 1), 0.36, 1, td)
             endif
+            call DamageSource('A001')
             call NextDmg(c, td, dmg, 0, 0.1)
             call StartSound(gg_snd_Hero_Raiden_W_1)
         endif
@@ -2213,7 +2197,7 @@ library RaidenSpells uses GearSystems
     endfunction
 
     function RaidenW_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("raiden t")) > 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T) > 0 then
             call RaidenTW_KS.RaidenTW_Start(c)
         else
             call RaidenW_KS.RaidenW_Start(c, c)
@@ -2236,4 +2220,48 @@ library RaidenSpells uses GearSystems
     function RaidenTT_Start takes unit c returns nothing
         call RaidenT2_KS.RaidenT2_Start(c)
     endfunction
+
+    private struct RaidenTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if RaidenTick_Active[0] then
+                call RaidenQ_KS.Loop_RaidenQ()
+            endif
+            if RaidenTick_Active[1] then
+                call RaidenW_KS.Loop_RaidenW()
+            endif
+            if RaidenTick_Active[2] then
+                call RaidenTW_KS.Loop_RaidenTW()
+            endif
+            if RaidenTick_Active[3] then
+                call RaidenE_KS.Loop_RaidenE()
+            endif
+            if RaidenTick_Active[4] then
+                call RaidenR_KS.Loop_RaidenR()
+            endif
+            if RaidenTick_Active[5] then
+                call RaidenPas_KS.Loop_RaidenPas()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set RaidenTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct RaidenTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if RaidenTick05_Active[0] then
+                call RaidenT_KS.Loop_RaidenT()
+            endif
+            if RaidenTick05_Active[1] then
+                call RaidenT2_KS.Loop_RaidenT2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set RaidenTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary

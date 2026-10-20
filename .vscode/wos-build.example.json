@@ -9,6 +9,7 @@
     "blizzardJ": "libs\\Blizzard.j",
     "buildDir": "_build",
     "testHero": "Crocodile",
+    "testNativeUI": true,
     "testMapsDir": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes",
     "testBaseSource": "test_map\\map_source\\TestBase.vj",
     "testHeroSourceDirs": [

@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "1a2a5c74b1744d65c98572ffe2e927dc667757776afca7f027f2eb419d8ec599",
+  "source_sha256": "52587f5050694509033ecf05e50c529f7c7645249583f4e1480757966f41928e",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -2322,12 +2322,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5952",
-            "_original_value": "TRIGSTR_5952",
+            "value": "TRIGSTR_2453",
+            "_original_value": "TRIGSTR_2453",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81OTUy",
-            "resolved_value": "Okarun have max movement speed.",
-            "_original_resolved_value": "Okarun have max movement speed."
+            "_raw_base64": "VFJJR1NUUl8yNDUz",
+            "resolved_value": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed).",
+            "_original_resolved_value": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed)."
           },
           "sanity_check": {
             "text": "",
@@ -4712,10 +4712,10 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9447",
-            "_original_value": "TRIGSTR_9447",
+            "value": "TRIGSTR_7324",
+            "_original_value": "TRIGSTR_7324",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85NDQ3",
+            "_raw_base64": "VFJJR1NUUl83MzI0",
             "resolved_value": "Uriel Protect",
             "_original_resolved_value": "Uriel Protect"
           },
@@ -6830,12 +6830,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1901",
-            "_original_value": "TRIGSTR_1901",
+            "value": "TRIGSTR_2454",
+            "_original_value": "TRIGSTR_2454",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTAx",
-            "resolved_value": "+25 hp/sec\n+6 mp/sec\n+25% MS",
-            "_original_resolved_value": "+25 hp/sec\n+6 mp/sec\n+25% MS"
+            "_raw_base64": "VFJJR1NUUl8yNDU0",
+            "resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500",
+            "_original_resolved_value": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500"
           },
           "sanity_check": {
             "text": "",
@@ -6922,12 +6922,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3071",
-            "_original_value": "TRIGSTR_3071",
+            "value": "TRIGSTR_2455",
+            "_original_value": "TRIGSTR_2455",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDcx",
-            "resolved_value": "active heal reduced by 30%",
-            "_original_resolved_value": "active heal reduced by 30%"
+            "_raw_base64": "VFJJR1NUUl8yNDU1",
+            "resolved_value": "Receives 30% less active healing.\nDark Holy Grail aura radius: 1500.",
+            "_original_resolved_value": "Receives 30% less active healing.\nDark Holy Grail aura radius: 1500."
           },
           "sanity_check": {
             "text": "",
@@ -7126,12 +7126,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4216",
-            "_original_value": "TRIGSTR_4216",
+            "value": "TRIGSTR_2465",
+            "_original_value": "TRIGSTR_2465",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjE2",
-            "resolved_value": "-7% active healing",
-            "_original_resolved_value": "-7% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDY1",
+            "resolved_value": "-5.5% healing and HP regeneration",
+            "_original_resolved_value": "-5.5% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -7238,12 +7238,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4225",
-            "_original_value": "TRIGSTR_4225",
+            "value": "TRIGSTR_2473",
+            "_original_value": "TRIGSTR_2473",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI1",
-            "resolved_value": "-14% active healing",
-            "_original_resolved_value": "-14% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDcz",
+            "resolved_value": "-11% healing and HP regeneration",
+            "_original_resolved_value": "-11% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -7350,12 +7350,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4226",
-            "_original_value": "TRIGSTR_4226",
+            "value": "TRIGSTR_2476",
+            "_original_value": "TRIGSTR_2476",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI2",
-            "resolved_value": "-21% active healing",
-            "_original_resolved_value": "-21% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDc2",
+            "resolved_value": "-16.5% healing and HP regeneration",
+            "_original_resolved_value": "-16.5% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -7462,12 +7462,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4227",
-            "_original_value": "TRIGSTR_4227",
+            "value": "TRIGSTR_2477",
+            "_original_value": "TRIGSTR_2477",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI3",
-            "resolved_value": "-28% active healing",
-            "_original_resolved_value": "-28% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDc3",
+            "resolved_value": "-22% healing and HP regeneration",
+            "_original_resolved_value": "-22% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -7574,12 +7574,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4228",
-            "_original_value": "TRIGSTR_4228",
+            "value": "TRIGSTR_2478",
+            "_original_value": "TRIGSTR_2478",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MjI4",
-            "resolved_value": "-35% active healing",
-            "_original_resolved_value": "-35% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDc4",
+            "resolved_value": "-27.5% healing and HP regeneration",
+            "_original_resolved_value": "-27.5% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -9678,12 +9678,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4334",
-            "_original_value": "TRIGSTR_4334",
+            "value": "TRIGSTR_2479",
+            "_original_value": "TRIGSTR_2479",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80MzM0",
-            "resolved_value": "-42% active healing",
-            "_original_resolved_value": "-42% active healing"
+            "_raw_base64": "VFJJR1NUUl8yNDc5",
+            "resolved_value": "-33% healing and HP regeneration",
+            "_original_resolved_value": "-33% healing and HP regeneration"
           },
           "sanity_check": {
             "text": "",
@@ -9790,12 +9790,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8723",
-            "_original_value": "TRIGSTR_8723",
+            "value": "TRIGSTR_2480",
+            "_original_value": "TRIGSTR_2480",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzIz",
-            "resolved_value": "-49% active healing and burn 10 mana per sec",
-            "_original_resolved_value": "-49% active healing and burn 10 mana per sec"
+            "_raw_base64": "VFJJR1NUUl8yNDgw",
+            "resolved_value": "-38.5% healing and HP regeneration; burns 1.35% of max mana per second",
+            "_original_resolved_value": "-38.5% healing and HP regeneration; burns 1.5% of max mana per second"
           },
           "sanity_check": {
             "text": "",
@@ -13812,6 +13812,282 @@
         }
       ],
       "display_name": "Suna Suna no Mi: Sand Speed"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B03F",
+        "hex": "42303346"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1871",
+            "_original_value": "TRIGSTR_1871",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xODcx",
+            "resolved_value": "Shun Shun Rikka",
+            "_original_resolved_value": "Shun Shun Rikka"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1932",
+            "_original_value": "TRIGSTR_1932",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTMy",
+            "resolved_value": "Receives 18% more HP regeneration and healing; stuns last 0.5 sec shorter.",
+            "_original_resolved_value": "Receives 18% more HP regeneration and healing; stuns last 0.5 sec shorter."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShunShunRikka.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShunShunRikka.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1NodW5TaHVuUmlra2EuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B040",
+        "hex": "42303430"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1934",
+            "_original_value": "TRIGSTR_1934",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTM0",
+            "resolved_value": "Frozen Heart Blessing",
+            "_original_resolved_value": "Frozen Heart Blessing"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1949",
+            "_original_value": "TRIGSTR_1949",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTQ5",
+            "resolved_value": "Receives 20% more mana regeneration and mana restoration.",
+            "_original_resolved_value": "Receives 20% more mana regeneration and mana restoration."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Frozen_Heart.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Frozen_Heart.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0Zyb3plbl9IZWFydC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B041",
+        "hex": "42303431"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1950",
+            "_original_value": "TRIGSTR_1950",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTUw",
+            "resolved_value": "Ashisogi Jizo",
+            "_original_resolved_value": "Ashisogi Jizo"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_1970",
+            "_original_value": "TRIGSTR_1970",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xOTcw",
+            "resolved_value": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec.",
+            "_original_resolved_value": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0FzaGlzb2dpSml6by5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
     }
   ]
 }

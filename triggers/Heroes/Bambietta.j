@@ -1,5 +1,11 @@
 library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_MORPH_END = StringHash("morph_end")
+        private integer SH_MORPH_T = StringHash("morph t")
+        private integer SH_STACK_COUNT = StringHash("stack_count")
+    endglobals
+    globals
         private timer BambiettaTimer03 = null
         private timer BambiettaTimer05 = null
         private code BambiettaTimer03Callback
@@ -98,12 +104,12 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         real BambiettaE_ExplosionDecorDamage = 50.0
 
 //---------------TE ability (Vollstandig: Shell Barrage)-----------------------
-        real BambiettaTE_DamageAgiBase = 3.0
+        real BambiettaTE_DamageAgiBase = 4.0
         real BambiettaTE_DamageAgiStep = 1.0
         real BambiettaTE_DamageAoe = 400.0
         real BambiettaTE_RangeBase = 1600.0
         real BambiettaTE_RangeStep = 100.0
-        real BambiettaTE_Stun = 0.1
+        real BambiettaTE_Stun = 0.15
         real BambiettaTE_CastTime = 0.60
         real BambiettaTE_Duration = 1.26
         real BambiettaTE_DecorDamage = 40.0
@@ -141,18 +147,35 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         real BambiettaTT_DamageAgiBase = 1.5
         real BambiettaTT_DamageAoe = 750.0
         real BambiettaTT_DamageAoe2 = 500.0
-        real BambiettaTT_Duration = 3.30
+        real BambiettaTT_Duration = 4.00
         real BambiettaTT_DecorDamage = 50.0
 
 //---------------G ability (The Explode)---------------------------------------
         integer BambiettaG_ID = 'A0DJ'
-        real BambiettaG_DamageAgiBase12 = 1.0
-        real BambiettaG_DamageAgiBase25 = 1.5
-        real BambiettaG_DamageAgiBase35 = 2.0
+        real BambiettaG_DamageAgi = 2.0
         real BambiettaG_CD = 5.0
         integer BambiettaG_Lvl_CD = 12
+        integer BambiettaG_Lvl_Stacks = 25
+        integer BambiettaG_Stacks25 = 2
+        integer BambiettaG_StacksT = 3
         real BambiettaG_DecorDamage = 25.0
     endglobals
+
+    // G: 1 заряд (PassiveCD) по умолчанию, 2 заряда с 25 уровня, 3 заряда в T.
+    function BambiettaG_SyncStacks takes unit c returns nothing
+        local integer maxStacks = 0
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) > 0 then
+            set maxStacks = BambiettaG_StacksT
+        elseif GetHeroLevel(c) >= BambiettaG_Lvl_Stacks then
+            set maxStacks = BambiettaG_Stacks25
+        endif
+        if maxStacks > 0 and SpellStacksGetMax(c) != maxStacks then
+            if SpellStacksGet(c) > maxStacks then
+                call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, maxStacks)
+            endif
+            call MySpellStacks(c, maxStacks, BambiettaG_CD)
+        endif
+    endfunction
 
     private function BambiettaTimer03Acquire takes nothing returns nothing
         set BambiettaTimer03Users = BambiettaTimer03Users + 1
@@ -219,7 +242,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaQ
                 set this = m_BambiettaQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.51 then
                         if BambiettaQ_IsInvul then
                             call DebugUnit(c)
@@ -293,6 +316,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0DE')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -381,7 +405,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTQ2
                 set this = m_BambiettaTQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r > 0 then
                         call MoveEff(e, move, a)
                         set r5 = r5 + move
@@ -416,7 +440,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     endif
                 else
                     if r == 999 then
-                        if IntegerCd(c, "cd s", 0.5) then
+                        if IntegerCdKey(c, SH_ICD_CD_S, 0.5) then
                             call MakeSound("war3mapimported\\Hero_Bambietta_TQ2")
                         endif
                         set x = GetEffX(e)
@@ -432,6 +456,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource(DamageSourceVariant(BambiettaQ_ID, 1, "TQ"))
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                             endif
@@ -494,7 +519,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTQ
                 set this = m_BambiettaTQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.51 then
                         if BambiettaTQ_IsInvul then
                             call DebugUnit(c)
@@ -624,7 +649,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaW2
                 set this = m_BambiettaW2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r > 0 then
                         call MoveEff(e, move, a)
                         set r5 = r5 + move
@@ -659,7 +684,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     endif
                 else
                     if r == 999 then
-                        if IntegerCd(c, "cd s", 0.5) then
+                        if IntegerCdKey(c, SH_ICD_CD_S, 0.5) then
                             call MakeSound("war3mapimported\\Hero_Bambietta_W2")
                         endif
                         set x = GetEffX(e)
@@ -675,6 +700,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0DF')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                             endif
@@ -737,7 +763,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaW
                 set this = m_BambiettaW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.51 then
                         if BambiettaW_IsInvul then
                             call DebugUnit(c)
@@ -830,10 +856,10 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTW2
                 set this = m_BambiettaTW2[i]
                 if SpellBoolCaster(c) and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call MoveEff(e, move, a)
                 else
-                    if IntegerCd(c, "cd s", 0.5) then
+                    if IntegerCdKey(c, SH_ICD_CD_S, 0.5) then
                         call MakeSound("war3mapimported\\Hero_Bambietta_W2")
                     endif
                     set x = GetEffX(e)
@@ -849,6 +875,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                            call DamageSource(DamageSourceVariant(BambiettaW_ID, 1, "TW"))
                             call dmgmag(c, u, dmg)
                         endif
                         call GroupRemoveUnit(g, u)
@@ -906,7 +933,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTW
                 set this = m_BambiettaTW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r > BambiettaTW_CastTime then
                         if BambiettaTW_IsInvul then
                             call DebugUnit(c)
@@ -1053,7 +1080,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaE2
                 set this = m_BambiettaE2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r > r4 then
                         call MoveEff(e, move, a)
                         call MoveEff(e2, move, a)
@@ -1089,7 +1116,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     endif
                 else
                     if r == 999 then
-                        if IntegerCd(c, "cd s", 0.5) then
+                        if IntegerCdKey(c, SH_ICD_CD_S, 0.5) then
                             call MakeSound("war3mapimported\\Hero_Bambietta_E3")
                         endif
                         set x = GetEffX(e)
@@ -1105,6 +1132,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0DG')
                                 call dmgmag(c, u, dmg)
                                 call SlowUnit(c, u, BambiettaE_Slow, BambiettaE_SlowDuration)
                                 call GroupAddUnit(g2, u)
@@ -1184,7 +1212,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaE
                 set this = m_BambiettaE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.6 then
                         if BambiettaE_IsInvul then
                             call DebugUnit(c)
@@ -1291,7 +1319,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTE2
                 set this = m_BambiettaTE2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r > r4 then
                         call MoveEff(e, move, a)
                         call MoveEff(e2, move, a)
@@ -1329,7 +1357,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     endif
                 else
                     if r == 999 then
-                        if IntegerCd(c, "cd s", 0.25) then
+                        if IntegerCdKey(c, SH_ICD_CD_S, 0.25) then
                             call MakeSound("war3mapimported\\Hero_Bambietta_TE3")
                         endif
                         set x = GetEffX(e)
@@ -1344,6 +1372,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource(DamageSourceVariant(BambiettaE_ID, 1, "TE"))
                                 call dmgmag(c, u, dmg)
                                 call SlowUnit(c, u, BambiettaE_Slow, BambiettaE_SlowDuration)
                                 call StunUnit(c, u, BambiettaTE_Stun)
@@ -1423,7 +1452,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTE
                 set this = m_BambiettaTE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if BambiettaTE_IsInvul then
                         call DebugUnit(c)
                     else
@@ -1440,7 +1469,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         if r2 > 0.09 then
                             set r2 = 0
                             set k = 0
-                            if IntegerCd(c, "sound e", 1.5) then
+                            if IntegerCdKey(c, SH_ICD_SOUND_E, 1.5) then
                                 call MakeSound("war3mapimported\\Hero_Bambietta_TE2")
                             endif
                             set k3 = GetRandomInt(1, 2)
@@ -1546,7 +1575,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaR
                 set this = m_BambiettaR[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if BambiettaR_IsInvul then
                         call DebugUnit(c)
                     else
@@ -1577,6 +1606,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0DH')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 call MUE(u, BambiettaR_PushRange, BambiettaR_PushDuration, GAngle3(x, y, u))
@@ -1661,7 +1691,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTR
                 set this = m_BambiettaTR[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if BambiettaTR_IsInvul then
                         call DebugUnit(c)
                     else
@@ -1701,6 +1731,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource(DamageSourceVariant(BambiettaR_ID, 1, "TR"))
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 call MUE(u, BambiettaTR_PushRange, BambiettaTR_PushDuration, GAngle3(x, y, u))
@@ -1821,13 +1852,13 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0) then
                         set r = r + 0.05
                     endif
-                    set r = S2R(R2SW(r, 0, 3))
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.05 then
                             set e = EffectSpawn("war3mapImported\\wos_FantasyBattle (805)red.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 3.25, 5)
                             set e2 = EffectSpawn("war3mapImported\\wos_FantasyBattle (804)_3red.mdl", GetUnitX(c), GetUnitY(c), 270, 1, 3, 0)
-                            call EffectSpawn2("war3mapimported\\wos_Shio_Super_Saiyan_JN_ZiRed.mdx", GetUnitX(c), GetUnitY(c), 270, 1, 5.75, 10, rmax)
-                            call EffectSpawn2("war3mapimported\\wos_Shio_Super_Saiyan_JN_ZiRed.mdx", GetUnitX(c), GetUnitY(c), 120, 1, 5.65, 15, rmax)
+                            call EffectSpawn2("war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_ZiRed.mdx", GetUnitX(c), GetUnitY(c), 270, 1, 5.75, 10, rmax)
+                            call EffectSpawn2("war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_ZiRed.mdx", GetUnitX(c), GetUnitY(c), 120, 1, 5.65, 15, rmax)
                         endif
                         if r == 0.65 then
                             call MakeSound("war3mapimported\\HeroBambietta_T2")
@@ -1836,7 +1867,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             if r2 > 0.1 then
                                 set r2 = 0
                                 call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_gnaden_air.mdl", x, y, GetRandomReal(0, 359), 0.4, 5, 1, 255, 25, 25, 255))
-                                call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_dustwave2221.mdx", x, y, GetRandomReal(0, 359), 0.85, 4, 1, 255, 25, 25, 50))
+                                // removed: wos_dustwave2221.mdx is not imported
                             else
                                 set r2 = r2 + 0.05
                             endif
@@ -1871,48 +1902,10 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                                 call StopSpellUnit2(c)
                             endif
                             set check = 1
-                            call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), 2)
-                            call MySpellStacks(c, 2, BambiettaG_CD)
+                            call SaveInteger(hs, GetHandleId(c), SH_STACK_COUNT, BambiettaG_StacksT)
+                            call MySpellStacks(c, BambiettaG_StacksT, BambiettaG_CD)
                             set rmax = BambiettaT_Duration
-                            if framebambietta_morph1[k2] == null then
-                                set framebambietta_morph1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(framebambietta_morph1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(framebambietta_morph1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(framebambietta_morph1[k2], true)
-                                endif
-                                set framebambietta_morph2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", framebambietta_morph1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph2[k2], 0.1, 0.019)
-                                set framebambietta_morph3[k2] = BlzCreateFrameByType("STATUSBAR", "", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetSize(framebambietta_morph3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(framebambietta_morph3[k2], 0.5)
-                                call BlzFrameSetModel(framebambietta_morph3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                                call BlzFrameSetMinMaxValue(framebambietta_morph3[k2], 0, rmax + 1)
-                                call BlzFrameSetValue(framebambietta_morph3[k2], rmax)
-                                set framebambietta_morph4[k2] = BlzCreateFrameByType("BACKDROP", "SS", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                                call BlzFrameSetSize(framebambietta_morph4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(framebambietta_morph4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_T", 0, false)
-                                set framebambietta_morph5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetText(framebambietta_morph5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(framebambietta_morph5[k2], 0.9)
-                                set framebambietta_morph6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", framebambietta_morph1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(framebambietta_morph6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                                call BlzFrameSetText(framebambietta_morph6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(framebambietta_morph6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(framebambietta_morph1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(framebambietta_morph3[k2], 0, rmax + 1)
-                                call BlzFrameSetValue(framebambietta_morph3[k2], rmax)
-                            endif
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t"), 1)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T, 1)
                             set r = 0
                             call BlzSetAbilityIcon(BambiettaQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_TQ.blp")
                             call BlzSetAbilityIcon(BambiettaW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_TW.blp")
@@ -1921,9 +1914,8 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set check = 1
                         endif
                     elseif check == 1 then
-                        call BlzFrameSetValue(framebambietta_morph3[k2], rmax - (r + 0.05))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(framebambietta_morph6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, BambiettaT_ID, "Vollstandig: Zofiel", rmax - r, rmax, true)
                         endif
                     endif
                 else
@@ -1943,16 +1935,16 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         call DestroyEffect(e2)
                         set e2 = null
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("morph_end"), 1)
                     call AddSpellLevel(c, 'A01C', 20, false)
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph t"), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_T, 0)
+                    if GetHeroLevel(c) >= BambiettaG_Lvl_Stacks then
+                        call BambiettaG_SyncStacks(c)
+                    else
+                        call SaveInteger(hs, GetHandleId(c), SH_MORPH_END, 1)
+                    endif
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), BambiettaT_ID, true)
                     call UnitRemoveAbility(c, BambiettaT2_ID)
-                    if framebambietta_morph1[k2] != null then
-                        if GetLocalPlayer() == GetOwningPlayer(c) then
-                            call BlzFrameSetVisible(framebambietta_morph1[k2], false)
-                        endif
-                    endif
+                            call WUI_HeroProgress(c, BambiettaT_ID, "Vollstandig: Zofiel", 0.00, 0.00, true)
                     call BlzSetAbilityIcon(BambiettaQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_Q.blp")
                     call BlzSetAbilityIcon(BambiettaW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_W.blp")
                     call BlzSetAbilityIcon(BambiettaE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_E.blp")
@@ -1995,14 +1987,14 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set check = 0
             set u = null
             call AddSpellLevel(c, 'A01C', 20, true)
-            call SaveInteger(hs, GetHandleId(c), StringHash("morph_end"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_MORPH_END, 0)
             set a = GetUnitFacing(c) * bj_DEGTORAD
             set rmax = BambiettaT_CastTime
             call ReduceCooldown(c, BambiettaQ_ID, BambiettaT_ReduceCD)
             call ReduceCooldown(c, BambiettaW_ID, BambiettaT_ReduceCD)
             call ReduceCooldown(c, BambiettaE_ID, BambiettaT_ReduceCD)
             call ReduceCooldown(c, BambiettaR_ID, BambiettaT_ReduceCD)
-            call BlzStartUnitAbilityCooldown(c, FakeAbi_ID, 0.01)
+            call BlzEndUnitAbilityCooldown(c, BambiettaG_ID)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BambiettaT_ID, false)
             call UnitAddAbility(c, BambiettaT2_ID)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BambiettaT2_ID, true)
@@ -2028,7 +2020,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 exitwhen i > MUI_BambiettaTT2
                 set this = m_BambiettaTT2[i]
                 if SpellBoolCaster(c) and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call MoveEff(e, move, a)
                     call BlzSetSpecialEffectHeight(e, BlzGetLocalSpecialEffectZ(e) - r5)
                 else
@@ -2045,6 +2037,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                            call DamageSource('A0DK')
                             call dmgmag(c, u, dmg)
                             call GroupAddUnit(g2, u)
                         endif
@@ -2106,8 +2099,9 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             loop
                 exitwhen i > MUI_BambiettaTT
                 set this = m_BambiettaTT[i]
+                call WUI_HeroProgress(c, BambiettaT2_ID, "Rain of Carnage", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.9 then
                         if BambiettaT2_IsInvul then
                             call DebugUnit(c)
@@ -2135,7 +2129,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             if r2 > 0.0 and check2 < 3 then
                                 set r2 = 0
                                 set check2 = check2 + 1
-                                if IntegerCd(c, "sound t cd", 0.8) then
+                                if IntegerCdKey(c, SH_ICD_SOUND_T_CD, 0.8) then
                                     call MakeSound("war3mapimported\\Hero_Bambietta_E3")
                                 endif
                                 set rr2 = GetRandomReal(0, 359) * bj_DEGTORAD
@@ -2254,7 +2248,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     endfunction
 
     function BambiettaQ_Start takes unit c, real x, real y returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) > 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) > 0 then
             call BambiettaSpells_Q.BambiettaTQ_Start(c, x, y)
         else
             call BambiettaSpells_Q.BambiettaQ_Start(c, x, y)
@@ -2262,7 +2256,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     endfunction
 
     function BambiettaW_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) > 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) > 0 then
             call BambiettaSpells_W.BambiettaTW_Start(c)
         else
             call BambiettaSpells_W.BambiettaW_Start(c)
@@ -2270,7 +2264,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     endfunction
 
     function BambiettaE_Start takes unit c, real x, real y returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) > 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) > 0 then
             call BambiettaSpells_E.BambiettaTE_Start(c, x, y)
         else
             call BambiettaSpells_E.BambiettaE_Start(c, x, y)
@@ -2278,7 +2272,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     endfunction
 
     function BambiettaR_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) > 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) > 0 then
             call BambiettaSpells_R.BambiettaTR_Start(c)
         else
             call BambiettaSpells_R.BambiettaR_Start(c)
@@ -2294,12 +2288,13 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
     endfunction
 
     function BambiettaG_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) == 0 then
-            call FakeCD_Start(c, BambiettaG_ID, BambiettaG_CD, 0, 0)
+        call BambiettaG_SyncStacks(c)
+        if SpellStacksGetMax(c) == 0 then
+            call PassiveCD_Start(c, BambiettaG_ID, BambiettaG_CD)
         else
             call MyRemoveStack(c)
-            if LoadInteger(hs, GetHandleId(c), StringHash("stack_count")) == 0 then
-                call FakeCD_Start(c, BambiettaG_ID, BambiettaG_CD, 0, 0)
+            if LoadInteger(hs, GetHandleId(c), SH_STACK_COUNT) == 0 then
+                call PassiveCD_Start(c, BambiettaG_ID, BambiettaG_CD)
             endif
         endif
     endfunction
@@ -2311,14 +2306,8 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         local real aoe = 400
         local real dmg = 0
         call MakeSound("war3mapimported\\Hero_Bambietta_G")
-        if GetHeroLevel(c) >= 35 then
-            set dmg = BambiettaG_DamageAgiBase35 * GetHeroAgi(c, true)
-        elseif GetHeroLevel(c) >= 25 then
-            set dmg = BambiettaG_DamageAgiBase25 * GetHeroAgi(c, true)
-        else
-            set dmg = BambiettaG_DamageAgiBase12 * GetHeroAgi(c, true)
-        endif
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph t")) == 0 then
+        set dmg = BambiettaG_DamageAgi * GetHeroAgi(c, true)
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T) == 0 then
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_AZ_D073.mdl", x, y, a * bj_RADTODEG, 1.35, 1, 1))
             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_A_P_blast3.mdl", x, y, a * bj_RADTODEG, 2.15, 1, 1), 0.15, 255, 255, 255, 0.45)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 1.475, 125))
@@ -2334,6 +2323,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set u = FirstOfGroup(g)
             exitwhen u == null
             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                call DamageSource('A0DJ')
                 call NextDmg(c, u, dmg, 0, 0.1)
             endif
             call GroupRemoveUnit(g, u)

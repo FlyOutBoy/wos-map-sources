@@ -1,0 +1,50 @@
+# ⚔️ WAR OF SOULS 2 — PATCH 0.33c
+
+## 🖥️ Interface
+- Dead heroes now show an **empty HP bar** in the top panel.
+- Collapsing **Common Info** moves gold and next-round income into the inventory header.
+- Centered the four buttons above the portrait.
+- Added optional **auto-select** for your living hero every **0.25s**.
+- Fixed missing range circles for long-range abilities.
+
+## 🦸 Heroes
+**Akainu**
+- **T:** cooldown **45 → 40s**; fists **30 → 36**.
+- **R:** cooldown scales **30 / 28.5 / 27 / 25.5 / 24s**.
+
+**Patriot**
+- **T1 — Arena:** duration **4s**; damage interval **0.45 → 0.75s**.
+
+**Raiden**
+- Fixed early-level attack counters and the **F** readiness display.
+
+**Milim**
+- **R:** explosion radius **700 → 660**.
+
+**Brandish**
+- Fixed abilities failing to go on cooldown.
+
+**Laxus**
+- **Q:** removed the movement delay after impact.
+- **Q2:** movement is restored as soon as lightning launches.
+
+**Inori**
+- **W — Lv. 35:** ally-target healing gains an additional **2× Intelligence**.
+
+**Okarun**
+- **T:** movement speed reduced by **200**.
+- Fixed slow movement and repeated order interruptions.
+- **T:** tackle cooldown is **0.75s per enemy**.
+- Knockback **400 → 450** over the same **0.35s**.
+- Tackle damage and knockback stop while Okarun is paused.
+
+## 🗡️ Items
+**Hell Blaze**
+- Healing and HP regeneration reduction: **7% → 5.5% per stack**, up to **38.5%** at 7 stacks.
+- Mana burn at full stacks: **1.5% → 1.35% max mana per second**.
+
+**Sakura Sesshou**
+- Reveal radius **3000 → 1400**; strike radius remains **1100**.
+
+**Shiki Knife Evolved**
+- Active projectile hit radius **150 → 190**.

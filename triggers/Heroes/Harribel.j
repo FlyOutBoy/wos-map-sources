@@ -1,5 +1,134 @@
 library HarribelSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer HarribelTick10_Timer = CreateTimer()
+        private boolean array HarribelTick10_Active
+        private integer HarribelTick10_Users = 0
+        private code HarribelTick10_Callback = null
+    endglobals
+
+    private function HarribelTick10_On takes integer k returns nothing
+        if not HarribelTick10_Active[k] then
+            set HarribelTick10_Active[k] = true
+            set HarribelTick10_Users = HarribelTick10_Users + 1
+            if HarribelTick10_Users == 1 then
+                call TimerStart(HarribelTick10_Timer, 0.1, true, HarribelTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function HarribelTick10_Off takes integer k returns nothing
+        if HarribelTick10_Active[k] then
+            set HarribelTick10_Active[k] = false
+            set HarribelTick10_Users = HarribelTick10_Users - 1
+            if HarribelTick10_Users <= 0 then
+                set HarribelTick10_Users = 0
+                call PauseTimer(HarribelTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer HarribelTick05_Timer = CreateTimer()
+        private boolean array HarribelTick05_Active
+        private integer HarribelTick05_Users = 0
+        private code HarribelTick05_Callback = null
+    endglobals
+
+    private function HarribelTick05_On takes integer k returns nothing
+        if not HarribelTick05_Active[k] then
+            set HarribelTick05_Active[k] = true
+            set HarribelTick05_Users = HarribelTick05_Users + 1
+            if HarribelTick05_Users == 1 then
+                call TimerStart(HarribelTick05_Timer, 0.05, true, HarribelTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function HarribelTick05_Off takes integer k returns nothing
+        if HarribelTick05_Active[k] then
+            set HarribelTick05_Active[k] = false
+            set HarribelTick05_Users = HarribelTick05_Users - 1
+            if HarribelTick05_Users <= 0 then
+                set HarribelTick05_Users = 0
+                call PauseTimer(HarribelTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.02 timers (runs only while any is active).
+        private timer HarribelTick02_Timer = CreateTimer()
+        private boolean array HarribelTick02_Active
+        private integer HarribelTick02_Users = 0
+        private code HarribelTick02_Callback = null
+    endglobals
+
+    private function HarribelTick02_On takes integer k returns nothing
+        if not HarribelTick02_Active[k] then
+            set HarribelTick02_Active[k] = true
+            set HarribelTick02_Users = HarribelTick02_Users + 1
+            if HarribelTick02_Users == 1 then
+                call TimerStart(HarribelTick02_Timer, 0.02, true, HarribelTick02_Callback)
+            endif
+        endif
+    endfunction
+
+    private function HarribelTick02_Off takes integer k returns nothing
+        if HarribelTick02_Active[k] then
+            set HarribelTick02_Active[k] = false
+            set HarribelTick02_Users = HarribelTick02_Users - 1
+            if HarribelTick02_Users <= 0 then
+                set HarribelTick02_Users = 0
+                call PauseTimer(HarribelTick02_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer HarribelTick_Timer = CreateTimer()
+        private boolean array HarribelTick_Active
+        private integer HarribelTick_Users = 0
+        private code HarribelTick_Callback = null
+    endglobals
+
+    private function HarribelTick_On takes integer k returns nothing
+        if not HarribelTick_Active[k] then
+            set HarribelTick_Active[k] = true
+            set HarribelTick_Users = HarribelTick_Users + 1
+            if HarribelTick_Users == 1 then
+                call TimerStart(HarribelTick_Timer, 0.03, true, HarribelTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function HarribelTick_Off takes integer k returns nothing
+        if HarribelTick_Active[k] then
+            set HarribelTick_Active[k] = false
+            set HarribelTick_Users = HarribelTick_Users - 1
+            if HarribelTick_Users <= 0 then
+                set HarribelTick_Users = 0
+                call PauseTimer(HarribelTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_DMG_COUNT = StringHash("dmg count")
+        private integer SH_ESC = StringHash("esc")
+        private integer SH_HARI_G_1 = StringHash("hari g 1")
+        private integer SH_HARI_G_2 = StringHash("hari g 2")
+        private integer SH_HARI_G_3 = StringHash("hari g 3")
+        private integer SH_INVUL = StringHash("invul")
+        private integer SH_MORPH_E = StringHash("morph e")
+        private integer SH_STOP_R = StringHash("stop r")
+        private integer SH_W_SKILL = StringHash("w skill")
+    endglobals
+    globals
 //--------------------------------------Harribel--------------------------------------------------------------
         integer Harribel_ID = 'H01P'
         integer Harribel_Morph_ID = 'H01Q'
@@ -76,9 +205,9 @@ library HarribelSpells uses GearSystems
 
     endglobals
     private struct HarribelSpells_Q
-        private static timer t_HarribelQ = CreateTimer()
         private static integer array m_HarribelQ
         private static integer MUI_HarribelQ = -1
+        integer src // Damage Stats instance: base / EQ
         unit c
         real x
         real y
@@ -99,7 +228,7 @@ library HarribelSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_HarribelQ takes nothing returns nothing
+        static method Loop_HarribelQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -107,7 +236,7 @@ library HarribelSpells uses GearSystems
                 set this = m_HarribelQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r< r7 then 
                     call DebugUnit2(c)
                     endif
@@ -170,6 +299,7 @@ library HarribelSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource(src)
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                 endif
@@ -207,6 +337,7 @@ library HarribelSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource(src)
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -225,8 +356,9 @@ library HarribelSpells uses GearSystems
                     set e2 = null
                     set m_HarribelQ[i] = m_HarribelQ[ MUI_HarribelQ]
                     set MUI_HarribelQ = MUI_HarribelQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelQ == -1 then
-                        call PauseTimer( t_HarribelQ)
+                        call HarribelTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -239,6 +371,10 @@ library HarribelSpells uses GearSystems
             set MUI_HarribelQ = MUI_HarribelQ + 1
             set m_HarribelQ[ MUI_HarribelQ] = this
             set c = NewC
+            set src = HarribelQ_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
+                set src = DamageSourceVariant(HarribelQ_ID, 1, "EQ")
+            endif
             set r = 0
             set x = NewX
             set y = NewY
@@ -252,7 +388,7 @@ library HarribelSpells uses GearSystems
             set dmg = GetHeroAgi( c , true) * ( HarribelQ_DamageAgiBase + ( HarribelQ_DamageAgiStep * ( GetUnitAbilityLevel( c , HarribelQ_ID) - 1 ) ) )
             set dmg = dmg+ HarribelQ_Damage2StaticBase + (HarribelQ_Damage2StaticStep * (GetUnitAbilityLevel(c, HarribelQ_ID) - 1))
             
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 call MakeSound("war3mapImported\\Hero_Harribel_Q")
                 call SetUnitAnimationByIndex( c , 1)
                 call SetUnitTimeScale( c , 0.42)
@@ -271,16 +407,16 @@ library HarribelSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
            set e2 = AddSpecialEffectTarget("war3mapImported\\wos_ChuShou_BY_Wood_yellow_XuLi.mdl", c, "weapon")
             if MUI_HarribelQ == 0 then
-                call TimerStart( t_HarribelQ, 0.03, true, function thistype.Loop_HarribelQ)
+                call HarribelTick_On(0)
             endif
         endmethod
 
     endstruct
 
     private struct HarribelSpells_W
-        private static timer t_HarribelW = CreateTimer()
         private static integer array m_HarribelW
         private static integer MUI_HarribelW = -1
+        integer src // Damage Stats instance: base / EW
         unit c
         unit td
         real x
@@ -301,16 +437,19 @@ library HarribelSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_HarribelW takes nothing returns nothing
+        static method Loop_HarribelW takes nothing returns nothing
             local integer this
             local real rr5 = 0
             local integer i = 0
             loop
                 exitwhen i > MUI_HarribelW
                 set this = m_HarribelW[i]
+                if check == 1 and r4 > rmax then
+                    call WUI_HeroProgress(c, HarribelW_ID, "Charge Attack", HarribelEW_MaxCastDuration + 0.12 - r, HarribelEW_MaxCastDuration + 0.12, true)
+                endif
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     set a = GAngle(c, td)
@@ -389,15 +528,17 @@ library HarribelSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource(src)
                                     call dmgphys(c, u, dmg)
                                     call StunUnit(c, u, HarribelW_StunDuration)
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop                 
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellow_light.mdl", x, y, GetRandomReal(0, 359), 1.15, 1.45, 0))
+                            // removed: wos_by_wood_effect_order_dange_yueyun_3yellow_light.mdl is not imported
                         else
                     call DecorRemove(c,x,y,250,25)
                             call StunUnit(c, td, HarribelW_StunDuration)
+                            call DamageSource(src)
                             call dmgphys(c, td, dmg)
                         endif
                         call SetUnitAnimation(td, "death")
@@ -405,7 +546,7 @@ library HarribelSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack1.mdx", x, y, GetRandomReal(0, 359), 1.25, 1.5, 0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0, 359), 1, 0.9, 1))
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w skill"), 0)                    
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL, 0)                    
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup(g)
                     set e = null
@@ -414,8 +555,9 @@ library HarribelSpells uses GearSystems
                     set e2 = null
                     set m_HarribelW[i] = m_HarribelW[ MUI_HarribelW]
                     set MUI_HarribelW = MUI_HarribelW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelW == -1 then
-                        call PauseTimer( t_HarribelW)
+                        call HarribelTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -428,6 +570,10 @@ library HarribelSpells uses GearSystems
             set MUI_HarribelW = MUI_HarribelW + 1
             set m_HarribelW[ MUI_HarribelW] = this
             set c = NewC
+            set src = HarribelW_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
+                set src = DamageSourceVariant(HarribelW_ID, 1, "EW")
+            endif
             set td = NewTd
             set r = 0
             set check = 0
@@ -439,7 +585,7 @@ library HarribelSpells uses GearSystems
             set dmg = dmg+ HarribelW_Damage2StaticBase + (HarribelW_Damage2StaticStep * (GetUnitAbilityLevel(c, HarribelW_ID) - 1))
             set rmax = 4.12
             call SetUnitFacing(c, a * bj_RADTODEG)
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then            
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then            
                 call StartSpellUnit2(c)
                 call MakeSound("war3mapImported\\Hero_Harribel_W")
                // call SetUnitAnimationByIndex( c , 11)
@@ -455,20 +601,18 @@ library HarribelSpells uses GearSystems
                 call SetUnitTimeScale( c , 0.4)
             set move = 105
             endif
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w skill"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL, 1)
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_ChuShou_BY_Wood_yellow_XuLi.mdl", c, "weapon")
             if MUI_HarribelW == 0 then
-                call TimerStart( t_HarribelW, 0.03, true, function thistype.Loop_HarribelW)
+                call HarribelTick_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct HarribelSpells_E
-        private static timer t_HarribelE = CreateTimer()
         private static integer array m_HarribelE
         private static integer MUI_HarribelE = -1
-        private static timer t_HarribelE2 = CreateTimer()
         private static integer array m_HarribelE2
         private static integer MUI_HarribelE2 = -1
         unit d
@@ -486,18 +630,12 @@ library HarribelSpells uses GearSystems
         integer check
         real aoe
         real r
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
         effect e
         effect e2
         real a
         real rmax
 
-        private static method Loop_HarribelE takes nothing returns nothing
+        static method Loop_HarribelE takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real tmp_y = 0.0375
@@ -505,10 +643,10 @@ library HarribelSpells uses GearSystems
                 exitwhen i > MUI_HarribelE
                 set this = m_HarribelE[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false then
-                    if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and LoadInteger(hs, GetHandleId(Player(k2)), StringHash("w skill"))==0) then
+                    if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and LoadInteger(hs, GetHandleId(Player(k2)), SH_W_SKILL)==0) then
                         set r = r + 0.05
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.5 then
                             call SetUnitTimeScale(c, 0.05)
@@ -563,65 +701,21 @@ library HarribelSpells uses GearSystems
                             call ReduceCooldown(c,HarribelR2_ID,HarribelE_ReduceR_CD)
                            endif
                            endif
-                            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax+2)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_E", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax+2)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
                             if GetHeroLevel(c)<12 then 
                             set tmp_y = 0
                             endif
-                            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                            call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17+tmp_y)
                                                
                             
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e"), 1)
+                            call WUI_RefreshDocks()
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E, 1)
                             set r = 0
                             set d = CreateUnit(Player(k2), HarribelE_IdDummy, 1, 1, 1)
                             set r2 = 9999
                             set check = 1
                         endif
                     elseif check == 1 then                    
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, HarribelE_ID, "Resurreccion Tiburon [Level 1]", rmax - r, rmax, true)
                         endif
                         
                         if r == 0.05 then
@@ -638,7 +732,7 @@ library HarribelSpells uses GearSystems
                     if GetUnitCurrentOrder(c)== OrderId("antimagicshell") then 
                     call IssueImmediateOrder(c,"stop")
                     endif
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph e"), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_E, 0)
                     call BlzSetAbilityIcon(HarribelQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_Q.blp")
                     call BlzSetAbilityIcon(HarribelW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_W.blp")           
                     call SetPlayerAbilityAvailable(Player(k2), HarribelR_ID, true)
@@ -660,15 +754,14 @@ library HarribelSpells uses GearSystems
                     if check == 0 then
                     call StopSpellUnit2(c)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                    call WUI_HeroProgress(c, HarribelE_ID, "Resurreccion Tiburon [Level 1]", 0.00, 0.00, true)
                     set c = null
                     set d = null
                     set m_HarribelE[i] = m_HarribelE[MUI_HarribelE]
                     set MUI_HarribelE = MUI_HarribelE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelE == -1 then
-                        call PauseTimer( t_HarribelE )
+                        call HarribelTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -698,17 +791,18 @@ library HarribelSpells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Harribel_E")
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_hakkeStart.mdx", x, y, GetRandomReal(0, 359), 0.35, 1.75, 5))
             if MUI_HarribelE == 0 then
-                call TimerStart( t_HarribelE, 0.05, true, function thistype.Loop_HarribelE )
+                call HarribelTick05_On(0)
             endif
         endmethod
 
-        private static method Loop_HarribelE2 takes nothing returns nothing
+        static method Loop_HarribelE2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_HarribelE2
                 set this = m_HarribelE2[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(c),StringHash("esc"))== 0 then
+                call WUI_HeroProgress(c, HarribelE2_ID, "Hirviendo", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(c),SH_ESC)== 0 then
                     call DebugUnit2(c)
                     set r = r+ 0.05
                     if r == 0.45 then 
@@ -728,6 +822,7 @@ library HarribelSpells uses GearSystems
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                     if IsUnitInGroup(u,g2) ==false then 
+                                    call DamageSource('A0AT')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2,u)
                                     endif
@@ -739,8 +834,8 @@ library HarribelSpells uses GearSystems
                     set r2 = r2 + 0.05
                     endif
                 else
-                call SaveInteger(hs,GetHandleId(c),StringHash("esc"),0)
-            call SaveInteger(hs,GetHandleId(c),StringHash("invul"),0)
+                call SaveInteger(hs,GetHandleId(c),SH_ESC,0)
+            call SaveInteger(hs,GetHandleId(c),SH_INVUL,0)
                     call DestroyEffect(e)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
@@ -752,8 +847,9 @@ library HarribelSpells uses GearSystems
                     set g2 = null
                     set m_HarribelE2[i] = m_HarribelE2[MUI_HarribelE2]
                     set MUI_HarribelE2 = MUI_HarribelE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelE2 == -1 then
-                        call PauseTimer( t_HarribelE2 )
+                        call HarribelTick05_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -778,10 +874,10 @@ library HarribelSpells uses GearSystems
             call SetUnitAnimationByIndex(c,7)
             call SetUnitTimeScale(c,0.5)
             set aoe = HarribelEE_DamageAoe 
-                call SaveInteger(hs,GetHandleId(c),StringHash("esc"),0)
+                call SaveInteger(hs,GetHandleId(c),SH_ESC,0)
             set u = null
             set dmg = GetHeroAgi( c , true) * ( HarribelEE_DamageAgiBase + ( HarribelEE_DamageAgiStep * ( GetUnitAbilityLevel( c , HarribelE_ID) - 1 ) ) )
-            call SaveInteger(hs,GetHandleId(c),StringHash("invul"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_INVUL,1)
             set a = GetUnitFacing(c) * bj_DEGTORAD // Angle Between points
             call BlzSetUnitFacingEx(c,a*bj_RADTODEG)
             set rmax = HarribelEE_DurationBase + (HarribelEE_DurationStep *(GetUnitAbilityLevel(c,HarribelE_ID)-1))
@@ -789,20 +885,17 @@ library HarribelSpells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Harribel_E2 2")
             set e = EffectSpawn3("war3mapimported\\wos_m2 (105)_2.mdx",GetUnitX(c)+150*Cos(a),GetUnitY(c)+150*Sin(a),a*bj_RADTODEG,1,1.35,220,-90)
             if MUI_HarribelE2 == 0 then
-                call TimerStart( t_HarribelE2, 0.05, true, function thistype.Loop_HarribelE2 )
+                call HarribelTick05_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct HarribelSpells_R
-        private static timer t_HarribelR = CreateTimer()
         private static integer array m_HarribelR
         private static integer MUI_HarribelR = -1
-        private static timer t_HarribelR3 = CreateTimer()
         private static integer array m_HarribelR3
         private static integer MUI_HarribelR3 = -1
-        private static timer t_HarribelR2 = CreateTimer()
         private static integer array m_HarribelR2
         private static integer MUI_HarribelR2 = -1
         unit c
@@ -827,7 +920,7 @@ library HarribelSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_HarribelR takes nothing returns nothing
+        static method Loop_HarribelR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -836,7 +929,7 @@ library HarribelSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
                     call DebugUnit(c)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r2 > 0.21 then
                         set r2 = 0
                         call DecorRemove(c,x,y,aoe,50)
@@ -852,6 +945,7 @@ library HarribelSpells uses GearSystems
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
                                 call GroupAddUnit(g2, u)
                                 call MUE(u,450,0.21,GAngle3(x,y,u))
+                                call DamageSource('A0AP')
                                 call dmgphys(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -886,8 +980,9 @@ library HarribelSpells uses GearSystems
                     set e2 = null
                     set m_HarribelR[i] = m_HarribelR[ MUI_HarribelR]
                     set MUI_HarribelR = MUI_HarribelR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelR == -1 then
-                        call PauseTimer( t_HarribelR)
+                        call HarribelTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -917,11 +1012,11 @@ library HarribelSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 9)
             call SetUnitTimeScale( c , 0.8)
             if MUI_HarribelR == 0 then
-                call TimerStart( t_HarribelR, 0.03, true, function thistype.Loop_HarribelR)
+                call HarribelTick_On(2)
             endif
         endmethod
 
-        private static method Loop_HarribelR3 takes nothing returns nothing
+        static method Loop_HarribelR3 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -929,7 +1024,7 @@ library HarribelSpells uses GearSystems
                 set this = m_HarribelR3[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     call MoveEff(e, move, a)
                     if r2>0.0 then 
                     set r2 =0
@@ -963,7 +1058,9 @@ library HarribelSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                            call DamageSource('A0AQ')
                             call dmgmag(c, u, dmg)
+                            call DamageSource('A0AQ')
                             call ErzaPassive(c,u,2)
                         endif
                         call GroupRemoveUnit(g, u)
@@ -976,8 +1073,9 @@ library HarribelSpells uses GearSystems
                     set c = null
                     set m_HarribelR3[i] = m_HarribelR3[ MUI_HarribelR3]
                     set MUI_HarribelR3 = MUI_HarribelR3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelR3 == -1 then
-                        call PauseTimer( t_HarribelR3)
+                        call HarribelTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -1003,19 +1101,19 @@ library HarribelSpells uses GearSystems
             set rmax = 0.42
             set move =( HarribelER_RangeBase + ( HarribelER_RangeStep * ( GetUnitAbilityLevel( c , HarribelR_ID) - 1 ) ) )/ (rmax / 0.03)
             if MUI_HarribelR3 == 0 then
-                call TimerStart( t_HarribelR3, 0.03, true, function thistype.Loop_HarribelR3)
+                call HarribelTick_On(3)
             endif
         endmethod
 
-        private static method Loop_HarribelR2 takes nothing returns nothing
+        static method Loop_HarribelR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_HarribelR2
                 set this = m_HarribelR2[i]
-                if SpellBoolCaster(c) and r <= rmax and check < k2 and LoadInteger(hs,GetHandleId(c),StringHash("stop r"))==0 then
+                if SpellBoolCaster(c) and r <= rmax and check < k2 and LoadInteger(hs,GetHandleId(c),SH_STOP_R)==0 then
                     set r = r + 0.02
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     call DebugUnit2(c)
                     set a = GAngle2(c,GetMouseX(GetOwningPlayer(c)),GetMouseY(GetOwningPlayer(c)))
                     call BlzSetUnitFacingEx(c,a*bj_RADTODEG)
@@ -1033,8 +1131,8 @@ library HarribelSpells uses GearSystems
                         set r2 = r2 + 0.02
                     endif                     
                 else
-                    call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),0)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_CAST_R,0)
+                    call SaveInteger(hs,GetHandleId(c),SH_STOP_R,0)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.3)
                     call DestroyEffect(e2)
                     call StopSpellUnit2(c)
@@ -1044,8 +1142,9 @@ library HarribelSpells uses GearSystems
                     set c = null
                     set m_HarribelR2[i] = m_HarribelR2[ MUI_HarribelR2]
                     set MUI_HarribelR2 = MUI_HarribelR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelR2 == -1 then
-                        call PauseTimer( t_HarribelR2)
+                        call HarribelTick02_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1073,21 +1172,20 @@ library HarribelSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 0 )
             call SetUnitTimeScale( c , 1.5)
             call MouseOn(GetOwningPlayer(c))
-            call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
-            call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_STOP_R,0)
+            call SaveInteger(hs,GetHandleId(c),SH_CAST_R,1)
             set MouseX[GetPlayerId(GetOwningPlayer(c))]=x
             set MouseY[GetPlayerId(GetOwningPlayer(c))]=y
             set e = EffectSpawn("war3mapImported\\wos_mr_war3_sxxq3.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 4, 0)
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_papsnaz (971)24.mdx", c, "weapon")
             if MUI_HarribelR2 == 0 then
-                call TimerStart( t_HarribelR2, 0.02, true, function thistype.Loop_HarribelR2)
+                call HarribelTick02_On(0)
             endif
         endmethod
 
     endstruct
 
     private struct HarribelSpells_T
-        private static timer t_HarribelT = CreateTimer()
         private static integer array m_HarribelT
         private static integer MUI_HarribelT = -1
         unit c
@@ -1106,7 +1204,7 @@ library HarribelSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_HarribelT takes nothing returns nothing
+        static method Loop_HarribelT takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1114,7 +1212,7 @@ library HarribelSpells uses GearSystems
                 set this = m_HarribelT[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     call DebugUnit(c)
                     if r == 0.03 then
                         call BlinkEff(c)
@@ -1179,7 +1277,9 @@ library HarribelSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A0AR')
                                 call dmgmag(c, u, dmg)
+                                call DamageSource('A0AR')
                                 call ErzaPassive(c,u,2)
                                 call StunUnit(c,u,HarribelT_Stun)
                         endif
@@ -1201,8 +1301,9 @@ library HarribelSpells uses GearSystems
                     set e2 = null
                     set m_HarribelT[i] = m_HarribelT[ MUI_HarribelT]
                     set MUI_HarribelT = MUI_HarribelT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelT == -1 then
-                        call PauseTimer( t_HarribelT)
+                        call HarribelTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1226,7 +1327,7 @@ library HarribelSpells uses GearSystems
             set a = GAngle2( c , x, y ) // Angle Between points
             call MakeSound("war3mapImported\\Hero_Harribel_T")
             set dmg = GetHeroAgi( c , true) * HarribelT_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then 
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then 
             set check = 1
              call BlzSetUnitSkin(c, Harribel_Morph_ID)
             endif
@@ -1238,14 +1339,13 @@ library HarribelSpells uses GearSystems
             call SetUnitTimeScale( c , 0.1)
             call VisionTimed(GetOwningPlayer(c),x,y,aoe*1.3,rmax)
             if MUI_HarribelT == 0 then
-                call TimerStart( t_HarribelT, 0.03, true, function thistype.Loop_HarribelT)
+                call HarribelTick_On(4)
             endif
         endmethod
 
     endstruct
 
     private struct HarribelSpells_G
-        private static timer t_HarribelG = CreateTimer()
         private static integer array m_HarribelG
         private static integer MUI_HarribelG = -1
         unit c
@@ -1259,14 +1359,8 @@ library HarribelSpells uses GearSystems
         real dmg
         integer check
         real r
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
 
-        private static method Loop_HarribelG takes nothing returns nothing
+        static method Loop_HarribelG takes nothing returns nothing
             local integer this
             local integer i = 0
             local real extraSpeed = 0
@@ -1282,47 +1376,45 @@ library HarribelSpells uses GearSystems
                         set r4 = 1000
                     endif
                     set r5 = 0
-                    set r3 =LoadReal(hs, GetHandleId(c), StringHash("dmg count"))  
+                    set r3 =LoadReal(hs, GetHandleId(c), SH_DMG_COUNT)  
                     if CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) then 
-                    call SaveReal(hs, GetHandleId(c), StringHash("dmg count"), 0)
+                    call SaveReal(hs, GetHandleId(c), SH_DMG_COUNT, 0)
                     endif
                     if r3>= 1000 then 
                     call UnitAddAbility(c,'A0AZ')
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 1"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_1,1)
                     else
                     call UnitRemoveAbility(c,'A0AZ')
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 1"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_1,0)
                     endif
                     if r3>= 2000 and GetHeroLevel(c)>=25 then 
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 2"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_2,1)
                     else
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 2"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_2,0)
                     endif
                     if r3>= 3000 and GetHeroLevel(c)>=35 then 
                     call UnitAddAbility(c,'A0B0')
-                    if IntegerCd(c,"cd sound",60) then 
+                    if IntegerCdKey(c, SH_ICD_CD_SOUND,60) then 
                     call MakeSound("war3mapimported\\Hero_Harribel_G3")
                     endif
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 3"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_3,1)
                     else
                     call UnitRemoveAbility(c,'A0B0')
-                    call SaveInteger(hs,GetHandleId(c),StringHash("hari g 3"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_HARI_G_3,0)
                     endif
                     if r3>r4 then
                     set r3 = r4
-                    call SaveReal(hs, GetHandleId(c), StringHash("dmg count"), r3)
+                    call SaveReal(hs, GetHandleId(c), SH_DMG_COUNT, r3)
                     endif
-                    call BlzFrameSetValue(frame_pas3[k2], r3)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + I2S(R2I(r3))+"/"+I2S(R2I(r4)) + "|r")
+                    call WUI_HeroProgress(c, HarribelG_ID, "Sacrifice", r3, r4, false)
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, HarribelG_ID, "Sacrifice", 0.00, 0.00, true)
                     set c = null
                     set m_HarribelG[i] = m_HarribelG[MUI_HarribelG]
                     set MUI_HarribelG = MUI_HarribelG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_HarribelG == -1 then
-                        call PauseTimer(t_HarribelG)
+                        call HarribelTick10_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1340,45 +1432,8 @@ library HarribelSpells uses GearSystems
             set r = 0
             set r2 = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, 3000+50)
-                call BlzFrameSetValue(frame_pas3[k2], 0)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Harribel_G", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Sacrifice:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], 0)
-            endif
             if MUI_HarribelG == 0 then
-                call TimerStart(t_HarribelG, 0.1, true, function thistype.Loop_HarribelG)
+                call HarribelTick10_On(0)
             endif
         endmethod
 
@@ -1422,7 +1477,7 @@ library HarribelSpells uses GearSystems
         call HarribelSpells_W.HarribelW_Start( c, td )
     endfunction
     function HarribelE_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
             call HarribelSpells_E.HarribelE_Start( c)
         endif
     endfunction
@@ -1454,8 +1509,8 @@ library HarribelSpells uses GearSystems
             set u = FirstOfGroup( g )
             exitwhen u == null
             if IsUnitAlly(u, GetOwningPlayer(c)) and GetWidgetLife(u)>1 and IsUnitIllusion(u) == false and GetUnitTypeId(u) == Harribel_ID and GetHeroLevel(u)>= 12 then
-            set r = LoadReal(hs, GetHandleId(u), StringHash("dmg count"))
-            call SaveReal(hs, GetHandleId(u), StringHash("dmg count"), r+(dmg*0.1))
+            set r = LoadReal(hs, GetHandleId(u), SH_DMG_COUNT)
+            call SaveReal(hs, GetHandleId(u), SH_DMG_COUNT, r+(dmg*0.1))
             endif
             call GroupRemoveUnit( g , u )
         endloop
@@ -1481,6 +1536,73 @@ library HarribelSpells uses GearSystems
         call MakeSound("war3mapImported\\Hero_Harribel_G2")
        endif
     endfunction  
+
+    private struct HarribelTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if HarribelTick_Active[0] then
+                call HarribelSpells_Q.Loop_HarribelQ()
+            endif
+            if HarribelTick_Active[1] then
+                call HarribelSpells_W.Loop_HarribelW()
+            endif
+            if HarribelTick_Active[2] then
+                call HarribelSpells_R.Loop_HarribelR()
+            endif
+            if HarribelTick_Active[3] then
+                call HarribelSpells_R.Loop_HarribelR3()
+            endif
+            if HarribelTick_Active[4] then
+                call HarribelSpells_T.Loop_HarribelT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set HarribelTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct HarribelTick02_Loop extends array
+        static method Loop takes nothing returns nothing
+            if HarribelTick02_Active[0] then
+                call HarribelSpells_R.Loop_HarribelR2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set HarribelTick02_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct HarribelTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if HarribelTick05_Active[0] then
+                call HarribelSpells_E.Loop_HarribelE()
+            endif
+            if HarribelTick05_Active[1] then
+                call HarribelSpells_E.Loop_HarribelE2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set HarribelTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct HarribelTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if HarribelTick10_Active[0] then
+                call HarribelSpells_G.Loop_HarribelG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set HarribelTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

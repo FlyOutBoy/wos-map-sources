@@ -132,16 +132,16 @@ class TimersAndRounds(unittest.TestCase):
         self.assertAlmostEqual(2.12,p[3]);self.assertAlmostEqual(3.12,p[4])
         self.assertIn('if check == 1 and r4 > rmax then',source('Heroes/Harribel.j'))
     def test_akainu_display_matches_real_fist_count_and_interval(self):
-        # Trace the production tick predicates/reset values until all fists fire.
+        # Trace the requested .15 period; the dedicated hero test executes the loop.
         r=r2=0.;count=0;events=[]
         while count<30:
             r=round(r+.03,3)
             if r>1.8:
-                if r2>.15:r2=.03;count+=1;events.append(r)
-                else:r2+=.03
-        p=self.preview('Akainu','AkainuT_ID',rmax=25,r=0,r2=0,check=0,AkainuT_CastTime=1.8,AkainuT_Fists=30)
+                r2+=.03
+                if r2+.0001>=.15:r2-=.15;count+=1;events.append(r)
+        p=self.preview('Akainu','AkainuT_ID',rmax=25,r=0,r2=0,check=0,AkainuT_CastTime=1.8,AkainuT_Fists=30,AkainuT_FistPeriod=.15)
         self.assertAlmostEqual(events[-1],p[3],delta=.031)
-        self.assertAlmostEqual(7.23,p[4])
+        self.assertAlmostEqual(6.3,p[4])
     def test_inori_uses_live_channel_field_once_from_shared_start(self):
         s=source('Heroes/Inori.j');self.assertIn('BlzGetAbilityRealLevelField(BlzGetUnitAbility(NewC, InoriW_ID), ABILITY_RLF_FOLLOW_THROUGH_TIME',s)
         p=self.preview('Inori','InoriW_ID',uiChannelDuration=7.5,r=2)
@@ -161,7 +161,7 @@ class TimersAndRounds(unittest.TestCase):
         for base,range_ in [(100,350),(100,400),(200,500)]:
             self.assertIn(f'GroupDmgEff(source, x, y, {range_}, {base}.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 25.00',decor)
             self.assertIn(f'WUI_InfoCurrentDamage({base}, 25)',info)
-        for base in [100,200]:
+        for base in [200,400]:
             self.assertIn(f'{base}.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 50.00',train)
             self.assertIn(f'WUI_InfoCurrentDamage({base}, 50)',info)
         self.assertIn('WUI_InfoCurrentDamage(0, 25)',info)
@@ -257,7 +257,7 @@ class EnvironmentRounds(unittest.TestCase):
         self.assertEqual(2,len(assignments))
         vm=JassState(header+'\nfunction Probe takes nothing returns nothing\n'+'\n'.join(assignments)+'\nendfunction')
         vm.g.update(dmg=0.,dmg2=0.)
-        for training,round_,expected in [(False,1,(100,200)),(False,2,(150,250)),(True,3,(100,200))]:
+        for training,round_,expected in [(False,1,(200,400)),(False,2,(250,450)),(True,3,(200,400))]:
             vm.g.update(TestMode=training,CurrentRound=round_);vm.run('Probe')
             self.assertEqual(expected,(vm.g['dmg'],vm.g['dmg2']))
 

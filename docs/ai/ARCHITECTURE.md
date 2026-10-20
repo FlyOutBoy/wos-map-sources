@@ -10,6 +10,13 @@ MAIN: редактируемые `triggers/` → синхронизация WTG/
 нужны компиляции; `check_wos_ui.py` берёт их из `.vscode/build/wos_map_globals.j`.
 Корневой `war3map.j` не заменяет внешние исходники триггеров.
 
+Исключение, требующее восстановления, а не слепого импорта: в рабочей STABLE
+2026-10-17 исполняемый `war3map.j` был новее вложенного WCT. Актуальные исходники
+восстановлены из проектного backup и сверены с игровыми/UI-функциями исполняемого
+скрипта. Импорт теперь предварительно перекомпилирует входящий WCT и сравнивает
+его со скриптом карты; MAIN-сборка требует совпадения WCT с `triggers` и проверяет
+скомпилированный результат. Причина и доказательства — KNOWLEDGE/RESUME CP59.
+
 Граф объявлений уже сохранён в [dependency-manifest](../../triggers/dependency-manifest.json),
 порядок и library — в [triggers/README](../../triggers/README.md).
 Перед добавлением/сменой зависимостей сверяй также `library ... uses/requires/needs`
@@ -37,6 +44,15 @@ MAIN: редактируемые `triggers/` → синхронизация WTG/
 | Пик, старт, завершение раунда | `WOS_Start/Player_Pick_Mode.j`, `Captain_Draft.j`, `WoS_Pick_Init.j`, `Starts.j`, `BuildsForChars.j`; `Round_End/RoundEnd.j` в `triggers/` | порядок/зависимости в triggers/README |
 | Общий UI и подключение владельца | `triggers/WOS_Start/WOSUI.j`: `WUI_Init`, `WUI_Bootstrap`, `WUI_OnReady` | [UI-правила](../../.claude/rules/ui-frames.md), [границы владельцев](../ui-redesign/ARCHITECTURE.md) |
 | Кнопки/КД, заряды, подсказки | `triggers/WOS_Start/ShowCD.j`, `TooltipBuilder.j`, `UniversalTooltips.j`; `Systems/TasBox.j` | [инвентарь фреймов](../ui-redesign/FRAME_INVENTORY.md): искать владельца, не читать целиком |
+
+CP65 common hot paths: register new shared event listeners through
+`GearDamageAddListener` / `GearSpellAddListener`; empty dispatch returns before
+trigger execution/context copying. Current MAIN has no external subscribers.
+TooltipBuilder prints damage formulas only, never evaluated combat totals.
+SPELL_EFFECT no longer requests full hero descriptions; the5-second poll and
+item/level/skill/form events own updates. Native tooltip writes compare text
+first. DamageStats retains immediate numeric collection; automatic presentation
+is5-second, while open/page/roster changes bypass that gate.
 | Карьера, локальный сейв, экспорт матча | `triggers/WOS_Start/SaveLoad.j`: `SaveSystem_Init`, `SaveSystem_InitLoad`, `SaveSystem_NormalizeNickname`; `Save2.j`; `UI_CAREER.j`: `WCS_UpdateHome` | [существующий разбор SaveLoad](../SAVELOAD_CHANGELOG_2026-10-09.md) |
 | Музыка, счёт, пинги | `triggers/WOS_Start/MusicPlayer.j`, `Scoreboard.j`, `TeamMapPings.j` | UI-контракты и профильные `tools/test_*.py` |
 | Объекты и обратная запись | `object-data/*.json`; `tools/war3_object_workspace.py`, `war3_object_data.py`, `sync_war3_project.py`, `sync_war3_triggers.py` | [OBJECT-DATA-README](../../OBJECT-DATA-README.md), [объекты/сборка](../../.claude/rules/object-data-build.md) |

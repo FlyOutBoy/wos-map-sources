@@ -1,6 +1,7 @@
 library TooltipBuilder
 
     globals
+        integer TooltipTextRevision = 0
         // Базовые цвета
         private constant string C_TITLE   = "|cffffcc00"
         private constant string C_LORE    = "|cffcccccc"
@@ -26,6 +27,29 @@ library TooltipBuilder
             return this
         endmethod
 
+        // Lore colour for free text; inline coloured labels resume it after their |r.
+        private static method lore takes string text returns string
+            local integer i = 0
+            local integer len = StringLength(text)
+            local string res = ""
+            local string pair
+            if text == "" or text == null then
+                return ""
+            endif
+            loop
+                exitwhen i >= len
+                set pair = SubString(text, i, i + 2)
+                if pair == "|r" or pair == "|R" then
+                    set res = res + "|r" + C_LORE
+                    set i = i + 2
+                else
+                    set res = res + SubString(text, i, i + 1)
+                    set i = i + 1
+                endif
+            endloop
+            return C_LORE + res + C_RESET
+        endmethod
+
         method addTitle takes string title returns thistype
             set this.buffer = this.buffer + C_TITLE + title + C_RESET
             return this
@@ -36,7 +60,7 @@ library TooltipBuilder
                 if (this.buffer != "") then
                     set this.buffer = this.buffer + "|n"
                 endif
-                set this.buffer = this.buffer + text
+                set this.buffer = this.buffer + thistype.lore(text)
             endif
             return this
         endmethod
@@ -53,9 +77,9 @@ library TooltipBuilder
 
                 if (text != "") then
                     if (this.buffer != "") then
-                        set this.buffer = this.buffer + "|n|n" + text
+                        set this.buffer = this.buffer + "|n|n" + thistype.lore(text)
                     else
-                        set this.buffer = text
+                        set this.buffer = thistype.lore(text)
                     endif
                 endif
             endif
@@ -84,6 +108,9 @@ library TooltipBuilder
             elseif (dmgType == 3) then
                 set color = C_TRUE
                 set name = "True Damage:"
+            elseif (dmgType == 4) then
+                set color = C_PHYS
+                set name = "Attack Damage:"
             else
                 set color = C_STAT
                 set name = "Damage:"
@@ -175,15 +202,23 @@ library TooltipBuilder
         endmethod
 
         method applyToAbility takes integer abilCode, integer level returns nothing
-            call BlzSetAbilityExtendedTooltip(abilCode, this.buffer, level - 1)
+            if BlzGetAbilityExtendedTooltip(abilCode, level - 1) != this.buffer then
+                call BlzSetAbilityExtendedTooltip(abilCode, this.buffer, level - 1)
+                set TooltipTextRevision = TooltipTextRevision + 1
+            endif
         endmethod
         
         method applyToAbilityLearn takes integer abilCode, integer level returns nothing
-            call BlzSetAbilityResearchExtendedTooltip(abilCode, this.buffer, level - 1)
+            if BlzGetAbilityResearchExtendedTooltip(abilCode, level - 1) != this.buffer then
+                call BlzSetAbilityResearchExtendedTooltip(abilCode, this.buffer, level - 1)
+                set TooltipTextRevision = TooltipTextRevision + 1
+            endif
         endmethod
 
         method applyToItem takes item it returns nothing
-            call BlzSetItemExtendedTooltip(it, this.buffer)
+            if BlzGetItemExtendedTooltip(it) != this.buffer then
+                call BlzSetItemExtendedTooltip(it, this.buffer)
+            endif
         endmethod
 
         method get takes nothing returns string

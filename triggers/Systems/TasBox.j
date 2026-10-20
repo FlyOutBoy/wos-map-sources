@@ -1,4 +1,14 @@
-library TasAbilityChargeBox requires optional FrameLoader
+library TasAbilityChargeBox requires WOSUI, optional FrameLoader
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ATK_COUNT = StringHash("atk count")
+        private integer SH_RAIDEN_W_ATK = StringHash("raiden w atk")
+        private integer SH_DARKSHIKI_PAS = StringHash("DarkShiki pas")
+        private integer SH_INORI_E = StringHash("Inori E")
+        private integer SH_INORI_E_ACTIVE = StringHash("Inori E Active")
+        private integer SH_PASSIVE_TARGET = StringHash("passive target")
+        private integer SH_TOMIOKA_ADD_DMG = StringHash("tomioka add dmg")
+    endglobals
    
 //Adds a custom ChargeBox over Command Buttons to display a xx Text
 //requires loading a fdf/toc containing "TasAbilityChargeBox"
@@ -17,11 +27,36 @@ library TasAbilityChargeBox requires optional FrameLoader
       public hashtable Hash = InitHashtable()
       private timer UpdateTimer = null
       private boolean Initialized = false
-      public string TocPath ="war3mapImported/TasAbilityChargeBox.toc" // no TocPath or TocPath = "" create it without fdf
+      public string TocPath ="UI\\WOS\\Charges.toc" // Loaded once by WOSUI before this owner creates frames.
       public framehandle array FrameBox
       public framehandle array FrameText
       public framehandle array FrameIcon
+      private boolean array Wanted
+      private boolean array Shown
+      // Counters are 12% larger than the original 0.012 box / 0.008 font.
+      public constant real BOX_SIZE = 0.0135
+      public constant real FONT_SIZE = 0.009
    endglobals
+
+   // Normal FRAME counterpart of the library's native command charge counter.
+   // A portrait is not a SIMPLEFRAME: keep the same font/material without
+   // reparenting a native texture across the two frame families.
+   public function CreatePortraitLabel takes framehandle portrait returns framehandle
+      local framehandle box = WUI_Panel("TasPortraitChargeBox", portrait, 0.0168, 0.0168)
+      local framehandle text = BlzCreateFrameByType("TEXT", "TasPortraitChargeText", box, "", 0)
+      local framehandle edge = WUI_Border("TasPortraitChargeEdge", box)
+      call BlzFrameSetEnable(box, false)
+      call BlzFrameSetEnable(edge, false)
+      call BlzFrameSetTexture(box, "UI\\WOS\\button.tga", 0, true)
+      call BlzFrameSetPoint(box, FRAMEPOINT_TOPRIGHT, portrait, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+      call BlzFrameSetAllPoints(text, box)
+      call BlzFrameSetFont(text, "Fonts/FRIZQT__.TTF", FONT_SIZE, 0)
+      call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+      call BlzFrameSetEnable(text, false)
+      set edge = null
+      set box = null
+      return text
+   endfunction
    
    public function GetUnitSpellCodeKey takes integer unitId, integer spellCode returns integer
       local integer count = LoadInteger(Hash, unitId, 0)
@@ -46,11 +81,130 @@ library TasAbilityChargeBox requires optional FrameLoader
    endfunction
 
    public function GetValue takes unit u, integer spellCode returns string
+      local integer stacks = 0
+      local integer hid = GetHandleId(u)
+      static if LIBRARY_NatsuSpells then
+         if spellCode == NatsuG_ID and BlzGetUnitAbilityCooldownRemaining(u, NatsuG2_ID) > 0.00 then
+            return I2S(R2I(BlzGetUnitAbilityCooldownRemaining(u, NatsuG2_ID) + 0.99))
+         endif
+      endif
+      static if LIBRARY_RimuruSpells then
+         if spellCode == RimuruQ2_ID or spellCode == RimuruF3_ID then
+            return ""
+         endif
+      endif
+      // Read gameplay state without creating handles or saving local UI state.
+      // The same value is used by native boxes and the custom ability row.
+      static if LIBRARY_DarkShikiSpells then
+         if spellCode == DarkShikiF_ID then
+            if LoadUnitHandle(hs, hid, SH_PASSIVE_TARGET) != null then
+               set stacks = LoadInteger(hs, GetHandleId(LoadUnitHandle(hs, hid, SH_PASSIVE_TARGET)), SH_DARKSHIKI_PAS)
+            endif
+            if stacks > 0 then
+               return I2S(IMinBJ(3, stacks))
+            endif
+            return ""
+         endif
+      endif
+      static if LIBRARY_TomiokaSpells then
+         if spellCode == TomiokaG_ID then
+            set stacks = LoadInteger(hs, hid, SH_TOMIOKA_ADD_DMG)
+            if stacks > 0 then
+               return I2S(stacks)
+            endif
+            return ""
+         endif
+      endif
+      static if LIBRARY_StarrkSpells then
+         if spellCode == StarrkG_ID then
+            if GetUnitAbilityLevel(u, Starrk_Pas1ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas2ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas3ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas4ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas5ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if GetUnitAbilityLevel(u, Starrk_Pas6ID) > 0 then
+               set stacks = stacks + 1
+            endif
+            if stacks > 0 then
+               return I2S(stacks)
+            endif
+            return ""
+         endif
+      endif
+      static if LIBRARY_InoriSpells then
+         if spellCode == InoriE_ID or spellCode == InoriEAlt_ID or spellCode == InoriEAlt2_ID or spellCode == InoriEE_ID or spellCode == InoriE2_ID then
+            set stacks = LoadInteger(hs, hid, SH_INORI_E)
+            if stacks > 0 and LoadInteger(hs, hid, SH_INORI_E_ACTIVE) == 0 then
+               return I2S(stacks)
+            endif
+            return ""
+         endif
+      endif
+      static if LIBRARY_RaidenSpells then
+         if spellCode == RaidenG_ID then
+            if Raiden_F_Dummy == null or GetOwningPlayer(Raiden_F_Dummy) != GetOwningPlayer(u) then
+               return I2S(LoadInteger(hs, hid, SH_ATK_COUNT))
+            endif
+            if LoadInteger(hs, hid, SH_RAIDEN_W_ATK) == 1 then
+               return "2"
+            endif
+            return I2S(RaidenG_CountAtkToTrigger)
+         endif
+      endif
       return LoadStr(Hash, GetHandleId(u), spellCode)
+   endfunction
+
+   // Retained API: command counters have no secondary damage plate.
+   public function GetSubValue takes unit u, integer spellCode returns string
+      return ""
    endfunction
 
    public function Clear takes unit u returns nothing
       call FlushChildHashtable(Hash, GetHandleId(u))
+   endfunction
+
+   // Register synchronously when a hero is learned; values remain read-only.
+   public function RegisterHeroCounters takes unit u returns nothing
+      local integer id = GetUnitTypeId(u)
+      static if LIBRARY_NatsuSpells then
+         if GetUnitTypeId(u) == Natsu_ID then
+            call SetValue(u, NatsuG_ID, "")
+         endif
+      endif
+      static if LIBRARY_TomiokaSpells then
+         if id == Tomioka_ID then
+            call SetValue(u, TomiokaG_ID, "")
+         endif
+      endif
+      static if LIBRARY_StarrkSpells then
+         if id == Starrk_ID or id == Starrk_Morph_ID then
+            call SetValue(u, StarrkG_ID, "")
+         endif
+      endif
+      static if LIBRARY_InoriSpells then
+         if id == Inori_ID then
+            call SetValue(u, InoriE_ID, "")
+            call SetValue(u, InoriEAlt_ID, "")
+            call SetValue(u, InoriEAlt2_ID, "")
+            call SetValue(u, InoriEE_ID, "")
+            call SetValue(u, InoriE2_ID, "")
+         endif
+      endif
+      static if LIBRARY_RaidenSpells then
+         if id == Raiden_ID or id == Raiden_Morph_ID then
+            call SetValue(u, RaidenG_ID, "")
+         endif
+      endif
    endfunction
 
    // Remove one counter without clearing other abilities/items on the unit.
@@ -77,24 +231,37 @@ library TasAbilityChargeBox requires optional FrameLoader
       local integer i = 0
       local integer pos
       local integer spellCode
+      local string value
     
+      // Checkpoint 27d: decide first, then touch only boxes whose state
+      // changed (hiding and re-showing all 12 every tick was costly).
       loop
          exitwhen i > 11
-         call BlzFrameSetVisible(FrameBox[i], false)
-         set i = i + 1 
+         set Wanted[i] = false
+         set i = i + 1
       endloop
-
-      // One wants to display something specific?
       set i = LoadInteger(Hash, unitId, 0)
       loop
          exitwhen i <= 0
          set spellCode = LoadInteger(Hash, unitId, i)
          set pos = BlzGetAbilityPosX(spellCode)+ BlzGetAbilityPosY(spellCode)*4
-         if pos >= 0 and pos <= 11 and GetUnitAbilityLevel(display, spellCode) > 0 then
-            call BlzFrameSetVisible(FrameBox[pos], true)
-            call BlzFrameSetText(FrameText[pos],  LoadStr(Hash, unitId, spellCode))
+         set value = GetValue(display, spellCode)
+         if pos >= 0 and pos <= 11 and GetUnitAbilityLevel(display, spellCode) > 0 and value != "" and value != null then
+            set Wanted[pos] = true
+            if BlzFrameGetText(FrameText[pos]) != value then
+               call BlzFrameSetText(FrameText[pos], value)
+            endif
          endif
          set i = i - 1
+      endloop
+      set i = 0
+      loop
+         exitwhen i > 11
+         if Shown[i] != Wanted[i] then
+            set Shown[i] = Wanted[i]
+            call BlzFrameSetVisible(FrameBox[i], Wanted[i])
+         endif
+         set i = i + 1
       endloop
       set display = null
    endfunction
@@ -103,7 +270,7 @@ library TasAbilityChargeBox requires optional FrameLoader
       local framehandle commandButton
       local integer i = 0
       local string font = "Fonts/FRIZQT__.TTF"
-      if TocPath == null or TocPath == "" or not BlzLoadTOCFile(TocPath) then
+      if not WUI_HasChargeDefinitions() then
          static if REFORGED then
             set font = SkinManagerGetLocalPath("InfoPanelTextFont")
          endif
@@ -117,15 +284,15 @@ library TasAbilityChargeBox requires optional FrameLoader
             call BlzFrameSetText(BlzGetFrameByName("InfoPanelIconLabel", 21), "")
 
             call BlzFrameClearAllPoints(FrameIcon[i])
-            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.003, -0.003)
-            call BlzFrameSetSize(FrameIcon[i], 0.02, 0.02)
-            call BlzFrameSetTexture(FrameIcon[i], "UI/Widgets/Console/Human/CommandButton/human-button-lvls-overlay.blp", 0, true)
+            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+            call BlzFrameSetSize(FrameIcon[i], BOX_SIZE, BOX_SIZE)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
 
             call BlzFrameClearAllPoints(FrameText[i])
-            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_BOTTOMRIGHT, commandButton, FRAMEPOINT_BOTTOMRIGHT, 0.003, -0.003)
-            call BlzFrameSetSize(FrameText[i], 0.02, 0.02)
+            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+            call BlzFrameSetSize(FrameText[i], BOX_SIZE, BOX_SIZE)
             call BlzFrameSetTextAlignment(FrameText[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-            call BlzFrameSetFont(FrameText[i], font, 0.011, 0)
+            call BlzFrameSetFont(FrameText[i], font, FONT_SIZE, 0)
 
             call BlzFrameSetVisible(FrameBox[i], false)
             set i = i + 1
@@ -136,6 +303,16 @@ library TasAbilityChargeBox requires optional FrameLoader
             set FrameBox[i] = BlzCreateSimpleFrame("TasAbilityChargeBox", BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i), i)
             // reserve HandleId, used Async later
             set FrameText[i] =  BlzGetFrameByName("TasAbilityChargeBoxText", i)
+            set FrameIcon[i] = BlzGetFrameByName("TasAbilityChargeBoxTexture", i)
+            set commandButton = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, i)
+            call BlzFrameClearAllPoints(FrameIcon[i])
+            call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+            call BlzFrameSetSize(FrameIcon[i], BOX_SIZE, BOX_SIZE)
+            call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
+            call BlzFrameClearAllPoints(FrameText[i])
+            call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+            call BlzFrameSetSize(FrameText[i], BOX_SIZE, BOX_SIZE)
+            call BlzFrameSetFont(FrameText[i], font, FONT_SIZE, 0)
             call BlzFrameSetVisible(FrameBox[i], false)
             set i = i + 1
          endloop
@@ -149,6 +326,11 @@ library TasAbilityChargeBox requires optional FrameLoader
       set Unit[GetPlayerId(GetTriggerPlayer())] = GetTriggerUnit()
    endfunction
 
+   private function StartFrames takes nothing returns nothing
+      call Create()
+      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
+   endfunction
+
    public function Init takes nothing returns nothing
       local trigger trig
       if Initialized then
@@ -156,11 +338,7 @@ library TasAbilityChargeBox requires optional FrameLoader
       endif
       set Initialized = true
       set UpdateTimer = CreateTimer()
-      call TimerStart(UpdateTimer, UpdateIntervale, true, function Update)
-      call Create()
-      static if LIBRARY_FrameLoader then
-         call FrameLoaderAdd(function Create)
-      endif
+      call WUI_OnReady(function StartFrames)
       set trig = CreateTrigger()
       call TriggerAddAction(trig, function Select)
       call TriggerRegisterAnyUnitEventBJ(trig, EVENT_PLAYER_UNIT_SELECTED)

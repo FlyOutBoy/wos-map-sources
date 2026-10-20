@@ -43,6 +43,9 @@ class SpellFactory:
         data.setCdAfterDuration = lambda v: change('after',v)
         data.setSecondDamage = lambda *v: change('second',v)
         data.setBonusMults = lambda *v: change('mults',v)
+        data.setPreviewChannel = lambda: change('preview_channel',True)
+        data.setPreviewDirected = lambda: change('preview_directed',True)
+        data.setCooldownFrom = lambda v: change('cooldown_from',v)
         self.records.append(data)
         return data
 
@@ -136,6 +139,13 @@ class AbilityWorkspace:
         self.changes.append((identity,field,level,value))
 
     def repair_levels(self, records):
+        """Restore holes at every declared rank, preserving explicit balance.
+
+        A constant or affine sequence must explain *all* existing ranks. Buff
+        variant registries have code-backed exceptions, never extrapolated IDs.
+        The raw Crs\0 field has an empty display name; its template keeps its ID.
+        """
+        self.unresolved = []
         for identity in self.objects:
             levels = self.get(identity,'alev',0,1)
             fields = self.fields(identity)
@@ -143,32 +153,49 @@ class AbilityWorkspace:
             if base=='ANcl' or any(f.startswith('Ncl') for f,l in fields):
                 for level in range(1,levels+1):
                     self.put(identity,'Ncl5',level,0,kind='int',pointer=5)
-            if levels < 5:
+            if levels < 2:
                 continue
-            # Preserve every existing gameplay value. Restore only missing
-            # levels 4/5, using explicit lower-level data and its progression.
-            for field in sorted({f for f,l in fields if 0<l<=5 and f}):
+            for field in sorted({f for f,l in fields if 0<l<=levels}):
                 available = {l:m for (f,l),m in fields.items() if f==field and 0<l<=levels}
-                for level in (4,5):
+                ranks = sorted(available)
+                numbers = [self.get(identity,field,l) for l in ranks]
+                for level in range(1,levels+1):
                     if level in available:
                         continue
-                    lower = sorted(l for l in available if l<level)
-                    if not lower:
-                        continue
-                    last = lower[-1]
-                    sample = available[last]
-                    value = self.get(identity,field,last)
-                    numbers = [self.get(identity,field,l) for l in lower]
-                    if len(lower)>=2 and all(isinstance(v,(int,float)) for v in numbers) and field in {'acdn','amcs','aran','aare','adur','ahdu'}:
-                        steps = [(numbers[i]-numbers[i-1])/(lower[i]-lower[i-1]) for i in range(1,len(lower))]
-                        if all(math.isclose(s,steps[0],abs_tol=1e-5) for s in steps):
-                            value = max(0,value+steps[0]*(level-last))
+                    sample = available[min(ranks,key=lambda l:abs(l-level))]
+                    value = None
+                    cc_steps = {'A1OA':0.1,'A1QY':0.5,'APPP':0.25,'A01V':0.5}
+                    if identity in cc_steps and field in {'adur','ahdu'}:
+                        value = level*cc_steps[identity]
+                    elif identity=='A1OT' and field in {'adur','ahdu','Slo1','Slo2'}:
+                        value = (level-1)%4+1 if field in {'adur','ahdu'} else ((level-1)//4+1)*0.05
+                    elif identity=='A0EG' and field=='Inf2' and level>=6:
+                        value = 0  # Offensive W: no defensive native armor.
+                    elif identity=='A0FW' and field=='Blo2' and level==8:
+                        value = 0.0  # W protection, not an F movement rank.
+                    elif all(v==numbers[0] for v in numbers):
+                        value = numbers[0]
+                    elif field in {'atp1','aut1'} and all(isinstance(v,str) for v in numbers):
+                        normalized = [re.sub(r'(?i)(level\s+)\d+',r'\1{rank}',v) for v in numbers]
+                        if len(set(normalized))==1:
+                            value = normalized[0].replace('{rank}',str(level))
+                    elif len(ranks)>=2 and all(isinstance(v,(int,float)) for v in numbers) and field not in {'Ncl2','Ncl3','Ncl5'}:
+                        step = (numbers[-1]-numbers[0])/(ranks[-1]-ranks[0])
+                        if all(math.isclose(v,numbers[0]+step*(l-ranks[0]),abs_tol=1e-5) for l,v in zip(ranks,numbers)):
+                            value = numbers[0]+step*(level-ranks[0])
                             if sample['type']=='int':
-                                value = int(value)
-                    elif field in {'atp1','aut1'} and isinstance(value,str):
-                        value = re.sub(r'(?i)(level\s+)\d+',lambda m:m[1]+str(level),value)
+                                value = round(value) if math.isclose(value,round(value),abs_tol=1e-5) else None
+                            if field in {'acdn','amcs','aran','aare','adur','ahdu'} and value is not None and value<0:
+                                value = None
+                    if value is None:
+                        self.unresolved.append((identity,field,level))
+                        continue
                     self.put(identity,field,level,value,template=sample)
-                    available[level] = self.fields(identity)[(field,level)]
+        # Standard native CC buff IDs were omitted completely in the baseline.
+        for identity,buff in [('A1OA','BPSE'),('APPP','BEer')]:
+            for level in range(1,self.get(identity,'alev',0,1)+1):
+                if self.get(identity,'abuf',level) is None:
+                    self.put(identity,'abuf',level,buff,kind='string')
 
 
 def render_tooltip(vm, data, desc, fields, level=0):
@@ -199,13 +226,24 @@ def render_tooltip(vm, data, desc, fields, level=0):
     return builder.buffer
 
 
-def stage(apply=False):
+def stage(apply=False, levels_only=False):
     documents,_ = workspace.prepare_documents(ROOT/'object-data',ROOT/'.object-data-raw')
-    vm,records = tooltip_vm()
+    vm,records = (None,[]) if levels_only else tooltip_vm()
     fields = AbilityWorkspace(documents)
     before = {(identity,field,level):fields.get(identity,field,level)
         for identity in fields.objects for field,level in fields.fields(identity)}
     fields.repair_levels(records)
+    if levels_only:
+        report = {'changes':fields.changes,'unresolved':fields.unresolved,
+                  'abilities':len(fields.objects),
+                  'multilevel_abilities':sum(fields.get(i,'alev',0,1)>1 for i in fields.objects)}
+        raw.dump_json(ROOT/'_build/all-ability-levels-report.json',report)
+        if fields.unresolved:
+            raise ValueError(f'Non-linear holes require explicit rules: {fields.unresolved}')
+        if apply:
+            write_abilities(documents)
+        print(f"{'Staged' if apply else 'Dry-run'}: {len(fields.changes)} fields; {report['multilevel_abilities']} multilevel abilities; no tooltip rebake.")
+        return fields,{},vm
     # Native Channel and the scripted T duration must agree after map edits.
     fields.put(vm.g['CrocodileT_ID'],'Ncl1',1,vm.g['CrocodileT_Duration'],kind='unreal',pointer=1)
     # E reads its recharge from Object Data; never replace acdn with the
@@ -250,18 +288,24 @@ def stage(apply=False):
               'registered_definitions':len(records)}
     raw.dump_json(ROOT/'_build/main-ability-levels-report.json',report)
     if apply:
-        for document in documents:
-            if document['kind']=='abilities':
-                raw.encode_object_file(document,document['source_file'])
-                raw.dump_json(ROOT/'.object-data-raw'/raw.OUTPUT_NAMES[document['source_file']],document)
-        editable,metadata = workspace.views_from_raw(documents,ROOT/'libs/common.j')['abilities']
-        raw.dump_json(ROOT/'object-data/abilities.json',editable)
-        raw.dump_json(ROOT/'.object-data-raw/workspace-meta/abilities.json',metadata)
+        write_abilities(documents)
     print(f"{'Staged' if apply else 'Dry-run'}: {len(fields.changes)} fields; {len(baked)} learn tooltips; {len(records)} code definitions.")
     return fields,registry,vm
+
+
+def write_abilities(documents):
+    for document in documents:
+        if document['kind']=='abilities':
+            raw.encode_object_file(document,document['source_file'])
+            raw.dump_json(ROOT/'.object-data-raw'/raw.OUTPUT_NAMES[document['source_file']],document)
+    editable,metadata = workspace.views_from_raw(documents,ROOT/'libs/common.j')['abilities']
+    raw.dump_json(ROOT/'object-data/abilities.json',editable)
+    raw.dump_json(ROOT/'.object-data-raw/workspace-meta/abilities.json',metadata)
 
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--apply',action='store_true')
-    stage(parser.parse_args().apply)
+    parser.add_argument('--levels-only',action='store_true',help='Only restore level fields; preserve current tooltip text and formulas')
+    args = parser.parse_args()
+    stage(args.apply,args.levels_only)

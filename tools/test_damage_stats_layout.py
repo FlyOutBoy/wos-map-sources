@@ -49,6 +49,7 @@ class LayoutFixture:
             WUI_SetButtonTextScale=lambda f,s:self.set(f,'scale',s),
             WUI_RegisterPassiveFocus=lambda f:self.passive.append(f),
             WUI_GetRoot=lambda:'root',WUI_GetTopActionOwner=lambda:'root',
+            WUI_StartupBegin=lambda:None,WUI_StartupEnd=lambda:None,WUI_OwnersDone=lambda:True,
             WUI_Panel=self.panel,WUI_RegisterColumnPanelEx=self.column,
             WUI_ColumnShow=lambda f,v:self.set(f,'visible',v and self.column_open),
             WUI_ColumnHeight=self.column_height,WUI_MinimalEdge=lambda *_:None,
@@ -199,16 +200,15 @@ class DamageLayout(unittest.TestCase):
         self.fx.event_frame=tab;self.vm.run('DS_Click')
         self.assertFalse(self.fx.visible(self.g['DS_Icon'][0]));self.assertEqual(0,self.g['DS_SlotSource'][0])
 
-    def test_details_cells_are_narrower_and_wrap_to_a_smaller_second_line(self):
+    def test_details_cells_are_narrower_and_stay_on_one_line(self):
         for n in range(20):self.vm.run('DamageStatsRecordHit',(0,2,100000+n,100.+n,0.))
         self.fx.render(1,3);row=self.g['DS_Row'][10]
-        first=[self.fx.rect(self.g['DS_Icon'][240+j]) for j in range(20)]
+        first=[self.fx.rect(self.g['DS_Icon'][120+j]) for j in range(12)]
         # ~15% narrower than the old .03048 pitch: exactly 12 cells per bar line.
         self.assertAlmostEqual(.3048/12,first[0][2]-first[0][0]);self.assertLess(first[0][2]-first[0][0],.03048*.86)
-        self.assertAlmostEqual(.046,self.fx.rect(row)[3]-self.fx.rect(row)[1])
-        for j in range(20):self.assertTrue(self.fx.visible(self.g['DS_Icon'][240+j]));self.inside(self.g['DS_Icon'][240+j],row)
-        self.assertAlmostEqual(first[0][0],first[12][0]);self.assertAlmostEqual(first[0][1],first[12][3])
-        self.assertLess(self.fx.frames[self.g['DS_Number'][240]]['font'][1],.0065)
+        self.assertAlmostEqual(.030,self.fx.rect(row)[3]-self.fx.rect(row)[1])
+        for j in range(12):self.assertTrue(self.fx.visible(self.g['DS_Icon'][120+j]));self.inside(self.g['DS_Icon'][120+j],row)
+        self.assertAlmostEqual(first[0][1],first[11][1])
         self.assertLess(self.fx.rect(self.g['DS_Row'][11])[3],self.fx.rect(row)[1])
 
     def test_amount_is_anchored_inside_right_bar_edge_with_space_before_it(self):
@@ -227,20 +227,21 @@ class DamageLayout(unittest.TestCase):
         self.expand()
         for view in [0,1]:
             self.fx.render(view,3);r=view*10
-            portrait=self.fx.rect(self.g['DS_Portrait'][r]);bar=self.fx.rect(self.g['DS_BarBack'][r]);cell=self.fx.rect(self.g['DS_Icon'][r*24])
+            portrait=self.fx.rect(self.g['DS_Portrait'][r]);bar=self.fx.rect(self.g['DS_BarBack'][r]);cell=self.fx.rect(self.g['DS_Icon'][r*12])
             self.assertAlmostEqual(portrait[3],bar[3])
             self.assertGreater(portrait[3]-portrait[1],1.8*(bar[3]-bar[1]))
             self.assertLessEqual(portrait[1],cell[1]+.003+1e-8)
             self.assertLess(portrait[2],bar[0]);self.inside(self.g['DS_Portrait'][r],self.g['DS_Row'][r])
 
-    def test_all_10_players_have_10_cells_covering_both_art_and_digits(self):
+    def test_players_have_10_cells_covering_both_art_and_digits(self):
+        # Compact: all 10 players; details: 5 players per page.
         self.populate();self.expand()
         for view in [0,1]:
             self.fx.render(view,10)
-            for row in range(view*10,view*10+10):
+            for row in range(view*10,view*10+(10 if view==0 else 5)):
                 owner=self.g['DS_Row'][row];last=None
                 for j in range(8 if view==0 else 10):
-                    slot=row*24+j;cell=self.g['DS_Icon'][slot];art=self.g['DS_Art'][slot];number=self.g['DS_Number'][slot]
+                    slot=row*12+j;cell=self.g['DS_Icon'][slot];art=self.g['DS_Art'][slot];number=self.g['DS_Number'][slot]
                     self.assertTrue(self.fx.visible(cell));self.inside(cell,owner)
                     self.inside(art,cell);self.inside(number,cell)
                     self.assertLessEqual(self.fx.rect(number)[3],self.fx.rect(art)[1]+1e-8)
@@ -266,9 +267,9 @@ class DamageLayout(unittest.TestCase):
         for view,old_portrait,old_art in [(0,.0315,.0105),(1,.034,.0165)]:
             r=view*10;portrait=self.fx.frames[self.g['DS_Portrait'][r]]
             self.assertAlmostEqual(old_portrait*.8*(1.045 if view==0 else 1.),portrait['size'][0])
-            art=self.fx.frames[self.g['DS_Art'][r*24]]
+            art=self.fx.frames[self.g['DS_Art'][r*12]]
             self.assertAlmostEqual(old_art*.8,art['size'][0])
-            number=self.g['DS_Number'][r*24];box=self.fx.rect(number)
+            number=self.g['DS_Number'][r*12];box=self.fx.rect(number)
             self.assertGreaterEqual(box[3]-box[1]+1e-8,self.fx.frames[number]['font'][1])
         backgrounds=[v for v in self.fx.frames.values() if v.get('name')=='DamageStatsBackground']
         self.assertEqual(2,len(backgrounds))
@@ -285,13 +286,13 @@ class DamageLayout(unittest.TestCase):
 
     def test_hover_has_one_manual_box_stable_across_ticks_and_leaves_cleanly(self):
         self.populate();self.expand();self.fx.render(0,10);self.fx.render(1,10)
-        for row in [0,9,10,19]:
+        for row in [0,9,10,14]:
             for n in ([0,7] if row<10 else [0,9]):
-                slot=row*24+n;sensor=self.g['DS_Sensor'][slot]
+                slot=row*12+n;sensor=self.g['DS_Sensor'][slot]
                 before=len(self.fx.created);self.hover(sensor,True)
                 self.assertEqual(slot,self.g['DS_HoverSlot'])
                 self.assertEqual(before,len(self.fx.created));self.assertTrue(self.fx.visible(self.g['DS_Tooltip']))
-                tip=self.g['DS_Tooltip'];self.assertEqual(self.g['DS_Small' if slot<240 else 'DS_Large'],self.fx.frames[tip]['points'][0][1])
+                tip=self.g['DS_Tooltip'];self.assertEqual(self.g['DS_Small' if slot<120 else 'DS_Large'],self.fx.frames[tip]['points'][0][1])
                 x,y,r,t=self.fx.rect(tip)
                 self.assertGreaterEqual(x,-.133334);self.assertLessEqual(r,.933334);self.assertLessEqual(t,.60001)
                 self.fx.calls.clear();self.vm.run('DS_Tick');self.vm.run('DS_Poll')
@@ -302,7 +303,7 @@ class DamageLayout(unittest.TestCase):
         self.populate();self.expand();self.fx.render(0,10);slot=0;sensor=self.g['DS_Sensor'][slot]
         self.hover(sensor,True)
         source=self.g['DS_SlotSource'][slot];pid=self.g['DS_RowPid'][0]
-        self.vm.run('DamageStatsRecordHit',(pid,(pid+1)%10,900000,500.,0.))
+        self.vm.run('DamageStatsRecordHit',(pid,(pid+1)%10,900000,10000000.,0.))  # biggest source -> first cell
         self.vm.run('DS_Tick');self.assertEqual(source,self.g['DS_SlotSource'][slot])
         self.hover(sensor,False);self.assertEqual(source,self.g['DS_SlotSource'][slot])
         self.vm.run('DS_Tick');self.assertEqual(900000,self.g['DS_SlotSource'][slot])
@@ -320,21 +321,26 @@ class DamageLayout(unittest.TestCase):
         for n in range(3):self.vm.run('DamageStatsRecordHit',(0,2,100000+n,100.+n,0.))
         self.g.update(DS_Selected=0);self.fx.render(1,3)
         self.hover(self.g['DS_RowSensor'][11],True)
-        self.assertTrue(self.g['DS_HoverDetail']);self.assertEqual(11*24,self.g['DS_HoverSlot'])
+        self.assertTrue(self.g['DS_HoverDetail']);self.assertEqual(11*12,self.g['DS_HoverSlot'])
         self.assertTrue(self.fx.visible(self.g['DS_Tooltip']))
         self.hover(self.g['DS_RowSensor'][11],False);self.assertFalse(self.fx.visible(self.g['DS_Tooltip']))
 
     def test_source_page_shows_big_source_icon_and_second_line_share_then_restores_players(self):
         for n in range(23):self.vm.run('DamageStatsRecordHit',(0,2,100000+n,100.+n,0.))
-        self.fx.render(1,3);value=self.fx.rect(self.g['DS_Value'][10]);icon=self.fx.rect(self.g['DS_Icon'][240])
+        self.fx.render(1,3);value=self.fx.rect(self.g['DS_Value'][10]);icon=self.fx.rect(self.g['DS_Icon'][120])
         self.g.update(DS_Selected=0,DS_SourcePage=2);self.fx.render(1,3)
-        self.assertFalse(self.fx.visible(self.g['DS_Portrait'][10]))
-        self.assertTrue(self.fx.visible(self.g['DS_SourceRowIcon'][10]))
-        self.assertEqual('icon',self.fx.frames[self.g['DS_SourceRowArt'][10]]['texture'])
+        # Row 10 is the player's summary bar (portrait, physical/magical share).
+        self.assertTrue(self.fx.visible(self.g['DS_Portrait'][10]))
+        self.assertFalse(self.fx.visible(self.g['DS_SourceRowIcon'][10]))
         self.assertIn('%',self.fx.frames[self.g['DS_SubLabel'][10]]['text'])
-        self.assertFalse(self.fx.visible(self.g['DS_Icon'][240]));self.assertFalse(self.fx.visible(self.g['DS_Row'][13]))
+        # 9 sources per page: page 3 holds sources 19..23 in rows 11..15.
+        self.assertFalse(self.fx.visible(self.g['DS_Portrait'][11]))
+        self.assertTrue(self.fx.visible(self.g['DS_SourceRowIcon'][11]))
+        self.assertEqual('icon',self.fx.frames[self.g['DS_SourceRowArt'][11]]['texture'])
+        self.assertIn('%',self.fx.frames[self.g['DS_SubLabel'][11]]['text'])
+        self.assertFalse(self.fx.visible(self.g['DS_Icon'][120]));self.assertFalse(self.fx.visible(self.g['DS_Row'][16]))
         self.g['DS_Selected']=-1;self.fx.render(1,3)
-        self.assertEqual(value,self.fx.rect(self.g['DS_Value'][10]));self.assertEqual(icon,self.fx.rect(self.g['DS_Icon'][240]))
+        self.assertEqual(value,self.fx.rect(self.g['DS_Value'][10]));self.assertEqual(icon,self.fx.rect(self.g['DS_Icon'][120]))
         self.assertTrue(self.fx.visible(self.g['DS_Portrait'][10]))
 
     def test_dealt_taken_tabs_switch_totals_sources_and_selection_together(self):
@@ -351,7 +357,7 @@ class DamageLayout(unittest.TestCase):
             for view in [0,1]:
                 self.fx.render(view,count);panel=self.g['DS_Small' if view==0 else 'DS_Large']
                 self.assertGreaterEqual(self.fx.rect(panel)[1],0.)
-                last=self.g['DS_Row'][view*10+count-1];self.inside(last,panel)
+                last=self.g['DS_Row'][view*10+(count if view==0 else min(count,5))-1];self.inside(last,panel)
                 footer=self.g['DS_Details' if view==0 else 'DS_Footer'];self.inside(footer,panel)
                 self.assertLess(self.fx.rect(footer)[3],self.fx.rect(last)[1])
         self.assertAlmostEqual(.360,self.fx.rect(self.g['DS_Large'])[2]-self.fx.rect(self.g['DS_Large'])[0])

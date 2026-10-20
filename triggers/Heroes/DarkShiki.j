@@ -1,13 +1,78 @@
 library DarkShikiSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer DarkShikiTick05_Timer = CreateTimer()
+        private boolean array DarkShikiTick05_Active
+        private integer DarkShikiTick05_Users = 0
+        private code DarkShikiTick05_Callback = null
+    endglobals
+
+    private function DarkShikiTick05_On takes integer k returns nothing
+        if not DarkShikiTick05_Active[k] then
+            set DarkShikiTick05_Active[k] = true
+            set DarkShikiTick05_Users = DarkShikiTick05_Users + 1
+            if DarkShikiTick05_Users == 1 then
+                call TimerStart(DarkShikiTick05_Timer, 0.05, true, DarkShikiTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function DarkShikiTick05_Off takes integer k returns nothing
+        if DarkShikiTick05_Active[k] then
+            set DarkShikiTick05_Active[k] = false
+            set DarkShikiTick05_Users = DarkShikiTick05_Users - 1
+            if DarkShikiTick05_Users <= 0 then
+                set DarkShikiTick05_Users = 0
+                call PauseTimer(DarkShikiTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer DarkShikiTick_Timer = CreateTimer()
+        private boolean array DarkShikiTick_Active
+        private integer DarkShikiTick_Users = 0
+        private code DarkShikiTick_Callback = null
+    endglobals
+
+    private function DarkShikiTick_On takes integer k returns nothing
+        if not DarkShikiTick_Active[k] then
+            set DarkShikiTick_Active[k] = true
+            set DarkShikiTick_Users = DarkShikiTick_Users + 1
+            if DarkShikiTick_Users == 1 then
+                call TimerStart(DarkShikiTick_Timer, 0.03, true, DarkShikiTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function DarkShikiTick_Off takes integer k returns nothing
+        if DarkShikiTick_Active[k] then
+            set DarkShikiTick_Active[k] = false
+            set DarkShikiTick_Users = DarkShikiTick_Users - 1
+            if DarkShikiTick_Users <= 0 then
+                set DarkShikiTick_Users = 0
+                call PauseTimer(DarkShikiTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_BACK_TO_POSITION = StringHash("back to position")
+        private integer SH_DARKSHIKI_PAS = StringHash("DarkShiki pas")
+        private integer SH_PASSIVE_TARGET = StringHash("passive target")
+        private integer SH_SHIKI_SPELL_PAUSE = StringHash("shiki_spell_pause")
+    endglobals
+    globals
 //--------------------------------------DarkShiki--------------------------------------------------------------
         integer DarkShiki_ID = 'H01K'
         integer DarkShikiF_ID = 'A09J'
         integer DarkShiki_Clone_ID = 'h01L' // dummmy id used for post clone effect
         real DarkShikiG_Damage = 1 // 1x agi for each cause stack
-        real DarkShikiG_Damage35BonusAdd = 0.5 // add bonus to prev damage
-        real DarkShikiG_StackFinalDamage = 5 // when trigger next passive after 3 - th stack , cause this amount of damage and remove stacks
-        real DarkShikiG_StackFinalDamage35BonusAdd = 3 // add bonus to prev damage
+        real DarkShikiG_Damage35BonusAdd = 0.4 // add bonus to prev damage
+        real DarkShikiG_StackFinalDamage = 4 // when trigger next passive after 3 - th stack , cause this amount of damage and remove stacks
+        real DarkShikiG_StackFinalDamage35BonusAdd = 2.5 // add bonus to prev damage
         real DarkShikiG_StackFinalSilenceDuration = 2 // from 0.1 to 3.0 , final big damage will cause stun for this time
         real DarkShikiG_Time = 5 // in seconds
         real DarkShikiG_Time35BonusAdd = 2 // in seconds
@@ -44,7 +109,10 @@ library DarkShikiSpells uses GearSystems
 //---------------T ability-----------------------------------------------------
         integer DarkShikiT_ID = 'A09I'
         real DarkShikiT_Stun = 0 // from 0.1 to 3
-        real DarkShikiT_DamageAgiBase = 9 // base number x Agi damage for 1 level
+        real DarkShikiT_DamageAgiBase = 10 // base number x Agi damage for 1 level
+        real DarkShikiT_ProjectileOffset = 140 // initial projectile offset from caster
+        real DarkShikiT_Range = 2100 // base number x Agi damage for 1 level
+        real DarkShikiT_AoE = 250 // base number x Agi damage for 1 level
 //---------------G ability-----------------------------------------------------
         integer DarkShikiG_ID = 'A0CO'
         real DarkShikiG_Stun = 0 // from 0.1 to 3
@@ -64,7 +132,6 @@ library DarkShikiSpells uses GearSystems
             set d = null
     endfunction
     private struct DarkShikiPas_KS
-        private static timer t_DarkShikiPas = CreateTimer( )
         private static integer array m_DarkShikiPas
         private static integer MUI_DarkShikiPas = -1
         unit c
@@ -82,10 +149,9 @@ library DarkShikiSpells uses GearSystems
         real r
         effect e
         effect e2
-        effect e3
         real a
         real rmax
-        private static method Loop_DarkShikiPas takes nothing returns nothing
+        static method Loop_DarkShikiPas takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer h
@@ -93,20 +159,16 @@ library DarkShikiSpells uses GearSystems
             loop
                 exitwhen i > MUI_DarkShikiPas
                 set this = m_DarkShikiPas[i]
-                if SpellBoolCaster(c) and SpellBoolCaster(td) and r < rmax and LoadUnitHandle(hs, GetHandleId(c), StringHash("passive target")) == td and CheckCoordsInRect(gg_rct_Base, GetUnitX(td), GetUnitY(td)) == false then
-                    if LoadInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause")) == 0 then
+                if SpellBoolCaster(c) and SpellBoolCaster(td) and r < rmax and LoadUnitHandle(hs, GetHandleId(c), SH_PASSIVE_TARGET) == td and CheckCoordsInRect(gg_rct_Base, GetUnitX(td), GetUnitY(td)) == false then
+                    if LoadInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE) == 0 then
                         set r = r + 0.03
-                        call BlzSetSpecialEffectTimeScale(e3, r5)
-                    else
-                        call BlzSetSpecialEffectTimeScale(e3, 0)
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     call EffVision(e2, td)
-                    call EffVision2(e3, c)
                     set h = GetHandleId(td)
-                    set sh = StringHash("DarkShiki pas")
+                    set sh = SH_DARKSHIKI_PAS
                     set fly = GetUnitFlyHeight(td)
                     if LoadInteger(hs, h, sh) > check then
                         set check = LoadInteger(hs, h, sh)
@@ -149,7 +211,7 @@ library DarkShikiSpells uses GearSystems
                             endif
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_ldeff (5).mdx", x, y, GAngle(c, td) * bj_RADTODEG, 1, 2.5, 165))
                         endif
-                        call BlzPlaySpecialEffect(e3, ANIM_TYPE_STAND)
+                        call DamageSource('A09J')
                         call NextDmg(c, td, dmg, 0, 0.05)
                     endif
                     if check2 == 1 then
@@ -161,28 +223,28 @@ library DarkShikiSpells uses GearSystems
                         call BlzSetSpecialEffectY(e2, y)
                         call BlzSetSpecialEffectZ(e2, fly)
                         call BlzSetSpecialEffectYaw(e2, (GetUnitFacing(td) + 180) * bj_DEGTORAD)
-                        call BlzSetSpecialEffectX(e3, GetUnitX(c))
-                        call BlzSetSpecialEffectY(e3, GetUnitY(c))
-                        call BlzSetSpecialEffectZ(e3, GetUnitFlyHeight(c) + 155)
-                        call BlzSetSpecialEffectYaw(e3, (GetUnitFacing(c)) * bj_DEGTORAD)
+                    endif
+                    if LoadUnitHandle(hs, GetHandleId(c), SH_PASSIVE_TARGET) == td then
+                        call WUI_HeroProgressDual(c, DarkShikiF_ID, "Eye Of Death Perception", rmax - r, rmax, I2R(LoadInteger(hs, GetHandleId(td), SH_DARKSHIKI_PAS)), 4.00)
                     endif
                 else
+                    if LoadUnitHandle(hs, GetHandleId(c), SH_PASSIVE_TARGET) == td then
+                        call WUI_HeroProgress(c, DarkShikiF_ID, "Eye Of Death Perception", 0.00, 0.00, true)
+                    endif
                     set h = GetHandleId(td)
-                    set sh = StringHash("DarkShiki pas")
+                    set sh = SH_DARKSHIKI_PAS
                     call DestroyEffect(e)
                     call ColorEffDummy3(e2, 0, 255, 255, 255, 0.12)
-                    call BlzSetSpecialEffectAlpha(e3,0)
-                    call DestroyEffect(e3)
                     call SaveInteger(hs, h, sh, 0)
                     set c = null
                     set td = null
                     set e = null
                     set e2 = null
-                    set e3 = null
                     set m_DarkShikiPas[i] = m_DarkShikiPas[ MUI_DarkShikiPas]
                     set MUI_DarkShikiPas = MUI_DarkShikiPas - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiPas == -1 then
-                        call PauseTimer( t_DarkShikiPas)
+                        call DarkShikiTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -198,7 +260,7 @@ library DarkShikiSpells uses GearSystems
             set r = 0
             set scale = 4
             set scale2 = 0.85
-            set check = LoadInteger(hs, GetHandleId(td), StringHash("DarkShiki pas"))
+            set check = LoadInteger(hs, GetHandleId(td), SH_DARKSHIKI_PAS)
             set x = GetUnitX(td)
             set y = GetUnitY(td)
             set dmg = GetHeroAgi( c , true) * DarkShikiG_Damage
@@ -220,13 +282,13 @@ library DarkShikiSpells uses GearSystems
                                 set dmg = DarkShikiG_Damage * GetHeroAgi(c, true)
                             endif
                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_ldeff (5).mdx", x, y, GAngle(c, td) * bj_RADTODEG, 1, 2.5, 165))
+                call DamageSource('A09J')
                 call NextDmg(c, td, dmg, 0, 0.05)
-                set e3 = EffectSpawn("war3mapImported\\wos_ShikiCounter.mdl", GetUnitX(c), GetUnitY(c), 0, r5, 4.5, 155)
                 set e2 = EffectSpawn("war3mapimported\\wos_AZ_EVEMD.mdl", x, y, 0, scale2, 1.75, 1)
                 set e = EffectSpawn("war3mapImported\\wos_DarkShikiClock_1.mdl", x, y, 0, scale2, scale, 0)
             endif
             if MUI_DarkShikiPas == 0 then
-                call TimerStart( t_DarkShikiPas, 0.03, true, function thistype.Loop_DarkShikiPas)
+                call DarkShikiTick_On(0)
             endif
         endmethod
     endstruct
@@ -235,14 +297,15 @@ library DarkShikiSpells uses GearSystems
         public static method DarkShikiPassiveApply takes unit c, unit td returns nothing
             local integer i = GetPlayerId(GetOwningPlayer(td))
             local integer h = GetHandleId(td)
-            local integer sh = StringHash("DarkShiki pas")
-            local unit d = LoadUnitHandle(hs, GetHandleId(c), StringHash("passive target"))
+            local integer sh = SH_DARKSHIKI_PAS
+            local unit d = LoadUnitHandle(hs, GetHandleId(c), SH_PASSIVE_TARGET)
             if GetHeroLevel(c) >= 6 and GetUnitAbilityLevel(td, 'Aloc') == 0 and IsUnitType(td,UNIT_TYPE_HERO) then
                 if d != td then
                 endif
                 if LoadInteger(hs, h, sh) == 0 or d != td then
                     call SaveInteger(hs, h, sh, 1)
-                    call SaveUnitHandle(hs, GetHandleId(c), StringHash("passive target"), td)
+                    call SaveUnitHandle(hs, GetHandleId(c), SH_PASSIVE_TARGET, td)
+                    call TasAbilityChargeBox_SetValue(c, DarkShikiF_ID, "")
                     call DarkShikiPas_KS.DarkShikiPas_Start(c, td)
                 elseif LoadInteger(hs, h, sh) == 1 and d == td then
                     call SaveInteger(hs, h, sh, 2)
@@ -261,7 +324,6 @@ library DarkShikiSpells uses GearSystems
     endstruct
 
     private struct DarkShikiQ_KS
-        private static timer t_DarkShikiQ = CreateTimer( )
         private static integer array m_DarkShikiQ
         private static integer MUI_DarkShikiQ = -1
         unit c
@@ -291,13 +353,7 @@ library DarkShikiSpells uses GearSystems
         effect e2
         real a
         real rmax
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
-        private static method Loop_DarkShikiQ takes nothing returns nothing
+        static method Loop_DarkShikiQ takes nothing returns nothing
             local integer this
             local integer i = 0
             local real tmp_y = 0
@@ -309,7 +365,7 @@ library DarkShikiSpells uses GearSystems
                     if check == 0 then
                         if r == r6 then
                             call PauseUnit( c , false)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                             call SetUnitAnimationByIndex( c , 33)
                             call SetUnitTimeScale(c, 2.5)
                             call MakeSound("war3mapimported\\Hero_DarkShiki_Q2")
@@ -343,6 +399,7 @@ library DarkShikiSpells uses GearSystems
                                         call DarkShikiPassive_KS.DarkShikiPassiveApply(c, u)
                                         set check2 = 1
                                     endif
+                                    call DamageSource('A09D')
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -354,55 +411,17 @@ library DarkShikiSpells uses GearSystems
                             set r = 0
                             set rmax = (DarkShikiQ_BackToPosDurationBase + DarkShikiQ_BackToPosDurationStep * (GetUnitAbilityLevel(c, DarkShikiQ_ID) - 1))
                             set check = 1
-                            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], 0)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_DarkShiki_Q", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Time to retreat:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame2_pas3[k2], 0)
-                            endif
                             call SwapAbility(c, rmax, DarkShikiQ2_ID, DarkShikiQ_ID)
                             call PauseUnit( c , false)
                             call SetUnitTimeScale(c, 1)
                         endif
                     elseif check == 1 then
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r ))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, DarkShikiQ_ID, "Time to retreat", rmax - r, rmax, true)
                         endif
-                        if LoadInteger(hs, GetHandleId(c), StringHash("back to position")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_BACK_TO_POSITION) == 1 then
                             set k = GetRandomInt(1, 3)
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(DarkShikiQ_ID)), 1)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_DarkShiki_DARKSHIKIQ_ID, 1)
                             if k == 1 then
                                 call MakeSound("war3mapimported\\Hero_DarkShiki_Q01")
                             elseif k == 2 then
@@ -427,7 +446,7 @@ library DarkShikiSpells uses GearSystems
                     endif
                 else
                     if check == 0 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                         call PauseUnit( c , false)
                         call SetUnitTimeScale(c, 1)
                     endif
@@ -436,9 +455,7 @@ library DarkShikiSpells uses GearSystems
                         call BlzSetSpecialEffectTimeScale(e2, 10)
                         call ColorEffDummy3(e, 0, 125, 125, 125, 0.21)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, DarkShikiQ_ID, "Time to retreat", 0.00, 0.00, true)
                     call DestroyGroup( g )
                     set g = null
                     call DestroyGroup( g2 )
@@ -448,8 +465,9 @@ library DarkShikiSpells uses GearSystems
                     set u = null
                     set m_DarkShikiQ[i] = m_DarkShikiQ[ MUI_DarkShikiQ]
                     set MUI_DarkShikiQ = MUI_DarkShikiQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiQ == -1 then
-                        call PauseTimer( t_DarkShikiQ)
+                        call DarkShikiTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -474,11 +492,11 @@ library DarkShikiSpells uses GearSystems
             call PauseUnit( c , true)
             set g = CreateGroup()
             set g2 = CreateGroup()
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
             set u = null
             set a = GAngle2( c , x , y ) // Angle Between points
             set check = 0
-            set r6 = 0.45
+            set r6 = 0.39
             set rmax = r6+0.36
             set r5 = (DarkShikiQ_RangeBase + DarkShikiQ_RangeStep * (GetUnitAbilityLevel(c, DarkShikiQ_ID) - 1)) / 1800
             set move = (DarkShikiQ_RangeBase + DarkShikiQ_RangeStep * (GetUnitAbilityLevel(c, DarkShikiQ_ID) - 1)) / 12
@@ -495,8 +513,8 @@ library DarkShikiSpells uses GearSystems
             call BlzSetSpecialEffectAlpha(e2, 165)
             set k = GetRandomInt(1, 3)
             call SetUnitTimeScale(c, 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(DarkShikiQ_ID)), 0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("back to position"), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_DarkShiki_DARKSHIKIQ_ID, 0)
+            call SaveInteger(hs, GetHandleId(c), SH_BACK_TO_POSITION, 0)
             call VisionTimed(GetOwningPlayer(c), x2, y2, 900, rmax + 1 + (DarkShikiQ_BackToPosDurationBase + DarkShikiQ_BackToPosDurationStep * (GetUnitAbilityLevel(c, DarkShikiQ_ID) - 1)))
             if k == 1 then
                 call MakeSound("war3mapimported\\Hero_DarkShiki_Q01")
@@ -507,13 +525,12 @@ library DarkShikiSpells uses GearSystems
             endif
             call MakeSound("war3mapimported\\Hero_DarkShiki_Q1")
             if MUI_DarkShikiQ == 0 then
-                call TimerStart( t_DarkShikiQ, 0.03, true, function thistype.Loop_DarkShikiQ)
+                call DarkShikiTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct DarkShikiW_KS
-        private static timer t_DarkShikiW = CreateTimer( )
         private static integer array m_DarkShikiW
         private static integer MUI_DarkShikiW = -1
         unit c
@@ -528,7 +545,7 @@ library DarkShikiSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_DarkShikiW takes nothing returns nothing
+        static method Loop_DarkShikiW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -537,10 +554,10 @@ library DarkShikiSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.05
                     call DebugUnit2(c)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r == 0.35 then
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_111.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 2.5, 0))
                         call BlinkEff(c)
@@ -548,11 +565,11 @@ library DarkShikiSpells uses GearSystems
                         call SetUnitY(c, y)
                         call BlinkEff2(c)
                     endif
-                    if r == 0.5 then
+                    if r == 0.45 then
                         call MakeSound("war3mapimported\\Hero_DarkShiki_W2")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_whiteakihared.mdl", x, y, a * bj_RADTODEG + 90, 1.25, 1.85, 135))
                     endif
-                    if r == 0.65 then
+                    if r == 0.6 then
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_Nanaya2Skill06Dred.mdl", x, y, 0, 1, 1.95, 195))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-RSFX-10.mdl", x, y, 0, 1, 2.5, 195))
                         call MUE(c, 255, 0.35, a)
@@ -565,6 +582,7 @@ library DarkShikiSpells uses GearSystems
                         call DestroyEffect( EffectSpawn("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", x, y, a * bj_RADTODEG, 0.35, 3, 145))
                         call DestroyEffect( EffectSpawn("war3mapimported\\wos_bloodex-special-23.mdx", x, y, a * bj_RADTODEG, 2, 3, 145))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_Lucia-leimitx10.mdx", x, y, 0, 2, 2, 1))
+                        call DamageSource('A09F')
                         call dmgphys(c, td, dmg)
                         //call SilenceUnit(c, td, 2)
                         if IsUnitIllusion(td) == false and check2 == 0 then
@@ -573,15 +591,16 @@ library DarkShikiSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     call PauseUnit(c, false)
                     call StopSpellUnit2(c)
                     set td = null
                     set c = null
                     set m_DarkShikiW[i] = m_DarkShikiW[ MUI_DarkShikiW]
                     set MUI_DarkShikiW = MUI_DarkShikiW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiW == -1 then
-                        call PauseTimer( t_DarkShikiW)
+                        call DarkShikiTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -598,7 +617,7 @@ library DarkShikiSpells uses GearSystems
             set x = GetUnitX(td)
             set y = GetUnitY(td)
             set r = 0
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
             set check2 = 0
             set r5 = 0
             set r = 0
@@ -615,18 +634,17 @@ library DarkShikiSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_DarkShiki_W03")
             endif
             call MakeSound("war3mapimported\\Hero_DarkShiki_G1")
-            set rmax = 0.8
+            set rmax = 0.7
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_HakkeStart.mdx", x, y, 0, 0.9, 1.5, 5))
             call SetUnitAnimationByIndex( c , 31)
             if MUI_DarkShikiW == 0 then
-                call TimerStart( t_DarkShikiW, 0.05, true, function thistype.Loop_DarkShikiW)
+                call DarkShikiTick05_On(0)
             endif
         endmethod
         
     endstruct
 
     private struct DarkShikiE_KS
-        private static timer t_DarkShikiE = CreateTimer( )
         private static integer array m_DarkShikiE
         private static integer MUI_DarkShikiE = -1
         unit c
@@ -642,7 +660,7 @@ library DarkShikiSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_DarkShikiE takes nothing returns nothing
+        static method Loop_DarkShikiE takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -651,7 +669,7 @@ library DarkShikiSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
                     call DebugUnit2(c)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     set a = GAngle(c, td)
@@ -659,7 +677,7 @@ library DarkShikiSpells uses GearSystems
                         call SetUnitAnimationByIndex(c, 14)
                         set r5 = 0
                     endif
-                    if r > 0.45 then
+                    if r > 0.3 then
                         if SR2(c, td) > 110 then
                             call ShikiClone(c, 14, r5, 2)
                             set r5 = r5 + 0.015
@@ -672,12 +690,13 @@ library DarkShikiSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     call StopSpellUnit2(c)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     if check == 1 then
                         call SetUnitPosition(c, x + 150 * Cos(a), y + 150 * Sin(a))
+                        call DamageSource('A09G')
                         call dmgphys(c, td, dmg)
                         call StunUnit(c, td, DarkShikiE_Stun)
                         if IsUnitIllusion(td) == false and check2 == 0 then
@@ -697,8 +716,9 @@ library DarkShikiSpells uses GearSystems
                     set td = null
                     set m_DarkShikiE[i] = m_DarkShikiE[MUI_DarkShikiE]
                     set MUI_DarkShikiE = MUI_DarkShikiE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiE == -1 then
-                        call PauseTimer( t_DarkShikiE )
+                        call DarkShikiTick_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -716,10 +736,10 @@ library DarkShikiSpells uses GearSystems
             set check2 = 0
             set check = 0
             set rmax = 2
-            set move = 80
+            set move = 100
             call StartSpellUnit2(c)
             call SetUnitAnimationByIndex(c, 13)
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
             call SetUnitTimeScale(c, 0.25)
             set a = GAngle(c, td)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
@@ -730,13 +750,12 @@ library DarkShikiSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_DarkShiki_E02")
             endif
             if MUI_DarkShikiE == 0 then
-                call TimerStart( t_DarkShikiE, 0.03, true, function thistype.Loop_DarkShikiE )
+                call DarkShikiTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct DarkShikiR_KS
-        private static timer t_DarkShikiR = CreateTimer( )
         private static integer array m_DarkShikiR
         private static integer MUI_DarkShikiR = -1
         unit c
@@ -762,7 +781,7 @@ library DarkShikiSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_DarkShikiR takes nothing returns nothing
+        static method Loop_DarkShikiR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rand1 = 0
@@ -773,11 +792,11 @@ library DarkShikiSpells uses GearSystems
                 set this = m_DarkShikiR[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
                         call DebugUnit(c)
-                        set r3 = 0.3
+                        set r3 = 0.21
                         if r < r3 then
                             set fly = 15
                         endif
@@ -799,11 +818,11 @@ library DarkShikiSpells uses GearSystems
                             set k2 = 22
                             set r4 = 6
                         endif
-                        if r == 0.6 then
+                        if r == 0.45 then
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_Nanaya2Skill06Dred.mdl", x, y, 0, 1, 1.95, 195))
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_FireFlyW-SFX-1red.mdl", x, y, 0, 1, 2.5, 1))
                         endif
-                        if r <= 0.6 then
+                        if r <= 0.45 then
                             call ShikiClone(c, k2, r5, r4)
                             set r5 = r5 + r6
                             call MoveUnit(c, move, a)
@@ -811,7 +830,7 @@ library DarkShikiSpells uses GearSystems
                             set r5 = r5 + r6
                         else
                             set check = 1
-                            set rmax = 0.69
+                            set rmax = 0.3
                             set r = 0
                             set r2 = 10
                     call SetFly(c, 0)
@@ -843,6 +862,7 @@ library DarkShikiSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A09H')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     if IsUnitIllusion(u) == false and check2 == 0 then
@@ -861,9 +881,9 @@ library DarkShikiSpells uses GearSystems
                 else
                     call SetFly(c, 0)
                             call StopSpellUnit(c)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     if check == 0 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     call StopSpellUnit(c)
                     endif                    
                     call SetUnitTimeScale( c , 1)
@@ -875,8 +895,9 @@ library DarkShikiSpells uses GearSystems
                     set c = null
                     set m_DarkShikiR[i] = m_DarkShikiR[ MUI_DarkShikiR]
                     set MUI_DarkShikiR = MUI_DarkShikiR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiR == -1 then
-                        call PauseTimer( t_DarkShikiR)
+                        call DarkShikiTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -897,7 +918,7 @@ library DarkShikiSpells uses GearSystems
             set g = CreateGroup()
             set k3 = 0
             set g2 = CreateGroup()
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
             set dmg = GetHeroAgi( c , true) * ( DarkShikiR_DamageAgiBase + ( DarkShikiR_DamageAgiStep * ( GetUnitAbilityLevel( c , DarkShikiR_ID) - 1 ) ) )
             set r2 = 0
             set aoe = DarkShikiR_DamageAoe
@@ -906,7 +927,7 @@ library DarkShikiSpells uses GearSystems
             call SetUnitTimeScale(c, 3)
             set a = GAngle2(c, x,y)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
-            set move = ( SR3(c, x,y) + 300) / 20
+            set move = ( SR3(c, x,y) + 150) / 15
             if GetRandomInt(1, 2) == 1 then
                 call MakeSound("war3mapimported\\Hero_DarkShiki_R01")
             else
@@ -917,13 +938,12 @@ library DarkShikiSpells uses GearSystems
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_HakkeStart.mdx", x, y, 0, 1, 2.2, 5))
             set rmax = 0.9
             if MUI_DarkShikiR == 0 then
-                call TimerStart( t_DarkShikiR, 0.03, true, function thistype.Loop_DarkShikiR)
+                call DarkShikiTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct DarkShikiT_KS
-        private static timer t_DarkShikiT = CreateTimer( )
         private static integer array m_DarkShikiT
         private static integer MUI_DarkShikiT = -1
         unit c
@@ -931,46 +951,78 @@ library DarkShikiSpells uses GearSystems
         real x
         real y
         real r2
+        real r5
         integer k2
         real dmg
         integer check
+        real aoe 
         integer check2
+        unit u 
+        group g 
         real move
         real r
+        real r3        
+        real r4
         effect e
+        effect e2
         real a
         real rmax
-        private static method Loop_DarkShikiT takes nothing returns nothing
+        static method Loop_DarkShikiT takes nothing returns nothing
             local integer this
+            local integer check3 = 0
             local integer i = 0
             loop
                 exitwhen i > MUI_DarkShikiT
                 set this = m_DarkShikiT[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+                    set r = RoundReal(r, 3)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
+                    if r< 0.21 then 
                     call DebugUnit2(c)
+                    endif
                     if check == 0 then
-                        if r == 0.45 then
+                        if r == 0.21 then
+                            call StopSpellUnit2(c)
                             call MakeSound("war3mapimported\\Hero_DarkShiki_T1")
-                            set e = EffectSpawn("war3mapimported\\wos_mh_nanaya_xd.mdl", GetUnitX(c) + 140 * Cos(a), GetUnitY(c) + 140 * Sin(a), a * bj_RADTODEG, 1, 2, 195)
+                            set e = EffectSpawn("war3mapimported\\wos_mh_nanaya_xd.mdl", GetUnitX(c) + DarkShikiT_ProjectileOffset * Cos(a), GetUnitY(c) + DarkShikiT_ProjectileOffset * Sin(a), a * bj_RADTODEG, 1, 2, 195)
+                            set e2 = EffectSpawn("war3mapimported\\wos_redstart2.mdl", GetUnitX(c) + DarkShikiT_ProjectileOffset * Cos(a), GetUnitY(c) + DarkShikiT_ProjectileOffset * Sin(a), a * bj_RADTODEG, 1.5, 0.85, 195)
                         endif
-                        set x = GetUnitX(td)
-                        set y = GetUnitY(td)
-                        if r > 0.51 then
-                            set a = GAngle5(e, x, y)
-                            if SR5(e, x, y) >= move * 1.25 then
-                                call MoveEff2(e, move, a)
-                                call BlzSetSpecialEffectYaw(e,GAngle5(e,x,y))
-                            else
+                        if r > 0.3 then
+                             call MoveEff2(e, move, a)
+                             call MoveEff2(e2, move, a)
+                            set r3 = r3 + move
+                            if r3 >= r4 then
+                            set r = 9999
+                            endif
+                            set x = GetEffX(e)
+                            set y = GetEffY(e)
+                             if r5> 0.03 then 
+                             set r5 = 0
+                             call VisionTimed(GetOwningPlayer(c),x,y,450,2)
+                             else                             
+                             set r5 = r5 + 0.03
+                             endif   
+                            call GroupClear( g )
+                            call GroupEnumUnitsInRange( g , x, y , aoe , NoDecor_Cond)
+                            loop
+                                set u = FirstOfGroup( g )
+                                exitwhen u == null or check3 == 1
+                                if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c ))  then
+                                   set check3 = 1
+                                   set x = GetUnitX(u)
+                                   set y = GetUnitY(u)
+                                   call BlzSetSpecialEffectYaw(e,GAngle5(e,x,y))
                                 call BlzSetSpecialEffectPosition(e, x, y, 185)
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_111.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 2.5, 0))
                                 call BlinkEff(c)
+                                call StartSpellUnit2(c)
                                 call SetUnitPosition(c, x, y)
                                 call SetUnitAnimationByIndex(c, 32)
                                 call ColorEffDummy3(e, 0, 255, 255, 255, 0.4)
+                                call DestroyEffect(e2)
                                 call SetUnitFacing(c, a * bj_RADTODEG)
+                                set td = u 
                                 call MakeSound("war3mapimported\\Hero_DarkShiki_T3")
                                     call MakeSound("war3mapimported\\Hero_DarkShiki_T02")
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-ESFX-4.mdl", x, y, a * bj_RADTODEG + 90, 1, 2.25, 210))
@@ -979,9 +1031,14 @@ library DarkShikiSpells uses GearSystems
                                 set r = 0
                                 set rmax = 0.36
                                 call MUE(c, 150, rmax, a)
-                            endif
+                                endif
+                                call GroupRemoveUnit( g , u )
+                            endloop
+                            set u = null
                         endif
                     elseif check == 1 then
+                    set x = GetUnitX(td)
+                        set y = GetUnitY(td)   
                         if r == 0.12 then
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1, 3.25, 200))
                         endif
@@ -1002,6 +1059,7 @@ library DarkShikiSpells uses GearSystems
                                 call DarkShikiPassive_KS.DarkShikiPassiveApply(c, td)
                                 set check2 = 1
                             endif
+                            call DamageSource('A09I')
                             call dmgphys(c, td, dmg)
                            // call StunUnit(c, td, DarkShikiT_Stun)
                             if k2 == 1 then
@@ -1010,61 +1068,70 @@ library DarkShikiSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     if check == 0 then
                         call ColorEffDummy3(e, 0, 255, 255, 255, 0.12)
+                        call DestroyEffect(e2)
                     else
                       
                     endif
+                    call DestroyGroup(g)
                     call StopSpellUnit2(c)
                     call SetUnitTimeScale( c , 1)
                     set e = null
+                    set e2 = null
                     set c = null
                     set td = null
+                    set g = null
                     set m_DarkShikiT[i] = m_DarkShikiT[ MUI_DarkShikiT]
                     set MUI_DarkShikiT = MUI_DarkShikiT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiT == -1 then
-                        call PauseTimer( t_DarkShikiT)
+                        call DarkShikiTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
                 set i = i + 1
             endloop
         endmethod
-        public static method DarkShikiT_Start takes unit NewC, unit NewTd returns nothing
+        public static method DarkShikiT_Start takes unit NewC, real NewX,real NewY returns nothing
             local thistype this = thistype.create( )
             set MUI_DarkShikiT = MUI_DarkShikiT + 1
             set m_DarkShikiT[ MUI_DarkShikiT] = this
             set c = NewC
-            set td = NewTd
+            set td = null
             set r = 0
-            set x = GetUnitX(td)
-            set y = GetUnitY(td)
+            set x = NewX
+            set y = NewY
             set r2 = 0
+            set r3 = 0
+            set r4 = DarkShikiT_Range
+            set r5 = 0
             call StartSpellUnit2(c)
             set dmg = DarkShikiT_DamageAgiBase * GetHeroAgi(c, true)
             set move = 140
             set check = 0
+            set aoe = DarkShikiT_AoE
             set k2 = 0
+            set g = CreateGroup()
             set check2 = 0
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
-            set a = GAngle(c, td)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
+            set a = GAngle2(c, x,y)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
                 set k2 = 1
                 call MakeSound("war3mapimported\\Hero_DarkShiki_T01")
             call MakeSound("war3mapimported\\Hero_DarkShiki_T4")
-            call VisionTimed(GetOwningPlayer(c), GetUnitX(td), GetUnitY(td), 1200, 3)
-            set rmax = 1.02
+           // call VisionTimed(GetOwningPlayer(c), GetUnitX(td), GetUnitY(td), 1200, 3)
+            set rmax = 2.01
             call SetUnitAnimationByIndex(c, 1)
             call SetUnitTimeScale(c, 0.7)
             if MUI_DarkShikiT == 0 then
-                call TimerStart( t_DarkShikiT, 0.03, true, function thistype.Loop_DarkShikiT)
+                call DarkShikiTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct DarkShikiG_KS
-        private static timer t_DarkShikiG = CreateTimer( )
         private static integer array m_DarkShikiG
         private static integer MUI_DarkShikiG = -1
         unit c
@@ -1081,7 +1148,7 @@ library DarkShikiSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_DarkShikiG takes nothing returns nothing
+        static method Loop_DarkShikiG takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rand1 = 0
@@ -1092,8 +1159,8 @@ library DarkShikiSpells uses GearSystems
                 set this = m_DarkShikiG[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+                    set r = RoundReal(r, 3)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
                         call DebugUnit(c)
                     if r == rmax then 
                     set x = GetUnitX(c)
@@ -1113,6 +1180,7 @@ library DarkShikiSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c ))  then
+                                    call DamageSource('A0CO')
                                     call dmgphys(c, u, dmg)
                                     if IsUnitIllusion(u) == false and check2 == 0 then
                                         call DarkShikiPassive_KS.DarkShikiPassiveApply(c, u)
@@ -1127,7 +1195,7 @@ library DarkShikiSpells uses GearSystems
                 else
                     call SetFly(c, 0)
                     if check == 0 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 0)
                     endif
                     call StopSpellUnit(c)
                     call SetUnitTimeScale( c , 1)
@@ -1137,8 +1205,9 @@ library DarkShikiSpells uses GearSystems
                     set c = null
                     set m_DarkShikiG[i] = m_DarkShikiG[ MUI_DarkShikiG]
                     set MUI_DarkShikiG = MUI_DarkShikiG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_DarkShikiG == -1 then
-                        call PauseTimer( t_DarkShikiG)
+                        call DarkShikiTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1158,7 +1227,7 @@ library DarkShikiSpells uses GearSystems
             set check2 = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set g = CreateGroup()
-            call SaveInteger(hs, GetHandleId(c), StringHash("shiki_spell_pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_SHIKI_SPELL_PAUSE, 1)
             set dmg = GetHeroAgi( c , true) *  DarkShikiG_DamageAgiBase
             set r2 = 0
             set aoe = DarkShikiG_DamageAoe
@@ -1172,7 +1241,7 @@ library DarkShikiSpells uses GearSystems
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_HakkeStart.mdx", x, y, 0, 0.6, 1.25, 5))
             set rmax = 0.27
             if MUI_DarkShikiG == 0 then
-                call TimerStart( t_DarkShikiG, 0.03, true, function thistype.Loop_DarkShikiG)
+                call DarkShikiTick_On(5)
             endif
         endmethod
      
@@ -1204,7 +1273,7 @@ library DarkShikiSpells uses GearSystems
         call DarkShikiQ_KS.DarkShikiQ_Start( c, x, y )
     endfunction
     function DarkShikiQ2_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("back to position"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_BACK_TO_POSITION, 1)
     endfunction
     function DarkShikiW_Start takes unit c, unit td returns nothing
         call DarkShikiW_KS.DarkShikiW_Start( c, td )
@@ -1215,12 +1284,58 @@ library DarkShikiSpells uses GearSystems
     function DarkShikiR_Start takes unit c, real x,real y returns nothing
         call DarkShikiR_KS.DarkShikiR_Start( c,x,y)
     endfunction
-    function DarkShikiT_Start takes unit c, unit td returns nothing
-        call DarkShikiT_KS.DarkShikiT_Start( c, td)
+    function DarkShikiT_Start takes unit c, real x, real y returns nothing
+        call DarkShikiT_KS.DarkShikiT_Start( c, x,y)
     endfunction
     function DarkShikiG_Start takes unit c returns nothing
         call DarkShikiG_KS.DarkShikiG_Start( c)
     endfunction
    
+
+    private struct DarkShikiTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if DarkShikiTick_Active[0] then
+                call DarkShikiPas_KS.Loop_DarkShikiPas()
+            endif
+            if DarkShikiTick_Active[1] then
+                call DarkShikiQ_KS.Loop_DarkShikiQ()
+            endif
+            if DarkShikiTick_Active[2] then
+                call DarkShikiE_KS.Loop_DarkShikiE()
+            endif
+            if DarkShikiTick_Active[3] then
+                call DarkShikiR_KS.Loop_DarkShikiR()
+            endif
+            if DarkShikiTick_Active[4] then
+                call DarkShikiT_KS.Loop_DarkShikiT()
+            endif
+            if DarkShikiTick_Active[5] then
+                call DarkShikiG_KS.Loop_DarkShikiG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set DarkShikiTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct DarkShikiTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if DarkShikiTick05_Active[0] then
+                call DarkShikiW_KS.Loop_DarkShikiW()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set DarkShikiTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_DarkShiki_DARKSHIKIQ_ID = StringHash(I2S(DarkShikiQ_ID))
+    endglobals
+
 endlibrary
 

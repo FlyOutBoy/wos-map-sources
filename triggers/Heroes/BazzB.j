@@ -13,9 +13,9 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
 
 //---------------G ability (The Heat - Cooldown Reduction Passive)-------------
         integer BazzBG_ID = 'A08R'
-        real BazzBG_CdReduce1 = 1.25
-        real BazzBG_CdReduce2 = 1.75
-        real BazzBG_CdReduce3 = 2.25
+        real BazzBG_CdReduce1 = 1.00
+        real BazzBG_CdReduce2 = 1.50
+        real BazzBG_CdReduce3 = 2.00
 
 //---------------Q ability (Burner Finger 1)-----------------------------------
         integer BazzBQ_ID = 'A08M'
@@ -57,7 +57,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         real BazzBR_DamageAgiStep = 1.00
         real BazzBR_DamageAoe = 500.00
         real BazzBR_StunDuration = 1.00
-        real BazzBR_CastTime = 2.10
+        real BazzBR_CastTime = 1.20
         boolean BazzBR_IsInvul = true
         real BazzBR_DecorDamage = 100.00
 
@@ -169,7 +169,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call DebugUnit2(c)
                         if r == 0.30 then
@@ -195,13 +195,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         set y1 = y1 + move * Sin(a)
                         call DecorRemove(c, x1, y1, aoe, BazzBQ_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x1, y1, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x1, y1, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                call DamageSource('A08M')
                                 call dmgmag(c, u, dmg)
+                                if GetHeroLevel(c) >= 35 then
+                                    call ErzaPassive(c, u, 1)
+                                endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call GroupAddUnit(g2, u)
                             endif
@@ -338,7 +342,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         set a = GAngle(c, td)
                         call DebugUnit2(c)
@@ -380,13 +384,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             set y = GetEffY(e)
                             call DecorRemove(c, x, y, aoe, BazzBW_DecorDamage)
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 call GroupRemoveUnit(g, u)
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A08N')
                                     call dmgmag(c, u, dmg)
+                                    if GetHeroLevel(c) >= 35 then
+                                        call ErzaPassive(c, u, 1)
+                                    endif
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     call GroupAddUnit(g2, u)
                                 endif
@@ -421,13 +429,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         set y = GetEffY(e)
                         call DecorRemove(c, x, y, aoe, BazzBW_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                call DamageSource('A08N')
                                 call dmgmag(c, u, dmg)
+                                if GetHeroLevel(c) >= 35 then
+                                    call ErzaPassive(c, u, 1)
+                                endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call GroupAddUnit(g2, u)
                             endif
@@ -552,7 +564,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     if r == 0.15 or r == 0.20 or r == 0.25 or r >= rmax then
                         set scale2 = aoe/750
@@ -568,13 +580,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         call VisionTimed(GetOwningPlayer(c), x, y, 1200.0, 3.0)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_opm (583).mdx", x, y, GetRandomReal(0.0, 359.0), 1.0, 1.05, 1.0))
                         call StopSpellUnit(c)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A08O')
                                 call dmgmag(c, u, dmg)
+                                if GetHeroLevel(c) >= 35 then
+                                    call ErzaPassive(c, u, 1)
+                                endif
                                 call MUE(u, BazzBE_PushRange, BazzBE_PushDuration, GAngle(c, u))
                             endif
                         endloop
@@ -675,7 +691,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                 if c == null or td == null or GetUnitTypeId(c) == 0 or GetUnitTypeId(td) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
@@ -690,7 +706,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_BazzB_R2")
                         call SetUnitTimeScale(c, 0.0)
                     endif
-                    if r == 1.80 then
+                    if r == 1.05 then
                         call SetUnitTimeScale(c, 0.35)
                     endif
                     if r > BazzBR_CastTime then
@@ -717,13 +733,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                         set y = GetUnitY(td)
                         call DecorRemove(c, x, y, aoe, BazzBR_DecorDamage)
                         call StopSpellUnit(c)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A08P')
                                 call dmgmag(c, u, dmg)
+                                if GetHeroLevel(c) >= 35 then
+                                    call ErzaPassive(c, u, 1)
+                                endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call StunUnit(c, u, BazzBR_StunDuration)
                             endif
@@ -852,7 +872,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
 
                     if r7 > 0.24 and r > 0.40 then
@@ -905,13 +925,17 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             set r6 = 0.0
                             call DecorRemove(c, x1, y1, aoe, BazzBT_DecorDamage)
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x1, y1, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x1, y1, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 call GroupRemoveUnit(g, u)
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A08Q')
                                     call dmgmag(c, u, dmg)
+                                    if GetHeroLevel(c) >= 35 then
+                                        call ErzaPassive(c, u, 1)
+                                    endif
                                     call MUE(u, BazzBT_Push, BazzBT_PushDuration, a)
                                     if BazzBT_StunDuration > 0.0 then
                                         call StunUnit(c, u, BazzBT_StunDuration)

@@ -45,6 +45,18 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotT_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotF_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotG_ID)
+    // HERO TRANSFER: Frostnova / BuildsForChars
+    set n = 3
+    set MaxHeroes = MaxHeroes + 1
+    set Hero_ID0[n] = Frostnova_ID // Frostnova
+    set Hero_ID0_Dummy[n] = CreateUnit(Player(12), Hero_ID0[n], GetRectCenterX(gg_rct_Test), GetRectCenterY(gg_rct_Test), 0)
+    call ShowUnit(Hero_ID0_Dummy[n], false)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaQ_ID)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaW_ID)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaE_ID)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaR_ID)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaT_ID)
+    call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaF_ID)
 //=========Bleach==============
     set n = 0
 set MaxHeroes = MaxHeroes + 1
@@ -196,7 +208,7 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoE_ID)
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoR_ID)
     call UnitAddAbility(Hero_ID4_Dummy[n], GojoT_ID)
-    call UnitAddAbility(Hero_ID4_Dummy[n], GojoG_ID)
+    call UnitAddAbility(Hero_ID4_Dummy[n], GojoF_ID)
     set n = 1
 set MaxHeroes = MaxHeroes + 1
     set Hero_ID4[n] = Kenjaku_ID // Kenjaku

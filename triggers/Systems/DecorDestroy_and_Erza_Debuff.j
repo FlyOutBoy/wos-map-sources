@@ -1,4 +1,26 @@
-library AAADest uses GearSystems
+library AAADest uses GearSystems, EnvironmentRoundRules
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_DECOR_ADD = StringHash("decor add")
+        private integer SH_DMG_STOP_MAG = StringHash("dmg stop mag")
+        private integer SH_ERZA_G2_ACTIVE = StringHash("erza g2 active")
+        private integer SH_ERZA_G2_MAG = StringHash("Erza G2 mag")
+        private integer SH_ERZA_G2_PHYS = StringHash("Erza G2 phys")
+        private integer SH_ERZA_G2_TYPE = StringHash("erza g2 type")
+        private integer SH_FRIEREN_T_PUSH = StringHash("frieren t push")
+        private integer SH_FRIEREN_T_PUSH_HIT = StringHash("frieren t push hit")
+        private integer SH_HEIGHT_TD = StringHash("height td")
+        private integer SH_LVL5 = StringHash("lvl5")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_MURASAME_ACTIVE = StringHash("murasame active")
+        // The Water buff lands a moment after the dummy cast: hits in the same instant read this mark.
+        integer SH_WATER_PENDING = StringHash("water pending")
+        private integer SH_MURASAME_LEFT = StringHash("murasame left")
+        private integer SH_MURASAME_BONUS = StringHash("murasame bonus")
+        private integer SH_ASHISOGI_LEFT = StringHash("ashisogi left")
+        private integer SH_ASHISOGI_ACTIVE = StringHash("ashisogi active")
+        private integer SH_NAOFUMI_SHIELD = StringHash("naofumi shield")
+    endglobals
     globals
         integer ErzaElemntalAbi_ID = 'A03T'
         integer ErzaFire_ID = 'B006'
@@ -33,6 +55,16 @@ library AAADest uses GearSystems
         // Dedicated timestamp cooldowns for destructables. Unlike IntegerCd,
         // this does not allocate a KS_Flush instance for every hit object.
         private hashtable DecorCooldownTable = InitHashtable()
+        // Sources that wrote cooldowns this round; their rows are flushed on DecorRestore
+        // (the table otherwise grew by one entry per source x decor for the whole game).
+        private integer array DecorCooldownSources
+        private integer DecorCooldownSourceCount = 0
+        // Reused enumeration rects; a depth stack keeps nested DecorRemove calls safe.
+        private rect array DecorEnumRects
+        private integer DecorEnumDepth = 0
+        // DecorRemove dedupe per source: repeat calls inside 0.09 s at nearly the same
+        // spot only re-enumerated decor that is on its 0.42 s per-source cooldown anyway.
+        private hashtable DecorCallTable = InitHashtable()
         private timer DecorCooldownClock = CreateTimer()
         private boolean DecorCooldownClockStarted = false
         boolexpr DecorAliveCond
@@ -48,7 +80,7 @@ library AAADest uses GearSystems
         private integer DecorLineKey
     endglobals
     function SlowUnitErza takes unit c, unit u, integer lvl returns nothing // percent - from 10 to 80( all percentage, example 10, 20, 30, 40, 50, 60, 70, 80), time choose prefered time 2, 3, 4 sec only
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if DummyPlayer4[i] == null or GetWidgetLife(DummyPlayer4[i]) < 1 then
             set DummyPlayer4[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer4[i], 'A03U')
@@ -63,6 +95,8 @@ library AAADest uses GearSystems
             endif
             call SetUnitAbilityLevel(DummyPlayer4[i], 'A03U', lvl)
             call BlzSetUnitFacingEx(DummyPlayer4[i], GAngle(DummyPlayer4[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer4[i], "slow", u)
         endif
     endfunction
@@ -82,6 +116,7 @@ library AAADest uses GearSystems
         return I2S(thousands) + "k"
     endfunction
     private struct ErzaDebuffs
+        integer damageSource
         private static timer t_ErzaPas = CreateTimer( )
         private static integer array m_ErzaPas
         private static integer MUI_ErzaPas = -1
@@ -113,12 +148,6 @@ library AAADest uses GearSystems
         effect e
         effect e2
         real a
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         framehandle array frame2_pas1 [10]
         framehandle array frame2_pas2 [10]
         framehandle array frame2_pas3 [10]
@@ -127,6 +156,29 @@ library AAADest uses GearSystems
         framehandle array frame2_pas6 [10]
         framehandle array frame2_pas7 [10]
         framehandle array frame2_pas8 [10]
+        // Checkpoint 27: split bar - red = physical share (Nakagami, left),
+        // blue = magical share (Armadura Fairy, right).
+        framehandle array frame2_red [10]
+        framehandle array frame2_blue [10]
+
+        // value = physical share in % (50 = even). Local presentation only.
+        method SetSplit takes real value returns nothing
+            local real part = RMaxBJ(0.00, RMinBJ(100.00, value)) / 100.00
+            call BlzFrameSetSize(frame2_red[k2], RMaxBJ(0.0002, 0.094 * part), 0.007)
+            call BlzFrameSetSize(frame2_blue[k2], RMaxBJ(0.0002, 0.094 * (1.00 - part)), 0.007)
+            call BlzFrameSetVisible(frame2_red[k2], part > 0.002)
+            call BlzFrameSetVisible(frame2_blue[k2], part < 0.998)
+            // Gold pick glow on the dominating side.
+            call BlzFrameClearAllPoints(frame2_pas8[k2])
+            if value > 50.5 then
+                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_LEFT, frame2_pas4[k2], FRAMEPOINT_LEFT, 0.0000, 0.48)
+            else
+                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_LEFT, frame2_pas5[k2], FRAMEPOINT_LEFT, 0.0000, 0.48)
+            endif
+            if GetLocalPlayer() == Player(k2) then
+                call BlzFrameSetVisible(frame2_pas8[k2], value > 50.5 or value < 49.5)
+            endif
+        endmethod
         private static method Loop_ErzaBar takes nothing returns nothing
             local thistype this
             local integer i = 0
@@ -138,10 +190,10 @@ library AAADest uses GearSystems
                 set this = m_3[i]
                 if GetUnitTypeId(Hero[k2]) == id and Hero[k2] != null then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 5 ) )
+                    set r = RoundReal(r, 5)
                     if check == 0 then
-                        set phys = LoadInteger(hs, GetHandleId(c), StringHash("Erza G2 phys"))
-                        set mag = LoadInteger(hs, GetHandleId(c), StringHash("Erza G2 mag"))
+                        set phys = LoadInteger(hs, GetHandleId(c), SH_ERZA_G2_PHYS)
+                        set mag = LoadInteger(hs, GetHandleId(c), SH_ERZA_G2_MAG)
                         set result = phys + mag
                         if result > ErzaG2_ActivateDamageCond then
                             set result = ErzaG2_ActivateDamageCond
@@ -152,24 +204,19 @@ library AAADest uses GearSystems
                             endif
                             set ErzaG2_Dummy[k2] = CreateUnit(GetOwningPlayer(c), ErzaG2_DummyID, x, y, 0)
                             call MakeSound("war3mapimported\\Hero_Erza_G2_1")
-                            if GetLocalPlayer() == Player(k2) then
-                                call BlzFrameSetVisible(frame2_pas8[k2], true)
-                            endif
                             if mag <= phys then
                                 call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "Nakagami" + "|r")
-                                call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 type"), 1) // nakagami
-                                call BlzFrameSetValue(frame2_pas3[k2], 99)
-                                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas4[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+                                call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_TYPE, 1) // nakagami
+                                call this.SetSplit(99)
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1", 0, false)
                                 call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Erza_G2_2Pas", 0, false)
                                 call BlzSetAbilityIcon(ErzaG2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1")
                             else
-                                call BlzFrameSetValue(frame2_pas3[k2], 0)
-                                call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+                                call this.SetSplit(0)
                                 call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "Armadura Fairy" + "|r")
                                 call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Erza_G2_1Pas", 0, false)
                                 call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2", 0, false)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 type"), 2) // armadura fairy
+                                call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_TYPE, 2) // armadura fairy
                                 call BlzSetAbilityIcon(ErzaG2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2")
                             endif
                         endif
@@ -177,25 +224,22 @@ library AAADest uses GearSystems
                             call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + FormatK(result - 2) + "/" + FormatK(ErzaG2_ActivateDamageCond) + "|r")
                             set result = R2I((I2R(phys) / I2R(phys + mag)) * 100)
                             if phys + mag < 3 then
-                                call BlzFrameSetValue(frame2_pas3[k2], 50)
+                                call this.SetSplit(50)
                             else
-                                call BlzFrameSetValue(frame2_pas3[k2], result)
+                                call this.SetSplit(result)
                             endif
                         endif
-                        if CondArena == 0 then
-                    
-                        endif
                     elseif check == 1 then
-                        if LoadInteger(hs, GetHandleId(c), StringHash("erza g2 active")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_ERZA_G2_ACTIVE) == 1 then
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame2_pas8[k2], false)
                                 call BlzFrameSetVisible(frame2_pas1[k2], false)
                             endif
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 phys"), 1)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 mag"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_PHYS, 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_MAG, 1)
                             set r = 0
                             call RemoveUnit(ErzaG2_Dummy[k2])
-                            call BlzFrameSetValue(frame2_pas3[k2], 50)
+                            call this.SetSplit(50)
                             call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas", 0, false)
                             call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas", 0, false)
                             set check = 2
@@ -205,8 +249,8 @@ library AAADest uses GearSystems
                             if GetLocalPlayer() == GetOwningPlayer(c) then
                                 call BlzFrameSetVisible(frame2_pas1[k2], true)
                             endif
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 phys"), 1)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 mag"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_PHYS, 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_MAG, 1)
                             set check = 0
                         endif
           
@@ -218,6 +262,7 @@ library AAADest uses GearSystems
                     set c = null
                     set m_3[i] = m_3[MUI_3]
                     set MUI_3 = MUI_3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_3 == -1 then
                         call PauseTimer(t_3)
                     endif
@@ -236,49 +281,71 @@ library AAADest uses GearSystems
             set r2 = 0
             set id = GetUnitTypeId(c)
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 phys"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("Erza G2 mag"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_PHYS, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_MAG, 1)
             set k = LoadInteger(hs, id, child_id)
-            set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.7, 0.18)
-            call BlzFrameSetSize(frame2_pas1[k2], 0.18, 0.04)
-            call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
+            set frame2_pas1[k2] = WUI_Window("WOSErzaOrigin", main_frame, 0, 0)
             call BlzFrameSetVisible(frame2_pas1[k2], false)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(frame2_pas1[k2], true)
             endif
-            set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-            call BlzFrameSetPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, 0.5)
-            call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.02)
+            call BlzFrameSetSize(frame2_pas1[k2], 0.160, 0.030)
+            // Checkpoint 27: every piece hangs from the panel (the dock moves it).
+            set frame2_pas2[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginBack", frame2_pas1[k2], "", 0)
+            call BlzFrameSetTexture(frame2_pas2[k2], "UI\\WOS\\bar-back.tga", 0, true)
+            call BlzFrameSetPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, -0.0045)
+            call BlzFrameSetSize(frame2_pas2[k2], 0.096, 0.009)
+            call BlzFrameSetEnable(frame2_pas2[k2], false)
+            // Old STATUSBAR kept hidden (nothing reads it any more).
             set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-            call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-            call BlzFrameSetModel(frame2_pas3[k2], "war3mapimported\\wos_XpBarConsole3.mdx", 0)
-            call BlzFrameSetPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.04, -0.01)
-            call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, 100)
-            call BlzFrameSetValue(frame2_pas3[k2], 50)
+            call BlzFrameSetVisible(frame2_pas3[k2], false)
+            set frame2_red[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginPhys", frame2_pas1[k2], "", 0)
+            call BlzFrameSetTexture(frame2_red[k2], "ReplaceableTextures\\TeamColor\\TeamColor00.blp", 0, true)
+            call BlzFrameSetPoint(frame2_red[k2], FRAMEPOINT_LEFT, frame2_pas2[k2], FRAMEPOINT_LEFT, 0.001, 0.000)
+            call BlzFrameSetEnable(frame2_red[k2], false)
+            call BlzFrameSetLevel(frame2_red[k2], 2)
+            set frame2_blue[k2] = BlzCreateFrameByType("BACKDROP", "WOSOriginMag", frame2_pas1[k2], "", 0)
+            call BlzFrameSetTexture(frame2_blue[k2], "ReplaceableTextures\\TeamColor\\TeamColor01.blp", 0, true)
+            call BlzFrameSetPoint(frame2_blue[k2], FRAMEPOINT_RIGHT, frame2_pas2[k2], FRAMEPOINT_RIGHT, -0.001, 0.000)
+            call BlzFrameSetEnable(frame2_blue[k2], false)
+            call BlzFrameSetLevel(frame2_blue[k2], 2)
             set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.07, 0.0)
-            call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
+            call BlzFrameSetPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, -0.064, 0.000)
+            call BlzFrameSetSize(frame2_pas4[k2], 0.024, 0.024)
             call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas", 0, false)
+            call BlzFrameSetEnable(frame2_pas4[k2], false)
             set frame2_pas5[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.07, 0.0)
-            call BlzFrameSetSize(frame2_pas5[k2], 0.03, 0.03)
+            call BlzFrameSetPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.064, 0.000)
+            call BlzFrameSetSize(frame2_pas5[k2], 0.024, 0.024)
             call BlzFrameSetTexture(frame2_pas5[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas", 0, false)
+            call BlzFrameSetEnable(frame2_pas5[k2], false)
             set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, 0.0125)
+            call BlzFrameSetScale(frame2_pas6[k2], 0.70)
+            call BlzFrameSetPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, 0.0075 / 0.70)
+            call BlzFrameSetSize(frame2_pas6[k2], 0.096 / 0.70, 0.011 / 0.70)
+            call BlzFrameSetTextAlignment(frame2_pas6[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
             call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + "Second Origin:" + "|r")
-            call BlzFrameSetScale(frame2_pas6[k2], 0.9)
+            call BlzFrameSetEnable(frame2_pas6[k2], false)
             set frame2_pas7[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-            call BlzFrameSetPoint(frame2_pas7[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.0, -0.005)
+            call BlzFrameSetScale(frame2_pas7[k2], 0.62)
+            // Offsets of a scaled frame are scaled too: divide by the scale.
+            call BlzFrameSetPoint(frame2_pas7[k2], FRAMEPOINT_CENTER, frame2_pas1[k2], FRAMEPOINT_CENTER, 0.000, -0.0045 / 0.62)
+            call BlzFrameSetSize(frame2_pas7[k2], 0.094 / 0.62, 0.009 / 0.62)
+            call BlzFrameSetTextAlignment(frame2_pas7[k2], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
             call BlzFrameSetText(frame2_pas7[k2], "|c00FFFF00" + "0/" + FormatK(ErzaG2_ActivateDamageCond) + "|r")
-            call BlzFrameSetScale(frame2_pas7[k2], 1.1)
+            call BlzFrameSetLevel(frame2_pas7[k2], 4)
+            call BlzFrameSetEnable(frame2_pas7[k2], false)
+            // Gold glow of the pick screen on the dominating icon.
             set frame2_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", frame2_pas1[k2], "WarCraftIIILogo", 0)
-            call BlzFrameSetPoint(frame2_pas8[k2], FRAMEPOINT_BOTTOMLEFT, frame2_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
             call BlzFrameSetSize(frame2_pas8[k2], 1., 1.)
-            call BlzFrameSetScale(frame2_pas8[k2], 1.)
-            call BlzFrameSetModel(frame2_pas8[k2], "Pick\\selecter5.mdx", 0)
+            call BlzFrameSetScale(frame2_pas8[k2], 0.66)
+            call BlzFrameSetModel(frame2_pas8[k2], "Pick\\wos_IconShine1.mdx", 0)
+            call BlzFrameSetEnable(frame2_pas8[k2], false)
+            call BlzFrameSetLevel(frame2_pas8[k2], 5)
             call BlzFrameSetVisible(frame2_pas8[k2], false)
+            call this.SetSplit(50)
+            call WUI_RegisterMeter(frame2_pas1[k2], k2, "ErzaSecondOrigin:" + I2S(k2))
+            call WUI_RefreshDocks()
             if MUI_3 == 0 then
                 call TimerStart(t_3, 0.05, true, function thistype.Loop_ErzaBar)
             endif
@@ -292,18 +359,15 @@ library AAADest uses GearSystems
                 set this = m_2[i]
                 if r < rmax then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 5 ) )
-                    call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
+                    set r = RoundReal(r, 5)
                     if rmax - r >= 0 then
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, Erza4E_ID, "Lightning Empress Stacks", rmax - r, rmax, true)
                     endif
                     if LoadInteger(hs, id, child_id) != k then
                         set r = 9999
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, Erza4E_ID, "Lightning Empress Stacks", 0.00, 0.00, true)
                     if r != 9999 then
                         call SaveInteger(hs, id, child_id, value)
                         call BlzSetAbilityIcon(Erza4E_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Erza4_E.blp")
@@ -312,6 +376,7 @@ library AAADest uses GearSystems
                     set c = null
                     set m_2[i] = m_2[MUI_2]
                     set MUI_2 = MUI_2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_2 == -1 then
                         call PauseTimer(t_2)
                     endif
@@ -334,36 +399,12 @@ library AAADest uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set r5 = BlzGetUnitAbilityCooldown(c, Erza4E_ID, GetUnitAbilityLevel(c, Erza4E_ID) - 1)
             set k = LoadInteger(hs, id, child_id)
-            set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-            call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-            call BlzFrameSetVisible(frame_pas1[k2], false)
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frame_pas1[k2], true)
-            endif
-            set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-            call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-            set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-            call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frame_pas3[k2], 0.5)
-            call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-            call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-            call BlzFrameSetValue(frame_pas3[k2], rmax)
-            set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-            call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-            call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza4_E", 0, false)
-            set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-            call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Stack Time Left:" + "|r")
-            call BlzFrameSetScale(frame_pas5[k2], 0.9)
-            set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-            call BlzFrameSetScale(frame_pas6[k2], 0.9)
+            call WUI_HeroProgress(c, Erza4E_ID, "Lightning Empress Stacks", 0.00, 0.00, true)
+
+
+            call WUI_HeroProgress(c, Erza4E_ID, "Lightning Empress Stacks", rmax - r, rmax, true)
+
+            call WUI_RefreshDocks()
             if MUI_2 == 0 then
                 call TimerStart(t_2, 0.05, true, function thistype.Loop_MyFlushStacks)
             endif
@@ -371,29 +412,51 @@ library AAADest uses GearSystems
         private static method Loop_Elemental takes nothing returns nothing
             local thistype this
             local integer i = 0
+            local boolean alive
             loop
                 exitwhen i > MUI_ErzaPas
                 set this = m_ErzaPas[i]
                 set r = r + 0.1
+                // Murasame / Ashisogi run on their own tick counters, not on buff time.
+                if k2 == 10 then
+                    set alive = GetWidgetLife(td) > 0.405 and LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) > 0
+                elseif k2 == 11 then
+                    set alive = GetWidgetLife(td) > 0.405 and LoadReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT) > 0
+                else
+                    set alive = GetUnitAbilityLevel(td, id) > 0
+                endif
                 if true then
-                    if GetUnitAbilityLevel(td, id) > 0 then
+                    if alive then
                         if r2 > 0.9 then
                             set r2 = 0.1
                             if dmg != 0 then
                                 if k2 == 6 then
                                     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_effect_yubanmeiqin_lightning_dianjishanghai.mdx", td, "chest"))
                                 endif
-                                call SaveInteger(hs, GetHandleId(c), StringHash("dmg stop mag"), 1)
-                                call MyFlush(GetHandleId(c), StringHash("dmg stop mag"), 0, 0.06)
+                                call SaveInteger(hs, GetHandleId(c), SH_DMG_STOP_MAG, 1)
+                                call MyFlush(GetHandleId(c), SH_DMG_STOP_MAG, 0, 0.06)
                                 if k2 == 9 then
+                                    call DamageSource(damageSource)
                                     call dmgmag2(c, td, dmg, "kurikara")
 
                                 elseif k2 == 10 then
+                                    // Bonus from attacks since the last tick lands on this tick.
                                     set MurasameTrigger = true
-                                    call dmgphys(c, td, dmg)
+                                    call DamageSource(damageSource)
+                                    call dmgphys(c, td, dmg + LoadReal(hs, GetHandleId(td), SH_MURASAME_BONUS))
                                     set MurasameTrigger = false
+                                    call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
+                                    call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) - 1)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl",td,"chest"))
+                                elseif k2 == 11 then
+                                    set AshisogiTrigger = true
+                                    call DamageSource(damageSource)
+                                    call dmgphys(c, td, dmg)
+                                    set AshisogiTrigger = false
+                                    call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, LoadReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT) - 1)
+                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\PoisonSting\\PoisonStingTarget.mdl", td, "chest"))
                                 else
+                                    call DamageSource(damageSource)
                                     call dmgmag(c, td, dmg)
                                 endif
                             
@@ -420,10 +483,11 @@ library AAADest uses GearSystems
                     if k2 == 2 or k2 == 6 then
                         call UnitRemoveAbility(td, 'B012')
                     endif
-                    if k2 == 3 then
+                    if k2 == 3 and GetUnitTypeId(td) != Laxus_ID then
                         call SetMpCurrent(td, -(ErzaLightning_ManaBurnBase + (ErzaLightning_ManaBurnStep * (GetUnitAbilityLevel(c, ErzaE_ID) - 1))))
                         call StunUnit(c, td, ErzaLightning_Stun)
                         if check2 == 1 then
+                            call DamageSource(damageSource)
                             call dmgmag(c, td, 300)
                             
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedMissile.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 3, 50))
@@ -441,7 +505,14 @@ library AAADest uses GearSystems
                     if k2 == 9 then
 
 elseif k2 == 10 then
-    call SaveInteger(hs, GetHandleId(td), StringHash("murasame active"), 0)
+    call SaveInteger(hs, GetHandleId(td), SH_MURASAME_ACTIVE, 0)
+    call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, 0)
+    call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
+    call UnitRemoveAbility(td, 'B03C')
+elseif k2 == 11 then
+    call SaveInteger(hs, GetHandleId(td), SH_ASHISOGI_ACTIVE, 0)
+    call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, 0)
+    call UnitRemoveAbility(td, AshisogiJizo_Buff_ID)
 endif
                     call DestroyEffect(e)
                     set c = null
@@ -450,6 +521,7 @@ endif
                     set e2 = null
                     set m_ErzaPas[i] = m_ErzaPas[MUI_ErzaPas]
                     set MUI_ErzaPas = MUI_ErzaPas - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaPas == -1 then
                         call PauseTimer( t_ErzaPas )
                     endif
@@ -459,7 +531,7 @@ endif
             set i = i + 1
         endloop
     endmethod
-    public static method ErzaPas_Start takes unit NewC, unit NewTd , integer NewId returns nothing
+    public static method ErzaPas_Start takes unit NewC, unit NewTd , integer NewId, integer NewSource returns nothing
         local thistype this = thistype.create( )
         set MUI_ErzaPas = MUI_ErzaPas + 1
         set m_ErzaPas[MUI_ErzaPas] = this
@@ -471,6 +543,7 @@ endif
         set dmg = 0
         set check2 = 0
         set k2 = NewId
+        set damageSource = NewSource
         if NewId == 1 then
             set id = ErzaFire_ID
             set dmg = ErzaFire_DamageBase
@@ -491,11 +564,12 @@ endif
                 call SlowUnitErza(c, td, ErzaWater_Slow1)
             endif
             if IsUnitEnemy(td, GetOwningPlayer(c)) then
+                call DamageSource(damageSource)
                 call NextDmg(c, td, ErzaWater_DamageBase, 0, 0.15)
             endif
             set id = ErzaWater_ID
         elseif NewId == 3 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 and LoadInteger(hs, GetHandleId(c), SH_LVL5) > 0 then
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_Opdef (1005)2red.mdl", td, "origin")
                 set check2 = 1
             else
@@ -508,14 +582,16 @@ endif
             call UnitAddAbility(td, ErzaWape_DecreaseArmor_ID)
             call UnitMakeAbilityPermanent(td, true, ErzaWape_DecreaseArmor_ID)
             if IsUnitEnemy(td, GetOwningPlayer(c)) then
+                call DamageSource(damageSource)
                 call NextDmg(c, td, ErzaWape_Damage * GetMainStatValue(c, true), 0, 0.3)
             endif
         elseif NewId == 5 then
             set id = ErzaOverload_ID
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_WTW-whitethunder-Zi.mdl", x, y, GetRandomReal(0, 359), 1.5, 2, 0))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_SasukeYh-41.mdl", x, y, GetRandomReal(0, 359), 1.5, 3, 75))
-            call DestroyEffect(EffectSpawn("war3mapImported\\wos_fire explosion-41.mdl", x, y, GetRandomReal(0, 359), 1, 1.2, 105))
+            // removed: wos_fire explosion-41.mdl is not imported
             if IsUnitEnemy(td, GetOwningPlayer(c)) then
+                call DamageSource(damageSource)
                 call NextDmg(c, td, ErzaOverload_Damage * GetMainStatValue(c, true), 0, 0.3)
                 call StunUnit(c, td, ErzaOverload_Stun)
             endif
@@ -541,10 +617,15 @@ endif
             set e = AddSpecialEffectTarget("war3mapImported\\wos_tx_huoyan.mdl", td, "origin")
 
         elseif NewId == 10 then
-            set dmg = (Murasame_DamageBase + GetAttack(c) * Murasame_AttackDamage)
+            set dmg = GetAttack(c) * Murasame_AttackDamage
             set e = AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin")
             set id = 'B03C'
-            call SaveInteger(hs, GetHandleId(td), StringHash("murasame active"), 1)
+            call SaveInteger(hs, GetHandleId(td), SH_MURASAME_ACTIVE, 1)
+        elseif NewId == 11 then
+            set dmg = GetHeroAgi(c, true) * AshisogiJizo_DamageAgi
+            set e = AddSpecialEffectTarget("Abilities\\Weapons\\PoisonSting\\PoisonStingTarget.mdl", td, "chest")
+            set id = AshisogiJizo_Buff_ID
+            call SaveInteger(hs, GetHandleId(td), SH_ASHISOGI_ACTIVE, 1)
         endif
     set r2 = 0.06
     if MUI_ErzaPas == 0 then
@@ -553,17 +634,42 @@ endif
 endmethod
 endstruct
 function ErzaPassive takes unit c, unit u, integer level returns nothing // min 0.5 , max 5.0 sec
-local integer i = GetPlayerId(GetOwningPlayer(c))
+local integer i = GetPlayerId(GetOwningPlayer(u))
 local integer id
 local integer cancel = 0
+local integer damageSource = GearDamageNextSource
 local unit d = DummyPlayer2[i]
 local integer skip = 0
-if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), StringHash("naofumi shield")) == 0 then
-    if level == 9 or level == 10 then
+set GearDamageNextSource = 0
+if level == 9 then
+    set damageSource = 'I00W'
+elseif level == 10 then
+    set damageSource = 'I03Y'
+elseif level == 11 then
+    set damageSource = AshisogiJizo_ID
+else
+    set damageSource = -100-level
+endif
+// Laxus: любой Electro (молния и её реакции) сразу снимается и прокает пассивку (мана + -КД).
+if GetUnitTypeId(u) == Laxus_ID and (level == 3 or level == 5 or level == 6 or level == 7 or level == 8) then
+    if IsUnitIllusion(u) == false then
+        call UnitRemoveAbility(u, ErzaLightning_ID)
+        call UnitRemoveAbility(u, ErzaOverload_ID)
+        call UnitRemoveAbility(u, ErzaElectrized_ID)
+        call SetMpCurrent(u, Laxus_LightningManaRestore)
+        call ReduceCooldown(u, LaxusG_ID, Laxus_LightningGReduceCD)
+        call ReduceCooldown(u, LaxusQ_ID, Laxus_LightningQReduceCD)
+        call ReduceCooldown(u, LaxusQ2_ID, Laxus_LightningQReduceCD)
+    endif
+    set d = null
+    return
+endif
+if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NAOFUMI_SHIELD) == 0 then
+    if level >= 9 and level <= 11 then
         set d = DummyPlayer6[i]
     endif
     if d == null or GetWidgetLife(d) < 1 then
-        if level == 9 or level == 10 then
+        if level >= 9 and level <= 11 then
             set DummyPlayer6[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
         else
             set DummyPlayer2[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
@@ -574,19 +680,39 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
         elseif level == 10 then
             set d = DummyPlayer6[i]
             call UnitAddAbility(d, 'A0I3')
+        elseif level == 11 then
+            set d = DummyPlayer6[i]
+            call UnitAddAbility(d, AshisogiJizo_Curse_ID)
         else
             set d = DummyPlayer2[i]
             call UnitAddAbility(d, ErzaElemntalAbi_ID)
         endif
     endif
+    // The DoT dummy is shared by Kurikara / Murasame / Ashisogi and all of them use
+    // the "curse" order: keep only the curse of the current item on it.
+    if level >= 9 and level <= 11 then
+        if level == 9 then
+            set id = 'A0DZ'
+        elseif level == 10 then
+            set id = 'A0I3'
+        else
+            set id = AshisogiJizo_Curse_ID
+        endif
+        if GetUnitAbilityLevel(d, id) == 0 then
+            call UnitRemoveAbility(d, 'A0DZ')
+            call UnitRemoveAbility(d, 'A0I3')
+            call UnitRemoveAbility(d, AshisogiJizo_Curse_ID)
+            call UnitAddAbility(d, id)
+        endif
+    endif
     if GetUnitTypeId(u) == Rimuru_ID and level == 1 then
         set level = 0
     endif
-    if level > 0 and level != 9 and level != 10 then
+    if level > 0 and (level < 9 or level > 11) then
         set level = DebuffImmune_Start(u, level)
     endif
     if level > 0 then
-        if GetUnitAbilityLevel(d, ErzaElemntalAbi_ID) == 0 and level != 9 and level != 10 then
+        if GetUnitAbilityLevel(d, ErzaElemntalAbi_ID) == 0 and (level < 9 or level > 11) then
             call UnitAddAbility(d, ErzaElemntalAbi_ID)
         endif
         call SetUnitFacing(d, GAngle(d, u) * bj_RADTODEG)
@@ -644,9 +770,11 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
             set id = 'B00F'
         elseif level == 10 then
             set id = 'B03C'
+        elseif level == 11 then
+            set id = AshisogiJizo_Buff_ID
         endif
         call SetUnitAbilityLevel(d, ErzaElemntalAbi_ID, level)
-        if level != 9 and level != 10 and GetUnitAbilityLevel(u, ErzaWape_ID) > 0 or GetUnitAbilityLevel(u, ErzaOverload_ID) > 0 or GetUnitAbilityLevel(u, ErzaElectrized_ID) > 0 then
+        if (level < 9 or level > 11) and (GetUnitAbilityLevel(u, ErzaWape_ID) > 0 or GetUnitAbilityLevel(u, ErzaOverload_ID) > 0 or GetUnitAbilityLevel(u, ErzaElectrized_ID) > 0) then
             set cancel = 1
         endif
         if level == 3 and GetUnitAbilityLevel(u, ErzaLightning_ID) > 0 then
@@ -655,17 +783,33 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
         if level == 7 or level == 8 then
             set cancel = 0
         endif
-        if (GetUnitAbilityLevel(u, id) == 0 or skip == 1 ) and cancel == 0 and level != 7 and level != 8 then
-            call ErzaDebuffs.ErzaPas_Start(c, u, level)
+        if level == 10 then
+            // Murasame/Ashisogi instances live while their tick counter runs.
+            if LoadInteger(hs, GetHandleId(u), SH_MURASAME_ACTIVE) == 0 and cancel == 0 then
+                call ErzaDebuffs.ErzaPas_Start(c, u, level, damageSource)
+            endif
+        elseif level == 11 then
+            if LoadInteger(hs, GetHandleId(u), SH_ASHISOGI_ACTIVE) == 0 and cancel == 0 then
+                call ErzaDebuffs.ErzaPas_Start(c, u, level, damageSource)
+            endif
+        elseif (GetUnitAbilityLevel(u, id) == 0 or skip == 1 ) and cancel == 0 and level != 7 and level != 8 then
+            call ErzaDebuffs.ErzaPas_Start(c, u, level, damageSource)
         endif
         if cancel == 0 then
+            if level == 2 or level == 6 then
+                call SaveInteger(hs, GetHandleId(u), SH_WATER_PENDING, 1)
+                call MyFlush(GetHandleId(u), SH_WATER_PENDING, 0, 0.3)
+            endif
+
+
             call IssueTargetOrder(d, "curse", u)
-            if level == 2 and IsItemInInventory(c, 'I01P') > 0 and IntegerCd(u, "cd sog", SogyoNoKotowari_CD) then
+            if level == 2 and IsItemInInventory(c, 'I01P') > 0 and IntegerCdKey(u, SH_ICD_CD_SOG, SogyoNoKotowari_CD) then
                    // call BlzStartUnitAbilityCooldown(c,'A09O',SogyoNoKotowari_CD)
                 if GetUnitAbilityLevel(c, 'A07Z') == 0 then
                     call UnitAddAbility(c, 'A07Z')
                     call MyRemoveAbility(c, 10, 'A07Z', 1)
                 endif
+                call DamageSource('I01P')
                 call ErzaPassive(c, u, 3)
             endif
         endif
@@ -673,11 +817,27 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
 endif
 set d = null
 endfunction
+// Murasame bleed: the first hit bleeds for Murasame_Duration ticks; every further hit
+// adds its tick damage to the next tick and shortens the bleed by one tick.
 function Murasame_Start takes unit c, unit td returns nothing
+local integer h = GetHandleId(td)
+if LoadInteger(hs, h, SH_MURASAME_ACTIVE) == 1 and LoadReal(hs, h, SH_MURASAME_LEFT) > 0 then
+    call SaveReal(hs, h, SH_MURASAME_BONUS, LoadReal(hs, h, SH_MURASAME_BONUS) + GetAttack(c) * Murasame_AttackDamage)
+    call SaveReal(hs, h, SH_MURASAME_LEFT, RMaxBJ(1, LoadReal(hs, h, SH_MURASAME_LEFT) - 1))
+    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", td, "origin"))
+    return
+endif
+call SaveReal(hs, h, SH_MURASAME_LEFT, Murasame_Duration)
+call SaveReal(hs, h, SH_MURASAME_BONUS, 0)
 call ErzaPassive(c, td, 10)
 endfunction
+// Ashisogi Jizo: poison for AshisogiJizo_Duration ticks; a new hit refreshes, never stacks.
+function AshisogiJizo_Poison takes unit c, unit td returns nothing
+call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, AshisogiJizo_Duration)
+call ErzaPassive(c, td, 11)
+endfunction
 function ErzaBuffNakagami_Start takes unit c, unit u returns nothing
-local integer i = GetPlayerId(GetOwningPlayer(c))
+local integer i = GetPlayerId(GetOwningPlayer(u))
 if DummyPlayer2[i] == null or GetWidgetLife(DummyPlayer2[i]) < 1 then
     set DummyPlayer2[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
     call UnitAddAbility(DummyPlayer2[i], ErzaNakagamiBuff)
@@ -686,6 +846,8 @@ if GetUnitAbilityLevel(DummyPlayer2[i], ErzaNakagamiBuff) == 0 then
     call UnitAddAbility(DummyPlayer2[i], ErzaNakagamiBuff)
 endif
 call SetUnitFacing(DummyPlayer2[i], GAngle(DummyPlayer2[i], u) * bj_RADTODEG)
+
+
 call IssueTargetOrder(DummyPlayer2[i], "innerfire", u)
 endfunction
 function ErzaBar takes unit c returns nothing
@@ -723,7 +885,9 @@ endfunction
 function GroupPushEff takes unit c, real x, real y, real aoe, real push_distance, real push_duration, real a, boolean all, integer k returns nothing
 local group g = CreateGroup()
 local unit u
+local integer damageSource = GearDamageNextSource
 local boolean b = true
+set GearDamageNextSource = 0
 call GroupEnumUnitsInRange( g , x , y , aoe , AAADestNoDecorCond)
 loop
     set u = FirstOfGroup( g )
@@ -732,6 +896,7 @@ loop
         set b = IsUnitEnemy( u , GetOwningPlayer( c ))
     endif
     if SpellBool( u ) and b then
+        call DamageSource(damageSource)
         call ErzaPassive(c, u, k)
         if a == -2 then
             call MUE(u, push_distance, push_duration, GAngle2(u, x, y))
@@ -750,12 +915,16 @@ endfunction
 function GroupDmgEff takes unit c, real x, real y, real aoe, real dmg, integer k returns nothing
 local group g = CreateGroup()
 local unit u
+local integer damageSource = GearDamageNextSource
+set GearDamageNextSource = 0
 call GroupEnumUnitsInRange( g , x , y , aoe , AAADestNoDecorCond)
 loop
     set u = FirstOfGroup( g )
     exitwhen u == null
     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+        call DamageSource(damageSource)
         call NextDmg(c, u, dmg, 0, 0.12)
+        call DamageSource(damageSource)
         call ErzaPassive(c, u, k)
     endif
     call GroupRemoveUnit( g , u )
@@ -796,6 +965,11 @@ local integer destructableId = GetHandleId(d)
 local real now = DecorClockNow()
 
 if now >= LoadReal(DecorCooldownTable, sourceId, destructableId) then
+    if not HaveSavedBoolean(DecorCooldownTable, sourceId, 0) and DecorCooldownSourceCount < 8000 then
+        call SaveBoolean(DecorCooldownTable, sourceId, 0, true)
+        set DecorCooldownSources[DecorCooldownSourceCount] = sourceId
+        set DecorCooldownSourceCount = DecorCooldownSourceCount + 1
+    endif
     call SaveReal(DecorCooldownTable, sourceId, destructableId, now + cooldown)
     return true
 endif
@@ -831,21 +1005,24 @@ local item trackedItem = null
 if sourceTypeId == 'h005' then
     if SR0(centerX, centerY, x, y) > radius and hp > 0.0 then
         set b = true
-        set r5 = GetRandomReal( -0.35, -0.15)
-        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", x, y, GetRandomReal(0, 359), 1, 1.2, 150, r5))
-        call DestroyEffect(EffectSpawn3("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", x, y, GetRandomReal(0, 359), 1, 1.2, 450, r5))
+        // Round-end zone hits every decor of the arena each 0.5 s: two slashes per decor
+        // were hundreds of effects per pulse. One slash, on the breaking hit or ~1 in 4 pulses.
+        if hp - damage <= 0.0 or GetRandomInt(1, 4) == 1 then
+            set r5 = GetRandomReal( -0.35, -0.15)
+            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdl", x, y, GetRandomReal(0, 359), 1, 1.2, 300, r5))
+        endif
     else
         set b = false
     endif
 endif
 if b then
-    if sourceTypeId == Mahoraga_ID and IsBuilding(id) and LoadInteger(hs, sourceHandleId, StringHash("height td")) == 1 and hp > 0 then
-        call SaveInteger(hs, sourceHandleId, StringHash("decor add"), 1)
+    if sourceTypeId == Mahoraga_ID and IsBuilding(id) and LoadInteger(hs, sourceHandleId, SH_HEIGHT_TD) == 1 and hp > 0 then
+        call SaveInteger(hs, sourceHandleId, SH_DECOR_ADD, 1)
     endif
             
-    if IsBuildingFrieren(id) and LoadInteger(hs, sourceHandleId, StringHash("frieren t push")) == 1 and hp > 0 then
+    if IsBuildingFrieren(id) and LoadInteger(hs, sourceHandleId, SH_FRIEREN_T_PUSH) == 1 and hp > 0 then
         call StunUnit(source, source, FrierenT_Stun)
-        call SaveInteger(hs, GetHandleId(source), StringHash("frieren t push hit"), 1)
+        call SaveInteger(hs, GetHandleId(source), SH_FRIEREN_T_PUSH_HIT, 1)
     endif
     if id == 'B015' or id == 'B017' then
         set time = 1
@@ -889,7 +1066,8 @@ if b then
                 endif
             endif
         endif
-        if id == 'B01A' or id == 'B019' and hpcheck <= 0 then // inori crystall
+        // Same behaviour as before, written explicitly: B01A breaks on any hit, B019 when depleted.
+        if id == 'B01A' or (id == 'B019' and hpcheck <= 0) then // inori crystall
             call SetDestructableAnimationSpeed(d, 3.15)
             call KillDestructable(d)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_FantasyBattle (1644).mdx", x, y, 1, 1, 2, 30))
@@ -897,13 +1075,15 @@ if b then
         if id == 'B00O' and hpcheck <= 0 then // explosive barrel
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_GZ_jntxn (11)_R1-200.mdl", x, y, 1, 1, 0.65, 1))
             call ScaleDummy(UnitSpawn(Player(PLAYER_NEUTRAL_PASSIVE), Fire_ID, x, y, 1, 1, 1.75, 45, 9), 7.5, 1.75, 0.5)
-            call GroupDmgEff(source, x, y, 350, 300, 1)
+            call DamageSource(-11)
+            call GroupDmgEff(source, x, y, 350, 100.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 25.00, 1)
         endif
         if id == 'B00P' and hpcheck <= 0 then // simple barrel
             call DestroyEffect(EffectSpawn("Abilities\\Spells\\Orc\\WarStomp\\WarStompCaster.mdl", x, y, 1, 1, 1, 1))
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_dustbrown.mdl", x, y, 1, 1, 1, 1))
         endif
-        if id == 'B007' or id == 'B009' and hpcheck <= 0 then // leaves
+        // Both leaf types burst only when destroyed (B007 used to spawn it on every hit).
+        if (id == 'B007' or id == 'B009') and hpcheck <= 0 then // leaves
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Razor_leaf-A392F3.mdl", x, y, 1, 1, 2, 95))
         endif
         if id == 'B005' or id == 'B00B' or id == 'B00C' or id == 'B00D' or id == 'B00E' then // red dom normal konoha and high and thin red konoha
@@ -961,7 +1141,8 @@ if b then
                 if id == 'B00S' then
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (431232).mdl", x, y, 1, 1, 0.7, 1))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_SasukeYh-41.mdl", x, y, 1, 1, 1.5, 55))
-                    call GroupDmgEff(source, x, y, 400, 200, 3)
+                    call DamageSource(-16)
+                    call GroupDmgEff(source, x, y, 400, 100.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 25.00, 3)
                 endif
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_solaire_lightning_impact.mdl", x, y, GetRandomReal(0, 359), 0.4, 2.15, 51))
             endif
@@ -973,10 +1154,12 @@ if b then
             else
                 call ScaleDummy(UnitSpawn(Player(PLAYER_NEUTRAL_PASSIVE), Fire_ID, x, y, 1, 1, 1.75, 45, 9), 7.5, 1.75, 0.5)
                 if id == 'B014' then
-                    call GroupDmgEff(source, x, y, 500, 500, 5)
+                    call DamageSource(-15)
+                    call GroupDmgEff(source, x, y, 500, 200.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 25.00, 5)
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (431232).mdl", x, y, 1, 1, 0.7, 1))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_SasukeYh-41.mdl", x, y, 1, 1, 1.5, 55))
                 else
+                    call DamageSource(-13)
                     call GroupDmgEff(source, x, y, 500, 1000, 1)
                 endif
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_yuzhiboyou_unusual_fenshendabaopo_2.mdl", x, y, GetRandomReal(0, 359), 1, 2, 1))
@@ -984,6 +1167,8 @@ if b then
         endif
         if id == 'B00T' then // gidrant
             if hpcheck <= 0 then
+                call DamageSource(-17)
+                call GroupDmgEff(source, x, y, 350, IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 25.00, 0)
                 call GroupPushEff(source, x, y, 350, 350, 0.42, -1, true, 2)
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_obr08 (171).mdl", x, y, GetRandomReal(0, 359), 0.75, 1.25, 1))
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_LD2209 (129).mdl", x, y, GetRandomReal(0, 359), 0.4, 0.8, 1))
@@ -1030,7 +1215,31 @@ endif
 set d = null
 endfunction
 function DecorRestore takes nothing returns nothing
+local integer i = 0
 call EnumDestructablesInRect( bj_mapInitialPlayableArea, null, function decordrevive )
+loop
+    exitwhen i >= DecorCooldownSourceCount
+    call FlushChildHashtable(DecorCooldownTable, DecorCooldownSources[i])
+    set i = i + 1
+endloop
+set DecorCooldownSourceCount = 0
+// Per-source call cache: drop it each round (dummies leave one row each).
+call FlushParentHashtable(DecorCallTable)
+set DecorCallTable = InitHashtable()
+endfunction
+
+private function DecorAcquireRect takes real minX, real minY, real maxX, real maxY returns rect
+set DecorEnumDepth = DecorEnumDepth + 1
+if DecorEnumRects[DecorEnumDepth] == null then
+    set DecorEnumRects[DecorEnumDepth] = Rect(minX, minY, maxX, maxY)
+else
+    call SetRect(DecorEnumRects[DecorEnumDepth], minX, minY, maxX, maxY)
+endif
+return DecorEnumRects[DecorEnumDepth]
+endfunction
+
+private function DecorReleaseRect takes nothing returns nothing
+set DecorEnumDepth = DecorEnumDepth - 1
 endfunction
 function PlayersMsg takes string s, real r returns nothing
 local integer i = 0
@@ -1042,18 +1251,34 @@ endloop
 endfunction
 function DecorRemove takes unit c, real x, real y, real aoe, real dmg returns nothing
 local rect enumRect
+local integer h
+local real now
+local real dx
+local real dy
     // Проверяем только корректность вызова. Общего кулдауна игрока здесь нет.
 if c == null or aoe <= 0.0 then
     return
 endif
+set h = GetHandleId(c)
+set now = DecorClockNow()
+set dx = x - LoadReal(DecorCallTable, h, 1)
+set dy = y - LoadReal(DecorCallTable, h, 2)
+if now - LoadReal(DecorCallTable, h, 0) < 0.09 and aoe <= LoadReal(DecorCallTable, h, 3) and dmg <= LoadReal(DecorCallTable, h, 4) and dx * dx + dy * dy <= aoe * aoe * 0.09 then
+    return
+endif
+call SaveReal(DecorCallTable, h, 0, now)
+call SaveReal(DecorCallTable, h, 1, x)
+call SaveReal(DecorCallTable, h, 2, y)
+call SaveReal(DecorCallTable, h, 3, aoe)
+call SaveReal(DecorCallTable, h, 4, dmg)
 set decordmg = dmg
 set decorunit = c
 set decor_x = x
 set decor_y = y
 set decor_aoe = aoe
-set enumRect = Rect(x - aoe, y - aoe, x + aoe, y + aoe)
+set enumRect = DecorAcquireRect(x - aoe, y - aoe, x + aoe, y + aoe)
 call EnumDestructablesInRect(enumRect, DecorAliveCond, function decordestroy)
-call RemoveRect(enumRect)
+call DecorReleaseRect()
 set enumRect = null
 endfunction
 
@@ -1101,9 +1326,9 @@ function DecorRemoveLine takes unit c, real x, real y, real angle, real length, 
     set decor_x = centerX
     set decor_y = centerY
     set decor_aoe = bound
-    set enumRect = Rect(centerX-bound,centerY-bound,centerX+bound,centerY+bound)
+    set enumRect = DecorAcquireRect(centerX-bound,centerY-bound,centerX+bound,centerY+bound)
     call EnumDestructablesInRect(enumRect,DecorAliveCond,function DecorLineHit)
-    call RemoveRect(enumRect)
+    call DecorReleaseRect()
     set enumRect = null
     set DecorLineHits = null
 endfunction
@@ -1112,9 +1337,9 @@ function DecorRemoveInori takes unit c, real x, real y, real aoe returns nothing
 local rect enumRect
 
 if aoe > 0.0 then
-    set enumRect = Rect(x - aoe, y - aoe, x + aoe, y + aoe)
+    set enumRect = DecorAcquireRect(x - aoe, y - aoe, x + aoe, y + aoe)
     call EnumDestructablesInRect(enumRect, null, function decordestroyInori)
-    call RemoveRect(enumRect)
+    call DecorReleaseRect()
     set enumRect = null
 endif
 endfunction

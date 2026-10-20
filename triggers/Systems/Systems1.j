@@ -1,6 +1,34 @@
 library GearSystems initializer Init uses GearSystems2
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ASTA_E = StringHash("asta e")
+        private integer SH_DEBUFF_IMMUNE = StringHash("debuff immune")
+        private integer SH_ERZA_G2_ACTIVE = StringHash("erza g2 active")
+        private integer SH_ERZA_G2_TYPE = StringHash("erza g2 type")
+        private integer SH_FIRE_ARMOR_PAS = StringHash("fire armor pas")
+        private integer SH_GOJO_E = StringHash("gojo e")
+        private integer SH_INORI_E_ACTIVE = StringHash("Inori E Active")
+        private integer SH_KIT_TYPE = StringHash("kit type")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_MODE_T = StringHash("mode t")
+        private integer SH_NAOFUMI_SHIELD = StringHash("naofumi shield")
+        private integer SH_PATRIOT_E = StringHash("patriot e")
+        private integer SH_Q_ARMOR_ACTIVE = StringHash("q armor active")
+        private integer SH_RAIDEN_T = StringHash("raiden t")
+        private integer SH_RIMURU_EVOL_1 = StringHash("rimuru evol 1")
+        private integer SH_RIMURU_EVOL_2 = StringHash("rimuru evol 2")
+        private integer SH_SABER_W = StringHash("saber w")
+        private integer SH_STYLE = StringHash("style")
+        private integer SH_TOMIOKA_ADD_DMG = StringHash("tomioka add dmg")
+    endglobals
 
 globals
+    hashtable WOS_MiniUnits = InitHashtable()
+    integer WOS_MiniCount = 0
+    unit array WOS_MiniUnit
+    unit array WOS_MiniSource
+    minimapicon array WOS_MiniIcon
+    string array WOS_MiniTexture
     group TransformCloneEnumGroup = CreateGroup()
     boolexpr TransformCloneFilterExpr = null
     unit TransformFilterHero = null
@@ -32,7 +60,7 @@ endglobals
         real str_hpregen = 0.2
         real int_mpregen = 0.2    
         real agi_as = 0.007 
-        real agi_ms = 0.75 
+        real agi_ms = 0.6 // war3mapMisc AgiMoveBonus
         real agi_def = 0.1
         real armor_resist = 0
 
@@ -49,6 +77,15 @@ endglobals
         //   125.0 = 20.87% физического сопротивления;
         //   150.0 = 24.04% физического сопротивления.
         real ARMOR_EFFECTIVENESS_PERCENT = 105.0
+        // Resistances (all in one place):
+        // WOS_ARMOR_PER_AGI    - armor the engine gives per Agility point (gameplay constant);
+        // WOS_PHYS_RES_PER_AGI - armor counted per Agility for physical resistance (+20%);
+        // WOS_MAG_RES_PER_INT  - armor-equivalent per Intelligence for magic resistance.
+        // Both use the armor formula: effective = value x ARMOR_EFFECTIVENESS_PERCENT / 100,
+        // resistance = effective / (100 + effective).
+        real WOS_ARMOR_PER_AGI = 0.1
+        real WOS_PHYS_RES_PER_AGI = 0.12
+        real WOS_MAG_RES_PER_INT = 0.12
 
         integer LetterCheck = 7
         rect REC     
@@ -90,22 +127,28 @@ function GetSelectedHeroForPlayer takes player p returns unit
     return Hero[pid]
 endfunction
 
-   function HideBottomUI takes player p, boolean b returns nothing
+// Synced: called on every client with the same player. Inside the local
+// check there is only the native frame call; everything else runs on every
+// client and touches only that player's frames internally.
+function HideBottomUI takes player p, boolean b returns nothing
     if GetLocalPlayer() == p then
-    call BlzHideOriginFrames(b)
+        call BlzHideOriginFrames(b)
     endif
-    if b == false then 
-    
+    call WUI_SetOriginHidden(p, b)
+    if not b then
+        call WUI_RestoreCompactNative(p)
     endif
 endfunction
 function HideUIExceptTopMenu takes player p, boolean b returns nothing
     if GetLocalPlayer() == p then
-        // Скрывает или возвращает стандартный интерфейс.
         call BlzHideOriginFrames(b)
-
-        // Верхняя панель с кнопками меню остаётся видимой.
-        call BlzFrameSetVisible(BlzGetFrameByName("UpperButtonBarMenuButton", 0), true)
     endif
+    call WUI_SetOriginHidden(p, b)
+    if not b then
+        call WUI_RestoreCompactNative(p)
+    endif
+    // The top bar with the menu buttons stays visible.
+    call WUI_ShowNativeMenu(p)
 endfunction
 function GetStr takes unit c returns integer
 local integer i
@@ -320,6 +363,8 @@ function InitHeroShopRegistry takes nothing returns nothing
     call RegisterShopHero(Milim_ID, 6, 13)  // shop 30
     // HERO TRANSFER: Crocodile / InitHeroShopRegistry
     call RegisterShopHero(Crocodile_ID, 4, 1)  // shop 31
+    // HERO TRANSFER: Frostnova / InitHeroShopRegistry
+    call RegisterShopHero(Frostnova_ID, 1, 3)  // shop 32
 endfunction
 
 function SetHeroId takes integer page, integer slot, integer heroId returns nothing
@@ -392,6 +437,184 @@ endfunction
 
 
 
+// Register synchronously; only visibility is allowed to differ between clients.
+// Hero portrait minimap icons are disabled: heroes keep the stock minimap
+// markers (the native display is no longer hidden). Kept as a no-op so the
+// existing callers (pick, illusions, Kirito clones, auras) stay valid.
+function WOS_RegisterHeroMinimap takes unit u, unit source returns nothing
+    local integer index
+    local string texture
+    if true then
+        return
+    endif
+    if u == null or source == null or GetUnitTypeId(u) == 0 then
+        return
+    endif
+    set index = LoadInteger(WOS_MiniUnits, GetHandleId(u), 0)
+    set texture = BlzGetAbilityIcon(GetUnitTypeId(source))
+    if texture == null or texture == "" then
+        return
+    endif
+    if index == 0 then
+        set WOS_MiniCount = WOS_MiniCount + 1
+        set index = WOS_MiniCount
+        set WOS_MiniUnit[index] = u
+        call SaveInteger(WOS_MiniUnits, GetHandleId(u), 0, index)
+    endif
+    set WOS_MiniSource[index] = source
+    if WOS_MiniTexture[index] != texture then
+        if WOS_MiniIcon[index] != null then
+            call DestroyMinimapIcon(WOS_MiniIcon[index])
+        endif
+        set WOS_MiniTexture[index] = texture
+        set WOS_MiniIcon[index] = CreateMinimapIconOnUnit(u, 255, 255, 255, texture, FOG_OF_WAR_VISIBLE)
+        call SetMinimapIconOrphanDestroy(WOS_MiniIcon[index], false)
+        call SetMinimapIconVisible(WOS_MiniIcon[index], false)
+    endif
+    call BlzSetUnitBooleanField(u, UNIT_BF_HERO_HIDE_HERO_MINIMAP_DISPLAY, true)
+    call BlzSetUnitBooleanField(u, UNIT_BF_HIDE_MINIMAP_DISPLAY, true)
+endfunction
+
+function WOS_UpdateHeroMinimap takes nothing returns nothing
+    local integer index = 1
+    local unit u
+    local player viewer = GetLocalPlayer()
+    local boolean visible
+    if WOS_MiniCount == 0 then
+        set viewer = null
+        return
+    endif
+    loop
+        exitwhen index > WOS_MiniCount
+        set u = WOS_MiniUnit[index]
+        if GetUnitTypeId(u) == 0 then
+            call DestroyMinimapIcon(WOS_MiniIcon[index])
+            call RemoveSavedInteger(WOS_MiniUnits, GetHandleId(u), 0)
+            set WOS_MiniUnit[index] = WOS_MiniUnit[WOS_MiniCount]
+            set WOS_MiniSource[index] = WOS_MiniSource[WOS_MiniCount]
+            set WOS_MiniIcon[index] = WOS_MiniIcon[WOS_MiniCount]
+            set WOS_MiniTexture[index] = WOS_MiniTexture[WOS_MiniCount]
+            if index < WOS_MiniCount then
+                call SaveInteger(WOS_MiniUnits, GetHandleId(WOS_MiniUnit[index]), 0, index)
+            endif
+            set WOS_MiniUnit[WOS_MiniCount] = null
+            set WOS_MiniSource[WOS_MiniCount] = null
+            set WOS_MiniIcon[WOS_MiniCount] = null
+            set WOS_MiniTexture[WOS_MiniCount] = null
+            set WOS_MiniCount = WOS_MiniCount - 1
+        else
+            // Morphs use the source hero's current portrait for every clone too.
+            call WOS_RegisterHeroMinimap(u, WOS_MiniSource[index])
+            set visible = GetWidgetLife(u) > 0.405 and not IsUnitHidden(u) and IsUnitVisible(u, viewer) and not IsUnitInvisible(u, viewer)
+            call SetMinimapIconVisible(WOS_MiniIcon[index], visible)
+            set index = index + 1
+        endif
+    endloop
+    set u = null
+    set viewer = null
+endfunction
+
+// ===== Desync probe =====
+// After every hero pick each client records, for 3 seconds, the next free
+// handle id and a synced random number (plus game time) and writes them to
+// CustomMapData\save\WOS2_desync_probe.txt. Two players' files diverge at the
+// first step that allocated handles or used randomness differently.
+globals
+    constant boolean WOS_DESYNC_PROBE_ENABLED = false
+    string array WOS_ProbeLine
+    integer WOS_ProbeCount = 0
+    integer WOS_ProbeTicks = 0
+    group WOS_ProbeGroup = CreateGroup()
+    real WOS_ProbeClock = 0.00
+    string WOS_ProbeLabel = ""
+    timer WOS_ProbeTimer = null
+endglobals
+
+function WOS_ProbeMark takes string label returns nothing
+    local location l = null
+    local integer id = 0
+    local integer i = 0
+    local real sum = 0.00
+    if not WOS_DESYNC_PROBE_ENABLED then
+        return
+    endif
+    set l = Location(0.00, 0.00)
+    set id = GetHandleId(l)
+    call RemoveLocation(l)
+    set l = null
+    loop
+        exitwhen i >= 10
+        if Hero[i] != null then
+            set sum = sum + GetUnitX(Hero[i]) + GetUnitY(Hero[i]) + GetWidgetLife(Hero[i])
+        endif
+        set i = i + 1
+    endloop
+    if WOS_ProbeCount < 1500 then
+        call GroupClear(WOS_ProbeGroup)
+        call GroupEnumUnitsInRect(WOS_ProbeGroup, bj_mapInitialPlayableArea, null)
+        set WOS_ProbeLine[WOS_ProbeCount] = R2SW(WOS_ProbeClock, 1, 2) + " " + label + " h=" + I2S(id) + " r=" + I2S(GetRandomInt(0, 999999)) + " s=" + I2S(R2I(sum)) + " u=" + I2S(CountUnitsInGroup(WOS_ProbeGroup))
+        set WOS_ProbeCount = WOS_ProbeCount + 1
+    endif
+endfunction
+
+function WOS_ProbeDump takes nothing returns nothing
+    local integer i = 0
+    if not WOS_DESYNC_PROBE_ENABLED then
+        return
+    endif
+    call PreloadGenClear()
+    call PreloadGenStart()
+    loop
+        exitwhen i >= WOS_ProbeCount
+        call Preload("\")\n" + WOS_ProbeLine[i] + "\n//")
+        set i = i + 1
+    endloop
+    call PreloadGenEnd("save\\WOS2_desync_probe.txt")
+    call PreloadGenClear()
+endfunction
+
+// The file is rewritten every second, so it exists even if the game is cut
+// off by a desync a moment later.
+function WOS_ProbeTick takes nothing returns nothing
+    if not WOS_DESYNC_PROBE_ENABLED then
+        return
+    endif
+    set WOS_ProbeClock = WOS_ProbeClock + 0.10
+    if WOS_ProbeTicks > 0 then
+        set WOS_ProbeTicks = WOS_ProbeTicks - 1
+        call WOS_ProbeMark(WOS_ProbeLabel + " +" + I2S(150 - WOS_ProbeTicks))
+        // Every 0.1 s during the first 3 s after a pick, then every second.
+        if WOS_ProbeTicks >= 120 or ModuloInteger(WOS_ProbeTicks, 10) == 0 then
+            call WOS_ProbeDump()
+        endif
+        if WOS_ProbeTicks == 0 then
+            call PauseTimer(WOS_ProbeTimer)
+        endif
+    endif
+endfunction
+
+function WOS_ProbeStart takes string label returns nothing
+    if not WOS_DESYNC_PROBE_ENABLED then
+        return
+    endif
+    if WOS_ProbeTimer == null then
+        set WOS_ProbeTimer = CreateTimer()
+    endif
+    // 15 s window per pick: two players' files from the same game diverge at
+    // the first line where h (next handle), r (synced random) or u (unit
+    // count) differ. Regen re-learns spells at the base every second: the same
+    // label only adds a mark and never restarts the window.
+    if WOS_ProbeTicks > 0 and label == WOS_ProbeLabel then
+        call WOS_ProbeMark(label + " again")
+        return
+    endif
+    call TimerStart(WOS_ProbeTimer, 0.10, true, function WOS_ProbeTick)
+    set WOS_ProbeLabel = label
+    set WOS_ProbeTicks = 150
+    call WOS_ProbeMark(label + " start")
+    call WOS_ProbeDump()
+endfunction
+
 function LearnHeroSpells takes unit c returns nothing
 local integer id = GetUnitTypeId(c)
 local integer i = 0
@@ -401,7 +624,19 @@ local integer e = 0
 local integer r = 0
 local integer t = 0
 local integer check = 0
+static if WOS_DESYNC_PROBE_ENABLED then
+call WOS_ProbeStart("pick p" + I2S(GetPlayerId(GetOwningPlayer(c))) + " " + GetUnitName(c))
+endif
+call TasAbilityChargeBox_RegisterHeroCounters(c)
+call WOS_RegisterHeroMinimap(c, c)
+static if WOS_DESYNC_PROBE_ENABLED then
+call WOS_ProbeMark("after minimap")
+endif
 if id == Raiden_ID then
+call UnitAddAbility(c, RaidenG_ID)
+call UnitMakeAbilityPermanent(c, true, RaidenG_ID)
+call UnitAddAbility(c, RaidenF_ID)
+call UnitMakeAbilityPermanent(c, true, RaidenF_ID)
 set q = RaidenQ_ID
 set w = RaidenW_ID
 set e = RaidenE_ID
@@ -491,7 +726,7 @@ set w = TakeshiW_ID
 set e = TakeshiE_ID
 set r = TakeshiR_ID
 set t = TakeshiT_ID
-if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("style")) == 1 then
+if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_STYLE) == 1 then
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),q,true)
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),w,true)
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),e,true)
@@ -509,7 +744,7 @@ set w = PatriotW_ID
 set e = PatriotE_ID
 set r = PatriotR_ID
 set t = PatriotT_ID
-if LoadInteger(hs, GetHandleId(c), StringHash("patriot e"))== 1 then 
+if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E)== 1 then 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),t,true)
 endif
 elseif id == DarkShiki_ID then
@@ -573,6 +808,8 @@ set e = AkainuE_ID
 set r = AkainuR_ID
 set t = AkainuT_ID
 elseif id == Kyoraku_ID then
+   call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuTSkip_ID, false)
+   call UnitRemoveAbility(c, KyorakuTSkip_ID)
    call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuQ_ID, true)
    call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuW_ID, true)
    call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuE_ID, true)
@@ -602,7 +839,7 @@ set w = KenjakuW_ID
 set e = KenjakuE_ID
 set r = KenjakuR_ID
 set t = KenjakuT_ID
-if LoadInteger(hs, GetHandleId(c), StringHash("kit type")) == 1 then 
+if LoadInteger(hs, GetHandleId(c), SH_KIT_TYPE) == 1 then 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),q,true) 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),w,true) 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),e,true) 
@@ -622,6 +859,13 @@ set w = CrocodileW_ID
 set e = CrocodileE_ID
 set r = CrocodileR_ID
 set t = CrocodileT_ID
+// HERO TRANSFER: Frostnova / LearnHeroSpells
+elseif id == Frostnova_ID then
+set q = FrostnovaQ_ID
+set w = FrostnovaW_ID
+set e = FrostnovaE_ID
+set r = FrostnovaR_ID
+set t = FrostnovaT_ID
 endif
 loop
 exitwhen i == 5  
@@ -648,7 +892,7 @@ set w = KenjakuW_ID
 set e = KenjakuE_ID
 set r = KenjakuR_ID
 set t = KenjakuT_ID
-if LoadInteger(hs, GetHandleId(c), StringHash("kit type")) == 1 then 
+if LoadInteger(hs, GetHandleId(c), SH_KIT_TYPE) == 1 then 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),q,false) 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),w,false) 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),e,false) 
@@ -669,7 +913,7 @@ call SetUnitAbilityLevel(c,KenjakuR2_ID,GetUnitAbilityLevel(c,r))
 endif
 endif
 if id == Takeshi_ID then 
-if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("style")) == 1 then
+if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_STYLE) == 1 then
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),q,false)
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),w,false)
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),e,false)
@@ -689,7 +933,7 @@ endif
 endif
 if id == Patriot_ID and GetUnitLevel(c)>=25 then
 set t = PatriotT_ID
-if LoadInteger(hs, GetHandleId(c), StringHash("patriot e"))== 1 then 
+if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E)== 1 then 
 call SetPlayerAbilityAvailable(GetOwningPlayer(c),t,false)
 if GetUnitAbilityLevel(c,PatriotT2_ID) == 0 then 
 call UnitAddAbility(c,PatriotT2_ID)
@@ -740,25 +984,10 @@ local integer i = GetPlayerId(p)
 call EnableTrigger(MouseTrig[i])
 endfunction
     function MakeSound3 takes string s returns nothing
-        local sound snd
-        set s = s + ".mp3"
-        set snd = CreateSound(s, false, false, false, 0, 0, "DefaultEAXON")
-        call SetSoundVolume( snd, 127 )
-        call StartSound(snd)
-        call KillSoundWhenDone(snd)
-        set snd = null
+        call GearSoundPlay(s + ".mp3", 127, false, null)
     endfunction
     function MakeSoundLocal takes string s, player p returns nothing
-        local sound snd
-        set s = s + ".mp3"
-        set snd = CreateSound(s, false, false, false, 0, 0, "DefaultEAXON")
-        call SetSoundVolume( snd, 0 )
-        if GetLocalPlayer() == p then 
-        call SetSoundVolume( snd, 127 )
-        endif 
-        call StartSound(snd)
-        call KillSoundWhenDone(snd)
-        set snd = null
+        call GearSoundPlay(s + ".mp3", 127, true, p)
     endfunction
 function DebuffClear takes unit c returns nothing
 call UnitRemoveAbility(c,'BEer')
@@ -890,7 +1119,7 @@ endfunction
     function AinzF_HasAllStatsBuff takes unit whichUnit returns boolean
         return AinzF_GetBuffStage(whichUnit) >= 6
     endfunction
-function GetHpRegen takes unit c returns real
+function GetHpRegenBase takes unit c returns real
 local real result = BlzGetUnitRealField(c,UNIT_RF_HIT_POINTS_REGENERATION_RATE)+GetHeroStr(c,true)*str_hpregen
 if GetUnitAbilityLevel(c,'A048')> 0 then //erza w armor hp regen
 set result = result + 2
@@ -964,13 +1193,66 @@ if GetUnitAbilityLevel(c,InoriE_Regen5_ID)> 0 then //erza w armor hp regen
 set result = result + 25
 endif
 
-if AinzF_HasActiveHealBuff(c) then //erza w armor hp regen
-set result = result *1.1
-endif
 return result 
 endfunction
-function GetMpRegen takes unit c returns real
+// Displayed/total regen: heal amplifiers (Ainz F, Shun Shun Rikka) also boost passive regen.
+function GetHpRegen takes unit c returns real
+return GetHpRegenBase(c) * RMaxBJ(0.00, GetHealMultiplier(c)) // amps and all heal cuts (Grail, Inori T, Kirito T, Rimuru Q...)
+endfunction
+function GetMpRegenBase takes unit c returns real
  return BlzGetUnitRealField(c,UNIT_RF_MANA_REGENERATION)+GetHeroInt(c,true)*int_mpregen
+endfunction
+function GetMpRegen takes unit c returns real
+ return GetMpRegenBase(c) * (1.00 + GetManaAmp(c))
+endfunction
+
+globals
+    // One shared 0.5 sec clock adds the amplified part of passive HP/MP regen
+    // for picked heroes only (native regen cannot be multiplied directly).
+    private timer HealAmp_Timer = CreateTimer()
+    private constant real HEAL_AMP_PERIOD = 0.50
+endglobals
+
+private function HealAmp_Apply takes unit u returns nothing
+    local real amp
+    local real r
+    if u == null or GetWidgetLife(u) <= 0.405 then
+        return
+    endif
+    // Net multiplier on passive regen: amplifiers minus Hell Blaze stacks.
+    set amp = GetHealMultiplierNoBlock(u) - 1.00 // BlockRegen cuts are applied by BlockRegen itself
+    if amp != 0.00 and GetUnitState(u, UNIT_STATE_LIFE) < GetUnitState(u, UNIT_STATE_MAX_LIFE) then
+        set r = GetHpRegenBase(u) * RMaxBJ(-1.00, amp) * HEAL_AMP_PERIOD
+        if r > 0.00 then
+            call SetUnitState(u, UNIT_STATE_LIFE, GetUnitState(u, UNIT_STATE_LIFE) + r)
+        elseif r < 0.00 then
+            call SetUnitState(u, UNIT_STATE_LIFE, RMaxBJ(1.00, GetUnitState(u, UNIT_STATE_LIFE) + r))
+        endif
+    endif
+    set amp = GetManaAmp(u)
+    if amp > 0.00 and GetUnitState(u, UNIT_STATE_MANA) < GetUnitState(u, UNIT_STATE_MAX_MANA) then
+        set r = GetMpRegenBase(u) * amp * HEAL_AMP_PERIOD
+        if r > 0.00 then
+            call SetUnitState(u, UNIT_STATE_MANA, GetUnitState(u, UNIT_STATE_MANA) + r)
+        endif
+    endif
+endfunction
+
+private function HealAmp_Tick takes nothing returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 10
+        call HealAmp_Apply(Hero[i])
+        set i = i + 1
+    endloop
+    if TestMode then
+        call HealAmp_Apply(TestUnit)
+        call HealAmp_Apply(TestAllyUnit)
+    endif
+endfunction
+
+function HealAmp_StartClock takes nothing returns nothing
+    call TimerStart(HealAmp_Timer, HEAL_AMP_PERIOD, true, function HealAmp_Tick)
 endfunction
 function GetAS takes unit c returns real
 local real base = BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_BASE_COOLDOWN, 0)
@@ -1008,6 +1290,12 @@ set base = base + 40
 endif
 if GetUnitAbilityLevel(c,'A0I4') > 0 then 
 set base = base + 80
+endif
+if GetUnitAbilityLevel(c,Kusanagi_Atk_ID) > 0 then
+set base = base + 40
+endif
+if GetUnitAbilityLevel(c,KusanagiGrade_Atk_ID) > 0 then
+set base = base + 60
 endif
 
 return base 
@@ -1213,7 +1501,7 @@ function GetMainStatAgi takes unit c returns boolean
     if BlzGetUnitIntegerField(c, UNIT_IF_PRIMARY_ATTRIBUTE) == 3 then // agi
         set b = true
     endif
-    if LoadInteger(hs, GetHandleId(c), StringHash("rimuru evol 2")) == 1 then
+    if LoadInteger(hs, GetHandleId(c), SH_RIMURU_EVOL_2) == 1 then
         set b = true
     endif
     return b
@@ -1284,8 +1572,6 @@ local integer id = GetUnitTypeId(Hero[i])
     call PauseUnit(Hero[i],true)
     endif
    
-    call BlzFrameSetVisible(lmpOpenButton,true)
-    call BlzFrameSetVisible(lmpLinkButton,true)
 
 // Clear the old hero's queue before writing the six new recommendations.
 set ItemsPage0_ID[i2+0] = 0
@@ -1540,6 +1826,15 @@ if id == Crocodile_ID then
     set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
     set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
 endif
+// HERO TRANSFER: Frostnova / RecommenedItems
+if id == Frostnova_ID then
+    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
+    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
+    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
+    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
+    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
+    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+endif
 set ItemsFrameCurrentPage_ID[i] = 0
 set ItemsCraftPlayerDebug_ID[i] = -1
 
@@ -1599,6 +1894,9 @@ endfunction
     endfunction
 
     function SetHpCurrent takes unit c, real r returns nothing
+    if IsUnitType(c, UNIT_TYPE_DEAD) then // a dead hero must stay at 0 HP (heals, lifesteal)
+        return
+    endif
     call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) + r)
 endfunction
     
@@ -1646,6 +1944,7 @@ endfunction
 
     function Init takes nothing returns nothing
         local integer i = 0
+        call HealAmp_StartClock()
         loop
             exitwhen i == 10
             set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
@@ -1677,8 +1976,16 @@ endfunction
         endif
         return b
     endfunction    
+    // Round reset: untouched decor is skipped (restoring every alive object replayed
+    // its birth animation map-wide in one frame); only destroyed decor plays birth.
     function decordrevive takes nothing returns nothing
-          call DestructableRestoreLife(GetEnumDestructable(), GetDestructableMaxLife(GetEnumDestructable()), true )
+        local destructable d = GetEnumDestructable()
+        local real life = GetDestructableLife(d)
+        local real maxLife = GetDestructableMaxLife(d)
+        if life < maxLife then
+            call DestructableRestoreLife(d, maxLife, life <= 0.405)
+        endif
+        set d = null
     endfunction
     function GetPlayerTakenPhys takes player p returns real 
     local integer id = GetPlayerId(p)
@@ -1699,11 +2006,14 @@ endfunction
     function GroupDmg takes unit c, real x,real y,real aoe,real dmg  returns nothing
     local group g = CreateGroup()
     local unit u 
+    local integer damageSource = GearDamageNextSource
+    set GearDamageNextSource = 0
     call GroupEnumUnitsInRange( g , x , y , aoe , NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null 
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource(damageSource)
                                     call NextDmg(c, u, dmg,0,0.12)
                                     endif
                                     call GroupRemoveUnit( g , u )
@@ -1795,7 +2105,7 @@ local real cd = 0
 if GearCCProtected(c) then
     return 0
 endif
-if LoadInteger(hs,GetHandleId(c),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(c),StringHash("erza g2 type")) == 1 then
+if LoadInteger(hs,GetHandleId(c),SH_ERZA_G2_ACTIVE) >0 and LoadInteger(hs,GetHandleId(c),SH_ERZA_G2_TYPE) == 1 then
         set k = 0
         endif
         if GetUnitAbilityLevel(c,'B00J')> 0 then 
@@ -1810,13 +2120,13 @@ if LoadInteger(hs,GetHandleId(c),StringHash("erza g2 active")) >0 and LoadIntege
         if GetUnitAbilityLevel(c,'B005')> 0 then 
         set k = 0
         endif
-        if LoadInteger(hs,GetHandleId(c),StringHash("naofumi shield")) == 1 then 
+        if LoadInteger(hs,GetHandleId(c),SH_NAOFUMI_SHIELD) == 1 then 
         set k = 0
         endif
 if GetUnitTypeId(c) == Rimuru_ID then 
-if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 1")) == 1 or LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 1 then
-if IntegerCd(c,"rimuru f cd",OkarunEggCdReal(c,RimuruF2_CD)) then
-if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 1   then
+if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_1) == 1 or LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 1 then
+if IntegerCdKey(c, SH_ICD_RIMURU_F_CD,OkarunEggCdReal(c,RimuruF2_CD)) then
+if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 1   then
 call MyFrame(c,OkarunEggCdReal(c,RimuruF2_CD),"BTNHero_Rimuru3_F",false,0)
 else
 call MyFrame(c,OkarunEggCdReal(c,RimuruF2_CD),"BTNHero_Rimuru_F",false,0)
@@ -1829,18 +2139,18 @@ endif
 set k = 0
 endif
 else
-if BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID) == 0 then 
+if BlzGetUnitAbilityCooldownRemaining(c,RimuruF_ID) == 0 then 
 set k = 0
 if GetRandomInt(1,2) == 1 then 
 call MakeSound("war3mapimported\\Hero_Rimuru_F")
 else
 call MakeSound("war3mapimported\\Hero_Rimuru_F2")
 endif
-call FakeCD_Start(c, RimuruF_ID, RimuruF_CD, 0, 0)
+call PassiveCD_Start(c, RimuruF_ID, RimuruF_CD)
 endif
 endif
 endif
-if LoadInteger(hs,GetHandleId(c),StringHash("debuff immune")) == 1 then 
+if LoadInteger(hs,GetHandleId(c),SH_DEBUFF_IMMUNE) == 1 then 
 set k = 0
 endif
 return k 
@@ -1883,34 +2193,45 @@ endfunction
 
 
 
-     function BuffUnit01 takes unit c, unit u, integer id,string s, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+     function BuffUnit01 takes unit c, unit u, integer id,string s, integer level returns real
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local unit d = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        local real duration
             call UnitAddAbility(d, id)
             call SetUnitAbilityLevel(d, id, level)
+            if IsUnitType(u, UNIT_TYPE_HERO) then
+                set duration = BlzGetAbilityRealLevelField(BlzGetUnitAbility(d, id), ABILITY_RLF_DURATION_HERO, level - 1)
+            else
+                set duration = BlzGetAbilityRealLevelField(BlzGetUnitAbility(d, id), ABILITY_RLF_DURATION_NORMAL, level - 1)
+            endif
             call SetUnitFacing(d, GAngle(d, u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(d, s, u)
       call MyRemoveUnit(d,0.2)
       set d = null
+        return duration
     endfunction
     function BuffUnit02 takes unit c, unit u, integer id,integer s, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local unit d = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(d, id)
             call SetUnitAbilityLevel(d, id, level)
             call SetUnitFacing(d, GAngle(d, u) * bj_RADTODEG)
+
+
             call IssueTargetOrderById(d, s, u)
       call MyRemoveUnit(d,0.2)
       set d = null
     endfunction
     function SilenceUnit takes unit c, unit u, real time returns nothing // min 0.5 , max 5.0 sec
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local integer level
         if time > 0 then 
         set level= R2I(time / 0.5)
         if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A01V')
         endif
         
@@ -1932,11 +2253,14 @@ endfunction
         set level = 0
         endif
         set level = DebuffImmune_Start(u,level)  
-        if LoadInteger(hs,GetHandleId(u),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(u),StringHash("erza g2 type")) == 1 then
+        if LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_ACTIVE) >0 and LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_TYPE) == 1 then
         set level = 0
         endif
-        if LoadInteger(hs,GetHandleId(u),StringHash("naofumi shield")) == 1 then 
+        if LoadInteger(hs,GetHandleId(u),SH_NAOFUMI_SHIELD) == 1 then 
         set level = 0
+        endif
+        if level > 0 and GetUnitAbilityLevel(u, ShunShunRikka_Buff_ID) > 0 then // Shun Shun Rikka aura
+            set level = level - R2I(ShunShunRikka_CcReduce / 0.5 + 0.5)
         endif
         if level > 0 then
             if GetUnitAbilityLevel(DummyPlayer[i], 'A01V') == 0 then
@@ -1945,15 +2269,17 @@ endfunction
             
             call SetUnitAbilityLevel(DummyPlayer[i], 'A01V', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "drunkenhaze", u)
         endif
         endif
         endif
     endfunction
     function DecreaseArmorUnit takes unit c, unit u, integer level returns nothing // min 0.1 , max 3.0 sec
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A01H')
         endif
         if level < 1 then
@@ -1971,11 +2297,11 @@ endfunction
         endif
     endfunction
     function StunUnit takes unit c, unit u, real time returns nothing // min 0.1 , max 3.0 sec
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local integer level = R2I(time * 10 )
         if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A1OA')
         endif
       
@@ -1986,10 +2312,10 @@ endfunction
         if GetUnitAbilityLevel(u,'B00J')>0 then  // inori R immune
         set level = 0
         endif
-        if LoadInteger(hs,GetHandleId(u),StringHash("naofumi shield")) == 1 then 
+        if LoadInteger(hs,GetHandleId(u),SH_NAOFUMI_SHIELD) == 1 then 
         set level = 0
         endif
-        if LoadInteger(hs,GetHandleId(u),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(u),StringHash("erza g2 type")) == 1 then
+        if LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_ACTIVE) >0 and LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_TYPE) == 1 then
         set level = 0
         endif
         if HasCachedItem(u,'I00L') >0 and BlzGetUnitAbilityCooldownRemaining(u,'A01D')==0 then // IntegerCd(u,"witch sin cd",25) then
@@ -2015,23 +2341,28 @@ endfunction
         set level= level - 1
         endif
         endif
+        if level > 0 and GetUnitAbilityLevel(u, ShunShunRikka_Buff_ID) > 0 then // Shun Shun Rikka aura
+            set level = level - R2I(ShunShunRikka_StunReduce * 10 + 0.5)
+        endif
         if level > 0 then
             if GetUnitAbilityLevel(DummyPlayer[i], 'A1OA') == 0 then
                 call UnitAddAbility(DummyPlayer[i], 'A1OA')
             endif
             call SetUnitAbilityLevel(DummyPlayer[i], 'A1OA', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "thunderbolt", u)
         endif
         endif
     endfunction
     function DoomUnit takes unit c, unit u, real time returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local integer level = R2I(time / 0.5)
         if u != null and GetWidgetLife(u)>5 then
         
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A1QY')
         endif
         if level < 1 then
@@ -2046,16 +2377,18 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer[i], 'A1QY', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "doom", u)
         endif
         endif
     endfunction
     function RootUnit takes unit c, unit u, real time returns nothing // min 0.5 , max 5.0 sec
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         local integer level = R2I(time / 0.25)
         if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'APPP')
         endif
         
@@ -2075,11 +2408,14 @@ endfunction
         call BlzStartUnitAbilityCooldown(u,'A09U',18)
         call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_[tx]_sishu_d.mdl",u,"origin"),5)
         endif
-        if LoadInteger(hs,GetHandleId(u),StringHash("erza g2 active")) >0 and LoadInteger(hs,GetHandleId(u),StringHash("erza g2 type")) == 1 then
+        if LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_ACTIVE) >0 and LoadInteger(hs,GetHandleId(u),SH_ERZA_G2_TYPE) == 1 then
         set level = 0
         endif
-        if LoadInteger(hs,GetHandleId(u),StringHash("naofumi shield")) == 1 then 
+        if LoadInteger(hs,GetHandleId(u),SH_NAOFUMI_SHIELD) == 1 then 
         set level = 0
+        endif
+        if level > 0 and GetUnitAbilityLevel(u, ShunShunRikka_Buff_ID) > 0 then // Shun Shun Rikka aura
+            set level = level - R2I(ShunShunRikka_CcReduce / 0.25 + 0.5)
         endif
         if level > 0 then
             if GetUnitAbilityLevel(DummyPlayer[i], 'APPP') == 0 then
@@ -2087,6 +2423,8 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer[i], 'APPP', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "entanglingroots", u)
         endif
         endif
@@ -2107,12 +2445,12 @@ endfunction
 function SlowUnit takes unit c, unit u, integer percent, integer time returns nothing
     // percent: 5 to 95 in multiples of 5 (5, 10, 15 ... 95)
     // time:    1, 2, 3, or 4 seconds
-    local integer i = GetPlayerId(GetOwningPlayer(c))
+    local integer i = GetPlayerId(GetOwningPlayer(u))
     local integer level = GetSlowAbilityLevel(percent, time)
 
     if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-        set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+        set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
         call UnitAddAbility(DummyPlayer[i], 'A1OT')
     endif
 
@@ -2128,10 +2466,10 @@ function SlowUnit takes unit c, unit u, integer percent, integer time returns no
     if GetUnitAbilityLevel(u, 'B00J') > 0 then  // inori R immune
         set level = 0
     endif
-    if LoadInteger(hs, GetHandleId(u), StringHash("erza g2 active")) > 0 and LoadInteger(hs, GetHandleId(u), StringHash("erza g2 type")) == 1 then
+    if LoadInteger(hs, GetHandleId(u), SH_ERZA_G2_ACTIVE) > 0 and LoadInteger(hs, GetHandleId(u), SH_ERZA_G2_TYPE) == 1 then
         set level = 0
     endif
-    if LoadInteger(hs, GetHandleId(u), StringHash("naofumi shield")) == 1 then
+    if LoadInteger(hs, GetHandleId(u), SH_NAOFUMI_SHIELD) == 1 then
         set level = 0
     endif
 
@@ -2141,15 +2479,17 @@ function SlowUnit takes unit c, unit u, integer percent, integer time returns no
         endif
         call SetUnitAbilityLevel(DummyPlayer[i], 'A1OT', level)
         call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
         call IssueTargetOrder(DummyPlayer[i], "slow", u)
     endif
     endif
 endfunction
     function CurseUnit takes unit c, unit u, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
-            set DummyPlayer[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A1OB')
         endif
         set level = DebuffImmune_Start(u, level)
@@ -2160,15 +2500,17 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer[i], 'A1OB', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "curse", u)
         endif
         endif
     endfunction
     function CurseUnit2 takes unit c, unit u, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if u != null and GetWidgetLife(u)>5 then
         if DummyPlayer3[i] == null or GetWidgetLife(DummyPlayer3[i]) < 1 then
-            set DummyPlayer3[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyPlayer3[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer3[i], 'A07L')
         endif
        set level = DebuffImmune_Start(u, level)
@@ -2178,14 +2520,16 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer3[i], 'A07L', level)
             call SetUnitFacing(DummyPlayer3[i], GAngle(DummyPlayer3[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer3[i], "curse", u)
         endif
         endif
     endfunction
     function CurseUnitHellBlaze takes unit c, unit u, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if DummyDebuff1[i] == null or GetWidgetLife(DummyDebuff1[i]) < 1 then
-            set DummyDebuff1[i] = CreateUnit( Player( PLAYER_NEUTRAL_PASSIVE ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
+            set DummyDebuff1[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyDebuff1[i], 'A0E6')
         endif
         set level = DebuffImmune_Start(u, level)
@@ -2195,11 +2539,56 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyDebuff1[i], 'A0E6', level)
             call SetUnitFacing(DummyDebuff1[i], GAngle(DummyDebuff1[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyDebuff1[i], "curse", u)
         endif
     endfunction
+    // Hell Blaze, полные стаки (бафф B02F): -1.35% макс. маны каждую секунду, пока висит бафф (любой юнит).
+    globals
+        real HellBlaze_ManaBurnPercent = 1.35
+        private timer HellBlazeBurn_Timer = CreateTimer()
+        private unit array HellBlazeBurn_Unit
+        private integer HellBlazeBurn_Count = 0
+        private integer SH_HELLBLAZE_BURN = StringHash("hellblaze burn")
+    endglobals
+
+    private function HellBlazeBurn_Tick takes nothing returns nothing
+        local integer i = 0
+        local unit u
+        loop
+            exitwhen i >= HellBlazeBurn_Count
+            set u = HellBlazeBurn_Unit[i]
+            if GetUnitTypeId(u) != 0 and GetWidgetLife(u) > 0.405 and GetUnitAbilityLevel(u, 'B02F') > 0 then
+                call SetMpCurrent(u, -GetUnitState(u, UNIT_STATE_MAX_MANA) * HellBlaze_ManaBurnPercent / 100.0)
+                set i = i + 1
+            else
+                call SaveInteger(hs, GetHandleId(u), SH_HELLBLAZE_BURN, 0)
+                set HellBlazeBurn_Count = HellBlazeBurn_Count - 1
+                set HellBlazeBurn_Unit[i] = HellBlazeBurn_Unit[HellBlazeBurn_Count]
+                set HellBlazeBurn_Unit[HellBlazeBurn_Count] = null
+            endif
+        endloop
+        if HellBlazeBurn_Count == 0 then
+            call PauseTimer(HellBlazeBurn_Timer)
+        endif
+        set u = null
+    endfunction
+
+    function HellBlazeBurn_Add takes unit u returns nothing
+        if u == null or LoadInteger(hs, GetHandleId(u), SH_HELLBLAZE_BURN) == 1 then
+            return
+        endif
+        call SaveInteger(hs, GetHandleId(u), SH_HELLBLAZE_BURN, 1)
+        set HellBlazeBurn_Unit[HellBlazeBurn_Count] = u
+        set HellBlazeBurn_Count = HellBlazeBurn_Count + 1
+        if HellBlazeBurn_Count == 1 then
+            call TimerStart(HellBlazeBurn_Timer, 1.00, true, function HellBlazeBurn_Tick)
+        endif
+    endfunction
+
     function BuffUnit1 takes unit c, unit u, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if DummyPlayer[i] == null or GetWidgetLife(DummyPlayer[i]) < 1 then
             set DummyPlayer[i] = CreateUnit( Player( i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer[i], 'A1P1')
@@ -2210,11 +2599,13 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer[i], 'A1P1', level)
             call SetUnitFacing(DummyPlayer[i], GAngle(DummyPlayer[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer[i], "innerfire", u)
         endif
     endfunction
     function BuffUnit2 takes unit c, unit u, integer level returns nothing
-        local integer i = GetPlayerId(GetOwningPlayer(c))
+        local integer i = GetPlayerId(GetOwningPlayer(u))
         if DummyPlayer3[i] == null or GetWidgetLife(DummyPlayer3[i]) < 1 then
             set DummyPlayer3[i] = CreateUnit( Player(  i ), 'h0C9', GetRectCenterX( gg_rct_Caster ), GetRectCenterY( gg_rct_Caster ), 0 )
             call UnitAddAbility(DummyPlayer3[i], 'A07D')
@@ -2225,6 +2616,8 @@ endfunction
             endif
             call SetUnitAbilityLevel(DummyPlayer3[i], 'A07D', level)
             call SetUnitFacing(DummyPlayer3[i], GAngle(DummyPlayer3[i], u) * bj_RADTODEG)
+
+
             call IssueTargetOrder(DummyPlayer3[i], "innerfire", u)
         endif
     endfunction
@@ -2258,6 +2651,8 @@ function DamageTriangle takes unit c, real ax, real ay, real bx, real by, real c
     local real maxx = RMaxBJ(ax, RMaxBJ(bx, cx))
     local real miny = RMinBJ(ay, RMinBJ(by, cy))
     local real maxy = RMaxBJ(ay, RMaxBJ(by, cy))
+    local integer damageSource = GearDamageNextSource
+    set GearDamageNextSource = 0
     set REC = Rect(minx, miny, maxx, maxy)
     call GroupEnumUnitsInRect(g, REC,  NoDecor_Cond)
     loop
@@ -2266,12 +2661,16 @@ function DamageTriangle takes unit c, real ax, real ay, real bx, real by, real c
         call GroupRemoveUnit(g, u)
         if SpellBool(u) and PointInTriangle(GetUnitX(u), GetUnitY(u), ax, ay, bx, by, cx, cy) and IsUnitEnemy(u,GetOwningPlayer(c)) then
         if dmgtype == 1 then 
+        call DamageSource(damageSource)
         call dmgmag(c,u,dmg)
         elseif dmgtype == 0 then 
+        call DamageSource(damageSource)
         call dmgphys(c,u,dmg)
         elseif dmgtype == 2 then 
+        call DamageSource(damageSource)
         call dmgatk(c,u,dmg)
         elseif dmgtype == 3 then 
+        call DamageSource(damageSource)
         call dmgmag(c,u,dmg)
         call SlowUnit(c,u,KenjakuE_SlowPercent,KenjakuE_SlowTime)
         endif
@@ -2458,7 +2857,7 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
         endif
 
     // Brandish E
-    if LoadInteger(hs,GetHandleId(td),StringHash("asta e"))==1 then 
+    if LoadInteger(hs,GetHandleId(td),SH_ASTA_E)==1 then 
     set dmg = dmg * 0.65
     endif
     if GetUnitAbilityLevel(td, BrandishE_Buff1_ID) > 0 then
@@ -2521,6 +2920,9 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
         endif
 
         call CurseUnitHellBlaze(c, td, stacks)
+        if stacks == 7 then
+            call HellBlazeBurn_Add(td)
+        endif
     endif
 
     // Р РЋРЎвЂљР В°Р С”Р С‘ Р С—РЎР‚Р ВµР Т‘Р СР ВµРЎвЂљР В° I013
@@ -2600,6 +3002,10 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
 endif
     
         set armor = BlzGetUnitArmor(td)
+        // Agility counts 20% more for physical resistance than the engine's armor.
+        if IsUnitType(td, UNIT_TYPE_HERO) then
+            set armor = armor + I2R(GetHeroAgi(td, true)) * (WOS_PHYS_RES_PER_AGI - WOS_ARMOR_PER_AGI)
+        endif
 
         if armor < 0.0 then
             set armor = 0.0
@@ -2707,6 +3113,12 @@ endif
 
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р В°РЎРЏ Р Р†Р ВµРЎвЂљР С”Р В°
     if isMagic then
+        // Intelligence resists magic with the armor formula:
+        // effectiveArmor = Int x WOS_MAG_RES_PER_INT x effectiveness.
+        if IsUnitType(td, UNIT_TYPE_HERO) then
+            set armor = I2R(GetHeroInt(td, true)) * WOS_MAG_RES_PER_INT * RMaxBJ(0.0, ARMOR_EFFECTIVENESS_PERCENT) / 10000.0
+            set dmg = dmg / (1.0 + armor)
+        endif
         // Asta G
         if HasCachedItem(td, 'I013') > 0 then
         set dmg = dmg * 0.9
@@ -2747,16 +3159,6 @@ endif
             set itemMagRes = itemMagRes + 4.0
         endif
         
-        set level = GetHeroLevel(td)
-        if TestMode == false or (GetPlayerId(GetOwningPlayer(td)) != TestUnitPlayerId and GetPlayerId(GetOwningPlayer(td)) != TestAllyUnitPlayerId) then  
-        if level >= 35 then
-            set dmg = dmg * 0.85
-        elseif level >= 24 then
-            set dmg = dmg * 0.9
-        elseif level >= 12 then
-            set dmg = dmg * 0.95
-        endif
-        endif
         // Inori E
         if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 then
             set dmg = dmg * (1.0 - InoriE_DmgMagResistFromPas / 100.0)
@@ -2880,17 +3282,29 @@ endif
     return dmg
 endfunction
 
+private function HeroChannelDamageFactor takes unit c returns real
+    static if LIBRARY_CrocodileSpells then
+        if GetUnitTypeId(c) == Crocodile_ID and LoadBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL) and GetWidgetLife(c) > 0.405 and not IsUnitIllusion(c) then
+            if GetHeroLevel(c) >= CrocodileT_DamageReductionHeroLevel then
+                return 1.0 - CrocodileT_DamageReduction35
+            endif
+            return 1.0 - CrocodileT_DamageReduction
+        endif
+    endif
+    return 1.0
+endfunction
+
 function GetPhysRes takes unit c returns real
 local real result = 0
 local real check = 0
-set check = 1-DamageBlock(null,c,1.00,2,true)
+set check = 1-DamageBlock(null,c,1.00,2,true)*HeroChannelDamageFactor(c)
 set result = (check) * 100
  return result
 endfunction
 function GetMagRes takes unit c returns real
 local real result = 0
 local real check = 0
-set check = 1-DamageBlock(null,c,1.00,1,true)
+set check = 1-DamageBlock(null,c,1.00,1,true)*HeroChannelDamageFactor(c)
 set result = (check) * 100
  return result
 endfunction
@@ -2901,7 +3315,30 @@ function GetAinzItemGoldCost takes unit c returns real
     return goldcost[GetPlayerId(GetOwningPlayer(c))]
 endfunction
 
-function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns real
+// Read-only outgoing modifiers shared by combat and selected-unit UI.
+// Mahoraga T adaptation stacks (buffs B01G..B01N) on a unit, 0..8.
+function MahoragaT_GetStacks takes unit u returns integer
+    if GetUnitAbilityLevel(u, MahoragaT_Abi_ID8) > 0 then
+        return 8
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID7) > 0 then
+        return 7
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID6) > 0 then
+        return 6
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID5) > 0 then
+        return 5
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID4) > 0 then
+        return 4
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID3) > 0 then
+        return 3
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID2) > 0 then
+        return 2
+    elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID1) > 0 then
+        return 1
+    endif
+    return 0
+endfunction
+
+function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg returns real
     local integer sourceId = GetUnitTypeId(c)
     local integer sourceHid = GetHandleId(c)
     local integer level
@@ -3022,7 +3459,7 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
 
     // Neuvillette F
     if sourceId == Neuvillette_ID then
-        if GetUnitAbilityLevel(td, 'B009') > 0 or GetUnitAbilityLevel(td, 'B007') > 0 or GetUnitAbilityLevel(td, 'B00B') > 0 then
+        if GetUnitAbilityLevel(td, 'B009') > 0 or GetUnitAbilityLevel(td, 'B007') > 0 or GetUnitAbilityLevel(td, 'B00B') > 0 or LoadInteger(hs, GetHandleId(td), SH_WATER_PENDING) == 1 then
             set multiplier = NeuvilletteF_DamageAdd
 
             if GetHeroLevel(c) >= 35 then
@@ -3033,8 +3470,20 @@ function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns re
         endif
     endif
 
+    // Mahoraga T: each adaptation debuff on the target adds +2% damage of his own abilities (not attacks/items).
+    if sourceId == Mahoraga_ID and typedmg != 0 and not (GearDamageActiveSource >= 'I000' and GearDamageActiveSource <= 'Izzz') then
+        set stacks = MahoragaT_GetStacks(td)
+        if stacks > 0 then
+            set dmg = dmg * (1.0 + stacks * MahoragaT_DamageBonusPerStack / 100.0)
+        endif
+    endif
 
-    return GearDamageRun(c, td, dmg, typedmg, 1)
+    return dmg
+endfunction
+
+// Combat keeps the original phase-1 listener dispatch; UI uses only the read-only formulas.
+function DamageCheck takes unit c, unit td, real dmg, integer typedmg returns real
+    return GearDamageRun(c, td, DamageCheckModifiers(c, td, dmg, typedmg), typedmg, 1)
 endfunction
 
 
@@ -3156,6 +3605,9 @@ function FixAura2 takes unit c returns nothing
         return
     endif
     set pid = GetPlayerId(GetOwningPlayer(c))
+    if pid < 15 and Hero[pid] != null then
+        call WOS_RegisterHeroMinimap(c, Hero[pid])
+    endif
     set hid = GetHandleId(c)
     set donatType = ActiveDonatType[pid]
     set variant = ActiveDonatVariant[pid]
@@ -3201,29 +3653,15 @@ function FixHeroPas takes unit c returns nothing
     if id == Okarun_ID and GetHeroLevel(hero) >= 6 then
         call AddTrackedCloneEffect(c, "war3mapimported\\wos_windwalk blood.mdx", "origin")
     elseif id == Inori_ID and GetHeroLevel(hero) >= 6 then
-        if LoadInteger(hs, heroHid, StringHash("mode t")) == 0 then
-            if LoadInteger(hs, heroHid, StringHash("Inori E Active")) == 0 then
-                set e = AddTrackedCloneEffect(c, "war3mapImported\\wos_Inori_Bar.mdl", "origin")
-                set check = LoadInteger(hs, heroHid, StringHash("Inori E"))
-                if check == 0 then
-                    call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
-                elseif check == 1 then
-                    call BlzPlaySpecialEffect(e, ANIM_TYPE_ATTACK)
-                elseif check == 2 then
-                    call BlzPlaySpecialEffect(e, ANIM_TYPE_DECAY)
-                elseif check == 3 then
-                    call BlzPlaySpecialEffect(e, ANIM_TYPE_DISSIPATE)
-                elseif check == 4 then
-                    call BlzPlaySpecialEffect(e, ANIM_TYPE_MORPH)
-                endif
-            else
+        if LoadInteger(hs, heroHid, SH_MODE_T) == 0 then
+            if LoadInteger(hs, heroHid, SH_INORI_E_ACTIVE) == 1 then
                 call AddTrackedCloneEffect(c, "war3mapimported\\Wos_InoriCrystall_atch.mdx", "hand right")
                 call AddTrackedCloneEffect(c, "war3mapimported\\Wos_InoriCrystall_atch.mdx", "hand left")
             endif
         else
             call AddTrackedCloneEffect(c, "war3mapImported\\wos_file00002900.mdl", "origin")
         endif
-    elseif id == AlterSaber_ID and LoadInteger(hs, heroHid, StringHash("saber w")) == 1 then
+    elseif id == AlterSaber_ID and LoadInteger(hs, heroHid, SH_SABER_W) == 1 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_saber_attach.mdl", "weapon")
     elseif id == Harribel_ID and GetUnitAbilityLevel(hero, 'A0B0') > 0 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_2.mdl", "origin")
@@ -3231,16 +3669,16 @@ function FixHeroPas takes unit c returns nothing
         call AddUnitAnimationProperties(c, "alternate", true)
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_aurapartblue.mdx", "origin")
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_JN_22blue.mdx", "chest")
-    elseif id == Tsuna_ID and LoadInteger(hs, heroHid, StringHash("mode g")) == 1 then
+    elseif id == Tsuna_ID and LoadInteger(hs, heroHid, SH_MODE_G) == 1 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_tsunaaura.mdl", "origin")
     elseif id == Rimuru_ID and (GetUnitAbilityLevel(c, RimuruG3_AgiBonus_ID) > 0 or GetUnitAbilityLevel(c, RimuruG3_IntBonus_ID) > 0) then
         call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_BDEF (2313).mdx", c, "origin"), 15)
         call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_blackwhiteaura_3.mdx", c, "origin"), 15)
-    elseif id == Raiden_ID and LoadInteger(hs, heroHid, StringHash("raiden t")) == 1 then
+    elseif id == Raiden_ID and LoadInteger(hs, heroHid, SH_RAIDEN_T) == 1 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdl", "origin")
         call AddUnitAnimationProperties(c, "alternate", true)
     elseif id == Natsu_ID then
-        if LoadInteger(hs, heroHid, StringHash("mode g")) == 1 then
+        if LoadInteger(hs, heroHid, SH_MODE_G) == 1 then
             call EUTU2(EffectSpawn("war3mapImported\\wos_Raienryuu no Houkou.mdl", x, y, 1, 1, 1.35, 125), 15, 125, c)
             call EUTU2(EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 1, 0.35, 0.5, 15), 15, 15, c)
             call EUTU2(EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 90, 0.35, 0.4, 125), 125, 1, c)
@@ -3248,14 +3686,14 @@ function FixHeroPas takes unit c returns nothing
         if GetUnitAbilityLevel(hero, NatsuF_Stats_ID) > 0 then
             call AddTrackedCloneEffect(c, "war3mapImported\\wos_by_wood_effect_order_dange_dbz_chaosaiguanghuan_1_3.mdl", "origin")
         endif
-    elseif id == Erza_ID and LoadInteger(hs, heroHid, StringHash("q armor active")) == 1 and LoadInteger(hs, heroHid, StringHash("fire armor pas")) == 1 then
+    elseif id == Erza_ID and LoadInteger(hs, heroHid, SH_Q_ARMOR_ACTIVE) == 1 and LoadInteger(hs, heroHid, SH_FIRE_ARMOR_PAS) == 1 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_buff_fire_big2.mdx", "weapon")
-    elseif id == Gojo_ID and LoadInteger(hs, heroHid, StringHash("gojo e")) == 1 then
+    elseif id == Gojo_ID and LoadInteger(hs, heroHid, SH_GOJO_E) == 1 then
         if GetUnitAbilityLevel(hero, GojoE_ID) >= 3 then
             call EUTU2(EffectSpawn("war3mapimported\\wos_obr08 (479).mdl", x, y, GetRandomReal(0, 359), 0.5, 1.55, 1), 15, 3, c)
         endif
         call AddTrackedCloneEffect(c, "war3mapimported\\wos_GojoEye1.mdl", "origin")
-    elseif id == Tomioka_ID and LoadInteger(hs, heroHid, StringHash("tomioka add dmg")) == 1 then
+    elseif id == Tomioka_ID and LoadInteger(hs, heroHid, SH_TOMIOKA_ADD_DMG) == 1 then
         call AddTrackedCloneEffect(c, "war3mapImported\\wos_aurapartblue.mdl", "origin")
     endif
     set hero = null

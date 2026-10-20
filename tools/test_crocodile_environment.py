@@ -36,7 +36,7 @@ class Environment(unittest.TestCase):
             'GetDestructableX': lambda d: d.x, 'GetDestructableY': lambda d: d.y,
             'GetDestructableLife': lambda d: d.hp,
             'GetEnumDestructable': lambda: self.enumerated,
-            'Rect': lambda *p: p, 'RemoveRect': lambda r: None,
+            'Rect': lambda *p: p, 'RemoveRect': lambda r: None, 'DecorAcquireRect': lambda *p: p, 'DecorReleaseRect': lambda: None,
             'EnumDestructablesInRect': self.enumerate_decor,
             'Test_DecorLineHit': lambda: self.vm.run('Test_DecorLineHit'),
             'decordestroy': self.decor_damage,

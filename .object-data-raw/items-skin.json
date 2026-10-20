@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3t",
-  "source_sha256": "8706262ad7e64e03f414e5a129b263faf6faf7f35d4a1581308807552b4d3e1f",
+  "source_sha256": "ada071125d5e5bac6cb2aaa344affb5803a3ca78d79328f1874a203d8f6ea708",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -2667,12 +2667,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_706",
-            "_original_value": "TRIGSTR_706",
+            "value": "TRIGSTR_1468",
+            "_original_value": "TRIGSTR_1468",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MDY=",
-            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
+            "_raw_base64": "VFJJR1NUUl8xNDY4",
+            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 500 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 500 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
           },
           "sanity_check": {
             "text": "",
@@ -2687,12 +2687,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_821",
-            "_original_value": "TRIGSTR_821",
+            "value": "TRIGSTR_1973",
+            "_original_value": "TRIGSTR_1973",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84MjE=",
-            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
+            "_raw_base64": "VFJJR1NUUl8xOTcz",
+            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 500 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 500 (default threshold).\nCooldown: 25 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
           },
           "sanity_check": {
             "text": "",
@@ -6831,12 +6831,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7731",
-            "_original_value": "TRIGSTR_7731",
+            "value": "TRIGSTR_050",
+            "_original_value": "TRIGSTR_050",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzMx",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nCooldown: 4 sec.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl8wNTA=",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nAura: You and allies within 1200 range receive 20% more mana regeneration and mana restoration.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nAura: You and allies within 1200 range receive 20% more mana regeneration and mana restoration.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -6869,12 +6869,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7732",
-            "_original_value": "TRIGSTR_7732",
+            "value": "TRIGSTR_051",
+            "_original_value": "TRIGSTR_051",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzMy",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nCooldown: 4 sec.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nCooldown: 4 sec."
+            "_raw_base64": "VFJJR1NUUl8wNTE=",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nAura: You and allies within 1200 range receive 20% more mana regeneration and mana restoration.\nCooldown: 4 sec.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Each decoration you destroy restores 100 HP and 25 MP (up to 15 stacks). After 15 uses, the item goes on a 4 sec cooldown.\nOn cast, slows enemies within 1500 range by 25% and deals 50 damage to nearby decorations (650 range).\nAura: You and allies within 1200 range receive 20% more mana regeneration and mana restoration.\nCooldown: 4 sec."
           },
           "sanity_check": {
             "text": "",
@@ -6963,12 +6963,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7733",
-            "_original_value": "TRIGSTR_7733",
+            "value": "TRIGSTR_1974",
+            "_original_value": "TRIGSTR_1974",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzMz",
-            "resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 14%.\nDuration: 7 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 14%.\nDuration: 7 sec."
+            "_raw_base64": "VFJJR1NUUl8xOTc0",
+            "resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 16%.\nDuration: 7 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 16%.\nDuration: 7 sec."
           },
           "sanity_check": {
             "text": "",
@@ -6983,12 +6983,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7740",
-            "_original_value": "TRIGSTR_7740",
+            "value": "TRIGSTR_1975",
+            "_original_value": "TRIGSTR_1975",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzQw",
-            "resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 14%.\nDuration: 7 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 14%.\nDuration: 7 sec."
+            "_raw_base64": "VFJJR1NUUl8xOTc1",
+            "resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 16%.\nDuration: 7 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: After you deal magic ability damage, your attacks apply a debuff that reduces magic resistance by 16%.\nDuration: 7 sec."
           },
           "sanity_check": {
             "text": "",
@@ -7059,12 +7059,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7743",
-            "_original_value": "TRIGSTR_7743",
+            "value": "TRIGSTR_1976",
+            "_original_value": "TRIGSTR_1976",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzQz",
-            "resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 14% (triggered only by non-attack physical damage).\nDuration: 7 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 14% (triggered only by non-attack physical damage).\nDuration: 7 sec."
+            "_raw_base64": "VFJJR1NUUl8xOTc2",
+            "resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 16% (triggered only by non-attack physical damage).\nDuration: 7 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 16% (triggered only by non-attack physical damage).\nDuration: 7 sec."
           },
           "sanity_check": {
             "text": "",
@@ -7097,12 +7097,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7744",
-            "_original_value": "TRIGSTR_7744",
+            "value": "TRIGSTR_1993",
+            "_original_value": "TRIGSTR_1993",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzQ0",
-            "resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 14% (triggered only by non-attack physical damage).\nDuration: 7 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 14% (triggered only by non-attack physical damage).\nDuration: 7 sec."
+            "_raw_base64": "VFJJR1NUUl8xOTkz",
+            "resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 16% (triggered only by non-attack physical damage).\nDuration: 7 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: After you deal physical ability damage, your attacks apply a debuff that reduces physical resistance by 16% (triggered only by non-attack physical damage).\nDuration: 7 sec."
           },
           "sanity_check": {
             "text": "",
@@ -8457,12 +8457,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7765",
-            "_original_value": "TRIGSTR_7765",
+            "value": "TRIGSTR_052",
+            "_original_value": "TRIGSTR_052",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY1",
-            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r"
+            "_raw_base64": "VFJJR1NUUl8wNTI=",
+            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r"
           },
           "sanity_check": {
             "text": "",
@@ -8477,12 +8477,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7766",
-            "_original_value": "TRIGSTR_7766",
+            "value": "TRIGSTR_053",
+            "_original_value": "TRIGSTR_053",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY2",
-            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r"
+            "_raw_base64": "VFJJR1NUUl8wNTM=",
+            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Water debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r"
           },
           "sanity_check": {
             "text": "",
@@ -8589,12 +8589,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7767",
-            "_original_value": "TRIGSTR_7767",
+            "value": "TRIGSTR_075",
+            "_original_value": "TRIGSTR_075",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY3",
-            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r"
+            "_raw_base64": "VFJJR1NUUl8wNzU=",
+            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r"
           },
           "sanity_check": {
             "text": "",
@@ -8609,12 +8609,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7768",
-            "_original_value": "TRIGSTR_7768",
+            "value": "TRIGSTR_105",
+            "_original_value": "TRIGSTR_105",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NzY4",
-            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 7 sec.\n|cffff0000Does not work together with other items of this type.|r"
+            "_raw_base64": "VFJJR1NUUl8xMDU=",
+            "resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing 200 or more damage to an enemy causes an explosion at its position, dealing 2x main stat damage and applying the Lightning debuff.\nCooldown: 6 sec.\n|cffff0000Does not work together with other items of this type.|r"
           },
           "sanity_check": {
             "text": "",
@@ -10689,12 +10689,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7795",
-            "_original_value": "TRIGSTR_7795",
+            "value": "TRIGSTR_2053",
+            "_original_value": "TRIGSTR_2053",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzk1",
-            "resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces active healing by 7% (up to 7 stacks). At 7 stacks, the target also burns 10 mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 15 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces active healing by 7% (up to 7 stacks). At 7 stacks, the target also burns 10 mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 15 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDUz",
+            "resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces healing and HP regeneration by 5.5% (up to 7 stacks). At 7 stacks, the target also loses 1.35% of max mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces healing and HP regeneration by 5.5% (up to 7 stacks). At 7 stacks, the target also loses 1.5% of max mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -10709,12 +10709,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7797",
-            "_original_value": "TRIGSTR_7797",
+            "value": "TRIGSTR_2055",
+            "_original_value": "TRIGSTR_2055",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzk3",
-            "resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces active healing by 7% (up to 7 stacks). At 7 stacks, the target also burns 10 mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 15 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces active healing by 7% (up to 7 stacks). At 7 stacks, the target also burns 10 mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 15 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDU1",
+            "resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces healing and HP regeneration by 5.5% (up to 7 stacks). At 7 stacks, the target also loses 1.35% of max mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 10 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Each instance of damage you deal applies a debuff that reduces healing and HP regeneration by 5.5% (up to 7 stacks). At 7 stacks, the target also loses 1.5% of max mana per second |cffff0000(cannot be dispelled)|r.\nDuration: 10 sec."
           },
           "sanity_check": {
             "text": "",
@@ -10803,12 +10803,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7798",
-            "_original_value": "TRIGSTR_7798",
+            "value": "TRIGSTR_2056",
+            "_original_value": "TRIGSTR_2056",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzk4",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 25 + 1% of the owner's max HP (up to 300) as magic damage every second to enemies within 850 range.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 25 + 1% of the owner's max HP (up to 300) as magic damage every second to enemies within 850 range."
+            "_raw_base64": "VFJJR1NUUl8yMDU2",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
           },
           "sanity_check": {
             "text": "",
@@ -10841,12 +10841,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7799",
-            "_original_value": "TRIGSTR_7799",
+            "value": "TRIGSTR_2057",
+            "_original_value": "TRIGSTR_2057",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83Nzk5",
-            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 25 + 1% of the owner's max HP (up to 300) as magic damage every second to enemies within 850 range.",
-            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 25 + 1% of the owner's max HP (up to 300) as magic damage every second to enemies within 850 range."
+            "_raw_base64": "VFJJR1NUUl8yMDU3",
+            "resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nPassive: Deals 40 + 1.15% of the owner's max HP (up to 250) as magic damage every second to enemies within 850 range."
           },
           "sanity_check": {
             "text": "",
@@ -11373,12 +11373,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7810",
-            "_original_value": "TRIGSTR_7810",
+            "value": "TRIGSTR_142",
+            "_original_value": "TRIGSTR_142",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODEw",
-            "resolved_value": "+30 str\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+30 str\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl8xNDI=",
+            "resolved_value": "+10 str\n+10 allstats\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff. Each enemy hit grants +5 Strength for 10 sec (up to +35).\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff. Each enemy hit grants +5 Strength for 10 sec (up to +35).\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11411,12 +11411,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7813",
-            "_original_value": "TRIGSTR_7813",
+            "value": "TRIGSTR_147",
+            "_original_value": "TRIGSTR_147",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODEz",
-            "resolved_value": "+30 str\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+30 str\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl8xNDc=",
+            "resolved_value": "+10 str\n+10 allstats\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff. Each enemy hit grants +5 Strength for 10 sec (up to +35).\nCooldown: 20 sec.",
+            "_original_resolved_value": "+10 str\n+10 allstats\nActive: Strikes the target point with a divine axe, dealing 5.5x Strength physical damage and applying the Fire debuff. Each enemy hit grants +5 Strength for 10 sec (up to +35).\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11505,12 +11505,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7814",
-            "_original_value": "TRIGSTR_7814",
+            "value": "TRIGSTR_149",
+            "_original_value": "TRIGSTR_149",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE0",
-            "resolved_value": "+15 allstats\nPassive: Increases the damage of all damaging active items by 3x main stat.\nCooldown: 1 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Increases the damage of all damaging active items by 3x main stat.\nCooldown: 1 sec."
+            "_raw_base64": "VFJJR1NUUl8xNDk=",
+            "resolved_value": "+15 allstats\nPassive: Using any active item reduces that item's cooldown by 5 sec. Damaging active items also deal +3x main stat damage.\nCooldown: 1 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Using any active item reduces that item's cooldown by 5 sec. Damaging active items also deal +3x main stat damage.\nCooldown: 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11525,12 +11525,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7815",
-            "_original_value": "TRIGSTR_7815",
+            "value": "TRIGSTR_238",
+            "_original_value": "TRIGSTR_238",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE1",
-            "resolved_value": "+15 allstats\nPassive: Increases the damage of all damaging active items by 3x main stat.\nCooldown: 1 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Increases the damage of all damaging active items by 3x main stat.\nCooldown: 1 sec."
+            "_raw_base64": "VFJJR1NUUl8yMzg=",
+            "resolved_value": "+15 allstats\nPassive: Using any active item reduces that item's cooldown by 5 sec. Damaging active items also deal +3x main stat damage.\nCooldown: 1 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Using any active item reduces that item's cooldown by 5 sec. Damaging active items also deal +3x main stat damage.\nCooldown: 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11637,12 +11637,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7818",
-            "_original_value": "TRIGSTR_7818",
+            "value": "TRIGSTR_239",
+            "_original_value": "TRIGSTR_239",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE4",
-            "resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 10 sec.",
-            "_original_resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 10 sec."
+            "_raw_base64": "VFJJR1NUUl8yMzk=",
+            "resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 8 sec.",
+            "_original_resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 8 sec."
           },
           "sanity_check": {
             "text": "",
@@ -11657,12 +11657,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7819",
-            "_original_value": "TRIGSTR_7819",
+            "value": "TRIGSTR_248",
+            "_original_value": "TRIGSTR_248",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODE5",
-            "resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 10 sec.",
-            "_original_resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 10 sec."
+            "_raw_base64": "VFJJR1NUUl8yNDg=",
+            "resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 8 sec.",
+            "_original_resolved_value": "+1500 hp\n+10% phys resistance\nPassive: When you take 2000 or more damage and have at least 125 MP, you become immune to damage.\nDuration: 2 sec.\nCooldown: 8 sec."
           },
           "sanity_check": {
             "text": "",
@@ -12225,12 +12225,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7829",
-            "_original_value": "TRIGSTR_7829",
+            "value": "TRIGSTR_249",
+            "_original_value": "TRIGSTR_249",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODI5",
-            "resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 1 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 1 sec."
+            "_raw_base64": "VFJJR1NUUl8yNDk=",
+            "resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 0.95 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 0.95 sec."
           },
           "sanity_check": {
             "text": "",
@@ -12245,12 +12245,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7830",
-            "_original_value": "TRIGSTR_7830",
+            "value": "TRIGSTR_266",
+            "_original_value": "TRIGSTR_266",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODMw",
-            "resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 1 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 1 sec."
+            "_raw_base64": "VFJJR1NUUl8yNjY=",
+            "resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 0.95 sec.",
+            "_original_resolved_value": "+15 allstats\nPassive: Every hit on an enemy with the Lightning debuff deals 0.8x main stat magic damage.\nCooldown: 0.95 sec."
           },
           "sanity_check": {
             "text": "",
@@ -16959,12 +16959,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7851",
-            "_original_value": "TRIGSTR_7851",
+            "value": "TRIGSTR_274",
+            "_original_value": "TRIGSTR_274",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODUx",
-            "resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 550 range for 2.5 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 550 range for 2.5 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl8yNzQ=",
+            "resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 600 range for 3 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 600 range for 3 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -16997,12 +16997,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7859",
-            "_original_value": "TRIGSTR_7859",
+            "value": "TRIGSTR_275",
+            "_original_value": "TRIGSTR_275",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODU5",
-            "resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 550 range for 2.5 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec.",
-            "_original_resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 550 range for 2.5 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec."
+            "_raw_base64": "VFJJR1NUUl8yNzU=",
+            "resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 600 range for 3 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+500 hp\n+15 allstats\n+5% phys resistance\nActive: Roots enemies within 600 range for 3 sec and burns 250 mana.\nDuration: 4 sec.\nCooldown: 20 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17091,12 +17091,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7863",
-            "_original_value": "TRIGSTR_7863",
+            "value": "TRIGSTR_2075",
+            "_original_value": "TRIGSTR_2075",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODYz",
-            "resolved_value": "+15 allstats\nActive: Reveals invisible units in the area.\nDuration: 10 sec.\nCooldown: 15 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Reveals invisible units in the area.\nDuration: 10 sec.\nCooldown: 15 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDc1",
+            "resolved_value": "+15 allstats\nActive: Places a totem at the target point that reveals invisible units in a 1400 area. Every 2 sec a lightning bolt strikes a random enemy within 1100 (invisible units first), dealing 1.25x main stat magic damage.\nDuration: 10 sec.\nCooldown: 15 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Places a totem at the target point that reveals invisible units in a 1400 area. Every 2 sec a lightning bolt strikes a random enemy within 1100 (invisible units first), dealing 1.25x main stat magic damage.\nDuration: 10 sec.\nCooldown: 15 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17111,12 +17111,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7864",
-            "_original_value": "TRIGSTR_7864",
+            "value": "TRIGSTR_2076",
+            "_original_value": "TRIGSTR_2076",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODY0",
-            "resolved_value": "+15 allstats\nActive: Reveals invisible units in the area.\nDuration: 10 sec.\nCooldown: 15 sec.",
-            "_original_resolved_value": "+15 allstats\nActive: Reveals invisible units in the area.\nDuration: 10 sec.\nCooldown: 15 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDc2",
+            "resolved_value": "+15 allstats\nActive: Places a totem at the target point that reveals invisible units in a 1400 area. Every 2 sec a lightning bolt strikes a random enemy within 1100 (invisible units first), dealing 1.25x main stat magic damage.\nDuration: 10 sec.\nCooldown: 15 sec.",
+            "_original_resolved_value": "+15 allstats\nActive: Places a totem at the target point that reveals invisible units in a 1400 area. Every 2 sec a lightning bolt strikes a random enemy within 1100 (invisible units first), dealing 1.25x main stat magic damage.\nDuration: 10 sec.\nCooldown: 15 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17355,12 +17355,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7865",
-            "_original_value": "TRIGSTR_7865",
+            "value": "TRIGSTR_278",
+            "_original_value": "TRIGSTR_278",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODY1",
-            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec, dealing 50 + 0.6x ATK damage. Does not stack; each new attack reapplies the poison.",
-            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec, dealing 50 + 0.6x ATK damage. Does not stack; each new attack reapplies the poison."
+            "_raw_base64": "VFJJR1NUUl8yNzg=",
+            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
+            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17375,12 +17375,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7866",
-            "_original_value": "TRIGSTR_7866",
+            "value": "TRIGSTR_290",
+            "_original_value": "TRIGSTR_290",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODY2",
-            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec, dealing 50 + 0.6x ATK damage. Does not stack; each new attack reapplies the poison.",
-            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks poison the target for 5 sec, dealing 50 + 0.6x ATK damage. Does not stack; each new attack reapplies the poison."
+            "_raw_base64": "VFJJR1NUUl8yOTA=",
+            "resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec.",
+            "_original_resolved_value": "+80 atk\n+15 allstats\nPassive: Attacks make the target bleed for 5 sec, dealing 0.45x ATK physical damage every second. Each further attack on a bleeding target adds that bleed damage to the next tick and shortens the bleed by 1 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17601,12 +17601,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7882",
-            "_original_value": "TRIGSTR_7882",
+            "value": "TRIGSTR_2077",
+            "_original_value": "TRIGSTR_2077",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODgy",
-            "resolved_value": "+15 allstats\nPassive: Dealing 600 or more damage restores HP equal to 35% of the damage dealt.\nCooldown: 3 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 600 or more damage restores HP equal to 35% of the damage dealt.\nCooldown: 3 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDc3",
+            "resolved_value": "+15 allstats\nPassive: Dealing damage to enemies restores HP equal to 15% of the damage dealt.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing damage to enemies restores HP equal to 15% of the damage dealt."
           },
           "sanity_check": {
             "text": "",
@@ -17621,12 +17621,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7886",
-            "_original_value": "TRIGSTR_7886",
+            "value": "TRIGSTR_2078",
+            "_original_value": "TRIGSTR_2078",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODg2",
-            "resolved_value": "+15 allstats\nPassive: Dealing 600 or more damage restores HP equal to 35% of the damage dealt.\nCooldown: 3 sec.",
-            "_original_resolved_value": "+15 allstats\nPassive: Dealing 600 or more damage restores HP equal to 35% of the damage dealt.\nCooldown: 3 sec."
+            "_raw_base64": "VFJJR1NUUl8yMDc4",
+            "resolved_value": "+15 allstats\nPassive: Dealing damage to enemies restores HP equal to 15% of the damage dealt.",
+            "_original_resolved_value": "+15 allstats\nPassive: Dealing damage to enemies restores HP equal to 15% of the damage dealt."
           },
           "sanity_check": {
             "text": "",
@@ -17733,12 +17733,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7887",
-            "_original_value": "TRIGSTR_7887",
+            "value": "TRIGSTR_293",
+            "_original_value": "TRIGSTR_293",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODg3",
-            "resolved_value": "+20 allstats\nPassive: Dealing 500 or more physical damage increases your magic damage by 30%, and dealing magic damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+20 allstats\nPassive: Dealing 500 or more physical damage increases your magic damage by 30%, and dealing magic damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8yOTM=",
+            "resolved_value": "+20 allstats\nPassive: Dealing 250 or more physical damage increases your magic damage by 33%, and dealing magic damage increases your physical damage by 33%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: Dealing 250 or more physical damage increases your magic damage by 33%, and dealing magic damage increases your physical damage by 33%.\nDuration: 3 sec.\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17753,12 +17753,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7888",
-            "_original_value": "TRIGSTR_7888",
+            "value": "TRIGSTR_305",
+            "_original_value": "TRIGSTR_305",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODg4",
-            "resolved_value": "+20 allstats\nPassive: Dealing 500 or more physical damage increases your magic damage by 30%, and dealing magic damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec.",
-            "_original_resolved_value": "+20 allstats\nPassive: Dealing 500 or more physical damage increases your magic damage by 30%, and dealing magic damage increases your physical damage by 30%.\nDuration: 3 sec.\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8zMDU=",
+            "resolved_value": "+20 allstats\nPassive: Dealing 250 or more physical damage increases your magic damage by 33%, and dealing magic damage increases your physical damage by 33%.\nDuration: 3 sec.\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: Dealing 250 or more physical damage increases your magic damage by 33%, and dealing magic damage increases your physical damage by 33%.\nDuration: 3 sec.\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -17979,12 +17979,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7893",
-            "_original_value": "TRIGSTR_7893",
+            "value": "TRIGSTR_2136",
+            "_original_value": "TRIGSTR_2136",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODkz",
-            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
+            "_raw_base64": "VFJJR1NUUl8yMTM2",
+            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above the threshold (keeps the Cup of Tea threshold; 1000 if bought without it), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above the threshold (keeps the Cup of Tea threshold; 1000 if bought without it), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
           },
           "sanity_check": {
             "text": "",
@@ -17999,12 +17999,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7894",
-            "_original_value": "TRIGSTR_7894",
+            "value": "TRIGSTR_2163",
+            "_original_value": "TRIGSTR_2163",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODk0",
-            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
-            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above 1000 (default threshold), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
+            "_raw_base64": "VFJJR1NUUl8yMTYz",
+            "resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above the threshold (keeps the Cup of Tea threshold; 1000 if bought without it), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r",
+            "_original_resolved_value": "+15 allstats\nPassive: Blocks the next instance of incoming damage above the threshold (keeps the Cup of Tea threshold; 1000 if bought without it), grants invisibility for 1.5 sec and moves you back 375 range.\nCooldown: 20 sec.\n|c00FFFC01Type \"-cup N\" to set the threshold (N from 200 to 9999).|r"
           },
           "sanity_check": {
             "text": "",
@@ -18111,12 +18111,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7895",
-            "_original_value": "TRIGSTR_7895",
+            "value": "TRIGSTR_306",
+            "_original_value": "TRIGSTR_306",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83ODk1",
-            "resolved_value": "+20 allstats\nPassive: When you deal 800 or more magic damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec.",
-            "_original_resolved_value": "+20 allstats\nPassive: When you deal 800 or more magic damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8zMDY=",
+            "resolved_value": "+20 allstats\nPassive: When you deal 600 or more magic or physical damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: When you deal 600 or more magic or physical damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18131,12 +18131,12 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7900",
-            "_original_value": "TRIGSTR_7900",
+            "value": "TRIGSTR_307",
+            "_original_value": "TRIGSTR_307",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83OTAw",
-            "resolved_value": "+20 allstats\nPassive: When you deal 800 or more magic damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec.",
-            "_original_resolved_value": "+20 allstats\nPassive: When you deal 800 or more magic damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec."
+            "_raw_base64": "VFJJR1NUUl8zMDc=",
+            "resolved_value": "+20 allstats\nPassive: When you deal 600 or more magic or physical damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec.",
+            "_original_resolved_value": "+20 allstats\nPassive: When you deal 600 or more magic or physical damage, the target takes an additional 30% of that damage after 2 sec (delayed while the enemy is invulnerable).\nCooldown: 5 sec."
           },
           "sanity_check": {
             "text": "",
@@ -18277,6 +18277,954 @@
         }
       ],
       "display_name": "Avalon Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I046",
+        "hex": "49303436"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_308",
+            "_original_value": "TRIGSTR_308",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMDg=",
+            "resolved_value": "Kusanagi",
+            "_original_resolved_value": "Kusanagi"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_315",
+            "_original_value": "TRIGSTR_315",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTU=",
+            "resolved_value": "Kusanagi",
+            "_original_resolved_value": "Kusanagi"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_317",
+            "_original_value": "TRIGSTR_317",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTc=",
+            "resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Kusanagi.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Kusanagi.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0t1c2FuYWdpLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_318",
+            "_original_value": "TRIGSTR_318",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTg=",
+            "resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+40 atk\n+15 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 2x ATK, then returns to the cast point. Does not grant invulnerability.\nShares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I047",
+        "hex": "49303437"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_332",
+            "_original_value": "TRIGSTR_332",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMzI=",
+            "resolved_value": "Kusanagi: Blaze Release",
+            "_original_resolved_value": "Kusanagi: Blaze Release"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_338",
+            "_original_value": "TRIGSTR_338",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMzg=",
+            "resolved_value": "Kusanagi: Blaze Release",
+            "_original_resolved_value": "Kusanagi: Blaze Release"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_339",
+            "_original_value": "TRIGSTR_339",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMzk=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiFire.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiFire.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0t1c2FuYWdpRmlyZS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_340",
+            "_original_value": "TRIGSTR_340",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNDA=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Fire debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi: Blaze Release"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I048",
+        "hex": "49303438"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_385",
+            "_original_value": "TRIGSTR_385",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zODU=",
+            "resolved_value": "Kusanagi: Water Release",
+            "_original_resolved_value": "Kusanagi: Water Release"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_410",
+            "_original_value": "TRIGSTR_410",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTA=",
+            "resolved_value": "Kusanagi: Water Release",
+            "_original_resolved_value": "Kusanagi: Water Release"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_417",
+            "_original_value": "TRIGSTR_417",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTc=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiWater.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiWater.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0t1c2FuYWdpV2F0ZXIuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_418",
+            "_original_value": "TRIGSTR_418",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80MTg=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Water debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi: Water Release"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I049",
+        "hex": "49303439"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_473",
+            "_original_value": "TRIGSTR_473",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzM=",
+            "resolved_value": "Chidori Kusanagi",
+            "_original_resolved_value": "Chidori Kusanagi"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_474",
+            "_original_value": "TRIGSTR_474",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzQ=",
+            "resolved_value": "Chidori Kusanagi",
+            "_original_resolved_value": "Chidori Kusanagi"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_475",
+            "_original_value": "TRIGSTR_475",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzU=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiElectro.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_KusanagiElectro.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0t1c2FuYWdpRWxlY3Ryby5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_476",
+            "_original_value": "TRIGSTR_476",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80NzY=",
+            "resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec.",
+            "_original_resolved_value": "+60 atk\n+20 allstats\nActive: Target an area: dashes once to every enemy within 700 range of the target point, striking each one with an attack that deals 3x ATK and applies the Lightning debuff, then returns to the cast point. Does not grant invulnerability.\nOnly one elemental Kusanagi can be carried. Shares its cooldown with every Kusanagi.\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Chidori Kusanagi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04A",
+        "hex": "49303441"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_498",
+            "_original_value": "TRIGSTR_498",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl80OTg=",
+            "resolved_value": "Hashirama Cells",
+            "_original_resolved_value": "Hashirama Cells"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_508",
+            "_original_value": "TRIGSTR_508",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MDg=",
+            "resolved_value": "Hashirama Cells",
+            "_original_resolved_value": "Hashirama Cells"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_512",
+            "_original_value": "TRIGSTR_512",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTI=",
+            "resolved_value": "+15 str\n+10 allstats\n+10 hp regen\nPassive: Whenever you take damage from an enemy, allied heroes within 700 range restore HP equal to 15% of the damage taken.\nActive: Sacrifices 10% of current HP to gain +15 Strength for 10 sec.\nCooldown: 15 sec.",
+            "_original_resolved_value": "+15 str\n+10 allstats\n+10 hp regen\nPassive: Whenever you take damage from an enemy, allied heroes within 700 range restore HP equal to 15% of the damage taken.\nActive: Sacrifices 10% of current HP to gain +15 Strength for 10 sec.\nCooldown: 15 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_HashiramaCells.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_HashiramaCells.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0hhc2hpcmFtYUNlbGxzLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_513",
+            "_original_value": "TRIGSTR_513",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTM=",
+            "resolved_value": "+15 str\n+10 allstats\n+10 hp regen\nPassive: Whenever you take damage from an enemy, allied heroes within 700 range restore HP equal to 15% of the damage taken.\nActive: Sacrifices 10% of current HP to gain +15 Strength for 10 sec.\nCooldown: 15 sec.",
+            "_original_resolved_value": "+15 str\n+10 allstats\n+10 hp regen\nPassive: Whenever you take damage from an enemy, allied heroes within 700 range restore HP equal to 15% of the damage taken.\nActive: Sacrifices 10% of current HP to gain +15 Strength for 10 sec.\nCooldown: 15 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hashirama Cells"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04B",
+        "hex": "49303442"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_514",
+            "_original_value": "TRIGSTR_514",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTQ=",
+            "resolved_value": "Shun Shun Rikka",
+            "_original_resolved_value": "Shun Shun Rikka"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_515",
+            "_original_value": "TRIGSTR_515",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTU=",
+            "resolved_value": "Shun Shun Rikka",
+            "_original_resolved_value": "Shun Shun Rikka"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShunShunRikka.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ShunShunRikka.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1NodW5TaHVuUmlra2EuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_516",
+            "_original_value": "TRIGSTR_516",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTY=",
+            "resolved_value": "+15 allstats\n+500 hp\nAura: Allies within 1200 range receive 18% more HP regeneration and healing; stuns, silences and roots on them last 0.5 sec shorter.",
+            "_original_resolved_value": "+15 allstats\n+500 hp\nAura: Allies within 1200 range receive 18% more HP regeneration and healing; stuns, silences and roots on them last 0.5 sec shorter."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_517",
+            "_original_value": "TRIGSTR_517",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MTc=",
+            "resolved_value": "+15 allstats\n+500 hp\nAura: Allies within 1200 range receive 18% more HP regeneration and healing; stuns, silences and roots on them last 0.5 sec shorter.",
+            "_original_resolved_value": "+15 allstats\n+500 hp\nAura: Allies within 1200 range receive 18% more HP regeneration and healing; stuns, silences and roots on them last 0.5 sec shorter."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shun Shun Rikka"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04C",
+        "hex": "49303443"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_525",
+            "_original_value": "TRIGSTR_525",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81MjU=",
+            "resolved_value": "Ashisogi Jizo",
+            "_original_resolved_value": "Ashisogi Jizo"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_528",
+            "_original_value": "TRIGSTR_528",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81Mjg=",
+            "resolved_value": "Ashisogi Jizo",
+            "_original_resolved_value": "Ashisogi Jizo"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0FzaGlzb2dpSml6by5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_544",
+            "_original_value": "TRIGSTR_544",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NDQ=",
+            "resolved_value": "+10 agi\n+10 allstats\nPassive: Dealing 100 or more physical damage with abilities (not basic attacks) poisons the enemy, dealing 0.4x Agility physical damage every second for 5 sec. Works on every target; a new hit refreshes the poison but does not stack it.",
+            "_original_resolved_value": "+10 agi\n+10 allstats\nPassive: Dealing 100 or more physical damage with abilities (not basic attacks) poisons the enemy, dealing 0.4x Agility physical damage every second for 5 sec. Works on every target; a new hit refreshes the poison but does not stack it."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_545",
+            "_original_value": "TRIGSTR_545",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NDU=",
+            "resolved_value": "+10 agi\n+10 allstats\nPassive: Dealing 100 or more physical damage with abilities (not basic attacks) poisons the enemy, dealing 0.4x Agility physical damage every second for 5 sec. Works on every target; a new hit refreshes the poison but does not stack it.",
+            "_original_resolved_value": "+10 agi\n+10 allstats\nPassive: Dealing 100 or more physical damage with abilities (not basic attacks) poisons the enemy, dealing 0.4x Agility physical damage every second for 5 sec. Works on every target; a new hit refreshes the poison but does not stack it."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ashisogi Jizo"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04D",
+        "hex": "49303444"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2164",
+            "_original_value": "TRIGSTR_2164",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMTY0",
+            "resolved_value": "Scroll of Mastery",
+            "_original_resolved_value": "Scroll of Mastery"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2167",
+            "_original_value": "TRIGSTR_2167",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMTY3",
+            "resolved_value": "Scroll of Mastery",
+            "_original_resolved_value": "Scroll of Mastery"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2168",
+            "_original_value": "TRIGSTR_2168",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMTY4",
+            "resolved_value": "Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot.",
+            "_original_resolved_value": "Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNTome.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNTome.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5Ub21lLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2201",
+            "_original_value": "TRIGSTR_2201",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMjAx",
+            "resolved_value": "Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot.",
+            "_original_resolved_value": "Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Scroll of Mastery"
     }
   ]
 }

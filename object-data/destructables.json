@@ -957,5 +957,20 @@
     "field_btxf": "",
     "field_btxi": 0,
     "field_bvar": 1
+  },
+  "B044": {
+    "name": "Frostnova Ice Crystal",
+    "base_id": "YTct",
+    "field_bfil": "Doodads\\Icecrown\\Terrain\\Icecrown_Crystal\\Icecrown_Crystal0.mdl",
+    "field_bflh": 0.0,
+    "field_bfvi": 1,
+    "field_bhps": 500.0,
+    "field_bmas": 1.0,
+    "field_bmis": 1.0,
+    "field_boch": 0.0,
+    "field_bptx": "PathTextures\\4x4SimpleSolid.tga",
+    "field_btil": "*",
+    "field_btxf": "",
+    "field_bvar": 1
   }
 }

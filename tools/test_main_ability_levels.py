@@ -94,6 +94,49 @@ class MainAbilityLevels(unittest.TestCase):
                 decoded = raw.parse_object_file(encoded,doc['source_file'],'abilities','level',{})
                 self.assertEqual(encoded,raw.encode_object_file(decoded,doc['source_file']))
 
+    def test_every_declared_rank_has_every_configured_level_field(self):
+        count = 0
+        for identity in self.fields.objects:
+            levels = self.fields.get(identity,'alev',0,1)
+            if levels<=1:
+                continue
+            count += 1
+            mods = self.fields.fields(identity)
+            for field in {f for f,l in mods if 0<l<=levels}:
+                for level in range(1,levels+1):
+                    with self.subTest(identity=identity,field=field,level=level):
+                        self.assertIn((field,level),mods)
+        self.assertGreaterEqual(count,241)
+
+    def test_all_rank_repair_is_idempotent(self):
+        fields = repair.AbilityWorkspace(copy.deepcopy(self.documents))
+        fields.repair_levels([])
+        self.assertEqual([],fields.unresolved)
+        self.assertEqual([],fields.changes)
+
+    def test_first_and_middle_rank_holes_follow_affine_or_cc_contract(self):
+        fields = repair.AbilityWorkspace(copy.deepcopy(self.documents))
+        removed = [('A023','aran',1),('A02K','Idef',1),('A1OA','ahdu',30),
+                   ('APPP','ahdu',14),('A1OT','adur',41),('A1OT','Slo1',41)]
+        before = {(i,f,l):fields.get(i,f,l) for i,f,l in removed}
+        for identity,field,level in removed:
+            for obj in fields.objects[identity]:
+                obj['modifications'] = [m for m in obj['modifications']
+                    if (m['field']['text'],m.get('level'))!=(field,level)]
+        fields.repair_levels([])
+        self.assertEqual([],fields.unresolved)
+        for identity,field,level in removed:
+            self.assertAlmostEqual(before[(identity,field,level)],fields.get(identity,field,level),places=5)
+
+    def test_variant_table_is_not_extrapolated_when_evidence_is_non_linear(self):
+        fields = repair.AbilityWorkspace(copy.deepcopy(self.documents))
+        for obj in fields.objects['A0EG']:
+            obj['modifications'] = [m for m in obj['modifications']
+                if (m['field']['text'],m.get('level'))!=('Inf4',8)]
+        fields.repair_levels([])
+        self.assertIn(('A0EG','Inf4',8),fields.unresolved)
+        self.assertIsNone(fields.get('A0EG','Inf4',8))
+
 
 if __name__=='__main__':
     unittest.main()

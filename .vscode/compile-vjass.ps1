@@ -115,15 +115,25 @@ else {
     $TargetDescription = Get-RelativeProjectPath $ActiveFullPath
 }
 
-# Discover every project JASS source. Generated output, Warcraft API stubs, and the
-# compiled map script are excluded; no dependency filename list is maintained here.
-$CandidateFiles = Get-ChildItem -LiteralPath $Root -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
+# MAIN supplies shared libraries; index only the requested source roots.
+# Walking the entire workspace used to read recovery backups and TEST snapshots,
+# taking minutes and introducing stale/ambiguous library providers.
+$MainSourceRoot = Get-FullPath (Join-Path $Root 'triggers')
+$DiscoveryRoots = @($MainSourceRoot)
+if ($SourceRootFullPath -and $SourceRootFullPath -ine $MainSourceRoot -and -not $SourceRootFullPath.StartsWith($MainSourceRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
+    $DiscoveryRoots += $SourceRootFullPath
+} elseif ($ActiveFullPath -and -not $ActiveFullPath.StartsWith($MainSourceRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
+    $DiscoveryRoots += Split-Path -Parent $ActiveFullPath
+}
+$CandidateFiles = @($DiscoveryRoots | Select-Object -Unique | ForEach-Object {
+    Get-ChildItem -LiteralPath $_ -Recurse -File -ErrorAction Stop
+}) | Where-Object {
     $_.Extension -in @('.j', '.jass')
 } | ForEach-Object {
     $_.FullName
 } | Where-Object {
     $Relative = Get-RelativeProjectPath $_
-    $Relative -notmatch '^(?i)(libs|\.vscode|\.git|\.build|_build)[\\/]' -and
+    $Relative -notmatch '(?i)(^|[\\/])(libs|\.vscode|\.git|\.build|_build|backups|logs)[\\/]' -and
     $Relative -notmatch '^(?i)war3map\.j$' -and
     !$DisabledTriggerPaths.ContainsKey((Get-FullPath $_))
 }
@@ -186,6 +196,19 @@ foreach ($File in $FamilyFiles) {
     Visit-Source $File
 }
 
+# Legacy plain JASS functions also depend on import order without declaring
+# library edges. Use the same enabled MAIN order as check_wos_ui.py after
+# validating the declared dependency closure above.
+if ($SourceRootFullPath -ieq $MainSourceRoot) {
+    $ResolvedFiles = New-Object System.Collections.Generic.List[string]
+    $ResolvedFiles.Add((Join-Path $MainSourceRoot 'Map_Header.j'))
+    foreach ($Property in $TriggerSettingsDocument.triggers.PSObject.Properties) {
+        if ($Property.Value) {
+            $ResolvedFiles.Add((Get-FullPath (Join-Path $MainSourceRoot ([string]$Property.Name))))
+        }
+    }
+}
+
 if (!(Test-Path -LiteralPath $BuildDir)) {
     New-Item -ItemType Directory -Path $BuildDir | Out-Null
 }
@@ -242,8 +265,15 @@ $Process = Start-Process `
     -FilePath $JassHelper `
     -ArgumentList $Arguments `
     -WorkingDirectory (Split-Path -Parent $JassHelper) `
-    -Wait `
+    -WindowStyle Hidden `
     -PassThru
+if (-not $Process.WaitForExit(30000)) {
+    $Process.Kill()
+    $errors = Join-Path (Split-Path -Parent $JassHelper) 'logs/compileerrors.txt'
+    if (Test-Path -LiteralPath $errors) { Get-Content -LiteralPath $errors -Tail 20 | Out-Host }
+    throw 'JassHelper did not exit within 30 seconds; inspect the compiler errors above.'
+}
+$Process.Refresh()
 
 Write-Host ""
 if ((Test-Path -LiteralPath $OutputFile) -and $Process.ExitCode -eq 0) {

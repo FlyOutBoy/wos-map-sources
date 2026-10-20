@@ -9,7 +9,7 @@
 //
 //  The only section normally edited is ConfigureEmojis below.
 // ============================================================================
-library EmojiStandalone requires GearSystems
+library EmojiStandalone initializer Emoji_RegisterUI requires GearSystems, WOSUI, CustomImageChat
 
 globals
     private constant integer EMOJI_MAX             = 30
@@ -18,17 +18,38 @@ globals
 
     private constant real    EMOJI_COOLDOWN        = 3.25
     private constant real    EMOJI_EFFECT_DURATION = 3.50
-    private constant real    EMOJI_PERIOD          = 0.05
+    private constant real    EMOJI_PERIOD          = 0.10
 
-    // 0.0288 * 2: every emoji button is exactly twice the old CustomImage size.
-    private constant real    EMOJI_BUTTON_SIZE     = 0.0576
-    private constant real    EMOJI_BUTTON_STEP     = 0.0648
+    // Compact icon grid; effect IDs, permissions and sync handlers are unchanged.
+    private constant real    EMOJI_BUTTON_SIZE     = 0.0420
+    private constant real    EMOJI_BUTTON_STEP     = 0.0480
     private constant real    EMOJI_HEADER_HEIGHT   = 0.0260
     private constant real    EMOJI_CLOSE_SIZE      = 0.0200
-    private constant integer EMOJI_PANEL_ALPHA     = 100
+    private constant integer EMOJI_PANEL_ALPHA     = 235
     private constant string  EMOJI_CLOSE_TEXTURE   = "Music\\Music_Close.blp"
     private constant real    EMOJI_PANEL_CENTER_X  = 0.370
     private constant real    EMOJI_PANEL_CENTER_Y  = 0.310
+    // Checkpoint 21 wheel (same interaction as the Z ping wheel): hold the
+    // emote key, hover an emote, release or click to send; Esc/right click
+    // cancels. Clicking the toolbar button opens it in the screen centre.
+    private constant real    EMOJI_WHEEL_SIZE      = 0.210
+    private constant real    EMOJI_WHEEL_RADIUS    = 0.074
+    private constant real    EMOJI_ICON_SIZE       = 0.034
+    private constant real    EMOJI_ICON_HOVER      = 0.044
+    private integer array EmojiWheelSlot
+    private integer EmojiWheelCount = 0
+    private boolean EmojiKeyHeld = false
+    private real EmojiCenterX = 0.40
+    private real EmojiCenterY = 0.32
+    private framehandle EmojiHotkeyOwner = null
+    private boolean EmojiHotkeyRegistered = false
+    private boolean EmojiRightWasDown = false
+    // Checkpoint 22: pages of 15 emotes, page arrows only when needed, a
+    // glow ring marks the hovered emote (icons no longer change size).
+    private constant integer EMOJI_PAGE_SIZE = 15
+    private integer EmojiPage = 0
+    private integer EmojiPageCount = 1
+    private integer EmojiAllowedCount = 0
 
     private integer EmojiCount = 0
     private string array EmojiModel
@@ -40,11 +61,7 @@ globals
 
     private oskeytype EmojiMenuKey = OSKEY_K
     private integer EmojiMenuMeta = 0
-
-    private framehandle EmojiPanel = null
-    private framehandle EmojiCloseButton = null
     private framehandle EmojiCloseIcon = null
-    private framehandle EmojiCooldownText = null
     private framehandle array EmojiButton
     private framehandle array EmojiButtonIcon
     private trigger EmojiFrameTrigger = null
@@ -53,7 +70,6 @@ globals
     private timer EmojiTimer = null
 
     // This state is used only for local frame visibility.
-    private boolean array EmojiPanelOpen
 
     private real array EmojiPlayerCooldown
     private unit array EmojiBoundHero
@@ -84,6 +100,23 @@ function Emoji_Add takes string modelPath, string texturePath returns integer
 endfunction
 
 // Marks an emoji as VIP3-only (true), or makes it available to everyone (false).
+// Shop VIP page: texture of the n-th (1-based) emote, VIP III-only or common.
+function Emoji_GetEmoteTexture takes integer index, boolean vip3 returns string
+    local integer i = 1
+    local integer found = 0
+    loop
+        exitwhen i > EmojiCount
+        if EmojiVIP3Only[i] == vip3 then
+            set found = found + 1
+            if found == index then
+                return EmojiTexture[i]
+            endif
+        endif
+        set i = i + 1
+    endloop
+    return ""
+endfunction
+
 function Emoji_SetVIP3Only takes integer emojiId, boolean flag returns nothing
     if emojiId > 0 and emojiId <= EmojiCount then
         set EmojiVIP3Only[emojiId] = flag
@@ -232,77 +265,114 @@ private function IsEmojiAllowed takes player p, integer emojiId returns boolean
 
     // Reuse the map's existing VIP3 source directly; no access-level
     // functions are copied or redeclared in this standalone trigger.
-    return not EmojiVIP3Only[emojiId] or VIPCheckLvl3(FramePlayerFirstName[GetPlayerId(p)])
+    // VIP emotes: same VIP level as the chat emojis (set at map start), the
+    // nickname list, or Test Mode (so they can be tried out there).
+    return not EmojiVIP3Only[emojiId] or TestMode or CustomChat_GetPlayerAccessLevel(p) >= 3 or VIPCheckLvl3(FramePlayerFirstName[GetPlayerId(p)])
 endfunction
 
 private function ApplyPaletteForPlayer takes player p returns nothing
-    local integer visibleCount = 0
-    local integer visibleSlot = 0
-    local integer columns
-    local integer rows
-    local integer column
-    local integer row
     local integer i = 1
-    local real panelWidth
-    local real panelHeight
-    local real x
-    local real y
-
+    local integer slot = 0
+    local integer order = 0
+    local real angle
     call HidePanelButtons()
-
+    set EmojiWheelCount = 0
+    set EmojiAllowedCount = 0
     loop
         exitwhen i > EmojiCount
         if IsEmojiAllowed(p, i) then
-            set visibleCount = visibleCount + 1
+            set EmojiAllowedCount = EmojiAllowedCount + 1
         endif
         set i = i + 1
     endloop
-
-    set columns = visibleCount
-    if columns > EMOJI_COLUMNS then
-        set columns = EMOJI_COLUMNS
+    set EmojiPageCount = IMaxBJ(1, (EmojiAllowedCount + EMOJI_PAGE_SIZE - 1) / EMOJI_PAGE_SIZE)
+    if EmojiPage >= EmojiPageCount then
+        set EmojiPage = 0
     endif
-    if columns <= 0 then
-        set columns = 1
-    endif
-
-    set rows = (visibleCount + EMOJI_COLUMNS - 1) / EMOJI_COLUMNS
-    if rows <= 0 then
-        set rows = 1
-    endif
-
-    set panelWidth = 0.010 + EMOJI_BUTTON_SIZE + I2R(columns - 1) * EMOJI_BUTTON_STEP
-    set panelHeight = 0.010 + EMOJI_BUTTON_SIZE + I2R(rows - 1) * EMOJI_BUTTON_STEP + EMOJI_HEADER_HEIGHT
-    call BlzFrameSetSize(EmojiPanel, panelWidth, panelHeight)
-    call BlzFrameClearAllPoints(EmojiPanel)
-    call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EMOJI_PANEL_CENTER_X, EMOJI_PANEL_CENTER_Y)
-
+    // Only the current page's emotes are spread around the ring.
     set i = 1
     loop
         exitwhen i > EmojiCount
+        set EmojiWheelSlot[i] = -1
         if IsEmojiAllowed(p, i) then
-            set column = ModuloInteger(visibleSlot, EMOJI_COLUMNS)
-            set row = visibleSlot / EMOJI_COLUMNS
-            set x = 0.005 + I2R(column) * EMOJI_BUTTON_STEP
-            set y = 0.005 + I2R(rows - 1 - row) * EMOJI_BUTTON_STEP
-
-            call BlzFrameClearAllPoints(EmojiButton[i])
-            call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
-            call BlzFrameSetVisible(EmojiButton[i], true)
-            set visibleSlot = visibleSlot + 1
+            if order >= EmojiPage * EMOJI_PAGE_SIZE and order < (EmojiPage + 1) * EMOJI_PAGE_SIZE then
+                set EmojiWheelSlot[i] = EmojiWheelCount
+                set EmojiWheelCount = EmojiWheelCount + 1
+            endif
+            set order = order + 1
         endif
         set i = i + 1
     endloop
+    call BlzFrameClearAllPoints(EmojiPanel)
+    call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EmojiCenterX, EmojiCenterY)
+    call BlzFrameSetSize(EmojiPanel, EMOJI_WHEEL_SIZE, EMOJI_WHEEL_SIZE)
+    set i = 1
+    loop
+        exitwhen i > EmojiCount
+        set slot = EmojiWheelSlot[i]
+        if slot >= 0 then
+            // Clockwise from the top, evenly spread around the ring.
+            set angle = (90.00 - I2R(slot) * 360.00 / I2R(EmojiWheelCount)) * bj_DEGTORAD
+            call BlzFrameClearAllPoints(EmojiButton[i])
+            call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_CENTER, EmojiPanel, FRAMEPOINT_CENTER, EMOJI_WHEEL_RADIUS * Cos(angle), EMOJI_WHEEL_RADIUS * Sin(angle))
+            call BlzFrameSetSize(EmojiButton[i], EMOJI_ICON_SIZE, EMOJI_ICON_SIZE)
+            call BlzFrameSetVisible(EmojiButton[i], true)
+        endif
+        set i = i + 1
+    endloop
+    set EmojiHover = 0
+    call BlzFrameSetVisible(EmojiHoverGlow, false)
+    call BlzFrameSetVisible(EmojiPrev, EmojiPageCount > 1)
+    call BlzFrameSetVisible(EmojiNext, EmojiPageCount > 1)
+    call BlzFrameSetVisible(EmojiPageText, EmojiPageCount > 1)
+    call BlzFrameSetText(EmojiPageText, WUI_GOLD + I2S(EmojiPage + 1) + " / " + I2S(EmojiPageCount) + "|r")
 endfunction
 
 private function UpdateCooldownText takes nothing returns nothing
     local integer pid = GetPlayerId(GetLocalPlayer())
-
     if EmojiPlayerCooldown[pid] > 0.05 then
-        call BlzFrameSetText(EmojiCooldownText, "|cffffcc00Cooldown: " + R2SW(EmojiPlayerCooldown[pid], 0, 1) + "s|r")
+        call BlzFrameSetText(EmojiCooldownText, "|cffffcc00" + R2SW(EmojiPlayerCooldown[pid], 0, 1) + "s|r")
+    elseif EmojiHover > 0 then
+        call BlzFrameSetText(EmojiCooldownText, WUI_GOLD + "Send|r")
     else
-        call BlzFrameSetText(EmojiCooldownText, "|cff40ff40Ready|r")
+        call BlzFrameSetText(EmojiCooldownText, WUI_GOLD + "Emote|r")
     endif
+endfunction
+
+// Local: which emote lies under the mouse (by angle around the wheel centre).
+private function UpdateEmojiHover takes nothing returns nothing
+    local real dx = BlzPixelToFrameX(BlzGetMouseScreenPosX()) - EmojiCenterX
+    local real dy = BlzPixelToFrameY(BlzGetMouseScreenPosY()) - EmojiCenterY
+    local real radius = SquareRoot(dx * dx + dy * dy)
+    local integer slot = -1
+    local integer hover = 0
+    local integer i = 1
+    local real turn
+    if EmojiWheelCount > 0 and radius >= 0.030 and radius <= 0.112 then
+        // Angle measured clockwise from the top, shifted by half a sector.
+        set turn = 90.00 - Atan2(dy, dx) * bj_RADTODEG + 180.00 / I2R(EmojiWheelCount)
+        loop
+            exitwhen turn >= 0.00
+            set turn = turn + 360.00
+        endloop
+        set slot = ModuloInteger(R2I(turn * I2R(EmojiWheelCount) / 360.00), EmojiWheelCount)
+    endif
+    loop
+        exitwhen i > EmojiCount
+        if EmojiWheelSlot[i] >= 0 and EmojiWheelSlot[i] == slot then
+            set hover = i
+        endif
+        set i = i + 1
+    endloop
+    if hover != EmojiHover then
+        if hover > 0 then
+            call BlzFrameClearAllPoints(EmojiHoverGlow)
+            call BlzFrameSetPoint(EmojiHoverGlow, FRAMEPOINT_CENTER, EmojiButton[hover], FRAMEPOINT_CENTER, 0.00, 0.00)
+            call BlzFrameSetSize(EmojiHoverGlow, EMOJI_ICON_HOVER, EMOJI_ICON_HOVER)
+        endif
+        call BlzFrameSetVisible(EmojiHoverGlow, hover > 0)
+    endif
+    set EmojiHover = hover
 endfunction
 
 function Emoji_ShowMenu takes player p, boolean flag returns nothing
@@ -311,14 +381,35 @@ function Emoji_ShowMenu takes player p, boolean flag returns nothing
     if GetLocalPlayer() == p then
         set EmojiPanelOpen[pid] = flag
         if flag then
+            call WUI_EnterWheel(1)
+            set EmojiRightWasDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
             call ApplyPaletteForPlayer(p)
             call UpdateCooldownText()
         else
+            set EmojiHold = false
+            set EmojiHover = 0
             call HidePanelButtons()
         endif
         call BlzFrameSetVisible(EmojiPanel, flag)
         call BlzFrameSetVisible(EmojiCloseButton, flag)
         call BlzFrameSetVisible(EmojiCooldownText, flag)
+        if not flag then
+            call BlzFrameSetVisible(EmojiHoverGlow, false)
+            call BlzFrameSetVisible(EmojiPrev, false)
+            call BlzFrameSetVisible(EmojiNext, false)
+            call BlzFrameSetVisible(EmojiPageText, false)
+        endif
+    endif
+endfunction
+
+function Emoji_ToggleMenu takes player p returns nothing
+    call WUI_StopPingTarget(p)
+    if EmojiInitialized and GetLocalPlayer() == p then
+        // Toolbar click: the wheel opens in the screen centre and stays open.
+        set EmojiCenterX = 0.40
+        set EmojiCenterY = 0.32
+        set EmojiHold = false
+        call Emoji_ShowMenu(p, not EmojiPanelOpen[GetPlayerId(p)])
     endif
 endfunction
 
@@ -353,6 +444,17 @@ private function OnEmojiClick takes nothing returns nothing
 
     if clicked == EmojiCloseButton then
         call Emoji_ShowMenu(p, false)
+    elseif clicked == EmojiPrev or clicked == EmojiNext then
+        // Page arrows: local presentation; the wheel stays where it is.
+        if GetLocalPlayer() == p then
+            if clicked == EmojiNext then
+                set EmojiPage = ModuloInteger(EmojiPage + 1, IMaxBJ(1, EmojiPageCount))
+            else
+                set EmojiPage = ModuloInteger(EmojiPage - 1 + EmojiPageCount, IMaxBJ(1, EmojiPageCount))
+            endif
+            set EmojiHold = false
+            call ApplyPaletteForPlayer(p)
+        endif
     else
         loop
             exitwhen i > EmojiCount
@@ -367,13 +469,10 @@ private function OnEmojiClick takes nothing returns nothing
         endloop
     endif
 
-    if GetLocalPlayer() == p then
-        call BlzFrameSetEnable(clicked, false)
-        call BlzFrameSetEnable(clicked, true)
-    endif
 
     set clicked = null
     set p = null
+    call WUI_ResetClickedButtonFocus()
 endfunction
 
 private function OnEmojiKey takes nothing returns nothing
@@ -383,9 +482,34 @@ private function OnEmojiKey takes nothing returns nothing
     local integer metaKey = BlzGetTriggerPlayerMetaKey()
     local integer i = 1
 
-    if key == EmojiMenuKey and metaKey == EmojiMenuMeta then
-        call Emoji_ShowMenu(p, not EmojiPanelOpen[pid])
-    else
+    if key == OSKEY_ESCAPE or (key == WUI_GetHotkey(WUI_HOTKEY_EMOTE, pid) and BlzGetTriggerPlayerIsKeyDown()) then
+        call WUI_StopPingTarget(p)
+    endif
+    if key == WUI_GetHotkey(WUI_HOTKEY_EMOTE, pid) then
+        // Hold to open at the cursor, release to send the hovered emote.
+        if GetLocalPlayer() == p then
+            if not BlzGetTriggerPlayerIsKeyDown() then
+                set EmojiKeyHeld = false
+            endif
+            if BlzGetTriggerPlayerIsKeyDown() then
+                if not EmojiPanelOpen[pid] and EmojiInitialized and not EmojiKeyHeld then
+                    set EmojiCenterX = RMaxBJ(0.13, RMinBJ(0.67, BlzPixelToFrameX(BlzGetMouseScreenPosX())))
+                    set EmojiCenterY = RMaxBJ(0.25, RMinBJ(0.46, BlzPixelToFrameY(BlzGetMouseScreenPosY())))
+                    call Emoji_ShowMenu(p, true)
+                    set EmojiHold = true
+                endif
+                set EmojiKeyHeld = true
+            elseif EmojiHold then
+                call UpdateEmojiHover()
+                if EmojiHover > 0 then
+                    call BlzSendSyncData("WEMJ", I2S(EmojiHover))
+                endif
+                call Emoji_ShowMenu(p, false)
+            endif
+        endif
+    elseif key == OSKEY_ESCAPE then
+        call Emoji_ShowMenu(p, false)
+    elseif BlzGetTriggerPlayerIsKeyDown() == false then
         loop
             exitwhen i > EmojiCount
             if key == EmojiHotkey[i] and metaKey == EmojiHotkeyMeta[i] then
@@ -399,6 +523,34 @@ private function OnEmojiKey takes nothing returns nothing
 
     set key = null
     set p = null
+endfunction
+
+// Owner-local and inactive while the palette is closed; no world click events.
+private function Emoji_PollMouse takes nothing returns nothing
+    local player p = GetLocalPlayer()
+    local boolean rightDown
+    if EmojiPanelOpen[GetPlayerId(p)] then
+        set rightDown = BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT)
+        if rightDown and not EmojiRightWasDown then
+            call Emoji_ShowMenu(p, false)
+        endif
+        set EmojiRightWasDown = rightDown
+    endif
+    set p = null
+endfunction
+
+// The toolbar button owns the key badge; registration runs once both the
+// key trigger (Emoji_Init) and the owner (toolbar) exist, in either order.
+private function Emoji_TryRegisterHotkey takes nothing returns nothing
+    if not EmojiHotkeyRegistered and EmojiKeyTrigger != null and EmojiHotkeyOwner != null then
+        set EmojiHotkeyRegistered = true
+        call WUI_RegisterHotkey(WUI_HOTKEY_EMOTE, EmojiKeyTrigger, EmojiMenuKey, "K", true, EmojiHotkeyOwner)
+    endif
+endfunction
+
+function Emoji_AttachHotkeyBadge takes framehandle owner returns nothing
+    set EmojiHotkeyOwner = owner
+    call Emoji_TryRegisterHotkey()
 endfunction
 
 private function Periodic takes nothing returns nothing
@@ -417,6 +569,10 @@ private function Periodic takes nothing returns nothing
     endloop
 
     if EmojiPanelOpen[localPid] then
+        call Emoji_PollMouse()
+    endif
+    if EmojiPanelOpen[localPid] then
+        call UpdateEmojiHover()
         call UpdateCooldownText()
     endif
 
@@ -458,36 +614,38 @@ private function CreatePanel takes nothing returns nothing
     set panelWidth = 0.010 + EMOJI_BUTTON_SIZE + I2R(columns - 1) * EMOJI_BUTTON_STEP
     set panelHeight = 0.010 + EMOJI_BUTTON_SIZE + I2R(rows - 1) * EMOJI_BUTTON_STEP + EMOJI_HEADER_HEIGHT
 
-    set EmojiPanel = BlzCreateFrameByType("BACKDROP", "WosEmojiPanel", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-    call BlzFrameSetSize(EmojiPanel, panelWidth, panelHeight)
+    // Same graphite + gold wheel as the team pings.
+
+    set EmojiPanel = BlzCreateFrameByType("BACKDROP", "WOSEmoteWheel", WUI_GetRoot(), "", 0)
+    call WUI_RegisterRangeCover(EmojiPanel)
+    call BlzFrameSetSize(EmojiPanel, EMOJI_WHEEL_SIZE, EMOJI_WHEEL_SIZE)
     call BlzFrameSetAbsPoint(EmojiPanel, FRAMEPOINT_CENTER, EMOJI_PANEL_CENTER_X, EMOJI_PANEL_CENTER_Y)
-    call BlzFrameSetTexture(EmojiPanel, "Textures\\black32.blp", 0, true)
-    call BlzFrameSetAlpha(EmojiPanel, EMOJI_PANEL_ALPHA)
+    call BlzFrameSetTexture(EmojiPanel, "UI\\WOS\\wheel-ring.tga", 0, true)
     call BlzFrameSetLevel(EmojiPanel, 1)
     call BlzFrameSetEnable(EmojiPanel, false)
 
     // Same close-button icon and button style as MusicPlayer.j.
     // It is parented to Game UI so the panel's transparency is not inherited.
-    set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
-    call BlzFrameSetPoint(EmojiCloseButton, FRAMEPOINT_TOPRIGHT, EmojiPanel, FRAMEPOINT_TOPRIGHT, -0.004, -0.004)
+    set EmojiCloseButton = BlzCreateFrameByType("BUTTON", "WosEmojiCloseButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
+    call BlzFrameSetPoint(EmojiCloseButton, FRAMEPOINT_TOPRIGHT, EmojiPanel, FRAMEPOINT_TOPRIGHT, -0.010, -0.010)
     call BlzFrameSetSize(EmojiCloseButton, EMOJI_CLOSE_SIZE, EMOJI_CLOSE_SIZE)
     call BlzFrameSetLevel(EmojiCloseButton, 3)
     call BlzTriggerRegisterFrameEvent(EmojiFrameTrigger, EmojiCloseButton, FRAMEEVENT_CONTROL_CLICK)
 
     set EmojiCloseIcon = BlzCreateFrameByType("BACKDROP", "WosEmojiCloseIcon", EmojiCloseButton, "", 0)
     call BlzFrameSetAllPoints(EmojiCloseIcon, EmojiCloseButton)
-    call BlzFrameSetTexture(EmojiCloseIcon, EMOJI_CLOSE_TEXTURE, 0, true)
+    call BlzFrameSetTexture(EmojiCloseIcon, "UI\\WOS\\glyph-close.tga", 0, true)
     call BlzFrameSetEnable(EmojiCloseIcon, false)
 
     // Local status line inside the header: green when ready, countdown otherwise.
-    set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "", 0)
-    call BlzFrameSetPoint(EmojiCooldownText, FRAMEPOINT_TOP, EmojiPanel, FRAMEPOINT_TOP, 0.000, -0.006)
-    call BlzFrameSetSize(EmojiCooldownText, 0.145, 0.018)
+    set EmojiCooldownText = BlzCreateFrameByType("TEXT", "WosEmojiCooldownText", WUI_GetRoot(), "", 0)
+    call BlzFrameSetPoint(EmojiCooldownText, FRAMEPOINT_CENTER, EmojiPanel, FRAMEPOINT_CENTER, 0.000, 0.000)
+    call BlzFrameSetSize(EmojiCooldownText, 0.050, 0.018)
     call BlzFrameSetTextAlignment(EmojiCooldownText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(EmojiCooldownText, 0.85)
     call BlzFrameSetLevel(EmojiCooldownText, 3)
     call BlzFrameSetEnable(EmojiCooldownText, false)
-    call BlzFrameSetText(EmojiCooldownText, "|cff40ff40Ready|r")
+    call BlzFrameSetText(EmojiCooldownText, WUI_GOLD + "Emote|r")
 
     loop
         exitwhen i > EmojiCount
@@ -498,7 +656,8 @@ private function CreatePanel takes nothing returns nothing
 
         // Same visual approach as CustomImage: a Warcraft button template with
         // a separate texture backdrop on top.
-        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "ScoreScreenTabButtonTemplate", 0)
+        set EmojiButton[i] = BlzCreateFrameByType("BUTTON", "WosEmojiButton", WUI_GetRoot(), "WOSIconButtonTemplate", 0)
+        call BlzFrameSetLevel(EmojiButton[i], 3)
         call BlzFrameSetPoint(EmojiButton[i], FRAMEPOINT_BOTTOMLEFT, EmojiPanel, FRAMEPOINT_BOTTOMLEFT, x, y)
         call BlzFrameSetSize(EmojiButton[i], EMOJI_BUTTON_SIZE, EMOJI_BUTTON_SIZE)
         call BlzFrameSetAlpha(EmojiButton[i], 255)
@@ -513,9 +672,33 @@ private function CreatePanel takes nothing returns nothing
         set i = i + 1
     endloop
 
+    // Hover ring + page arrows (bottom of the wheel), created once.
+    set EmojiHoverGlow = BlzCreateFrameByType("BACKDROP", "WosEmojiHoverGlow", WUI_GetRoot(), "", 0)
+    call BlzFrameSetTexture(EmojiHoverGlow, "UI\\WOS\\learn-glow.tga", 0, true)
+    call BlzFrameSetLevel(EmojiHoverGlow, 4)
+    call BlzFrameSetEnable(EmojiHoverGlow, false)
+    set EmojiPrev = WUI_TextButton("WosEmojiPrev", WUI_GetRoot(), "<", 0.016, 0.016)
+    call BlzFrameSetPoint(EmojiPrev, FRAMEPOINT_CENTER, EmojiPanel, FRAMEPOINT_BOTTOM, -0.024, 0.010)
+    call BlzFrameSetLevel(EmojiPrev, 5)
+    set EmojiNext = WUI_TextButton("WosEmojiNext", WUI_GetRoot(), ">", 0.016, 0.016)
+    call BlzFrameSetPoint(EmojiNext, FRAMEPOINT_CENTER, EmojiPanel, FRAMEPOINT_BOTTOM, 0.024, 0.010)
+    call BlzFrameSetLevel(EmojiNext, 5)
+    set EmojiPageText = BlzCreateFrameByType("TEXT", "WosEmojiPageText", WUI_GetRoot(), "", 0)
+    call BlzFrameSetPoint(EmojiPageText, FRAMEPOINT_CENTER, EmojiPanel, FRAMEPOINT_BOTTOM, 0.00, 0.010)
+    call BlzFrameSetSize(EmojiPageText, 0.030 / 0.70, 0.012 / 0.70)
+    call BlzFrameSetScale(EmojiPageText, 0.70)
+    call BlzFrameSetTextAlignment(EmojiPageText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+    call BlzFrameSetEnable(EmojiPageText, false)
+    call BlzTriggerRegisterFrameEvent(EmojiFrameTrigger, EmojiPrev, FRAMEEVENT_CONTROL_CLICK)
+    call BlzTriggerRegisterFrameEvent(EmojiFrameTrigger, EmojiNext, FRAMEEVENT_CONTROL_CLICK)
+
     call BlzFrameSetVisible(EmojiPanel, false)
     call BlzFrameSetVisible(EmojiCloseButton, false)
     call BlzFrameSetVisible(EmojiCooldownText, false)
+    call BlzFrameSetVisible(EmojiHoverGlow, false)
+    call BlzFrameSetVisible(EmojiPrev, false)
+    call BlzFrameSetVisible(EmojiNext, false)
+    call BlzFrameSetVisible(EmojiPageText, false)
     call HidePanelButtons()
 endfunction
 
@@ -525,7 +708,7 @@ private function RegisterKeys takes nothing returns nothing
 
     loop
         exitwhen pid >= bj_MAX_PLAYERS
-        call BlzTriggerRegisterPlayerKeyEvent(EmojiKeyTrigger, Player(pid), EmojiMenuKey, EmojiMenuMeta, false)
+        call BlzTriggerRegisterPlayerKeyEvent(EmojiKeyTrigger, Player(pid), OSKEY_ESCAPE, 0, true)
 
         set i = 1
         loop
@@ -570,7 +753,12 @@ function Emoji_Init takes nothing returns nothing
     call TriggerAddAction(EmojiFrameTrigger, function OnEmojiClick)
     call TriggerAddAction(EmojiSyncTrigger, function OnEmojiSync)
     call TriggerAddAction(EmojiKeyTrigger, function OnEmojiKey)
+    call Emoji_TryRegisterHotkey()
     call TimerStart(EmojiTimer, EMOJI_PERIOD, true, function Periodic)
+endfunction
+
+private function Emoji_RegisterUI takes nothing returns nothing
+    call WUI_OnReady(function Emoji_Init)
 endfunction
 
 endlibrary

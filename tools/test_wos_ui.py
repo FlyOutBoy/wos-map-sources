@@ -15,8 +15,11 @@ def load_source(filename):
     source = (ROOT / 'triggers/WOS_Start' / filename).read_text(encoding='utf-8-sig')
     # Comments include retired implementations, which are not compiled by Warcraft.
     source = re.sub(r'/\*.*?\*/', '', source, flags=re.S)
-    vm = JassState(source.replace('static if LIBRARY_DamageStats then','if LIBRARY_DamageStats then'))
+    source = source.replace('static if LIBRARY_DamageStats then','if LIBRARY_DamageStats then')
+    source = source.replace('static if LIBRARY_WOSTestNativeUI then','if LIBRARY_WOSTestNativeUI then')
+    vm = JassState(source)
     vm.g.setdefault('LIBRARY_DamageStats', False)
+    vm.g.setdefault('LIBRARY_WOSTestNativeUI', False)
     shared=(ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig').split('// CP44_SHARED_UI:',1)[1].split('// CP44_SHARED_UI_END',1)[0]
     for kind,array,name,value in re.findall(r'(?m)^\s*(boolean|integer|real|framehandle|trigger)( array)? (\w+)(?: = ([^\n]+))?\s*$',shared):
         if name in vm.g:continue
@@ -35,6 +38,18 @@ def load_source(filename):
     vm.g.setdefault('WUI_GetTopActionOwner', lambda: 'top-actions')
     vm.g.setdefault('WUI_TopShown', lambda: True)
     vm.g.setdefault('WUI_RegisterRangeCover', lambda *_: None)
+    # Shop: round-gated Scroll of Mastery and refund credit of consumed components.
+    if filename == 'WoS_Shop_Init.j':
+        vm.g.update(ScrollOfMastery_ID=-404, ScrollOfMastery_Round=15, ShopCraftRefundCredit=0, ShopCraftTeaCharges=0)
+        vm.g.setdefault('CurrentRound', 1)
+        vm.g.setdefault('TestMode', False)
+        vm.g['ShopMarkFullRefund'] = lambda *_: None
+        vm.g.setdefault('hs', {})
+        vm.g.setdefault('GEAR_KEY_FULLREFUND', 8)
+        vm.g.setdefault('GearKey', lambda kind, prefix, n: (kind, n))
+        vm.g.setdefault('GetHandleId', lambda h: id(h))
+        vm.g.setdefault('GetItemCharges', lambda it: 0)
+        vm.g.setdefault('RemoveSavedInteger', lambda t, k, c: t.pop((k, c), None))
     vm.g.setdefault('HaveSavedHandle',lambda t,k,c:(k,c) in t)
     vm.g.setdefault('HaveSavedReal',lambda t,k,c:(k,c) in t)
     vm.g.setdefault('Shop_Active',defaultdict(bool))
@@ -266,6 +281,18 @@ class DeferredUIStartup(unittest.TestCase):
         self.assertEqual(len(owners), len(callbacks))
         self.assertTrue(all(callable(callback) for callback in callbacks))
 
+    def test_native_test_ui_preserves_input_defaults_without_starting_custom_frames(self):
+        self.vm.g['LIBRARY_WOSTestNativeUI'] = True
+        self.vm.run('WUI_Init')
+        self.assertFalse(self.calls)
+        self.assertFalse(self.timers)
+        self.assertFalse(self.vm.g['WUI_Ready'])
+        for pid in range(self.vm.g['bj_MAX_PLAYER_SLOTS']):
+            self.assertEqual(-1, self.vm.g['WUI_CaptureChannel'][pid])
+            self.assertEqual(-1, self.vm.g['WUI_SlotCapture'][pid])
+        self.vm.run('WUI_HeroProgress', (None, 0, '', 0, 0, False))
+        self.assertFalse(self.calls)
+
     def test_bootstrap_creates_root_before_owners_once(self):
         observed = []
         callback = lambda: observed.append((self.vm.g['WUI_Root'], self.vm.g['WUI_Ready']))
@@ -275,6 +302,13 @@ class DeferredUIStartup(unittest.TestCase):
         self.assertFalse(self.calls)
         self.vm.run('WUI_Init')
         self.timers[0][3]()
+        # Owners run one per re-armed one-shot timer (one per frame at most).
+        drained = 0
+        while self.vm.g['WUI_ReadyCount'] and drained < 20:
+            drain = [t for t in self.timers if t[3] is not self.timers[0][3] and t[1:3] == (.01, False)]
+            self.assertTrue(drain)
+            drain[-1][3]()
+            drained += 1
         self.assertEqual([('BACKDROP:WOSIndependentRoot', True)] * 2, observed)
         self.assertEqual(0, self.vm.g['WUI_ReadyCount'])
         # Two test owners + HUD chrome (the hotkey editor is switched off,
@@ -433,6 +467,31 @@ class HiddenEnemyData(unittest.TestCase):
         self.assertTrue(self.frames[vm.g['StatusHpBar'][5],'visible'])
         self.assertTrue(self.frames[vm.g['StatusMpBar'][5],'visible'])
         self.assertEqual(0.,values[vm.g['StatusHpBar'][5]])
+        self.assertEqual(0,self.frames[vm.g['StatusHpBar'][5],'alpha'])
+
+    def test_dead_hp_fill_is_invisible_even_if_zero_width_is_ignored_and_restores_on_revive(self):
+        vm=load_source('WoS_Hero_Icons_Init.j');self.configure(vm)
+        self.ally=True;dead=[False];width={};values=[]
+        hero=vm.unit(owner=5)
+        def fill(frame,value):
+            values.append((frame,value))
+            if value > 0:width[frame]=value  # Model the engine ignoring zero width.
+        vm.g.update(Hero={5:hero},CaptainMode=False,CapPickPhase=2,Leave={5:0},
+            StatusHpBar={5:'hp'},StatusMpBar={5:'mp'},StatusLeaveCover={5:'cover'},
+            StatusSlotInitialized={5:True},StatusLastHeroType={5:1},StatusLastDead={5:False},
+            StatusLastLeave={5:0},StatusLastVisible={5:True},FRAME_StatusHeroStringIcon={5:'icon'},
+            GetUnitTypeId=lambda u:1,IsUnitType=lambda u,t:dead[0],
+            GetWidgetLife=lambda u:750.,BlzGetUnitMaxHP=lambda u:1000,
+            GetUnitState=lambda *_:50.,BlzGetUnitMaxMana=lambda u:100,
+            WUI_SetValue=fill,ConvertBTNtoDISBTN=lambda icon:'disabled',
+            BlzFrameSetTexture=lambda *_:None)
+        vm.run('UpdateStatusHeroSlotOptimized',(5,))
+        self.assertEqual(75.,width['hp']);self.assertEqual(255,self.frames['hp','alpha'])
+        dead[0]=True;vm.run('UpdateStatusHeroSlotOptimized',(5,))
+        self.assertEqual(75.,width['hp']);self.assertIn(('hp',0.),values)
+        self.assertEqual(0,self.frames['hp','alpha'])
+        dead[0]=False;vm.run('UpdateStatusHeroSlotOptimized',(5,))
+        self.assertEqual(255,self.frames['hp','alpha']);self.assertEqual(75.,width['hp'])
 
     def test_visible_but_undetected_enemy_is_also_private(self):
         # Checkpoint 25: a visible enemy is inspectable (portrait, stats and
@@ -444,7 +503,7 @@ class HiddenEnemyData(unittest.TestCase):
         self.configure(vm)
         selected = vm.unit(owner=5)
         vm.g.update({
-            'UNITSTAT_Root': 'selected-hud', 'UNITSTAT_LastSelected': None,
+            'UNITSTAT_Root': 'selected-hud', 'UNITSTAT_LastSelected': None, 'UNITSTAT_StatsUnit': None,
             'UNITSTAT_Gold': 'gold', 'UNITSTAT_Hover': -1,
             'UNITSTAT_Tooltip': 'tooltip', 'Player': lambda pid: pid,
             'WUI_SetText': lambda f, v: self.frames.update({(f, 'text'): v}),
@@ -473,7 +532,7 @@ class SharedShopControls(unittest.TestCase):
         self.vm.g.update({
             'Hero': {0: self.vm.unit(owner=0)}, 'Shop_Active': defaultdict(bool),
             'ItemsCraftPlayerDebug_ID': defaultdict(int), 'ItemsFrameCurrentPage_ID': {0: 5},
-            'ShopUICreated': True, 'FRAME_ShopMAIN': 'shop', 'END1': 0,
+            'ShopUICreated': True, 'FRAME_ShopMAIN': 'shop', 'FRAME_ShopItemInventoryName': None, 'FRAME_ShopGoldText': None, 'ShopGoldShown': -1, 'END1': 0,
             'FRAME_AutoBuyCheckbox': 'auto', 'FRAME_AutoBuyText': 'auto-label',
             'FRAME_ShopItemInventorySlot': {6: 'buy', 7: 'sell'}, 'hs': {},
             'GetPlayerId': lambda p: p, 'GetHandleId': lambda p: p,

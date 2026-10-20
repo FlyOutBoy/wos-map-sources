@@ -158,7 +158,12 @@ def ensure(workspace: Path, config_path: Path | None = None) -> dict:
     registration = f"{hero}_Register"
     has_registration = any(re.search(rf"^[ \t]*function\s+{re.escape(registration)}\s+takes\s+unit\s+\w+\s+returns\s+nothing", p.read_text(encoding="utf-8-sig"), re.MULTILINE) for p in hero_files)
     call = f"    call {registration}.evaluate(u)\n" if has_registration else ""
-    hook.write_text(f"library TestHeroAdapter\nfunction TestHero_Register takes unit u returns nothing\n{call}endfunction\nendlibrary\n",encoding="utf-8")
+    native_ui = config.get("testNativeUI", True)
+    if not isinstance(native_ui, bool):
+        raise ValueError("testNativeUI must be true or false")
+    ui_policy = "library WOSTestNativeUI\nendlibrary\n\n" if native_ui else ""
+    hook.write_text(ui_policy + f"library TestHeroAdapter\nfunction TestHero_Register takes unit u returns nothing\n{call}endfunction\nendlibrary\n",encoding="utf-8")
+    effective["testNativeUI"] = native_ui
     effective["testOnlySources"] = [*config.get("testOnlySources",[]),str(hook)]
     effective_path = build/"test-profile.json"
     write(effective_path,effective)

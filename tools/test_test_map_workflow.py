@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import sync_war3_project as project
 import test_map_sources as sources
+import test_map_profile as profile
 import war3_object_data as raw
 import extract_war3_triggers as fmt
 import sync_war3_triggers as triggers
@@ -83,11 +84,14 @@ class TestSourceStaging(unittest.TestCase):
 
 
 class ValidateBeforeSave(unittest.TestCase):
-    def run_wrapper(self, failure=None):
+    def run_wrapper(self, failure=None, test_profile=False, no_build=False, editor_running=False):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         config = Path(directory.name) / "config.json"
-        config.write_text("{}")
+        config.write_text(json.dumps({"test_profile": test_profile}))
+        build_dir = config.parent/"_build"
+        build_dir.mkdir()
+        (build_dir/"test-profile-sync.json").write_text("{}")
         calls = []
         def mark(name):
             def callback(*args):
@@ -95,19 +99,36 @@ class ValidateBeforeSave(unittest.TestCase):
                 if failure == name:
                     raise raw.FormatError("invalid fixture")
             return callback
-        with patch("sys.argv", ["sync", "--config", str(config), "check-save"]), \
+        with patch("sys.argv", ["sync", "--config", str(config), "check-save"] + (["--no-build"] if no_build else [])), \
+             patch.object(profile, "ensure", return_value={"buildDir": "_build"}), \
+             patch.object(profile, "powershell", side_effect=mark("test-build")), \
              patch.object(project.objects, "load_config", return_value=(Path("map"),) * 5), \
              patch.object(project.objects, "check_workspace", side_effect=mark("object-check")), \
              patch.object(project.triggers, "check", side_effect=mark("trigger-check")), \
              patch.object(project.objects, "import_workspace", side_effect=mark("object-save")), \
              patch.object(project.triggers, "push", side_effect=mark("trigger-save")), \
-             patch.object(project, "world_editor_running", return_value=False), \
+             patch.object(project, "world_editor_running", return_value=editor_running), \
              contextlib.redirect_stderr(io.StringIO()):
             result = project.main()
         return result, calls
 
     def test_both_checks_precede_both_saves(self):
         self.assertEqual((0, ["object-check", "trigger-check", "object-save", "trigger-save"]), self.run_wrapper())
+
+    def test_test_save_can_defer_build_to_combined_launcher(self):
+        saved = ["object-check", "trigger-check", "object-save", "trigger-save"]
+        self.assertEqual((0, saved), self.run_wrapper(test_profile=True, no_build=True))
+        self.assertEqual((0, saved + ["test-build"]), self.run_wrapper(test_profile=True))
+
+    def test_open_editor_blocks_both_map_writes(self):
+        self.assertEqual((1, ["object-check", "trigger-check"]), self.run_wrapper(editor_running=True))
+
+    @unittest.skipUnless(project.os.name == "nt", "Windows editor process detection")
+    def test_both_editor_process_names_are_detected(self):
+        from types import SimpleNamespace
+        for name, expected in [("World Editor.exe", True), ("WorldEditorTESH.exe", True), ("Warcraft III.exe", False)]:
+            with patch.object(project.subprocess, "run", return_value=SimpleNamespace(stdout='"' + name + '","123"')):
+                self.assertEqual(expected, project.world_editor_running(), name)
 
     def test_invalid_objects_block_all_saves(self):
         self.assertEqual((1, ["object-check"]), self.run_wrapper("object-check"))

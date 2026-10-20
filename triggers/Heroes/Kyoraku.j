@@ -1,14 +1,89 @@
 library KyorakuSpells uses GearSystems
     globals
+        private integer SH_KYORAKU_E4_CAGE = StringHash("kyoraku e4 cage")
+        private integer SH_KYORAKU_E4_X = StringHash("kyoraku e4 x")
+        private integer SH_KYORAKU_E4_Y = StringHash("kyoraku e4 y")
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer KyorakuTick05_Timer = CreateTimer()
+        private boolean array KyorakuTick05_Active
+        private integer KyorakuTick05_Users = 0
+        private code KyorakuTick05_Callback = null
+    endglobals
+
+    private function KyorakuTick05_On takes integer k returns nothing
+        if not KyorakuTick05_Active[k] then
+            set KyorakuTick05_Active[k] = true
+            set KyorakuTick05_Users = KyorakuTick05_Users + 1
+            if KyorakuTick05_Users == 1 then
+                call TimerStart(KyorakuTick05_Timer, 0.05, true, KyorakuTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function KyorakuTick05_Off takes integer k returns nothing
+        if KyorakuTick05_Active[k] then
+            set KyorakuTick05_Active[k] = false
+            set KyorakuTick05_Users = KyorakuTick05_Users - 1
+            if KyorakuTick05_Users <= 0 then
+                set KyorakuTick05_Users = 0
+                call PauseTimer(KyorakuTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer KyorakuTick_Timer = CreateTimer()
+        private boolean array KyorakuTick_Active
+        private integer KyorakuTick_Users = 0
+        private code KyorakuTick_Callback = null
+    endglobals
+
+    private function KyorakuTick_On takes integer k returns nothing
+        if not KyorakuTick_Active[k] then
+            set KyorakuTick_Active[k] = true
+            set KyorakuTick_Users = KyorakuTick_Users + 1
+            if KyorakuTick_Users == 1 then
+                call TimerStart(KyorakuTick_Timer, 0.03, true, KyorakuTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function KyorakuTick_Off takes integer k returns nothing
+        if KyorakuTick_Active[k] then
+            set KyorakuTick_Active[k] = false
+            set KyorakuTick_Users = KyorakuTick_Users - 1
+            if KyorakuTick_Users <= 0 then
+                set KyorakuTick_Users = 0
+                call PauseTimer(KyorakuTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_BANKAI_1_ST_ACTIVATED = StringHash("bankai 1-st activated")
+        private integer SH_BANKAI_END = StringHash("bankai end")
+        private integer SH_CUR_MANA = StringHash("cur mana")
+        private integer SH_DESC_T_OFF = StringHash("desc t off")
+        private integer SH_INSTANT_END = StringHash("instant end")
+        private integer SH_INSTANT_SKIP = StringHash("instant skip")
+        private integer SH_KYORAKU_BANKAI = StringHash("kyoraku bankai")
+        private integer SH_KYORAKU_ESC = StringHash("kyoraku esc")
+        private integer SH_LAST_DAN = StringHash("last dan")
+        private integer SH_SHADOW_AOE = StringHash("shadow aoe")
+        private integer SH_SHADOW_EFF = StringHash("shadow eff")
+        private integer SH_SHADOW_X = StringHash("shadow x")
+        private integer SH_SHADOW_Y = StringHash("shadow y")
+        private integer SH_W2_CAST = StringHash("w2 cast")
+        private integer SH_WE_START = StringHash("we start")
+        private integer SH_W_ACTIVE = StringHash("w active")
+        private integer SH_W_START = StringHash("w start")
+    endglobals
+    globals
         integer Kyoraku_ID = 'H00U'
         unit array KyorDummy
         trigger Frame_clickKyoraku = CreateTrigger()
-        framehandle array frame_KyorBankai1 [10]
-        framehandle array frame_KyorBankai2 [10]
-        framehandle array frame_KyorBankai3 [10]
-        framehandle array frame_KyorBankai4 [10]
-        framehandle array frame_KyorBankai5 [10]
-        framehandle array frame_KyorBankai6 [10]
         framehandle array frame_KyorBankai7 [10]
         framehandle array frame_KyorBankai8 [10]
         framehandle array frame_KyorBankai9 [10]
@@ -61,6 +136,18 @@ library KyorakuSpells uses GearSystems
         real KyorakuE2_DurationBase = 3
         real KyorakuE2_Stun = 1 // take stun main unit after end
         real KyorakuE2_Stun2 = 0.1 // take stun aroun unit while shadown jumping
+        real KyorakuE2_FlyTime = 0.42 // whole shadow pass (was 0.6); keep multiples of 0.03
+        real KyorakuE2_StrikeBeforeEnd = 0.15 // final strike this long before the end (was 0.21)
+        real KyorakuE2_ShadowSpawnTime = 0.1 // shadows spawn during the first N sec
+//---------------E2 (lv 25) Takaoni: fly through the E cage, two giant slashes---------
+        integer KyorakuE4_ID = 'A114'
+        integer KyorakuE4_Level = 25
+        real KyorakuE4_DamageAgi = 2.5 // x Agi per slash
+        integer KyorakuE4_Slashes = 2
+        real KyorakuE4_MaxRange = 2000 // from the E cage
+        real KyorakuE4_Speed = 2500 // per second
+        real KyorakuE4_SlashScale = 3.2 // x Toji Q1 slash size
+        real KyorakuE4_FlyPast = 650 // distance past the cage center
 //---------------.r ability-----------------------------------------------------
         integer KyorakuR_ID = 'A053'
         integer KyorakuR_BuffId = 'B00G'
@@ -80,7 +167,10 @@ library KyorakuSpells uses GearSystems
         integer KyorakuTSkip_ID = 'A0DY'
         integer KyorakuT_DummyID = 'h00V'
         integer KyorakuT_BankaiBuff = 'B00H'
+        private integer array KyorakuBankaiStage
         boolean BankaiActive = false
+        unit KyorakuBankaiCaster = null // only enemies of this hero can activate the bankai debuff
+        real KyorakuT_BuffDelay = 0.5 // bankai debuff starts 0.5 sec after the cast
         real KyorakuT_Dan1_MinHp = 15 // hp cant go lower than this amount
         real KyorakuT_Dan1_Reverse = 0.7 // 1 = 100% reverse, 0.8 = 80%
         real KyorakuT_Dan2_KyorakuSelfHealEnter = 5 // % of max hp that kyoraku will restore for each main enemy hero that attacked someone while 1 - st dan, for example 3 heroes deal damage while 1 - st dan, when second activated kyoraku will restore instantly 3x10% = 30% of max hp
@@ -99,6 +189,43 @@ library KyorakuSpells uses GearSystems
         real KyorakuF_SilenceDuration = 1 // from 0.5 to 5 sec, 0.5...1...1.5..2....5
 //--------------------------------------Kyoraku--------------------------------------------------------------
     endglobals    
+// Stable public meter key; the current act supplies its caption and artwork.
+private function KyorakuBankaiProgress takes unit c, integer stage, real remaining, real total returns nothing
+    local integer pid = GetPlayerId(GetOwningPlayer(c))
+    local integer art = KyorakuT0_ID
+    local string title = "Bankai"
+    if LoadInteger(hs, GetHandleId(c), SH_LAST_DAN) > 0 then
+        set stage = 4
+    endif
+    if stage == 1 then
+        set title = "1-st stage"
+        set art = KyorakuT1_ID
+    elseif stage == 2 then
+        set title = "2-nd stage"
+        set art = KyorakuT2_ID
+    elseif stage == 3 then
+        set title = "3-rd stage"
+        set art = KyorakuT3_ID
+    elseif stage == 4 then
+        set title = "4-th stage"
+        set art = KyorakuT4_ID
+    endif
+    call WUI_HeroProgressPublic(c, KyorakuT_ID, title, remaining, total)
+    if KyorakuBankaiStage[pid] != stage + 1 then
+        set KyorakuBankaiStage[pid] = stage + 1
+        call WUI_HeroProgressIcon(c, KyorakuT_ID, BlzGetAbilityIcon(art))
+    endif
+endfunction
+
+// Text height is presentation-only; every act can grow or shrink the same panel.
+private function KyorakuBankaiHelp takes unit c, integer pid, integer abilityId returns nothing
+    local ability a = BlzGetUnitAbility(c, abilityId)
+    call BlzFrameSetSize(frame_KyorBankai7[pid], 0.164, 0.00)
+    call BlzFrameSetText(frame_KyorBankai7[pid], BlzGetAbilityStringLevelField(a, ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(a, ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0))
+    call WUI_ColumnHeight(frame_KyorBankai12[pid], RMaxBJ(0.035, BlzFrameGetHeight(frame_KyorBankai7[pid]) + 0.016))
+    set a = null
+endfunction
+
 function KyorakuFrameClick takes nothing returns nothing
     local framehandle clicked = BlzGetTriggerFrame()
     local integer i = 0
@@ -112,27 +239,28 @@ function KyorakuFrameClick takes nothing returns nothing
     exitwhen k == 10 
     if clicked == frame_KyorBankai8[k] then 
         if GetLocalPlayer() == p then
-        call BlzFrameSetVisible(frame_KyorBankai12[k], false)
+        call WUI_ColumnShow(frame_KyorBankai12[k], false)
         call BlzFrameSetVisible(frame_KyorBankai8[k],false)
         call BlzFrameSetVisible(frame_KyorBankai10[k],false)
         call BlzFrameSetVisible(frame_KyorBankai9[k],true)
         call BlzFrameSetVisible(frame_KyorBankai11[k],true)
         endif
-        call SaveInteger(hs,GetHandleId(Player(pid)),StringHash("desc t off"),1)
+        call SaveInteger(hs,GetHandleId(Player(pid)),SH_DESC_T_OFF,1)
     elseif clicked == frame_KyorBankai9[k] then
         if GetLocalPlayer() == p then    
-        call BlzFrameSetVisible(frame_KyorBankai12[k], true)
+        call WUI_ColumnShow(frame_KyorBankai12[k], true)
         call BlzFrameSetVisible(frame_KyorBankai8[k],true)
         call BlzFrameSetVisible(frame_KyorBankai10[k],true)
         call BlzFrameSetVisible(frame_KyorBankai9[k],false)
         call BlzFrameSetVisible(frame_KyorBankai11[k],false)
         endif 
-        call SaveInteger(hs,GetHandleId(Player(pid)),StringHash("desc t off"),0)
+        call SaveInteger(hs,GetHandleId(Player(pid)),SH_DESC_T_OFF,0)
     endif
     set k = k + 1
     endloop
     set clicked = null
     set p = null
+    call WUI_ReleaseClickFocus()
 endfunction
 
     function BuffUnitKyoraku takes unit c, unit u, integer level returns nothing
@@ -152,7 +280,6 @@ endfunction
     endfunction
 
     private struct KyorakuQ_KS
-        private static timer t_KyorakuQ = CreateTimer( )
         private static integer array m_KyorakuQ
         private static integer MUI_KyorakuQ = -1
         unit c
@@ -169,7 +296,7 @@ endfunction
         effect e2
         real a
         real rmax
-        private static method Loop_KyorakuQ takes nothing returns nothing
+        static method Loop_KyorakuQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -177,7 +304,7 @@ endfunction
                 set this = m_KyorakuQ[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if false  then//GetHeroLevel(c)>= 35 then 
                     call DebugUnit(.c)
                     else
@@ -208,6 +335,7 @@ endfunction
                             set .u = FirstOfGroup(.g)
                             exitwhen .u == null
                             if IsUnitEnemy(.u, GetOwningPlayer(.c)) and SpellBool(.u) then
+                                call DamageSource('A050')
                                 call dmgphys(.c, .u, .dmg)
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_whiteakihared.mdx", GetUnitX(.u), GetUnitY(.u), GetRandomReal(0, 359), 0.85, 1, GetUnitFlyHeight(.u) + 50))
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", .u, "chest"))
@@ -238,8 +366,9 @@ endfunction
                     set .u = null
                     set m_KyorakuQ[i] = m_KyorakuQ[ MUI_KyorakuQ]
                     set MUI_KyorakuQ = MUI_KyorakuQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuQ == -1 then
-                        call PauseTimer( t_KyorakuQ)
+                        call KyorakuTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -276,13 +405,12 @@ endfunction
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", GetUnitX(.c), GetUnitY(.c), GetRandomReal(0, 359), 0.8, 1, 0))
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", GetUnitX(.c), GetUnitY(.c), GetRandomReal(0, 359), 0.92, 1.25, 0))
             if MUI_KyorakuQ == 0 then
-                call TimerStart( t_KyorakuQ, 0.03, true, function thistype.Loop_KyorakuQ)
+                call KyorakuTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct KyorakuQ2_KS
-        private static timer t_KyorakuQ2 = CreateTimer( )
         private static integer array m_KyorakuQ2
         private static integer MUI_KyorakuQ2 = -1
         unit c
@@ -294,7 +422,7 @@ endfunction
         real aoe
         real r
         real rmax
-        private static method Loop_KyorakuQ2 takes nothing returns nothing
+        static method Loop_KyorakuQ2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -302,7 +430,7 @@ endfunction
                 set this = m_KyorakuQ2[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     call DebugUnit2(.c)
                     if .r == .rmax then
                         call GroupClear(.g)
@@ -311,6 +439,7 @@ endfunction
                             set .u = FirstOfGroup(.g)
                             exitwhen .u == null
                             if IsUnitEnemy(.u, GetOwningPlayer(.c)) and SpellBool(.u) then
+                                call DamageSource('A056')
                                 call dmgphys(.c, .u, .dmg)
                                 call DestroyEffect( AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", .u, "chest"))
                                 call EffectSpawn2("war3mapimported\\wos_kageoni.mdx", GetUnitX(.u), GetUnitY(.u), GAngle2(.c, .x,.y), 1, 5, 1, 0.45)
@@ -327,8 +456,9 @@ endfunction
                     set .u = null
                     set m_KyorakuQ2[i] = m_KyorakuQ2[ MUI_KyorakuQ2]
                     set MUI_KyorakuQ2 = MUI_KyorakuQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuQ2 == -1 then
-                        call PauseTimer( t_KyorakuQ2)
+                        call KyorakuTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -342,9 +472,9 @@ endfunction
             set .c = NewC
             set .r = 0
             set .u = null 
-            set .x = LoadReal(hs, GetHandleId(.c), StringHash("shadow x"))
-            set .y = LoadReal(hs, GetHandleId(.c), StringHash("shadow y"))
-            set .aoe = LoadReal(hs, GetHandleId(.c), StringHash("shadow aoe"))
+            set .x = LoadReal(hs, GetHandleId(.c), SH_SHADOW_X)
+            set .y = LoadReal(hs, GetHandleId(.c), SH_SHADOW_Y)
+            set .aoe = LoadReal(hs, GetHandleId(.c), SH_SHADOW_AOE)
             set .g = CreateGroup()
             call StartSpellUnit2(.c)
             call MakeSound("war3mapimported\\Hero_Kyoraku_Q2")
@@ -352,13 +482,12 @@ endfunction
             set .rmax = 0.12
             call SetUnitAnimationByIndex(.c, 11)
             if MUI_KyorakuQ2 == 0 then
-                call TimerStart( t_KyorakuQ2, 0.03, true, function thistype.Loop_KyorakuQ2)
+                call KyorakuTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct KyorakuW_KS
-        private static timer t_KyorakuW = CreateTimer( )
         private static integer array m_KyorakuW
         private static integer MUI_KyorakuW = -1
         unit c
@@ -375,22 +504,16 @@ endfunction
         real r
         effect e
         real rmax
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
-        private static method Loop_KyorakuW takes nothing returns nothing
+        static method Loop_KyorakuW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_KyorakuW
                 set this = m_KyorakuW[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
-                    if LoadInteger(hs, GetHandleId(.c), StringHash("we start")) == 0 then
+                    if LoadInteger(hs, GetHandleId(.c), SH_WE_START) == 0 then
                         set .r = .r + 0.03
-                        set .r = S2R( R2SW( .r , 0, 3 ) )
+                        set .r = RoundReal(.r, 3)
                     endif
                     if .r == 0.42 then
                         call SetUnitVertexColor(.c, 255, 255, 255, 0)
@@ -423,6 +546,7 @@ endfunction
                                 set .u = FirstOfGroup(.g)
                                 exitwhen .u == null
                                 if IsUnitEnemy(.u, GetOwningPlayer(.c)) and SpellBool(.u) and IsUnitInGroup(.u, .g2) == false then
+                                    call DamageSource('A051')
                                     call dmgphys(.c, .u, .dmg)
                                     call GroupAddUnit(.g2, .u)
                                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_whiteakihared.mdx", GetUnitX(.u), GetUnitY(.u), GetRandomReal(0, 359), 0.85, 1, GetUnitFlyHeight(.u) + 50))
@@ -437,9 +561,8 @@ endfunction
                         endif
                     endif
                     if .r > 0.9 then
-                        call BlzFrameSetValue(frame_pas3[k2], .rmax - (.r + 0.1))
                         if .rmax - .r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
+                            call WUI_HeroProgress(.c, KyorakuW_ID, "Shadow Time Left", .rmax - .r, .rmax, true)
                         endif
                         set .x = GetEffX(.e)
                         set .y = GetEffY(.e)
@@ -477,10 +600,10 @@ endfunction
                         call RemoveUnit(KyorakuW_Dummy[k2])
                         set KyorakuW_Dummy[k2] = null
                     endif
-                    call RemoveSavedHandle(hs, GetHandleId(.c), StringHash("shadow eff"))
-                    call SaveReal(hs, GetHandleId(.c), StringHash("shadow x"), 0)
-                    call SaveReal(hs, GetHandleId(.c), StringHash("shadow y"), 0)
-                    call SaveReal(hs, GetHandleId(.c), StringHash("shadow aoe"), 0)
+                    call RemoveSavedHandle(hs, GetHandleId(.c), SH_SHADOW_EFF)
+                    call SaveReal(hs, GetHandleId(.c), SH_SHADOW_X, 0)
+                    call SaveReal(hs, GetHandleId(.c), SH_SHADOW_Y, 0)
+                    call SaveReal(hs, GetHandleId(.c), SH_SHADOW_AOE, 0)
                         call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuQ_ID, true)
                         call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuW_ID, true)
                         call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuE_ID, true)
@@ -492,10 +615,8 @@ endfunction
                         call SetUnitAnimationByIndex( .c , 14)
                         call AnimDummy(.c, 0.3, 1)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(.c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("w start"), 0)
+                        call WUI_HeroProgress(.c, KyorakuW_ID, "Shadow Time Left", 0.00, 0.00, true)
+                    call SaveInteger(hs, GetHandleId(.c), SH_W_START, 0)
                    // call SetUnitPathing(.c, true)
                     call ColorEffDummy3(.e, 0, 255, 255, 255, 1.25)
                     call SetUnitVertexColor(.c, 255, 255, 255, 255)
@@ -507,8 +628,9 @@ endfunction
                     set .u = null
                     set m_KyorakuW[i] = m_KyorakuW[ MUI_KyorakuW]
                     set MUI_KyorakuW = MUI_KyorakuW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuW == -1 then
-                        call PauseTimer( t_KyorakuW)
+                        call KyorakuTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -548,44 +670,6 @@ endfunction
             set .e = EffectSpawnColor("war3mapImported\\wos_hakkestart.mdx", .x, .y, GetRandomReal(0, 359), 1, 1.48 + 0.28 * ( (KyorakuW_ShadowAoeStep * (GetUnitAbilityLevel(.c, KyorakuW_ID) - 1)) / 200), 5, 255, 255, 255, 235)
             if GetUnitAbilityLevel(.c, KyorakuW_ID) >= 3 then
                 set .rmax = KyorakuW_ShadowDuration
-                if frame_pas1[k2] == null then
-                    set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                    call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                    if GetLocalPlayer() == GetOwningPlayer(.c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                    endif
-                    set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                    call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                    call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                    set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                    call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                    call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                    call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                    call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, .rmax)
-                    call BlzFrameSetValue(frame_pas3[k2], .rmax - (.r + 0.1))
-                    set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                    call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                    call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_W", 0, false)
-                    set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Shadow Time Left:" + "|r")
-                    call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                    set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
-                    call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                else
-                    if GetLocalPlayer() == GetOwningPlayer(.c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                    endif
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, .rmax)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
-                endif
                 set .rmax = .rmax + 1.12
                 set .aoe2 = KyorakuW_ShadowAoeBase + (KyorakuW_ShadowAoeStep * (GetUnitAbilityLevel(.c, KyorakuW_ID) - 1))
                 if GetUnitAbilityLevel(.c, KyorakuQ2_ID) == 0 then
@@ -608,20 +692,19 @@ endfunction
                 endif
             endif
             call AnimDummyEff(.e, 0.25, 0)
-            call SaveInteger(hs, GetHandleId(.c), StringHash("w start"), 1)
-            call SaveEffectHandle(hs, GetHandleId(.c), StringHash("shadow eff"), .e)
-            call SaveReal(hs, GetHandleId(.c), StringHash("shadow x"), .x)
-            call SaveReal(hs, GetHandleId(.c), StringHash("shadow y"), .y)
-            call SaveReal(hs, GetHandleId(.c), StringHash("shadow aoe"), .aoe2)
+            call SaveInteger(hs, GetHandleId(.c), SH_W_START, 1)
+            call SaveEffectHandle(hs, GetHandleId(.c), SH_SHADOW_EFF, .e)
+            call SaveReal(hs, GetHandleId(.c), SH_SHADOW_X, .x)
+            call SaveReal(hs, GetHandleId(.c), SH_SHADOW_Y, .y)
+            call SaveReal(hs, GetHandleId(.c), SH_SHADOW_AOE, .aoe2)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_HakkeStart.mdx", GetUnitX(.c), GetUnitY(.c), GetRandomReal(0, 359), 1.25, 0.35, 3))
             if MUI_KyorakuW == 0 then
-                call TimerStart( t_KyorakuW, 0.03, true, function thistype.Loop_KyorakuW)
+                call KyorakuTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct KyorakuW2_KS
-        private static timer t_KyorakuW2 = CreateTimer( )
         private static integer array m_KyorakuW2
         private static integer MUI_KyorakuW2 = -1
         unit c
@@ -634,7 +717,7 @@ endfunction
         real r
         real a
         real rmax
-        private static method Loop_KyorakuW2 takes nothing returns nothing
+        static method Loop_KyorakuW2 takes nothing returns nothing
             local integer this
             local real xx1 = 0
             local real yy1 = 0
@@ -642,10 +725,10 @@ endfunction
             loop
                 exitwhen i > MUI_KyorakuW2
                 set this = m_KyorakuW2[i]
-                if SpellBoolCaster(.c) and .r <= .rmax and LoadInteger(hs, GetHandleId(.c), StringHash("w start")) == 1 and LoadInteger(hs, GetHandleId(GetOwningPlayer(.c)), StringHash("kyoraku esc")) == 0 then
+                if SpellBoolCaster(.c) and .r <= .rmax and LoadInteger(hs, GetHandleId(.c), SH_W_START) == 1 and LoadInteger(hs, GetHandleId(GetOwningPlayer(.c)), SH_KYORAKU_ESC) == 0 then
                     set .r = .r + 0.03
                     call DebugUnit(.c)
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     set .x1 = GetMouseX(GetOwningPlayer(c))
                     set .y1 = GetMouseY(GetOwningPlayer(c))
                     set .a = GAngle2(.c, .x1, .y1)
@@ -664,7 +747,7 @@ endfunction
                     call StopSpellUnit(.c)                   
                     
                         call MouseOff(GetOwningPlayer(c))
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), StringHash("w active"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), SH_W_ACTIVE, 0)
                     call SetUnitTimeScale( .c , 5)
                     call SetUnitAnimationByIndex( .c , 14)
                     call AnimDummy(.c, 0.3, 1)
@@ -672,8 +755,9 @@ endfunction
                     set .c = null
                     set m_KyorakuW2[i] = m_KyorakuW2[ MUI_KyorakuW2]
                     set MUI_KyorakuW2 = MUI_KyorakuW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuW2 == -1 then
-                        call PauseTimer( t_KyorakuW2)
+                        call KyorakuTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -685,31 +769,30 @@ endfunction
             set MUI_KyorakuW2 = MUI_KyorakuW2 + 1
             set m_KyorakuW2[ MUI_KyorakuW2] = this
             set .c = NewC
-            set .x = LoadReal(hs, GetHandleId(.c), StringHash("shadow x"))
-            set .y = LoadReal(hs, GetHandleId(.c), StringHash("shadow y"))
-            set .aoe = LoadReal(hs, GetHandleId(.c), StringHash("shadow aoe"))
+            set .x = LoadReal(hs, GetHandleId(.c), SH_SHADOW_X)
+            set .y = LoadReal(hs, GetHandleId(.c), SH_SHADOW_Y)
+            set .aoe = LoadReal(hs, GetHandleId(.c), SH_SHADOW_AOE)
             set .r = 0
             set .a = 0
             
                         set MouseX[GetPlayerId(GetOwningPlayer(c))] = x 
                         set MouseY[GetPlayerId(GetOwningPlayer(c))] = y 
             call MouseOn(GetOwningPlayer(c))
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), StringHash("w active"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), SH_W_ACTIVE, 1)
             call StartSpellUnit(.c)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), StringHash("kyoraku esc"), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), SH_KYORAKU_ESC, 0)
             call SetUnitPathing(.c, false)
             set .rmax = KyorakuW2_Duration
             set .move = KyorakuW2_Speed / 30
             call SetUnitAnimationByIndex( .c , 12)
             call SetUnitTimeScale( .c , 2)
             if MUI_KyorakuW2 == 0 then
-                call TimerStart( t_KyorakuW2, 0.03, true, function thistype.Loop_KyorakuW2)
+                call KyorakuTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct KyorakuE_KS
-        private static timer t_KyorakuE = CreateTimer( )
         private static integer array m_KyorakuE
         private static integer MUI_KyorakuE = -1
         unit c
@@ -730,7 +813,7 @@ endfunction
         effect e
         real a
         real rmax
-        private static method Loop_KyorakuE takes nothing returns nothing
+        static method Loop_KyorakuE takes nothing returns nothing
             local integer this
             local integer i = 0
             local real .x1
@@ -740,7 +823,7 @@ endfunction
                 set this = m_KyorakuE[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if .r == 0.33 then
                         call SetUnitAnimationByIndex(.c, 10)
                     endif
@@ -799,6 +882,7 @@ endfunction
                                     set .u = FirstOfGroup(.g)
                                     exitwhen .u == null
                                     if IsUnitEnemy(.u, GetOwningPlayer(.c)) and SpellBool(.u) then
+                                        call DamageSource('A052')
                                         call dmgmag(.c, .u, .dmg)
                                         call MUE(.u, 175, 0.21, GAngle2(.u, .x, .y))
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", .u, "chest"))
@@ -815,14 +899,22 @@ endfunction
                     if .r < 0.45 then
                     call StopSpellUnit2(.c)
                     endif
+                    call SaveInteger(hs, GetHandleId(.c), SH_KYORAKU_E4_CAGE, 0)
+                    // The real cage lifetime owns E2 availability, not a longer swap timer.
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(.c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", KyorakuE_ID)) == KyorakuE4_ID then
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuE4_ID, false)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuE_ID, true)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(.c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", KyorakuE_ID), 0)
+                    endif
                     call DestroyGroup(.g)
                     set .c = null
                     set .g = null
                     set .e = null
                     set m_KyorakuE[i] = m_KyorakuE[ MUI_KyorakuE]
                     set MUI_KyorakuE = MUI_KyorakuE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuE == -1 then
-                        call PauseTimer( t_KyorakuE)
+                        call KyorakuTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -850,14 +942,152 @@ endfunction
             set .dmg = .dmg / (.rmax * 4)
             call SetUnitAnimationByIndex( .c , 8)
             call SetUnitTimeScale( .c , 2)
+            call SaveInteger(hs, GetHandleId(.c), SH_KYORAKU_E4_CAGE, 1)
+            call SaveReal(hs, GetHandleId(.c), SH_KYORAKU_E4_X, .x)
+            call SaveReal(hs, GetHandleId(.c), SH_KYORAKU_E4_Y, .y)
+            if GetHeroLevel(.c) >= KyorakuE4_Level then
+                // cage travel (125 per 0.03 sec) + its duration
+                call SwapAbility(.c, SR3(.c, .x, .y) / 4166.0 + 0.45 + .rmax + 0.2, KyorakuE4_ID, KyorakuE_ID)
+            endif
             if MUI_KyorakuE == 0 then
-                call TimerStart( t_KyorakuE, 0.03, true, function thistype.Loop_KyorakuE)
+                call KyorakuTick_On(4)
+            endif
+        endmethod
+    endstruct
+
+    // E2 (Takaoni): Kyoraku flies through the Bushogoma cage and slashes it twice.
+    private struct KyorakuE4_KS
+        private static integer array m_KyorakuE4
+        private static integer MUI_KyorakuE4 = -1
+        unit c
+        real x
+        real y
+        real endX
+        real endY
+        real a
+        real r
+        real dmg
+        integer slashes
+        group g
+        effect e
+
+        private method slash takes nothing returns nothing
+            local unit u
+            local real side = 60
+            if ModuloInteger(slashes, 2) == 1 then
+                set side = -60
+            endif
+            call DestroyEffect(EffectSpawnColor3("war3mapImported\\wos_blue_circular.mdl", x, y, a * bj_RADTODEG + side, 1.25, 0.45 * KyorakuE4_SlashScale, 145, -30, 255, 255, 255, 195))
+            call DestroyEffect(EffectSpawnColor3("war3mapImported\\wos_animeslashfinalanother.mdl", x, y, a * bj_RADTODEG + side, 1.0, 2.25 * KyorakuE4_SlashScale, 185, -35, 255, 255, 255, 125))
+            if slashes == 0 then
+                call MakeSound("war3mapimported\\Hero_Kyoraku_Q2")
+            endif
+            if slashes == 0 then
+                call DestroyEffect(EffectSpawn3("war3mapImported\\wos_zhanji-blue.mdl", x + 10 * Cos(a), y + 10 * Sin(a), a * bj_RADTODEG, 1, 1, 175, 45))
+            else
+                call DestroyEffect(EffectSpawn3("war3mapImported\\wos_zhanji-blue.mdl", x + 10 * Cos(a), y + 10 * Sin(a), a * bj_RADTODEG, 1, 1, 175, -45))
+            endif
+            call GroupEnumUnitsInRange(g, x, y, KyorakuE_DamageAoe, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(g)
+                exitwhen u == null
+                call GroupRemoveUnit(g, u)
+                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                    call DamageSource(KyorakuE4_ID)
+                    call dmgphys(c, u, dmg)
+                    call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", u, "chest"))
+                endif
+            endloop
+            set slashes = slashes + 1
+        endmethod
+
+        static method Loop_KyorakuE4 takes nothing returns nothing
+            local thistype this
+            local integer i = 0
+            local boolean done
+            local real move = KyorakuE4_Speed * 0.03
+            loop
+                exitwhen i > MUI_KyorakuE4
+                set this = m_KyorakuE4[i]
+                set done = not SpellBoolCaster(c)
+                if not done then
+                    if SR3(c, endX, endY) > move then
+                        call MoveUnit(c, move, a)
+                    else
+                        call SetUnitX(c, endX)
+                        call SetUnitY(c, endY)
+                        set done = true
+                    endif
+                    // Cross the cage: both hits happen in this tick, before the overshoot.
+                    if slashes == 0 and (x - GetUnitX(c)) * Cos(a) + (y - GetUnitY(c)) * Sin(a) <= 100 then
+                        loop
+                            exitwhen slashes >= KyorakuE4_Slashes
+                            call slash()
+                        endloop
+                    endif
+                endif
+                if done then
+                    call DestroyEffect(e)
+                    call StopSpellUnit2(c)
+                    call SetUnitTimeScale(c, 1)
+                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuE4_ID, false)
+                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuE_ID, true)
+                    call DestroyGroup(g)
+                    set e = null
+                    set g = null
+                    set c = null
+                    set m_KyorakuE4[i] = m_KyorakuE4[MUI_KyorakuE4]
+                    set MUI_KyorakuE4 = MUI_KyorakuE4 - 1
+                    set i = i - 1
+                    if MUI_KyorakuE4 == -1 then
+                        call KyorakuTick_Off(10)
+                    endif
+                    call deallocate(this)
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+
+        public static method KyorakuE4_Start takes unit NewC returns nothing
+            local thistype this
+            local real tx = LoadReal(hs, GetHandleId(NewC), SH_KYORAKU_E4_X)
+            local real ty = LoadReal(hs, GetHandleId(NewC), SH_KYORAKU_E4_Y)
+            if LoadInteger(hs, GetHandleId(NewC), SH_KYORAKU_E4_CAGE) == 0 then
+                call DisplayTimedTextToPlayer(GetOwningPlayer(NewC), 0, 0, 2, "|cffff4040No Bushogoma cage to fly to.|r")
+                return
+            endif
+            if SR3(NewC, tx, ty) > KyorakuE4_MaxRange then
+                call DisplayTimedTextToPlayer(GetOwningPlayer(NewC), 0, 0, 2, "|cffff4040Too far from the cage (max " + I2S(R2I(KyorakuE4_MaxRange)) + ").|r")
+                return
+            endif
+            set this = thistype.create()
+            set MUI_KyorakuE4 = MUI_KyorakuE4 + 1
+            set m_KyorakuE4[MUI_KyorakuE4] = this
+            set c = NewC
+            set x = tx
+            set y = ty
+            set a = GAngle2(c, x, y)
+            if SR3(c, x, y) < 1 then
+                set a = GetUnitFacing(c) * bj_DEGTORAD
+            endif
+            set endX = x + KyorakuE4_FlyPast * Cos(a)
+            set endY = y + KyorakuE4_FlyPast * Sin(a)
+            set slashes = 0
+            set r = 0
+            set g = CreateGroup()
+            set dmg = GetHeroAgi(c, true) * KyorakuE4_DamageAgi
+            call StartSpellUnit2(c)
+            call SetUnitFacing(c, a * bj_RADTODEG)
+            call SetUnitAnimationByIndex(c, 15)
+            call SetUnitTimeScale(c, 0.5)
+            set e = AddSpecialEffectTarget("war3mapImported\\wos_whiteauralance_white.mdl", c, "hand right")
+            if MUI_KyorakuE4 == 0 then
+                call KyorakuTick_On(10)
             endif
         endmethod
     endstruct
 
     private struct KyorakuE3_KS
-        private static timer t_KyorakuE3 = CreateTimer( )
         private static integer array m_KyorakuE3
         private static integer MUI_KyorakuE3 = -1
         unit c
@@ -877,7 +1107,7 @@ endfunction
         real sr
         real a
         real rmax
-        private static method Loop_KyorakuE3 takes nothing returns nothing
+        static method Loop_KyorakuE3 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real .x1
@@ -887,7 +1117,7 @@ endfunction
                 set this = m_KyorakuE3[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     call MoveEff2(.e, .move, .a)
                     call MoveEff2(.e2, .move, .a)
                     call MoveEff2(.e3, .move, .a)
@@ -906,8 +1136,9 @@ endfunction
                     set .e3 = null
                     set m_KyorakuE3[i] = m_KyorakuE3[ MUI_KyorakuE3]
                     set MUI_KyorakuE3 = MUI_KyorakuE3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuE3 == -1 then
-                        call PauseTimer( t_KyorakuE3)
+                        call KyorakuTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -943,13 +1174,12 @@ endfunction
             set .sr = SR5(.e, .x1, .y1)
             set .move = .sr / (.rmax * 33)
             if MUI_KyorakuE3 == 0 then
-                call TimerStart( t_KyorakuE3, 0.03, true, function thistype.Loop_KyorakuE3)
+                call KyorakuTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct KyorakuE2_KS
-        private static timer t_KyorakuE2 = CreateTimer( )
         private static integer array m_KyorakuE2
         private static integer MUI_KyorakuE2 = -1
         unit c
@@ -962,7 +1192,7 @@ endfunction
         real aoe
         real r
         real rmax
-        private static method Loop_KyorakuE2 takes nothing returns nothing
+        static method Loop_KyorakuE2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real .x1
@@ -974,8 +1204,8 @@ endfunction
                     set .r = .r + 0.03
                     call SetUnitX(.td, .x)
                     call SetUnitY(.td, .y)
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
-                    if .r < .rmax - 0.5 then
+                    set .r = RoundReal(.r, 3)
+                    if .r < KyorakuE2_ShadowSpawnTime then
                         //if .r3 > 0.0 then
                           //  set .r3 = 0
                         call KyorakuE3_KS.KyorakuE3_Start(.c, .x, .y, rmax - .r)
@@ -983,7 +1213,7 @@ endfunction
                         //    set .r3 = .r3 + 0.03
                        // endif
                     endif
-                    if .r == rmax-0.21 then
+                    if .r == rmax - KyorakuE2_StrikeBeforeEnd then
                         call MakeSound("war3mapimported\\Hero_Kyoraku_W3")
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_FantasyBattle (1517).mdx", .x, .y, GetRandomReal(0, 359), 1.25, 1.04, 3))
                         call SetUnitTimeScale( .c , 5)
@@ -994,20 +1224,22 @@ endfunction
                 else
                 call StopSpellUnit(c)
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-wsfx-2.mdl", GetUnitX(.td), GetUnitY(.td), GetRandomReal(0, 359), 0.5, 2, 145))
-                    call AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", .td, "chest")
-                    call DestroyEffect(EffectSpawn("war3mapImported\\Gear_nanaya2skill06dred.mdl", GetUnitX(.td), GetUnitY(.td), 1.45, 1, 1.45, 125))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\Gear_OPm (434)4.mdl", GetUnitX(.td), GetUnitY(.td), 0, 2, 1, 1))
+                    call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", .td, "chest"), 1.5)
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_Nanaya2Skill06Dred.mdl", GetUnitX(.td), GetUnitY(.td), 1.45, 1, 1.45, 125))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)4.mdl", GetUnitX(.td), GetUnitY(.td), 0, 2, 1, 1))
                     call StunUnit(.c, .td, KyorakuE2_Stun)
+                    call DamageSource('A058')
                     call dmgphys(.c, .td, .dmg)
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("we start"), 0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_WE_START, 0)
                     call StopSpellUnit(.c)
                     call DestroyGroup(.g)
                     set .c = null
                     set .g = null
                     set m_KyorakuE2[i] = m_KyorakuE2[ MUI_KyorakuE2]
                     set MUI_KyorakuE2 = MUI_KyorakuE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuE2 == -1 then
-                        call PauseTimer( t_KyorakuE2)
+                        call KyorakuTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1038,20 +1270,19 @@ endfunction
             set .aoe = KyorakuE2_DamageAoe
             set .dmg = KyorakuE2_Damage2StaticBase + (KyorakuE2_Damage2StaticStep * (GetUnitAbilityLevel(.c, KyorakuE_ID) - 1))
             set .dmg = .dmg + GetHeroAgi(.c, true) * (KyorakuE2_DamageAgiBase + (KyorakuE2_DamageAgiStep * (GetUnitAbilityLevel(.c, KyorakuE_ID) - 1)))
-            set .rmax = 0.6 //KyorakuE2_DurationBase
-            call SaveInteger(hs, GetHandleId(.c), StringHash("we start"), 1)
-            call BlzSetSpecialEffectPosition(LoadEffectHandle(hs, GetHandleId(.c), StringHash("shadow eff")), .x, .y, 3)
+            set .rmax = KyorakuE2_FlyTime
+            call SaveInteger(hs, GetHandleId(.c), SH_WE_START, 1)
+            call BlzSetSpecialEffectPosition(LoadEffectHandle(hs, GetHandleId(.c), SH_SHADOW_EFF), .x, .y, 3)
             call VisionTimed(GetOwningPlayer(.c), .x, .y, .aoe * 1.75, .rmax)
             call SetUnitAnimationByIndex( .c , 12)
             call SetUnitTimeScale( .c , 2)
             if MUI_KyorakuE2 == 0 then
-                call TimerStart( t_KyorakuE2, 0.03, true, function thistype.Loop_KyorakuE2)
+                call KyorakuTick_On(6)
             endif
         endmethod
     endstruct
 
     private struct KyorakuR_KS
-        private static timer t_KyorakuR = CreateTimer( )
         private static integer array m_KyorakuR
         private static integer MUI_KyorakuR = -1
         unit c
@@ -1070,7 +1301,7 @@ endfunction
         real sr
         real a
         real rmax
-        private static method Loop_KyorakuR takes nothing returns nothing
+        static method Loop_KyorakuR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1078,7 +1309,7 @@ endfunction
                 set this = m_KyorakuR[i]
                 if SpellBoolCaster(.c)  and SpellBoolCaster(td) and .r <= .rmax then
                     set .r = .r + 0.05
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if .r == 0.05 then
                         call MakeSound("war3mapimported\\Hero_Kyoraku_RNEW")
                       //  call MakeSound("war3mapimported\\Hero_Kyoraku_R1")
@@ -1154,10 +1385,11 @@ endfunction
                             // call MakeSound("war3mapimported\\Hero_Kyoraku_R4")
                             
                             call StopSpellUnit(.c)
+                            call DamageSource('A053')
                             call dmgphys(.c, .td, .dmg)
                             call SetUnitAnimation(.td, "death")
                             call StunUnit(.c, .td, KyorakuR_Stun)
-                            call AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", .td, "chest")
+                            call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", .td, "chest"), 1.5)
                             set .r = 9999
                         endif
                     endif
@@ -1173,8 +1405,9 @@ endfunction
                     set .e = null
                     set m_KyorakuR[i] = m_KyorakuR[ MUI_KyorakuR]
                     set MUI_KyorakuR = MUI_KyorakuR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuR == -1 then
-                        call PauseTimer( t_KyorakuR)
+                        call KyorakuTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1215,13 +1448,12 @@ endfunction
             call SetUnitTimeScale( .c , 0.01)            
             call VisionTimed(GetOwningPlayer(.c), .x, .y, 750, 6)
             if MUI_KyorakuR == 0 then
-                call TimerStart( t_KyorakuR, 0.05, true, function thistype.Loop_KyorakuR)
+                call KyorakuTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct KyorakuT4_KS
-        private static timer t_KyorakuT2 = CreateTimer( )
         private static integer array m_KyorakuT2
         private static integer MUI_KyorakuT2 = -1
         unit c
@@ -1239,7 +1471,7 @@ endfunction
         effect e5
         real a
         real rmax
-        private static method Loop_KyorakuT4 takes nothing returns nothing
+        static method Loop_KyorakuT4 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1247,7 +1479,7 @@ endfunction
                 set this = m_KyorakuT2[i]
                 if SpellBoolCaster(.c) and  SpellBoolCaster(.td) and  .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if .r < 2.68 then
                         set .a = GAngle(.c, .td)
                         call SetUnitFacing(.c, .a * bj_RADTODEG)
@@ -1320,14 +1552,15 @@ endfunction
                     call DecorRemove(.c, .x, .y, 900, 100)
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T18")
                     call StunUnit(.c, .td, KyorakuT_DanFinal_Stun)
+                    call DamageSource('A059')
                     call dmgphys(.c, .td, .dmg)
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_fuxuan-21.mdl", .x, .y, 0, 1, 4.75, 150))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", .x, .y, 0, 1, 1.75, 10))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", .x, .y, 0, 1, 5, 10))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_1jinse_97.mdl", .x, .y, 0, 3.5, 3, 0))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_CrackWhitee.mdl", .x, .y, 0, 0.75, 1, 0))
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("last dan"), 0)
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("bankai end"), 1)
+                    call SaveInteger(hs, GetHandleId(.c), SH_LAST_DAN, 0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_BANKAI_END, 1)
                     call DestroyEffect(.e)
                     call DestroyEffect(.e2)
                     call DestroyEffect(.e3)
@@ -1344,8 +1577,9 @@ endfunction
                     set .e5 = null
                     set m_KyorakuT2[i] = m_KyorakuT2[ MUI_KyorakuT2]
                     set MUI_KyorakuT2 = MUI_KyorakuT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuT2 == -1 then
-                        call PauseTimer( t_KyorakuT2)
+                        call KyorakuTick_Off(7)
                     endif
                     call deallocate(this)
                 endif
@@ -1367,7 +1601,7 @@ endfunction
             call StopSound(gg_snd_Hero_Kyoraku_T14__2, false, false)
             call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_1")
             call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_2")
-            call SaveInteger(hs, GetHandleId(.c), StringHash("last dan"), 1)
+            call SaveInteger(hs, GetHandleId(.c), SH_LAST_DAN, 1)
             set .e = AddSpecialEffectTarget("war3mapImported\\wos_whiteauralance_white.mdl", .c, "hand right")
             set .a = GAngle( .c , .td ) // Angle Between points
             set .dmg = GetHeroAgi( .c , true) * KyorakuT_DanFinal_Dmg
@@ -1375,13 +1609,12 @@ endfunction
             call SetUnitAnimationByIndex( .c , 20)
             call SetUnitTimeScale( .c , 0.25)
             if MUI_KyorakuT2 == 0 then
-                call TimerStart( t_KyorakuT2, 0.03, true, function thistype.Loop_KyorakuT4)
+                call KyorakuTick_On(7)
             endif
         endmethod
     endstruct
 
     private struct KyorakuT_KS
-        private static timer t_KyorakuT = CreateTimer( )
         private static integer array m_KyorakuT
         private static integer MUI_KyorakuT = -1
         unit c
@@ -1414,7 +1647,7 @@ endfunction
         effect e8
         real a
         real rmax
-        private static method Loop_KyorakuT takes nothing returns nothing
+        static method Loop_KyorakuT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real drain = 0
@@ -1431,25 +1664,23 @@ endfunction
             loop
                 exitwhen i > MUI_KyorakuT
                 set this = m_KyorakuT[i]
-                if SpellBoolCaster(.c) and IsUnitType(c,UNIT_TYPE_DEAD)== false and .r <= .rmax and LoadInteger(hs, GetHandleId(.c), StringHash("instant end")) == 0 and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false then
-                    if LoadInteger(hs, GetHandleId(.c), StringHash("last dan")) == 0 then
+                if SpellBoolCaster(.c) and IsUnitType(c,UNIT_TYPE_DEAD)== false and .r <= .rmax and LoadInteger(hs, GetHandleId(.c), SH_INSTANT_END) == 0 and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false then
+                    if LoadInteger(hs, GetHandleId(.c), SH_LAST_DAN) == 0 then
                         set .r = .r + 0.03
-                        set .r = S2R( R2SW( .r , 0, 3 ) )
+                        set .r = RoundReal(.r, 3)
                     else
                         if .check3 == 0 then
                             set .check3 = 1
                             call ColorEffDummy3(.e8, 0, 255, 255, 255, 0.5)
-                            call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "Final Act:" + "|r")
-                            call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T4", 0, false)
-                            call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT4_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT4_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
+                            call KyorakuBankaiHelp(.c, k2, KyorakuT4_ID)
                         endif
                     endif
-                    if LoadInteger(hs, GetHandleId(.c), StringHash("bankai end")) == 1 then
-                        call SaveInteger(hs, GetHandleId(.c), StringHash("bankai end"), 0)
+                    if LoadInteger(hs, GetHandleId(.c), SH_BANKAI_END) == 1 then
+                        call SaveInteger(hs, GetHandleId(.c), SH_BANKAI_END, 0)
                         set .r = .rmax - 0.1
                     endif
                     call SetTimeOfDay(0)
-                    if check>=0 or (check == 0 and r >3.75) then 
+                    if .check > 0 or .r >= KyorakuT_BuffDelay then 
                     if r7>0.12 then 
                     set r7 = 0
                     call GroupClear(.g)
@@ -1468,9 +1699,8 @@ endfunction
                     endif
                     if .check == 0 then
                         if .r > 3.75 then
-                            call BlzFrameSetValue(frame_KyorBankai3[k2], (.r-3.75))
                             if preparetime - .r >= 0 then
-                                call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(preparetime - .r, 0, 2) + "|r")
+                                call KyorakuBankaiProgress(.c, .check, preparetime - .r, preparetime - 3.75)
                             endif
                         endif
                         if .r < 3.69 then
@@ -1514,47 +1744,29 @@ endfunction
                             call ColorEffDummy3(.e3, 0.6, 255, 255, 255, 1.8)
                         endif
                         if .r == 3.75 then
-                            call SaveInteger(hs, GetHandleId(.c), StringHash("kyoraku bankai"), 1)
+                            call SaveInteger(hs, GetHandleId(.c), SH_KYORAKU_BANKAI, 1)
                             call StopSpellUnit(.c)
                             call MakeSound3("war3mapimported\\Hero_Kyoraku_T5")
-                            if frame_KyorBankai1[k2] == null then
-                                set frame_KyorBankai1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.39, 0.49)
-                                call BlzFrameSetSize(frame_KyorBankai1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_KyorBankai1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_KyorBankai1[k2], true)
-                                set frame_KyorBankai12[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_KyorBankai12[k2], FRAMEPOINT_CENTER, 0, 0)
-                                call BlzFrameSetSize(frame_KyorBankai12[k2], 0, 0)
-                                call BlzFrameSetVisible(frame_KyorBankai12[k2], true)
-                                set frame_KyorBankai2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_KyorBankai1[k2], 0, 0)
-                                call BlzFrameSetPoint(frame_KyorBankai2[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0, 0.5)
-                                call BlzFrameSetSize(frame_KyorBankai2[k2], 0.1, 0.019)
-                                set frame_KyorBankai3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_KyorBankai1[k2], "", 0)
-                                call BlzFrameSetSize(frame_KyorBankai3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_KyorBankai3[k2], 0.5)
-                                call BlzFrameSetModel(frame_KyorBankai3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetPoint(frame_KyorBankai3[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, -0.015, 0)
-                                call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, preparetime-3.75)
-                                call BlzFrameSetValue(frame_KyorBankai3[k2],0 )
-                                set frame_KyorBankai4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_KyorBankai1[k2], "", 0)
-                                call BlzFrameSetPoint(frame_KyorBankai4[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, -0.048, 0.0)
-                                call BlzFrameSetSize(frame_KyorBankai4[k2], 0.0275, 0.0275)
-                                call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T0", 0, false)
-                                set frame_KyorBankai5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)
-                                call BlzFrameSetPoint(frame_KyorBankai5[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0175, 0.01)
-                                call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "Karamatsu Shinju:" + "|r")
-                                call BlzFrameSetScale(frame_KyorBankai5[k2], 0.9)
-                                set frame_KyorBankai6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_KyorBankai1[k2], "", 0)
-                                call BlzFrameSetPoint(frame_KyorBankai6[k2], FRAMEPOINT_CENTER, frame_KyorBankai1[k2], FRAMEPOINT_CENTER, 0.0175, -0.005)
-                                call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(preparetime - .r, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_KyorBankai6[k2], 0.9)
-                                set frame_KyorBankai7[k2] = BlzCreateFrame("EscMenuTextAreaTemplate", frame_KyorBankai12[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_KyorBankai7[k2], FRAMEPOINT_CENTER, 0.83, 0.34)
-                                call BlzFrameSetSize(frame_KyorBankai7[k2], 0.19, 0.17 )
-                                call BlzFrameSetAlpha(frame_KyorBankai7[k2], 225)
-                                set xxx = 0.9
-                                set yyy = 0.4
+                            if frame_KyorBankai12[k2] == null then
+                                set frame_KyorBankai12[k2] = WUI_Window("WOSKyorakuHelp", main_frame, 0, 0)
+                                // Checkpoint 24: right-column panel under the top-right menu,
+                                // collapsible with its own header (like TEST COMMANDS).
+                                call WUI_RegisterColumnPanel(frame_KyorBankai12[k2], "BANKAI STAGES", 0.035)
+                                call WUI_ColumnShow(frame_KyorBankai12[k2], true)
+
+
+                                call KyorakuBankaiProgress(.c, .check, preparetime - .r, preparetime - 3.75)
+
+                                call WUI_RefreshDocks()
+                                set frame_KyorBankai7[k2] = BlzCreateFrameByType("TEXT", "WOSKyorakuHelpText", frame_KyorBankai12[k2], "", 0)
+                                call BlzFrameSetPoint(frame_KyorBankai7[k2], FRAMEPOINT_TOP, frame_KyorBankai12[k2], FRAMEPOINT_TOP, 0.000, -0.008)
+                                call BlzFrameSetSize(frame_KyorBankai7[k2], 0.164, 0.00)
+                                call BlzFrameSetFont(frame_KyorBankai7[k2], "Fonts\\FRIZQT__.TTF", 0.0105, 0)
+                                call BlzFrameSetTextAlignment(frame_KyorBankai7[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+                                call BlzFrameSetEnable(frame_KyorBankai7[k2], false)
+                                // The old open/close icons are replaced by the column header.
+                                set xxx = -1.00
+                                set yyy = -1.00
         set frame_KyorBankai8[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", main_frame, "ScoreScreenTabButtonTemplate", 0)
         call BlzFrameSetAbsPoint(frame_KyorBankai8[k2],FRAMEPOINT_CENTER, xxx,yyy )// - 0.03 * i)
         call BlzFrameSetSize(frame_KyorBankai8[k2], 0.02, 0.02)
@@ -1573,20 +1785,17 @@ endfunction
         call BlzFrameSetTexture(frame_KyorBankai11[k2], "WOS\\Scroll", 0, true)
         call BlzTriggerRegisterFrameEvent(Frame_clickKyoraku, frame_KyorBankai8[k2], FRAMEEVENT_CONTROL_CLICK)
         call BlzTriggerRegisterFrameEvent(Frame_clickKyoraku, frame_KyorBankai9[k2], FRAMEEVENT_CONTROL_CLICK)
-                                call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT0_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT0_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
+                                call KyorakuBankaiHelp(.c, k2, KyorakuT0_ID)
                             else
-                                call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T0", 0, false)
-                                call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "Karamatsu Shinju:" + "|r")
-                                call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT0_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT0_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
+                                call KyorakuBankaiHelp(.c, k2, KyorakuT0_ID)
                                 set k = 0
                                 loop
                                 exitwhen k == 10                                        
                                 if GetLocalPlayer() == Player(k) then 
-                                call BlzFrameSetVisible(frame_KyorBankai1[k2], true)
                                 endif
-                                if LoadInteger(hs,GetHandleId(Player(k)),StringHash("desc t off"))== 0 then 
+                                if LoadInteger(hs,GetHandleId(Player(k)),SH_DESC_T_OFF)== 0 then 
                                 if GetLocalPlayer() == Player(k) then 
-                                call BlzFrameSetVisible(frame_KyorBankai12[k2], true)
+                                call WUI_ColumnShow(frame_KyorBankai12[k2], true)
                                 call BlzFrameSetVisible(frame_KyorBankai8[k2],true)
                                 call BlzFrameSetVisible(frame_KyorBankai10[k2],true)
                                 call BlzFrameSetVisible(frame_KyorBankai9[k2],false)
@@ -1594,7 +1803,7 @@ endfunction
                                 endif
                                 else
                                 if GetLocalPlayer() == Player(k) then 
-                                call BlzFrameSetVisible(frame_KyorBankai12[k2], false)
+                                call WUI_ColumnShow(frame_KyorBankai12[k2], false)
                                 call BlzFrameSetVisible(frame_KyorBankai8[k2],false)
                                 call BlzFrameSetVisible(frame_KyorBankai10[k2],false)
                                 call BlzFrameSetVisible(frame_KyorBankai9[k2],true)
@@ -1604,9 +1813,7 @@ endfunction
                                 endif
                                 set k = k + 1
                                 endloop
-                                call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, preparetime-3.75)
-                                call BlzFrameSetValue(frame_KyorBankai3[k2],0 )
-                                call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(preparetime - .r, 0, 2) + "|r")
+                                call KyorakuBankaiProgress(.c, .check, preparetime - .r, preparetime - 3.75)
                             endif
                         endif
                         if .r == 7.74 then
@@ -1634,12 +1841,11 @@ endfunction
                             endif
                         endif
                     elseif .check == 1 then
-                        call BlzFrameSetValue(frame_KyorBankai3[k2], 5.49 - (.r + 0.03))
                         if 5.49 - .r >= 0 then
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(5.49 - .r, 0, 2) + "|r")
+                            call KyorakuBankaiProgress(.c, .check, 5.49 - .r, 5.49)
                         endif
-                        if LoadInteger(hs, GetHandleId(.c), StringHash("instant skip")) == 1 then 
-                        call SaveInteger(hs, GetHandleId(.c), StringHash("instant skip"),0)
+                        if LoadInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP) == 1 then 
+                        call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP,0)
                         set r = 5.49
                         endif
                         if .r == 5.49 then
@@ -1659,20 +1865,16 @@ endfunction
                             endloop
                             call GroupClear(.g)
                             call UnitRemoveAbility(c,KyorakuTSkip_ID)
-                            call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT2_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT2_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
-                            call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T2", 0, false)
-                            call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, 9.03)
-                            call BlzFrameSetValue(frame_KyorBankai3[k2], 9 - (.r + 0.03))
-                            call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "2-nd Act:" + "|r")
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(7.02 - .r, 0, 2) + "|r")
+                            call KyorakuBankaiHelp(.c, k2, KyorakuT2_ID)
+                            call KyorakuBankaiProgress(.c, .check, 7.02 - .r, 7.02)
                             set .k3 = 0
                             call MakeSound3("war3mapimported\\Hero_Kyoraku_T9")
                             set .k = 0
                             loop
                                 exitwhen .k > 10
-                                if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated")) > 0 then
+                                if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED) > 0 then
                                     set .k3 = .k3 + 1
-                                    call SaveEffectHandle(hs, GetHandleId(Hero[k]), StringHash("2-nd dan" + I2S(.k2)), AddSpecialEffectTarget("war3mapimported\\wos_dan2.mdx", Hero[k], "chest"))
+                                    call SaveEffectHandle(hs, GetHandleId(Hero[k]), GearKey(GEAR_KEY_2ND_DAN, "2-nd dan", .k2), AddSpecialEffectTarget("war3mapimported\\wos_dan2.mdx", Hero[k], "chest"))
                                 endif
                                 set .k = .k + 1
                             endloop
@@ -1680,27 +1882,22 @@ endfunction
                         endif
                     elseif .check == 2 then
                     set rr2 = 6.99
-                        call BlzFrameSetValue(frame_KyorBankai3[k2], rr2 - (.r + 0.03))
                         if rr2 - .r >= 0 then
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(rr2 - .r, 0, 2) + "|r")
+                            call KyorakuBankaiProgress(.c, .check, rr2 - .r, rr2)
                         endif
-                        if LoadInteger(hs, GetHandleId(.c), StringHash("instant skip")) == 1 then 
-                        call SaveInteger(hs, GetHandleId(.c), StringHash("instant skip"),0)
+                        if LoadInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP) == 1 then 
+                        call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP,0)
                         set r = rr2
                         endif
                         if .r == rr2 then
                             set .r = 0
                             set .check = 3
-                            call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T3", 0, false)
-                            call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, .rmax)
-                            call BlzFrameSetValue(frame_KyorBankai3[k2], .rmax - (.r + 0.03))
-                            call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "3-rd Act:" + "|r")
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
+                            call KyorakuBankaiProgress(.c, .check, .rmax - .r, .rmax)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT4_ID, true)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(.c),KyorakuTSkip_ID,false)
                             call OkarunEggCd(c,KyorakuT4_ID,KyorakuT_DanFinal_BaseCd)
                     //call SetPlayerAbilityAvailable(GetOwningPlayer(.c),KyorakuT3_ID,true)
-                            call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT3_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT3_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
+                            call KyorakuBankaiHelp(.c, k2, KyorakuT3_ID)
                     //        call SetPlayerAbilityAvailable(GetOwningPlayer(.c),KyorakuT2_ID,false)
                             //call MakeSound3("war3mapimported\\Hero_Kyoraku_T10")
                             call StartSound(gg_snd_Hero_Kyoraku_T14__2)
@@ -1731,9 +1928,8 @@ endfunction
                             endloop
                         endif
                     elseif .check == 3 then
-                        call BlzFrameSetValue(frame_KyorBankai3[k2], .rmax - (.r + 0.03))
                         if .rmax - .r >= 0 then
-                            call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(.rmax - .r, 0, 2) + "|r")
+                            call KyorakuBankaiProgress(.c, .check, .rmax - .r, .rmax)
                         endif
                         if .r == 0.3 then
                             set .e8 = EffectSpawnColor("war3mapImported\\wos_cd (706).mdx", .x, .y, GetUnitFacing(.c), 1, 0.45, 42, 255, 255, 255, 255)
@@ -1758,7 +1954,7 @@ endfunction
                         loop
                             exitwhen .k > 10
                             if Hero[k] != null and GetWidgetLife(Hero[k]) > 1 and SR2(Hero[k],c)<=KyorakuT_DamageAoe  then
-                                set rand1 = LoadReal(hs, GetHandleId(Hero[k]), StringHash("cur mana"))
+                                set rand1 = LoadReal(hs, GetHandleId(Hero[k]), SH_CUR_MANA)
                                 if rand1 == 0 then
                                     set rand1 = GetUnitState(Hero[k], UNIT_STATE_MANA)
                                 endif
@@ -1770,14 +1966,14 @@ endfunction
                                 if rand1 < 1 then
                                     set rand1 = 1
                                 endif
-                                call SaveReal(hs, GetHandleId(Hero[k]), StringHash("cur mana"), rand1)
+                                call SaveReal(hs, GetHandleId(Hero[k]), SH_CUR_MANA, rand1)
                             endif
                             set .k = .k + 1
                         endloop
                         if .r5 > 1.75 then
                             set .r5 = 0
                             set ok = 1 
-                            if LoadInteger(hs, GetHandleId(.c), StringHash("last dan")) == 1 then 
+                            if LoadInteger(hs, GetHandleId(.c), SH_LAST_DAN) == 1 then 
                             set ok = 1
                             endif
                             call GroupClear(.g)
@@ -1798,6 +1994,7 @@ endfunction
                                      if IsUnitAlly(u,GetOwningPlayer(c)) then 
                                      set ok = ok*1
                                      endif
+                                    call DamageSource('A054')
                                     call dmgmag(.c, .u, .dmg2*ok)
                                         
                                 endif
@@ -1842,19 +2039,20 @@ endfunction
                     if .check >= 2 then
                         if .r3 >= 2.7 then
                         set ok = 1 
-                            if LoadInteger(hs, GetHandleId(.c), StringHash("last dan")) == 1 then 
+                            if LoadInteger(hs, GetHandleId(.c), SH_LAST_DAN) == 1 then 
                             //set ok = 0.5
                             endif
                             set .r3 = 0
                             set .k = 0
                             loop
                                 exitwhen .k > 10
-                                if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated")) > 0 and SR2(c,Hero[k])<= KyorakuT_DamageAoe then
+                                if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED) > 0 and SR2(c,Hero[k])<= KyorakuT_DamageAoe then
                                     if IsUnitAlly(u,GetOwningPlayer(c)) then 
                                      set ok = ok*1
                                      else
                                       set ok = 1
                                     endif
+                                    call DamageSource('A054')
                                     call dmgphys(.c, Hero[k], .dmg*ok)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", Hero[k], "chest"))
                                 endif
@@ -1872,7 +2070,7 @@ endfunction
                                 set .k3 = 0
                                 loop
                                     exitwhen .k > 10
-                                    if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated")) > 0 then
+                                    if Hero[k] != null and LoadInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED) > 0 then
                                         set .k3 = 1
                            // call BJDebugMsg(I2S(.k))
                                     endif
@@ -1885,12 +2083,8 @@ endfunction
                             call SetPlayerAbilityAvailable(GetOwningPlayer(.c),KyorakuTSkip_ID,true)
                             call UnitAddAbility(c,KyorakuTSkip_ID)
                             //call SetPlayerAbilityAvailable(GetOwningPlayer(.c),KyorakuT0_ID,false)
-                                    call BlzFrameSetTexture(frame_KyorBankai4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_T1", 0, false)
-                                    call BlzFrameSetMinMaxValue(frame_KyorBankai3[k2], 0, 5.49)
-                                    call BlzFrameSetText(frame_KyorBankai7[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT1_ID), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(.c, KyorakuT1_ID), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
-                                    call BlzFrameSetValue(frame_KyorBankai3[k2], 5.49 - (.r + 0.03))
-                                    call BlzFrameSetText(frame_KyorBankai5[k2], "|c00FFFF00" + "1-st Act:" + "|r")
-                                    call BlzFrameSetText(frame_KyorBankai6[k2], "|c00FFFF00" + R2SW(5.49 - .r, 0, 2) + "|r")
+                                    call KyorakuBankaiHelp(.c, k2, KyorakuT1_ID)
+                                    call KyorakuBankaiProgress(.c, .check, 5.49 - .r, 5.49)
                                     call StopSound(gg_snd_Hero_Kyoraku_T6, false, false)
                                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T7")
                                 endif
@@ -1930,16 +2124,16 @@ endfunction
                     loop
                         exitwhen .k > 10
                         if Hero[k] != null then
-                            call SaveReal(hs, GetHandleId(Hero[k]), StringHash("cur mana"), 0)
-                            call DestroyEffect(LoadEffectHandle(hs, GetHandleId(Hero[k]), StringHash("2-nd dan" + I2S(.k2))))
-                            call RemoveSavedHandle(hs, GetHandleId(Hero[k]), StringHash("2-nd dan" + I2S(.k2)))
-                            call SaveInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated"), 0)
-                            call RemoveSavedInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated"))
+                            call SaveReal(hs, GetHandleId(Hero[k]), SH_CUR_MANA, 0)
+                            call DestroyEffect(LoadEffectHandle(hs, GetHandleId(Hero[k]), GearKey(GEAR_KEY_2ND_DAN, "2-nd dan", .k2)))
+                            call RemoveSavedHandle(hs, GetHandleId(Hero[k]), GearKey(GEAR_KEY_2ND_DAN, "2-nd dan", .k2))
+                            call SaveInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED, 0)
+                            call RemoveSavedInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED)
                         endif
                         set .k = .k + 1
                     endloop                            
-                    call BlzFrameSetVisible(frame_KyorBankai1[k2], false)
-                    call BlzFrameSetVisible(frame_KyorBankai12[k2], false)
+                    call KyorakuBankaiProgress(.c, .check, 0.00, 0.00)
+                    call WUI_ColumnShow(frame_KyorBankai12[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai8[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai9[k2], false)
                     call BlzFrameSetVisible(frame_KyorBankai10[k2], false)
@@ -1948,7 +2142,10 @@ endfunction
                     if r <=16.1 then 
                     call StopSound(gg_snd_Hero_Kyoraku_T14__2, false, false)
                     endif
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("instant skip"),0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP,0)
+                    call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuTSkip_ID, false)
+                    call UnitRemoveAbility(.c, KyorakuTSkip_ID)
+                    set KyorakuBankaiStage[k2] = 0
                     call ColorEffDummy3(.e, 0, 255, 255, 255, 0.5)
                     call ColorEffDummy3(.e2, 0, 255, 255, 255, 0.5)
                     call ColorEffDummy3(.e3, 0, 255, 255, 255, 0.5)
@@ -1960,9 +2157,9 @@ endfunction
                     else
                         call ColorEffDummy3(.e8, 0, 255, 255, 255, 0.5)
                     endif
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("last dan"), 0)
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("bankai end"), 0)
-                    call SaveInteger(hs, GetHandleId(.c), StringHash("instant end"), 0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_LAST_DAN, 0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_BANKAI_END, 0)
+                    call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_END, 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT0_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT1_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT2_ID, false)
@@ -1985,8 +2182,9 @@ endfunction
                     set .g2 = null
                     set m_KyorakuT[i] = m_KyorakuT[ MUI_KyorakuT]
                     set MUI_KyorakuT = MUI_KyorakuT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuT == -1 then
-                        call PauseTimer( t_KyorakuT)
+                        call KyorakuTick_Off(8)
                     endif
                     call deallocate(this)
                 endif
@@ -2013,11 +2211,15 @@ endfunction
             set .g2 = CreateGroup()
             call StartSpellUnit(.c)
             call DebuffClear(c)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuTSkip_ID, false)
+            call UnitRemoveAbility(.c, KyorakuTSkip_ID)
+            call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_SKIP, 0)
             set BankaiActive = true
+            set KyorakuBankaiCaster = .c
             call SetUnitFacing(.c, 270)
-            call SaveInteger(hs, GetHandleId(.c), StringHash("bankai end"), 0)
-                        call SaveInteger(hs, GetHandleId(.c), StringHash("last dan"), 0)
-                        call SaveInteger(hs, GetHandleId(.c), StringHash("instant end"), 0)
+            call SaveInteger(hs, GetHandleId(.c), SH_BANKAI_END, 0)
+                        call SaveInteger(hs, GetHandleId(.c), SH_LAST_DAN, 0)
+                        call SaveInteger(hs, GetHandleId(.c), SH_INSTANT_END, 0)
             call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT5_ID, true)
             call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT0_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(.c), KyorakuT_ID, false)
@@ -2041,8 +2243,8 @@ endfunction
             loop
                 exitwhen .k > 10
                 if Hero[k] != null then
-                    call SaveInteger(hs, GetHandleId(Hero[k]), StringHash("bankai 1-st activated"), 0)
-                    call RemoveSavedInteger(hs,GetHandleId(Hero[k]), StringHash("bankai 1-st activated"))
+                    call SaveInteger(hs, GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED, 0)
+                    call RemoveSavedInteger(hs,GetHandleId(Hero[k]), SH_BANKAI_1_ST_ACTIVATED)
                 endif
                 set .k = .k + 1
             endloop
@@ -2050,13 +2252,12 @@ endfunction
             call SetUnitTimeScale(.c, 0.5)
             call SetUnitAnimationByIndex(.c, 18)
             if MUI_KyorakuT == 0 then
-                call TimerStart( t_KyorakuT, 0.03, true, function thistype.Loop_KyorakuT)
+                call KyorakuTick_On(8)
             endif
         endmethod
     endstruct
 
     private struct KyorakuF_KS
-        private static timer t_KyorakuF = CreateTimer( )
         private static integer array m_KyorakuF
         private static integer MUI_KyorakuF = -1
         unit c
@@ -2071,7 +2272,7 @@ endfunction
         effect e
         real a
         real rmax
-        private static method Loop_KyorakuF takes nothing returns nothing
+        static method Loop_KyorakuF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -2080,7 +2281,7 @@ endfunction
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
                     call DebugUnit2(.c)
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if .r2 > 0.12 then
                         set .r2 = 0
                         call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_0713.mdx", .c, "hand right"))
@@ -2108,6 +2309,7 @@ endfunction
                             set .u = FirstOfGroup(.g)
                             exitwhen .u == null
                             if IsUnitEnemy(.u, GetOwningPlayer(.c)) and SpellBool(.u) then
+                                call DamageSource('A055')
                                 call dmgmag(.c, .u, .dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", .u, "chest"))
                                 call SilenceUnit(.c, .u, KyorakuF_SilenceDuration)
@@ -2125,8 +2327,9 @@ endfunction
                     set .g = null
                     set m_KyorakuF[i] = m_KyorakuF[ MUI_KyorakuF]
                     set MUI_KyorakuF = MUI_KyorakuF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KyorakuF == -1 then
-                        call PauseTimer( t_KyorakuF)
+                        call KyorakuTick_Off(9)
                     endif
                     call deallocate(this)
                 endif
@@ -2154,7 +2357,7 @@ endfunction
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", GetUnitX(.c), GetUnitY(.c), GetRandomReal(0, 359), 0.8, 1, 0))
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_T_dustgaraa2.mdx", GetUnitX(.c), GetUnitY(.c), GetRandomReal(0, 359), 0.92, 1.25, 0))
             if MUI_KyorakuF == 0 then
-                call TimerStart( t_KyorakuF, 0.03, true, function thistype.Loop_KyorakuF)
+                call KyorakuTick_On(9)
             endif
         endmethod
     endstruct
@@ -2194,11 +2397,14 @@ endfunction
     function KyorakuW_Start takes unit c, real x, real y returns nothing
         local integer i = GetPlayerId(GetOwningPlayer(c))
         call KyorakuW_KS.KyorakuW_Start( c, x, y )
-        call SaveInteger(hs, GetHandleId(Player(i)), StringHash("w2 cast"), 0)
+        call SaveInteger(hs, GetHandleId(Player(i)), SH_W2_CAST, 0)
     endfunction
     function KyorakuW2_Start takes unit c returns nothing
         local integer i = GetPlayerId(GetOwningPlayer(c))
         call KyorakuW2_KS.KyorakuW2_Start( c )
+    endfunction
+    function KyorakuE4_Start takes unit c returns nothing
+        call KyorakuE4_KS.KyorakuE4_Start(c)
     endfunction
     function KyorakuE_Start takes unit c, real x, real y returns nothing
         call KyorakuE_KS.KyorakuE_Start( c, x, y)
@@ -2216,14 +2422,75 @@ endfunction
         call KyorakuT_KS.KyorakuT_Start( c )
     endfunction
     function KyorakuT5_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("instant end"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_INSTANT_END, 1)
     endfunction
     function KyorakuTSkip_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("instant skip"), 1)
+        if BankaiActive and KyorakuBankaiCaster == c and GetUnitAbilityLevel(c, KyorakuTSkip_ID) > 0 then
+            call SaveInteger(hs, GetHandleId(c), SH_INSTANT_SKIP, 1)
+        else
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), KyorakuTSkip_ID, false)
+            call UnitRemoveAbility(c, KyorakuTSkip_ID)
+        endif
     endfunction
     function KyorakuT4_Start takes unit c, unit td returns nothing
         call KyorakuT4_KS.KyorakuT4_Start( c, td )
     endfunction
+
+    private struct KyorakuTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if KyorakuTick_Active[0] then
+                call KyorakuQ_KS.Loop_KyorakuQ()
+            endif
+            if KyorakuTick_Active[1] then
+                call KyorakuQ2_KS.Loop_KyorakuQ2()
+            endif
+            if KyorakuTick_Active[2] then
+                call KyorakuW_KS.Loop_KyorakuW()
+            endif
+            if KyorakuTick_Active[3] then
+                call KyorakuW2_KS.Loop_KyorakuW2()
+            endif
+            if KyorakuTick_Active[4] then
+                call KyorakuE_KS.Loop_KyorakuE()
+            endif
+            if KyorakuTick_Active[5] then
+                call KyorakuE3_KS.Loop_KyorakuE3()
+            endif
+            if KyorakuTick_Active[6] then
+                call KyorakuE2_KS.Loop_KyorakuE2()
+            endif
+            if KyorakuTick_Active[7] then
+                call KyorakuT4_KS.Loop_KyorakuT4()
+            endif
+            if KyorakuTick_Active[8] then
+                call KyorakuT_KS.Loop_KyorakuT()
+            endif
+            if KyorakuTick_Active[9] then
+                call KyorakuF_KS.Loop_KyorakuF()
+            endif
+            if KyorakuTick_Active[10] then
+                call KyorakuE4_KS.Loop_KyorakuE4()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set KyorakuTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct KyorakuTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if KyorakuTick05_Active[0] then
+                call KyorakuR_KS.Loop_KyorakuR()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set KyorakuTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

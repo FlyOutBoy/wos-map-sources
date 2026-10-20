@@ -98,3 +98,5 @@ if __name__ == '__main__':
     # Checkpoint 21: stat medallions, attack types, wheels, fields, glows.
     from build_wos_ui_textures_cp21 import build as build_checkpoint21
     build_checkpoint21()
+    from build_hero_lock_icon import build as build_hero_lock
+    build_hero_lock()

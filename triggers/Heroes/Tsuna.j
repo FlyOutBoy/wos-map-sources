@@ -1,5 +1,113 @@
 library TsunaSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer TsunaTick10_Timer = CreateTimer()
+        private boolean array TsunaTick10_Active
+        private integer TsunaTick10_Users = 0
+        private code TsunaTick10_Callback = null
+    endglobals
+
+    private function TsunaTick10_On takes integer k returns nothing
+        if not TsunaTick10_Active[k] then
+            set TsunaTick10_Active[k] = true
+            set TsunaTick10_Users = TsunaTick10_Users + 1
+            if TsunaTick10_Users == 1 then
+                call TimerStart(TsunaTick10_Timer, 0.1, true, TsunaTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TsunaTick10_Off takes integer k returns nothing
+        if TsunaTick10_Active[k] then
+            set TsunaTick10_Active[k] = false
+            set TsunaTick10_Users = TsunaTick10_Users - 1
+            if TsunaTick10_Users <= 0 then
+                set TsunaTick10_Users = 0
+                call PauseTimer(TsunaTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer TsunaTick05_Timer = CreateTimer()
+        private boolean array TsunaTick05_Active
+        private integer TsunaTick05_Users = 0
+        private code TsunaTick05_Callback = null
+    endglobals
+
+    private function TsunaTick05_On takes integer k returns nothing
+        if not TsunaTick05_Active[k] then
+            set TsunaTick05_Active[k] = true
+            set TsunaTick05_Users = TsunaTick05_Users + 1
+            if TsunaTick05_Users == 1 then
+                call TimerStart(TsunaTick05_Timer, 0.05, true, TsunaTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TsunaTick05_Off takes integer k returns nothing
+        if TsunaTick05_Active[k] then
+            set TsunaTick05_Active[k] = false
+            set TsunaTick05_Users = TsunaTick05_Users - 1
+            if TsunaTick05_Users <= 0 then
+                set TsunaTick05_Users = 0
+                call PauseTimer(TsunaTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer TsunaTick_Timer = CreateTimer()
+        private boolean array TsunaTick_Active
+        private integer TsunaTick_Users = 0
+        private code TsunaTick_Callback = null
+    endglobals
+
+    private function TsunaTick_On takes integer k returns nothing
+        if not TsunaTick_Active[k] then
+            set TsunaTick_Active[k] = true
+            set TsunaTick_Users = TsunaTick_Users + 1
+            if TsunaTick_Users == 1 then
+                call TimerStart(TsunaTick_Timer, 0.03, true, TsunaTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TsunaTick_Off takes integer k returns nothing
+        if TsunaTick_Active[k] then
+            set TsunaTick_Active[k] = false
+            set TsunaTick_Users = TsunaTick_Users - 1
+            if TsunaTick_Users <= 0 then
+                set TsunaTick_Users = 0
+                call PauseTimer(TsunaTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CAST_T = StringHash("cast t")
+        private integer SH_INSTINCT = StringHash("instinct")
+        private integer SH_INSTINCT_E = StringHash("instinct e")
+        private integer SH_INSTINCT_G1 = StringHash("instinct g1")
+        private integer SH_INSTINCT_G2 = StringHash("instinct g2")
+        private integer SH_INSTINCT_G3 = StringHash("instinct g3")
+        private integer SH_INSTINCT_G4 = StringHash("instinct g4")
+        private integer SH_INSTINCT_Q = StringHash("instinct q")
+        private integer SH_INSTINCT_R = StringHash("instinct r")
+        private integer SH_INSTINCT_T = StringHash("instinct t")
+        private integer SH_INSTINCT_W = StringHash("instinct w")
+        private integer SH_MODE_DEF = StringHash("mode def")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_TSUNA_CAMBIO = StringHash("tsuna cambio")
+        private integer SH_TSUNA_ESC = StringHash("tsuna esc")
+        private integer SH_TSUNA_F_LOOP = StringHash("tsuna f loop")
+        private integer SH_ZERO_KAI = StringHash("zero kai")
+        private integer SH_ZERO_KAI_DMG = StringHash("zero kai dmg")
+    endglobals
+    globals
 //--------------------------------------Tsuna Core---------------------------------------------------------
         integer Tsuna_ID = 'H01D'
         integer Tsuna2_ID = 'H01F'
@@ -193,57 +301,77 @@ library TsunaSpells uses GearSystems
         real TsunaG3_DecorDamage = 50.0              // Урон по декорациям при взрыве купола
     endglobals
 
+    // Cambio Forma retains the complete W stance; its W3 button stays available.
+    private function TsunaCambio_RefreshW takes unit c returns nothing
+        if GetUnitAbilityLevel(c, TsunaW_Buff_ID) == 0 then
+            call BuffUnit1(c, c, 4)
+            call MyEffBuff(c, TsunaW_Buff_ID, AddSpecialEffectTarget("war3mapImported\\wos_icefile00002579.mdl", c, "hand right"))
+            call MyEffBuff(c, TsunaW_Buff_ID, AddSpecialEffectTarget("war3mapImported\\wos_icefile00002579.mdl", c, "hand left"))
+        endif
+    endfunction
+    function TsunaCambio_OnAttack takes unit c, unit td returns nothing
+        local real dmg
+        if LoadInteger(hs, GetHandleId(c), SH_TSUNA_CAMBIO) == 1 and GetUnitAbilityLevel(c, TsunaW_Buff_ID) == 0 then
+            set dmg = GetHeroAgi(c, true) * (TsunaW_DamageAgiBase + TsunaW_DamageAgiStep * (GetUnitAbilityLevel(c, TsunaW_ID) - 1))
+            set dmg = dmg + TsunaW_Damage2StaticBase + TsunaW_Damage2StaticStep * (GetUnitAbilityLevel(c, TsunaW_ID) - 1)
+            call RootUnit(c, td, TsunaW_Root)
+            call DamageSource('A083')
+            call NextDmg(c, td, dmg, 0, 0.05)
+            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_file00003436.mdl", td, "chest"))
+            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_az_nevermoreice_x.mdl", td, "origin"))
+        endif
+    endfunction
+
     private function TsundaFStackAdd takes unit c, integer i returns nothing
         if i == 1 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct q")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct q"), 1)
-                call MyFlush2(c, StringHash("instinct q"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_Q) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_Q, 1)
+                call MyFlush2(c, SH_INSTINCT_Q, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 2 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct w")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct w"), 1)
-                call MyFlush2(c, StringHash("instinct w"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_W) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_W, 1)
+                call MyFlush2(c, SH_INSTINCT_W, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 3 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct e")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct e"), 1)
-                call MyFlush2(c, StringHash("instinct e"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_E) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_E, 1)
+                call MyFlush2(c, SH_INSTINCT_E, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 4 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct r")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct r"), 1)
-                call MyFlush2(c, StringHash("instinct r"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_R) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_R, 1)
+                call MyFlush2(c, SH_INSTINCT_R, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 5 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct t")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct t"), 1)
-                call MyFlush2(c, StringHash("instinct t"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_T) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_T, 1)
+                call MyFlush2(c, SH_INSTINCT_T, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 6 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct g1")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct g1"), 1)
-                call MyFlush2(c, StringHash("instinct g1"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G1) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_G1, 1)
+                call MyFlush2(c, SH_INSTINCT_G1, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 7 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct g2")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct g2"), 1)
-                call MyFlush2(c, StringHash("instinct g2"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G2) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_G2, 1)
+                call MyFlush2(c, SH_INSTINCT_G2, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 8 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct g3")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct g3"), 1)
-                call MyFlush2(c, StringHash("instinct g3"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G3) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_G3, 1)
+                call MyFlush2(c, SH_INSTINCT_G3, 0, TsunaF_StackDuration, false)
             endif
         elseif i == 9 then
-            if LoadInteger(hs, GetHandleId(c), StringHash("instinct g4")) == 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("instinct g4"), 1)
-                call MyFlush2(c, StringHash("instinct g4"), 0, TsunaF_StackDuration, false)
+            if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G4) == 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_INSTINCT_G4, 1)
+                call MyFlush2(c, SH_INSTINCT_G4, 0, TsunaF_StackDuration, false)
             endif
         endif
     endfunction
 
     private struct TsunaQKS
-        private static timer t_TsunaQ = CreateTimer()
         private static integer array m_TsunaQ
         private static integer MUI_TsunaQ = -1
         unit c
@@ -265,7 +393,7 @@ library TsunaSpells uses GearSystems
         real a
         real rmax
         
-        private static method Loop_TsunaQ takes nothing returns nothing
+        static method Loop_TsunaQ takes nothing returns nothing
             local integer this
             local integer i = 0
             local real r6 = 90
@@ -291,6 +419,7 @@ library TsunaSpells uses GearSystems
                                         exitwhen u == null
                                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
                                             call GroupAddUnit(g2, u)
+                                            call DamageSource('A082')
                                             call dmgatk(c, u, dmg)
                                             set check2 = check2 + 1
                                         endif
@@ -333,6 +462,7 @@ library TsunaSpells uses GearSystems
                             call MakeSound("war3mapimported\\Hero_Tsuna_Q5")
                         endif
                         if r == 0.3 then
+                            call DamageSource('A082')
                             call dmgatk(c, td, dmg)
                             call TsundaFStackAdd(c, 1)
                             set x = GetUnitX(td)
@@ -361,8 +491,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaQ[i] = m_TsunaQ[MUI_TsunaQ]
                     set MUI_TsunaQ = MUI_TsunaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaQ == -1 then
-                        call PauseTimer(t_TsunaQ)
+                        call TsunaTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -408,13 +539,12 @@ library TsunaSpells uses GearSystems
             endif
             
             if MUI_TsunaQ == 0 then
-                call TimerStart(t_TsunaQ, 0.03, true, function thistype.Loop_TsunaQ)
+                call TsunaTick_On(0)
             endif
         endmethod
     endstruct
         
     private struct TsunaQ2KS
-        private static timer t_TsunaQ2 = CreateTimer()
         private static integer array m_TsunaQ2
         private static integer MUI_TsunaQ2 = -1
         unit c
@@ -438,7 +568,7 @@ library TsunaSpells uses GearSystems
         real rmax
         effect e
         
-        private static method Loop_TsunaQ2 takes nothing returns nothing
+        static method Loop_TsunaQ2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real r6 = 90
@@ -493,6 +623,7 @@ library TsunaSpells uses GearSystems
                         endif
                         
                         if r == 0.3 then
+                            call DamageSource('A08C')
                             call dmgatk(c, td, dmg)
                             call TsundaFStackAdd(c, 1)
                             set x = GetUnitX(td)
@@ -568,6 +699,7 @@ library TsunaSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                         set check2 = check2 + 1
+                                        call DamageSource('A08C')
                                         call dmgmag(c, u, dmg2)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     endif
@@ -600,8 +732,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaQ2[i] = m_TsunaQ2[MUI_TsunaQ2]
                     set MUI_TsunaQ2 = MUI_TsunaQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaQ2 == -1 then
-                        call PauseTimer(t_TsunaQ2)
+                        call TsunaTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -643,13 +776,12 @@ library TsunaSpells uses GearSystems
             endif
             
             if MUI_TsunaQ2 == 0 then
-                call TimerStart(t_TsunaQ2, 0.03, true, function thistype.Loop_TsunaQ2)
+                call TsunaTick_On(1)
             endif
         endmethod
     endstruct
         
     private struct TsunaWKS
-        private static timer t_TsunaW = CreateTimer( )
         private static integer array m_TsunaW
         private static integer MUI_TsunaW = -1
         unit c
@@ -668,7 +800,7 @@ library TsunaSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_TsunaW takes nothing returns nothing
+        static method Loop_TsunaW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -690,6 +822,7 @@ library TsunaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A083')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 call RootUnit(c, u, TsunaW2_Root)
@@ -725,8 +858,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaW[i] = m_TsunaW[ MUI_TsunaW]
                     set MUI_TsunaW = MUI_TsunaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaW == -1 then
-                        call PauseTimer( t_TsunaW)
+                        call TsunaTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -745,7 +879,7 @@ library TsunaSpells uses GearSystems
             set check2 = 0
             set r3 = 0
             set k2 = 6
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TsunaW_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Tsuna_TSUNAW_ID, 0)
             set aoe = TsunaW_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TsunaW2_DamageAgiBase + ( TsunaW2_DamageAgiStep * ( GetUnitAbilityLevel( c , TsunaW_ID) - 1 ) ) )
             set dmg = dmg + TsunaW2_Damage2StaticBase + ( TsunaW2_Damage2StaticStep * ( GetUnitAbilityLevel( c , TsunaW_ID) - 1 ) )
@@ -763,13 +897,12 @@ library TsunaSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 4)
             call MakeSound("war3mapimported\\Hero_Tsuna_W2")
             if MUI_TsunaW == 0 then
-                call TimerStart( t_TsunaW, 0.03, true, function thistype.Loop_TsunaW)
+                call TsunaTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct TsunaW2KS
-        private static timer t_TsunaW2 = CreateTimer( )
         private static integer array m_TsunaW2
         private static integer MUI_TsunaW2 = -1
         unit c
@@ -796,7 +929,7 @@ library TsunaSpells uses GearSystems
         real a
         real a2
         real rmax
-        private static method Loop_TsunaW2 takes nothing returns nothing
+        static method Loop_TsunaW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -891,6 +1024,7 @@ library TsunaSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     set check2 = check2 + 1
+                                    call DamageSource('A084')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -917,8 +1051,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaW2[i] = m_TsunaW2[ MUI_TsunaW2]
                     set MUI_TsunaW2 = MUI_TsunaW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaW2 == -1 then
-                        call PauseTimer( t_TsunaW2)
+                        call TsunaTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -951,13 +1086,12 @@ library TsunaSpells uses GearSystems
             set e = AddSpecialEffectTarget("war3mapImported\\wos_summon3missle.mdl", c, "hand right")
             call MakeSound("war3mapimported\\Hero_Tsuna_TW")
             if MUI_TsunaW2 == 0 then
-                call TimerStart( t_TsunaW2, 0.03, true, function thistype.Loop_TsunaW2)
+                call TsunaTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct TsunaEKS
-        private static timer t_TsunaE = CreateTimer( )
         private static integer array m_TsunaE
         private static integer MUI_TsunaE = -1
         unit c
@@ -977,7 +1111,7 @@ library TsunaSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_TsunaE takes nothing returns nothing
+        static method Loop_TsunaE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1043,6 +1177,7 @@ library TsunaSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                 set check2 = check2 + 1
+                                call DamageSource('A085')
                                 call dmgmag(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -1062,8 +1197,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaE[i] = m_TsunaE[ MUI_TsunaE]
                     set MUI_TsunaE = MUI_TsunaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaE == -1 then
-                        call PauseTimer( t_TsunaE)
+                        call TsunaTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1095,13 +1231,12 @@ library TsunaSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Tsuna_E")
             call MakeSound("war3mapimported\\Hero_Tsuna_E3")
             if MUI_TsunaE == 0 then
-                call TimerStart( t_TsunaE, 0.03, true, function thistype.Loop_TsunaE)
+                call TsunaTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct TsunaE2KS
-        private static timer t_TsunaE2 = CreateTimer( )
         private static integer array m_TsunaE2
         private static integer MUI_TsunaE2 = -1
         unit c
@@ -1132,7 +1267,7 @@ library TsunaSpells uses GearSystems
         real a
         real rmax
         private static framehandle array frame0_pas3
-        private static method Loop_TsunaE2 takes nothing returns nothing
+        static method Loop_TsunaE2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kkk = 0
@@ -1152,7 +1287,7 @@ library TsunaSpells uses GearSystems
                         set x = GetUnitX(c) - 50 * Cos(a)
                         set y = GetUnitY(c) - 50 * Sin(a)
                     endif
-                    call BlzFrameSetValue(frame0_pas3[k2], r)
+                    call WUI_FrameSetValue(frame0_pas3[k2], r)
                     if r == 0.45 then
                         set check2 = 0
                         set e6 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", c, "hand right")
@@ -1173,8 +1308,8 @@ library TsunaSpells uses GearSystems
                     endif
                     if r == TsunaE2_CastTime then
                         set r = rmax - 0.1
-                        set r3 = 350
-                        set kkk = 6
+                        set r3 = 0
+                        set kkk = 7
                         set k = 0
                         loop
                             exitwhen k > kkk
@@ -1186,6 +1321,7 @@ library TsunaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A08E')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     set check2 = check2 + 1
@@ -1196,7 +1332,11 @@ library TsunaSpells uses GearSystems
                             endloop
                             set u = null
                             set k = k + 1
-                            set r3 = r3 + 365
+                            if k == 1 then
+                                set r3 = 350
+                            else
+                                set r3 = r3 + 365
+                            endif
                         endloop
                         set k = 0
                         set r3 = 125
@@ -1234,8 +1374,9 @@ library TsunaSpells uses GearSystems
                     set c = null
                     set m_TsunaE2[i] = m_TsunaE2[ MUI_TsunaE2]
                     set MUI_TsunaE2 = MUI_TsunaE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaE2 == -1 then
-                        call PauseTimer( t_TsunaE2)
+                        call TsunaTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1269,13 +1410,12 @@ library TsunaSpells uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             call MakeSound("war3mapimported\\Hero_Tsuna_TE")
             if MUI_TsunaE2 == 0 then
-                call TimerStart( t_TsunaE2, 0.05, true, function thistype.Loop_TsunaE2)
+                call TsunaTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct TsunaRKS
-        private static timer t_TsunaR = CreateTimer( )
         private static integer array m_TsunaR
         private static integer MUI_TsunaR = -1
         unit c
@@ -1296,7 +1436,7 @@ library TsunaSpells uses GearSystems
         effect e4
         real a
         real rmax
-        private static method Loop_TsunaR takes nothing returns nothing
+        static method Loop_TsunaR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1345,6 +1485,7 @@ library TsunaSpells uses GearSystems
                         call PosUnit(c, x + r3 * Cos(a), y + r3 * Sin(a))
                         if r2 > 0.15 then
                             set r2 = 0                                      
+                            call DamageSource('A086')
                             call dmgmag(c, td, dmg)
                             call SlowUnit(c, td, TsunaR_Slow, TsunaR_SlowDuration)
                             set check2 = check2 + 1
@@ -1367,8 +1508,9 @@ library TsunaSpells uses GearSystems
                     set e4 = null
                     set m_TsunaR[i] = m_TsunaR[ MUI_TsunaR]
                     set MUI_TsunaR = MUI_TsunaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaR == -1 then
-                        call PauseTimer( t_TsunaR)
+                        call TsunaTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1400,13 +1542,12 @@ library TsunaSpells uses GearSystems
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_summon3missle.mdl", c, "hand left")
             call MakeSound("war3mapimported\\Hero_Tsuna_R")
             if MUI_TsunaR == 0 then
-                call TimerStart( t_TsunaR, 0.03, true, function thistype.Loop_TsunaR)
+                call TsunaTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct TsunaR2KS
-        private static timer t_TsunaR2 = CreateTimer( )
         private static integer array m_TsunaR2
         private static integer MUI_TsunaR2 = -1
         unit c
@@ -1431,7 +1572,7 @@ library TsunaSpells uses GearSystems
         effect e4
         real a
         real rmax
-        private static method Loop_TsunaR2 takes nothing returns nothing
+        static method Loop_TsunaR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1489,6 +1630,7 @@ library TsunaSpells uses GearSystems
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                     set check2 = check2 + 1
                                     call SlowUnit(c, u, TsunaR2_Slow, TsunaR2_SlowDuration)
+                                    call DamageSource('A08F')
                                     call dmgmag(c, u, dmg)
                                     call MUE(u, TsunaR2_PullRange, TsunaR2_PullDuration, GAngle2(u, x, y))
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1519,8 +1661,9 @@ library TsunaSpells uses GearSystems
                     set e4 = null
                     set m_TsunaR2[i] = m_TsunaR2[ MUI_TsunaR2]
                     set MUI_TsunaR2 = MUI_TsunaR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaR2 == -1 then
-                        call PauseTimer( t_TsunaR2)
+                        call TsunaTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1555,14 +1698,24 @@ library TsunaSpells uses GearSystems
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_summon3missle.mdl", c, "hand left")
             call MakeSound("war3mapimported\\Hero_Tsuna_R")
             if MUI_TsunaR2 == 0 then
-                call TimerStart( t_TsunaR2, 0.03, true, function thistype.Loop_TsunaR2)
+                call TsunaTick_On(6)
             endif
         endmethod
     endstruct
     
+    function TsunaT_DisplayCharge takes real elapsed, boolean canOvercharge returns real
+        local real fullAt = 0.30 + TsunaT_ChargeTimeFull
+        if elapsed <= fullAt then
+            return RMaxBJ(0.00, RMinBJ(100.00, (elapsed - 0.30) / RMaxBJ(0.01, TsunaT_ChargeTimeFull) * 100.00))
+        endif
+        if not canOvercharge then
+            return 100.00
+        endif
+        return RMinBJ(TsunaT_OverchargeDmgPct, 100.00 + (TsunaT_OverchargeDmgPct - 100.00) * (elapsed - fullAt) / RMaxBJ(0.01, TsunaT_OverchargeTime - fullAt))
+    endfunction
+
     private struct TsunaTKS
         private static real TsunaT_Size = 1
-        private static timer t_TsunaT = CreateTimer( )
         private static integer array m_TsunaT
         private static integer MUI_TsunaT = -1
         unit c
@@ -1584,6 +1737,7 @@ library TsunaSpells uses GearSystems
         real dmg
         integer check
         integer check2
+        real chargePct
         integer check3
         real aoe
         real r
@@ -1604,15 +1758,12 @@ library TsunaSpells uses GearSystems
         real a
         real rmax
         // Интерфейс принадлежит игроку, а не отдельному экземпляру заклинания.
-        private static framehandle array frame0_pas1
-        private static framehandle array frame0_pas2
-        private static framehandle array frame0_pas3
-        private static framehandle array frame0_pas4
-        private static method Loop_TsunaT takes nothing returns nothing
+        static method Loop_TsunaT takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kkk = 0
             local real rkk = TsunaT_ChargeTimeFull
+            local real chargeVisual
             local real targetA
             local real step
             local real diff
@@ -1628,6 +1779,12 @@ library TsunaSpells uses GearSystems
                 exitwhen i > MUI_TsunaT
                 set this = m_TsunaT[i]
                 if SpellBoolCaster(c) and r <= rmax then
+                    if check == 0 then
+                        set chargeVisual = TsunaT_DisplayCharge(r, GetHeroLevel(c) >= 35)
+                        call WUI_HeroProgressCharge(c, TsunaT_ID, "X-Burner", chargeVisual, TsunaT_OverchargeDmgPct, chargeVisual >= TsunaT_OverchargeDmgPct)
+                    else
+                        call WUI_HeroProgressText(c, TsunaT_ID, "X-Burner", RMaxBJ(0.00, rmax - r), rmax, true, R2SW(RMinBJ(r, TsunaT_Duration), 0, 1) + " / " + R2SW(TsunaT_Duration, 0, 1) + "s")
+                    endif
                     set r = r + 0.05
                     call SetUnitX(c, x1)
                     call SetUnitY(c, y1)
@@ -1657,24 +1814,21 @@ library TsunaSpells uses GearSystems
                                 set r3 = r3 + 245 * TsunaT_Size
                             endloop
                         endif
-                        call BlzFrameSetValue(frame0_pas3[k2], r)
                         if r == 0.3 then
                             set check2 = 0
                             call BlzSetSpecialEffectTimeScale(e3, 3.04* (1+(rkk/1.8)))
                             set e6 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", c, "hand right")
                             call BlzSetSpecialEffectScale(e6, TsunaT_Size)
                         endif
-                        if r >= 0.3 and r <= 1.5 then
-                            set check2 = R2I((r - 0.3) / rkk * 100 + 0.5)
-                            if check2 > 100 then
-                                set check2 = 100
-                            endif
+                        if r >= 0.3 and r <= TsunaT_OverchargeTime then
+                            // Damage and display share every percentage, including partial overcharge.
+                            set chargePct = TsunaT_DisplayCharge(r, GetHeroLevel(c) >= 35)
+                            set check2 = R2I(chargePct + 0.5)
                             if check2 >= 50 then
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaT2_ID, true)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaT_ID, false)
                                 call UnitAddAbility(c, TsunaT2_ID)
                             endif
-                            call BlzFrameSetText(frame0_pas4[k2], "" + I2S(check2) + "%|r")
                         endif
                         if r == 1.5 then
                             call MakeSound("war3mapimported\\Hero_Tsuna_T3")
@@ -1685,7 +1839,6 @@ library TsunaSpells uses GearSystems
                         if r == TsunaT_OverchargeTime and GetHeroLevel(c) >= 35 then
                             set check2 = R2I(TsunaT_OverchargeDmgPct)
                             
-                            call BlzFrameSetText(frame0_pas4[k2], "|c00FF0303" + I2S(check2) + "%|r")
                             call MakeSound("war3mapimported\\Hero_Tsuna_T7")
                             call MakeSound("war3mapimported\\Hero_Tsuna_T")
                             set k3 = 1
@@ -1709,8 +1862,8 @@ library TsunaSpells uses GearSystems
                                 set r3 = r3 + 245 * TsunaT_Size
                             endloop
                         endif
-                        if LoadInteger(hs, GetHandleId(c), StringHash("cast t")) == 1 then
-                            call SaveInteger(hs, GetHandleId(c), StringHash("cast t"), 0)
+                        if LoadInteger(hs, GetHandleId(c), SH_CAST_T) == 1 then
+                            call SaveInteger(hs, GetHandleId(c), SH_CAST_T, 0)
                             set check = 1
                             set check3 = 0
                             set r = 0
@@ -1722,7 +1875,12 @@ library TsunaSpells uses GearSystems
                             if check2>= 120 then 
                             call BlzStartUnitAbilityCooldown(c,TsunaT_ID,BlzGetUnitAbilityCooldownRemaining(c,TsunaT_ID)*(I2R(check2) / 100))
                             endif
-                            set dmg = dmg * (I2R(check2) / 100)
+                            // Partial overcharge is continuous; ordinary charge keeps legacy rounding.
+                            if chargePct > 100.00 then
+                                set dmg = dmg * (chargePct / 100.00)
+                            else
+                                set dmg = dmg * (I2R(check2) / 100.00)
+                            endif
                             call StartSpellUnit(c)
                             set MouseX[GetPlayerId(GetOwningPlayer(c))] = GetUnitX(c) + 150 * TsunaT_Size * Cos(a)
                             set MouseY[GetPlayerId(GetOwningPlayer(c))] = GetUnitY(c) + 150 * TsunaT_Size * Sin(a)
@@ -1901,6 +2059,7 @@ library TsunaSpells uses GearSystems
                                         set u = FirstOfGroup( g )
                                         exitwhen u == null
                                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                            call DamageSource('A087')
                                             call dmgmag(c, u, dmg)
                                             call GroupAddUnit(g2, u)
                                             if IsUnitInGroup(u, g3) == false then 
@@ -1980,10 +2139,7 @@ library TsunaSpells uses GearSystems
                     if check == 0 then
                         call ColorEffDummy3(e3, 0, 255, 255, 255, 0.15)
                     endif
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame0_pas1[k2], false)
-                        call BlzFrameSetVisible(frame0_pas4[k2], false)
-                    endif
+                    call WUI_HeroProgress(c, TsunaT_ID, "X-Burner", 0.00, 0.00, false)
                     call SetFly(c, 0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
@@ -2000,8 +2156,9 @@ library TsunaSpells uses GearSystems
                     set c = null
                     set m_TsunaT[i] = m_TsunaT[ MUI_TsunaT]
                     set MUI_TsunaT = MUI_TsunaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaT == -1 then
-                        call PauseTimer( t_TsunaT)
+                        call TsunaTick05_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -2025,6 +2182,7 @@ library TsunaSpells uses GearSystems
             set r2 = 40
             set check = 0
             set check2 = 0
+            set chargePct = 0.00
             set a = GAngle2( c , x , y )
             set aoe = TsunaT_DamageAoe * TsunaT_Size
             set dmg = GetHeroAgi( c , true) * TsunaT_DamageAgiBase
@@ -2041,55 +2199,17 @@ library TsunaSpells uses GearSystems
             set beamAnimTime2 = 0
             set beamAnimAngle = a
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            set tmp_x = 0.29875
-            set tmp_y = 0.17
-            if frame0_pas1[k2] == null then
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)
-                call BlzFrameClearAllPoints(frame0_pas1[k2])
-                call BlzFrameSetVisible(frame0_pas1[k2], false)
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame0_pas1[k2], true)
-                endif
-                set frame0_pas2[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceBackGround", frame0_pas1[k2], "", 0)
-                set frame0_pas3[k2] = BlzCreateFrameByType("SIMPLESTATUSBAR", "2FaceForeGround", frame0_pas2[k2], "", 0)
-                call BlzFrameClearAllPoints(frame0_pas2[k2])
-                call BlzFrameClearAllPoints(frame0_pas3[k2])
-                call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
-                call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
-                call BlzFrameSetSize(frame0_pas1[k2], 0.025, 0.025)
-                set frame0_pas4[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", main_frame, "", 0)
-                call BlzFrameSetPoint(frame0_pas4[k2], FRAMEPOINT_BOTTOMLEFT, frame0_pas1[k2], FRAMEPOINT_BOTTOMLEFT, tmp_x - 0.295, tmp_y - 0.335)
-                call BlzFrameSetText(frame0_pas4[k2], "" + I2S(0) + "%|r")
-                call BlzFrameSetScale(frame0_pas4[k2], 1)
-                call BlzFrameSetSize(frame0_pas4[k2], 0.2, 0.2)
-                call BlzFrameSetVisible(frame0_pas4[k2], false)
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame0_pas4[k2], true)
-                endif
-            else
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame0_pas1[k2], true)
-                    call BlzFrameSetVisible(frame0_pas4[k2], true)
-                endif
-            endif
-            call BlzFrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
-            call BlzFrameSetValue(frame0_pas2[k2], 100)
-            call BlzFrameSetValue(frame0_pas3[k2], 0)
-            call BlzFrameSetText(frame0_pas4[k2], "" + I2S(0) + "%|r")
-            call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
-            call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_T.blp", 0, false)
-            call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Tsuna_T.blp", 0, false)
+            call WUI_HeroProgressCharge(c, TsunaT_ID, "X-Burner", 0.00, TsunaT_OverchargeDmgPct, false)
             set r = 0
             set e3 = EffectSpawn("war3mapImported\\wos_operation_x.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG + 180, 0, 5 * TsunaT_Size, 15 * TsunaT_Size)
             call MakeSound("war3mapimported\\Hero_Tsuna_T2")
             if MUI_TsunaT == 0 then
-                call TimerStart( t_TsunaT, 0.05, true, function thistype.Loop_TsunaT)
+                call TsunaTick05_On(1)
             endif
         endmethod
     endstruct
 
     private struct TsunaT2KS
-        private static timer t_TsunaT2 = CreateTimer( )
         private static integer array m_TsunaT2
         private static integer MUI_TsunaT2 = -1
         unit c
@@ -2122,7 +2242,7 @@ library TsunaSpells uses GearSystems
         effect e8
         real a
         real rmax
-        private static method Loop_TsunaT2 takes nothing returns nothing
+        static method Loop_TsunaT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kkk = 0
@@ -2231,6 +2351,7 @@ library TsunaSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                        call DamageSource('A088')
                                         call dmgmag(c, u, dmg)
                                         if IsUnitInGroup(u, g3) == false then 
                                             call RootUnit(c,u,TsunaT_Root)
@@ -2272,8 +2393,9 @@ library TsunaSpells uses GearSystems
                     set c = null
                     set m_TsunaT2[i] = m_TsunaT2[ MUI_TsunaT2]
                     set MUI_TsunaT2 = MUI_TsunaT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaT2 == -1 then
-                        call PauseTimer( t_TsunaT2)
+                        call TsunaTick_Off(7)
                     endif
                     call deallocate(this)
                 endif
@@ -2315,13 +2437,12 @@ library TsunaSpells uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             call MakeSound("war3mapimported\\Hero_Tsuna_TT1")
             if MUI_TsunaT2 == 0 then
-                call TimerStart( t_TsunaT2, 0.03, true, function thistype.Loop_TsunaT2)
+                call TsunaTick_On(7)
             endif
         endmethod
     endstruct
 
     private struct TsunaFKS
-        private static timer t_TsunaF = CreateTimer( )
         private static integer array m_TsunaF
         private static integer MUI_TsunaF = -1
         unit c
@@ -2335,13 +2456,7 @@ library TsunaSpells uses GearSystems
         integer check
         real r
         effect e
-        private static framehandle array frame_pas1
-        private static framehandle array frame_pas2
-        private static framehandle array frame_pas3
-        private static framehandle array frame_pas4
-        private static framehandle array frame_pas5
-        private static framehandle array frame_pas6
-        private static method Loop_TsunaF takes nothing returns nothing
+        static method Loop_TsunaF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -2357,31 +2472,31 @@ library TsunaSpells uses GearSystems
                     endif
                     set r4 = r4 / 100
                     set r5 = 0
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct q")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_Q) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct w")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_W) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct e")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_E) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct r")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_R) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct t")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_T) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct g1")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G1) > 0 then
                         set r5 = r5 + TsunaG_DamagetoF_Chance1 + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct g2")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G2) > 0 then
                         set r5 = r5 + TsunaG_DamagetoF_Chance2 + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct g3")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G3) > 0 then
                         set r5 = r5 + TsunaG_DamagetoF_Chance3 + 0.005
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("instinct g4")) > 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_INSTINCT_G4) > 0 then
                         set r5 = r5 + TsunaF_SkillSuccessfulAtkBonusAdd + 0.005
                     endif
                     set r5 = r5 / 100
@@ -2389,19 +2504,17 @@ library TsunaSpells uses GearSystems
                     if r3 >= 1 then
                         set r3 = 1
                     endif
-                    call SaveReal(hs, GetHandleId(c), StringHash("instinct"), r3)
-                    call BlzFrameSetValue(frame_pas3[k2], r3 * 100)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + I2S(R2I(r3 * 100)) + "% to dodge|r")
+                    call SaveReal(hs, GetHandleId(c), SH_INSTINCT, r3)
+                    call WUI_HeroProgressText(c, TsunaF_ID, "Hyperintuition", r3 * 100, 100.00, false, I2S(R2I(r3 * 100)) + "% to dodge")
                 else
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("tsuna f loop"), 0)
+                        call WUI_HeroProgress(c, TsunaF_ID, "Hyperintuition", 0.00, 0.00, true)
+                    call SaveInteger(hs, GetHandleId(c), SH_TSUNA_F_LOOP, 0)
                     set c = null
                     set m_TsunaF[i] = m_TsunaF[MUI_TsunaF]
                     set MUI_TsunaF = MUI_TsunaF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaF == -1 then
-                        call PauseTimer(t_TsunaF)
+                        call TsunaTick10_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -2410,10 +2523,10 @@ library TsunaSpells uses GearSystems
         endmethod
         public static method TsunaF_Start takes unit NewC returns nothing
             local thistype this
-            if NewC == null or LoadInteger(hs, GetHandleId(NewC), StringHash("tsuna f loop")) > 0 then
+            if NewC == null or LoadInteger(hs, GetHandleId(NewC), SH_TSUNA_F_LOOP) > 0 then
                 return
             endif
-            call SaveInteger(hs, GetHandleId(NewC), StringHash("tsuna f loop"), 1)
+            call SaveInteger(hs, GetHandleId(NewC), SH_TSUNA_F_LOOP, 1)
             set this = thistype.create()
             set MUI_TsunaF = MUI_TsunaF + 1
             set m_TsunaF[MUI_TsunaF] = this
@@ -2423,51 +2536,13 @@ library TsunaSpells uses GearSystems
             set r2 = 0
             set r3 = TsunaF_Chance12
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, 100)
-                call BlzFrameSetValue(frame_pas3[k2], 0)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_F", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Hyperintuition:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], 0)
-            endif
             if MUI_TsunaF == 0 then
-                call TimerStart(t_TsunaF, 0.1, true, function thistype.Loop_TsunaF)
+                call TsunaTick10_On(0)
             endif
         endmethod
     endstruct
 
     private struct TsunaGKS
-        private static timer t_TsunaG = CreateTimer( )
         private static integer array m_TsunaG
         private static integer MUI_TsunaG = -1
         unit c
@@ -2481,21 +2556,17 @@ library TsunaSpells uses GearSystems
         real r
         real a
         real rmax
-        private static framehandle array frame1_pas1
-        private static framehandle array frame1_pas2
-        private static framehandle array frame1_pas3
-        private static framehandle array frame1_pas4
-        private static framehandle array frame1_pas5
-        private static framehandle array frame1_pas6
-        private static method Loop_TsunaG takes nothing returns nothing
+        static method Loop_TsunaG takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_TsunaG
                 set this = m_TsunaG[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("tsuna esc")) == 0 then
+                call WUI_HeroProgressDual(c, TsunaG_ID, "Zero Point Breakthrough: Revised", rmax - r, rmax, r3, I2R(k3))
+                call WUI_HeroProgressThresholds(c, TsunaG_ID, I2R(k3), TsunaG_DamagetoStats1, TsunaG_DamagetoStats2, TsunaG_DamagetoStats3, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_TSUNA_ESC) == 0 then
                     set r = r + 0.1
-                    set r3 = LoadReal(hs, GetHandleId(c), StringHash("zero kai dmg"))
+                    set r3 = LoadReal(hs, GetHandleId(c), SH_ZERO_KAI_DMG)
                     if GetUnitAbilityLevel(c, TsunaG_Stat_ID1) == 0 and r3 >= TsunaG_DamagetoStats1 then
                         call TsundaFStackAdd(c, 6)
                         call UnitAddAbility(c, TsunaG_Stat_ID1)
@@ -2525,8 +2596,6 @@ library TsunaSpells uses GearSystems
                      if r3 > k3 then
                         set r3 = I2R(k3)
                     endif
-                    call BlzFrameSetText(frame1_pas6[k2], "|c00FFFF00" + I2S(R2I(r3)) + "/" + I2S(k3) + "|r")
-                    call BlzFrameSetValue(frame1_pas3[k2], r3)
                 else
                     call DebuffClear(c)
                     if GetUnitAbilityLevel(c, TsunaG_Stat_ID1) > 0 then
@@ -2541,21 +2610,19 @@ library TsunaSpells uses GearSystems
                     if GetHeroLevel(c) >= 35 and r3 >= TsunaG_DamagetoStats3 then
                         call SwapAbility(c, TsunaG2_TimeToEnter, TsunaG2_ID, TsunaG_ID)
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("zero kai"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_ZERO_KAI, 0)
                     if r3 > 0 then
                         call MakeSound("war3mapimported\\Hero_Tsuna_G4")
                         call MakeSound("war3mapimported\\Hero_Tsuna_G5")
                         call SetMpCurrent(c, r3 * (TsunaG_DamagetoMana / 100))
                     endif
                     call StopSpellUnit2(c)
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame1_pas1[k2], false)
-                    endif
                     set c = null
                     set m_TsunaG[i] = m_TsunaG[ MUI_TsunaG]
                     set MUI_TsunaG = MUI_TsunaG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaG == -1 then
-                        call PauseTimer( t_TsunaG)
+                        call TsunaTick10_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -2573,8 +2640,8 @@ library TsunaSpells uses GearSystems
             call StartSpellUnit2(c)
             set a = GetUnitFacing(c) * bj_DEGTORAD
             set rmax = TsunaG_Duration
-            call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),StringHash("tsuna esc"),0) 
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TsunaG_ID)), 0)
+            call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_TSUNA_ESC,0) 
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Tsuna_TSUNAG_ID, 0)
             set k2 = GetPlayerId(GetOwningPlayer(c))
             if GetHeroLevel(c) >= 35 then
                 set k3 = R2I(TsunaG_DamagetoStats3 )
@@ -2584,7 +2651,7 @@ library TsunaSpells uses GearSystems
                 set k3 = R2I(TsunaG_DamagetoStats1 )
             endif
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("zero kai"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_ZERO_KAI, 1)
             call SetUnitAnimationByIndex(c, 1)
             call MakeSound("war3mapimported\\Hero_Tsuna_G")
             if GetRandomInt(1, 2) == 1 then
@@ -2592,59 +2659,14 @@ library TsunaSpells uses GearSystems
             else
                 call MakeSound("war3mapimported\\Hero_Tsuna_G3")
             endif
-            if frame1_pas1[k2] == null then
-                set frame1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame1_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame1_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame1_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame1_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame1_pas1[k2], true)
-                endif
-                set frame1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame1_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetSize(frame1_pas2[k2], 0.1, 0.019)
-                set frame1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame1_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame1_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame1_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame1_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                call BlzFrameSetMinMaxValue(frame1_pas3[k2], 0, I2R(k3))
-                call BlzFrameSetValue(frame1_pas3[k2], 0)
-                set frame1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame1_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame1_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame1_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_G", 0, false)
-                set frame1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame1_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetText(frame1_pas5[k2], "|c00FFFF00" + "Flame absorbed:|r")
-                call BlzFrameSetScale(frame1_pas5[k2], 0.9)
-                set frame1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame1_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                call BlzFrameSetText(frame1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-                call BlzFrameSetScale(frame1_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame1_pas1[k2], true)
-                endif
-                call BlzFrameSetText(frame1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-                call BlzFrameSetMinMaxValue(frame1_pas3[k2], 0, I2R(k3+5))
-                call BlzFrameSetValue(frame1_pas3[k2], 0)
-                set r3 = LoadReal(hs, GetHandleId(c), StringHash("zero kai dmg"))
-                if r3 > k3 then
-                    set r3 = I2R(k3)
-                endif
-                call BlzFrameSetText(frame1_pas6[k2], "|c00FFFF00" + I2S(R2I(r3)) + "/" + I2S(k3) + "|r")
-                call BlzFrameSetValue(frame1_pas3[k2], r3)
-            endif
+            set r3 = RMinBJ(I2R(k3), LoadReal(hs, GetHandleId(c), SH_ZERO_KAI_DMG))
             if MUI_TsunaG == 0 then
-                call TimerStart( t_TsunaG, 0.1, true, function thistype.Loop_TsunaG)
+                call TsunaTick10_On(1)
             endif
         endmethod
     endstruct
 
     private struct TsunaG2KS
-        private static timer t_TsunaG2 = CreateTimer( )
         private static integer array m_TsunaG2
         private static integer MUI_TsunaG2 = -1
         unit c
@@ -2660,13 +2682,7 @@ library TsunaSpells uses GearSystems
         effect e2
         effect e3
         real rmax
-        private static framehandle array frame2_pas1
-        private static framehandle array frame2_pas2
-        private static framehandle array frame2_pas3
-        private static framehandle array frame2_pas4
-        private static framehandle array frame2_pas5
-        private static framehandle array frame2_pas6
-        private static method Loop_TsunaG2 takes nothing returns nothing
+        static method Loop_TsunaG2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real tmp_y = 0.035
@@ -2677,7 +2693,7 @@ library TsunaSpells uses GearSystems
                     if check == 0 then
                         call DebugUnit(c)
                         set r = r + 0.03
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = RoundReal(r, 3)
                         if r == 0.81 then
                             call MakeSound("war3mapimported\\Hero_Tsuna_GS2")
                         endif
@@ -2689,6 +2705,10 @@ library TsunaSpells uses GearSystems
                             set e2 = null
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_chargeorange2.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 8, 0))
                             call NextSound("war3mapimported\\Hero_Tsuna_GS3", 0.6)
+                            // Retire the pending G -> G2 swap: its timer would re-enable G inside
+                            // Cambio (extra G button pushed T off the card). G2 is spent as well.
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", TsunaG_ID), 0)
+                            call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaG2_ID, false)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaG_ID, false)
                             call UnitAddAbility(c, TsunaG3_ID)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaG3_ID, true)
@@ -2724,60 +2744,25 @@ library TsunaSpells uses GearSystems
                             call DecorRemove(c, x, y, TsunaG2_TransformDecorAoe, TsunaG2_TransformDecorDamage)
                             call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                             set check = 1
+                            call SaveInteger(hs, GetHandleId(c), SH_TSUNA_CAMBIO, 1)
+                            call TsunaCambio_RefreshW(c)
                             call StopSpellUnit(c)
                             set r = 0
-                            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tsuna_G2", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
                         endif
                     elseif check == 1 then
-                        if IsUnitPaused(c) == false and LoadInteger(hs,GetHandleId(c), StringHash("mode def")) == 0 then
+                        if IsUnitPaused(c) == false and LoadInteger(hs,GetHandleId(c), SH_MODE_DEF) == 0 then
                             set r = r + 0.03
                         endif
-                        set r = S2R( R2SW( r , 0, 3 ) )
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
-                        if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
-                        endif
+                        set r = RoundReal(r, 3)
+                        call TsunaCambio_RefreshW(c)
+                        call WUI_HeroProgress(c, TsunaG2_ID, "Cambio Forma ver Vongola Gear", rmax - r, rmax, true)
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TSUNA_CAMBIO, 0)
+                    call UnitRemoveAbility(c, TsunaW_Buff_ID)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaG3_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaQ2_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaW3_ID, false)
@@ -2791,16 +2776,14 @@ library TsunaSpells uses GearSystems
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaR_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaT_ID, true)
                     
-                    call BlzStartUnitAbilityCooldown(c, TsunaQ2_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaQ2_ID))
+                    call BlzStartUnitAbilityCooldown(c, TsunaQ_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaQ2_ID))
                     call BlzStartUnitAbilityCooldown(c, TsunaW_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaW3_ID))
                     call BlzStartUnitAbilityCooldown(c, TsunaE_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaE2_ID))
                     call BlzStartUnitAbilityCooldown(c, TsunaR_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaR2_ID))
                     call BlzStartUnitAbilityCooldown(c, TsunaT_ID, BlzGetUnitAbilityCooldownRemaining(c, TsunaT3_ID))
                     call BlzSetUnitSkin(c, Tsuna_ID)
                     call AAUniversalTooltips_SetUnitForm(c, 0)
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, TsunaG2_ID, "Cambio Forma ver Vongola Gear", 0.00, 0.00, true)
                     if check == 0 then
                         call StopSpellUnit(c)
                     endif
@@ -2814,8 +2797,9 @@ library TsunaSpells uses GearSystems
                     set e3 = null
                     set m_TsunaG2[i] = m_TsunaG2[ MUI_TsunaG2]
                     set MUI_TsunaG2 = MUI_TsunaG2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaG2 == -1 then
-                        call PauseTimer( t_TsunaG2)
+                        call TsunaTick_Off(8)
                     endif
                     call deallocate(this)
                 endif
@@ -2834,22 +2818,21 @@ library TsunaSpells uses GearSystems
             set r = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set r2 = 10
-            call SaveReal(hs, GetHandleId(c), StringHash("zero kai dmg"), 0)
+            call SaveReal(hs, GetHandleId(c), SH_ZERO_KAI_DMG, 0)
             call UnitRemoveAbility(c, TsunaW_Buff_ID)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TsunaG_ID)), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Tsuna_TSUNAG_ID, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 1)
             set e = EffectSpawn("war3mapImported\\wos_huoqiang.mdl", x, y, 1, 1, 1.5, 0)
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_tsunaaura.mdl", c, "origin")
             set rmax = TsunaG2_Duration
             call MakeSound("war3mapimported\\Hero_Tsuna_GS1")
             if MUI_TsunaG2 == 0 then
-                call TimerStart( t_TsunaG2, 0.03, true, function thistype.Loop_TsunaG2)
+                call TsunaTick_On(8)
             endif
         endmethod
     endstruct
 
     private struct TsunaG3KS
-        private static timer t_TsunaG3 = CreateTimer( )
         private static integer array m_TsunaG3
         private static integer MUI_TsunaG3 = -1
         unit c
@@ -2863,17 +2846,18 @@ library TsunaSpells uses GearSystems
         real r
         effect e
         real rmax
-        private static method Loop_TsunaG3 takes nothing returns nothing
+        static method Loop_TsunaG3 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real tmp_y = 0.035
             loop
                 exitwhen i > MUI_TsunaG3
                 set this = m_TsunaG3[i]
-                if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false and LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+                call WUI_HeroProgress(c, TsunaG3_ID, "Mantello di Vongola Primo", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false and LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                     if IsUnitPaused(c) == false then
                         set r = r + 0.03
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = RoundReal(r, 3)
                     endif
                     if r == 1.32 then
                         call MakeSound("war3mapimported\\Hero_Tsuna_GG2")
@@ -2907,7 +2891,7 @@ library TsunaSpells uses GearSystems
                     call UnitRemoveAbility(c, TsunaG3_Buff_ID)
                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_chargeorange2.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 12, 121, 255, 255, 255, 135))
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.21)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode def"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_DEF, 0)
                     set k = GetPlayerId(GetOwningPlayer(c))
                     if TsunaG3_Unit[k] != null then
                         call RemoveUnit(TsunaG3_Unit[k])
@@ -2920,8 +2904,9 @@ library TsunaSpells uses GearSystems
                     set u = null
                     set m_TsunaG3[i] = m_TsunaG3[ MUI_TsunaG3]
                     set MUI_TsunaG3 = MUI_TsunaG3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TsunaG3 == -1 then
-                        call PauseTimer( t_TsunaG3)
+                        call TsunaTick_Off(9)
                     endif
                     call deallocate(this)
                 endif
@@ -2938,13 +2923,13 @@ library TsunaSpells uses GearSystems
             set check2 = 0
             set g = CreateGroup()
             set aoe = TsunaG3_DamageAoe
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode def"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_DEF, 1)
             set e = AddSpecialEffectTarget("war3mapImported\\wos_sawada_def01.mdl", c, "chest")
             set rmax = TsunaG3_Duration
             call MakeSound("war3mapimported\\Hero_Tsuna_GG")
             call MyFrameBuffSlot(c, TsunaG3_Buff_ID, rmax, "BTNHero_Tsuna_TG", true, 1)
             if MUI_TsunaG3 == 0 then
-                call TimerStart( t_TsunaG3, 0.03, true, function thistype.Loop_TsunaG3)
+                call TsunaTick_On(9)
             endif
         endmethod
     endstruct
@@ -2963,7 +2948,7 @@ library TsunaSpells uses GearSystems
         if IsUnitPaused(c) == false then
             call MUE(c, TsunaF_DodgeDistance, TsunaF_DodgeDuration, GAngle(c, td) + GetRandomReal( -30, 30) * bj_DEGTORAD)
         endif
-        call FakeCD_Start(c, TsunaF_ID, cd, 0, 0)
+        call PassiveCD_Start(c, TsunaF_ID, cd)
     endfunction
     function TsunaQ_Start takes unit c, real x, real y returns nothing
         call TsunaQKS.TsunaQ_Start(c, x, y)
@@ -3020,12 +3005,12 @@ library TsunaSpells uses GearSystems
         endif
     endfunction
     function TsunaT_Start takes unit c, real x, real y returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("cast t"), 0)
+        call SaveInteger(hs, GetHandleId(c), SH_CAST_T, 0)
         call TsunaTKS.TsunaT_Start( c, x, y)
     endfunction
     function TsunaT2_Start takes unit c returns nothing    
         call StartSpellUnit(c)
-        call SaveInteger(hs, GetHandleId(c), StringHash("cast t"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_CAST_T, 1)
     endfunction
     function TsunaT3_Start takes unit c, real x, real y returns nothing
         if GetUnitAbilityLevel(c,TsunaG3_Buff_ID)>0 then 
@@ -3037,7 +3022,7 @@ library TsunaSpells uses GearSystems
     endfunction
     function TsunaF_Start takes unit c returns nothing
         local integer k = GetPlayerId(GetOwningPlayer(c))
-        if LoadInteger(hs, GetHandleId(c), StringHash("tsuna f loop")) == 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_TSUNA_F_LOOP) == 0 then
             call TsunaFKS.TsunaF_Start(c)
             if TsunaG3_Unit[k] != null then
                 call RemoveUnit(TsunaG3_Unit[k])
@@ -3048,18 +3033,18 @@ library TsunaSpells uses GearSystems
     function TsunaG_Start takes unit c returns nothing
         // Защита от двух параллельных экземпляров G для одного игрока.
         // Накопленный zero kai dmg намеренно не сбрасывается между применениями.
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("zero kai")) == 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_ZERO_KAI) == 0 then
             call TsunaGKS.TsunaG_Start( c )
         endif
     endfunction
     function TsunaG2_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 0 then
             call TsunaG2KS.TsunaG2_Start(c)
         endif
     endfunction
     function TsunaG3_Start takes unit c returns nothing
         local integer k = GetPlayerId(GetOwningPlayer(c))
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode def")) == 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_DEF) == 0 then
             if TsunaG3_Unit[k] != null then
                 call RemoveUnit(TsunaG3_Unit[k])
                 set TsunaG3_Unit[k] = null
@@ -3068,4 +3053,82 @@ library TsunaSpells uses GearSystems
             call TsunaG3KS.TsunaG3_Start(c)
         endif
     endfunction
+
+    private struct TsunaTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TsunaTick_Active[0] then
+                call TsunaQKS.Loop_TsunaQ()
+            endif
+            if TsunaTick_Active[1] then
+                call TsunaQ2KS.Loop_TsunaQ2()
+            endif
+            if TsunaTick_Active[2] then
+                call TsunaWKS.Loop_TsunaW()
+            endif
+            if TsunaTick_Active[3] then
+                call TsunaW2KS.Loop_TsunaW2()
+            endif
+            if TsunaTick_Active[4] then
+                call TsunaEKS.Loop_TsunaE()
+            endif
+            if TsunaTick_Active[5] then
+                call TsunaRKS.Loop_TsunaR()
+            endif
+            if TsunaTick_Active[6] then
+                call TsunaR2KS.Loop_TsunaR2()
+            endif
+            if TsunaTick_Active[7] then
+                call TsunaT2KS.Loop_TsunaT2()
+            endif
+            if TsunaTick_Active[8] then
+                call TsunaG2KS.Loop_TsunaG2()
+            endif
+            if TsunaTick_Active[9] then
+                call TsunaG3KS.Loop_TsunaG3()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TsunaTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct TsunaTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TsunaTick05_Active[0] then
+                call TsunaE2KS.Loop_TsunaE2()
+            endif
+            if TsunaTick05_Active[1] then
+                call TsunaTKS.Loop_TsunaT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TsunaTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct TsunaTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TsunaTick10_Active[0] then
+                call TsunaFKS.Loop_TsunaF()
+            endif
+            if TsunaTick10_Active[1] then
+                call TsunaGKS.Loop_TsunaG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TsunaTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Tsuna_TSUNAG_ID = StringHash(I2S(TsunaG_ID))
+        integer SH_Tsuna_TSUNAW_ID = StringHash(I2S(TsunaW_ID))
+    endglobals
+
 endlibrary

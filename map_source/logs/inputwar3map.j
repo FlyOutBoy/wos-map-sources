@@ -1,5 +1,5 @@
-// Main.vj - complete MAIN map source based on Anime_WOS2_0.32.w3x
-// World Editor initialization comes from Anime_WOS2_0.32.w3x/war3map.j.
+// Main.vj - complete MAIN map source based on reference-full
+// World Editor initialization comes from reference-full/war3map.j.
 // Current external files under triggers are the source of truth.
 
 // BEGIN AUTO TRIGGER IMPORTS
@@ -117,7 +117,7 @@
 // END AUTO TRIGGER IMPORTS
 
 globals
-    // World Editor generated handles from Anime_WOS2_0.32.w3x
+    // World Editor generated handles from reference-full
 rect gg_rct_Caster= null
 rect gg_rct_Base= null
 rect gg_rct_Test= null
@@ -1207,6 +1207,8 @@ function main takes nothing returns nothing
     call InitSounds()
     call CreateRegions()
     call InitBlizzard()
+
+
 
 
     call InitGlobals()

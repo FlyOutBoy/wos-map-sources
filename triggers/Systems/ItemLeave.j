@@ -5,6 +5,9 @@ function Trig_ItemLeave_Actions takes nothing returns nothing
     local integer i = GetPlayerId(GetOwningPlayer(c))
     local real r
 
+    if id == HashiramaCells_ID then
+        call AddHpRegen(c, HashiramaCells_HpRegen, false)
+    endif
     if id == 'I00C' then
         call AddHpRegen(c, 5, false)
     endif
@@ -93,7 +96,7 @@ function Trig_ItemLeave_Actions takes nothing returns nothing
     
     if debugcditem(id) then
         set r = BlzGetUnitAbilityCooldownRemaining(c, getdebugcditem_abi_id(id))
-        call SaveReal(hs, GetHandleId(c), StringHash(I2S(id)), r)
+        call SaveReal(hs, GetHandleId(c), GearKey(GEAR_KEY_I2S, "", id), r)
     endif
     if id == 'I00M' or id == 'I043' then
         call UnitRemoveAbility(c, 'A07Q')

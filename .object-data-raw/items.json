@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "417969894304c25b810df91b126220917a164e13edf4fb89dfa9b646d02c14cd",
+  "source_sha256": "54ff4827b6029c3f5c55a77cfc45f86e01737dd396b34747e91b866ae0cbb728",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -4591,10 +4591,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A07N,A07M,A072,A00X",
-            "_original_value": "A07N,A07M,A072,A00X",
+            "value": "A07N,A07M,A10F,A072,A00X",
+            "_original_value": "A07N,A07M,A10F,A072,A00X",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA3TixBMDdNLEEwNzIsQTAwWA=="
+            "_raw_base64": "QTA3TixBMDdNLEExMEYsQTA3MixBMDBY"
           },
           "sanity_check": {
             "text": "",
@@ -7532,10 +7532,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0F5,A0G7",
-            "_original_value": "A0F5,A0G7",
+            "value": "A0F5,A072,A00X",
+            "_original_value": "A0F5,A072,A00X",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBGNSxBMEc3"
+            "_raw_base64": "QTBGNSxBMDcyLEEwMFg="
           },
           "sanity_check": {
             "text": "",
@@ -11269,10 +11269,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "ACbl",
-            "_original_value": "ACbl",
+            "value": "A0HE",
+            "_original_value": "A0HE",
             "_encoding": "utf-8",
-            "_raw_base64": "QUNibA=="
+            "_raw_base64": "QTBIRQ=="
           },
           "sanity_check": {
             "text": "",
@@ -11947,6 +11947,797 @@
         }
       ],
       "display_name": "Avalon Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I046",
+        "hex": "49303436"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102,A100,A00M",
+            "_original_value": "A102,A100,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMixBMTAwLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102",
+            "_original_value": "A102",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I047",
+        "hex": "49303437"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102,A101,A00W",
+            "_original_value": "A102,A101,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMixBMTAxLEEwMFc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 11000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102",
+            "_original_value": "A102",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi: Blaze Release"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I048",
+        "hex": "49303438"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102,A101,A00W",
+            "_original_value": "A102,A101,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMixBMTAxLEEwMFc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 11000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102",
+            "_original_value": "A102",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kusanagi: Water Release"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I049",
+        "hex": "49303439"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102,A101,A00W",
+            "_original_value": "A102,A101,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMixBMTAxLEEwMFc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 11000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A102",
+            "_original_value": "A102",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwMg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Chidori Kusanagi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04A",
+        "hex": "49303441"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A10D,A06T,A00X",
+            "_original_value": "A10D,A06T,A00X",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwRCxBMDZULEEwMFg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A10D",
+            "_original_value": "A10D",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwRA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hashirama Cells"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04B",
+        "hex": "49303442"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A10E,A00M,A01Y",
+            "_original_value": "A10E,A00M,A01Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEwRSxBMDBNLEEwMVk="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Shun Shun Rikka"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04C",
+        "hex": "49303443"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A074,A00X",
+            "_original_value": "A074,A00X",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA3NCxBMDBY"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ashisogi Jizo"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04D",
+        "hex": "49303444"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Scroll of Mastery"
     }
   ]
 }

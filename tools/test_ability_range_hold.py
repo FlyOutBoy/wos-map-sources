@@ -44,6 +44,8 @@ class AreaSource(unittest.TestCase):
             'T_RadExp':lambda a,b:f'|cffffcc00Radius:|r {int(a)} (Explosion {int(b)})|n',
             'StarrkQ_ID':1001,'StarrkQ_RangeBase':1300.0,'StarrkQ_RangeStep':100.0,
             'StarrkEQ_RangeBonus':100.0,'hs':self.hs,'StringHash':lambda s:s,
+            'DarkShikiT_ID':'DarkShikiT_ID',
+            'ARules_GetImpactReach':lambda h,a,l,r,p:r,  # This suite isolates instant-vs-directed source selection.
             'GetOwningPlayer':lambda h:0})
 
     def radius(self):return self.vm.run('GetPreviewRadius',('hero',self.abilityId))
@@ -106,7 +108,7 @@ class AreaSource(unittest.TestCase):
         self.level=5;self.assertEqual(self.radius(),1800)
         self.hs[(7,'stark t')]=1;self.castRange=2100
         self.assertEqual(self.radius(),2100)
-        self.assertIn('builder.addRange(FormatReal(ReadHeroCastRange(hero, abilId, ab, lvl)))',self.source)
+        self.assertIn('builder.addRange(FormatReal(previewRadius))',self.source)
         self.assertIn('set rangeChanged = CheckAndSaveRangeState(u)',self.source)
 
     def test_examples_are_inferred_from_real_object_data_not_an_exception_table(self):

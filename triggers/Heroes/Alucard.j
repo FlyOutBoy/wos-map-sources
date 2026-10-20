@@ -1,5 +1,84 @@
 library AlucardSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer AlucardTick05_Timer = CreateTimer()
+        private boolean array AlucardTick05_Active
+        private integer AlucardTick05_Users = 0
+        private code AlucardTick05_Callback = null
+    endglobals
+
+    private function AlucardTick05_On takes integer k returns nothing
+        if not AlucardTick05_Active[k] then
+            set AlucardTick05_Active[k] = true
+            set AlucardTick05_Users = AlucardTick05_Users + 1
+            if AlucardTick05_Users == 1 then
+                call TimerStart(AlucardTick05_Timer, 0.05, true, AlucardTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AlucardTick05_Off takes integer k returns nothing
+        if AlucardTick05_Active[k] then
+            set AlucardTick05_Active[k] = false
+            set AlucardTick05_Users = AlucardTick05_Users - 1
+            if AlucardTick05_Users <= 0 then
+                set AlucardTick05_Users = 0
+                call PauseTimer(AlucardTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer AlucardTick_Timer = CreateTimer()
+        private boolean array AlucardTick_Active
+        private integer AlucardTick_Users = 0
+        private code AlucardTick_Callback = null
+    endglobals
+
+    private function AlucardTick_On takes integer k returns nothing
+        if not AlucardTick_Active[k] then
+            set AlucardTick_Active[k] = true
+            set AlucardTick_Users = AlucardTick_Users + 1
+            if AlucardTick_Users == 1 then
+                call TimerStart(AlucardTick_Timer, 0.03, true, AlucardTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AlucardTick_Off takes integer k returns nothing
+        if AlucardTick_Active[k] then
+            set AlucardTick_Active[k] = false
+            set AlucardTick_Users = AlucardTick_Users - 1
+            if AlucardTick_Users <= 0 then
+                set AlucardTick_Users = 0
+                call PauseTimer(AlucardTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ALUCARD_BULLET = StringHash("alucard bullet")
+        private integer SH_ALUCARD_G1 = StringHash("alucard g1")
+        private integer SH_ALUCARD_G2 = StringHash("alucard g2")
+        private integer SH_ALUCARD_G3 = StringHash("alucard g3")
+        private integer SH_ALUCARD_PAS = StringHash("Alucard pas")
+        private integer SH_ALUCARD_PAS_VISION = StringHash("Alucard pas vision")
+        private integer SH_INVUL = StringHash("invul")
+        private integer SH_MORPH_R = StringHash("morph r")
+        private integer SH_Q2_TARGET = StringHash("q2 target")
+        private integer SH_RESET_SFX = StringHash("reset sfx")
+        private integer SH_SOUND1_CD = StringHash("sound1 cd")
+        private integer SH_SOUND2_CD = StringHash("sound2 cd")
+        private integer SH_SOUND3_CD = StringHash("sound3 cd")
+        private integer SH_T_IMMUN_ADD_DMG = StringHash("t immun add dmg")
+        private integer SH_T_IMMUN_ADD_HEAL = StringHash("t immun add heal")
+        private integer SH_T_IMMUN_TIME = StringHash("t immun time")
+        private integer SH_T_IMMUN_TIME_TARGET = StringHash("t immun time target")
+        private integer SH_W_START = StringHash("w start")
+    endglobals
+    globals
 //--------------------------------------Alucard--------------------------------------------------------------
         integer Alucard_ID = 'H01Z'        
         integer Alucard_Morph_ID = 'H020'
@@ -88,13 +167,39 @@ library AlucardSpells uses GearSystems
         real AlucardT_Heal = 20 // in %, how much hp restored if kill T target under AlucardT_HpToHealCondition hp condition
         real AlucardT2_Heal = 10 // in %, how much hp restored if kill T target under AlucardT_HpToHealCondition hp condition
         real AlucardT_Duration = 8 // duration of spell
+        real AlucardT_CDReduce = 50 // in %, first hit of each Q/W/E cast on T-marked target (not T2) cuts remaining CD
+        private integer SH_ALUCARD_T_CDR = StringHash("alucard t cdr")
 //------------------------------------------------------------------------------
     endglobals
+
+    // Взводит снижение КД на текущий каст (одно срабатывание на каст).
+    private function AlucardT_ArmCDR takes unit c, integer baseAbil returns nothing
+        call SaveInteger(hs, GetHandleId(c), SH_ALUCARD_T_CDR + baseAbil, 1)
+    endfunction
+
+    // Вызывается из DmgSys: урон от способности Алукарда по цели с меткой T.
+    function AlucardT_MarkedHit takes unit c, integer damageSourceId returns nothing
+        local integer baseAbil = 0
+        local real cd
+        if damageSourceId == AlucardQ_ID or damageSourceId == AlucardQ2_ID then
+            set baseAbil = AlucardQ_ID
+        elseif damageSourceId == AlucardW_ID or damageSourceId == AlucardW2_ID then
+            set baseAbil = AlucardW_ID
+        elseif damageSourceId == AlucardE_ID then
+            set baseAbil = AlucardE_ID
+        endif
+        if baseAbil == 0 or LoadInteger(hs, GetHandleId(c), SH_ALUCARD_T_CDR + damageSourceId) == 0 then
+            return
+        endif
+        set cd = BlzGetUnitAbilityCooldownRemaining(c, baseAbil)
+        if cd > 0 then
+            call SaveInteger(hs, GetHandleId(c), SH_ALUCARD_T_CDR + damageSourceId, 0)
+            call ReduceCooldown(c, baseAbil, cd * AlucardT_CDReduce / 100)
+        endif
+    endfunction
     private struct AlucardSpells_Utility
-        private static timer t_AlucardPas = CreateTimer()
         private static integer array m_AlucardPas
         private static integer MUI_AlucardPas = -1
-        private static timer t_AlucardPas2 = CreateTimer()
         private static integer array m_AlucardPas2
         private static integer MUI_AlucardPas2 = -1
         unit c
@@ -114,7 +219,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardPas takes nothing returns nothing
+        static method Loop_AlucardPas takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer h
@@ -124,7 +229,7 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardPas[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r < rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(td), GetUnitY(td)) == false then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     set a = GAngle(c, td) * bj_RADTODEG
@@ -158,15 +263,15 @@ library AlucardSpells uses GearSystems
                     call BlzSetSpecialEffectPosition(e, x, y, GetUnitFlyHeight(td) + 195)
                     call FogModifierStart(fg)
                 else
-                    call SaveInteger(hs, GetHandleId(td) , StringHash("Alucard pas"), 0)
+                    call SaveInteger(hs, GetHandleId(td) , SH_ALUCARD_PAS, 0)
                         if GetUnitAbilityLevel(c, AlucardF_AdditionalMoveSpeed_ID) > 0 then
                             call AddSpellLevel(c,'A01C',10,false)
                             call UnitRemoveAbility(c, AlucardF_AdditionalMoveSpeed_ID)
                         endif
-                        call FakeCD_Start(c,AlucardF_ID,10,0,0)
+                        call PassiveCD_Start(c, AlucardF_ID, 10)
                     call DestroyEffect(e)
                     call DestroyFogModifier(fg)
-                    call MyFlush(GetHandleId(c) , StringHash("Alucard pas vision"), 0, AlucardF_Cooldown)
+                    call MyFlush(GetHandleId(c) , SH_ALUCARD_PAS_VISION, 0, AlucardF_Cooldown)
                     set c = null
                     set td = null
                     set fg = null
@@ -174,8 +279,9 @@ library AlucardSpells uses GearSystems
                     set e2 = null
                     set m_AlucardPas[i] = m_AlucardPas[ MUI_AlucardPas]
                     set MUI_AlucardPas = MUI_AlucardPas - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardPas == -1 then
-                        call PauseTimer( t_AlucardPas)
+                        call AlucardTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -197,15 +303,15 @@ library AlucardSpells uses GearSystems
             set fg = CreateFogModifierRadius(GetOwningPlayer(c), FOG_OF_WAR_VISIBLE, x, y, AlucardF_VisionAoe, false, false)
             set e = EffectSpawn("war3mapImported\\wos_alucard_eye.mdl", x, y, 1, 0.5, 2, 195)
             call FogModifierStart(fg)
-            call SaveInteger(hs, GetHandleId(c) , StringHash("Alucard pas vision"), 1)
-            call SaveInteger(hs, GetHandleId(td) , StringHash("Alucard pas"), 1)
+            call SaveInteger(hs, GetHandleId(c) , SH_ALUCARD_PAS_VISION, 1)
+            call SaveInteger(hs, GetHandleId(td) , SH_ALUCARD_PAS, 1)
             set r = 0
             if MUI_AlucardPas == 0 then
-                call TimerStart( t_AlucardPas, 0.03, true, function thistype.Loop_AlucardPas)
+                call AlucardTick_On(0)
             endif
         endmethod
 
-        private static method Loop_AlucardPas2 takes nothing returns nothing
+        static method Loop_AlucardPas2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -213,70 +319,70 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardPas2[i]
                 if Hero[check2] == c  then
                 if IsUnitType(c,UNIT_TYPE_DEAD) == false then 
-                    if LoadInteger(hs,GetHandleId(c),StringHash("reset sfx")) == 1 then 
-                    call SaveInteger(hs,GetHandleId(c),StringHash("reset sfx"),0)
+                    if LoadInteger(hs,GetHandleId(c),SH_RESET_SFX) == 1 then 
+                    call SaveInteger(hs,GetHandleId(c),SH_RESET_SFX,0)
                     if e != null then 
                     call DestroyEffect(e)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g1"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G1,0)
                     set e = null
                     endif
                     if e2 != null then 
                     call DestroyEffect(e2)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g2"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G2,0)
                     set e2 = null
                     endif
                     if e3 != null then 
                     call DestroyEffect(e3)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g3"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G3,0)
                     set e3 = null
                     endif
                     endif
                     if GetUnitState(c,UNIT_STATE_LIFE) <= (AlucardG_HpCond1/100)*GetUnitState(c,UNIT_STATE_MAX_LIFE) then
                     if e == null then
                     set e = AddSpecialEffectTarget("war3mapImported\\wos_redauraAi0.mdl",c,"origin")
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g1"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G1,1)
                     call UnitAddAbility(c,AlucardG_Stat_ID)
-                    if LoadInteger(hs,GetHandleId(c),StringHash("sound1 cd")) == 0 then 
+                    if LoadInteger(hs,GetHandleId(c),SH_SOUND1_CD) == 0 then 
                      call MakeSound("war3mapimported\\Hero_Alucard_G1")
-                     call SaveInteger(hs,GetHandleId(c),StringHash("sound1 cd"),1)
-                     call MyFlush(GetHandleId(c),StringHash("sound1 cd"),0,60)
+                     call SaveInteger(hs,GetHandleId(c),SH_SOUND1_CD,1)
+                     call MyFlush(GetHandleId(c),SH_SOUND1_CD,0,60)
                     endif
                     endif
                     elseif e != null then
                     call UnitRemoveAbility(c,AlucardG_Stat_ID)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g1"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G1,0)
                     call DestroyEffect(e)
                     set e = null
                     endif
                     if GetUnitState(c,UNIT_STATE_LIFE) <= (AlucardG_HpCond2/100)*GetUnitState(c,UNIT_STATE_MAX_LIFE) then 
                     if e2 == null then
                     set e2 = AddSpecialEffectTarget("war3mapImported\\wos_model (471)2a.mdl",c,"origin")
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g2"),1)
-                    if LoadInteger(hs,GetHandleId(c),StringHash("sound2 cd")) == 0 then 
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G2,1)
+                    if LoadInteger(hs,GetHandleId(c),SH_SOUND2_CD) == 0 then 
                      call MakeSound("war3mapimported\\Hero_Alucard_G2")
-                     call SaveInteger(hs,GetHandleId(c),StringHash("sound2 cd"),1)
-                     call MyFlush(GetHandleId(c),StringHash("sound2 cd"),0,60)
+                     call SaveInteger(hs,GetHandleId(c),SH_SOUND2_CD,1)
+                     call MyFlush(GetHandleId(c),SH_SOUND2_CD,0,60)
                     endif
                     endif
                     elseif e2 != null then
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g2"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G2,0)
                     call DestroyEffect(e2)
                     set e2 = null
                     endif
                     if GetUnitState(c,UNIT_STATE_LIFE) <= (AlucardG_HpCond3/100)*GetUnitState(c,UNIT_STATE_MAX_LIFE)  then 
                     if e3 == null then
                     set e3 = AddSpecialEffectTarget("war3mapImported\\wos_crimson aura wbats2.mdl",c,"origin")
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g3"),1)
-                    if LoadInteger(hs,GetHandleId(c),StringHash("sound3 cd")) == 0 then 
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G3,1)
+                    if LoadInteger(hs,GetHandleId(c),SH_SOUND3_CD) == 0 then 
                      call MakeSound("war3mapimported\\Hero_Alucard_G4")
-                     call SaveInteger(hs,GetHandleId(c),StringHash("sound3 cd"),1)
-                     call MyFlush(GetHandleId(c),StringHash("sound3 cd"),0,60)
+                     call SaveInteger(hs,GetHandleId(c),SH_SOUND3_CD,1)
+                     call MyFlush(GetHandleId(c),SH_SOUND3_CD,0,60)
                     endif
                     endif
                     call UnitRemoveAbility(c,'BPSE')
                     call UnitRemoveAbility(c,'BNsi')
                     elseif e3 != null then
-                    call SaveInteger(hs,GetHandleId(c),StringHash("alucard g3"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_ALUCARD_G3,0)
                     call DestroyEffect(e3)
                     set e3 = null
                     endif
@@ -288,8 +394,9 @@ library AlucardSpells uses GearSystems
                     set e3 = null
                     set m_AlucardPas2[i] = m_AlucardPas2[ MUI_AlucardPas2]
                     set MUI_AlucardPas2 = MUI_AlucardPas2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardPas2 == -1 then
-                        call PauseTimer( t_AlucardPas2)
+                        call AlucardTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -307,16 +414,16 @@ library AlucardSpells uses GearSystems
             set e3 = null
             set check2 = GetPlayerId(GetOwningPlayer(c))
             if MUI_AlucardPas2 == 0 then
-                call TimerStart( t_AlucardPas2, 0.05, true, function thistype.Loop_AlucardPas2)
+                call AlucardTick05_On(0)
             endif
         endmethod        
 
     endstruct
 
     private struct AlucardSpells_Q
-        private static timer t_AlucardQ = CreateTimer()
         private static integer array m_AlucardQ
         private static integer MUI_AlucardQ = -1
+        integer src // Damage Stats instance: base / RQ
         unit c
         unit td
         real x
@@ -344,7 +451,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardQ takes nothing returns nothing
+        static method Loop_AlucardQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -383,24 +490,26 @@ library AlucardSpells uses GearSystems
                             if r6 >= 0.0 then
                                 set r6 = 0
                                 call GroupClear( g )
-                                call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
                                         if IsUnitType(u, UNIT_TYPE_HERO) then
                                             if k2 == 0 then
+                                                call DamageSource(src)
                                                 call dmgphys(c, u, dmg)
                                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                             endif
                                             if IsUnitIllusion(u) == false then
                                                 set td = u
-                                                call SaveUnitHandle(hs, GetHandleId(c), StringHash("q2 target"), td)
+                                                call SaveUnitHandle(hs, GetHandleId(c), SH_Q2_TARGET, td)
                                                 set k2 = k2 + 1
                                             endif
                                         else
                                             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                             call GroupAddUnit( g2 , u )
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                         endif
                                     endif
@@ -446,14 +555,16 @@ library AlucardSpells uses GearSystems
                             if r6 >= 0.0 then
                                 set r6 = 0
                                 call GroupClear( g )
-                                call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
                                         if check3 == 0 then
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                         else
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg + MissHp(u, AlucardRQ_AddDamageFromMissedHp / 100))
                                         endif
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -480,9 +591,9 @@ library AlucardSpells uses GearSystems
                 else
                     if check2 == 0 then
                         if k2 > 0 and GetUnitAbilityLevel(c,AlucardQ_ID)>= 5 then
-                            call SaveInteger(hs, GetHandleId(td), StringHash("alucard bullet"), 1)
-                            call MyFlush(GetHandleId(td), StringHash("alucard bullet"), 0, AlucardQ_TimeBeforeQ2Expire)
-                            call EUTU3(EffectSpawn("war3mapImported\\wos_Crosshair.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 2, 60), AlucardQ_TimeBeforeQ2Expire, 105, td, StringHash("alucard bullet"))
+                            call SaveInteger(hs, GetHandleId(td), SH_ALUCARD_BULLET, 1)
+                            call MyFlush(GetHandleId(td), SH_ALUCARD_BULLET, 0, AlucardQ_TimeBeforeQ2Expire)
+                            call EUTU3(EffectSpawn("war3mapImported\\wos_Crosshair.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 2, 60), AlucardQ_TimeBeforeQ2Expire, 105, td, SH_ALUCARD_BULLET)
                             call SwapAbility(c, AlucardQ_TimeBeforeQ2Expire, AlucardQ2_ID, AlucardQ_ID)
                             call SetUnitAbilityLevel(c,AlucardQ2_ID,GetUnitAbilityLevel(c,AlucardQ_ID))
             call MyFrame(c,AlucardQ_TimeBeforeQ2Expire,"BTNHero_Alucard_Q2",false,0)
@@ -505,8 +616,10 @@ library AlucardSpells uses GearSystems
                     set u = null
                     set m_AlucardQ[i] = m_AlucardQ[ MUI_AlucardQ]
                     set MUI_AlucardQ = MUI_AlucardQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardQ == -1 then
-                        call PauseTimer( t_AlucardQ)
+                        call AlucardTick_Off(4)
+                        call AlucardTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -519,6 +632,10 @@ library AlucardSpells uses GearSystems
             set MUI_AlucardQ = MUI_AlucardQ + 1
             set m_AlucardQ[ MUI_AlucardQ] = this
             set c = NewC
+            set src = AlucardQ_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
+                set src = DamageSourceVariant(AlucardQ_ID, 1, "RQ")
+            endif
             set x = NewX
             set y = NewY
             set r = 0
@@ -535,11 +652,11 @@ library AlucardSpells uses GearSystems
             set a = GAngle2( c , x , y ) // Angle Between points
             set check = 0
             set k = 0
-            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("q2 target"))
+            call RemoveSavedHandle(hs, GetHandleId(c), SH_Q2_TARGET)
             set aoe = AlucardQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( AlucardQ_DamageAgiBase + ( AlucardQ_DamageAgiStep * ( GetUnitAbilityLevel( c , AlucardQ_ID) - 1 ) ) )
             set dmg = dmg + AlucardQ_Damage2StaticBase + ( AlucardQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , AlucardQ_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph r")) == 1 then// T ability add dmg
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then// T ability add dmg
                 set check2 = 1
                 set aoe = AlucardRQ_DamageAoe
                 if GetUnitState(c, UNIT_STATE_LIFE) <= GetUnitState(c, UNIT_STATE_MAX_LIFE) * (AlucardRQ_HpToAddDamageCondition / 100) then
@@ -547,9 +664,9 @@ library AlucardSpells uses GearSystems
                 endif
             endif
             set r7 = AlucardQ_RangeBase + ( AlucardQ_RangeStep * ( GetUnitAbilityLevel( c , AlucardQ_ID) - 1 ) )
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlucardQ_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Alucard_ALUCARDQ_ID, 0)
             set rmax = 2
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph r")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
                 set rmax = 2
                 if GetRandomInt(1, 2) == 1 then
                     call MakeSound("war3mapimported\\Hero_Alucard_Q04")
@@ -576,11 +693,13 @@ library AlucardSpells uses GearSystems
                 endif
             endif
             if MUI_AlucardQ == 0 then
-                call TimerStart( t_AlucardQ, 0.03, true, function thistype.Loop_AlucardQ)
+                // Q and Q2 share one instance list; the last started loop drives it (as before).
+                call AlucardTick_Off(5)
+                call AlucardTick_On(4)
             endif
         endmethod
 
-        private static method Loop_AlucardQ2 takes nothing returns nothing
+        static method Loop_AlucardQ2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -623,11 +742,12 @@ library AlucardSpells uses GearSystems
                         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun1.mdl",  GetEffX(e) + 155 * Cos(a),  GetEffY(e) + 155 * Sin(a), a * bj_RADTODEG, 1.15, 0.75, 135,255,125,125,255))
                             set r6 = 0
                             call GroupClear( g )
-                            call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange( g , GetEffX(e) , GetEffY(e) , aoe , NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A0C1')
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -656,10 +776,10 @@ library AlucardSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 2.5, 2, 80))
                         call StunUnit(c, td, AlucardQ2_StunTime)
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlucardQ_ID)), 1)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Alucard_ALUCARDQ_ID, 1)
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
-                    call SaveInteger(hs, GetHandleId(td), StringHash("alucard bullet"), 0)
+                    call SaveInteger(hs, GetHandleId(td), SH_ALUCARD_BULLET, 0)
                     call SetUnitTimeScale( c , 1)
                     if r <= 0.42 then
                         call StopSpellUnit2(c)
@@ -675,8 +795,10 @@ library AlucardSpells uses GearSystems
                     set u = null
                     set m_AlucardQ[i] = m_AlucardQ[ MUI_AlucardQ]
                     set MUI_AlucardQ = MUI_AlucardQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardQ == -1 then
-                        call PauseTimer( t_AlucardQ)
+                        call AlucardTick_Off(4)
+                        call AlucardTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -689,6 +811,10 @@ library AlucardSpells uses GearSystems
             set MUI_AlucardQ = MUI_AlucardQ + 1
             set m_AlucardQ[ MUI_AlucardQ] = this
             set c = NewC
+            set src = AlucardQ_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
+                set src = DamageSourceVariant(AlucardQ_ID, 1, "RQ")
+            endif
             set td = NewTd
             set r = 0
             set r2 = 0
@@ -721,17 +847,17 @@ library AlucardSpells uses GearSystems
             endif
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_krk (1971).mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 0.65, 1.25, 0))
             if MUI_AlucardQ == 0 then
-                call TimerStart( t_AlucardQ, 0.03, true, function thistype.Loop_AlucardQ2)
+                call AlucardTick_Off(4)
+                call AlucardTick_On(5)
             endif
         endmethod
 
     endstruct
 
     private struct AlucardSpells_W
-        private static timer t_AlucardW = CreateTimer()
         private static integer array m_AlucardW
         private static integer MUI_AlucardW = -1
-        private static timer t_AlucardW2 = CreateTimer()
+        integer src // Damage Stats instance: base / RW
         private static integer array m_AlucardW2
         private static integer MUI_AlucardW2 = -1
         unit c
@@ -752,12 +878,6 @@ library AlucardSpells uses GearSystems
         unit u
         real dmg
         integer check
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
         real aoe
         real move
         real r
@@ -766,7 +886,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardW takes nothing returns nothing
+        static method Loop_AlucardW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -774,7 +894,7 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardW[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r == 0.05 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1.8, 0))
                         call SetUnitPosition(c, GetUnitX(td) + 145 * Cos(a), GetUnitY(td) + 145 * Sin(a))
@@ -788,7 +908,7 @@ library AlucardSpells uses GearSystems
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                         call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, 450, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, 450, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
@@ -811,11 +931,12 @@ library AlucardSpells uses GearSystems
                     set y = GetUnitY(td)
                     call SetHpCurrent2(c,c, r5)
                     call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, 2000, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, 2000, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u,g2) then
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_claw blood splatter (1).mdl", GetUnitX(u), GetUnitY(u), 0, 2, 1.5, 155))
                                             call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_blood impact.mdl", u, "origin"))                                            
@@ -831,6 +952,7 @@ library AlucardSpells uses GearSystems
                         set r = 9999
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
+                        call DamageSource(src)
                         call dmgphys(c, td, dmg)                  
                         call SetHpCurrent2(c,c, r5)
                         call CurseUnit(c,td,5)
@@ -848,8 +970,9 @@ library AlucardSpells uses GearSystems
                     set td = null
                     set m_AlucardW[i] = m_AlucardW[ MUI_AlucardW]
                     set MUI_AlucardW = MUI_AlucardW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardW == -1 then
-                        call PauseTimer( t_AlucardW)
+                        call AlucardTick05_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -862,6 +985,10 @@ library AlucardSpells uses GearSystems
             set MUI_AlucardW = MUI_AlucardW + 1
             set m_AlucardW[ MUI_AlucardW] = this
             set c = NewC
+            set src = AlucardW_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
+                set src = DamageSourceVariant(AlucardW_ID, 1, "RW")
+            endif
             set td = NewTd
             set x = GetUnitX(td)
             set y = GetUnitY(td)
@@ -872,7 +999,7 @@ library AlucardSpells uses GearSystems
             call StartSpellUnit2(c)
           //  call StartSpellUnit2(td)
             set r5 = ( AlucardW_SelfHealAgiBase  + ( AlucardW_SelfHealAgiStep  * ( GetUnitAbilityLevel( c , AlucardW_ID) - 1 ) ) )*GetHeroAgi(c,true)
-            if LoadInteger(hs,GetHandleId(c),StringHash("alucard g3")) == 1 then  
+            if LoadInteger(hs,GetHandleId(c),SH_ALUCARD_G3) == 1 then  
             set r5 = r5 * 1.25
             endif
             call SetUnitAnimationByIndex(c, 13)
@@ -881,7 +1008,7 @@ library AlucardSpells uses GearSystems
             set g = CreateGroup()
             set g2 = CreateGroup()
             set u = null
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph r")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
             set check = 1
             set dmg = dmg + GetHeroAgi( c , true)
             endif
@@ -891,11 +1018,11 @@ library AlucardSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Alucard_W02")
             endif
             if MUI_AlucardW == 0 then
-                call TimerStart( t_AlucardW, 0.05, true, function thistype.Loop_AlucardW)
+                call AlucardTick05_On(1)
             endif
         endmethod
 
-        private static method Loop_AlucardW2 takes nothing returns nothing
+        static method Loop_AlucardW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -903,11 +1030,10 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardW2[i]
                 if SpellBoolCaster(c) and r <= rmax then
                         set r = r + 0.03
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = RoundReal(r, 3)
                         call DebugUnit(c)
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.06))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, AlucardW2_ID, "Blood Pool [Level 1]", rmax - r, rmax, true)
                         endif
                     if r < 0.3 then 
                     set k = k - 26
@@ -934,11 +1060,12 @@ library AlucardSpells uses GearSystems
                             set x = GetUnitX(c)
                             set y = GetUnitY(c)
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0C3')
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -965,15 +1092,13 @@ library AlucardSpells uses GearSystems
                 else
                 call MakeSound("war3mapimported\\Hero_Alucard_RW2")
                     call SetFly(c, 0)
-                    if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                    call WUI_HeroProgress(c, AlucardW2_ID, "Blood Pool [Level 1]", 0.00, 0.00, true)
                     call MouseOff(GetOwningPlayer(c))
                     call SetUnitVertexColor(c,255,255,255,255)
                     call SetUnitPathing(c, true)
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w start"), 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_W_START, 0)
                     call StopSpellUnit(c)
                     call DestroyGroup(g)
                     set c = null
@@ -981,8 +1106,9 @@ library AlucardSpells uses GearSystems
                     set e = null
                     set m_AlucardW2[i] = m_AlucardW2[ MUI_AlucardW2]
                     set MUI_AlucardW2 = MUI_AlucardW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardW2 == -1 then
-                        call PauseTimer( t_AlucardW2)
+                        call AlucardTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -996,6 +1122,10 @@ library AlucardSpells uses GearSystems
             set MUI_AlucardW2 = MUI_AlucardW2 + 1
             set m_AlucardW2[ MUI_AlucardW2] = this            
             set c = NewC
+            set src = AlucardW_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
+                set src = DamageSourceVariant(AlucardW_ID, 1, "RW")
+            endif
             set r = 0
             set check = 0
             set x = GetUnitX(c)
@@ -1027,56 +1157,18 @@ library AlucardSpells uses GearSystems
             call SetUnitTimeScale( c , 1)
             set e = EffectSpawn("war3mapImported\\wos_crimson aura wbats.mdl", x, y, 0, 1, 1, 5)
             set e2 = EffectSpawn("war3mapImported\\wos_Evtx_x120_rb2.mdl", x, y, 0, 1, 1, 5)
-            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w start"), 1)
-            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18+tmp_y)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175+tmp_y)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax+1)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18+tmp_y)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_RW", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Time Left:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17+tmp_y)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax+1)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
+            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_W_START, 1)
             if MUI_AlucardW2 == 0 then
-                call TimerStart( t_AlucardW2, 0.03, true, function thistype.Loop_AlucardW2)
+                call AlucardTick_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct AlucardSpells_E
-        private static timer t_AlucardE = CreateTimer()
         private static integer array m_AlucardE
         private static integer MUI_AlucardE = -1
+        integer src // Damage Stats instance: base / RE
         unit c
         real x
         real y
@@ -1105,7 +1197,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardE takes nothing returns nothing
+        static method Loop_AlucardE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1113,7 +1205,7 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardE[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                     if r == 0.3 then 
                     call StopSpellUnit2(c)
@@ -1144,7 +1236,7 @@ library AlucardSpells uses GearSystems
                         if r2 > 0.03 then
                             set r2 = 0
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
@@ -1156,10 +1248,12 @@ library AlucardSpells uses GearSystems
                                             set x = GetUnitX(u)
                                             set y = GetUnitY(u)
                                             call BlzSetSpecialEffectPosition(e, x - 180 * Cos(a), y - 180 * Sin(a), 0)
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                             call SlowUnit(c,u,AlucardE_Slow,AlucardE_Duration)
                                         endif
                                     else
+                                        call DamageSource(src)
                                         call dmgphys(c, u, dmg)
                                     endif
                                 endif
@@ -1212,13 +1306,14 @@ library AlucardSpells uses GearSystems
                             if r2 > 0.03 then
                                 set r2 = 0
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                         if IsUnitInGroup(u, g2) == false then
                                             call GroupAddUnit(g2, u)
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                             call SlowUnit(c,u,AlucardE_Slow,AlucardE_Duration)
                                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_claw blood splatter (1).mdl", GetUnitX(u), GetUnitY(u), 0, 2, 1.5, 155))
@@ -1248,13 +1343,14 @@ library AlucardSpells uses GearSystems
                             set k = k + 1
                         endloop
                          call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, aoe*1.5, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, aoe*1.5, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                         if IsUnitInGroup(u, g2) == false then
                                             call GroupAddUnit(g2, u)
+                                            call DamageSource(src)
                                             call dmgphys(c, u, dmg)
                                             call SlowUnit(c,u,AlucardE_Slow,AlucardE_Duration)
                                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_claw blood splatter (1).mdl", GetUnitX(u), GetUnitY(u), 0, 2, 1.5, 155))
@@ -1290,8 +1386,9 @@ library AlucardSpells uses GearSystems
                     set c = null
                     set m_AlucardE[i] = m_AlucardE[ MUI_AlucardE]
                     set MUI_AlucardE = MUI_AlucardE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardE == -1 then
-                        call PauseTimer( t_AlucardE)
+                        call AlucardTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -1304,6 +1401,10 @@ library AlucardSpells uses GearSystems
             set MUI_AlucardE = MUI_AlucardE + 1
             set m_AlucardE[ MUI_AlucardE] = this
             set c = NewC
+            set src = AlucardE_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
+                set src = DamageSourceVariant(AlucardE_ID, 1, "RE")
+            endif
             set x = NewX
             set y = NewY
             set r = 0
@@ -1322,7 +1423,7 @@ library AlucardSpells uses GearSystems
             set r7 = AlucardE_RangeBase + ( AlucardE_RangeStep * ( GetUnitAbilityLevel( c , AlucardE_ID) - 1 ) )
             call SetUnitFacing(c, a * bj_RADTODEG)
             set scale = 0.75
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph r")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
                 set rmax = 1.5
                 set move = 5
                 call StartSpellUnit2(c)
@@ -1349,17 +1450,16 @@ library AlucardSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Alucard_E2")
                 set e = EffectSpawn("war3mapImported\\wos_[By XeSHTeG]Alucard Dog.mdl", GetUnitX(c) + 150 * Cos(a), GetUnitY(c) + 150 * Sin(a), a * bj_RADTODEG, 2.5, 2.375, 0)
                 call ColorEffDummy4(e,0,255,255,255,0.6)
-                set e2 = EffectSpawn("war3mapImported\\Gear_auralanceblack023123.mdl", GetUnitX(c) + 190 * Cos(a), GetUnitY(c) + 190 * Sin(a), a * bj_RADTODEG, 1, 1.65, 150)
+                set e2 = null // Gear_auralanceblack023123.mdl is not imported
             endif               
             if MUI_AlucardE == 0 then
-                call TimerStart( t_AlucardE, 0.03, true, function thistype.Loop_AlucardE)
+                call AlucardTick_On(2)
             endif
         endmethod
 
     endstruct
 
     private struct AlucardSpells_R
-        private static timer t_AlucardR = CreateTimer()
         private static integer array m_AlucardR
         private static integer MUI_AlucardR = -1
         unit c
@@ -1372,12 +1472,6 @@ library AlucardSpells uses GearSystems
         unit u
         integer check
         integer check2
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         real aoe
         real r
         effect e
@@ -1385,7 +1479,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardR takes nothing returns nothing
+        static method Loop_AlucardR takes nothing returns nothing
             local thistype this
             local real tmp_y = 0
             local integer i = 0
@@ -1396,7 +1490,7 @@ library AlucardSpells uses GearSystems
                     if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0) then
                         set r = r + 0.05
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r < 1.05 then
                             call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) - r5)
@@ -1429,7 +1523,7 @@ library AlucardSpells uses GearSystems
                             call DestroyEffect(e2)
                             call SetUnitVertexColor(c, 255, 255, 255, 255)
                             call StopSpellUnit2(c)
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph r"), 1)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R, 1)
                             set r = 0
                             set rmax = AlucardR_DurationBase + (AlucardR_DurationStep * ( GetUnitAbilityLevel( c , AlucardR_ID) - 1 )) + 0.2
                             set r5 = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
@@ -1453,63 +1547,22 @@ library AlucardSpells uses GearSystems
                             call SetUnitAbilityLevel(c, AlucardT2_ID, GetUnitAbilityLevel(c, AlucardT_ID))
                             call BlzStartUnitAbilityCooldown(c, AlucardT2_ID, BlzGetUnitAbilityCooldownRemaining(c, AlucardT_ID))
                             endif
-                            call SaveInteger(hs,GetHandleId(c),StringHash("reset sfx"),1)
+                            call SaveInteger(hs,GetHandleId(c),SH_RESET_SFX,1)
                             set check = 1
                             
-                            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18+tmp_y)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175+tmp_y)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax+1)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18+tmp_y)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_R", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185+tmp_y)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17+tmp_y)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax+1)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
                         endif
                     elseif check == 1 then
                         
-                         call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.06))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, AlucardR_ID, "Limit Release [Level 1]", rmax - r, rmax, true)
                         endif
                     endif
                 else
                     if check == 0 then
                         call StopSpellUnit2(c)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                                endif
-                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlucardQ_ID)), 0)
+                                    call WUI_HeroProgress(c, AlucardR_ID, "Limit Release [Level 1]", 0.00, 0.00, true)
+                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Alucard_ALUCARDQ_ID, 0)
             
                   //  call BlzSetUnitRealField(c, UNIT_RF_HIT_POINTS_REGENERATION_RATE, BlzGetUnitRealField(c, UNIT_RF_HIT_POINTS_REGENERATION_RATE) -( AlucardR_HpRegenAddBase + (AlucardR_HpRegenAddStep * (GetUnitAbilityLevel(c, AlucardR_ID) - 1))))
                     //call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlucardW_ID, true)
@@ -1528,7 +1581,7 @@ library AlucardSpells uses GearSystems
                    // set r5 = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
                   //  call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - (AlucardR_HpAddBase + AlucardR_HpAddStep * (GetUnitAbilityLevel(c, AlucardR_ID) - 1)))
                   //  call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * r5)
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph r"), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_R, 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlucardR_ID, true)
                   //  call UnitRemoveAbility(c, AlucardR2_ID)
                     call BlzSetAbilityIcon(AlucardQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_Q.blp")
@@ -1537,13 +1590,14 @@ library AlucardSpells uses GearSystems
                     call BlzSetAbilityIcon(AlucardT_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Alucard_T.blp")
                     call BlzSetUnitSkin(c, Alucard_ID)
                     call AAUniversalTooltips_SetUnitForm(c, 0)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("reset sfx"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_RESET_SFX,1)
                     call SetUnitTimeScale( c, 1 )
                     set c = null
                     set m_AlucardR[i] = m_AlucardR[MUI_AlucardR]
                     set MUI_AlucardR = MUI_AlucardR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardR == -1 then
-                        call PauseTimer( t_AlucardR )
+                        call AlucardTick05_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -1581,7 +1635,7 @@ library AlucardSpells uses GearSystems
             elseif GetUnitAbilityLevel(c, AlucardR_ID) == 5 then
                 call UnitAddAbility(c, AlterSaberR_Regen4)
             endif
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlucardQ_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Alucard_ALUCARDQ_ID, 1)
             
             call SetUnitAbilityLevel(c, AlucardR_Armor, GetUnitAbilityLevel(c, AlucardR_ID))
             set r5 = (GetUnitState(c, UNIT_STATE_LIFE) * ((AlucardR_HpCostBase+AlucardR_HpCostStep*(GetUnitAbilityLevel(c, AlucardR_ID)-1)) / 100)) / 20
@@ -1591,17 +1645,15 @@ library AlucardSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Alucard_R")
             call MakeSound("war3mapimported\\Hero_Alucard_R3")
             if MUI_AlucardR == 0 then
-                call TimerStart( t_AlucardR, 0.05, true, function thistype.Loop_AlucardR )
+                call AlucardTick05_On(2)
             endif
         endmethod
 
     endstruct
 
     private struct AlucardSpells_T
-        private static timer t_AlucardT = CreateTimer()
         private static integer array m_AlucardT
         private static integer MUI_AlucardT = -1
-        private static timer t_AlucardT2 = CreateTimer()
         private static integer array m_AlucardT2
         private static integer MUI_AlucardT2 = -1
         unit c
@@ -1623,7 +1675,7 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_AlucardT takes nothing returns nothing
+        static method Loop_AlucardT takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1631,7 +1683,7 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardT[i]
                 if SpellBoolCaster(td) and r <= rmax and (GetUnitAbilityLevel(td,AlucardT_Buff_ID)>0 or GetUnitAbilityLevel(td,AlucardT2_Buff_ID)>0) then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r5 >=100 then 
                     call BlzSetSpecialEffectPosition(e2, GetUnitX(td), GetUnitY(td), GetUnitFlyHeight(td) + 150)
                     call EffVision(e2, td)
@@ -1645,16 +1697,17 @@ library AlucardSpells uses GearSystems
                     endif
                    // call DestroyEffect(e3)
                  //   call BlzSetSpecialEffectTimeScale(e3, 2.5)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(td)), StringHash("t immun time target"), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("t immun time"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(td)), SH_T_IMMUN_TIME_TARGET, 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_T_IMMUN_TIME, 0)
                     set c = null
                     set td = null
                     set e2 = null
                     set e3 = null
                     set m_AlucardT[i] = m_AlucardT[ MUI_AlucardT]
                     set MUI_AlucardT = MUI_AlucardT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardT == -1 then
-                        call PauseTimer( t_AlucardT)
+                        call AlucardTick05_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -1686,16 +1739,16 @@ library AlucardSpells uses GearSystems
             set rmax = AlucardT_Duration/2
             endif
             //set e3 = EffectSpawn("war3mapImported\\wos_[By XeSHTeG]Alucard Circle.mdl", x, y, 0, 0.5, 0.85, 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(td)), StringHash("t immun time target"), 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("t immun time"), 1)
-            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("t immun add dmg"), r5/100)
-            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("t immun add heal"), r6/100)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(td)), SH_T_IMMUN_TIME_TARGET, 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_T_IMMUN_TIME, 1)
+            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_T_IMMUN_ADD_DMG, r5/100)
+            call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_T_IMMUN_ADD_HEAL, r6/100)
             if MUI_AlucardT == 0 then
-                call TimerStart( t_AlucardT, 0.05, true, function thistype.Loop_AlucardT)
+                call AlucardTick05_On(3)
             endif
         endmethod
 
-        private static method Loop_AlucardT2 takes nothing returns nothing
+        static method Loop_AlucardT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1703,7 +1756,7 @@ library AlucardSpells uses GearSystems
                 set this = m_AlucardT2[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     call DebugUnit2(c)
                     if r < 2.05 then
                         call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) - r6)
@@ -1725,7 +1778,7 @@ library AlucardSpells uses GearSystems
                     if r == 1. or r == 1.5 or r == 2 or r == 2.5   then
                         call GroupClear(g)
                         call DecorRemove(c,x,y,aoe,100)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
@@ -1734,6 +1787,7 @@ library AlucardSpells uses GearSystems
                                     call GroupAddUnit(g2, u)                        
                                 call CurseUnit(c,u,7)
                                     call AlucardT_Start(c,u,50,AlucardT_Heal/2,1)
+                                    call DamageSource('A0C7')
                                     call dmgphys(c, u, dmg)            
                                 endif
                             endif
@@ -1764,7 +1818,7 @@ library AlucardSpells uses GearSystems
                     endif
                 else
                     call StopSpellUnit2(c)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("invul"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_INVUL,0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     set c = null
@@ -1774,8 +1828,9 @@ library AlucardSpells uses GearSystems
                     set g2 = null
                     set m_AlucardT2[i] = m_AlucardT2[ MUI_AlucardT2]
                     set MUI_AlucardT2 = MUI_AlucardT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlucardT2 == -1 then
-                        call PauseTimer( t_AlucardT2)
+                        call AlucardTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -1798,7 +1853,7 @@ library AlucardSpells uses GearSystems
             set r6 = (GetUnitState(c, UNIT_STATE_LIFE) * ((AlucardT2_HpCost / 100))) / 40
             set aoe = AlucardT2_DamageAoe
             call StartSpellUnit2(c)
-            call SaveInteger(hs,GetHandleId(c),StringHash("invul"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_INVUL,1)
             set a = GetUnitFacing(c) * bj_DEGTORAD
             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_red and black pool.mdl", GetUnitX(c), GetUnitY(c), 1, 1.5, 0.95, 1), 1, 255, 255, 255, 0.5)
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZK-SM_XL8.mdl", GetUnitX(c), GetUnitY(c), 1, 0.75, 2, 90))
@@ -1806,7 +1861,7 @@ library AlucardSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Alucard_RT2")
              call VisionTimed(GetOwningPlayer(c), x,y, 2500, 5)
             if MUI_AlucardT2 == 0 then
-                call TimerStart( t_AlucardT2, 0.03, true, function thistype.Loop_AlucardT2)
+                call AlucardTick_On(3)
             endif
         endmethod
 
@@ -1831,20 +1886,25 @@ library AlucardSpells uses GearSystems
     
      */ 
     function AlucardQ_Start takes unit c, real x, real y returns nothing
+        call AlucardT_ArmCDR(c, AlucardQ_ID)
         call AlucardSpells_Q.AlucardQ_Start( c, x, y )
     endfunction
     function AlucardQ2_Start takes unit c returns nothing
-        local unit td = LoadUnitHandle(hs, GetHandleId(c), StringHash("q2 target"))
+        local unit td = LoadUnitHandle(hs, GetHandleId(c), SH_Q2_TARGET)
+        call AlucardT_ArmCDR(c, AlucardQ2_ID)
         call AlucardSpells_Q.AlucardQ2_Start( c, td )
         set td = null
     endfunction
     function AlucardW_Start takes unit c, unit td returns nothing
+        call AlucardT_ArmCDR(c, AlucardW_ID)
         call AlucardSpells_W.AlucardW_Start( c, td )
     endfunction
     function AlucardW2_Start takes unit c returns nothing
+        call AlucardT_ArmCDR(c, AlucardW2_ID)
         call AlucardSpells_W.AlucardW2_Start( c )
     endfunction
     function AlucardE_Start takes unit c, real x, real y returns nothing
+        call AlucardT_ArmCDR(c, AlucardE_ID)
         call AlucardSpells_E.AlucardE_Start( c, x , y )
     endfunction
     function AlucardR_Start takes unit c returns nothing
@@ -1874,6 +1934,61 @@ library AlucardSpells uses GearSystems
         call AlucardSpells_Utility.AlucardPas2_Start( c )
     endfunction
     
+
+    private struct AlucardTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AlucardTick_Active[0] then
+                call AlucardSpells_Utility.Loop_AlucardPas()
+            endif
+            if AlucardTick_Active[1] then
+                call AlucardSpells_W.Loop_AlucardW2()
+            endif
+            if AlucardTick_Active[2] then
+                call AlucardSpells_E.Loop_AlucardE()
+            endif
+            if AlucardTick_Active[3] then
+                call AlucardSpells_T.Loop_AlucardT2()
+            endif
+            if AlucardTick_Active[4] then
+                call AlucardSpells_Q.Loop_AlucardQ()
+            endif
+            if AlucardTick_Active[5] then
+                call AlucardSpells_Q.Loop_AlucardQ2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AlucardTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct AlucardTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AlucardTick05_Active[0] then
+                call AlucardSpells_Utility.Loop_AlucardPas2()
+            endif
+            if AlucardTick05_Active[1] then
+                call AlucardSpells_W.Loop_AlucardW()
+            endif
+            if AlucardTick05_Active[2] then
+                call AlucardSpells_R.Loop_AlucardR()
+            endif
+            if AlucardTick05_Active[3] then
+                call AlucardSpells_T.Loop_AlucardT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AlucardTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Alucard_ALUCARDQ_ID = StringHash(I2S(AlucardQ_ID))
+    endglobals
+
 endlibrary
 
 

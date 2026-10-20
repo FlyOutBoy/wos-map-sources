@@ -1,5 +1,28 @@
 library PatriotSpells initializer InitPatriotSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_OLD_RANDOM = StringHash("old random")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+        private integer SH_PATRIOT_E = StringHash("patriot e")
+        private integer SH_PATRIOT_EE = StringHash("patriot ee")
+        private integer SH_R_ACT = StringHash("r act")
+        private integer SH_R_X = StringHash("r x")
+        private integer SH_R_Y = StringHash("r y")
+        private integer SH_STOP_R = StringHash("stop r")
+        private integer SH_T_ACT = StringHash("t act")
+        private integer SH_T_ACT_2 = StringHash("T act")
+        private integer SH_T_X = StringHash("t x")
+        private integer SH_T_Y = StringHash("t y")
+        private integer SH_W_ACT = StringHash("w act")
+        private integer SH_W_X = StringHash("w x")
+        private integer SH_W_Y = StringHash("w y")
+    endglobals
+    globals
         private timer PatriotTimer03
         private code PatriotTimer03Callback
         private integer PatriotTimer03Users = 0
@@ -151,10 +174,10 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Patriot_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -166,9 +189,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Patriot_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -180,7 +203,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Patriot_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
@@ -188,7 +211,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     endfunction
 
     function Patriot_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -197,19 +220,19 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         local unit tu
 
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -274,8 +297,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         set y = GetUnitY(td)
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_Satsu-WWSFX-1.mdx", x, y, 0.0, 1.25, 2.0, 75.0), 0.76, 75.0, td)
+        call DamageSource('A0EF')
         call NextDmg(c, td, PatriotG_DamageAgiBase * GetHeroAgi(c, true), 0, 0.10)
-        if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+        if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E) == 1 then
         if PatriotG_CD_Atk >0 then 
             call BlzStartUnitAbilityCooldown(c,PatriotG_ID,PatriotG_CD_Atk)
             endif
@@ -352,7 +376,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < PatriotQ_CastTime then
                         call DebugUnit2(c)
                     endif
@@ -388,12 +412,12 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         endif
 
                         set r5 = r5 + move
-                        set x1 = LoadReal(hs, GetHandleId(c), StringHash("w x"))
-                        set y1 = LoadReal(hs, GetHandleId(c), StringHash("w y"))
-                        set x2 = LoadReal(hs, GetHandleId(c), StringHash("r x"))
-                        set y2 = LoadReal(hs, GetHandleId(c), StringHash("r y"))
-                        set x3 = LoadReal(hs, GetHandleId(c), StringHash("t x"))
-                        set y3 = LoadReal(hs, GetHandleId(c), StringHash("t y"))
+                        set x1 = LoadReal(hs, GetHandleId(c), SH_W_X)
+                        set y1 = LoadReal(hs, GetHandleId(c), SH_W_Y)
+                        set x2 = LoadReal(hs, GetHandleId(c), SH_R_X)
+                        set y2 = LoadReal(hs, GetHandleId(c), SH_R_Y)
+                        set x3 = LoadReal(hs, GetHandleId(c), SH_T_X)
+                        set y3 = LoadReal(hs, GetHandleId(c), SH_T_Y)
 
                         if r5 >= r6 then
                             set r = 9999.0
@@ -402,14 +426,14 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         if x1 != 0.0 and SR5(e, x1, y1) < 150.0 then
                             set r = 9999.0
                             set k3 = 1
-                            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_W_ACT, 1)
                             call BlzSetSpecialEffectPosition(e, x1, y1, 25.0)
                         endif
 
                         if x2 != 0.0 and SR5(e, x2, y2) < 275.0 then
                             set k3 = 1
                             set r = 9999.0
-                            call SaveInteger(hs, GetHandleId(c), StringHash("r act"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_R_ACT, 1)
                             call BlzSetSpecialEffectPosition(e, x2, y2, 25.0)
                         endif
 
@@ -424,7 +448,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 // crossing remains free to carry enemies into it.
                                 if r7 <= PatriotT_DamageAoe - PatriotT_EdgeInset and r4 > PatriotT_DamageAoe - PatriotT_EdgeInset then
                                     set k3 = 1
-                                    call SaveInteger(hs, GetHandleId(c), StringHash("t act"), 1)
+                                    call SaveInteger(hs, GetHandleId(c), SH_T_ACT, 1)
                                     set arenaAngle = Atan2(y - y3, x - x3)
                                     set x = x3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Cos(arenaAngle)
                                     set y = y3 + (PatriotT_DamageAoe - PatriotT_EdgeInset) * Sin(arenaAngle)
@@ -445,6 +469,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                     call MakeSound("war3mapImported\\Hero_Kirito_Q2")
                                 endif
                                 if not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0E7')
                                     call dmgphys(c, u, dmg)
                                     if GetHeroLevel(c) >= 35 then
                                         call PatriotPas(c, u)
@@ -502,6 +527,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0E7')
                             call dmgphys(c, u, dmg)
                             if GetHeroLevel(c) >= 35 then
                                 call PatriotPas(c, u)
@@ -587,7 +613,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             call Patriot_RestoreOrder(c, 9)
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E) == 1 then
                 set check4 = 1
                 set dmg = dmg + GetHeroAgi(c, true) * PatriotQ_RuinationAgiBonus
             endif
@@ -634,17 +660,18 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             loop
                 exitwhen i > MUI_PatriotW
                 set this = m_PatriotW[i]
+                call WUI_HeroProgress(c, PatriotW_ID, "Sarkaz Sorcery", RMinBJ(rmax - r, RMaxBJ(0.00, PatriotW_CastTime - r) + I2R(IMaxBJ(0, k2 - k3 - 1)) * 0.99 + RMaxBJ(0.00, 0.99 - r2)), RMinBJ(rmax, PatriotW_CastTime + I2R(k2 - 1) * 0.99), true)
                 set remove = false
 
-                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax or LoadInteger(hs, GetHandleId(c), StringHash("w act")) != 0 or k3 >= k2 then
+                if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax or LoadInteger(hs, GetHandleId(c), SH_W_ACT) != 0 or k3 >= k2 then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == PatriotW_CastTime then
                         call MakeSound("war3mapImported\\Hero_Patriot_W4")
                         call GroupClear(g)
-                        call SaveReal(hs, GetHandleId(c), StringHash("w x"), x)
-                        call SaveReal(hs, GetHandleId(c), StringHash("w y"), y)
+                        call SaveReal(hs, GetHandleId(c), SH_W_X, x)
+                        call SaveReal(hs, GetHandleId(c), SH_W_Y, y)
                         set e = EffectSpawn("war3mapImported\\wos_[tx][z]baofengshuijing4.mdl", x, y, 1.0, 1.0, 1.0, 0.0)
                         call BlzSetSpecialEffectAlpha(e, 0)
                         call ColorEffDummy4(e, 0.0, 255, 255, 255, 0.30)
@@ -665,11 +692,12 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0E8')
                                     call dmgmag(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
                                 if IsUnitAlly(u, GetOwningPlayer(c)) and SpellBool(u) then
-                                    if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+                                    if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E) == 1 then
                                         call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID) + 5)
                                     else
                                         call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID))
@@ -690,7 +718,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         call ColorEffDummy3(e, 0.0, 255, 255, 255, 0.30)
                     endif
 
-                    if LoadInteger(hs, GetHandleId(c), StringHash("w act")) == 1 then
+                    if LoadInteger(hs, GetHandleId(c), SH_W_ACT) == 1 then
                         call MakeSound("war3mapImported\\Hero_Patriot_W3")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, a * bj_RADTODEG + 180.0, 1.0, 6.35 * scale, 1.0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1.0, 1.65 * scale, 1.0))
@@ -709,8 +737,10 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if k2 - k3 <= 1 then
+                                    call DamageSource('A0E8')
                                     call dmgmag(c, u, dmg)
                                 else
+                                    call DamageSource('A0E8')
                                     call dmgmag(c, u, dmg * (k2 - k3))
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -719,9 +749,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         endloop
                     endif
 
-                    call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
+                    call SaveInteger(hs, GetHandleId(c), SH_W_ACT, 0)
+                    call SaveReal(hs, GetHandleId(c), SH_W_X, 0.0)
+                    call SaveReal(hs, GetHandleId(c), SH_W_Y, 0.0)
 
                     if g != null then
                         call DestroyGroup(g)
@@ -758,9 +788,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set y = NewY
             set r2 = 10.0
             set g = CreateGroup()
-            call SaveReal(hs, GetHandleId(c), StringHash("w x"), 0.0)
-            call SaveReal(hs, GetHandleId(c), StringHash("w y"), 0.0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("w act"), 0)
+            call SaveReal(hs, GetHandleId(c), SH_W_X, 0.0)
+            call SaveReal(hs, GetHandleId(c), SH_W_Y, 0.0)
+            call SaveInteger(hs, GetHandleId(c), SH_W_ACT, 0)
             if GetHeroLevel(c) >= 35 then
             set PatriotW_CastTime = 0.03
             endif
@@ -800,12 +830,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         integer id2
         real x1
         real y1
-        framehandle array frame_pas1 [12]
-        framehandle array frame_pas2 [12]
-        framehandle array frame_pas3 [12]
-        framehandle array frame_pas4 [12]
-        framehandle array frame_pas5 [12]
-        framehandle array frame_pas6 [12]
         integer k2
         real r
         effect e2
@@ -825,7 +849,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     set remove = true
                 else
                     if not IsUnitPaused(c) then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
 
                     if r == 0.03 then
@@ -836,9 +860,8 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         endif
                     endif
 
-                    call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.05))
                     if rmax - r >= 0.0 then
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, PatriotE_ID, "Perseverance Stance", rmax - r, rmax, true)
                     endif
                     set x1 = GetUnitX(c)
                     set y1 = GetUnitY(c)
@@ -848,11 +871,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     if c != null and GetUnitTypeId(c) != 0 then
                         call PlayersMsg(GetPlayerVisualColorString(Player(id)) + GetPlayerName(Player(id)) + "|r killed " + GetPlayerVisualColorString(Player(id2)) + GetPlayerName(Player(id2)) + "|r", 2)
                         call KillUnit(c)
-                        if GetLocalPlayer() == GetOwningPlayer(c) then
-                            call BlzFrameSetVisible(frame_pas1[k2], false)
-                        endif
-                        call SaveInteger(hs, GetHandleId(c), StringHash("patriot ee"), 0)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("patriot e"), 0)
+                            call WUI_HeroProgress(c, PatriotE_ID, "Perseverance Stance", 0.00, 0.00, true)
+                        call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_EE, 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 0)
                         call AddUnitAnimationProperties(c, "alternate", false)
                         call AAUniversalTooltips_SetUnitForm(c, 0)
                     endif
@@ -907,51 +928,13 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
 
             call AddUnitAnimationProperties(c, "alternate", true)
             call Patriot_RestoreOrder(c, 4)
-            call SaveInteger(hs, GetHandleId(c), StringHash("patriot e"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("patriot ee"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_EE, 1)
             call AddSpellLevel(c, 'A01C', 10, true)
             call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2.blp")
 
             call AAUniversalTooltips_SetUnitForm(c, 2)
 
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 1)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Perseverance Stance:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 1)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-            endif
 
             set e2 = AddSpecialEffectTarget("war3mapimported\\wos_DingZhi_BY_Wood_Effect_Bleach_LvSeQiLiu2.mdx", c, "origin")
             call MakeSound("war3mapImported\\Hero_Patriot_EE")
@@ -1010,23 +993,23 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         if r > PatriotR_CastTime then
                             set r5 = r5 + move
-                            if r5 > r7 or LoadInteger(hs, GetHandleId(c), StringHash("r act")) == 1 then
+                            if r5 > r7 or LoadInteger(hs, GetHandleId(c), SH_R_ACT) == 1 then
                                 set r = 0.0
                                 set r2 = 255.0
                                 set rmax = PatriotR_Duration
                                 set check = 1
-                                call SaveReal(hs, GetHandleId(c), StringHash("r x"), x1)
-                                call SaveReal(hs, GetHandleId(c), StringHash("r y"), y1)
+                                call SaveReal(hs, GetHandleId(c), SH_R_X, x1)
+                                call SaveReal(hs, GetHandleId(c), SH_R_Y, y1)
                             endif
 
                             set x1 = x1 + move * Cos(a)
                             set y1 = y1 + move * Sin(a)
-                            call SaveReal(hs, GetHandleId(c), StringHash("r x"), x1)
-                            call SaveReal(hs, GetHandleId(c), StringHash("r y"), y1)
+                            call SaveReal(hs, GetHandleId(c), SH_R_X, x1)
+                            call SaveReal(hs, GetHandleId(c), SH_R_Y, y1)
 
                             set k = 0
                             loop
@@ -1050,6 +1033,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                         if not IsUnitInGroup(u, g2) then
+                                            call DamageSource('A0EA')
                                             call dmgphys(c, u, dmg)
                                             if GetHeroLevel(c) >= 35 then
                                                 call PatriotPas(c, u)
@@ -1083,8 +1067,8 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                             endif
                         endif
                     else
-                        call SaveReal(hs, GetHandleId(c), StringHash("r x"), x1)
-                        call SaveReal(hs, GetHandleId(c), StringHash("r y"), y1)
+                        call SaveReal(hs, GetHandleId(c), SH_R_X, x1)
+                        call SaveReal(hs, GetHandleId(c), SH_R_Y, y1)
 
                         if r == 1.02 then
                             set k = 0
@@ -1119,6 +1103,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0EA')
                                     call dmgphys(c, u, dmg2)
                                     if GetHeroLevel(c) >= 35 then
                                         call PatriotPas(c, u)
@@ -1156,9 +1141,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     if g2 != null then
                         call DestroyGroup(g2)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("r act"), 0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("r x"), 0.0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("r y"), 0.0)
+                    call SaveInteger(hs, GetHandleId(c), SH_R_ACT, 0)
+                    call SaveReal(hs, GetHandleId(c), SH_R_X, 0.0)
+                    call SaveReal(hs, GetHandleId(c), SH_R_Y, 0.0)
                     set c = null
                     set g = null
                     set g2 = null
@@ -1193,7 +1178,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set r2 = 10.0
             set r3 = 10.0
             set check = 0
-            call SaveInteger(hs, GetHandleId(c), StringHash("r act"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_R_ACT, 0)
             set r5 = 0.0
             set maxRange = PatriotR_RangeBase + (PatriotR_RangeStep * (level - 1))
             set r7 = maxRange
@@ -1205,7 +1190,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set dmg2 = GetHeroAgi(c, true) * (PatriotR2_DamageAgiBase + (PatriotR2_DamageAgiStep * (level - 1)))
             set rmax = 3.0
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("patriot e")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E) == 1 then
                 // Стойка Сокрушения: спавн СТРОГО в точке клика курсора
                 set xxx = NewX
                 set yyy = NewY
@@ -1249,6 +1234,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     private struct PatriotSpells_T
         private static integer array m_PatriotT
         private static integer MUI_PatriotT = -1
+        // Duration meter (WOSHeroMeter window above the minimap, like Toji R), one per player.
 
         unit c
         real x
@@ -1284,9 +1270,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or not SpellBoolCaster(c) or r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
-                    call SaveReal(hs, GetHandleId(c), StringHash("t x"), x)
-                    call SaveReal(hs, GetHandleId(c), StringHash("t y"), y)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    call SaveReal(hs, GetHandleId(c), SH_T_X, x)
+                    call SaveReal(hs, GetHandleId(c), SH_T_Y, y)
 
                     if r > PatriotT_CastTime then
                         if r2 > 0.95 then
@@ -1306,7 +1292,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         else
                             set r2 = r2 + 0.03
                         endif
-                        if r4 > 0.45 then
+                        if r4 > 0.75 then
                           
                             set check2 = 0
                             set r4 = 0.0
@@ -1326,8 +1312,10 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                     if distance > aoe - 350.0 and distance < aoe then
                                         if check2 == 0 then
                                             if GetHeroLevel(c) >= 35 then
+                                                call DamageSource('A0EB')
                                                 call NextDmg(c, u, GetAttack(c), 2, 0.36)
                                             endif
+                                            call DamageSource('A0EB')
                                             call dmgphys(c, u, dmg)
                                         endif
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1353,6 +1341,12 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 endif
 
                 if remove then
+                    call WUI_HeroProgress(c, PatriotT_ID, "Surround Them", 0.00, 0.00, true)
+                else
+                    call WUI_HeroProgress(c, PatriotT_ID, "Surround Them", rmax - r, rmax, true)
+                endif
+
+                if remove then
                     set k = 0
                     loop
                         exitwhen k == k3
@@ -1366,8 +1360,8 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     if g2 != null then
                         call DestroyGroup(g2)
                     endif
-                    call SaveReal(hs, GetHandleId(c), StringHash("t x"), 0.0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("t y"), 0.0)
+                    call SaveReal(hs, GetHandleId(c), SH_T_X, 0.0)
+                    call SaveReal(hs, GetHandleId(c), SH_T_Y, 0.0)
                     set c = null
                     set g = null
                     set g2 = null
@@ -1383,6 +1377,10 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 set i = i + 1
             endloop
             set u = null
+        endmethod
+
+        private static method ShowMeter takes thistype this, unit owner, real duration returns nothing
+            call WUI_HeroProgress(owner, PatriotT_ID, "Surround Them", duration, duration, true)
         endmethod
 
         public static method PatriotT_Start takes unit NewC, real NewX, real NewY returns nothing
@@ -1401,7 +1399,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set r3 = 10.0
             set r4 = 0
             set check2 = 0
-            call SaveInteger(hs, GetHandleId(c), StringHash("T act"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_T_ACT_2, 0)
             set aoe = PatriotT_DamageAoe
             set g = CreateGroup()
             set g2 = CreateGroup()
@@ -1411,6 +1409,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set k3 = 15
 
             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 350.0, rmax + 1.0)
+            call thistype.ShowMeter(this, c, rmax)
             loop
                 exitwhen k == k3
                 set x1 = x + aoe * Cos((360.0 / I2R(k3)) * k * bj_DEGTORAD)
@@ -1481,7 +1480,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 if r > rmax then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if r == 0.60 or r == 1.20 then
                         call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_3yue_5.mdl", x1, y1, GetRandomReal(0, 359), 1.0, 0.60, 0.0, 255, 255, 255, 125))
@@ -1629,6 +1628,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0EC')
                                 call dmgphys(c, u, dmg)
                                 if GetHeroLevel(c) >= 35 then
                                     call PatriotPas(c, u)
@@ -1766,12 +1766,13 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             loop
                 exitwhen i > MUI_PatriotF
                 set this = m_PatriotF[i]
+                call WUI_HeroProgress(c, PatriotF_ID, "March on", rmax - r, rmax, true)
                 set remove = false
 
-                if c == null or GetUnitTypeId(c) == 0 or r >= rmax or not SpellBool(c) or LoadInteger(hs, GetHandleId(c), StringHash("stop r")) != 0 then
+                if c == null or GetUnitTypeId(c) == 0 or r >= rmax or not SpellBool(c) or LoadInteger(hs, GetHandleId(c), SH_STOP_R) != 0 then
                     set remove = true
                 else
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
 
                     if r == 0.60 then
@@ -1839,8 +1840,8 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                 if remove then
                     if c != null and GetUnitTypeId(c) != 0 then
                         call StopSpellUnit2(c)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("stop r"), 0)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_STOP_R, 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 0)
                         call SetUnitTimeScale(c, 1.0)
                         call MouseOff(GetOwningPlayer(c))
                     endif
@@ -1882,7 +1883,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call StartSpellUnit2(c)
             set x1 = GetUnitX(c)
             set y1 = GetUnitY(c)
-            call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 1)
             call MouseOn(GetOwningPlayer(c))
             set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
             set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
@@ -1928,14 +1929,14 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     endfunction
 
     function PatriotE_Start takes unit c returns nothing
-        local integer e = LoadInteger(hs, GetHandleId(c), StringHash("patriot e"))
+        local integer e = LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E)
         local integer rand = GetRandomInt(1, 3)
         local real x = GetUnitX(c)
         local real y = GetUnitY(c)
         local real cd1 = BlzGetUnitAbilityCooldownRemaining(c, PatriotT_ID)
         local real cd2 = BlzGetUnitAbilityCooldownRemaining(c, PatriotT2_ID)
         local real a = GetUnitFacing(c) * bj_DEGTORAD
-        local integer oldrand = LoadInteger(hs, GetHandleId(c), StringHash("old random"))
+        local integer oldrand = LoadInteger(hs, GetHandleId(c), SH_OLD_RANDOM)
 
         loop
             set rand = GetRandomInt(1, 3)
@@ -1948,7 +1949,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         elseif rand == 3 then
             call MakeSound("war3mapImported\\Hero_Patriot_E3")
         endif
-        call SaveInteger(hs, GetHandleId(c), StringHash("old random"), rand)
+        call SaveInteger(hs, GetHandleId(c), SH_OLD_RANDOM, rand)
 
         if e == 0 then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF_ID, false)
@@ -1962,7 +1963,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             endif
             call AddUnitAnimationProperties(c, "alternate", true)
             call Patriot_RestoreOrder(c, 8)
-            call SaveInteger(hs, GetHandleId(c), StringHash("patriot e"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 1)
             call AddSpellLevel(c, 'A01C', 10, true)
             call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2.blp")
             call AAUniversalTooltips_SetUnitForm(c, 1)
@@ -1976,7 +1977,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT2_ID, false)
             call AddUnitAnimationProperties(c, "alternate", false)
             call Patriot_RestoreOrder(c, 3)
-            call SaveInteger(hs, GetHandleId(c), StringHash("patriot e"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 0)
             call AAUniversalTooltips_SetUnitForm(c, 0)
         endif
 

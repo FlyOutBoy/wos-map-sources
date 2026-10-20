@@ -44,7 +44,7 @@ class Performance(unittest.TestCase):
 
     def test_range_inventory_scan_is_four_hz_while_hover_remains_twenty_hz(self):
         vm=JassState(functions('WOS_Start/ShowCD.j','AHUI_Periodic'));scan=[];render=[]
-        vm.g.update(AHUI_UpdateTick=0,AHUI_REFRESH_TICKS=5,AHUI_SeenHudRevision=0,WUI_HudRevision=0,
+        vm.g.update(AHUI_UpdateTick=0,AHUI_REFRESH_TICKS=5,AHUI_SeenHudRevision=0,WUI_HudRevision=0,AHUI_TipClock=0,AHUI_TipEpoch=0,
             GetPlayerId=lambda p:p,GetLocalPlayer=lambda:0,bj_MAX_PLAYER_SLOTS=24,
             AHUI_SelectedHero=defaultdict(lambda:None),AHUI_DeselectPending=defaultdict(bool),AHUI_HoveredSlot=defaultdict(int),
             AR_Reconcile=lambda:scan.append(1),AR_Render=render.append,AHUI_HideTooltip=lambda *a:None)
@@ -55,9 +55,9 @@ class Performance(unittest.TestCase):
         vm=JassState(functions('WOS_Start/ShowCD.j','AHUI_ShowKey','AHUI_HideSlot')+'\n'+functions('WOS_Start/WOSUI.j','WUI_Show'))
         native=[];alpha=[];frames={}
         def show(f,v):native.append((f,v));frames[f]=v
-        vm.g.update(AHUI_FrameIndex=lambda p,s:s,AHUI_SlotVisible=defaultdict(bool),AHUI_RenderedAbility=defaultdict(int),
-            AHUI_RenderedIconPath=defaultdict(lambda:None),AHUI_CooldownPeak=defaultdict(float),AHUI_LastRemaining=defaultdict(float),
-            AHUI_HoveredSlot=defaultdict(lambda:-1),AHUI_READY_ALPHA=255,
+        vm.g.update(AHUI_FrameIndex=lambda p,s:s,AHUI_SlotVisible=defaultdict(bool),AHUI_ToggleGlowShown=defaultdict(bool),AHUI_ToggleGlow=defaultdict(lambda:None),AHUI_RenderedAbility=defaultdict(int),
+            AHUI_RenderedIconPath=defaultdict(lambda:None),AHUI_CooldownPeak=defaultdict(float),AHUI_LastRemaining=defaultdict(float),AHUI_CooldownTicks=defaultdict(int),AHUI_TipShown=defaultdict(int),
+            AHUI_HoveredSlot=defaultdict(lambda:-1),AHUI_NativeCommandShown=defaultdict(bool),AHUI_READY_ALPHA=255,AHUI_PartState=defaultdict(int),AHUI_IconAlphaSet=defaultdict(int),AHUI_FillAlphaSet=defaultdict(int),
             BlzFrameIsVisible=lambda f:frames.get(f,False),BlzFrameSetVisible=show,
             BlzFrameSetAlpha=lambda *a:alpha.append(a))
         for name in ['PausedText','Root','Icon','CooldownFill','CooldownText','KeyBox','KeyText','ChargeBox']:
@@ -79,7 +79,8 @@ class Performance(unittest.TestCase):
             lmpElapsed=defaultdict(float),lmpUiElapsed=defaultdict(float),lmpEqualizerElapsed=defaultdict(float),
             lmpEqualizerPhase=defaultdict(int),lmpPanel='panel',BlzFrameIsVisible=lambda f:visible,
             LMP_SetProgress=lambda *a:progress.append(a),LMP_UpdateTimeText=labels.append,
-            LMP_UpdateEqualizer=lambda p:None,ModuloInteger=lambda a,b:a%b,I2R=float)
+            LMP_UpdateEqualizer=lambda p:None,ModuloInteger=lambda a,b:a%b,I2R=float,
+            lmpScanRequested=False,lmpScanDone=True,lmpScanTrack=31,lmpScanLimit=30)
         for _ in range(50):vm.run('LMP_OnTick')
         self.assertAlmostEqual(5.,vm.g['lmpElapsed'][0]);self.assertFalse(progress);self.assertFalse(labels)
         visible=True

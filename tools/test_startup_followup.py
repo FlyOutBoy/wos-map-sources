@@ -94,7 +94,7 @@ class StatsStartup(unittest.TestCase):
             WOS_STATS_TEX_PANEL_FILL='panel',WOS_STATS_TEX_TOOLTIP='panel',
             BlzCreateFrameByType=frame,CreateTimer=handle,CreateTrigger=handle,DestroyTimer=lambda *_:None,
             BlzTriggerRegisterPlayerKeyEvent=lambda *a:hotkeys.append(a),
-            BlzTriggerRegisterFrameEvent=lambda *a:clicks.append(a),TriggerAddAction=lambda *_:None,
+            BlzTriggerRegisterFrameEvent=lambda *a:clicks.append(a),TriggerAddAction=lambda *_:None,PauseTimer=lambda *_:None,
             TimerStart=lambda *a:timers.append(a),GetExpiredTimer=lambda:'builder',
             GetHandleId=lambda h:h,Player=lambda p:p,ConvertOsKeyType=lambda n:n,
             I2R=float,BlzGetLocalClientWidth=lambda:1920,BlzGetLocalClientHeight=lambda:1080,
@@ -106,6 +106,9 @@ class StatsStartup(unittest.TestCase):
             BlzFrameSetVisible=lambda f,v:visible.update({f:v}))
         vm.run('WOS_STATS_CreateUI')
         self.assertFalse(created);self.assertEqual(-6,vm.g['WOS_STATS_BuildRow'])
+        # Rows wait for every WUI_OnReady owner (one owner per frame after the bootstrap).
+        vm.run('WOS_STATS_BuildNextRow');self.assertEqual(-6,vm.g['WOS_STATS_BuildRow'])
+        vm.g['WUI_ReadyDrainDone']=True
         vm.run('WOS_STATS_BuildNextRow')
         self.assertEqual('OSKEY_F2',vm.g['WUI_HotkeyKey'][vm.g['WUI_HOTKEY_STATS']*16])
         self.assertTrue(any(a[2]=='OSKEY_F2' for a in hotkeys))
@@ -148,10 +151,11 @@ class ModeStartup(unittest.TestCase):
         vm.g.update(WOS_ModeCountdown=None,CreateTrigger=lambda:object(),CreateTimer=lambda:object(),bj_DEGTORAD=3.14159/180,
             TimerStart=lambda t,period,repeat,callback:events.append((period,repeat)),
             WUI_OnReady=lambda callback:events.append('selector'),WUI_GetRoot=lambda:'root',
+            WOS_PickPrebuild=lambda:None,WUI_StartupComplete=lambda:True,
             BlzCreateFrameByType=fail)
         with self.assertRaisesRegex(RuntimeError,'optional frame'):vm.run('InitTrig_ModeDialog')
         self.assertFalse(vm.g['WOS_ModeStarted'])
-        self.assertEqual([(5.,False)],events)
+        self.assertEqual([(10.,False)],events)
         vm.g.update(GetExpiredTimer=lambda:'delay',DestroyTimer=lambda *_:None)
         vm.run('WOS_ModeDelayExpired')
         self.assertTrue(vm.g['WOS_ModeStarted'])
@@ -326,7 +330,7 @@ class DirectPresentation(unittest.TestCase):
 
     def test_hud_shift_invalidates_pip_cache_without_new_timer_or_callback(self):
         vm=ui.load_source('ShowCD.j')
-        vm.g.update(WUI_HudRevision=3,AHUI_SeenHudRevision=2,AHUI_UpdateTick=0,
+        vm.g.update(WUI_HudRevision=3,AHUI_SeenHudRevision=2,AHUI_UpdateTick=0,AHUI_TipClock=0,AHUI_TipEpoch=0,
             bj_MAX_PLAYER_SLOTS=0,AR_Reconcile=lambda:None)
         vm.g['AHUI_PipTexture'][0]='old'
         vm.run('AHUI_Periodic')

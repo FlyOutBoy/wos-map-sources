@@ -1,5 +1,9 @@
 library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_NEVI_SOUND = StringHash("nevi sound")
+    endglobals
+    globals
         private timer NeuvilletteTimer03
         private code NeuvilletteTimer03Callback
         private integer NeuvilletteTimer03Users = 0
@@ -74,6 +78,9 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
         integer NeuvilletteF_ID = 'A07W'
         real NeuvilletteF_DamageAdd = 15.0
         real NeuvilletteF_DamageAdd35 = 5.0
+        integer NeuvilletteF_LifestealLevel = 12
+        real NeuvilletteF_Lifesteal = 15.0 // % of damage dealt to Water-debuffed targets (lv 12+)
+        real NeuvilletteF_Lifesteal35 = 20.0 // lv 35
     endglobals
 
     //===========================================================================
@@ -125,7 +132,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if r == RoundReal(rmax - 0.21, 3) then
                         call MakeSound("war3mapImported\\Hero_Kenjaku_W2 3")
@@ -140,15 +147,17 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                         call DecorRemove(c, x, y, aoe, NeuvilletteQ_DecorDamage)
 
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if GetHeroLevel(c) >= 35 then
+                                    call DamageSource('A07R')
                                     call ErzaPassive(c, u, 2)
                                 endif
+                                call DamageSource('A07R')
                                 call dmgmag(c, u, dmg)
                             endif
                         endloop
@@ -226,7 +235,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                 call StartSpellUnit2(c)
             endif
 
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 1 then
                 call MakeSound("war3mapImported\\Hero_Neuvillette2_Q")
             else
                 call MakeSound("war3mapImported\\Hero_Neuvillette_Q")
@@ -273,7 +282,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if NeuvilletteW_IsInvul then
                         call DebugUnit(c)
                     else
@@ -294,12 +303,13 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                         call DecorRemove(c, x, y, aoe, NeuvilletteW_DecorDamage)
 
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A07S')
                                 call dmgphys(c, u, dmg)
                             endif
                         endloop
@@ -379,7 +389,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 1)
             call SetUnitTimeScale(c, 0.60)
 
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 1 then
                 call MakeSound("war3mapImported\\Hero_Neuvillette2_W")
             else
                 call MakeSound("war3mapimported\\Hero_Neuvillette_W")
@@ -422,10 +432,11 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             loop
                 exitwhen i > MUI_NeuvilletteE
                 set this = m_NeuvilletteE[i]
+                call WUI_HeroProgress(c, NeuvilletteE_ID, "O Tears, I Shall Repay", rmax - r, rmax, true)
                 set remove = false
 
                 if r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if r < 0.81 then
                         set scale = scale + r4
@@ -437,13 +448,15 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                         set r2 = 0.0
                         call DecorRemove(c, x, y, aoe, NeuvilletteE_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             call GroupRemoveUnit(g, u)
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A07T')
                                 call ErzaPassive(c, u, 2)
+                                call DamageSource('A07T')
                                 call dmgmag(c, u, dmg)
                                 if slowPercent > 0 then
                                     call SlowUnit(c, u, slowPercent, NeuvilletteE_SlowDuration)
@@ -451,7 +464,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                             endif
                         endloop
                     else
-                        set r2 = RoundReal(r2 + 0.03, 3)
+                        set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
                 else
                     set remove = true
@@ -527,7 +540,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 2)
             call SetUnitTimeScale(c, 1.0)
 
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 1 then
                 call MakeSound("war3mapImported\\Hero_Neuvillette2_E")
             else
                 call MakeSound("war3mapimported\\Hero_Neuvillette_E")
@@ -582,12 +595,13 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             loop
                 exitwhen i > MUI_NeuvilletteR
                 set this = m_NeuvilletteR[i]
+                call WUI_HeroProgress(c, NeuvilletteR_ID, "Discipline of the Supreme Arbitration", rmax - r, rmax, true)
                 set remove = false
 
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if NeuvilletteR_IsInvul then
                         call DebugUnit(c)
                     else
@@ -667,15 +681,17 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                                 call VisionTimed(GetOwningPlayer(c), x, y, aoe + 400.0, 2.0)
 
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     call GroupRemoveUnit(g, u)
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                         if GetHeroLevel(c) >= 35 then
+                                            call DamageSource('A07U')
                                             call ErzaPassive(c, u, 2)
                                         endif
+                                        call DamageSource('A07U')
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit(g2, u)
                                         call MUE(u, r4, NeuvilletteR_PushDuration, a)
@@ -688,7 +704,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                                 set y = GetUnitY(c) + r6 * Sin(a)
                             endloop
                         else
-                            set r2 = RoundReal(r2 + 0.03, 3)
+                            set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
 
                         if r >= rmax then
@@ -792,9 +808,9 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             call SetUnitTimeScale(c, 0.90)
 
             set e3 = AddSpecialEffectTarget("war3mapImported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand right")
-            set e4 = AddSpecialEffectTarget("war3mapImported\\wos_241.mdx", c, "origin")
+            set e4 = null // wos_241.mdx is not imported
 
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 1 then
                 if GetRandomInt(1, 2) == 1 then
                     call MakeSound("war3mapImported\\Hero_Neuvillette2_R")
                 else
@@ -851,7 +867,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                 if c == null or GetUnitTypeId(c) == 0 or GetWidgetLife(c) <= 0.405 then
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if NeuvilletteT_IsInvul then
                         call DebugUnit(c)
                     else
@@ -861,7 +877,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                     set r5 = r5 + 0.6 * bj_DEGTORAD
                     call BlzSetSpecialEffectYaw(e2, r5)
 
-                    if r == 0.90 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 0 then
+                    if r == 0.90 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 0 then
                         call MakeSound("war3mapimported\\Hero_Neuvillette_T2")
                     endif
 
@@ -884,14 +900,16 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2blue.mdl", x1, y1, GetRandomReal(0, 359), 0.6, 4, 0))
 
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x1, y1, NeuvilletteT_DamageAoePillar, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x1, y1, NeuvilletteT_DamageAoePillar, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     call GroupRemoveUnit(g, u)
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                        call DamageSource('A07V')
                                         call ErzaPassive(c, u, 2)
                                         call SlowUnit(c, u, NeuvilletteT_Slow, NeuvilletteT_Duration)
+                                        call DamageSource('A07V')
                                         call dmgmag(c, u, dmg)
                                     endif
                                 endloop
@@ -900,7 +918,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                                 set k = k + 1
                             endloop
                         else
-                            set r2 = RoundReal(r2 + 0.03, 3)
+                            set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
                     endif
 
@@ -991,7 +1009,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
             call SetUnitTimeScale(c, 0.50)
             call VisionTimed(GetOwningPlayer(c), x, y, aoe + 800.0, 4.0)
 
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("nevi sound")) == 1 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NEVI_SOUND) == 1 then
                 call MakeSound("war3mapImported\\Hero_Neuvillette2_T")
             else
                 call MakeSound("war3mapimported\\Hero_Neuvillette_T")

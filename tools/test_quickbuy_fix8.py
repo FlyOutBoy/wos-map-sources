@@ -4,7 +4,7 @@ import test_quickbuy_fix7 as prior
 import test_wos_ui as ui
 class Fix8(prior.Fix7):
  def setUp(self):
-  super().setUp();g=self.vm.g;self.enabled={};g.update(BlzFrameGetEnable=lambda f:self.enabled.get(f,False),BlzFrameSetEnable=lambda f,v:self.enabled.update({f:v}),BlzFrameSetTooltip=lambda *_:None)
+  super().setUp();g=self.vm.g;self.enabled={};g.update(SHOP_PAGE_LAST=7,SHOP_CATEGORY_MAX_ITEMS=42,BlzFrameGetEnable=lambda f:self.enabled.get(f,False),BlzFrameSetEnable=lambda f,v:self.enabled.update({f:v}),BlzFrameSetTooltip=lambda *_:None)
   for i in range(6):g['QB_PreviewRemove'][i]=('input',i);g['QB_PreviewMinusFace'][i]=('face',i)
  def test_hud_minuses_disable_on_real_items_other_selection_and_empty_queue(self):
   self.goals([1,2,3]);g=self.vm.g;g.update(QB_Panel='panel',WUI_GOLD='',WUI_TEXT='',QB_Layout=lambda:None,REC_Render=lambda:None,QB_RefreshAdds=lambda:None,WUI_TopShown=lambda:True,BlzFrameSetTexture=lambda *_:None,BlzFrameSetText=lambda *_:None)

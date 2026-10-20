@@ -1,5 +1,27 @@
 library GojoSpells initializer InitGojoSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_BLUE = StringHash("blue")
+        private integer SH_BLUE_X = StringHash("blue x")
+        private integer SH_BLUE_Y = StringHash("blue y")
+        private integer SH_EFF_BLUE = StringHash("eff blue")
+        private integer SH_EFF_RED = StringHash("eff red")
+        private integer SH_GOJO_E = StringHash("gojo e")
+        private integer SH_GOJO_RR = StringHash("gojo RR")
+        private integer SH_POVOROT = StringHash("povorot")
+        private integer SH_PURPLE = StringHash("purple")
+        private integer SH_PURPLE_S = StringHash("purple s")
+        private integer SH_RED = StringHash("red")
+        private integer SH_RT = StringHash("rt")
+        private integer SH_RT_END = StringHash("rt end ")
+        private integer SH_RT_X = StringHash("rt x")
+        private integer SH_RT_Y = StringHash("rt y")
+        private integer SH_SKIP_T = StringHash("skip t")
+        private integer SH_TURN_OFF_E = StringHash("turn off e")
+        private integer SH_T_CUR1 = StringHash("t cur1")
+        private integer SH_T_CUR2 = StringHash("t cur2")
+    endglobals
+    globals
         private timer GojoTimer03 = null
         private timer GojoTimer05 = null
         private code GojoTimer03Callback
@@ -21,9 +43,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 //--------------------------------------Gojo--------------------------------------------------------------
         integer Gojo_ID = 'H009'
 //---------------G ability-----------------------------------------------------
-        integer GojoG_ID = 'A01U'
-        real Gojo_G_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_G_ManaRestoreTime seconds
-        real Gojo_G_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
+        integer GojoF_ID = 'A01U'
+        real Gojo_F_ManaRestore = 25 // in % of gojo spell mana cost, it means he will restore % of his manacost for Gojo_F_ManaRestoreTime seconds
+        real Gojo_F_ManaRestoreTime = 10 // in seconds, how long time he will restore mana
 //---------------Q ability-----------------------------------------------------
         integer GojoQ_ID = 'A01J'
         integer GojoQ2_ID = 'A01L'
@@ -63,8 +85,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         integer GojoE2_ID = 'A01O'
         real GojoE_Duration = 3 // how much sec ability works on lvl 1 - 4, on lvl 5 how much sec before mana drain start
         real GojoE_AddDuration = 0.5 // for each next level
-        real GojoE_MaxDuration = 6 // how much sec ability works on lvl 5 how much sec before ability end
-        real GojoE_Lvl5Manacost = 6 // manacost for each sec at 5 lvl after base duration of ability
+        real GojoE_MaxDuration = 2 // free duration on level 5; afterwards sustained by mana
+        real GojoE_Lvl5Manacost = 10 // manacost for each sec at 5 lvl after base duration of ability
         real GojoE_DamageAoe = 335
 //---------------R ability-----------------------------------------------------
         integer GojoR_ID = 'A01P'
@@ -178,7 +200,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoQ
                 set this = m_GojoQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if k2 == 0 then
                         if r == 0.45 then
                             call StopSpellUnit2(c)
@@ -200,14 +222,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
-                                    call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 1)
-                                    call MyFlush(GetHandleId(u), StringHash("blue"), 0, 2.25)
-                                    if LoadInteger(hs, GetHandleId(u), StringHash("red")) > 0 then
-                                        call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 0)
+                                    call SaveInteger(hs, GetHandleId(u), SH_BLUE, 1)
+                                    call MyFlush(GetHandleId(u), SH_BLUE, 0, 2.25)
+                                    if LoadInteger(hs, GetHandleId(u), SH_RED) > 0 then
+                                        call SaveInteger(hs, GetHandleId(u), SH_BLUE, 0)
+                                        call DamageSource('A01J')
                                         call dmgphys(c, u, dmg + (dmg * (GojoQWLvl1_BonusDmg / 100)))
                                         call StunUnit(c, u, GojoQLvl1_QW_StunTime )
                                         call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                     else
+                                        call DamageSource('A01J')
                                         call dmgphys(c, u, dmg)
                                     endif
                                     set r6 = SR2(c, u)
@@ -267,14 +291,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                         if IsUnitInGroup(u, g2) == false then
-                                            call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 1)
-                                            call MyFlush(GetHandleId(u), StringHash("blue"), 0, 2.25)
-                                            if LoadInteger(hs, GetHandleId(u), StringHash("red")) > 0 then
-                                                call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 0)
+                                            call SaveInteger(hs, GetHandleId(u), SH_BLUE, 1)
+                                            call MyFlush(GetHandleId(u), SH_BLUE, 0, 2.25)
+                                            if LoadInteger(hs, GetHandleId(u), SH_RED) > 0 then
+                                                call SaveInteger(hs, GetHandleId(u), SH_BLUE, 0)
+                                                call DamageSource('A01J')
                                                 call dmgphys(c, u, dmg + (dmg * (GojoQWLvl2_BonusDmg / 100)))
                                                 call StunUnit(c, u, GojoQLvl2_QW_StunTime )
                                                 call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                             else
+                                                call DamageSource('A01J')
                                                 call dmgphys(c, u, dmg)
                                             endif
                                             call GroupAddUnit(g2, u)
@@ -311,14 +337,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                         if IsUnitInGroup(u, g2) == false then
-                                            call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 1)
-                                            call MyFlush(GetHandleId(u), StringHash("blue"), 0, 2.25)
-                                            if LoadInteger(hs, GetHandleId(u), StringHash("red")) > 0 then
-                                                call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 0)
+                                            call SaveInteger(hs, GetHandleId(u), SH_BLUE, 1)
+                                            call MyFlush(GetHandleId(u), SH_BLUE, 0, 2.25)
+                                            if LoadInteger(hs, GetHandleId(u), SH_RED) > 0 then
+                                                call SaveInteger(hs, GetHandleId(u), SH_BLUE, 0)
+                                                call DamageSource('A01J')
                                                 call dmgphys(c, u, dmg + (dmg * (GojoQWLvl2_BonusDmg / 100)))
                                                 call StunUnit(c, u, GojoQLvl2_QW_StunTime )
                                                 call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                             else
+                                                call DamageSource('A01J')
                                                 call dmgphys(c, u, dmg)
                                             endif
                                             call GroupAddUnit(g2, u)
@@ -335,8 +363,11 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         endif
                     elseif k2 == 2 then
                         if r3 > 0.09 then
+                            set k = k + 1
                             call DecorRemove(c, x1, y1, aoe , 100)
-                            call VisionTimed(GetOwningPlayer(c), x1, y1, 1050, 2)
+                            if ModuloInteger(k, 2) == 1 then
+                                call VisionTimed(GetOwningPlayer(c), x1, y1, 1050, 2)
+                            endif
                             set r3 = 0
                             if check == 1 and r > 0.56 then
                                 set r7 = GetRandomReal(1.45, 0.95 + r)
@@ -347,7 +378,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             endif
                             set r6 = GetRandomReal( -90, -45)
                             call EUTU4(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b.mdl", GetEffX(e), GetEffY(e), GetRandomReal(0, 359), 1.1, r7, fly, r6), 0.51, 15 + scale, e)
-                            if check == 1 and r > 0.6 then
+                            // Ground ring (1800 faces, scale up to ~3.7) every second pulse.
+                            if check == 1 and r > 0.6 and ModuloInteger(k, 2) == 1 then
                                 call EffectSpawnColor2("war3mapimported\\wos_WTW-Cang-DiMian-Blue-B.mdl", GetEffX(e), GetEffY(e), GetRandomReal(0, 359), 1.5, 1.2 + r, 1, 0.21, 255, 255, 255, 100)
                             endif
                         else
@@ -368,14 +400,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                     if IsUnitInGroup(u, g2) == false then
-                                        call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 1)
-                                        call MyFlush(GetHandleId(u), StringHash("blue"), 0, 3.5)
-                                        if LoadInteger(hs, GetHandleId(u), StringHash("red")) > 0 then
-                                            call SaveInteger(hs, GetHandleId(u), StringHash("blue"), 0)
+                                        call SaveInteger(hs, GetHandleId(u), SH_BLUE, 1)
+                                        call MyFlush(GetHandleId(u), SH_BLUE, 0, 3.5)
+                                        if LoadInteger(hs, GetHandleId(u), SH_RED) > 0 then
+                                            call SaveInteger(hs, GetHandleId(u), SH_BLUE, 0)
+                                            call DamageSource('A01J')
                                             call dmgphys(c, u, dmg + (dmg * (GojoQWLvl2_BonusDmg / 100)))
                                             call StunUnit(c, u, GojoQLvl2_QW_StunTime )
                                             call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                         else
+                                            call DamageSource('A01J')
                                             call dmgphys(c, u, dmg)
                                         endif
                                         call GroupAddUnit(g2, u)
@@ -435,7 +469,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 set k3 = 255
                             endif
                         elseif check == 1 then
-                            if LoadReal(hs, GetHandleId(c), StringHash("blue x")) == 99 then
+                            if LoadReal(hs, GetHandleId(c), SH_BLUE_X) == 99 then
                                 set r = 9999
                             endif
                             if r == 0.9 then
@@ -462,8 +496,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     call ScaleEffDummy(e5, 2, 1.75, 4)
                                     call ScaleEffDummy(e, 3, 1.7, 3.45)
                                     call ScaleEffDummy(e2, 3, 2, 6)
-                                    call SaveReal(hs, GetHandleId(c), StringHash("blue x"), x)
-                                    call SaveReal(hs, GetHandleId(c), StringHash("blue y"), y)
+                                    call SaveReal(hs, GetHandleId(c), SH_BLUE_X, x)
+                                    call SaveReal(hs, GetHandleId(c), SH_BLUE_Y, y)
                                 endif
                                 if r3 > 0.21 then
                                     set r3 = 0
@@ -493,8 +527,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         call DestroyEffect(e3)
                         call DestroyEffect(e4)
                      //   endif
-                        call SaveReal(hs, GetHandleId(c), StringHash("blue x"), 0)
-                        call SaveReal(hs, GetHandleId(c), StringHash("blue y"), 0)
+                        call SaveReal(hs, GetHandleId(c), SH_BLUE_X, 0)
+                        call SaveReal(hs, GetHandleId(c), SH_BLUE_Y, 0)
                         if r < 0.6 then
                             call StopSpellUnit(c)
                         endif
@@ -554,7 +588,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set check = 0
             set k3 = 0
             set aoe = GojoQ_DamageAoe
-            call SaveReal(hs, GetHandleId(c), StringHash("blue x"), 0)
+            call SaveReal(hs, GetHandleId(c), SH_BLUE_X, 0)
             set dmg = GetHeroInt( c , true) * ( GojoQ_DamageIntBase + ( GojoQ_DamageIntStep * ( GetUnitAbilityLevel( c , GojoQ_ID) - 1 ) ) )
             set dmg = dmg + GojoQ_Damage2StaticBase + ( GojoQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , GojoQ_ID) - 1 ) )
             call SetUnitFacing( c , a * bj_RADTODEG)
@@ -592,7 +626,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoQ2
                 set this = m_GojoQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call MoveUnit(c, move, a)
                     if r2 > 0.03 then
                         set r2 = 0
@@ -603,6 +637,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                 if IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A01L')
                                     call dmgatk(c, u, dmg)
                                     call StunUnit(c, u, GojoRQ_Stun)
                                     call GroupAddUnit(g2, u)
@@ -652,8 +687,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set sr = (SR3(c, x, y) / move) * 0.03
             set rmax = sr
             set u = null
-            set x1 = LoadReal(hs, GetHandleId(c), StringHash("rt x"))
-            set y1 = LoadReal(hs, GetHandleId(c), StringHash("rt y"))
+            set x1 = LoadReal(hs, GetHandleId(c), SH_RT_X)
+            set y1 = LoadReal(hs, GetHandleId(c), SH_RT_Y)
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = GojoRQ_DamageAoe
             call SetUnitFacing( c , a * bj_RADTODEG)
@@ -709,7 +744,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoW
                 set this = m_GojoW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if k2 == 0 then
                         if r == 0.45 then
                             call StopSpellUnit2(c)
@@ -731,14 +766,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
-                                    call SaveInteger(hs, GetHandleId(u), StringHash("red"), 1)
-                                    call MyFlush(GetHandleId(u), StringHash("red"), 0, 2.25)
-                                    if LoadInteger(hs, GetHandleId(u), StringHash("blue")) > 0 then
-                                        call SaveInteger(hs, GetHandleId(u), StringHash("red"), 0)
+                                    call SaveInteger(hs, GetHandleId(u), SH_RED, 1)
+                                    call MyFlush(GetHandleId(u), SH_RED, 0, 2.25)
+                                    if LoadInteger(hs, GetHandleId(u), SH_BLUE) > 0 then
+                                        call SaveInteger(hs, GetHandleId(u), SH_RED, 0)
+                                        call DamageSource('A01K')
                                         call dmgmag(c, u, dmg + (dmg * (GojoQWLvl1_BonusDmg / 100)))
                                         call StunUnit(c, u, GojoQLvl1_QW_StunTime )
                                         call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                     else
+                                        call DamageSource('A01K')
                                         call dmgmag(c, u, dmg)
                                     endif
                                     call MUE(u, GojoW_PushRange , GojoW_PushDuration , a)
@@ -784,14 +821,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                         if IsUnitInGroup(u, g2) == false then
-                                            call SaveInteger(hs, GetHandleId(u), StringHash("red"), 1)
-                                            call MyFlush(GetHandleId(u), StringHash("red"), 0, 2.25)
-                                            if LoadInteger(hs, GetHandleId(u), StringHash("blue")) > 0 then
-                                                call SaveInteger(hs, GetHandleId(u), StringHash("red"), 0)
+                                            call SaveInteger(hs, GetHandleId(u), SH_RED, 1)
+                                            call MyFlush(GetHandleId(u), SH_RED, 0, 2.25)
+                                            if LoadInteger(hs, GetHandleId(u), SH_BLUE) > 0 then
+                                                call SaveInteger(hs, GetHandleId(u), SH_RED, 0)
+                                                call DamageSource('A01K')
                                                 call dmgmag(c, u, dmg + (dmg * (GojoQWLvl2_BonusDmg / 100)))
                                                 call StunUnit(c, u, GojoQLvl2_QW_StunTime )
                                                 call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                             else
+                                                call DamageSource('A01K')
                                                 call dmgmag(c, u, dmg)
                                             endif
                                             call GroupAddUnit(g2, u)
@@ -827,14 +866,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                         if IsUnitInGroup(u, g2) == false then
-                                            call SaveInteger(hs, GetHandleId(u), StringHash("red"), 1)
-                                            call MyFlush(GetHandleId(u), StringHash("red"), 0, 2.25)
-                                            if LoadInteger(hs, GetHandleId(u), StringHash("blue")) > 0 then
-                                                call SaveInteger(hs, GetHandleId(u), StringHash("red"), 0)
+                                            call SaveInteger(hs, GetHandleId(u), SH_RED, 1)
+                                            call MyFlush(GetHandleId(u), SH_RED, 0, 2.25)
+                                            if LoadInteger(hs, GetHandleId(u), SH_BLUE) > 0 then
+                                                call SaveInteger(hs, GetHandleId(u), SH_RED, 0)
+                                                call DamageSource('A01K')
                                                 call dmgmag(c, u, dmg + (dmg * (GojoQWLvl2_BonusDmg / 100)))
                                                 call StunUnit(c, u, GojoQLvl2_QW_StunTime )
                                                 call EUTU2_3(EffectSpawn("war3mapImported\\wos_purple wave explosion.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG , 1.5, 0.65, 1), 1.25, 5, u)
                                             else
+                                                call DamageSource('A01K')
                                                 call dmgmag(c, u, dmg)
                                             endif
                                             call MUE(u, GojoW_PushRange , 0.3 , a)
@@ -869,10 +910,10 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             set x = GetEffX(e)
                             set y = GetEffY(e)
                             set r5 = r5 + move
-                            set x2 = LoadReal(hs, GetHandleId(c), StringHash("blue x"))
-                            set y2 = LoadReal(hs, GetHandleId(c), StringHash("blue y"))
+                            set x2 = LoadReal(hs, GetHandleId(c), SH_BLUE_X)
+                            set y2 = LoadReal(hs, GetHandleId(c), SH_BLUE_Y)
                             if x2 != 0 and SR5(e, x2, y2) < 250 then
-                                call SaveReal(hs, GetHandleId(c), StringHash("blue x"), 99)
+                                call SaveReal(hs, GetHandleId(c), SH_BLUE_X, 99)
                                 call BlzSetSpecialEffectPosition(e, x2, y2, 90)
                                 call MakeSound("war3mapimported\\Hero_Gojo_QW")
                                 call DestroyEffect(EffectSpawn("war3mapimported\\WOS_OPM (513)purple.mdx", x2, y2, GetRandomReal(0, 359), 1, 1.1, 1))
@@ -895,6 +936,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                        call DamageSource('A01K')
                                         call dmgmag(c, u, (dmg * (GojoQWLvl3_BonusDmg / 100)))
                                         call MUE(u, GojoW_PushRange , 0.35 , a)
                                         call StunUnit(c, u, GojoQLvl3_QW_StunTime )
@@ -912,20 +954,29 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             call MoveEff2(e3, move, a)
                             if r3 > 0.06 then
                                 set r3 = 0
+                                set check = check + 1
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, GetRandomReal(0, 359), 3, 3.15, 1))
-                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_0780red.mdl", x, y, a * bj_RADTODEG , 0.75, 4, 1))
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_bjt_baozha_WRed.mdl", x, y, a * bj_RADTODEG + 180, 1, 1, 1))
-                                call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, GetRandomReal(0, 359), 0.5, 5.35, 1))
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1.15, 1.5, 1))
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_Satsu-RSFX-10.mdl", x, y, GetRandomReal(0, 359), 1, 9, 175))
                                 call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y , GetRandomReal(0, 359), 1.25, 3.15, 125, 0))
+                                // Long-lived heavy layers every second pulse: dange_yueyun plays a 5 s death
+                                // (~145 particles, width 600), 0780red 3 s, 1hongse ~590 particles.
+                                if ModuloInteger(check, 2) == 1 then
+                                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_0780red.mdl", x, y, a * bj_RADTODEG , 0.75, 4, 1))
+                                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, GetRandomReal(0, 359), 0.5, 5.35, 1))
+                                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1.15, 1.5, 1))
+                                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_Satsu-RSFX-10.mdl", x, y, GetRandomReal(0, 359), 1, 9, 175))
+                                endif
                             else
                                 set r3 = r3 + 0.03
                             endif
                             if r2 > 0.03 then
                                 set r2 = 0
-                                call DecorRemove(c, x, y, aoe * 1.2, 100)
-                                call VisionTimed(GetOwningPlayer(c), x, y, 1050, 2)
+                                // Decor/vision every second check: 250 travel < 650 radius, no gaps.
+                                set k3 = k3 + 1
+                                if ModuloInteger(k3, 2) == 1 then
+                                    call DecorRemove(c, x, y, aoe * 1.2, 100)
+                                    call VisionTimed(GetOwningPlayer(c), x, y, 1050, 2)
+                                endif
                                 call GroupClear( g )
                                 call GroupEnumUnitsInRange( g , x , y , aoe , NoDecor_Cond)
                                 loop
@@ -933,6 +984,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                         if IsUnitInGroup(u, g2) == false then
+                                            call DamageSource('A01K')
                                             call dmgmag(c, u, dmg)
                                             call GroupAddUnit(g2, u)
                                         endif
@@ -951,7 +1003,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if k2 == 0 and r < 0.45 then
                         call StopSpellUnit2(c)
                     elseif k2 == 2 then
-                        call SaveReal(hs, GetHandleId(c), StringHash("blue x"), 0)
+                        call SaveReal(hs, GetHandleId(c), SH_BLUE_X, 0)
                         if r <= 1.59 then
                             call StopSpellUnit(c)
                         endif
@@ -1047,7 +1099,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoW2
                 set this = m_GojoW2[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == 0.03 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, 1.8, 0))
                         call SetUnitPosition(c, x - 150 * Cos(a), y - 150 * Sin(a))
@@ -1058,6 +1110,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if r == 1.2 then
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
+                        call DamageSource('A01M')
                         call dmgphys(c, td, dmg)
                         call MakeSound("war3mapimported\\Hero_Gojo_RW3")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1, 3.25, 200))
@@ -1140,19 +1193,15 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoE
                 set this = m_GojoE[i]
                 if GetUnitAbilityLevel(c, GojoE_ID) >= 5 then
-                    set b = SpellBoolCaster(c) and (r <= rmax or GetUnitState(c, UNIT_STATE_MANA) > 0) and LoadInteger(hs, GetHandleId(c), StringHash("turn off e")) == 0 and r < r7
+                    set b = SpellBoolCaster(c) and GetUnitState(c, UNIT_STATE_MANA) >= 100.00 and LoadInteger(hs, GetHandleId(c), SH_TURN_OFF_E) == 0
                 else
                     set b = SpellBoolCaster(c) and r <= rmax
                 endif
                 if b then
-                    set r = RoundReal(r + 0.03, 3)
-                    if r > rmax then
-                        if r3 > 0.21 then
-                            set r3 = 0
-                            call SetMpCurrent(c, -((GetUnitState(c, UNIT_STATE_MAX_MANA) * (GojoE_Lvl5Manacost / 100)) / 4))
-                        else
-                            set r3 = r3 + 0.03
-                        endif
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    if GetUnitAbilityLevel(c, GojoE_ID) >= 5 and r > rmax then
+                        // Integrate only the paid part of this .03 tick (including the boundary tick).
+                        call SetUnitState(c, UNIT_STATE_MANA, RMaxBJ(0.00, GetUnitState(c, UNIT_STATE_MANA) - GetUnitState(c, UNIT_STATE_MAX_MANA) * (GojoE_Lvl5Manacost / 100.00) * RMinBJ(0.03, r - rmax)))
                     endif
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
@@ -1170,7 +1219,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
-                                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IntegerCd(u, "move cd", 0.15) then
+                                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IntegerCdKey(u, SH_ICD_MOVE_CD, 0.15) then
                                     call MUE(u, 85, 0.15, GAngle2(c, GetUnitX(u), GetUnitY(u)))
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -1180,22 +1229,20 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         endif
                     endif
                     if GetUnitAbilityLevel(c, GojoE_ID) >= 5 then
-                        call BlzFrameSetValue(frame_pas3[k2], r7 - (r + 0.1))
-                        if r7 - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(r7 - r, 0, 2) + "|r")
+                        if r < rmax then
+                            call WUI_HeroProgress(c, GojoE_ID, "Eternity: free time", rmax - r, rmax, true)
+                        else
+                            call WUI_HeroProgressText(c, GojoE_ID, "Eternity: mana", GetUnitState(c, UNIT_STATE_MANA), RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)), false, R2SW(100.00 * GetUnitState(c, UNIT_STATE_MANA) / RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)), 0, 1) + "% MP")
                         endif
                     else
-                        call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, GojoE_ID, "Eternity Time Left", rmax - r, rmax, true)
                         endif
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, GojoE_ID, "Eternity Time Left", 0.00, 0.00, true)
                     call OkarunEggCd(c, GojoE_ID, BlzGetUnitAbilityCooldown(c, GojoE_ID, GetUnitAbilityLevel(c, GojoE_ID) - 1))
-                    call SaveInteger(hs, GetHandleId(c), StringHash("gojo e"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_GOJO_E, 0)
                     call DestroyGroup(g)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.12)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoE2_ID, false)
@@ -1203,7 +1250,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if check == 1 then
                         call BlzStartUnitAbilityCooldown(c, GojoQ_ID, BlzGetUnitAbilityCooldownRemaining(c, GojoQ2_ID))
                         call UnitRemoveAbility(c, GojoQ2_ID)
-                        if LoadInteger(hs, GetHandleId(c), StringHash("rt")) == 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_RT) == 0 then
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ_ID, true)
                         endif
                     elseif check == 2 then
@@ -1212,14 +1259,14 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if k3 == 1 then
                         call BlzStartUnitAbilityCooldown(c, GojoW_ID, BlzGetUnitAbilityCooldownRemaining(c, GojoW2_ID))
                         call UnitRemoveAbility(c, GojoW2_ID)
-                        if LoadInteger(hs, GetHandleId(c), StringHash("rt")) == 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_RT) == 0 then
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoW_ID, true)
                         endif
                     elseif k3 == 2 then
                         call SetUnitAbilityLevel(c, GojoW_ID, GetUnitAbilityLevel(c, GojoW_ID) - 1)
                     endif
                     call UnitRemoveAbility(c, GojoE2_ID)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("turn off e"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TURN_OFF_E, 0)
                     if GetUnitAbilityLevel(c, GojoE_ID) >= 3 then
                         // Effect is owned by ColorEffDummy3 below.
                         call BlzPlaySpecialEffect(e2,ANIM_TYPE_DEATH)
@@ -1262,7 +1309,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 set e2 = EffectSpawn("war3mapimported\\wos_obr08 (479).mdl", x, y, GetRandomReal(0, 359), 0.5, 1.55, 1)
             endif
             if GetUnitAbilityLevel(c, GojoE_ID) >= 5 then
-                set rmax = GojoE_Duration
+                set rmax = GojoE_MaxDuration
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoE2_ID, true)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoE_ID, false)
                 call UnitAddAbility(c, GojoE2_ID)
@@ -1273,7 +1320,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             if GetUnitAbilityLevel(c, GojoQ2_ID) == 0 and GetUnitAbilityLevel(c, GojoQ_ID) >= 5 then
                 call UnitAddAbility(c, GojoQ2_ID)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ_ID, false)
-                if LoadInteger(hs, GetHandleId(c), StringHash("rt")) == 0 then
+                if LoadInteger(hs, GetHandleId(c), SH_RT) == 0 then
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ2_ID, true)
                 else
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ2_ID, false)
@@ -1287,7 +1334,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             if GetUnitAbilityLevel(c, GojoW2_ID) == 0 and GetUnitAbilityLevel(c, GojoW_ID) >= 5 then
                 call UnitAddAbility(c, GojoW2_ID)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoW_ID, false)
-                if LoadInteger(hs, GetHandleId(c), StringHash("rt")) == 0 then
+                if LoadInteger(hs, GetHandleId(c), SH_RT) == 0 then
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoW2_ID, true)
                 else
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoW2_ID, false)
@@ -1301,55 +1348,13 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set e = EffectSpawn("war3mapimported\\wos_GojoEye1.mdl", x, y, GetRandomReal(0, 359), 1.25, 1.35, 1)
             call SetUnitTimeScale(c, 1)
             call SetUnitAnimationByIndex(c, 4)
-            call SaveInteger(hs, GetHandleId(c), StringHash("gojo e"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_GOJO_E, 1)
             if GetUnitAbilityLevel(c, GojoE_ID) == 5 then
                 call MakeSound("war3mapImported\\Hero_Gojo_E3")
             elseif GetUnitAbilityLevel(c, GojoE_ID) >= 3 then
                 call MakeSound("war3mapImported\\Hero_Gojo_E2")
             else
                 call MakeSound("war3mapImported\\Hero_Gojo_E1")
-            endif
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                if GetUnitAbilityLevel(c, GojoE_ID) >= 5 then
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r7)
-                    call BlzFrameSetValue(frame_pas3[k2], r7)
-                else
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                    call BlzFrameSetValue(frame_pas3[k2], rmax)
-                endif
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Gojo_E", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Eternity Time Left:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
             endif
             if MUI_GojoE == 0 then
                 call GojoTimer03Acquire()
@@ -1395,11 +1400,11 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             loop
                 exitwhen i > MUI_GojoR2
                 set this = m_GojoR2[i]
-                if r < rmax and LoadInteger(hs, GetHandleId(c), StringHash("rt")) == 1 and k3 < k2 then
+                if r < rmax and LoadInteger(hs, GetHandleId(c), SH_RT) == 1 and k3 < k2 then
                     if r == 0.3 then
                         call MakeSound("war3mapImported\\Hero_Gojo_R4")
                     endif
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r2 > 1.2 then
                         if k3 == 0 then
                             call DecorRemove(c, x, y, aoe * 1.25, 50)
@@ -1451,8 +1456,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set MUI_GojoR2 = MUI_GojoR2 + 1
             set m_GojoR2[MUI_GojoR2] = this
             set c = NewC
-            set x = LoadReal(hs, GetHandleId(c), StringHash("rt x"))
-            set y = LoadReal(hs, GetHandleId(c), StringHash("rt y"))
+            set x = LoadReal(hs, GetHandleId(c), SH_RT_X)
+            set y = LoadReal(hs, GetHandleId(c), SH_RT_Y)
             set r = 0
             set g = CreateGroup()
             set u = null
@@ -1463,7 +1468,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set k2 = GojoRR_Count + (GojoRR_CountAdd * (GetUnitAbilityLevel(c, GojoR_ID) - 1))
             set k3 = 0
             if GetHeroLevel(c) >= 35 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("gojo RR"), 1)
+                call SaveInteger(hs, GetHandleId(c), SH_GOJO_RR, 1)
             endif
             set e = EffectSpawnColor("war3mapimported\\wos_evolt-8.mdl", x, y, GetRandomReal(0, 359), 1.25, 0.01, 375, 255, 255, 255, 180)
             call ScaleEffDummy(e, 0.35, 0.01, 2.5)
@@ -1480,8 +1485,11 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             loop
                 exitwhen i > MUI_GojoR
                 set this = m_GojoR[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("rt end ")) == 0 then
-                    set r = RoundReal(r + 0.05, 2)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_RT_END) == 0 then
+                    set r = I2R(R2I((r + 0.05) * 100.0 + 0.5)) / 100.0
+                    if r >= 1.75 then
+                        call WUI_HeroProgress(c, GojoR_ID, "Unlimited Void", rmax - r, rmax - 1.75, true)
+                    endif
                     if r == 0.8 then
                         set e = EffectSpawn("war3mapImported\\wos_RT_Cast3.mdl", x, y, 0, 0.3, 0.5, 15)
                         call ScaleEffDummy(e, 0.75, 0.5, 3.25 * scale)
@@ -1516,6 +1524,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 call StunUnit(c, u, GojoR_StunTime)
+                                call DamageSource('A01P')
                                 call dmgmag(c, u, dmg2)
                                 if SR3(u, x, y) > 400 then
                                     call MUE(u, 400, 0.35, GAngle2(u, x, y))
@@ -1547,7 +1556,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         else
                             set r2 = r2 + 0.03
                         endif
-                        if LoadInteger(hs, GetHandleId(c), StringHash("gojo RR")) == 1 and r7 > 1.3 then
+                        if LoadInteger(hs, GetHandleId(c), SH_GOJO_RR) == 1 and r7 > 1.3 then
                             set r7 = 1.2
                         endif
                         if r3 > r7 then
@@ -1558,6 +1567,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A01P')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -1633,11 +1643,14 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     endif
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoR_ID, true)
                     
-                    call SaveInteger(hs, GetHandleId(c), StringHash("rt end "), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("rt"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("gojo RR"), 0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("rt x"), 0)
-                    call SaveReal(hs, GetHandleId(c), StringHash("rt y"), 0)
+                    if r >= 1.75 then
+                        call WUI_HeroProgress(c, GojoR_ID, "Unlimited Void", 0.00, 0.00, true)
+                    endif
+                    call SaveInteger(hs, GetHandleId(c), SH_RT_END, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_RT, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_GOJO_RR, 0)
+                    call SaveReal(hs, GetHandleId(c), SH_RT_X, 0)
+                    call SaveReal(hs, GetHandleId(c), SH_RT_Y, 0)
                     call MakeSound("war3mapImported\\Hero_Gojo_R7")
                     call DestroyGroup(g)
                     set g = null
@@ -1684,8 +1697,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             if GetHeroLevel(c) >= 35 then
                 set aoe = aoe + GojoR_35lvl_AddAoe
             endif
-            call SaveReal(hs, GetHandleId(c), StringHash("rt x"), x)
-            call SaveReal(hs, GetHandleId(c), StringHash("rt y"), y)
+            call SaveReal(hs, GetHandleId(c), SH_RT_X, x)
+            call SaveReal(hs, GetHandleId(c), SH_RT_Y, y)
             set dmg2 = GetHeroInt( c , true) * (GojoR_DamageIntFirst * GetUnitAbilityLevel( c , GojoR_ID))
             set dmg = GetHeroInt( c , true) * ( GojoR_DamageIntBase + ( GojoR_DamageIntStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) ) )
             set rmax = 1.75 + GojoR_DurationBase + ( GojoR_DurationStep * ( GetUnitAbilityLevel( c , GojoR_ID) - 1 ) )
@@ -1694,9 +1707,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 call PosUnit(c, x - (aoe - 350) * Cos(a), y - (aoe - 350) * Sin(a))
                 call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_blackblink.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2, 1.35, 0, 0, 0, 0, 255))
             endif
-            call SaveInteger(hs, GetHandleId(c), StringHash("rt"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("gojo RR"), 0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("rt end "), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_RT, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_GOJO_RR, 0)
+            call SaveInteger(hs, GetHandleId(c), SH_RT_END, 0)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoQ2_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoW_ID, false)
@@ -1775,7 +1788,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                 exitwhen i > MUI_GojoT
                 set this = m_GojoT[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 4.89 then
                         call DebugUnit(c)
                     endif
@@ -1807,8 +1820,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         if r4 > 0.12 then
                             set r4 = 0
                             set k = 0
+                            // One bolt per pulse: each bolt plays a 2 s death, two kept ~45 alive.
                             loop
-                                exitwhen k == 2
+                                exitwhen k == 1
                                 set kr2 = GetRandomReal(450, 950)
                                 set kr3 = GetRandomReal(0, 359)
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_wtw-whitethunder-zi.mdl", GetUnitX(c) + kr2 * Cos(kr3), GetUnitY(c) + kr2 * Sin(kr3), GetRandomReal(0, 359), 1, 2, 1))
@@ -1866,8 +1880,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         call MyRemoveEff(e2, 0.5)
                         set e = null
                         set e2 = null
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff blue"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff red"))
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_BLUE)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_RED)
                         call MakeSound("war3mapImported\\Hero_Gojo_T5")
                         call MakeSound("war3mapImported\\Hero_Gojo_T4")
                         set e3 = EffectSpawn("war3mapimported\\wos_rasenganbiru_purp4.mdl", GetUnitX(c) + 550 * Cos(a), GetUnitY(c) + 550 * Sin(a), a * bj_RADTODEG, 1, 0.35, 225)
@@ -1879,8 +1893,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
                         call MouseOn(GetOwningPlayer(c))
                         
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("povorot"), 1)
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("purple"), 1)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_POVOROT, 1)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_PURPLE, 1)
                         set e5 = EffectSpawn("war3mapImported\\wos_T_Button.mdx", GetUnitX(c) - 100 * Cos(a + 25 * bj_DEGTORAD), GetUnitY(c) - 100 * Sin(a + 25 * bj_DEGTORAD), 270, 1.5, 1.75, 650)
                         call BlzSetSpecialEffectAlpha(e5, 0)
                         set r6 = GojoT_PushRange
@@ -1895,14 +1909,14 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         set a = GAngle2(c, x, y)
                         call SetUnitFacing(c, a * bj_RADTODEG)
                         call BlzSetSpecialEffectPosition(e5, GetUnitX(c) - 100 * Cos(a + 25 * bj_DEGTORAD), GetUnitY(c) - 100 * Sin(a + 25 * bj_DEGTORAD), 650)
-                        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("skip t")) == 1 then
+                        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_SKIP_T) == 1 then
                             set r = 4.89
                             call BlzPlaySpecialEffect(e5, ANIM_TYPE_BIRTH)
                             call MyRemoveEff(e5, 0.35)
                             call ColorEffDummy3(e5, 0.35, 255, 255, 255, 0.36)
                             set e5 = null
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("purple"), 0)
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("skip t"), 0)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_PURPLE, 0)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_SKIP_T, 0)
                         endif
                         call SetUnitPosition(c, x2, y2)
                         call BlzSetSpecialEffectPosition(e3, GetUnitX(c) + 580 * Cos(a), GetUnitY(c) + 580 * Sin(a), 225)
@@ -1925,8 +1939,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         set r2 = 10
                         call StopSpellUnit(c)
                         call MakeSound("war3mapImported\\Hero_Gojo_T6")
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("purple"), 0)
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("povorot"), 0)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_PURPLE, 0)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_POVOROT, 0)
                     endif
                     if r == 5.19 then
                         call MakeSound("war3mapImported\\Hero_Gojo_T7")
@@ -1939,7 +1953,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             set r3 = 0
                             set k = 0
                             loop
-                                exitwhen k == 2
+                                exitwhen k == 1
                                 set kr2 = GetRandomReal(350, 550)
                                 set kr3 = GetRandomReal(0, 359)
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_wtw-whitethunder-zi.mdl", GetEffX(e3) + kr2 * Cos(kr3), GetEffY(e3) + kr2 * Sin(kr3), GetRandomReal(0, 359), 1, 2, 1))
@@ -1949,7 +1963,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         else
                             set r3 = r3 + 0.03
                         endif
-                        if r2 > 0.12 then
+                        // opdef (100)11: 16 emitters (~370 alpha-blended particles, width up to 1000).
+                        if r2 > 0.27 then
                             set r2 = 0
                             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_opdef (100)11.mdl", GetEffX(e3), GetEffY(e3), GetRandomReal(0, 359), 1, 0.3, 0), 0.35, 255, 255, 255, 0.75)
                         else
@@ -1973,6 +1988,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A01T')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                  //   call StunUnit(c,u,10)
@@ -1994,15 +2010,15 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if r > 1.86 then
                         call ColorEffDummy3(e3, 0, 255, 255, 255, 0.35)
                     else
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff blue"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff red"))
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_BLUE)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_RED)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("purple s"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_PURPLE_S, 0)
                     call MouseOff(GetOwningPlayer(c))
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("purple"), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("skip t"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_PURPLE, 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_SKIP_T, 0)
                     if r < 4.89 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("povorot"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_POVOROT, 0)
                         call DestroyEffect(e7)
                         call DestroyEffect(e4)
                         call StopSpellUnit(c)
@@ -2049,21 +2065,21 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set e4 = null
             set e5 = null
             set e6 = null
-            call SaveInteger(hs, GetHandleId(c), StringHash("t cur1"), 0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("t cur2"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_T_CUR1, 0)
+            call SaveInteger(hs, GetHandleId(c), SH_T_CUR2, 0)
             set a = GAngle2(c, x, y) // Angle Between points
             set aoe = GojoT_DamageAoe
-            call SaveInteger(hs, GetHandleId(c), StringHash("purple"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_PURPLE, 0)
             set dmg = GetHeroInt( c , true) * GojoT_DamageIntBase
             set rmax = 8.5
             call SetUnitFacingTimed(c, a * bj_RADTODEG, 0)
             call StartSpellUnit(c)
             call SetUnitAnimationByIndex(c, 25)
             call MakeSound("war3mapImported\\Hero_Gojo_T8")
-            set e7 = EffectSpawn("war3mapimported\\Gear_opdef (429).mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1, 0)
-            set e = LoadEffectHandle(hs, GetHandleId(c), StringHash("eff blue"))
-            set e2 = LoadEffectHandle(hs, GetHandleId(c), StringHash("eff red"))
-            call SaveInteger(hs, GetHandleId(c), StringHash("purple s"), 1)
+            set e7 = EffectSpawn("war3mapImported\\wos_Opdef (429).mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1, 0)
+            set e = LoadEffectHandle(hs, GetHandleId(c), SH_EFF_BLUE)
+            set e2 = LoadEffectHandle(hs, GetHandleId(c), SH_EFF_RED)
+            call SaveInteger(hs, GetHandleId(c), SH_PURPLE_S, 1)
             call BlzSetSpecialEffectPosition(e, (GetUnitX(c) - 300 * Cos(a)) + 300 * Cos(a - 90 * bj_DEGTORAD), (GetUnitY(c) - 300 * Sin(a)) + 300 * Sin(a - 90 * bj_DEGTORAD), BlzGetLocalUnitZ(c) + 255)
             call BlzSetSpecialEffectPosition(e2, (GetUnitX(c) - 300 * Cos(a)) + 300 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) - 300 * Sin(a)) + 300 * Sin(a + 90 * bj_DEGTORAD), BlzGetLocalUnitZ(c) + 255)
             if MUI_GojoT == 0 then
@@ -2079,7 +2095,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             loop
                 exitwhen i > MUI_GojoT2
                 set this = m_GojoT2[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("purple s")) == 0 then
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_PURPLE_S) == 0 then
                     set a = GetUnitFacing(c) * bj_DEGTORAD
                     call BlzSetSpecialEffectPosition(e7, GetUnitX(c), GetUnitY(c), BlzGetLocalUnitZ(c) + 3)
                     if check2 == 2 then
@@ -2088,23 +2104,23 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                     if k3 == 2 then
                         call BlzSetSpecialEffectPosition(e2, (GetUnitX(c) - 300 * Cos(a)) + kr1 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) - 300 * Sin(a)) + kr1 * Sin(a + 90 * bj_DEGTORAD), BlzGetLocalUnitZ(c) + 255)
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("t cur1")) == 1 and check2 < 2 then
+                    if LoadInteger(hs, GetHandleId(c), SH_T_CUR1) == 1 and check2 < 2 then
                         call DebugUnit2(c)
                         if check2 == 0 then
                             set check2 = 1
                             set r5 = 0
                         endif
                         set krr = 1
-                        set r5 = RoundReal(r5 + 0.03, 3)
+                        set r5 = I2R(R2I((r5 + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r5 == 1.59 then
                             call EffectSpawn2("war3mapImported\\wos_FSAeff (85)_002.mdl", (GetUnitX(c) - 350 * Cos(a)) + kr1 * Cos(a - 90 * bj_DEGTORAD), (GetUnitY(c) - 350 * Sin(a)) + kr1 * Sin(a - 90 * bj_DEGTORAD), 1.5, 1, 1, 255, 0.5)
                             set e = EffectSpawn("war3mapImported\\wos_wtw-1r2-cang11.mdl", (GetUnitX(c) - 350 * Cos(a)) + kr1 * Cos(a - 90 * bj_DEGTORAD), (GetUnitY(c) - 350 * Sin(a)) + kr1 * Sin(a - 90 * bj_DEGTORAD), 0.5, 1, 0.8, 255)
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("eff blue"), e)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_EFF_BLUE, e)
                             set check2 = 2
                             call StopSpellUnit2(c)
                         endif
                     endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("t cur2")) == 1 and k3 < 2 then
+                    if LoadInteger(hs, GetHandleId(c), SH_T_CUR2) == 1 and k3 < 2 then
                         call DebugUnit2(c)
                         set krr = 1
                         if k3 == 0 then
@@ -2113,7 +2129,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             call MakeSound("war3mapImported\\Hero_Gojo_T2")
                             set r5 = 0
                         endif
-                        set r5 = RoundReal(r5 + 0.03, 3)
+                        set r5 = I2R(R2I((r5 + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r5 == 1.41 then
                             call EffectSpawn2("war3mapImported\\wos_FSAeff (85)_001.mdl", (GetUnitX(c) - 350 * Cos(a)) + kr1 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) - 350 * Sin(a)) + kr1 * Sin(a + 90 * bj_DEGTORAD), 1.5, 1, 1, 255, 0.5)
                         endif
@@ -2123,38 +2139,35 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoT2_ID, false)
                             call UnitAddAbility(c, GojoT_ID)
                             set e2 = EffectSpawn("war3mapImported\\wos_WTW-1R2-He11.mdl", (GetUnitX(c) - 350 * Cos(a)) + kr1 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) - 350 * Sin(a)) + kr1 * Sin(a + 90 * bj_DEGTORAD), 0.5, 1, 0.8, 255)
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("eff red"), e2)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_EFF_RED, e2)
                             call StopSpellUnit2(c)
                         endif
                     endif
                     if krr == 0 and IsUnitPaused(c) == false then
-                        set r = RoundReal(r + 0.03, 3)
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, GojoT_ID, "Purple prepare", rmax - r, rmax, true)
                         endif
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
-                    if LoadInteger(hs, GetHandleId(c), StringHash("purple s")) == 0 then
+                        call WUI_HeroProgress(c, GojoT_ID, "Purple prepare", 0.00, 0.00, true)
+                    if LoadInteger(hs, GetHandleId(c), SH_PURPLE_S) == 0 then
                         if e != null then
                             call ColorEffDummy3(e, 0, 255, 255, 255, 0.35)
                         endif
                         if e2 != null then
                             call ColorEffDummy3(e2, 0, 255, 255, 255, 0.35)
                         endif
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff blue"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("eff red"))
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_BLUE)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_EFF_RED)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("purple s"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_PURPLE_S, 0)
                     call StopSpellUnit2(c)
                     call OkarunEggCd(c, GojoT2_ID, BlzGetUnitAbilityCooldown(c, GojoT_ID, 0))
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoT2_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), GojoT_ID, false)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("t cur1"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("t cur2"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_T_CUR1, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_T_CUR2, 0)
                     call DestroyEffect(e7)
                     set c = null
                     set e = null
@@ -2188,47 +2201,10 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set check2 = 0
             set k3 = 0
-            if frame2_pas1[k2] == null then
-                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.2175)
-                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                endif
-                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.2125)
-                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
-                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.2175)
-                call BlzFrameSetSize(frame2_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Gojo_T2", 0, false)
-                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Purple prepare:" + "|r")
-                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.2075)
-                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
-                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
-            endif
             call StartSpellUnit2(c)
             call SetUnitAnimationByIndex(c, 25)
-            set e7 = EffectSpawn("war3mapimported\\Gear_opdef (429).mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1, 0)
-            call MyRemoveEff(e7, rmax)
+            // Loop end destroys e7; a timed MyRemoveEff here would destroy the recycled handle later.
+            set e7 = EffectSpawn("war3mapImported\\wos_Opdef (429).mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1, 0)
             if MUI_GojoT2 == 0 then
                 call GojoTimer03Acquire()
             endif
@@ -2256,6 +2232,10 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         set GojoTimer05 = CreateTimer()
         set GojoTimer03Callback = function GojoTimer03Loop
         set GojoTimer05Callback = function GojoTimer05Loop
+        // Checkpoint 27: the Six Eyes passive (former G) sits on the F button
+        // (1:1). Button X is not an editable field in object-data JSON.
+        call BlzSetAbilityPosX(GojoF_ID, 1)
+        call BlzSetAbilityPosY(GojoF_ID, 1)
     endfunction
 
     //----------------------------Gojo-----------------------------------------------
@@ -2274,9 +2254,9 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
     25 - t start
      */ 
     function GojoPas_Start takes unit c, integer id returns nothing
-        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_G_ManaRestore / 100)
+        local real mana = BlzGetUnitAbilityManaCost(c, id, GetUnitAbilityLevel(c, id) - 1) * (Gojo_F_ManaRestore / 100)
         if GetHeroLevel(c) >= 12 then
-            call MPS(c, mana, Gojo_G_ManaRestoreTime)
+            call MPS(c, mana, Gojo_F_ManaRestoreTime)
         endif
     endfunction
     function GojoQ_Start takes unit c, real x, real y returns nothing
@@ -2300,14 +2280,14 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         call GojoPas_Start(c, GojoE_ID)
     endfunction
     function GojoE2_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("turn off e"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_TURN_OFF_E, 1)
     endfunction
     function GojoR_Start takes unit c, real x, real y returns nothing
         call GojoSpells_R.GojoR_Start( c, x, y )
         call GojoPas_Start(c, GojoR_ID)
     endfunction
     function GojoR2_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("rt end "), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_RT_END, 1)
     endfunction
     function GojoRQ_Start takes unit c, real x, real y returns nothing
         call GojoSpells_Q.GojoQ2_Start( c, x, y )
@@ -2326,16 +2306,16 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         call GojoPas_Start(c, GojoT_ID)
     endfunction
     function GojoT2_Start takes unit c returns nothing
-        local integer id = LoadInteger(hs, GetHandleId(c), StringHash("t cur1"))
-        local integer id2 = LoadInteger(hs, GetHandleId(c), StringHash("t cur2"))
+        local integer id = LoadInteger(hs, GetHandleId(c), SH_T_CUR1)
+        local integer id2 = LoadInteger(hs, GetHandleId(c), SH_T_CUR2)
         call GojoPas_Start(c, GojoT2_ID)
         if id == 0 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("t cur1"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_T_CUR1, 1)
             call GojoSpells_T.GojoT2_Start(c)
             call MakeSound("war3mapImported\\Hero_Gojo_T8")
             call MakeSound("war3mapImported\\Hero_Gojo_T1")
         elseif id2 == 0 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("t cur2"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_T_CUR2, 1)
         endif
     endfunction
 endlibrary

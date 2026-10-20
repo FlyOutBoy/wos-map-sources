@@ -1,4 +1,23 @@
 globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_LvlUpCheck_CAST_ALLOW = StringHash("cast allow")
+        integer SH_LvlUpCheck_E_ARMOR_ACTIVE = StringHash("e armor active")
+        integer SH_LvlUpCheck_LVL5 = StringHash("lvl5")
+        integer SH_LvlUpCheck_PAS_START = StringHash("pas start")
+        integer SH_LvlUpCheck_PAS_START1 = StringHash("pas start1")
+        integer SH_LvlUpCheck_PAS_START2 = StringHash("pas start2")
+        integer SH_LvlUpCheck_PAS_START3 = StringHash("pas start3")
+        integer SH_LvlUpCheck_PAS_START4 = StringHash("pas start4")
+        integer SH_LvlUpCheck_PAS_START5 = StringHash("pas start5")
+        integer SH_LvlUpCheck_Q_ARMOR_ACTIVE = StringHash("q armor active")
+        integer SH_LvlUpCheck_RIMURU_EVOL_1 = StringHash("rimuru evol 1")
+        integer SH_LvlUpCheck_R_ARMOR_ACTIVE = StringHash("r armor active")
+        integer SH_LvlUpCheck_S1 = StringHash("s1")
+        integer SH_LvlUpCheck_STACK_COUNT = StringHash("stack_count")
+        integer SH_LvlUpCheck_T_ARMOR_ACTIVE = StringHash("t armor active")
+        integer SH_LvlUpCheck_W_ARMOR_ACTIVE = StringHash("w armor active")
+endglobals
+globals
 unit array lvl_6
 integer lvl_6_id = 'h00T'
 unit array lvl_10
@@ -17,12 +36,17 @@ local integer k2 = 0
 local unit c = GetTriggerUnit()
 local integer id = GetUnitTypeId(c)
 local real hp = GetUnitState(GetTriggerUnit(),UNIT_STATE_LIFE)/GetUnitState(GetTriggerUnit(),UNIT_STATE_MAX_LIFE)
+    static if LIBRARY_FrostnovaSpells then
+    if Frostnova_ID == id then
+        call Frostnova_Register(c)
+    endif
+    endif
     // HERO TRANSFER: Crocodile / LvlUpCheck
     if Crocodile_ID == id then
         call Crocodile_InitializeHero(c)
     endif
-if (CheckAllow1(GetTriggerUnit()) or CheckAllow2(GetTriggerUnit()) ) and LoadInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),StringHash("cast allow"))== 0 and IsUnitIllusion(GetTriggerUnit())== false then 
-    call SaveInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),StringHash("cast allow"),1)
+if (CheckAllow1(GetTriggerUnit()) or CheckAllow2(GetTriggerUnit()) ) and LoadInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),SH_LvlUpCheck_CAST_ALLOW)== 0 and IsUnitIllusion(GetTriggerUnit())== false then 
+    call SaveInteger(hs,GetHandleId(GetOwningPlayer(GetTriggerUnit())),SH_LvlUpCheck_CAST_ALLOW,1)
     call TriggerRegisterPlayerUnitEvent(gg_trg_CastCheck, GetOwningPlayer(GetTriggerUnit()), EVENT_PLAYER_UNIT_SPELL_EFFECT, null)
     endif
     if k >= 6 and lvl_6[i] == null then 
@@ -74,8 +98,8 @@ endif
     call UnitAddAbility(c,MahoragaG_ID)
     call UnitMakeAbilityPermanent(c,true,MahoragaG_ID)
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("pas start"))==0 and GetHeroLevel(c)>=25 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START)==0 and GetHeroLevel(c)>=25 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     call MahoragaTInfo_Start(c,true)
     endif
     endif
@@ -103,7 +127,7 @@ if Laxus_ID == id then
     if GetHeroLevel(c)>= 35 then 
     call SetUnitAbilityLevel(c,LaxusG_ID,2)
      call BlzSetAbilityIcon(LaxusG_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_G2.blp")
-    call SaveInteger(hs,GetHandleId(c),StringHash("lvl5"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_LVL5,1)
     endif
     endif
     if Kirito_ID == id then 
@@ -113,15 +137,15 @@ if Laxus_ID == id then
     call UnitAddAbility(c,KiritoG_ID)
     call UnitMakeAbilityPermanent(c,true,KiritoG_ID)
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("pas start"))==0 and GetHeroLevel(c)>=25 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START)==0 and GetHeroLevel(c)>=25 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     call KiritoPas(c)
     endif
     endif
     if Gojo_ID == id then 
-    if GetUnitAbilityLevel(c,GojoG_ID) == 0 then 
-    call UnitAddAbility(c,GojoG_ID)
-    call UnitMakeAbilityPermanent(c,true,GojoG_ID)
+    if GetUnitAbilityLevel(c,GojoF_ID) == 0 then 
+    call UnitAddAbility(c,GojoF_ID)
+    call UnitMakeAbilityPermanent(c,true,GojoF_ID)
     endif
     if GetHeroLevel(c)>=35 then 
     call BlzSetAbilityRealLevelField(BlzGetUnitAbility(c, GojoR_ID),ABILITY_RLF_AREA_OF_EFFECT, 4, 1250)
@@ -132,27 +156,30 @@ if Laxus_ID == id then
     call UnitAddAbility(c,BambiettaG_ID)
     call UnitMakeAbilityPermanent(c,true,BambiettaG_ID)
     endif
+    if GetHeroLevel(c)>=BambiettaG_Lvl_Stacks then
+    call BambiettaG_SyncStacks(c)
+    endif
     endif
     if Ainz_ID == id then
-    if GetHeroLevel(c)>= 2 and LoadInteger(hs,GetHandleId(c),StringHash("pas start1"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start1"),1)
-    call SaveInteger(hs, GetHandleId(c), StringHash("stack_count"), 2)
+    if GetHeroLevel(c)>= 2 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START1)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START1,1)
+    call SaveInteger(hs, GetHandleId(c), SH_LvlUpCheck_STACK_COUNT, 2)
     call MySpellStacksForAbility(c, AinzQ_ID, 0, 2, 13.00)
     endif
-    if GetHeroLevel(c)>= 5 and LoadInteger(hs,GetHandleId(c),StringHash("pas start2"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start2"),1)
+    if GetHeroLevel(c)>= 5 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START2)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START2,1)
     call SpellStacksSetMax(c, 3, true)
     endif
-    if GetHeroLevel(c)>= 8 and LoadInteger(hs,GetHandleId(c),StringHash("pas start3"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start3"),1)
+    if GetHeroLevel(c)>= 8 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START3)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START3,1)
     call SpellStacksSetMax(c, 3, true)
     endif
-    if GetHeroLevel(c)>= 11 and LoadInteger(hs,GetHandleId(c),StringHash("pas start4"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start4"),1)
+    if GetHeroLevel(c)>= 11 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START4)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START4,1)
     call SpellStacksSetMax(c, 4, true)
     endif
-    if GetHeroLevel(c)>= 14 and LoadInteger(hs,GetHandleId(c),StringHash("pas start5"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start5"),1)
+    if GetHeroLevel(c)>= 14 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START5)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START5,1)
     call SpellStacksSetMax(c, 4, true)
     endif
     if GetUnitAbilityLevel(c,AinzG_ID) == 0 then 
@@ -188,8 +215,8 @@ if Laxus_ID == id then
     call UnitAddAbility(c,HarribelG_ID)
     call UnitMakeAbilityPermanent(c,true,HarribelG_ID)
     endif
-    if GetHeroLevel(c)>=12 and LoadInteger(hs,GetHandleId(c),StringHash("pas start"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    if GetHeroLevel(c)>=12 and LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     call HarribelG_Start(c)
     endif
     endif
@@ -206,14 +233,14 @@ if Laxus_ID == id then
     call UnitAddAbility(c,AlucardF_ID)
     call UnitMakeAbilityPermanent(c,true,AlucardF_ID)
     endif
-    if GetHeroLevel(c)>=12 and  LoadInteger(hs,GetHandleId(c),StringHash("pas start"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    if GetHeroLevel(c)>=12 and  LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     call AlucardG_Start(c)
     endif
     endif
     if Inori_ID == id then 
-    if k>= 6 and  LoadInteger(hs,GetHandleId(c),StringHash("pas start"))==0 then 
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    if k>= 6 and  LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START)==0 then 
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     call InoriE_Start(c)
     endif
     if GetUnitAbilityLevel(c,InoriG_ID) == 0 then 
@@ -232,7 +259,7 @@ if Laxus_ID == id then
     if Erza_ID == id and GetHeroLevel(c)>=35 and GetUnitAbilityLevel(c,ErzaG2_ID) == 0 then 
     call UnitAddAbility(c,ErzaG2_ID)
     call UnitMakeAbilityPermanent(c,true,ErzaG2_ID)
-    if LoadInteger(hs, GetHandleId(c), StringHash("q armor active")) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("w armor active")) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("e armor active")) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("r armor active")) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("t armor active")) == 1 then
+    if LoadInteger(hs, GetHandleId(c), SH_LvlUpCheck_Q_ARMOR_ACTIVE) == 1 or LoadInteger(hs, GetHandleId(c), SH_LvlUpCheck_W_ARMOR_ACTIVE) == 1 or LoadInteger(hs, GetHandleId(c), SH_LvlUpCheck_E_ARMOR_ACTIVE) == 1 or LoadInteger(hs, GetHandleId(c), SH_LvlUpCheck_R_ARMOR_ACTIVE) == 1 or LoadInteger(hs, GetHandleId(c), SH_LvlUpCheck_T_ARMOR_ACTIVE) == 1 then
     call SetPlayerAbilityAvailable(GetOwningPlayer(c),ErzaG2_ID,false)
     else
     call SetPlayerAbilityAvailable(GetOwningPlayer(c),ErzaG_ID,false)
@@ -248,9 +275,9 @@ if Laxus_ID == id then
     call UnitAddAbility(c,OkarunF_ID)
     call UnitMakeAbilityPermanent(c,true,OkarunF_ID)
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("pas start")) == 0 and GetHeroLevel(c)>= 6 then 
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START) == 0 and GetHeroLevel(c)>= 6 then 
     call OkarunPassive_Start(c)
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     endif
     endif
     if Kyoraku_ID == id and GetUnitAbilityLevel(c,KyorakuF_ID) == 0 then 
@@ -258,9 +285,11 @@ if Laxus_ID == id then
     call UnitMakeAbilityPermanent(c,true,KyorakuF_ID)
     endif
     if AlterSaber_ID == id then 
+    call AlterSaberW_Start(c)
     if GetUnitAbilityLevel(c,AlterSaberF_ID) == 0 then 
     call UnitAddAbility(c,AlterSaberF_ID)
     call UnitMakeAbilityPermanent(c,true,AlterSaberF_ID)
+    call AlterSaberF_Initialize(c)
     call UnitAddAbility(c,AlterSaberG_ID)
     call UnitMakeAbilityPermanent(c,true,AlterSaberG_ID)
     endif    
@@ -301,9 +330,9 @@ if Laxus_ID == id then
     call UnitAddAbility(c,TsunaG_ID)
     call UnitMakeAbilityPermanent(c,true,TsunaG_ID)
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("pas start")) == 0 and GetHeroLevel(c)>= 12 then 
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START) == 0 and GetHeroLevel(c)>= 12 then 
     call TsunaF_Start(c)
-    call SaveInteger(hs,GetHandleId(c),StringHash("pas start"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_PAS_START,1)
     endif
     endif
      if BazzB_ID == id then 
@@ -361,15 +390,24 @@ if Laxus_ID == id then
     call UnitMakeAbilityPermanent(c,true,AkainuF_ID)
     endif
     if Rimuru_ID == id then 
-    if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 1")) == 0 and GetHeroLevel(c)>= 12 then 
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_RIMURU_EVOL_1) == 0 and GetHeroLevel(c)>= 12 then 
     call RimuruEvol_Start(c,true)
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("s1")) == 0  then 
+    if LoadInteger(hs,GetHandleId(c),SH_LvlUpCheck_S1) == 0  then 
     call UnitAddAbility(c,RimuruG_ID)
     call UnitMakeAbilityPermanent(c,true,RimuruG_ID)
     call UnitAddAbility(c,RimuruF_ID)
     call UnitMakeAbilityPermanent(c,true,RimuruF_ID)
-    call SaveInteger(hs,GetHandleId(c),StringHash("s1"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_LvlUpCheck_S1,1)
+    endif
+    // T unlocks at 18 (earlier than other heroes' T): learn it right away so no
+    // skill point / learn prompt is left until the next round's auto-learn.
+    if GetHeroLevel(c) >= 18 and GetUnitAbilityLevel(c, RimuruT_ID) == 0 and GetHeroSkillPoints(c) > 0 then
+    call SelectHeroSkill(c, RimuruT_ID)
+    endif
+    // Evolved forms remove the base skills: points left then can never be spent.
+    if GetUnitAbilityLevel(c, RimuruQ_ID) == 0 and (GetUnitAbilityLevel(c, RimuruQ2_ID) > 0 or GetUnitAbilityLevel(c, RimuruQ3_ID) > 0) and GetHeroSkillPoints(c) > 0 then
+    call UnitModifySkillPoints(c, -GetHeroSkillPoints(c))
     endif
     endif
     if Neuvillette_ID == id and GetUnitAbilityLevel(c,NeuvilletteF_ID) == 0 then 
@@ -385,6 +423,11 @@ if Laxus_ID == id then
     endif
     if Milim_ID == id and GetHeroLevel(c) >= 12 then
     call MilimG_Start(c)
+    endif
+    // HERO TRANSFER: Frostnova / LvlUpCheck
+    if Frostnova_ID == id and GetUnitAbilityLevel(c,FrostnovaF_ID) == 0 then
+    call UnitAddAbility(c,FrostnovaF_ID)
+    call UnitMakeAbilityPermanent(c,true,FrostnovaF_ID)
     endif
     set c = null
 endfunction

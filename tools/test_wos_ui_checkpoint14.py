@@ -122,7 +122,8 @@ class RestoredPickAndHUD(unittest.TestCase):
         # Checkpoint 20: larger .050 portrait with its own level plate below.
         self.assertEqual(positions['WOSSelectedUnitIcon'][2:], (.050, .050))
         self.assertLess(positions['WOSSelectedUnitLevelBadge'][1], positions['WOSSelectedUnitIcon'][1] - .025)
-        self.assertIn('WOSGoldIcon', positions)
+        self.assertIn('\"WOSGoldIcon\", UNITSTAT_Widget[7]', source)
+        self.assertIn('BlzFrameSetPoint(back, FRAMEPOINT_LEFT, UNITSTAT_Widget[7]', source)
         self.assertIn('UI\\\\Feedback\\\\Resources\\\\ResourceGold.blp', source)
 
 

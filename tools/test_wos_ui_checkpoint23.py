@@ -130,7 +130,8 @@ class Checkpoint24b(unittest.TestCase):
         self.assertIn('BlzFrameSetVisible(WUI_Resource, true)', park)
         self.assertIn('FRAMEPOINT_TOPRIGHT, WUI_FPS_X + 0.44, WUI_FPS_Y + 0.03', park)
         kyoraku = (WOS.parent / 'Heroes/Kyoraku.j').read_text(encoding='utf-8-sig')
-        self.assertIn('call WUI_RegisterColumnPanel(frame_KyorBankai12[k2], "BANKAI STAGES", 0.190)', kyoraku)
+        self.assertIn('call WUI_RegisterColumnPanel(frame_KyorBankai12[k2], "BANKAI STAGES", 0.035)', kyoraku)
+        self.assertIn('BlzFrameGetHeight(frame_KyorBankai7[pid])', kyoraku)
         self.assertNotIn('BlzFrameSetVisible(frame_KyorBankai12', kyoraku)
 
     def test_shop_fast_actions_and_two_level_tree(self):

@@ -1,5 +1,69 @@
 library BarraganSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer BarraganTick05_Timer = CreateTimer()
+        private boolean array BarraganTick05_Active
+        private integer BarraganTick05_Users = 0
+        private code BarraganTick05_Callback = null
+    endglobals
+
+    private function BarraganTick05_On takes integer k returns nothing
+        if not BarraganTick05_Active[k] then
+            set BarraganTick05_Active[k] = true
+            set BarraganTick05_Users = BarraganTick05_Users + 1
+            if BarraganTick05_Users == 1 then
+                call TimerStart(BarraganTick05_Timer, 0.05, true, BarraganTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function BarraganTick05_Off takes integer k returns nothing
+        if BarraganTick05_Active[k] then
+            set BarraganTick05_Active[k] = false
+            set BarraganTick05_Users = BarraganTick05_Users - 1
+            if BarraganTick05_Users <= 0 then
+                set BarraganTick05_Users = 0
+                call PauseTimer(BarraganTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer BarraganTick_Timer = CreateTimer()
+        private boolean array BarraganTick_Active
+        private integer BarraganTick_Users = 0
+        private code BarraganTick_Callback = null
+    endglobals
+
+    private function BarraganTick_On takes integer k returns nothing
+        if not BarraganTick_Active[k] then
+            set BarraganTick_Active[k] = true
+            set BarraganTick_Users = BarraganTick_Users + 1
+            if BarraganTick_Users == 1 then
+                call TimerStart(BarraganTick_Timer, 0.03, true, BarraganTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function BarraganTick_Off takes integer k returns nothing
+        if BarraganTick_Active[k] then
+            set BarraganTick_Active[k] = false
+            set BarraganTick_Users = BarraganTick_Users - 1
+            if BarraganTick_Users <= 0 then
+                set BarraganTick_Users = 0
+                call PauseTimer(BarraganTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_BARAGAN_T_CANCEL = StringHash("baragan t cancel")
+        private integer SH_BARRAGAN_T = StringHash("barragan t")
+        private integer SH_MORPH_E = StringHash("morph e")
+    endglobals
+    globals
 //--------------------------------------Barragan--------------------------------------------------------------
         integer Barragan_ID = 'H01R'
         integer Barragan2_ID = 'H01S'
@@ -106,12 +170,12 @@ library BarraganSpells uses GearSystems
     set dmg = BarraganG_Damage2Static_6
     endif
     set dmg = dmg + (GetHeroInt(c, true) * BarraganG_DamageIntBase)
+        call DamageSource('A0B8')
         call DmgPTime(c, td,dmg, BarraganG_DamageDuration, BarraganG_DamagePeriodic, 1)
         call EffectSpawnTarget("war3mapImported\\wos_zz-fire-ore-hit1-zihei_2.mdx", td, "origin", GetRandomReal(0, 359), 1.15, 2, 0, BarraganG_DamageDuration)
     endfunction
     
     private struct HeroSpells_Q
-        private static timer t_BarraganQ = CreateTimer()
         private static integer array m_BarraganQ
         private static integer MUI_BarraganQ = -1
         unit c
@@ -141,7 +205,7 @@ library BarraganSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_BarraganQ takes nothing returns nothing
+        static method Loop_BarraganQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -203,6 +267,7 @@ library BarraganSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource(DamageSourceMode(BarraganQ_ID, k2, "EQ", "TQ"))
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit( g2 , u )
                                     endif
@@ -255,6 +320,7 @@ library BarraganSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource(DamageSourceMode(BarraganQ_ID, k2, "EQ", "TQ"))
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     if GetHeroLevel(c) >= BarraganG_AbilityEnchantLevelGain then
@@ -319,6 +385,7 @@ library BarraganSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource(DamageSourceMode(BarraganQ_ID, k2, "EQ", "TQ"))
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call StunUnit(c, u, BarraganETQ_Stun)
@@ -363,8 +430,9 @@ library BarraganSpells uses GearSystems
                     set u = null
                     set m_BarraganQ[i] = m_BarraganQ[ MUI_BarraganQ]
                     set MUI_BarraganQ = MUI_BarraganQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganQ == -1 then
-                        call PauseTimer( t_BarraganQ)
+                        call BarraganTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -397,14 +465,14 @@ library BarraganSpells uses GearSystems
             set aoe = BarraganQ_DamageAoe
             set dmg = GetHeroInt( c , true) * ( BarraganQ_DamageIntBase + ( BarraganQ_DamageIntStep * ( GetUnitAbilityLevel( c , BarraganQ_ID) - 1 ) ) )
             set dmg = dmg + BarraganQ_Damage2StaticBase + ( BarraganQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , BarraganQ_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) != 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
                 set dmg = dmg + (GetHeroInt( c , true) * BarraganQ_DamageMorphIntImprove)
                 set r5 = r5 + BarraganEQ_RangeAdd
-                if LoadInteger(hs, GetHandleId(c), StringHash("barragan t")) > 0 then// T ability add dmg
+                if LoadInteger(hs, GetHandleId(c), SH_BARRAGAN_T) > 0 then// T ability add dmg
                     set dmg = dmg + (GetHeroInt( c , true) * BarraganQ_DamageTIntImprove)
                 endif
             endif
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 set k2 = 0
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", c, "hand left")
                 call SetUnitFacing( c , a * bj_RADTODEG)
@@ -416,7 +484,7 @@ library BarraganSpells uses GearSystems
                 else
                     call MakeSound("war3mapimported\\Hero_Barragan_Q 2")
                 endif
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("barragan t")) == 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_BARRAGAN_T) == 0 then
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiPurple.mdx", c, "hand left")
                 set k2 = 1
                 set rmax = 0.6
@@ -442,17 +510,15 @@ library BarraganSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Barragan_ET2 2")
             endif
             if MUI_BarraganQ == 0 then
-                call TimerStart( t_BarraganQ, 0.03, true, function thistype.Loop_BarraganQ)
+                call BarraganTick_On(0)
             endif
         endmethod
 
     endstruct
 
     private struct HeroSpells_W
-        private static timer t_BarraganW = CreateTimer()
         private static integer array m_BarraganW
         private static integer MUI_BarraganW = -1
-        private static timer t_BarraganW2 = CreateTimer()
         private static integer array m_BarraganW2
         private static integer MUI_BarraganW2 = -1
         unit c
@@ -475,7 +541,7 @@ library BarraganSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_BarraganW takes nothing returns nothing
+        static method Loop_BarraganW takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -512,6 +578,7 @@ library BarraganSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource(DamageSourceMode(BarraganW_ID, k2, "EW", "EW"))
                                     call dmgphys(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -566,6 +633,7 @@ library BarraganSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource(DamageSourceMode(BarraganW_ID, k2, "EW", "EW"))
                                     call dmgmag(c, u, dmg)
                                     call SlowUnit(c, u, BarraganW_Slow, BarraganW_SlowDuration)
                                     if GetHeroLevel(c) >= BarraganG_AbilityEnchantLevelGain then
@@ -597,8 +665,9 @@ library BarraganSpells uses GearSystems
                     set e2 = null
                     set m_BarraganW[i] = m_BarraganW[MUI_BarraganW]
                     set MUI_BarraganW = MUI_BarraganW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganW == -1 then
-                        call PauseTimer( t_BarraganW )
+                        call BarraganTick_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -622,11 +691,11 @@ library BarraganSpells uses GearSystems
             set aoe = BarraganW_DamageAoe
             set dmg = GetHeroInt(c, true) * (BarraganW_DamageIntBase + (BarraganW_DamageIntStep * (GetUnitAbilityLevel(c, BarraganW_ID) - 1)))
             set dmg = dmg + BarraganW_Damage2StaticBase + ( BarraganW_Damage2StaticStep * ( GetUnitAbilityLevel( c , BarraganW_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) != 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
                 set dmg = dmg + (GetHeroInt( c , true) * BarraganW_DamageMorphIntImprove)
             endif
             call SetUnitFacing( c , a * bj_RADTODEG)
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 set k2 = 0
                 set rmax = 0.69
                 call SetUnitTimeScale(c, 0.475)
@@ -648,13 +717,13 @@ library BarraganSpells uses GearSystems
                 endif
                 call MakeSound("war3mapimported\\Hero_Barragan_EW3")
             endif
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(BarraganW_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Barragan_BARRAGANW_ID, 0)
             if MUI_BarraganW == 0 then
-                call TimerStart( t_BarraganW, 0.03, true, function thistype.Loop_BarraganW )
+                call BarraganTick_On(1)
             endif
         endmethod
 
-        private static method Loop_BarraganW2 takes nothing returns nothing
+        static method Loop_BarraganW2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -687,6 +756,7 @@ library BarraganSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A0B7')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_whiteakihared.mdx", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 0.85, 1, GetUnitFlyHeight(u) + 50))
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -704,8 +774,9 @@ library BarraganSpells uses GearSystems
                     set u = null
                     set m_BarraganW2[i] = m_BarraganW2[MUI_BarraganW2]
                     set MUI_BarraganW2 = MUI_BarraganW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganW2 == -1 then
-                        call PauseTimer( t_BarraganW2 )
+                        call BarraganTick_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -735,29 +806,21 @@ library BarraganSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Barragan_W2 2")
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_HakkeStart.mdx", x, y, GetRandomReal(0, 359), 0.86, 2.15, 10))
             if MUI_BarraganW2 == 0 then
-                call TimerStart( t_BarraganW2, 0.03, true, function thistype.Loop_BarraganW2 )
+                call BarraganTick_On(2)
             endif
         endmethod
 
     endstruct
 
     private struct HeroSpells_E
-        private static timer t_BarraganE = CreateTimer()
         private static integer array m_BarraganE
         private static integer MUI_BarraganE = -1
-        private static timer t_BarraganE2 = CreateTimer()
         private static integer array m_BarraganE2
         private static integer MUI_BarraganE2 = -1
         unit c
         real x
         real y
         real r2
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         integer k2
         integer check2
         unit d
@@ -773,7 +836,7 @@ library BarraganSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_BarraganE takes nothing returns nothing
+        static method Loop_BarraganE takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real hp
@@ -784,7 +847,7 @@ library BarraganSpells uses GearSystems
                     if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 ) then
                         set r = r + 0.05
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.2 then
                             call SetUnitTimeScale(c, 0)
@@ -820,7 +883,7 @@ library BarraganSpells uses GearSystems
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganE2_ID, true)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganE_ID, false)
                             call SetUnitAbilityLevel(c, BarraganE_Def_ID , GetUnitAbilityLevel(c, BarraganE_ID))
-                            call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph e"), 1)
+                            call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_E, 1)
                             call BlzSetAbilityRealLevelField(BlzGetUnitAbility(c, BarraganW_ID), ABILITY_RLF_CAST_RANGE, GetUnitAbilityLevel(c, BarraganW_ID) - 1, BarraganW_MorphRange)
                             call UnitMakeAbilityPermanent(c, true, BarraganE_Def_ID )
                             call BlzSetUnitSkin(c, Barragan2_ID)
@@ -831,54 +894,14 @@ library BarraganSpells uses GearSystems
                             set r2 = 9999
                             call FixAura(c)
                             set check = 1
-                            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_E", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
                         endif
                     elseif check == 1 then                       
-                        call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, BarraganE_ID, "Resurreccion Arrogante [Level 1]", rmax - r, rmax, true)
                         endif
-                        if check2 == 0 and LoadInteger(hs, GetHandleId(c), StringHash("barragan t")) == 1 then 
+                        if check2 == 0 and LoadInteger(hs, GetHandleId(c), SH_BARRAGAN_T) == 1 then 
                         set check2 = 1
                         set rmax = rmax + BarraganT_Duration
-                        call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
                         endif
                         if r2 > 1.95 then
                             set r2 = 0.05
@@ -918,21 +941,19 @@ library BarraganSpells uses GearSystems
                     set hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
                     call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - (BarraganE_HP_Base + (BarraganE_HP_Step * (GetUnitAbilityLevel(c, BarraganE_ID) - 1))))
                     call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash(I2S(BarraganW_ID)), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_Barragan_BARRAGANW_ID, 0)
                     call BlzSetAbilityRealLevelField(BlzGetUnitAbility(c, BarraganW_ID), ABILITY_RLF_CAST_RANGE, GetUnitAbilityLevel(c, BarraganW_ID) - 1, BarraganW_BaseRange)
                     call BlzSetAbilityIcon(BarraganQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_Q.blp")
                     call BlzSetAbilityIcon(BarraganW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_W.blp")
                     call BlzSetAbilityIcon(BarraganR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_R.blp")
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph e"), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_E, 0)
                     call UnitRemoveAbility(c, BarraganE_Def_ID )
                     call RemoveUnit(d)
                     call BlzSetUnitSkin(c, Barragan_ID)
                     call AAUniversalTooltips_SetUnitForm(c, 0)
                     call FixAura(c)
                     call SetUnitTimeScale( c, 1 )
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, BarraganE_ID, "Resurreccion Arrogante [Level 1]", 0.00, 0.00, true)
                     call DestroyGroup(g)
                     set g = null
                     set d = null
@@ -941,8 +962,9 @@ library BarraganSpells uses GearSystems
                     set e2 = null
                     set m_BarraganE[i] = m_BarraganE[MUI_BarraganE]
                     set MUI_BarraganE = MUI_BarraganE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganE == -1 then
-                        call PauseTimer( t_BarraganE )
+                        call BarraganTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -977,13 +999,13 @@ library BarraganSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Barragan_E1")
             call MakeSound("war3mapimported\\Hero_Barragan_E2")
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_HakkeStart.mdx", x, y, GetRandomReal(0, 359), 0.35, 1.75, 10))
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(BarraganW_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Barragan_BARRAGANW_ID, 1)
             if MUI_BarraganE == 0 then
-                call TimerStart( t_BarraganE, 0.05, true, function thistype.Loop_BarraganE )
+                call BarraganTick05_On(0)
             endif
         endmethod
 
-        private static method Loop_BarraganE2 takes nothing returns nothing
+        static method Loop_BarraganE2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -1015,6 +1037,7 @@ library BarraganSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A0BG')
                                 call dmgphys(c, u, dmg)
                                 if check2 == 1 then 
                                 call StunUnit(c,u,BarraganE2T_Stun)
@@ -1035,8 +1058,9 @@ library BarraganSpells uses GearSystems
                     set e2 = null
                     set m_BarraganE2[i] = m_BarraganE2[MUI_BarraganE2]
                     set MUI_BarraganE2 = MUI_BarraganE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganE2 == -1 then
-                        call PauseTimer( t_BarraganE2 )
+                        call BarraganTick_Off(3)
                     endif
                     call destroy( )
                 endif
@@ -1060,7 +1084,7 @@ library BarraganSpells uses GearSystems
             set aoe = BarraganE2_DamageAoe
             set dmg = GetHeroInt(c, true) * BarraganE2_DamageIntBase
             set check2 = 0
-            if  LoadInteger(hs, GetHandleId(c), StringHash("barragan t")) == 1 then 
+            if  LoadInteger(hs, GetHandleId(c), SH_BARRAGAN_T) == 1 then 
             set check2 = 1
             set dmg = dmg + GetHeroInt(c, true) * BarraganE2_DamageIntBaseTAdd
             endif
@@ -1073,14 +1097,13 @@ library BarraganSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Barragan_E2 1")
             call MakeSound("war3mapimported\\Hero_Barragan_E2 2")
             if MUI_BarraganE2 == 0 then
-                call TimerStart( t_BarraganE2, 0.03, true, function thistype.Loop_BarraganE2 )
+                call BarraganTick_On(3)
             endif
         endmethod
 
     endstruct
 
     private struct HeroSpells_R
-        private static timer t_BarraganR = CreateTimer()
         private static integer array m_BarraganR
         private static integer MUI_BarraganR = -1
         unit c
@@ -1104,7 +1127,7 @@ library BarraganSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_BarraganR takes nothing returns nothing
+        static method Loop_BarraganR takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -1161,11 +1184,13 @@ library BarraganSpells uses GearSystems
                             exitwhen u == null
                             if check == 0 then
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0B4')
                                     call dmgmag(c, u, dmg)
                                     call SlowUnit(c, u, BarraganR_Slow , BarraganR_SlowDuration )
                                 endif
                             else
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A0B4')
                                     call DmgPTime(c, u, dmg, BarraganER_DamageDuration, BarraganER_DamagePeriodic, 1)
                                     call EffectSpawnTarget("war3mapImported\\wos_zz-fire-ore-hit1-zihei_2.mdx", u, "origin", GetRandomReal(0, 359), 1.15, 2, 0, BarraganER_DamageDuration)
                                     call SlowUnit(c, u, BarraganR_Slow , BarraganR_SlowDuration )
@@ -1232,8 +1257,9 @@ library BarraganSpells uses GearSystems
                     set u = null
                     set m_BarraganR[i] = m_BarraganR[MUI_BarraganR]
                     set MUI_BarraganR = MUI_BarraganR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganR == -1 then
-                        call PauseTimer( t_BarraganR )
+                        call BarraganTick05_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -1255,7 +1281,7 @@ library BarraganSpells uses GearSystems
             set a = GetUnitFacing(c) * bj_DEGTORAD
             set g = CreateGroup()
             set rmax = BarraganR_DamageInvulBase + (BarraganR_DamageInvulStep * (GetUnitAbilityLevel(c, BarraganR_ID) - 1))
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 set check = 0
                 set aoe = BarraganR_DamageAoe
                 set dmg = GetHeroInt(c, true) * (BarraganR_DamageIntBase + (BarraganR_DamageIntStep * (GetUnitAbilityLevel(c, BarraganR_ID) - 1)))
@@ -1286,17 +1312,15 @@ library BarraganSpells uses GearSystems
             endif
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 2000, rmax)
             if MUI_BarraganR == 0 then
-                call TimerStart( t_BarraganR, 0.05, true, function thistype.Loop_BarraganR )
+                call BarraganTick05_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct HeroSpells_T
-        private static timer t_BarraganT = CreateTimer()
         private static integer array m_BarraganT
         private static integer MUI_BarraganT = -1
-        private static timer t_BarraganT2 = CreateTimer()
         private static integer array m_BarraganT2
         private static integer MUI_BarraganT2 = -1
         unit c
@@ -1306,12 +1330,6 @@ library BarraganSpells uses GearSystems
         real y1
         real r2
         real r7
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
         integer k
         integer k2
         unit d
@@ -1333,39 +1351,36 @@ library BarraganSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_BarraganT takes nothing returns nothing
+        static method Loop_BarraganT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_BarraganT
                 set this = m_BarraganT[i]
-                if SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) > 0 and r < rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("baragan t cancel")) == 0 then
+                if SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) > 0 and r < rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_BARAGAN_T_CANCEL) == 0 then
                     if IsUnitPaused(c) == false then
                         set r = r + 0.05
                     endif
-                    call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
                     if rmax - r >= 0 then
-                        call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, BarraganT_ID, "Gran Caida", rmax - r, rmax, true)
                     endif
                 else
-                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                         call BlzSetAbilityIcon(BarraganQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_Q.blp")
                     else
                         call BlzSetAbilityIcon(BarraganQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_EQ.blp")
                     endif
                     call RemoveUnit(d)
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("barragan t"), 0)
-                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 1 then
+                        call WUI_HeroProgress(c, BarraganT_ID, "Gran Caida", 0.00, 0.00, true)
+                    call SaveInteger(hs, GetHandleId(c), SH_BARRAGAN_T, 0)
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 1 then
                         call AAUniversalTooltips_SetUnitForm(c, 1)
                     else
                         call AAUniversalTooltips_SetUnitForm(c, 0)
                     endif
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganT2_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganT_ID, true)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("baragan t cancel"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_BARAGAN_T_CANCEL, 0)
                     call DestroyEffect(e)
                     call SetUnitTimeScale( c, 1 )
                     set c = null
@@ -1373,8 +1388,9 @@ library BarraganSpells uses GearSystems
                     set e = null
                     set m_BarraganT[i] = m_BarraganT[MUI_BarraganT]
                     set MUI_BarraganT = MUI_BarraganT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganT == -1 then
-                        call PauseTimer( t_BarraganT )
+                        call BarraganTick05_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -1395,8 +1411,8 @@ library BarraganSpells uses GearSystems
             set k2 = GetPlayerId(GetOwningPlayer(c))
             call SetUnitAnimationByIndex(c, 6)
             set d = CreateUnit(GetOwningPlayer(c), BarraganT_IdDummy, 1, 1, 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("baragan t cancel"), 0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("barragan t"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_BARAGAN_T_CANCEL, 0)
+            call SaveInteger(hs, GetHandleId(c), SH_BARRAGAN_T, 1)
             call AAUniversalTooltips_SetUnitForm(c, 2)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganT_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), BarraganT2_ID, true)
@@ -1404,43 +1420,6 @@ library BarraganSpells uses GearSystems
             call UnitMakeAbilityPermanent(c, true, BarraganT2_ID)
             call MakeSound("war3mapimported\\Hero_Barragan_T")
             call MakeSound("war3mapimported\\Hero_Barragan_T2")
-            if frame2_pas1[k2] == null then
-                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                endif
-                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax + 2)
-                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_T", 0, false)
-                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Time Left:" + "|r")
-                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-            endif
             
             call BlzSetAbilityIcon(BarraganQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Barragan_ETQ.blp")
             set e = AddSpecialEffectTarget("war3mapimported\\wos_[By XeSHTeG]BarraganAxe.mdx", c, "hand right")
@@ -1458,11 +1437,11 @@ library BarraganSpells uses GearSystems
                 set k = k + 1
             endloop
             if MUI_BarraganT == 0 then
-                call TimerStart( t_BarraganT, 0.05, true, function thistype.Loop_BarraganT )
+                call BarraganTick05_On(2)
             endif
         endmethod
 
-        private static method Loop_BarraganT2 takes nothing returns nothing
+        static method Loop_BarraganT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1499,6 +1478,7 @@ library BarraganSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0B6')
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, BarraganT2_StunDuration)
                                 call GroupAddUnit(g2, u)
@@ -1535,6 +1515,7 @@ library BarraganSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0B6')
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, BarraganT2_StunDuration)
                                 call GroupAddUnit(g2, u)
@@ -1565,8 +1546,9 @@ library BarraganSpells uses GearSystems
                     set u = null
                     set m_BarraganT2[i] = m_BarraganT2[ MUI_BarraganT2]
                     set MUI_BarraganT2 = MUI_BarraganT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_BarraganT2 == -1 then
-                        call PauseTimer( t_BarraganT2)
+                        call BarraganTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1603,7 +1585,7 @@ library BarraganSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 10)
             call MakeSound("war3mapimported\\Hero_Barragan_ET2 1")
             if MUI_BarraganT2 == 0 then
-                call TimerStart( t_BarraganT2, 0.03, true, function thistype.Loop_BarraganT2)
+                call BarraganTick_On(4)
             endif
         endmethod
 
@@ -1653,7 +1635,7 @@ library BarraganSpells uses GearSystems
         call HeroSpells_W.BarraganW2_Start( c )
     endfunction
     function BarraganE_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
             call HeroSpells_E.BarraganE_Start( c )
         else
             call IssueImmediateOrder(c, "stop")
@@ -1673,6 +1655,55 @@ library BarraganSpells uses GearSystems
         call HeroSpells_T.BarraganT2_Start( c, x, y )
     endfunction
   
+
+    private struct BarraganTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if BarraganTick_Active[0] then
+                call HeroSpells_Q.Loop_BarraganQ()
+            endif
+            if BarraganTick_Active[1] then
+                call HeroSpells_W.Loop_BarraganW()
+            endif
+            if BarraganTick_Active[2] then
+                call HeroSpells_W.Loop_BarraganW2()
+            endif
+            if BarraganTick_Active[3] then
+                call HeroSpells_E.Loop_BarraganE2()
+            endif
+            if BarraganTick_Active[4] then
+                call HeroSpells_T.Loop_BarraganT2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set BarraganTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct BarraganTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if BarraganTick05_Active[0] then
+                call HeroSpells_E.Loop_BarraganE()
+            endif
+            if BarraganTick05_Active[1] then
+                call HeroSpells_R.Loop_BarraganR()
+            endif
+            if BarraganTick05_Active[2] then
+                call HeroSpells_T.Loop_BarraganT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set BarraganTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Barragan_BARRAGANW_ID = StringHash(I2S(BarraganW_ID))
+    endglobals
+
 endlibrary
 
 

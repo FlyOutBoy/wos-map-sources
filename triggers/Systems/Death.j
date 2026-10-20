@@ -1,3 +1,14 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_Death_DEATHCHECK = StringHash("deathcheck")
+        integer SH_Death_EVOL_KILL = StringHash("evol kill")
+        integer SH_Death_KENJAKU_UNIT_E = StringHash("kenjaku unit e")
+        integer SH_Death_KENJAKU_UNIT_Q = StringHash("kenjaku unit q")
+        integer SH_Death_KENJAKU_UNIT_W = StringHash("kenjaku unit w")
+        integer SH_Death_KIT_TYPE = StringHash("kit type")
+        integer SH_Death_RIMURU_EVOL_1 = StringHash("rimuru evol 1")
+        integer SH_Death_RIMURU_EVOL_2 = StringHash("rimuru evol 2")
+endglobals
 function Trig_Death_Conditions takes nothing returns boolean
    return true
 endfunction
@@ -12,6 +23,9 @@ function Trig_Death_Actions takes nothing returns nothing
     local integer k = 0
     local integer k2 = 0
     local boolean death = true 
+    static if LIBRARY_FrostnovaSpells then
+        call Frostnova_Death(td)
+    endif
     static if LIBRARY_CrocodileSpells then
         call Crocodile_Death(td)
     endif
@@ -21,11 +35,10 @@ function Trig_Death_Actions takes nothing returns nothing
     set k = 0
     loop
     exitwhen k == 10 
-    if GetUnitTypeId(Hero[k]) == Rimuru_ID and td != Hero[k] and LoadInteger(hs, GetHandleId(Hero[k]), StringHash("evol kill")) < RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(Hero[k]),StringHash("rimuru evol 2")) == 0 and LoadInteger(hs,GetHandleId(Hero[k]),StringHash("rimuru evol 1")) == 1 then 
-    set k2 = LoadInteger(hs, GetHandleId(Hero[k]), StringHash("evol kill"))+1 
-    call SaveInteger(hs,GetHandleId(Hero[k]), StringHash("evol kill") ,k2)
-    call BlzFrameSetValue(frameRimuru2_pas3[k], I2R(k2))
-    call BlzFrameSetText(frameRimuru2_pas6[k], "|c00FFFF00" + I2S(k2)+"/" + I2S(RimuruEvol2_Counter) + "|r")
+    if GetUnitTypeId(Hero[k]) == Rimuru_ID and td != Hero[k] and LoadInteger(hs, GetHandleId(Hero[k]), SH_Death_EVOL_KILL) < RimuruEvol2_Counter and LoadInteger(hs,GetHandleId(Hero[k]),SH_Death_RIMURU_EVOL_2) == 0 and LoadInteger(hs,GetHandleId(Hero[k]),SH_Death_RIMURU_EVOL_1) == 1 then 
+    set k2 = LoadInteger(hs, GetHandleId(Hero[k]), SH_Death_EVOL_KILL)+1 
+    call SaveInteger(hs,GetHandleId(Hero[k]), SH_Death_EVOL_KILL ,k2)
+    call WUI_HeroProgressCounter(Hero[k], RimuruF2_ID, "Souls Gathered", I2R(k2), I2R(RimuruEvol2_Counter))
     endif
     set k = k + 1
     endloop
@@ -39,10 +52,10 @@ endif
 set k = k + 1
 endloop
     endif
-    if GetUnitTypeId(td) == Patriot_ID and GetHeroLevel(td)>=35 and LoadInteger(hs,GetHandleId(td),StringHash("deathcheck"))== 0 then 
+    if GetUnitTypeId(td) == Patriot_ID and GetHeroLevel(td)>=35 and LoadInteger(hs,GetHandleId(td),SH_Death_DEATHCHECK)== 0 then 
     call PatriotEE_Start(td,c)
-    call SaveInteger(hs,GetHandleId(td),StringHash("deathcheck"),1)
-    call MyFlush(GetHandleId(td),StringHash("deathcheck"),0,15)
+    call SaveInteger(hs,GetHandleId(td),SH_Death_DEATHCHECK,1)
+    call MyFlush(GetHandleId(td),SH_Death_DEATHCHECK,0,15)
     set death = false
     endif
     if c != null and c!= td and IsUnitAlly(td,Player(id)) == false then
@@ -113,8 +126,8 @@ endloop
 call MyRemoveUnit(td,6)
 call PauseUnit(td,true)
     if GetUnitTypeId(td) == KenjakuQ2_Dummy_ID  then 
-    call RemoveSavedHandle(hs,GetHandleId(Player(id2)),StringHash("kenjaku unit q"))
-    if LoadInteger(hs, GetHandleId(Hero[id2]), StringHash("kit type"))  == 1 then 
+    call RemoveSavedHandle(hs,GetHandleId(Player(id2)),SH_Death_KENJAKU_UNIT_Q)
+    if LoadInteger(hs, GetHandleId(Hero[id2]), SH_Death_KIT_TYPE)  == 1 then 
     call SetPlayerAbilityAvailable(Player(id2),KenjakuQ2_ID,true)
     call SetPlayerAbilityAvailable(Player(id2),KenjakuQ3_ID,false)
     endif
@@ -122,8 +135,8 @@ call PauseUnit(td,true)
     call BlzStartUnitAbilityCooldown(Hero[id2],KenjakuQ2_ID, BlzGetUnitAbilityCooldown(Hero[id2],KenjakuQ2_ID,GetUnitAbilityLevel(Hero[id2],KenjakuQ2_ID)-1))
     endif
  elseif GetUnitTypeId(td) == KenjakuW2_Dummy_ID  then    
- call RemoveSavedHandle(hs,GetHandleId(Player(id2)),StringHash("kenjaku unit w"))
-    if LoadInteger(hs, GetHandleId(Hero[id2]), StringHash("kit type"))  == 1 then 
+ call RemoveSavedHandle(hs,GetHandleId(Player(id2)),SH_Death_KENJAKU_UNIT_W)
+    if LoadInteger(hs, GetHandleId(Hero[id2]), SH_Death_KIT_TYPE)  == 1 then 
     call SetPlayerAbilityAvailable(Player(id2),KenjakuW2_ID,true)
     call SetPlayerAbilityAvailable(Player(id2),KenjakuW3_ID,false)
     endif
@@ -131,8 +144,8 @@ call PauseUnit(td,true)
     call BlzStartUnitAbilityCooldown(Hero[id2],KenjakuW2_ID, BlzGetUnitAbilityCooldown(Hero[id2],KenjakuW2_ID,GetUnitAbilityLevel(Hero[id2],KenjakuW2_ID)-1))
     endif
  elseif GetUnitTypeId(td) == KenjakuE2_Dummy_ID  then    
- call RemoveSavedHandle(hs,GetHandleId(Player(id2)),StringHash("kenjaku unit e"))
- if LoadInteger(hs, GetHandleId(Hero[id2]), StringHash("kit type"))  == 1 then 
+ call RemoveSavedHandle(hs,GetHandleId(Player(id2)),SH_Death_KENJAKU_UNIT_E)
+ if LoadInteger(hs, GetHandleId(Hero[id2]), SH_Death_KIT_TYPE)  == 1 then 
     call SetPlayerAbilityAvailable(Player(id2),KenjakuE2_ID,true)
     call SetPlayerAbilityAvailable(Player(id2),KenjakuE3_ID,false)
     endif

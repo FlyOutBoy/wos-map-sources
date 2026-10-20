@@ -1,4 +1,8 @@
 globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_ArrowUp_DONAT_UP = StringHash("donat up")
+endglobals
+globals
     effect array AttachDonat1
     effect array AttachDonat2
     effect array AttachDonat3
@@ -23,7 +27,7 @@ function Trig_ArrowUp_Actions takes nothing returns nothing
                 set AttachDonat2[i] = null
                 set AttachDonat3[i] = null
                 set AttachDonat4[i] = null
-                set id = LoadInteger(hs, GetHandleId(Player(i)), StringHash("donat up"))
+                set id = LoadInteger(hs, GetHandleId(Player(i)), SH_ArrowUp_DONAT_UP)
                 call SetActiveDonat(i, 1, id)
                 if id == 0 then
                     set AttachDonat1[i] = AddSpecialEffectTarget("war3mapimported\\wos_scghmx (6).mdx", Hero[i], "origin")
@@ -36,7 +40,7 @@ function Trig_ArrowUp_Actions takes nothing returns nothing
                 if id > 2 then
                     set id = 0
                 endif
-                call SaveInteger(hs, GetHandleId(Player(i)), StringHash("donat up"), id)
+                call SaveInteger(hs, GetHandleId(Player(i)), SH_ArrowUp_DONAT_UP, id)
             else
                 call DestroyEffect(AttachDonat1[i])
                 set AttachDonat1[i] = null

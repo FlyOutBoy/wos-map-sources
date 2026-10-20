@@ -10,12 +10,50 @@ function Trig_EnterRegion_Actions takes nothing returns nothing
 local player p = GetOwningPlayer(GetEnteringUnit())
 local integer id = GetPlayerId(p)
  set Shop_Active[id] = true
+call WUI_EnterExclusiveWindow(0, p)
  if GetLocalPlayer() == p then 
 call StartSound(gg_snd_wos_shopenter)
 call BlzFrameSetVisible(FRAME_ShopMAIN,true)
 endif
 set p = null
 endfunction
+// Test heroes have owners reserved for shared control, not extra human ready slots.
+function TestUnit_FastStartReady takes nothing returns boolean
+    local integer i = 0
+    local integer required = 0
+    local integer ready = 0
+    local unit u
+    loop
+        exitwhen i == 10
+        set u = Hero[i]
+        if IsActivePlayerSlot(i) and not (u != null and (u == TestUnit or u == TestAllyUnit)) then
+            set required = required + 1
+            if u != null and CheckCoordsInRect(gg_rct_Go, GetUnitX(u), GetUnitY(u)) then
+                set ready = ready + 1
+            endif
+        endif
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i == 2
+        if i == 0 then
+            set u = TestUnit
+        else
+            set u = TestAllyUnit
+        endif
+        if u != null and GetUnitTypeId(u) != 0 then
+            set required = required + 1
+            if CheckCoordsInRect(gg_rct_Go, GetUnitX(u), GetUnitY(u)) then
+                set ready = ready + 1
+            endif
+        endif
+        set i = i + 1
+    endloop
+    set u = null
+    return required > 0 and ready == required
+endfunction
+
 function Trig_EnterRegion_ActionsGO takes nothing returns nothing
 local player p = GetOwningPlayer(GetEnteringUnit())
 local integer id = GetPlayerId(p)
@@ -30,9 +68,18 @@ set g = null
 set p = null
 return
 endif
+if TestMode then
+    if END1 == 0 and CondArena == 0 and inststart == 0 and TestUnit_FastStartReady() then
+        set inststart = 1
+        call PlayersMsg(GetPlayerVisualColorString(p) + "Round starts immediately!|r", 1)
+        set TimeMove = TimeRound - 1
+    endif
+    set p = null
+    return
+endif
 set g = CreateGroup()
 if END1 == 0 and (((CapPickPhase == 2 or CapPickPhase == 4) and CaptainMode == true) or CaptainMode == false) then 
-if IntegerCd(GetEnteringUnit(),"round instant start cd",5) then 
+if IntegerCdKey(GetEnteringUnit(), SH_ICD_ROUND_INSTANT_START_CD,5) then 
 call PlayersMsg(GetPlayerVisualColorString(p)+GetPlayerName(p)+"|r wants to start next round immediatly...",1)
 endif 
 loop
@@ -65,7 +112,7 @@ set p = null
 endfunction
 function Trig_PushTop takes nothing returns nothing
 local unit c = GetEnteringUnit()
-if IntegerCd(c,"move cd",3) then 
+if IntegerCdKey(c, SH_ICD_MOVE_CD,3) then 
 call ImmuneToPushDebuff(c)
 call MUE(c,800,0.3,90*bj_DEGTORAD)
 call BuffUnitMS(c,c,0.2)
@@ -75,7 +122,7 @@ set c = null
 endfunction
 function Trig_PushBottom takes nothing returns nothing
 local unit c = GetEnteringUnit()
-if IntegerCd(c,"move cd",3) then 
+if IntegerCdKey(c, SH_ICD_MOVE_CD,3) then 
 call ImmuneToPushDebuff(c)
 call MUE(c,800,0.3,270*bj_DEGTORAD)
 call BuffUnitMS(c,c,0.2)
@@ -85,7 +132,7 @@ set c = null
 endfunction
 function Trig_PushLeft takes nothing returns nothing
 local unit c = GetEnteringUnit()
-if IntegerCd(c,"move cd",3) then 
+if IntegerCdKey(c, SH_ICD_MOVE_CD,3) then 
 call ImmuneToPushDebuff(c)
 call MUE(c,800,0.3,180*bj_DEGTORAD)
 call BuffUnitMS(c,c,0.2)
@@ -95,7 +142,7 @@ set c = null
 endfunction
 function Trig_PushRight takes nothing returns nothing
 local unit c = GetEnteringUnit()
-if IntegerCd(c,"move cd",3) then 
+if IntegerCdKey(c, SH_ICD_MOVE_CD,3) then 
 call ImmuneToPushDebuff(c)
 call MUE(c,800,0.3,0*bj_DEGTORAD)
 call BuffUnitMS(c,c,0.2)

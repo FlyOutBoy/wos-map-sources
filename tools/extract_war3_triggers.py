@@ -297,10 +297,13 @@ def write_index(output: Path, manifest: dict) -> None:
             f"[{item['path']}]({item['path'].replace(' ', '%20')}) | "
             f"{', '.join(declared) or '—'} | {', '.join(dependencies) or '—'} |"
         )
-    (output / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    from war3_object_data import dump_text
+    dump_text(output / "README.md", "\n".join(lines) + "\n", newline="\n")
 
 
 def write_dependency_manifest(output: Path, manifest: dict) -> None:
+    from war3_object_data import dump_json
+
     providers = {}
     for item in manifest["sources"]:
         for name in item["declarations"]["libraries"] + item["declarations"]["scopes"]:
@@ -340,11 +343,7 @@ def write_dependency_manifest(output: Path, manifest: dict) -> None:
         "unresolved_required": unresolved_required,
         "unresolved_optional": unresolved_optional,
     }
-    (output / "dependency-manifest.json").write_text(
-        json.dumps(dependency_manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
+    dump_json(output / "dependency-manifest.json", dependency_manifest, newline="\n")
 
 
 def extract(wtg_path: Path, wct_path: Path, output: Path, allow_stale_counts: bool = False) -> dict:

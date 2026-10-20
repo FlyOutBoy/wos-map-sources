@@ -2,6 +2,7 @@ import json
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 import war3_object_data as object_data
@@ -11,6 +12,19 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class ObjectDataTests(unittest.TestCase):
+    def test_atomic_metadata_skips_unchanged_and_preserves_old_file_on_replace_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'metadata.json'
+            object_data.dump_json(path, {'value': 1}, newline='\n')
+            before = path.read_bytes()
+            with patch('os.replace', side_effect=PermissionError('watched file')) as replace:
+                object_data.dump_json(path, {'value': 1}, newline='\n')
+                replace.assert_not_called()
+                with self.assertRaises(PermissionError):
+                    object_data.dump_json(path, {'value': 2}, newline='\n')
+            self.assertEqual(before, path.read_bytes())
+            self.assertEqual([path], list(Path(temporary).iterdir()))
+
     @classmethod
     def setUpClass(cls):
         cls.map_dir, _, _ = object_data.load_config(PROJECT_ROOT / "object-data.config.json")

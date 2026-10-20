@@ -27,6 +27,11 @@
     "WOS_Start/WoS_Hero_Icons_Init.j": true,
     "WOS_Start/Leave.j": true,
     "WOS_Start/TeamMapPings.j": true,
+    "WOS_Start/WOSUI.j": true,
+    "WOS_Start/ArenaMinimap.j": true,
+    "WOS_Start/AbilityRangePreview.j": true,
+    "WOS_Start/MatchVotes.j": true,
+    "WOS_Start/DamageStats.j": true,
     "Round_End/RoundEnd.j": true,
     "Systems/CastAItems.j": true,
     "Systems/TasBox.j": true,
@@ -109,6 +114,7 @@
     "Heroes/Erza/ErzaG2_Fairy.j": true,
     "Heroes/Erza/ErzaBase.j": true,
     "Heroes/Milim.j": true,
-    "Heroes/Crocodile.j": true
+    "Heroes/Crocodile.j": true,
+    "Heroes/Frostnova.j": true
   }
 }

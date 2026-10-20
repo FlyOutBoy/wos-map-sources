@@ -57,4 +57,5 @@ if (-not $ValidateOnly) {
         }
     }
 }
-Write-Host "TEST $Mode import OK. Backup: $backup"
+if ($ValidateOnly) { Write-Host "TEST $Mode import validation OK (project unchanged)." }
+else { Write-Host "TEST $Mode import OK. Backup: $backup" }

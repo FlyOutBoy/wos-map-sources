@@ -1,21 +1,21 @@
 {
   "format": 1,
   "source_files": {
-    "wtg": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\Anime_WOS2_0.32.w3x\\war3map.wtg",
-    "wct": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\Anime_WOS2_0.32.w3x\\war3map.wct"
+    "wtg": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3map.wtg",
+    "wct": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3map.wct"
   },
   "wtg": {
     "magic_number": "0x80000004",
     "format_version": 7,
     "trigger_definition_version": 2,
-    "object_count": 121,
-    "custom_text_object_count": 108
+    "object_count": 127,
+    "custom_text_object_count": 114
   },
   "wct": {
     "magic_number": "0x80000004",
     "format_version": 1,
     "header_comment": "",
-    "source_count": 108
+    "source_count": 114
   },
   "sources": [
     {
@@ -29,10 +29,12 @@
       "enabled": true,
       "run_on_map_init": true,
       "path": "Map_Header.j",
-      "source_bytes": 246,
-      "sha256": "45a7c84ca02c7accabcce5a40d932f04f589a8d06e5e9298af262481a196a779",
+      "source_bytes": 589,
+      "sha256": "373beb608d500cf0272b07ff76889e84ff3c18cbd29f07b90743e44c21367715",
       "declarations": {
-        "libraries": [],
+        "libraries": [
+          "EnvironmentRoundRules"
+        ],
         "scopes": [],
         "structs": [],
         "modules": [],
@@ -146,8 +148,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 71862,
-      "sha256": "14b8497f96c3da8cb86812f16776becbf17f2f446a3ecef3254c5c7e257e2312",
+      "source_bytes": 141989,
+      "sha256": "7dc0c6ca6c0adbbaa1e80e763dab1f08a66bd4abfaf8d870b3c59c5d0706e6ca",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -160,6 +162,21 @@
       "dependencies": [
         {
           "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "AbilityRangePreview",
           "optional": false,
           "keyword": "requires"
         }
@@ -179,8 +196,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TooltipBuilder.j",
-      "source_bytes": 7664,
-      "sha256": "95866634a7b52256e25d2f1443e1774a04fd97e64659d46ee555bb6313b7b034",
+      "source_bytes": 9199,
+      "sha256": "17a01184d1fabcdebd134db2651d21633482d345efd00a3d6a6215e1764b5c32",
       "declarations": {
         "libraries": [
           "TooltipBuilder"
@@ -208,8 +225,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UniversalTooltips.j",
-      "source_bytes": 224729,
-      "sha256": "281e57dc0ec283fb734aa25bfa5ce921dd1fc0aa3a774cad687f5a4705f11ecd",
+      "source_bytes": 352951,
+      "sha256": "362d33edc121b5beac4cebc5d968a69c1b3258a4b9298f339836436a4f289fd4",
       "declarations": {
         "libraries": [
           "AAUniversalTooltips"
@@ -232,6 +249,11 @@
           "name": "TooltipBuilder",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
@@ -249,8 +271,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UI_CAREER.j",
-      "source_bytes": 47835,
-      "sha256": "8646696a48365185fe66c1e12451c6dd91e0d0ef83034b512972e0fc2a5a2d94",
+      "source_bytes": 74346,
+      "sha256": "4d0c65135d35d90b8468d412d95a6f0da8c3814321fd062af462c1c169705553",
       "declarations": {
         "libraries": [
           "WosCareerStats"
@@ -270,6 +292,11 @@
           "name": "heroicon",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
@@ -287,8 +314,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 15749,
-      "sha256": "9375f19f1aa1f100be330d673c230c130d4b8791e914c300fcb9456e879e0745",
+      "source_bytes": 58133,
+      "sha256": "6cc2b9c16913dac4e792d690e6e09a7e58d27974269e0b69b3175e65d24c2476",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -300,7 +327,27 @@
       },
       "dependencies": [
         {
+          "name": "WOSPickBans",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
           "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "EmojiStandalone",
           "optional": false,
           "keyword": "requires"
         }
@@ -347,8 +394,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/SaveLoad.j",
-      "source_bytes": 82321,
-      "sha256": "e27e226587548b4829a0ce6921dbf4cf0a8a7012d4af8b2941d1e1d9733c6f15",
+      "source_bytes": 177234,
+      "sha256": "0ddc5a41caf44194c909d5952b0dd3e831899c4df4253fb9797eac550c81f665",
       "declarations": {
         "libraries": [
           "AAINIT"
@@ -361,6 +408,16 @@
       "dependencies": [
         {
           "name": "WOS2BotCodec",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "LocalMp3Player",
           "optional": false,
           "keyword": "requires"
         }
@@ -380,8 +437,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 60747,
-      "sha256": "b246ed8e7403e3f7fcbf9c3f033b594baa0e1485f959b9cd06a3cc7315cb1051",
+      "source_bytes": 71809,
+      "sha256": "3e84abe1cfcbbb3e70a2d98237f09bf5507fc97319e0eaa05bdbbf213cdfffa8",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -391,7 +448,13 @@
         "modules": [],
         "textmacros": []
       },
-      "dependencies": []
+      "dependencies": [
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
     },
     {
       "order": 12,
@@ -407,8 +470,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Scoreboard.j",
-      "source_bytes": 92710,
-      "sha256": "30e2ca3205eeff7b8992dc90a39425a9df22c3a4c199320b641ce2a178794ce6",
+      "source_bytes": 107994,
+      "sha256": "17822e61394619a3a36dd3d6002c993452191aca92957bcaa405cb098e77c12b",
       "declarations": {
         "libraries": [
           "WosScoreboard"
@@ -421,6 +484,16 @@
       "dependencies": [
         {
           "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSTeamMembership",
           "optional": false,
           "keyword": "requires"
         }
@@ -440,8 +513,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ChatCommand.j",
-      "source_bytes": 28532,
-      "sha256": "88aa08f68d19187ac2073358e17512d42aa69c0d8f4bae14089ca7fbd867dbab",
+      "source_bytes": 34142,
+      "sha256": "5ec832edfd0c94718e4de46d9681224456b613d0c05b0de948390fc08900847a",
       "declarations": {
         "libraries": [
           "CustomImageChat"
@@ -454,6 +527,11 @@
       "dependencies": [
         {
           "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "WOSUI",
           "optional": false,
           "keyword": "uses"
         }
@@ -473,8 +551,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/EMOTES.j",
-      "source_bytes": 21769,
-      "sha256": "e867d1134fd3e139a39215d36c8f75f26618bb2624502015dc4d3359b1aea161",
+      "source_bytes": 31272,
+      "sha256": "38e62a3f220b19380f7b77974258f15985fb99141e2323e3d996675c373fefbb",
       "declarations": {
         "libraries": [
           "EmojiStandalone"
@@ -487,6 +565,16 @@
       "dependencies": [
         {
           "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "CustomImageChat",
           "optional": false,
           "keyword": "requires"
         }
@@ -506,10 +594,12 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Player_Pick_Mode.j",
-      "source_bytes": 90459,
-      "sha256": "ae39ab9d8b406f9deb876b26072dc85470e43bb02b7d746e317e61a337098991",
+      "source_bytes": 96782,
+      "sha256": "c9fc4acaa6a91c2eedd643db40b09edb9b68ae625eb836d1d5994bc5951f4af6",
       "declarations": {
-        "libraries": [],
+        "libraries": [
+          "WOSTeamMembership"
+        ],
         "scopes": [],
         "structs": [],
         "modules": [],
@@ -531,8 +621,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Captain_Draft.j",
-      "source_bytes": 57271,
-      "sha256": "f26765579fc4c4c5fa8afd493d75bc7be5573cd01164beb01262d78fd2ada185",
+      "source_bytes": 63771,
+      "sha256": "d5dac24308643a60d6dc71adfdd674f9cc573f5db4ee8dc3d610b6418044cf4d",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -556,8 +646,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 120544,
-      "sha256": "37a446cd7eed0528b5c077d09d54480865458aef14f68dbcb54755c6d32a7975",
+      "source_bytes": 309019,
+      "sha256": "652ad0e0749ec6d28aac6335784a789c25d097f72324ba16d593011e24042e0d",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -581,16 +671,29 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 234606,
-      "sha256": "bfce84ef6a45acd779a4c212b3146983f21eeb4a2af07847855b9d7efcb27783",
+      "source_bytes": 305061,
+      "sha256": "078a231be975e320a5eceb05e274145bfaba34521b401d6d10ebb3e1af52f0fc",
       "declarations": {
-        "libraries": [],
+        "libraries": [
+          "WOSPickBans"
+        ],
         "scopes": [],
         "structs": [],
         "modules": [],
         "textmacros": []
       },
-      "dependencies": []
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
     },
     {
       "order": 19,
@@ -606,8 +709,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Starts.j",
-      "source_bytes": 25575,
-      "sha256": "477c7afd0cee17b07f1e67c5e113b0b53881c3a8ef4f63f5e0c5212d96d456e7",
+      "source_bytes": 28503,
+      "sha256": "3106b38a475c4a6f79576fb8cd851c6af21ce858410f16bb16176fadc8bf46ae",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -656,8 +759,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/BuildsForChars.j",
-      "source_bytes": 22287,
-      "sha256": "718e17d2452559464352dfc9982ee2da6dae4a8a717991787eef67684c171c5b",
+      "source_bytes": 22961,
+      "sha256": "6801c24444d722ff3619ab395b36b04ede945b3bd5a4ad7bcce57b03aa8c608a",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -681,8 +784,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TestUnit.j",
-      "source_bytes": 1248,
-      "sha256": "558f4e70cab782126ea9aff2f3c084f7daffed1a38e22ad62b15b4a8d4196a00",
+      "source_bytes": 1308,
+      "sha256": "09d6e33fd49d7cfb6f2bdd22f4b2c59e0673c695e09d8ee192c76c4de33fb024",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -706,8 +809,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 85968,
-      "sha256": "52a2b3ea4c74b8b48992e65f91f41bf118e35b66162bc3366b2a0989b7e5845b",
+      "source_bytes": 120895,
+      "sha256": "0aeccc26153935b6fbc95b5661282d24eb0508253921e0f715a4f24aae6e90b5",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -732,6 +835,11 @@
           "name": "GearSystems",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
@@ -749,16 +857,34 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/Leave.j",
-      "source_bytes": 2705,
-      "sha256": "54da03099513d7db4cfee4ae45ef9b0428072d6a4835e1b10722b6a913994248",
+      "source_bytes": 3758,
+      "sha256": "801b8e6f98aa86286fa1237100e070f704a8dae07e0c8cff312b9377dd8f4a07",
       "declarations": {
-        "libraries": [],
+        "libraries": [
+          "WOSPlayerLeave"
+        ],
         "scopes": [],
         "structs": [],
         "modules": [],
         "textmacros": []
       },
-      "dependencies": []
+      "dependencies": [
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
     },
     {
       "order": 25,
@@ -774,8 +900,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TeamMapPings.j",
-      "source_bytes": 33554,
-      "sha256": "ecfedc2e09c5ff752f2a468899e7100d779975197b82cf4f95beade70e992017",
+      "source_bytes": 36619,
+      "sha256": "4641ac97b38e2365d3ee2942785d1f0b995800689648a2a3374ecf46ac9460c6",
       "declarations": {
         "libraries": [
           "TeamMapPings"
@@ -790,13 +916,225 @@
           "name": "GearSystems",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
     {
       "order": 26,
       "wct_index": 25,
+      "object_order": 27,
+      "object_id": "0x03000071",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "WOSUI",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/WOSUI.j",
+      "source_bytes": 281437,
+      "sha256": "9134abec185fbb6e5c4dc54c3f43ad3f62e50171a24facf51fe876bec0a33898",
+      "declarations": {
+        "libraries": [
+          "WOSUI"
+        ],
+        "scopes": [],
+        "structs": [
+          "WOSHeroMeter"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "EnvironmentRoundRules",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 27,
+      "wct_index": 26,
       "object_order": 28,
+      "object_id": "0x03000068",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "ArenaMinimap",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/ArenaMinimap.j",
+      "source_bytes": 316,
+      "sha256": "a740d48b4d285754a1c02a1c18d51a1b2b7c1449f8ddabd015942f08642cb570",
+      "declarations": {
+        "libraries": [
+          "ArenaMinimap"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 28,
+      "wct_index": 27,
+      "object_order": 29,
+      "object_id": "0x0300006D",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "AbilityRangePreview",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/AbilityRangePreview.j",
+      "source_bytes": 8905,
+      "sha256": "ecee9c497ab210168f6aa627bb38d8da67ce4f79a990d6398c6bddbb30a40ecc",
+      "declarations": {
+        "libraries": [
+          "AbilityRangePreview"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "AAUniversalTooltips",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "ItemsSpells",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 29,
+      "wct_index": 28,
+      "object_order": 30,
+      "object_id": "0x03000078",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "MatchVotes",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/MatchVotes.j",
+      "source_bytes": 25028,
+      "sha256": "7a9ed1b014a7f0ec5e6b1734f5e503ec73813dae7cda039f8c481ae30d0c8c4e",
+      "declarations": {
+        "libraries": [
+          "WOSMatchVotes"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "AAINIT",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSPlayerLeave",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSTeamMembership",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 30,
+      "wct_index": 29,
+      "object_order": 31,
+      "object_id": "0x03000049",
+      "object_type": "trigger",
+      "category": "WOS Start",
+      "category_id": "0x02000007",
+      "trigger_name": "DamageStats",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "WOS_Start/DamageStats.j",
+      "source_bytes": 109020,
+      "sha256": "96798500b4eae0abb80c92843e328d79c5480f86b8d57c2680d8e762bfc16313",
+      "declarations": {
+        "libraries": [
+          "DamageStats"
+        ],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "heroicon",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
+    },
+    {
+      "order": 31,
+      "wct_index": 30,
+      "object_order": 33,
       "object_id": "0x03000031",
       "object_type": "trigger",
       "category": "Round End",
@@ -807,8 +1145,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Round_End/RoundEnd.j",
-      "source_bytes": 29226,
-      "sha256": "61233fb7218c7e7ff21d73d506e46f002f89c0bb4126b9fc01741654275e0807",
+      "source_bytes": 31694,
+      "sha256": "ae075bcdba74e3f3799e4abbde3b089a49906109a8e4cc31eb9c63d25c331d64",
       "declarations": {
         "libraries": [
           "RoundSpells"
@@ -825,13 +1163,23 @@
           "name": "GearSystems",
           "optional": false,
           "keyword": "uses"
+        },
+        {
+          "name": "EnvironmentRoundRules",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "DamageStats",
+          "optional": true,
+          "keyword": "uses"
         }
       ]
     },
     {
-      "order": 27,
-      "wct_index": 26,
-      "object_order": 30,
+      "order": 32,
+      "wct_index": 31,
+      "object_order": 35,
       "object_id": "0x03000037",
       "object_type": "trigger",
       "category": "Systems",
@@ -842,8 +1190,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastAItems.j",
-      "source_bytes": 12153,
-      "sha256": "3454fb58b9fb686429c44bd9d4f68a8c55668c0a75a35213e00d4f2364b6cff3",
+      "source_bytes": 12534,
+      "sha256": "002f231d81a7a8b25e1bccdb87447105adbcb6927a33ad9cdc07c8039152597a",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -854,9 +1202,9 @@
       "dependencies": []
     },
     {
-      "order": 28,
-      "wct_index": 27,
-      "object_order": 31,
+      "order": 33,
+      "wct_index": 32,
+      "object_order": 36,
       "object_id": "0x0300006E",
       "object_type": "trigger",
       "category": "Systems",
@@ -867,8 +1215,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/TasBox.j",
-      "source_bytes": 7147,
-      "sha256": "adcc9d477ddbb655c5810e5c9d3876eeb21f36ba8299e49c93f7d4392ed1711f",
+      "source_bytes": 14997,
+      "sha256": "2c7a399b477caab13e32227fe23516fab23b169cdadbd219957861ed51eb854a",
       "declarations": {
         "libraries": [
           "TasAbilityChargeBox"
@@ -880,6 +1228,11 @@
       },
       "dependencies": [
         {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
           "name": "FrameLoader",
           "optional": true,
           "keyword": "requires"
@@ -887,9 +1240,9 @@
       ]
     },
     {
-      "order": 29,
-      "wct_index": 28,
-      "object_order": 32,
+      "order": 34,
+      "wct_index": 33,
+      "object_order": 37,
       "object_id": "0x03000045",
       "object_type": "trigger",
       "category": "Systems",
@@ -900,8 +1253,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastCheck.j",
-      "source_bytes": 41893,
-      "sha256": "9dfc40a7245c1831aff46c32bec16a686205157fd512fa9310c4af68c32ae44d",
+      "source_bytes": 49115,
+      "sha256": "c2d24c0c9962d559549ffd8326e58fca865f327c477bb3ecf7eaf9bddbb18854",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -912,9 +1265,9 @@
       "dependencies": []
     },
     {
-      "order": 30,
-      "wct_index": 29,
-      "object_order": 33,
+      "order": 35,
+      "wct_index": 34,
+      "object_order": 38,
       "object_id": "0x0300002C",
       "object_type": "trigger",
       "category": "Systems",
@@ -925,8 +1278,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastingCheck.j",
-      "source_bytes": 7636,
-      "sha256": "49b00c4ecd55d1af7af8334b380be6ba507ab641120a189c706894dddd1225a4",
+      "source_bytes": 7015,
+      "sha256": "9b561426bd2fa744738833cab247949f9c932fcdb1f13dafe88ec91613c665bd",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -937,9 +1290,9 @@
       "dependencies": []
     },
     {
-      "order": 31,
-      "wct_index": 30,
-      "object_order": 34,
+      "order": 36,
+      "wct_index": 35,
+      "object_order": 39,
       "object_id": "0x0300004E",
       "object_type": "trigger",
       "category": "Systems",
@@ -950,8 +1303,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ClickEvent.j",
-      "source_bytes": 2373,
-      "sha256": "cdebe4cddd46452f84b678785a82656cc8edd9ba3669e0c8ab2ad7edbe8ed159",
+      "source_bytes": 2715,
+      "sha256": "63cf6c8be8fb87227a2062eccec57234fe16b9c60054498a861818b5f09147e9",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -962,9 +1315,9 @@
       "dependencies": []
     },
     {
-      "order": 32,
-      "wct_index": 31,
-      "object_order": 35,
+      "order": 37,
+      "wct_index": 36,
+      "object_order": 40,
       "object_id": "0x0300004D",
       "object_type": "trigger",
       "category": "Systems",
@@ -975,8 +1328,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
-      "source_bytes": 58256,
-      "sha256": "5de642da685c4aa861d7034f8da4839f5e188f67f7fa93caa060f46e559a0fd5",
+      "source_bytes": 69624,
+      "sha256": "1c78cb9d2c68272ebdb065f07734648b212508bad6253fc26ed2369ac6f8879a",
       "declarations": {
         "libraries": [
           "AAADest"
@@ -993,13 +1346,18 @@
           "name": "GearSystems",
           "optional": false,
           "keyword": "uses"
+        },
+        {
+          "name": "EnvironmentRoundRules",
+          "optional": false,
+          "keyword": "uses"
         }
       ]
     },
     {
-      "order": 33,
-      "wct_index": 32,
-      "object_order": 37,
+      "order": 38,
+      "wct_index": 37,
+      "object_order": 42,
       "object_id": "0x03000048",
       "object_type": "trigger",
       "category": "Systems",
@@ -1010,8 +1368,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 141721,
-      "sha256": "e257151657639261b6141112d9c843efb287e00dbf319dbbe01d9a69d419b047",
+      "source_bytes": 159530,
+      "sha256": "1117ad84fd1abfa6f2ab3e76e0245cc4ff0e76d19db1a9ff374bf467f46ebc1e",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -1030,9 +1388,9 @@
       ]
     },
     {
-      "order": 34,
-      "wct_index": 33,
-      "object_order": 38,
+      "order": 39,
+      "wct_index": 38,
+      "object_order": 43,
       "object_id": "0x0300006F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1043,8 +1401,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems2.j",
-      "source_bytes": 201422,
-      "sha256": "ef28e60b4e0827628f925f0b113804af0fb599cbe6143cffd67740f9886ebdbf",
+      "source_bytes": 222603,
+      "sha256": "229206a1ffb6e11f5ab9e77f7cd3f64fab49b88260cfdf63f40abbb8705ee119",
       "declarations": {
         "libraries": [
           "GearSystems2"
@@ -1081,7 +1439,6 @@
           "KS_Fear",
           "KS_AbilityLevel",
           "KS_Cooldown",
-          "KS_FakeCooldown",
           "KS_EffectHeight",
           "KS_RemoveDestructable",
           "KS_BuffTimer"
@@ -1094,13 +1451,18 @@
           "name": "TasAbilityChargeBox",
           "optional": false,
           "keyword": "uses"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "uses"
         }
       ]
     },
     {
-      "order": 35,
-      "wct_index": 34,
-      "object_order": 40,
+      "order": 40,
+      "wct_index": 39,
+      "object_order": 45,
       "object_id": "0x0300004F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1111,8 +1473,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 42501,
-      "sha256": "7ca7f60f34d07b4f5a550263884a4559d88d067ed4ba7e19682ec1be3fcb2727",
+      "source_bytes": 52573,
+      "sha256": "5b7fd4475a2121ffaf55fd700f8e4ceadecf1fb7f894d3f5dea169a5664f032a",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1123,9 +1485,9 @@
       "dependencies": []
     },
     {
-      "order": 36,
-      "wct_index": 35,
-      "object_order": 41,
+      "order": 41,
+      "wct_index": 40,
+      "object_order": 46,
       "object_id": "0x03000055",
       "object_type": "trigger",
       "category": "Systems",
@@ -1148,9 +1510,9 @@
       "dependencies": []
     },
     {
-      "order": 37,
-      "wct_index": 36,
-      "object_order": 42,
+      "order": 42,
+      "wct_index": 41,
+      "object_order": 47,
       "object_id": "0x03000051",
       "object_type": "trigger",
       "category": "Systems",
@@ -1173,9 +1535,9 @@
       "dependencies": []
     },
     {
-      "order": 38,
-      "wct_index": 37,
-      "object_order": 43,
+      "order": 43,
+      "wct_index": 42,
+      "object_order": 48,
       "object_id": "0x03000029",
       "object_type": "trigger",
       "category": "Systems",
@@ -1186,8 +1548,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/Death.j",
-      "source_bytes": 7419,
-      "sha256": "461869a696c7a7f527758fd461bdbb5c4e20b1540cc2862ec61f13e4faaa5713",
+      "source_bytes": 8011,
+      "sha256": "31050a1fa16846235daca1d621d2c3a61caf1fbbeee130f4d110c6104c8d51b6",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1198,9 +1560,9 @@
       "dependencies": []
     },
     {
-      "order": 39,
-      "wct_index": 38,
-      "object_order": 44,
+      "order": 44,
+      "wct_index": 43,
+      "object_order": 49,
       "object_id": "0x0300002F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1223,9 +1585,9 @@
       "dependencies": []
     },
     {
-      "order": 40,
-      "wct_index": 39,
-      "object_order": 45,
+      "order": 45,
+      "wct_index": 44,
+      "object_order": 50,
       "object_id": "0x0300004B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1236,8 +1598,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/LvlUpCheck.j",
-      "source_bytes": 17566,
-      "sha256": "0438c681fc32fb31035595140f66ed24f29d936fd18371d75faeda2fd85e3d89",
+      "source_bytes": 19957,
+      "sha256": "4160d413c75fb2030e3dd95f3d286e9c088b88b99ead160dadad570658abd34e",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1248,9 +1610,9 @@
       "dependencies": []
     },
     {
-      "order": 41,
-      "wct_index": 40,
-      "object_order": 46,
+      "order": 46,
+      "wct_index": 45,
+      "object_order": 51,
       "object_id": "0x03000044",
       "object_type": "trigger",
       "category": "Systems",
@@ -1273,9 +1635,9 @@
       "dependencies": []
     },
     {
-      "order": 42,
-      "wct_index": 41,
-      "object_order": 47,
+      "order": 47,
+      "wct_index": 46,
+      "object_order": 52,
       "object_id": "0x03000020",
       "object_type": "trigger",
       "category": "Systems",
@@ -1298,9 +1660,9 @@
       "dependencies": []
     },
     {
-      "order": 43,
-      "wct_index": 42,
-      "object_order": 48,
+      "order": 48,
+      "wct_index": 47,
+      "object_order": 53,
       "object_id": "0x03000021",
       "object_type": "trigger",
       "category": "Systems",
@@ -1323,9 +1685,9 @@
       "dependencies": []
     },
     {
-      "order": 44,
-      "wct_index": 43,
-      "object_order": 49,
+      "order": 49,
+      "wct_index": 48,
+      "object_order": 54,
       "object_id": "0x0300003D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1348,9 +1710,9 @@
       "dependencies": []
     },
     {
-      "order": 45,
-      "wct_index": 44,
-      "object_order": 50,
+      "order": 50,
+      "wct_index": 49,
+      "object_order": 55,
       "object_id": "0x03000006",
       "object_type": "trigger",
       "category": "Systems",
@@ -1361,8 +1723,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/NeviSound.j",
-      "source_bytes": 1320,
-      "sha256": "ed705f896ed4042c3388aaf258c11d9ebf3669441850a4887c19bb4ed33dc92c",
+      "source_bytes": 1475,
+      "sha256": "ab70d7702474268e269b6e66d33aa74896cc3b8c4bceb179f6896676b560dffa",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1373,9 +1735,9 @@
       "dependencies": []
     },
     {
-      "order": 46,
-      "wct_index": 45,
-      "object_order": 51,
+      "order": 51,
+      "wct_index": 50,
+      "object_order": 56,
       "object_id": "0x03000011",
       "object_type": "trigger",
       "category": "Systems",
@@ -1386,8 +1748,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/Evol1.j",
-      "source_bytes": 1201,
-      "sha256": "456900bf35bbdc312071674174264c47f34868c697acd8b0d81726d638c5f71d",
+      "source_bytes": 1466,
+      "sha256": "9c6023524c0552757e43b688e819da982a05243676945eca285371c3c1ee8ca8",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1398,9 +1760,9 @@
       "dependencies": []
     },
     {
-      "order": 47,
-      "wct_index": 46,
-      "object_order": 52,
+      "order": 52,
+      "wct_index": 51,
+      "object_order": 57,
       "object_id": "0x03000012",
       "object_type": "trigger",
       "category": "Systems",
@@ -1411,8 +1773,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/Evol2.j",
-      "source_bytes": 1193,
-      "sha256": "b229a26cc1bafdfcdac2e5dfb0fe514d0893c212e5d9202bfc05e3aeb2b3d8be",
+      "source_bytes": 1556,
+      "sha256": "1e8f8f614a13610da92adc69a30495aa78c56251f6550e787210d314e458285b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1423,9 +1785,9 @@
       "dependencies": []
     },
     {
-      "order": 48,
-      "wct_index": 47,
-      "object_order": 53,
+      "order": 53,
+      "wct_index": 52,
+      "object_order": 58,
       "object_id": "0x03000030",
       "object_type": "trigger",
       "category": "Systems",
@@ -1448,9 +1810,9 @@
       "dependencies": []
     },
     {
-      "order": 49,
-      "wct_index": 48,
-      "object_order": 54,
+      "order": 54,
+      "wct_index": 53,
+      "object_order": 59,
       "object_id": "0x0300003F",
       "object_type": "trigger",
       "category": "Systems",
@@ -1461,8 +1823,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ESC.j",
-      "source_bytes": 1708,
-      "sha256": "b1f23bd588caa392d7fbe288999f5aa8d19a13eb56d09e067f8911b6d22406d3",
+      "source_bytes": 2256,
+      "sha256": "c168aa9455537c88dedb784b226f791a20069d689066176c7ce4492648115405",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1473,9 +1835,9 @@
       "dependencies": []
     },
     {
-      "order": 50,
-      "wct_index": 49,
-      "object_order": 55,
+      "order": 55,
+      "wct_index": 54,
+      "object_order": 60,
       "object_id": "0x03000041",
       "object_type": "trigger",
       "category": "Systems",
@@ -1486,21 +1848,34 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/Killme.j",
-      "source_bytes": 968,
-      "sha256": "127dd107d11a098b7f6a96d0dbf0beb6501328be4639fce90e112c6b56f37110",
+      "source_bytes": 6255,
+      "sha256": "20111aff24c91d0506104234d28020b02d0ca3a7a91ebf1f29453b5e486f071a",
       "declarations": {
-        "libraries": [],
+        "libraries": [
+          "KillmeProgress"
+        ],
         "scopes": [],
         "structs": [],
         "modules": [],
         "textmacros": []
       },
-      "dependencies": []
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "requires"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "requires"
+        }
+      ]
     },
     {
-      "order": 51,
-      "wct_index": 50,
-      "object_order": 56,
+      "order": 56,
+      "wct_index": 55,
+      "object_order": 61,
       "object_id": "0x03000043",
       "object_type": "trigger",
       "category": "Systems",
@@ -1511,8 +1886,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/AnimCheck.j",
-      "source_bytes": 1217,
-      "sha256": "79d113d4e13784b0642fe32df20ca6ba84796397648948a1912e364f357271e6",
+      "source_bytes": 1195,
+      "sha256": "53353078dc6bc07198111f921e7bf926dbf5ff3974282a55270d2376301388b9",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1523,9 +1898,9 @@
       "dependencies": []
     },
     {
-      "order": 52,
-      "wct_index": 51,
-      "object_order": 57,
+      "order": 57,
+      "wct_index": 56,
+      "object_order": 62,
       "object_id": "0x0300000D",
       "object_type": "trigger",
       "category": "Systems",
@@ -1548,9 +1923,9 @@
       "dependencies": []
     },
     {
-      "order": 53,
-      "wct_index": 52,
-      "object_order": 58,
+      "order": 58,
+      "wct_index": 57,
+      "object_order": 63,
       "object_id": "0x03000014",
       "object_type": "trigger",
       "category": "Systems",
@@ -1573,9 +1948,9 @@
       "dependencies": []
     },
     {
-      "order": 54,
-      "wct_index": 53,
-      "object_order": 59,
+      "order": 59,
+      "wct_index": 58,
+      "object_order": 64,
       "object_id": "0x0300003E",
       "object_type": "trigger",
       "category": "Systems",
@@ -1586,8 +1961,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ArrowLeft.j",
-      "source_bytes": 3297,
-      "sha256": "2500cae7448fde42819fcbbb45e96029f3769dfc99bc094360899d8c8c85b37e",
+      "source_bytes": 3453,
+      "sha256": "a1cc1e6acbc95ffc5117ee5ee3882c0ad5aacd89d9369a3cb1bca1b57804da4a",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1598,9 +1973,9 @@
       "dependencies": []
     },
     {
-      "order": 55,
-      "wct_index": 54,
-      "object_order": 60,
+      "order": 60,
+      "wct_index": 59,
+      "object_order": 65,
       "object_id": "0x0300003B",
       "object_type": "trigger",
       "category": "Systems",
@@ -1611,8 +1986,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ArrowUp.j",
-      "source_bytes": 3353,
-      "sha256": "a6d6969c3cdb38902db248b6a8d5118dc5b402f17ce930f9b107fb6e19713ed5",
+      "source_bytes": 3499,
+      "sha256": "c8789be170c79decf02c86cdd347bbc244a8569d3e3b786ae821155622132db7",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1623,9 +1998,9 @@
       "dependencies": []
     },
     {
-      "order": 56,
-      "wct_index": 55,
-      "object_order": 61,
+      "order": 61,
+      "wct_index": 60,
+      "object_order": 66,
       "object_id": "0x03000001",
       "object_type": "trigger",
       "category": "Systems",
@@ -1648,9 +2023,9 @@
       "dependencies": []
     },
     {
-      "order": 57,
-      "wct_index": 56,
-      "object_order": 62,
+      "order": 62,
+      "wct_index": 61,
+      "object_order": 67,
       "object_id": "0x03000056",
       "object_type": "trigger",
       "category": "Systems",
@@ -1661,133 +2036,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ArrowRight.j",
-      "source_bytes": 3113,
-      "sha256": "2512c1dec315b6da5e216d92ee7eda78070cd069f8f21d28d2c90841cb860960",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 58,
-      "wct_index": 57,
-      "object_order": 65,
-      "object_id": "0x03000054",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "ButtonPressed",
-      "comment": "FRAME_Chat0",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/ButtonPressed.j",
-      "source_bytes": 11115,
-      "sha256": "6d8727d1144b6ef2567abf8d74d7b79e197ae609f5b89a9f1553b8beaf814d8d",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 59,
-      "wct_index": 58,
-      "object_order": 66,
-      "object_id": "0x0300001F",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "ButtonPressed ESC",
-      "comment": "FRAME_Chat0",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/ButtonPressed_ESC.j",
-      "source_bytes": 1713,
-      "sha256": "1e5efe0c07e8fbc361347ea2c05f73d909508f4559c7d69cd42fcbdc9a7f1b53",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 60,
-      "wct_index": 59,
-      "object_order": 67,
-      "object_id": "0x03000016",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "ButtonUnPressed_ESC",
-      "comment": "FRAME_Chat0",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/ButtonUnPressed_ESC.j",
-      "source_bytes": 1217,
-      "sha256": "e37cc26227f6283254bc236df111f67f0f7907a329657014b23e794e24b8e5bc",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 61,
-      "wct_index": 60,
-      "object_order": 69,
-      "object_id": "0x0300001C",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "EnterBase",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/EnterBase.j",
-      "source_bytes": 2303,
-      "sha256": "da00a557e3d9081bfbf4f12f038c014f4ada86d3683476996bcefc2c2c241438",
-      "declarations": {
-        "libraries": [],
-        "scopes": [],
-        "structs": [],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": []
-    },
-    {
-      "order": 62,
-      "wct_index": 61,
-      "object_order": 70,
-      "object_id": "0x03000027",
-      "object_type": "trigger",
-      "category": "Systems",
-      "category_id": "0x0200000B",
-      "trigger_name": "EnterRegion",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Systems/EnterRegion.j",
-      "source_bytes": 5087,
-      "sha256": "6714f8507f0d0ddf59d182c7cdf5feab670d2c48bccbed70d1b9165ed5754b90",
+      "source_bytes": 3274,
+      "sha256": "afe7def235019222aaaf03bfefd1243a7aa6e588b39c09447ed4f83a2d5b25b8",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1800,19 +2050,19 @@
     {
       "order": 63,
       "wct_index": 62,
-      "object_order": 71,
-      "object_id": "0x0300001D",
+      "object_order": 70,
+      "object_id": "0x03000054",
       "object_type": "trigger",
       "category": "Systems",
       "category_id": "0x0200000B",
-      "trigger_name": "LeavesBase",
-      "comment": "",
+      "trigger_name": "ButtonPressed",
+      "comment": "FRAME_Chat0",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Systems/LeavesBase.j",
-      "source_bytes": 1076,
-      "sha256": "1f6b4b2ddd5db17e2604d00da35343c666dbabd0d9be36d27942040f9983af3e",
+      "path": "Systems/ButtonPressed.j",
+      "source_bytes": 7664,
+      "sha256": "ddb64ecf3d94a62076356bd697fdf5a281c920005e44e9430948ea8c7d66e8f6",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1825,19 +2075,19 @@
     {
       "order": 64,
       "wct_index": 63,
-      "object_order": 72,
-      "object_id": "0x03000026",
+      "object_order": 71,
+      "object_id": "0x0300001F",
       "object_type": "trigger",
       "category": "Systems",
       "category_id": "0x0200000B",
-      "trigger_name": "LeavesRegion",
-      "comment": "",
+      "trigger_name": "ButtonPressed ESC",
+      "comment": "FRAME_Chat0",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Systems/LeavesRegion.j",
-      "source_bytes": 956,
-      "sha256": "c3ec18ffa591fb7d11ef35e809b1cf0ca727f9192539184b9ae055919d613227",
+      "path": "Systems/ButtonPressed_ESC.j",
+      "source_bytes": 1994,
+      "sha256": "a327a07d6e9f9a067012783dda16359aa5049b207e32ce471e871c26095b16af",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1850,7 +2100,132 @@
     {
       "order": 65,
       "wct_index": 64,
+      "object_order": 72,
+      "object_id": "0x03000016",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "ButtonUnPressed_ESC",
+      "comment": "FRAME_Chat0",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/ButtonUnPressed_ESC.j",
+      "source_bytes": 1494,
+      "sha256": "641e416dd62a1d4488922d490958d558c88e400b11066a968926be92705b083a",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 66,
+      "wct_index": 65,
       "object_order": 74,
+      "object_id": "0x0300001C",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "EnterBase",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/EnterBase.j",
+      "source_bytes": 3096,
+      "sha256": "149e9c67e0afb85d9a7de39c96647e060810d56c63c9823fe9ba45f6d078d291",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 67,
+      "wct_index": 66,
+      "object_order": 75,
+      "object_id": "0x03000027",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "EnterRegion",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/EnterRegion.j",
+      "source_bytes": 6663,
+      "sha256": "fa9abfa0cd2f8096b46a5b65fe198229d3f04566cccc7efdb286c0ad55e14d5c",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 68,
+      "wct_index": 67,
+      "object_order": 76,
+      "object_id": "0x0300001D",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LeavesBase",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LeavesBase.j",
+      "source_bytes": 1095,
+      "sha256": "984d75ce7ccc6dc5e4f1a8d0732150f75bd619cb3bf79218a3b538b42ca7ff9e",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 69,
+      "wct_index": 68,
+      "object_order": 77,
+      "object_id": "0x03000026",
+      "object_type": "trigger",
+      "category": "Systems",
+      "category_id": "0x0200000B",
+      "trigger_name": "LeavesRegion",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Systems/LeavesRegion.j",
+      "source_bytes": 989,
+      "sha256": "3f3189dedcdd85ed79e86ce079123e3e87fc8a00a3fc9b28f157160e8956b505",
+      "declarations": {
+        "libraries": [],
+        "scopes": [],
+        "structs": [],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": []
+    },
+    {
+      "order": 70,
+      "wct_index": 69,
+      "object_order": 79,
       "object_id": "0x03000007",
       "object_type": "trigger",
       "category": "Systems",
@@ -1873,9 +2248,9 @@
       "dependencies": []
     },
     {
-      "order": 66,
-      "wct_index": 65,
-      "object_order": 75,
+      "order": 71,
+      "wct_index": 70,
+      "object_order": 80,
       "object_id": "0x03000039",
       "object_type": "trigger",
       "category": "Systems",
@@ -1886,8 +2261,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemEnter.j",
-      "source_bytes": 6331,
-      "sha256": "322846bb17890d36cfaebadbed19392c736203bce7831523b956bf5f07d01a4b",
+      "source_bytes": 7364,
+      "sha256": "722cb0a57d39c71e7a3b0fd26954555944e490d148bcbbdd7256005970c52547",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1898,9 +2273,9 @@
       "dependencies": []
     },
     {
-      "order": 67,
-      "wct_index": 66,
-      "object_order": 76,
+      "order": 72,
+      "wct_index": 71,
+      "object_order": 81,
       "object_id": "0x03000038",
       "object_type": "trigger",
       "category": "Systems",
@@ -1911,8 +2286,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemLeave.j",
-      "source_bytes": 3964,
-      "sha256": "9299e9cb8bed1a7d8bdfec2f7f682ddb04340f95bfcc389b23cf015de9aea6a9",
+      "source_bytes": 4081,
+      "sha256": "d0a54addaa8fa6366f5123014ab67bf1b5126c090880ca48e8640550dc570011",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1923,9 +2298,9 @@
       "dependencies": []
     },
     {
-      "order": 68,
-      "wct_index": 67,
-      "object_order": 78,
+      "order": 73,
+      "wct_index": 72,
+      "object_order": 83,
       "object_id": "0x0300003A",
       "object_type": "trigger",
       "category": "Items",
@@ -1936,14 +2311,16 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 109348,
-      "sha256": "3e67ecde4b65133a2433c7fded841a5ac523b7de5c4ffee5f8bc9174eb221fa7",
+      "source_bytes": 145202,
+      "sha256": "32cafe4e374b2ae414c343ad4c3c8443304a091d1304fd9777d1eca4687e871d",
       "declarations": {
         "libraries": [
           "ItemsSpells"
         ],
         "scopes": [],
         "structs": [
+          "ItemsSpells_Kusanagi",
+          "ItemsSpells_TimedStr",
           "ItemsSpells_FunnyBarrel",
           "ItemsSpells_TsuchikageHat",
           "ItemsSpells_FunnyPresent",
@@ -1961,7 +2338,10 @@
           "ItemsSpells_TurboNeko",
           "ItemsSpells_TsuchikageHatEvolve",
           "ItemsSpells_ShikiKnifeEvolved",
-          "ItemsSpells_DeathNote"
+          "ItemsSpells_DeathNote",
+          "ItemsSpells_SakuraSesshou",
+          "ItemsTick05_Loop",
+          "ItemsTick_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -1975,9 +2355,9 @@
       ]
     },
     {
-      "order": 69,
-      "wct_index": 68,
-      "object_order": 80,
+      "order": 74,
+      "wct_index": 73,
+      "object_order": 85,
       "object_id": "0x03000070",
       "object_type": "trigger",
       "category": "Heroes",
@@ -1988,8 +2368,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Toji.j",
-      "source_bytes": 108153,
-      "sha256": "91c963ff21d1008591eb4b8ed48359b1eae7483f655c4d5c7ec5e71946bb01ab",
+      "source_bytes": 111677,
+      "sha256": "de967952b3847dede747e4d8234a338f3f528704bc1b19430cc59a1c4b2b4f40",
       "declarations": {
         "libraries": [
           "TojiSpells"
@@ -2017,9 +2397,9 @@
       ]
     },
     {
-      "order": 70,
-      "wct_index": 69,
-      "object_order": 81,
+      "order": 75,
+      "wct_index": 74,
+      "object_order": 86,
       "object_id": "0x0300001E",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2030,8 +2410,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Raiden.j",
-      "source_bytes": 121798,
-      "sha256": "6b5f5d2dab2a5182babfb842d9be9b356402c19e2cf6847a3c79a6ac6e43aae0",
+      "source_bytes": 118090,
+      "sha256": "c6e49d40778d6c527af7723f1c9dcc2fd0367ddff1bc40865887eb0da607d787",
       "declarations": {
         "libraries": [
           "RaidenSpells"
@@ -2046,7 +2426,9 @@
           "RaidenR_KS",
           "RaidenT_KS",
           "RaidenT2_KS",
-          "RaidenPas_KS"
+          "RaidenPas_KS",
+          "RaidenTick_Loop",
+          "RaidenTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2060,9 +2442,9 @@
       ]
     },
     {
-      "order": 71,
-      "wct_index": 70,
-      "object_order": 82,
+      "order": 76,
+      "wct_index": 75,
+      "object_order": 87,
       "object_id": "0x0300006C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2073,8 +2455,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Frieren.j",
-      "source_bytes": 120686,
-      "sha256": "fdb3db5b6e3b144e386fba0f050476b77b8cf413f90e946da830156eb31b5291",
+      "source_bytes": 122649,
+      "sha256": "1ef8f2b8cdb22ba26e0ec169074608da89ff5836343a4b11c17153ff0515f335",
       "declarations": {
         "libraries": [
           "FrierenSpells"
@@ -2108,9 +2490,9 @@
       ]
     },
     {
-      "order": 72,
-      "wct_index": 71,
-      "object_order": 83,
+      "order": 77,
+      "wct_index": 76,
+      "object_order": 88,
       "object_id": "0x03000066",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2121,8 +2503,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Ainz.j",
-      "source_bytes": 165558,
-      "sha256": "b8437561d9be46e82b1be154bf854417e6ac0d1caac94a7a210c27fe1fad890b",
+      "source_bytes": 162166,
+      "sha256": "15786ff49528687babffc04da8e70c987916854ccc9bc93ceb0a69c271505c3b",
       "declarations": {
         "libraries": [
           "AinzSpells"
@@ -2140,7 +2522,8 @@
           "AinzTE_KS",
           "AinzTR_KS",
           "AinzF_KS",
-          "AinzG_KS"
+          "AinzG_KS",
+          "AinzTick_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2154,9 +2537,9 @@
       ]
     },
     {
-      "order": 73,
-      "wct_index": 72,
-      "object_order": 84,
+      "order": 78,
+      "wct_index": 77,
+      "object_order": 89,
       "object_id": "0x03000040",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2167,8 +2550,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Laxus.j",
-      "source_bytes": 116356,
-      "sha256": "85d73430b13b979ec68a8b3ba72bdc119c35acbfbc8f0032b1feaede3e72d9ed",
+      "source_bytes": 116337,
+      "sha256": "d80f11c69d4af089b789e77f2440cf10a2d516654c4b6479d0520a02fd29421f",
       "declarations": {
         "libraries": [
           "LaxusSpells"
@@ -2202,9 +2585,9 @@
       ]
     },
     {
-      "order": 74,
-      "wct_index": 73,
-      "object_order": 85,
+      "order": 79,
+      "wct_index": 78,
+      "object_order": 90,
       "object_id": "0x03000060",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2215,8 +2598,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Brandish.j",
-      "source_bytes": 58121,
-      "sha256": "23b9b26ff075c8594a2722f29c2376585e0fc63da8f212b9de23ab250cf24030",
+      "source_bytes": 58870,
+      "sha256": "47d74c613c456d9cb9e67d630c6ccf428207f79908089203f0cde94007b84fd1",
       "declarations": {
         "libraries": [
           "BrandishSpells"
@@ -2244,9 +2627,9 @@
       ]
     },
     {
-      "order": 75,
-      "wct_index": 74,
-      "object_order": 86,
+      "order": 80,
+      "wct_index": 79,
+      "object_order": 91,
       "object_id": "0x0300005F",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2257,8 +2640,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
-      "source_bytes": 97512,
-      "sha256": "bac7c1fb6c99ca6f0c8d569c906be5a8ca8dab23a83c7cfbc5e53e912780e076",
+      "source_bytes": 96552,
+      "sha256": "09623005359ccaf84b4baedeced271da8b2a036f066ed6d811c203b07db03492",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -2286,9 +2669,9 @@
       ]
     },
     {
-      "order": 76,
-      "wct_index": 75,
-      "object_order": 87,
+      "order": 81,
+      "wct_index": 80,
+      "object_order": 92,
       "object_id": "0x03000059",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2299,8 +2682,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Asta.j",
-      "source_bytes": 97536,
-      "sha256": "d6a1bafe10ba484d51d226338d20718229cc96553183c4dce66d2816563806f1",
+      "source_bytes": 95813,
+      "sha256": "3eceb839093078c1813532b2d6bc9025cacd14b379552adb4f5c10d40efdabaa",
       "declarations": {
         "libraries": [
           "AstaSpells"
@@ -2327,9 +2710,9 @@
       ]
     },
     {
-      "order": 77,
-      "wct_index": 76,
-      "object_order": 88,
+      "order": 82,
+      "wct_index": 81,
+      "object_order": 93,
       "object_id": "0x0300003C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2340,8 +2723,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Gojo.j",
-      "source_bytes": 127432,
-      "sha256": "7a4684e0b60e330d0996120cb85b5b8fc81a8e5a9fc0200f64134c7407823f0d",
+      "source_bytes": 125049,
+      "sha256": "2261ad8ab5e5636f3eb15862d78e81c58bc8011be9d4873dd15ee6169d8db9fd",
       "declarations": {
         "libraries": [
           "GojoSpells"
@@ -2366,9 +2749,9 @@
       ]
     },
     {
-      "order": 78,
-      "wct_index": 77,
-      "object_order": 89,
+      "order": 83,
+      "wct_index": 82,
+      "object_order": 94,
       "object_id": "0x03000058",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2379,8 +2762,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Bambietta.j",
-      "source_bytes": 110607,
-      "sha256": "56d8c0ce904d6ff65d18fb0cacb904f5f09307e0555a1d0640aa00f8f424e789",
+      "source_bytes": 108458,
+      "sha256": "0f82f67b488dc2f6961b6472f02ca11596719c8c0e4059631eb03edcaa302650",
       "declarations": {
         "libraries": [
           "BambiettaSpells"
@@ -2405,9 +2788,9 @@
       ]
     },
     {
-      "order": 79,
-      "wct_index": 78,
-      "object_order": 90,
+      "order": 84,
+      "wct_index": 83,
+      "object_order": 95,
       "object_id": "0x03000057",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2418,8 +2801,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Kirito.j",
-      "source_bytes": 82891,
-      "sha256": "ecddd25588b6f556b466ca657601cca2d056906c698edfae8b505670b8007f3f",
+      "source_bytes": 86499,
+      "sha256": "b23a826cf23fc11f6cfc39c74ac5fde0db1bd31c82ac96ea075b0e0c85d2e2bb",
       "declarations": {
         "libraries": [
           "KiritoSpells"
@@ -2431,206 +2814,9 @@
           "KiritoSpells_E",
           "KiritoSpells_R",
           "KiritoSpells_T",
-          "KiritoSpells_G"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 80,
-      "wct_index": 79,
-      "object_order": 91,
-      "object_id": "0x03000009",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Alucard",
-      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Alucard.j",
-      "source_bytes": 105819,
-      "sha256": "72d3d518d4c3b74eb7607f45ca55f9a0478cec6d6bcb8ffe53727732b890a1cb",
-      "declarations": {
-        "libraries": [
-          "AlucardSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "AlucardSpells_Utility",
-          "AlucardSpells_Q",
-          "AlucardSpells_W",
-          "AlucardSpells_E",
-          "AlucardSpells_R",
-          "AlucardSpells_T"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 81,
-      "wct_index": 80,
-      "object_order": 92,
-      "object_id": "0x03000004",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Starrk",
-      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Starrk.j",
-      "source_bytes": 145537,
-      "sha256": "38d9d93e96ab6ac7401ff1ecb76e7d860c29b672433f5b2b0c406322468ce2fe",
-      "declarations": {
-        "libraries": [
-          "StarrkSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "StarrkSpells_Utility",
-          "StarrkSpells_Q",
-          "StarrkSpells_W",
-          "StarrkSpells_E",
-          "StarrkSpells_R",
-          "StarrkSpells_T"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 82,
-      "wct_index": 81,
-      "object_order": 93,
-      "object_id": "0x03000003",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Takeshi",
-      "comment": "dmg2 +\"/\"R2I(I2S(rmax))",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Takeshi.j",
-      "source_bytes": 149382,
-      "sha256": "1684bfc65992d3a7d91286c2518b3a7b38f73f102531225fe145e085a20486f4",
-      "declarations": {
-        "libraries": [
-          "TakeshiSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "TakeshiSpells_Q",
-          "TakeshiSpells_W",
-          "TakeshiSpells_E",
-          "TakeshiSpells_R",
-          "TakeshiSpells_T",
-          "TakeshiSpells_G"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 83,
-      "wct_index": 82,
-      "object_order": 94,
-      "object_id": "0x03000015",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Barragan",
-      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Barragan.j",
-      "source_bytes": 91754,
-      "sha256": "323a57a84ec154abcbed51aec08027f99c740b5ecec2899ffff3c92f9d2eaadf",
-      "declarations": {
-        "libraries": [
-          "BarraganSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "HeroSpells_Q",
-          "HeroSpells_W",
-          "HeroSpells_E",
-          "HeroSpells_R",
-          "HeroSpells_T"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 84,
-      "wct_index": 83,
-      "object_order": 95,
-      "object_id": "0x03000017",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Mahoraga",
-      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Mahoraga.j",
-      "source_bytes": 89452,
-      "sha256": "eb913139284bbb0d89678ac9895e580cd39af79e7bdf5275d292b402e4b640d9",
-      "declarations": {
-        "libraries": [
-          "MahoragaSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "MahoragaSpells_Q",
-          "MahoragaSpells_E",
-          "MahoragaSpells_W",
-          "MahoragaSpells_T",
-          "MahoragaSpells_F",
-          "MahoragaSpells_G"
+          "KiritoSpells_G",
+          "KiritoTick_Loop",
+          "KiritoTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2647,30 +2833,32 @@
       "order": 85,
       "wct_index": 84,
       "object_order": 96,
-      "object_id": "0x03000013",
+      "object_id": "0x03000009",
       "object_type": "trigger",
       "category": "Heroes",
       "category_id": "0x0200000F",
-      "trigger_name": "Harribel",
-      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "trigger_name": "Alucard",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Heroes/Harribel.j",
-      "source_bytes": 77131,
-      "sha256": "89b7f116bfcd040715f2396b6e498d647dbc56f55be0171311bb6b0b4bcf4ef6",
+      "path": "Heroes/Alucard.j",
+      "source_bytes": 106570,
+      "sha256": "f9be4dc4a27ebc24765fffda6f8c3765defa5afbc41439128f39541203a57914",
       "declarations": {
         "libraries": [
-          "HarribelSpells"
+          "AlucardSpells"
         ],
         "scopes": [],
         "structs": [
-          "HarribelSpells_Q",
-          "HarribelSpells_W",
-          "HarribelSpells_E",
-          "HarribelSpells_R",
-          "HarribelSpells_T",
-          "HarribelSpells_G"
+          "AlucardSpells_Utility",
+          "AlucardSpells_Q",
+          "AlucardSpells_W",
+          "AlucardSpells_E",
+          "AlucardSpells_R",
+          "AlucardSpells_T",
+          "AlucardTick_Loop",
+          "AlucardTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2687,6 +2875,218 @@
       "order": 86,
       "wct_index": 85,
       "object_order": 97,
+      "object_id": "0x03000004",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Starrk",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Starrk.j",
+      "source_bytes": 148280,
+      "sha256": "998f32ca70be8ee4f4e840df54f498e868ffd70b8f261c8d318216a3d28c8258",
+      "declarations": {
+        "libraries": [
+          "StarrkSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "StarrkSpells_Utility",
+          "StarrkSpells_Q",
+          "StarrkSpells_W",
+          "StarrkSpells_E",
+          "StarrkSpells_R",
+          "StarrkSpells_T",
+          "Starrk_StackMeter",
+          "StarrkTick_Loop",
+          "StarrkTick05_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 87,
+      "wct_index": 86,
+      "object_order": 98,
+      "object_id": "0x03000003",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Takeshi",
+      "comment": "dmg2 +\"/\"R2I(I2S(rmax))",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Takeshi.j",
+      "source_bytes": 151549,
+      "sha256": "81806ef8971cfcc12bfcaf6eb57c3531325e78b24034c202c49f4208d8d9d3c4",
+      "declarations": {
+        "libraries": [
+          "TakeshiSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "TakeshiSpells_Q",
+          "TakeshiSpells_W",
+          "TakeshiSpells_E",
+          "TakeshiSpells_R",
+          "TakeshiSpells_T",
+          "TakeshiSpells_G",
+          "TakeshiTick_Loop",
+          "TakeshiTick10_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 88,
+      "wct_index": 87,
+      "object_order": 99,
+      "object_id": "0x03000015",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Barragan",
+      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Barragan.j",
+      "source_bytes": 89355,
+      "sha256": "5f68adb1de91b95a9961a38a635bca38e31212951368dec85e6437e50448cb13",
+      "declarations": {
+        "libraries": [
+          "BarraganSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "HeroSpells_Q",
+          "HeroSpells_W",
+          "HeroSpells_E",
+          "HeroSpells_R",
+          "HeroSpells_T",
+          "BarraganTick_Loop",
+          "BarraganTick05_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 89,
+      "wct_index": 88,
+      "object_order": 100,
+      "object_id": "0x03000017",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Mahoraga",
+      "comment": "StarrkE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Mahoraga.j",
+      "source_bytes": 94641,
+      "sha256": "cf0c6fac3d04cc4b1eec42b1a3c65f68664fb5aeae1911430420a8f0f35316f6",
+      "declarations": {
+        "libraries": [
+          "MahoragaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "MahoragaSpells_Q",
+          "MahoragaSpells_E",
+          "MahoragaSpells_W",
+          "MahoragaSpells_T",
+          "MahoragaSpells_F",
+          "MahoragaSpells_G",
+          "MahoragaTick_Loop",
+          "MahoragaTick10_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 90,
+      "wct_index": 89,
+      "object_order": 101,
+      "object_id": "0x03000013",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Harribel",
+      "comment": "BarraganE_ReduceR_CD\r\n                    call BlzStartUnitAbilityCooldown(c,StarrkR_ID,BlzGetUnitAbilityCooldownRemaining(c,StarrkR2_ID))\r\nif GetHeroLevel(c) >= 35 then\r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID)-StarrkE_ReduceR_CD)\r\n                                    else                                    \r\n                                    call BlzStartUnitAbilityCooldown(c, StarrkR2_ID, BlzGetUnitAbilityCooldownRemaining(c, StarrkR_ID))\r\n                                endif",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Harribel.j",
+      "source_bytes": 77925,
+      "sha256": "e1b69a4e3054976aba5b297d4195d0a507970fe25ce57c8036fe9ff830253eee",
+      "declarations": {
+        "libraries": [
+          "HarribelSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "HarribelSpells_Q",
+          "HarribelSpells_W",
+          "HarribelSpells_E",
+          "HarribelSpells_R",
+          "HarribelSpells_T",
+          "HarribelSpells_G",
+          "HarribelTick_Loop",
+          "HarribelTick02_Loop",
+          "HarribelTick05_Loop",
+          "HarribelTick10_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 91,
+      "wct_index": 90,
+      "object_order": 102,
       "object_id": "0x03000062",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2697,8 +3097,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Tsuna.j",
-      "source_bytes": 165603,
-      "sha256": "1a24faacc03ae6554996b2e370902ca1bc45eddc5cccca5b2848884c87c0dc6b",
+      "source_bytes": 162632,
+      "sha256": "55d22e2fd0d94b9e34a9d6fe411394217093f64abe1506331034bb4f92956660",
       "declarations": {
         "libraries": [
           "TsunaSpells"
@@ -2718,7 +3118,10 @@
           "TsunaFKS",
           "TsunaGKS",
           "TsunaG2KS",
-          "TsunaG3KS"
+          "TsunaG3KS",
+          "TsunaTick_Loop",
+          "TsunaTick05_Loop",
+          "TsunaTick10_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2732,9 +3135,9 @@
       ]
     },
     {
-      "order": 87,
-      "wct_index": 86,
-      "object_order": 98,
+      "order": 92,
+      "wct_index": 91,
+      "object_order": 103,
       "object_id": "0x0300000E",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2745,8 +3148,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Rimuru.j",
-      "source_bytes": 203624,
-      "sha256": "2faf4856c170f8d4773bf5775bcebd59656bb16f148d432c1de15479e307cb64",
+      "source_bytes": 202416,
+      "sha256": "e2aff7803e5820f1681ae1394c9124e5ac01efadb3d3e5e91652cf8e8dd76f47",
       "declarations": {
         "libraries": [
           "RimuruSpells"
@@ -2788,9 +3191,9 @@
       ]
     },
     {
-      "order": 88,
-      "wct_index": 87,
-      "object_order": 99,
+      "order": 93,
+      "wct_index": 92,
+      "object_order": 104,
       "object_id": "0x0300000C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2801,8 +3204,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/DarkShiki.j",
-      "source_bytes": 63838,
-      "sha256": "3487330a1f7218a9beab41559be14b1cb92b6672f6f4610c6d2a508515cdff64",
+      "source_bytes": 66444,
+      "sha256": "742b50a1da784966adddeacfe302939aaef4f17b63cbba2ddc6a888b99471a24",
       "declarations": {
         "libraries": [
           "DarkShikiSpells"
@@ -2816,7 +3219,9 @@
           "DarkShikiE_KS",
           "DarkShikiR_KS",
           "DarkShikiT_KS",
-          "DarkShikiG_KS"
+          "DarkShikiG_KS",
+          "DarkShikiTick_Loop",
+          "DarkShikiTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2830,9 +3235,9 @@
       ]
     },
     {
-      "order": 89,
-      "wct_index": 88,
-      "object_order": 100,
+      "order": 94,
+      "wct_index": 93,
+      "object_order": 105,
       "object_id": "0x0300000B",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2843,8 +3248,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/BazzB.j",
-      "source_bytes": 45800,
-      "sha256": "b859c14ca79d3d275ba098042c4896317ac3fadd214b37ab4c9b0420498ec385",
+      "source_bytes": 47154,
+      "sha256": "af5350458d2d1b93ae7fd0b5a8283b3bc203b0ca378d46b2d138cfd688a0aa6f",
       "declarations": {
         "libraries": [
           "BazzBSpells"
@@ -2869,9 +3274,9 @@
       ]
     },
     {
-      "order": 90,
-      "wct_index": 89,
-      "object_order": 101,
+      "order": 95,
+      "wct_index": 94,
+      "object_order": 106,
       "object_id": "0x03000005",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2882,8 +3287,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Neuvillette.j",
-      "source_bytes": 44107,
-      "sha256": "65ec4ca83270efdf111351e585a1a338af9d5ba1194847d4e8ab819dd0faac65",
+      "source_bytes": 45248,
+      "sha256": "31bd5a4b11195967f48913d458f0c60536f39ca97d7d9bca707fba2387b7da3d",
       "declarations": {
         "libraries": [
           "NeuvilletteSpells"
@@ -2908,9 +3313,9 @@
       ]
     },
     {
-      "order": 91,
-      "wct_index": 90,
-      "object_order": 102,
+      "order": 96,
+      "wct_index": 95,
+      "object_order": 107,
       "object_id": "0x03000002",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2921,8 +3326,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Okarun.j",
-      "source_bytes": 60878,
-      "sha256": "300e2ddf641d73ac7c740f2b6e775d098386f7c0f780c422836bf028170af532",
+      "source_bytes": 58048,
+      "sha256": "8b8212a4d95c8e1b7609afe03b912aba9fc1b2b819cf9b51b933d103ede6fbf8",
       "declarations": {
         "libraries": [
           "OkarunSpells"
@@ -2935,7 +3340,8 @@
           "OkarunR_KS",
           "OkarunTBuff_KS",
           "OkarunT_KS",
-          "OkarunF_KS"
+          "OkarunF_KS",
+          "OkarunTick_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -2949,9 +3355,9 @@
       ]
     },
     {
-      "order": 92,
-      "wct_index": 91,
-      "object_order": 103,
+      "order": 97,
+      "wct_index": 96,
+      "object_order": 108,
       "object_id": "0x03000000",
       "object_type": "trigger",
       "category": "Heroes",
@@ -2962,8 +3368,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Akainu.j",
-      "source_bytes": 47488,
-      "sha256": "0ebdc79ad794970acdaaee5df5ee7d9a8a4a6e0be0b696c6d0c0ea740d8eb887",
+      "source_bytes": 49474,
+      "sha256": "5772f965fbb13bd5c4525bbd3923612916691c1782a4a4ba78da201e76b83cf3",
       "declarations": {
         "libraries": [
           "AkainuSpells"
@@ -2990,9 +3396,9 @@
       ]
     },
     {
-      "order": 93,
-      "wct_index": 92,
-      "object_order": 104,
+      "order": 98,
+      "wct_index": 97,
+      "object_order": 109,
       "object_id": "0x03000050",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3003,8 +3409,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Inori.j",
-      "source_bytes": 141334,
-      "sha256": "12f70b6ac0f3ff0451104b1cb612fba68de0c0423bbddf5e004d3e946333e29b",
+      "source_bytes": 142576,
+      "sha256": "8331fb633da72ca0df7128be3ef6db4a657ed15d3758411affc74fbbb7177b01",
       "declarations": {
         "libraries": [
           "InoriSpells"
@@ -3020,7 +3426,9 @@
           "InoriR2_KS",
           "InoriT_KS",
           "InoriT2_KS",
-          "InoriF_KS"
+          "InoriF_KS",
+          "InoriTick_Loop",
+          "InoriTick10_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3034,9 +3442,9 @@
       ]
     },
     {
-      "order": 94,
-      "wct_index": 93,
-      "object_order": 105,
+      "order": 99,
+      "wct_index": 98,
+      "object_order": 110,
       "object_id": "0x03000047",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3047,8 +3455,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Kenjaku.j",
-      "source_bytes": 121742,
-      "sha256": "748ad1969d404c0ff533ef0129a19bd74d7d91f323d9c677408886dcabbbf129",
+      "source_bytes": 121687,
+      "sha256": "dcae7ef78b607e04d90d48118d5bfcffcde2178ec7ae624368978fbdfe499024",
       "declarations": {
         "libraries": [
           "KenjakuSpells"
@@ -3066,7 +3474,10 @@
           "KenjakuT_KS",
           "KenjakuF_KS",
           "KenjakuF2_KS",
-          "KenjakuSummon_KS"
+          "KenjakuSummon_KS",
+          "KenjakuTick_Loop",
+          "KenjakuTick05_Loop",
+          "KenjakuTick10_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3080,9 +3491,9 @@
       ]
     },
     {
-      "order": 95,
-      "wct_index": 94,
-      "object_order": 106,
+      "order": 100,
+      "wct_index": 99,
+      "object_order": 111,
       "object_id": "0x03000034",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3093,8 +3504,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/AlterSaber.j",
-      "source_bytes": 89507,
-      "sha256": "9f094d9afab3ac26e8489b063bc195a97f58300ded4b9ea33c94c4561da5be3d",
+      "source_bytes": 95383,
+      "sha256": "308709fa500ecabd38c46b3ab3a9138655c0e5469d40a43ee3a7d8e725ace272",
       "declarations": {
         "libraries": [
           "AlterSaberSpells"
@@ -3109,7 +3520,10 @@
           "AlterSaberComboE_KS",
           "AlterSaberR_KS",
           "AlterSaberRR_KS",
-          "AlterSaberT_KS"
+          "AlterSaberT_KS",
+          "AlterSaberTick_Loop",
+          "AlterSaberTick25_Loop",
+          "AlterSaberTick50_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3123,9 +3537,9 @@
       ]
     },
     {
-      "order": 96,
-      "wct_index": 95,
-      "object_order": 107,
+      "order": 101,
+      "wct_index": 100,
+      "object_order": 112,
       "object_id": "0x03000042",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3136,8 +3550,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Natsu.j",
-      "source_bytes": 118662,
-      "sha256": "7841d197ab13e302fcac638f4b25abcd5195aaff19b41cb5c53860dcb976d0f2",
+      "source_bytes": 116729,
+      "sha256": "82e615128d3e7db4db23f0d9cc7056e10c2fb69e9b8acbd031f4c2a1d5c83cc7",
       "declarations": {
         "libraries": [
           "NatsuSpells"
@@ -3153,7 +3567,9 @@
           "NatsuG_KS",
           "NatsuPas_KS",
           "NatsuFR_KS",
-          "NatsuFT_KS"
+          "NatsuFT_KS",
+          "NatsuTick_Loop",
+          "NatsuTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3167,9 +3583,9 @@
       ]
     },
     {
-      "order": 97,
-      "wct_index": 96,
-      "object_order": 108,
+      "order": 102,
+      "wct_index": 101,
+      "object_order": 113,
       "object_id": "0x0300004C",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3180,8 +3596,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Kyoraku.j",
-      "source_bytes": 130120,
-      "sha256": "45f8de3e43e7ccc260f4ed66a6ae69a5621a5d68eb188dc4b36969b38029899d",
+      "source_bytes": 135875,
+      "sha256": "64cc39e19c34945de825e8a6faceee1c07a95549d23f79dd365748ce71e3dbbd",
       "declarations": {
         "libraries": [
           "KyorakuSpells"
@@ -3193,227 +3609,15 @@
           "KyorakuW_KS",
           "KyorakuW2_KS",
           "KyorakuE_KS",
+          "KyorakuE4_KS",
           "KyorakuE3_KS",
           "KyorakuE2_KS",
           "KyorakuR_KS",
           "KyorakuT4_KS",
           "KyorakuT_KS",
-          "KyorakuF_KS"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 98,
-      "wct_index": 97,
-      "object_order": 109,
-      "object_id": "0x03000033",
-      "object_type": "trigger",
-      "category": "Heroes",
-      "category_id": "0x0200000F",
-      "trigger_name": "Tomioka",
-      "comment": " BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0 then\r\nset r = 25\r\ncall BlzStartUnitAbilityCooldown(c,'A01I',2.5)",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Tomioka.j",
-      "source_bytes": 61688,
-      "sha256": "9ed553429176f6471642698358c13bd0386d6375100525a1b4eec8691ea17c15",
-      "declarations": {
-        "libraries": [
-          "TomiokaSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "TomiokaQ_KS",
-          "TomiokaW_KS",
-          "TomiokaE_KS",
-          "TomiokaR_KS",
-          "TomiokaT_KS",
-          "TomiokaF_KS",
-          "TomiokaG_KS"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 99,
-      "wct_index": 98,
-      "object_order": 111,
-      "object_id": "0x0300002B",
-      "object_type": "trigger",
-      "category": "Erza",
-      "category_id": "0x02000005",
-      "trigger_name": "ErzaQ",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Erza/ErzaQ.j",
-      "source_bytes": 34725,
-      "sha256": "f3c36cf6506a1311dd8caed5d7216f57581f2a0b335775283c0251d28ec3bef5",
-      "declarations": {
-        "libraries": [
-          "ErzaQSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "ErzaPas_KS",
-          "ErzaQ_KS",
-          "ErzaW_KS",
-          "ErzaE_KS",
-          "ErzaR_KS",
-          "ErzaT_KS"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        },
-        {
-          "name": "ErzaTSpells",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 100,
-      "wct_index": 99,
-      "object_order": 112,
-      "object_id": "0x03000052",
-      "object_type": "trigger",
-      "category": "Erza",
-      "category_id": "0x02000005",
-      "trigger_name": "ErzaW",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Erza/ErzaW.j",
-      "source_bytes": 35006,
-      "sha256": "1678cdbb0444df9e0a3a2ba12212dae82c337d033f0bff743adee1cb71d9450d",
-      "declarations": {
-        "libraries": [
-          "ErzaWSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "Erza2Q_KS",
-          "Erza2W_KS",
-          "Erza2E_KS",
-          "Erza2R_KS",
-          "Erza2T_KS"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        },
-        {
-          "name": "ErzaTSpells",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 101,
-      "wct_index": 100,
-      "object_order": 113,
-      "object_id": "0x03000035",
-      "object_type": "trigger",
-      "category": "Erza",
-      "category_id": "0x02000005",
-      "trigger_name": "ErzaE",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Erza/ErzaE.j",
-      "source_bytes": 40774,
-      "sha256": "64892158e08ad565fe669d4e80f1cbb56c1bceb2742ad6bf27df3bab28170bd2",
-      "declarations": {
-        "libraries": [
-          "ErzaESpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "Erza3Q_KS",
-          "Erza3W_KS",
-          "Erza3E_KS",
-          "Erza3R_KS",
-          "Erza3T_KS"
-        ],
-        "modules": [],
-        "textmacros": []
-      },
-      "dependencies": [
-        {
-          "name": "GearSystems",
-          "optional": false,
-          "keyword": "uses"
-        },
-        {
-          "name": "ErzaTSpells",
-          "optional": false,
-          "keyword": "uses"
-        }
-      ]
-    },
-    {
-      "order": 102,
-      "wct_index": 101,
-      "object_order": 114,
-      "object_id": "0x03000036",
-      "object_type": "trigger",
-      "category": "Erza",
-      "category_id": "0x02000005",
-      "trigger_name": "ErzaR",
-      "comment": "",
-      "enabled": true,
-      "initially_off": false,
-      "run_on_map_init": false,
-      "path": "Heroes/Erza/ErzaR.j",
-      "source_bytes": 89851,
-      "sha256": "3d858c43568498d6ccfbff06264ec3bbc5b9dbee6427e58c5518c6015a8b9c9a",
-      "declarations": {
-        "libraries": [
-          "ErzaRSpells"
-        ],
-        "scopes": [],
-        "structs": [
-          "Erza4Q_KS",
-          "Erza4W_KS",
-          "Erza4E_KS",
-          "Erza4R_KS",
-          "Erza4TT_KS",
-          "Erza4T_KS",
-          "Erza4F_KS"
+          "KyorakuF_KS",
+          "KyorakuTick_Loop",
+          "KyorakuTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3429,33 +3633,34 @@
     {
       "order": 103,
       "wct_index": 102,
-      "object_order": 115,
-      "object_id": "0x03000032",
+      "object_order": 114,
+      "object_id": "0x03000033",
       "object_type": "trigger",
-      "category": "Erza",
-      "category_id": "0x02000005",
-      "trigger_name": "ErzaT",
-      "comment": "",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Tomioka",
+      "comment": " BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0 then\r\nset r = 25\r\ncall BlzStartUnitAbilityCooldown(c,'A01I',2.5)",
       "enabled": true,
       "initially_off": false,
       "run_on_map_init": false,
-      "path": "Heroes/Erza/ErzaT.j",
-      "source_bytes": 98964,
-      "sha256": "9faf2649f41ed0212a0448f5670851baa9680a8ed2b24941ad04f8737805ab07",
+      "path": "Heroes/Tomioka.j",
+      "source_bytes": 62201,
+      "sha256": "47992446318fd8337c44570c5b12dd0457af6c67ce3709cebaf935f1fcbf947e",
       "declarations": {
         "libraries": [
-          "ErzaTSpells"
+          "TomiokaSpells"
         ],
         "scopes": [],
         "structs": [
-          "Erza5Q_KS",
-          "Erza5W_KS",
-          "Erza5E_KS",
-          "Erza5R2_KS",
-          "Erza5R_KS",
-          "Erza5T_KS",
-          "Erza5F_KS",
-          "Erza5TT_KS"
+          "TomiokaQ_KS",
+          "TomiokaW_KS",
+          "TomiokaE_KS",
+          "TomiokaR_KS",
+          "TomiokaT_KS",
+          "TomiokaF_KS",
+          "TomiokaG_KS",
+          "TomiokaTick_Loop",
+          "TomiokaTick10_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3472,6 +3677,233 @@
       "order": 104,
       "wct_index": 103,
       "object_order": 116,
+      "object_id": "0x0300002B",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaQ",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaQ.j",
+      "source_bytes": 39046,
+      "sha256": "3f5ad585a58129da0580455d0c6e21e8a8c38cfe7b14f267693ac4add55a3e1c",
+      "declarations": {
+        "libraries": [
+          "ErzaQSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "ErzaPas_KS",
+          "ErzaQ_KS",
+          "ErzaW_KS",
+          "ErzaE_KS",
+          "ErzaR_KS",
+          "ErzaT_KS",
+          "ErzaQTick_Loop",
+          "ErzaQTick05_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 105,
+      "wct_index": 104,
+      "object_order": 117,
+      "object_id": "0x03000052",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaW",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaW.j",
+      "source_bytes": 38993,
+      "sha256": "f0ec24b3dfc869319a14acc3ea1edc681b2c6a9ac6cd482ac889a2191f7a2fe1",
+      "declarations": {
+        "libraries": [
+          "ErzaWSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza2Q_KS",
+          "Erza2W_KS",
+          "Erza2E_KS",
+          "Erza2R_KS",
+          "Erza2T_KS",
+          "ErzaWTick_Loop",
+          "ErzaWTick10_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 106,
+      "wct_index": 105,
+      "object_order": 118,
+      "object_id": "0x03000035",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaE",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaE.j",
+      "source_bytes": 46688,
+      "sha256": "3b442d17aa20badc271a1ee8d9789c71d61db4aed279b49b1a6c53bc01651802",
+      "declarations": {
+        "libraries": [
+          "ErzaESpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza3Q_KS",
+          "Erza3W_KS",
+          "Erza3E_KS",
+          "Erza3R_KS",
+          "Erza3T_KS",
+          "ErzaETick_Loop",
+          "ErzaETick05_Loop",
+          "ErzaETick10_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        },
+        {
+          "name": "ErzaTSpells",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 107,
+      "wct_index": 106,
+      "object_order": 119,
+      "object_id": "0x03000036",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaR",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaR.j",
+      "source_bytes": 86588,
+      "sha256": "bcf3187daa4b09e7373f6b9c23c13f65168a27494922876f2645db27f3389620",
+      "declarations": {
+        "libraries": [
+          "ErzaRSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza4Q_KS",
+          "Erza4W_KS",
+          "Erza4E_KS",
+          "Erza4R_KS",
+          "Erza4TT_KS",
+          "Erza4T_KS",
+          "Erza4F_KS",
+          "ErzaRTick_Loop",
+          "ErzaRTick05_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 108,
+      "wct_index": 107,
+      "object_order": 120,
+      "object_id": "0x03000032",
+      "object_type": "trigger",
+      "category": "Erza",
+      "category_id": "0x02000005",
+      "trigger_name": "ErzaT",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Erza/ErzaT.j",
+      "source_bytes": 99243,
+      "sha256": "091673e73c81ef1af4fa1024bbb693ff44d8e8381d2dce6b4774e38c979c3a1f",
+      "declarations": {
+        "libraries": [
+          "ErzaTSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "Erza5Q_KS",
+          "Erza5W_KS",
+          "Erza5E_KS",
+          "Erza5R2_KS",
+          "Erza5R_KS",
+          "Erza5T_KS",
+          "Erza5F_KS",
+          "Erza5TT_KS",
+          "ErzaTTick_Loop",
+          "ErzaTTick05_Loop"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 109,
+      "wct_index": 108,
+      "object_order": 121,
       "object_id": "0x0300002E",
       "object_type": "trigger",
       "category": "Erza",
@@ -3482,8 +3914,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaG2_Nakagami.j",
-      "source_bytes": 45984,
-      "sha256": "f9620f495e80a507d3b40e10b50b149c8ef180577f85409519b54530aded98ac",
+      "source_bytes": 49307,
+      "sha256": "f6c18f51066c20a962a6fdbdbc8111a2cf8142d89301d29b8d5b5c88af9294a4",
       "declarations": {
         "libraries": [
           "ErzaG1Spells"
@@ -3495,7 +3927,10 @@
           "Erza6E_KS",
           "Erza6R_KS",
           "Erza6T_KS",
-          "Erza6G_KS"
+          "Erza6G_KS",
+          "ErzaG2_NakagamiTick_Loop",
+          "ErzaG2_NakagamiTick05_Loop",
+          "ErzaG2_NakagamiTick10_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3509,9 +3944,9 @@
       ]
     },
     {
-      "order": 105,
-      "wct_index": 104,
-      "object_order": 117,
+      "order": 110,
+      "wct_index": 109,
+      "object_order": 122,
       "object_id": "0x03000025",
       "object_type": "trigger",
       "category": "Erza",
@@ -3522,8 +3957,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaG2_Fairy.j",
-      "source_bytes": 37136,
-      "sha256": "c4073696968c511e69a3b826b981f8b7df4907d0c654e6f8d6e4684c48731061",
+      "source_bytes": 41179,
+      "sha256": "676bb6a6281f856faf627bfe44e529e943e8d6b308b2468e9c749b1b094a5130",
       "declarations": {
         "libraries": [
           "ErzaG2Spells"
@@ -3534,7 +3969,9 @@
           "Erza7W_KS",
           "Erza7E_KS",
           "Erza7R_KS",
-          "Erza7T_KS"
+          "Erza7T_KS",
+          "ErzaG2_FairyTick_Loop",
+          "ErzaG2_FairyTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3548,9 +3985,9 @@
       ]
     },
     {
-      "order": 106,
-      "wct_index": 105,
-      "object_order": 118,
+      "order": 111,
+      "wct_index": 110,
+      "object_order": 123,
       "object_id": "0x03000023",
       "object_type": "trigger",
       "category": "Erza",
@@ -3561,8 +3998,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaBase.j",
-      "source_bytes": 32040,
-      "sha256": "dd2860b948d5c3047f3c174169d36abb334e3f7600e7100143b632f1e6546323",
+      "source_bytes": 32671,
+      "sha256": "329853534f8bb3de54c68607b089249b78f68081c8d13ed639b2443ec1e47e5e",
       "declarations": {
         "libraries": [
           "ErzaBase"
@@ -3586,9 +4023,9 @@
       ]
     },
     {
-      "order": 107,
-      "wct_index": 106,
-      "object_order": 119,
+      "order": 112,
+      "wct_index": 111,
+      "object_order": 124,
       "object_id": "0x0300007A",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3599,8 +4036,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Milim.j",
-      "source_bytes": 97122,
-      "sha256": "62167c167aaca2e3fa62002dc1a983e719cc55fa7d5b1d507a22f3e342b8e98d",
+      "source_bytes": 96372,
+      "sha256": "c0ef3b1aff046c11ad5b32e58b44ccda9557ebcb956d18d84a78b349f482ca50",
       "declarations": {
         "libraries": [
           "MilimSpells"
@@ -3608,7 +4045,9 @@
         "scopes": [],
         "structs": [
           "MilimQKS",
-          "MilimWKS"
+          "MilimWKS",
+          "MilimTick_Loop",
+          "MilimTick05_Loop"
         ],
         "modules": [],
         "textmacros": []
@@ -3618,13 +4057,18 @@
           "name": "GearSystems",
           "optional": false,
           "keyword": "uses"
+        },
+        {
+          "name": "WOSUI",
+          "optional": false,
+          "keyword": "uses"
         }
       ]
     },
     {
-      "order": 108,
-      "wct_index": 107,
-      "object_order": 120,
+      "order": 113,
+      "wct_index": 112,
+      "object_order": 125,
       "object_id": "0x03000064",
       "object_type": "trigger",
       "category": "Heroes",
@@ -3635,8 +4079,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Crocodile.j",
-      "source_bytes": 170644,
-      "sha256": "5a6619ac2059141bed594c506a674070b996f7da845e0342a20ef063519fbcf0",
+      "source_bytes": 178133,
+      "sha256": "78cfdb664cb0450dbde982ce30510d0c0ce43ca7f02bc573319c7d2126eb774a",
       "declarations": {
         "libraries": [
           "CrocodileSpells"
@@ -3683,6 +4127,44 @@
         },
         {
           "name": "TasAbilityChargeBox",
+          "optional": false,
+          "keyword": "uses"
+        }
+      ]
+    },
+    {
+      "order": 114,
+      "wct_index": 113,
+      "object_order": 126,
+      "object_id": "0x03000067",
+      "object_type": "trigger",
+      "category": "Heroes",
+      "category_id": "0x0200000F",
+      "trigger_name": "Frostnova",
+      "comment": "",
+      "enabled": true,
+      "initially_off": false,
+      "run_on_map_init": false,
+      "path": "Heroes/Frostnova.j",
+      "source_bytes": 29791,
+      "sha256": "641522a453fd21d8a48d3a1187dc693d693872fc8ccdd1a8b041084db75cf714",
+      "declarations": {
+        "libraries": [
+          "FrostnovaSpells"
+        ],
+        "scopes": [],
+        "structs": [
+          "FrostnovaState",
+          "FrostnovaCold_KS",
+          "FrostnovaMissile_KS",
+          "FrostnovaField_KS"
+        ],
+        "modules": [],
+        "textmacros": []
+      },
+      "dependencies": [
+        {
+          "name": "GearSystems",
           "optional": false,
           "keyword": "uses"
         }

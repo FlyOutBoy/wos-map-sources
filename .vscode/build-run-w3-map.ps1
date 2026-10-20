@@ -76,7 +76,11 @@ function Copy-MapToAvailableBuildSlot {
 
         try {
             if (Test-Path -LiteralPath $OriginalMap -PathType Container) {
-                & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Pack -Map $candidate -Directory $OriginalMap -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') | Out-Host
+                # Keep packing independent of any existing build-slot contents.
+                # Pack into a fresh file, then replace the checked slot.
+                $freshArchive = Join-Path $BuildDirectory ('.main-pack-' + [guid]::NewGuid().ToString('N') + '.w3x')
+                & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Pack -Map $freshArchive -Directory $OriginalMap -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') | Out-Host
+                Move-Item -LiteralPath $freshArchive -Destination $candidate -Force
             } else {
                 Copy-Item -LiteralPath $OriginalMap -Destination $candidate -Force
             }
@@ -92,6 +96,21 @@ function Copy-MapToAvailableBuildSlot {
         $message += " Last copy error: $lastCopyError"
     }
     throw $message
+}
+
+function Get-MapScriptHash {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    # Get-FileHash may be unavailable when VS Code inherits a reduced PSModulePath.
+    $algorithm = [Security.Cryptography.SHA256]::Create()
+    $stream = $null
+    try {
+        $stream = [IO.File]::OpenRead($Path)
+        return [BitConverter]::ToString($algorithm.ComputeHash($stream))
+    } finally {
+        if ($null -ne $stream) { $stream.Dispose() }
+        $algorithm.Dispose()
+    }
 }
 
 function Ensure-BattleNetSession {
@@ -123,6 +142,7 @@ function Ensure-BattleNetSession {
     Write-Host "Starting Battle.net Launcher..." -ForegroundColor Cyan
     Start-Process `
         -FilePath $battleNetExe `
+        -WindowStyle Hidden `
         -WorkingDirectory (Split-Path -Parent $battleNetExe)
 
     if ($waitSeconds -gt 0) {
@@ -177,6 +197,9 @@ try {
         $source = Resolve-WorkspacePath ([string]$config.mainSource)
         $outputName = "WoS_Test.w3x"
 
+        & python (Join-Path $workspaceRoot 'tools/check_main_source_parity.py') --require-synced
+        if ($LASTEXITCODE -ne 0) { throw 'MAIN WCT/source preflight failed; check/save before building.' }
+
         if (-not (Test-Path -LiteralPath $originalMap)) { throw "Original MAIN map not found: $originalMap" }
         if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
             Write-Host "MAIN SOURCE NOT CREATED:" -ForegroundColor Red
@@ -202,6 +225,9 @@ try {
                 & python (Join-Path $workspaceRoot 'tools\install_wos_ui_assets.py') --map $originalMap
                 if ($LASTEXITCODE -ne 0) { throw 'Shared UI asset installation failed' }
             }
+            # Item icons and effect copies kept prebuilt in assets/ (see tools/install_project_assets.py).
+            & python (Join-Path $workspaceRoot 'tools\install_project_assets.py') --map $originalMap
+            if ($LASTEXITCODE -ne 0) { throw 'Project asset installation failed' }
         }
     }
 
@@ -217,14 +243,29 @@ try {
         exit 0
     }
 
-    $builtMap = Copy-MapToAvailableBuildSlot `
-        -OriginalMap $originalMap `
-        -BuildDirectory $buildDir `
-        -OutputName $outputName
-    Write-Host "Built map:        $builtMap"
+    if ($Target -eq 'Test') {
+        $builtMap = Copy-MapToAvailableBuildSlot `
+            -OriginalMap $originalMap `
+            -BuildDirectory $buildDir `
+            -OutputName $outputName
+        Write-Host "Built map:        $builtMap"
+    } else {
+        # MAIN: compile the complete external script first, then pack that exact
+        # script. Legacy map-mode compilation can silently omit external imports.
+        $scriptStage = Join-Path $buildDir 'main-compiled-script'
+        New-Item -ItemType Directory -Path $scriptStage -Force | Out-Null
+        $compiledMainScript = Join-Path $scriptStage 'war3map.j'
+    }
 
     if ($Target -eq 'Test') {
         $unpacked = Resolve-WorkspacePath ([string]$config.testMapDirectory)
+        if (-not (Test-Path -LiteralPath (Join-Path $unpacked 'war3map.imp') -PathType Leaf)) {
+            $importNames = Join-Path $buildDir 'test-import-names.json'
+            [IO.File]::WriteAllText($importNames, '["war3map.imp"]', [Text.UTF8Encoding]::new($false))
+            & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $originalMap -Directory $unpacked -NamesFile $importNames -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+        }
+        & python (Join-Path $workspaceRoot 'tools/install_project_assets.py') --map $unpacked
+        if ($LASTEXITCODE -ne 0) { throw 'TEST project asset installation failed' }
         & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Update -Map $builtMap -Directory $unpacked -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
         # Materialize the same resolved source set into the copied map's editor
         # payload. Never save into the input map or the original unpacked folder.
@@ -248,6 +289,10 @@ try {
         "`"$source`"",
         "`"$builtMap`""
     )
+    if ($Target -eq 'Main') {
+        $jassHelperArguments = @('--scriptonly', "`"$commonJ`"", "`"$blizzardJ`"", "`"$source`"", "`"$compiledMainScript`"")
+        $sourceDirectory = Split-Path -Parent $jassHelper
+    }
 
     Write-Host "Running JassHelper..." -ForegroundColor Cyan
     $jassHelperProcess = Start-Process `
@@ -271,13 +316,12 @@ try {
         if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {
             throw "Close World Editor before updating MAIN's compiled script. Compiled copy: $builtMap"
         }
-        $scriptStage = Join-Path $buildDir 'main-compiled-script'
-        New-Item -ItemType Directory -Path $scriptStage -Force | Out-Null
-        $scriptNames = Join-Path $buildDir 'main-compiled-script-names.json'
-        [IO.File]::WriteAllText($scriptNames, '["war3map.j"]', [Text.UTF8Encoding]::new($false))
-        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $builtMap -Directory $scriptStage -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') -NamesFile $scriptNames | Out-Host
-        $compiledScript = Join-Path $scriptStage 'war3map.j'
+        $compiledScript = $compiledMainScript
         Require-File -Path $compiledScript -Name 'Compiled MAIN mapscript'
+        & python (Join-Path $workspaceRoot 'tools/check_main_source_parity.py') `
+            --require-synced --candidate-source $source --reference-script $compiledScript `
+            --work-directory (Join-Path $buildDir 'main-source-parity')
+        if ($LASTEXITCODE -ne 0) { throw 'MAIN source/compiled parity failed; scenario script was not replaced.' }
         $scriptBackup = Join-Path $workspaceRoot ('backups/main-map-build/' + (Get-Date -Format 'yyyyMMdd-HHmmss-fff'))
         New-Item -ItemType Directory -Path $scriptBackup -Force | Out-Null
         $mapScript = Join-Path $originalMap 'war3map.j'
@@ -285,6 +329,16 @@ try {
         Copy-Item -LiteralPath $compiledScript -Destination $mapScript -Force
         Write-Host "MAIN scenario compiled script updated: $mapScript"
         Write-Host "Previous script backup: $scriptBackup"
+        $builtMap = Copy-MapToAvailableBuildSlot `
+            -OriginalMap $originalMap -BuildDirectory $buildDir -OutputName $outputName
+        Write-Host "Built map:        $builtMap"
+        $packedStage = Join-Path $buildDir 'main-packed-script-verify'
+        $scriptNames = Join-Path $buildDir 'main-compiled-script-names.json'
+        [IO.File]::WriteAllText($scriptNames, '["war3map.j"]', [Text.UTF8Encoding]::new($false))
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $builtMap -Directory $packedStage -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll') -NamesFile $scriptNames | Out-Host
+        if ((Get-MapScriptHash -Path (Join-Path $packedStage 'war3map.j')) -ne (Get-MapScriptHash -Path $compiledScript)) {
+            throw 'Packed MAIN script differs from the checked compiled script.'
+        }
     }
     if ($Target -eq 'Test') {
         if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {

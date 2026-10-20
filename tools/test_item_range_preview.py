@@ -15,8 +15,8 @@ def rules_vm():
     source = (ROOT / 'triggers/Items/Items.j').read_text(encoding='utf-8-sig')
     functions = re.findall(r'(?m)^\s*public function (?:GetPreviewAbility|GetItemPreviewRadius) takes[^\n]*\n[\s\S]*?^\s*endfunction', source)
     vm = JassState('\n'.join(functions))
-    for name, value in re.findall(r'^\s+(?:integer|real) (\w+) = ([0-9.]+)\b', ''.join(re.findall(r'globals(.*?)endglobals', source, re.S)), re.M):
-        vm.g[name] = float(value)
+    for name, value in re.findall(r"^\s+(?:integer|real) (\w+) = ('[^']+'|[0-9.]+)", ''.join(re.findall(r'globals(.*?)endglobals', source, re.S)), re.M):
+        vm.g[name] = value[1:-1] if value.startswith("'") else float(value)
     vm.g.update(ABILITY_RLF_CAST_RANGE='cast', ABILITY_RLF_AREA_OF_EFFECT='area',
                 BlzGetAbilityRealLevelField=lambda a, field, level: a[field])
     return vm
@@ -58,7 +58,7 @@ class Rules(unittest.TestCase):
         abilities = json.loads((ROOT / 'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         audit = json.loads((ROOT / 'assets/AbilityRange/item-rules.json').read_text(encoding='utf-8'))
         self.assertEqual(set(items), {r['item'] for r in audit})
-        self.assertEqual(150, len(audit))
+        self.assertEqual(158, len(audit))
         for row in audit:
             ids = items[row['item']].get('abilities', '').split(',')
             self.assertEqual([a['id'] for a in row['abilities']], [a for a in ids if a])
@@ -66,10 +66,11 @@ class Rules(unittest.TestCase):
                 self.assertIn(row['ability'], ids)
                 self.assertEqual(abilities[row['ability']].get(row['field'], 0), row['fallback'])
                 self.assertEqual(row['fallback'], self.radius(row['item']))
-        self.assertEqual(27, sum(r['mode'] != 'none' for r in audit))
+        self.assertEqual(33, sum(r['mode'] != 'none' for r in audit))
 
 
 class Runtime(prior.RangeRuntime):
+    MAX_RADIUS = 32768
     """Also rerun every existing lifecycle test on MAIN, rather than the old TEST template."""
     def setUp(self):
         super().setUp()
@@ -81,7 +82,8 @@ class Runtime(prior.RangeRuntime):
         self.item_types = {'grail': 'I021', 'dark': 'I02B', 'stats': 'I000', 'sakura': 'I03W'}
         self.lookups = []
         rules = rules_vm()
-        self.vm.g.update(AR_ItemOwner=defaultdict(lambda: None), AR_CachedItem=defaultdict(lambda: None),
+        self.vm.g.update(MilimT2_ID='A0HM', MilimT2_BeamRange=2700.,AR_LastX=0.,AR_LastY=0.,
+                         AR_ItemOwner=defaultdict(lambda: None), AR_CachedItem=defaultdict(lambda: None),
                          AR_ItemAbility=defaultdict(lambda: None), AR_RequestedItemSlot=defaultdict(lambda: -1),
                          UnitItemInSlot=lambda u, s: self.inventory[u, s], GetItemTypeId=lambda i: self.item_types[i],
                          ItemsSpells_GetPreviewAbility=lambda iid: rules.run('GetPreviewAbility', (iid,)),

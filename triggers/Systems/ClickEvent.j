@@ -1,6 +1,13 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_ClickEvent_E_END = StringHash("e end")
+        integer SH_ClickEvent_REAL_X = StringHash("real x")
+        integer SH_ClickEvent_REAL_Y = StringHash("real y")
+        integer SH_ClickEvent_UNIT_TARGET = StringHash("unit target")
+endglobals
 function KiritoMoveCheck takes unit c returns boolean
 local boolean b = true 
-if IsUnitPaused(c)  or GetUnitAbilityLevel(c,'BPSE') >0  or LoadInteger(hs,GetHandleId(c),StringHash("e end"))>0 then
+if IsUnitPaused(c)  or GetUnitAbilityLevel(c,'BPSE') >0  or LoadInteger(hs,GetHandleId(c),SH_ClickEvent_E_END)>0 then
 set b = false
 endif
 if GetUnitCurrentOrder(c) != OrderId("smart") and GetUnitCurrentOrder(c) != OrderId("move") and GetUnitCurrentOrder(c) != OrderId("attack") then
@@ -26,12 +33,12 @@ endif
 //endif
 if id == Okarun_ID then 
 if GetOrderTargetUnit()!= null then
-call SaveUnitHandle(hs,GetHandleId(GetTriggerUnit()),StringHash("unit target"),GetOrderTargetUnit())
-elseif LoadUnitHandle(hs,GetHandleId(GetTriggerUnit()),StringHash("unit target")) != null then 
-call RemoveSavedHandle(hs,GetHandleId(GetTriggerUnit()),StringHash("unit target"))
+call SaveUnitHandle(hs,GetHandleId(GetTriggerUnit()),SH_ClickEvent_UNIT_TARGET,GetOrderTargetUnit())
+elseif LoadUnitHandle(hs,GetHandleId(GetTriggerUnit()),SH_ClickEvent_UNIT_TARGET) != null then 
+call RemoveSavedHandle(hs,GetHandleId(GetTriggerUnit()),SH_ClickEvent_UNIT_TARGET)
 endif
-call SaveReal(hs,GetHandleId(GetTriggerUnit()),StringHash("real x"),x)
-call SaveReal(hs,GetHandleId(GetTriggerUnit()),StringHash("real y"),y)
+call SaveReal(hs,GetHandleId(GetTriggerUnit()),SH_ClickEvent_REAL_X,x)
+call SaveReal(hs,GetHandleId(GetTriggerUnit()),SH_ClickEvent_REAL_Y,y)
 endif
 endfunction
 function Trig_ClickEvent_Cond takes nothing returns boolean

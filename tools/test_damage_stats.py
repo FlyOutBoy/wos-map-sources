@@ -21,28 +21,36 @@ class DamageStats(unittest.TestCase):
         text=text.replace('sourceId <= -1000000','NegativeAtMost(sourceId,-1000000)')
         text=text.replace('sourceId <= -101','NegativeAtMost(sourceId,-101)')
         self.vm = JassState(text)
+        # Hits are buffered until the synced 5 s fold; tests read the buckets right away.
+        run=self.vm.run
+        def run_and_fold(name,args=(),*rest):
+            result=run(name,args,*rest)
+            if name.startswith('DamageStatsRecord'):run('DamageStatsFlush',())
+            return result
+        self.vm.run=run_and_fold
         g = self.vm.g
         for name in self.vm.methods:
             g[name] = lambda *a,n=name:self.vm.run(n,a)
-        for name in ['DS_Count','DS_Total','DS_Order','DS_Recent','DS_SourceOrder','DS_RowPid','DS_SlotSource','DS_LastHero','DS_LastActive','DS_RowSource','DS_RowPortrait','DS_RowLines','DS_TabMode','DS_Phys','DS_Mag']:
+        for name in ['DS_Count','DS_Total','DS_Order','DS_Recent','DS_SourceOrder','DS_RowPid','DS_SlotSource','DS_LastHero','DS_LastActive','DS_RowSource','DS_RowPortrait','DS_RowLines','DS_TabMode','DS_Phys','DS_Mag',
+                     'DS_PendSrc','DS_PendCount','DS_PendTotal','DS_PendMag','DS_PendPhys','DS_PendList','DS_SortValue','DS_SlotColor']:
             g[name] = defaultdict(int)
         g['DS_PlayerTexture']=defaultdict(lambda:'texture')
-        for name in ['DS_Row','DS_Label','DS_Value','DS_Icon','DS_Art','DS_Number','DS_Tab','DS_Portrait','DS_Fill','DS_BarBack','DS_SourceRowIcon','DS_SourceRowArt','DS_SubLabel','DS_DirTab','DS_Sensor','DS_RowSensor','DS_RowFillTex']:
+        for name in ['DS_Row','DS_Label','DS_Value','DS_Icon','DS_Art','DS_Number','DS_Tab','DS_Portrait','DS_Fill','DS_BarBack','DS_SourceRowIcon','DS_SourceRowArt','DS_SubLabel','DS_DirTab','DS_Sensor','DS_RowSensor','DS_RowFillTex','DS_RowBackTex']:
             g[name] = defaultdict(lambda:'frame')
         def flush(t,p):
             for key in list(t):
                 if key[1] == p:del t[key]
         g.update(NegativeAtMost=lambda n,limit:isinstance(n,(int,float)) and n<=limit,DS_Origins={},DS_Actors={},DS_TakenKeys={},DS_ActorCount=0,DS_OriginCount=0,DS_ScreenRight=-1.0,WUI_ScreenRight=lambda:.933333,WUI_InfoSourceIcon=lambda s:"",
-                 DS_Keys={},DS_Data={},DS_Sequence=0,DS_Version=0,DAMAGE_STATS_ENABLED=True,
+                 DS_Keys={},DS_Data={},DS_Pend={},DS_PendDirty=0,DS_PEND_CAP=400,DS_FlushTicks=10,DS_Sequence=0,DS_Version=0,DAMAGE_STATS_ENABLED=True,DamageStatsActive=True,
                  DS_Direction=0,DS_TabPage=-1,DS_TabDirection=-1,DS_HoverDetail=False,DS_Minimized=False,
-                 DS_CELLS=24,DS_LINE=12,DS_PITCH=.0254,DS_SMALL=8,DS_SMALL_PITCH=.020,DamageStatsHitKind=0,DS_SourceKind={},DS_GameTip=defaultdict(lambda:None),DS_GameTipKeys='',
-                 WUI_HOTKEY_CLEAR=3,WUI_HOTKEY_LOAD=4,WUI_GetHotkeyName=lambda c,p:'F3' if c==3 else 'F4',DS_SmallPitch=.028,DS_SmallGap=.0008,DS_SmallHeight=-1.,DS_LargeHeight=-1.,DS_Page=0,DS_Selected=-1,DS_SourcePage=0,DS_LastVersion=-1,
+                 DS_CELLS=12,DS_MAX_SOURCES=12,GearDamageVariants={},DS_PickHidden=False,DS_SmallBeforePick=False,DS_LINE=12,DS_PITCH=.0254,DS_SMALL=8,DS_SMALL_PITCH=.020,DamageStatsHitKind=0,DS_SourceKind={},DS_GameTip=defaultdict(lambda:None),DS_GameTipKeys='',
+                 WUI_HOTKEY_CLEAR=3,WUI_HOTKEY_LOAD=4,WUI_GetHotkeyName=lambda c,p:'F3' if c==3 else 'F4',DS_SmallPitch=.028,DS_SmallGap=.0008,DS_SmallHeight=-1.,DS_LargeHeight=-1.,DS_Page=0,DS_Selected=-1,DS_SourcePage=0,DS_PlayerPage=0,DS_PLAYERS_PER_PAGE=5,DS_SOURCES_PER_PAGE=9,DS_LastVersion=-1,
                  DS_LastRoster=-1,DS_Ready=True,DS_HoverSlot=-1,DS_Small='small',DS_Large='large',
-                 DS_WasSmall=False,DS_WasLarge=False,WUI_TopShown=lambda:True,
+                 DS_WasSmall=False,DS_WasLarge=False,DS_DamageTicks=0,WUI_TopShown=lambda:True,
                  DS_Toggle='toggle',DS_Tooltip='tooltip',DS_TooltipText='tiptext',DS_Footer='footer',DS_Heading='heading',
                  DS_HeadingDamage='heading-damage',DS_HeadingRecent='heading-recent',DS_Details='details',
                  DS_Back='back',DS_Previous='prev',DS_Next='next',
-                 HaveSavedString=lambda t,p,c:('s',p,c) in t,
+                 HaveSavedString=lambda t,p,c:('s',p,c) in t,HaveSavedInteger=lambda t,p,c:('i',p,c) in t,
                  LoadStr=lambda t,p,c:t.get(('s',p,c),''),
                  SaveStr=lambda t,p,c,v:t.update({('s',p,c):v}),
                  HaveSavedReal=lambda t,p,c:('r',p,c) in t,
@@ -75,6 +83,7 @@ class DamageStats(unittest.TestCase):
                  GetObjectName=lambda n:f'Source {n}',BlzGetAbilityIcon=lambda n:f'Icon {n}',
                  BlzGetAbilityTooltip=lambda n,l:'Burning Finger',
                  R2SW=lambda v,w,d:f'{v:.{d}f}',I2S=str,I2R=float,
+                 BlzFrameSetTextColor=lambda *_:None,BlzConvertColor=lambda a,r,g,b:(a,r,g,b),
                  StringLength=len,SubString=lambda s,a,b:s[a:b])
 
     def runj(self,name,*args):return self.vm.run(name,args)
@@ -111,7 +120,7 @@ class DamageStats(unittest.TestCase):
     def test_invalid_players_nonpositive_hits_and_disabled_feature_do_not_write(self):
         for pid in [-1,10,23]:self.hit(pid=pid)
         for dmg in [0.,-1.]:self.hit(amount=dmg)
-        self.vm.g['DAMAGE_STATS_ENABLED']=False;self.hit()
+        self.vm.g['DamageStatsActive']=False;self.hit()
         self.assertFalse(self.vm.g['DS_Data']);self.assertEqual(0,self.vm.g['DS_Version'])
 
     def test_taken_keeps_two_hero_attacks_and_spell_owners_distinct(self):
@@ -136,7 +145,7 @@ class DamageStats(unittest.TestCase):
         for _ in range(100):self.runj('DamageStatsRecordHitFrom',(2,10000000),2,0,100000,50.9,.2)
         self.assertEqual(1,g['DS_ActorCount']);self.assertEqual(2,g['DS_OriginCount'])
         self.assertEqual(5000.,self.runj('DamageStatsTotal',0,4))
-        g['DAMAGE_STATS_ENABLED']=False
+        g['DamageStatsActive']=False
         self.runj('DamageStatsRecordHitFrom',(5,20000000),5,0,200000,50.,0.)
         self.assertEqual(2,g['DS_OriginCount'])
 
@@ -209,9 +218,10 @@ class DamageStats(unittest.TestCase):
     def test_recent_ten_are_distinct_and_ordered_by_latest_hit(self):
         for source in range(100000,100015):self.hit(source=source)
         self.hit(source=100003);self.assertEqual(10,self.runj('DS_SelectRecent',0,10))
-        self.assertEqual([100003]+list(range(100014,100005,-1)),[self.vm.g['DS_Recent'][i] for i in range(10)])
-        self.assertEqual(15,self.runj('DS_SelectRecent',0,24));self.assertEqual(0,self.vm.g['DS_Recent'][15])
-        self.assertEqual(15,self.vm.g['DS_Count'][0])
+        # Equal amounts: the bucket keeps its first 12 sources (DS_MAX_SOURCES), later ones are dropped.
+        self.assertEqual([100003]+list(range(100011,100003,-1))+[100002],[self.vm.g['DS_Recent'][i] for i in range(10)])
+        self.assertEqual(12,self.runj('DS_SelectRecent',0,24));self.assertEqual(0,self.vm.g['DS_Recent'][12])
+        self.assertEqual(12,self.vm.g['DS_Count'][0])
 
     def test_player_rank_excludes_empty_slots_and_breaks_ties_by_slot(self):
         self.hit(pid=2,amount=200);self.hit(pid=0,amount=100);self.hit(pid=1,amount=999)
@@ -242,13 +252,13 @@ class DamageStats(unittest.TestCase):
         self.vm.g['DS_SourceIcon']=lambda *_:self.fail('source icon while minimized')
         self.runj('DS_RenderView',0,3);self.assertEqual(0,self.vm.g['DS_SlotSource'][0])
 
-    def test_details_show_up_to_24_latest_sources_on_two_lines(self):
-        for source in range(100000,100030):self.hit(source=source)
+    def test_details_show_up_to_12_biggest_sources_on_one_line(self):
+        for source in range(100000,100030):self.hit(source=source,amount=float(source-99999))
         self.runj('DS_RankPlayers');self.runj('DS_RenderView',1,3)
-        cells=[self.vm.g['DS_SlotSource'][240+j] for j in range(24)]
-        self.assertEqual(list(range(100029,100005,-1)),cells);self.assertEqual(2,self.vm.g['DS_RowLines'][10])
+        cells=[self.vm.g['DS_SlotSource'][120+j] for j in range(12)]
+        self.assertEqual(list(range(100029,100017,-1)),cells);self.assertEqual(1,self.vm.g['DS_RowLines'][10])
         self.runj('DamageStatsNextRound');self.hit(source=100001);self.runj('DS_RenderView',1,3)
-        self.assertEqual(1,self.vm.g['DS_RowLines'][10]);self.assertEqual(0,self.vm.g['DS_SlotSource'][241])
+        self.assertEqual(1,self.vm.g['DS_RowLines'][10]);self.assertEqual(0,self.vm.g['DS_SlotSource'][121])
 
     def test_rounded_short_labels_preserve_real_totals(self):
         cases={0.0:'0',.25:'<1',176.6:'177',1234.0:'1.2k',1255.0:'1.3k',
@@ -344,11 +354,33 @@ class DamageStats(unittest.TestCase):
         self.visible['small']=True;self.runj('DS_Tick')
         self.assertTrue(self.heights)
 
+    def test_hits_stay_buffered_until_the_synced_five_second_fold(self):
+        self.runj('DS_Pending',0,100000,10.);self.runj('DS_Pending',0,100000,2.);self.runj('DS_Pending',10,100001,4.)
+        self.assertEqual(0.,self.runj('DamageStatsTotal',0,0));self.assertEqual(0,self.vm.g['DS_Version'])
+        for _ in range(9):self.runj('DS_Tick')
+        self.assertEqual(0.,self.runj('DamageStatsTotal',0,1))
+        self.runj('DS_Tick')
+        for page in range(3):
+            self.assertEqual(12.,self.runj('DamageStatsTotal',0,page));self.assertEqual(4.,self.runj('DamageStatsTotal',0,4+page))
+            self.assertEqual(12.,self.amount(page));self.assertEqual(1,self.vm.g['DS_Count'][page*10])
+        self.assertEqual(1,self.vm.g['DS_Version']);self.assertEqual(0,self.vm.g['DS_PendDirty'])
+        self.runj('DS_Pending',0,100000,5.);self.runj('DamageStatsNextRound')
+        self.assertEqual(17.,self.amount(3));self.assertEqual(0.,self.amount(0))
+
+    def test_top_cells_pick_the_biggest_sources_without_a_full_sort(self):
+        for n in range(40):self.hit(source=100000+n,amount=float((n*17)%40+1))
+        self.assertEqual(8,self.runj('DS_SelectTop',0,8))
+        self.assertEqual([100000+n for n in sorted(range(40),key=lambda n:-((n*17)%40))[:8]],[self.vm.g['DS_Recent'][i] for i in range(8)])
+        for n,amount in enumerate([5.,30.,12.]):self.hit(pid=2,source=200000+n,amount=amount)
+        self.assertEqual(3,self.runj('DS_SelectTop',2,8))
+        self.assertEqual([200001,200002,200000,0],[self.vm.g['DS_Recent'][i] for i in range(4)])
+
     def test_large_source_list_stays_sorted_for_a_long_training_session(self):
         for n in range(451):self.hit(source=100000+n,amount=(n*37)%451+1)
         count=self.runj('DS_SortSources',0)
         values=[self.amount(source=self.vm.g['DS_SourceOrder'][i]) for i in range(count)]
-        self.assertEqual(451,count);self.assertEqual(sorted(values,reverse=True),values)
+        # Only the 12 biggest sources are kept; totals still include every hit.
+        self.assertEqual(12,count);self.assertEqual(sorted(((n*37)%451+1 for n in range(451)),reverse=True)[:12],values)
 
 
 class Attribution(unittest.TestCase):
@@ -372,6 +404,33 @@ class Attribution(unittest.TestCase):
         self.assertEqual([100000,200000],seen);self.assertEqual(0,g['GearDamageActiveSource'])
         target.life=0;vm.run('DamageSource',(300000,));vm.run('spelldmg',(hero,target,10.))
         self.assertEqual(0,g['GearDamageNextSource']);self.assertEqual(0,g['GearDamageActiveSource'])
+
+    def test_damage_numbers_merge_per_target_player_and_kind_and_show_only_to_owners(self):
+        text=(ROOT/'triggers/Systems/DmgSys.j').read_text(encoding='utf-8-sig')
+        code='\n'.join(re.search(r'(?m)^function '+n+r' takes.*?^endfunction',text,re.S)[0] for n in ['DmgTextFlush','DmgTextAdd'])
+        vm=JassState(code);g=vm.g;tags=[];timers=[];local=[3]
+        class Tag:pass
+        def create():
+            t=Tag();tags.append(t);return t
+        for n in ['DmgTextFlush','DmgTextAdd']:g[n]=lambda *a,n=n:vm.run(n,a)
+        for n in ['DmgTextHid','DmgTextKey','DmgTextSource','DmgTextTarget','DmgTextKind','DmgTextAmount','DmgTextX','DmgTextY','DmgTextAngle']:
+            g[n]=defaultdict(int)
+        g.update(DMG_TEXT_SLOTS=64,DMG_TEXT_WINDOW=.10,DmgTextCount=0,DmgTextIndex={},DmgTextTimer='timer',
+                 GetHandleId=lambda u:u,GAngle=lambda c,t:0.,GetUnitX=lambda u:100.,GetUnitY=lambda u:200.,
+                 LoadInteger=lambda h,p,k:h.get((p,k),0),SaveInteger=lambda h,p,k,v:h.update({(p,k):v}),
+                 RemoveSavedInteger=lambda h,p,k:h.pop((p,k),None),TimerStart=lambda *a:timers.append(a),
+                 CreateTextTag=create,SetTextTagPos=lambda *a:None,SetTextTagText=lambda t,s,size:setattr(t,'text',s),
+                 SetTextTagColor=lambda t,*c:setattr(t,'color',c),SetTextTagLifespan=lambda *a:None,
+                 SetTextTagFadepoint=lambda *a:None,SetTextTagPermanent=lambda *a:None,SetTextTagVelocity=lambda *a:None,
+                 SetTextTagVisibility=lambda t,v:setattr(t,'visible',v),IsVisibleToPlayer=lambda x,y,p:True,
+                 GetLocalPlayer=lambda:local[0],GetPlayerId=lambda p:p,I2S=str,Cos=lambda a:1.,Sin=lambda a:0.,bj_DEGTORAD=.0174)
+        for amount in [10,20,30]:vm.run('DmgTextAdd',('c','target',3,5,0,amount))
+        vm.run('DmgTextAdd',('c','target',3,5,1,7));vm.run('DmgTextAdd',('c2','target',4,5,0,9))
+        self.assertEqual(1,len(timers));self.assertFalse(tags)
+        vm.run('DmgTextFlush',())
+        self.assertEqual(['60','7','9'],[t.text for t in tags]);self.assertEqual([True,True,False],[t.visible for t in tags])
+        self.assertEqual((255,0,0,255),tags[0].color);self.assertEqual((47,99,255,255),tags[1].color)
+        self.assertFalse(g['DmgTextIndex']);self.assertEqual(0,g['DmgTextCount'])
 
     def test_deferred_instances_capture_and_replay_their_own_source(self):
         text=(ROOT/'triggers/Systems/Systems2.j').read_text(encoding='utf-8-sig')

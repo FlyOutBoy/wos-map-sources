@@ -15,13 +15,41 @@ Windows PowerShell. Компилятор уже поставлен в `utility/J
 | Объектный кодек MAIN | `python -B tools/war3_object_data.py --config object-data.config.json roundtrip` | побайтный binary → JSON → binary, без записи карты; не подтверждает корректность несохранённых editable JSON |
 | Editable JSON + J ↔ WTG/WCT MAIN | `python -B tools/sync_war3_project.py --config object-data.config.json check` | проверка данных/соответствия; карта не записывается, но переименование J может обновить trigger-settings |
 | TEST-код и объекты | Skill `wos-sync`, конфиг `object-data.test.config.json` | подготовка профиля/closure имеет побочные эффекты; MAIN-компиляция не заменяет TEST-сборку |
+| Задачи VS Code | `python -B -m unittest discover -s tools -p "test_vscode_tasks.py"` + `test_wos_map_workflow.py` + `test_test_map_workflow.py` | проверяет команды, пути, маршруты MAIN/TEST, параметры/синтаксис PowerShell и живой MAIN closure; пишет только generated compile input, не сохраняет карты и не запускает игру |
 | Только документация/Skills | ссылки, frontmatter, Git diff и сохранность прежних файлов | игровую сборку не запускать без отдельной причины |
+
+Импорт MAIN проходит `tools/check_main_source_parity.py`: входящий WCT должен
+воспроизводить исполняемый скрипт выбранной карты. Иначе импорт остановится до
+замены файлов проекта. MAIN-сборка проверяет WCT ↔ `triggers` до упаковки, затем
+compiled ↔ source parity перед заменой сценарного скрипта. Сравнение сохраняет
+строковые значения и игровые константы; нормализует только комментарии/пробелы
+кода и служебное именование JassHelper. Не обходить эту проверку из-за известного
+рабочего имени архива: его WCT тоже может отставать (CP59).
 
 Не подменяй существующие тесты выдуманным `npm test` или универсальным запуском
 всех `test_*.py`: в `tools/` есть также вспомогательные CLI с именами `test_*`.
 Для UI выбирай runner или профильные тесты; для иной системы — её файл.
 
 ## Синхронизация и реальные записи
+
+Основные задачи VS Code имеют одинаковые номера у TEST и MAIN:
+`1. Карта → проект — получить ВСЁ из World Editor`,
+`2. Проект → карта — сохранить ВСЁ, собрать и ЗАПУСТИТЬ`,
+`3. Проект → карта — сохранить ВСЁ и собрать без запуска`.
+Они вызывают `tools/wos_map_workflow.py receive/build --target Test|Main`.
+Для сборки без игры добавляется `--no-launch`. `Ctrl+Shift+B` — TEST: 3.
+Объекты, J и WCT/WTG сохраняются перед каждой основной сборкой;
+TEST использует `check-save --no-build`, затем один вызов build/run.
+MAIN parity остаётся обязательной. Import MAIN проверяет оба набора до замены,
+сохраняет общий бэкап и восстанавливает проект при сбое применения.
+Чтение реальной карты без замены проекта: `receive --target Main|Test --validate-only`.
+
+Раздельные импорты кода/объектов и обслуживание помечены `COMMON | ...`.
+`COMMON | MAIN: Проверить компиляцию всего кода без сборки карты` индексирует
+live source roots и сохраняет порядок включённых MAIN-импортов из
+trigger-settings.json: старые plain JASS ссылки не описаны в library-зависимостях.
+Бэкапы и TEST-снимки не являются провайдерами MAIN.
+TEST по умолчанию использует стандартный UI (`testNativeUI: true`).
 
 Процедура с ожидаемыми результатами уже находится в
 [общем wos-sync](../../.claude/skills/wos-sync/SKILL.md), доступном Codex через
@@ -32,9 +60,17 @@ Windows PowerShell. Компилятор уже поставлен в `utility/J
 - MAIN `save` пишет объекты и триггеры, но сам не запускает MAIN-сборку.
 - TEST `check-save` пишет данные, затем собирает выбранную карту без игры;
   сборка также обновляет выбранный архив героя с бэкапом.
+  TEST build также устанавливает `assets/ReplaceableTextures`/`assets/effects`
+  через `install_project_assets.py`; `war3map.imp` и staged-ассеты входят в архив.
+  Проверять новые импорты нужно в готовом `.w3x`, а не только в `unpacked`.
 - MAIN-сборка без игры:
   `powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/build-run-w3-map.ps1 -Target Main -NoLaunch`.
   `-NoLaunch` исключает запуск игры, но не запись карты/ресурсов/артефактов.
+- Готовую MAIN пользователь запускает из `WOS2_MAIN_STABLE.w3x` рядом со сценарием
+  `mainMap` (указание 2026-10-17). После успешной заказанной сборки проверить
+  готовый архив и обновить этот файл, сохранив прежний в бэкап. Сам build-скрипт
+  оставляет архив в `_build/WoS_Test.w3x`; одного `BUILD OK` для обновления STABLE
+  недостаточно. Личный каталог брать из локального `.vscode/wos-build.json`.
 - До внешней записи закрыть World Editor без сохранения. Для импорта из редактора,
   напротив, сначала сохранить нужную версию и выбрать направление импорта.
 - Авторизация определяется запросом пользователя и уже данными разрешениями;
@@ -47,8 +83,9 @@ Windows PowerShell. Компилятор уже поставлен в `utility/J
   Синхронизация новых файлов и выбор файлов `check_wos_ui.py` — разные механизмы.
 - Не найдены `gg_*`: проверь `.vscode/build/wos_map_globals.j` и подготовку
   через существующие PowerShell-задачи; не объявляй глобалы вручную в игровых системах.
-- Ошибка компиляции: `utility/JassHelper/logs/compileerrors.txt`; MAIN pjass —
-  `map_source/logs/pjass.txt`. Ищи `error` и нужные строки, не выводи весь лог.
+- Ошибка компиляции: `utility/JassHelper/logs/compileerrors.txt`; актуальная
+  MAIN `--scriptonly`/pjass проверка — `utility/JassHelper/logs/pjass.txt`.
+  `map_source/logs/` может содержать старый map-mode лог. Ищи релевантные строки.
 - Разъехались исходники после TEST: см. [test_map/README](../../test_map/README.md),
   `source-provenance.json` / `test-resolution.json` в staging и текущий выбранный файл героя.
 - Визуальные/input/десинк ошибки требуют проверки в Warcraft III; статические

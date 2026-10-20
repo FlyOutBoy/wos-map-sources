@@ -111,7 +111,7 @@ class TeamMapPings(unittest.TestCase):
             'BlzConvertColor':lambda *a:a, 'BlzFrameSetVertexColor':lambda *a:None,
             'CreateTrigger':lambda:object(), 'CreateTimer':lambda:object(),
             'EnableTrigger':lambda t:self.enabled.add(t),'DisableTrigger':lambda t:self.enabled.discard(t),
-            'TriggerAddAction':lambda *a:None, 'DestroyTrigger':lambda *a:None, 'TimerStart':lambda *a:setattr(self,'timer_running',True),
+            'TriggerAddAction':lambda *a:None, 'DestroyTrigger':lambda *a:None, 'TimerStart':lambda *a:setattr(self,'timer_running',True) if a[2] else None,  # one-shot preload timer is not the ping clock
             'PauseTimer':lambda *a:setattr(self,'timer_running',False),
             'ResumeTimer':lambda *a:setattr(self,'timer_running',True),
             'WUI_ResetClickedButtonFocus':lambda:setattr(self,'focus_resets',self.focus_resets+1),

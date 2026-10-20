@@ -46,6 +46,9 @@ def _sh_keys():
     for path in (ROOT / "triggers").rglob("*.j"):
         for name, literal in re.findall(r'\bSH_(\w+) = StringHash\("([^"]*)"\)', path.read_text(encoding="utf-8", errors="replace")):
             keys.setdefault("SH_" + name, literal)
+        # GearKey slot constants (GearSystems2).
+        for name, number in re.findall(r'\bconstant integer (GEAR_KEY_\w+) = (\d+)', path.read_text(encoding="utf-8", errors="replace")):
+            keys.setdefault(name, int(number))
     return keys
 
 
@@ -58,12 +61,12 @@ class JassState:
         if text is None:
             # Execute the actual CastCheck branch; ability-ID dispatch lives only there.
             routing = (ROOT/"triggers/Systems/CastCheck.j").read_text(encoding="utf-8")
-            begin = routing.index("    if GetUnitTypeId(c) == Crocodile_ID")
+            begin = routing.index("    if heroType == Crocodile_ID")
             end = routing.index("    endif // shared dispatch",begin)
             end = routing.rfind("    endif\n",begin,end)
             branch = routing[begin:end]
             self.text += ("\nfunction Test_CrocodileCast takes unit c, integer id, real x, real y returns boolean\n"
-                          "    local integer check = 0\n"+branch+
+                          "    local integer check = 0\n    local integer heroType = GetUnitTypeId(c)\n"+branch+
                           "    return check == 1\nendfunction\n")
         self.text = re.sub(r"\b(?:public|private)? ?function", "method", self.text).replace("endfunction", "endmethod")
         self.methods = dict(re.findall(r"^\s*(?:(?:public|private) )?(?:static )?method (\w+) takes [^\n]+\n(.*?)\n\s*endmethod", self.text, re.S|re.M))
@@ -89,6 +92,9 @@ class JassState:
         self.ability_history = []
         self.range_history = []
         self.g = {
+            # Lazy 0.03 listener registration (Crocodile_InitializeHero).
+            "Crocodile_ListenerOn": True, "GearTimer03Listeners": "listeners",
+            "TriggerAddCondition": lambda *args: None, "Condition": lambda f: f,
             # Checkpoint 24 natives used by shared UI code (harmless defaults).
             "BlzGetAbilityPosX": lambda *args: -1, "BlzGetAbilityPosY": lambda *args: -1,
             "BlzGetOriginFrame": lambda *args: None, "ORIGIN_FRAME_HERO_BUTTON": "ORIGIN_FRAME_HERO_BUTTON",
@@ -122,6 +128,7 @@ class JassState:
             "StartSpellUnit": lambda u: (self.add_ability(u,'Avul'),self.spell_pause(u,True)),
             "StopSpellUnit": lambda u: (self.remove_ability(u,'Avul'),self.spell_pause(u,False)),
             "R2I": int,
+            "I2R": float,  # inlined RoundReal(r + step, digits) in hero ticks
             # External attribution API; collector tests load its real body.
             "DamageSource": lambda source:self.g.update(GearDamageNextSource=source),
             "GetRandomInt": lambda a,b:a,
@@ -220,6 +227,8 @@ class JassState:
             "NoDecor_Cond": None,
             # Pre-hashed SH_* keys: identity keeps hashtable keys readable in tests.
             "StringHash": lambda s: s,
+            # GearKey(slot, prefix, n) = StringHash(prefix + I2S(n)) cached in GearSystems2.
+            "GearKey": lambda slot, prefix, n: prefix + str(n),
             # Local selection enumeration (tests model a single selected unit).
             "GroupClear": lambda g: g.clear() if hasattr(g, "clear") else None,
             "GroupEnumUnitsSelected": lambda *a: None,

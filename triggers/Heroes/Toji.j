@@ -1,5 +1,13 @@
 library TojiSpells initializer InitTojiSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_TOJIE_LEAPBUFFSTACKS = StringHash("TojiE_LeapBuffStacks")
+        private integer SH_TOJIQ_ARSENALMODE = StringHash("TojiQ_ArsenalMode")
+        private integer SH_TOJIR_MOSQUITOEFFECTS = StringHash("TojiR_MosquitoEffects")
+        private integer SH_TOJI_BULLET = StringHash("toji bullet")
+        private integer SH_TOJI_Q3 = StringHash("toji q3")
+    endglobals
+    globals
         private timer TojiTimer03
         private code TojiTimer03Callback
         private integer TojiTimer03Users = 0
@@ -82,7 +90,6 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         real TojiW_MoveBase = 60.0
         real TojiW_MoveStep = 5.0
         real TojiW_ReturnMoveBonus = 0.0
-        real TojiW_ChainDuration = 5.0
         real TojiW_ChainMaxRange = 1600.0
         boolean TojiW_IsInvul = false
         real TojiW_CastTime = 0.00
@@ -238,7 +245,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
     endfunction
 
     private function TojiE_ConsumeLeapBonus takes unit c returns real
-        local integer key = StringHash("TojiE_LeapBuffStacks")
+        local integer key = SH_TOJIE_LEAPBUFFSTACKS
         local integer stacks = GetUnitAbilityLevel(c, TojiE_Buff_ID)
         if stacks <= 0 then
             return 0.0
@@ -249,7 +256,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
     endfunction
 
     function TojiE_GetLeapBuffStacks takes unit c returns integer
-        return LoadInteger(hs, GetHandleId(c), StringHash("TojiE_LeapBuffStacks"))
+        return LoadInteger(hs, GetHandleId(c), SH_TOJIE_LEAPBUFFSTACKS)
     endfunction
 
     private function TojiAbilityDamage takes unit c, unit td, real damage returns real
@@ -397,7 +404,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             endif
                         endif
                     elseif state == 1 then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         call MoveUnit(c, 5.0, a)
                         call MoveUnit(td, 5.0, a)
                         if r >= TojiQ_FirstHitDelay + TojiQ_BetweenHits * hits then
@@ -405,6 +412,13 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             if hits == 0 then
                                 set hitDamage = hitDamage + bonusDmg
                                 set bonusDmg = 0.0
+                            endif
+                            if mode == 2 then
+                                call DamageSource(TojiQ2_ID)
+                            elseif mode == 3 then
+                                call DamageSource(TojiQ3_ID)
+                            else
+                                call DamageSource(TojiQ_ID)
                             endif
                             call dmgphys(c, td, TojiAbilityDamage(c, td, hitDamage))
                             set rr1 = 0.0
@@ -437,7 +451,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         call DecorRemove(c, GetUnitX(c), GetUnitY(c), 300, TojiQ2_DecorDamage)
                         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_luanzhanwhite01.mdl", GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), GetRandomReal(0, 359), 1.2, 1.75, 0, 255, 255, 255, 75))
                     else
-                        set r2 = RoundReal(r2 + 0.03, 3)
+                        set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
                     set effectClock = RoundReal(effectClock + 0.03, 3)
                     if effectClock >= 0.18 then
@@ -477,12 +491,12 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call SetUnitTimeScale(c, 1.65)
                         endif
                     elseif state == 1 then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         set damageClock = RoundReal(damageClock + 0.03, 3)
                         if damageClock >= TojiQ2_DamageInterval and hits < TojiQ2_DamageCount then
                             set damageClock = RoundReal(damageClock - TojiQ2_DamageInterval, 3)
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, GetUnitX(c), GetUnitY(c), TojiQ2_DamageAoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, GetUnitX(c), GetUnitY(c), TojiQ2_DamageAoe, NoDecor_Cond)
                             loop
                                 set picked = FirstOfGroup(g)
                                 exitwhen picked == null
@@ -495,6 +509,13 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                                     endif
                                     call StunUnit(c, picked, TojiQ2_MiniStun)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", picked, "chest"))
+                                    if mode == 2 then
+                                call DamageSource(TojiQ2_ID)
+                            elseif mode == 3 then
+                                call DamageSource(TojiQ3_ID)
+                            else
+                                call DamageSource(TojiQ_ID)
+                            endif
                                     call dmgphys(c, picked, TojiAbilityDamage(c, picked, hitDamage))
                                 endif
                             endloop
@@ -528,7 +549,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 
                 else // mode == 3 (Q3)
                     if state == 0 then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
                         if r == 0.30 then
@@ -550,10 +571,17 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_DustWindFaster3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2.55, 1, 1))
                         endif
                         if r == 0.33 then 
-                            call SaveInteger(hs, GetHandleId(c), StringHash("toji q3"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_TOJI_Q3, 1)
                             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_redstart2.mdx", x, y, a * bj_RADTODEG, 1.25, 1.5, 140), 0.3, 255, 255, 255, 0.15)                      
                         endif
                         if r >= TojiQ3_HitDelay then
+                            if mode == 2 then
+                                call DamageSource(TojiQ2_ID)
+                            elseif mode == 3 then
+                                call DamageSource(TojiQ3_ID)
+                            else
+                                call DamageSource(TojiQ_ID)
+                            endif
                             call dmgphys(c, td, TojiAbilityDamage(c, td, dmg + bonusDmg))
                             set bonusDmg = 0.0
                             call StunUnit(c, td, TojiQ3_Stun)                                             
@@ -565,7 +593,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", td, "chest"))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_1hongse_2blue.mdl", x, y, GetRandomReal(0, 359), 0.95, 3.95, 11))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.0, 3, 3))
-                            call SaveInteger(hs, GetHandleId(c), StringHash("toji q3"), 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_TOJI_Q3, 0)
                             set state = 1
                             set r = 9999.0
                         endif
@@ -586,7 +614,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call DestroyEffect(e2)
                             call DestroyEffect(e3)
                         elseif mode == 3 then 
-                            call SaveInteger(hs, GetHandleId(c), StringHash("toji q3"), 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_TOJI_Q3, 0)
                             call DestroyEffect(e)
                             call DestroyEffect(e2)
                             call DestroyEffect(e3)
@@ -723,6 +751,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         real a
         real move
         real r
+        real chainDuration
         real r6
         real r7
         real dmg
@@ -772,7 +801,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             set r2 = r2 + 0.03
                         endif
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, TojiW_DamageAoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, TojiW_DamageAoe, NoDecor_Cond)
                         loop
                             set picked = FirstOfGroup(g)
                             exitwhen picked == null or td != null
@@ -787,7 +816,8 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             set state = 1
                             set r = 0.0                                             
                             call MakeSound("war3mapimported\\Hero_Toji_W 2")
-                            call BuffUnit01(c, td, TojiW_AbiDebuff_ID, "curse", GetUnitAbilityLevel(c, TojiW_ID))
+                            set chainDuration = BuffUnit01(c, td, TojiW_AbiDebuff_ID, "curse", GetUnitAbilityLevel(c, TojiW_ID))
+                            call DamageSource('A0H1')
                             call dmgphys(c, td, TojiAbilityDamage(c, td, dmg))
                             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
                             call MakeSound("war3mapImported\\Hero_Toji_TW2")
@@ -814,7 +844,9 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                     if td == null or GetUnitTypeId(td) == 0 or GetWidgetLife(td) <= 0.405 or GetUnitAbilityLevel(td,TojiW_Debuff_ID) == 0 then
                         set remove = true
                     else
-                        set r = RoundReal(r + 0.03, 3)
+                        if not IsUnitPaused(td) then
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        endif
                         set dx = GetUnitX(td) - GetUnitX(c)
                         set dy = GetUnitY(td) - GetUnitY(c)
                         set distance = SquareRoot(dx * dx + dy * dy)
@@ -823,7 +855,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call PosUnit(td, GetUnitX(c) + TojiW_ChainMaxRange * Cos(angle), GetUnitY(c) + TojiW_ChainMaxRange * Sin(angle))
                         endif
                         call MoveLightningEx(chain, true, GetUnitX(c), GetUnitY(c), 110.0, GetUnitX(td), GetUnitY(td), 110.0)
-                        if r >= TojiW_ChainDuration then
+                        if r >= chainDuration then
                             set remove = true
                         endif
                     endif
@@ -847,7 +879,9 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                     if td == null or GetUnitTypeId(td) == 0 or GetWidgetLife(td) <= 0.405 or GetUnitAbilityLevel(td, TojiW_Debuff_ID) == 0 then
                         set remove = true
                     else
-                        set r = RoundReal(r + 0.03, 3)
+                        if not IsUnitPaused(td) then
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        endif
                         set pullElapsed = RoundReal(pullElapsed + 0.03, 3)
                         set step = pullMove
                         if step > pullRemaining then
@@ -872,13 +906,14 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call PosUnit(td, GetUnitX(c) + TojiW_ChainMaxRange * Cos(angle), GetUnitY(c) + TojiW_ChainMaxRange * Sin(angle))
                         endif
                         call MoveLightningEx(chain, true, GetUnitX(c), GetUnitY(c), 110.0, GetUnitX(td), GetUnitY(td), 110.0)
-                        if r >= TojiW_ChainDuration then
+                        if r >= chainDuration then
                             set remove = true
                         endif
                     endif
                 endif
 
                 if remove then
+                    call WUI_HeroProgress(c, TojiW_ID, "Chain of a Thousand Miles", 0.00, 0.00, true)
                     if c != null then
                         call SetPlayerAbilityAvailable(GetOwningPlayer(c), TojiW2_ID, false)
                         call SetPlayerAbilityAvailable(GetOwningPlayer(c), TojiW_ID, true)
@@ -908,6 +943,9 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         call TojiTimer03Release()
                     endif
                 else
+                    if state == 1 or state == 3 then
+                        call WUI_HeroProgress(c, TojiW_ID, "Chain of a Thousand Miles", chainDuration - r, chainDuration, true)
+                    endif
                     set i = i + 1
                 endif
             endloop
@@ -1086,13 +1124,14 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 
                     if level25 then
                         call GroupClear(scanGroup)
-                        call GroupEnumUnitsInRange(scanGroup, GetUnitX(c), GetUnitY(c), TojiE_HitAoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(scanGroup, GetUnitX(c), GetUnitY(c), TojiE_HitAoe, NoDecor_Cond)
                         loop
                             set target = FirstOfGroup(scanGroup)
                             exitwhen target == null
                             call GroupRemoveUnit(scanGroup, target)
                             if IsUnitEnemy(target, GetOwningPlayer(c)) and SpellBool(target) and not IsUnitInGroup(target, hitGroup) then
                                 call GroupAddUnit(hitGroup, target)
+                                call DamageSource('A0H3')
                                 call dmgphys(c, target, TojiAbilityDamage(c, target, attackDamage))
                                 call MUE(target, TojiE_Level25ThrowRange, TojiE_Level25ThrowDuration, a)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", target, "chest"))
@@ -1217,7 +1256,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             call SetAnimIndex(c, 0.03, 4)
             call SetUnitTimeScale(NewC, 2.0)
             set e = AddSpecialEffectTarget("war3mapimported\\wos_Windwalk Black.mdx", c, "origin")
-            if IntegerCd(c, "sound e cd", 10) then 
+            if IntegerCdKey(c, SH_ICD_SOUND_E_CD, 10) then 
                 if GetRandomInt(1, 2) == 1 then 
                     call MakeSound("war3mapimported\\Hero_Toji_E3")
                 else
@@ -1238,6 +1277,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
     private struct TojiSpells_R_Insectoids
         private static integer array m_TojiRI
         private static integer MUI_TojiRI = -1
+        // Duration meter (same WOSHeroMeter window as Gojo E), one per player.
 
         unit c
         group scanGroup
@@ -1428,7 +1468,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         if scanClock >= 0.12 then
                             set scanClock = RoundReal(scanClock - 0.12, 3)
                             call GroupClear(scanGroup)
-                            call GroupEnumUnitsInRange(scanGroup, centerX, centerY, TojiR_Aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(scanGroup, centerX, centerY, TojiR_Aoe, NoDecor_Cond)
                             call GroupClear(keepGroup)
 
                             loop
@@ -1464,12 +1504,13 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             set hit = false
                             call DecorRemove(c, centerX, centerY, TojiR_Aoe, TojiR_DecorDamage)
                             call GroupClear(damageGroup)
-                            call GroupEnumUnitsInRange(damageGroup, centerX, centerY, TojiR_Aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(damageGroup, centerX, centerY, TojiR_Aoe, NoDecor_Cond)
                             loop
                                 set target = FirstOfGroup(damageGroup)
                                 exitwhen target == null
                                 call GroupRemoveUnit(damageGroup, target)
                                 if IsUnitEnemy(target, GetOwningPlayer(c)) and SpellBool(target) then
+                                    call DamageSource('A0H4')
                                     call dmgphys(c, target, TojiAbilityDamage(c, target, damage))
                                     set hit = true
                                 endif
@@ -1483,6 +1524,12 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             set remove = true
                         endif
                     endif
+                endif
+
+                if remove then
+                    call WUI_HeroProgress(c, TojiR_ID, "Cursed Spirit Swarm", 0.00, 0.00, true)
+                else
+                    call WUI_HeroProgress(c, TojiR_ID, "Cursed Spirit Swarm", 0.80 + r5 - elapsed, 0.80 + r5, true)
                 endif
 
                 if remove then
@@ -1531,6 +1578,10 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             set swapGroup = null
         endmethod
 
+        private static method ShowMeter takes thistype this, unit owner, real duration returns nothing
+            call WUI_HeroProgress(owner, TojiR_ID, "Cursed Spirit Swarm", duration, duration, true)
+        endmethod
+
         public static method TojiR_Start takes unit NewC, real NewX, real NewY returns nothing
             local thistype this = thistype.create()
             local integer n = 0
@@ -1568,7 +1619,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             set damageGroup = CreateGroup()
             set affectedGroup = CreateGroup()
             set keepGroup = CreateGroup()
-            set effectParent = StringHash("TojiR_MosquitoEffects") + this
+            set effectParent = SH_TOJIR_MOSQUITOEFFECTS + this
             loop
                 exitwhen n >= 48
                 set angle = GetRandomReal(0.0, 2.0 * bj_PI)
@@ -1602,6 +1653,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             endloop
             set mosquito = null
             call VisionTimed(GetOwningPlayer(NewC), NewX, NewY, TojiR_Aoe, 0.80 + r5)
+            call thistype.ShowMeter(this, NewC, 0.80 + r5)
             call MakeSound("war3mapImported\\Hero_Toji_R")
             if MUI_TojiRI == 0 then
                 call TojiTimer03Acquire()
@@ -1744,11 +1796,12 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         call BlzSetSpecialEffectYaw(e2, a)
                         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun1.mdl", GetEffX(e) + 155.00 * Cos(a), GetEffY(e) + 155.00 * Sin(a), a * bj_RADTODEG, 1.15, 0.75, 135.00, 255, 125, 125, 255))
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, GetEffX(e), GetEffY(e), aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, GetEffX(e), GetEffY(e), aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                call DamageSource('A0H7')
                                 call dmgphys(c, u, TojiAbilityDamage(c, u, dmg))
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1778,10 +1831,10 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         endif
                         call TojiSpells_G_Debuff.Start(td)
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TojiG_ID)), 1)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Toji_TOJIG_ID, 1)
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
-                    call SaveInteger(hs, GetHandleId(td), StringHash("toji bullet"), 0)
+                    call SaveInteger(hs, GetHandleId(td), SH_TOJI_BULLET, 0)
                     call SetUnitTimeScale(c, 1.00)
                     if r <= 0.42 then
                         if TojiG_IsInvul then
@@ -1849,7 +1902,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Toji_G2 2")
             call SetUnitAnimationByIndex(NewC, 5)
             call SetUnitTimeScale(NewC, 0.65)
-            call SaveInteger(hs, GetHandleId(NewTd), StringHash("toji bullet"), 1)
+            call SaveInteger(hs, GetHandleId(NewTd), SH_TOJI_BULLET, 1)
             if MUI_TojiG == 0 then
                 call TojiTimer05Acquire()
             endif
@@ -1870,6 +1923,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         real r
         real dmg
         boolean pierceAdded
+        real elapsed
 
         public static method Loop_TojiT takes nothing returns nothing
             local integer i = 0
@@ -1898,15 +1952,17 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                         call DebugUnit2(c)
                     endif
                     call PosUnit(c, x, y)
+                    set elapsed = RoundReal(elapsed + 0.03, 3)
+                    call WUI_HeroProgress(c, TojiT_ID, "Heavenly Chain", RMaxBJ(0.00, TojiT_Duration - elapsed), TojiT_Duration, true)
                     if state == 0 then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r2 >= 0.42 then
                             set r2 = 0.0
                             call MakeSound("war3mapImported\\Hero_Toji_T4")
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack1.mdx", x, y, GetRandomReal(0, 359), 1.25, 2.15, 0))
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_firefly-rr-sfx9.mdl", x, y, GetRandomReal(0, 359), 1.15, 5.55, 650, 255, 255, 255, 145))
                         else
-                            set r2 = RoundReal(r2 + 0.03, 3)
+                            set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
                         if r >= TojiT_HitInterval then
                             call MakeSound("war3mapImported\\Hero_Toji_T3")
@@ -1926,12 +1982,13 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             call DecorRemove(c, x, y, TojiT_DamageAoe, TojiT_DecorDamage)
                             call DestroyEffect(EffectSpawn3("war3mapImported\\wos_blue_circular.mdl", x, y, GetRandomReal(0, 359), 1.15, 1.25, 425, -45))
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, TojiT_DamageAoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, TojiT_DamageAoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 call GroupRemoveUnit(g, u)
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0H5')
                                     call dmgphys(c, u, TojiAbilityDamage(c, u, dmg))
                                     call BuffUnit01(c, u, TojiG_AbiShieldPierce_ID, "curse", 1)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1945,7 +2002,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                             endif
                         endif
                     else
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         set progress = r / TojiT_DescendDuration
                         if progress > 1.0 then
                             set progress = 1.0
@@ -1960,6 +2017,9 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                 endif
 
                 if remove then
+                    if c != null then
+                        call WUI_HeroProgress(c, TojiT_ID, "Heavenly Chain", 0.00, 0.00, true)
+                    endif
                     if c != null and GetUnitTypeId(c) != 0 then
                         call SetUnitFlyHeight(c, 0.0, 0.0)
                         call SetUnitTimeScale(c, 1.0)
@@ -2010,6 +2070,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
             set x = NewX
             set y = NewY
             set r = 0.0
+            set elapsed = 0.0
             set r2 = 0.30
             set totalDamage = GetHeroAgi(NewC, true) * TojiT_DamageAgi + TojiE_ConsumeLeapBonus(NewC)
             set dmg = totalDamage / I2R(TojiT_HitCount)
@@ -2066,7 +2127,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
 
             set heroLevel = GetHeroLevel(NewC)
             set hid = GetHandleId(NewC)
-            set key = StringHash("TojiQ_ArsenalMode")
+            set key = SH_TOJIQ_ARSENALMODE
             set currentMode = LoadInteger(hs, hid, key)
             if currentMode < 1 or currentMode > 3 then
                 set currentMode = 1
@@ -2227,4 +2288,9 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
     function TojiF_Start takes unit c returns nothing
         call TojiSpells_F.TojiF_Start(c)
     endfunction
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Toji_TOJIG_ID = StringHash(I2S(TojiG_ID))
+    endglobals
+
 endlibrary

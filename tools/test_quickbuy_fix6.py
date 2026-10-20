@@ -17,7 +17,7 @@ class Fix6(prior.Fix5):
  def test_layout_all_supported_aspects_reflows_names_and_keeps_footer_in_panel(self):
   g=self.vm.g;source=(ui.ROOT/'triggers/WOS_Start/WoS_Shop_Init.j').read_text(encoding='utf-8');placed={}
   for array,name in re.findall(r'(?m)^    framehandle (array )?(\w+)\s*(?:=.*)?$',source):g[name]={i:(name,i) for i in range(80)} if array else name
-  g.update(WUI_Place=lambda f,x,y,a,z:placed.update({f:(x,y,a,z)}),ShopPlacePrice=lambda *_:None,BlzFrameSetScale=lambda *_:None,BlzFrameSetSize=lambda *_:None,BlzFrameClearAllPoints=lambda *_:None,BlzFrameSetAllPoints=lambda *_:None)
+  g.update(WUI_Place=lambda f,x,y,a,z:placed.update({f:(x,y,a,z)}),BlzFrameSetTextAlignment=lambda *_:None,TEXT_JUSTIFY_MIDDLE='TEXT_JUSTIFY_MIDDLE',TEXT_JUSTIFY_LEFT='TEXT_JUSTIFY_LEFT',ShopPlacePrice=lambda *_:None,BlzFrameSetScale=lambda *_:None,BlzFrameSetSize=lambda *_:None,BlzFrameClearAllPoints=lambda *_:None,BlzFrameSetAllPoints=lambda *_:None)
   for aspect in [5/4,4/3,16/9,21/9]:
    g['WUI_ScreenRight']=lambda a=aspect:.4+.3*a;g['QB_Right']=0;placed.clear();self.vm.run('QB_Layout');panel=placed['QB_Panel'];hint=placed['QB_Hint'];status=placed['QB_StateText'];self.assertAlmostEqual(panel[1]-panel[3]/2,.098)
    self.assertAlmostEqual(hint[1],.126);self.assertAlmostEqual(status[1],.107);self.assertGreater(status[1]-.01/2,.098)

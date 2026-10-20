@@ -1,3 +1,7 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_ArrowRight_DONAT_RIGHT = StringHash("donat right")
+endglobals
 function Trig_ArrowRight_Actions takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer i = GetPlayerId(p)
@@ -17,7 +21,7 @@ function Trig_ArrowRight_Actions takes nothing returns nothing
                 set AttachDonat2[i] = null
                 set AttachDonat4[i] = null
                 if VIPCheckLvl3(FramePlayerFirstName[i]) then
-                    set id = LoadInteger(hs, GetHandleId(Player(i)), StringHash("donat right"))
+                    set id = LoadInteger(hs, GetHandleId(Player(i)), SH_ArrowRight_DONAT_RIGHT)
                     call SetActiveDonat(i, 3, id)
                     if id == 0 then
                         set AttachDonat3[i] = AddSpecialEffectTarget("war3mapImported\\wos_ncow_sfx_sharingan3tomoe.mdx", Hero[i], "origin")
@@ -34,7 +38,7 @@ function Trig_ArrowRight_Actions takes nothing returns nothing
                     if id > 4 then
                         set id = 0
                     endif
-                    call SaveInteger(hs, GetHandleId(Player(i)), StringHash("donat right"), id)
+                    call SaveInteger(hs, GetHandleId(Player(i)), SH_ArrowRight_DONAT_RIGHT, id)
                 else
                     set AttachDonat3[i] = AddSpecialEffectTarget("war3mapImported\\wos_ncow_sfx_sharingan3tomoe.mdx", Hero[i], "origin")
                     call SetActiveDonat(i, 3, 0)

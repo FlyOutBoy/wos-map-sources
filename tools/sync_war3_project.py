@@ -20,7 +20,7 @@ def world_editor_running() -> bool:
         return False
     try:
         result = subprocess.run(
-            ["tasklist", "/FI", "IMAGENAME eq World Editor.exe", "/FO", "CSV", "/NH"],
+            ["tasklist", "/FI", "IMAGENAME eq World*.exe", "/FO", "CSV", "/NH"],
             check=False,
             capture_output=True,
             text=True,
@@ -29,13 +29,15 @@ def world_editor_running() -> bool:
         )
     except OSError:
         return False
-    return '"World Editor.exe"' in result.stdout
+    return any('"' + name + '"' in result.stdout.casefold()
+               for name in ("world editor.exe", "worldeditortesh.exe"))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("export", "check", "save", "check-save"))
     parser.add_argument("--config", type=Path, default=Path("object-data.config.json"))
+    parser.add_argument("--no-build", action="store_true", help="Save TEST without building; used by the combined build/run workflow")
     args = parser.parse_args()
     config = args.config.resolve()
     try:
@@ -73,7 +75,7 @@ def main() -> int:
                 )
             objects.import_workspace(map_dir, output_dir, raw_dir, backup_dir, common_j, False)
             triggers.push(config, trigger_dir, trigger_backup)
-            if selected_profile:
+            if selected_profile and not args.no_build:
                 test_map_profile.powershell(workspace,workspace/".vscode/build-run-w3-map.ps1","-Target","Test","-NoLaunch")
         return 0
     except (raw.FormatError, OSError, ValueError, subprocess.CalledProcessError) as exc:

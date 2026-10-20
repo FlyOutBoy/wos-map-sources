@@ -1,5 +1,82 @@
 library StarrkSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer StarrkTick05_Timer = CreateTimer()
+        private boolean array StarrkTick05_Active
+        private integer StarrkTick05_Users = 0
+        private code StarrkTick05_Callback = null
+    endglobals
+
+    private function StarrkTick05_On takes integer k returns nothing
+        if not StarrkTick05_Active[k] then
+            set StarrkTick05_Active[k] = true
+            set StarrkTick05_Users = StarrkTick05_Users + 1
+            if StarrkTick05_Users == 1 then
+                call TimerStart(StarrkTick05_Timer, 0.05, true, StarrkTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function StarrkTick05_Off takes integer k returns nothing
+        if StarrkTick05_Active[k] then
+            set StarrkTick05_Active[k] = false
+            set StarrkTick05_Users = StarrkTick05_Users - 1
+            if StarrkTick05_Users <= 0 then
+                set StarrkTick05_Users = 0
+                call PauseTimer(StarrkTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer StarrkTick_Timer = CreateTimer()
+        private boolean array StarrkTick_Active
+        private integer StarrkTick_Users = 0
+        private code StarrkTick_Callback = null
+    endglobals
+
+    private function StarrkTick_On takes integer k returns nothing
+        if not StarrkTick_Active[k] then
+            set StarrkTick_Active[k] = true
+            set StarrkTick_Users = StarrkTick_Users + 1
+            if StarrkTick_Users == 1 then
+                call TimerStart(StarrkTick_Timer, 0.03, true, StarrkTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function StarrkTick_Off takes integer k returns nothing
+        if StarrkTick_Active[k] then
+            set StarrkTick_Active[k] = false
+            set StarrkTick_Users = StarrkTick_Users - 1
+            if StarrkTick_Users <= 0 then
+                set StarrkTick_Users = 0
+                call PauseTimer(StarrkTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ATK_BASE_DMG = StringHash("atk base dmg")
+        private integer SH_BAN_SOUND_Q = StringHash("ban sound q")
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_MORPH_E = StringHash("morph e")
+        private integer SH_POVOROT = StringHash("povorot")
+        private integer SH_R_START = StringHash("r start")
+        private integer SH_SOND_CD = StringHash("sond cd")
+        private integer SH_SOND_CD2 = StringHash("sond cd2")
+        private integer SH_STARK_T = StringHash("stark t")
+        private integer SH_STARRK_T_ACTION = StringHash("starrk t action")
+        private integer SH_STOP_MOVE = StringHash("stop move")
+        private integer SH_STOP_R = StringHash("stop r")
+        private integer SH_T_END = StringHash("t end")
+        private integer SH_WOLF_GROUP = StringHash("wolf group")
+        private integer SH_WOLF_ULT = StringHash("wolf ult")
+        private integer SH_W_SKILL = StringHash("w skill")
+    endglobals
+    globals
 //--------------------------------------Starrk--------------------------------------------------------------
         integer Starrk_ID = 'H01X'
         integer Starrk_Morph_ID = 'H01Y'
@@ -56,7 +133,7 @@ library StarrkSpells uses GearSystems
         real StarrkE_DurationBase = 12 // in seconds , how long clone would live 10 = 10 sec
         real StarrkE_DurationStep = 2 // in seconds , how much time added with next level
         real StarrkE_AttackRange = 800 // additional attack range to morph, it mean count as basical attack range + this
-        real StarrkE_AttackRangeBase = 100 // additional attack range to morph, it mean count as basical attack range + this
+        real StarrkE_AttackRangeBase = 125 // additional attack range to morph, it mean count as basical attack range + this
         integer StarrkE_IdDummy = 'h00E'//'h0CO'
         real StarrkEAtk_Aoe = 330
         real StarrkEAtk_CeroRange = 1900
@@ -97,8 +174,47 @@ library StarrkSpells uses GearSystems
         real StarrkT_Stun = 0 // wolves do not stun
         real StarrkT3_HitGroupDuration = 3.0 // keeps one shared hit group alive after TT/TR launches
     endglobals
+    globals
+        // Wolf trails are owned per wolf: an attached effect outlives RemoveUnit and stayed
+        // floating where faded or killed wolves had been.
+        private integer SH_STARRK_WOLF_TRAIL = StringHash("starrk wolf trail")
+        private trigger StarrkWolfDeathTrigger = null
+    endglobals
+
+    private function StarrkWolfDropTrail takes unit wolf returns nothing
+        local integer h = GetHandleId(wolf)
+        local effect e = LoadEffectHandle(hs, h, SH_STARRK_WOLF_TRAIL)
+        if e != null then
+            call DestroyEffect(e)
+            call RemoveSavedHandle(hs, h, SH_STARRK_WOLF_TRAIL)
+        endif
+        set e = null
+    endfunction
+
+    private function StarrkWolfOnDeath takes nothing returns boolean
+        if GetUnitTypeId(GetTriggerUnit()) == StarrkWolf_ID then
+            call StarrkWolfDropTrail(GetTriggerUnit())
+        endif
+        return false
+    endfunction
+
+    private function StarrkWolfTrail takes unit wolf returns nothing
+        if StarrkWolfDeathTrigger == null then
+            set StarrkWolfDeathTrigger = CreateTrigger()
+            call TriggerRegisterAnyUnitEventBJ(StarrkWolfDeathTrigger, EVENT_PLAYER_UNIT_DEATH)
+            call TriggerAddCondition(StarrkWolfDeathTrigger, Condition(function StarrkWolfOnDeath))
+        endif
+        call StarrkWolfDropTrail(wolf)
+        call SaveEffectHandle(hs, GetHandleId(wolf), SH_STARRK_WOLF_TRAIL, AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", wolf, "chest"))
+    endfunction
+
+    // Fade out and remove a wolf together with its trail.
+    private function StarrkWolfFade takes unit wolf, real time returns nothing
+        call StarrkWolfDropTrail(wolf)
+        call ColorDummy3(wolf, 0, 255, 255, 255, time)
+    endfunction
+
     private struct StarrkSpells_Utility
-        private static timer t_StarrkPas2 = CreateTimer()
         private static integer array m_StarrkPas2
         private static integer MUI_StarrkPas2 = -1
         unit c
@@ -120,15 +236,15 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkPas2 takes nothing returns nothing
+        static method Loop_StarrkPas2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_StarrkPas2
                 set this = m_StarrkPas2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     if move >= StarrkEAtk_CeroRange then
                         set r = 9999
                     endif
@@ -164,6 +280,7 @@ library StarrkSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                call DamageSource('A0BJ')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit( g2 , u )
                             endif
@@ -182,8 +299,9 @@ library StarrkSpells uses GearSystems
                     set c = null
                     set m_StarrkPas2[i] = m_StarrkPas2[ MUI_StarrkPas2]
                     set MUI_StarrkPas2 = MUI_StarrkPas2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkPas2 == -1 then
-                        call PauseTimer( t_StarrkPas2)
+                        call StarrkTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -214,7 +332,7 @@ library StarrkSpells uses GearSystems
             call DestroyEffect(EffectSpawnColor3("war3mapimported\\wos_whitering.mdx", x1, y1, a * bj_RADTODEG, 3, 0.71, 180, -90, 0, 75, 255, 255))
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue-shoot.mdl", x1 - 160 * Cos(a), y1 - 160 * Sin(a), a * bj_RADTODEG, 1.25, 1.15, 1))
             if MUI_StarrkPas2 == 0 then
-                call TimerStart( t_StarrkPas2, 0.03, true, function thistype.Loop_StarrkPas2)
+                call StarrkTick_On(0)
             endif
         endmethod
 
@@ -227,9 +345,9 @@ library StarrkSpells uses GearSystems
     endstruct
 
     private struct StarrkSpells_Q
-        private static timer t_StarrkQ = CreateTimer()
         private static integer array m_StarrkQ
         private static integer MUI_StarrkQ = -1
+        integer src // Damage Stats instance: Q / EQ / TQ
         unit c
         real x
         real y
@@ -262,7 +380,7 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkQ takes nothing returns nothing
+        static method Loop_StarrkQ takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rkek = 0
@@ -270,7 +388,7 @@ library StarrkSpells uses GearSystems
                 exitwhen i > MUI_StarrkQ
                 set this = m_StarrkQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if k2 == 0 then // 0 - normal spell, 1 - morph spell, 2( only for q) enchaned with T morph spell
                         if check == 0 then
                             call DebugUnit2(c)
@@ -337,6 +455,7 @@ library StarrkSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit( g2 , u )
                                     endif
@@ -432,6 +551,7 @@ library StarrkSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call MUE(u, StarrkEQ_PushDistance, StarrkEQ_PushDuration, a)
                                         call GroupAddUnit( g2 , u )
@@ -456,13 +576,13 @@ library StarrkSpells uses GearSystems
                                 call GroupAddUnit(g2, dd[0])
                                 call SetUnitVertexColor(dd[0], 255, 255, 255, 0)
                                 call ColorDummy4(dd[0], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[0], "chest")
+                                call StarrkWolfTrail(dd[0])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[0], "chest"))
                                 set dd[1] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, x2, y2, a * bj_RADTODEG)
                                 call GroupAddUnit(g2, dd[1])
                                 call SetUnitVertexColor(dd[1], 255, 255, 255, 0)
                                 call ColorDummy4(dd[1], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[1], "chest")
+                                call StarrkWolfTrail(dd[1])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[1], "chest"))
                                 set r3 = SR3(dd[0], x, y) / 15
                                 set r4 = SR3(dd[1], x, y) / 15
@@ -499,6 +619,7 @@ library StarrkSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, StarrkTQ_Stun)
                                         call GroupAddUnit( g2 , u )
@@ -513,8 +634,8 @@ library StarrkSpells uses GearSystems
                                     call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_dustwave222.mdx", x, y, GetRandomReal(0, 359), r5, 2.35 + k * 0.85, 0, 75, 185, 255, 50))
                                     set k = k + 1
                                 endloop
-                                call ColorDummy3(dd[0], 0, 255, 255, 255, 0.3)
-                                call ColorDummy3(dd[1], 0, 255, 255, 255, 0.3)
+                                call StarrkWolfFade(dd[0], 0.3)
+                                call StarrkWolfFade(dd[1], 0.3)
                                 set dd[0] = null
                                 set dd[1] = null
                             endif
@@ -523,7 +644,7 @@ library StarrkSpells uses GearSystems
                     endif
                 else
                     if k2 == 2 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("starrk t action"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION, 0)
                     endif
                     if check > 0 then
                         call DestroyEffect( e )
@@ -543,8 +664,9 @@ library StarrkSpells uses GearSystems
                     set u = null
                     set m_StarrkQ[i] = m_StarrkQ[ MUI_StarrkQ]
                     set MUI_StarrkQ = MUI_StarrkQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkQ == -1 then
-                        call PauseTimer( t_StarrkQ)
+                        call StarrkTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -576,14 +698,14 @@ library StarrkSpells uses GearSystems
             set r7 = StarrkQ_RangeBase + ( StarrkQ_RangeStep * ( GetUnitAbilityLevel( c , StarrkQ_ID) - 1 ) )
             set dmg = GetHeroAgi( c , true) * ( StarrkQ_DamageAgiBase + ( StarrkQ_DamageAgiStep * ( GetUnitAbilityLevel( c , StarrkQ_ID) - 1 ) ) )
             set dmg = dmg + StarrkQ_Damage2StaticBase + ( StarrkQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , StarrkQ_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) != 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
                 set dmg = dmg + (GetHeroAgi( c , true) * StarrkQ_DamageMorphIntImprove)
                 set r7 = r7+ StarrkEQ_RangeBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("stark t")) == 1 then// T ability add dmg
+                if LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 1 then// T ability add dmg
                     set dmg = dmg + (GetHeroAgi( c , true) * StarrkQ_DamageTIntImprove)
                 endif
             endif
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 set k2 = 0
                 set x1 = GetUnitX( c ) + 85 * Cos( a )
                 set y1 = GetUnitY( c ) + 85 * Sin( a )
@@ -595,14 +717,14 @@ library StarrkSpells uses GearSystems
                 call SetUnitAnimationByIndex( c , 12)
                 call MakeSound("war3mapimported\\Hero_Starrk_Q")
                 call MakeSound("war3mapimported\\Hero_Starrk_Q2")
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("stark t")) == 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 0 then
                 set e = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand left")
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand right")
                 set k2 = 1
                 set rmax = 0.66
                 call SetUnitTimeScale( c , 1)
                 call SetUnitAnimationByIndex( c , 3)
-                if GetRandomInt(1, 2) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("ban sound q")) == 1 then
+                if GetRandomInt(1, 2) == 1 or LoadInteger(hs, GetHandleId(c), SH_BAN_SOUND_Q) == 1 then
                     call MakeSound("war3mapimported\\Hero_Starrk_EQ")
                 else
                     call MakeSound("war3mapimported\\Hero_Starrk_EQ2")
@@ -610,20 +732,25 @@ library StarrkSpells uses GearSystems
             else
                 set k2 = 2
                 set rmax = 0.03
-                call SaveInteger(hs, GetHandleId(c), StringHash("starrk t action"), 1)
+                call SaveInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION, 1)
                 call MakeSound("war3mapimported\\Hero_Starrk_TQ")
             endif
+            if k2 == 2 then
+                set src = DamageSourceVariant(StarrkQ_ID, 2, "TQ")
+            else
+                set src = DamageSourceVariant(StarrkQ_ID, k2, "EQ")
+            endif
             if MUI_StarrkQ == 0 then
-                call TimerStart( t_StarrkQ, 0.03, true, function thistype.Loop_StarrkQ)
+                call StarrkTick_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct StarrkSpells_W
-        private static timer t_StarrkW = CreateTimer()
         private static integer array m_StarrkW
         private static integer MUI_StarrkW = -1
+        integer src // Damage Stats instance: W / EW / TW
         unit c
         unit td
         real x
@@ -652,7 +779,7 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkW takes nothing returns nothing
+        static method Loop_StarrkW takes nothing returns nothing
             local integer this
             local real rr3 = 0
             local real rr4 = 0
@@ -663,8 +790,8 @@ library StarrkSpells uses GearSystems
                 exitwhen i > MUI_StarrkW
                 set this = m_StarrkW[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     set a = GAngle(c, td)
@@ -690,10 +817,11 @@ library StarrkSpells uses GearSystems
                       //      call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_TanjiroEffect229.mdl", x - 100 * Cos(a), y - 100 * Sin(a), a * bj_RADTODEG, 1.5, 2.65, 135), 0.36, 255, 255, 255, 0.3)
                                 call MUE(c, 450, 0.3, a)
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_slashbluekojiro.mdl", x, y, a * bj_RADTODEG + 90, 1, 1.7, 175))
-                                call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
+                                call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.1, 4, 9))
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_bloodex-special-23.mdx", x, y, GetRandomReal(0, 359), 2.5, 3.75, 65))
                                 call DecorRemove(c, x, y, aoe, 25)
+                                call DamageSource(src)
                                 call dmgphys(c, td, dmg)
                             endif
                         endif
@@ -753,6 +881,7 @@ library StarrkSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) or u == td then
+                                    call DamageSource(src)
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_ZK_BMSword-qi explosion_Lan.mdl", u, "chest"))
@@ -779,11 +908,11 @@ library StarrkSpells uses GearSystems
                             call MUE(c, 900, 0.27, GAngle(c, td))
                         endif
                         if r == 0.75 then
-                            call AddSpecialEffectTarget("war3mapimported\\wos_bloodex-special-23.mdl", td, "chest")
-                            call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
+                            call MyRemoveEff(AddSpecialEffectTarget("war3mapimported\\wos_bloodex-special-23.mdl", td, "chest"), 1.5)
+                            call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
                             call SetUnitAnimation(td, "death")
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_blood pool.mdx", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 2.1, 1.75, 9))
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 0)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 0)
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (431232).mdl", x, y, GetRandomReal(0, 359), 1.5, 2.15, 35))
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3_x2.mdl", x, y, GetRandomReal(0, 359), 1, 2.5, 1))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_dajiqiquan4.mdx", x, y, GetRandomReal(0, 359), 1.1, 3, 9))
@@ -797,6 +926,7 @@ library StarrkSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) or u == td then
+                                    call DamageSource(src)
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -807,7 +937,7 @@ library StarrkSpells uses GearSystems
                     endif
                 else
                     if check == 2 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("starrk t action"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION, 0)
                         call DestroyEffect(e)
                         call DestroyEffect(e2)
                         set e = null
@@ -830,8 +960,9 @@ library StarrkSpells uses GearSystems
                     set e4 = null
                     set m_StarrkW[i] = m_StarrkW[ MUI_StarrkW]
                     set MUI_StarrkW = MUI_StarrkW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkW == -1 then
-                        call PauseTimer( t_StarrkW)
+                        call StarrkTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -848,6 +979,14 @@ library StarrkSpells uses GearSystems
             set r = 0
             set check = 0
             set k2 = 0
+            set src = StarrkW_ID
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
+                if LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 0 then
+                    set src = DamageSourceVariant(StarrkW_ID, 1, "EW")
+                else
+                    set src = DamageSourceVariant(StarrkW_ID, 2, "TW")
+                endif
+            endif
             set r5 = 0
             set g = CreateGroup()
             set g2 = CreateGroup()
@@ -857,7 +996,7 @@ library StarrkSpells uses GearSystems
             set dmg = dmg + StarrkW_Damage2StaticBase + ( StarrkW_Damage2StaticStep * ( GetUnitAbilityLevel( c , StarrkW_ID) - 1 ) )
             set rmax = 6
             call SetUnitFacing(c, a * bj_RADTODEG)
-            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 call StartSpellUnit2(c)
                 call MakeSound("war3mapimported\\Hero_Starrk_W2 1")
                 call SetUnitTimeScale( c , 0.5)
@@ -867,7 +1006,7 @@ library StarrkSpells uses GearSystems
                 set scale = 1
                 set scale2 = 0.25
                 set move = 70
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("stark t")) == 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 0 then
                 set r4 = 999
                 set check = 1
                 set rmax = 4
@@ -885,40 +1024,33 @@ library StarrkSpells uses GearSystems
                 set r4 = 999
                 set check = 2
                 set rmax = 1.8
-                call SaveInteger(hs, GetHandleId(c), StringHash("starrk t action"), 1)
+                call SaveInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION, 1)
                 set dmg = dmg + StarrkEW_DamageMorphIntImprove * GetHeroAgi(c, true)
                 set dmg = dmg + StarrkTW_DamageImprove * GetHeroAgi(c, true)
                 set aoe = StarrkEW_DamageAoe
                 call StartSpellUnit2(c)
                 call MakeSound("war3mapimported\\Hero_Starrk_TW")
                 call SetUnitAnimationByIndex( c , 0)
-                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 1)
+                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 1)
                 call SetUnitTimeScale( c , 0.4)
                 set e = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand left")
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand right")
             endif
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w skill"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL, 1)
             if MUI_StarrkW == 0 then
-                call TimerStart( t_StarrkW, 0.03, true, function thistype.Loop_StarrkW)
+                call StarrkTick_On(2)
             endif
         endmethod
 
     endstruct
 
     private struct StarrkSpells_E
-        private static timer t_StarrkE = CreateTimer()
         private static integer array m_StarrkE
         private static integer MUI_StarrkE = -1
         unit d
         unit c
         real x
         real y
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         real r2
         integer k
         integer k2
@@ -933,17 +1065,17 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkE takes nothing returns nothing
+        static method Loop_StarrkE takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_StarrkE
                 set this = m_StarrkE[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
-                    if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and LoadInteger(hs, GetHandleId(c), StringHash("starrk t action")) == 0) then
+                    if check == 0 or (check == 1 and IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and LoadInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION) == 0) then
                         set r = r + 0.05
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.05 then
                             call ColorEffDummy3(e2, 0, 255, 255, 255, 0.5)
@@ -969,8 +1101,8 @@ library StarrkSpells uses GearSystems
                         if r == rmax then
                             call MakeSound("war3mapimported\\Hero_Starrk_E5")
                             call NextSound("war3mapimported\\Hero_Starrk_EQ2", 0.3)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("ban sound q"), 1)
-                            call MyFlush(GetHandleId(c), StringHash("ban sound q"), 0, 3)
+                            call SaveInteger(hs, GetHandleId(c), SH_BAN_SOUND_Q, 1)
+                            call MyFlush(GetHandleId(c), SH_BAN_SOUND_Q, 0, 3)
                             set k = 0
                             loop
                                 exitwhen k > 3
@@ -1007,7 +1139,7 @@ library StarrkSpells uses GearSystems
                             call SetUnitAbilityLevel(c, StarrkE2_ID, GetUnitAbilityLevel(c, StarrkE_ID))
                             call UnitMakeAbilityPermanent(c, true, StarrkE_Atk_ID)
                            // call UnitMakeAbilityPermanent(c, true, StarrkE_AS_ID)
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e"), 1)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E, 1)
                             set r = 0
                             if GetHeroLevel(c) >= 35 then
                                 call AddHpRegen(c, 20, true)
@@ -1016,54 +1148,14 @@ library StarrkSpells uses GearSystems
                             set d = CreateUnit(Player(k2), StarrkE_IdDummy, 1, 1, 1)
                             set r2 = 9999
                             set check = 1
-                            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_E", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
                         endif
                    
                     elseif check == 1 then
-                        call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, StarrkE_ID, "Resurreccion Los Lobos [Level 1]", rmax - r, rmax, true)
                         endif
-                        if check2 == 0 and LoadInteger(hs, GetHandleId(c), StringHash("stark t")) == 1 then
+                        if check2 == 0 and LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 1 then
                             set rmax = rmax + StarrkT_Duration
-                            call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 2)
                             set check2 = 1
                         endif
                         if r2 > 0.94 then
@@ -1085,7 +1177,7 @@ library StarrkSpells uses GearSystems
                    // call UnitRemoveAbility(c,'A0I2')
                     call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, 0, 6)// 4 - mag, 5 - chaos, 6 - hero
                     call SetUnitRange(c, StarrkE_AttackRangeBase)
-                    call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("morph e"), 0)
+                    call SaveInteger(hs, GetHandleId(Player(k2)), SH_MORPH_E, 0)
                     call BlzSetAbilityIcon(StarrkQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_Q.blp")
                     call BlzSetAbilityIcon(StarrkW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_W.blp")
                     call BlzSetUnitSkin(c, Starrk_ID)
@@ -1099,9 +1191,7 @@ library StarrkSpells uses GearSystems
                     endif
                     //call UnitRemoveAbility(c, StarrkE_AS_ID)
                     call UnitRemoveAbility(c, StarrkE_Atk_ID)
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, StarrkE_ID, "Resurreccion Los Lobos [Level 1]", 0.00, 0.00, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), StarrkR2_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), StarrkE2_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), StarrkR_ID, true)
@@ -1117,8 +1207,9 @@ library StarrkSpells uses GearSystems
                     set d = null
                     set m_StarrkE[i] = m_StarrkE[MUI_StarrkE]
                     set MUI_StarrkE = MUI_StarrkE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkE == -1 then
-                        call PauseTimer( t_StarrkE )
+                        call StarrkTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -1150,20 +1241,17 @@ library StarrkSpells uses GearSystems
             call SetUnitTimeScale(c, 0.9)
             call MakeSound("war3mapimported\\Hero_Starrk_E4")
             if MUI_StarrkE == 0 then
-                call TimerStart( t_StarrkE, 0.05, true, function thistype.Loop_StarrkE )
+                call StarrkTick05_On(0)
             endif
         endmethod
 
     endstruct
 
     private struct StarrkSpells_R
-        private static timer t_StarrkR3 = CreateTimer()
         private static integer array m_StarrkR3
         private static integer MUI_StarrkR3 = -1
-        private static timer t_StarrkR2 = CreateTimer()
         private static integer array m_StarrkR2
         private static integer MUI_StarrkR2 = -1
-        private static timer t_StarrkR = CreateTimer()
         private static integer array m_StarrkR
         private static integer MUI_StarrkR = -1
         unit d
@@ -1201,7 +1289,7 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkR3 takes nothing returns nothing
+        static method Loop_StarrkR3 takes nothing returns nothing
             local integer this
             local real rr3 = 0
             local real rr4 = 0
@@ -1212,8 +1300,8 @@ library StarrkSpells uses GearSystems
                 exitwhen i > MUI_StarrkR3
                 set this = m_StarrkR3[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     call DebugUnit(c)
@@ -1296,6 +1384,7 @@ library StarrkSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A0BN')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit( g2 , u )
                                 endif
@@ -1350,8 +1439,9 @@ library StarrkSpells uses GearSystems
                     set e4 = null
                     set m_StarrkR3[i] = m_StarrkR3[ MUI_StarrkR3]
                     set MUI_StarrkR3 = MUI_StarrkR3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkR3 == -1 then
-                        call PauseTimer( t_StarrkR3)
+                        call StarrkTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -1386,21 +1476,21 @@ library StarrkSpells uses GearSystems
             set scale = 1
             set scale2 = 0.25
             set move = 70
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("w skill"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL, 1)
             if MUI_StarrkR3 == 0 then
-                call TimerStart( t_StarrkR3, 0.03, true, function thistype.Loop_StarrkR3)
+                call StarrkTick_On(3)
             endif
         endmethod
 
-        private static method Loop_StarrkR2 takes nothing returns nothing
+        static method Loop_StarrkR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_StarrkR2
                 set this = m_StarrkR2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     //call MoveEff2(e, r3, a)
                     //call MoveEff2(e2, r4, a)
                     //set x = GetEffX(e)
@@ -1440,8 +1530,9 @@ library StarrkSpells uses GearSystems
                     set c = null
                     set m_StarrkR2[i] = m_StarrkR2[ MUI_StarrkR2]
                     set MUI_StarrkR2 = MUI_StarrkR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkR2 == -1 then
-                        call PauseTimer( t_StarrkR2)
+                        call StarrkTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1490,11 +1581,11 @@ library StarrkSpells uses GearSystems
             set r4 = GetRandomReal(200*1.23, 225*1.23)
             set rmax = 0.21
             if MUI_StarrkR2 == 0 then
-                call TimerStart( t_StarrkR2, 0.03, true, function thistype.Loop_StarrkR2)
+                call StarrkTick_On(4)
             endif
         endmethod
 
-        private static method Loop_StarrkR takes nothing returns nothing
+        static method Loop_StarrkR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real targetA = 0
@@ -1504,9 +1595,9 @@ library StarrkSpells uses GearSystems
             loop
                 exitwhen i > MUI_StarrkR
                 set this = m_StarrkR[i]
-                if SpellBoolCaster(c) and r < rmax and LoadInteger(hs, GetHandleId(c), StringHash("stop r")) == 0 then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                if SpellBoolCaster(c) and r < rmax and LoadInteger(hs, GetHandleId(c), SH_STOP_R) == 0 then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     if r < 1.26 then
                      //   call DebugUnit(c)
                     else
@@ -1536,7 +1627,7 @@ library StarrkSpells uses GearSystems
                     if r == 0.03 then
                     //call UnitRemoveAbility(c,'Avul')
                     set r2 = 10
-                        call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 1)
+                        call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 1)
                         call MouseOn(GetOwningPlayer(c))
                         set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
                         set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
@@ -1590,6 +1681,7 @@ library StarrkSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource('A0BP')
                                         call dmgmag(c, u, dmg)
                                         if r >= StarrkR2_StunAppearTime and GetHeroLevel(c) >= 35 then
                                             call StunUnit(c, u, StarrkR2_Stun)
@@ -1611,9 +1703,9 @@ library StarrkSpells uses GearSystems
                     call StopSpellUnit2(c)
                     call MouseOff(GetOwningPlayer(c))
                     call DestroyEffect(e)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("stop r"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("povorot"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_STOP_R, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_POVOROT, 0)
                     if r < r7 then
                         call UnitRemoveAbility(c, 'Avul')
                     endif
@@ -1626,8 +1718,9 @@ library StarrkSpells uses GearSystems
                     set c = null
                     set m_StarrkR[i] = m_StarrkR[ MUI_StarrkR]
                     set MUI_StarrkR = MUI_StarrkR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkR == -1 then
-                        call PauseTimer( t_StarrkR)
+                        call StarrkTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1662,7 +1755,7 @@ library StarrkSpells uses GearSystems
             set r2 = 10
             set aoe = StarrkR2_DamageAoe
             call StartSpellUnit2(c)
-            call SaveInteger(hs, GetHandleId(Player(k2)), StringHash("r start"), 1)
+            call SaveInteger(hs, GetHandleId(Player(k2)), SH_R_START, 1)
             set a = GAngle2( c , x, y ) // Angle Between points
             call MakeSound("war3mapimported\\Hero_Starrk_R1")
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800, 4)
@@ -1674,20 +1767,17 @@ library StarrkSpells uses GearSystems
             call SetUnitTimeScale(c, 1)
             call SetUnitAnimationByIndex(c, 2)
             if MUI_StarrkR == 0 then
-                call TimerStart( t_StarrkR, 0.03, true, function thistype.Loop_StarrkR)
+                call StarrkTick_On(5)
             endif
         endmethod
 
     endstruct
 
     private struct StarrkSpells_T
-        private static timer t_StarrkT2 = CreateTimer()
         private static integer array m_StarrkT2
         private static integer MUI_StarrkT2 = -1
-        private static timer t_StarrkT = CreateTimer()
         private static integer array m_StarrkT
         private static integer MUI_StarrkT = -1
-        private static timer t_StarrkT3 = CreateTimer()
         private static integer array m_StarrkT3
         private static integer MUI_StarrkT3 = -1
         unit d
@@ -1699,12 +1789,6 @@ library StarrkSpells uses GearSystems
         real x1
         real y1
         real x2
-        framehandle array frame1_pas1 [10]
-        framehandle array frame1_pas2 [10]
-        framehandle array frame1_pas3 [10]
-        framehandle array frame1_pas4 [10]
-        framehandle array frame1_pas5 [10]
-        framehandle array frame1_pas6 [10]
         real y2
         real r2
         integer k
@@ -1732,7 +1816,7 @@ library StarrkSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_StarrkT2 takes nothing returns nothing
+        static method Loop_StarrkT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1747,8 +1831,8 @@ library StarrkSpells uses GearSystems
                     endif
                 endif
                 if b then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         set a = GAngle(d, td)
                     else
@@ -1771,10 +1855,10 @@ library StarrkSpells uses GearSystems
                     if SpellBoolCaster(c) or check == 1 then
                     set x = GetUnitX(d)
                     set y = GetUnitY(d)
-                    if LoadInteger(hs, GetHandleId(c), StringHash("sond cd2")) == 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_SOND_CD2) == 0 then
                         call MakeSound("war3mapimported\\Hero_Starrk_TT3")
-                        call SaveInteger(hs, GetHandleId(c), StringHash("sond cd2"), 1)
-                        call MyFlush(GetHandleId(c), StringHash("sond cd2"), 0, 1.5)
+                        call SaveInteger(hs, GetHandleId(c), SH_SOND_CD2, 1)
+                        call MyFlush(GetHandleId(c), SH_SOND_CD2, 0, 1.5)
                     endif
                     if check == 0 then
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3_x2.mdl", x, y, GetRandomReal(0, 359), 1, 1, 1))
@@ -1797,6 +1881,7 @@ library StarrkSpells uses GearSystems
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g3) == false then
                             call GroupAddUnit(g3, u)
+                            call DamageSource('A0BM')
                             call dmgmag(c, u, dmg)
                             call StunUnit(c, u, StarrkT_Stun)
                         endif
@@ -1816,8 +1901,9 @@ library StarrkSpells uses GearSystems
                     set c = null
                     set m_StarrkT2[i] = m_StarrkT2[ MUI_StarrkT2]
                     set MUI_StarrkT2 = MUI_StarrkT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkT2 == -1 then
-                        call PauseTimer( t_StarrkT2)
+                        call StarrkTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1875,18 +1961,18 @@ library StarrkSpells uses GearSystems
                 call SetUnitAnimationByIndex(d, 1)
                 call SetUnitTimeScale(d, 2)
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("sond cd")) == 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_SOND_CD) == 0 then
                 call MakeSound("war3mapimported\\Hero_Starrk_TW2")
-                call SaveInteger(hs, GetHandleId(c), StringHash("sond cd"), 1)
-                call MyFlush(GetHandleId(c), StringHash("sond cd"), 0, 1.5)
+                call SaveInteger(hs, GetHandleId(c), SH_SOND_CD, 1)
+                call MyFlush(GetHandleId(c), SH_SOND_CD, 0, 1.5)
             endif
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun0.mdl", GetUnitX(d) + 100 * Cos(a), GetUnitY(d) + 100 * Sin(a), a * bj_RADTODEG, 0.85, 1, 50))
             if MUI_StarrkT2 == 0 then
-                call TimerStart( t_StarrkT2, 0.03, true, function thistype.Loop_StarrkT2)
+                call StarrkTick_On(6)
             endif
         endmethod
 
-        private static method Loop_StarrkT takes nothing returns nothing
+        static method Loop_StarrkT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real wolfx = 0
@@ -1897,18 +1983,18 @@ library StarrkSpells uses GearSystems
             loop
                 exitwhen i > MUI_StarrkT
                 set this = m_StarrkT[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 1 and LoadInteger(hs, GetHandleId(c), StringHash("t end")) == 0 then
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 1 and LoadInteger(hs, GetHandleId(c), SH_T_END) == 0 then
                     // Do not advance ordinary T while Starrk is paused or casting TQ/TW.
                     if r >1.25 then 
-                    if IsUnitPaused(c)==false and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                    if IsUnitPaused(c)==false and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                         set r = r + 0.05
                     endif
                     else
-                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                         set r = r + 0.05
                     endif
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r > 0 and r < 1.2 then
                         if r3 > 0.0 and check < 16 then
                             set r3 = 0
@@ -1927,7 +2013,7 @@ library StarrkSpells uses GearSystems
                                 call GroupAddUnit(g2, dd[check])
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[check], "chest")
+                                call StarrkWolfTrail(dd[check])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[check], "chest"))
                                 set check = check + 1
                                 set wolfx = x1 + move * Cos(a - (90 - a2) * bj_DEGTORAD)
@@ -1942,7 +2028,7 @@ library StarrkSpells uses GearSystems
                                 call GroupAddUnit(g2, dd[check])
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[check], "chest")
+                                call StarrkWolfTrail(dd[check])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[check], "chest"))
                                 set check = check + 1
                                 set wolfx = x2 + move * Cos(a + (90 - a2) * bj_DEGTORAD)
@@ -1956,7 +2042,7 @@ library StarrkSpells uses GearSystems
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[check], "chest")
+                                call StarrkWolfTrail(dd[check])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[check], "chest"))
                                 call GroupAddUnit(g2, dd[check])
                                 set check = check + 1
@@ -1971,7 +2057,7 @@ library StarrkSpells uses GearSystems
                                 set dd[check] = CreateUnit(GetOwningPlayer(c), StarrkWolf_ID, wolfx, wolfy, a * bj_RADTODEG)
                                 call SetUnitVertexColor(dd[check], 255, 255, 255, 0)
                                 call ColorDummy4(dd[check], 0, 255, 255, 255, 0.45)
-                                call AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_huoyantuowei3.mdx", dd[check], "chest")
+                                call StarrkWolfTrail(dd[check])
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[check], "chest"))
                                 call GroupAddUnit(g2, dd[check])
                                 set check = check + 1
@@ -1992,63 +2078,24 @@ library StarrkSpells uses GearSystems
                    // call BJDebugMsg(I2S(check))
                    call SetPlayerAbilityAvailable(Player(check2), StarrkR3_ID, true)
                        call SetPlayerAbilityAvailable(Player(check2), StarrkT2_ID, true)
-                        call SaveGroupHandle(hs, GetHandleId(c), StringHash("wolf group"), g2)
+                        call SaveGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP, g2)
                         call StopSpellUnit(c)
                         set r4 = 10
                         set r5 = 0
                         set kek1 = 0.0375
-                        if frame1_pas1[check2] == null then
-                            set frame1_pas1[check2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas1[check2], FRAMEPOINT_CENTER, 0.055, 0.18 + kek1)
-                            call BlzFrameSetSize(frame1_pas1[check2], 0.135, 0.035)
-                            call BlzFrameSetTexture(frame1_pas1[check2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                            call BlzFrameSetVisible(frame1_pas1[check2], false)
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame1_pas1[check2], true)
-                            endif
-                            set frame1_pas2[check2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[check2], 0, 0)
-                            call BlzFrameSetAbsPoint(frame1_pas2[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
-                            call BlzFrameSetSize(frame1_pas2[check2], 0.1, 0.019)
-                            set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetSize(frame1_pas3[check2], 0.1, 0.035)
-                            call BlzFrameSetScale(frame1_pas3[check2], 0.5)
-                            call BlzFrameSetModel(frame1_pas3[check2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas3[check2], FRAMEPOINT_CENTER, 0.05, 0.175 + kek1)
-                            call BlzFrameSetMinMaxValue(frame1_pas3[check2], 0, rmax + 2)
-                            call BlzFrameSetValue(frame1_pas3[check2], rmax)
-                            set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas4[check2], FRAMEPOINT_CENTER, 0.005, 0.18 + kek1)
-                            call BlzFrameSetSize(frame1_pas4[check2], 0.03, 0.03)
-                            call BlzFrameSetTexture(frame1_pas4[check2], "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_T", 0, false)
-                            set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas5[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
-                            call BlzFrameSetText(frame1_pas5[check2], "|c00FFFF00" + "Wolfs Time Left:" + "|r")
-                            call BlzFrameSetScale(frame1_pas5[check2], 0.9)
-                            set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas6[check2], FRAMEPOINT_CENTER, 0.07, 0.17 + kek1)
-                            call BlzFrameSetText(frame1_pas6[check2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                            call BlzFrameSetScale(frame1_pas6[check2], 0.9)
-                        else
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame1_pas1[check2], true)
-                            endif
-                            call BlzFrameSetMinMaxValue(frame1_pas3[check2], 0, rmax + 2)
-                            call BlzFrameSetValue(frame1_pas3[check2], rmax)
-                        endif
                     endif
                     if r > 1.25 then
-                        call BlzFrameSetValue(frame1_pas3[check2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame1_pas6[check2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, StarrkT_ID, "Wolfs Time Left", rmax - r, rmax, true)
                         endif
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
-                        if FirstOfGroup(g2) == null and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                        if FirstOfGroup(g2) == null and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                             set r = 99999
                         endif
-                        if r4 > 0.19 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                        if r4 > 0.19 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                             set r4 = 0
-                            call SaveGroupHandle(hs, GetHandleId(c), StringHash("wolf group"), g2)
+                            call SaveGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP, g2)
                             call GroupClear(g)
                             call GroupEnumUnitsOfPlayer(g, GetOwningPlayer(c), null)
                             loop
@@ -2057,9 +2104,9 @@ library StarrkSpells uses GearSystems
                                 if IsUnitInGroup(u, g2) and IsUnitPaused(u) == false then
                                     set kek1 = GetRandomReal(0, 359) * bj_DEGTORAD
                                     set kek2 = GetRandomReal(275, 850)
-                                    if GetUnitCurrentOrder(u) != OrderId("move") and LoadInteger(hs, GetHandleId(u), StringHash("stop move")) == 0 then
-                                        call SaveInteger(hs, GetHandleId(u), StringHash("stop move"), 1)
-                                        call MyFlush(GetHandleId(u), StringHash("stop move"), 0, 1.5)
+                                    if GetUnitCurrentOrder(u) != OrderId("move") and LoadInteger(hs, GetHandleId(u), SH_STOP_MOVE) == 0 then
+                                        call SaveInteger(hs, GetHandleId(u), SH_STOP_MOVE, 1)
+                                        call MyFlush(GetHandleId(u), SH_STOP_MOVE, 0, 1.5)
                                         call SetUnitPathing(u, false)
                                         call IssuePointOrder(u, "move", GetUnitX(c) + kek2 * Cos(kek1), GetUnitY(c) + kek2 * Sin(kek1))
                                         set wolfx = GetUnitX(c) + kek2 * Cos(kek1)
@@ -2075,11 +2122,11 @@ library StarrkSpells uses GearSystems
                             endloop
                             set u = null
                         else
-                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                                 set r4 = r4 + 0.05
                             endif
                         endif
-                        if r5 > 0.95 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                        if r5 > 0.95 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                             set r5 = 0
                             set k3 = 0
                             set k2 = 0
@@ -2118,16 +2165,14 @@ library StarrkSpells uses GearSystems
                                 set u = null
                             endif
                         else
-                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult")) == 0 then
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT) == 0 then
                                 set r5 = r5 + 0.05
                             endif
                         endif
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame1_pas1[check2], false)
-                    endif
-                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 1 then
+                        call WUI_HeroProgress(c, StarrkT_ID, "Wolfs Time Left", 0.00, 0.00, true)
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 1 then
                         call SetPlayerAbilityAvailable(Player(check2), StarrkR2_ID, true)
                         call BlzSetAbilityIcon(StarrkQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_EQ.blp")
                         call BlzSetAbilityIcon(StarrkW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_EW.blp")
@@ -2142,7 +2187,7 @@ loop
     exitwhen k >= check
     if dd[k] != null and GetUnitTypeId(dd[k]) == StarrkWolf_ID then
         call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_k_baozha_2_blue.mdx", dd[k], "chest"))
-        call ColorDummy3(dd[k], 0, 255, 255, 255, 0.5)
+        call StarrkWolfFade(dd[k], 0.5)
     endif
     set dd[k] = null
     set k = k + 1
@@ -2150,10 +2195,10 @@ endloop
                     if r < 1.25 then
                         call StopSpellUnit(c)
                     endif
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("stark t"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_STARK_T, 0)
                     call AAUniversalTooltips_SetUnitForm(c, 0)
-                    call SaveGroupHandle(hs, GetHandleId(c), StringHash("wolf group"), null)
+                    call SaveGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP, null)
                     call DestroyGroup(g)
                     set g = null
                     call DestroyGroup(g2)
@@ -2163,8 +2208,9 @@ endloop
                     set e2 = null
                     set m_StarrkT[i] = m_StarrkT[ MUI_StarrkT]
                     set MUI_StarrkT = MUI_StarrkT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkT == -1 then
-                        call PauseTimer( t_StarrkT)
+                        call StarrkTick05_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -2188,9 +2234,9 @@ endloop
             set g = CreateGroup()
             set g2 = CreateGroup()
             set aoe = StarrkT_SearchAoe
-            call SaveInteger(hs, GetHandleId(c), StringHash("stark t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_STARK_T, 1)
             call AAUniversalTooltips_SetUnitForm(c, 2)
-            call SaveInteger(hs, GetHandleId(c), StringHash("t end"),0)
+            call SaveInteger(hs, GetHandleId(c), SH_T_END,0)
             call UnitAddAbility(c,StarrkF_ID)
             call BlzSetAbilityIcon(StarrkQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_TQ.blp")
             call BlzSetAbilityIcon(StarrkW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Starrk_TW.blp")
@@ -2209,11 +2255,11 @@ endloop
             set rmax = StarrkT_Duration
             call VisionTimed(GetOwningPlayer(c), x, y, 1800, 5)
             if MUI_StarrkT == 0 then
-                call TimerStart( t_StarrkT, 0.05, true, function thistype.Loop_StarrkT)
+                call StarrkTick05_On(1)
             endif
         endmethod
 
-        private static method Loop_StarrkT3 takes nothing returns nothing
+        static method Loop_StarrkT3 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real kek1 = 0
@@ -2224,7 +2270,7 @@ endloop
                 // Keep the shared hit group alive for TT/TR wolves already in flight.
                 if r <= rmax and (b or (SpellBoolCaster(c) and FirstOfGroup(g2) != null)) then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if check == 0 then
                         if r == 0.05 then
                             call GroupClear(g)
@@ -2238,7 +2284,7 @@ endloop
                                     // Do not freeze wolves while TT is being aimed/prepared.
                                     // StarrkT2_Start pauses each wolf only when its attack begins.
                                     call GroupAddUnit(g3, u)
-                                    call AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", u, "chest")
+                                    call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", u, "chest"), 2.0)
                                     set k = k + 1
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -2270,8 +2316,8 @@ endloop
                             // move and perform their usual automatic attacks.
                             
                     call UnitAddAbility(c,StarrkF_ID)
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 0)
-                            call SaveGroupHandle(hs, GetHandleId(c), StringHash("wolf group"), g2)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 0)
+                            call SaveGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP, g2)
                         endif
                     elseif check == 1 then
                         if r == 0.65 then
@@ -2288,7 +2334,7 @@ endloop
                                     // Do not freeze wolves while TR is being aimed/prepared.
                                     // StarrkT2_Start pauses each wolf only when its attack begins.
                                     call GroupAddUnit(g3, u)
-                                    call AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", u, "chest")
+                                    call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", u, "chest"), 2.0)
                                     set k = k + 1
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -2328,7 +2374,7 @@ endloop
                                 set k2 = k2 + 1
                             endloop
                             set u = null
-                            call SaveGroupHandle(hs, GetHandleId(c), StringHash("wolf group"), g2)
+                            call SaveGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP, g2)
                             call UnitAddAbility(c,StarrkF_ID)
                     
                             // Keep g alive while all ten wolves are still travelling.
@@ -2337,16 +2383,16 @@ endloop
                             set b = true
                             // Resume the normal T loop immediately: remaining wolves can
                             // move and perform their usual automatic attacks.
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 0)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 0)
                         endif
                     endif
                 else
                     call DestroyGroup(g3)
                     call StopSpellUnit(c)
                     set g3 = null
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 0)
                     // T is still running: make both T3 orders available again.
-                    if LoadInteger(hs, GetHandleId(c), StringHash("stark t")) == 1 then
+                    if LoadInteger(hs, GetHandleId(c), SH_STARK_T) == 1 then
                     //    call SetPlayerAbilityAvailable(Player(check2), StarrkR3_ID, true)
                    //     call SetPlayerAbilityAvailable(Player(check2), StarrkT2_ID, true)
                     endif
@@ -2356,8 +2402,9 @@ endloop
                     set c = null
                     set m_StarrkT3[i] = m_StarrkT3[ MUI_StarrkT3]
                     set MUI_StarrkT3 = MUI_StarrkT3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_StarrkT3 == -1 then
-                        call PauseTimer( t_StarrkT3)
+                        call StarrkTick05_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -2377,7 +2424,7 @@ endloop
             set aoe = 300
             set r = 0
             set b = false
-            set g2 = LoadGroupHandle(hs, GetHandleId(c), StringHash("wolf group"))
+            set g2 = LoadGroupHandle(hs, GetHandleId(c), SH_WOLF_GROUP)
             set g3 = CreateGroup()
             set g = CreateGroup()
                     call UnitRemoveAbility(c,StarrkF_ID)
@@ -2392,7 +2439,7 @@ endloop
                call StartSpellUnit(c)
             endif
             call MakeSound("war3mapimported\\Hero_Starrk_TT1")
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("wolf ult"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_WOLF_ULT, 1)
             set rmax = 8
             if check == 0 then
                 call VisionTimed(GetOwningPlayer(c), x, y, StarrkTT_DamageAoe + StarrkT_DamageAoe, 3)
@@ -2400,7 +2447,7 @@ endloop
                 call VisionTimed(GetOwningPlayer(c), x, y, 1600, 3)
             endif
             if MUI_StarrkT3 == 0 then
-                call TimerStart( t_StarrkT3, 0.05, true, function thistype.Loop_StarrkT3)
+                call StarrkTick05_On(2)
             endif
         endmethod
 
@@ -2433,6 +2480,78 @@ endloop
     1 - move
     6 - atk bite
      */ 
+
+    // UI clock follows the actual six independently expiring stat abilities.
+    private struct Starrk_StackMeter
+        private static unit array tracked
+        private static integer count = 0
+        private static real uiTick = 0.0
+        // The 0.03 listener is registered with the first tracked Starrk.
+        private static boolean listenerOn = false
+
+        private static method loopUI takes nothing returns nothing
+            local integer pid = 0
+            local unit u
+            local real remaining
+            local string stacks
+            set uiTick = uiTick + 0.03
+            if uiTick < 0.12 then
+                return
+            endif
+            set uiTick = 0.0
+            loop
+                exitwhen pid >= 12
+                set u = tracked[pid]
+                if u != null then
+                    set stacks = TasAbilityChargeBox_GetValue(u, StarrkG_ID)
+                    if GetUnitTypeId(u) == 0 or Hero[pid] != u or stacks == "" then
+                        call WUI_HeroProgress(u, StarrkG_ID, "Agility stacks", 0.00, 0.00, true)
+                        set tracked[pid] = null
+                        set count = count - 1
+                        if count == 0 then
+                            call GearTimer03Release()
+                        endif
+                    else
+                        set remaining = GearAbilityTimeRemaining(u, Starrk_Pas1ID)
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas2ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas3ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas4ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas5ID))
+                        set remaining = RMaxBJ(remaining, GearAbilityTimeRemaining(u, Starrk_Pas6ID))
+                        call WUI_HeroProgress(u, StarrkG_ID, "Agility: " + stacks + " stacks", remaining, StarkG_TimeStatAdd, true)
+                    endif
+                endif
+                set pid = pid + 1
+            endloop
+            set u = null
+        endmethod
+
+        private static method listener03 takes nothing returns boolean
+            call thistype.loopUI()
+            return false
+        endmethod
+
+        static method track takes unit u returns nothing
+            local integer pid = GetPlayerId(GetOwningPlayer(u))
+            if pid >= 12 or Hero[pid] != u then
+                return
+            endif
+            if not listenerOn then
+                set listenerOn = true
+                call TriggerAddCondition(GearTimer03Listeners, Condition(function thistype.listener03))
+            endif
+            if tracked[pid] == null then
+                set count = count + 1
+                if count == 1 then
+                    call GearTimer03Acquire()
+                endif
+            endif
+            set tracked[pid] = u
+            call WUI_HeroProgress(u, StarrkG_ID, "Agility stacks", StarkG_TimeStatAdd, StarkG_TimeStatAdd, true)
+        endmethod
+
+    endstruct
+
     function StarrkPas takes unit c returns nothing
         local group g = CreateGroup()
         local unit u = null
@@ -2470,23 +2589,30 @@ endloop
             if b == true then
                 if GetUnitAbilityLevel(c, Starrk_Pas1ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas1ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas1ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas1ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas2ID) == 0 then
                     call UnitAddAbility(c, Starrk_Pas2ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas2ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas2ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas3ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas3ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas3ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas3ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas4ID) == 0 and lvl >= 25 then
                     call UnitAddAbility(c, Starrk_Pas4ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas4ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas4ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas5ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas5ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas5ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas5ID, 1)
                 elseif GetUnitAbilityLevel(c, Starrk_Pas6ID) == 0 and lvl >= 35 then
                     call UnitAddAbility(c, Starrk_Pas6ID)
+                    call GearWatchAbilityTime(c, Starrk_Pas6ID)
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas6ID, 1)
                 endif
+                call Starrk_StackMeter.track(c)
                 call SetHpCurrent2(c, c, hp*scale)
                 call SetMpCurrent(c, mp*scale)
                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_longskill_point_39.mdx", c, "origin"))
@@ -2508,7 +2634,7 @@ endloop
     function StarrkE_Attack_Start takes unit c , real x, real y returns nothing
         local real dmg = GetAttack(c)
         call StarrkSpells_Utility.StarrkPas2_Start( c, x, y, dmg )
-        call SaveReal(hs, GetHandleId(c), StringHash("atk base dmg"), 0)
+        call SaveReal(hs, GetHandleId(c), SH_ATK_BASE_DMG, 0)
     endfunction
     function StarrkE2_Start takes unit c , real x, real y returns nothing
         local real sr
@@ -2530,7 +2656,7 @@ endloop
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 1.5, 1.8, 0))
     endfunction
     function StarrkE_Start takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("morph e")) == 0 then
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
             call StarrkSpells_E.StarrkE_Start( c)
         else
             //call IssueImmediateOrder(c, "stop")
@@ -2547,10 +2673,60 @@ endloop
         call StarrkSpells_T.StarrkT_Start( c)
     endfunction
     function StarrkF_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("t end"),1)
+        call SaveInteger(hs, GetHandleId(c), SH_T_END,1)
     endfunction
     function StarrkT2_Start takes unit c , real x, real y returns nothing
         call StarrkSpells_T.StarrkT3_Start( c, x, y, 0 )
     endfunction
     
+
+    private struct StarrkTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if StarrkTick_Active[0] then
+                call StarrkSpells_Utility.Loop_StarrkPas2()
+            endif
+            if StarrkTick_Active[1] then
+                call StarrkSpells_Q.Loop_StarrkQ()
+            endif
+            if StarrkTick_Active[2] then
+                call StarrkSpells_W.Loop_StarrkW()
+            endif
+            if StarrkTick_Active[3] then
+                call StarrkSpells_R.Loop_StarrkR3()
+            endif
+            if StarrkTick_Active[4] then
+                call StarrkSpells_R.Loop_StarrkR2()
+            endif
+            if StarrkTick_Active[5] then
+                call StarrkSpells_R.Loop_StarrkR()
+            endif
+            if StarrkTick_Active[6] then
+                call StarrkSpells_T.Loop_StarrkT2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set StarrkTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct StarrkTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if StarrkTick05_Active[0] then
+                call StarrkSpells_E.Loop_StarrkE()
+            endif
+            if StarrkTick05_Active[1] then
+                call StarrkSpells_T.Loop_StarrkT()
+            endif
+            if StarrkTick05_Active[2] then
+                call StarrkSpells_T.Loop_StarrkT3()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set StarrkTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary

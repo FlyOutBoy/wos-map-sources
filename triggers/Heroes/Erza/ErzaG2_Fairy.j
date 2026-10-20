@@ -1,5 +1,63 @@
 library ErzaG2Spells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer ErzaG2_FairyTick05_Timer = CreateTimer()
+        private boolean array ErzaG2_FairyTick05_Active
+        private integer ErzaG2_FairyTick05_Users = 0
+        private code ErzaG2_FairyTick05_Callback = null
+    endglobals
+
+    private function ErzaG2_FairyTick05_On takes integer k returns nothing
+        if not ErzaG2_FairyTick05_Active[k] then
+            set ErzaG2_FairyTick05_Active[k] = true
+            set ErzaG2_FairyTick05_Users = ErzaG2_FairyTick05_Users + 1
+            if ErzaG2_FairyTick05_Users == 1 then
+                call TimerStart(ErzaG2_FairyTick05_Timer, 0.05, true, ErzaG2_FairyTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaG2_FairyTick05_Off takes integer k returns nothing
+        if ErzaG2_FairyTick05_Active[k] then
+            set ErzaG2_FairyTick05_Active[k] = false
+            set ErzaG2_FairyTick05_Users = ErzaG2_FairyTick05_Users - 1
+            if ErzaG2_FairyTick05_Users <= 0 then
+                set ErzaG2_FairyTick05_Users = 0
+                call PauseTimer(ErzaG2_FairyTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer ErzaG2_FairyTick_Timer = CreateTimer()
+        private boolean array ErzaG2_FairyTick_Active
+        private integer ErzaG2_FairyTick_Users = 0
+        private code ErzaG2_FairyTick_Callback = null
+    endglobals
+
+    private function ErzaG2_FairyTick_On takes integer k returns nothing
+        if not ErzaG2_FairyTick_Active[k] then
+            set ErzaG2_FairyTick_Active[k] = true
+            set ErzaG2_FairyTick_Users = ErzaG2_FairyTick_Users + 1
+            if ErzaG2_FairyTick_Users == 1 then
+                call TimerStart(ErzaG2_FairyTick_Timer, 0.03, true, ErzaG2_FairyTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaG2_FairyTick_Off takes integer k returns nothing
+        if ErzaG2_FairyTick_Active[k] then
+            set ErzaG2_FairyTick_Active[k] = false
+            set ErzaG2_FairyTick_Users = ErzaG2_FairyTick_Users - 1
+            if ErzaG2_FairyTick_Users <= 0 then
+                set ErzaG2_FairyTick_Users = 0
+                call PauseTimer(ErzaG2_FairyTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
 //--------------------------------------Erza--------------------------------------------------------------
         real Erza7_PhysicalDmgResist = 30 // in %  , 30 = 30%
 //---------------Q ability-----------------------------------------------------
@@ -35,7 +93,6 @@ library ErzaG2Spells uses GearSystems
      
 
     private struct Erza7Q_KS
-        private static timer t_ErzaQ = CreateTimer( )
         private static integer array m_ErzaQ
         private static integer MUI_ErzaQ = -1
         unit c
@@ -55,7 +112,7 @@ library ErzaG2Spells uses GearSystems
         effect e4
         real a
         real rmax
-        private static method Loop_ErzaQ takes nothing returns nothing
+        static method Loop_ErzaQ takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rkek = 0
@@ -99,6 +156,7 @@ library ErzaG2Spells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                        call DamageSource('A04F')
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit(g2, u)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -131,8 +189,9 @@ library ErzaG2Spells uses GearSystems
                     set e4 = null
                     set m_ErzaQ[i] = m_ErzaQ[ MUI_ErzaQ]
                     set MUI_ErzaQ = MUI_ErzaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaQ == -1 then
-                        call PauseTimer( t_ErzaQ)
+                        call ErzaG2_FairyTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -163,13 +222,12 @@ library ErzaG2Spells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Erza7_Q2")
                         call MakeSound("war3mapimported\\Hero_Erza7_W2")
             if MUI_ErzaQ == 0 then
-                call TimerStart( t_ErzaQ, 0.03, true, function thistype.Loop_ErzaQ)
+                call ErzaG2_FairyTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza7W_KS
-        private static timer t_ErzaW = CreateTimer( )
         private static integer array m_ErzaW
         private static integer MUI_ErzaW = -1
         unit c
@@ -188,7 +246,7 @@ library ErzaG2Spells uses GearSystems
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaW takes nothing returns nothing
+        static method Loop_ErzaW takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rkek = 0
@@ -252,6 +310,7 @@ library ErzaG2Spells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                        call DamageSource('A04G')
                                         call dmgmag(c, u, dmg)
                                         call GroupAddUnit(g2, u)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -272,8 +331,9 @@ library ErzaG2Spells uses GearSystems
                     set e2 = null
                     set m_ErzaW[i] = m_ErzaW[ MUI_ErzaW]
                     set MUI_ErzaW = MUI_ErzaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaW == -1 then
-                        call PauseTimer( t_ErzaW)
+                        call ErzaG2_FairyTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -303,13 +363,12 @@ library ErzaG2Spells uses GearSystems
                 call SetUnitTimeScale(c, 0.2)
                 call MakeSound("war3mapimported\\Hero_Erza7_Q")
             if MUI_ErzaW == 0 then
-                call TimerStart( t_ErzaW, 0.03, true, function thistype.Loop_ErzaW)
+                call ErzaG2_FairyTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct Erza7E_KS
-        private static timer t_ErzaE = CreateTimer( )
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
         unit c
@@ -325,7 +384,7 @@ library ErzaG2Spells uses GearSystems
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaE takes nothing returns nothing
+        static method Loop_ErzaE takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real random
@@ -364,6 +423,7 @@ library ErzaG2Spells uses GearSystems
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     call StunUnit(c,td,1.5)
+                    call DamageSource('A04H')
                     call dmgmag(c,td,dmg)
                     call SetAnim(td,0.03,"death")
                     call DecorRemove(c,x,y,355,40)                            
@@ -387,8 +447,9 @@ library ErzaG2Spells uses GearSystems
                     set e2 = null
                     set m_ErzaE[i] = m_ErzaE[MUI_ErzaE]
                     set MUI_ErzaE = MUI_ErzaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE == -1 then
-                        call PauseTimer( t_ErzaE )
+                        call ErzaG2_FairyTick_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -417,13 +478,12 @@ library ErzaG2Spells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Erza7_E")
             call MakeSound("war3mapImported\\Hero_Erza7_E2")
             if MUI_ErzaE == 0 then
-                call TimerStart( t_ErzaE, 0.03, true, function thistype.Loop_ErzaE )
+                call ErzaG2_FairyTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct Erza7R_KS
-        private static timer t_ErzaR = CreateTimer( )
         private static integer array m_ErzaR
         private static integer MUI_ErzaR = -1
         unit c
@@ -442,12 +502,13 @@ library ErzaG2Spells uses GearSystems
         effect e2
         effect e3
         real rmax
-        private static method Loop_ErzaR takes nothing returns nothing
+        static method Loop_ErzaR takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaR
                 set this = m_ErzaR[i]
+                call WUI_HeroProgress(c, Erza7R_ID, "Verdant Detonation", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r<rmax then
                     set r = r + 0.05
                     call DebugUnit(c)
@@ -484,6 +545,7 @@ library ErzaG2Spells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                            call DamageSource('A04I')
                             call dmgmag(c,u,dmg)
                             call MUE(u,Erza7R_PushRange,Erza7R_PushTime,GAngle(c,u))
                             endif
@@ -506,8 +568,9 @@ library ErzaG2Spells uses GearSystems
                     set e3 = null
                     set m_ErzaR[i] = m_ErzaR[MUI_ErzaR]
                     set MUI_ErzaR = MUI_ErzaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR == -1 then
-                        call PauseTimer( t_ErzaR )
+                        call ErzaG2_FairyTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -544,13 +607,12 @@ library ErzaG2Spells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Erza7_R")
             call MakeSound("war3mapImported\\Hero_Erza7_R2")
             if MUI_ErzaR == 0 then
-                call TimerStart( t_ErzaR, 0.05, true, function thistype.Loop_ErzaR )
+                call ErzaG2_FairyTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza7T_KS
-        private static timer t_ErzaT = CreateTimer( )
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
         unit c
@@ -573,7 +635,7 @@ library ErzaG2Spells uses GearSystems
         effect e4
         real a
         real rmax
-        private static method Loop_ErzaT takes nothing returns nothing
+        static method Loop_ErzaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -636,7 +698,7 @@ library ErzaG2Spells uses GearSystems
                     call DecorRemove(c,x,y,aoe,100)                            
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_hakkestart.mdx",x,y,GetRandomReal(0,359),1.25,1.5,0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_ncds (179).mdl", x, y, a * bj_RADTODEG,3.75, 1.75, 1))
-                        call DestroyEffect(EffectSpawnColor("war3mapImported\\Gear_ZK_Narumea_lianzhan1.mdx", x - 50 * Cos(a), y - 50 * Sin(a), a * bj_RADTODEG + GetRandomReal( -15, 15), 2.5, 2.85, 1,255,255,255,125))
+                        call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_ZK_Narumea_lianzhan1.mdx", x - 50 * Cos(a), y - 50 * Sin(a), a * bj_RADTODEG + GetRandomReal( -15, 15), 2.5, 2.85, 1,255,255,255,125))
                             set k = 0
                             loop
                                 exitwhen k >6                                
@@ -652,6 +714,7 @@ library ErzaG2Spells uses GearSystems
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if IsUnitInGroup(u,g2) == false then 
+                                    call DamageSource('A04J')
                                     call dmgmag(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     call GroupAddUnit(g2,u)                                    
@@ -679,8 +742,9 @@ library ErzaG2Spells uses GearSystems
                     set u = null
                     set m_ErzaT[i] = m_ErzaT[MUI_ErzaT]
                     set MUI_ErzaT = MUI_ErzaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaT == -1 then
-                        call PauseTimer( t_ErzaT )
+                        call ErzaG2_FairyTick_Off(3)
                     endif
                     call destroy( )
                 endif
@@ -715,7 +779,7 @@ library ErzaG2Spells uses GearSystems
             call SetUnitAnimationByIndex(c, 1)
             call MakeSound("war3mapImported\\Hero_Erza7_T")
             if MUI_ErzaT == 0 then
-                call TimerStart( t_ErzaT, 0.03, true, function thistype.Loop_ErzaT )
+                call ErzaG2_FairyTick_On(3)
             endif
         endmethod
     endstruct
@@ -744,6 +808,41 @@ library ErzaG2Spells uses GearSystems
     function Erza7T_Start takes unit c,unit td returns nothing
      call Erza7T_KS.ErzaT_Start( c,td)
     endfunction
+
+    private struct ErzaG2_FairyTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaG2_FairyTick_Active[0] then
+                call Erza7Q_KS.Loop_ErzaQ()
+            endif
+            if ErzaG2_FairyTick_Active[1] then
+                call Erza7W_KS.Loop_ErzaW()
+            endif
+            if ErzaG2_FairyTick_Active[2] then
+                call Erza7E_KS.Loop_ErzaE()
+            endif
+            if ErzaG2_FairyTick_Active[3] then
+                call Erza7T_KS.Loop_ErzaT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaG2_FairyTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaG2_FairyTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaG2_FairyTick05_Active[0] then
+                call Erza7R_KS.Loop_ErzaR()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaG2_FairyTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

@@ -1,5 +1,16 @@
 library FrierenSpells initializer InitFrierenSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_FRIEREN_F_DMG = StringHash("frieren f dmg")
+        private integer SH_FRIEREN_Q_GROUP = StringHash("frieren q group")
+        private integer SH_FRIEREN_R_ILLUSION = StringHash("Frieren R illusion")
+        private integer SH_FRIEREN_R_OWNER = StringHash("Frieren R owner")
+        private integer SH_FRIEREN_R_SEARCH_GENERATION = StringHash("Frieren R search generation")
+        private integer SH_FRIEREN_T_PUSH = StringHash("frieren t push")
+        private integer SH_FRIEREN_T_PUSH_HIT = StringHash("frieren t push hit")
+        private integer SH_MODE_T = StringHash("mode t")
+    endglobals
+    globals
         private timer FrierenTimer03
         private code FrierenTimer03Callback
         private integer FrierenTimer03Users = 0
@@ -30,9 +41,13 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
 //---------------W ability-----------------------------------------------------
         integer FrierenW_ID = 'A0GN'
         integer FrierenW2_ID = 'A0GO'
-        real FrierenW2_DamageIntBase = 1.5 // base number x Str damage for 1 level
-        real FrierenW2_Damage2StaticBase = 75 // base static damage for 1 level
+        real FrierenW2_DamageIntBase = 1.35 // base number x Str damage for 1 level
+        real FrierenW2_Damage2StaticBase = 67.5 // base static damage for 1 level
         real FrierenW2_DamageAoe = 600
+        real FrierenW2_Range = 1800.00
+        real FrierenW2_Speed = 850.00
+        integer FrierenW2_MaxHits = 5
+        private hashtable FrierenW2_Hits = InitHashtable()
         real FrierenW_DamageIntBase = 1 // base number x Str damage for 1 level
         real FrierenW_DamageIntStep = 1 // additional number x Str damage for each next level
         real FrierenW_Damage2StaticBase = 150 // base static damage for 1 level
@@ -62,7 +77,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real FrierenTR_DamageAoe = 550
         real FrierenTR_Stun = 0.5
         real FrierenTR_Duration = 16
-        real FrierenR_CloneRangeCast = 3000
+        real FrierenR_CloneRangeCast = 4000
         real FrierenR_CloneSearchDuration = 0.1
 //---------------T ability-----------------------------------------------------
         integer FrierenT_ID = 'A0GR'
@@ -75,6 +90,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer FrierenT2_ID = 'A0GT'
         real FrierenT2_DamageIntBase = 8 // base number x Str damage for 1 level
         real FrierenT2_DamageAoe = 600
+        real FrierenT2_Range = 2000.00
         integer FrierenT2_Slow = 60
         integer FrierenT2_SlowDuration = 1
 //---------------G ability-----------------------------------------------------
@@ -83,7 +99,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer FrierenG_BuffID2 = 'B02W'
         integer FrierenG_BuffID3 = 'B02X'
         integer FrierenG_SpellID = 'A0GJ'
-        real FrierenG_Duration = 1.5 // duration of raienryuu mode
+        real FrierenG_Duration = 2.5 // duration of raienryuu mode
         real FrierenG_DamageAoe = 450
 //---------------F ability-----------------------------------------------------
         integer FrierenF_ID = 'A0GW'
@@ -99,6 +115,16 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endglobals
     private function FrierenCloneCheck takes unit c returns boolean
         return IsUnitIllusion(c) == false and GetUnitTypeId(c) != FrierenTR_unitid
+    endfunction
+    private function FrierenQ_UnlockFinisher takes unit c returns nothing
+        // Q3 has one object level; do not inherit Q1's learned rank.
+        call UnitAddAbility(c, FrierenQ3_ID)
+        call UnitMakeAbilityPermanent(c, true, FrierenQ3_ID)
+        call SetUnitAbilityLevel(c, FrierenQ3_ID, 1)
+        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Frieren_FRIERENQ_ID, 0)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenQ2_ID, false)
+        call SwapAbility(c, FrierenQ_TimeSwap_Q3, FrierenQ3_ID, FrierenQ_ID)
+        call MyFrame(c, FrierenQ_TimeSwap_Q3, "BTNHero_Frieren_Q3", false, 1)
     endfunction
     private function UpdateGIcon takes integer stacks returns nothing
         if stacks >= 10 then
@@ -162,6 +188,21 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             call PauseTimer(FrierenTimer03)
         endif
     endfunction
+    // Max travel along angle a from (px,py) that keeps the missile within
+    // radius R of the real Frieren (hx,hy): clone casts must not reach 2000
+    // past the clone itself.
+    function FrierenRayLimit takes real px, real py, real a, real hx, real hy, real R returns real
+        local real dx = px - hx
+        local real dy = py - hy
+        local real b = dx * Cos(a) + dy * Sin(a)
+        local real c = dx * dx + dy * dy - R * R
+        local real d = b * b - c
+        if d <= 0.00 then
+            return 0.00
+        endif
+        return RMaxBJ(0.00, RMinBJ(R, -b + SquareRoot(d)))
+    endfunction
+
     private struct FrierenSpells_Q
         private static integer array m_FrierenQ
         private static integer MUI_FrierenQ = -1
@@ -199,7 +240,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenQ
                 set this = m_FrierenQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call DebugUnit2(c)
                         if r == 0.24 then
@@ -294,6 +335,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A0GK')
                                     call dmgmag(c, u, dmg)
                                         //call MUE(u, StarrkEQ_PushDistance, StarrkEQ_PushDuration, a)
                                     call GroupAddUnit( g2 , u )
@@ -302,7 +344,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 call GroupRemoveUnit( g , u )
                             endloop
                             set u = null
-                            call SaveGroupHandle(hs, GetHandleId(c), StringHash("frieren q group"), g3)
+                            call SaveGroupHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP, g3)
                         else
                             set r2 = r2 + 0.03
                         endif
@@ -318,11 +360,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                     call SetUnitAbilityLevel(c,FrierenQ2_ID,GetUnitAbilityLevel(c,FrierenQ_ID))
                           call MyFrame(c,FrierenQ_TimeSwap_Q2 ,"BTNHero_Frieren_Q2",false,0)
                     else
-                        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
-                            call SwapAbility(c, FrierenQ_TimeSwap_Q3, FrierenQ3_ID, FrierenQ_ID)
-                          call MyFrame(c,FrierenQ_TimeSwap_Q3 ,"BTNHero_Frieren_Q3",false,1)
+                        if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
+                            call FrierenQ_UnlockFinisher(c)
                         endif
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("frieren q group"))
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP)
                         call DestroyGroup(g3)
                         set g3 = null
                     endif
@@ -369,12 +410,12 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set move = 70
             set r7 = FrierenQ_RangeBase + (FrierenQ_RangeStep* (GetUnitAbilityLevel(c,FrierenQ_ID)-1))
             set aoe = FrierenQ_DamageAoe
-            set g3 = LoadGroupHandle(hs, GetHandleId(c), StringHash("frieren q group"))
+            set g3 = LoadGroupHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP)
             if g3 == null then
                 set g3 = CreateGroup()
             endif
             call GroupClear(g3)
-            call SaveGroupHandle(hs, GetHandleId(c), StringHash("frieren q group"), g3)
+            call SaveGroupHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP, g3)
             set dmg = GetHeroInt( statSource , true) * ( FrierenQ_DamageIntBase + ( FrierenQ_DamageIntStep * ( GetUnitAbilityLevel( statSource , FrierenQ_ID) - 1 ) ) )
             set dmg = dmg + FrierenQ_Damage2StaticBase + ( FrierenQ_Damage2StaticStep * ( GetUnitAbilityLevel( statSource , FrierenQ_ID) - 1 ) )
             call SetUnitFacing( c , a * bj_RADTODEG)
@@ -417,7 +458,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_Item11
                 set this = m_Item11[i]
                 if SpellBoolCaster(td) and r <= rmax and SR5(e, GetUnitX(td), GetUnitY(td)) > move*2 then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call BlzSetSpecialEffectYaw(e, a)
                     set k = 0
                     set step = move / 2
@@ -443,6 +484,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 else
                     call DestroyEffect(e)
                     call DestroyEffect(e3)
+                    call DamageSource('A0GL')
                     call dmgmag(c, td, dmg)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
@@ -538,7 +580,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenQ2
                 set this = m_FrierenQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call DebugUnit2(c)
                         if r == 0.24 then
@@ -603,7 +645,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
 // Убираем цель только после нужного количества попаданий.
                             if shotsOnTarget >= shotsPerTarget then
                                 call GroupRemoveUnit(g3, u)
-                                call SaveGroupHandle(hs, GetHandleId(c), StringHash("frieren q group"), g3)
+                                call SaveGroupHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP, g3)
                                 set shotsOnTarget = 0
     // При трёх целях только первая получает два выстрела.
                                 if targetCount == 3 then
@@ -619,10 +661,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         call StopSpellUnit2(c)
                     endif
                     if FrierenCloneCheck(c) then
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(FrierenQ_ID)), 0)
-                    if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
-                        call SwapAbility(c, FrierenQ_TimeSwap_Q3, FrierenQ3_ID, FrierenQ_ID)
-                        call MyFrame(c,FrierenQ_TimeSwap_Q3 ,"BTNHero_Frieren_Q3",false,1)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Frieren_FRIERENQ_ID, 0)
+                    if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
+                        call FrierenQ_UnlockFinisher(c)
                     endif
                     endif
                     set k = 0
@@ -636,7 +677,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         set ee[k] = null
                         set k = k + 1
                     endloop
-                    call RemoveSavedHandle(hs, GetHandleId(c), StringHash("frieren q group"))
+                    call RemoveSavedHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP)
                     call DestroyGroup(g3)
                     set g3 = null
                     set c = null
@@ -668,10 +709,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set u = null
             set a = GetUnitFacing(c) * bj_DEGTORAD // Angle Between points
             set check = 0
-            set g3 = LoadGroupHandle(hs, GetHandleId(c), StringHash("frieren q group"))
+            set g3 = LoadGroupHandle(hs, GetHandleId(c), SH_FRIEREN_Q_GROUP)
             set targetCount = GetUnitsCountInGroup(g3, GetUnitX(c), GetUnitY(c))
             set shotsOnTarget = 0
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(FrierenQ_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Frieren_FRIERENQ_ID, 1)
             if targetCount == 1 then
                 set shotsPerTarget = 4
             elseif targetCount == 2 then
@@ -722,7 +763,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenTQ
                 set this = m_FrierenTQ[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if check == 0 then
@@ -767,6 +808,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         if r == 0.3 then
                             set x = GetUnitX(td)
                             set y = GetUnitY(td)
+                            call DamageSource('A0GK')
                             call ErzaPassive(c, td, 3)
                             if FrierenCloneCheck(c) then
                                 call MakeSound("war3mapimported\\Hero_Frieren_Q3 1")
@@ -800,6 +842,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A0GK')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -903,7 +946,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenW
                 set this = m_FrierenW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call DebugUnit2(c)
                         set a = GAngle(c, td)
@@ -959,6 +1002,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A0GN')
                                     call dmgmag(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     call GroupAddUnit( g2 , u )
@@ -991,6 +1035,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         call StunUnit(c, td, FrierenW_Stun)
                     endif
                     if GetHeroLevel(c)>=1 then 
+                                call DamageSource('A0GN')
                                 call ErzaPassive(c,td,3)
                                 endif
                     call DestroyEffect(e)
@@ -1068,6 +1113,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real a2
         real x
         real move
+        real travelled
+        real limit
         real a
         effect array ee[7]
         real y
@@ -1091,15 +1138,17 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_FrierenW2
                 set this = m_FrierenW2[i]
-                if SpellBoolCaster(c) and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r2 = RoundReal(r2 + 0.03, 3)
-                    set r3 = RoundReal(r3 + 0.03, 3)
-                    set r4 = RoundReal(r4 + 0.03, 3)
-                    set r5 = RoundReal(r5 + 0.03, 3)
+                if SpellBoolCaster(c) and r < rmax and travelled < limit then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r5 = I2R(R2I((r5 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r6 = RoundReal(r6 + 0.03, 3)
-                    set x = x + move * Cos(a)
-                    set y = y + move * Sin(a)
+                    set rr1 = RMinBJ(move, limit - travelled)
+                    set travelled = travelled + rr1
+                    set x = x + rr1 * Cos(a)
+                    set y = y + rr1 * Sin(a)
                     call BlzSetSpecialEffectPosition(e, x, y, 265)
                     set k = 0
                     loop
@@ -1154,9 +1203,12 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
-                            if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false then
+                            if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsUnitInGroup(u, g2) == false and LoadInteger(FrierenW2_Hits, this, GetHandleId(u)) < FrierenW2_MaxHits then
+                                call SaveInteger(FrierenW2_Hits, this, GetHandleId(u), LoadInteger(FrierenW2_Hits, this, GetHandleId(u)) + 1)
+                                call DamageSource('A0GO')
                                 call dmgmag(c, u, dmg)
                                 if GetHeroLevel(c)>=1 then 
+                                call DamageSource('A0GO')
                                 call ErzaPassive(c,u,3)
                                 endif
                                 call GroupAddUnit(g2, u)
@@ -1179,6 +1231,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                     call DestroyEffect(e)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
+                    call FlushChildHashtable(FrierenW2_Hits, this)
                     set g = null
                     set g2 = null
                     set c = null
@@ -1196,7 +1249,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 set i = i + 1
             endloop
         endmethod
-        public static method FrierenW2_Start takes unit NewC, real NewX, real NewY returns nothing
+        public static method FrierenW2_Start takes unit NewC, unit owner, real NewX, real NewY returns nothing
             local thistype this
             if NewC == null then
                 return
@@ -1213,10 +1266,12 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set r6 = 0
             set r5 = 0
             set r4 = 0
-            set rmax = 3
+            set rmax = 4
             set aoe = FrierenW2_DamageAoe
             set k = 0
-            set move = 30
+            set move = FrierenW2_Speed * 0.03
+            set travelled = 1.00
+            call FlushChildHashtable(FrierenW2_Hits, this)
             set g = CreateGroup()
             set g2 = CreateGroup()
             set u = null
@@ -1225,6 +1280,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set a2 = GAngle2(c, x, y)
             set x = GetUnitX(c) + 1 * Cos(a)
             set y = GetUnitY(c) + 1 * Sin(a)
+            set limit = FrierenRayLimit(x, y, a, GetUnitX(owner), GetUnitY(owner), FrierenW2_Range)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex(c, 21)
             set e = EffectSpawn("war3mapimported\\wos_3ygnz_1_2.mdx", x, y, 1, 0.45, 3, 225)
@@ -1278,8 +1334,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_FrierenE
                 set this = m_FrierenE[i]
+                call WUI_HeroProgress(c, FrierenE_ID, "Hellfire: Vollzanbel", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r3 >= 0.42 then
                         set r3 = 0.03
                         set td = null
@@ -1314,8 +1371,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 set j = 0
                                 loop
                                     exitwhen j >= k
-                                    set dx = x - LoadReal(hs, this, StringHash("FrierenEColumnX" + I2S(j)))
-                                    set dy = y - LoadReal(hs, this, StringHash("FrierenEColumnY" + I2S(j)))
+                                    set dx = x - LoadReal(hs, this, GearKey(GEAR_KEY_FRIEREN_E_X, "FrierenEColumnX", j))
+                                    set dy = y - LoadReal(hs, this, GearKey(GEAR_KEY_FRIEREN_E_Y, "FrierenEColumnY", j))
                                     if dx * dx + dy * dy < 275 * 275 then
                                         set positionOk = false
                                         exitwhen true
@@ -1326,8 +1383,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 exitwhen positionOk or tries >= 20
                             endloop
                         endif
-                        call SaveReal(hs, this, StringHash("FrierenEColumnX" + I2S(k)), x)
-                        call SaveReal(hs, this, StringHash("FrierenEColumnY" + I2S(k)), y)
+                        call SaveReal(hs, this, GearKey(GEAR_KEY_FRIEREN_E_X, "FrierenEColumnX", k), x)
+                        call SaveReal(hs, this, GearKey(GEAR_KEY_FRIEREN_E_Y, "FrierenEColumnY", k), y)
                         set k = k + 1
                         if check2 == 0 then
                             call DecorRemove(c, x, y, aoe, 50)
@@ -1346,7 +1403,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0GP')
                                 call dmgmag(c, u, dmg) 
+                                call DamageSource('A0GP')
                                 call ErzaPassive(c,u,1)
                                 call SlowUnit(c,u,FrierenE_Slow,FrierenE_Duration)
                                 if IsUnitInGroup(u, g2) == false then
@@ -1398,7 +1457,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set dmg = GetHeroInt( statSource , true) * ( FrierenE_DamageIntBase + ( FrierenE_DamageIntStep * ( GetUnitAbilityLevel( statSource , FrierenE_ID) - 1 ) ) )
             set dmg = dmg + FrierenE_Damage2StaticBase + ( FrierenE_Damage2StaticStep * ( GetUnitAbilityLevel( statSource , FrierenE_ID) - 1 ) )
             
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
                 set check2 = 1
                 set aoe2 = 950
                 set dmg = dmg + GetInt(c)*FrierenTE_DamageIncrease
@@ -1427,6 +1486,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real y
         real r
         integer generation
+        real cloneDuration
         group g
         group existing
 
@@ -1439,9 +1499,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > count
                 set this = instances[i]
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 set illusion = null
-                set finished = generation != LoadInteger(hs, GetHandleId(c), StringHash("Frieren R search generation"))
+                set finished = generation != LoadInteger(hs, GetHandleId(c), SH_FRIEREN_R_SEARCH_GENERATION)
 
                 // Ищем возле текущей позиции героя: новая иллюзия появляется рядом с ним,
                 // а x/y являются точкой, куда найденный клон будет перенесён.
@@ -1460,13 +1520,21 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 endif
 
                 if illusion != null then
-                    call SaveUnitHandle(hs, GetHandleId(c), StringHash("Frieren R illusion"), illusion)
+                    call SaveUnitHandle(hs, GetHandleId(c), SH_FRIEREN_R_ILLUSION, illusion)
                     call SetUnitUserData(illusion,25)
-                    call SaveInteger(hs, GetHandleId(illusion), StringHash("Frieren R owner"), GetHandleId(c))
+                    // Illusions do not copy the script movement speed (base speed and A01C
+                    // "Hero MS Base" levels from items) - match Frieren so the clone keeps up.
+                    call SetUnitMoveSpeed(illusion, GetUnitMoveSpeed(c))
+                    if GetUnitAbilityLevel(illusion, 'A01C') == 0 then
+                        call UnitAddAbility(illusion, 'A01C')
+                    endif
+                    call SetUnitAbilityLevel(illusion, 'A01C', GetUnitAbilityLevel(c, 'A01C'))
+                    call SaveInteger(hs, GetHandleId(illusion), SH_FRIEREN_R_OWNER, GetHandleId(c))
                     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_ade (blue).mdx", illusion, "origin"))
                     call BlinkEff(illusion)
                     call PosUnit(illusion, x, y)
                     call BlinkEff(illusion)
+                    call WUI_HeroDuration(c, FrierenR_ID, "Summon Golem", cloneDuration, 0, "", illusion)
                     set finished = true
                 elseif r >= FrierenR_CloneSearchDuration then
                     set finished = true
@@ -1498,10 +1566,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             local unit d
             local unit u
             local group cleanup = CreateGroup()
-            local integer nextGeneration = LoadInteger(hs, GetHandleId(caster), StringHash("Frieren R search generation")) + 1
+            local integer nextGeneration = LoadInteger(hs, GetHandleId(caster), SH_FRIEREN_R_SEARCH_GENERATION) + 1
 
             // Новый каст отменяет незавершённый поиск предыдущего каста этого героя.
-            call SaveInteger(hs, GetHandleId(caster), StringHash("Frieren R search generation"), nextGeneration)
+            call SaveInteger(hs, GetHandleId(caster), SH_FRIEREN_R_SEARCH_GENERATION, nextGeneration)
 
             // Удаляем все старые иллюзии Фрирен этого игрока, включая те,
             // которые прежний короткий поиск не успел сохранить или пометить.
@@ -1511,11 +1579,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen u == null
                 call GroupRemoveUnit(cleanup, u)
                 if GetOwningPlayer(u) == GetOwningPlayer(caster) and IsUnitIllusion(u) and GetUnitTypeId(u) == GetUnitTypeId(caster) and GetUnitUserData(u)== 25 then
-                    call RemoveSavedInteger(hs, GetHandleId(u), StringHash("Frieren R owner"))
+                    call RemoveSavedInteger(hs, GetHandleId(u), SH_FRIEREN_R_OWNER)
                     call RemoveUnit(u)
                 endif
             endloop
-            call RemoveSavedHandle(hs, GetHandleId(caster), StringHash("Frieren R illusion"))
+            call RemoveSavedHandle(hs, GetHandleId(caster), SH_FRIEREN_R_ILLUSION)
 
             // Запоминаем все юниты, существовавшие до создания клона R.
             // Поэтому иллюзия от предмета не сможет стать результатом этого поиска.
@@ -1535,6 +1603,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set d = CreateUnit(GetOwningPlayer(c), 'h0C9', GetUnitX(c), GetUnitY(c), 0)
             call UnitAddAbility(d, FrierenR_SpellID)
             call SetUnitAbilityLevel(d, FrierenR_SpellID, GetUnitAbilityLevel(c, FrierenR_ID))
+            set cloneDuration = BlzGetAbilityRealLevelField(BlzGetUnitAbility(d, FrierenR_SpellID), ABILITY_RLF_DURATION_NORMAL, GetUnitAbilityLevel(d, FrierenR_SpellID) - 1)
             call IssueTargetOrderById(d, 852274, c)
             call MyRemoveUnit(d, 0.1)
             call MakeSoundLocal("war3mapimported\\Hero_Frieren_R", GetOwningPlayer(c))
@@ -1573,20 +1642,20 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenTR
                 set this = m_FrierenTR[i]
                 if SpellBoolCaster(c) and r < rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set fly = fly - r4
                     call MoveEff2(e, move, a)
                     call BlzSetSpecialEffectHeight(e, fly)
                 else
                     //call StopSpellUnit2(c)
                     call DestroyEffect(e)
-                    set u = LoadUnitHandle(hs, GetHandleId(c), StringHash("Frieren R illusion"))
+                    set u = LoadUnitHandle(hs, GetHandleId(c), SH_FRIEREN_R_ILLUSION)
                     if u != null then
                         call RemoveUnit(u)
                     endif
                     set u = null
                     set u = CreateUnit(GetOwningPlayer(c), FrierenTR_unitid, x, y, a * bj_RADTODEG)
-                    call SaveUnitHandle(hs, GetHandleId(c), StringHash("Frieren R illusion"), u)
+                    call SaveUnitHandle(hs, GetHandleId(c), SH_FRIEREN_R_ILLUSION, u)
                     call UnitApplyTimedLife(u, 'BTLF', FrierenTR_Duration)
                     call SetUnitVertexColor(u, 255, 255, 255, 0)
                     call DecorRemove(c,x,y,aoe, 50)
@@ -1603,6 +1672,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                            call DamageSource('A0GQ')
                             call dmgphys(c, u, dmg)
                             call StunUnit(c, u, FrierenTR_Stun )
                         endif
@@ -1676,8 +1746,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_3
                 set this = m_3[i]
-                if c != null and r <= rmax and LoadInteger(hs,GetHandleId(c),StringHash("frieren t push hit"))== 0 then
-                    set r = RoundReal(r + 0.03, 3)
+                if c != null and r <= rmax and LoadInteger(hs,GetHandleId(c),SH_FRIEREN_T_PUSH_HIT)== 0 then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                          call MoveUnit3(c, move, a)
                          if r2> 0.0 then 
                          set r2 = 0
@@ -1686,7 +1756,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             set r2=r2 + 0.03
                             endif
                     else
-                    call SaveInteger(hs,GetHandleId(c),StringHash("frieren t push hit"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_FRIEREN_T_PUSH_HIT,0)
                     set c = null
                     set m_3[i] = m_3[MUI_3]
                     set MUI_3 = MUI_3 - 1
@@ -1713,7 +1783,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set r2 = 0
             set rmax = NewRmax
             set move = (NewDist / (rmax * 100)) * 3
-                    call SaveInteger(hs,GetHandleId(c),StringHash("frieren t push hit"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_FRIEREN_T_PUSH_HIT,0)
            
             set a = NewA
             if MUI_3 == 0 then
@@ -1727,12 +1797,6 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         private static integer MUI_FrierenT = -1
         unit c
         integer k2
-        private static framehandle array frame_pas1
-        private static framehandle array frame_pas2
-        private static framehandle array frame_pas3
-        private static framehandle array frame_pas4
-        private static framehandle array frame_pas5
-        private static framehandle array frame_pas6
         real r
         effect e
         real aoe
@@ -1758,7 +1822,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 set this = m_FrierenT[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
                     if check == 0 then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r == 0.6 then
                             set x = GetUnitX(c)
                             set y = GetUnitY(c)
@@ -1782,9 +1846,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0GR')
                                 call dmgphys(c,u,dmg)
-                                call SaveInteger(hs,GetHandleId(u),StringHash("frieren t push"),1)
-                                call MyFlush(GetHandleId(u),StringHash("frieren t push"),0,0.3)
+                                call SaveInteger(hs,GetHandleId(u),SH_FRIEREN_T_PUSH,1)
+                                call MyFlush(GetHandleId(u),SH_FRIEREN_T_PUSH,0,0.3)
                                     call KS_MoveUnitFrir.MUE_Start1(u, 1000 - SR3(u, x, y), 0.3, GAngle3(x, y, u))
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -1793,36 +1858,36 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         endif
                     else
                         if IsUnitPaused(c) == false then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
                         set remaining = rmax - r
                         if remaining < 0 then
                             set remaining = 0
                         endif
                         if b then
-                            call BlzFrameSetValue(frame_pas3[k2], remaining)
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(remaining, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, FrierenT_ID, "Height of Magic", remaining, rmax, true)
                         endif
                     endif
                 else
                     if b then
-                        if GetLocalPlayer() == Player(k2) then
-                            call BlzFrameSetVisible(frame_pas1[k2], false)
-                        endif
+                            call WUI_HeroProgress(c, FrierenT_ID, "Height of Magic", 0.00, 0.00, true)
                     endif
                     if check == 0 then
                         call StopSpellUnit(c)
                     endif
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenT_ID, true)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenT2_ID, false)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenF_ID, true)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenTF_ID, false)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW_ID, true)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW2_ID, false)
+                    // Clone expiry must not change the real hero's player-wide spell slots.
+                    if b then
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenT_ID, true)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenT2_ID, false)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenF_ID, true)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenTF_ID, false)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW_ID, true)
+                        call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW2_ID, false)
+                    endif
                     call AddUnitAnimationProperties(c, "alternate", false)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 0)
                     call DestroyGroup(g)
                     set c = null
                     set e = null
@@ -1860,7 +1925,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
          //   call BlzStartUnitAbilityCooldown(c, LaxusQ_ID, 0.01)
             call SetAnimIndex(c, 0.03, 15)
             call StartSpellUnit(c)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 1)
             set b = FrierenCloneCheck(c)
             set g = CreateGroup()
             set u = null
@@ -1878,45 +1943,6 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), FrierenW2_ID, true)
             call BlzStartUnitAbilityCooldown(c, FrierenW2_ID, BlzGetUnitAbilityCooldownRemaining(c, FrierenW_ID))
-            if b then
-                if frame_pas1[k2] == null then
-                    set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                    call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                    endif
-                    set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                    call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                    call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                    set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                    call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                    call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                    call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                    call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 0.1)
-                    call BlzFrameSetValue(frame_pas3[k2], rmax)
-                    set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                    call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                    call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_T.blp", 0, false)
-                    set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Height of Magic:" + "|r")
-                    call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                    set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                    call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                    call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                else
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                    endif
-                    call BlzFrameSetValue(frame_pas3[k2], rmax)
-                endif
-            endif
             if FrierenCloneCheck(c) then
                 call MakeSound("war3mapimported\\Hero_Frieren_T1")
                 call NextSound("war3mapimported\\Hero_Frieren_T2", 0.8)
@@ -1942,6 +1968,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real a2
         real x
         real move
+        real travelled
+        real limit
         real a
         real scale
         real y
@@ -1961,14 +1989,16 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_FrierenT2
                 set this = m_FrierenT2[i]
-                if SpellBoolCaster(c) and r < rmax and k < 10 then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r2 = RoundReal(r2 + 0.03, 3)
-                    set r3 = RoundReal(r3 + 0.03, 3)
-                    set r4 = RoundReal(r4 + 0.03, 3)
+                if SpellBoolCaster(c) and r < rmax and k < 10 and travelled < limit then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if IsTerrainPathable(x,y,PATHING_TYPE_FLYABILITY)== false then 
-                    set x = x + move * Cos(a)
-                    set y = y + move * Sin(a)
+                    set rr = RMinBJ(move, limit - travelled)
+                    set travelled = travelled + rr
+                    set x = x + rr * Cos(a)
+                    set y = y + rr * Sin(a)
                     endif
                     if r == 0.9 then
                  //   call BlzPlaySpecialEffect(e,ANIM_TYPE_STAND)
@@ -2011,6 +2041,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0GT')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -2039,6 +2070,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                            call DamageSource('A0GT')
                             call dmgmag(c, u, dmg2)
                             call SlowUnit(c,u,FrierenT2_Slow,FrierenT2_SlowDuration)
                         endif
@@ -2066,7 +2098,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 set i = i + 1
             endloop
         endmethod
-        public static method FrierenT2_Start takes unit NewC, real NewX, real NewY returns nothing
+        public static method FrierenT2_Start takes unit NewC, unit owner, real NewX, real NewY returns nothing
             local thistype this
             if NewC == null then
                 return
@@ -2081,10 +2113,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set r2 = 0.3
             set r3 = 0.3
             set scale = 0.85
-            set rmax = 2.5
+            set rmax = 3.5
             set aoe = FrierenT2_DamageAoe
             set k = 0
             set move = 30
+            set travelled = 1.00
             set g = CreateGroup()
             set u = null
             set r4 = 10
@@ -2097,9 +2130,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set a2 = GAngle2(c, x, y)
             set x = GetUnitX(c) + 1 * Cos(a)
             set y = GetUnitY(c) + 1 * Sin(a)
+            set limit = FrierenRayLimit(x, y, a, GetUnitX(owner), GetUnitY(owner), FrierenT2_Range)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex(c, 21)
-            set e = EffectSpawn("war3mapImported\\mei-tsfx-1.mdl", x, y, 1, 0.45, 2, 265)
+            set e = null // mei-tsfx-1.mdl is not imported
             set e2 = EffectSpawn("war3mapimported\\wos_Naruto_Effect_DaiTu_ShenWei.mdl", x, y, GetRandomReal(0, 359), 0.65, 2.5, 275)
             set e3 = EffectSpawn("war3mapimported\\wos_Satsu-RSFX-10.mdl", x, y, GetRandomReal(0, 359), 0.65, 3.75, 275)
             call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x + 150 * Cos(a), y + 150 * Sin(a), GetRandomReal(0, 359), 1.15, 3.25, 255, 255, 255, 255, 255))
@@ -2136,7 +2170,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 exitwhen i > MUI_FrierenG
                 set this = m_FrierenG[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r2 = r2 + 0.03
                     if r2 >= 0.03 then
                         set r2 = 0
@@ -2225,8 +2259,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_FrierenF
                 set this = m_FrierenF[i]
+                call WUI_HeroProgress(c, FrierenTF_ID, "Mana Strike", rmax - r, rmax, true)
                 if GetUnitAbilityLevel(td, FrierenTF_BuffID) > 0 and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if phase == 0 and r >= 3.78 then
                         set phase = 1
                         call EUTU2(EffectSpawn("war3mapImported\\wos_452.mdl", GetUnitX(td), GetUnitY(td), 0, 1, 0.85, 0), 1.2, 1, td)
@@ -2234,12 +2269,13 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Frieren_F")
                     endif
                 else
-                    set dmg = LoadReal(hs, GetHandleId(td), StringHash("frieren f dmg"))
+                    set dmg = LoadReal(hs, GetHandleId(td), SH_FRIEREN_F_DMG)
                     call UnitRemoveAbility(td, FrierenTF_BuffID)
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_blood impact.mdl", GetUnitX(td), GetUnitY(td), GetUnitFacing(c), 1, 2.5, 0))
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 2.5, 2, 80))
+                    call DamageSource('A0GW')
                     call dmgmag(c, td, dmg)
-                    call SaveReal(hs, GetHandleId(td), StringHash("frieren f dmg"), 0)
+                    call SaveReal(hs, GetHandleId(td), SH_FRIEREN_F_DMG, 0)
                     set td = null
                     set c = null
                     set m_FrierenF[i] = m_FrierenF[ MUI_FrierenF]
@@ -2263,7 +2299,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set rmax = 6.99
             set r = 0
             set phase = 0
-            call SaveReal(hs, GetHandleId(td), StringHash("frieren f dmg"), 0)
+            call SaveReal(hs, GetHandleId(td), SH_FRIEREN_F_DMG, 0)
             call MakeSound("war3mapimported\\Hero_Frieren_F3")
             if MUI_FrierenF == 0 then
                 call FrierenTimer03Acquire()
@@ -2310,11 +2346,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endfunction
     // Возвращает сохранённую живую иллюзию.
     private function FrierenR_GetIllusion takes unit c returns unit
-        local unit illusion = LoadUnitHandle(hs, GetHandleId(c), StringHash("Frieren R illusion"))
+        local unit illusion = LoadUnitHandle(hs, GetHandleId(c), SH_FRIEREN_R_ILLUSION)
         if illusion != null and GetUnitTypeId(illusion) != 0 and GetUnitState(illusion, UNIT_STATE_LIFE) > 0.405 then
             return illusion
         endif
-        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("Frieren R illusion"))
+        call RemoveSavedHandle(hs, GetHandleId(c), SH_FRIEREN_R_ILLUSION)
         set illusion = null
         return null
     endfunction
@@ -2352,9 +2388,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endfunction
     function FrierenW2_Start takes unit c, real x, real y returns nothing
         local unit illusion = FrierenR_GetIllusion(c)
-        call FrierenSpells_W2.FrierenW2_Start(c, x, y)
+        call FrierenSpells_W2.FrierenW2_Start(c, c, x, y)
         if illusion != null and SR2(c,illusion)<=FrierenR_CloneRangeCast then
-            call FrierenSpells_W2.FrierenW2_Start(illusion, x, y)
+            call FrierenSpells_W2.FrierenW2_Start(illusion, c, x, y)
         endif
         set illusion = null
     endfunction
@@ -2367,7 +2403,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         set illusion = null
     endfunction
     function FrierenR_Start takes unit c, real x, real y returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
             call FrierenSpells_TR.FrierenTR_Start(c, x, y)
         else
             call FrierenRSearch.Start(c, x, y)
@@ -2383,9 +2419,9 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endfunction
     function FrierenT2_Start takes unit c, real x, real y returns nothing
         local unit illusion = FrierenR_GetIllusion(c)
-        call FrierenSpells_T2.FrierenT2_Start(c, x, y)
+        call FrierenSpells_T2.FrierenT2_Start(c, c, x, y)
         if illusion != null and SR2(c,illusion)<=FrierenR_CloneRangeCast then
-            call FrierenSpells_T2.FrierenT2_Start(illusion, x, y)
+            call FrierenSpells_T2.FrierenT2_Start(illusion, c, x, y)
         endif
         set illusion = null
     endfunction
@@ -2418,6 +2454,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         call BlzSetAbilityIcon(FrierenG_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Frieren_G.blp")
         set illusion = null
     endfunction
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Frieren_FRIERENQ_ID = StringHash(I2S(FrierenQ_ID))
+    endglobals
+
 endlibrary
 
 

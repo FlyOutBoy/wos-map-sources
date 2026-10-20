@@ -1,5 +1,22 @@
 library ErzaBase uses GearSystems, ErzaQSpells
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ERZA_G2_ACTIVE = StringHash("erza g2 active")
+        private integer SH_ERZA_G2_TYPE = StringHash("erza g2 type")
+        private integer SH_E_ARMOR_ACTIVE = StringHash("e armor active")
+        private integer SH_E_STACKS = StringHash("e stacks")
+        private integer SH_G_ARMOR_ACTIVE = StringHash("g armor active")
+        private integer SH_Q_ARMOR_ACTIVE = StringHash("q armor active")
+        private integer SH_R_ARMOR_ACTIVE = StringHash("r armor active")
+        private integer SH_SOUND_CD2 = StringHash("sound cd2")
+        private integer SH_SOUND_CD3 = StringHash("sound cd3")
+        private integer SH_SOUND_CD4 = StringHash("sound cd4")
+        private integer SH_SOUND_CD5 = StringHash("sound cd5")
+        private integer SH_SOUND_CD6 = StringHash("sound cd6")
+        private integer SH_T_ARMOR_ACTIVE = StringHash("t armor active")
+        private integer SH_W_ARMOR_ACTIVE = StringHash("w armor active")
+    endglobals
+    globals
 //--------------------------------------Erza--------------------------------------------------------------
         integer Erza_ID = 'H00H'
         integer ErzaG_ID = 'A031'
@@ -29,24 +46,24 @@ library ErzaBase uses GearSystems, ErzaQSpells
         integer ErzaE_ID = 'A02X'
         integer ErzaE_UnitSkin_ID = 'H00K'
         real ErzaE_ArmorStatMpRegenBase = 1 // give + N mp / sec when in armor at 1 lvl
-        real ErzaE_ArmorStatMpRegenStep = 0.8 // give + N mp / sec when in armor for each next lvl
-        integer ErzaE_ArmorMS_LvLBase_ID = 2 // 2 = 20 ms, base bonus
-        integer ErzaE_ArmorMS_LvLStep_ID = 2 // for each next lvl, base + (this * (ability lvl - 1))
+        real ErzaE_ArmorStatMpRegenStep = 0.5 // give + N mp / sec when in armor for each next lvl
+        integer ErzaE_ArmorMS_LvLBase_ID = 1 // 2 = 20 ms, base bonus
+        integer ErzaE_ArmorMS_LvLStep_ID = 1 // for each next lvl, base + (this * (ability lvl - 1))
 //---------------R ability-----------------------------------------------------
         integer ErzaR_ID = 'A02Y'
         integer ErzaR_DummyElementalId = 'h0DI'
         unit array ErzaR_NatsuGrayDummy [10]
         integer ErzaR_UnitSkin_ID = 'H00L'
-        integer ErzaR_ArmorStatHpBase = 250 // give + 100 hp when in armor at 1 lvl
-        integer ErzaR_ArmorStatHpStep = 150 // give + 100 hp when in armor for each next lvl
-        integer ErzaR_ArmorMS_LvLBase_ID = 4 // 2 = 20 ms, base bonus
-        integer ErzaR_ArmorMS_LvLStep_ID = 2 // for each next lvl, base + (this * (ability lvl - 1))
+        integer ErzaR_ArmorStatHpBase = 200 // give + 100 hp when in armor at 1 lvl
+        integer ErzaR_ArmorStatHpStep = 100 // give + 100 hp when in armor for each next lvl
+        integer ErzaR_ArmorMS_LvLBase_ID = 3 // 2 = 20 ms, base bonus
+        integer ErzaR_ArmorMS_LvLStep_ID = 1 // for each next lvl, base + (this * (ability lvl - 1))
         integer ErzaR_ArmorStatAS_ID = 'A041'
         integer ErzaR_ArmorStatEvade_ID = 'A040'
 //---------------T ability-----------------------------------------------------
         integer ErzaT_ID = 'A02Z'
         integer ErzaT_UnitSkin_ID = 'H00M'
-        integer ErzaT_ArmorStatHpBase = 1000 // give + 100 hp when in armor at 1 lvl
+        integer ErzaT_ArmorStatHpBase = 800 // give + 100 hp when in armor at 1 lvl
         //real ErzaT_ArmorStatResistance = 12.5 // in % how much damage would be reduced, pierced by cloud
 //---------------G_1 ability-----------------------------------------------------
         integer ErzaG1_UnitSkin_ID = 'H00Q'
@@ -221,12 +238,12 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaF_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh1 = StringHash("q armor active")
-        local integer sh2 = StringHash("w armor active")
-        local integer sh3 = StringHash("e armor active")
-        local integer sh4 = StringHash("r armor active")
-        local integer sh5 = StringHash("t armor active")
-        local integer sh6 = StringHash("g armor active")
+        local integer sh1 = SH_Q_ARMOR_ACTIVE
+        local integer sh2 = SH_W_ARMOR_ACTIVE
+        local integer sh3 = SH_E_ARMOR_ACTIVE
+        local integer sh4 = SH_R_ARMOR_ACTIVE
+        local integer sh5 = SH_T_ARMOR_ACTIVE
+        local integer sh6 = SH_G_ARMOR_ACTIVE
         local integer k
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         local real cd
@@ -272,13 +289,13 @@ library ErzaBase uses GearSystems, ErzaQSpells
             call ErzaBaseAbiBlock(c, true)
             set check = 1
             call SaveInteger(hs, id, sh4, 0)
-            set k = LoadInteger(hs, GetHandleId(c), StringHash("e stacks"))
+            set k = LoadInteger(hs, GetHandleId(c), SH_E_STACKS)
             set cd = BlzGetUnitAbilityCooldown(c, Erza4E_ID, GetUnitAbilityLevel(c, Erza4E_ID) - 1)
             if k > 0 then
-                call MyFlush(GetHandleId(c), StringHash("e stacks"), 0, 1)
+                call MyFlush(GetHandleId(c), SH_E_STACKS, 0, 1)
                 call BlzStartUnitAbilityCooldown(c, Erza4E_ID, cd)
             endif
-            call SaveInteger(hs, GetHandleId(c), StringHash("e stacks"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_E_STACKS, 0)
             call ErzaAbiArmorAdd(c, Erza4Q_ID, Erza4W_ID, Erza4E_ID, Erza4R_ID, Erza4T_ID, Erza4F_ID, false, GetUnitAbilityLevel(c, ErzaR_ID))
         elseif LoadInteger(hs, id, sh5) == 1 then
             set check = 1
@@ -291,7 +308,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
             set check = 1
             call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - ErzaT_ArmorStatHpBase)
             call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
-            call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 active"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_ACTIVE, 0)
             call ErzaBaseAbiBlock(c, true)
             call SaveInteger(hs, id, sh6, 0)
             call ErzaAbiArmorAdd(c, Erza6Q_ID, Erza6W_ID, Erza6E_ID, Erza6R_ID, Erza6T_ID, 0, false, GetUnitAbilityLevel(c, ErzaG2_ID))
@@ -312,7 +329,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaQ_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh = StringHash("q armor active")
+        local integer sh = SH_Q_ARMOR_ACTIVE
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         call BlzSetUnitSkin(c, ErzaQ_UnitSkin_ID)
         call FixAura(c)
@@ -327,9 +344,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
         call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
         call UnitAddAbility(c, ErzaQ_ArmorStat_ID)
         call SetUnitAbilityLevel(c, ErzaQ_ArmorStat_ID, GetUnitAbilityLevel(c, ErzaQ_ID))
-        if LoadInteger(hs, i, StringHash("sound cd2")) == 0 then
-            call SaveInteger(hs, i, StringHash("sound cd2"), 1)
-            call MyFlush(i, StringHash("sound cd2"), 0, 10)
+        if LoadInteger(hs, i, SH_SOUND_CD2) == 0 then
+            call SaveInteger(hs, i, SH_SOUND_CD2, 1)
+            call MyFlush(i, SH_SOUND_CD2, 0, 10)
             if GetRandomInt(1, 2) == 1 then
                 call MakeSound("war3mapImported\\Hero_Erza1_Start")
             else
@@ -341,7 +358,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaW_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh = StringHash("w armor active")
+        local integer sh = SH_W_ARMOR_ACTIVE
         //call BlzSetUnitRealField(c, UNIT_RF_HIT_POINTS_REGENERATION_RATE, BlzGetUnitRealField(c, UNIT_RF_HIT_POINTS_REGENERATION_RATE) + ErzaW_ArmorStatHpRegenBase + (ErzaW_ArmorStatHpRegenStep * (GetUnitAbilityLevel(c, ErzaW_ID) - 1)))
         if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
             call UnitAddAbility(c, ErzaW_Regen0_ID)
@@ -362,9 +379,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
         call FixAura(c)
         call SaveInteger(hs, id, sh, 1)
         call ErzaBaseAbiBlock(c, false)
-        if LoadInteger(hs, i, StringHash("sound cd3")) == 0 then
-            call SaveInteger(hs, i, StringHash("sound cd3"), 1)
-            call MyFlush(i, StringHash("sound cd3"), 0, 10)
+        if LoadInteger(hs, i, SH_SOUND_CD3) == 0 then
+            call SaveInteger(hs, i, SH_SOUND_CD3, 1)
+            call MyFlush(i, SH_SOUND_CD3, 0, 10)
             call MakeSound("war3mapImported\\Hero_Erza2_Start")
         endif
         call ErzaAbiArmorAdd(c, Erza2Q_ID, Erza2W_ID, Erza2E_ID, Erza2R_ID, Erza2T_ID, 0, true, GetUnitAbilityLevel(c, ErzaW_ID))
@@ -372,16 +389,16 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaE_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh = StringHash("e armor active")
+        local integer sh = SH_E_ARMOR_ACTIVE
         call BlzSetUnitSkin(c, ErzaE_UnitSkin_ID)
         call FixAura(c)
         call SaveInteger(hs, id, sh, 1)
         call AddSpellLevel(c, 'A01C', ErzaE_ArmorMS_LvLBase_ID + (ErzaE_ArmorMS_LvLStep_ID * (GetUnitAbilityLevel(c, ErzaW_ID) - 1)), true)
         call BlzSetUnitRealField(c, UNIT_RF_MANA_REGENERATION, BlzGetUnitRealField(c, UNIT_RF_MANA_REGENERATION) + (ErzaE_ArmorStatMpRegenBase + (ErzaE_ArmorStatMpRegenStep * (GetUnitAbilityLevel(c, ErzaE_ID) - 1))))
         call ErzaBaseAbiBlock(c, false)
-        if LoadInteger(hs, i, StringHash("sound cd4")) == 0 then
-            call SaveInteger(hs, i, StringHash("sound cd4"), 1)
-            call MyFlush(i, StringHash("sound cd4"), 0, 10)
+        if LoadInteger(hs, i, SH_SOUND_CD4) == 0 then
+            call SaveInteger(hs, i, SH_SOUND_CD4, 1)
+            call MyFlush(i, SH_SOUND_CD4, 0, 10)
             call MakeSound("war3mapImported\\Hero_Erza3_Start")
         endif
         if GetUnitAbilityLevel(c, ErzaG2_ID) > 0 then
@@ -393,8 +410,8 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaR_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh = StringHash("r armor active")
-        local integer stacks = 3 - LoadInteger(hs, GetHandleId(c), StringHash("e stacks"))
+        local integer sh = SH_R_ARMOR_ACTIVE
+        local integer stacks = 3 - LoadInteger(hs, GetHandleId(c), SH_E_STACKS)
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         local real x = GetUnitX(c)
         local real y = GetUnitY(c)
@@ -443,9 +460,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
         call SaveInteger(hs, id, sh, 1)
         call BlzSetAbilityIcon(Erza4E_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Erza4_E.blp")
         call ErzaBaseAbiBlock(c, false)
-        if LoadInteger(hs, i, StringHash("sound cd5")) == 0 then
-            call SaveInteger(hs, i, StringHash("sound cd5"), 1)
-            call MyFlush(i, StringHash("sound cd5"), 0, 10)
+        if LoadInteger(hs, i, SH_SOUND_CD5) == 0 then
+            call SaveInteger(hs, i, SH_SOUND_CD5, 1)
+            call MyFlush(i, SH_SOUND_CD5, 0, 10)
             if GetRandomInt(1, 2) == 1 then
                 call MakeSound("war3mapImported\\Hero_Erza4_Start")
             else
@@ -463,7 +480,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
     function ErzaT_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh = StringHash("t armor active")
+        local integer sh = SH_T_ARMOR_ACTIVE
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         call BlzSetUnitSkin(c, ErzaT_UnitSkin_ID)
         call FixAura(c)
@@ -471,9 +488,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
         call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) + ErzaT_ArmorStatHpBase)
         call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
         call ErzaBaseAbiBlock(c, false)
-        if LoadInteger(hs, i, StringHash("sound cd6")) == 0 then
-            call SaveInteger(hs, i, StringHash("sound cd6"), 1)
-            call MyFlush(i, StringHash("sound cd6"), 0, 8)
+        if LoadInteger(hs, i, SH_SOUND_CD6) == 0 then
+            call SaveInteger(hs, i, SH_SOUND_CD6, 1)
+            call MyFlush(i, SH_SOUND_CD6, 0, 8)
             if GetRandomInt(1, 2) == 1 then
                 call MakeSound("war3mapImported\\Hero_Erza5_Start")
             else
@@ -494,9 +511,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
         local integer k = 0
-        local integer sh = StringHash("g armor active")
+        local integer sh = SH_G_ARMOR_ACTIVE
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
-            call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 active"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_ACTIVE, 1)
             call Erza6G_Start(c)
             if GetUnitAbilityLevel(c, ErzaG2_ID) > 0 then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), ErzaG2_ID, false)            
@@ -504,7 +521,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
         else
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), ErzaG_ID, false)
         endif
-        if LoadInteger(hs, GetHandleId(c), StringHash("erza g2 type")) == 1 then
+        if LoadInteger(hs, GetHandleId(c), SH_ERZA_G2_TYPE) == 1 then
             call BlzSetUnitSkin(c, ErzaG1_UnitSkin_ID)
             call FixAura(c)
             call SaveInteger(hs, id, sh, 1)
@@ -512,9 +529,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
             call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
             call ErzaBaseAbiBlock(c, false)
             call MakeSound("war3mapImported\\Hero_Erza6_G3")
-            if LoadInteger(hs, i, StringHash("sound cd6")) == 0 then
-                call SaveInteger(hs, i, StringHash("sound cd6"), 1)
-                call MyFlush(i, StringHash("sound cd6"), 0, 0.1)
+            if LoadInteger(hs, i, SH_SOUND_CD6) == 0 then
+                call SaveInteger(hs, i, SH_SOUND_CD6, 1)
+                call MyFlush(i, SH_SOUND_CD6, 0, 0.1)
                 call MakeSound("war3mapImported\\Hero_Erza6_Enter")
             endif
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_123 (383)_yell.mdl", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1.35, 0.7, 1))
@@ -535,9 +552,9 @@ library ErzaBase uses GearSystems, ErzaQSpells
             call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
             call ErzaBaseAbiBlock(c, false)
             call MakeSound("war3mapImported\\Hero_Erza6_G3")
-            if LoadInteger(hs, i, StringHash("sound cd6")) == 0 then
-                call SaveInteger(hs, i, StringHash("sound cd6"), 1)
-                call MyFlush(i, StringHash("sound cd6"), 0, 0.1)
+            if LoadInteger(hs, i, SH_SOUND_CD6) == 0 then
+                call SaveInteger(hs, i, SH_SOUND_CD6, 1)
+                call MyFlush(i, SH_SOUND_CD6, 0, 0.1)
                 call MakeSound("war3mapImported\\Hero_Erza7_Enter")
             endif
         endif

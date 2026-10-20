@@ -7,6 +7,8 @@ SUITES = ['test_ui_performance', 'test_damage_stats_layout', 'test_damage_stats'
           'test_wos_ui_checkpoint14', 'test_wos_ui_checkpoint15', 'test_wos_ui_checkpoint16',
           'test_wos_ui_checkpoint17', 'test_wos_ui_checkpoint18', 'test_wos_ui_checkpoint19', 'test_wos_ui_checkpoint20', 'test_wos_ui_checkpoint21', 'test_wos_ui_checkpoint22', 'test_wos_ui_checkpoint23', 'test_ally_hero_ability_ui', 'test_team_map_pings',
           'test_sync_war3_triggers', 'test_test_map_workflow']
+SUITES += ['test_hero_balance_followup', 'test_hero_packet_followup', 'test_hero_impact_reach', 'test_main_source_parity', 'test_common_performance', 'test_followup_033c']
+
 if __name__ == '__main__':
     report = Path('_build/ui-redesign/checkpoint23-tests.txt')
     report.parent.mkdir(parents=True, exist_ok=True)

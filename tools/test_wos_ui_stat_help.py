@@ -9,6 +9,25 @@ import test_wos_ui as ui
 
 
 class StatHelp(unittest.TestCase):
+    def test_attack_numbers_follow_live_weapon_and_override_native_bonus_colors(self):
+        vm = ui.load_source('WOSUI.j')
+        weapon = {'type': 6}
+        vm.g.update(GetUnitTypeId=lambda _: 1, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE='type',
+            BlzGetUnitWeaponIntegerField=lambda *_: weapon['type'], StringLength=len,
+            SubString=lambda text, start, end: text[start:end])
+        for native_type, color in ((6, '|cffff8a73'), (4, '|cff7caefa'), (6, '|cffff8a73')):
+            weapon['type'] = native_type
+            for raw, plain in (('133 - 143 |cff00ff00+195|r', '133 - 143 +195'),
+                               ('|cffffffff100|r |cffff0000-25|r', '100 -25')):
+                self.assertEqual(color + plain + '|r', vm.run('WUI_AttackDamageText', ('hero', raw)))
+        self.assertEqual('|cffff8a7320|r', vm.run('WUI_AttackDamageText', (None, '20')))
+        hud = (ui.ROOT / 'triggers/WOS_Start/DefaultArmorChangeStable_Copy.j').read_text(encoding='utf-8-sig')
+        pick = (ui.ROOT / 'triggers/WOS_Start/WoS_Pick_Init.j').read_text(encoding='utf-8-sig')
+        self.assertNotIn('WOSAttackDamageType', hud)
+        self.assertIn('WUI_AttackDamageText(selected, damage)', hud)
+        self.assertIn('WUI_AttackDamageText(d, I2S(BlzGetUnitWeaponIntegerField', pick)
+        self.assertIn('WUI_AttackDamageText(null, I2S(WOS_PickStat(statId, 8)))', pick)
+
     def setUp(self):
         self.vm = ui.load_source('DefaultArmorChangeStable_Copy.j')
         systems = (ui.ROOT / 'triggers/Systems/Systems1.j').read_text(encoding='utf-8-sig')
@@ -35,7 +54,7 @@ class StatHelp(unittest.TestCase):
         self.vm.g['agi_as'] = .009
         text = self.vm.run('UNITSTAT_AttributeHelp', ('hero', 4))
         self.assertIn('Attack speed: +0.90%', text)
-        self.assertIn('Move speed: +1.00', text)
+        self.assertIn('Move speed: +0.60', text)
         self.assertIn('Armor: +0.10', text)
         gain = self.vm.run('UNITSTAT_ArmorResistancePerAgi', ('hero',))
         before = 20 * 1.05

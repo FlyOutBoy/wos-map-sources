@@ -15,8 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class RangeRuntime(unittest.TestCase):
+    SOURCE = 'test_map/ability_range/AbilityRangePreview.j'
+    MAX_RADIUS = 2500
     def setUp(self):
-        self.source = (ROOT/'test_map/ability_range/AbilityRangePreview.j').read_text(encoding='utf-8')
+        self.source = (ROOT/self.SOURCE).read_text(encoding='utf-8')
         self.vm = JassState(self.source)
         self.local = 0
         self.radius = 512.0
@@ -63,7 +65,11 @@ class RangeRuntime(unittest.TestCase):
             'MoveLocation':lambda *a:None,'GetLocationZ':lambda l:47.0,
             'GetUnitX':lambda u:123.0,'GetUnitY':lambda u:456.0,
         })
+        self.configure_vm()
         self.runj('AR_Reconcile')
+
+    def configure_vm(self):
+        pass
 
     def runj(self,name,*args):
         return self.vm.run(name,args)
@@ -87,11 +93,11 @@ class RangeRuntime(unittest.TestCase):
         self.assertIn(('position',1,123.0,456.0,50.0),self.calls)
 
     def test_thresholds_no_clamping_and_no_hidden_position_updates(self):
-        for radius in (-1,0,2500.01,5000):
+        for radius in (-1,0,self.MAX_RADIUS+.01,99999):
             self.calls.clear();self.radius=radius;self.show()
             self.assertFalse(any(c[0] in ('position','scale') for c in self.calls))
             self.assertEqual(self.vm.g['AR_Visible'],-1)
-        for radius in (1,512,1024,1536,2048,2500):
+        for radius in (1,512,1024,1536,2048,2500,self.MAX_RADIUS):
             self.radius=radius;self.show()
             self.assertEqual(self.vm.g['AR_Scale'],radius/512.0)
 
@@ -164,7 +170,8 @@ class BuilderSource(unittest.TestCase):
             'LoadInteger':lambda h,p,c:self.form if c==8888 else int(self.registered),
             'BlzGetAbilityRealLevelField':lambda a,f,l:self.range+l*10,
             'ABILITY_RLF_CAST_RANGE':'range','StarrkQ_ID':999999,
-            'ARules_GetCastRange':lambda h,a,ab,l:self.range+(l-1)*10})
+            'ARules_GetCastRange':lambda h,a,ab,l:self.range+(l-1)*10,
+            'GetPreviewRadius':lambda h,a:self.range+(self.level-1)*10 if self.registered and self.level>0 else 0.})
 
     def test_same_builder_field_live_level_and_registration(self):
         self.assertIn('set v = ReadCastRange(ab, i)',self.src)
@@ -197,7 +204,7 @@ class HoverIntegration(unittest.TestCase):
             'AHUI_HoverPips':{0:False},'AHUI_PingHoverGrace':{0:0},
             'AHUI_TOOLTIP_LEAVE_TICKS':10,
             'AHUI_SLOT_COUNT':1,'AHUI_LEARN_SLOTS':1,'AHUI_ICON_SIZE':0.04,'WUI_PIP_Y':0.01,
-            'AHUI_PipMax':{0:0},'AHUI_SlotVisible':{0:True},'AHUI_TooltipRoot':{0:'tooltip'},
+            'AHUI_PipMax':{0:0},'AHUI_SlotVisible':{0:True},'AHUI_NativeCommandShown':{0:False},'AHUI_TooltipRoot':{0:'tooltip'},
             'AHUI_CurrentAbility':{0:100},'AHUI_FrameIndex':lambda p,s:0,
             'AHUI_IsEligibleHero':lambda u,p:True,'WUI_RangePreviewBlocked':lambda:False,
             'BlzGetMouseScreenPosX':lambda:self.x,'BlzGetMouseScreenPosY':lambda:self.y,
@@ -223,9 +230,19 @@ class HoverIntegration(unittest.TestCase):
         self.assertEqual(self.requests[-1],(0,'hero',101))
 
     def test_native_hover_uses_existing_coordinates_without_new_tooltip(self):
+        self.vm.g['AHUI_NativeCommandShown'][0]=True
         self.vm.g['AHUI_SlotVisible'][0]=False;self.native=True;self.visible=False
         self.hover();self.assertEqual(self.requests[-1],(0,'hero',100))
         self.assertFalse(self.hides)
+
+    def test_native_fg_key_badge_does_not_open_a_second_tooltip_or_lose_range(self):
+        self.vm.g['AHUI_NativeCommandShown'][0]=True
+        self.native=True
+        self.vm.g['AHUI_RefreshTooltip']=lambda *a:self.fail('Native command must own its tooltip')
+        self.hover()
+        self.assertEqual(self.requests[-1],(0,'hero',100))
+        self.assertEqual(self.vm.g['AHUI_HoveredSlot'][0],-1)
+        self.assertTrue(self.hides)
 
     def test_leave_hides_range_immediately_even_during_old_chat_tooltip_grace(self):
         self.hover();self.x=0.7;self.hover()

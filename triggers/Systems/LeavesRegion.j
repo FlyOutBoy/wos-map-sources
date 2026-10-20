@@ -6,6 +6,7 @@ function Trig_LeavesRegion_Actions takes nothing returns nothing
 local player p = GetOwningPlayer(GetLeavingUnit())
 local integer id = GetPlayerId(p)
  set Shop_Active[id] = false
+ call WUI_SetShopRmb(id, false)
  if GetLocalPlayer() == p then 
 call BlzFrameSetVisible(FRAME_ShopMAIN,false)
 endif

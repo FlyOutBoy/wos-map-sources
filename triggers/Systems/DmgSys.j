@@ -1,9 +1,119 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_DmgSys_ALUCARD_PAS = StringHash("Alucard pas")
+        integer SH_DmgSys_ALUCARD_PAS_VISION = StringHash("Alucard pas vision")
+        integer SH_DmgSys_ATK_COUNT = StringHash("atk count")
+        integer SH_DmgSys_BANKAI_1_ST_ACTIVATED = StringHash("bankai 1-st activated")
+        integer SH_DmgSys_BARRAGAN_T = StringHash("barragan t")
+        integer SH_DmgSys_DEF_T = StringHash("def t")
+        integer SH_DmgSys_DMG_B_E = StringHash("dmg b e")
+        integer SH_DmgSys_ERZA_4_TT = StringHash("erza 4 tt")
+        integer SH_DmgSys_ERZA_G2_MAG = StringHash("Erza G2 mag")
+        integer SH_DmgSys_ERZA_G2_PHYS = StringHash("Erza G2 phys")
+        integer SH_DmgSys_E_ARMOR_ACTIVE = StringHash("e armor active")
+        integer SH_DmgSys_FRIEREN_F_DMG = StringHash("frieren f dmg")
+        integer SH_DmgSys_GOJO_E = StringHash("gojo e")
+        integer SH_DmgSys_INSTINCT = StringHash("instinct")
+        integer SH_DmgSys_MODE_DEF = StringHash("mode def")
+        integer SH_DmgSys_MODE_R = StringHash("mode r")
+        integer SH_DmgSys_MODE_T = StringHash("mode t")
+        integer SH_DmgSys_MORPH_E = StringHash("morph e")
+        integer SH_DmgSys_MORPH_R = StringHash("morph r")
+        integer SH_DmgSys_NAOFUMI_SHIELD = StringHash("naofumi shield")
+        integer SH_DmgSys_PATRIOT_EE = StringHash("patriot ee")
+        integer SH_DmgSys_RAIDEN_T = StringHash("raiden t")
+        integer SH_DmgSys_RAIDEN_W = StringHash("raiden w")
+        integer SH_DmgSys_RIMURU_F = StringHash("rimuru f")
+        integer SH_DmgSys_RIMURU_R3_INVUL = StringHash("rimuru r3 invul")
+        integer SH_DmgSys_TYPE_SWORD = StringHash("type sword")
+        integer SH_DmgSys_YAMAMOTO_FR = StringHash("yamamoto fr")
+        integer SH_DmgSys_ZERO_KAI_DMG = StringHash("zero kai dmg")
+endglobals
 globals 
 boolean I02H_ReflectActive = false
 boolean QuincyCrossDamageActive = false
 boolean MurasameTrigger = false
 boolean KurikaraTrigger = false
+boolean AshisogiTrigger = false // Ashisogi Jizo poison tick in progress
 endglobals
+globals
+    // Damage numbers: hits on one target from one player of one kind merge into a
+    // single text tag per window (DoT ticks and multi-hits were one tag per hit).
+    constant real DMG_TEXT_WINDOW = 0.10
+    constant integer DMG_TEXT_SLOTS = 64
+    hashtable DmgTextIndex = InitHashtable()
+    timer DmgTextTimer = CreateTimer()
+    integer DmgTextCount = 0
+    integer array DmgTextHid
+    integer array DmgTextKey
+    integer array DmgTextSource
+    integer array DmgTextTarget
+    integer array DmgTextKind
+    integer array DmgTextAmount
+    real array DmgTextX
+    real array DmgTextY
+    real array DmgTextAngle
+endglobals
+
+// Synced timer callback: creation stays synced, only visibility is local
+// (source and target owners, like the heal numbers).
+function DmgTextFlush takes nothing returns nothing
+    local integer i = 0
+    local integer localId = GetPlayerId(GetLocalPlayer())
+    local texttag t
+    local real a
+    loop
+        exitwhen i >= DmgTextCount
+        call RemoveSavedInteger(DmgTextIndex, DmgTextHid[i], DmgTextKey[i])
+        set t = CreateTextTag()
+        set a = DmgTextAngle[i]
+        if DmgTextKind[i] == 1 then
+            call SetTextTagPos(t, DmgTextX[i] + 185.0 * Cos(a + 315.0 * bj_DEGTORAD), DmgTextY[i] - 185.0 * Sin(a + 315.0 * bj_DEGTORAD), 160)
+            call SetTextTagText(t, I2S(DmgTextAmount[i]), 0.01825)
+            call SetTextTagColor(t, 47, 99, 255, 255)
+        else
+            call SetTextTagPos(t, DmgTextX[i] + 185.0 * Cos(a + 45.0 * bj_DEGTORAD), DmgTextY[i] + 185.0 * Sin(a + 45.0 * bj_DEGTORAD), 160)
+            call SetTextTagText(t, I2S(DmgTextAmount[i]), 0.01725)
+            call SetTextTagColor(t, 255, 0, 0, 255)
+        endif
+        call SetTextTagLifespan(t, 0.9)
+        call SetTextTagFadepoint(t, 0.45)
+        call SetTextTagPermanent(t, false)
+        call SetTextTagVelocity(t, 0, 0.1)
+        call SetTextTagVisibility(t, localId == DmgTextTarget[i] or (localId == DmgTextSource[i] and IsVisibleToPlayer(DmgTextX[i], DmgTextY[i], GetLocalPlayer())))
+        set i = i + 1
+    endloop
+    set DmgTextCount = 0
+    set t = null
+endfunction
+
+// Per hit: one hashtable read (+ one write for a new slot), no handles or strings.
+function DmgTextAdd takes unit c, unit td, integer sourcePid, integer targetPid, integer kind, integer amount returns nothing
+    local integer hid = GetHandleId(td)
+    local integer key = sourcePid * 2 + kind
+    local integer slot = LoadInteger(DmgTextIndex, hid, key) - 1
+    if slot < 0 then
+        if DmgTextCount >= DMG_TEXT_SLOTS then
+            call DmgTextFlush()
+        endif
+        set slot = DmgTextCount
+        set DmgTextCount = DmgTextCount + 1
+        call SaveInteger(DmgTextIndex, hid, key, slot + 1)
+        set DmgTextHid[slot] = hid
+        set DmgTextKey[slot] = key
+        set DmgTextSource[slot] = sourcePid
+        set DmgTextTarget[slot] = targetPid
+        set DmgTextKind[slot] = kind
+        set DmgTextAmount[slot] = 0
+        set DmgTextAngle[slot] = GAngle(c, td)
+        if slot == 0 then
+            call TimerStart(DmgTextTimer, DMG_TEXT_WINDOW, false, function DmgTextFlush)
+        endif
+    endif
+    set DmgTextAmount[slot] = DmgTextAmount[slot] + amount
+    set DmgTextX[slot] = GetUnitX(td)
+    set DmgTextY[slot] = GetUnitY(td)
+endfunction
 // Applied exactly once to the source damage before DamageCheck/shield previews.
 function CrocodileG_OffensiveDamage takes unit c, unit td, real amount returns real
     local real maxMana
@@ -65,6 +175,12 @@ endif
     call RaidenAtk_Start(c,td)
     //call BJDebugMsg("S")
     endif
+    if sourceId == Laxus_ID then
+        call LaxusG_OnAttack(c, td)
+    endif
+    if sourceId == Tsuna_ID then
+        call TsunaCambio_OnAttack(c, td)
+    endif
     if GetUnitAbilityLevel(c, TakeshiW2_Buff_ID) > 0 and SR2(c, td) < TakeshiW2_Range then
         call UnitRemoveAbility(c, TakeshiW2_Buff_ID)
         call TakeshiW2_Act(c, td)
@@ -76,6 +192,7 @@ endif
         call RootUnit(c, td, TsunaW_Root)
         set dmg2 = GetHeroAgi( c , true) * ( TsunaW_DamageAgiBase + ( TsunaW_DamageAgiStep * ( GetUnitAbilityLevel( c , TsunaW_ID) - 1 ) ) )
         set dmg2 = dmg2 + TsunaW_Damage2StaticBase + ( TsunaW_Damage2StaticStep * ( GetUnitAbilityLevel( c , TsunaW_ID) - 1 ) )
+        call DamageSource('A083')
         call NextDmg(c, td, dmg2, 0, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_file00003436.mdl", td, "chest"))
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_az_nevermoreice_x.mdl", td, "origin"))
@@ -90,68 +207,84 @@ endif
         call PatriotPas(c,td)
     endif
     if sourceId == Takeshi_ID and LoadInteger(hs, sourceHid, KEY_MODE_G) == 1 then
+        call DamageSource(TakeshiG_ID)
         call ErzaPassive(c, td, 2)
     endif
-    if sourceId == Barragan_ID and LoadInteger(hs, sourceOwnerHid, StringHash("morph e")) > 0 then 
+    if sourceId == Barragan_ID and LoadInteger(hs, sourceOwnerHid, SH_DmgSys_MORPH_E) > 0 then 
      call BarraganPassiveBurn(c, td)
-    if LoadInteger(hs, sourceHid, StringHash("barragan t")) > 0 then
+    if LoadInteger(hs, sourceHid, SH_DmgSys_BARRAGAN_T) > 0 then
         call BarraganPassiveBurn(c, td)
+        call DamageSource('A0B5')
         call NextDmg(c,td,BarraganT_AtkDmg*GetHeroInt(c,true),0,0.1)
         call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_Ldeff (262)", td, "chest"))
     endif
     endif
-    if sourceId == Bambietta_ID and GetHeroLevel(c)>=BambiettaG_Lvl_CD and SR2(c,td)<175 and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0  then 
+    if sourceId == Bambietta_ID and GetHeroLevel(c)>=BambiettaG_Lvl_CD and SR2(c,td)<BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) + 100 and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0  then 
     call BambiettaG_Start(c)
     call BambiettaG2_Start(c,x,y)
     endif
     
     if sourceId == Erza_ID then
-        if LoadInteger(hs, sourceHid, StringHash("type sword")) > 0 then
-            set k = LoadInteger(hs, sourceHid, StringHash("type sword"))
+        if LoadInteger(hs, sourceHid, SH_DmgSys_TYPE_SWORD) > 0 then
+            set k = LoadInteger(hs, sourceHid, SH_DmgSys_TYPE_SWORD)
             if k < 4 then
+                if k == 1 then
+                    call DamageSource(ErzaQ_ID)
+                elseif k == 2 then
+                    call DamageSource(ErzaW_ID)
+                else
+                    call DamageSource(ErzaE_ID)
+                endif
                 call ErzaPassive(c, td, k)
             elseif k == 4 then
-                if LoadInteger(hs, sourceHid, StringHash("atk count")) == 0 then
+                if LoadInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT) == 0 then
+                    call DamageSource(ErzaQ_ID)
                     call ErzaPassive(c, td, 1)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 1)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 1)
                 else
+                    call DamageSource('A02W')
                     call ErzaPassive(c, td, 2)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 0)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 0)
                 endif
             elseif k == 5 then
-                if LoadInteger(hs, sourceHid, StringHash("atk count")) == 0 then
+                if LoadInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT) == 0 then
+                    call DamageSource(ErzaQ_ID)
                     call ErzaPassive(c, td, 1)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 1)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 1)
                 else
+                    call DamageSource(ErzaE_ID)
                     call ErzaPassive(c, td, 3)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 0)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 0)
                 endif
             elseif k == 6 then
-                if LoadInteger(hs, sourceHid, StringHash("atk count")) == 0 then
+                if LoadInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT) == 0 then
+                    call DamageSource(ErzaE_ID)
                     call ErzaPassive(c, td, 3)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 1)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 1)
                 else
+                    call DamageSource('A02W')
                     call ErzaPassive(c, td, 2)
-                    call SaveInteger(hs, sourceHid, StringHash("atk count"), 0)
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ATK_COUNT, 0)
                 endif
             endif
         endif
-        if LoadInteger(hs, sourceHid, StringHash("erza 4 tt")) == 1 and IsUnitPaused(c) == false then
+        if LoadInteger(hs, sourceHid, SH_DmgSys_ERZA_4_TT) == 1 and IsUnitPaused(c) == false then
+            call DamageSource('A03L')
             call NextDmg(c, td, Erza4TT_AdditionalAgiDmgPerAtk * GetHeroAgi(c, true), 0, 0.15)
-            call DestroyEffect(EffectSpawn("war3mapImported\\Gear_nanaya2skill06dred.mdl", GetUnitX(td), GetUnitY(td), 1.45, 1, 1.1, 125))
-            call DestroyEffect(EffectSpawn("war3mapImported\\Gear_OPm (434)4.mdl", GetUnitX(td), GetUnitY(td), 0, 2, 0.6, 1))
-            call DestroyEffect(EffectSpawn("war3mapImported\\Gear_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), GAngle(c, td) * bj_RADTODEG, 1, 1.8, 0))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_Nanaya2Skill06Dred.mdl", GetUnitX(td), GetUnitY(td), 1.45, 1, 1.1, 125))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (434)4.mdl", GetUnitX(td), GetUnitY(td), 0, 2, 0.6, 1))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx", GetUnitX(c), GetUnitY(c), GAngle(c, td) * bj_RADTODEG, 1, 1.8, 0))
             call SetUnitX(c, x + 130 * Cos(GAngle(c, td)))
             call SetUnitY(c, y + 130 * Sin(GAngle(c, td)))
             call BlzSetUnitFacingEx(c, GAngle(c, td) * bj_RADTODEG)
             call IssueTargetOrder(c, "attack", td)
-            call DestroyEffect(EffectSpawnColor("war3mapImported\\Gear_blackblink.mdx", GetUnitX(c), GetUnitY(c), GAngle(c, td) * bj_RADTODEG, 2.5, 1.35, 0, 0, 0, 0, 255))
+            call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_blackblink.mdx", GetUnitX(c), GetUnitY(c), GAngle(c, td) * bj_RADTODEG, 2.5, 1.35, 0, 0, 0, 0, 255))
         endif
     endif
-    if sourceId == Alucard_ID and LoadInteger(hs, sourceOwnerHid, StringHash("morph r")) == 0 then
+    if sourceId == Alucard_ID and LoadInteger(hs, sourceOwnerHid, SH_DmgSys_MORPH_R) == 0 then
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_qqqqq.mdl", GetUnitX(td), GetUnitY(td), 0, 1, 1, 100))
     endif
-    if LoadInteger(hs, sourceHid, StringHash("raiden t")) > 0 then
+    if LoadInteger(hs, sourceHid, SH_DmgSys_RAIDEN_T) > 0 then
         set a = GetRandomReal(0, 359)
         call EUTU2(EffectSpawn("war3mapimported\\wos_ld2209 (199).mdl", x, y, a, 0.85, 2.5, 90), 0.36, 90, td)
         call EUTU2(EffectSpawn("war3mapimported\\wos_BY_Wood_Effect_Order_DanGe_Stf_DaJi_1_3Purple.mdl", x, y, a, 1.25, 2.15, 135), 0.36, 135, td)
@@ -171,11 +304,7 @@ endif
   
     if sourceId == AlterSaber_ID then
         set a = GAngle(c, td)
-        if LoadInteger(hs, sourceHid, StringHash("mode r")) > 0 then
-            set dmg = dmg + GetUnitState(c, UNIT_STATE_MANA) * (AlterSaberF_DamageFromCurrentManaMorph / 100)
-        else
-            set dmg = dmg + GetUnitState(c, UNIT_STATE_MANA) * (AlterSaberF_DamageFromCurrentManaBase / 100)
-        endif
+        set dmg = dmg + AlterSaberF_Attack(c, LoadInteger(hs, sourceHid, SH_DmgSys_MODE_R) > 0)
         if GetHeroLevel(c) >= 35 and BlzGetUnitAbilityCooldownRemaining(c, AlterSaberQ_ID) > 0 then
             call BlzStartUnitAbilityCooldown(c, AlterSaberQ_ID, BlzGetUnitAbilityCooldownRemaining(c, AlterSaberQ_ID) - 1)
         endif
@@ -197,21 +326,47 @@ if I02H_ReflectActive or source == null or target == null or source == target or
 return
 endif
 set I02H_ReflectActive = true
-if IntegerCd(target,"I02H reflect sfx",0.15) then
+if IntegerCdKey(target, SH_ICD_I02H_REFLECT_SFX,0.15) then
 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Opdef (571)2.mdx",source,"chest"))
 endif
 if typedmg == 1 then
+call DamageSource('I02H')
 call dmgmag(target,source,dmg*(YataMirror_ReversedDmg/100))
 else
+call DamageSource('I02H')
 call dmgphys(target,source,dmg*(YataMirror_ReversedDmg/100))
 endif
 set I02H_ReflectActive = false
+endfunction
+globals
+    // Local presentation: game time when the owner's hero may be auto-selected again.
+    real array DmgSys_AutoSelectAt
+    timer DmgSys_Clock = null
+    constant real DMGSYS_AUTOSELECT_CD = 2.00
+endglobals
+// A hit on the player's own hero re-selects it when something else is selected
+// (target clicked to inspect), so the next orders do not go to the enemy.
+function DmgSys_AutoSelectHero takes integer pid, unit hero returns nothing
+    local real now
+    if DmgSys_Clock == null then
+        set DmgSys_Clock = CreateTimer()
+        call TimerStart(DmgSys_Clock, 1000000.00, false, null)
+    endif
+    if GetLocalPlayer() == Player(pid) and not IsUnitSelected(hero, Player(pid)) then
+        set now = TimerGetElapsed(DmgSys_Clock)
+        if now >= DmgSys_AutoSelectAt[pid] then
+            set DmgSys_AutoSelectAt[pid] = now + DMGSYS_AUTOSELECT_CD
+            call ClearSelection()
+            call SelectUnit(hero, true)
+        endif
+    endif
 endfunction
 function Trig_DmgSys_Actions takes nothing returns nothing
     local unit c = GetEventDamageSource()
     local unit td = GetTriggerUnit()
     local player sourceOwner = GetOwningPlayer(c)
     local player targetOwner = GetOwningPlayer(td)
+    local integer damageSourceId = GearDamageActiveSource
     local integer sourceId = GetUnitTypeId(c)
     local integer targetId = GetUnitTypeId(td)
     local integer sourceHid = GetHandleId(c)
@@ -221,7 +376,10 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local integer id = GetPlayerId(sourceOwner)
     local integer id2 = GetPlayerId(targetOwner)
     local real dmg = GetEventDamage()
+    local boolean eventIsAttack = BlzGetEventIsAttack()
+    local integer appliedInteger
     local real dmg_base = dmg
+    local real quincyShare = 0.0
     local real hpblock1
     local real shieldInput = 0.0
     local real random1
@@ -240,6 +398,8 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     // Сила исходного удара нужна для порога Last Sin. Само пробивание
     // вызывается отдельно на каждом полном щите.
     local real penetrationTrigger = dmg
+    local real damageCheckFactor = 1.0
+    local boolean damageCheckReuse = false
     local real ang = 0
     local integer typedmg = 0 // 0 - atk, 1 - mag dmg, 2 - phys dmg
     local boolean isEnemy = not IsUnitAlly(c, targetOwner)
@@ -247,6 +407,11 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local boolean targetIsHero = IsUnitType(td, UNIT_TYPE_HERO)
     local boolean targetIsIllusion = IsUnitIllusion(td)
     local boolean shieldPen = HasShieldPen(c, td)
+    static if LIBRARY_DamageStats then
+        if damageSourceId == 0 then
+            set damageSourceId = DamageStatsNativeSource(c)
+        endif
+    endif
     if BlzGetEventAttackType() == ATTACK_TYPE_MAGIC then
         set typedmg = 1
     elseif BlzGetEventAttackType() == ATTACK_TYPE_NORMAL and BlzGetEventDamageType() == DAMAGE_TYPE_FIRE then
@@ -255,20 +420,27 @@ function Trig_DmgSys_Actions takes nothing returns nothing
         set typedmg = 0
     endif
         
-    if BlzGetEventIsAttack() or typedmg == 0 then // for attacks only
-    if HasCachedItem(c,'I03X') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 then
+    static if LIBRARY_AinzSpells then
+        // AinzW knights remember their attack target here (was one damage event per knight).
+        if sourceId == AinzW_Unit_ID and eventIsAttack then
+            call AinzW_KnightHit(c, td)
+        endif
+    endif
+    if eventIsAttack or typedmg == 0 then // for attacks only
+    if HasCachedItem(c,'I03X') > 0 and GetUnitAbilityLevel(c, 'A0HT') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HT') == 0 then
+    call DamageSource('I03X')
     call NextDmg(c,td,GetAttack(c),2,0.5)
     call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_daoguang_blue_hitsword.mdx",td,"origin"))
     call BlzStartUnitAbilityCooldown(c,'A0HT',1)
     endif
-    if BlzGetEventIsAttack() and sourceId == Starrk_ID and LoadInteger(hs, sourceOwnerHid, StringHash("morph e")) == 1 then
+    if eventIsAttack and sourceId == Starrk_ID and LoadInteger(hs, sourceOwnerHid, SH_DmgSys_MORPH_E) == 1 then
         call StarrkE_Attack_Start(c, GetUnitX(td), GetUnitY(td))
         set dmg = 0
         else        
         set dmg = AttackCheck(c, td, dmg)
     endif
     endif
-    if isEnemy and sourceIsHero and LoadInteger(hs, targetHid, StringHash("naofumi shield")) == 0 then
+    if isEnemy and sourceIsHero and LoadInteger(hs, targetHid, SH_DmgSys_NAOFUMI_SHIELD) == 0 then
         if typedmg == 0 or typedmg == 2 then
             if HasCachedItem(c, 'I01M') > 0 then
                 call DecreaseArmorUnit(c, td, 2)
@@ -286,21 +458,31 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     set dmg = CrocodileG_OffensiveDamage(c,td,dmg)
     static if LIBRARY_CrocodileSpells then
         if targetId == Crocodile_ID and CrocodileT_IsChanneling(td) then
-            set dmg = dmg*(1.0-CrocodileT_DamageReduction)
+            if GetHeroLevel(td) >= CrocodileT_DamageReductionHeroLevel then
+                set dmg = dmg*(1.0-CrocodileT_DamageReduction35)
+            else
+                set dmg = dmg*(1.0-CrocodileT_DamageReduction)
+            endif
         endif
     endif
     set dmg = GearDamageRun(c, td, dmg, typedmg, 2)
     // Предварительный урон со всеми усилениями атакующего, но ещё без резистов цели.
     // DamageCheck в текущей реализации не изменяет состояние.
     set penetrationTrigger = DamageCheck(c, td, dmg, typedmg)
-    if sourceId == Alucard_ID and LoadInteger(hs, targetHid, StringHash("Alucard pas")) == 1 then
+    // DamageCheckModifiers only multiplies: the second DamageCheck below reuses this
+    // factor instead of recomputing (exact call kept when phase-1 listeners exist).
+    if dmg != 0.0 and not GearDamageHasListeners then
+        set damageCheckFactor = penetrationTrigger / dmg
+        set damageCheckReuse = true
+    endif
+    if sourceId == Alucard_ID and LoadInteger(hs, targetHid, SH_DmgSys_ALUCARD_PAS) == 1 then
         set penetrationTrigger = penetrationTrigger * 1.07
     endif
   //  if LoadInteger(hs, targetHid, StringHash("brandish e")) > 0 and not shieldPen then
    //     set dmg = dmg - (dmg * (BrandishE_DamageDecrease / 100))
    // endif
-    if LoadInteger(hs, sourceHid, StringHash("raiden w")) > 0 then
-        if IntegerCd(td, "raiden w atk cd", RaidenW_AtkCd) then
+    if LoadInteger(hs, sourceHid, SH_DmgSys_RAIDEN_W) > 0 then
+        if IntegerCdKey(td, SH_ICD_RAIDEN_W_ATK_CD, RaidenW_AtkCd) then
             call RaidenW_Strike_Start(c, td, typedmg)
         endif
     endif
@@ -342,7 +524,7 @@ endif
         call UnitRemoveAbility(td, KyorakuR_BuffId)
         call KyorakuRAct_Start(td, c)
     endif
-    if targetId == Gojo_ID and LoadInteger(hs, targetHid, StringHash("gojo e")) == 1 and not shieldPen then
+    if targetId == Gojo_ID and LoadInteger(hs, targetHid, SH_DmgSys_GOJO_E) == 1 and not shieldPen then
         if GetUnitAbilityLevel(td, GojoE_ID) > 3 then
             set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         else
@@ -367,12 +549,12 @@ endif
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ATTACK)
     endif
     if targetId == Takeshi_ID and dmg > 0 then
-        if LoadInteger(hs, targetOwnerHid, StringHash("yamamoto fr")) == 1 then
+        if LoadInteger(hs, targetOwnerHid, SH_DmgSys_YAMAMOTO_FR) == 1 then
             set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
             call DecorRemove(td, targetX, targetY, 500, 20)
             call SetUnitAnimationByIndex( td , 8)
             call SetUnitTimeScale(td, 3)
-            if IntegerCd(td, "r sound", 0.3) then
+            if IntegerCdKey(td, SH_ICD_R_SOUND, 0.3) then
                 call MakeSound("war3mapimported\\Hero_Takeshi_FR4")
                 if SR2(c, td) <= 300 then
                     call MUE(c, 330, 0.2, GAngle(td, c))
@@ -387,11 +569,11 @@ endif
     endif
     
    
-    if LoadInteger(hs, GetHandleId(td), StringHash("patriot ee")) == 1 then 
+    if LoadInteger(hs, GetHandleId(td), SH_DmgSys_PATRIOT_EE) == 1 then 
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
-    if GetUnitCurrentOrder(td) == OrderId("autoharvestlumber") and LoadInteger(hs, targetHid, StringHash("e armor active")) == 1 and not shieldPen and LoadReal(hs, targetHid, StringHash("dmg b e")) > 0 then
-        set block = LoadReal(hs, targetHid, StringHash("dmg b e"))
+    if GetUnitCurrentOrder(td) == OrderId("autoharvestlumber") and LoadInteger(hs, targetHid, SH_DmgSys_E_ARMOR_ACTIVE) == 1 and not shieldPen and LoadReal(hs, targetHid, SH_DmgSys_DMG_B_E) > 0 then
+        set block = LoadReal(hs, targetHid, SH_DmgSys_DMG_B_E)
         set hpblock1 = block * 2
         if dmg > block then
             set shieldInput = dmg
@@ -408,20 +590,26 @@ endif
             set block = block - (hpblock1)
             set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         endif
-        call SaveReal(hs, targetHid, StringHash("dmg b e"), block)
+        call SaveReal(hs, targetHid, SH_DmgSys_DMG_B_E, block)
     endif
     if GetUnitAbilityLevel(td, Erza3E_DamageImmune_ID) > 0 and not shieldPen then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
         if not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
+       // Keep the real hit unchanged; split the final statistic after mitigation.
+       set quincyShare = QuincyCross_DamageBase/RMaxBJ(0.0001,dmg+QuincyCross_DamageBase)
        set dmg = dmg + QuincyCross_DamageBase
        // call QuincyCross_Start(c, td)
     endif
     if targetId == Mahoraga_ID and GetUnitAbilityLevel(td, MahoragaT_ID) > 0 then
         call MahoragaT_Start(td, c, dmg)
     endif    
-    set dmg = DamageCheck(c, td, dmg, typedmg)    
-    if sourceId == Alucard_ID and LoadInteger(hs, targetHid , StringHash("Alucard pas")) == 1 then
+    if damageCheckReuse then
+        set dmg = dmg * damageCheckFactor
+    else
+        set dmg = DamageCheck(c, td, dmg, typedmg)
+    endif
+    if sourceId == Alucard_ID and LoadInteger(hs, targetHid , SH_DmgSys_ALUCARD_PAS) == 1 then
         set dmg = dmg * 1.07
     endif
     if dmg > 1 and GetUnitAbilityLevel(td, 'B01E') > 0 and sourceId == Alucard_ID then
@@ -444,10 +632,21 @@ endif
     set dmg = ApplyFullDamageShield(c, td, shieldInput, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
     endif
-      if dmg>= 600 and HasCachedItem(c,'I040') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0HV') == 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then
-    call BlzStartUnitAbilityCooldown(c, 'A0HV', 3 )
-    call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_blink_red.mdx",c,"chest"))
-    call SetHpCurrent2(c,c,dmg*0.35)
+      if dmg > 1 and isEnemy and HasCachedItem(c,'I040') > 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then // Philosopher's Stone: no damage threshold
+    // 15% of the final damage; no per-hit effect.
+    call SetHpCurrent2(c,c,dmg*0.15)
+    endif
+    // Takeshi: Cambio gauge and Cambio extension use the final damage of his own abilities.
+    if sourceId == Takeshi_ID and isEnemy and dmg > 1 and damageSourceId >= 'A000' and damageSourceId <= 'Azzz' then
+        call TakeshiDmg_OnHit(c, td, dmg)
+    endif
+    // Neuvillette F (lv 12+): lifesteal against targets under a Water debuff.
+    if sourceId == Neuvillette_ID and isEnemy and dmg > 1 and GetHeroLevel(c) >= NeuvilletteF_LifestealLevel and (GetUnitAbilityLevel(td, 'B009') > 0 or GetUnitAbilityLevel(td, 'B007') > 0 or GetUnitAbilityLevel(td, 'B00B') > 0 or LoadInteger(hs, targetHid, SH_WATER_PENDING) == 1) then
+        if GetHeroLevel(c) >= 35 then
+            call SetHpCurrent2(c, c, dmg * (NeuvilletteF_Lifesteal35 / 100.0))
+        else
+            call SetHpCurrent2(c, c, dmg * (NeuvilletteF_Lifesteal / 100.0))
+        endif
     endif
     if dmg>= DemonDwellerSword_MinDmg  and HasCachedItem(c,DemonDwellerSword_ID ) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DemonDwellerSword_Abi_CD_ID) == 0 and GetUnitAbilityLevel(c, DemonDwellerSword_Abi_CD_ID) > 0 then
     if typedmg == 1 then 
@@ -457,7 +656,7 @@ endif
     endif
     call BlzStartUnitAbilityCooldown(c, DemonDwellerSword_Abi_CD_ID, DemonDwellerSword_CD  )
     endif
-    if dmg> 1 and HasCachedItem(td,SusanooShield_Item_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0F7') == 0 and GetUnitAbilityLevel(td, 'A0F7') > 0 then
+    if dmg> 1 and HasCachedItem(td,SusanooShield_Item_ID) > 0 and GetUnitAbilityLevel(td, 'A0F7') > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0F7') == 0 then
     set k = GetItemCharges(UnitItemInSlot(td, IsItemInInventory3(td, SusanooShield_Item_ID)))
      if k < SusanooShield_TresholdDamage then 
      set k = k + R2I(dmg)
@@ -478,20 +677,23 @@ endif
     endif
     endif
     if targetId == Tsuna_ID and dmg > 1 then
-        set x1 = LoadReal(hs, targetHid, StringHash("instinct")) * 100
+        set x1 = LoadReal(hs, targetHid, SH_DmgSys_INSTINCT) * 100
         set y1 = GetRandomReal(0, 100)
         if LoadInteger(hs, targetOwnerHid, KEY_ZERO_KAI) == 0 then
-            if LoadInteger(hs, targetHid, StringHash("mode def")) == 1 then
+            if LoadInteger(hs, targetHid, SH_DmgSys_MODE_DEF) == 1 then
                 set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
-            elseif BlzGetUnitAbilityCooldownRemaining(td, FakeAbi_ID) == 0 and y1 <= x1 and SR2(c, td) <= TsunaF_Aoe then
+            elseif BlzGetUnitAbilityCooldownRemaining(td, TsunaF_ID) == 0 and y1 <= x1 and SR2(c, td) <= TsunaF_Aoe then
                 set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
                 call TsunaDodge(td, c)
             endif
         endif
     endif
-    if targetId == Alucard_ID and BlzGetUnitAbilityCooldownRemaining(td, FakeAbi_ID) == 0 and GetHeroLevel(td) >= 12 and LoadInteger(hs, targetHid , StringHash("Alucard pas vision")) == 0 then
-        call SaveInteger(hs, targetHid , StringHash("Alucard pas vision"), 1)
+    if targetId == Alucard_ID and BlzGetUnitAbilityCooldownRemaining(td, AlucardF_ID) == 0 and GetHeroLevel(td) >= 12 and LoadInteger(hs, targetHid , SH_DmgSys_ALUCARD_PAS_VISION) == 0 then
+        call SaveInteger(hs, targetHid , SH_DmgSys_ALUCARD_PAS_VISION, 1)
         call AlucardF_Start(td, c)
+    endif
+    if sourceId == Alucard_ID and damageSourceId != 0 and GetUnitAbilityLevel(td, AlucardT_Buff_ID) > 0 then // alucard t: -cd on marked target
+        call AlucardT_MarkedHit(c, DamageSourceBase(damageSourceId))
     endif
     if GetUnitAbilityLevel(c, AlucardW_Buff_ID) > 0 and not shieldPen then // alucard w
         set dmg = dmg * 0.75
@@ -502,11 +704,13 @@ endif
     if GetUnitAbilityLevel(c, AlucardT2_Buff_ID) > 0 and targetId == Alucard_ID and not shieldPen then // alucard t
         set dmg = dmg * (1 - 0.3)
     endif
-    if targetId == Takeshi_ID and LoadInteger(hs, targetHid, StringHash("def t")) == 1 then
+    if targetId == Takeshi_ID and LoadInteger(hs, targetHid, SH_DmgSys_DEF_T) == 1 then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
     if targetId == Rimuru_ID and dmg > 0 then
-        if LoadInteger(hs, targetHid, StringHash("rimuru f")) == 1 then
+        if LoadInteger(hs, targetHid, SH_DmgSys_RIMURU_R3_INVUL) == 1 then
+            set dmg = 0
+        elseif LoadInteger(hs, targetHid, SH_DmgSys_RIMURU_F) == 1 then
             set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         elseif dmg >= RimuruQ2_MinDamage and (GetUnitAbilityLevel(td, RimuruQ2_Buff_ID) > 0 or GetUnitAbilityLevel(td, RimuruF3_Buff_ID) > 0 ) then
             call Rimuru2Q_Dodge(td, c, dmg)
@@ -517,11 +721,11 @@ endif
             endif
         endif
     endif
-    if BankaiActive and c != td and dmg > 5 and GetUnitAbilityLevel(td, KyorakuT_BankaiBuff) > 0 and GetUnitAbilityLevel(c, KyorakuT_BankaiBuff) > 0 and LoadInteger(hs, sourceHid, StringHash("naofumi shield")) == 0 and LoadInteger(hs, targetHid, StringHash("naofumi shield")) == 0 then
+    if BankaiActive and c != td and dmg > 5 and KyorakuBankaiCaster != null and IsUnitEnemy(c, GetOwningPlayer(KyorakuBankaiCaster)) and GetUnitAbilityLevel(td, KyorakuT_BankaiBuff) > 0 and GetUnitAbilityLevel(c, KyorakuT_BankaiBuff) > 0 and LoadInteger(hs, sourceHid, SH_DmgSys_NAOFUMI_SHIELD) == 0 and LoadInteger(hs, targetHid, SH_DmgSys_NAOFUMI_SHIELD) == 0 then
         if sourceIsHero == false then
-            call SaveInteger(hs, GetHandleId(Hero[id]), StringHash("bankai 1-st activated"), 1)
+            call SaveInteger(hs, GetHandleId(Hero[id]), SH_DmgSys_BANKAI_1_ST_ACTIVATED, 1)
         else
-            call SaveInteger(hs, sourceHid, StringHash("bankai 1-st activated"), 1)
+            call SaveInteger(hs, sourceHid, SH_DmgSys_BANKAI_1_ST_ACTIVATED, 1)
         endif
         set rand1 = KyorakuT_Dan1_Reverse * dmg
         if rand1 >= GetUnitState(c, UNIT_STATE_LIFE) then
@@ -536,7 +740,7 @@ endif
             call SetUnitState(td, UNIT_STATE_LIFE, GetUnitState(td, UNIT_STATE_MAX_LIFE) * (KyorakuT_Dan1_MinHp / 100))
         endif
     endif
-    if IsUnitIllusion(c) == false and GetUnitAbilityLevel(td,DeathNote_Buff_ID)==0 and dmg>=DeathNote_MinDmg and typedmg == 1 and isEnemy and HasCachedItem(c, DeathNote_ID ) > 0  and BlzGetUnitAbilityCooldownRemaining(c, DeathNote_CD_ID ) == 0 and GetUnitAbilityLevel(c, DeathNote_CD_ID ) > 0 then
+    if IsUnitIllusion(c) == false and GetUnitAbilityLevel(td,DeathNote_Buff_ID)==0 and dmg>=DeathNote_MinDmg and (typedmg == 1 or typedmg == 2) and isEnemy and HasCachedItem(c, DeathNote_ID ) > 0  and BlzGetUnitAbilityCooldownRemaining(c, DeathNote_CD_ID ) == 0 and GetUnitAbilityLevel(c, DeathNote_CD_ID ) > 0 then
         call BlzStartUnitAbilityCooldown(c, DeathNote_CD_ID , DeathNote_CD  )
         call DeathNote_Start(c,td,dmg)
     endif
@@ -557,8 +761,12 @@ endif
     if typedmg == 1 then
         
     else
-        if isEnemy and dmg >= Earth_Power_MinDmg and HasCachedItem(c, 'I019') > 0 and IntegerCd(td, "dmg stop punch", Earth_Power_CD) then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
+        if not MurasameTrigger and not AshisogiTrigger and isEnemy and dmg >= Earth_Power_MinDmg and HasCachedItem(c, 'I019') > 0 and IntegerCdKey(td, SH_ICD_DMG_STOP_PUNCH, Earth_Power_CD) then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
             call EarthPower(c, td)
+        endif
+        // Physical spells only; a tagged/scripted basic attack is still an attack.
+        if typedmg == 2 and not eventIsAttack and not AshisogiTrigger and not MurasameTrigger and damageSourceId != 0 and isEnemy and dmg >= AshisogiJizo_MinDmg and HasCachedItem(c, AshisogiJizo_ID) > 0 then
+            call AshisogiJizo_Poison(c, td)
         endif
     endif
     if dmg > 0.0 and NatsuPicked and targetIsHero and not targetIsIllusion and targetId != Natsu_ID then
@@ -575,82 +783,97 @@ endif
         call SetHpCurrent2(td, td,AvalonEvolved_HpRestore)
         elseif dmg > 1 and isEnemy and HasCachedItem(td, 'I02K') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
         call SetHpCurrent2(td, td,Avalon_HpRestore)
-    
+
+    endif
+    if dmg > 1 and isEnemy and HasCachedItem(td, HashiramaCells_ID) > 0 then
+        call HashiramaCells_AllyHeal_Start(td, dmg)
     endif
     
-    if isEnemy and dmg >= GutsArmor_DmgTreshold  and BlzGetUnitAbilityCooldownRemaining(td, 'A0F4') == 0 and GetUnitAbilityLevel(td, 'A0F4') > 0 then
+    if isEnemy and dmg >= GutsArmor_DmgTreshold  and GetUnitAbilityLevel(td, 'A0F4') > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0F4') == 0 then
         call BlzStartUnitAbilityCooldown(td, 'A0F4', GutsArmor_CD )
        call BuffUnit01(td,td,'A0F3',"innerfire",1)
     endif
     if isEnemy and dmg>1 and GetUnitAbilityLevel(c, GutsArmor_Buff_ID) > 0 then
         call UnitRemoveAbility(c,GutsArmor_Buff_ID)
+        call DamageSource('I02J')
         call NextDmg(c, td, GutsArmor_DamageBase  * GetHeroStr(c, true), 0, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_bloodex-special-23.mdl", td, "chest"))
     endif
     if dmg > 1 and GetUnitAbilityLevel(td, 'B018') > 0 and targetIsHero and not targetIsIllusion then
         call HarribelG2_Start(td, dmg)
     endif
-    if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 and targetIsHero and not targetIsIllusion and LoadInteger(hs, targetHid, StringHash("mode t")) == 0 then
+    if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 and targetIsHero and not targetIsIllusion and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
         if dmg > InoriE_DmgCap then
             call InoriEPas_Start(td)
         endif
     endif
-    if dmg > InoriE_DmgCap and targetIsHero  and not targetIsIllusion  and GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0  and LoadInteger(hs, targetHid, StringHash("mode t")) == 0 then
+    if dmg > InoriE_DmgCap and targetIsHero  and not targetIsIllusion  and GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0  and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
     call InoriEPas_Start(td)
 endif
     if dmg > 1 and GetUnitAbilityLevel(td,'A0F9')>0  then
     call BlzStartUnitAbilityCooldown(td,'A0F9',ElixirOfLife_CD)
     endif
-    if dmg> 1 and HasCachedItem(td,'I02R') > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0FB') == 0 and GetUnitAbilityLevel(td, 'A0FB') > 0 then
+    if dmg> 1 and HasCachedItem(td,'I02R') > 0 and GetUnitAbilityLevel(td, 'A0FB') > 0 and BlzGetUnitAbilityCooldownRemaining(td, 'A0FB') == 0 then
     call BlzStartUnitAbilityCooldown(td, 'A0FB', 15 )
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Eff (134).mdl",td,"origin"))
     set dmg = dmg - 200
     endif
     if typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0FA', ShikiKnife_CD )
+        call DamageSource('I02P')
         call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
     if  typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0HY', ShikiKnifeEvolved_CD )
+        call DamageSource('I042')
         call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
-    if isEnemy and dmg >= RyijinJakka_MinDmg and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 and GetUnitAbilityLevel(c, 'A080') > 0 then
+    if isEnemy and dmg >= RyijinJakka_MinDmg and GetUnitAbilityLevel(c, 'A080') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A080', RyijinJakka_CD)
+        call DamageSource('I01Q')
         call NextDmg(c, td, RyijinJakka_DamageBase * GetMainStatValue(c, true), 0, 0.05)
+        call DamageSource('I01Q')
         call ErzaPassive(c, td, 1)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_fire explosion.mdl", td, "chest"))
     endif
-    if isEnemy and dmg >= 1 and BlzGetUnitAbilityCooldownRemaining(c, 'A0FD') == 0 and GetUnitAbilityLevel(c, 'A0FD') > 0 then
+    if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0FD') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0FD') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0FD', 10)
+        call DamageSource('I02T')
         call ErzaPassive(c, td, 3)
     endif
-    if isEnemy and dmg >= 1 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G1') == 0 and GetUnitAbilityLevel(c, 'A0G1') > 0 then
+    if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0G1') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G1') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0G1', 10)
+        call DamageSource('I03F')
         call ErzaPassive(c, td, 2)
     endif
-    if isEnemy and dmg >= 1 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G0') == 0 and GetUnitAbilityLevel(c, 'A0G0') > 0 then
+    if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0G0') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G0') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0G0', 10)
+        call DamageSource('I03E')
         call ErzaPassive(c, td, 1)
     endif
-    if isEnemy and dmg >= Nejibana_MinDmg and BlzGetUnitAbilityCooldownRemaining(c, 'A09P') == 0 and GetUnitAbilityLevel(c, 'A09P') > 0 then
+    if isEnemy and dmg >= Nejibana_MinDmg and GetUnitAbilityLevel(c, 'A09P') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A09P') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A09P', Nejibana_CD)
+        call DamageSource('I01X')
         call ErzaPassive(c, td, 2)
+        call DamageSource('I01X')
         call NextDmg(c, td, Nejibana_DamageBase * GetMainStatValue(c, true), 0, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_waterexplosion.mdl", td, "chest"))
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_yc_shockwave_b.mdl", td, "chest"))
     endif
-    if isEnemy and dmg >= Gonryomaru_MinDmg and BlzGetUnitAbilityCooldownRemaining(c, 'A081') == 0 and GetUnitAbilityLevel(c, 'A081') > 0 then
+    if isEnemy and dmg >= Gonryomaru_MinDmg and GetUnitAbilityLevel(c, 'A081') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A081') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A081', Gonryomaru_CD)
+        call DamageSource('I01Y')
         call NextDmg(c, td, Gonryomaru_DamageBase * GetMainStatValue(c, true), 0, 0.05)
+        call DamageSource('I01Y')
         call ErzaPassive(c, td, 3)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_SasukeYh-41.mdl", td, "chest"))
     endif
     if targetId == Tsuna_ID and dmg > 1 then
         if LoadInteger(hs, targetOwnerHid, KEY_ZERO_KAI) == 1 and not shieldPen then
-            set rand1 = LoadReal(hs, targetHid, StringHash("zero kai dmg"))
-            call SaveReal(hs, targetHid, StringHash("zero kai dmg"), rand1 + dmg)
+            set rand1 = LoadReal(hs, targetHid, SH_DmgSys_ZERO_KAI_DMG)
+            call SaveReal(hs, targetHid, SH_DmgSys_ZERO_KAI_DMG, rand1 + dmg)
             set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
         endif
     endif
@@ -670,78 +893,73 @@ endif
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
    if dmg>1 and  GetUnitAbilityLevel(td,FrierenTF_BuffID)>0 and (sourceId == Frieren_ID or sourceId == FrierenTR_unitid ) then
-   set hpblock1 = LoadReal(hs,GetHandleId(td),StringHash("frieren f dmg"))+ dmg*(FrierenTF_RememberDamage/100)
+   set hpblock1 = LoadReal(hs,GetHandleId(td),SH_DmgSys_FRIEREN_F_DMG)+ dmg*(FrierenTF_RememberDamage/100)
    
-   call SaveReal(hs,GetHandleId(td),StringHash("frieren f dmg"),hpblock1)
+   call SaveReal(hs,GetHandleId(td),SH_DmgSys_FRIEREN_F_DMG,hpblock1)
    endif
     set dmg = GearDamageRun(c, td, dmg, typedmg, 3)
-    call CrocodileG_AppliedSpellHit(c,td,dmg,typedmg,BlzGetEventIsAttack())
+    call CrocodileG_AppliedSpellHit(c,td,dmg,typedmg,eventIsAttack)
     if dmg != dmg_base then
         call BlzSetEventDamage(dmg)
     endif
     if (targetId == Milim_ID or targetId == Milim2_ID) and targetIsHero and not targetIsIllusion and dmg > 0 then
         call MilimGAddDmg(td, dmg)
     endif
+    if damageSourceId == RimuruR3_ID and dmg > 0 and isEnemy and not IsUnitIllusion(c) then // rimuru R3 lifesteal
+        call SetHpCurrent(c, dmg * (RimuruR3_Lifesteal / 100))
+    endif
     if not I02H_ReflectActive and dmg > 1.0 and c != null and c != td and HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range then
 call I02HReflect(c,td,dmg,typedmg)
 endif
+    static if LIBRARY_DamageStats then
+        if DamageStatsActive and dmg > 0 and isEnemy and targetIsHero and not targetIsIllusion then // ally/self hits (heal-side effects) are not damage dealt
+            if typedmg == 1 then
+                set DamageStatsHitKind = 1
+            else
+                set DamageStatsHitKind = 2
+            endif
+            call DamageStatsRecordHitFrom(c,id,id2,damageSourceId,dmg,quincyShare)
+            set DamageStatsHitKind = 0
+        endif
+    endif
+    if dmg > 0 and isEnemy and targetIsHero and not targetIsIllusion and id2 < 10 and Hero[id2] == td then
+        call DmgSys_AutoSelectHero(id2, td)
+    endif
+    set appliedInteger = R2I(dmg)
     if dmg > 0 then
         if typedmg == 0 or typedmg == 2 then
             set s2 = "|cffff0000"
             if targetIsIllusion==false and targetIsHero then
-                set PlayerDamagePhys[id] = PlayerDamagePhys[id] + R2I(dmg)
-                set PlayerDamageTakenPhys[id2] = PlayerDamageTakenPhys[id2] + R2I(dmg)
-                set PlayerDamagePhysAll[id] = PlayerDamagePhysAll[id] + R2I(dmg)
-                set PlayerDamageTakenPhysAll[id2] = PlayerDamageTakenPhysAll[id2] + R2I(dmg)
+                set PlayerDamagePhys[id] = PlayerDamagePhys[id] + appliedInteger
+                set PlayerDamageTakenPhys[id2] = PlayerDamageTakenPhys[id2] + appliedInteger
+                set PlayerDamagePhysAll[id] = PlayerDamagePhysAll[id] + appliedInteger
+                set PlayerDamageTakenPhysAll[id2] = PlayerDamageTakenPhysAll[id2] + appliedInteger
                 if sourceId == Erza_ID then
-                    set rr1 = LoadInteger(hs, sourceHid, StringHash("Erza G2 phys")) + R2I(dmg)
-                    call SaveInteger(hs, sourceHid, StringHash("Erza G2 phys"), rr1)
+                    set rr1 = LoadInteger(hs, sourceHid, SH_DmgSys_ERZA_G2_PHYS) + appliedInteger
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ERZA_G2_PHYS, rr1)
                 endif
             endif
         endif
         if typedmg == 1 then
             set s2 = "|c002F63FF"
             if  targetIsIllusion== false and targetIsHero then
-                set PlayerDamageMag[id] = PlayerDamageMag[id] + R2I(dmg)
-                set PlayerDamageTakenMag[id2] = PlayerDamageTakenMag[id2] + R2I(dmg)
-                set PlayerDamageMagAll[id] = PlayerDamageMagAll[id] + R2I(dmg)
-                set PlayerDamageTakenMagAll[id2] = PlayerDamageTakenMagAll[id2] + R2I(dmg)
+                set PlayerDamageMag[id] = PlayerDamageMag[id] + appliedInteger
+                set PlayerDamageTakenMag[id2] = PlayerDamageTakenMag[id2] + appliedInteger
+                set PlayerDamageMagAll[id] = PlayerDamageMagAll[id] + appliedInteger
+                set PlayerDamageTakenMagAll[id2] = PlayerDamageTakenMagAll[id2] + appliedInteger
                 if sourceId == Erza_ID then
-                    set rr1 = LoadInteger(hs, sourceHid, StringHash("Erza G2 mag")) + R2I(dmg)
-                    call SaveInteger(hs, sourceHid, StringHash("Erza G2 mag"), rr1)
+                    set rr1 = LoadInteger(hs, sourceHid, SH_DmgSys_ERZA_G2_MAG) + appliedInteger
+                    call SaveInteger(hs, sourceHid, SH_DmgSys_ERZA_G2_MAG, rr1)
                 endif
             endif
         endif
     endif
-    if ShowDmgTestText and dmg > 0 then
-        set s = I2S(R2I(dmg))
-        set random1 = 185
-        set random2 = GetRandomReal(0, 359) * bj_DEGTORAD
-        set bj_lastCreatedTextTag = CreateTextTag()
-        call SetTextTagLifespan(bj_lastCreatedTextTag, 0.9) // С‡РµСЂРµР· 0.5 СЃРµРє СѓРґР°Р»РёС‚СЃСЏ
-        call SetTextTagFadepoint(bj_lastCreatedTextTag, 0.45) // РєРѕРіРґР° РЅР°С‡РЅРµС‚ РїР»Р°РІРЅРѕ РёСЃС‡РµР·Р°С‚СЊ
-        set ang = GAngle(c, td)
-        if typedmg == 0 or typedmg == 2 then
-            set x1 = 0.01725
-            call SetTextTagPos(bj_lastCreatedTextTag, targetX + random1 * Cos(ang + 45 * bj_DEGTORAD), targetY + random1 * Sin(ang + 45 * bj_DEGTORAD), 160) // РїРѕР·РёС†РёСЏ (РЅР°РїСЂРёРјРµСЂ РЅР° СЋРЅРёС‚Рµ)
+    if ShowDmgTestText and appliedInteger > 0 then
+        if typedmg == 1 then
+            call DmgTextAdd(c, td, id, id2, 1, appliedInteger)
         else
-            set x1 = 0.01825
-            call SetTextTagPos(bj_lastCreatedTextTag, targetX + random1 * Cos(ang + 315 * bj_DEGTORAD), targetY - random1 * Sin(ang + 315 * bj_DEGTORAD), 160) // РїРѕР·РёС†РёСЏ (РЅР°РїСЂРёРјРµСЂ РЅР° СЋРЅРёС‚Рµ)
+            call DmgTextAdd(c, td, id, id2, 0, appliedInteger)
         endif
-        call SetTextTagText(bj_lastCreatedTextTag, s2 + s, 0.01725) // СЃР°Рј С‚РµРєСЃС‚ Рё СЂР°Р·РјРµСЂ
-        call SetTextTagPermanent(bj_lastCreatedTextTag, false) // РґРµР»Р°РµРј РЅРµРїРѕСЃС‚РѕСЏРЅРЅС‹Рј
-        call SetTextTagVelocity(bj_lastCreatedTextTag, 0, 0.1)
-        call SetTextTagVisibility(bj_lastCreatedTextTag, false)
-        set k = 0
-        loop
-            exitwhen k > 10
-            if IsUnitVisible(td, Player(k)) then
-                if GetLocalPlayer() == Player(k) then
-                    call SetTextTagVisibility(bj_lastCreatedTextTag, true)
-                endif
-            endif
-            set k = k + 1
-        endloop
     endif
     set c = null
     set td = null
@@ -752,12 +970,19 @@ endif
 endfunction
 
 
+function DmgSys_Condition takes nothing returns boolean
+    if checkdmgsys() then
+        call Trig_DmgSys_Actions()
+    endif
+    return false
+endfunction
+
 //===========================================================================
 function InitTrig_DmgSys takes nothing returns nothing
     set gg_trg_DmgSys = CreateTrigger( )
     call TriggerRegisterAnyUnitEventBJ( gg_trg_DmgSys, EVENT_PLAYER_UNIT_DAMAGING )
-    call TriggerAddCondition(gg_trg_DmgSys, Condition(function checkdmgsys))
-    call TriggerAddAction( gg_trg_DmgSys, function Trig_DmgSys_Actions )
+    // The handler runs inside the condition: no extra action thread per damage event.
+    call TriggerAddCondition(gg_trg_DmgSys, Condition(function DmgSys_Condition))
 endfunction
 
 

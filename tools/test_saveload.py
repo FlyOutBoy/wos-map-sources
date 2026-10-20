@@ -58,6 +58,8 @@ class CareerRuntime:
         self.writes = []
         self.cached = {}
         self.tooltips = defaultdict(lambda: 'original tooltip')
+        # Abilities absent from the game (e.g. most stock 'AIxx'): setters are ignored, getters give "".
+        self.missing = set()
         self.preload_lines = []
         self.handles = []
         self.expired = None
@@ -92,8 +94,8 @@ class CareerRuntime:
             'S2I': lambda s: signed32(int(s)) if re.fullmatch(r'-?\d+', s or '') else 0,
             'I2S': lambda n: str(int(n)),
             'ModuloInteger': lambda n, b: signed32(n) % b,
-            'BlzSetAbilityTooltip': lambda a, s, level: self.tooltips.__setitem__((a, level), s),
-            'BlzGetAbilityTooltip': lambda a, level: self.tooltips[a, level],
+            'BlzSetAbilityTooltip': lambda a, s, level: None if a in self.missing else self.tooltips.__setitem__((a, level), s),
+            'BlzGetAbilityTooltip': lambda a, level: '' if a in self.missing else self.tooltips[a, level],
             'Preloader': self.preloader,
             'PreloadGenClear': lambda: self.preload_lines.clear(),
             'PreloadGenStart': lambda: None,
@@ -114,7 +116,9 @@ class CareerRuntime:
             'TriggerAddAction': lambda *args: None,
             'TriggerAddCondition': lambda *args: None, 'Condition': lambda f: f, 'BlzTriggerRegisterPlayerSyncEvent': lambda *args: None,
             # Checkpoint 27b: chunked career parsing runs through TriggerEvaluate.
-            'TriggerEvaluate': lambda trigger: self.vm.run('SaveSystem_LocalCareerParseChunk'),
+            # UI construction is outside these save tests; callbacks stay deferred.
+            'WUI_OnReady': lambda callback: None,
+            'TriggerEvaluate': lambda trigger: self.vm.run('SaveSystem_AppExtParseChunk' if trigger is self.vm.g.get('ss_AppExtTrigger') else 'SaveSystem_LocalCareerParseChunk'),
             'UnitItemInSlot': lambda *args: None,
             'GetUnitTypeId': lambda hero: hero,
         })
@@ -129,8 +133,11 @@ class CareerRuntime:
         # Model the documented engine cache: writes do not refresh a read path.
         script = self.cached.setdefault(path, self.disk.get(path, ''))
         # Only interpret the tooltip carrier grammar, never execute file code.
-        for match in re.finditer(r'call BlzSetAbilityTooltip\((\d+),(.*),0\)', script):
-            ability, rhs = int(match[1]), match[2]
+        for match in re.finditer(r"call BlzSetAbilityTooltip\((\d+|'[A-Za-z0-9]{4}'),(.*),0\)", script):
+            code = match[1]
+            ability, rhs = (int.from_bytes(code[1:-1].encode('ascii'), 'big') if code.startswith("'") else int(code)), match[2]
+            if ability in self.missing:
+                continue
             prefix = f'BlzGetAbilityTooltip({ability},0)+'
             if rhs.startswith(prefix):
                 self.tooltips[ability, 0] += json.loads(rhs[len(prefix):])
@@ -155,7 +162,49 @@ class CareerRuntime:
         self.run('SaveSystem_WriteOwnCareerAtFinish')
 
 
+def game_like_abilities(runtime):
+    """As in the real game: of the 120 stock 'AIxx' only two hold a tooltip, stock hero abilities none."""
+    codes = re.findall(r'set ss_ChunkCode\[\d+\] = "(AI..)"', SOURCE.read_text(encoding='utf-8-sig'))
+    codes = [code for code in codes if code not in ('AIcy', 'AIfg')] + 'AHbz AHwe AHab AHmt AHtb AHtc AHbh AHav AHhb AHds AHad AHre AHfs AHbn AHdr AHpx AOcl AOfs AOsf AOeq AOwk AOcr AOmi AOww AOsh AOws AOae AOre AOhw AOhx AOsw AOvd'.split()
+    runtime.missing.update(int.from_bytes(code.encode('ascii'), 'big') for code in codes)
+
+
 class CareerPersistence(unittest.TestCase):
+    def test_long_career_survives_when_most_stock_carriers_are_missing(self):
+        disk = {}
+        heroes = [1211117600 + i for i in range(45)]
+        for game, hero in enumerate(heroes, 1):
+            runtime = CareerRuntime(disk)
+            game_like_abilities(runtime)
+            runtime.start()
+            self.assertEqual(game - 1, runtime.run('SaveSystem_GetGamesPlayed', 0), 'career reloaded intact')
+            self.assertFalse(runtime.run('SaveSystem_IsLocalLoadFailed'))
+            runtime.finish(win=game % 2 == 0, hero=hero)
+        path = runtime.run('SaveSystem_LocalFilePath', 0)
+        written = [key for key in disk if key.startswith(path[:-4])]
+        self.assertGreater(len(written), 1, 'a long career is split into parts')
+        self.assertGreater(sum(len(disk[key]) for key in written), 2000)
+        runtime = CareerRuntime(disk)
+        game_like_abilities(runtime)
+        runtime.start()
+        self.assertEqual(len(heroes), runtime.run('SaveSystem_GetGamesPlayed', 0))
+        self.assertEqual(1, runtime.run('SaveSystem_GetHeroGames', 0, heroes[-1]))
+
+    def test_old_single_file_on_stock_carriers_still_loads(self):
+        # File as written by maps before 2026-10-19: pieces on the first working 'AIxx'.
+        payload = 'WOS2L5|V,6|A,1,1,0|'
+        runtime = CareerRuntime()
+        game_like_abilities(runtime)
+        path = runtime.run('SaveSystem_LocalFilePath', 0)
+        runtime.run('SaveSystem_EnsureIdentity', 0)
+        checksum = runtime.run('SaveSystem_LocalChecksum', 0, 1, 1)
+        hero = runtime.run('SaveSystem_LocalChecksum', 0, 1, 0)
+        payload = 'WOS2L5|V,6|A,1,1,%d|E,1,%d|' % (checksum, hero)
+        runtime.disk[path] = "call BlzSetAbilityTooltip('AIcy',\"%s\",0)\n" % payload[:12] + "call BlzSetAbilityTooltip('AIfg',\"%s\",0)\n" % payload[12:]
+        runtime.start()
+        self.assertFalse(runtime.run('SaveSystem_IsLocalLoadFailed'))
+        self.assertEqual(1, runtime.run('SaveSystem_GetGamesPlayed', 0))
+
     def test_existing_real_l5_file_loads_before_career_opens(self):
         runtime = CareerRuntime()
         path = runtime.run('SaveSystem_LocalRawFilePath', 0)
@@ -188,8 +237,9 @@ class CareerPersistence(unittest.TestCase):
             # Duplicate end events cannot count the same match twice.
             runtime.finish()
             self.assertEqual(game, runtime.run('SaveSystem_GetGamesPlayed', 0))
-        self.assertEqual(1, len(set(paths)))
-        self.assertEqual(1, len(disk))
+        # One profile file; an empty "_p1" part only terminates the part sequence.
+        self.assertEqual(1, len({path for path in paths if '_p' not in path}))
+        self.assertEqual(1, len([path for path in disk if '_p' not in path]))
         self.assertEqual(2, runtime.run('SaveSystem_GetGamesWon', 0))
         self.assertEqual(3, runtime.run('SaveSystem_GetHeroGames', 0, 1211117892))
 

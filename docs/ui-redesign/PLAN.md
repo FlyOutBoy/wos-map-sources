@@ -566,3 +566,23 @@ Remove diagnostic probe IO by default, quiet closed F2/pings, merge same-period
 UI timers and cache repeated native setters/metadata. Align actions at.598,
 remove compact gap and move messages below Restart. See RESUME CP54 for exact
 periods and verification boundary; no game FPS claim from operation tests.
+
+
+CP66 DONE (implementation and MAIN publication): restored gameplay minimap
+texture at startup; reset F2 Expand/Opacity/Close focus; remove stale Kyoraku G;
+public bankai stage captions/icons and text-sized right-column description.
+Compile,727 regressions and6720 packed payload comparisons PASS. Native game
+acceptance remains pending; evidence and next checks are in RESUME CP66.
+
+
+CP67 DONE (project implementation), publication/native acceptance pending:
+Common Info folds gold into Inventory, four portrait controls with optional
+alive-hero auto-selection, early Raiden readiness/counters, long-range previews,
+Brandish cooldown repair, Laxus Q release, Okarun speed/order correction and
+0.33c balance packet. See RESUME CP67 and docs/CHANGELOG_0.33c.txt.
+
+
+CP68 DONE (implementation and MAIN/STABLE publication): portrait controls moved
+right, demanded .25s auto-select, Q2 launch release, Okarun .75s order retries
+and per-target tackle cooldown with450/.35s push.753 regressions PASS,5 skips.
+Native visual/input/multiplayer acceptance remains pending; see RESUME CP68.

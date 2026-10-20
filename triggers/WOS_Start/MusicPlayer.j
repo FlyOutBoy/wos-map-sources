@@ -1,4 +1,4 @@
-library LocalMp3Player initializer LocalMp3Player_Init
+library LocalMp3Player initializer LocalMp3Player_Init requires WOSUI
 
 globals
     private constant integer LMP_ROWS = 3
@@ -18,10 +18,10 @@ globals
     private constant boolean LMP_AUDIO_ENABLED = true
     private constant string LMP_COMMAND = "-music"
     private constant string LMP_LINK_URL = "bit.ly/4x8cOaB"
-    private constant string LMP_TEX_BLACK = "Textures\\black32.blp"
+    private constant string LMP_TEX_BLACK = WUI_PANEL_TEXTURE
     private constant string LMP_TEX_CLOSE = "Music\\Music_Close.blp"
-    private constant string LMP_TEX_OPEN = "Music\\Music_Icon.blp"
-    private constant string LMP_TEX_LINK = "Music\\Music_Link.blp"
+    private constant string LMP_TEX_OPEN = "UI\\WOS\\glyph-music.tga"
+    private constant string LMP_TEX_LINK = "UI\\WOS\\wos-app-link.tga"
     private constant string LMP_TEX_LOOP_OFF = "Music\\Music_LoopOff.blp"
     private constant string LMP_TEX_LOOP_ON = "Music\\Music_LoopOn.blp"
     private constant string LMP_TEX_SHUFFLE_OFF = "Music\\Music_MergeOff.blp"
@@ -40,82 +40,82 @@ globals
     // All absolute frame coordinates and sizes are kept here. The main window
     // and its contents have been shifted 0.045 to the right.
     //===========================================================================
-    private constant real LMP_OPEN_X = 0.835
-    private constant real LMP_OPEN_Y = 0.560
+    private constant real LMP_OPEN_X = 0.767
+    private constant real LMP_OPEN_Y = 0.548
     private constant real LMP_OPEN_SIZE = 0.022
     // Кнопка ссылки расположена справа от кнопки музыки.
-    private constant real LMP_LINK_X = 0.805
-    private constant real LMP_LINK_Y = 0.560
+    private constant real LMP_LINK_X = 0.729
+    private constant real LMP_LINK_Y = 0.548
     private constant real LMP_LINK_SIZE = 0.022
     private constant real LMP_LINK_EDIT_X = 0.525
     private constant real LMP_LINK_EDIT_Y = 0.535
     private constant real LMP_LINK_EDIT_WIDTH = 0.1
     private constant real LMP_LINK_EDIT_HEIGHT = 0.026
 
-    private constant real LMP_PANEL_X = 0.445
+    private constant real LMP_PANEL_X = 0.400
     private constant real LMP_PANEL_Y = 0.326
     private constant real LMP_PANEL_WIDTH = 0.270
     private constant real LMP_PANEL_HEIGHT = 0.270
-    private constant real LMP_TITLE_X = 0.445
+    private constant real LMP_TITLE_X = 0.400
     private constant real LMP_TITLE_Y = 0.434
     private constant real LMP_TITLE_WIDTH = 0.170
     private constant real LMP_TITLE_HEIGHT = 0.016
-    private constant real LMP_CLOSE_X = 0.559
+    private constant real LMP_CLOSE_X = 0.514
     private constant real LMP_CLOSE_Y = 0.434
     private constant real LMP_CLOSE_SIZE = 0.020
-    private constant real LMP_NOW_X = 0.445
+    private constant real LMP_NOW_X = 0.400
     private constant real LMP_NOW_Y = 0.411
     private constant real LMP_NOW_WIDTH = 0.205
     private constant real LMP_NOW_HEIGHT = 0.016
-    private constant real LMP_TIME_X = 0.445
+    private constant real LMP_TIME_X = 0.400
     private constant real LMP_TIME_Y = 0.358
     private constant real LMP_TIME_WIDTH = 0.110
     private constant real LMP_TIME_HEIGHT = 0.014
-    private constant real LMP_PROGRESS_X = 0.445
+    private constant real LMP_PROGRESS_X = 0.400
     private constant real LMP_PROGRESS_Y = 0.375
     private constant real LMP_PROGRESS_WIDTH = 0.215
     private constant real LMP_PROGRESS_HEIGHT = 0.014
-    private constant real LMP_EQUALIZER_X = 0.445
+    private constant real LMP_EQUALIZER_X = 0.400
     private constant real LMP_EQUALIZER_Y = 0.392
     private constant real LMP_EQUALIZER_WIDTH = 0.205
     private constant real LMP_EQUALIZER_HEIGHT = 0.014
 
-    private constant real LMP_LIST_X = 0.438
+    private constant real LMP_LIST_X = 0.393
     private constant real LMP_LIST_Y = 0.310
     private constant real LMP_LIST_WIDTH = 0.218
     private constant real LMP_LIST_HEIGHT = 0.076
-    private constant real LMP_ROW_X = 0.437
+    private constant real LMP_ROW_X = 0.392
     private constant real LMP_ROW_FIRST_Y = 0.334
     private constant real LMP_ROW_STEP_Y = 0.024
     private constant real LMP_ROW_WIDTH = 0.198
     private constant real LMP_ROW_HEIGHT = 0.020
-    private constant real LMP_SCROLL_X = 0.558
+    private constant real LMP_SCROLL_X = 0.513
     private constant real LMP_SCROLL_Y = 0.310
     private constant real LMP_SCROLL_WIDTH = 0.012
     private constant real LMP_SCROLL_HEIGHT = 0.074
 
     private constant real LMP_CONTROLS_ROW1_Y = 0.255
     private constant real LMP_CONTROLS_ROW2_Y = 0.225
-    private constant real LMP_CONTROL_SIZE = 0.019
-    private constant real LMP_PREVIOUS_X = 0.350
-    private constant real LMP_BACK_10_X = 0.385
-    private constant real LMP_PLAY_PAUSE_X = 0.420
-    private constant real LMP_FORWARD_10_X = 0.455
-    private constant real LMP_NEXT_X = 0.490
-    private constant real LMP_RERUN_X = 0.350
-    private constant real LMP_LOOP_X = 0.385
-    private constant real LMP_SHUFFLE_X = 0.420
+    private constant real LMP_CONTROL_SIZE = 0.022
+    private constant real LMP_PREVIOUS_X = 0.305
+    private constant real LMP_BACK_10_X = 0.340
+    private constant real LMP_PLAY_PAUSE_X = 0.375
+    private constant real LMP_FORWARD_10_X = 0.410
+    private constant real LMP_NEXT_X = 0.445
+    private constant real LMP_RERUN_X = 0.305
+    private constant real LMP_LOOP_X = 0.340
+    private constant real LMP_SHUFFLE_X = 0.375
 
-    private constant real LMP_VOLUME_X = 0.490
+    private constant real LMP_VOLUME_X = 0.445
     private constant real LMP_VOLUME_Y = 0.220
     private constant real LMP_VOLUME_WIDTH = 0.115
     private constant real LMP_VOLUME_HEIGHT = 0.014
-    private constant real LMP_VOLUME_TEXT_X = 0.490
+    private constant real LMP_VOLUME_TEXT_X = 0.445
     private constant real LMP_VOLUME_TEXT_Y = 0.238
     private constant real LMP_VOLUME_TEXT_WIDTH = 0.105
     private constant real LMP_VOLUME_TEXT_HEIGHT = 0.011
 
-    private constant real LMP_TOOLTIP_X = 0.445
+    private constant real LMP_TOOLTIP_X = 0.400
     private constant real LMP_TOOLTIP_Y = 0.279
     private constant real LMP_TOOLTIP_WIDTH = 0.122
     private constant real LMP_TOOLTIP_HEIGHT = 0.020
@@ -126,11 +126,12 @@ globals
     private integer array lmpDurationMs
     private integer array lmpCurrent
     private integer array lmpListOffset
+    private integer array lmpScrollShown
+    private integer array lmpScrollEcho
     private boolean array lmpPlaying
     private boolean array lmpPaused
     private boolean array lmpLoop
     private boolean array lmpShuffle
-    private boolean array lmpVisible
     private boolean array lmpLinkVisible
     private boolean array lmpClickBusy
     private integer array lmpOrder
@@ -192,13 +193,25 @@ globals
     private trigger lmpChatTrigger = CreateTrigger()
     private timer lmpUpdateTimer = CreateTimer()
     // Scan local MP3 files after map startup in small batches.
+    // Local scan state. Music\N.mp3 are each player's own files (any length);
+    // GetSoundFileDuration parses a whole MP3 synchronously, so the scan is phased:
+    // phase 1 = files 1..LMP_SCAN_FIRST as soon as the UI exists (before mode selection),
+    // phase 2 = one file when the next track starts, or while the hero is dead / in base,
+    // at least LMP_SCAN_GAP_TICKS apart and never in the last seconds of a playing track.
+    private constant integer LMP_SCAN_FIRST = 20
+    private constant real LMP_SCAN_PERIOD = 0.25
+    private constant integer LMP_SCAN_GAP_TICKS = 8 // phase 2: >= 2 s between files
+    private constant integer LMP_SCAN_TAIL_MS = 3000 // no file in the last 3 s of a track
     private timer lmpScanTimer = CreateTimer()
+    private integer lmpScanLimit = LMP_SCAN_FIRST // local
+    private integer lmpScanGap = 0 // local: ticks since the last phase-2 file
+    private boolean lmpScanNow = false // local: a track just started
+    private boolean lmpScanDone = false // local: all LMP_SCAN_FILE_COUNT files read
+    private integer array lmpSavedCurrent // saved track waiting for the local scan
     private integer lmpScanTrack = 1
     // Три файла за короткий тик: весь диапазон завершается примерно за 0,5 с,
     // но не складывает все 30 синхронных чтений в один зависший кадр.
     private constant integer LMP_SCAN_BATCH = 1
-    private constant real LMP_SCAN_INTERVAL = 0.07
-    private constant real LMP_SCAN_DELAY = 2
 endglobals
 
 //===========================================================================
@@ -384,7 +397,7 @@ private function LMP_SetProgress takes player whichPlayer, real value returns no
     endif
 
     if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetValue(lmpSeek, value)
+        call WUI_FrameSetValue(lmpSeek, value)
     endif
 endfunction
 
@@ -515,11 +528,11 @@ private function LMP_UpdateList takes player whichPlayer returns nothing
                 else
                     set prefix = "|cffdddddd  "
                 endif
-                call BlzFrameSetText(lmpRow[row], prefix + I2S(trackIndex) + ". " + lmpTitle[trackIndex] + "|r")
+                call WUI_SetButtonText(lmpRow[row], prefix + I2S(trackIndex) + ". " + lmpTitle[trackIndex] + "|r")
                 call BlzFrameSetEnable(lmpRow[row], true)
             else
                 set lmpRowTrack[row] = 0
-                call BlzFrameSetText(lmpRow[row], "")
+                call WUI_SetButtonText(lmpRow[row], "")
                 call BlzFrameSetEnable(lmpRow[row], false)
             endif
 
@@ -538,8 +551,11 @@ private function LMP_UpdateHeader takes player whichPlayer returns nothing
             call BlzFrameSetText(lmpNowPlaying, "|cffffcc00" + lmpTitle[trackIndex] + "|r")
             set durationSeconds = (lmpDurationMs[trackIndex] + 500) / 1000
             call BlzFrameSetText(lmpTimeText, LMP_FormatTime(R2I(lmpElapsed[pid])) + " / " + LMP_FormatTime(durationSeconds))
+        elseif lmpTrackCount > 0 then
+            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaChoose a track|r")
+            call BlzFrameSetText(lmpTimeText, "0:00 / 0:00")
         else
-            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaNo tracks imported|r")
+            call BlzFrameSetText(lmpNowPlaying, "|cffaaaaaaNo local tracks found|r")
             call BlzFrameSetText(lmpTimeText, "0:00 / 0:00")
         endif
 
@@ -590,6 +606,9 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
     local integer pid = GetPlayerId(whichPlayer)
 
     set lmpVisible[pid] = flag
+    if flag then
+        call WUI_EnterExclusiveWindow(2, whichPlayer)
+    endif
 
     // On the first opening, enqueue stopping the map's default music. All music
     // natives are executed later by the periodic timer.
@@ -599,6 +618,10 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
     endif
 
     if GetLocalPlayer() == whichPlayer then
+        // Local: opening the player allows phase 2 (dead / in base only).
+        if flag then
+            set lmpScanLimit = LMP_SCAN_FILE_COUNT
+        endif
         call BlzFrameSetVisible(lmpPanel, flag)
         call BlzFrameSetVisible(lmpSeek, flag)
         call BlzFrameSetVisible(lmpSeekBlocker, flag)
@@ -608,6 +631,20 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
 
     if flag then
         call LMP_UpdateAll(whichPlayer)
+    endif
+endfunction
+
+function LocalMp3Player_SetTopVisible takes player viewer, boolean visible returns nothing
+    if not lmpFramesReady then
+        return
+    endif
+    call LMP_SetVisible(viewer, false)
+    set lmpLinkVisible[GetPlayerId(viewer)] = false
+    if GetLocalPlayer() == viewer then
+        call BlzFrameSetVisible(lmpOpenButton, visible)
+        call BlzFrameSetVisible(lmpLinkButton, visible)
+        call BlzFrameSetVisible(lmpLinkActiveButton, false)
+        call BlzFrameSetVisible(lmpLinkEdit, false)
     endif
 endfunction
 
@@ -629,9 +666,41 @@ private function LMP_Stop takes player whichPlayer returns nothing
     call LMP_UpdateHeader(whichPlayer)
 endfunction
 
+// Synced: moves the owner's list slider to the current offset. The change
+// returns as a synced SLIDER_VALUE_CHANGED event (an echo); every client
+// counts it so LMP_OnScroll drops it instead of bouncing the list back.
+private function LMP_ShowScroll takes player whichPlayer returns nothing
+    local integer pid = GetPlayerId(whichPlayer)
+    local integer value = LMP_MaxOffset() - lmpListOffset[pid]
+    if value != lmpScrollShown[pid] then
+        set lmpScrollShown[pid] = value
+        set lmpScrollEcho[pid] = lmpScrollEcho[pid] + 1
+        if GetLocalPlayer() == whichPlayer then
+            call WUI_FrameSetValue(lmpScroll, I2R(value))
+        endif
+    endif
+endfunction
+
+// Every client's list slider starts at the top (value = max offset).
+private function LMP_InitScrollShown takes nothing returns nothing
+    local integer pid = 0
+    loop
+        exitwhen pid >= bj_MAX_PLAYER_SLOTS
+        set lmpScrollShown[pid] = LMP_MaxOffset()
+        set lmpScrollEcho[pid] = 0
+        set pid = pid + 1
+    endloop
+endfunction
+
 private function LMP_PlayTrack takes player whichPlayer, integer trackIndex returns nothing
     local integer pid = GetPlayerId(whichPlayer)
     local integer orderPosition
+
+    // Local: starting a track allows phase 2 and reads one more file right now.
+    if GetLocalPlayer() == whichPlayer then
+        set lmpScanLimit = LMP_SCAN_FILE_COUNT
+        set lmpScanNow = true
+    endif
 
     if lmpTrackCount <= 0 then
         return
@@ -663,10 +732,28 @@ private function LMP_PlayTrack takes player whichPlayer, integer trackIndex retu
 
     if GetLocalPlayer() == whichPlayer then
         call LMP_SetProgress(whichPlayer, 0.00)
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
     endif
+    call LMP_ShowScroll(whichPlayer)
 
     call LMP_UpdateAll(whichPlayer)
+endfunction
+
+// Checkpoint 27b: last chosen track for the local4 settings file (local).
+function LocalMp3Player_GetCurrent takes integer pid returns integer
+    return lmpCurrent[pid]
+endfunction
+
+// Local: select a saved track without starting it (the player presses play).
+function LocalMp3Player_SetCurrent takes integer pid, integer trackIndex returns nothing
+    if not lmpScanDone and trackIndex > lmpTrackCount then
+        // Not scanned yet (phased local scan): applied when the scan reaches it.
+        set lmpSavedCurrent[pid] = trackIndex
+        return
+    endif
+    if trackIndex > 0 and trackIndex <= lmpTrackCount then
+        set lmpCurrent[pid] = trackIndex
+        set lmpElapsed[pid] = 0.00
+    endif
 endfunction
 
 private function LMP_Play takes player whichPlayer returns nothing
@@ -813,9 +900,7 @@ private function LMP_ToggleShuffle takes player whichPlayer returns nothing
     endif
     set lmpListOffset[pid] = LMP_ClampOffset(lmpListOffset[pid])
 
-    if GetLocalPlayer() == whichPlayer then
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
-    endif
+    call LMP_ShowScroll(whichPlayer)
     call LMP_UpdateAll(whichPlayer)
 endfunction
 
@@ -849,6 +934,7 @@ private function LMP_OnClick takes nothing returns nothing
     if lmpClickBusy[pid] then
         set clicked = null
         set p = null
+        call WUI_ReleaseClickFocus()
         return
     endif
     set lmpClickBusy[pid] = true
@@ -862,7 +948,6 @@ private function LMP_OnClick takes nothing returns nothing
             call BlzFrameSetVisible(lmpLinkActiveButton, true)
             call BlzFrameSetVisible(lmpLinkEdit, true)
             call BlzFrameSetEnable(lmpLinkEdit, true)
-            call BlzFrameSetFocus(lmpLinkEdit, true)
             call BlzFrameSetText(lmpLinkEdit, "")
             call BlzFrameSetText(lmpLinkEdit, LMP_LINK_URL)
         endif
@@ -916,6 +1001,10 @@ private function LMP_OnClick takes nothing returns nothing
     set lmpClickBusy[pid] = false
     set clicked = null
     set p = null
+    call WUI_ReleaseClickFocus()
+    if BlzGetTriggerFrame() == lmpLinkButton and GetLocalPlayer() == GetTriggerPlayer() then
+        call BlzFrameSetFocus(lmpLinkEdit, true)
+    endif
 endfunction
 
 private function LMP_OnLinkEdit takes nothing returns nothing
@@ -946,6 +1035,13 @@ private function LMP_OnScroll takes nothing returns nothing
     local integer pid = GetPlayerId(p)
     local integer sliderValue = R2I(BlzGetTriggerFrameValue() + 0.50)
 
+    // Echo of our own slider move (LMP_ShowScroll): drop it.
+    if lmpScrollEcho[pid] > 0 then
+        set lmpScrollEcho[pid] = lmpScrollEcho[pid] - 1
+        set p = null
+        return
+    endif
+    set lmpScrollShown[pid] = sliderValue
     set lmpListOffset[pid] = LMP_ClampOffset(LMP_MaxOffset() - sliderValue)
     call LMP_UpdateList(p)
 
@@ -963,9 +1059,7 @@ private function LMP_OnWheel takes nothing returns nothing
         set lmpListOffset[pid] = LMP_ClampOffset(lmpListOffset[pid] - 1)
     endif
 
-    if GetLocalPlayer() == p then
-        call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset() - lmpListOffset[pid]))
-    endif
+    call LMP_ShowScroll(p)
     call LMP_UpdateList(p)
 
     set p = null
@@ -979,16 +1073,154 @@ private function LMP_OnChat takes nothing returns nothing
     set p = null
 endfunction
 
-private function LMP_OnTick takes nothing returns nothing
+//===========================================================================
+// Deferred local MP3 duration scan
+//===========================================================================
+private function LMP_FinishTrackScan takes nothing returns nothing
     local integer pid = 0
+    local player p
+
+    set lmpScanDone = lmpScanTrack > LMP_SCAN_FILE_COUNT
+
+    loop
+        exitwhen pid >= bj_MAX_PLAYERS
+        if lmpShuffle[pid] then
+            call LMP_ShuffleOrder(pid)
+        else
+            call LMP_ResetOrder(pid)
+        endif
+        if lmpSavedCurrent[pid] > 0 and lmpSavedCurrent[pid] <= lmpTrackCount and not lmpPlaying[pid] then
+            set lmpCurrent[pid] = lmpSavedCurrent[pid]
+            set lmpElapsed[pid] = 0.00
+            set lmpSavedCurrent[pid] = 0
+        elseif lmpScanDone then
+            set lmpSavedCurrent[pid] = 0
+        endif
+
+        if lmpFramesReady then
+            set p = Player(pid)
+            set lmpListOffset[pid] = 0
+            if GetLocalPlayer() == p then
+                call WUI_FrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
+            endif
+            call LMP_ShowScroll(p)
+            call LMP_UpdateAll(p)
+        endif
+
+        set pid = pid + 1
+    endloop
+
+    set p = null
+endfunction
+
+private function LMP_ScanTrackTick takes nothing returns nothing
+    local string filePath
+    local string displayName
+    local integer durationMs
+    local integer batch = 0
+
+    if lmpScanTrack > lmpScanLimit then
+        return
+    endif
+
+    // Один файл за тик ограничивает максимальный синхронный I/O-всплеск.
+    loop
+        exitwhen batch >= LMP_SCAN_BATCH or lmpScanTrack > lmpScanLimit
+
+        set filePath = "Music\\" + I2S(lmpScanTrack) + ".mp3"
+        if lmpScanTrack < 10 then
+            set displayName = "Track 0" + I2S(lmpScanTrack)
+        else
+            set displayName = "Track " + I2S(lmpScanTrack)
+        endif
+
+        // Натив читает локальный файл напрямую и не создаёт sound-handle.
+        // Поэтому локальная замена Music\\N.mp3 по-прежнему получает свою длительность.
+        set durationMs = GetSoundFileDuration(filePath)
+        if durationMs > LMP_DURATION_CORRECTION_MS then
+            set durationMs = durationMs - LMP_DURATION_CORRECTION_MS
+        endif
+
+        if durationMs > 0 and lmpTrackCount < LMP_MAX_TRACKS then
+            set lmpTrackCount = lmpTrackCount + 1
+            set lmpPath[lmpTrackCount] = filePath
+            set lmpTitle[lmpTrackCount] = displayName
+            set lmpDurationMs[lmpTrackCount] = durationMs
+        endif
+
+        set lmpScanTrack = lmpScanTrack + 1
+        set batch = batch + 1
+    endloop
+
+    if lmpScanTrack > lmpScanLimit then
+        // End of a phase: show what was found (phase 1 = first 15, phase 2 = all).
+        call LMP_FinishTrackScan()
+    endif
+endfunction
+
+// Local: phase 2 reads files only while a stall cannot cost a fight.
+private function LMP_ScanSafe takes integer pid returns boolean
+    local unit hero = Hero[pid]
+    local real x
+    local real y
+    local boolean safe = true
+    if lmpScanTrack <= LMP_SCAN_FIRST then
+        set hero = null
+        return true // phase 1: before mode selection
+    endif
+    if lmpScanNow then
+        set hero = null
+        return true // the next track has just started
+    endif
+    if hero != null and GetWidgetLife(hero) > 0.405 then
+        set x = GetUnitX(hero)
+        set y = GetUnitY(hero)
+        set safe = x >= GetRectMinX(gg_rct_Base) and x <= GetRectMaxX(gg_rct_Base) and y >= GetRectMinY(gg_rct_Base) and y <= GetRectMaxY(gg_rct_Base)
+    endif
+    set hero = null
+    return safe
+endfunction
+
+// Synced one-shot clock (same on every client); the file work itself is local.
+private function LMP_ScanClock takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
+    local integer track
+    local boolean tail = false
+    if lmpScanDone then
+        call PauseTimer(lmpScanTimer)
+        return
+    endif
+    call TimerStart(lmpScanTimer, LMP_SCAN_PERIOD, false, function LMP_ScanClock)
+    if pid >= bj_MAX_PLAYERS or lmpScanTrack > lmpScanLimit then
+        return
+    endif
+    if lmpScanTrack > LMP_SCAN_FIRST then
+        set lmpScanGap = lmpScanGap + 1
+        if lmpScanGap < LMP_SCAN_GAP_TICKS then
+            return
+        endif
+        set track = lmpCurrent[pid]
+        if lmpPlaying[pid] and track > 0 and track <= lmpTrackCount then
+            set tail = lmpDurationMs[track] - R2I(lmpElapsed[pid] * 1000.0) < LMP_SCAN_TAIL_MS
+        endif
+        if tail or not LMP_ScanSafe(pid) then
+            return
+        endif
+        set lmpScanGap = 0
+        set lmpScanNow = false
+    endif
+    call LMP_ScanTrackTick()
+endfunction
+
+private function LMP_OnTick takes nothing returns nothing
+    local integer pid = GetPlayerId(GetLocalPlayer())
     local integer trackIndex
     local integer durationMs
     local integer nextTrack
     local real seekValue
     local player p
 
-    loop
-        exitwhen pid >= bj_MAX_PLAYERS
+    if pid < bj_MAX_PLAYERS then
         set p = Player(pid)
 
         call LMP_ProcessMusicSwitch(p)
@@ -1013,11 +1245,7 @@ private function LMP_OnTick takes nothing returns nothing
                         endif
                         call LMP_PlayTrack(p, nextTrack)
                     else
-                        // Keep the horizontal thumb moving smoothly.
-                        set seekValue = lmpElapsed[pid] * 1000000.00 / I2R(durationMs)
-                        call LMP_SetProgress(p, seekValue)
-
-                        if lmpEqualizerElapsed[pid] >= 0.20 then
+                        if lmpEqualizerElapsed[pid] >= 0.20 and lmpPanel != null and BlzFrameIsVisible(lmpPanel) then
                             set lmpEqualizerElapsed[pid] = 0.00
                             set lmpEqualizerPhase[pid] = ModuloInteger(lmpEqualizerPhase[pid] + 1, 4)
                             call LMP_UpdateEqualizer(p)
@@ -1027,7 +1255,11 @@ private function LMP_OnTick takes nothing returns nothing
                             set lmpUiElapsed[pid] = 0.00
                             // Do not reassign button textures from the timer.
                             // Only the elapsed-time label needs periodic work.
-                            call LMP_UpdateTimeText(p)
+                            if lmpPanel != null and BlzFrameIsVisible(lmpPanel) then
+                                set seekValue = lmpElapsed[pid] * 1000000.00 / I2R(durationMs)
+                                call LMP_SetProgress(p, seekValue)
+                                call LMP_UpdateTimeText(p)
+                            endif
                         endif
                     endif
                 endif
@@ -1038,8 +1270,7 @@ private function LMP_OnTick takes nothing returns nothing
             set lmpSkipElapsedTick[pid] = false
         endif
 
-        set pid = pid + 1
-    endloop
+    endif
 
     set p = null
 endfunction
@@ -1048,18 +1279,18 @@ endfunction
 // Frame construction
 //===========================================================================
 private function LMP_CreateTextButton takes framehandle parent, string text, real x, real y, real width, real height, integer context returns framehandle
-    local framehandle newFrame = BlzCreateFrame("ScriptDialogButton", parent, 0, context)
+    local framehandle newFrame = WUI_TextButton("LMPTextButton" + I2S(context), parent, text, width, height)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, width, height)
-    call BlzFrameSetText(newFrame, text)
+    call WUI_SetButtonText(newFrame, text)
     call BlzTriggerRegisterFrameEvent(lmpClickTrigger, newFrame, FRAMEEVENT_CONTROL_CLICK)
 
     return newFrame
 endfunction
 
 private function LMP_CreateIconButton takes framehandle parent, real x, real y, real size, integer context returns framehandle
-    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "ScoreScreenTabButtonTemplate", context)
+    local framehandle newFrame = BlzCreateFrameByType("BUTTON", "LMPIconButton", parent, "WOSIconButtonTemplate", context)
 
     call BlzFrameSetAbsPoint(newFrame, FRAMEPOINT_CENTER, x, y)
     call BlzFrameSetSize(newFrame, size, size)
@@ -1073,8 +1304,29 @@ private function LMP_CreateIcon takes framehandle iconParent, string texture ret
 
     call BlzFrameSetAllPoints(icon, iconParent)
     call BlzFrameSetTexture(icon, texture, 0, true)
+    call BlzFrameSetEnable(icon, false)
 
     return icon
+endfunction
+
+// Checkpoint 25: player controls in the UI style - graphite plate, gold
+// hairline, the glyph inset (it used to float as a bare white icon).
+private function LMP_StyleControl takes framehandle control returns nothing
+    local framehandle icon = BlzFrameGetChild(control, 0)
+    local framehandle plate = BlzCreateFrameByType("BACKDROP", "LMPControlPlate", control, "", 0)
+    call BlzFrameSetAllPoints(plate, control)
+    call BlzFrameSetTexture(plate, WUI_FILL_NORMAL, 0, true)
+    call BlzFrameSetEnable(plate, false)
+    call BlzFrameSetLevel(plate, 1)
+    set plate = WUI_GoldFrame("LMPControlEdge", plate, 0.0024, 0.0045)
+    if icon != null then
+        call BlzFrameClearAllPoints(icon)
+        call BlzFrameSetPoint(icon, FRAMEPOINT_TOPLEFT, control, FRAMEPOINT_TOPLEFT, 0.0045, -0.0045)
+        call BlzFrameSetPoint(icon, FRAMEPOINT_BOTTOMRIGHT, control, FRAMEPOINT_BOTTOMRIGHT, -0.0045, 0.0045)
+        call BlzFrameSetLevel(icon, 3)
+    endif
+    set icon = null
+    set plate = null
 endfunction
 
 private function LMP_AttachNativeTooltip takes framehandle whichFrame, string whichText returns nothing
@@ -1104,36 +1356,71 @@ private function LMP_AttachNativeTooltip takes framehandle whichFrame, string wh
 endfunction
 
 private function LMP_CreateFrames takes nothing returns nothing
-    local framehandle consoleUI = BlzGetFrameByName("ConsoleUIBackdrop", 0)
-    local framehandle gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    local framehandle consoleUI = WUI_GetRoot()
+    local framehandle gameUI = WUI_GetRoot()
     local framehandle title
     local framehandle icon
     local integer row = 0
     local real rowY
 
+    // Allocate required FDF controls before any window or input blocker.
+    // A parser/create failure must never leave a half-built visible panel.
+    set lmpLinkEdit = null
+    if WUI_HasFrameDefinitions() then
+        set lmpLinkEdit = BlzCreateFrame("WOSEditBox", consoleUI, 0, 9161)
+    endif
+    if lmpLinkEdit == null then
+        set lmpLinkEdit = BlzCreateFrame("LMPLinkEditTemplate", consoleUI, 0, 0)
+    endif
+    set lmpSeek = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 0)
+    set lmpVolumeSlider = BlzCreateFrame("LMPHorizontalSliderTemplate", gameUI, 0, 1)
+    if lmpLinkEdit == null or lmpSeek == null or lmpVolumeSlider == null then
+        if lmpLinkEdit != null then
+            call BlzDestroyFrame(lmpLinkEdit)
+            set lmpLinkEdit = null
+        endif
+        if lmpSeek != null then
+            call BlzDestroyFrame(lmpSeek)
+            set lmpSeek = null
+        endif
+        if lmpVolumeSlider != null then
+            call BlzDestroyFrame(lmpVolumeSlider)
+            set lmpVolumeSlider = null
+        endif
+        call BJDebugMsg("|cffff2020LocalMp3Player: private Music.fdf controls were not created.|r")
+        return
+    endif
+    call BlzFrameSetVisible(lmpLinkEdit, false)
+    call BlzFrameSetVisible(lmpSeek, false)
+    call BlzFrameSetVisible(lmpVolumeSlider, false)
+
     // Independent external buttons: no ResourceBar/Upkeep lookup, mutation or anchor.
-    set lmpOpenButton = LMP_CreateIconButton(consoleUI, LMP_OPEN_X, LMP_OPEN_Y, LMP_OPEN_SIZE, 100)
+    set lmpOpenButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(4), 0.584, LMP_OPEN_SIZE, 100)
+    call WUI_PlaceRight(lmpOpenButton, .018, 0.584, LMP_OPEN_SIZE, LMP_OPEN_SIZE)
     set icon = LMP_CreateIcon(lmpOpenButton, LMP_TEX_OPEN)
     call BlzFrameSetLevel(lmpOpenButton, 100)
     call BlzFrameSetLevel(icon, 101)
     call BlzFrameSetVisible(lmpOpenButton,false)
-    set lmpLinkButton = LMP_CreateIconButton(consoleUI, LMP_LINK_X, LMP_LINK_Y, LMP_LINK_SIZE, 101)
+    set lmpLinkButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 101)
+    call WUI_PlaceRight(lmpLinkButton, .054, 0.584, LMP_LINK_SIZE, LMP_LINK_SIZE)
     set lmpLinkIcon = LMP_CreateIcon(lmpLinkButton, LMP_TEX_LINK)
+    call WUI_TooltipBelowLeft(lmpLinkButton, "|cffd5b876WOS APP|r|nGlobal match statistics and custom in-game music. Click to get the application link.")
     call BlzFrameSetLevel(lmpLinkButton, 100)
     call BlzFrameSetLevel(lmpLinkIcon, 101)    
     call BlzFrameSetVisible(lmpLinkButton, false)
     
-    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, LMP_LINK_X, LMP_LINK_Y, LMP_LINK_SIZE, 102)
-    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, LMP_TEX_CLOSE)
+    set lmpLinkActiveButton = LMP_CreateIconButton(consoleUI, WUI_TopActionX(3), 0.584, LMP_LINK_SIZE, 102)
+    call WUI_PlaceRight(lmpLinkActiveButton, .054, 0.584, LMP_LINK_SIZE, LMP_LINK_SIZE)
+    set lmpLinkActiveIcon = LMP_CreateIcon(lmpLinkActiveButton, "UI\\WOS\\glyph-close.tga")
     call BlzFrameSetLevel(lmpLinkActiveButton, 100)
     call BlzFrameSetLevel(lmpLinkActiveIcon, 101)
     call BlzFrameSetVisible(lmpLinkActiveButton, false)
 
-    set lmpLinkEdit = BlzCreateFrame("EscMenuEditBoxTemplate", consoleUI, 0, 0)
     call BlzFrameSetAbsPoint(lmpLinkEdit, FRAMEPOINT_CENTER, LMP_LINK_EDIT_X, LMP_LINK_EDIT_Y)
     call BlzFrameClearAllPoints(lmpLinkEdit)
     call BlzFrameSetPoint(lmpLinkEdit, FRAMEPOINT_TOP, lmpLinkButton, FRAMEPOINT_BOTTOM, 0.000, -0.004)
     call BlzFrameSetSize(lmpLinkEdit, LMP_LINK_EDIT_WIDTH, LMP_LINK_EDIT_HEIGHT)
+    set icon = WUI_GoldFrame("LMPLinkEditEdge", lmpLinkEdit, 0.0030, 0.0060)
     call BlzFrameSetText(lmpLinkEdit, LMP_LINK_URL)
     call BlzFrameSetEnable(lmpLinkEdit, true)
     call BlzFrameSetLevel(lmpLinkEdit, 20)
@@ -1142,11 +1429,18 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzTriggerRegisterFrameEvent(lmpLinkEditTrigger, lmpLinkEdit, FRAMEEVENT_CONTROL_CLICK)
 
     // Plain black translucent background, matching the emoji panel.
-    set lmpPanel = BlzCreateFrameByType("BACKDROP", "LMPPanel", consoleUI, "", 0)
+    set lmpPanel = WUI_Window("WOSMusicWindow", consoleUI, 0, 0)
+    call WUI_RegisterWindowPart(4, lmpPanel)
+    call WUI_RegisterRangeCover(lmpPanel)
+
+    call BlzFrameSetVisible(lmpPanel, false)
     call BlzFrameSetAbsPoint(lmpPanel, FRAMEPOINT_CENTER, LMP_PANEL_X, LMP_PANEL_Y)
     call BlzFrameSetSize(lmpPanel, LMP_PANEL_WIDTH, LMP_PANEL_HEIGHT)
     call BlzFrameSetTexture(lmpPanel, LMP_TEX_BLACK, 0, true)
-    call BlzFrameSetAlpha(lmpPanel, 210)
+    // Checkpoint 23: opaque fill that reaches flush ornate rails (the old
+    // translucent fill spilled past its inner border).
+    call BlzFrameSetAlpha(lmpPanel, 255)
+    set icon = WUI_OrnateWindow("WOSMusicMetal", lmpPanel, 0.022)
 
     set title = BlzCreateFrameByType("TEXT", "LMPTitle", lmpPanel, "", 0)
     call BlzFrameSetAbsPoint(title, FRAMEPOINT_CENTER, LMP_TITLE_X, LMP_TITLE_Y)
@@ -1155,8 +1449,15 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(title, 0.82)
     call BlzFrameSetText(title, "|cffffcc00WOS2 Music|r")
 
-    set lmpCloseButton = LMP_CreateIconButton(lmpPanel, LMP_CLOSE_X, LMP_CLOSE_Y, LMP_CLOSE_SIZE, 103)
-    set icon = LMP_CreateIcon(lmpCloseButton, LMP_TEX_CLOSE)
+    // Close button in the shop style: graphite fill, gold X, gold hairline.
+    set lmpCloseButton = LMP_CreateIconButton(lmpPanel, LMP_CLOSE_X, LMP_CLOSE_Y, 0.016, 103)
+    set icon = LMP_CreateIcon(lmpCloseButton, WUI_FILL_NORMAL)
+    set icon = BlzCreateFrameByType("BACKDROP", "LMPCloseGlyph", lmpCloseButton, "", 0)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_TOPLEFT, lmpCloseButton, FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+    call BlzFrameSetPoint(icon, FRAMEPOINT_BOTTOMRIGHT, lmpCloseButton, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+    call BlzFrameSetTexture(icon, "UI\\WOS\\glyph-close.tga", 0, true)
+    call BlzFrameSetEnable(icon, false)
+    set icon = WUI_GoldFrame("LMPCloseEdge", lmpCloseButton, 0.0026, 0.0000)
 
     set lmpNowPlaying = BlzCreateFrameByType("TEXT", "LMPNowPlaying", lmpPanel, "", 0)
     call BlzFrameSetAbsPoint(lmpNowPlaying, FRAMEPOINT_CENTER, LMP_NOW_X, LMP_NOW_Y)
@@ -1176,27 +1477,27 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetTextAlignment(lmpTimeText, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetScale(lmpTimeText, 0.78)
 
-    // Native horizontal template from UI\FrameDef\UI\escmenutemplates.fdf.
-    // Templates.TOC is loaded immediately before LocalMp3Player_CreateUI.
-    set lmpSeek = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 0)
-    if lmpSeek == null then
-        call BJDebugMsg("|cffff2020LocalMp3Player: native EscMenuSliderTemplate was not created.|r")
-        return
-    endif
+    // Private horizontal definition, loaded once after the common UI bootstrap.
     call BlzFrameClearAllPoints(lmpSeek)
     call BlzFrameSetAbsPoint(lmpSeek, FRAMEPOINT_CENTER, LMP_PROGRESS_X, LMP_PROGRESS_Y)
     call BlzFrameSetSize(lmpSeek, LMP_PROGRESS_WIDTH, LMP_PROGRESS_HEIGHT)
-    call BlzFrameSetMinMaxValue(lmpSeek, 0.00, 1000.00)
+    call WUI_FrameSetMinMaxValue(lmpSeek, 0.00, 1000.00)
     call BlzFrameSetStepSize(lmpSeek, 1.00)
     call BlzFrameSetAlpha(lmpSeek, 255)
-    call BlzFrameSetValue(lmpSeek, 0.00)
+    call WUI_FrameSetValue(lmpSeek, 0.00)
     call BlzFrameSetEnable(lmpSeek, true)
-    call BlzFrameSetVisible(lmpSeek, true)
+    call BlzFrameSetVisible(lmpSeek, false)
     call BlzFrameSetLevel(lmpSeek, 20)
 
     // The duration bar is display-only. This transparent frame consumes mouse
     // clicks while leaving the slider and its moving thumb fully visible.
     set lmpSeekBlocker = BlzCreateFrameByType("BUTTON", "LMPProgressBlocker", gameUI, "", 600)
+    call WUI_RegisterWindowPart(5, lmpSeek)
+    call WUI_RegisterWindowPart(6, lmpSeekBlocker)
+    call WUI_RegisterWindowPart(7, lmpVolumeSlider)
+    call WUI_RegisterWindowPart(8, lmpOpenButton)
+    call WUI_RegisterPassiveFocus(lmpSeekBlocker)
+    call BlzFrameSetVisible(lmpSeekBlocker, false)
     call BlzFrameClearAllPoints(lmpSeekBlocker)
     call BlzFrameSetAbsPoint(lmpSeekBlocker, FRAMEPOINT_CENTER, LMP_PROGRESS_X, LMP_PROGRESS_Y)
     call BlzFrameSetSize(lmpSeekBlocker, LMP_PROGRESS_WIDTH, LMP_PROGRESS_HEIGHT)
@@ -1220,12 +1521,20 @@ private function LMP_CreateFrames takes nothing returns nothing
         set row = row + 1
     endloop
 
-    set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)
+    // Same gold slider as the camera (WOSControls.fdf), stock one as fallback.
+    set lmpScroll = null
+    if WUI_HasFrameDefinitions() then
+        set lmpScroll = BlzCreateFrame("WOSVerticalSlider", lmpPanel, 0, 9160)
+    endif
+    if lmpScroll == null then
+        set lmpScroll = BlzCreateFrameByType("SLIDER", "LMPScroll", lmpPanel, "QuestMainListScrollBar", 0)
+    endif
     call BlzFrameSetAbsPoint(lmpScroll, FRAMEPOINT_CENTER, LMP_SCROLL_X, LMP_SCROLL_Y)
     call BlzFrameSetSize(lmpScroll, LMP_SCROLL_WIDTH, LMP_SCROLL_HEIGHT)
-    call BlzFrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
+    call WUI_FrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
     call BlzFrameSetStepSize(lmpScroll, 1.00)
-    call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset()))
+    call WUI_FrameSetValue(lmpScroll, I2R(LMP_MaxOffset()))
+    call LMP_InitScrollShown()
     call BlzTriggerRegisterFrameEvent(lmpScrollTrigger, lmpScroll, FRAMEEVENT_SLIDER_VALUE_CHANGED)
 
     // First row: previous, -10, play/pause, +10, next.
@@ -1248,6 +1557,15 @@ private function LMP_CreateFrames takes nothing returns nothing
     set lmpShuffleButton = LMP_CreateIconButton(lmpPanel, LMP_SHUFFLE_X, LMP_CONTROLS_ROW2_Y, LMP_CONTROL_SIZE, 207)
     set lmpShuffleIcon = LMP_CreateIcon(lmpShuffleButton, LMP_TEX_SHUFFLE_OFF)
 
+    call LMP_StyleControl(lmpPreviousButton)
+    call LMP_StyleControl(lmpBack10Button)
+    call LMP_StyleControl(lmpPlayPauseButton)
+    call LMP_StyleControl(lmpForward10Button)
+    call LMP_StyleControl(lmpNextButton)
+    call LMP_StyleControl(lmpRerunButton)
+    call LMP_StyleControl(lmpLoopButton)
+    call LMP_StyleControl(lmpShuffleButton)
+    call LMP_AttachNativeTooltip(lmpCloseButton, "Close window|nHotkey: ESC")
     call LMP_AttachNativeTooltip(lmpPreviousButton, "Previous track")
     call LMP_AttachNativeTooltip(lmpBack10Button, "Rewind 10 seconds")
     call LMP_AttachNativeTooltip(lmpPlayPauseButton, "Play / pause")
@@ -1265,20 +1583,15 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetScale(lmpVolumeText, 0.72)
     call BlzFrameSetText(lmpVolumeText, "|cffffffffVOLUME 100%|r")
 
-    set lmpVolumeSlider = BlzCreateFrame("EscMenuSliderTemplate", gameUI, 0, 1)
-    if lmpVolumeSlider == null then
-        call BJDebugMsg("|cffff2020LocalMp3Player: native volume EscMenuSliderTemplate was not created.|r")
-        return
-    endif
     call BlzFrameClearAllPoints(lmpVolumeSlider)
     call BlzFrameSetAbsPoint(lmpVolumeSlider, FRAMEPOINT_CENTER, LMP_VOLUME_X, LMP_VOLUME_Y)
     call BlzFrameSetSize(lmpVolumeSlider, LMP_VOLUME_WIDTH, LMP_VOLUME_HEIGHT)
-    call BlzFrameSetMinMaxValue(lmpVolumeSlider, 0.00, 127.00)
+    call WUI_FrameSetMinMaxValue(lmpVolumeSlider, 0.00, 127.00)
     call BlzFrameSetStepSize(lmpVolumeSlider, 1.00)
     call BlzFrameSetAlpha(lmpVolumeSlider, 255)
-    call BlzFrameSetValue(lmpVolumeSlider, 127.00)
+    call WUI_FrameSetValue(lmpVolumeSlider, 127.00)
     call BlzFrameSetEnable(lmpVolumeSlider, true)
-    call BlzFrameSetVisible(lmpVolumeSlider, true)
+    call BlzFrameSetVisible(lmpVolumeSlider, false)
     call BlzFrameSetLevel(lmpVolumeSlider, 20)
     call BlzTriggerRegisterFrameEvent(lmpVolumeTrigger, lmpVolumeSlider, FRAMEEVENT_SLIDER_VALUE_CHANGED)
 
@@ -1289,6 +1602,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     // После полного создания музыкального UI показываем кнопку открытия.
     call BlzFrameSetVisible(lmpOpenButton, true)
     call BlzFrameSetVisible(lmpLinkButton, true)
+    call WUI_ReleaseGhost(0)
 
     call TriggerAddAction(lmpClickTrigger, function LMP_OnClick)
     call TriggerAddAction(lmpScrollTrigger, function LMP_OnScroll)
@@ -1304,85 +1618,6 @@ private function LMP_CreateFrames takes nothing returns nothing
 endfunction
 
 //===========================================================================
-// Deferred local MP3 duration scan
-//===========================================================================
-private function LMP_FinishTrackScan takes nothing returns nothing
-    local integer pid = 0
-    local player p
-
-    call PauseTimer(lmpScanTimer)
-
-    loop
-        exitwhen pid >= bj_MAX_PLAYERS
-        call LMP_ResetOrder(pid)
-
-        if lmpFramesReady then
-            set p = Player(pid)
-            if GetLocalPlayer() == p then
-                set lmpListOffset[pid] = 0
-                call BlzFrameSetMinMaxValue(lmpScroll, 0.00, I2R(LMP_MaxOffset()))
-                call BlzFrameSetValue(lmpScroll, I2R(LMP_MaxOffset()))
-            endif
-            call LMP_UpdateAll(p)
-        endif
-
-        set pid = pid + 1
-    endloop
-
-    set p = null
-endfunction
-
-private function LMP_ScanTrackTick takes nothing returns nothing
-    local string filePath
-    local string displayName
-    local integer durationMs
-    local integer batch = 0
-
-    if lmpScanTrack > LMP_SCAN_FILE_COUNT then
-        call LMP_FinishTrackScan()
-        return
-    endif
-
-    // Один файл за тик ограничивает максимальный синхронный I/O-всплеск.
-    loop
-        exitwhen batch >= LMP_SCAN_BATCH or lmpScanTrack > LMP_SCAN_FILE_COUNT
-
-        set filePath = "Music\\" + I2S(lmpScanTrack) + ".mp3"
-        if lmpScanTrack < 10 then
-            set displayName = "Track 0" + I2S(lmpScanTrack)
-        else
-            set displayName = "Track " + I2S(lmpScanTrack)
-        endif
-
-        // Натив читает локальный файл напрямую и не создаёт sound-handle.
-        // Поэтому локальная замена Music\\N.mp3 по-прежнему получает свою длительность.
-        set durationMs = GetSoundFileDuration(filePath)
-        if durationMs > LMP_DURATION_CORRECTION_MS then
-            set durationMs = durationMs - LMP_DURATION_CORRECTION_MS
-        endif
-
-        if durationMs > 0 and lmpTrackCount < LMP_MAX_TRACKS then
-            set lmpTrackCount = lmpTrackCount + 1
-            set lmpPath[lmpTrackCount] = filePath
-            set lmpTitle[lmpTrackCount] = displayName
-            set lmpDurationMs[lmpTrackCount] = durationMs
-        endif
-
-        set lmpScanTrack = lmpScanTrack + 1
-        set batch = batch + 1
-    endloop
-
-    if lmpScanTrack > LMP_SCAN_FILE_COUNT then
-        call LMP_FinishTrackScan()
-    endif
-endfunction
-
-private function LMP_BeginTrackScan takes nothing returns nothing
-    set lmpScanTrack = 1
-    set lmpTrackCount = 0
-    call TimerStart(lmpScanTimer, LMP_SCAN_INTERVAL, true, function LMP_ScanTrackTick)
-endfunction
-//===========================================================================
 // Initialization
 //===========================================================================
 function LocalMp3Player_CreateUI takes nothing returns nothing
@@ -1393,14 +1628,14 @@ function LocalMp3Player_CreateUI takes nothing returns nothing
         return
     endif
 
-    // The TOC is normally loaded by the library initializer. Retry once here
-    // in case another map system requested the UI unusually early.
+    // The shared game-time bootstrap owns definitions for music, link and shop.
+    // Read its result; reparsing stock FDF globals can abort with duplicate names.
     if not lmpTocLoaded then
-        set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")
+        set lmpTocLoaded = WUI_HasMusicDefinitions()
     endif
 
     if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc.|r")
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load shared UI\\WOS\\Templates.toc.|r")
         return
     endif
 
@@ -1423,14 +1658,23 @@ endfunction
 
 
 
+private function LMP_LoadTemplates takes nothing returns nothing
+    // Phase 1 of the local track scan starts with the UI, before mode selection.
+    call TimerStart(lmpScanTimer, LMP_SCAN_PERIOD, false, function LMP_ScanClock)
+    // Read the shared bootstrap result before any player music UI is built.
+    if lmpTocLoaded then
+        return
+    endif
+    set lmpTocLoaded = WUI_HasMusicDefinitions()
+    if not lmpTocLoaded then
+        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load shared UI\\WOS\\Templates.toc after UI startup.|r")
+    endif
+endfunction
+
 private function LocalMp3Player_Init takes nothing returns nothing
     local integer pid = 0
     local player p
-    // Load all required frame definitions once, before any player UI is built.
-    set lmpTocLoaded = BlzLoadTOCFile("war3mapImported\\Templates.toc")
-    if not lmpTocLoaded then
-        call BJDebugMsg("|cffff2020LocalMp3Player: failed to load war3mapImported\\Templates.toc during initialization.|r")
-    endif
+    call WUI_OnReady(function LMP_LoadTemplates)
     loop
         exitwhen pid >= 10
         set p = Player(pid)
@@ -1464,8 +1708,8 @@ private function LocalMp3Player_Init takes nothing returns nothing
 
     call TriggerAddAction(lmpChatTrigger, function LMP_OnChat)
 
-    // Let map music and mode-selection initialization finish first.
-    call TimerStart(lmpScanTimer, LMP_SCAN_DELAY, false, function LMP_BeginTrackScan)
+    // No scan at map start: GetSoundFileDuration parses a whole MP3 synchronously
+    // (~10 s of freezes for 30 files). Each client scans on its first opening.
 
     set p = null
 endfunction

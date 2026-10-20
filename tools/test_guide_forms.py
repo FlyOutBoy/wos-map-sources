@@ -261,7 +261,7 @@ class WindowTransitions(unittest.TestCase):
             WOS_STATS_VIEWER_COUNT=24,CondArena=0,TestMode=False,
             WUI_GetHotkey=lambda *a:'F2',WUI_HOTKEY_STATS=1,BlzGetTriggerPlayerKey=lambda:'F2',
             BlzGetTriggerFrame=lambda:'music-open',WUI_ReleaseClickFocus=lambda:None,
-            WUI_ResetClickedButtonFocus=lambda:None)
+            WUI_ResetClickedButtonFocus=lambda:None,lmpScanLimit=15)
         for i,frame in [(0,'shop'),(1,'stats'),(4,'music'),(5,'seek'),(6,'seekblock'),(7,'volume'),(8,'music-open'),(9,'guide')]:
             vm.g['WUI_WindowPart'][i]=frame
         return vm,sender,data,visible,calls,sent

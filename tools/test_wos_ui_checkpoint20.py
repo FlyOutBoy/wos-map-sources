@@ -97,11 +97,15 @@ class Learning(unittest.TestCase):
         self.click(0)
         self.assertEqual([(self.c, self.vm.g['CrocodileQ_ID'])], self.learned)
 
-    def test_t2_variant_still_learns_base_t(self):
+    def test_replaced_t_does_not_learn_base_until_replacement_ends(self):
         g = self.vm.g
         self.c.abilities[g['CrocodileT_ID']]['level'] = 0
         self.c.abilities[g['CrocodileT2_ID']] = {'level': 1, 'remaining': 3}
         self.c.hero_level = 25
+        self.click(4)
+        self.assertEqual([], self.learned)
+        self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(0,g['CrocodileT2_ID'],False))
+        self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(0,g['CrocodileT_ID'],True))
         self.click(4)
         self.assertEqual([(self.c, g['CrocodileT_ID'])], self.learned)
 

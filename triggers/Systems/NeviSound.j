@@ -1,15 +1,19 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_NeviSound_NEVI_SOUND = StringHash("nevi sound")
+endglobals
 function Trig_NeviSound_Actions takes nothing returns nothing
    local real r = S2R(SubString(GetEventPlayerChatString(), 5,9))
   local  integer i = GetPlayerId(GetTriggerPlayer())
-  local integer k = LoadInteger(hs,GetHandleId(Player(i)),StringHash("nevi sound"))
+  local integer k = LoadInteger(hs,GetHandleId(Player(i)),SH_NeviSound_NEVI_SOUND)
   if VIPCheckLvl3(FramePlayerFirstName[i]) then
   if GetUnitTypeId(Hero[i]) == Neuvillette_ID then 
   if  k == 0 then 
   call DisplayTimedTextToPlayer(Player(i),0,0,0.1,"|c00FF0303Neuvillette|r |c00FFFF00voice line changed to |c00FF0303English|r")
-  call SaveInteger(hs,GetHandleId(Player(i)),StringHash("nevi sound"),1)
+  call SaveInteger(hs,GetHandleId(Player(i)),SH_NeviSound_NEVI_SOUND,1)
   else
   call DisplayTimedTextToPlayer(Player(i),0,0,0.1,"|c00FF0303Neuvillette|r |c00FFFF00voice line changed to |c00FF0303Japan|r")
-  call SaveInteger(hs,GetHandleId(Player(i)),StringHash("nevi sound"),0)  
+  call SaveInteger(hs,GetHandleId(Player(i)),SH_NeviSound_NEVI_SOUND,0)  
   endif
   endif
     endif

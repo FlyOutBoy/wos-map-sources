@@ -400,7 +400,10 @@ def flatten_unified(document: dict[str, Any]) -> tuple[dict[str, Any], dict[str,
             "fields": {},
         }
         used = set(editable_object)
+        levels = next((f["value"] for f in obj["fields"] if f["field_id"] == "alev"), None)
         for field in obj["fields"]:
+            if document["category"] == "abilities" and isinstance(levels, int) and levels > 0 and field.get("level", 0) > levels:
+                continue
             if not should_expose_field(document["category"], field):
                 continue
             property_name = unique_property_name(property_base(field), field, used)

@@ -13,6 +13,9 @@ backups/main-map-build/
 backups/ui-redesign/
 backups/source-import/
 backups/import-path-fix/
+backups/project-assets/
+backups/item-icons/
+backups/kusanagi-effects/
 # Персональные конфиги сборки в корне
 /wos-build.json
 wos-build.json

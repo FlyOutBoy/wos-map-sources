@@ -1,5 +1,107 @@
 library KenjakuSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer KenjakuTick10_Timer = CreateTimer()
+        private boolean array KenjakuTick10_Active
+        private integer KenjakuTick10_Users = 0
+        private code KenjakuTick10_Callback = null
+    endglobals
+
+    private function KenjakuTick10_On takes integer k returns nothing
+        if not KenjakuTick10_Active[k] then
+            set KenjakuTick10_Active[k] = true
+            set KenjakuTick10_Users = KenjakuTick10_Users + 1
+            if KenjakuTick10_Users == 1 then
+                call TimerStart(KenjakuTick10_Timer, 0.1, true, KenjakuTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function KenjakuTick10_Off takes integer k returns nothing
+        if KenjakuTick10_Active[k] then
+            set KenjakuTick10_Active[k] = false
+            set KenjakuTick10_Users = KenjakuTick10_Users - 1
+            if KenjakuTick10_Users <= 0 then
+                set KenjakuTick10_Users = 0
+                call PauseTimer(KenjakuTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer KenjakuTick05_Timer = CreateTimer()
+        private boolean array KenjakuTick05_Active
+        private integer KenjakuTick05_Users = 0
+        private code KenjakuTick05_Callback = null
+    endglobals
+
+    private function KenjakuTick05_On takes integer k returns nothing
+        if not KenjakuTick05_Active[k] then
+            set KenjakuTick05_Active[k] = true
+            set KenjakuTick05_Users = KenjakuTick05_Users + 1
+            if KenjakuTick05_Users == 1 then
+                call TimerStart(KenjakuTick05_Timer, 0.05, true, KenjakuTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function KenjakuTick05_Off takes integer k returns nothing
+        if KenjakuTick05_Active[k] then
+            set KenjakuTick05_Active[k] = false
+            set KenjakuTick05_Users = KenjakuTick05_Users - 1
+            if KenjakuTick05_Users <= 0 then
+                set KenjakuTick05_Users = 0
+                call PauseTimer(KenjakuTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer KenjakuTick_Timer = CreateTimer()
+        private boolean array KenjakuTick_Active
+        private integer KenjakuTick_Users = 0
+        private code KenjakuTick_Callback = null
+    endglobals
+
+    private function KenjakuTick_On takes integer k returns nothing
+        if not KenjakuTick_Active[k] then
+            set KenjakuTick_Active[k] = true
+            set KenjakuTick_Users = KenjakuTick_Users + 1
+            if KenjakuTick_Users == 1 then
+                call TimerStart(KenjakuTick_Timer, 0.03, true, KenjakuTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function KenjakuTick_Off takes integer k returns nothing
+        if KenjakuTick_Active[k] then
+            set KenjakuTick_Active[k] = false
+            set KenjakuTick_Users = KenjakuTick_Users - 1
+            if KenjakuTick_Users <= 0 then
+                set KenjakuTick_Users = 0
+                call PauseTimer(KenjakuTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ACTIVATE_R = StringHash("activate r")
+        private integer SH_BARRIER_1 = StringHash("barrier 1")
+        private integer SH_BARRIER_2 = StringHash("barrier 2")
+        private integer SH_BARRIER_3 = StringHash("barrier 3")
+        private integer SH_BARRIER_4 = StringHash("barrier 4")
+        private integer SH_CAM_SWING = StringHash("cam swing")
+        private integer SH_KENJAKUF_STARTED = StringHash("KenjakuF Started")
+        private integer SH_KENJAKU_STACKS = StringHash("Kenjaku Stacks")
+        private integer SH_KENJAKU_UNIT_E = StringHash("kenjaku unit e")
+        private integer SH_KENJAKU_UNIT_Q = StringHash("kenjaku unit q")
+        private integer SH_KENJAKU_UNIT_W = StringHash("kenjaku unit w")
+        private integer SH_KIT_TYPE = StringHash("kit type")
+    endglobals
+    globals
         integer Kenjaku_ID = 'H010'
         real Kenjaku_35lvlDamageIntCreepSpellAdd = 1
 //---------------Q ability-----------------------------------------------------
@@ -102,7 +204,7 @@ library KenjakuSpells uses GearSystems
         integer KenjakuT_ID = 'A05M'
         real KenjakuT_DamageIntBase = 10 //Int
         real KenjakuT_DamageAoe = 800
-        integer KenjakuT_SlowPercent = 40
+        integer KenjakuT_SlowPercent = 50
         integer KenjakuT_SlowTime = 1
 //---------------F ability-----------------------------------------------------
         integer KenjakuF_ID = 'A05V'
@@ -160,7 +262,6 @@ library KenjakuSpells uses GearSystems
     endfunction
 
     private struct KenjakuQ_KS
-        private static timer t_KenjakuQ = CreateTimer( )
         private static integer array m_KenjakuQ
         private static integer MUI_KenjakuQ = -1
         unit c
@@ -172,7 +273,7 @@ library KenjakuSpells uses GearSystems
         effect e
         effect e2
         real rmax
-        private static method Loop_KenjakuQ takes nothing returns nothing
+        static method Loop_KenjakuQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -180,7 +281,7 @@ library KenjakuSpells uses GearSystems
                 set this = m_KenjakuQ[i]
                 if SpellBoolCaster(.c) and .r <= .rmax then
                     set .r = .r + 0.03
-                    set .r = S2R( R2SW( .r , 0, 3 ) )
+                    set .r = RoundReal(.r, 3)
                     if .r2 >= .r3 then
                         set .r2 = 0
                         call SetHpCurrent2(c,c, dmg)
@@ -195,8 +296,9 @@ library KenjakuSpells uses GearSystems
                     set .e2 = null
                     set m_KenjakuQ[i] = m_KenjakuQ[ MUI_KenjakuQ]
                     set MUI_KenjakuQ = MUI_KenjakuQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuQ == -1 then
-                        call PauseTimer( t_KenjakuQ)
+                        call KenjakuTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -232,13 +334,12 @@ library KenjakuSpells uses GearSystems
             set .e = AddSpecialEffectTarget("war3mapImported\\wos_obr08 (18).mdl", c, "origin")
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_glowlinered", c, "origin")
             if MUI_KenjakuQ == 0 then
-                call TimerStart( t_KenjakuQ, 0.03, true, function thistype.Loop_KenjakuQ)
+                call KenjakuTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct KenjakuQ2_KS
-        private static timer t_KenjakuQ2 = CreateTimer( )
         private static integer array m_KenjakuQ2
         private static integer MUI_KenjakuQ2 = -1
         unit c
@@ -257,7 +358,7 @@ library KenjakuSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_KenjakuQ2 takes nothing returns nothing
+        static method Loop_KenjakuQ2 takes nothing returns nothing
             local integer this
             local real rr5 = 0
             local integer i = 0
@@ -265,7 +366,7 @@ library KenjakuSpells uses GearSystems
                 exitwhen i > MUI_KenjakuQ2
                 set this = m_KenjakuQ2[i]
                 if SpellBoolCaster(d) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     if r < rmax - 0.21 then
                         set a = GAngle2(d, x, y) // Angle Between points
@@ -311,6 +412,7 @@ library KenjakuSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A05N')
                                 call dmgphys(c, u, dmg)
                                 call SlowUnit(c, u, KenjakuQ2_SlowPercent, KenjakuQ2_SlowTime)
                                 call SetUnitAnimation(u, "death")
@@ -329,8 +431,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuQ2[i] = m_KenjakuQ2[ MUI_KenjakuQ2]
                     set MUI_KenjakuQ2 = MUI_KenjakuQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuQ2 == -1 then
-                        call PauseTimer( t_KenjakuQ2)
+                        call KenjakuTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -358,7 +461,7 @@ library KenjakuSpells uses GearSystems
             set move = 85
             set aoe = aoe + 100
             endif
-            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit q"))
+            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_Q)
             set rmax = 2.1
             call SetUnitFacing(d, a * bj_RADTODEG)
             call StartSpellUnit2(d)
@@ -366,13 +469,12 @@ library KenjakuSpells uses GearSystems
             call SetUnitAnimationByIndex( d , 5)
             call SetUnitTimeScale(d, 1.35)
             if MUI_KenjakuQ2 == 0 then
-                call TimerStart( t_KenjakuQ2, 0.03, true, function thistype.Loop_KenjakuQ2)
+                call KenjakuTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct KenjakuW_KS
-        private static timer t_KenjakuW = CreateTimer( )
         private static integer array m_KenjakuW
         private static integer MUI_KenjakuW = -1
         unit c
@@ -387,7 +489,7 @@ library KenjakuSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_KenjakuW takes nothing returns nothing
+        static method Loop_KenjakuW takes nothing returns nothing
             local integer this
             local real rr5 = 0
             local integer i = 0
@@ -395,7 +497,7 @@ library KenjakuSpells uses GearSystems
                 exitwhen i > MUI_KenjakuW
                 set this = m_KenjakuW[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
@@ -433,6 +535,7 @@ library KenjakuSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 1.5, 0.85, 125))
                             call EUTU2_3(EffectSpawn("war3mapimported\\wos_1daji_4.mdl", x, y, GetRandomReal(0, 359), 1, 3, 15), 1, 15, td)
                             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
+                            call DamageSource('A05J')
                             call dmgphys(c, td, dmg)                            
                                 call StunUnit(c,td,KenjakuW_StunForPunch)
                             set rr5 = SR2(c, td)
@@ -450,6 +553,7 @@ library KenjakuSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x , y , a * bj_RADTODEG, 1, 2.25, 125))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", x, y, GetRandomReal(0, 359), 1, 2.5, 125))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 1.55, 0.85, 125))
+                            call DamageSource('A05J')
                             call dmgphys(c, td, dmg)                            
                                 call StunUnit(c,td,KenjakuW_StunForPunch)
                             call MUE(td, 245, 0.21, a)
@@ -478,6 +582,7 @@ library KenjakuSpells uses GearSystems
                                 call EUTU2_3(EffectSpawn("war3mapimported\\wos_1daji_4.mdl", x, y, GetRandomReal(0, 359), 1, 3, 15), 1, 15, td)
                                 set r = 999999
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
+                                call DamageSource('A05J')
                                 call dmgphys(c, td, dmg)                                
                                 call StunUnit(c,td,KenjakuW_StunForPunch)
                                 call MUE(td, 225, 0.3, a)
@@ -492,8 +597,9 @@ library KenjakuSpells uses GearSystems
                     set td = null
                     set m_KenjakuW[i] = m_KenjakuW[ MUI_KenjakuW]
                     set MUI_KenjakuW = MUI_KenjakuW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuW == -1 then
-                        call PauseTimer( t_KenjakuW)
+                        call KenjakuTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -519,13 +625,12 @@ library KenjakuSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 4)
             set move = 65
             if MUI_KenjakuW == 0 then
-                call TimerStart( t_KenjakuW, 0.03, true, function thistype.Loop_KenjakuW)
+                call KenjakuTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct KenjakuW2_KS
-        private static timer t_KenjakuW2 = CreateTimer( )
         private static integer array m_KenjakuW2
         private static integer MUI_KenjakuW2 = -1
         unit c
@@ -541,14 +646,14 @@ library KenjakuSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_KenjakuW2 takes nothing returns nothing
+        static method Loop_KenjakuW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_KenjakuW2
                 set this = m_KenjakuW2[i]
                 if SpellBoolCaster(d) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     if r == rmax then
                         call MakeSound("war3mapImported\\Hero_Kenjaku_W2 3")
@@ -562,6 +667,7 @@ library KenjakuSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A05P')
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, KenjakuW2_Stun)
                                 call SetAnim(u, 0.03, "death")
@@ -580,8 +686,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuW2[i] = m_KenjakuW2[ MUI_KenjakuW2]
                     set MUI_KenjakuW2 = MUI_KenjakuW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuW2 == -1 then
-                        call PauseTimer( t_KenjakuW2)
+                        call KenjakuTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -609,7 +716,7 @@ library KenjakuSpells uses GearSystems
             set rmax = 0.81
            // set aoe = aoe + 100
             endif
-            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit w"))
+            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_W)
             
             set scale = aoe/scale
             set a = GAngle2(c, x, y) // Angle Between points
@@ -622,13 +729,12 @@ library KenjakuSpells uses GearSystems
             call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_3x4_94.mdl", d, "hand left"))
             set e = EffectSpawnScale("war3mapImported\\wos_JY-[I0]Attack1.mdl", x, y, 1, 1, 0.01, 3, rmax - 0.12, 0.01, 0.45*scale)
             if MUI_KenjakuW2 == 0 then
-                call TimerStart( t_KenjakuW2, 0.03, true, function thistype.Loop_KenjakuW2)
+                call KenjakuTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct KenjakuE_KS
-        private static timer t_KenjakuE = CreateTimer( )
         private static integer array m_KenjakuE
         private static integer MUI_KenjakuE = -1
         unit c
@@ -644,7 +750,7 @@ library KenjakuSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_KenjakuE takes nothing returns nothing
+        static method Loop_KenjakuE takes nothing returns nothing
             local integer this
             local real rr5 = 0
             local integer i = 0
@@ -652,7 +758,7 @@ library KenjakuSpells uses GearSystems
                 exitwhen i > MUI_KenjakuE
                 set this = m_KenjakuE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                      call DebugUnit(c)
                     set r = RoundReal(r, 3)
                     if r == 0.24 then
@@ -666,20 +772,21 @@ library KenjakuSpells uses GearSystems
                         if GetLocalPlayer() == GetOwningPlayer(c) then
                             call CameraSetTargetNoise(15.0, 25.0)
                         endif
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("cam swing"), 1)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_CAM_SWING, 1)
                         call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_FantasyBattle (1644)2.mdx", u, "chest"))
+                                call DamageSource('A05K')
                                 call dmgmag(c, u, dmg)
                                 call SlowUnit(c, u, KenjakuE_SlowPercent, KenjakuE_SlowTime)
                                 call SetUnitAnimation(u, "death")
                                 if GetLocalPlayer() == GetOwningPlayer(u) then
                                     call CameraSetTargetNoise(15.0, 25.0)
                                 endif
-                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(u)), StringHash("cam swing"), 1)
+                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(u)), SH_CAM_SWING, 1)
                             endif
                             call GroupRemoveUnit(g, u)
                         endloop
@@ -702,11 +809,11 @@ library KenjakuSpells uses GearSystems
                     set k = 0
                     loop
                         exitwhen k > 10
-                        if LoadInteger(hs, GetHandleId(Player(k)), StringHash("cam swing")) == 1 then
+                        if LoadInteger(hs, GetHandleId(Player(k)), SH_CAM_SWING) == 1 then
                             if GetLocalPlayer() == Player(k) then
                                 call CameraSetTargetNoise(0, 0)
                             endif
-                            call SaveInteger(hs, GetHandleId(Player(k)), StringHash("cam swing"), 0)
+                            call SaveInteger(hs, GetHandleId(Player(k)), SH_CAM_SWING, 0)
                         endif
                         set k = k + 1
                     endloop
@@ -718,8 +825,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuE[i] = m_KenjakuE[ MUI_KenjakuE]
                     set MUI_KenjakuE = MUI_KenjakuE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuE == -1 then
-                        call PauseTimer( t_KenjakuE)
+                        call KenjakuTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -753,13 +861,12 @@ library KenjakuSpells uses GearSystems
             call SetUnitTimeScale(c, 0.95)
             set e = EffectSpawnScale("war3mapImported\\wos_blackring.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 0.01, 1, 0.24, 0.01, 3)
             if MUI_KenjakuE == 0 then
-                call TimerStart( t_KenjakuE, 0.03, true, function thistype.Loop_KenjakuE)
+                call KenjakuTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct KenjakuE2_KS
-        private static timer t_KenjakuE2 = CreateTimer( )
         private static integer array m_KenjakuE2
         private static integer MUI_KenjakuE2 = -1
         unit c
@@ -779,7 +886,7 @@ library KenjakuSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_KenjakuE2 takes nothing returns nothing
+        static method Loop_KenjakuE2 takes nothing returns nothing
             local integer this
             local real rr5 = 0
             local real rr6 = 0
@@ -788,7 +895,7 @@ library KenjakuSpells uses GearSystems
                 exitwhen i > MUI_KenjakuE2
                 set this = m_KenjakuE2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     if r == 0.45 then
                         call MakeSound("war3mapImported\\Hero_Kenjaku_E2 2")
@@ -806,6 +913,7 @@ library KenjakuSpells uses GearSystems
                         set x2 = GetUnitX(d) + rr5 * Cos(a - rr6 * bj_DEGTORAD)
                         set y2 = GetUnitY(d) + rr5 * Sin(a - rr6 * bj_DEGTORAD)
                         call EffectSpawn2("war3mapImported\\wos_hqn5_w.mdl", GetUnitX(d) + 250 * Cos(a), GetUnitY(d) + 250 * Sin(a), a * bj_RADTODEG, 1, 1.5*r4, 1, 0.42)
+                        call DamageSource('A05R')
                         call DamageTriangle(c, GetUnitX(d)-75*Cos(a), GetUnitY(d)-75*Sin(a), x1, y1, x2, y2, dmg, 3)
                         call DecorRemove(c, x + 300 * Cos(a), y + 300 * Sin(a), 450, 40)
                         call DecorRemove(c, x + 700 * Cos(a), y + 700 * Sin(a), 450, 40)
@@ -823,8 +931,9 @@ library KenjakuSpells uses GearSystems
                     set e = null
                     set m_KenjakuE2[i] = m_KenjakuE2[ MUI_KenjakuE2]
                     set MUI_KenjakuE2 = MUI_KenjakuE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuE2 == -1 then
-                        call PauseTimer( t_KenjakuE2)
+                        call KenjakuTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -847,7 +956,7 @@ library KenjakuSpells uses GearSystems
             if GetHeroLevel(c)>= 35 then 
             set dmg = dmg + Kenjaku_35lvlDamageIntCreepSpellAdd*GetHeroInt(c,true)
             endif
-            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit e"))
+            set d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_E)
             set dmg = dmg / 3
             set rmax = 1.53
             call BlinkEff(d)
@@ -858,13 +967,12 @@ library KenjakuSpells uses GearSystems
             call SetUnitAnimation(d, "spell channel")
             call SetUnitTimeScale(d, 0.95)
             if MUI_KenjakuE2 == 0 then
-                call TimerStart( t_KenjakuE2, 0.03, true, function thistype.Loop_KenjakuE2)
+                call KenjakuTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct KenjakuR_KS
-        private static timer t_KenjakuR = CreateTimer( )
         private static integer array m_KenjakuR
         private static integer MUI_KenjakuR = -1
         unit c
@@ -896,7 +1004,7 @@ library KenjakuSpells uses GearSystems
         framehandle array frame0_pas1 [10]
         framehandle array frame0_pas2 [10]
         framehandle array frame0_pas3 [10]
-        private static method Loop_KenjakuR takes nothing returns nothing
+        static method Loop_KenjakuR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real ux
@@ -904,11 +1012,14 @@ library KenjakuSpells uses GearSystems
             loop
                 exitwhen i > MUI_KenjakuR
                 set this = m_KenjakuR[i]
-                if SpellBoolCaster(c) and (r <= rmax or (LoadInteger(hs, GetHandleId(c), StringHash("activate r")) == 1 and check != 4)) then
-                    set r = RoundReal(r + 0.03, 3)
+                if check == 4 then
+                    call WUI_HeroProgress(c, KenjakuR_ID, "Barrier Technique", rmax - r, rmax, true)
+                endif
+                if SpellBoolCaster(c) and (r <= rmax or (LoadInteger(hs, GetHandleId(c), SH_ACTIVATE_R) == 1 and check != 4)) then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
-                    call BlzFrameSetValue(frame0_pas3[k2], r)
-                    if (LoadInteger(hs, GetHandleId(c), StringHash("activate r")) == 1 and check != 4) then
+                    call WUI_FrameSetValue(frame0_pas3[k2], r)
+                    if (LoadInteger(hs, GetHandleId(c), SH_ACTIVATE_R) == 1 and check != 4) then
                         set r = 9999
                     endif
                     if check == 4 then
@@ -943,27 +1054,27 @@ library KenjakuSpells uses GearSystems
                         endloop
                     endif
                 else
-                    if LoadInteger(hs, GetHandleId(c), StringHash("activate r")) == 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_ACTIVATE_R) == 0 then
                         call DestroyEffect(e)
                         if check == 1 then
-                            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 1"))
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 1"), null)
+                            call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_1)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_1, null)
                         elseif check == 2 then
-                            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 2"))
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 2"), null)
+                            call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_2)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_2, null)
                         elseif check == 3 then
-                            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 3"))
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 3"), null)
+                            call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_3)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_3, null)
                         elseif check == 4 then
-                            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 4"))
-                            call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 4"), null)
+                            call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_4)
+                            call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_4, null)
                         endif
                     endif
                     if GetLocalPlayer() == Player(k2) then 
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                     endif
                     call ColorEffDummy3(e5, 0, 255, 255, 255, 0.2)
-                    if LoadInteger(hs, GetHandleId(c), StringHash("activate r")) == 1 and check == 4 then
+                    if LoadInteger(hs, GetHandleId(c), SH_ACTIVATE_R) == 1 and check == 4 then
                         call DestroyLightning(ls[0])
                         call DestroyLightning(ls[1])
                         call DestroyLightning(ls[2])
@@ -976,15 +1087,15 @@ library KenjakuSpells uses GearSystems
                         call DestroyEffect(e2)
                         call DestroyEffect(e3)
                         call DestroyEffect(e4)
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 1"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 2"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 3"))
-                        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("barrier 4"))
-                        call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 1"), null)
-                        call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 2"), null)
-                        call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 3"), null)
-                        call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 4"), null)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("activate r"), 0)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_1)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_2)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_3)
+                        call RemoveSavedHandle(hs, GetHandleId(c), SH_BARRIER_4)
+                        call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_1, null)
+                        call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_2, null)
+                        call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_3, null)
+                        call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_4, null)
+                        call SaveInteger(hs, GetHandleId(c), SH_ACTIVATE_R, 0)
                         call DestroyGroup(g2)
                         set g2 = null
                         call DestroyGroup(g)
@@ -1002,8 +1113,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuR[i] = m_KenjakuR[ MUI_KenjakuR]
                     set MUI_KenjakuR = MUI_KenjakuR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuR == -1 then
-                        call PauseTimer( t_KenjakuR)
+                        call KenjakuTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1033,32 +1145,32 @@ library KenjakuSpells uses GearSystems
             set rmax = KenjakuR_ColumnBase + (KenjakuR_ColumnStep * (GetUnitAbilityLevel(c, KenjakuR_ID) - 1))
             call SetUnitFacing(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex( c , 6)
-            if LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 1")) == null then
+            if LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_1) == null then
                 set e = EffectSpawn("war3mapImported\\wos_kenj_r.mdl", x, y, 1, 2, 1.5, 1)
-                call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 1"), e)
+                call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_1, e)
                 set check = 1
                 set e5 = EffectSpawn("war3mapImported\\wos_pink circl.mdl", x, y, 1, 2, 1.5, 1)
-            elseif LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 2")) == null then
+            elseif LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_2) == null then
                 set e = EffectSpawn("war3mapImported\\wos_kenj_r.mdl", x, y, 1, 2, 1.5, 1)
                 set check = 2
                 set e5 = EffectSpawn("war3mapImported\\wos_pink circl.mdl", x, y, 1, 2, 1.5, 1)
-                call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 2"), e)
-            elseif LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 3")) == null then
+                call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_2, e)
+            elseif LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_3) == null then
                 set e = EffectSpawn("war3mapImported\\wos_kenj_r.mdl", x, y, 1, 2, 1.5, 1)
                 set check = 3
                 set e5 = EffectSpawn("war3mapImported\\wos_pink circl.mdl", x, y, 1, 2, 1.5, 1)
-                call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 3"), e)
-            elseif LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 4")) == null then
+                call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_3, e)
+            elseif LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_4) == null then
                 set e = EffectSpawn("war3mapImported\\wos_kenj_r.mdl", x, y, 1, 2, 1.5, 1)
                 set check = 4
                 set e5 = EffectSpawn("war3mapImported\\wos_pink circl.mdl", x, y, 1, 2, 1.5, 1)
-                call SaveEffectHandle(hs, GetHandleId(c), StringHash("barrier 4"), e)
+                call SaveEffectHandle(hs, GetHandleId(c), SH_BARRIER_4, e)
             endif
             if check != 4 then
                 set tmp_x = 0.26875 + check * 0.0225
                 set tmp_y = 0.17
                 if frame0_pas1[k2] == null then 
-                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", main_frame, "", 0)
+                set frame0_pas1[k2] = BlzCreateFrameByType("SIMPLEFRAME", "2Face", WUI_GetSimpleRoot(), "", 0)
                 call BlzFrameClearAllPoints(frame0_pas1[k2])
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                 if GetLocalPlayer() == Player(k2) then 
@@ -1071,13 +1183,14 @@ library KenjakuSpells uses GearSystems
                 call BlzFrameSetAllPoints(frame0_pas2[k2], frame0_pas1[k2])
                 call BlzFrameSetAllPoints(frame0_pas3[k2], frame0_pas1[k2])
                 call BlzFrameSetSize(frame0_pas1[k2], 0.0225, 0.0225)
+                call WUI_SimpleBorder(frame0_pas1[k2])
                 else
                  if GetLocalPlayer() == Player(k2) then 
                     call BlzFrameSetVisible(frame0_pas1[k2],false)
                     endif
                 endif
-                call BlzFrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame0_pas2[k2], 100)
+                call WUI_FrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
+                call WUI_FrameSetValue(frame0_pas2[k2], 100)
                 call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_R.blp", 0, false)
                 if check == 1 then
                     call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Stack1.blp", 0, false)
@@ -1086,17 +1199,18 @@ library KenjakuSpells uses GearSystems
                 elseif check == 3 then
                     call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Stack3.blp", 0, false)
                 endif
-                call BlzFrameSetAbsPoint(frame0_pas1[k2], FRAMEPOINT_CENTER, tmp_x, tmp_y)
+                call WUI_RegisterBuff(frame0_pas1[k2], null, k2, "KenjakuBarrier:" + I2S(k2))
+                call WUI_RefreshDocks()
             endif            
             if check == 4 then
                 set rmax = KenjakuR_BarrierBase + (KenjakuR_BarrierStep * (GetUnitAbilityLevel(c, KenjakuR_ID) - 1))
                 set g = CreateGroup()
                 set g2 = CreateGroup()
                 set u = null
-                set e = LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 1"))
-                set e2 = LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 2"))
-                set e3 = LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 3"))
-                set e4 = LoadEffectHandle(hs, GetHandleId(c), StringHash("barrier 4"))
+                set e = LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_1)
+                set e2 = LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_2)
+                set e3 = LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_3)
+                set e4 = LoadEffectHandle(hs, GetHandleId(c), SH_BARRIER_4)
                 set x1 = GetEffX(e)
                 set y1 = GetEffY(e)
                 set x2 = GetEffX(e2)
@@ -1153,7 +1267,7 @@ library KenjakuSpells uses GearSystems
                 set y3 = py[2]
                 set x4 = px[3]
                 set y4 = py[3]
-                call SaveInteger(hs, GetHandleId(c), StringHash("activate r"), 1)
+                call SaveInteger(hs, GetHandleId(c), SH_ACTIVATE_R, 1)
                 set ls[0] = AddLightningEx("AAKN", false, x1, y1, BlzGetLocalSpecialEffectZ(e) + 75, x2, y2, BlzGetLocalSpecialEffectZ(e2) + 75)
                 set ls[1] = AddLightningEx("AAKN", false, x2, y2, BlzGetLocalSpecialEffectZ(e2) + 75, x3, y3, BlzGetLocalSpecialEffectZ(e3) + 75)
                 set ls[2] = AddLightningEx("AAKN", false, x3, y3, BlzGetLocalSpecialEffectZ(e3) + 75, x4, y4, BlzGetLocalSpecialEffectZ(e4) + 75)
@@ -1162,13 +1276,12 @@ library KenjakuSpells uses GearSystems
             endif
             call MakeSound("war3mapImported\\Hero_Kenjaku_R 2")
             if MUI_KenjakuR == 0 then
-                call TimerStart( t_KenjakuR, 0.03, true, function thistype.Loop_KenjakuR)
+                call KenjakuTick_On(6)
             endif
         endmethod
     endstruct
 
     private struct KenjakuR2_KS
-        private static timer t_KenjakuR2 = CreateTimer( )
         private static integer array m_KenjakuR2
         private static integer MUI_KenjakuR2 = -1
         unit c
@@ -1188,21 +1301,21 @@ library KenjakuSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_KenjakuR2 takes nothing returns nothing
+        static method Loop_KenjakuR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_KenjakuR2
                 set this = m_KenjakuR2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
                     set r = RoundReal(r, 3)
                     if r == 0.3 then
                         if check < 6 then
                             set e = EffectSpawn("war3mapImported\\wos_YGNZ_BY_Wood_NEF_Odr_KOF_Igniz_BaiLuoMieJing.mdl", GetUnitX(c) + 150 * Cos(a), GetUnitY(c) + 150 * Sin(a), a * bj_RADTODEG, 1, 0.6, 125)
                         else
-                            call EffectSpawn2("war3mapImported\\wos_[dttx] (21).mdl", GetUnitX(c), GetUnitY(c), 1, 0.55, 3, 1, r5 + 0.6 - r5)
+                            // removed: wos_[dttx] (21).mdl is not imported
                             set e = EffectSpawnScale("war3mapImported\\wos_YGNZ_BY_Wood_NEF_Odr_KOF_Igniz_BaiLuoMieJing.mdl", GetUnitX(c) + 25 * Cos(a), GetUnitY(c) + 25 * Sin(a), a * bj_RADTODEG, 1, 0.1, 205, 0.57, 0.1, 3.15)
                         endif
                     endif
@@ -1242,6 +1355,7 @@ library KenjakuSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A05T')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 set check2 = check2 + 1
@@ -1265,7 +1379,7 @@ library KenjakuSpells uses GearSystems
                     endif
                 else
                     if check2 > 0 then
-                    call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))+k2)
+                    call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)+k2)
                     endif
                     call DestroyEffect(e)
                     call StopSpellUnit2(c)
@@ -1278,8 +1392,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuR2[i] = m_KenjakuR2[ MUI_KenjakuR2]
                     set MUI_KenjakuR2 = MUI_KenjakuR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuR2 == -1 then
-                        call PauseTimer( t_KenjakuR2)
+                        call KenjakuTick_Off(7)
                     endif
                     call deallocate(this)
                 endif
@@ -1305,7 +1420,7 @@ library KenjakuSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             call StartSpellUnit2(c)
             call SetUnitTimeScale(c, 1.25)
-            set check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
+            set check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
             if GetHeroLevel(c) >= 35 then
             elseif GetHeroLevel(c) >= 24 then
             endif
@@ -1322,17 +1437,16 @@ library KenjakuSpells uses GearSystems
                 set rmax = 1.54
                 call SetUnitTimeScale(c, 2.25)
                 call SetUnitAnimationByIndex(c, 14)
-            call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, 0)
                 set r5 = 1.32
             endif
             if MUI_KenjakuR2 == 0 then
-                call TimerStart( t_KenjakuR2, 0.03, true, function thistype.Loop_KenjakuR2)
+                call KenjakuTick_On(7)
             endif
         endmethod
     endstruct
 
     private struct KenjakuT_KS
-        private static timer t_KenjakuT = CreateTimer( )
         private static integer array m_KenjakuT
         private static integer MUI_KenjakuT = -1
         unit c
@@ -1356,14 +1470,14 @@ library KenjakuSpells uses GearSystems
         effect e2
         real a
         real rmax
-        private static method Loop_KenjakuT takes nothing returns nothing
+        static method Loop_KenjakuT takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_KenjakuT
                 set this = m_KenjakuT[i]
                 if SpellBoolCaster(c) and r <= rmax and check< check2 then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     call DebugUnit(c)
                     if r == 0.66 then
@@ -1403,13 +1517,14 @@ library KenjakuSpells uses GearSystems
                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdx", .x, .y, GetRandomReal(0, 359), 1, 4.5*scale, 1))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_FantasyBattle (1517).mdx", .x, .y, GetRandomReal(0, 359), 1.5, 1.25*scale, 3))
                             endif
-                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("cam swing"), 1)
+                            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_CAM_SWING, 1)
                             call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                     if r >= r5 then
+                                        call DamageSource('A05M')
                                         call dmgmag(c, u, dmg)
                                         call SlowUnit(c,u,KenjakuT_SlowPercent,KenjakuT_SlowTime)
                                         call SetUnitAnimation(u, "death")
@@ -1417,7 +1532,7 @@ library KenjakuSpells uses GearSystems
                                     if GetLocalPlayer() == GetOwningPlayer(u) then
                                         call CameraSetTargetNoise(17.0, 25.0)
                                     endif
-                                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(u)), StringHash("cam swing"), 1)
+                                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(u)), SH_CAM_SWING, 1)
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop
@@ -1429,11 +1544,11 @@ library KenjakuSpells uses GearSystems
                     set k = 0
                     loop
                         exitwhen k > 10
-                        if LoadInteger(hs, GetHandleId(Player(k)), StringHash("cam swing")) == 1 then
+                        if LoadInteger(hs, GetHandleId(Player(k)), SH_CAM_SWING) == 1 then
                             if GetLocalPlayer() == Player(k) then
                                 call CameraSetTargetNoise(0, 0)
                             endif
-                            call SaveInteger(hs, GetHandleId(Player(k)), StringHash("cam swing"), 0)
+                            call SaveInteger(hs, GetHandleId(Player(k)), SH_CAM_SWING, 0)
                         endif
                         set k = k + 1
                     endloop
@@ -1449,8 +1564,9 @@ library KenjakuSpells uses GearSystems
                     set u = null
                     set m_KenjakuT[i] = m_KenjakuT[ MUI_KenjakuT]
                     set MUI_KenjakuT = MUI_KenjakuT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_KenjakuT == -1 then
-                        call PauseTimer( t_KenjakuT)
+                        call KenjakuTick_Off(8)
                     endif
                     call deallocate(this)
                 endif
@@ -1488,13 +1604,12 @@ library KenjakuSpells uses GearSystems
             set e = EffectSpawn("war3mapimported\\wos_hakkestart.mdl", x1, y1, 1, 1, 1.25, 3)
             call AnimDummyEff(e, 0.25, 0)
             if MUI_KenjakuT == 0 then
-                call TimerStart( t_KenjakuT, 0.03, true, function thistype.Loop_KenjakuT)
+                call KenjakuTick_On(8)
             endif
         endmethod
     endstruct
 
     private struct KenjakuF_KS
-        private static timer t_KenjakuF = CreateTimer( )
         private static integer array m_KenjakuF
         private static integer MUI_KenjakuF = -1
         unit c
@@ -1504,13 +1619,7 @@ library KenjakuSpells uses GearSystems
         integer check
         integer check2
         real r
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
-        private static method Loop_KenjakuF takes nothing returns nothing
+        static method Loop_KenjakuF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1532,7 +1641,6 @@ library KenjakuSpells uses GearSystems
         else
         set r2 = KenjakuF_StackTimeReplenish0
         endif
-                    call BlzFrameSetValue(frame_pas3[k2], (r))
                     set k3 = KenjakuF_BaseStacksAmount
                     if GetHeroLevel(c) >= 35 then
                         set k3 = KenjakuF_MaxStacksAmount4
@@ -1543,11 +1651,10 @@ library KenjakuSpells uses GearSystems
                     elseif GetHeroLevel(c) >= 6 then
                         set k3 = KenjakuF_MaxStacksAmount1
                     endif
-                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r2)
-                    set check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
+                    set check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
                     if check > k3 then
                         set check = k3
-                        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check)
+                        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check)
                     endif
                     if r >= r2 then
                         set r = 0
@@ -1555,7 +1662,7 @@ library KenjakuSpells uses GearSystems
                         if check > k3 then
                             set check = k3
                         endif
-                        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check)
+                        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check)
                     endif
                     if check >= KenjakuQ2_CostCurse then
                         if KenjakuF_Unit1[k2] == null then
@@ -1583,22 +1690,23 @@ library KenjakuSpells uses GearSystems
                         call BlzSetAbilityIcon(KenjakuR2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku2_R.blp")
                     endif
                     if r2 - r >= 0 then
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(r, 0, 2) + "|r")
+                        call WUI_HeroProgressText(c, KenjakuF_ID, "Curse count: " + I2S(check) + " / " + I2S(k3), r2 - r, r2, true, R2SW(RMaxBJ(0.00, r2 - r), 0, 1) + "s")
+                        call WUI_HeroProgressIcon(c, KenjakuF_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_F2.blp")
                     endif
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Curse count: " + I2S(check) + "/" + I2S(k3) + "|r")
                      /* if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) or IsUnitType(c, UNIT_TYPE_DEAD) then
                     set r = 0
                     set check = 1
                 endif */ 
             else
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                endif
+                    call WUI_HeroProgress(c, KenjakuF_ID, "Curse count", 0.00, 0.00, true)
+                // The next round start may restart the passive for this unit.
+                call RemoveSavedBoolean(hs, GetHandleId(c), SH_KENJAKUF_STARTED)
                 set c = null
                 set m_KenjakuF[i] = m_KenjakuF[ MUI_KenjakuF]
                 set MUI_KenjakuF = MUI_KenjakuF - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_KenjakuF == -1 then
-                    call PauseTimer( t_KenjakuF)
+                    call KenjakuTick10_Off(0)
                 endif
                 call deallocate(this)
             endif
@@ -1610,7 +1718,8 @@ library KenjakuSpells uses GearSystems
         set MUI_KenjakuF = MUI_KenjakuF + 1
         set m_KenjakuF[ MUI_KenjakuF] = this
         set c = NewC
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), 0)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, 0)
+        call SaveBoolean(hs, GetHandleId(c), SH_KENJAKUF_STARTED, true)
         set check = 1
         set check2 = GetUnitTypeId(c)
         set k3 = KenjakuF_BaseStacksAmount
@@ -1626,52 +1735,14 @@ library KenjakuSpells uses GearSystems
         else
         set r2 = KenjakuF_StackTimeReplenish0
         endif
-        if frame_pas1[k2] == null then
-            set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-            call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-            call BlzFrameSetVisible(frame_pas1[k2], false)
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frame_pas1[k2], true)
-            endif
-            set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-            call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-            set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-            call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frame_pas3[k2], 0.5)
-            call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-            call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r2)
-            call BlzFrameSetValue(frame_pas3[k2], 0)
-            set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-            call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-            call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_F4", 0, false)
-            set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-            call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Curse count:" + I2S(check) + "|r")
-            call BlzFrameSetScale(frame_pas5[k2], 0.9)
-            set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real, 0, 2) + "|r")
-            call BlzFrameSetScale(frame_pas6[k2], 0.9)
-        else
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frame_pas1[k2], true)
-            endif
-            call BlzFrameSetValue(frame_pas3[k2], r2)
-        endif
         set r = 0
         if MUI_KenjakuF == 0 then
-            call TimerStart( t_KenjakuF, 0.1, true, function thistype.Loop_KenjakuF)
+            call KenjakuTick10_On(0)
         endif
     endmethod
     endstruct
 
     private struct KenjakuF2_KS
-        private static timer t_KenjakuF2 = CreateTimer( )
         private static integer array m_KenjakuF2
         private static integer MUI_KenjakuF2 = -1
         unit c
@@ -1693,20 +1764,14 @@ library KenjakuSpells uses GearSystems
         effect e4
         real a
         real rmax
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
-    private static method Loop_KenjakuF2 takes nothing returns nothing
+    static method Loop_KenjakuF2 takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
             exitwhen i > MUI_KenjakuF2
             set this = m_KenjakuF2[i]
             if SpellBoolCaster(c) and GetWidgetLife(td) > 0.405 and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 set r = RoundReal(r, 3)
                 set x = GetUnitX(td)
                 set y = GetUnitY(td)
@@ -1784,39 +1849,6 @@ library KenjakuSpells uses GearSystems
                         call UnitAddAbility(td,KenjakuF2_Prison_Abi_ID)
                         call UnitMakeAbilityPermanent(td,true,KenjakuF2_Prison_Abi_ID)
                         call SetUnitPosition(td, GetRectCenterX(gg_rct_Cage), GetRectCenterY(gg_rct_Cage))
-                        if frame2_pas1[ k2] == null then
-                            set frame2_pas1[ k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                            call BlzFrameSetAbsPoint( frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.525, 0.49)
-                            call BlzFrameSetSize( frame2_pas1[ k2], 0.135, 0.035)
-                            call BlzFrameSetTexture( frame2_pas1[ k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                            call BlzFrameSetVisible( frame2_pas1[ k2], true)
-                            set frame2_pas2[ k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[ k2], 0, 0)
-                            call BlzFrameSetPoint( frame2_pas2[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0, 0.5)
-                            call BlzFrameSetSize( frame2_pas2[ k2], 0.1, 0.019)
-                            set frame2_pas3[ k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[ k2], "", 0)
-                            call BlzFrameSetSize( frame2_pas3[ k2], 0.1, 0.035)
-                            call BlzFrameSetScale( frame2_pas3[ k2], 0.5)
-                            call BlzFrameSetModel( frame2_pas3[ k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                            call BlzFrameSetPoint( frame2_pas3[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, -0.015, 0)
-                            call BlzFrameSetMinMaxValue( frame2_pas3[ k2], 0, rmax)
-                            call BlzFrameSetValue( frame2_pas3[ k2], rmax )
-                            set frame2_pas4[ k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[ k2], "", 0)
-                            call BlzFrameSetPoint( frame2_pas4[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, -0.048, 0)
-                            call BlzFrameSetSize( frame2_pas4[ k2], 0.0275, 0.0275)
-                            call BlzFrameSetTexture( frame2_pas4[ k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Kenjaku_F3", 0, false)
-                            set frame2_pas5[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)
-                            call BlzFrameSetPoint( frame2_pas5[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.0175, 0.01)
-                            call BlzFrameSetText( frame2_pas5[ k2], "|c00FFFF00" + "Prison Realm:" + "|r")
-                            call BlzFrameSetScale( frame2_pas5[ k2], 0.9)
-                            set frame2_pas6[ k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[ k2], "", 0)
-                            call BlzFrameSetPoint( frame2_pas6[ k2], FRAMEPOINT_CENTER, frame2_pas1[ k2], FRAMEPOINT_CENTER, 0.0175, -0.005)
-                            call BlzFrameSetText( frame2_pas6[ k2], "|c00FFFF00" + R2SW(rmax , 0, 2) + "|r")
-                            call BlzFrameSetScale( frame2_pas6[ k2], 0.9)
-                        else
-                            call BlzFrameSetVisible( frame2_pas1[ k2], true)
-                            call BlzFrameSetMinMaxValue( frame2_pas3[ k2], 0, rmax)
-                            call BlzFrameSetText( frame2_pas6[ k2], "|c00FFFF00" + R2SW(rmax, 0, 2) + "|r")
-                        endif
                     endif
                 elseif check >= 2 then
                     if r == 0.6 and check == 2 then
@@ -1831,8 +1863,7 @@ library KenjakuSpells uses GearSystems
                     if GetWidgetLife(td)>10 then 
                     call SetHpCurrent(td,-1.75)
                     endif
-                    call BlzFrameSetValue( frame2_pas3[ k2], r)
-                    call BlzFrameSetText( frame2_pas6[ k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                    call WUI_HeroProgressPublic(c, KenjakuF2_ID, "Prison Realm", rmax - r, rmax)
                     if SR5(e, GetUnitX(c), GetUnitY(c)) < 90 and check == 2 then
                         set check = 3
                         call ScaleEffDummy(e, 0.21, 2, 0)
@@ -1844,7 +1875,7 @@ library KenjakuSpells uses GearSystems
             else
                 call UnitRemoveAbility(td,KenjakuF2_Prison_Abi_ID)
                 if check >= 2  then
-                    call BlzFrameSetVisible( frame2_pas1[ k2], false)
+                    call WUI_HeroProgressPublic(c, KenjakuF2_ID, "Prison Realm", 0.00, 0.00)
                     if check == 2 then
                         set x = x1 + 200 * Cos(90 * bj_DEGTORAD)
                         set y = y1 + 200 * Sin(90 * bj_DEGTORAD)
@@ -1878,8 +1909,9 @@ library KenjakuSpells uses GearSystems
                 set e4 = null
                 set m_KenjakuF2[i] = m_KenjakuF2[ MUI_KenjakuF2]
                 set MUI_KenjakuF2 = MUI_KenjakuF2 - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_KenjakuF2 == -1 then
-                    call PauseTimer( t_KenjakuF2)
+                    call KenjakuTick_Off(9)
                 endif
                 call deallocate(this)
             endif
@@ -1905,13 +1937,12 @@ library KenjakuSpells uses GearSystems
         call MakeSound("war3mapImported\\Hero_Kenjaku_F2 0")
         set check = 0
         if MUI_KenjakuF2 == 0 then
-            call TimerStart( t_KenjakuF2, 0.03, true, function thistype.Loop_KenjakuF2)
+            call KenjakuTick_On(9)
         endif
     endmethod
     endstruct
 
     private struct KenjakuSummon_KS
-        private static timer t_KenjakuSummon = CreateTimer( )
         private static integer array m_KenjakuSummon
         private static integer MUI_KenjakuSummon = -1
         unit c
@@ -1923,7 +1954,7 @@ library KenjakuSpells uses GearSystems
         integer check
         integer check2
         real r
-    private static method Loop_KenjakuSummon takes nothing returns nothing
+    static method Loop_KenjakuSummon takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
@@ -1978,15 +2009,15 @@ library KenjakuSpells uses GearSystems
                 endif
             else
             if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
-            set check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
+            set check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
             if KenjakuQ2_Dummy_ID == GetUnitTypeId(d) then
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuQ2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuQ2_CostCurse)
     endif
     if KenjakuW2_Dummy_ID == GetUnitTypeId(d) then
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuW2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuW2_CostCurse)
     endif
     if KenjakuE2_Dummy_ID == GetUnitTypeId(d) then 
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuE2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuE2_CostCurse)
     endif
     endif
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Effect_Void_DaiTu_ShenWei_FangChu.mdl", GetUnitX(d), GetUnitY(d), 1, 1.1, 2.75, 125))
@@ -1999,8 +2030,9 @@ library KenjakuSpells uses GearSystems
                 set d = null
                 set m_KenjakuSummon[i] = m_KenjakuSummon[ MUI_KenjakuSummon]
                 set MUI_KenjakuSummon = MUI_KenjakuSummon - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_KenjakuSummon == -1 then
-                    call PauseTimer( t_KenjakuSummon)
+                    call KenjakuTick05_Off(0)
                 endif
                 call deallocate(this)
             endif
@@ -2032,7 +2064,7 @@ library KenjakuSpells uses GearSystems
         endif
         set r = 0
         if MUI_KenjakuSummon == 0 then
-            call TimerStart( t_KenjakuSummon, 0.05, true, function thistype.Loop_KenjakuSummon)
+            call KenjakuTick05_On(0)
         endif
     endmethod
     endstruct
@@ -2068,7 +2100,7 @@ Blue big nose:
     
  */ 
 function KenjakuF3_Start takes unit c, unit td returns nothing
-    local integer check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
+    local integer check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
     local real hp = GetUnitState(td,UNIT_STATE_LIFE)*(KenjakuF_Hpregen/100)
     call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Effect_Void_DaiTu_ShenWei_FangChu.mdl", GetUnitX(td), GetUnitY(td), 1, 1.1, 2.75, 125))
     call SetUnitTimeScale(td, 0.01)
@@ -2082,18 +2114,18 @@ function KenjakuF3_Start takes unit c, unit td returns nothing
     call MakeSound("war3mapImported\\Hero_Kenjaku_F2")
     if KenjakuQ2_Dummy_ID == GetUnitTypeId(td) then
         call SetMpCurrent(c, BlzGetUnitAbilityManaCost(c, KenjakuQ2_ID, GetUnitAbilityLevel(c, KenjakuQ2_ID)-1))
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuQ2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuQ2_CostCurse)
         call SetHpCurrent2(c,c,hp)
     endif
     if KenjakuW2_Dummy_ID == GetUnitTypeId(td) then
         call SetMpCurrent(c, BlzGetUnitAbilityManaCost(c, KenjakuW2_ID, GetUnitAbilityLevel(c, KenjakuW2_ID)-1))
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuW2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuW2_CostCurse)
         call SetHpCurrent2(c,c,hp)
     endif
     if KenjakuE2_Dummy_ID == GetUnitTypeId(td) then 
         call SetHpCurrent2(c,c,hp)
         call SetMpCurrent(c, BlzGetUnitAbilityManaCost(c, KenjakuE2_ID, GetUnitAbilityLevel(c, KenjakuE2_ID)-1))
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check + KenjakuE2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check + KenjakuE2_CostCurse)
     endif
 endfunction
 function KenjakuF_Start takes unit c, unit td returns nothing
@@ -2104,7 +2136,7 @@ function KenjakuF2_Start takes unit c returns nothing
 endfunction
 function KenjakuG_Start takes unit c returns nothing
     local integer i = GetPlayerId(GetOwningPlayer(c))
-    local integer check = LoadInteger(hs, GetHandleId(c), StringHash("kit type"))
+    local integer check = LoadInteger(hs, GetHandleId(c), SH_KIT_TYPE)
     if check == 0 then
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuQ_ID, false)
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuW_ID, false)
@@ -2134,15 +2166,15 @@ function KenjakuG_Start takes unit c returns nothing
         call SetUnitAbilityLevel(c, KenjakuW3_ID, GetUnitAbilityLevel(c, KenjakuW_ID))
         call SetUnitAbilityLevel(c, KenjakuE3_ID, GetUnitAbilityLevel(c, KenjakuE_ID))
         call SetUnitAbilityLevel(c, KenjakuR2_ID, GetUnitAbilityLevel(c, KenjakuR_ID))
-        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit q")) != null then
+        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_Q) != null then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuQ2_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuQ3_ID, true)
         endif
-        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit w")) != null then
+        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_W) != null then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuW2_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuW3_ID, true)
         endif
-        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit e")) != null then
+        if LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_E) != null then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuE2_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuE3_ID, true)
         endif
@@ -2163,18 +2195,18 @@ function KenjakuG_Start takes unit c returns nothing
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuR2_ID, false)
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuF2_ID, false)
     endif
-    call SaveInteger(hs, GetHandleId(c), StringHash("kit type"), check)
+    call SaveInteger(hs, GetHandleId(c), SH_KIT_TYPE, check)
 endfunction
 function KenjakuQ_Start takes unit c returns nothing
     call KenjakuQ_KS.KenjakuQ_Start( c )
 endfunction
 function KenjakuQ2_Start takes unit c returns nothing
 local integer hp
-    local integer check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
-    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit q"))
+    local integer check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
+    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_Q)
     if d == null then
         set d = CreateUnit(GetOwningPlayer(c), KenjakuQ2_Dummy_ID, GetUnitX(c) + 250 * Cos((GetUnitFacing(c) + 35) * bj_DEGTORAD), GetUnitY(c) + 250 * Sin((GetUnitFacing(c) + 35) * bj_DEGTORAD), GetUnitFacing(c))
-        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit q"), d)
+        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_Q, d)
         call KenjakuSummon_KS.KenjakuSummon_Start( c, d )
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuQ2_ID, false)
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuQ3_ID, true)
@@ -2197,7 +2229,7 @@ local integer hp
         if BlzGetUnitAbilityCooldownRemaining(c, KenjakuE2_ID) == 0 then
             call OkarunEggCd(c,KenjakuE2_ID,KenjakuE2_CD_WhenOtherSpiritUse)
         endif
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check - KenjakuQ2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check - KenjakuQ2_CostCurse)
     endif
     set d = null
 endfunction
@@ -2208,12 +2240,12 @@ function KenjakuW_Start takes unit c, unit td returns nothing
     call KenjakuW_KS.KenjakuW_Start( c, td )
 endfunction
 function KenjakuW2_Start takes unit c returns nothing
-    local integer check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
+    local integer check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
     local integer hp = 0
-    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit w"))
+    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_W)
     if d == null then
         set d = CreateUnit(GetOwningPlayer(c), KenjakuW2_Dummy_ID, GetUnitX(c) + 250 * Cos(GetUnitFacing(c) * bj_DEGTORAD), GetUnitY(c) + 250 * Sin(GetUnitFacing(c) * bj_DEGTORAD), GetUnitFacing(c))
-        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit w"), d)
+        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_W, d)
         call KenjakuSummon_KS.KenjakuSummon_Start( c, d )
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuW2_ID, false)
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuW3_ID, true)
@@ -2235,7 +2267,7 @@ function KenjakuW2_Start takes unit c returns nothing
         if BlzGetUnitAbilityCooldownRemaining(c, KenjakuE2_ID) == 0 then
             call OkarunEggCd(c,KenjakuE2_ID,KenjakuE2_CD_WhenOtherSpiritUse)
         endif
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check - KenjakuW2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check - KenjakuW2_CostCurse)
     endif
     set d = null
 endfunction
@@ -2246,12 +2278,12 @@ function KenjakuE_Start takes unit c returns nothing
     call KenjakuE_KS.KenjakuE_Start( c)
 endfunction
 function KenjakuE2_Start takes unit c returns nothing
-    local integer check = LoadInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"))
-    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit e"))
+    local integer check = LoadInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS)
+    local unit d = LoadUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_E)
     local integer hp = 0
     if d == null then
         set d = CreateUnit(GetOwningPlayer(c), KenjakuE2_Dummy_ID, GetUnitX(c) + 250 * Cos((GetUnitFacing(c) - 35) * bj_DEGTORAD), GetUnitY(c) + 250 * Sin((GetUnitFacing(c) - 35) * bj_DEGTORAD), GetUnitFacing(c))
-        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), StringHash("kenjaku unit e"), d)
+        call SaveUnitHandle(hs, GetHandleId(GetOwningPlayer(c)), SH_KENJAKU_UNIT_E, d)
         call KenjakuSummon_KS.KenjakuSummon_Start( c, d )
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuE2_ID, false)
         call SetPlayerAbilityAvailable(GetOwningPlayer(c), KenjakuE3_ID, true)
@@ -2273,7 +2305,7 @@ function KenjakuE2_Start takes unit c returns nothing
         if BlzGetUnitAbilityCooldownRemaining(c, KenjakuQ2_ID) == 0 then
             call OkarunEggCd(c,KenjakuQ2_ID,KenjakuQ2_CD_WhenOtherSpiritUse)
         endif
-        call SaveInteger(hs, GetHandleId(c), StringHash("Kenjaku Stacks"), check - KenjakuE2_CostCurse)
+        call SaveInteger(hs, GetHandleId(c), SH_KENJAKU_STACKS, check - KenjakuE2_CostCurse)
     endif
     set d = null
 endfunction
@@ -2281,7 +2313,7 @@ function KenjakuE3_Start takes unit c, real x, real y returns nothing
     call KenjakuE2_KS.KenjakuE2_Start( c, x, y )
 endfunction
 function KenjakuR_Start takes unit c, real x, real y returns nothing
-    if LoadInteger(hs, GetHandleId(c), StringHash("activate r")) == 0 then
+    if LoadInteger(hs, GetHandleId(c), SH_ACTIVATE_R) == 0 then
         call KenjakuR_KS.KenjakuR_Start( c, x, y )
     endif
 endfunction
@@ -2291,6 +2323,72 @@ endfunction
 function KenjakuT_Start takes unit c, real x, real y returns nothing
     call KenjakuT_KS.KenjakuT_Start( c, x, y )
 endfunction
+
+    private struct KenjakuTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if KenjakuTick_Active[0] then
+                call KenjakuQ_KS.Loop_KenjakuQ()
+            endif
+            if KenjakuTick_Active[1] then
+                call KenjakuQ2_KS.Loop_KenjakuQ2()
+            endif
+            if KenjakuTick_Active[2] then
+                call KenjakuW_KS.Loop_KenjakuW()
+            endif
+            if KenjakuTick_Active[3] then
+                call KenjakuW2_KS.Loop_KenjakuW2()
+            endif
+            if KenjakuTick_Active[4] then
+                call KenjakuE_KS.Loop_KenjakuE()
+            endif
+            if KenjakuTick_Active[5] then
+                call KenjakuE2_KS.Loop_KenjakuE2()
+            endif
+            if KenjakuTick_Active[6] then
+                call KenjakuR_KS.Loop_KenjakuR()
+            endif
+            if KenjakuTick_Active[7] then
+                call KenjakuR2_KS.Loop_KenjakuR2()
+            endif
+            if KenjakuTick_Active[8] then
+                call KenjakuT_KS.Loop_KenjakuT()
+            endif
+            if KenjakuTick_Active[9] then
+                call KenjakuF2_KS.Loop_KenjakuF2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set KenjakuTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct KenjakuTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if KenjakuTick05_Active[0] then
+                call KenjakuSummon_KS.Loop_KenjakuSummon()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set KenjakuTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct KenjakuTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if KenjakuTick10_Active[0] then
+                call KenjakuF_KS.Loop_KenjakuF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set KenjakuTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

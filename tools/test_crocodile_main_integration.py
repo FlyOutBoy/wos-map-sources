@@ -49,10 +49,10 @@ class MainIntegration(unittest.TestCase):
         self.fixture.fixture.e = self.state(1)
         self.fixture.e = self.state(1)
         routing = (ROOT/'triggers/Systems/CastCheck.j').read_text(encoding='utf-8-sig')
-        start = routing.index('    if GetUnitTypeId(c) == Crocodile_ID')
+        start = routing.index('    if heroType == Crocodile_ID')
         end = routing.index('    endif // shared dispatch',start)
         end = routing.rfind('    endif\n',start,end)
-        self.vm.methods['Test_CrocodileCast'] = ('    local integer check = 0\n' + routing[start:end] + '    return check == 1')
+        self.vm.methods['Test_CrocodileCast'] = ('    local integer check = 0\n    local integer heroType = GetUnitTypeId(c)\n' + routing[start:end] + '    return check == 1')
 
     def state(self, key, unit=None):
         return self.vm.g['LoadInteger'](self.vm.g['CrocodileTable'], id(unit or self.c), key)

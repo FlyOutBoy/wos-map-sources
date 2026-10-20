@@ -1,5 +1,77 @@
 library InoriSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer InoriTick10_Timer = CreateTimer()
+        private boolean array InoriTick10_Active
+        private integer InoriTick10_Users = 0
+        private code InoriTick10_Callback = null
+    endglobals
+
+    private function InoriTick10_On takes integer k returns nothing
+        if not InoriTick10_Active[k] then
+            set InoriTick10_Active[k] = true
+            set InoriTick10_Users = InoriTick10_Users + 1
+            if InoriTick10_Users == 1 then
+                call TimerStart(InoriTick10_Timer, 0.1, true, InoriTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function InoriTick10_Off takes integer k returns nothing
+        if InoriTick10_Active[k] then
+            set InoriTick10_Active[k] = false
+            set InoriTick10_Users = InoriTick10_Users - 1
+            if InoriTick10_Users <= 0 then
+                set InoriTick10_Users = 0
+                call PauseTimer(InoriTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer InoriTick_Timer = CreateTimer()
+        private boolean array InoriTick_Active
+        private integer InoriTick_Users = 0
+        private code InoriTick_Callback = null
+    endglobals
+
+    private function InoriTick_On takes integer k returns nothing
+        if not InoriTick_Active[k] then
+            set InoriTick_Active[k] = true
+            set InoriTick_Users = InoriTick_Users + 1
+            if InoriTick_Users == 1 then
+                call TimerStart(InoriTick_Timer, 0.03, true, InoriTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function InoriTick_Off takes integer k returns nothing
+        if InoriTick_Active[k] then
+            set InoriTick_Active[k] = false
+            set InoriTick_Users = InoriTick_Users - 1
+            if InoriTick_Users <= 0 then
+                set InoriTick_Users = 0
+                call PauseTimer(InoriTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CANCEL_T = StringHash("cancel t")
+        private integer SH_CURRENT_T = StringHash("current t")
+        private integer SH_E_ACTIVATED = StringHash("e activated")
+        private integer SH_E_ACTIVATED2 = StringHash("e activated2")
+        private integer SH_INORI_E = StringHash("Inori E")
+        private integer SH_INORI_E_ACTIVE = StringHash("Inori E Active")
+        private integer SH_INORI_R_CLEAR = StringHash("inori r clear")
+        private integer SH_MODE_F = StringHash("mode f")
+        private integer SH_MODE_T = StringHash("mode t")
+        private integer SH_PAS_CD = StringHash("pas cd")
+        private integer SH_RAIDEN_TT_R = StringHash("raiden tt r")
+    endglobals
+    globals
         integer Inori_ID = 'H017'
         integer Inori2_ID = 'H018'
         integer InoriF_ID = 'A065'
@@ -49,6 +121,7 @@ library InoriSpells uses GearSystems
         real InoriW_HealBaseStatic = 75 // base static damage for 1 level per second
         real InoriW_HealStaticStep = 0 // additional static damage for each next le per secondvel
         real InoriW_HealBaseInt = 1 // base static damage for 1 level
+        real InoriW_Heal35BonusInt = 2.00
         real InoriW_HealStepInt = 1 // additional static damage for each next level
         real InoriW_Stun = 1
 //---------------W2 ability-----------------------------------------------------
@@ -89,9 +162,11 @@ library InoriSpells uses GearSystems
 //---------------R ability-----------------------------------------------------
         integer InoriR_ID = 'A062'
         integer InoriER_ID = 'A06B'
+        // Damage Stats tag for the next shared Q/W cast (EQ/EW reuse the base structs).
+        integer InoriCastSource = 0
         integer InoriR_BuffId = 'B00J'
         real InoriR_HealIntBase = 0.6 // base number x Int damage for 1 level .dmg per sec
-        real InoriR_HealIntStep = 0.15 // additional number x Int damage for each next level .dmg per sec
+        real InoriR_HealIntStep = 0.1 // additional number x Int damage for each next level .dmg per sec
         real InoriR_HealStaticBase = 0 // base number x Int damage for 1 level .dmg per sec
         real InoriR_HealStaticStep = 0 // additional number x Int damage for each next level .dmg per sec
         real InoriR_HealAoe = 1000
@@ -164,7 +239,7 @@ library InoriSpells uses GearSystems
     endfunction
 
     private struct InoriQ_KS
-        private static timer t_InoriQ = CreateTimer( )
+        integer src
         private static integer array m_InoriQ
         private static integer MUI_InoriQ = -1
         unit c
@@ -193,14 +268,14 @@ library InoriSpells uses GearSystems
         effect e2
         real a
         real rmax
-        private static method Loop_InoriQ takes nothing returns nothing
+        static method Loop_InoriQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_InoriQ
                 set this = m_InoriQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check2 == 0 then
                         if check == 0 then
                             call DebugUnit2(c)
@@ -240,11 +315,12 @@ library InoriSpells uses GearSystems
                                     exitwhen u == null or k2 > 0
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
                                         if k2 == 0 then
+                                            call DamageSource(src)
                                             call dmgmag(c, u, dmg)
-                                            if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("pas cd")) == 0 then
-                                                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("Inori E"))
+                                            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                                                set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                                                 if check3 < 4 then
-                                                    call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), check3 + 1 )
+                                                    call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
                                                 endif
                                             endif
                                             set k2 = k2 + 1
@@ -294,6 +370,7 @@ library InoriSpells uses GearSystems
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                     if IsUnitInGroup( u , g2 ) == false then
+                                        call DamageSource(src)
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, InoriEQ_Stun)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -343,6 +420,7 @@ library InoriSpells uses GearSystems
                                         exitwhen u == null
                                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                             if IsUnitInGroup( u , g2 ) == false then
+                                                call DamageSource(src)
                                                 call dmgmag(c, u, dmg)
                                                 call StunUnit(c, u, InoriFQ_StunPeriodic )
                                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -381,8 +459,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriQ[i] = m_InoriQ[ MUI_InoriQ]
                     set MUI_InoriQ = MUI_InoriQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriQ == -1 then
-                        call PauseTimer( t_InoriQ)
+                        call InoriTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -391,6 +470,11 @@ library InoriSpells uses GearSystems
         endmethod
         public static method InoriQ_Start takes unit NewC, real NewX, real NewY returns nothing
             local thistype this = thistype.create( )
+            set src = InoriCastSource
+            if src == 0 then
+                set src = InoriQ_ID
+            endif
+            set InoriCastSource = 0
             set MUI_InoriQ = MUI_InoriQ + 1
             set m_InoriQ[ MUI_InoriQ] = this
             set c = NewC
@@ -416,7 +500,7 @@ library InoriSpells uses GearSystems
             set dmg = GetHeroInt( c , true) * ( InoriQ_DamageIntBase + ( InoriQ_DamageIntStep * ( GetUnitAbilityLevel( c , InoriQ_ID) - 1 ) ) )
             set dmg = dmg + InoriQ_Damage2StaticBase + ( InoriQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , InoriQ_ID) - 1 ) )
             set rmax = 4
-            if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 1 then
                 set check2 = 1
                 set aoe = InoriEQ_DamageAoe
                 set dmg = GetHeroInt( c , true) * ( InoriEQ_DamageIntBase + ( InoriEQ_DamageIntStep * ( GetUnitAbilityLevel( c , InoriQ_ID) - 1 ) ) )
@@ -424,7 +508,7 @@ library InoriSpells uses GearSystems
                 call SetUnitAnimationByIndex(c, 6)
                 call MakeSound("war3mapimported\\Hero_Inori_W2 1")
                 call MakeSound("war3mapimported\\Hero_Inori_EQ")
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("mode f")) == 1 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_MODE_F) == 1 then
                 set check2 = 2
                 set rmax = 1.95
                 call StartSpellUnit(c)
@@ -442,13 +526,12 @@ library InoriSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Inori_Q5")
             endif
             if MUI_InoriQ == 0 then
-                call TimerStart( t_InoriQ, 0.03, true, function thistype.Loop_InoriQ)
+                call InoriTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct InoriQ2_KS
-        private static timer t_InoriQ2 = CreateTimer( )
         private static integer array m_InoriQ2
         private static integer MUI_InoriQ2 = -1
         unit c
@@ -471,14 +554,14 @@ library InoriSpells uses GearSystems
         real a
         real a2
         real rmax
-        private static method Loop_InoriQ2 takes nothing returns nothing
+        static method Loop_InoriQ2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_InoriQ2
                 set this = m_InoriQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == 0.03 then
                         set move = 23
                         set r5 = 0
@@ -518,6 +601,7 @@ library InoriSpells uses GearSystems
                         exitwhen u == null
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                             if IsUnitInGroup( u , g2 ) == false then
+                                call DamageSource(InoriQ3_ID)
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, 0.5)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -535,6 +619,7 @@ library InoriSpells uses GearSystems
                         exitwhen u == null
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                             if IsUnitInGroup( u , g2 ) == false then
+                                call DamageSource(InoriQ3_ID)
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, InoriTQ_Stun)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -567,8 +652,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriQ2[i] = m_InoriQ2[ MUI_InoriQ2]
                     set MUI_InoriQ2 = MUI_InoriQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriQ2 == -1 then
-                        call PauseTimer( t_InoriQ2)
+                        call InoriTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -601,13 +687,22 @@ library InoriSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Inori_TQ3")
             call MakeSound("war3mapimported\\Hero_Inori_TQ2")
             if MUI_InoriQ2 == 0 then
-                call TimerStart( t_InoriQ2, 0.03, true, function thistype.Loop_InoriQ2)
+                call InoriTick_On(1)
             endif
         endmethod
     endstruct
 
+    function InoriW_GetHealTotal takes unit c returns real
+        local integer level = GetUnitAbilityLevel(c, InoriW_ID)
+        local real multiplier = InoriW_HealBaseInt + InoriW_HealStepInt * (level - 1)
+        if GetHeroLevel(c) >= 35 then
+            set multiplier = multiplier + InoriW_Heal35BonusInt
+        endif
+        return GetHeroInt(c, true) * multiplier + InoriW_HealBaseStatic + InoriW_HealStaticStep * (level - 1)
+    endfunction
+
     private struct InoriW_KS
-        private static timer t_InoriW = CreateTimer( )
+        integer src
         private static integer array m_InoriW
         private static integer MUI_InoriW = -1
         unit c
@@ -633,14 +728,18 @@ library InoriSpells uses GearSystems
         effect e6
         real a
         real rmax
-        private static method Loop_InoriW takes nothing returns nothing
+        real uiChannelDuration
+        static method Loop_InoriW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_InoriW
                 set this = m_InoriW[i]
+                if check == 0 and IsUnitAlly(td, GetOwningPlayer(c)) then
+                    call WUI_HeroProgress(c, InoriW_ID, "Resonance of Sacrifice", uiChannelDuration - r, uiChannelDuration, true)
+                endif
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     set a = GAngle(c, td)
                     set x = GetUnitX(td)
@@ -720,14 +819,16 @@ library InoriSpells uses GearSystems
                                 set r = 999999
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
                                 if check == 1 then
-                                    if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("pas cd")) == 0 then
-                                        set check3 = LoadInteger(hs, GetHandleId(c), StringHash("Inori E"))
+                                    if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                                        set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                                         if check3 < 4 then
-                                            call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), check3 + 1 )
+                                            call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
                                         endif
                                     endif
+                                    call DamageSource(src)
                                     call dmgmag(c, td, dmg)
                                 else
+                                    call DamageSource(src)
                                     call dmgmag(c, td, dmg)
                                 endif
                                 call SetAnim(td, 0.03, "death")
@@ -756,8 +857,9 @@ library InoriSpells uses GearSystems
                     set e5 = null
                     set m_InoriW[i] = m_InoriW[ MUI_InoriW]
                     set MUI_InoriW = MUI_InoriW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriW == -1 then
-                        call PauseTimer( t_InoriW)
+                        call InoriTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -766,8 +868,14 @@ library InoriSpells uses GearSystems
         endmethod
         public static method InoriW_Start takes unit NewC, unit NewTd returns nothing
             local thistype this = thistype.create( )
+            set src = InoriCastSource
+            if src == 0 then
+                set src = InoriW_ID
+            endif
+            set InoriCastSource = 0
             set MUI_InoriW = MUI_InoriW + 1
             set m_InoriW[ MUI_InoriW] = this
+            set uiChannelDuration = BlzGetAbilityRealLevelField(BlzGetUnitAbility(NewC, InoriW_ID), ABILITY_RLF_FOLLOW_THROUGH_TIME, IMaxBJ(0, GetUnitAbilityLevel(NewC, InoriW_ID) - 1))
             set c = NewC
             set td = NewTd
             set r = 0
@@ -781,7 +889,7 @@ library InoriSpells uses GearSystems
             set dmg = GetHeroInt( c , true) * ( InoriW_DamageIntBase + ( InoriW_DamageIntStep * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) ) )
             set dmg = dmg + InoriW_DamageStaticBase + ( InoriW_DamageStaticStep * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) )
             set rmax = 2
-            if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 1 then
                 set check = 2
                 set dmg = GetHeroInt( c , true) * ( InoriEW_DamageIntBase + ( InoriEW_DamageIntStep * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) ) )
                 set dmg = dmg + InoriEW_DamageStaticBase + ( InoriEW_DamageStaticStep * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) )
@@ -799,15 +907,14 @@ library InoriSpells uses GearSystems
             if check == 0 then
                 set r5 = 1000
                 call StartSound(gg_snd_Hero_Inori_W_2)
-                set r4 = GetHeroInt( c , true) * ( InoriW_HealBaseInt + ( InoriW_HealStepInt * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) ) )
-                set r4 = r4 + InoriW_HealBaseStatic + ( InoriW_HealStaticStep * ( GetUnitAbilityLevel( c , InoriW_ID) - 1 ) )
+                set r4 = InoriW_GetHealTotal(c)
                 set rmax = 99
                 set r4 = r4 / 29
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("Inori E"))
-                if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("pas cd")) == 0 then
-                    set check3 = LoadInteger(hs, GetHandleId(c), StringHash("Inori E"))
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
+                if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                    set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                     if check3 < 4 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), check3 + 1 )
+                        call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
                     endif
                 endif
                 call MakeSound("war3mapimported\\HeroInori_W3")
@@ -822,13 +929,12 @@ library InoriSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             set move = 70
             if MUI_InoriW == 0 then
-                call TimerStart( t_InoriW, 0.03, true, function thistype.Loop_InoriW)
+                call InoriTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct InoriW2_KS
-        private static timer t_InoriW2 = CreateTimer( )
         private static integer array m_InoriW2
         private static integer MUI_InoriW2 = -1
         unit c
@@ -848,7 +954,7 @@ library InoriSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_InoriW2 takes nothing returns nothing
+        static method Loop_InoriW2 takes nothing returns nothing
             local integer this
             local real rr1 = 0
             local real rr2 = 0
@@ -863,7 +969,7 @@ library InoriSpells uses GearSystems
                 exitwhen i > MUI_InoriW2
                 set this = m_InoriW2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r = RoundReal(r, 3)
                     if r2 > 0.06 then
                         set r2 = 0
@@ -924,6 +1030,7 @@ library InoriSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource(InoriW3_ID)
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, InoriTW_Stun)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -941,8 +1048,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriW2[i] = m_InoriW2[ MUI_InoriW2]
                     set MUI_InoriW2 = MUI_InoriW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriW2 == -1 then
-                        call PauseTimer( t_InoriW2)
+                        call InoriTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -974,13 +1082,12 @@ library InoriSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 6)
             call SetUnitTimeScale(c, 0.95)
             if MUI_InoriW2 == 0 then
-                call TimerStart( t_InoriW2, 0.03, true, function thistype.Loop_InoriW2)
+                call InoriTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct InoriE_KS
-        private static timer t_InoriE = CreateTimer( )
         private static integer array m_InoriE
         private static integer MUI_InoriE = -1
         unit c
@@ -993,17 +1100,10 @@ library InoriSpells uses GearSystems
         integer check2
         integer check3
         real r
-        effect e
         effect e2
         effect e3
         real rmax
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
-        private static method Loop_InoriE takes nothing returns nothing
+        static method Loop_InoriE takes nothing returns nothing
             local integer this
             local integer i = 0
             local real fk
@@ -1012,19 +1112,13 @@ library InoriSpells uses GearSystems
                 set this = m_InoriE[i]
                 if GetUnitTypeId(c) == check2 then
                     if k3 == 0 then
-                        set check = LoadInteger(hs, GetHandleId(c), StringHash("Inori E"))
+                        set check = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                         set fk = GetUnitFacing(c) * bj_DEGTORAD
-                        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
                             set k4 = 0
                         endif
-                        if k4 == 0 and LoadInteger(hs, GetHandleId(c), StringHash("pas cd")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
-                            call BlzSetSpecialEffectAlpha(e, 0)
-                            call DestroyEffect(e)
-                            set e = null
-                            set e = AddSpecialEffectTarget("war3mapImported\\wos_Inori_Bar.mdl", c, "origin")
+                        if k4 == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 and LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                             set k4 = 1
-                            call ColorEffDummy4(e, 0, 255, 255, 255, 0.51)
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
                             set check3 = 0
                         endif
                         set fk = 0
@@ -1033,45 +1127,39 @@ library InoriSpells uses GearSystems
                             set check3 = 0
                             if GetUnitAbilityLevel(c, InoriEE_ID) > 0 then
                                 call UnitRemoveAbility(c, InoriEE_ID)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("e activated"), 0)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("e activated2"), 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 0)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
                             endif
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_DEATH)
                         elseif check == 1 and check != check3 then
                             set fk = 1
                             set check3 = 1
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_ATTACK)
                         elseif check == 2 and check != check3 then
                             set fk = 1
                             set check3 = 2
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_DECAY)
                         elseif check == 3 and check != check3 then
                             set fk = 1
                             set check3 = 3
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_DISSIPATE)
                         elseif check == 4 and check != check3 then
                             set check3 = 5
-                            if LoadInteger(hs, GetHandleId(c), StringHash("e activated2")) == 0 then
-                                call SaveInteger(hs, GetHandleId(c), StringHash("e activated2"), 1)
+                            if LoadInteger(hs, GetHandleId(c), SH_E_ACTIVATED2) == 0 then
+                                call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 1)
                                 set fk = 1
                             else
                                 set fk = 0
                             endif
-                            call BlzPlaySpecialEffect(e, ANIM_TYPE_MORPH)
-                            if GetUnitAbilityLevel(c, InoriEE_ID) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
+                            if GetUnitAbilityLevel(c, InoriEE_ID) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                                 call UnitAddAbility(c, InoriEE_ID)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, false)
                             endif
-                            if k3 == 0 and LoadInteger(hs, GetHandleId(c), StringHash("e activated")) == 1 then
+                            if k3 == 0 and LoadInteger(hs, GetHandleId(c), SH_E_ACTIVATED) == 1 then
                                 set k3 = 1
                                 call UnitRemoveAbility(c, InoriEE_ID)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), 0)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("Inori E Active"), 1)
+                                call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE, 1)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("e activated"), 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 0)
                                 set r = 0
-                                call ColorEffDummy32(e, 0, 255, 255, 255, 0.51)
                                 set k = GetRandomInt(1, 3)
                                 if k == 1 then
                                     call MakeSound("war3mapimported\\Hero_Inori_E1")
@@ -1119,56 +1207,18 @@ library InoriSpells uses GearSystems
                                 call SetPlayerAbilityAvailable(Player(k2), InoriW_ID, false)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
                                 set rmax = InoriE_Duration
-                                if frame_pas1[k2] == null then
-                                    set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                    call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                    call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                    call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                                    endif
-                                    set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                    call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                    call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                    set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                    call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                    call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                    call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                    call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                    call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                                    call BlzFrameSetValue(frame_pas3[k2], 0)
-                                    set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                    call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                    call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                    call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E", 0, false)
-                                    set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                    call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Void Absorbation:" + "|r")
-                                    call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                    set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                    call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax, 0, 2) + "|r")
-                                    call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                                else
-                                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                                        call BlzFrameSetVisible(frame_pas1[k2], true)
-                                    endif
-                                    call BlzFrameSetValue(frame_pas3[k2], r2)
-                                endif
                             endif
                         endif
                         if fk == 1 then
                             call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_FSAeff (200).mdl", c, "origin"))
                         endif
                     else
-                        if r < rmax and SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
+                        if r < rmax and SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                             if IsUnitPaused(c) == false then
                                 set r = r + 0.1
                                 set r = RoundReal(r, 2)
                             endif
-                            call BlzFrameSetValue(frame_pas3[k2], (rmax - r))
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, InoriE_ID, "Void Absorption", rmax - r, rmax, true)
                         else
                             set r = 0
                             set k4 = 0
@@ -1189,21 +1239,19 @@ library InoriSpells uses GearSystems
                             call UnitRemoveAbility(c, InoriE_Regen3_ID)
                             call UnitRemoveAbility(c, InoriE_Regen4_ID)
                             call UnitRemoveAbility(c, InoriE_Atk_ID)
-                            if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
+                            if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                                 call SetPlayerAbilityAvailable(Player(k2), InoriQ_ID, true)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriW_ID, true)
                                 call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, true)
                             endif
-                            call SaveInteger(hs, GetHandleId(c), StringHash("e activated"), 0)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("e activated2"), 0)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("pas cd"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_PAS_CD, 1)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
-                            call FakeCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1), StringHash("pas cd"), 0)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), 0)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("Inori E Active"), 0)
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                            endif
+                            call MyFlush(GetHandleId(c), SH_PAS_CD, 0, PassiveCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1)))
+                            call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE, 0)
+                                call WUI_HeroProgress(c, InoriE_ID, "Void Absorption", 0.00, 0.00, true)
                             call DestroyEffect(e2)
                             call DestroyEffect(e3)
                             set e2 = null
@@ -1211,20 +1259,17 @@ library InoriSpells uses GearSystems
                         endif
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
-                    call DestroyEffect(e)
+                        call WUI_HeroProgress(c, InoriE_ID, "Void Absorption", 0.00, 0.00, true)
                     call DestroyEffect(e2)
                     call DestroyEffect(e3)
                     set c = null
-                    set e = null
                     set e2 = null
                     set e3 = null
                     set m_InoriE[i] = m_InoriE[ MUI_InoriE]
                     set MUI_InoriE = MUI_InoriE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriE == -1 then
-                        call PauseTimer( t_InoriE)
+                        call InoriTick10_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1236,7 +1281,7 @@ library InoriSpells uses GearSystems
             set MUI_InoriE = MUI_InoriE + 1
             set m_InoriE[ MUI_InoriE] = this
             set c = NewC
-            call SaveInteger(hs, GetHandleId(c), StringHash("Inori E"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
             set check = 1
             set check2 = GetUnitTypeId(c)
             set k3 = 0
@@ -1244,15 +1289,13 @@ library InoriSpells uses GearSystems
             set check3 = -1
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set r = 0
-            set e = AddSpecialEffectTarget("war3mapImported\\wos_Inori_Bar.mdl", c, "origin")
             if MUI_InoriE == 0 then
-                call TimerStart( t_InoriE, 0.1, true, function thistype.Loop_InoriE)
+                call InoriTick10_On(0)
             endif
         endmethod
     endstruct
 
     private struct InoriR_KS
-        private static timer t_InoriR = CreateTimer( )
         private static integer array m_InoriR
         private static integer MUI_InoriR = -1
         unit c
@@ -1284,13 +1327,14 @@ library InoriSpells uses GearSystems
         effect e9
         real a
         real rmax
-        private static method Loop_InoriR takes nothing returns nothing
+        static method Loop_InoriR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real hh
             loop
                 exitwhen i > MUI_InoriR
                 set this = m_InoriR[i]
+                call WUI_HeroProgress(c, InoriR_ID, "Song of Salvation", rmax - r, rmax, true)
                 if check == 1 then
                     set b = r < rmax and SpellBoolCaster(c)
                 else
@@ -1301,7 +1345,7 @@ library InoriSpells uses GearSystems
                    // endif
                 endif
                 if b then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call BlzSetSpecialEffectPosition(e5, GetUnitX(c), GetUnitY(c), GetUnitFlyHeight(c))
                         if r == InoriR_AntiDebuffStartTime and check2 == 0 then
@@ -1336,7 +1380,7 @@ library InoriSpells uses GearSystems
                       //  call BlzSetSpecialEffectPosition(e7, GetUnitX(c), GetUnitY(c), 1)
                       //  call BlzSetSpecialEffectPosition(e8, GetUnitX(c), GetUnitY(c), 1)
                       //  call BlzSetSpecialEffectPosition(e9, GetUnitX(c), GetUnitY(c), 1)
-                      if    LoadInteger(hs,GetHandleId(c),StringHash("inori r clear"))== 1  then 
+                      if    LoadInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR)== 1  then 
                        call GroupEnumUnitsInRange(g, x, y, aoe, null)
                             loop
                                 set u = FirstOfGroup(g)
@@ -1347,7 +1391,7 @@ library InoriSpells uses GearSystems
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop
-                            call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),0)
+                            call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,0)
                       endif
                         if r2 > 0.94 then
                             set r2 = 0
@@ -1363,11 +1407,7 @@ library InoriSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitAlly(u, GetOwningPlayer(c)) then
-                                if GetUnitState(u,UNIT_STATE_LIFE)>=GetUnitState(u,UNIT_STATE_MAX_LIFE)*0.5 then 
-                                    call SetHpCurrent2(c,u, hh*0.5)
-                                    else                                    
                                     call SetHpCurrent2(c,u, hh)
-                                    endif
                                     endif
                                 call GroupRemoveUnit(g, u)
                             endloop
@@ -1412,6 +1452,7 @@ library InoriSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                        call DamageSource(InoriER_ID) // ER (Resonant Slice), not plain R
                                         call dmgmag(c, u, dmg)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                     endif
@@ -1423,7 +1464,7 @@ library InoriSpells uses GearSystems
                 else
                     call DestroyEffect(e)
                     if check == 0 then
-                        call BlzStartUnitAbilityCooldown(c, InoriR_ID, BlzGetAbilityCooldown(InoriR_ID, GetUnitAbilityLevel(c, InoriR_ID) - 1))
+                        // Cooldown is already held by OkarunEggCd during the song (keeps the egg reduction).
                         call StopSound(gg_snd_Hero_Inori_R, false, false)
                         call DestroyEffect(e6)
                         call DestroyEffect(e7)
@@ -1453,8 +1494,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriR[i] = m_InoriR[ MUI_InoriR]
                     set MUI_InoriR = MUI_InoriR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriR == -1 then
-                        call PauseTimer( t_InoriR)
+                        call InoriTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1475,7 +1517,7 @@ library InoriSpells uses GearSystems
             set check2 = 0
             set check = 0
             set a = GAngle2(c, x, y) // Angle Between points
-            if LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 1 then
                 set rmax = 1.2
                 set check = 1
                 set move = 90
@@ -1521,13 +1563,12 @@ library InoriSpells uses GearSystems
             endif
             set r5 = 1.5
             if MUI_InoriR == 0 then
-                call TimerStart( t_InoriR, 0.03, true, function thistype.Loop_InoriR)
+                call InoriTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct InoriR2_KS
-        private static timer t_InoriR2 = CreateTimer( )
         private static integer array m_InoriR2
         private static integer MUI_InoriR2 = -1
         unit c
@@ -1546,7 +1587,7 @@ library InoriSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_InoriR2 takes nothing returns nothing
+        static method Loop_InoriR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1557,7 +1598,7 @@ library InoriSpells uses GearSystems
                 exitwhen i > MUI_InoriR2
                 set this = m_InoriR2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == 0.45 then
                         call MakeSound("war3mapImported\\Hero_Inori_TR2")
                         call MyRemoveEff(EffectSpawnScale("war3mapImported\\wos_pinkfloor1.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1.5, 1, 0.8, 1.5, 2.75), 1.75)
@@ -1608,8 +1649,10 @@ library InoriSpells uses GearSystems
                                 if IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
                                     if r < 1.5 then
+                                        call DamageSource('A06C')
                                         call dmgmag(c, u, dmg * 0.25)
                                     else
+                                        call DamageSource('A06C')
                                         call dmgmag(c, u, dmg)
                                     endif
                                 endif
@@ -1627,7 +1670,7 @@ library InoriSpells uses GearSystems
                         call MakeSound("war3mapImported\\Hero_Inori_EQ")
                         set aoe = InoriR2_DamageAoe
                         call MouseOn(GetOwningPlayer(c))
-                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r"), 1)
+                        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R, 1)
                     endif
                     if r > 1. and r < rmax - 0.3 then
                         set x1 = GetMouseX(GetOwningPlayer(c))
@@ -1651,6 +1694,7 @@ library InoriSpells uses GearSystems
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A06C')
                                     call dmgmag(c, u, dmg)
                                     call RootUnit(c, u, 2)
                                     call MUE(u, SR3(u, x, y), 0.15, GAngle2(u, x, y))
@@ -1672,7 +1716,7 @@ library InoriSpells uses GearSystems
                         endif
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("raiden tt r"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_RAIDEN_TT_R, 0)
                     call MouseOff(GetOwningPlayer(c))
                     call StopSpellUnit(c)
                     call DestroyGroup(g)
@@ -1683,8 +1727,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriR2[i] = m_InoriR2[ MUI_InoriR2]
                     set MUI_InoriR2 = MUI_InoriR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriR2 == -1 then
-                        call PauseTimer( t_InoriR2)
+                        call InoriTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1721,13 +1766,12 @@ library InoriSpells uses GearSystems
             set y = GetUnitY(c)
             set rmax = 2.22
             if MUI_InoriR2 == 0 then
-                call TimerStart( t_InoriR2, 0.03, true, function thistype.Loop_InoriR2)
+                call InoriTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct InoriT_KS
-        private static timer t_InoriT = CreateTimer( )
         private static integer array m_InoriT
         private static integer MUI_InoriT = -1
         unit c
@@ -1747,7 +1791,7 @@ library InoriSpells uses GearSystems
         real r
         effect e
         real rmax
-        private static method Loop_InoriT takes nothing returns nothing
+        static method Loop_InoriT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1759,8 +1803,9 @@ library InoriSpells uses GearSystems
             loop
                 exitwhen i > MUI_InoriT
                 set this = m_InoriT[i]
+                call WUI_HeroProgress(c, InoriT_ID, "Apocalypse Virus", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r< 3 then 
                     call DebugUnit(c)
                     endif
@@ -1823,6 +1868,7 @@ library InoriSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A063')
                                 call dmgmag(c, u, dmg)
                                 if IsUnitType(u, UNIT_TYPE_HERO) then
                                     call BuffUnitInori2(c, u, 1)
@@ -1870,8 +1916,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriT[i] = m_InoriT[ MUI_InoriT]
                     set MUI_InoriT = MUI_InoriT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriT == -1 then
-                        call PauseTimer( t_InoriT)
+                        call InoriTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1903,13 +1950,12 @@ library InoriSpells uses GearSystems
             set e = EffectSpawn("war3mapimported\\wos_hakkestart.mdl", x, y, 1, 1, 0.95, 3)
             call AnimDummyEff(e, 0.25, 0)
             if MUI_InoriT == 0 then
-                call TimerStart( t_InoriT, 0.03, true, function thistype.Loop_InoriT)
+                call InoriTick_On(6)
             endif
         endmethod
     endstruct
 
     private struct InoriT2_KS
-        private static timer t_InoriT2 = CreateTimer( )
         private static integer array m_InoriT2
         private static integer MUI_InoriT2 = -1
         unit c
@@ -1931,13 +1977,7 @@ library InoriSpells uses GearSystems
         effect e
         effect e2
         real rmax
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
-        private static method Loop_InoriT2 takes nothing returns nothing
+        static method Loop_InoriT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1981,6 +2021,7 @@ library InoriSpells uses GearSystems
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                     //call RootUnit(c, u, InoriT_RootTime)
+                                    call DamageSource('A064')
                                     call dmgmag(c, u, dmg)
                                     set ds = CreateDestructable(InoriT_Crystal2_ID, GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 2, 0)
                                     call SetDestructableAnimation(ds, "birth")
@@ -1996,8 +2037,8 @@ library InoriSpells uses GearSystems
                     endif
                     if check == 0 then
                         call DebugUnit(c)
-                        set r = RoundReal(r + 0.03, 3)
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        set r = RoundReal(r, 3)
                        
                         if r == 1.32 then
                             call UnitRemoveAbility(c, InoriEE_ID)
@@ -2022,8 +2063,7 @@ library InoriSpells uses GearSystems
                             call SetPlayerAbilityAvailable(Player(k2), InoriE_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriT2_ID, false)
-                            call SetPlayerAbilityAvailable(Player(k2), FakeAbi_ID, false)
-                            call DecorRemove(c, x, y, 800, 50)
+                                                        call DecorRemove(c, x, y, 800, 50)
                             call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                             call BlzSetUnitSkin(c, Inori2_ID)
                             call FixAura(c)
@@ -2032,43 +2072,6 @@ library InoriSpells uses GearSystems
                             call ColorEffDummy3(e, 0, 255, 255, 255, 0.6)
                             call ColorEffDummy3(e2, 0, 255, 255, 255, 0.35)
                             call ColorDummy4(c, 0, 255, 255, 255, 1.2)
-                            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_TE", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
                             call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 0.85, 4, 1, -90))
                             call SetUnitAnimationByIndex(c, 7)
                             call SetUnitTimeScale(c, 0.9)
@@ -2092,15 +2095,14 @@ library InoriSpells uses GearSystems
                         endif
                     elseif check == 1 then
                         if IsUnitPaused(c) == false then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
-                        if LoadInteger(hs, GetHandleId(c), StringHash("cancel t")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_CANCEL_T) == 1 then
                             set r = 99999
                         endif
-                        set r = S2R( R2SW( r , 0, 3 ) )
-                        call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
+                        set r = RoundReal(r, 3)
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, InoriT2_ID, "Mana Ascension", rmax - r, rmax, true)
                         endif
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -2111,8 +2113,8 @@ library InoriSpells uses GearSystems
                     call FixAura(c)
                     call UnitRemoveAbility(c,InoriEE_ID)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
-                    call UnitRemoveAbility(c,FakeAbi_ID)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("cancel t"), 0)
+                    call BlzEndUnitAbilityCooldown(c, InoriE_ID)
+                    call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 0)
                     call BlzSetAbilityIcon(Inori_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_Icon.blp")
                     call SetPlayerAbilityAvailable(Player(k2), InoriQ_ID, true)
                     call SetPlayerAbilityAvailable(Player(k2), InoriW_ID, true)
@@ -2124,19 +2126,16 @@ library InoriSpells uses GearSystems
                     call SetPlayerAbilityAvailable(Player(k2), InoriE2_ID, false)
                     call SetPlayerAbilityAvailable(Player(k2), InoriR2_ID, false)
                     call SetPlayerAbilityAvailable(Player(k2), InoriT3_ID, false)
-                    call SetPlayerAbilityAvailable(Player(k2), FakeAbi_ID, true)
-                    call SetUnitVertexColor(c, 255, 255, 255, 255)
+                                        call SetUnitVertexColor(c, 255, 255, 255, 255)
                     call ColorDummy4(c, 0, 255, 255, 255, 0.3)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("pas cd"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_PAS_CD, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 0)
                     call EUTU2_3(e, 0.3, 0, c)
                     if check == 0 then
                         call StopSpellUnit2(c)
                         call DestroyEffect(e2)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, InoriT2_ID, "Mana Ascension", 0.00, 0.00, true)
                     call DestroyGroup(g)
                     set c = null
                     set e = null
@@ -2145,8 +2144,9 @@ library InoriSpells uses GearSystems
                     set u = null
                     set m_InoriT2[i] = m_InoriT2[ MUI_InoriT2]
                     set MUI_InoriT2 = MUI_InoriT2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriT2 == -1 then
-                        call PauseTimer( t_InoriT2)
+                        call InoriTick_Off(7)
                     endif
                     call deallocate(this)
                 endif
@@ -2178,44 +2178,45 @@ library InoriSpells uses GearSystems
             call ColorEffDummy4(e, 0., 255, 255, 255, 0.5)
             set e2 = EffectSpawnScale("war3mapImported\\wos_GameBABY_qilongzhu_004.mdl", x, y, 0, 1.1, 1, 1, 0.8, 1, 1.65)
             call BlzPlaySpecialEffect(e2, ANIM_TYPE_BIRTH)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 1)
             call SetUnitAnimationByIndex(c, 8)
             call BlzSetAbilityIcon(Inori_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2.blp")
             call ColorDummy32(c, 0.3, 255, 255, 255, 1.02)
             if MUI_InoriT2 == 0 then
-                call TimerStart( t_InoriT2, 0.03, true, function thistype.Loop_InoriT2)
+                call InoriTick_On(7)
             endif
         endmethod
     endstruct
 
     private struct InoriF_KS
-        private static timer t_InoriF = CreateTimer( )
         private static integer array m_InoriF
         private static integer MUI_InoriF = -1
         unit c
         real r
         effect e
         real rmax
-        private static method Loop_InoriF takes nothing returns nothing
+        static method Loop_InoriF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_InoriF
                 set this = m_InoriF[i]
+                call WUI_HeroProgress(c, InoriF_ID, "Void Sprint", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
                     set r = r + 0.1
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                 else
                     call DestroyEffect(e)
                     call AddSpellLevel(c, 'A01C', 5, false)
                     call BlzSetAbilityIcon(InoriQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_Q.blp")
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode f"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_F, 0)
                     set c = null
                     set e = null
                     set m_InoriF[i] = m_InoriF[ MUI_InoriF]
                     set MUI_InoriF = MUI_InoriF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_InoriF == -1 then
-                        call PauseTimer( t_InoriF)
+                        call InoriTick10_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -2233,14 +2234,14 @@ library InoriSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Inori_F1")
             call ReduceCooldown(c, InoriQ_ID, 4)
             set e = AddSpecialEffectTarget("war3mapImported\\wos_Effect AZ_Lina_F.mdl", c, "origin")
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode f"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_F, 1)
             if true then //LoadInteger(hs, GetHandleId(c), StringHash("Inori E Active")) == 1 or LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
                 call BlinkEff(c)
                 call MUE(c, InoriF_PushRange, 0.3, GetUnitFacing(c) * bj_DEGTORAD)
             endif
             call BlzSetAbilityIcon(InoriQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_Q2.blp")
             if MUI_InoriF == 0 then
-                call TimerStart( t_InoriF, 0.1, true, function thistype.Loop_InoriF)
+                call InoriTick10_On(1)
             endif
         endmethod
     endstruct
@@ -2264,14 +2265,15 @@ library InoriSpells uses GearSystems
     
     function InoriQ_Start takes unit c, real x, real y returns nothing
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
         call InoriQ_KS.InoriQ_Start( c, x, y )
     endfunction
     function InoriQ2_Start takes unit c, real x, real y returns nothing
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
+        set InoriCastSource = InoriQ2_ID
         call InoriQ_KS.InoriQ_Start( c, x, y )
     endfunction
     function InoriQ3_Start takes unit c, real x, real y returns nothing
@@ -2280,13 +2282,14 @@ library InoriSpells uses GearSystems
     function InoriW_Start takes unit c, unit td returns nothing
         call InoriW_KS.InoriW_Start( c, td )
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriW2_Start takes unit c, unit td returns nothing
+        set InoriCastSource = InoriW2_ID
         call InoriW_KS.InoriW_Start( c, td )
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriW3_Start takes unit c, real x, real y returns nothing
@@ -2327,12 +2330,12 @@ library InoriSpells uses GearSystems
             if dx * dx + dy * dy <= rangeSquared then
                 set hid = GetHandleId(inori)
 
-                if LoadInteger(hs, hid, StringHash("pas cd")) == 0 then
-                    set stacks = LoadInteger(hs, hid, StringHash("Inori E"))
+                if LoadInteger(hs, hid, SH_PAS_CD) == 0 then
+                    set stacks = LoadInteger(hs, hid, SH_INORI_E)
 
                     if stacks < 4 then
-                        call SaveInteger(hs, hid, StringHash("Inori E"), stacks + 1)
-                        call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_A_194-9F68D.mdl", inori, "origin"))
+                        call SaveInteger(hs, hid, SH_INORI_E, stacks + 1)
+                        // removed: wos_A_194-9F68D.mdl is not imported
                     endif
                 endif
             endif
@@ -2347,19 +2350,19 @@ endfunction
     function InoriE_Start takes unit c returns nothing
         call InoriE_KS.InoriE_Start( c )
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriR_Start takes unit c, real x, real y returns nothing
    if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
    call InoriR_KS.InoriR_Start( c, x, y )
     endfunction
     function InoriER_Start takes unit c, real x, real y returns nothing
         call InoriR_KS.InoriR_Start( c, x, y )
     if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriR2_Start takes unit c, real x, real y returns nothing
@@ -2372,25 +2375,25 @@ endfunction
         local player p = GetTriggerPlayer()
         local integer k2 = GetPlayerId(p)
         if clicked == inori_frame_pas5[k2] then
-            call SaveInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"), InoriT_ID)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, -0.11, -0.1)
+            call SaveInteger(hs, GetHandleId(Hero[k2]), SH_CURRENT_T, InoriT_ID)
             if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(inori_frame_pas8[k2], true)
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual", 0, true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
+            // Checkpoint 25: a click on the weapon confirms it right away.
+            set clicked = inori_frame_pas10[k2]
         endif
         if clicked == inori_frame_pas7[k2] then
-            call SaveInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"), InoriT2_ID)
-            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.11, -0.1)
+            call SaveInteger(hs, GetHandleId(Hero[k2]), SH_CURRENT_T, InoriT2_ID)
             if GetLocalPlayer() == p then
-                call BlzFrameSetVisible(inori_frame_pas8[k2], true)
-                call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual", 0, true)
+                call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm.tga", 0, true)
             endif
             call BlzFrameSetEnable(inori_frame_pas10[k2], true)
+            // Checkpoint 25: a click on the weapon confirms it right away.
+            set clicked = inori_frame_pas10[k2]
         endif
         if clicked == inori_frame_pas10[k2] then
-            set k = LoadInteger(hs, GetHandleId(Hero[k2]), StringHash("current t"))
+            set k = LoadInteger(hs, GetHandleId(Hero[k2]), SH_CURRENT_T)
             if k == InoriT_ID then
                 call SetPlayerAbilityAvailable(Player(k2), k, true)
                 call SetPlayerAbilityAvailable(Player(k2), InoriT2_ID, false)
@@ -2409,6 +2412,7 @@ endfunction
         endif
         set p = null
         set clicked = null
+        call WUI_ReleaseClickFocus()
     endfunction
     function InoriG_Start takes unit c returns nothing
         local real x = 0
@@ -2420,14 +2424,14 @@ endfunction
             call UnitAddAbility(c, InoriT2_ID)
             call UnitAddAbility(c, InoriT_ID)
             call SetPlayerAbilityAvailable(Player(k2), InoriT2_ID, false)
-            call SaveInteger(hs, GetHandleId(c), StringHash("current t"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_CURRENT_T, 0)
         endif
         if inori_frame_pas1[k2] == null then
             if InoriFrameDebug == 0 then
                 set InoriFrameDebug = InoriFrameDebug + 10
                 call TriggerAddAction(InoriFrameTrig1, function OnClickInori)
             endif
-            set inori_frame_pas1[k2] = BlzCreateFrame("EscMenuBackdrop", main_frame, 0, 0)
+            set inori_frame_pas1[k2] = WUI_Window("WOSInoriWeapons", main_frame, 0, 0)
             call BlzFrameSetAbsPoint(inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.4, 0.35)
             call BlzFrameSetSize(inori_frame_pas1[k2], 0.5, 0.35)
             call BlzFrameSetVisible(inori_frame_pas1[k2], false)
@@ -2437,11 +2441,11 @@ endfunction
             set inori_frame_pas2[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas2[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, 0.135, 0.215)
             call BlzFrameSetSize(inori_frame_pas2[k2], 0.19, 0.19)
-            call BlzFrameSetTexture(inori_frame_pas2[k2], "Textures\\black32.blp", 0, false)
+            call BlzFrameSetTexture(inori_frame_pas2[k2], WUI_PANEL_TEXTURE, 0, true)
             set inori_frame_pas3[k2] = BlzCreateFrameByType("BACKDROP", "Port", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas3[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, 0.365, 0.215)
             call BlzFrameSetSize(inori_frame_pas3[k2], 0.19, 0.19)
-            call BlzFrameSetTexture(inori_frame_pas3[k2], "Textures\\black32.blp", 0, false)
+            call BlzFrameSetTexture(inori_frame_pas3[k2], WUI_PANEL_TEXTURE, 0, true)
             set x = 0.135
             set y = 0.07
             set inori_frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)
@@ -2463,7 +2467,7 @@ endfunction
             set inori_frame_pas8[k2] = BlzCreateFrameByType("SPRITE", "justAName", inori_frame_pas1[k2], "WarCraftIIILogo", 0)
             call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMLEFT, inori_frame_pas1[k2], FRAMEPOINT_CENTER, 0.11, -0.1)
             call BlzFrameSetSize(inori_frame_pas8[k2], 1, 1)
-            call BlzFrameSetScale(inori_frame_pas8[k2], 1.05)
+            call BlzFrameSetScale(inori_frame_pas8[k2], 0.70)
             call BlzFrameSetModel(inori_frame_pas8[k2], "Pick\\selecter5.mdx", 0)
             call BlzFrameSetVisible(inori_frame_pas8[k2], false)
             set x = 0.25
@@ -2471,7 +2475,7 @@ endfunction
             set inori_frame_pas9[k2] = BlzCreateFrameByType("BACKDROP", "SS", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas9[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x + 0.0025, y)
             call BlzFrameSetSize(inori_frame_pas9[k2], 0.045, 0.045)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual2", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
             set inori_frame_pas10[k2] = BlzCreateFrameByType("BUTTON", "MyIconButton", inori_frame_pas1[k2], "ScoreScreenTabButtonTemplate", 0)
             call BlzFrameSetPoint(inori_frame_pas10[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas10[k2], 0.04, 0.04)
@@ -2486,18 +2490,69 @@ endfunction
             call BlzFrameSetSize(inori_frame_pas12[k2], 0.02, 0.02)
             set x = 0.135
             set y = 0.2
-            set inori_frame_pas13[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)
+            set inori_frame_pas13[k2] = BlzCreateFrameByType("TEXT", "WOSInoriWeaponText", inori_frame_pas1[k2], "", 0)
             call BlzFrameSetPoint(inori_frame_pas13[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas13[k2], 0.175, 0.19)
             call BlzFrameSetScale(inori_frame_pas13[k2], 1)
             call BlzFrameSetText(inori_frame_pas13[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id1), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id1), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
             set x = 0.365
             set y = 0.2
-            set inori_frame_pas14[k2] = BlzCreateFrameByType("TEXT", "MyHeroNameButton", inori_frame_pas1[k2], "ScriptDialogButton", 0)
+            set inori_frame_pas14[k2] = BlzCreateFrameByType("TEXT", "WOSInoriWeaponText", inori_frame_pas1[k2], "", 1)
             call BlzFrameSetPoint(inori_frame_pas14[k2], FRAMEPOINT_CENTER, inori_frame_pas1[k2], FRAMEPOINT_BOTTOMLEFT, x, y)
             call BlzFrameSetSize(inori_frame_pas14[k2], 0.175, 0.19)
             call BlzFrameSetScale(inori_frame_pas14[k2], 1)
             call BlzFrameSetText(inori_frame_pas14[k2], BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id2), ABILITY_SLF_TOOLTIP_NORMAL, 0) + "|n|n" + BlzGetAbilityStringLevelField(BlzGetUnitAbility(c, id2), ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED, 0) )
+            // Checkpoint 25: compact window; each weapon = description + icon.
+            // Hover enlarges the icon (engine tooltip), a click picks it; no
+            // confirm button, no selection model; styled close X.
+            call WUI_Place(inori_frame_pas1[k2], 0.400, 0.345, 0.300, 0.214)
+            call WUI_Place(inori_frame_pas2[k2], 0.327, 0.364, 0.138, 0.150)
+            call WUI_Place(inori_frame_pas3[k2], 0.473, 0.364, 0.138, 0.150)
+            call WUI_Place(inori_frame_pas4[k2], 0.327, 0.265, 0.030, 0.030)
+            call WUI_Place(inori_frame_pas5[k2], 0.327, 0.265, 0.030, 0.030)
+            call WUI_Place(inori_frame_pas6[k2], 0.473, 0.265, 0.030, 0.030)
+            call WUI_Place(inori_frame_pas7[k2], 0.473, 0.265, 0.030, 0.030)
+            call WUI_Place(inori_frame_pas9[k2], -0.50, -0.50, 0.032, 0.032)
+            call WUI_Place(inori_frame_pas10[k2], -0.50, -0.50, 0.032, 0.032)
+            call BlzFrameSetVisible(inori_frame_pas9[k2], false)
+            call BlzFrameSetVisible(inori_frame_pas10[k2], false)
+            call WUI_Place(inori_frame_pas11[k2], 0.537, 0.439, 0.016, 0.016)
+            call WUI_Place(inori_frame_pas12[k2], 0.537, 0.439, 0.016, 0.016)
+            call BlzFrameSetTexture(inori_frame_pas11[k2], WUI_FILL_NORMAL, 0, true)
+            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriCloseGlyph", inori_frame_pas11[k2], "", 0)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_TOPLEFT, inori_frame_pas11[k2], FRAMEPOINT_TOPLEFT, 0.003, -0.003)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_BOTTOMRIGHT, inori_frame_pas11[k2], FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+            call BlzFrameSetTexture(inori_frame_pas8[k2], "UI\\WOS\\glyph-close.tga", 0, true)
+            call BlzFrameSetEnable(inori_frame_pas8[k2], false)
+            set inori_frame_pas8[k2] = WUI_GoldFrame("WOSInoriCloseEdge", inori_frame_pas11[k2], 0.0024, 0.0000)
+            set inori_frame_pas8[k2] = WUI_IconFrame(inori_frame_pas4[k2], WUI_ICON_FRAME)
+            set inori_frame_pas8[k2] = WUI_IconFrame(inori_frame_pas6[k2], WUI_ICON_FRAME)
+            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriZoom", inori_frame_pas1[k2], "", 0)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_CENTER, inori_frame_pas5[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+            call BlzFrameSetSize(inori_frame_pas8[k2], 0.038, 0.038)
+            call BlzFrameSetTexture(inori_frame_pas8[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T", 0, false)
+            call BlzFrameSetLevel(inori_frame_pas8[k2], 12)
+            call BlzFrameSetTooltip(inori_frame_pas5[k2], inori_frame_pas8[k2])
+            call BlzFrameSetVisible(inori_frame_pas8[k2], false)
+            set inori_frame_pas8[k2] = BlzCreateFrameByType("BACKDROP", "WOSInoriZoom", inori_frame_pas1[k2], "", 1)
+            call BlzFrameSetPoint(inori_frame_pas8[k2], FRAMEPOINT_CENTER, inori_frame_pas7[k2], FRAMEPOINT_CENTER, 0.0, 0.0)
+            call BlzFrameSetSize(inori_frame_pas8[k2], 0.038, 0.038)
+            call BlzFrameSetTexture(inori_frame_pas8[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2", 0, false)
+            call BlzFrameSetLevel(inori_frame_pas8[k2], 12)
+            call BlzFrameSetTooltip(inori_frame_pas7[k2], inori_frame_pas8[k2])
+            call BlzFrameSetVisible(inori_frame_pas8[k2], false)
+            call BlzFrameClearAllPoints(inori_frame_pas13[k2])
+            call BlzFrameClearAllPoints(inori_frame_pas14[k2])
+            call BlzFrameSetScale(inori_frame_pas13[k2], 0.66)
+            call BlzFrameSetScale(inori_frame_pas14[k2], 0.66)
+            call BlzFrameSetAbsPoint(inori_frame_pas13[k2], FRAMEPOINT_CENTER, 0.327, 0.364)
+            call BlzFrameSetAbsPoint(inori_frame_pas14[k2], FRAMEPOINT_CENTER, 0.473, 0.364)
+            call BlzFrameSetSize(inori_frame_pas13[k2], 0.126 / 0.66, 0.140 / 0.66)
+            call BlzFrameSetSize(inori_frame_pas14[k2], 0.126 / 0.66, 0.140 / 0.66)
+            call BlzFrameSetTextAlignment(inori_frame_pas13[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetTextAlignment(inori_frame_pas14[k2], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetEnable(inori_frame_pas13[k2], false)
+            call BlzFrameSetEnable(inori_frame_pas14[k2], false)
     
             call BlzTriggerRegisterFrameEvent(InoriFrameTrig1, inori_frame_pas5[k2], FRAMEEVENT_CONTROL_CLICK)
             call BlzTriggerRegisterFrameEvent(InoriFrameTrig1, inori_frame_pas7[k2], FRAMEEVENT_CONTROL_CLICK)
@@ -2508,7 +2563,7 @@ endfunction
         else
             call BlzFrameSetVisible(inori_frame_pas8[k2], false)
             call BlzFrameSetEnable(inori_frame_pas10[k2], false)
-            call BlzFrameSetTexture(inori_frame_pas9[k2], "Pick\\PickButton_Pick_Manual2", 0, true)
+            call BlzFrameSetTexture(inori_frame_pas9[k2], "UI\\WOS\\pick-confirm-off.tga", 0, true)
             if GetLocalPlayer() == GetOwningPlayer(c) then
                 call BlzFrameSetVisible(inori_frame_pas1[k2], true)
             endif
@@ -2517,27 +2572,77 @@ endfunction
     function InoriF_Start takes unit c returns nothing
         call InoriF_KS.InoriF_Start( c )        
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriEE_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("e activated"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 1)
     endfunction
     function InoriT1_Start takes unit c returns nothing
         call InoriT_KS.InoriT_Start( c )
         if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
     endfunction
     function InoriT2_Start takes unit c returns nothing
       if GetHeroLevel(c)>=35 then
-    call SaveInteger(hs,GetHandleId(c),StringHash("inori r clear"),1)
+    call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
         endif
        call InoriT2_KS.InoriT2_Start( c )
     endfunction
     function InoriT3_Start takes unit c returns nothing
-        call SaveInteger(hs, GetHandleId(c), StringHash("cancel t"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 1)
     endfunction
+
+    private struct InoriTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if InoriTick_Active[0] then
+                call InoriQ_KS.Loop_InoriQ()
+            endif
+            if InoriTick_Active[1] then
+                call InoriQ2_KS.Loop_InoriQ2()
+            endif
+            if InoriTick_Active[2] then
+                call InoriW_KS.Loop_InoriW()
+            endif
+            if InoriTick_Active[3] then
+                call InoriW2_KS.Loop_InoriW2()
+            endif
+            if InoriTick_Active[4] then
+                call InoriR_KS.Loop_InoriR()
+            endif
+            if InoriTick_Active[5] then
+                call InoriR2_KS.Loop_InoriR2()
+            endif
+            if InoriTick_Active[6] then
+                call InoriT_KS.Loop_InoriT()
+            endif
+            if InoriTick_Active[7] then
+                call InoriT2_KS.Loop_InoriT2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set InoriTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct InoriTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if InoriTick10_Active[0] then
+                call InoriE_KS.Loop_InoriE()
+            endif
+            if InoriTick10_Active[1] then
+                call InoriF_KS.Loop_InoriF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set InoriTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

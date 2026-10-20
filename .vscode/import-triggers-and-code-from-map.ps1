@@ -213,6 +213,15 @@ try {
     Require-File -Path $temporaryMainSource -Description "Generated Main.vj"
     & $triggerSettingsApplier -TriggerDirectory $temporaryTriggers -MainSource $temporaryMainSource
 
+    # WCT can lag behind the playable script even in a known-good archive.
+    # Recompile the incoming sources before touching the project's current files.
+    & $python.Source (Join-Path $workspaceRoot 'tools/check_main_source_parity.py') `
+        --candidate-source $temporaryMainSource --reference-script $sourceJ `
+        --work-directory (Join-Path $temporaryRoot 'source-parity')
+    if ($LASTEXITCODE -ne 0) {
+        throw "Incoming WCT does not reproduce the map's compiled code. Import stopped; current project sources were not changed."
+    }
+
     if ($ValidateOnly) {
         Write-Host ""
         Write-Host "TRIGGER AND CODE IMPORT VALIDATION OK" -ForegroundColor Green

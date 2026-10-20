@@ -37,14 +37,14 @@ class PassiveCounters(unittest.TestCase):
         self.vm.g['hs'][id(self.u), key] = value
 
     def test_tomioka_bonus_tracks_stacks_and_hides_at_expiry(self):
-        # Stack count in the corner box, the damage on the plate below.
+        # Keep the corner stack count; the obsolete lower damage plate stays absent.
         plate = lambda: self.vm.run('GetSubValue', (self.u, self.vm.g['TomiokaG_ID']))
         self.state('tomioka add dmg', 1)
         self.assertEqual('1', self.value('TomiokaG_ID'))
-        self.assertIn('+40 dmg', plate())
+        self.assertEqual('', plate())
         self.state('tomioka add dmg', 6)
         self.assertEqual('6', self.value('TomiokaG_ID'))
-        self.assertIn('+190 dmg', plate())
+        self.assertEqual('', plate())
         self.state('tomioka add dmg', 0)
         self.assertEqual('', self.value('TomiokaG_ID'))
         self.assertEqual('', plate())
@@ -74,7 +74,11 @@ class PassiveCounters(unittest.TestCase):
         self.vm.g['Raiden_F_Dummy'] = self.vm.unit(owner=1)
         self.assertEqual('2', self.value('RaidenG_ID'))
         self.vm.g['Raiden_F_Dummy'].owner = 0
-        self.assertEqual('', self.value('RaidenG_ID'))
+        self.vm.g['RaidenG_CountAtkToTrigger'] = 3
+        self.assertEqual('3', self.value('RaidenG_ID'))
+        self.state('raiden w atk', 1)
+        self.assertEqual('2', self.value('RaidenG_ID'))
+        self.state('raiden w atk', 0)
         self.vm.g['Raiden_F_Dummy'] = None
         self.state('atk count', 0)
         self.assertEqual('0', self.value('RaidenG_ID'))

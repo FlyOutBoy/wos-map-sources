@@ -1,5 +1,16 @@
 library AstaSpells initializer InitAstaSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ASTA_E = StringHash("asta e")
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+        private integer SH_STOP_R = StringHash("stop r")
+    endglobals
+    globals
         private timer AstaTimer03
         private code AstaTimer03Callback
         private integer AstaTimer03Users = 0
@@ -132,6 +143,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         integer AstaT_ID = 'A0DP'
         integer AstaT2_ID = 'A0DV'
         real AstaT_Duration = 20.0
+        real AstaT_AttackRangeBonus = 110.0 // attack range bonus while T is active
         real AstaT_CastTime = 0.00
         real AstaT_TR_reduceCD = 15
         boolean AstaT_IsInvul = false
@@ -171,10 +183,10 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Asta_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -186,9 +198,9 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Asta_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -200,7 +212,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Asta_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
@@ -208,7 +220,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
     endfunction
 
     function Asta_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -217,19 +229,19 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         local unit tu
 
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -336,15 +348,15 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaQ
                 set this = m_AstaQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < AstaQ_CastTime then
                         call DebugUnit2(c)
                     endif
                     if r == 0.39 then
                         call MakeSound("war3mapimported\\Hero_Asta_Q2")
                         call MakeSound("war3mapimported\\Hero_Asta_Q2")
-                        set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", GetUnitX(c) - 200 * Cos(a), GetUnitY(c) - 200 * Sin(a), a * bj_RADTODEG, 0.65, 0.5, 155, -20)
-                        set e2 = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", GetUnitX(c) - 200 * Cos(a), GetUnitY(c) - 200 * Sin(a), a * bj_RADTODEG, 0.65, 0.5, 155, -340)
+                        set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", GetUnitX(c) - 100 * Cos(a), GetUnitY(c) - 100 * Sin(a), a * bj_RADTODEG, 0.65, 0.5, 155, -20)
+                        set e2 = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", GetUnitX(c) - 100 * Cos(a), GetUnitY(c) - 100 * Sin(a), a * bj_RADTODEG, 0.65, 0.5, 155, -340)
                         set e3 = EffectSpawn("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdl", GetUnitX(c) + 250 * Cos(a), GetUnitY(c) + 250 * Sin(a), a * bj_RADTODEG, 0.65, 3, 135)
                         call MoveEff(e3, 10, a)
                         set scale = 1.0
@@ -392,12 +404,13 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         endif
                         call DecorRemove(c, x, y, aoe, AstaQ_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x + 150 * Cos(a), y + 150 * Sin(a), aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x + 150 * Cos(a), y + 150 * Sin(a), aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                 call GroupAddUnit(g2, u)
+                                call DamageSource('A0DL')
                                 call dmgphys(c, u, dmg)
                                 set r = rmax
                                 call MUE(u, 150, 0.3, a)
@@ -413,12 +426,13 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     set y = GetEffY(e) + 425 * Sin(a)
                     call DecorRemove(c, x, y, AstaQ_DamageAoe2, AstaQ_DecorExpDamage)
                     call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x, y, AstaQ_DamageAoe2, Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g, x, y, AstaQ_DamageAoe2, NoDecor_Cond)
                     loop
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0DL')
                             call dmgphys(c, u, dmg)
                             set r = rmax
                             call MUE(u, 150, 0.3, GAngle3(x, y, u))
@@ -504,7 +518,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaQ3
                 set this = m_AstaQ3[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set x = GetEffX(e) + 280 * Cos(a)
                     set y = GetEffY(e) + 280 * Sin(a)
                     call MoveEff(e, move, a)
@@ -529,12 +543,13 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     endif
                     call DecorRemove(c, x, y, aoe, AstaQ2_DecorDamage)
                     call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x + 150 * Cos(a), y + 150 * Sin(a), aoe, Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g, x + 150 * Cos(a), y + 150 * Sin(a), aoe, NoDecor_Cond)
                     loop
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0DS')
                             call dmgphys(c, u, dmg)
                             set r = rmax
                             if check2 == 0 then
@@ -551,12 +566,13 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     set y = GetEffY(e) + 425 * Sin(a)
                     call DecorRemove(c, x, y, AstaQ2_DamageAoe2, AstaQ2_DecorExpDamage)
                     call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x, y, AstaQ2_DamageAoe2, Condition(function NoDecor_Filter))
+                    call GroupEnumUnitsInRange(g, x, y, AstaQ2_DamageAoe2, NoDecor_Cond)
                     loop
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0DS')
                             call dmgphys(c, u, dmg)
                             set r = rmax
                             if check2 == 0 then
@@ -630,11 +646,11 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             set check2 = 0
             if NewK == 1 then
                 set check2 = 1
-                set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", x1 - 150 * Cos(a - 90 * bj_DEGTORAD), y1 - 150 * Sin(a - 90 * bj_DEGTORAD), a * bj_RADTODEG, 0.65, 0.5, 175, -35)
+                set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", x1 - 50 * Cos(a - 90 * bj_DEGTORAD), y1 - 50 * Sin(a - 90 * bj_DEGTORAD), a * bj_RADTODEG, 0.65, 0.5, 175, -35)
                 set a = a - 4 * bj_DEGTORAD
             else
                 set a = a + 4 * bj_DEGTORAD
-                set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", x1 - 150 * Cos(a + 90 * bj_DEGTORAD), y1 - 150 * Sin(a + 90 * bj_DEGTORAD), a * bj_RADTODEG, 0.65, 0.5, 175, -325)
+                set e = EffectSpawn4("war3mapImported\\wos_blackslash.mdx", x1 - 50 * Cos(a + 90 * bj_DEGTORAD), y1 - 50 * Sin(a + 90 * bj_DEGTORAD), a * bj_RADTODEG, 0.65, 0.5, 175, -325)
             endif
             set e3 = EffectSpawn("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdl", GetEffX(e), GetEffY(e), a * bj_RADTODEG, 0.65, 3, 135)
             set scale = 1.0
@@ -660,7 +676,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaQ2
                 set this = m_AstaQ2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < AstaQ2_CastTime then
                         call DebugUnit2(c)
                     endif
@@ -771,7 +787,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaW
                 set this = m_AstaW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
@@ -795,7 +811,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                             set r = 9999.0
                         endif
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
@@ -805,6 +821,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                                     call MakeSound("war3mapImported\\Hero_Kirito_Q2")
                                 endif
                                 if not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0DM')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call StunUnit(c, u, AstaW_Stun)
@@ -842,7 +859,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_3yue_5.mdl", x, y, GetRandomReal(0, 359), 1.5, 1, 0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 2.475, 125))
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
@@ -855,6 +872,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                                     set td = u
                                 endif
                                 if not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0DM')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call StunUnit(c, u, AstaW_Stun)
@@ -941,7 +959,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaW2
                 set this = m_AstaW2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
                     set a = GAngle(c, td)
                     set x = GetUnitX(c)
@@ -963,7 +981,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                             set r = 9999.0
                         endif
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
@@ -976,6 +994,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                                     set td = u
                                 endif
                                 if not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0DT')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call StunUnit(c, u, AstaW2_Stun)
@@ -1126,8 +1145,9 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             loop
                 exitwhen i > MUI_AstaE
                 set this = m_AstaE[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("stop r")) == 0 then
-                    set r = RoundReal(r + 0.03, 3)
+                call WUI_HeroProgress(c, AstaE_ID, "Black Hurricane", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_STOP_R) == 0 then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
                     if r == 1.50 then
                         call MakeSound("war3mapimported\\Hero_Asta_E2")
@@ -1192,11 +1212,12 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     if r3 > AstaE_Interval then
                         set r3 = 0.0
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                call DamageSource('A0DN')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 call GroupAddUnit(g2, u)
@@ -1212,9 +1233,9 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     call SetUnitTimeScale(c, 1.0)
                     call BlzSetSpecialEffectScale(e, 0.01)
                     call BlzSetSpecialEffectScale(e2, 0.01)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("asta e"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("stop r"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_ASTA_E, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_STOP_R, 0)
                     call EUTU2(e, 2, 50, c)
                     call EUTU2(e2, 2, 50, c)
                     call DestroyGroup(g)
@@ -1263,12 +1284,12 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             set a = GetUnitFacing(c) * bj_DEGTORAD
             set rmax = AstaE_Duration
             set move = 8.0
-            call SaveInteger(hs, GetHandleId(c), StringHash("asta e"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_ASTA_E, 1)
             if GetHeroLevel(c) >= 35 then
                 set move = 12.0
                 set r6 = r6 * (1.0 + (AstaE_35_bonuspeed / 100.0))
             endif
-            call SaveInteger(hs, GetHandleId(c), StringHash("cast r"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_CAST_R, 1)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
             set aoe = AstaE_DamageAoe
             set dmg = GetHeroAgi(c, true) * (AstaE_DamageAgiBase + AstaE_DamageAgiStep * (level - 1))
@@ -1331,7 +1352,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaR
                 set this = m_AstaR[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     set x1 = GetUnitX(c)
@@ -1349,6 +1370,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         if SR2(c, td) >= 200.0 then
                             call MoveUnit(c, move, a)
                         else
+                            call DamageSource('A0DO')
                             call dmgphys(c, td, dmg)
                             call MUE(c, 600, 0.3, a)
                             call MakeSound("war3mapImported\\Hero_Asta_R3")
@@ -1430,7 +1452,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaR2
                 set this = m_AstaR2[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
                     set x1 = GetUnitX(c)
@@ -1455,16 +1477,18 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         call SetUnitAnimation(td, "death")
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
+                        call DamageSource('A0DU')
                         call dmgphys(c, td, dmg)
                         call DecorRemove(c, x, y, aoe, AstaR2_DecorDamage)
                         call StopSpellUnit(c)
                         call StopSpellUnit(td)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0DU')
                                 call dmgphys(c, u, dmg)
                                 call SilenceUnit(c, u, R2I(AstaR2_Silence))
                             endif
@@ -1593,16 +1617,14 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 set this = m_AstaT[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     if not IsUnitPaused(c) then
-                        set r = RoundReal(r + 0.05, 3)
+                        set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     endif
-                    call BlzFrameSetValue(frameAsta_pas3[k2], rmax - r)
                     if rmax - r >= 0.0 then
-                        call BlzFrameSetText(frameAsta_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, AstaT_ID, "Black Divider", rmax - r, rmax, true)
                     endif
                 else
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frameAsta_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, AstaT_ID, "Black Divider", 0.00, 0.00, true)
+                    call SetUnitRange(c, BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) - AstaT_AttackRangeBonus)
                     call UnitRemoveAbility(c, AstaSword2_ID)
                     call UnitAddAbility(c, AstaSword_ID)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaT2_ID, false)
@@ -1639,49 +1661,12 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
             set y = GetUnitY(c)
             set rmax = AstaT_Duration
             call DecorRemove(c, x, y, 450, AstaT_DecorDamage)
-            if frameAsta_pas1[k2] == null then
-                set frameAsta_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                call BlzFrameSetSize(frameAsta_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frameAsta_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frameAsta_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frameAsta_pas1[k2], true)
-                endif
-                set frameAsta_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameAsta_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetSize(frameAsta_pas2[k2], 0.1, 0.019)
-                set frameAsta_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameAsta_pas1[k2], "", 0)
-                call BlzFrameSetSize(frameAsta_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frameAsta_pas3[k2], 0.5)
-                call BlzFrameSetModel(frameAsta_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                call BlzFrameSetMinMaxValue(frameAsta_pas3[k2], 0, rmax + 1)
-                call BlzFrameSetValue(frameAsta_pas3[k2], rmax)
-                set frameAsta_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameAsta_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                call BlzFrameSetSize(frameAsta_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frameAsta_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Asta_T", 0, false)
-                set frameAsta_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                call BlzFrameSetText(frameAsta_pas5[k2], "|c00FFFF00" + "Divider Time Left:" + "|r")
-                call BlzFrameSetScale(frameAsta_pas5[k2], 0.9)
-                set frameAsta_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameAsta_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameAsta_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                call BlzFrameSetText(frameAsta_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frameAsta_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frameAsta_pas1[k2], true)
-                endif
-                call BlzFrameSetMinMaxValue(frameAsta_pas3[k2], 0, rmax + 1)
-                call BlzFrameSetValue(frameAsta_pas3[k2], rmax)
-            endif
             set e2 = AddSpecialEffectTarget("war3mapimported\\wos_DingZhi_BY_Wood_Effect_Bleach_LvSeQiLiu2.mdx", c, "origin")
             call Asta_RestoreOrder(c, 3)
             call SetUnitTimeScale(c, 0.5)
             call UnitRemoveAbility(c, AstaSword_ID)
             call UnitAddAbility(c, AstaSword2_ID)
+            call SetUnitRange(c, BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) + AstaT_AttackRangeBonus)
             if GetHeroLevel(c) >= 25 then
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaT2_ID, true)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AstaT_ID, false)
@@ -1713,7 +1698,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaT2
                 set this = m_AstaT2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     if r == 1.02 then
                         call MakeSound("war3mapImported\\Hero_Asta_T2 2")
@@ -1749,12 +1734,13 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_3yue_5.mdl", x, y, GetRandomReal(0, 359), 1.5, 1, 0))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_3yue_5.mdl", x, y, GetRandomReal(0, 359), 1.75, 1.35, 0))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_opdef (425).mdl", x, y, GetRandomReal(0, 359), 1.85, 0.5, 0))
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0DV')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call StunUnit(c, u, AstaT2_Stun)
@@ -1864,7 +1850,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                 exitwhen i > MUI_AstaF
                 set this = m_AstaF[i]
                 if SpellBool(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     call BlzSetSpecialEffectPosition(e, x, y, 0)
@@ -1877,7 +1863,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                     if r2 > AstaF_Interval then
                         set r2 = 0.0
                         set r5 = 0.0
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null

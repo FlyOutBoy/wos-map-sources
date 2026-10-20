@@ -1,5 +1,102 @@
 library AlterSaberSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.5 timers (runs only while any is active).
+        private timer AlterSaberTick50_Timer = CreateTimer()
+        private boolean array AlterSaberTick50_Active
+        private integer AlterSaberTick50_Users = 0
+        private code AlterSaberTick50_Callback = null
+    endglobals
+
+    private function AlterSaberTick50_On takes integer k returns nothing
+        if not AlterSaberTick50_Active[k] then
+            set AlterSaberTick50_Active[k] = true
+            set AlterSaberTick50_Users = AlterSaberTick50_Users + 1
+            if AlterSaberTick50_Users == 1 then
+                call TimerStart(AlterSaberTick50_Timer, 0.5, true, AlterSaberTick50_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AlterSaberTick50_Off takes integer k returns nothing
+        if AlterSaberTick50_Active[k] then
+            set AlterSaberTick50_Active[k] = false
+            set AlterSaberTick50_Users = AlterSaberTick50_Users - 1
+            if AlterSaberTick50_Users <= 0 then
+                set AlterSaberTick50_Users = 0
+                call PauseTimer(AlterSaberTick50_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.25 timers (runs only while any is active).
+        private timer AlterSaberTick25_Timer = CreateTimer()
+        private boolean array AlterSaberTick25_Active
+        private integer AlterSaberTick25_Users = 0
+        private code AlterSaberTick25_Callback = null
+    endglobals
+
+    private function AlterSaberTick25_On takes integer k returns nothing
+        if not AlterSaberTick25_Active[k] then
+            set AlterSaberTick25_Active[k] = true
+            set AlterSaberTick25_Users = AlterSaberTick25_Users + 1
+            if AlterSaberTick25_Users == 1 then
+                call TimerStart(AlterSaberTick25_Timer, 0.25, true, AlterSaberTick25_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AlterSaberTick25_Off takes integer k returns nothing
+        if AlterSaberTick25_Active[k] then
+            set AlterSaberTick25_Active[k] = false
+            set AlterSaberTick25_Users = AlterSaberTick25_Users - 1
+            if AlterSaberTick25_Users <= 0 then
+                set AlterSaberTick25_Users = 0
+                call PauseTimer(AlterSaberTick25_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer AlterSaberTick_Timer = CreateTimer()
+        private boolean array AlterSaberTick_Active
+        private integer AlterSaberTick_Users = 0
+        private code AlterSaberTick_Callback = null
+    endglobals
+
+    private function AlterSaberTick_On takes integer k returns nothing
+        if not AlterSaberTick_Active[k] then
+            set AlterSaberTick_Active[k] = true
+            set AlterSaberTick_Users = AlterSaberTick_Users + 1
+            if AlterSaberTick_Users == 1 then
+                call TimerStart(AlterSaberTick_Timer, 0.03, true, AlterSaberTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AlterSaberTick_Off takes integer k returns nothing
+        if AlterSaberTick_Active[k] then
+            set AlterSaberTick_Active[k] = false
+            set AlterSaberTick_Users = AlterSaberTick_Users - 1
+            if AlterSaberTick_Users <= 0 then
+                set AlterSaberTick_Users = 0
+                call PauseTimer(AlterSaberTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_COMBO_W = StringHash("combo w")
+        private integer SH_HEIGHT_TD = StringHash("height td")
+        private integer SH_MODE_R = StringHash("mode r")
+        private integer SH_SABER_G_ACTIVE = StringHash("saber g active")
+        private integer SH_SABER_W = StringHash("saber w")
+        private integer SH_SABER_W_CD = StringHash("saber w cd")
+        private integer SH_SABER_W_TRG = StringHash("saber w trg")
+    endglobals
+    globals
 //--------------------------------------AlterSaber--------------------------------------------------------------
         integer AlterSaber_ID = 'H00B'
         integer AlterSaber2_ID = 'H00F'
@@ -73,8 +170,12 @@ library AlterSaberSpells uses GearSystems
         real AlterSaberT_Range = 4000
 //---------------F ability-----------------------------------------------------
         integer AlterSaberF_ID = 'A02C'
-        real AlterSaberF_DamageFromCurrentManaBase = 5 // additional damage per atk from current saber mana
-        real AlterSaberF_DamageFromCurrentManaMorph = 5 // additional damage per atk from current saber mana
+        integer AlterSaberF_Active_ID = 'A115'
+        integer SH_ALTERSABER_F_ACTIVE = StringHash("alter saber f active")
+        real AlterSaberF_DamageFromCurrentMana = 5 // % current mana as bonus damage per atk, always (On and Off)
+        real AlterSaberF_ManaBurnBase = 5 // On: % current mana burned per atk
+        real AlterSaberF_ManaBurnMorph = 3 // On, R form: % current mana burned per atk
+        real AlterSaberF_BurnDamageMultiplier = 2 // On: burned mana x this as extra damage
 //---------------G ability-----------------------------------------------------
         integer AlterSaberG_ID = 'A02F'
         real AlterSaberG_DamageAgiBase = 1 // base number x Agi damage for 1 level
@@ -87,7 +188,6 @@ library AlterSaberSpells uses GearSystems
     endglobals
 
     private struct AlterSaberQ_KS
-        private static timer t_AlterSaberQ = CreateTimer( )
         private static integer array m_AlterSaberQ
         private static integer MUI_AlterSaberQ = -1
         unit c
@@ -113,7 +213,7 @@ library AlterSaberSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_AlterSaberQ takes nothing returns nothing
+        static method Loop_AlterSaberQ takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kc = 0
@@ -203,6 +303,7 @@ library AlterSaberSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                        call DamageSource('A01F')
                                         call dmgphys(c, u, dmg)
                                         set kc = kc + 1
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -315,6 +416,7 @@ library AlterSaberSpells uses GearSystems
                                             set u = FirstOfGroup( g )
                                             exitwhen u == null
                                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                                call DamageSource('A01F')
                                                 call dmgatk(c, u, dmg)
                                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                             endif
@@ -339,8 +441,9 @@ library AlterSaberSpells uses GearSystems
                     set u = null
                     set m_AlterSaberQ[i] = m_AlterSaberQ[ MUI_AlterSaberQ]
                     set MUI_AlterSaberQ = MUI_AlterSaberQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberQ == -1 then
-                        call PauseTimer( t_AlterSaberQ)
+                        call AlterSaberTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -369,14 +472,14 @@ library AlterSaberSpells uses GearSystems
             set k3 = 0
             set u = null
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode r")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_R) > 0 then
                 set k2 = 1
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("saber w")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_SABER_W) > 0 then
                 set k3 = 1
             endif
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberW_ID)), 0)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberE_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERE_ID, 0)
             set a = GAngle2( c , x , y ) // Angle Between points
             set check = 0
             set aoe = AlterSaberQ_DamageAoeCheck
@@ -403,11 +506,11 @@ library AlterSaberSpells uses GearSystems
                     set dmg2 = GetHeroAgi( c , true) * ( AlterSaberG_DamageAgiBase + ( AlterSaberG_DamageAgiStep * ( GetLevelPas3Check(c)-1 ) ) )
                     set dmg2 = dmg2 + AlterSaberG_Damage2StaticBase + ( AlterSaberG_Damage2StaticStep * ( GetLevelPas3Check(c)-1))
                     set dmg = dmg + dmg2 * 0.75                    
-                    call SaveInteger(hs,GetHandleId(c),StringHash("saber w"),0)
-call SaveInteger(hs,GetHandleId(c),StringHash("saber w cd"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_SABER_W,0)
+call SaveInteger(hs,GetHandleId(c),SH_SABER_W_CD,1)
 set time = AlterSaberG_CD_Base-((GetLevelPas3Check(c)-1)*AlterSaberG_CD_Step)
- call FakeCD_Start(c,AlterSaberG_ID,time,StringHash("saber w cd"),0)
-call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
+ call PassiveCD_Start(c, AlterSaberG_ID, time)
+call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                 
                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 0.81, 1.225, 1, 255, 255, 255, 255))
                 endif
@@ -415,18 +518,17 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call SetUnitFacing( c , a * bj_RADTODEG)
             set r5 = 0
             if MUI_AlterSaberQ == 0 then
-                call TimerStart( t_AlterSaberQ, 0.03, true, function thistype.Loop_AlterSaberQ)
+                call AlterSaberTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberW_KS
-        private static timer t_AlterSaberW = CreateTimer( )
         private static integer array m_AlterSaberW
         private static integer MUI_AlterSaberW = -1
         unit c
         effect e
-        private static method Loop_AlterSaberW takes nothing returns nothing
+        static method Loop_AlterSaberW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -434,13 +536,13 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                 set this = m_AlterSaberW[i]
                 if SpellBoolCaster(c) and c != null then
                 if GetHeroLevel(c)>= 12 then 
-                    if LoadInteger(hs, GetHandleId(c), StringHash("saber w")) == 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_SABER_W) == 0 then
                         if e != null then
                             call DestroyEffect(e)
                             set e = null
                         endif
-                        if LoadInteger(hs, GetHandleId(c), StringHash("saber w cd")) == 0 then
-                            call SaveInteger(hs, GetHandleId(c), StringHash("saber w"), 1)
+                        if LoadInteger(hs, GetHandleId(c), SH_SABER_W_CD) == 0 then
+                            call SaveInteger(hs, GetHandleId(c), SH_SABER_W, 1)
                             if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_W")
                             endif
@@ -449,8 +551,8 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                         
                         
                     endif
-                 if LoadInteger(hs, GetHandleId(c), StringHash("saber w trg")) == 1 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("saber w trg"), 0)
+                 if LoadInteger(hs, GetHandleId(c), SH_SABER_W_TRG) == 1 then
+                        call SaveInteger(hs, GetHandleId(c), SH_SABER_W_TRG, 0)
                         call DestroyEffect(e)
                         set e = null 
                             set e = AddSpecialEffectTarget("war3mapImported\\wos_saber_attach.mdl", c, "weapon")
@@ -458,12 +560,14 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                  endif   
                 else
                     call DestroyEffect(e)
+                    call SaveInteger(hs,GetHandleId(c),SH_SABER_G_ACTIVE,0)
                     set c = null
                     set e = null
                     set m_AlterSaberW[i] = m_AlterSaberW[ MUI_AlterSaberW]
                     set MUI_AlterSaberW = MUI_AlterSaberW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberW == -1 then
-                        call PauseTimer( t_AlterSaberW)
+                        call AlterSaberTick25_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -477,13 +581,12 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set c = NewC
             set e = null
             if MUI_AlterSaberW == 0 then
-                call TimerStart( t_AlterSaberW, 0.25, true, function thistype.Loop_AlterSaberW)
+                call AlterSaberTick25_On(0)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberW2_KS
-        private static timer t_AlterSaberW2 = CreateTimer( )
         private static integer array m_AlterSaberW2
         private static integer MUI_AlterSaberW2 = -1
         unit c
@@ -503,7 +606,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e3
         real a
         real rmax
-        private static method Loop_AlterSaberW2 takes nothing returns nothing
+        static method Loop_AlterSaberW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -573,6 +676,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                            call DamageSource('A028')
                             call dmgmag(c, u, dmg)
                         endif
                         call GroupRemoveUnit(g, u)
@@ -592,8 +696,9 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     set u = null
                     set m_AlterSaberW2[i] = m_AlterSaberW2[ MUI_AlterSaberW2]
                     set MUI_AlterSaberW2 = MUI_AlterSaberW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberW2 == -1 then
-                        call PauseTimer( t_AlterSaberW2)
+                        call AlterSaberTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -625,13 +730,12 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call MakeSound("war3mapimported\\Hero_AlterSaber_W6")
             call SetUnitFacing( c , a * bj_RADTODEG)
             if MUI_AlterSaberW2 == 0 then
-                call TimerStart( t_AlterSaberW2, 0.03, true, function thistype.Loop_AlterSaberW2)
+                call AlterSaberTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberE_KS
-        private static timer t_AlterSaberE = CreateTimer( )
         private static integer array m_AlterSaberE
         private static integer MUI_AlterSaberE = -1
         unit c
@@ -652,7 +756,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e
         real a
         real rmax
-        private static method Loop_AlterSaberE takes nothing returns nothing
+        static method Loop_AlterSaberE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -689,6 +793,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A029')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                 endif
@@ -733,6 +838,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                        call DamageSource('A029')
                                         call dmgphys(c, u, dmg)
                                         call GroupAddUnit(g2, u)
                                     endif
@@ -757,8 +863,9 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     set u = null
                     set m_AlterSaberE[i] = m_AlterSaberE[ MUI_AlterSaberE]
                     set MUI_AlterSaberE = MUI_AlterSaberE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberE == -1 then
-                        call PauseTimer( t_AlterSaberE)
+                        call AlterSaberTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -786,8 +893,8 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set dmg = dmg + AlterSaberE_Damage2StaticBase + ( AlterSaberE_Damage2StaticStep * ( GetUnitAbilityLevel( c , AlterSaberE_ID) - 1 ) )
             call SetUnitAnimationByIndex( c , 4)
             call SetUnitTimeScale(c, 1.5)            
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberW_ID)), 0)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberE_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERE_ID, 0)
             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 0.5, 1.1, 1, 255, 255, 255, 255))
             if k3 == 1 then
                 call MakeSound("war3mapimported\\Hero_AlterSaber_E")
@@ -797,13 +904,12 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call MakeSound("war3mapimported\\Hero_AlterSaber_E3")
             call SetUnitFacing( c , a * bj_RADTODEG)
             if MUI_AlterSaberE == 0 then
-                call TimerStart( t_AlterSaberE, 0.03, true, function thistype.Loop_AlterSaberE)
+                call AlterSaberTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberComboW_KS
-        private static timer t_AlterSaberComboW = CreateTimer( )
         private static integer array m_AlterSaberComboW
         private static integer MUI_AlterSaberComboW = -1
         unit c
@@ -818,7 +924,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         real r
         real a
         real rmax
-        private static method Loop_AlterSaberComboW takes nothing returns nothing
+        static method Loop_AlterSaberComboW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -853,15 +959,16 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                                 set r6 = r5 / 50
                                 call SetUnitAbilityLevel(c,AlterSaberComboE_ID,GetUnitAbilityLevel(c,AlterSaberW_ID))
                                 call StunUnit(c, td, AlterSaberComboW_Stun)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 0)
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_E4")
+                                call DamageSource('A05F')
                                 call dmgphys(c, td, dmg)
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 2.15, 120))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_rraiden-esfx-6.mdl", GetUnitX(td) - 235 * Cos(a), GetUnitY(td) - 235 * Sin(a), a * bj_RADTODEG , 1.25, 0.9, 125))
                             endif
                         endif
                     elseif check == 1 then
-                        if LoadInteger(hs, GetHandleId(c), StringHash("height td")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_HEIGHT_TD) == 1 then
                             set r = 9999
                         endif
                         if r == 0.09 then 
@@ -880,16 +987,17 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     if check == 0 or (check == 1 and r< 0.09) then
                         call StopSpellUnit2(c)
                     else
-                        if LoadInteger(hs, GetHandleId(c), StringHash("height td")) == 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_HEIGHT_TD) == 0 then
                             call SetFly(td, 0)
                         endif
                     endif                                        
-                    call SaveInteger(hs,GetHandleId(c),StringHash("combo w"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_COMBO_W,0)
                     set c = null
                     set m_AlterSaberComboW[i] = m_AlterSaberComboW[ MUI_AlterSaberComboW]
                     set MUI_AlterSaberComboW = MUI_AlterSaberComboW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberComboW == -1 then
-                        call PauseTimer( t_AlterSaberComboW)
+                        call AlterSaberTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -912,19 +1020,18 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set dmg = dmg + 100
             call SetUnitAnimationByIndex( c , 4)
             call SetUnitTimeScale(c, 1.5)
-            call SaveInteger(hs,GetHandleId(c),StringHash("combo w"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_COMBO_W,1)
             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 0.5, 1.1, 1, 255, 255, 255, 255))
             call MakeSound("war3mapimported\\Hero_AlterSaber_Pick5")
             call MakeSound("war3mapimported\\Hero_AlterSaber_E3")
             call SetUnitFacing( c , a * bj_RADTODEG)
             if MUI_AlterSaberComboW == 0 then
-                call TimerStart( t_AlterSaberComboW, 0.03, true, function thistype.Loop_AlterSaberComboW)
+                call AlterSaberTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberComboE_KS
-        private static timer t_AlterSaberComboE = CreateTimer( )
         private static integer array m_AlterSaberComboE
         private static integer MUI_AlterSaberComboE = -1
         unit c
@@ -942,7 +1049,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e
         real a
         real rmax
-        private static method Loop_AlterSaberComboE takes nothing returns nothing
+        static method Loop_AlterSaberComboE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -981,6 +1088,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                            call DamageSource('A05G')
                             call dmgatk(c, u, dmg)
                         endif
                         call GroupRemoveUnit(g, u)
@@ -990,8 +1098,8 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_exceffect4.mdl", x , y , GetRandomReal(0, 359), 1.5, 5, 0))
                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_ldeff (41).mdl", x , y , GetRandomReal(0, 359), 1, 2.75, 0))
                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_afb (2080).mdl", x , y, a * bj_RADTODEG, 0.4, 1.7, 1))
-                    call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 0)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("combo w"),0)
+                    call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 0)
+                    call SaveInteger(hs,GetHandleId(c),SH_COMBO_W,0)
                     call DestroyEffect(e)
                     call DestroyGroup(g)
                     call SetUnitAnimation(c, "stand")
@@ -1006,8 +1114,9 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     set u = null
                     set m_AlterSaberComboE[i] = m_AlterSaberComboE[ MUI_AlterSaberComboE]
                     set MUI_AlterSaberComboE = MUI_AlterSaberComboE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberComboE == -1 then
-                        call PauseTimer( t_AlterSaberComboE)
+                        call AlterSaberTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1033,32 +1142,25 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call BlinkEff(c)
             set g = CreateGroup()
             set u = null            
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberW_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 1)
             call PosUnit(c, GetUnitX(td) - 100 * Cos(a), GetUnitY(td) - 100 * Sin(a))
             call SetFly(c, GetUnitFlyHeight(td))
             call BlinkEff(c)
             call MakeSound("war3mapimported\\Hero_AlterSaber_R2")
             call SetUnitFacing( c , a * bj_RADTODEG)
-            call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 1)
             if MUI_AlterSaberComboE == 0 then
-                call TimerStart( t_AlterSaberComboE, 0.03, true, function thistype.Loop_AlterSaberComboE)
+                call AlterSaberTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberR_KS
-        private static timer t_AlterSaberR = CreateTimer( )
         private static integer array m_AlterSaberR
         private static integer MUI_AlterSaberR = -1
         unit c
         real x
         real y
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         integer k2
         integer check
         real r
@@ -1066,7 +1168,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e2
         effect e3
         real rmax
-        private static method Loop_AlterSaberR takes nothing returns nothing
+        static method Loop_AlterSaberR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1076,7 +1178,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     if check == 0 then
                         call DebugUnit2(c)
                         set r = r + 0.03
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = RoundReal(r, 3)
                         if r == 0.75 then
                         if GetUnitAbilityLevel(c,AlterSaberR_ID) >= 3 then 
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberR_ID, false)
@@ -1104,56 +1206,18 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                             if AlterSaberR_Dummy[k2] == null then
                                 set AlterSaberR_Dummy[k2] = UnitSpawn0(Player(k2), DummyR_ID, GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 1, 1, 1, 1)
                             endif
-                            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_R", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
                             call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 0.85, 4, 1, -90))
                          //   call SaveInteger(hs, GetHandleId(c), StringHash("saber w"), 0)
                           //  call SaveInteger(hs, GetHandleId(c), StringHash("saber w cd"), 0)
-                            call SaveInteger(hs, GetHandleId(c), StringHash("saber w trg"), 1)
+                            call SaveInteger(hs, GetHandleId(c), SH_SABER_W_TRG, 1)
                         endif
                     elseif check == 1 then
                         if IsUnitPaused(c) == false then
                             set r = r + 0.03
                         endif
-                        set r = S2R( R2SW( r , 0, 3 ) )
-                        call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
+                        set r = RoundReal(r, 3)
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, AlterSaberR_ID, "Grail Ascension [Level 1]", rmax - r, rmax, true)
                         endif
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -1170,18 +1234,18 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     call UnitRemoveAbility(c, AlterSaberR_Regen2)
                     call UnitRemoveAbility(c, AlterSaberR_Regen3)
                     call UnitRemoveAbility(c, AlterSaberR_Regen4)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberW_ID)), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberE_ID)), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERE_ID, 0)
                    // call SaveInteger(hs, GetHandleId(c), StringHash("saber w"), 0)
                    // call SaveInteger(hs, GetHandleId(c), StringHash("saber w cd"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("saber w trg"), 1)
+                    call SaveInteger(hs, GetHandleId(c), SH_SABER_W_TRG, 1)
                     call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 1.25, 3, 50, -90))
                     call BlzSetUnitSkin(c, AlterSaber_ID)
                     call FixAura(c)
                     call BlzSetAbilityIcon(AlterSaber_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_Icon.blp")
                     call BlzSetAbilityIcon(AlterSaberQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_Q.blp")
                     call BlzSetAbilityIcon(AlterSaberR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_R.blp")
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode r"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_R, 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberR_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberRR_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberW_ID, true)
@@ -1193,17 +1257,16 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     else
                         call DestroyEffect(e3)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, AlterSaberR_ID, "Grail Ascension [Level 1]", 0.00, 0.00, true)
                     set c = null
                     set e = null
                     set e2 = null
                     set e3 = null
                     set m_AlterSaberR[i] = m_AlterSaberR[ MUI_AlterSaberR]
                     set MUI_AlterSaberR = MUI_AlterSaberR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberR == -1 then
-                        call PauseTimer( t_AlterSaberR)
+                        call AlterSaberTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1221,7 +1284,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set check = 0
             set r = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode r"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_R, 1)
             set rmax = AlterSaberR_DurationBase + (AlterSaberR_DurationStep * (GetUnitAbilityLevel(c, AlterSaberR_ID) - 1))
             call MakeSound("war3mapimported\\Hero_AlterSaber_R")
             if GetUnitAbilityLevel(c,AlterSaberR_ID) >= 5 then 
@@ -1230,8 +1293,8 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set e = EffectSpawn("war3mapImported\\wos_LimitIndra-ORA.mdl", x, y, 1, 1, 3, 1)
             call BlzSetSpecialEffectAlpha(e, 0)
             call ColorEffDummy4(e, 0., 255, 255, 255, 0.5)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberW_ID)), 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AlterSaberE_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERE_ID, 1)
             call UnitAddAbility(c, AlterSaberR_Attack)
             call UnitAddAbility(c, AlterSaberR_Armor)
             if GetUnitAbilityLevel(c, AlterSaberR_ID) == 1 then
@@ -1253,13 +1316,12 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call BlzSetAbilityIcon(AlterSaber_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_Icon2.blp")
             call BlzSetAbilityIcon(AlterSaberQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_RQ.blp")            
             if MUI_AlterSaberR == 0 then
-                call TimerStart( t_AlterSaberR, 0.03, true, function thistype.Loop_AlterSaberR)
+                call AlterSaberTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberRR_KS
-        private static timer t_AlterSaberRR = CreateTimer( )
         private static integer array m_AlterSaberRR
         private static integer MUI_AlterSaberRR = -1
         unit c
@@ -1274,7 +1336,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e
         effect e2
         real rmax
-        private static method Loop_AlterSaberRR takes nothing returns nothing
+        static method Loop_AlterSaberRR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1282,13 +1344,14 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                 set this = m_AlterSaberRR[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.5
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     call GroupClear(g)
                     call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                     loop
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                            call DamageSource('A02D')
                             call NextDmg(c, u, dmg, 1, 0.5)
                             call RootUnit(c, u, AlterSaberRR_RootDurationBase)
                             set e2 = EffectSpawn("war3mapImported\\wos_altersabermorph.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1.25, 0.65, 1)
@@ -1312,8 +1375,9 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     set e = null
                     set m_AlterSaberRR[i] = m_AlterSaberRR[ MUI_AlterSaberRR]
                     set MUI_AlterSaberRR = MUI_AlterSaberRR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberRR == -1 then
-                        call PauseTimer( t_AlterSaberRR)
+                        call AlterSaberTick50_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1340,13 +1404,12 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call DecorRemove(c, x, y, aoe * 1.1, 50)
             call VisionTimed(GetOwningPlayer(c), x , y, aoe * 1.5, rmax + 2)
             if MUI_AlterSaberRR == 0 then
-                call TimerStart( t_AlterSaberRR, 0.5, true, function thistype.Loop_AlterSaberRR)
+                call AlterSaberTick50_On(0)
             endif
         endmethod
     endstruct
 
     private struct AlterSaberT_KS
-        private static timer t_AlterSaberT = CreateTimer( )
         private static integer array m_AlterSaberT
         private static integer MUI_AlterSaberT = -1
         unit c
@@ -1369,7 +1432,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
         effect e2
         real a
         real rmax
-        private static method Loop_AlterSaberT takes nothing returns nothing
+        static method Loop_AlterSaberT takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1412,6 +1475,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A02B')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                             endif
@@ -1453,8 +1517,9 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
                     set u = null
                     set m_AlterSaberT[i] = m_AlterSaberT[ MUI_AlterSaberT]
                     set MUI_AlterSaberT = MUI_AlterSaberT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_AlterSaberT == -1 then
-                        call PauseTimer( t_AlterSaberT)
+                        call AlterSaberTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1471,7 +1536,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             set r = 0
             set r2 = 10
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode r")) == 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_R) == 0 then
                 set check2 = 1
                 call BlzSetUnitSkin(c, AlterSaber2_ID)
                 call FixAura(c)
@@ -1503,7 +1568,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
             call ColorEffDummy3(e2, 2.4, 255, 255, 255, 1.2)
             call ScaleEffDummy2(e2, 2.4, 1.2, 4, 6)
             if MUI_AlterSaberT == 0 then
-                call TimerStart( t_AlterSaberT, 0.03, true, function thistype.Loop_AlterSaberT)
+                call AlterSaberTick_On(6)
             endif
         endmethod
     endstruct
@@ -1534,6 +1599,52 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
     13 - atk normal 1 ( for e)
     
      */ 
+    function AlterSaberF_Toggle takes unit c returns nothing
+        local boolean active = not LoadBoolean(hs, GetHandleId(c), SH_ALTERSABER_F_ACTIVE)
+        call SaveBoolean(hs, GetHandleId(c), SH_ALTERSABER_F_ACTIVE, active)
+        if GetUnitAbilityLevel(c, AlterSaberF_Active_ID) == 0 then
+            call UnitAddAbility(c, AlterSaberF_Active_ID)
+            call UnitMakeAbilityPermanent(c, true, AlterSaberF_Active_ID)
+        endif
+        if active then
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", AlterSaberF_ID), AlterSaberF_Active_ID)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_ID, false)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_Active_ID, true)
+        else
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", AlterSaberF_ID), 0)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_Active_ID, false)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_ID, true)
+        endif
+    endfunction
+
+    function AlterSaberF_Initialize takes unit c returns nothing
+        call SaveBoolean(hs, GetHandleId(c), SH_ALTERSABER_F_ACTIVE, false)
+        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_AHUI_SWAP, "AHUI swap ", AlterSaberF_ID), 0)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_Active_ID, false)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberF_ID, true)
+        call AlterSaberF_Toggle(c) // F starts switched On
+    endfunction
+
+    // Always: X% current mana as damage. On: also burns Y% current mana (less in R form) for x2 of it.
+    function AlterSaberF_Attack takes unit c, boolean morph returns real
+        local real burn = AlterSaberF_ManaBurnBase
+        local real mana = GetUnitState(c, UNIT_STATE_MANA)
+        local real bonus
+        if GetUnitAbilityLevel(c, AlterSaberF_ID) == 0 and GetUnitAbilityLevel(c, AlterSaberF_Active_ID) == 0 then
+            return 0.0
+        endif
+        set bonus = mana * AlterSaberF_DamageFromCurrentMana / 100
+        if LoadBoolean(hs, GetHandleId(c), SH_ALTERSABER_F_ACTIVE) then
+            if morph then
+                set burn = AlterSaberF_ManaBurnMorph
+            endif
+            set burn = mana * burn / 100
+            call SetUnitState(c, UNIT_STATE_MANA, RMaxBJ(0, mana - burn))
+            set bonus = bonus + burn * AlterSaberF_BurnDamageMultiplier
+        endif
+        return bonus
+    endfunction
+
     function AlterSaberPas_Start takes unit c returns nothing
      //   call AlterSaberSpells.AlterSaberPas_Start( c )
     endfunction
@@ -1546,7 +1657,7 @@ call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
     local real x = GetUnitX(td)
     local real y = GetUnitY(td)
     local real time 
-if LoadInteger(hs,GetHandleId(c),StringHash("saber w")) > 0 then 
+if LoadInteger(hs,GetHandleId(c),SH_SABER_W) > 0 then 
 set a = GAngle(c,td)
 set dmg2 = GetHeroAgi( c , true) * ( AlterSaberG_DamageAgiBase + ( AlterSaberG_DamageAgiStep * ( GetLevelPas3Check( c)-1 ) ))
 set dmg2 = dmg2 + AlterSaberG_Damage2StaticBase + ( AlterSaberG_Damage2StaticStep * ( ( GetLevelPas3Check( c)-1 ) ))
@@ -1557,12 +1668,13 @@ call EUTU2_3(EffectSpawn("war3mapImported\\wos_mei-wsfx-2.mdl", x, y, a*bj_RADTO
 call EUTU2_3(EffectSpawn("war3mapImported\\wos_bloodex-special-23", x, y, a*bj_RADTODEG, 2., 2.45, 135), 2, 135, td)
 call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(td), GetUnitY(td), a * bj_RADTODEG , 0.65, 1.75, 1, 255, 255, 255, 255))
 call MakeSound("war3mapimported\\Hero_AlterSaber_W3")
+call DamageSource('A02F')
 call NextDmg(c,td,dmg2,0,0.06)
-call SaveInteger(hs,GetHandleId(c),StringHash("saber w"),0)
-call SaveInteger(hs,GetHandleId(c),StringHash("saber w cd"),1)
+call SaveInteger(hs,GetHandleId(c),SH_SABER_W,0)
+call SaveInteger(hs,GetHandleId(c),SH_SABER_W_CD,1)
 set time = AlterSaberG_CD_Base-((GetLevelPas3Check(c)-1)*AlterSaberG_CD_Step)
- call FakeCD_Start(c,AlterSaberG_ID,time,StringHash("saber w cd"),0)
-call MyFlush(GetHandleId(c),StringHash("saber w cd"),0,time)
+ call PassiveCD_Start(c, AlterSaberG_ID, time)
+call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
 endif
     endfunction
     function AlterSaberComboW_Start takes unit c, unit td returns nothing
@@ -1572,7 +1684,13 @@ endif
         call AlterSaberComboE_KS.AlterSaberComboE_Start( c, td )
     endfunction
     function AlterSaberW_Start takes unit c returns nothing
-        call AlterSaberW_KS.AlterSaberW_Start( c )
+        if c == null or GetUnitTypeId(c) != AlterSaber_ID or IsUnitIllusion(c) then
+            return
+        endif
+        if LoadInteger(hs,GetHandleId(c),SH_SABER_G_ACTIVE) == 0 then
+            call SaveInteger(hs,GetHandleId(c),SH_SABER_G_ACTIVE,1)
+            call AlterSaberW_KS.AlterSaberW_Start(c)
+        endif
     endfunction
     function AlterSaberW2_Start takes unit c, real x, real y returns nothing
         call AlterSaberW2_KS.AlterSaberW2_Start( c, x, y )
@@ -1596,6 +1714,69 @@ endif
     function AlterSaberRR_Start takes unit c returns nothing
         call AlterSaberRR_KS.AlterSaberRR_Start( c )
     endfunction
+
+    private struct AlterSaberTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AlterSaberTick_Active[0] then
+                call AlterSaberQ_KS.Loop_AlterSaberQ()
+            endif
+            if AlterSaberTick_Active[1] then
+                call AlterSaberW2_KS.Loop_AlterSaberW2()
+            endif
+            if AlterSaberTick_Active[2] then
+                call AlterSaberE_KS.Loop_AlterSaberE()
+            endif
+            if AlterSaberTick_Active[3] then
+                call AlterSaberComboW_KS.Loop_AlterSaberComboW()
+            endif
+            if AlterSaberTick_Active[4] then
+                call AlterSaberComboE_KS.Loop_AlterSaberComboE()
+            endif
+            if AlterSaberTick_Active[5] then
+                call AlterSaberR_KS.Loop_AlterSaberR()
+            endif
+            if AlterSaberTick_Active[6] then
+                call AlterSaberT_KS.Loop_AlterSaberT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AlterSaberTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct AlterSaberTick25_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AlterSaberTick25_Active[0] then
+                call AlterSaberW_KS.Loop_AlterSaberW()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AlterSaberTick25_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct AlterSaberTick50_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AlterSaberTick50_Active[0] then
+                call AlterSaberRR_KS.Loop_AlterSaberRR()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AlterSaberTick50_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_AlterSaber_ALTERSABERE_ID = StringHash(I2S(AlterSaberE_ID))
+        integer SH_AlterSaber_ALTERSABERW_ID = StringHash(I2S(AlterSaberW_ID))
+    endglobals
+
 endlibrary
 
 

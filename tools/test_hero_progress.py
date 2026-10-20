@@ -1,5 +1,6 @@
 """Execute production progress/hero clocks; Warcraft rendering remains external."""
 from pathlib import Path
+from collections import defaultdict
 import re
 import unittest
 
@@ -11,12 +12,85 @@ ROOT = Path(__file__).resolve().parents[1]
 def source(path):
     return (ROOT / 'triggers' / path).read_text(encoding='utf-8-sig')
 
+def bankai_vm():
+    text = source('Heroes/Kyoraku.j')
+    functions = re.findall(r'(?m)^\s*(?:(?:private|public)\s+)?function\s+Kyoraku(?:BankaiProgress|BankaiHelp|TSkip_Start)\s+takes[\s\S]*?^\s*endfunction', text)
+    vm = JassState('\n'.join(functions))
+    vm.g['KyorakuBankaiStage'] = defaultdict(int)
+    return vm
+
 
 class UnifiedProgress(unittest.TestCase):
     def setUp(self):
         self.fx = progress_fixture.Progress()
         self.fx.setUp()
         self.vm = self.fx.vm
+
+    def test_bankai_stages_reuse_public_meter_and_change_art_for_every_viewer(self):
+        fx, vm = self.fx, self.vm
+        hero_vm = bankai_vm()
+        textures = {}
+        vm.g['BlzFrameSetTexture'] = lambda f, t, *_: textures.update({f: t})
+        vm.g['WUI_RegisterPublicMeter'] = lambda *_: None
+        hero_vm.g.update(vm.g)
+        hero_vm.g.update(KyorakuT_ID=10, KyorakuT0_ID=20, KyorakuT1_ID=21,
+            KyorakuT2_ID=22, KyorakuT3_ID=23, KyorakuT4_ID=24,
+            SH_LAST_DAN='final', hs={},
+            WUI_HeroProgressPublic=lambda *a: vm.run('WUI_HeroProgressPublic', a),
+            WUI_HeroProgressIcon=lambda *a: vm.run('WUI_HeroProgressIcon', a))
+        fx.local = 1
+        for stage, caption in enumerate(['Bankai', '1-st stage', '2-nd stage', '3-rd stage', '4-th stage']):
+            hero_vm.run('KyorakuBankaiProgress', (fx.hero, stage, 3., 5.))
+            self.assertEqual(6, len(fx.created))
+            self.assertIn(caption, fx.texts[vm.g['WUI_ProgressCaption'][1]])
+            self.assertEqual(str(20 + stage), textures[vm.g['WUI_ProgressIcon'][1]])
+        # Final execution replaces the third act even while its loop keeps check=3.
+        hero_vm.g['hs'][id(fx.hero), 'final'] = 1
+        hero_vm.run('KyorakuBankaiProgress', (fx.hero, 3, 2., 5.))
+        self.assertIn('4-th stage', fx.texts[vm.g['WUI_ProgressCaption'][1]])
+        self.assertEqual('24', textures[vm.g['WUI_ProgressIcon'][1]])
+        hero_vm.run('KyorakuBankaiProgress', (fx.hero, 3, 0., 0.))
+        self.assertFalse(fx.visible[vm.g['WUI_ProgressPanel'][1]])
+
+    def test_bankai_help_height_shrinks_and_grows_with_rendered_text(self):
+        vm = bankai_vm()
+        heights, sizes = [], []
+        measured = [0.12]
+        vm.g.update(frame_KyorBankai7={0:'text'}, frame_KyorBankai12={0:'panel'},
+            ABILITY_SLF_TOOLTIP_NORMAL='title', ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED='body',
+            BlzGetUnitAbility=lambda *a: 'ability',
+            BlzGetAbilityStringLevelField=lambda *a: 'description',
+            BlzFrameSetSize=lambda *a: sizes.append(a), BlzFrameSetText=lambda *a: None,
+            BlzFrameGetHeight=lambda *a: measured[0],
+            WUI_ColumnHeight=lambda panel, height: heights.append(height))
+        for value in [0.12, 0.02, 0.22, 0.0]:
+            measured[0] = value
+            vm.run('KyorakuBankaiHelp', ('hero', 0, 20))
+        for got, want in zip(heights, [.136, .036, .236, .035]):
+            self.assertAlmostEqual(want, got)
+        self.assertEqual([('text', .164, 0.)] * 4, sizes)
+
+    def test_skip_outside_bankai_is_removed_and_cannot_queue_next_cast(self):
+        vm = bankai_vm()
+        hero = vm.unit(owner=0)
+        changes = []
+        vm.add_ability(hero, 30)
+        vm.g.update(KyorakuTSkip_ID=30, SH_INSTANT_SKIP='skip', hs={},
+            BankaiActive=False, KyorakuBankaiCaster=hero,
+            GetOwningPlayer=lambda u: u.owner,
+            SetPlayerAbilityAvailable=lambda *a: changes.append(a))
+        vm.run('KyorakuTSkip_Start', (hero,))
+        self.assertEqual([(0, 30, False)], changes)
+        self.assertEqual(0, vm.g['GetUnitAbilityLevel'](hero, 30))
+        self.assertNotIn((id(hero), 'skip'), vm.g['hs'])
+        vm.g['BankaiActive'] = True
+        vm.add_ability(hero, 30)
+        vm.run('KyorakuTSkip_Start', (hero,))
+        self.assertEqual(1, vm.g['hs'][id(hero), 'skip'])
+        text = source('Heroes/Kyoraku.j')
+        cleanup = text.split('call KyorakuBankaiProgress(.c, .check, 0.00, 0.00)', 1)[1].split('set .c = null', 1)[0]
+        self.assertIn('call UnitRemoveAbility(.c, KyorakuTSkip_ID)', cleanup)
+        self.assertIn('KyorakuTSkip_ID, false)', cleanup)
 
     def test_curse_artwork_override_preserves_ability_key_and_other_meter(self):
         fx,vm=self.fx,self.vm;textures={}
@@ -206,15 +280,16 @@ class HeroClocks(unittest.TestCase):
                     StringHash=lambda s:s, GetRectCenterX=lambda _:0., GetRectCenterY=lambda _:0.,
                     CreateUnit=lambda owner,code,x,y,facing: vm.unit(owner=owner,x=x,y=y),
                     RemoveUnit=lambda unit:setattr(unit,'life',0),
-                    WUI_HeroProgressCounter=lambda *a: values.append(a))
+                    WUI_HeroProgressCounter=lambda *a: values.append(a),WUI_HeroProgressSingle=lambda *_:None,
+                    WUI_HeroProgressDualCounter=lambda *a:values.append(a))
         vm.run('TakeshiGAdd_Start', (hero, 150.))
         self.assertEqual(150., vm.g['hs'][id(hero), 'takeshi dmg'])
         self.assertEqual(150., values[-1][3])
         vm.run('TakeshiGAdd_Start', (hero, 7000.))
-        self.assertEqual(6000., vm.g['hs'][id(hero), 'takeshi dmg'])
+        self.assertEqual(5000., vm.g['hs'][id(hero), 'takeshi dmg'])
         self.assertIsNotNone(vm.g['TakeshiDummy'])
         vm.run('TakeshiGAdd_Start', (hero, -50.))
-        self.assertEqual(5950., vm.g['hs'][id(hero), 'takeshi dmg'])
+        self.assertEqual(4950., vm.g['hs'][id(hero), 'takeshi dmg'])
         self.assertIsNone(vm.g['TakeshiDummy'])
 
     def test_shiki_button_and_progress_read_current_target_stacks(self):
@@ -276,7 +351,7 @@ class RoundWarnings(unittest.TestCase):
         end=text.index('                set i = 0',start)
         block=text[start:end]+'\n            endif'
         vm=JassState('function FinishPick takes nothing returns nothing\n'+block+'\nendfunction')
-        vm.g.update(TimeMove=70, FRAME_RoundCountSecBasePrepare=60, PrePickTime=10, RandomAllPlayers=0, TimeRound=120)
+        vm.g.update(PickChat_Sync=lambda *a:None, TimeMove=70, FRAME_RoundCountSecBasePrepare=60, PrePickTime=10, RandomAllPlayers=0, TimeRound=120)
         vm.run('FinishPick');vm.run('FinishPick')
         self.assertEqual(150,vm.g['TimeRound'])
         self.assertIn('set TimeRound = FRAME_RoundCountSecBasePrepare',text)

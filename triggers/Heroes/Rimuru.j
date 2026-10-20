@@ -1,5 +1,17 @@
 library RimuruSpells initializer InitRimuruSpells uses GearSystems
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_DODGE_Q = StringHash("dodge q")
+        private integer SH_EVOL_DMG = StringHash("evol dmg")
+        private integer SH_EVOL_KILL = StringHash("evol kill")
+        private integer SH_RIMURU_EVOL_1 = StringHash("rimuru evol 1")
+        private integer SH_RIMURU_EVOL_2 = StringHash("rimuru evol 2")
+        private integer SH_RIMURU_F = StringHash("rimuru f")
+        private integer SH_RIMURU_G_ORB_COUNT = StringHash("rimuru g orb count")
+        private integer SH_RIMURU_R3_INVUL = StringHash("rimuru r3 invul")
+        private integer SH_RIM_MAIN_STAT = StringHash("rim main stat")
+    endglobals
+    globals
         private timer RimuruTimer03
         private timer RimuruTimer10
         private code RimuruTimer03Callback
@@ -12,18 +24,6 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         integer Rimuru3_ID = 'H01O'
         integer RimuruEvol1_MagiculeDmg = 1500 // need to deal 4000 dmg with T to evolve in next grade
         integer RimuruEvol2_Counter = 20 // need N times that enemy die
-        framehandle array frameRimuru1_pas1
-        framehandle array frameRimuru1_pas2
-        framehandle array frameRimuru1_pas3
-        framehandle array frameRimuru1_pas4
-        framehandle array frameRimuru1_pas5
-        framehandle array frameRimuru1_pas6
-        framehandle array frameRimuru2_pas1
-        framehandle array frameRimuru2_pas2
-        framehandle array frameRimuru2_pas3
-        framehandle array frameRimuru2_pas4
-        framehandle array frameRimuru2_pas5
-        framehandle array frameRimuru2_pas6
 //---------------F ability-----------------------------------------------------
         integer RimuruF_ID = 'A0A1'
         real RimuruF_CD = 20 // in seconds
@@ -60,6 +60,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         integer RimuruG3_AgiBonus_ID = 'A0AJ'
         integer RimuruG3_IntBonus_ID = 'A0AK'
         real RimuruG3_BonusDuration = 10
+        integer RimuruG3_2_ID = 'A113' // 3G2: copy of 2R unlocked by G3 in the 3rd form, damage as R2 level 5
 //---------------Q ability-----------------------------------------------------
         integer RimuruQ_ID = 'A09V'
         real RimuruQ_RangeBase = 1500
@@ -155,6 +156,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         real RimuruR3_DamageIntBase = 8 // base number x Int damage per 1 second
         real RimuruR3_DamageAoe = 360
         real RimuruR3_Stun = 1 // from 0.1 to 3
+        real RimuruR3_Lifesteal = 40 // in %, heals Rimuru for this share of R3 damage dealt (after target resists, DmgSys)
 //---------------T ability-----------------------------------------------------
         integer RimuruR_ID = 'A0A0'
         real RimuruR_DamageIntStep = 1 // additional number x Int damage for each next level per second
@@ -236,7 +238,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruQ
                 set this = m_RimuruQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.6 then
                         call DebugUnit2(c)
                     endif
@@ -271,6 +273,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                 call GroupAddUnit(g2, u)
+                                call DamageSource('A09V')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -369,7 +372,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruW
                 set this = m_RimuruW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.3 then
                         call DebugUnit2(c)
                     endif
@@ -377,6 +380,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Rimuru_W2")
                         call StopSpellUnit2(c)
                         call RootUnit(c, td, RimiruW_Root)
+                        call DamageSource('A09W')
                         call dmgphys(c, td, dmg)
                     endif
                     if r == 0.3 then
@@ -516,7 +520,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruE
                 set this = m_RimuruE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 1.2 then
                         call DebugUnit(c)
                     endif
@@ -562,6 +566,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 call GroupAddUnit(g2, u)
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_poisonaura_purp.mdx", GetUnitX(u), GetUnitY(u), 1, 1, 1.2, 1), 2, 20, u)
                                 call SlowUnit(c, u, RimuruE_SlowPercent, RimuruE_SlowTime)
+                                call DamageSource('A09Y')
                                 call DmgPTime(c, u, dmg, 2, 0.25, 1)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -645,7 +650,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruT2
                 set this = m_RimuruT2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r >= r5 then
                         call MoveEff2(e, move, a)
                         call VisionTimed(GetOwningPlayer(c), GetEffX(e), GetEffY(e) , aoe, 1)
@@ -656,6 +661,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c ))and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A0A7')
                                 call dmgmag(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                 call StunUnit(c, u, RimuruT_Stun)
@@ -672,6 +678,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         set u = FirstOfGroup( g )
                         exitwhen u == null
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c ))and IsUnitInGroup(u, g2) == false then
+                            call DamageSource('A0A7')
                             call dmgmag(c, u, dmg)
                             call GroupAddUnit(g2, u)
                             call StunUnit(c, u, RimuruT_Stun)
@@ -757,7 +764,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruT
                 set this = m_RimuruT[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.51 then
                         call DebugUnit2(c)
                     endif
@@ -858,16 +865,13 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruR
                 set this = m_RimuruR[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r8 = LoadReal(hs, GetHandleId(c), StringHash("evol dmg"))
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r8 = LoadReal(hs, GetHandleId(c), SH_EVOL_DMG)
                     if r8 > k3 then
                         set r8 = I2R(k3)
                     endif
                     // Эволюционный интерфейс мог ещё не быть создан.
-                    if frameRimuru1_pas6[k2] != null and frameRimuru1_pas3[k2] != null then
-                        call BlzFrameSetText(frameRimuru1_pas6[k2], "|c00FFFF00" + I2S(R2I(r8)) + "/" + I2S(k3) + "|r")
-                        call BlzFrameSetValue(frameRimuru1_pas3[k2], r8)
-                    endif
+                        call WUI_HeroProgressCounter(c, RimuruF_ID, "Magicules absorbed", LoadReal(hs, GetHandleId(c), SH_EVOL_DMG), I2R(k3))
                     if check == 0 then
                         if r <= 0.6 then
                             set r4 = r4 + 0.05
@@ -917,9 +921,10 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         endif
                         if r2 > 0.21 then
                             set r2 = 0
+                            call DamageSource('A0A0')
                             call dmgphys(c, td, dmg)
                             if GetHeroLevel(c)>=12 then
-                            call SaveReal(hs, GetHandleId(c), StringHash("evol dmg"), r8 + dmg)
+                            call SaveReal(hs, GetHandleId(c), SH_EVOL_DMG, r8 + dmg)
                             endif
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_xiaonajia01_d_W.mdl", x, y, GetRandomReal(0, 359), 1.75, 1.75, 455))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_obr08 (214).mdl", x, y, GetRandomReal(0, 359), 1, 1.25, 1))
@@ -1021,7 +1026,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             if whichUnit == null then
                 return 0
             endif
-            return LoadInteger(hs, GetHandleId(whichUnit), StringHash("rimuru g orb count"))
+            return LoadInteger(hs, GetHandleId(whichUnit), SH_RIMURU_G_ORB_COUNT)
         endmethod
 
         public static method Loop_RimuruG takes nothing returns nothing
@@ -1054,7 +1059,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                             set y = GetUnitY(c)
                             set sr = SR5(e, x, y)
                             set r6 = RimuruG_ConsumeRange
-                            if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 1 then
+                            if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 1 then
                                 set r6 = 9999
                             endif
                             if sr < r6 then
@@ -1082,11 +1087,11 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                     set y = GetEffY(e)
                     call EffectSpawn2("war3mapImported\\wos_Bubbles2_small.mdx", x, y, GetRandomReal(0, 359), 1, 3, 10, 0.15)
                     call DestroyEffect(e)
-                    set check2 = LoadInteger(hs, GetHandleId(c), StringHash("rimuru g orb count")) - 1
+                    set check2 = LoadInteger(hs, GetHandleId(c), SH_RIMURU_G_ORB_COUNT) - 1
                     if check2 < 0 then
                         set check2 = 0
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("rimuru g orb count"), check2)
+                    call SaveInteger(hs, GetHandleId(c), SH_RIMURU_G_ORB_COUNT, check2)
                     set c = null
                     set e = null
                     set m_RimuruG[i] = m_RimuruG[ MUI_RimuruG]
@@ -1113,13 +1118,13 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                     return
                 endif
                 // Самовосстановление счётчика, если внешняя система удалила эффект/instance.
-                call SaveInteger(hs, GetHandleId(NewC), StringHash("rimuru g orb count"), 0)
+                call SaveInteger(hs, GetHandleId(NewC), SH_RIMURU_G_ORB_COUNT, 0)
             endif
             set this = thistype.create( )
             set MUI_RimuruG = MUI_RimuruG + 1
             set m_RimuruG[ MUI_RimuruG] = this
             set c = NewC
-            call SaveInteger(hs, GetHandleId(c), StringHash("rimuru g orb count"), thistype.CountActive(c) + 1)
+            call SaveInteger(hs, GetHandleId(c), SH_RIMURU_G_ORB_COUNT, thistype.CountActive(c) + 1)
             set r = 0
             set dmg = NewHp
             set rmax = NewRmax
@@ -1161,7 +1166,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_Rimuru2Q
                 set this = m_Rimuru2Q[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_DEGTORAD)
@@ -1171,10 +1176,12 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         else
                             set x = GetUnitX(td)
                             set y = GetUnitY(td)
+                            call DamageSource('A0A3')
                             call dmgmag(c, td, dmg)
                             set r = 9999
                             call EUTU2_3(EffectSpawn("war3mapImported\\wos_yh_az_jugg_e2_black.mdl", x, y, GetRandomReal(0, 359), 0.35, 4.25, 180), 1.5, 185, td)
                             call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_dark purple fire.mdl", td, "chest"), 4)
+                            call DamageSource('A0A3')
                             call DmgPTime(c, td, dmg2, RimuruQ2_DurationDebuff, 0.25, 1)
                             call BlockRegen(td,RimuruQ2_DurationDebuff,RimuruQ2_DebuffHealReduce/100)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_yc_launchbig.mdx", .x, .y, GetRandomReal(0, 359), 1.5, 1, 13))
@@ -1251,7 +1258,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_RimuruW2
                 set this = m_RimuruW2[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == 0.03 then
                         call RootUnit(c, td, RimiruW_Root)
                         set ls_progress = 0.0
@@ -1396,7 +1403,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_Rimuru2W
                 set this = m_Rimuru2W[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.75 then
                         call DebugUnit2(c)
                     endif
@@ -1446,6 +1453,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c ))and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A0A4')
                                     call dmgphys(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call Rimuru2W2_KS.Rimuru2W2_Start(c, u)
@@ -1585,7 +1593,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_Rimuru2E
                 set this = m_Rimuru2E[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit2(c)
                     if r == 0.6 then
                         call MakeSound("war3mapimported\\Hero_Rimuru2_E2")
@@ -1623,6 +1631,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0A5')
                                 call dmgmag(c, u, dmg)
                                 call StunUnit(c, u, RimuruE2_Stun)
                             endif
@@ -1705,7 +1714,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                 exitwhen i > MUI_Rimuru2R
                 set this = m_Rimuru2R[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         if r < 0.6 then
                             call DebugUnit2(c)
@@ -1750,6 +1759,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A0A6')
                                     call dmgmag(c, u, dmg)
                                     call SlowUnit(c,u,RimuruR2_Slow,RimuruR2_SlowDuration )
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1815,6 +1825,9 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             set move = 90
             set aoe = RimuruR2_DamageAoe
             set dmg = GetHeroInt( c , true) * ( RimuruR2_DamageIntBase + ( RimuruR2_DamageIntStep * ( GetUnitAbilityLevel( c , RimuruR2_ID) - 1 ) ) )
+            if GetUnitAbilityLevel(c, RimuruG3_2_ID) > 0 then // 3rd form copy (R2 is removed there): level 5 damage
+                set dmg = GetHeroInt( c , true) * ( RimuruR2_DamageIntBase + RimuruR2_DamageIntStep * 4 )
+            endif
             set dmg = dmg / 9
             call SetUnitFacing( c , a * bj_RADTODEG)
             call SetUnitAnimationByIndex( c , 8)
@@ -1855,8 +1868,9 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             loop
                 exitwhen i > MUI_Rimuru2T
                 set this = m_Rimuru2T[i]
+                call WUI_HeroProgress(c, RimuruT2_ID, "Hell Flare", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         if r == 0.03 then
                             set e = EffectSpawn("war3mapImported\\wos_SacredAuraRed.mdl", x, y, 1, 1, 0.01, 1)
@@ -1942,6 +1956,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A0A7')
                                     call dmgmag(c, u, dmg)
                                     call SlowUnit(c, u, RimuruT2_SlowPercent , RimuruT2_SlowTime )
                                 endif
@@ -2050,7 +2065,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru2F
             set this = m_Rimuru2F[i]
             if SpellBoolCaster(c) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 call DebugUnit2(c)
                 if r == 0.45 then
                     set e = EffectSpawn("war3mapImported\\wos_ZK_MS_LJ_H.mdl", GetUnitX(c) + 50 * Cos(a), GetUnitY(c) + 50 * Sin(a), a * bj_RADTODEG, 1, 0.01, 165)
@@ -2075,6 +2090,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A0A8')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -2113,7 +2129,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                     endif
                 endif
             else
-                call SaveInteger(hs, GetHandleId(c), StringHash("rimuru f"), 0)
+                call SaveInteger(hs, GetHandleId(c), SH_RIMURU_F, 0)
                 call StopSpellUnit2(c)
                 call DestroyEffect(e)
                 call DestroyGroup( g )
@@ -2153,7 +2169,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set a = GAngle2( c , x , y ) // Angle Between points
         set rmax = 1.25
         set aoe = RimiruF2_Aoe
-        call SaveInteger(hs, GetHandleId(c), StringHash("rimuru f"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_RIMURU_F, 1)
         set dmg = GetHeroInt( c , true) * RimuruF2_DamageIntBase
         set dmg = dmg / 4
         call SetUnitFacing( c , a * bj_RADTODEG)
@@ -2184,7 +2200,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru2Evol
             set this = m_Rimuru2Evol[i]
             if r <= rmax then
-                set r = RoundReal(r + 0.1, 1)
+                set r = I2R(R2I((r + 0.1) * 10.0 + 0.5)) / 10.0
             else
                 set x = GetUnitX(c)
                 set y = GetUnitY(c)
@@ -2242,8 +2258,8 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set r = 0
         set rmax = 3.72//3.72
         set e = AddSpecialEffectTarget("war3mapImported\\wos_ChuShou_BY_Wood_yellow_XuLi.mdl", c, "chest")
-        set e2 = AddSpecialEffectTarget("war3mapImported\\wos_evolution2.mdl", c, "origin")
-        set e3 = AddSpecialEffectTarget("war3mapImported\\wos_evolution2.mdl", c, "chest")
+        set e2 = null // wos_evolution2.mdl is not imported
+        set e3 = null // wos_evolution2.mdl is not imported
         call MakeSound("war3mapimported\\Hero_Rimuru2_Evol")
         if MUI_Rimuru2Evol == 0 then
             call RimuruTimer10Acquire()
@@ -2279,7 +2295,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru3Q
             set this = m_Rimuru3Q[i]
             if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 call DebugUnit2(c)
                 set a = GAngle(c, td)
                 call SetUnitFacing(c, a * bj_DEGTORAD)
@@ -2301,8 +2317,10 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set k4 = GetRandomInt(1,3)
                                 endif
                                  if k4>0 then
+                                     call DamageSource('A0AA')
                                      call ErzaPassive(c,td,k4)
                                     endif
+                    call DamageSource('A0AA')
                     call dmgphys(c, td, dmg)
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
@@ -2311,6 +2329,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                     if r == 1.5 then
                         call MakeSound("war3mapimported\\Hero_Rimuru3_Q4")
                             call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_dark purple fire.mdl", td, "chest"), 4)
+                            call DamageSource('A0AA')
                             call DmgPTime(c, td, dmg2, RimuruQ2_DurationDebuff, 0.25, 1)
                             call BlockRegen(td,RimuruQ2_DurationDebuff,RimuruQ2_DebuffHealReduce/100)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_yc_launchbig.mdx", .x, .y, GetRandomReal(0, 359), 1.5, 1, 13))
@@ -2371,7 +2390,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set a = GAngle(c, td)
         set rmax = 1.5
         set move = 75
-        if LoadInteger(hs,GetHandleId(c),StringHash("rim main stat")) ==0 then
+        if LoadInteger(hs,GetHandleId(c),SH_RIM_MAIN_STAT) ==0 then
         set dmg = GetHeroInt( c , true) * RimuruQ3_DamageIntBase
         set dmg2 = GetHeroInt( c , true) * RimuruQ3_DamageIntBurnBase
         else
@@ -2414,8 +2433,9 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         loop
             exitwhen i > MUI_Rimuru3W
             set this = m_Rimuru3W[i]
+            call WUI_HeroProgress(c, RimuruW3_ID, "Uriel Protection", rmax - r, rmax, true)
             if SpellBoolCaster(c) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if r == 0.24 then
                     call BlzPlaySpecialEffect(e, ANIM_TYPE_STAND)
                     call BlzSetSpecialEffectTimeScale(e, 1)
@@ -2555,7 +2575,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru3E
             set this = m_Rimuru3E[i]
             if r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if k3 < 175 then
                     set k3 = k3 + 3
                 endif
@@ -2599,9 +2619,12 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set k4 = GetRandomInt(1,3)
                                 endif
                          if k4>0 then
+                                     call DamageSource('A0AD')
                                      call ErzaPassive(c,u,k4)
                                     endif
+                            call DamageSource('A0AD')
                             call ErzaPassive(c, u, 3)
+                            call DamageSource('A0AD')
                             call dmgmag(c, u, dmg)
                             call SlowUnit(c, u, RimuruE3_SlowPercent , RimuruE3_SlowTime )
                             set k = 0
@@ -2658,7 +2681,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set u = null
         set k3 = 0
         set aoe = RimuruE3_DamageAoe
-        if LoadInteger(hs,GetHandleId(c),StringHash("rim main stat")) ==0 then
+        if LoadInteger(hs,GetHandleId(c),SH_RIM_MAIN_STAT) ==0 then
         set dmg = GetHeroInt( c , true) * ( RimuruE3_DamageIntBase )
         else
         set dmg = GetHeroAgi( c , true) * ( RimuruE3_DamageIntBase )
@@ -2722,7 +2745,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru3E2
             set this = m_Rimuru3E2[i]
             if SpellBoolCaster(c) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if r == 0.03 or r == 0.3 or r == 0.6 then
                     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_chargeorange2.mdl", c, "hand right"))
                 endif
@@ -2789,14 +2812,17 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         exitwhen u == null
                         if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0AC')
                             call dmgmag(c, u, dmg)
                             set k4 = 0
                                 if GetUnitAbilityLevel(c,RimuruG3_IntBonus_ID)>0 then
                                 set k4 = GetRandomInt(1,3)
                                 endif
                              if k4>0 then
+                                     call DamageSource('A0AC')
                                      call ErzaPassive(c,u,k4)
                                     endif
+                            call DamageSource('A0AC')
                             call ErzaPassive(c,u,1)
                         endif
                         call GroupRemoveUnit( g , u )
@@ -2846,7 +2872,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set u = null
         set a = GAngle2( c , x , y ) // Angle Between points
         set aoe = RimuruE4_DamageAoe
-        if LoadInteger(hs,GetHandleId(c),StringHash("rim main stat")) ==0 then
+        if LoadInteger(hs,GetHandleId(c),SH_RIM_MAIN_STAT) ==0 then
         set dmg = GetHeroInt( c , true) * ( RimuruE4_DamageIntBase )
         else
         set dmg = GetHeroAgi( c , true) * ( RimuruE4_DamageIntBase )
@@ -2886,7 +2912,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru3E3
             set this = m_Rimuru3E3[i]
             if SpellBoolCaster(c) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 if r == rmax - 0.21 then
                     call VisionTimed(GetOwningPlayer(c),x,y,1000,2)
                     call MakeSound("war3mapImported\\Hero_Rimuru3_E1 2")
@@ -2912,12 +2938,14 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                            call DamageSource('A0AE')
                             call dmgmag(c, u, dmg)
                             set k4 = 0
                                 if GetUnitAbilityLevel(c,RimuruG3_IntBonus_ID)>0 then
                                 set k4 = GetRandomInt(1,3)
                                 endif
                             if k4>0 then
+                                     call DamageSource('A0AE')
                                      call ErzaPassive(c,u,k4)
                                     endif
                             call StunUnit(c,u,RimuruE5_Stun)
@@ -2957,7 +2985,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set g = CreateGroup()
         set u = null
         set angle = GAngle2(c, x, y)
-        if LoadInteger(hs,GetHandleId(c),StringHash("rim main stat")) ==0 then
+        if LoadInteger(hs,GetHandleId(c),SH_RIM_MAIN_STAT) ==0 then
         set dmg = GetHeroInt( c , true) * ( RimuruE5_DamageIntBase )
         else
         set dmg = GetHeroAgi( c , true) * ( RimuruE5_DamageIntBase )
@@ -3010,11 +3038,11 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             exitwhen i > MUI_Rimuru3R
             set this = m_Rimuru3R[i]
             if SpellBoolCaster(c) and r <= rmax then
-                set r = RoundReal(r + 0.03, 3)
+                set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 call DebugUnit(c)
                 if r == 0.36 then
                     set e = EffectSpawn("war3mapImported\\wos_ZK_MS_LJ_H.mdl", GetUnitX(c) + 50 * Cos(a), GetUnitY(c) + 50 * Sin(a), a * bj_RADTODEG, 1, 0.01, 165)
-                    call ScaleEffDummy(e, 0.45, 0.01, 0.95)
+                    call ScaleEffDummy(e, 0.45, 0.01, 1.045)
                 endif
                 if r == 0.45 then
                     call MakeSound("war3mapimported\\Hero_Rimuru3_R2")
@@ -3035,7 +3063,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         call GroupClear( g2 )
                         set k = 0
                         loop
-                            exitwhen k == 4
+                            exitwhen k == 5
                     call DecorRemove(c,x + r5 * Cos(a) , y + r5 * Sin(a) , aoe,100)
                     call VisionTimed(GetOwningPlayer(c),x + r5 * Cos(a) , y + r5 * Sin(a) ,700,2)
                             call GroupEnumUnitsInRange( g , x + r5 * Cos(a) , y + r5 * Sin(a) , aoe , NoDecor_Cond)
@@ -3043,6 +3071,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A0AF')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     set rr1 = SR3(u, x + 350 * 1 * Cos(a) , y + 350 * 1 * Sin(a))
@@ -3067,6 +3096,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set k4 = GetRandomInt(1,3)
                                 endif
                                     if k4>0 then
+                                     call DamageSource('A0AF')
                                      call ErzaPassive(c,u,k4)
                                     endif
                                     call MUE(u, SR3(u, x1 , y1)*0.4, 0.12, GAngle2(u, x1 , y1))
@@ -3090,7 +3120,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         call GroupClear( g )
                         set k = 0
                         loop
-                            exitwhen k == 6
+                            exitwhen k == 7
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_chushou_by_wood_effect_fire_flamecrack23.mdl", x + r5 * Cos(a) , y + r5 * Sin(a) , GetRandomReal(0, 359), 2, 1 + k * 0.35, 1))
                             call DestroyEffect(EffectSpawn3("war3mapimported\\wos_kirito-17.mdl", x + (r5 * 1.35) * Cos(a) , y + (r5 * 1.35) * Sin(a) , a * bj_RADTODEG, GetRandomReal(0.9, 1.2), 0.8 + k * 0.25, 100, -90))
                             set r5 = r5 + 250
@@ -3106,7 +3136,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             else
                 call DebuffClear(c)
                 call EUTU2(e2, 4, 1, c)
-                call SaveInteger(hs, GetHandleId(c), StringHash("rimuru f"), 0)
+                call SaveInteger(hs, GetHandleId(c), SH_RIMURU_R3_INVUL, 0)
                 call StopSpellUnit(c)
                 call SetUnitTimeScale(c, 1)
                 call MakeSound("war3mapimported\\Hero_Rimuru3_R3")
@@ -3149,8 +3179,8 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         set rmax = 1.8
         set e2 = EffectSpawn("war3mapImported\\wos_blackwhiteaura_3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.5, 1, 1)
         set aoe = RimuruR3_DamageAoe
-        call SaveInteger(hs, GetHandleId(c), StringHash("rimuru f"), 1)
-        if LoadInteger(hs,GetHandleId(c),StringHash("rim main stat")) ==0 then
+        call SaveInteger(hs, GetHandleId(c), SH_RIMURU_R3_INVUL, 1)
+        if LoadInteger(hs,GetHandleId(c),SH_RIM_MAIN_STAT) ==0 then
         set dmg = GetHeroInt( c , true) * ( RimuruR3_DamageIntBase )
         else
         set dmg = GetHeroAgi( c , true) * ( RimuruR3_DamageIntBase )
@@ -3237,8 +3267,9 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             loop
                 exitwhen i > MUI_Rimuru3T
                 set this = m_Rimuru3T[i]
+                call WUI_HeroProgress(c, RimuruT3_ID, "Megido", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 2.7 then
                       //  call DebugUnit(c)
                     endif
@@ -3389,7 +3420,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                       //  call StopSpellUnit(c)
                     endif
                     // в”Ђв”Ђ Lightning strike loop (check 2..6, repeating) в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
-                    if r > 2.7 and r < rmax - 0.1 then
+                    if r > 1.8 and r < rmax - 0.1 then
                         // в”Ђв”Ђ check 2в†’3 : init descending lightning from sky в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
                         if check == 2 then
                             set check = 3
@@ -3610,6 +3641,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                     set u = FirstOfGroup(g2)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and SR3(u, x, y) <= aoe then
+                                        call DamageSource('A0AG')
                                         call dmgmag(c, u, dmg)
                                         call StunUnit(c, u, RimuruT3_Stun)
                                         set k4 = 0
@@ -3617,6 +3649,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                                 set k4 = GetRandomInt(1,3)
                                 endif
                                         if k4>0 then
+                                     call DamageSource('A0AG')
                                      call ErzaPassive(c,u,k4)
                                         endif
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -3751,7 +3784,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
             set angle = GAngle2(c, x, y)
             set rmax = 6.5
             //call StartSpellUnit(c)
-            if LoadInteger(hs, GetHandleId(c), StringHash("rim main stat")) == 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_RIM_MAIN_STAT) == 0 then
                 set dmg = GetHeroInt(c, true) * RimuruT3_DamageIntBase
             else
                 set dmg = GetHeroAgi(c, true) * RimuruT3_DamageIntBase
@@ -3795,6 +3828,78 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         call Rimuru2Evol_KS.Loop_Rimuru2Evol()
     endfunction
 
+    globals
+        private unit array RimuruDodgeHero
+        private integer array RimuruDodgeAbility
+        private integer array RimuruDodgeBuff
+        private boolean array RimuruDodgeSeen
+        private real array RimuruDodgeGrace
+        private integer RimuruDodgeCount = 0
+        // The 0.03 listener is registered only once a Rimuru dodge meter exists.
+        private boolean RimuruDodgeListenerOn = false
+    endglobals
+
+    private function RimuruDodgeProgressTick takes nothing returns nothing
+        local integer pid = 0
+        local unit c
+        local integer remaining
+        local boolean active
+        if RimuruDodgeCount == 0 then
+            return
+        endif
+        loop
+            exitwhen pid >= 10
+            set c = RimuruDodgeHero[pid]
+            if c != null then
+                set active = GetUnitAbilityLevel(c, RimuruDodgeBuff[pid]) > 0
+                if active then
+                    set RimuruDodgeSeen[pid] = true
+                endif
+                set RimuruDodgeGrace[pid] = RimuruDodgeGrace[pid] + 0.03
+                if Hero[pid] != c or GetWidgetLife(c) <= 0.405 or (not active and (RimuruDodgeSeen[pid] or RimuruDodgeGrace[pid] > 0.30)) then
+                    call WUI_HeroProgress(c, RimuruDodgeAbility[pid], "Dodges remaining", 0.00, 0.00, true)
+                    set RimuruDodgeHero[pid] = null
+                    set RimuruDodgeCount = RimuruDodgeCount - 1
+                    if RimuruDodgeCount == 0 then
+                        call GearTimer03Release()
+                    endif
+                elseif active then
+                    set remaining = IMaxBJ(0, RimuruQ2_NumberofDodges - LoadInteger(hs, GetHandleId(c), SH_DODGE_Q))
+                    call WUI_HeroProgress(c, RimuruDodgeAbility[pid], "Dodges remaining", I2R(remaining), I2R(RimuruQ2_NumberofDodges), false)
+                endif
+            endif
+            set pid = pid + 1
+        endloop
+        set c = null
+    endfunction
+
+    private function Rimuru_Listener03 takes nothing returns boolean
+        call RimuruDodgeProgressTick()
+        return false
+    endfunction
+
+    private function RimuruTrackDodges takes unit c, integer abilityId, integer buffId returns nothing
+        local integer pid = GetPlayerId(GetOwningPlayer(c))
+        if pid >= 10 or Hero[pid] != c then
+            return
+        endif
+        if RimuruDodgeHero[pid] == null then
+            if RimuruDodgeCount == 0 then
+                call GearTimer03Acquire()
+            endif
+            if not RimuruDodgeListenerOn then
+                set RimuruDodgeListenerOn = true
+                call TriggerAddCondition(GearTimer03Listeners, Condition(function Rimuru_Listener03))
+            endif
+            set RimuruDodgeCount = RimuruDodgeCount + 1
+        endif
+        set RimuruDodgeHero[pid] = c
+        set RimuruDodgeAbility[pid] = abilityId
+        set RimuruDodgeBuff[pid] = buffId
+        set RimuruDodgeSeen[pid] = false
+        set RimuruDodgeGrace[pid] = 0.00
+    endfunction
+
     private function InitRimuruSpells takes nothing returns nothing
         set RimuruTimer03 = CreateTimer()
         set RimuruTimer10 = CreateTimer()
@@ -3831,56 +3936,10 @@ function RimuruEvol2_Start takes unit c, boolean b returns nothing
     local integer k = 0
     local integer k3 = RimuruEvol2_Counter
     if b == true then
-        if frameRimuru2_pas1[k2] == null then
-            set frameRimuru2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frameRimuru2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-            call BlzFrameSetVisible(frameRimuru2_pas1[k2], false)
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frameRimuru2_pas1[k2], true)
-            endif
-            set frameRimuru2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru2_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas2[k2], 0.1, 0.019)
-            set frameRimuru2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetSize(frameRimuru2_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frameRimuru2_pas3[k2], 0.5)
-            call BlzFrameSetModel(frameRimuru2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-            call BlzFrameSetMinMaxValue(frameRimuru2_pas3[k2], 0, I2R(k3))
-            call BlzFrameSetValue(frameRimuru2_pas3[k2], 0)
-            set frameRimuru2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru2_pas4[k2], 0.03, 0.03)
-            call BlzFrameSetTexture(frameRimuru2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru3_G.blp", 0, false)
-            set frameRimuru2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetText(frameRimuru2_pas5[k2], "|c00FFFF00" + "Soul Gathered:|r")
-            call BlzFrameSetScale(frameRimuru2_pas5[k2], 0.9)
-            set frameRimuru2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru2_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-            call BlzFrameSetText(frameRimuru2_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetScale(frameRimuru2_pas6[k2], 0.9)
-        else
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frameRimuru2_pas1[k2], true)
-            endif
-            call BlzFrameSetText(frameRimuru2_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetMinMaxValue(frameRimuru2_pas3[k2], 0, I2R(k3))
-            call BlzFrameSetValue(frameRimuru2_pas3[k2], 0)
-            set k = LoadInteger(hs, GetHandleId(c), StringHash("evol kill"))
-            if k > k3 then
-                set k = k3
-            endif
-            call BlzFrameSetText(frameRimuru2_pas6[k2], "|c00FFFF00" + I2S(k) + "/" + I2S(k3) + "|r")
-            call BlzFrameSetValue(frameRimuru2_pas3[k2], I2R(k))
-        endif
+        call WUI_HeroProgressCounter(c, RimuruF2_ID, "Souls Gathered", I2R(LoadInteger(hs, GetHandleId(c), SH_EVOL_KILL)), I2R(k3))
     else
         call Rimuru2Evol_KS.Rimuru2Evol_Start(c)
-        if frameRimuru2_pas1[k2] != null and GetLocalPlayer() == GetOwningPlayer(c) then
-            call BlzFrameSetVisible(frameRimuru2_pas1[k2], false)
-        endif
+            call WUI_HeroProgress(c, RimuruF2_ID, "Souls Gathered", 0.00, 0.00, true)
     endif
 endfunction
 function RimuruEvol_Start takes unit c, boolean b returns nothing
@@ -3891,51 +3950,7 @@ function RimuruEvol_Start takes unit c, boolean b returns nothing
     local real y = GetUnitY(c)
     local integer k3 = RimuruEvol1_MagiculeDmg
     if b == true then
-        if frameRimuru1_pas1[k2] == null then
-            set frameRimuru1_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas1[k2], 0.135, 0.035)
-            call BlzFrameSetTexture(frameRimuru1_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-            call BlzFrameSetVisible(frameRimuru1_pas1[k2], false)
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frameRimuru1_pas1[k2], true)
-            endif
-            set frameRimuru1_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameRimuru1_pas1[k2], 0, 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas2[k2], 0.1, 0.019)
-            set frameRimuru1_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetSize(frameRimuru1_pas3[k2], 0.1, 0.035)
-            call BlzFrameSetScale(frameRimuru1_pas3[k2], 0.5)
-            call BlzFrameSetModel(frameRimuru1_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-            call BlzFrameSetMinMaxValue(frameRimuru1_pas3[k2], 0, I2R(k3 + 10))
-            call BlzFrameSetValue(frameRimuru1_pas3[k2], 0)
-            set frameRimuru1_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-            call BlzFrameSetSize(frameRimuru1_pas4[k2], 0.03, 0.03)
-            call BlzFrameSetTexture(frameRimuru1_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Rimuru_Evol1.blp", 0, false)
-            set frameRimuru1_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-            call BlzFrameSetText(frameRimuru1_pas5[k2], "|c00FFFF00" + "Magicule absorbed:|r")
-            call BlzFrameSetScale(frameRimuru1_pas5[k2], 0.9)
-            set frameRimuru1_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameRimuru1_pas1[k2], "", 0)
-            call BlzFrameSetAbsPoint(frameRimuru1_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-            call BlzFrameSetText(frameRimuru1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetScale(frameRimuru1_pas6[k2], 0.9)
-        else
-            if GetLocalPlayer() == GetOwningPlayer(c) then
-                call BlzFrameSetVisible(frameRimuru1_pas1[k2], true)
-            endif
-            call BlzFrameSetText(frameRimuru1_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-            call BlzFrameSetMinMaxValue(frameRimuru1_pas3[k2], 0, I2R(k3 + 10))
-            call BlzFrameSetValue(frameRimuru1_pas3[k2], 0)
-            set r8 = LoadReal(hs, GetHandleId(c), StringHash("evol dmg"))
-            if r8 > k3 then
-                set r8 = I2R(k3)
-            endif
-            call BlzFrameSetText(frameRimuru1_pas6[k2], "|c00FFFF00" + I2S(R2I(r8)) + "/" + I2S(k3) + "|r")
-            call BlzFrameSetValue(frameRimuru1_pas3[k2], r8)
-        endif
+        call WUI_HeroProgressCounter(c, RimuruF_ID, "Magicules absorbed", LoadReal(hs, GetHandleId(c), SH_EVOL_DMG), I2R(k3))
     else
         call BlzSetUnitSkin(c, Rimuru2_ID)
         call MakeSound("war3mapimported\\Hero_Rimuru_Evol1")
@@ -3981,9 +3996,7 @@ function RimuruEvol_Start takes unit c, boolean b returns nothing
         call DestroyEffect(EffectSpawn("war3mapimported\\wos_waterexplosion.mdl", x, y, 1, 1, 1.5, 1))
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_2-[tx]-03-03jianta (3)_1.mdl", x, y, 1, 2.5, 1, 1))
         call RimuruEvol2_Start(c, true)
-        if frameRimuru1_pas1[k2] != null and GetLocalPlayer() == GetOwningPlayer(c) then
-            call BlzFrameSetVisible(frameRimuru1_pas1[k2], false)
-        endif
+            call WUI_HeroProgress(c, RimuruF_ID, "Magicules absorbed", 0.00, 0.00, true)
     endif
 endfunction
 function RimuruQ_Start takes unit c, real x, real y returns nothing
@@ -4007,10 +4020,10 @@ local real hp = 0
     local real hp2 = dmg * (RimuruG_Restore2 / 100)
     local real hp3 = dmg * (RimuruG_Restore3 / 100)
     set hp = hp1
-    if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 1")) == 1 then
+    if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_1) == 1 then
     set hp = hp2
     endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 1 then
+    if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 1 then
     set hp = hp3
     endif
     call RimuruG_KS.RimuruG_Start( c, hp, RimuruG_OrbLifeTime )
@@ -4019,11 +4032,12 @@ function RimuruG_GetActiveOrbCount takes unit c returns integer
     return RimuruG_KS.CountActive(c)
 endfunction
 function Rimuru2Q_Start takes unit c returns nothing
+    call SaveInteger(hs, GetHandleId(c), SH_DODGE_Q, 0)
+    call RimuruTrackDodges(c, RimuruQ2_ID, RimuruQ2_Buff_ID)
     call BuffUnit1( c, c, 9 )
     call MakeSound("war3mapimported\\Hero_Rimuru2_Q")
     call NextSound("war3mapimported\\Hero_Rimuru2_Q2", 1.5)
-    call MyFlushBuff(GetHandleId(c), StringHash("dodge q"), 0, c, RimuruQ2_Buff_ID)
-    call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0303Dodges left: |r" + I2S(RimuruQ2_NumberofDodges))
+    call MyFlushBuff(GetHandleId(c), SH_DODGE_Q, 0, c, RimuruQ2_Buff_ID)
 endfunction
 function Rimuru2QAct_Start takes unit c, unit td returns nothing
     call Rimuru2Q_KS.Rimuru2Q_Start( c, td )
@@ -4036,7 +4050,7 @@ function Rimuru2Q_Dodge takes unit c, unit td, real dmg returns nothing
     local real a = GAngle(c, td)
     local real x1
     local real y1
-    local integer k = LoadInteger(hs, GetHandleId(c), StringHash("dodge q"))
+    local integer k = LoadInteger(hs, GetHandleId(c), SH_DODGE_Q)
     if GetRandomInt(1, 2) == 1 then
         set r2 = 90
     else
@@ -4049,19 +4063,12 @@ function Rimuru2Q_Dodge takes unit c, unit td, real dmg returns nothing
     call PosUnit(c, x1, y1)
     call BlinkEff(c)
     set k = k + 1
-    call SaveInteger(hs, GetHandleId(c), StringHash("dodge q"), k)
-    if RimuruQ2_NumberofDodges - k == 0 then
-    if  LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 0 then
-        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0303Counterattack begin!")
-        endif
-    else
-        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0303Dodges left: |r" + I2S(RimuruQ2_NumberofDodges - k))
-    endif
-    if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 1 then
+    call SaveInteger(hs, GetHandleId(c), SH_DODGE_Q, k)
+    if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 1 then
         call ReduceCooldown(c, RimuruQ3_ID, RimiruF3_ReduceQCdTime)
     endif
     if k >= RimuruQ2_NumberofDodges  then
-    if LoadInteger(hs,GetHandleId(c),StringHash("rimuru evol 2")) == 0 then
+    if LoadInteger(hs,GetHandleId(c),SH_RIMURU_EVOL_2) == 0 then
         call Rimuru2QAct_Start(c, td)
         endif
         call UnitRemoveAbility(c, RimuruQ2_Buff_ID)
@@ -4133,14 +4140,15 @@ function Rimuru3T_Start takes unit c, real x, real y returns nothing
     call GetMainStatValue(c,false)
 endfunction
 function Rimuru3F_Start takes unit c returns nothing
+    call SaveInteger(hs, GetHandleId(c), SH_DODGE_Q, 0)
+    call RimuruTrackDodges(c, RimuruF3_ID, RimuruF3_Buff_ID)
     call BuffUnit1( c, c, 10 )
     if GetRandomInt(1, 2) == 1 then
         call MakeSound("war3mapimported\\Hero_Rimuru3_F")
     else
         call MakeSound("war3mapimported\\Hero_Rimuru3_F2")
     endif
-    call MyFlushBuff(GetHandleId(c), StringHash("dodge q"), 0, c, RimuruF3_Buff_ID)
-    call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0303Dodges left: |r" + I2S(RimuruQ2_NumberofDodges))
+    call MyFlushBuff(GetHandleId(c), SH_DODGE_Q, 0, c, RimuruF3_Buff_ID)
 endfunction
 function Rimuru3G_Start takes unit c, real x, real y returns nothing
     local integer abilityId = RimuruG3_IntBonus_ID
@@ -4148,6 +4156,10 @@ function Rimuru3G_Start takes unit c, real x, real y returns nothing
     call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_BDEF (2313).mdx", c, "origin"), RimuruG3_BonusDuration)
     call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_blackwhiteaura_3.mdx", c, "origin"), RimuruG3_BonusDuration)
     call MyRemoveAbility(c, RimuruG3_BonusDuration, abilityId, 1)
+    call WUI_HeroDuration(c, RimuruG3_ID, "Demon Lord Haki", RimuruG3_BonusDuration, abilityId, "", c)
+    // G is replaced by Black Flame (3G2, copy of 2R) for the Haki duration.
+    call SwapAbility(c, RimuruG3_BonusDuration, RimuruG3_2_ID, RimuruG3_ID)
+    call SetUnitAbilityLevel(c, RimuruG3_2_ID, 1)
 endfunction
 endlibrary
 

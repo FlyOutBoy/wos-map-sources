@@ -18,7 +18,7 @@ class Fixes(unittest.TestCase):
   def frame(kind,name,*_):fr=(kind,len(created));created.append(fr);return fr
   g.update(UNITSTAT_Root='root',BlzCreateFrameByType=frame,BlzFrameSetSize=lambda fr,w,h:sizes.update({fr:(w,h)}),BlzFrameSetScale=lambda fr,v:scales.update({fr:v}),BlzFrameSetPoint=lambda fr,*p:points.update({fr:p}),BlzFrameSetTexture=lambda *_:None,BlzFrameSetEnable=lambda *_:None,BlzFrameSetTextAlignment=lambda *_:None,WUI_PlaceShiftLeft=lambda *_:None,FRAMEPOINT_LEFT='left',TEXT_JUSTIFY_MIDDLE='middle',TEXT_JUSTIFY_LEFT='left')
   for index,width in [(3,.058),(4,.058),(5,.058),(8,.040),(0,.103)]:
-   vm.run('UNITSTAT_WidgetCreate',(index,'icon',.2615,.04,width,None));fr=g['UNITSTAT_Value'][index];self.assertAlmostEqual(sizes[fr][0]*scales[fr],width-.015);self.assertEqual(scales[fr],.76);self.assertEqual(points[fr][-2:],(.0145,0));self.assertLessEqual(.0145+sizes[fr][0]*.76,width)
+   vm.run('UNITSTAT_WidgetCreate',(index,'icon',.2615,.04,width,None));fr=g['UNITSTAT_Value'][index];inset=.0145;self.assertAlmostEqual(sizes[fr][0]*scales[fr],width-inset-.0005);self.assertEqual(scales[fr],.76);self.assertEqual(points[fr][-2:],(inset,0));self.assertLessEqual(inset+sizes[fr][0]*.76,width)
  def test_full_values_and_negative_bonuses_independent_clients(self):
   a=ui.load_source('DefaultArmorChangeStable_Copy.j');b=ui.load_source('DefaultArmorChangeStable_Copy.j')
   for vm in [a,b]:vm.g.update(I2S=str,WUI_GOLD='gold')

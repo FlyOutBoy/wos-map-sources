@@ -1,5 +1,74 @@
 library MahoragaSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer MahoragaTick10_Timer = CreateTimer()
+        private boolean array MahoragaTick10_Active
+        private integer MahoragaTick10_Users = 0
+        private code MahoragaTick10_Callback = null
+    endglobals
+
+    private function MahoragaTick10_On takes integer k returns nothing
+        if not MahoragaTick10_Active[k] then
+            set MahoragaTick10_Active[k] = true
+            set MahoragaTick10_Users = MahoragaTick10_Users + 1
+            if MahoragaTick10_Users == 1 then
+                call TimerStart(MahoragaTick10_Timer, 0.1, true, MahoragaTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function MahoragaTick10_Off takes integer k returns nothing
+        if MahoragaTick10_Active[k] then
+            set MahoragaTick10_Active[k] = false
+            set MahoragaTick10_Users = MahoragaTick10_Users - 1
+            if MahoragaTick10_Users <= 0 then
+                set MahoragaTick10_Users = 0
+                call PauseTimer(MahoragaTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer MahoragaTick_Timer = CreateTimer()
+        private boolean array MahoragaTick_Active
+        private integer MahoragaTick_Users = 0
+        private code MahoragaTick_Callback = null
+    endglobals
+
+    private function MahoragaTick_On takes integer k returns nothing
+        if not MahoragaTick_Active[k] then
+            set MahoragaTick_Active[k] = true
+            set MahoragaTick_Users = MahoragaTick_Users + 1
+            if MahoragaTick_Users == 1 then
+                call TimerStart(MahoragaTick_Timer, 0.03, true, MahoragaTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function MahoragaTick_Off takes integer k returns nothing
+        if MahoragaTick_Active[k] then
+            set MahoragaTick_Active[k] = false
+            set MahoragaTick_Users = MahoragaTick_Users - 1
+            if MahoragaTick_Users <= 0 then
+                set MahoragaTick_Users = 0
+                call PauseTimer(MahoragaTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_COMBO_W = StringHash("combo w")
+        private integer SH_DEBUFF_IMMUNE = StringHash("debuff immune")
+        private integer SH_DECOR_ADD = StringHash("decor add")
+        private integer SH_HEIGHT_TD = StringHash("height td")
+        private integer SH_MAHA_T_DMG = StringHash("maha t dmg")
+        private integer SH_STACK_5 = StringHash("stack 5")
+        private integer SH_T_DMG = StringHash("t dmg")
+        private integer SH_W_TARGET = StringHash("w target")
+    endglobals
+    globals
 //--------------------------------------Mahoraga--------------------------------------------------------------
         integer Mahoraga_ID = 'H021'
         framehandle array frameMahoraga_pas1 [10]
@@ -54,7 +123,7 @@ library MahoragaSpells uses GearSystems
 //---------------E3 ability-----------------------------------------------------
         integer MahoragaE3_ID = 'A0CJ'
         real MahoragaE3_DamageAoe = 675
-        real MahoragaE3_DamageAgiBase = 5 // base number x Agi damage for 1 level
+        real MahoragaE3_DamageAgiBase = 6 // base number x Agi damage for 1 level
         real MahoragaE3_DamageAddForBuildings = 20 // %
         real MahoragaE3_Range = 1400 // how long from start target pos you can move
 //---------------R ability-----------------------------------------------------
@@ -77,6 +146,7 @@ library MahoragaSpells uses GearSystems
         integer MahoragaT_DamageToReduceCD = 1750
         real MahoragaT_ReduceCDAfterDone = 1
         real MahoragaT_DamageReductionPerStack = 5 // %
+        real MahoragaT_DamageBonusPerStack = 2 // % more ability damage per adaptation debuff on the target
         real MahoragaT_CD = 5
         real MahoragaT_CondAoeFind = 3000
         real MahoragaT_DamageTreshold = 50 
@@ -92,10 +162,8 @@ library MahoragaSpells uses GearSystems
 //------------------------------------------------------------------------------
     endglobals
     private struct MahoragaSpells_Q
-        private static timer t_MahoragaQ = CreateTimer()
         private static integer array m_MahoragaQ
         private static integer MUI_MahoragaQ = -1
-        private static timer t_MahoragaQ2 = CreateTimer()
         private static integer array m_MahoragaQ2
         private static integer MUI_MahoragaQ2 = -1
         unit c
@@ -117,7 +185,7 @@ library MahoragaSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_MahoragaQ takes nothing returns nothing
+        static method Loop_MahoragaQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -162,7 +230,7 @@ library MahoragaSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x , y , a * bj_RADTODEG, 1, 2.45, 125))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", x, y, GetRandomReal(0, 359), 1, 2.5, 125))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 2.75, 1.35, 125))
-                            call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
+                            call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 2.5, 2, 80))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlash.mdl" , x + 25 * Cos(a), y + 25 * Sin(a), 1, 1., 1.475, 125))
                             call StunUnit(c, td, MahoragaQ_Stun )
@@ -172,6 +240,7 @@ library MahoragaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A0CD')
                                     call dmgatk(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -190,8 +259,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaQ[i] = m_MahoragaQ[ MUI_MahoragaQ]
                     set MUI_MahoragaQ = MUI_MahoragaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaQ == -1 then
-                        call PauseTimer( t_MahoragaQ)
+                        call MahoragaTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -224,11 +294,11 @@ library MahoragaSpells uses GearSystems
             call SetUnitTimeScale(c, 1.01)
             call MakeSound("war3mapimported\\Hero_Mahoraga_Q")
             if MUI_MahoragaQ == 0 then
-                call TimerStart( t_MahoragaQ, 0.03, true, function thistype.Loop_MahoragaQ)
+                call MahoragaTick_On(0)
             endif
         endmethod
 
-        private static method Loop_MahoragaQ2 takes nothing returns nothing
+        static method Loop_MahoragaQ2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -280,6 +350,7 @@ library MahoragaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0CE')
                                 call dmgphys(c, u, dmg)
                                 call StunUnit(c, u, MahoragaQ2_Stun)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -300,8 +371,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaQ2[i] = m_MahoragaQ2[ MUI_MahoragaQ2]
                     set MUI_MahoragaQ2 = MUI_MahoragaQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaQ2 == -1 then
-                        call PauseTimer( t_MahoragaQ2)
+                        call MahoragaTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -333,19 +405,16 @@ library MahoragaSpells uses GearSystems
             call SetUnitTimeScale(c, 1.3)
             call MakeSound("war3mapimported\\Hero_Mahoraga_Q2 2")
             if MUI_MahoragaQ2 == 0 then
-                call TimerStart( t_MahoragaQ2, 0.03, true, function thistype.Loop_MahoragaQ2)
+                call MahoragaTick_On(1)
             endif
         endmethod
 
     endstruct
   private struct MahoragaSpells_E
-        private static timer t_MahoragaE3 = CreateTimer()
         private static integer array m_MahoragaE3
         private static integer MUI_MahoragaE3 = -1
-        private static timer t_MahoragaE = CreateTimer()
         private static integer array m_MahoragaE
         private static integer MUI_MahoragaE = -1
-        private static timer t_MahoragaE2 = CreateTimer()
         private static integer array m_MahoragaE2
         private static integer MUI_MahoragaE2 = -1
         unit c
@@ -378,7 +447,7 @@ library MahoragaSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_MahoragaE3 takes nothing returns nothing
+        static method Loop_MahoragaE3 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr = 0
@@ -403,7 +472,7 @@ library MahoragaSpells uses GearSystems
                         set y = GetUnitY(c)
                         call SetUnitAnimation(td, "death")
                         call SetUnitTimeScale(td, 0.08)
-                        call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
+                        call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x , y , a * bj_RADTODEG, 0.5, 2.45, GetUnitFlyHeight(c) + 475))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", x, y, GetRandomReal(0, 359), 0.5, 2.5, GetUnitFlyHeight(c) + 475))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 1.85, 1.35, GetUnitFlyHeight(c) + 475))
@@ -456,7 +525,7 @@ library MahoragaSpells uses GearSystems
                     endif
             // Phase 4: r == rmax вЂ” Land, deal AoE damage (like normal E)
                     if r == rmax then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("decor add"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_DECOR_ADD, 0)
                         set x = GetUnitX(c) + 150 * Cos(a)
                         set y = GetUnitY(c) + 150 * Sin(a)
                         call SetFly(c, 0)
@@ -465,7 +534,7 @@ library MahoragaSpells uses GearSystems
                         call StopSpellUnit(td)
                         call MakeSound("war3mapimported\\Hero_Mahoraga_E3 3")
                         call DecorRemove(c, x, y, aoe, 100)
-                        if LoadInteger(hs, GetHandleId(c), StringHash("decor add")) > 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_DECOR_ADD) > 0 then
                             set dmg = dmg * (1 + (MahoragaE3_DamageAddForBuildings / 100))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_hit wave white.mdl", x, y, GetRandomReal(0, 359), 0.65, 2, scale))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Effect Pieces.mdl", x, y, GetRandomReal(0, 359), 1, 3.25, scale - 110))
@@ -489,6 +558,7 @@ library MahoragaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0CJ')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -502,7 +572,7 @@ library MahoragaSpells uses GearSystems
                     call SetFly(c, 0)
                     call SetFly(td, 0)
                    // call BlzStartUnitAbilityCooldown(c,MahoragaE_ID,BlzGetUnitAbilityCooldownRemaining(c,MahoragaE3_ID))
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 0)
                     if GetHeroLevel(c) >= 25 then
                         call SwapAbility(c, MahoragaE2_TimeSwap, MahoragaE2_ID, MahoragaE_ID)
                         call MyFrame(c, MahoragaE2_TimeSwap, "BTNHero_Mahoraga_E2", false, 1)
@@ -516,10 +586,10 @@ library MahoragaSpells uses GearSystems
                     call DestroyEffect(e4)
                     call DestroyEffect(e5)
                     call SetUnitAnimation(c, "stand")
-                    call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("combo w"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("decor add"), 0)
-                    call RemoveSavedHandle(hs, GetHandleId(c), StringHash("w target"))
+                    call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_COMBO_W, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_DECOR_ADD, 0)
+                    call RemoveSavedHandle(hs, GetHandleId(c), SH_W_TARGET)
                     call DestroyGroup(g)
                     set c = null
                     set td = null
@@ -532,8 +602,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaE3[i] = m_MahoragaE3[MUI_MahoragaE3]
                     set MUI_MahoragaE3 = MUI_MahoragaE3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaE3 == -1 then
-                        call PauseTimer(t_MahoragaE3)
+                        call MahoragaTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -546,7 +617,7 @@ library MahoragaSpells uses GearSystems
             set MUI_MahoragaE3 = MUI_MahoragaE3 + 1
             set m_MahoragaE3[MUI_MahoragaE3] = this
             set c = NewC
-            set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("w target"))
+            set td = LoadUnitHandle(hs, GetHandleId(c), SH_W_TARGET)
             set r = 0
             set x1 = GetUnitX(c)
             set y1 = GetUnitY(c)
@@ -571,11 +642,11 @@ library MahoragaSpells uses GearSystems
             set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
             set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
             call SetUnitFacing(c, a * bj_RADTODEG)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 1)
             call SetUnitAnimationByIndex(c, 12) // same as normal E startup anim
-            call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("decor add"), 0)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_DECOR_ADD, 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 1)
             call MakeSound("war3mapimported\\Hero_Mahoraga_E3 1")
             set e = EffectSpawn("war3mapImported\\wos_[tx] (381).mdl", x1, y1, 1, 1, 0.01, 3)
             call ScaleEffDummy(e, 0.3, 0.01, scale)
@@ -585,11 +656,11 @@ library MahoragaSpells uses GearSystems
             set e4 = AddSpecialEffectTarget("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdx", c, "hand right")
             set e5 = AddSpecialEffectTarget("Abilities\\Weapons\\AvengerMissile\\AvengerMissile.mdx", c, "hand left")
             if MUI_MahoragaE3 == 0 then
-                call TimerStart(t_MahoragaE3, 0.03, true, function thistype.Loop_MahoragaE3)
+                call MahoragaTick_On(2)
             endif
         endmethod
 
-        private static method Loop_MahoragaE takes nothing returns nothing
+        static method Loop_MahoragaE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -661,6 +732,7 @@ library MahoragaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0CH')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -687,8 +759,9 @@ library MahoragaSpells uses GearSystems
                     set g2 = null
                     set m_MahoragaE[i] = m_MahoragaE[ MUI_MahoragaE]
                     set MUI_MahoragaE = MUI_MahoragaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaE == -1 then
-                        call PauseTimer( t_MahoragaE)
+                        call MahoragaTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -713,7 +786,7 @@ library MahoragaSpells uses GearSystems
             call StartSpellUnit(c)
             set g = CreateGroup()
             call MakeSound("war3mapimported\\Hero_Mahoraga_E 1")
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 0)
             set dmg = GetHeroAgi( c , true) * ( MahoragaE_DamageAgiBase + ( MahoragaE_DamageAgiStep * ( GetUnitAbilityLevel( c , MahoragaE_ID) - 1 ) ) )
             set move = 150
             call MouseOn(GetOwningPlayer(c))
@@ -730,11 +803,11 @@ library MahoragaSpells uses GearSystems
             set e = EffectSpawn("war3mapImported\\wos_[tx] (381).mdl", x1, y1, 1, 1, 0.01, 3)
             call ScaleEffDummy(e, r5, 0.01, scale)
             if MUI_MahoragaE == 0 then
-                call TimerStart( t_MahoragaE, 0.03, true, function thistype.Loop_MahoragaE)
+                call MahoragaTick_On(3)
             endif
         endmethod
 
-        private static method Loop_MahoragaE2 takes nothing returns nothing
+        static method Loop_MahoragaE2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -801,6 +874,7 @@ library MahoragaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0CI')
                                 call dmgphys(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -820,8 +894,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaE2[i] = m_MahoragaE2[ MUI_MahoragaE2]
                     set MUI_MahoragaE2 = MUI_MahoragaE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaE2 == -1 then
-                        call PauseTimer( t_MahoragaE2)
+                        call MahoragaTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -857,7 +932,7 @@ library MahoragaSpells uses GearSystems
             set rmax = 1.5
             call MakeSound("war3mapimported\\Hero_Mahoraga_E2")
             if MUI_MahoragaE2 == 0 then
-                call TimerStart( t_MahoragaE2, 0.03, true, function thistype.Loop_MahoragaE2)
+                call MahoragaTick_On(4)
             endif
         endmethod
 
@@ -865,10 +940,8 @@ library MahoragaSpells uses GearSystems
 
    
     private struct MahoragaSpells_W
-        private static timer t_MahoragaW2 = CreateTimer()
         private static integer array m_MahoragaW2
         private static integer MUI_MahoragaW2 = -1
-        private static timer t_MahoragaW = CreateTimer()
         private static integer array m_MahoragaW
         private static integer MUI_MahoragaW = -1
         unit c
@@ -892,7 +965,7 @@ library MahoragaSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_MahoragaW2 takes nothing returns nothing
+        static method Loop_MahoragaW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -931,31 +1004,32 @@ library MahoragaSpells uses GearSystems
                                 set e = AddSpecialEffectTarget("war3mapimported\\wos_Windwalk.mdx", td, "chest")
                                 set r6 = r5 / 50
                                 set r2 = 0.84
-                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 0)
+                                call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 0)
                                 call SwapAbility(c, r2, MahoragaE3_ID, MahoragaE_ID)
                                 call MyFrame(c, r2, "BTNHero_Mahoraga_WE", false, 2)
                                 call SetUnitAbilityLevel(c, MahoragaE3_ID, GetUnitAbilityLevel(c, MahoragaE_ID))
                                // call BlzStartUnitAbilityCooldown(c,MahoragaE3_ID,BlzGetUnitAbilityCooldownRemaining(c,MahoragaE_ID))
                                 call StopSpellUnit2(c)
                                 call StunUnit(c, td, MahoragaW2_Stun)
-                                call SaveUnitHandle(hs, GetHandleId(c), StringHash("w target"), td)
+                                call SaveUnitHandle(hs, GetHandleId(c), SH_W_TARGET, td)
                                 set x = GetUnitX(td)
                                 set y = GetUnitY(td)
-                                call SaveInteger(hs, GetHandleId(c), StringHash("height td"), 0)
+                                call SaveInteger(hs, GetHandleId(c), SH_HEIGHT_TD, 0)
                                 call MakeSound("war3mapimported\\Hero_AlterSaber_E4")
+                                call DamageSource('A0CG')
                                 call dmgphys(c, td, dmg)
                                 call EffectSpawn2("war3mapimported\\wos_LD2209 (157).mdx", x, y, GetRandomReal(0, 359), 1, 1, 0, 1)
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x , y , a * bj_RADTODEG, 1, 2.45, 125))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", x, y, GetRandomReal(0, 359), 1, 2.5, 125))
                                 call DestroyEffect(EffectSpawn3("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 2.75, 1.5, 185, -90))
-                                call AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest")
+                                call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_blood impact.mdl", GetUnitX(td), GetUnitY(td), a * bj_RADTODEG, 1, 3.5, 0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", x + 25 * Cos(a), y + 25 * Sin(a) , a * bj_RADTODEG, 1, 3.25, 125))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_cf2.mdx", x + 125 * Cos(a), y + 125 * Sin(a) , a * bj_RADTODEG, 1, 1.95, 15))
                             endif
                         endif
                     elseif check == 1 then
-                        if LoadInteger(hs, GetHandleId(c), StringHash("height td")) == 1 then
+                        if LoadInteger(hs, GetHandleId(c), SH_HEIGHT_TD) == 1 then
                             set r = 9999
                         endif
                         call MoveUnit(td, r6, a)
@@ -967,19 +1041,20 @@ library MahoragaSpells uses GearSystems
                         call StopSpellUnit2(c)
                     else
                         call DestroyEffect(e)
-                        if LoadInteger(hs, GetHandleId(c), StringHash("height td")) == 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_HEIGHT_TD) == 0 then
                             call SetFly(td, 0)
-                            call RemoveSavedHandle(hs, GetHandleId(c), StringHash("w target"))
+                            call RemoveSavedHandle(hs, GetHandleId(c), SH_W_TARGET)
                         endif
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("combo w"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_COMBO_W, 0)
                     set c = null
                     set e = null
                     set u = null
                     set m_MahoragaW2[i] = m_MahoragaW2[ MUI_MahoragaW2]
                     set MUI_MahoragaW2 = MUI_MahoragaW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaW2 == -1 then
-                        call PauseTimer( t_MahoragaW2)
+                        call MahoragaTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -998,21 +1073,21 @@ library MahoragaSpells uses GearSystems
             call StartSpellUnit2(c)
             set check = 0
             set rmax = 2.4
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MahoragaE_ID)), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Mahoraga_MAHORAGAE_ID, 1)
             set a = GAngle( c , td ) // Angle Between points
             set dmg = GetHeroAgi( c , true) * MahoragaW2_DamageAgiBase
             call SetUnitAnimationByIndex( c , 4)
             call SetUnitTimeScale(c, 0.5)            
-            call SaveInteger(hs, GetHandleId(c), StringHash("combo w"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_COMBO_W, 1)
             //call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_wfile00009065.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG , 0.5, 1.1, 1, 255, 255, 255, 255))
             call MakeSound("war3mapimported\\Hero_Mahoraga_W2 1")
             call SetUnitFacing( c , a * bj_RADTODEG)
             if MUI_MahoragaW2 == 0 then
-                call TimerStart( t_MahoragaW2, 0.03, true, function thistype.Loop_MahoragaW2)
+                call MahoragaTick_On(5)
             endif
         endmethod
 
-        private static method Loop_MahoragaW takes nothing returns nothing
+        static method Loop_MahoragaW takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1046,6 +1121,7 @@ library MahoragaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A0CF')
                                 call dmgphys(c, u, dmg)
                                 if GetUnitAbilityLevel(c,MahoragaE2_Buff_ID)>0 then 
                                 call MahoragaSpells_E.MahoragaE2_Start(c,u)
@@ -1069,8 +1145,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaW[i] = m_MahoragaW[ MUI_MahoragaW]
                     set MUI_MahoragaW = MUI_MahoragaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaW == -1 then
-                        call PauseTimer( t_MahoragaW)
+                        call MahoragaTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1102,14 +1179,13 @@ library MahoragaSpells uses GearSystems
             call SetUnitTimeScale(c, 1.)
             call MakeSound("war3mapimported\\Hero_Mahoraga_W")
             if MUI_MahoragaW == 0 then
-                call TimerStart( t_MahoragaW, 0.03, true, function thistype.Loop_MahoragaW)
+                call MahoragaTick_On(6)
             endif
         endmethod
 
     endstruct
 
    private struct MahoragaSpells_T
-        private static timer t_MahoragaT = CreateTimer()
         private static integer array m_MahoragaT
         private static integer MUI_MahoragaT = -1
         unit c
@@ -1129,7 +1205,7 @@ library MahoragaSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_MahoragaT takes nothing returns nothing
+        static method Loop_MahoragaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -1160,6 +1236,7 @@ library MahoragaSpells uses GearSystems
                     set y = GetUnitY(td)
                     if check == 1 then
                         call MUE(c, 350, 0.15, a)
+                        call DamageSource('A0CL')
                         call dmgphys(c, td, dmg)
                         call DecorRemove(c, GetUnitX(td), GetUnitY(td), 300, 100)
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-WWSFX-1.mdl", x, y, a * bj_RADTODEG, 0.5, 10, 155))
@@ -1178,8 +1255,9 @@ library MahoragaSpells uses GearSystems
                     set td = null
                     set m_MahoragaT[i] = m_MahoragaT[MUI_MahoragaT]
                     set MUI_MahoragaT = MUI_MahoragaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaT == -1 then
-                        call PauseTimer( t_MahoragaT )
+                        call MahoragaTick_Off(7)
                     endif
                     call destroy( )
                 endif
@@ -1210,14 +1288,13 @@ library MahoragaSpells uses GearSystems
             set e3 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Mahoraga_T2 1")
             if MUI_MahoragaT == 0 then
-                call TimerStart( t_MahoragaT, 0.03, true, function thistype.Loop_MahoragaT )
+                call MahoragaTick_On(7)
             endif
         endmethod
 
     endstruct
 
     private struct MahoragaSpells_F
-        private static timer t_MahoragaF = CreateTimer()
         private static integer array m_MahoragaF
         private static integer MUI_MahoragaF = -1
         unit c
@@ -1248,7 +1325,7 @@ library MahoragaSpells uses GearSystems
         real a
         real rmax
 
-        private static method Loop_MahoragaF takes nothing returns nothing
+        static method Loop_MahoragaF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1256,7 +1333,7 @@ library MahoragaSpells uses GearSystems
                 set this = m_MahoragaF[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    call DebugUnit(c)
+                    call DebugUnit2(c)
                     if r7 > 0.03 and r > 0 and check == 0 then
                         set r7 = 0
                         set r5 = GetRandomReal(2, 3.5)
@@ -1305,11 +1382,12 @@ library MahoragaSpells uses GearSystems
                             set r6 = 0
                             call DecorRemove(c, x1, y1, aoe, 100)
                             call GroupClear( g )
-                            call GroupEnumUnitsInRange( g , x1 - 100 * Cos(a), y1 - 100 * Sin(a) , aoe , Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange( g , x1 - 100 * Cos(a), y1 - 100 * Sin(a) , aoe , NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A0CM')
                                     call dmgphys(c, u, dmg)
                                     call MUE(u, MahoragaF_PushRange, MahoragaF_PushDuration, a)
                                     call GroupAddUnit( g2 , u )
@@ -1334,7 +1412,8 @@ library MahoragaSpells uses GearSystems
                         endif
                     endif
                 else
-                    call StopSpellUnit(c)
+                    call StopSpellUnit2(c)
+                    call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 0)
                     call SetUnitTimeScale( c , 1)
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
@@ -1350,8 +1429,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaF[i] = m_MahoragaF[ MUI_MahoragaF]
                     set MUI_MahoragaF = MUI_MahoragaF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaF == -1 then
-                        call PauseTimer( t_MahoragaF)
+                        call MahoragaTick_Off(8)
                     endif
                     call deallocate(this)
                 endif
@@ -1373,7 +1453,8 @@ library MahoragaSpells uses GearSystems
             set r5 = 0
             set r6 = 0
             set r7 = 0
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
+            call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 1) // shielded (Laxus T style), not invulnerable
             set g = CreateGroup()
             set g2 = CreateGroup()
             set u = null
@@ -1387,14 +1468,13 @@ library MahoragaSpells uses GearSystems
             call SetUnitTimeScale(c, 0.5)
             call MakeSound("war3mapimported\\Hero_Mahoraga_F")
             if MUI_MahoragaF == 0 then
-                call TimerStart( t_MahoragaF, 0.03, true, function thistype.Loop_MahoragaF)
+                call MahoragaTick_On(8)
             endif
         endmethod
 
     endstruct
 
     private struct MahoragaSpells_G
-        private static timer t_MahoragaG = CreateTimer()
         private static integer array m_MahoragaG
         private static integer MUI_MahoragaG = -1
         unit c
@@ -1411,7 +1491,7 @@ library MahoragaSpells uses GearSystems
         real aoe
         real r
 
-        private static method Loop_MahoragaG takes nothing returns nothing
+        static method Loop_MahoragaG takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1421,7 +1501,7 @@ library MahoragaSpells uses GearSystems
                     if GetHeroLevel(c) >= 25 then
                         if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) or IsUnitType(c, UNIT_TYPE_DEAD) then
                             if d != null then
-                                    call SaveInteger(hs,GetHandleId(c),StringHash("stack 5"),0)
+                                    call SaveInteger(hs,GetHandleId(c),SH_STACK_5,0)
                                 call RemoveUnit(d)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), MahoragaW_ID, true)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), MahoragaW2_ID, false)
@@ -1451,12 +1531,12 @@ library MahoragaSpells uses GearSystems
                             if k == 1 then
                                 if d == null  then
                                     call UnitAddAbility(c, MahoragaW2_ID)
-                                    call SaveInteger(hs,GetHandleId(c),StringHash("stack 5"),1)
+                                    call SaveInteger(hs,GetHandleId(c),SH_STACK_5,1)
                                     set d = CreateUnit(GetOwningPlayer(c), MahoragaT_Unit_ID, GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 1)
                                 endif
                             else
                                 if d != null  then
-                                    call SaveInteger(hs,GetHandleId(c),StringHash("stack 5"),0)
+                                    call SaveInteger(hs,GetHandleId(c),SH_STACK_5,0)
                                     call RemoveUnit(d)
                                     set d = null
                                 endif
@@ -1469,8 +1549,9 @@ library MahoragaSpells uses GearSystems
                     set u = null
                     set m_MahoragaG[i] = m_MahoragaG[ MUI_MahoragaG]
                     set MUI_MahoragaG = MUI_MahoragaG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MahoragaG == -1 then
-                        call PauseTimer( t_MahoragaG)
+                        call MahoragaTick10_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1491,7 +1572,7 @@ library MahoragaSpells uses GearSystems
             set aoe = MahoragaT_CondAoeFind
             set r = 0
             if MUI_MahoragaG == 0 then
-                call TimerStart( t_MahoragaG, 0.1, true, function thistype.Loop_MahoragaG)
+                call MahoragaTick10_On(0)
             endif
         endmethod
 
@@ -1560,8 +1641,8 @@ library MahoragaSpells uses GearSystems
        // set hp = hp * (1+(MahoragaR_HealBonusT/100))
         //endif
         if GetHeroLevel(c)>= 35 then 
-        call SaveInteger(hs,GetHandleId(c),StringHash("debuff immune"),1)
-        call MyFlush(GetHandleId(c),StringHash("debuff immune"),0,MahoragaR_Duration)
+        call SaveInteger(hs,GetHandleId(c),SH_DEBUFF_IMMUNE,1)
+        call MyFlush(GetHandleId(c),SH_DEBUFF_IMMUNE,0,MahoragaR_Duration)
         call DebuffClear(c)
         endif 
         call HPS(c, c, hp, MahoragaR_Duration)
@@ -1597,8 +1678,8 @@ library MahoragaSpells uses GearSystems
                 call BlzFrameSetScale(frameMahoraga_pas3[k2], 0.5)
                 call BlzFrameSetModel(frameMahoraga_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
                 call BlzFrameSetAbsPoint(frameMahoraga_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                call BlzFrameSetMinMaxValue(frameMahoraga_pas3[k2], 0, I2R(k3 + 1))
-                call BlzFrameSetValue(frameMahoraga_pas3[k2], 0)
+                call WUI_FrameSetMinMaxValue(frameMahoraga_pas3[k2], 0, I2R(k3 + 1))
+                call WUI_FrameSetValue(frameMahoraga_pas3[k2], 0)
                 set frameMahoraga_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frameMahoraga_pas1[k2], "", 0)
                 call BlzFrameSetAbsPoint(frameMahoraga_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
                 call BlzFrameSetSize(frameMahoraga_pas4[k2], 0.03, 0.03)
@@ -1617,14 +1698,14 @@ library MahoragaSpells uses GearSystems
                     call BlzFrameSetVisible(frameMahoraga_pas1[k2], true)
                 endif
                 call BlzFrameSetText(frameMahoraga_pas6[k2], "|c00FFFF00" + "0/" + I2S(k3) + "|r")
-                call BlzFrameSetMinMaxValue(frameMahoraga_pas3[k2], 0, I2R(k3 + 1))
-                call BlzFrameSetValue(frameMahoraga_pas3[k2], 0)
-                set k = LoadInteger(hs, GetHandleId(Hero[k]), StringHash("t dmg"))
+                call WUI_FrameSetMinMaxValue(frameMahoraga_pas3[k2], 0, I2R(k3 + 1))
+                call WUI_FrameSetValue(frameMahoraga_pas3[k2], 0)
+                set k = LoadInteger(hs, GetHandleId(Hero[k]), SH_T_DMG)
                 if k > k3 then
                     set k = k3
                 endif
                 call BlzFrameSetText(frameMahoraga_pas6[k2], "|c00FFFF00" + I2S(k) + "/" + I2S(k3) + "|r")
-                call BlzFrameSetValue(frameMahoraga_pas3[k2], I2R(k))
+                call WUI_FrameSetValue(frameMahoraga_pas3[k2], I2R(k))
             endif*/
         else
          //   if GetLocalPlayer() == GetOwningPlayer(c) then
@@ -1640,7 +1721,7 @@ library MahoragaSpells uses GearSystems
     local real cd 
 
     // РЎСѓРјРјРёСЂСѓРµРј РЅР°РєРѕРїР»РµРЅРЅС‹Р№ + РЅРѕРІС‹Р№ СѓСЂРѕРЅ
-    set k = LoadInteger(hs, GetHandleId(td), StringHash("maha t dmg")) + R2I(dmg)
+    set k = LoadInteger(hs, GetHandleId(td), SH_MAHA_T_DMG) + R2I(dmg)
     if k>= MahoragaT_DamageToReduceCD then 
         loop
             exitwhen k < k3 or k4 >= 8
@@ -1657,7 +1738,7 @@ library MahoragaSpells uses GearSystems
     if k < 0 then
         set k = 0
     endif
-    call SaveInteger(hs, GetHandleId(td), StringHash("maha t dmg"), k)
+    call SaveInteger(hs, GetHandleId(td), SH_MAHA_T_DMG, k)
     if k4>0 then
     set k4 = k4 - 1
     if GetUnitAbilityLevel(td, MahoragaT_Abi_ID8) == 1 then
@@ -1692,13 +1773,13 @@ library MahoragaSpells uses GearSystems
     endif 
     // UI вЂ” k РіР°СЂР°РЅС‚РёСЂРѕРІР°РЅРЅРѕ РІ РґРёР°РїР°Р·РѕРЅРµ [0, k3-1]
     call BlzFrameSetText(frameMahoraga_pas6[k2], "|c00FFFF00" + I2S(k) + "/" + I2S(k3) + "|r")
-    call BlzFrameSetValue(frameMahoraga_pas3[k2], I2R(k))
+    call WUI_FrameSetValue(frameMahoraga_pas3[k2], I2R(k))
 
     // --- Р›РѕРіРёРєР° РЅР°Р»РѕР¶РµРЅРёСЏ РїСЂРѕРєР»СЏС‚РёСЏ ---
     set k = 0
     // ... РѕСЃС‚Р°Р»СЊРЅРѕР№ РєРѕРґ Р±РµР· РёР·РјРµРЅРµРЅРёР№
-    if dmg >= MahoragaT_DamageTreshold and IntegerCd(td,"t cd",4) then
-        if IntegerCd(c,"cd sound",10) then 
+    if dmg >= MahoragaT_DamageTreshold and IntegerCdKey(td, SH_ICD_T_CD,4) then
+        if IntegerCdKey(c, SH_ICD_CD_SOUND,10) then 
             call MakeSound("war3mapimported\\Hero_Mahoraga_T")
         endif
        // if  GetUnitAbilityLevel(c, FakeAbi_ID) == 0 then 
@@ -1740,6 +1821,61 @@ endfunction
     function MahoragaF_Start takes unit c, real x, real y returns nothing
         call MahoragaSpells_F.MahoragaF_Start( c, x, y)
     endfunction
+
+    private struct MahoragaTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if MahoragaTick_Active[0] then
+                call MahoragaSpells_Q.Loop_MahoragaQ()
+            endif
+            if MahoragaTick_Active[1] then
+                call MahoragaSpells_Q.Loop_MahoragaQ2()
+            endif
+            if MahoragaTick_Active[2] then
+                call MahoragaSpells_E.Loop_MahoragaE3()
+            endif
+            if MahoragaTick_Active[3] then
+                call MahoragaSpells_E.Loop_MahoragaE()
+            endif
+            if MahoragaTick_Active[4] then
+                call MahoragaSpells_E.Loop_MahoragaE2()
+            endif
+            if MahoragaTick_Active[5] then
+                call MahoragaSpells_W.Loop_MahoragaW2()
+            endif
+            if MahoragaTick_Active[6] then
+                call MahoragaSpells_W.Loop_MahoragaW()
+            endif
+            if MahoragaTick_Active[7] then
+                call MahoragaSpells_T.Loop_MahoragaT()
+            endif
+            if MahoragaTick_Active[8] then
+                call MahoragaSpells_F.Loop_MahoragaF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set MahoragaTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct MahoragaTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if MahoragaTick10_Active[0] then
+                call MahoragaSpells_G.Loop_MahoragaG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set MahoragaTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Mahoraga_MAHORAGAE_ID = StringHash(I2S(MahoragaE_ID))
+    endglobals
+
 endlibrary
 
 

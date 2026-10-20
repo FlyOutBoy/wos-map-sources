@@ -1,0 +1,72 @@
+{
+  "Icon": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/14_01.01d2bd12.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      192,
+      22,
+      941,
+      778
+    ]
+  },
+  "Q": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/10_01.61a81040.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      1133,
+      32,
+      1901,
+      799
+    ]
+  },
+  "W": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/15_01.66f5b707.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      672,
+      22,
+      1651,
+      1004
+    ]
+  },
+  "E": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/09_05.fbf50caf.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      230,
+      43,
+      1267,
+      1069
+    ]
+  },
+  "R": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/10_01.61a81040.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      0,
+      76,
+      614,
+      1026
+    ]
+  },
+  "T": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/10_01.61a81040.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      461,
+      0,
+      1363,
+      896
+    ]
+  },
+  "F": {
+    "url": "https://webusstatic.yo-star.com/ark_anime/assets/16_05.fb3568fa.png",
+    "page": "https://arknights-anime.jp/",
+    "crop_pixels": [
+      384,
+      32,
+      1459,
+      1069
+    ]
+  }
+}

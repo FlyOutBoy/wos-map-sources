@@ -1,5 +1,74 @@
 library NatsuSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer NatsuTick05_Timer = CreateTimer()
+        private boolean array NatsuTick05_Active
+        private integer NatsuTick05_Users = 0
+        private code NatsuTick05_Callback = null
+    endglobals
+
+    private function NatsuTick05_On takes integer k returns nothing
+        if not NatsuTick05_Active[k] then
+            set NatsuTick05_Active[k] = true
+            set NatsuTick05_Users = NatsuTick05_Users + 1
+            if NatsuTick05_Users == 1 then
+                call TimerStart(NatsuTick05_Timer, 0.05, true, NatsuTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function NatsuTick05_Off takes integer k returns nothing
+        if NatsuTick05_Active[k] then
+            set NatsuTick05_Active[k] = false
+            set NatsuTick05_Users = NatsuTick05_Users - 1
+            if NatsuTick05_Users <= 0 then
+                set NatsuTick05_Users = 0
+                call PauseTimer(NatsuTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer NatsuTick_Timer = CreateTimer()
+        private boolean array NatsuTick_Active
+        private integer NatsuTick_Users = 0
+        private code NatsuTick_Callback = null
+    endglobals
+
+    private function NatsuTick_On takes integer k returns nothing
+        if not NatsuTick_Active[k] then
+            set NatsuTick_Active[k] = true
+            set NatsuTick_Users = NatsuTick_Users + 1
+            if NatsuTick_Users == 1 then
+                call TimerStart(NatsuTick_Timer, 0.03, true, NatsuTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function NatsuTick_Off takes integer k returns nothing
+        if NatsuTick_Active[k] then
+            set NatsuTick_Active[k] = false
+            set NatsuTick_Users = NatsuTick_Users - 1
+            if NatsuTick_Users <= 0 then
+                set NatsuTick_Users = 0
+                call PauseTimer(NatsuTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CD_ATK = StringHash("cd atk")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_NATSU_R = StringHash("natsu r")
+        private integer SH_NATSU_R_ADD = StringHash("natsu r add")
+        private integer SH_NATSU_TT_R = StringHash("Natsu tt r")
+        private integer SH_NATSU_TT_R_X = StringHash("Natsu tt r x")
+        private integer SH_NATSU_TT_R_Y = StringHash("Natsu tt r y")
+        private integer SH_REV_Q = StringHash("rev q")
+    endglobals
+    globals
 //--------------------------------------Natsu--------------------------------------------------------------
         integer Natsu_ID = 'H001'
         boolean NatsuPicked = false
@@ -88,7 +157,6 @@ library NatsuSpells uses GearSystems
     endglobals
 
     private struct NatsuQ_KS
-        private static timer t_NatsuQ = CreateTimer( )
         private static integer array m_NatsuQ
         private static integer MUI_NatsuQ = -1
         unit c
@@ -113,14 +181,14 @@ library NatsuSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_NatsuQ takes nothing returns nothing
+        static method Loop_NatsuQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_NatsuQ
                 set this = m_NatsuQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if k2 == 0 then
                         if r == r_prepare - 0.03 then
                             call SetUnitTimeScale(c, 1)
@@ -162,6 +230,7 @@ library NatsuSpells uses GearSystems
                                 exitwhen u == null or check > 0
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A00E')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -232,6 +301,7 @@ library NatsuSpells uses GearSystems
                                 exitwhen u == null or check > 0
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A00E')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -309,6 +379,7 @@ library NatsuSpells uses GearSystems
                                 exitwhen u == null or check > 0
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A00E')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -330,8 +401,9 @@ library NatsuSpells uses GearSystems
                     set u = null
                     set m_NatsuQ[i] = m_NatsuQ[ MUI_NatsuQ]
                     set MUI_NatsuQ = MUI_NatsuQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuQ == -1 then
-                        call PauseTimer( t_NatsuQ)
+                        call NatsuTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -360,9 +432,9 @@ library NatsuSpells uses GearSystems
             set r3 = 1
             set r4 = 1
             set u = null
-            if LoadInteger(hs, GetHandleId(c), StringHash("rev q")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_REV_Q) > 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 set k2 = 2
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            elseif LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 set k2 = 1
             endif
             set a = GAngle2( c , x , y ) // Angle Between points
@@ -394,13 +466,12 @@ library NatsuSpells uses GearSystems
             call SetUnitFacing( c , a * bj_RADTODEG)
             set r7 = 0
             if MUI_NatsuQ == 0 then
-                call TimerStart( t_NatsuQ, 0.03, true, function thistype.Loop_NatsuQ)
+                call NatsuTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct NatsuW_KS
-        private static timer t_NatsuW = CreateTimer( )
         private static integer array m_NatsuW
         private static integer MUI_NatsuW = -1
         unit c
@@ -416,20 +487,21 @@ library NatsuSpells uses GearSystems
         effect e3
         real a
         real rmax
-        private static method Loop_NatsuW takes nothing returns nothing
+        static method Loop_NatsuW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_NatsuW
                 set this = m_NatsuW[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if r > 0.45 then
                         if SR2(c, td) > 100 then
                             call MoveUnit(c, move, a)
                         else
+                            call DamageSource('A00F')
                             call dmgphys(c, td, dmg)
                             call StunUnit(c,td,NatsuW_Stun)
                             call MUE(td, NatsuW_PushRange, NatsuW_PushDuration, a)
@@ -460,8 +532,9 @@ library NatsuSpells uses GearSystems
                     set e3 = null
                     set m_NatsuW[i] = m_NatsuW[ MUI_NatsuW]
                     set MUI_NatsuW = MUI_NatsuW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuW == -1 then
-                        call PauseTimer( t_NatsuW)
+                        call NatsuTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -481,7 +554,7 @@ library NatsuSpells uses GearSystems
             call StartSpellUnit2(c)
             call SetUnitAnimationByIndex( c , 14)
             call SetUnitTimeScale(c, 0.35)
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 set k2 = 1
                 set e3 = AddSpecialEffectTarget("war3mapImported\\wos_lightningeff.mdl", c, "hand right")
                 call MakeSound("war3mapimported\\Hero_Natsu_W2")
@@ -493,16 +566,15 @@ library NatsuSpells uses GearSystems
             if k2 == 2 then
                 set dmg = dmg + GetHeroAgi(c, true) * NatsuGW_DamageAgiBonus
             endif
-            set e = AddSpecialEffectTarget("war3mapImported\\war3mapImported\\wos_windwalk fire2.mdl", c, "hand right")
+            set e = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Fire2.mdl", c, "hand right")
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_File00000712.mdl", c, "hand right")
             if MUI_NatsuW == 0 then
-                call TimerStart( t_NatsuW, 0.03, true, function thistype.Loop_NatsuW)
+                call NatsuTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct NatsuE_KS
-        private static timer t_NatsuE = CreateTimer( )
         private static integer array m_NatsuE
         private static integer MUI_NatsuE = -1
         unit c
@@ -528,7 +600,7 @@ library NatsuSpells uses GearSystems
         effect e4
         real a
         real rmax
-        private static method Loop_NatsuE takes nothing returns nothing
+        static method Loop_NatsuE takes nothing returns nothing
             local integer this
             local integer i = 0
             local real kk = 72
@@ -536,7 +608,7 @@ library NatsuSpells uses GearSystems
                 exitwhen i > MUI_NatsuE
                 set this = m_NatsuE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r == 0.18 then
                         if k2 == 1 then
                             set e3 = AddSpecialEffectTarget("war3mapImported\\wos_lb_hg2-E12B5.mdx", c, "hand right")
@@ -630,10 +702,13 @@ library NatsuSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A00G')
                                     call dmgmag(c, u, dmg)
                                     if k2 == 1 then 
+                                    call DamageSource('A00G')
                                     call ErzaPassive(c,u,5)
                                     else
+                                    call DamageSource('A00G')
                                     call ErzaPassive(c,u,1)                                    
                                     endif
                                     call SlowUnit(c, u, NatsuE_Slow, NatsuE_Duration)
@@ -685,8 +760,9 @@ library NatsuSpells uses GearSystems
                     set e2 = null
                     set m_NatsuE[i] = m_NatsuE[ MUI_NatsuE]
                     set MUI_NatsuE = MUI_NatsuE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuE == -1 then
-                        call PauseTimer( t_NatsuE)
+                        call NatsuTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -712,7 +788,7 @@ library NatsuSpells uses GearSystems
             set rmax = 2.9
             set dmg = GetHeroAgi( c , true) * ( NatsuE_DamageAgiBase + ( NatsuE_DamageAgiStep * ( GetUnitAbilityLevel( c , NatsuE_ID) - 1 ) ) )
             set dmg = dmg + NatsuE_Damage2StaticBase + ( NatsuE_Damage2StaticStep * ( GetUnitAbilityLevel( c , NatsuE_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 set k2 = 1
                 set dmg = dmg + GetHeroAgi(c, true) * NatsuGE_DamageAgiBonus
                 call MakeSound("war3mapimported\\Hero_Natsu_GE")
@@ -723,13 +799,12 @@ library NatsuSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 9)
             call SetUnitTimeScale(c, 1)
             if MUI_NatsuE == 0 then
-                call TimerStart( t_NatsuE, 0.03, true, function thistype.Loop_NatsuE)
+                call NatsuTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct NatsuR_KS
-        private static timer t_NatsuR = CreateTimer( )
         private static integer array m_NatsuR
         private static integer MUI_NatsuR = -1
         unit c
@@ -755,7 +830,7 @@ library NatsuSpells uses GearSystems
         effect e5
         real a
         real rmax
-        private static method Loop_NatsuR takes nothing returns nothing
+        static method Loop_NatsuR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1
@@ -765,7 +840,7 @@ library NatsuSpells uses GearSystems
                 exitwhen i > MUI_NatsuR
                 set this = m_NatsuR[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     if r< r8 then
                     call DebugUnit(td)
@@ -799,12 +874,12 @@ library NatsuSpells uses GearSystems
                         if r > 0.3 then
                         call DecorRemove(c, x, y, 450, 10)
                             call BlzSetSpecialEffectPosition(e5, GetUnitX(c) - 100 * Cos(a + 25 * bj_DEGTORAD), GetUnitY(c) - 100 * Sin(a + 25 * bj_DEGTORAD), 650)
-                            if LoadInteger(hs, GetHandleId(c), StringHash("natsu r add")) == 1 and check == 0 then
+                            if LoadInteger(hs, GetHandleId(c), SH_NATSU_R_ADD) == 1 and check == 0 then
                                 if r7 < NatsuR_BonusMax  then
                                     set r3 = r3 - 0.0175
                                     call BlzPlaySpecialEffect(e5, ANIM_TYPE_BIRTH)
-                                    call SaveInteger(hs, GetHandleId(c), StringHash("natsu r add"), 0)
-                                    call SaveReal(hs, GetHandleId(c), StringHash("cd atk"), r3)
+                                    call SaveInteger(hs, GetHandleId(c), SH_NATSU_R_ADD, 0)
+                                    call SaveReal(hs, GetHandleId(c), SH_CD_ATK, r3)
                                     set r7 = r7 + NatsuR_BonusAdd 
                                 else
                                     set r7 = NatsuR_BonusMax 
@@ -815,6 +890,7 @@ library NatsuSpells uses GearSystems
                             if r2 > r3 then
                                 set r2 = 0
                                 call UnitRemoveAbility(td, 'Avul')
+                                call DamageSource('A00H')
                                 call dmgphys(c, td, dmg)
                                 call UnitAddAbility(td, 'Avul')
                             else
@@ -896,6 +972,7 @@ library NatsuSpells uses GearSystems
                                 
                                 call StunUnit(c, td, NatsuR_Stun)
                                     set dmg =dmg * (1+(r7 /100))
+                                call DamageSource('A00H')
                                 call dmgphys(c,td,dmg)
                                 
                                 
@@ -916,6 +993,7 @@ library NatsuSpells uses GearSystems
                                 set r = 999999
                                 call StunUnit(c, td, NatsuR_Stun)
                                 call MUE(td, NatsuR_PushRange, NatsuR_PushDuration, a)
+                                call DamageSource('A00H')
                                 call dmgphys(c, td, dmg2)
                             endif
                         endif
@@ -939,10 +1017,10 @@ library NatsuSpells uses GearSystems
                     if GetLocalPlayer() == GetOwningPlayer(td) then
                         call CameraSetTargetNoise( 0, 0)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("natsu r"), 0)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("Natsu tt r x"), 0)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("Natsu tt r y"), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("Natsu tt r"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_NATSU_R, 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_NATSU_TT_R_X, 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_NATSU_TT_R_Y, 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_NATSU_TT_R, 0)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.21)
                     set c = null
                     set td = null
@@ -953,8 +1031,9 @@ library NatsuSpells uses GearSystems
                     set e5 = null
                     set m_NatsuR[i] = m_NatsuR[ MUI_NatsuR]
                     set MUI_NatsuR = MUI_NatsuR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuR == -1 then
-                        call PauseTimer( t_NatsuR)
+                        call NatsuTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -974,16 +1053,16 @@ library NatsuSpells uses GearSystems
             set a = GAngle2(c, x, y)
             call StartSpellUnit(c)
             call StartSpellUnit(td)
-            set e = AddSpecialEffectTarget("war3mapImported\\war3mapImported\\wos_windwalk fire2.mdl", c, "hand right")
-            set e2 = AddSpecialEffectTarget("war3mapImported\\war3mapImported\\wos_windwalk fire2.mdl", c, "hand left")
+            set e = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Fire2.mdl", c, "hand right")
+            set e2 = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Fire2.mdl", c, "hand left")
             set rmax = 2.7
             set r8 = rmax
             set check = 0
             set r3 = 0.45
-            call SaveReal(hs, GetHandleId(c), StringHash("cd atk"), r3)
+            call SaveReal(hs, GetHandleId(c), SH_CD_ATK, r3)
             set dmg = GetHeroAgi( c , true) * ( NatsuR_DamageAgiBase + ( NatsuR_DamageAgiStep * ( GetUnitAbilityLevel( c , NatsuR_ID) - 1 ) ) )
             set dmg = dmg + NatsuR_Damage2StaticBase + ( NatsuR_Damage2StaticStep * ( GetUnitAbilityLevel( c , NatsuR_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 set k2 = 1
                 set dmg2 = GetHeroAgi(c, true) * NatsuGR_DamageAgiBonus
                 call MakeSound("war3mapimported\\Hero_Natsu_GR")
@@ -991,18 +1070,17 @@ library NatsuSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Natsu_R")
             endif
             
-            call SaveInteger(hs, GetHandleId(c), StringHash("natsu r"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("natsu r add"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_NATSU_R, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_NATSU_R_ADD, 0)
             call SetUnitAnimationByIndex( c , 11)
             call SetUnitTimeScale(c, 2)
             if MUI_NatsuR == 0 then
-                call TimerStart( t_NatsuR, 0.03, true, function thistype.Loop_NatsuR)
+                call NatsuTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct NatsuT_KS
-        private static timer t_NatsuT = CreateTimer( )
         private static integer array m_NatsuT
         private static integer MUI_NatsuT = -1
         unit c
@@ -1027,7 +1105,7 @@ library NatsuSpells uses GearSystems
         effect e5
         real a
         real rmax
-        private static method Loop_NatsuT takes nothing returns nothing
+        static method Loop_NatsuT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1036,8 +1114,8 @@ library NatsuSpells uses GearSystems
                 exitwhen i > MUI_NatsuT
                 set this = m_NatsuT[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     if r == 0.3 then
                         set x = GetUnitX(c) + 140 * Cos(a)
                         set y = GetUnitY(c) + 140 * Sin(a)
@@ -1101,6 +1179,7 @@ library NatsuSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                 call GroupAddUnit(g2, u)
+                                call DamageSource('A00I')
                                 call dmgmag(c, u, dmg)
                                 call MUE(u, NatsuT_PushRange, NatsuT_PushDuration, a)
                             endif
@@ -1131,8 +1210,9 @@ library NatsuSpells uses GearSystems
                     set u = null
                     set m_NatsuT[i] = m_NatsuT[ MUI_NatsuT]
                     set MUI_NatsuT = MUI_NatsuT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuT == -1 then
-                        call PauseTimer( t_NatsuT)
+                        call NatsuTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1161,7 +1241,7 @@ library NatsuSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 10)
             call SetUnitTimeScale(c, 0.85)
             set k2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                 call MakeSound("war3mapimported\\Hero_Natsu_GT")
                 set k2 = 1
                 set dmg = dmg + NatsuGT_DamageAgiBonus * GetHeroAgi(c, true)
@@ -1177,31 +1257,24 @@ library NatsuSpells uses GearSystems
                 set e5 = AddSpecialEffectTarget("war3mapImported\\wos_lightningeff.mdl", c, "hand left")
             endif
             if MUI_NatsuT == 0 then
-                call TimerStart( t_NatsuT, 0.03, true, function thistype.Loop_NatsuT)
+                call NatsuTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct NatsuG2_KS
-        private static timer t_NatsuG2 = CreateTimer( )
         private static integer array m_NatsuG2
         private static integer MUI_NatsuG2 = -1
         unit c
         real x
         real y
         integer k2
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         real r
         effect e
         effect e2
         effect e3
         real rmax
-        private static method Loop_NatsuG2 takes nothing returns nothing
+        static method Loop_NatsuG2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1209,22 +1282,19 @@ library NatsuSpells uses GearSystems
                 set this = m_NatsuG2[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c))== false then
                     if IsUnitPaused(c) == false then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     call BlzSetSpecialEffectPosition(e, x, y, GetUnitFlyHeight(c) + 105 )
                     call BlzSetSpecialEffectPosition(e2, x, y, GetUnitFlyHeight(c) + 15)
                     call BlzSetSpecialEffectPosition(e3, x, y, GetUnitFlyHeight(c) + 125)
-                    call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, NatsuG2_ID, "Modo Raienryu", rmax - r, rmax, true)
                         endif
                 else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, NatsuG2_ID, "Modo Raienryu", 0.00, 0.00, true)
                     call IssueImmediateOrder(c,"stop")
                     call BlzSetAbilityIcon(Natsu_ID,"ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_Icon.blp")
                     call BlzSetAbilityIcon(NatsuQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_Q.blp")
@@ -1232,7 +1302,7 @@ library NatsuSpells uses GearSystems
                     call BlzSetAbilityIcon(NatsuE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_E.blp")
                     call BlzSetAbilityIcon(NatsuR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_R.blp")
                     call BlzSetAbilityIcon(NatsuT_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_T.blp")
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 0)
                     call EUTU2_3(e, 0.3, 0, c)
                     call DestroyEffect(e2)
                     call DestroyEffect(e3)
@@ -1242,8 +1312,9 @@ library NatsuSpells uses GearSystems
                     set e3 = null
                     set m_NatsuG2[i] = m_NatsuG2[ MUI_NatsuG2]
                     set MUI_NatsuG2 = MUI_NatsuG2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuG2 == -1 then
-                        call PauseTimer( t_NatsuG2)
+                        call NatsuTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1264,58 +1335,20 @@ library NatsuSpells uses GearSystems
             set e = EffectSpawn("war3mapImported\\wos_Raienryuu no Houkou.mdl", x, y, 1, 1, 1.35, 1)
             set e2 = EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 1, 0.35, 0.5, 15)
             set e3 = EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 90, 0.35, 0.4, 125)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 1)
             call BlzSetAbilityIcon(Natsu_ID,"ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_Icon2.blp")
             call BlzSetAbilityIcon(NatsuQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GQ.blp")
             call BlzSetAbilityIcon(NatsuW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GW.blp")
             call BlzSetAbilityIcon(NatsuE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GE.blp")
             call BlzSetAbilityIcon(NatsuR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GR.blp")
             call BlzSetAbilityIcon(NatsuT_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GT.blp")
-            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_Icon2", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
             if MUI_NatsuG2 == 0 then
-                call TimerStart( t_NatsuG2, 0.03, true, function thistype.Loop_NatsuG2)
+                call NatsuTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct NatsuG_KS
-        private static timer t_NatsuG = CreateTimer( )
         private static integer array m_NatsuG
         private static integer MUI_NatsuG = -1
         unit c
@@ -1337,12 +1370,14 @@ library NatsuSpells uses GearSystems
         effect e
         effect e2
         real a
-        private static method Loop_NatsuG takes nothing returns nothing
+        static method Loop_NatsuG takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_NatsuG
                 set this = m_NatsuG[i]
+                // Lower row: channel time; upper row: what the absorbed flames gave so far.
+                call WUI_HeroProgressDualText(c, NatsuG_ID, "Flame absorb", 2.80 - r, 2.80, I2R(check + check2), RMaxBJ(1, I2R(check + check2)), "+" + I2S(check * 100) + " MP  |  -" + I2S(R2I((check + check2) * NatsuG_CdReduceTime)) + " sec Q W E")
                 if GetUnitCurrentOrder(c) == OrderId("creepheal") then
                     set r = r + 0.05
                     set x = GetUnitX(c)
@@ -1368,6 +1403,14 @@ library NatsuSpells uses GearSystems
                     loop
                         set u = FirstOfGroup( g )
                         exitwhen u == null
+                        if IsUnitAlly(u, GetOwningPlayer(c)) and GetWidgetLife(u) > 0.405 and GetUnitAbilityLevel(u, ErzaFire_ID) > 0 then
+                            call UnitRemoveAbility(u, ErzaFire_ID)
+                            set check2 = check2 + 1
+                            // Applied at once, not only when the channel ends.
+                            call ReduceCooldown(c, NatsuQ_ID, NatsuG_CdReduceTime)
+                            call ReduceCooldown(c, NatsuW_ID, NatsuG_CdReduceTime)
+                            call ReduceCooldown(c, NatsuE_ID, NatsuG_CdReduceTime)
+                        endif
                         if GetUnitAbilityLevel(u, 'Avul') > 0 and GetUnitTypeId(u) == Fire_ID and GetUnitAbilityLevel(u, 'Aloc') == 0 then
                             call MUE(u, SR3(u, x, y), 0.66, GAngle2(u, x, y))
                             call SetAnim(u, 0.66, "death")
@@ -1375,14 +1418,18 @@ library NatsuSpells uses GearSystems
                             call MyRemoveUnit(u, 1.25)
                             call UnitAddAbility(u, 'Aloc')
                             set check = check + 1
+                            call SetMpCurrent(c, 100)
+                            call ReduceCooldown(c, NatsuQ_ID, NatsuG_CdReduceTime)
+                            call ReduceCooldown(c, NatsuW_ID, NatsuG_CdReduceTime)
+                            call ReduceCooldown(c, NatsuE_ID, NatsuG_CdReduceTime)
                         endif
                         call GroupRemoveUnit( g , u )
                     endloop
                     set u = null
                     if r == 2.8 and k2 == 1 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("rev q"), 1)
-                        call MyFlush(GetHandleId(c), StringHash("rev q"), 0, 5)
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF8040You have 5 sec to use enchanced Q|r")
+                        call SaveInteger(hs, GetHandleId(c), SH_REV_Q, 1)
+                        call MyFlush(GetHandleId(c), SH_REV_Q, 0, 5)
+                        call WUI_HeroDuration(c, NatsuQ_ID, "Raienryuu no Hoko", 5.00, 0, "rev q", c)
                     endif
                 else
                     if k2 == 1 then
@@ -1393,18 +1440,11 @@ library NatsuSpells uses GearSystems
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), NatsuG_ID, true)
                     call StopSound(gg_snd_Hero_Natsu_G, false, false)
                     set r5 = check * 100
-                    set r7 = check * NatsuG_CdReduceTime
-                    call SetMpCurrent(c, r5)
-                    call ReduceCooldown(c, NatsuQ_ID, r7)
-                    call ReduceCooldown(c, NatsuW_ID, r7)
-                    call ReduceCooldown(c, NatsuE_ID, r7)
-                    if check == 0 and check2 == 0 then
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0000No flame absorbed|r")
-                    elseif check > 0 then
+                    set r7 = (check + check2) * NatsuG_CdReduceTime // already applied per absorbed flame
+                    if check > 0 or check2 > 0 then
                     if k2 == 0 then 
                     call MakeSound("war3mapimported\\Hero_Natsu_Pick5")
                     endif
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FF0000Restored|r |c000042FF" + I2S(R2I(r5)) + "|r |c00FF0000mana and reduced ongoing Q W E cd for|r |c00FFFC01" + I2S(R2I(r7)) + "|r |c00FF0000sec|r")
                     endif
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.21)
                     call DestroyGroup(g)
@@ -1413,8 +1453,9 @@ library NatsuSpells uses GearSystems
                     set e = null
                     set m_NatsuG[i] = m_NatsuG[ MUI_NatsuG]
                     set MUI_NatsuG = MUI_NatsuG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuG == -1 then
-                        call PauseTimer( t_NatsuG)
+                        call NatsuTick05_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -1442,7 +1483,7 @@ library NatsuSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             call SetUnitTimeScale(c, 0.5)
             call SetUnitAnimationByIndex(c, 15)
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 call StartSound(gg_snd_Hero_Natsu_GQ0)
                 call SetUnitTimeScale(c, 0.35)
                 set k2 = 1
@@ -1455,13 +1496,12 @@ library NatsuSpells uses GearSystems
             endif
             set e = EffectSpawn("war3mapimported\\wos_firacharge.mdl", x, y, a, 1, scale, fly)
             if MUI_NatsuG == 0 then
-                call TimerStart( t_NatsuG, 0.05, true, function thistype.Loop_NatsuG)
+                call NatsuTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct NatsuPas_KS
-        private static timer t_NatsuPas = CreateTimer( )
         private static integer array m_NatsuPas
         private static integer MUI_NatsuPas = -1
         unit c
@@ -1470,17 +1510,11 @@ library NatsuSpells uses GearSystems
         integer k2
         real scale
         real fly
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
         real r
         effect e
         real a
         real rmax
-        private static method Loop_NatsuPas takes nothing returns nothing
+        static method Loop_NatsuPas takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1488,7 +1522,7 @@ library NatsuSpells uses GearSystems
                 set this = m_NatsuPas[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c))== false then
                     if IsUnitPaused(c) == false then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
                     if r == 0.03 then                     
                 call BlzStartUnitAbilityCooldown(c,NatsuFR_ID,BlzGetUnitAbilityCooldownRemaining(c,NatsuR_ID))
@@ -1501,17 +1535,14 @@ library NatsuSpells uses GearSystems
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     call BlzSetSpecialEffectPosition(e, x, y, GetUnitFlyHeight(c) + fly)
-                    call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, NatsuF_ID, "Flame of Emotion", rmax - r, rmax, true)
                         endif
                 else
                 if GetUnitCurrentOrder(c) == OrderId("ancestralspirittarget") or GetUnitCurrentOrder(c) == OrderId("awaken") then
                 call IssueImmediateOrder(c,"stop")
                 endif
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame2_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, NatsuF_ID, "Flame of Emotion", 0.00, 0.00, true)
                     call UnitRemoveAbility(c, NatsuF_Stats_ID)
                     if GetUnitAbilityLevel(c, NatsuR_ID) > 0 then
                         call SetPlayerAbilityAvailable(GetOwningPlayer(c), NatsuFR_ID, false)
@@ -1527,8 +1558,9 @@ library NatsuSpells uses GearSystems
                     set e = null
                     set m_NatsuPas[i] = m_NatsuPas[ MUI_NatsuPas]
                     set MUI_NatsuPas = MUI_NatsuPas - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuPas == -1 then
-                        call PauseTimer( t_NatsuPas)
+                        call NatsuTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1565,51 +1597,13 @@ library NatsuSpells uses GearSystems
                 endif
                 //call ReduceCooldown(c, NatsuFR_ID, NatsuF_CdReduceTime)
             endif
-            if frame2_pas1[k2] == null then
-                                set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.2175)
-                                call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame2_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                                call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                                set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.2125)
-                                call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                                set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.2175)
-                                call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_F", 0, false)
-                                set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.2225)
-                                call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Flame of Emotion:" + "|r")
-                                call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                                set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.2075)
-                                call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame2_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            endif
             if MUI_NatsuPas == 0 then
-                call TimerStart( t_NatsuPas, 0.03, true, function thistype.Loop_NatsuPas)
+                call NatsuTick_On(6)
             endif
         endmethod
     endstruct
 
     private struct NatsuFR_KS
-        private static timer t_NatsuFR = CreateTimer( )
         private static integer array m_NatsuFR
         private static integer MUI_NatsuFR = -1
         unit c
@@ -1631,7 +1625,7 @@ library NatsuSpells uses GearSystems
         effect e3
         real a
         real rmax
-        private static method Loop_NatsuFR takes nothing returns nothing
+        static method Loop_NatsuFR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1
@@ -1642,7 +1636,7 @@ library NatsuSpells uses GearSystems
                 exitwhen i > MUI_NatsuFR
                 set this = m_NatsuFR[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and IsUnitType(td,UNIT_TYPE_DEAD)== false and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call DebugUnit(c)
                     if check == 5 then 
                     call DebugUnit(td)
@@ -1675,6 +1669,7 @@ library NatsuSpells uses GearSystems
                                 endif
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_yuzhiboyou_fire_babangouyu_1_kong.mdx", GetUnitX(td) + 100 * Cos(a), GetUnitY(td) + 100 * Sin(a), 1, 1.25, 1, 120))
                                 call SetUnitAnimation(td, "death")
+                                call DamageSource('A00N')
                                 call dmgphys(c, td, dmg)
                                 call StunUnit(c,td,NatsuFR_Stun)
                                 endif
@@ -1701,6 +1696,7 @@ library NatsuSpells uses GearSystems
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2.mdl", GetUnitX(td), GetUnitY(td), 100, 1, 1.15, 150), 1.5, 150, td)
                                 call SetUnitAnimation(td, "death")
                                 call StunUnit(c,td,NatsuFR_Stun)
+                                call DamageSource('A00N')
                                 call dmgphys(c, td, dmg)
                                 endif
                         endif
@@ -1725,6 +1721,7 @@ library NatsuSpells uses GearSystems
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_t8_by_wood_effect_order_dange_daoguang_baozha_2_2_clear.mdl", GetUnitX(td), GetUnitY(td), 100, 1, 1, 30), 1.5, 20, td)
                                 call EUTU2_3(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_DaYanJieYanDi_2.mdl", GetUnitX(td), GetUnitY(td), 100, 0.5, 1.25, 55), 1, 55, td)
                                 call StunUnit(c,td,NatsuFR_Stun)
+                                call DamageSource('A00N')
                                 call dmgphys(c, td, dmg)
                             endif
                         endif
@@ -1747,9 +1744,10 @@ library NatsuSpells uses GearSystems
                                 if k2 == 1 then
                                     call EUTU2(EffectSpawn("war3mapImported\\wos_a_light_hity.mdl", GetUnitX(td), GetUnitY(td), GetRandomReal(0, 359), 0.67, 1.5, 40), 1, 35, td)
                                 endif
-                                call DestroyEffect(EffectSpawn("war3mapImported\\papsnaz (484).mdl", GetUnitX(td), GetUnitY(td), a * bj_RADTODEG, 1.2, 0.45, 110))
+                                // removed: papsnaz (484).mdl is not imported
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2.mdl", GetUnitX(td), GetUnitY(td), 100, 2, 1.25, 150), 1.5, 1, td)
                                 call StunUnit(c,td,NatsuFR_Stun)
+                                call DamageSource('A00N')
                                 call dmgphys(c, td, dmg)
                             endif
                         endif
@@ -1774,6 +1772,7 @@ library NatsuSpells uses GearSystems
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_papsnaz (707).mdl", GetUnitX(td), GetUnitY(td), 100, 0.8, 0.65, 150), 1.5, 25, td)
                                 call EUTU2(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2.mdl", GetUnitX(td), GetUnitY(td), 100, 1, 2.15, 150), 1.5, 1, td)
                                 call StunUnit(c,td,NatsuFR_Stun)
+                                call DamageSource('A00N')
                                 call dmgphys(c, td, dmg)
                                 if GetUnitAbilityLevel(c,NatsuT_ID)>0 and BlzGetUnitAbilityCooldownRemaining(c, NatsuFT_ID) == 0 then
                                     set check = 5
@@ -1800,6 +1799,7 @@ library NatsuSpells uses GearSystems
                                 call HeightSet(td, 0.09, GetUnitFlyHeight(td) + 33)
                                 call MUE(td, 90, 0.1, a)
                                 call UnitRemoveAbility(td, 'Avul')
+                                call DamageSource('A00N')
                                 call dmgmag(c, td, dmg2)
                                 call UnitAddAbility(td, 'Avul')
                                 call DecorRemove(c, x, y, 450, 100)
@@ -1869,8 +1869,9 @@ library NatsuSpells uses GearSystems
                     set e3 = null
                     set m_NatsuFR[i] = m_NatsuFR[ MUI_NatsuFR]
                     set MUI_NatsuFR = MUI_NatsuFR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuFR == -1 then
-                        call PauseTimer( t_NatsuFR)
+                        call NatsuTick_Off(7)
                     endif
                     call deallocate(this)
                 endif
@@ -1890,18 +1891,18 @@ library NatsuSpells uses GearSystems
             set move = 60
             call StartSpellUnit(c)
             set g = CreateGroup()
-            set e = AddSpecialEffectTarget("war3mapImported\\war3mapImported\\wos_windwalk fire2.mdl", c, "hand right")
-            set e2 = AddSpecialEffectTarget("war3mapImported\\war3mapImported\\wos_windwalk fire2.mdl", c, "hand left")
+            set e = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Fire2.mdl", c, "hand right")
+            set e2 = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Fire2.mdl", c, "hand left")
             set rmax = 4
             set check = 0
             set dmg = GetHeroAgi( c , true) * ( NatsuFR_DamageAgiBase + ( NatsuFR_DamageAgiStep * ( GetUnitAbilityLevel( c , NatsuR_ID) - 1 ) ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
                // set dmg = dmg + GetHeroAgi(c, true) * NatsuGR_DamageAgiBonus
                 set k2 = 1
             endif
             set dmg = dmg / 5
             set dmg2 = GetHeroAgi( c , true) * NatsuFT_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
             //    set dmg2 = dmg2 + GetHeroAgi(c, true) * NatsuGT_DamageAgiBonus
             endif
             set dmg2 = dmg2 / 11
@@ -1909,13 +1910,12 @@ library NatsuSpells uses GearSystems
             call SetUnitAnimationByIndex( c , 11)
             call SetUnitTimeScale(c, 1)
             if MUI_NatsuFR == 0 then
-                call TimerStart( t_NatsuFR, 0.03, true, function thistype.Loop_NatsuFR)
+                call NatsuTick_On(7)
             endif
         endmethod
     endstruct
 
     private struct NatsuFT_KS
-        private static timer t_NatsuFT = CreateTimer( )
         private static integer array m_NatsuFT
         private static integer MUI_NatsuFT = -1
         unit c
@@ -1942,7 +1942,7 @@ library NatsuSpells uses GearSystems
         effect e5
         real a
         real rmax
-        private static method Loop_NatsuFT takes nothing returns nothing
+        static method Loop_NatsuFT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr1 = 0
@@ -1951,8 +1951,8 @@ library NatsuSpells uses GearSystems
                 exitwhen i > MUI_NatsuFT
                 set this = m_NatsuFT[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     if r == 0.9 then
@@ -2037,6 +2037,7 @@ library NatsuSpells uses GearSystems
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                 if IsUnitInGroup(u, g2) == false then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A00O')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 if u != td then
@@ -2071,8 +2072,9 @@ library NatsuSpells uses GearSystems
                     set u = null
                     set m_NatsuFT[i] = m_NatsuFT[ MUI_NatsuFT]
                     set MUI_NatsuFT = MUI_NatsuFT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_NatsuFT == -1 then
-                        call PauseTimer( t_NatsuFT)
+                        call NatsuTick_Off(8)
                     endif
                     call deallocate(this)
                 endif
@@ -2103,7 +2105,7 @@ library NatsuSpells uses GearSystems
             set k2 = 0
             set r5 = 10
             set dmg = GetHeroAgi( c , true) * NatsuFT_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) > 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) > 0 then
            //     set dmg = dmg + GetHeroAgi(c, true) * NatsuGT_DamageAgiBonus
                 set k2 = 1
             endif
@@ -2111,7 +2113,7 @@ library NatsuSpells uses GearSystems
             set e = AddSpecialEffectTarget("war3mapImported\\wos_File00000712.mdl", c, "hand right")
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_File00000712.mdl", c, "hand left")
             if MUI_NatsuFT == 0 then
-                call TimerStart( t_NatsuFT, 0.03, true, function thistype.Loop_NatsuFT)
+                call NatsuTick_On(8)
             endif
         endmethod
     endstruct
@@ -2160,8 +2162,8 @@ library NatsuSpells uses GearSystems
             set dx = GetUnitX(responder) - damagedX
             set dy = GetUnitY(responder) - damagedY
 
-            if dx * dx + dy * dy <= rangeSquared and IntegerCd(responder, "pas f", NatsuF_Cd) then
-                call FakeCD_Start(responder, NatsuF_ID, NatsuF_Cd, StringHash("pas f"), 0)
+            if dx * dx + dy * dy <= rangeSquared and IntegerCdKey(responder, SH_ICD_PAS_F, NatsuF_Cd) then
+                call PassiveCD_Start(responder, NatsuF_ID, NatsuF_Cd)
                 call NatsuPas_Start(responder)
             endif
         endif
@@ -2199,7 +2201,7 @@ endfunction
     function NatsuG2_Start takes unit c returns nothing
         local real x = GetUnitX(c)
         local real y = GetUnitY(c)
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode g"))==0 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_G)==0 then
         call ReduceCooldown(c, NatsuG_ID, 99)
         call MakeSound("war3mapimported\\Hero_Natsu_G3")
         call MakeSound("war3mapimported\\Hero_Natsu_GG")
@@ -2207,9 +2209,59 @@ endfunction
         call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c00FFFC01Modo Raienryuu|r")
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_firefly-rq-sfx2.mdl", x, y, 1, 1, 1.5, 100), 1.5, 100, c)
         call EUTU2_3(EffectSpawn("war3mapImported\\wos_5731-sl_8bc718f-F.mdl", x, y, 1, 1, 1.15, 1), 1.5, 1, c)
-        call EUTU2_3(EffectSpawn("war3mapImported\\wos_firefly-rw-sfx4_01.mdl", x, y, 0, 2.25, 1.5, 1), 1.5, 1, c)
+        // removed: wos_firefly-rw-sfx4_01.mdl is not imported
     else
     call IssueImmediateOrder(c,"stop")
     endif
     endfunction
+
+    private struct NatsuTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if NatsuTick_Active[0] then
+                call NatsuQ_KS.Loop_NatsuQ()
+            endif
+            if NatsuTick_Active[1] then
+                call NatsuW_KS.Loop_NatsuW()
+            endif
+            if NatsuTick_Active[2] then
+                call NatsuE_KS.Loop_NatsuE()
+            endif
+            if NatsuTick_Active[3] then
+                call NatsuR_KS.Loop_NatsuR()
+            endif
+            if NatsuTick_Active[4] then
+                call NatsuT_KS.Loop_NatsuT()
+            endif
+            if NatsuTick_Active[5] then
+                call NatsuG2_KS.Loop_NatsuG2()
+            endif
+            if NatsuTick_Active[6] then
+                call NatsuPas_KS.Loop_NatsuPas()
+            endif
+            if NatsuTick_Active[7] then
+                call NatsuFR_KS.Loop_NatsuFR()
+            endif
+            if NatsuTick_Active[8] then
+                call NatsuFT_KS.Loop_NatsuFT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set NatsuTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct NatsuTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if NatsuTick05_Active[0] then
+                call NatsuG_KS.Loop_NatsuG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set NatsuTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary

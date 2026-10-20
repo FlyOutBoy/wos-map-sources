@@ -1,5 +1,102 @@
 library ErzaG1Spells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer ErzaG2_NakagamiTick10_Timer = CreateTimer()
+        private boolean array ErzaG2_NakagamiTick10_Active
+        private integer ErzaG2_NakagamiTick10_Users = 0
+        private code ErzaG2_NakagamiTick10_Callback = null
+    endglobals
+
+    private function ErzaG2_NakagamiTick10_On takes integer k returns nothing
+        if not ErzaG2_NakagamiTick10_Active[k] then
+            set ErzaG2_NakagamiTick10_Active[k] = true
+            set ErzaG2_NakagamiTick10_Users = ErzaG2_NakagamiTick10_Users + 1
+            if ErzaG2_NakagamiTick10_Users == 1 then
+                call TimerStart(ErzaG2_NakagamiTick10_Timer, 0.1, true, ErzaG2_NakagamiTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaG2_NakagamiTick10_Off takes integer k returns nothing
+        if ErzaG2_NakagamiTick10_Active[k] then
+            set ErzaG2_NakagamiTick10_Active[k] = false
+            set ErzaG2_NakagamiTick10_Users = ErzaG2_NakagamiTick10_Users - 1
+            if ErzaG2_NakagamiTick10_Users <= 0 then
+                set ErzaG2_NakagamiTick10_Users = 0
+                call PauseTimer(ErzaG2_NakagamiTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer ErzaG2_NakagamiTick05_Timer = CreateTimer()
+        private boolean array ErzaG2_NakagamiTick05_Active
+        private integer ErzaG2_NakagamiTick05_Users = 0
+        private code ErzaG2_NakagamiTick05_Callback = null
+    endglobals
+
+    private function ErzaG2_NakagamiTick05_On takes integer k returns nothing
+        if not ErzaG2_NakagamiTick05_Active[k] then
+            set ErzaG2_NakagamiTick05_Active[k] = true
+            set ErzaG2_NakagamiTick05_Users = ErzaG2_NakagamiTick05_Users + 1
+            if ErzaG2_NakagamiTick05_Users == 1 then
+                call TimerStart(ErzaG2_NakagamiTick05_Timer, 0.05, true, ErzaG2_NakagamiTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaG2_NakagamiTick05_Off takes integer k returns nothing
+        if ErzaG2_NakagamiTick05_Active[k] then
+            set ErzaG2_NakagamiTick05_Active[k] = false
+            set ErzaG2_NakagamiTick05_Users = ErzaG2_NakagamiTick05_Users - 1
+            if ErzaG2_NakagamiTick05_Users <= 0 then
+                set ErzaG2_NakagamiTick05_Users = 0
+                call PauseTimer(ErzaG2_NakagamiTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer ErzaG2_NakagamiTick_Timer = CreateTimer()
+        private boolean array ErzaG2_NakagamiTick_Active
+        private integer ErzaG2_NakagamiTick_Users = 0
+        private code ErzaG2_NakagamiTick_Callback = null
+    endglobals
+
+    private function ErzaG2_NakagamiTick_On takes integer k returns nothing
+        if not ErzaG2_NakagamiTick_Active[k] then
+            set ErzaG2_NakagamiTick_Active[k] = true
+            set ErzaG2_NakagamiTick_Users = ErzaG2_NakagamiTick_Users + 1
+            if ErzaG2_NakagamiTick_Users == 1 then
+                call TimerStart(ErzaG2_NakagamiTick_Timer, 0.03, true, ErzaG2_NakagamiTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaG2_NakagamiTick_Off takes integer k returns nothing
+        if ErzaG2_NakagamiTick_Active[k] then
+            set ErzaG2_NakagamiTick_Active[k] = false
+            set ErzaG2_NakagamiTick_Users = ErzaG2_NakagamiTick_Users - 1
+            if ErzaG2_NakagamiTick_Users <= 0 then
+                set ErzaG2_NakagamiTick_Users = 0
+                call PauseTimer(ErzaG2_NakagamiTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ERZA_G2_ACTIVE = StringHash("erza g2 active")
+        private integer SH_E_ARMOR_ACTIVE = StringHash("e armor active")
+        private integer SH_G_ARMOR_ACTIVE = StringHash("g armor active")
+        private integer SH_Q_ARMOR_ACTIVE = StringHash("q armor active")
+        private integer SH_R_ARMOR_ACTIVE = StringHash("r armor active")
+        private integer SH_T_ARMOR_ACTIVE = StringHash("t armor active")
+        private integer SH_W_ARMOR_ACTIVE = StringHash("w armor active")
+    endglobals
+    globals
 //--------------------------------------Erza-------------------------------------------------------------- 
         real Erza6_MagicalDmgResist = 40 // in %  , 40 = 40%
         real Erza6_ArmorDuration = 30 // how long both armor live
@@ -105,12 +202,12 @@ library ErzaG1Spells uses GearSystems
     private function ErzaF_Start takes unit c returns nothing
         local integer id = GetHandleId(c)
         local integer i = GetPlayerId(GetOwningPlayer(c))
-        local integer sh1 = StringHash("q armor active")
-        local integer sh2 = StringHash("w armor active")
-        local integer sh3 = StringHash("e armor active")
-        local integer sh4 = StringHash("r armor active")
-        local integer sh5 = StringHash("t armor active")
-        local integer sh6 = StringHash("g armor active")
+        local integer sh1 = SH_Q_ARMOR_ACTIVE
+        local integer sh2 = SH_W_ARMOR_ACTIVE
+        local integer sh3 = SH_E_ARMOR_ACTIVE
+        local integer sh4 = SH_R_ARMOR_ACTIVE
+        local integer sh5 = SH_T_ARMOR_ACTIVE
+        local integer sh6 = SH_G_ARMOR_ACTIVE
         local integer k
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         local real cd
@@ -125,7 +222,7 @@ library ErzaG1Spells uses GearSystems
             set check = 1
             call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - ErzaT_ArmorStatHpBase)
             call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
-            call SaveInteger(hs, GetHandleId(c), StringHash("erza g2 active"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_ERZA_G2_ACTIVE, 0)
             call ErzaBaseAbiBlock(c, true)
             call SaveInteger(hs, id, sh6, 0)
             call ErzaAbiArmorAdd(c, Erza6Q_ID, Erza6W_ID, Erza6E_ID, Erza6R_ID, Erza6T_ID, 0, false, GetUnitAbilityLevel(c, ErzaG2_ID))
@@ -138,7 +235,6 @@ library ErzaG1Spells uses GearSystems
     endfunction
 
     private struct Erza6Q_KS
-        private static timer t_ErzaQ = CreateTimer( )
         private static integer array m_ErzaQ
         private static integer MUI_ErzaQ = -1
         unit c
@@ -156,7 +252,7 @@ library ErzaG1Spells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaQ takes nothing returns nothing
+        static method Loop_ErzaQ takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real random
@@ -196,6 +292,7 @@ library ErzaG1Spells uses GearSystems
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 call MoveUnit(u, move, a)
                                 if IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A04A')
                                     call dmgphys(c, u, dmg)
                                     call EUTU2_3(EffectSpawn("war3mapimported\\wos_0854.mdx", x, y, a * bj_RADTODEG, 1, 2.5, 1), 0.76, 1, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -225,6 +322,7 @@ library ErzaG1Spells uses GearSystems
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A04A')
                                     call dmgphys(c, u, dmg)
                                     call EUTU2_3(EffectSpawn("war3mapimported\\wos_0854.mdx", x, y, a * bj_RADTODEG, 1, 2.5, 1), 0.76, 1, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -244,8 +342,9 @@ library ErzaG1Spells uses GearSystems
                     set u = null
                     set m_ErzaQ[i] = m_ErzaQ[MUI_ErzaQ]
                     set MUI_ErzaQ = MUI_ErzaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaQ == -1 then
-                        call PauseTimer( t_ErzaQ )
+                        call ErzaG2_NakagamiTick_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -277,13 +376,12 @@ library ErzaG1Spells uses GearSystems
             call MakeSound("war3mapImported\\Hero_Erza6_Q")
             call MakeSound("war3mapImported\\Hero_Erza6_Q2")
             if MUI_ErzaQ == 0 then
-                call TimerStart( t_ErzaQ, 0.03, true, function thistype.Loop_ErzaQ )
+                call ErzaG2_NakagamiTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza6W_KS
-        private static timer t_ErzaW = CreateTimer( )
         private static integer array m_ErzaW
         private static integer MUI_ErzaW = -1
         unit c
@@ -298,7 +396,7 @@ library ErzaG1Spells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaW takes nothing returns nothing
+        static method Loop_ErzaW takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -329,6 +427,7 @@ library ErzaG1Spells uses GearSystems
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 if IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A04B')
                                     call dmgphys(c, u, dmg)
                                     call EUTU2_3(EffectSpawn("war3mapimported\\wos_0854.mdx", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG, 1, 2.5, 1), 0.76, 1, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -346,8 +445,9 @@ library ErzaG1Spells uses GearSystems
                     set u = null
                     set m_ErzaW[i] = m_ErzaW[MUI_ErzaW]
                     set MUI_ErzaW = MUI_ErzaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaW == -1 then
-                        call PauseTimer( t_ErzaW )
+                        call ErzaG2_NakagamiTick_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -374,13 +474,12 @@ library ErzaG1Spells uses GearSystems
             call SetUnitAnimationByIndex(c, 5)
             call MakeSound("war3mapImported\\Hero_Erza6_Q2")
             if MUI_ErzaW == 0 then
-                call TimerStart( t_ErzaW, 0.03, true, function thistype.Loop_ErzaW )
+                call ErzaG2_NakagamiTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct Erza6E_KS
-        private static timer t_ErzaE = CreateTimer( )
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
         unit c
@@ -396,7 +495,7 @@ library ErzaG1Spells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaE takes nothing returns nothing
+        static method Loop_ErzaE takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -427,6 +526,7 @@ library ErzaG1Spells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A04C')
                                     call dmgphys(c, u, dmg)
                                     call MUE(u, 300, 0.3, a)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -447,8 +547,9 @@ library ErzaG1Spells uses GearSystems
                     set u = null
                     set m_ErzaE[i] = m_ErzaE[MUI_ErzaE]
                     set MUI_ErzaE = MUI_ErzaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE == -1 then
-                        call PauseTimer( t_ErzaE )
+                        call ErzaG2_NakagamiTick_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -480,13 +581,12 @@ library ErzaG1Spells uses GearSystems
             call SetUnitAnimationByIndex(c, 5)
             call MakeSound("war3mapImported\\Hero_Erza6_Q2")
             if MUI_ErzaE == 0 then
-                call TimerStart( t_ErzaE, 0.03, true, function thistype.Loop_ErzaE )
+                call ErzaG2_NakagamiTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct Erza6R_KS
-        private static timer t_ErzaR = CreateTimer( )
         private static integer array m_ErzaR
         private static integer MUI_ErzaR = -1
         unit c
@@ -500,12 +600,13 @@ library ErzaG1Spells uses GearSystems
         real r
         effect e
         effect e2
-        private static method Loop_ErzaR takes nothing returns nothing
+        static method Loop_ErzaR takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaR
                 set this = m_ErzaR[i]
+                call WUI_HeroProgress(c, Erza6R_ID, "Nakagami Verdict", GetUnitState(c, UNIT_STATE_MANA), GetUnitState(c, UNIT_STATE_MAX_MANA), false)
                 if GetUnitCurrentOrder(c) == OrderId("bloodlustoff") then
                     set r = r + 0.05
                     set x = GetUnitX(c)
@@ -541,6 +642,7 @@ library ErzaG1Spells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                            call DamageSource('A04D')
                             call ErzaPassive(c, u, 7)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -564,8 +666,9 @@ library ErzaG1Spells uses GearSystems
                     set e2 = null
                     set m_ErzaR[i] = m_ErzaR[MUI_ErzaR]
                     set MUI_ErzaR = MUI_ErzaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR == -1 then
-                        call PauseTimer( t_ErzaR )
+                        call ErzaG2_NakagamiTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -591,13 +694,12 @@ library ErzaG1Spells uses GearSystems
             call ColorEffDummy4(e2, 0, 255, 255, 75, 0.33)
             call MakeSound("war3mapImported\\Hero_Erza6_R")
             if MUI_ErzaR == 0 then
-                call TimerStart( t_ErzaR, 0.05, true, function thistype.Loop_ErzaR )
+                call ErzaG2_NakagamiTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza6T_KS
-        private static timer t_ErzaT = CreateTimer( )
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
         unit c
@@ -621,7 +723,7 @@ library ErzaG1Spells uses GearSystems
         effect e3
         real a
         real rmax
-        private static method Loop_ErzaT takes nothing returns nothing
+        static method Loop_ErzaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real random
@@ -716,8 +818,10 @@ library ErzaG1Spells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                        call DamageSource('A04E')
                                         call dmgphys(c, u, dmg)
                                         call StunUnit(c, u, Erza6T_Stun)
+                                        call DamageSource('A04E')
                                         call ErzaPassive(c,u,8)
                                         call EUTU2_3(EffectSpawn("war3mapimported\\wos_0854.mdx", x, y, a * bj_RADTODEG, 1, 2.5, 1), 0.76, 1, u)
                                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -740,8 +844,9 @@ library ErzaG1Spells uses GearSystems
                     set u = null
                     set m_ErzaT[i] = m_ErzaT[MUI_ErzaT]
                     set MUI_ErzaT = MUI_ErzaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaT == -1 then
-                        call PauseTimer( t_ErzaT )
+                        call ErzaG2_NakagamiTick_Off(3)
                     endif
                     call destroy( )
                 endif
@@ -774,54 +879,47 @@ library ErzaG1Spells uses GearSystems
             call SetUnitAnimationByIndex(c, 1)
             call MakeSound("war3mapImported\\Hero_Erza6_T")
             if MUI_ErzaT == 0 then
-                call TimerStart( t_ErzaT, 0.03, true, function thistype.Loop_ErzaT )
+                call ErzaG2_NakagamiTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct Erza6G_KS
-        private static timer t_ErzaG = CreateTimer( )
         private static integer array m_ErzaG
         private static integer MUI_ErzaG = -1
         unit c
-        framehandle array frame_pas1[10]
-        framehandle array frame_pas2[10]
-        framehandle array frame_pas3[10]
-        framehandle array frame_pas4[10]
-        framehandle array frame_pas5[10]
-        framehandle array frame_pas6[10]
         integer k2
         group g2
         real r
         real rmax
-        private static method Loop_ErzaG takes nothing returns nothing
+        static method Loop_ErzaG takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real random
             loop
                 exitwhen i > MUI_ErzaG
                 set this = m_ErzaG[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(c),StringHash("erza g2 active")) == 1 then 
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs,GetHandleId(c),SH_ERZA_G2_ACTIVE) == 1 then 
                 if IsUnitPaused(c) == false then 
                     set r = r + 0.1
-                    set r = S2R(R2SW(r,0,2))
+                    set r = RoundReal(r, 2)
                     endif
-                     call  BlzFrameSetValue(frame_pas3[k2], rmax-(r+0.1))
                         if rmax -r >=0 then 
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax-r,0,2) + "|r")
+                        call WUI_HeroProgress(c, ErzaG2_ID, "Erza6G", rmax-r, rmax, true)
                     endif
                     else
                     if r>= rmax then 
                     call ErzaF_Start(c)
                     endif
                     if GetLocalPlayer() == GetOwningPlayer(c) then 
-                    call BlzFrameSetVisible(frame_pas1[k2],false)
+                    call WUI_HeroProgress(c, ErzaG2_ID, "Erza6G", 0.00, 0.00, true)
                     endif
                     set c = null
                     set m_ErzaG[i] = m_ErzaG[MUI_ErzaG]
                     set MUI_ErzaG = MUI_ErzaG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaG == -1 then
-                        call PauseTimer( t_ErzaG )
+                        call ErzaG2_NakagamiTick10_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -836,54 +934,8 @@ library ErzaG1Spells uses GearSystems
             set r = 0
             set rmax = Erza6_ArmorDuration 
             set k2 = GetPlayerId(GetOwningPlayer(c))
-        if frame_pas1[k2] == null then 
-        set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS",main_frame, "", 0)
-        call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-        call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-        call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-        call BlzFrameSetVisible(frame_pas1[k2],false)
-        if GetLocalPlayer() == GetOwningPlayer(c) then 
-        call BlzFrameSetVisible(frame_pas1[k2],true)
-        endif
-        set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-        call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-        call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-        set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-        call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-        call BlzFrameSetScale(frame_pas3[k2], 0.5)
-        call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-        call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-        call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-        call  BlzFrameSetValue(frame_pas3[k2], rmax)
-        set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-        call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-        if LoadInteger(hs,GetHandleId(c),StringHash("erza g2 type")) == 1 then 
-        call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas.blp", 0, false)
-        else
-        call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas.blp", 0, false)
-        endif
-        set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-        call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Time Left:" + "|r")
-        call BlzFrameSetScale(frame_pas5[k2],0.9)
-        set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real,0,2) + "|r")
-        call BlzFrameSetScale(frame_pas6[k2],0.9)
-        else
-        if GetLocalPlayer() == GetOwningPlayer(c) then 
-        call BlzFrameSetVisible(frame_pas1[k2],true)
-        endif
-        if LoadInteger(hs,GetHandleId(c),StringHash("erza g2 type")) == 1 then 
-        call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_1Pas.blp", 0, false)
-        else
-        call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza_G2_2Pas.blp", 0, false)
-        endif
-        call  BlzFrameSetValue(frame_pas3[k2], rmax)
-        endif
             if MUI_ErzaG == 0 then
-                call TimerStart( t_ErzaG, 0.1, true, function thistype.Loop_ErzaG )
+                call ErzaG2_NakagamiTick10_On(0)
             endif
         endmethod
     endstruct
@@ -915,6 +967,54 @@ library ErzaG1Spells uses GearSystems
     function Erza6G_Start takes unit c returns nothing
         call Erza6G_KS.ErzaG_Start( c)
     endfunction
+
+    private struct ErzaG2_NakagamiTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaG2_NakagamiTick_Active[0] then
+                call Erza6Q_KS.Loop_ErzaQ()
+            endif
+            if ErzaG2_NakagamiTick_Active[1] then
+                call Erza6W_KS.Loop_ErzaW()
+            endif
+            if ErzaG2_NakagamiTick_Active[2] then
+                call Erza6E_KS.Loop_ErzaE()
+            endif
+            if ErzaG2_NakagamiTick_Active[3] then
+                call Erza6T_KS.Loop_ErzaT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaG2_NakagamiTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaG2_NakagamiTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaG2_NakagamiTick05_Active[0] then
+                call Erza6R_KS.Loop_ErzaR()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaG2_NakagamiTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaG2_NakagamiTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaG2_NakagamiTick10_Active[0] then
+                call Erza6G_KS.Loop_ErzaG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaG2_NakagamiTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

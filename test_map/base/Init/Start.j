@@ -1,4 +1,13 @@
 globals
+// Compatibility globals for shared MAIN systems; TEST has no shop/picker.
+integer CurrentRound = 1
+boolean array Shop_Active
+integer ShopCraftTeaCharges = 0
+framehandle array FRAME_Swap
+framehandle array FRAME_Repick
+constant real WOS_SWAP_X = 0.150
+constant real WOS_REPICK_X = 0.124
+constant real WOS_SWAP_Y = 0.585
 integer LLL = 0
 boolean udg_RK_KOTH_ENABLED = false
 integer CapPickPhase = 0

@@ -4,7 +4,7 @@ function AnimCheckActions2 takes nothing returns nothing
     local unit u
     if TestMode == true then 
     set bj_lastCreatedGroup = CreateGroup()
-    call GroupEnumUnitsInRange(bj_lastCreatedGroup, 1, 1, 30000, Condition(function NoDecor_Filter))
+    call GroupEnumUnitsInRange(bj_lastCreatedGroup, 1, 1, 30000, NoDecor_Cond)
     loop
         set u = FirstOfGroup(bj_lastCreatedGroup)
         exitwhen u == null

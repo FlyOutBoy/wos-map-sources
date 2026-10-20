@@ -1,4 +1,18 @@
 library BrandishSpells initializer InitBrandishSpells uses GearSystems
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_BRANDISH_G_ALLY = StringHash("brandish g ally")
+        private integer SH_BRANDISH_G_ENEMY = StringHash("brandish g enemy")
+        private integer SH_FMULT = StringHash("FMult")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+        private integer SH_R_CANCEL = StringHash("r cancel")
+        private integer SH_T = StringHash("t")
+        private integer SH_TMULT = StringHash("TMult")
+    endglobals
 
     globals
         // Central Timer Management
@@ -64,7 +78,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         integer BrandishE_Buff3_ID = 'B027'
         integer BrandishE_Buff4_ID = 'B028'
         integer BrandishE_Buff5_ID = 'B029'
-        real BrandishE_DurationBase = 2.0
+        real BrandishE_DurationBase = 3.0
         real BrandishE_DurationStep = 1.0
         real BrandishE_DamageDecrease = 15.0
         real BrandishE_HealStaticBase = 0.0
@@ -121,10 +135,10 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Brandish_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -136,9 +150,9 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Brandish_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -150,7 +164,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Brandish_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
@@ -158,7 +172,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
     endfunction
 
     function Brandish_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -168,21 +182,21 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
 
         // 1. Герой на бегу в точку
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             // Если до цели больше 75 единиц — сразу возобновляем бег без анимации каста
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         // 2. Герой на бегу к цели атаки/приказа
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -324,8 +338,8 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         endmethod
 
         public static method GetTotalScale takes unit u returns real
-            local real tm = LoadReal(hs, GetHandleId(u), StringHash("TMult"))
-            local real fm = LoadReal(hs, GetHandleId(u), StringHash("FMult"))
+            local real tm = LoadReal(hs, GetHandleId(u), SH_TMULT)
+            local real fm = LoadReal(hs, GetHandleId(u), SH_FMULT)
             if tm == 0.0 then
                 set tm = 1.0
             endif
@@ -371,7 +385,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 exitwhen i > MUI_BrandishQ
                 set this = m_BrandishQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if check == 0 then
                         call DebugUnit(c)
                         if r == 0.33 then
@@ -435,11 +449,12 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                             call GroupClear(g)
                             call EMUE(EffectSpawn2("war3mapimported\\wos_brandi_sandq.mdx", x - 200.0 * Cos(a), y - 200.0 * Sin(a), a * bj_RADTODEG, 2.25, 1.75, r * 200.0, 0.36), 650.0, 0.42, a)
                             call EMUE(EffectSpawn2("war3mapimported\\wos_brandi_sandq.mdx", x + 300.0 * Cos(a), y + 300.0 * Sin(a), a * bj_RADTODEG, 2.15, 1.50, 200.0 + r * 500.0, 0.36), 450.0, 0.42, a)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
+                                    call DamageSource('A0EH')
                                     call dmgphys(c, u, dmg)
                                     call MUE(u, BrandishQ_PushRange, BrandishQ_PushTime, a)
                                     call GroupAddUnit(g2, u)
@@ -542,7 +557,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 exitwhen i > MUI_BrandishW
                 set this = m_BrandishW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     if r >= rmax then
                         call DestroyEffect(e2)
                         set k = 0
@@ -572,11 +587,12 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                         call ColorEffDummy3(e, 1.0, 255, 255, 255, 1.5)
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_JY-ZK_BM_Mine blasting-Lv-075.mdl", x, y, GetRandomReal(0, 359), 0.5, 2.15, 0.0))
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0EI')
                                 call dmgphys(c, u, dmg)
                                 call RootUnit(c, u, BrandishW_RootDuration)
                             endif
@@ -741,8 +757,8 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             loop
                 exitwhen i > MUI_BrandishR
                 set this = m_BrandishR[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(Player(k2)), StringHash("r cancel")) == 0 then
-                    set r = RoundReal(r + 0.05, 3)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(Player(k2)), SH_R_CANCEL) == 0 then
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     set x1 = GetUnitX(c)
                     set y1 = GetUnitY(c)
                     if r == 0.05 then
@@ -782,11 +798,12 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                         set e2 = EffectSpawn2("war3mapImported\\wos_kamni.mdx", x, y, GetRandomReal(0, 359), 1.25, 2.55 * scale, 1.0, 1.35)
                         call ColorEffDummy3(e2, 0.8, 255, 255, 255, 1.65)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0EK')
                                 call dmgphys(c, u, dmg)
                                 call MUE(u, SR3(u, x, y), 0.21, GAngle2(u, x, y))
                                 call SlowUnit(c, u, BrandishR_Slow, BrandishR_SlowDuration)
@@ -885,7 +902,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 exitwhen i > MUI_BrandishT
                 set this = m_BrandishT[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.05, 3)
+                    set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     if GetUnitAbilityLevel(c, BrandishF_Buff_ID) > 0 then
                         set r8 = aoe * (1.0 + (BrandishF_DamageOutputIncrease / 100.0))
                     else
@@ -919,11 +936,12 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                         endloop
                         call DecorRemove(c, x, y, r8, BrandishT_DecorDamage)
                         call MakeSound("war3mapimported\\Hero_Brandish_T4")
-                        call GroupEnumUnitsInRange(g, x, y, r8, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, r8, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0EL')
                                 call dmgphys(c, u, dmg)
                                 call StunUnit(c, u, BrandishT_Stun)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -948,11 +966,12 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_BY_Wood_Eff_Ord_YeYe_Eat_DiBanZhaKai2.mdx", x, y, GetRandomReal(0, 359), 1.5, 2.0, 0.0))
                             call DecorRemove(c, x, y, r8 - 500.0, BrandishT_DecorDamage)
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, r8 - 500.0, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, r8 - 500.0, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                    call DamageSource('A0EL')
                                     call dmgphys(c, u, dmg2)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -968,7 +987,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                     if r >= r4 then
                         set r = 9999.0
                         set scale2 = BrandishSpells_Utility.GetTotalScale(c)
-                        call SaveReal(hs, GetHandleId(c), StringHash("TMult"), 1.0)
+                        call SaveReal(hs, GetHandleId(c), SH_TMULT, 1.0)
                         set scale = BrandishSpells_Utility.GetTotalScale(c)
                         call MakeSound("war3mapimported\\Hero_Brandish_T3")
                         call ScaleDummy(c, 0.30, scale2, scale)
@@ -982,10 +1001,10 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                         call AddSpellLevel(c, 'A01C', 17, false)
                     endif
                     set scale2 = BrandishSpells_Utility.GetTotalScale(c)
-                    call SaveReal(hs, GetHandleId(c), StringHash("TMult"), 1.0)
+                    call SaveReal(hs, GetHandleId(c), SH_TMULT, 1.0)
                     set scale = BrandishSpells_Utility.GetTotalScale(c)
                     call ScaleDummy(c, 0.20, scale2, scale)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_T, 0)
                     if e != null then
                         call DestroyEffect(e)
                     endif
@@ -1031,7 +1050,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 set rmax = r4 + 0.50
             endif
             set scale = BrandishSpells_Utility.GetTotalScale(c)
-            call SaveReal(hs, GetHandleId(c), StringHash("TMult"), BrandishT_ScaleIncrease / 100.0)
+            call SaveReal(hs, GetHandleId(c), SH_TMULT, BrandishT_ScaleIncrease / 100.0)
             set scale2 = BrandishSpells_Utility.GetTotalScale(c)
             call ScaleDummy(c, 0.75, scale, scale2)
             set aoe = BrandishT_DamageAoe
@@ -1045,7 +1064,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Brandish_T1")
             call MakeSound("war3mapimported\\Hero_Brandish_T3")
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800.0, 4.0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_T, 1)
             call SetUnitFacingTimed(c, a * bj_RADTODEG, 0.0)
             call SetUnitTimeScale(c, 2.0)
             if MUI_BrandishT == 0 then
@@ -1078,18 +1097,18 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 set this = m_BrandishF[i]
                 if GetUnitAbilityLevel(td, check2) > 0 and SpellBoolCaster(c) and r < rmax and not CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
                     if not IsUnitPaused(td) then
-                        set r = RoundReal(r + 0.05, 3)
+                        set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
                     endif
                 else
                     set scale2 = BrandishSpells_Utility.GetTotalScale(td)
-                    call SaveReal(hs, GetHandleId(td), StringHash("FMult"), 1.0)
+                    call SaveReal(hs, GetHandleId(td), SH_FMULT, 1.0)
                     set scale = BrandishSpells_Utility.GetTotalScale(td)
                     call ScaleDummy(td, 0.50, scale2, scale)
                     if check == 0 then
-                        call SaveInteger(hs, GetHandleId(td), StringHash("brandish g enemy"), 0)
+                        call SaveInteger(hs, GetHandleId(td), SH_BRANDISH_G_ENEMY, 0)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_brandi_red_increase.mdl", GetUnitX(td), GetUnitY(td), 0.0, 1.25, 2.20, 0.0))
                     else
-                        call SaveInteger(hs, GetHandleId(td), StringHash("brandish g ally"), 0)
+                        call SaveInteger(hs, GetHandleId(td), SH_BRANDISH_G_ALLY, 0)
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_brandi_green_decrease.mdl", GetUnitX(td), GetUnitY(td), 0.0, 1.25, 2.00, 0.0))
                     endif
                     call MakeSound("war3mapimported\\Hero_Brandish_G3")
@@ -1121,20 +1140,20 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             endif
             call MakeSound("war3mapimported\\Hero_Brandish_G1")
             set scale = BrandishSpells_Utility.GetTotalScale(td)
-            call SaveReal(hs, GetHandleId(td), StringHash("FMult"), 1.0)
+            call SaveReal(hs, GetHandleId(td), SH_FMULT, 1.0)
             if IsUnitEnemy(td, GetOwningPlayer(c)) then
-                call SaveReal(hs, GetHandleId(td), StringHash("FMult"), BrandishF_DamageOutputDecreaseScale / 100.0)
+                call SaveReal(hs, GetHandleId(td), SH_FMULT, BrandishF_DamageOutputDecreaseScale / 100.0)
                 set check = 0
                 set check2 = BrandishF_Debuff_ID
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_brandi_red_decrease.mdl", GetUnitX(td), GetUnitY(td), 0.0, 1.25, 2.20, 0.0))
-                call SaveInteger(hs, GetHandleId(td), StringHash("brandish g enemy"), 1)
+                call SaveInteger(hs, GetHandleId(td), SH_BRANDISH_G_ENEMY, 1)
                 call BrandishSpells_Utility.BuffUnitBran2(c, td, 1, true)
             else
                 set check = 1
                 set check2 = BrandishF_Buff_ID
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_brandi_green_increase.mdl", GetUnitX(td), GetUnitY(td), 0.0, 1.25, 2.00, 0.0))
-                call SaveInteger(hs, GetHandleId(td), StringHash("brandish g ally"), 1)
-                call SaveReal(hs, GetHandleId(td), StringHash("FMult"), BrandishF_DamageOutputIncreaseScale / 100.0)
+                call SaveInteger(hs, GetHandleId(td), SH_BRANDISH_G_ALLY, 1)
+                call SaveReal(hs, GetHandleId(td), SH_FMULT, BrandishF_DamageOutputIncreaseScale / 100.0)
                 call BrandishSpells_Utility.BuffUnitBran2(c, td, 1, false)
             endif
             set scale2 = BrandishSpells_Utility.GetTotalScale(td)

@@ -1,5 +1,68 @@
 library ErzaWSpells uses GearSystems, ErzaTSpells
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer ErzaWTick10_Timer = CreateTimer()
+        private boolean array ErzaWTick10_Active
+        private integer ErzaWTick10_Users = 0
+        private code ErzaWTick10_Callback = null
+    endglobals
+
+    private function ErzaWTick10_On takes integer k returns nothing
+        if not ErzaWTick10_Active[k] then
+            set ErzaWTick10_Active[k] = true
+            set ErzaWTick10_Users = ErzaWTick10_Users + 1
+            if ErzaWTick10_Users == 1 then
+                call TimerStart(ErzaWTick10_Timer, 0.1, true, ErzaWTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaWTick10_Off takes integer k returns nothing
+        if ErzaWTick10_Active[k] then
+            set ErzaWTick10_Active[k] = false
+            set ErzaWTick10_Users = ErzaWTick10_Users - 1
+            if ErzaWTick10_Users <= 0 then
+                set ErzaWTick10_Users = 0
+                call PauseTimer(ErzaWTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer ErzaWTick_Timer = CreateTimer()
+        private boolean array ErzaWTick_Active
+        private integer ErzaWTick_Users = 0
+        private code ErzaWTick_Callback = null
+    endglobals
+
+    private function ErzaWTick_On takes integer k returns nothing
+        if not ErzaWTick_Active[k] then
+            set ErzaWTick_Active[k] = true
+            set ErzaWTick_Users = ErzaWTick_Users + 1
+            if ErzaWTick_Users == 1 then
+                call TimerStart(ErzaWTick_Timer, 0.03, true, ErzaWTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaWTick_Off takes integer k returns nothing
+        if ErzaWTick_Active[k] then
+            set ErzaWTick_Active[k] = false
+            set ErzaWTick_Users = ErzaWTick_Users - 1
+            if ErzaWTick_Users <= 0 then
+                set ErzaWTick_Users = 0
+                call PauseTimer(ErzaWTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_WATER_X = StringHash("water x")
+        private integer SH_WATER_Y = StringHash("water y")
+    endglobals
+    globals
 //---------------Q ability-----------------------------------------------------
         integer Erza2Q_ID = 'A037'
         real Erza2Q_DamageAgiBase = 1 // base number x Agi damage for 1 level
@@ -39,7 +102,6 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
      
 
     private struct Erza2Q_KS
-        private static timer t_ErzaQ = CreateTimer( )
         private static integer array m_ErzaQ
         private static integer MUI_ErzaQ = -1
         unit c
@@ -60,7 +122,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaQ takes nothing returns nothing
+        static method Loop_ErzaQ takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -129,7 +191,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A037')
                                 call dmgphys(c, u, dmg)
+                                call DamageSource('A037')
                                 call ErzaPassive(c, u, 2)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -149,8 +213,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     set e2 = null
                     set m_ErzaQ[i] = m_ErzaQ[MUI_ErzaQ]
                     set MUI_ErzaQ = MUI_ErzaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaQ == -1 then
-                        call PauseTimer( t_ErzaQ )
+                        call ErzaWTick_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -180,13 +245,12 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                 call MakeSound("war3mapImported\\Hero_Erza2_Q3")
             endif
             if MUI_ErzaQ == 0 then
-                call TimerStart( t_ErzaQ, 0.03, true, function thistype.Loop_ErzaQ )
+                call ErzaWTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza2W_KS
-        private static timer t_ErzaW = CreateTimer( )
         private static integer array m_ErzaW
         private static integer MUI_ErzaW = -1
         unit c
@@ -203,12 +267,13 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaW takes nothing returns nothing
+        static method Loop_ErzaW takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaW
                 set this = m_ErzaW[i]
+                call WUI_HeroProgress(c, Erza2W_ID, "Water Pillar", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.1
                     if r< 0.5 then 
@@ -217,8 +282,8 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     if r == 0.5 then
                         call StopSpellUnit2(c)
                         call DestroyEffect(e2)
-                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water x"), x)
-                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water y"), y)
+                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_X, x)
+                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_Y, y)
                         call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1250, rmax + 1.5 - r)
                         call DecorRemove(c,x, y,aoe,20)
                     endif
@@ -269,6 +334,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                     call MUE(u, Erza2W_PushDistance - SR3(u, x, y), Erza2W_PushTime, GAngle3(x, y, u))
+                                    call DamageSource('A038')
                                     call ErzaPassive(c, u, 2)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -288,8 +354,8 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     if r < 0.5 then
                         call StopSpellUnit2(c)
                     endif
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water x"), 0)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water y"), 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_X, 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_Y, 0)
                     call DestroyGroup(g)
                     set c = null
                     set g = null
@@ -297,8 +363,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     set e2 = null
                     set m_ErzaW[i] = m_ErzaW[MUI_ErzaW]
                     set MUI_ErzaW = MUI_ErzaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaW == -1 then
-                        call PauseTimer( t_ErzaW )
+                        call ErzaWTick10_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -329,13 +396,12 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                 call MakeSound("war3mapImported\\Hero_Erza2_W2")
             endif
             if MUI_ErzaW == 0 then
-                call TimerStart( t_ErzaW, 0.1, true, function thistype.Loop_ErzaW )
+                call ErzaWTick10_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza2E_KS
-        private static timer t_ErzaE = CreateTimer( )
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
         unit c
@@ -354,7 +420,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaE takes nothing returns nothing
+        static method Loop_ErzaE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -362,7 +428,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                 set this = m_ErzaE[i]
                 if SpellBoolCaster(c) and r < rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     call MoveUnit(c, move, a)
@@ -374,6 +440,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                             if IsUnitInGroup(u, g2) == false then
                                 call GroupAddUnit(g2, u)
+                                call DamageSource('A039')
                                 call ErzaPassive(c, u, 2)
                             endif
                         endif
@@ -413,8 +480,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     set u = null
                     set m_ErzaE[i] = m_ErzaE[ MUI_ErzaE]
                     set MUI_ErzaE = MUI_ErzaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE == -1 then
-                        call PauseTimer( t_ErzaE)
+                        call ErzaWTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -449,13 +517,12 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
             call SetUnitAnimationByIndex( c , 6)
             call SetUnitTimeScale( c , 1)
             if MUI_ErzaE == 0 then
-                call TimerStart( t_ErzaE, 0.03, true, function thistype.Loop_ErzaE)
+                call ErzaWTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct Erza2R_KS
-        private static timer t_ErzaR = CreateTimer( )
         private static integer array m_ErzaR
         private static integer MUI_ErzaR = -1
         unit c
@@ -473,7 +540,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaR takes nothing returns nothing
+        static method Loop_ErzaR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -481,7 +548,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                 set this = m_ErzaR[i]
                 if SpellBoolCaster(c) and r < rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     call DebugUnit2(c)
@@ -513,7 +580,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                     if IsUnitInGroup(u, g2) == false then
                                         call GroupAddUnit(g2, u)
+                                        call DamageSource('A03A')
                                         call dmgphys(c, u, dmg)
+                                        call DamageSource('A03A')
                                         call ErzaPassive(c, u, 2)
                                     endif
                                 endif
@@ -537,8 +606,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     set c = null
                     set m_ErzaR[i] = m_ErzaR[ MUI_ErzaR]
                     set MUI_ErzaR = MUI_ErzaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR == -1 then
-                        call PauseTimer( t_ErzaR)
+                        call ErzaWTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -570,13 +640,12 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
             call SetUnitAnimationByIndex( c , 5)
             call SetUnitTimeScale( c , 0.5)
             if MUI_ErzaR == 0 then
-                call TimerStart( t_ErzaR, 0.03, true, function thistype.Loop_ErzaR)
+                call ErzaWTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct Erza2T_KS
-        private static timer t_ErzaT = CreateTimer( )
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
         unit c
@@ -595,7 +664,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         effect e2
         real a
         real rmax
-        private static method Loop_ErzaT takes nothing returns nothing
+        static method Loop_ErzaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -654,7 +723,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A03B')
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource('A03B')
                                     call ErzaPassive(c, u, 2)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -675,8 +746,9 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
                     set u = null
                     set m_ErzaT[i] = m_ErzaT[MUI_ErzaT]
                     set MUI_ErzaT = MUI_ErzaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaT == -1 then
-                        call PauseTimer( t_ErzaT )
+                        call ErzaWTick_Off(3)
                     endif
                     call destroy( )
                 endif
@@ -706,7 +778,7 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
             call SetUnitAnimationByIndex(c, 5)
             call MakeSound("war3mapImported\\Hero_Erza2_T")
             if MUI_ErzaT == 0 then
-                call TimerStart( t_ErzaT, 0.03, true, function thistype.Loop_ErzaT )
+                call ErzaWTick_On(3)
             endif
         endmethod
     endstruct
@@ -741,6 +813,41 @@ library ErzaWSpells uses GearSystems, ErzaTSpells
         call Erza2T_KS.ErzaT_Start( c, td)
     endfunction
    
+
+    private struct ErzaWTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaWTick_Active[0] then
+                call Erza2Q_KS.Loop_ErzaQ()
+            endif
+            if ErzaWTick_Active[1] then
+                call Erza2E_KS.Loop_ErzaE()
+            endif
+            if ErzaWTick_Active[2] then
+                call Erza2R_KS.Loop_ErzaR()
+            endif
+            if ErzaWTick_Active[3] then
+                call Erza2T_KS.Loop_ErzaT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaWTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaWTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaWTick10_Active[0] then
+                call Erza2W_KS.Loop_ErzaW()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaWTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

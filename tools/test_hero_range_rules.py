@@ -21,6 +21,12 @@ class HeroRanges(unittest.TestCase):
     def radius(self,name,level=1):
         return self.vm.run('ARules_GetCastRange',('hero',self.vm.g.get(name,name),'ability',level))
 
+    def test_main_frieren_and_milim_ranges_use_live_production_formulas(self):
+        production=JassState((ROOT/'triggers/WOS_Start/UniversalTooltips.j').read_text(encoding='utf-8-sig'))
+        self.vm.methods['ARules_GetCastRange']=production.methods['ARules_GetCastRange']
+        for ability,level,expected in (('FrierenQ_ID',5,1600.),('FrierenW2_ID',1,1800.),('FrierenT2_ID',1,2000.),('MilimQ_ID',1,1255.),('MilimE_ID',5,1600.),('MilimT2_ID',1,2700.)):
+            with self.subTest(ability=ability):self.assertEqual(expected,self.radius(ability,level))
+
     def test_harribel_e_reduces_q_instead_of_stacking_bonus(self):
         self.assertEqual(self.radius('HarribelQ_ID',5),1800)
         self.flags[('owner','morph e')]=1

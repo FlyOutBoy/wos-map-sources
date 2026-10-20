@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "d414d7716c89165c4a041149d2e9c0cae89c50fa20f2a7334a8fe70d1256b5f8",
+  "source_sha256": "07b0d812b16f41711b226e6429d0baf18af4cc307900e8b2bf99d0ff4a9c8208",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -1024,7 +1024,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -1558,7 +1558,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 140
+            "value": 165
           },
           "sanity_check": {
             "text": "",
@@ -3398,6 +3398,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Natsu Dragneel"
@@ -4566,6 +4581,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Gojo Satoru"
@@ -5128,6 +5158,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Giyu Tomioka"
@@ -5622,7 +5667,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -7108,7 +7153,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -7992,6 +8037,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Erza Scarlet"
@@ -8549,6 +8609,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -9116,6 +9191,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Erza Scarlet"
@@ -9673,6 +9763,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -10240,6 +10345,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Erza Scarlet"
@@ -10797,6 +10917,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -12273,6 +12408,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Erza Scarlet"
@@ -12830,6 +12980,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -14032,6 +14197,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -15917,6 +16097,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -19255,6 +19450,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Yuzuriha Inori"
@@ -19826,7 +20036,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 140
+            "value": 165
           },
           "sanity_check": {
             "text": "",
@@ -20697,6 +20907,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Sakazuki Akainu"
@@ -21293,6 +21518,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Okarun"
@@ -21855,6 +22095,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Neuvillette"
@@ -22412,6 +22667,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -23282,6 +23552,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Sawada Tsunayoshi"
@@ -23824,6 +24109,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -24391,6 +24691,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Yamamoto Takeshi"
@@ -24948,6 +25263,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -25818,6 +26148,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Shadow Nanaya"
@@ -26645,7 +26990,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -27256,7 +27601,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -27833,7 +28178,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -28448,6 +28793,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Harribel Tiburon"
@@ -29010,6 +29370,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Harribel Tiburon"
@@ -29564,7 +29939,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -30141,7 +30516,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -31883,7 +32258,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 1500
+            "value": 1525
           },
           "sanity_check": {
             "text": "",
@@ -31948,6 +32323,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -32515,6 +32905,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Starrk Coyote"
@@ -33021,7 +33426,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -33149,7 +33554,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 550
+            "value": 575
           },
           "sanity_check": {
             "text": "",
@@ -33696,7 +34101,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -33805,7 +34210,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 550
+            "value": 575
           },
           "sanity_check": {
             "text": "",
@@ -34402,6 +34807,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -35267,6 +35687,21 @@
           "type": "int",
           "data": {
             "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -36402,7 +36837,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -36979,7 +37414,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -37603,7 +38038,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 140
+            "value": 165
           },
           "sanity_check": {
             "text": "",
@@ -38468,7 +38903,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 110
+            "value": 135
           },
           "sanity_check": {
             "text": "",
@@ -39051,6 +39486,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Brandish"
@@ -39575,6 +40025,21 @@
           "type": "int",
           "data": {
             "value": 290
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -40389,7 +40854,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -40517,7 +40982,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -41944,7 +42409,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -42072,7 +42537,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 700
+            "value": 725
           },
           "sanity_check": {
             "text": "",
@@ -43237,6 +43702,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Toji"
@@ -43794,6 +44274,21 @@
             "value": 2.0,
             "_original_value": 2.0,
             "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
           },
           "sanity_check": {
             "text": "",
@@ -44361,6 +44856,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 125
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Milim Nava"
@@ -44885,7 +45395,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 120
+            "value": 145
           },
           "sanity_check": {
             "text": "",
@@ -45180,6 +45690,957 @@
         }
       ],
       "display_name": "Dummy Train Thomas"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H002",
+        "hex": "48303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "uhab",
+            "hex": "75686162"
+          },
+          "field_name": "Hero abilities / Способности героя",
+          "type": "string",
+          "data": {
+            "value": "A116,A117,A118,A119,A11A"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1c",
+            "hex": "75613163"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.5,
+            "_original_value": 1.5,
+            "_raw_hex": "0000C03F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustp",
+            "hex": "75737470"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.4500000476837158,
+            "_original_value": 1.4500000476837158,
+            "_raw_hex": "9A99B93F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagi",
+            "hex": "75616769"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 15
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uint",
+            "hex": "75696E74"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 30
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ustr",
+            "hex": "75737472"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 15
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpr",
+            "hex": "756D7072"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uagp",
+            "hex": "75616770"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.850000023841858,
+            "_original_value": 1.850000023841858,
+            "_raw_hex": "CDCCEC3F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upra",
+            "hex": "75707261"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "INT"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvr",
+            "hex": "756D7672"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq2",
+            "hex": "75727132"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urq1",
+            "hex": "75727131"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urqc",
+            "hex": "75727163"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvs",
+            "hex": "756D7673"
+          },
+          "field_name": "Movement speed / Скорость движения",
+          "type": "int",
+          "data": {
+            "value": 290
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpi",
+            "hex": "756D7069"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 9999
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umpm",
+            "hex": "756D706D"
+          },
+          "field_name": "Maximum mana / Максимум маны",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucbs",
+            "hex": "75636273"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucpt",
+            "hex": "75637074"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 0.0,
+            "_original_value": 0.0,
+            "_raw_hex": "00000000"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulum",
+            "hex": "756C756D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upoi",
+            "hex": "75706F69"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "upri",
+            "hex": "75707269"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ugor",
+            "hex": "75676F72"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ulur",
+            "hex": "756C7572"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urtm",
+            "hex": "7572746D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1g",
+            "hex": "75613167"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "debris,ground,item,structure,ward"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uinp",
+            "hex": "75696E70"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.0,
+            "_original_value": 2.0,
+            "_raw_hex": "00000040"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usid",
+            "hex": "75736964"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "usin",
+            "hex": "7573696E"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 400
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "udef",
+            "hex": "75646566"
+          },
+          "field_name": "Base armor / Базовая броня",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ufle",
+            "hex": "75666C65"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1r",
+            "hex": "75613172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 725
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1w",
+            "hex": "75613177"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "missile"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1z",
+            "hex": "7561317A"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1800
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umh1",
+            "hex": "756D6831"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ucs1",
+            "hex": "75637331"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "urb1",
+            "hex": "75726231"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1000.0,
+            "_original_value": 1000.0,
+            "_raw_hex": "00007A44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uhpm",
+            "hex": "7568706D"
+          },
+          "field_name": "Maximum hit points / Максимум здоровья",
+          "type": "int",
+          "data": {
+            "value": 250
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1b",
+            "hex": "75613162"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 20
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua2r",
+            "hex": "75613272"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 725
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "uacq",
+            "hex": "75616371"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 700.0,
+            "_original_value": 700.0,
+            "_raw_hex": "00002F44"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Frieren.mdl"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ussi",
+            "hex": "75737369"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostnova"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "upro",
+            "hex": "7570726F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Yeti Princess"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "upru",
+            "hex": "75707275"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uawt",
+            "hex": "75617774"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostnova"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utpr",
+            "hex": "75747072"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Frostnova - frost mage. Placeholder model; replace ufil when the model is ready."
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uhas",
+            "hex": "75686173"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uspa",
+            "hex": "75737061"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Jaina"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1m",
+            "hex": "7561316D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Weapons\\LichMissile\\LichMissile.mdl"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uimz",
+            "hex": "75696D7A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 150.0
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ulpz",
+            "hex": "756C707A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 150.0
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ussc",
+            "hex": "75737363"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 3.0
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ufil",
+            "hex": "7566696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "units\\human\\Jaina\\Jaina.mdl"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uabi",
+            "hex": "75616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A11B"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "usca",
+            "hex": "75736361"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 1.0
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        }
+      ],
+      "display_name": "Frieren"
     }
   ]
 }

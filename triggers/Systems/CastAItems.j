@@ -33,6 +33,8 @@ local real cd
 local real r1 = 0
 local integer i = GetPlayerId(GetOwningPlayer(c))
 local real a = GAngle2(c,x,y)
+set SacredGearBooster_CastAbil = id
+set SacredGearBooster_Proc = false
 if GetUnitAbilityLevel(c,'B00D')>0 then 
 call SilenceUnit(c,c,Erza6R_Silence)
 call UnitRemoveAbility(c,'B00D')
@@ -102,6 +104,12 @@ endif
 if id == Rhitta_ID then 
 call Rhitta_Start(c,x,y)
 endif
+if id == Kusanagi_Abi_ID then
+call Kusanagi_Start(c,x,y)
+endif
+if id == HashiramaCells_Abi_ID then
+call HashiramaCells_Start(c)
+endif
 if id == TuskBarrel_ID then 
 call TuskBarrel_Start(c,x,y)
 endif
@@ -120,10 +128,13 @@ endif
 if id == RedCup_ID then 
 call RedCup_Start(c,x,y)
 endif
+if id == SakuraSesshou_ID then 
+call SakuraSesshou_Start(c,x,y)
+endif
 if id == HokageHat_ID then
 call SetMpCurrent(td,-HokageHat_Manaburn)
 call RootUnit(c,td,HokageHat_RootTime)
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif
@@ -131,7 +142,7 @@ call EUTU2(EffectSpawn("war3mapImported\\wos_1hongse_2blue.mdl",GetUnitX(td),Get
 call EUTU2(EffectSpawn("war3mapImported\\wos_s225.mdl",GetUnitX(td),GetUnitY(td),1,1,1,1),HokageHat_RootTime,1,td)
 endif
 if id == HokageHatEvolved_ID then
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,x,y)
 endif
@@ -143,12 +154,13 @@ call MakeSound("war3mapimported\\Item_Hiraishin")
 call DestroyEffect(EffectSpawn("war3mapImported\\wos_1jinse_94.mdl",GetUnitX(c),GetUnitY(c),1,1,1,1))
 call DestroyEffect(EffectSpawn("war3mapImported\\wos_0713.mdl",GetUnitX(c),GetUnitY(c),1,1,1,125))
 call PosUnit(c,GetUnitX(td)+50*Cos(GAngle(c,td)),GetUnitY(td)+50*Sin(GAngle(c,td)))
-if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,FakeAbi_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
+if GetUnitTypeId(c) == Bambietta_ID and IsUnitEnemy(td,GetOwningPlayer(c)) and BlzGetUnitAbilityCooldownRemaining(c,BambiettaG_ID)==0 and GetHeroLevel(c)>=BambiettaG_Lvl_CD then 
 call BambiettaG_Start(c)
 call BambiettaG2_Start(c,GetUnitX(td),GetUnitY(td))
 endif
 set cd = BlzGetUnitAbilityCooldown(c,'A076',GetUnitAbilityLevel(c,'A076')-1)/2
 if IsUnitEnemy(td,GetOwningPlayer(c)) then 
+call DamageSource('I01N')
 call dmgatk(c,td,Hiraishin_DamageBase+(Hiraishin_Damage *GetMainStatValue(c,true) ))
 if GetUnitAbilityLevel(td,'B02R')>0 then 
 call BlzStartUnitAbilityCooldown(c,'A076',cd)
@@ -169,19 +181,19 @@ call DestroyEffect(EffectSpawn("war3mapImported\\wos_0713.mdl",GetUnitX(c),GetUn
 call DestroyEffect(EffectSpawn("war3mapImported\\wos_1daji_4.mdl",GetUnitX(td),GetUnitY(td),1,1,1,125))
 endif
 /*
-if BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 and IsItemInInventory(c,'I00U')>0 and BlzGetUnitAbilityCooldownRemaining(c,'A05H')==0  then 
+if BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 and HasCachedItem(c,'I00U')>0 and BlzGetUnitAbilityCooldownRemaining(c,'A05H')==0  then 
 call SetHpCurrent(c,GetUnitState(c,UNIT_STATE_MAX_LIFE)*0.025)
 call BlzStartUnitAbilityCooldown(c,'A05H',2.5)
 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\VampiricAura\\VampiricAuraTarget.mdl",c,"origin"))
 endif*/
-if IsItemInInventory(c,'I012')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A04Y')==0 and GetUnitState(c, UNIT_STATE_MANA) <= GetUnitState(c, UNIT_STATE_MAX_MANA) * 0.95 then
+if HasCachedItem(c,'I012')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A04Y')==0 and GetUnitState(c, UNIT_STATE_MANA) <= GetUnitState(c, UNIT_STATE_MAX_MANA) * 0.95 then
 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_az_siwenpf1_w1.mdl",c,"origin"))
 set r1 = FairyTailEmblem_ManaRestoreStatic + (GetUnitState(c,UNIT_STATE_MAX_MANA)*(FairyTailEmblem_ManaRestorePercent/100))
 call SetMpCurrent(c,r1)
 call SetHpCurrent2(c,c,FairyTailEmblem_HpRestoreStatic)
 call BlzStartUnitAbilityCooldown(c,'A04Y',FairyTailEmblem_CD )
 endif   
-if IsItemInInventory(c,'I00H')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0  then
+if HasCachedItem(c,'I00H')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0  then
 set r = 35
 call BlzStartUnitAbilityCooldown(c,'A01I',2)
 if GetUnitAbilityLevel(c,'A010') == 0 then 
@@ -210,7 +222,7 @@ call SetItemCharges(UnitItemInSlot(c,IsItemInInventory3(c,'I00H')),GetItemCharge
 call MyRemoveAbility(c,r,'A015',1)
 endif
 endif
-if IsItemInInventory(c,'I01I')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A07E')==0 then
+if HasCachedItem(c,'I01I')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A07E')==0 then
 set r = 35
 call BlzStartUnitAbilityCooldown(c,'A07E',2)
 if GetUnitAbilityLevel(c,'A07H') == 0 then 
@@ -267,4 +279,6 @@ endif
 call PosUnit(c,x,y)
  call DestroyEffect(EffectSpawn("war3mapImported\\wos_Mdx_Effect_MirrorImage_Black.mdx",GetUnitX(c),GetUnitY(c), GetUnitFacing(c), 1.5, 1.8, 0))
  endif
+call SacredGearBooster_ItemCast(c,id)
+set SacredGearBooster_CastAbil = 0
 endfunction

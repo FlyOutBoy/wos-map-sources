@@ -9,6 +9,21 @@ import test_map_profile as profiles
 
 
 class TestHeroProfiles(unittest.TestCase):
+    def test_native_ui_is_default_and_can_be_explicitly_disabled(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(profiles,'initialize'), contextlib.redirect_stderr(io.StringIO()):
+            root=Path(temp)
+            config=self.fixture(root)
+            selected=profiles.ensure(root)
+            hook=Path(selected['testOnlySources'][-1])
+            self.assertTrue(selected['testNativeUI'])
+            self.assertIn('library WOSTestNativeUI',hook.read_text())
+            values=profiles.read(config)
+            values['testNativeUI']=False
+            profiles.write(config,values)
+            selected=profiles.ensure(root)
+            self.assertFalse(selected['testNativeUI'])
+            self.assertNotIn('library WOSTestNativeUI',hook.read_text())
+
     def fixture(self, root, hero="Crocodile"):
         template = root/"template.w3x"
         template.write_bytes(b"original map")

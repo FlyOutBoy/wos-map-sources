@@ -1,5 +1,44 @@
 library OkarunSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer OkarunTick_Timer = CreateTimer()
+        private boolean array OkarunTick_Active
+        private integer OkarunTick_Users = 0
+        private code OkarunTick_Callback = null
+    endglobals
+
+    private function OkarunTick_On takes integer k returns nothing
+        if not OkarunTick_Active[k] then
+            set OkarunTick_Active[k] = true
+            set OkarunTick_Users = OkarunTick_Users + 1
+            if OkarunTick_Users == 1 then
+                call TimerStart(OkarunTick_Timer, 0.03, true, OkarunTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function OkarunTick_Off takes integer k returns nothing
+        if OkarunTick_Active[k] then
+            set OkarunTick_Active[k] = false
+            set OkarunTick_Users = OkarunTick_Users - 1
+            if OkarunTick_Users <= 0 then
+                set OkarunTick_Users = 0
+                call PauseTimer(OkarunTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_OKARUN_T_TACKLE = StringHash("Okarun T tackle")
+        private integer SH_CURRENT_SPEED = StringHash("current speed")
+        private integer SH_CURRENT_SPEED1 = StringHash("current speed1")
+        private integer SH_REAL_X = StringHash("real x")
+        private integer SH_REAL_Y = StringHash("real y")
+        private integer SH_SPELL_P = StringHash("spell p")
+        private integer SH_UNIT_TARGET = StringHash("unit target")
+    endglobals
+    globals
 //--------------------------------------Okarun--------------------------------------------------------------
         integer Okarun_ID = 'H01B'
 //---------------Q ability-----------------------------------------------------
@@ -59,20 +98,45 @@ library OkarunSpells uses GearSystems
         real OkarunT_DamageIntBase = 10 // for each punch
         real OkarunT_DamageAoe = 700 // for each punch
         real OkarunT_bonusspeed = 1.25 // 125%
+        real OkarunT_SpeedReduction = 200.00
         integer OkarunT_Slow = 50 // Caused slow %
         integer OkarunT_SlowDuration = 2 // slow time 2, 3, 4 sec only
+        real OkarunT_PushInterval = 0.75 // per-target tackle cooldown
+        real OkarunT_PushScanPeriod = 0.09
+        real OkarunF_OrderRepeatPeriod = 0.75
+        real OkarunT_PushAoe = 350
+        real OkarunT_PushRange = 450
+        real OkarunT_PushDuration = 0.35
+        real OkarunT_PushDamageInt = 2.0 // x Int damage per tackle
 //---------------F ability-----------------------------------------------------
         integer OkarunF_ID = 'A07C'
         real OkarunF_MaxSpeed0 = 600
         real OkarunF_MaxSpeed1 = 700
         real OkarunF_MaxSpeed2 = 800
         real OkarunF_MaxSpeed3 = 900
-        real OkarunF_MaxSpeed4 = 1000
+        real OkarunF_MaxSpeed4 = 1500 // lv 35
         real OkarunF_AddSpeedPercentPerSec = 5 // gain 10% of max speed per second
         real OkarunF_DecreaseSpeedPercentPerSec = 1.2 // 2% of max speed decreased
     endglobals
+    function OkarunF_MaxSpeed takes unit c returns real
+        local integer level = GetHeroLevel(c)
+        if level >= 35 then
+            return OkarunF_MaxSpeed4
+        elseif level >= 25 then
+            return OkarunF_MaxSpeed3
+        elseif level >= 18 then
+            return OkarunF_MaxSpeed2
+        elseif level >= 12 then
+            return OkarunF_MaxSpeed1
+        endif
+        return OkarunF_MaxSpeed0
+    endfunction
+
+    function OkarunT_Speed takes unit c returns real
+        return RMaxBJ(GetUnitMoveSpeed(c), OkarunF_MaxSpeed(c) * OkarunT_bonusspeed - OkarunT_SpeedReduction)
+    endfunction
+
     private struct OkarunQ_KS
-        private static timer t_OkarunQ = CreateTimer( )
         private static integer array m_OkarunQ
         private static integer MUI_OkarunQ = -1
         unit c
@@ -91,7 +155,7 @@ library OkarunSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_OkarunQ takes nothing returns nothing
+        static method Loop_OkarunQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -100,7 +164,7 @@ library OkarunSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03                      
                     call DebugUnit2(c)
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
                     if r == 0.21 or r == 0.42 then                     
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_az2_az_laser3-x.mdl" , GetUnitX(c), GetUnitY(c), 1, 1, 1.25, 11))
                     endif
@@ -138,7 +202,7 @@ library OkarunSpells uses GearSystems
                             set y = GetUnitY(c) + 100 * Sin(a)
                             set r = 99999
                             if GetUnitAbilityLevel(c, OkarunT_Buff_ID) == 0 then                        
-                            call SaveReal(hs, GetHandleId(c), StringHash("current speed"), GetUnitMoveSpeed(c))
+                            call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED, GetUnitMoveSpeed(c))
                             endif
                             call MakeSound("war3mapimported\\Hero_Okarun_Q5")
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_Satsu-Hit-red.mdx", x, y, a * bj_RADTODEG, 1.25, 3.45, 145))
@@ -159,6 +223,7 @@ library OkarunSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A077')
                                     call dmgphys(c, u, dmg)
                                     call MUE(u, OkarunQ_PushRange, OkarunQ_PushDuration, a)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -169,7 +234,7 @@ library OkarunSpells uses GearSystems
                         endif
                     endif
                 else
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
                     call StopSpellUnit2(c)
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup( g )
@@ -178,8 +243,9 @@ library OkarunSpells uses GearSystems
                     set u = null
                     set m_OkarunQ[i] = m_OkarunQ[ MUI_OkarunQ]
                     set MUI_OkarunQ = MUI_OkarunQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunQ == -1 then
-                        call PauseTimer( t_OkarunQ)
+                        call OkarunTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -195,21 +261,21 @@ library OkarunSpells uses GearSystems
             set y = NewY
             set r = 0
             set r2 = 0
-            set move = 65 + LoadReal(hs, GetHandleId(c), StringHash("current speed1")) / 12
+            set move = 65 + LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1) / 12
             call StartSpellUnit2(c)
             set g = CreateGroup()
             set u = null
-            set r3 = LoadReal(hs, GetHandleId(c), StringHash("current speed1"))
+            set r3 = LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1)
                                 if r3>GetUnitMoveSpeed(c) then 
                                 set r3 = (r3 - GetUnitMoveSpeed(c))*0.25
                                 set r3 =GetUnitMoveSpeed(c)+r3
                                 endif
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = OkarunQ_DamageAoe
             set dmg = GetHeroInt( c , true) * ( OkarunQ_DamageIntBase + ( OkarunQ_DamageIntStep * ( GetUnitAbilityLevel( c , OkarunQ_ID) - 1 ) ) )
             set dmg = dmg + OkarunQ_Damage2StaticBase + ( OkarunQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , OkarunQ_ID) - 1 ) )
-            set dmg = dmg + (LoadReal(hs, GetHandleId(c), StringHash("current speed1")) * ((OkarunQ_DamageSpeedBonusBase+ (OkarunQ_DamageSpeedBonusStep* ( GetUnitAbilityLevel( c , OkarunQ_ID) - 1 )))/100))
+            set dmg = dmg + (LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1) * ((OkarunQ_DamageSpeedBonusBase+ (OkarunQ_DamageSpeedBonusStep* ( GetUnitAbilityLevel( c , OkarunQ_ID) - 1 )))/100))
             set rmax = 2.1
             set r5 = 0
             set r4 = OkarunQ_RangeBase + (OkarunQ_RangeStep*(GetUnitAbilityLevel(c,OkarunQ_ID)-1))
@@ -217,13 +283,12 @@ library OkarunSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Okarun_Q")
             call MakeSound("war3mapimported\\Hero_Okarun_Q3")
             if MUI_OkarunQ == 0 then
-                call TimerStart( t_OkarunQ, 0.03, true, function thistype.Loop_OkarunQ)
+                call OkarunTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct OkarunW_KS
-        private static timer t_OkarunW = CreateTimer( )
         private static integer array m_OkarunW
         private static integer MUI_OkarunW = -1
         unit c
@@ -234,7 +299,7 @@ library OkarunSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_OkarunW takes nothing returns nothing
+        static method Loop_OkarunW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -243,7 +308,7 @@ library OkarunSpells uses GearSystems
                 if SpellBoolCaster(c)  and SpellBoolCaster(td) and r <= rmax then
                     set r = r + 0.03
                     call DebugUnit2(c)
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
                     if r == 0.33 then
                         set a = GAngle(c, td)
                         call SetUnitAnimationByIndex(c, 8)
@@ -257,6 +322,7 @@ library OkarunSpells uses GearSystems
                     if r == 0.51 then
                         set r = 999
                         call StunUnit(c, td, OkarunW_Stun)
+                        call DamageSource('A078')
                         call dmgphys (c, td, dmg)
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
@@ -268,14 +334,15 @@ library OkarunSpells uses GearSystems
                     endif
                 else
                     call StopSpellUnit2(c)
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
                     call SetUnitTimeScale( c , 1)
                     set c = null
                     set td = null
                     set m_OkarunW[i] = m_OkarunW[ MUI_OkarunW]
                     set MUI_OkarunW = MUI_OkarunW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunW == -1 then
-                        call PauseTimer( t_OkarunW)
+                        call OkarunTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -289,7 +356,7 @@ library OkarunSpells uses GearSystems
             set c = NewC
             set td = NewTd
             set r = 0
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
             set dmg = GetHeroInt( c , true) * ( OkarunW_DamageIntBase + ( OkarunW_DamageIntStep * ( GetUnitAbilityLevel( c , OkarunW_ID) - 1 ) ) )
             set dmg = dmg + OkarunW_Damage2StaticBase + ( OkarunW_Damage2StaticStep * ( GetUnitAbilityLevel( c , OkarunW_ID) - 1 ) )
             call StartSpellUnit2(c)
@@ -299,13 +366,12 @@ library OkarunSpells uses GearSystems
             call SetUnitTimeScale(c, 2.95)
             call MakeSound("war3mapimported\\Hero_Okarun_W")
             if MUI_OkarunW == 0 then
-                call TimerStart( t_OkarunW, 0.03, true, function thistype.Loop_OkarunW)
+                call OkarunTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct OkarunE_KS
-        private static timer t_OkarunE = CreateTimer( )
         private static integer array m_OkarunE
         private static integer MUI_OkarunE = -1
         unit c
@@ -321,7 +387,7 @@ library OkarunSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_OkarunE takes nothing returns nothing
+        static method Loop_OkarunE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -329,7 +395,7 @@ library OkarunSpells uses GearSystems
                 set this = m_OkarunE[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
                     set r = r + 0.03
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
                     call DebugUnit2(c)
                     if r > 0.3 then
                         set x = GetUnitX(td)
@@ -370,6 +436,7 @@ library OkarunSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A079')
                                 call dmgmag(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -377,7 +444,7 @@ library OkarunSpells uses GearSystems
                         endloop
                         set u = null
                     endif
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup( g )
                     set g = null
@@ -386,8 +453,9 @@ library OkarunSpells uses GearSystems
                     set u = null
                     set m_OkarunE[i] = m_OkarunE[ MUI_OkarunE]
                     set MUI_OkarunE = MUI_OkarunE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunE == -1 then
-                        call PauseTimer( t_OkarunE)
+                        call OkarunTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -404,15 +472,15 @@ library OkarunSpells uses GearSystems
             set y = GetUnitY(td)
             set r = 0
             set r2 = 0
-            set move = 50 + LoadReal(hs, GetHandleId(c), StringHash("current speed1")) / 10
+            set move = 50 + LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1) / 10
             call StartSpellUnit2(c)
             set g = CreateGroup()
             set u = null
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = OkarunE_DamageAoe
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
             set dmg = GetHeroInt( c , true) * ( OkarunE_DamageIntBase + ( OkarunE_DamageIntStep * ( GetUnitAbilityLevel( c , OkarunE_ID) - 1 ) ) )
-            set dmg = dmg + (LoadReal(hs, GetHandleId(c), StringHash("current speed1")) * (OkarunE_DamageSpeedBonus/100))
+            set dmg = dmg + (LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1) * (OkarunE_DamageSpeedBonus/100))
             set rmax = 2.4
             call SetUnitAnimationByIndex(c, 4)
             call SetUnitTimeScale(c, 0.15)
@@ -420,13 +488,12 @@ library OkarunSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Okarun_E3")
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_saberalterqc.mdl" , GetUnitX(c) , GetUnitY(c), 1, 2.5, 1.95, 1))
             if MUI_OkarunE == 0 then
-                call TimerStart( t_OkarunE, 0.03, true, function thistype.Loop_OkarunE)
+                call OkarunTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct OkarunR_KS
-        private static timer t_OkarunR = CreateTimer( )
         private static integer array m_OkarunR
         private static integer MUI_OkarunR = -1
         unit c
@@ -445,7 +512,7 @@ library OkarunSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_OkarunR takes nothing returns nothing
+        static method Loop_OkarunR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -478,7 +545,7 @@ library OkarunSpells uses GearSystems
                                 set check2 = 1
                                 set x = GetUnitX(td)
                                 set y = GetUnitY(td)                                
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
                                    call MakeSound("war3mapimported\\Hero_Okarun_R")
                                 call SetUnitAnimationByIndex(c, 3)
             call BlinkEff2(c)
@@ -504,6 +571,7 @@ library OkarunSpells uses GearSystems
                         set y = GetUnitY(td)
                         call SetUnitAnimation(td, "death")
                         call StunUnit(c, td, OkarunR_Stun )
+                        call DamageSource('A07A')
                         call dmgphys(c, td, dmg)
                         call MUE(td, OkarunR_SmallPushRange, OkarunR_SmallPushDuration, a)
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_az2_az_laser3-x.mdl" , x , y, 1, 1.5, 1.25, 111))
@@ -528,6 +596,7 @@ library OkarunSpells uses GearSystems
                             call StunUnit(c, td, OkarunR_Stun )
                             call PosUnit(c, x - 100 * Cos(a), y - 100 * Sin(a))
                             call SetUnitAnimation(td, "death")
+                            call DamageSource('A07A')
                             call dmgphys(c, td, dmg)
                             call MUE(td, OkarunR_SmallPushRange, OkarunR_SmallPushDuration, a)
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_acg_bbb.mdl", x, y, a * bj_RADTODEG , 1, 0.85, 111, 255, 255, 255, 125))
@@ -564,6 +633,7 @@ library OkarunSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Okarun_R4")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_exceffect4.mdl", x , y , GetRandomReal(0, 359), 1, 4.5, 0))
                         call StopSpellUnit(c)
+                        call DamageSource('A07A')
                         call dmgphys(c, td, dmg)
                         call StunUnit(c, td, OkarunR_StunFinal)
                         call MUE(td, OkarunR_PushRange , OkarunR_PushDuration , a)
@@ -575,7 +645,7 @@ library OkarunSpells uses GearSystems
                     endif
                 else
                     call StopSpellUnit(c)                                 
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
                     call DestroyGroup(g)
                     set g = null
                     set c = null
@@ -583,8 +653,9 @@ library OkarunSpells uses GearSystems
                     set u = null
                     set m_OkarunR[i] = m_OkarunR[ MUI_OkarunR]
                     set MUI_OkarunR = MUI_OkarunR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunR == -1 then
-                        call PauseTimer( t_OkarunR)
+                        call OkarunTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -608,11 +679,11 @@ library OkarunSpells uses GearSystems
             set u = null
             set g = CreateGroup()
             set r4 = 0            
-            call SaveInteger(hs,GetHandleId(c),StringHash("spell p"),1)
+            call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,1)
             set r5 = OkarunR_DamageSpeedBonusBase + OkarunR_DamageSpeedBonusStep*(GetUnitAbilityLevel(c,OkarunR_ID)-1)
             set a = GAngle2( c , x , y ) // Angle Between points
             set dmg = GetHeroInt( c , true) * ( OkarunR_DamageIntBase + ( OkarunR_DamageIntStep * ( GetUnitAbilityLevel( c , OkarunR_ID) - 1 ) ) )
-            set dmg = dmg + (LoadReal(hs, GetHandleId(c), StringHash("current speed1")) * (r5/100))
+            set dmg = dmg + (LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED1) * (r5/100))
             set dmg = dmg / 8.5
             set rmax = 7.2
             call MakeSound("war3mapimported\\Hero_Okarun_F")
@@ -620,19 +691,56 @@ library OkarunSpells uses GearSystems
             call SetUnitTimeScale(c, 1)            
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_mh_tx-ba-symh-hit11Red.mdx", GetUnitX(c) ,GetUnitY(c), a * bj_RADTODEG, 0.9, 2, 116))
             if MUI_OkarunR == 0 then
-                call TimerStart( t_OkarunR, 0.03, true, function thistype.Loop_OkarunR)
+                call OkarunTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct OkarunTBuff_KS
-        private static timer t_OkarunTBuff = CreateTimer()
         private static integer array m_OkarunTBuff
         private static integer MUI_OkarunTBuff = -1
+        private static group pushGroup = CreateGroup()
         unit c
         real r
+        real r2
+        real trailTime
+        real lastX
+        real lastY
 
-        private static method Loop_OkarunTBuff takes nothing returns nothing
+        // Enemies next to Okarun are knocked to the side they stand on (as when hit while running in F).
+        private method tackle takes nothing returns nothing
+            local unit u
+            local real facing = GetUnitFacing(c) * bj_DEGTORAD
+            local real a
+            local real dmg = GetHeroInt(c, true) * OkarunT_PushDamageInt
+            if IsUnitPaused(c) then
+                return
+            endif
+            call GroupEnumUnitsInRange(pushGroup, GetUnitX(c), GetUnitY(c), OkarunT_PushAoe, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(pushGroup)
+                exitwhen u == null
+                call GroupRemoveUnit(pushGroup, u)
+                if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IntegerCdKey(u, SH_OKARUN_T_TACKLE + GetHandleId(c), OkarunT_PushInterval) then
+                    set a = GAngle(c, u)
+                    if Sin(a - facing) >= 0 then
+                        set a = facing + bj_PI / 2
+                    else
+                        set a = facing - bj_PI / 2
+                    endif
+                    call MUE(u, OkarunT_PushRange, OkarunT_PushDuration, a)
+                    call DamageSource(OkarunT_ID)
+                    call dmgmag(c, u, dmg)
+                    // Hit effects of Kenjaku W.
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_az_hitheavy.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG, 1, 2.25, 125))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_BDEF (124)2.mdx", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 2.5, 125))
+                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_acg_bbb.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG, 1.5, 0.85, 125))
+                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                endif
+            endloop
+        endmethod
+
+        static method Loop_OkarunTBuff takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -643,13 +751,31 @@ library OkarunSpells uses GearSystems
                     if GetUnitAbilityLevel(c, OkarunT_Buff_ID) == 0 then
                         call BuffUnit1(c, c, 3)
                     endif
+                    if not IsUnitPaused(c) and SR3(c, lastX, lastY) > 1.00 then
+                        set trailTime = trailTime + 0.03
+                        if trailTime >= 0.15 then
+                            set trailTime = 0
+                            call DestroyEffect(EffectSpawn("war3mapImported\\cf2.mdx", GetUnitX(c), GetUnitY(c), GetUnitFacing(c), 1, 0.5, 15))
+                        endif
+                    else
+                        set trailTime = 0
+                    endif
+                    set lastX = GetUnitX(c)
+                    set lastY = GetUnitY(c)
+                    set r2 = r2 + 0.03
+                    if IsUnitPaused(c) then
+                        set r2 = 0.00
+                    elseif r2 + 0.0001 >= OkarunT_PushScanPeriod and GetWidgetLife(c) > 0.405 then
+                        set r2 = r2 - OkarunT_PushScanPeriod
+                        call tackle()
+                    endif
                 else
                     call UnitRemoveAbility(c, OkarunT_Buff_ID)
                     set c = null
                     set m_OkarunTBuff[i] = m_OkarunTBuff[MUI_OkarunTBuff]
                     set MUI_OkarunTBuff = MUI_OkarunTBuff - 1
                     if MUI_OkarunTBuff == -1 then
-                        call PauseTimer(t_OkarunTBuff)
+                        call OkarunTick_Off(4)
                     endif
                     call deallocate(this)
                     set i = i - 1
@@ -664,14 +790,17 @@ library OkarunSpells uses GearSystems
             set m_OkarunTBuff[MUI_OkarunTBuff] = this
             set c = NewC
             set r = 0
+            set r2 = 0
+            set trailTime = 0
+            set lastX = GetUnitX(c)
+            set lastY = GetUnitY(c)
             if MUI_OkarunTBuff == 0 then
-                call TimerStart(t_OkarunTBuff, 0.03, true, function thistype.Loop_OkarunTBuff)
+                call OkarunTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct OkarunT_KS
-        private static timer t_OkarunT = CreateTimer( )
         private static integer array m_OkarunT
         private static integer MUI_OkarunT = -1
         unit c
@@ -688,7 +817,7 @@ library OkarunSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_OkarunT takes nothing returns nothing
+        static method Loop_OkarunT takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -720,16 +849,7 @@ library OkarunSpells uses GearSystems
                         set y = GetUnitY(c)
                         call BuffUnit1(c, c, 3)
                         call OkarunTBuff_KS.OkarunTBuff_Start(c)
-                        if GetHeroLevel(c) >= 35 then
-                set r5 = OkarunF_MaxSpeed3
-            elseif GetHeroLevel(c) >= 25 then
-                set r5 = OkarunF_MaxSpeed2
-            elseif GetHeroLevel(c) >= 12 then
-                set r5 = OkarunF_MaxSpeed1
-            else
-                set r5 = OkarunF_MaxSpeed0
-            endif
-            call SaveReal(hs, GetHandleId(c), StringHash("current speed"), r5*OkarunT_bonusspeed)
+                        call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED, OkarunT_Speed(c))
                         call MyFrame(c,OkarunT_Buff_Duration,"BTNHero_Okarun_T",false,0)
                         call MakeSound("war3mapimported\\Hero_Okarun_T3")
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_az2_az_laser3-x.mdl" , x , y, 1, 1, 2.5, 111))
@@ -743,6 +863,7 @@ library OkarunSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A07B')
                                 call dmgphys(c, u, dmg)
                                 call SlowUnit(c, u, OkarunT_Slow, OkarunT_SlowDuration)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -762,8 +883,9 @@ library OkarunSpells uses GearSystems
                     set c = null
                     set m_OkarunT[i] = m_OkarunT[ MUI_OkarunT]
                     set MUI_OkarunT = MUI_OkarunT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunT == -1 then
-                        call PauseTimer( t_OkarunT)
+                        call OkarunTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -804,13 +926,12 @@ library OkarunSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Okarun_T7")
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_opm (513)red.mdx", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 1., 1))
             if MUI_OkarunT == 0 then
-                call TimerStart( t_OkarunT, 0.03, true, function thistype.Loop_OkarunT)
+                call OkarunTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct OkarunF_KS
-        private static timer t_OkarunF = CreateTimer( )
         private static integer array m_OkarunF
         private static integer MUI_OkarunF = -1
         unit c
@@ -829,191 +950,87 @@ library OkarunSpells uses GearSystems
         real r
         effect e
         real a
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
-        private static method Loop_OkarunF takes nothing returns nothing
+        real lastX
+        real lastY
+        static method Loop_OkarunF takes nothing returns nothing
             local integer this
             local integer i = 0
-            local real rkek = 0
-            local real extraSpeed = 0
+            local real nativeStep
+            local real distance
+            local integer order
+            local boolean moving
             loop
                 exitwhen i > MUI_OkarunF
                 set this = m_OkarunF[i]
                 if check == GetUnitTypeId(c) and Hero[k2] != null then
                     if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
-                        call SaveReal(hs, GetHandleId(c), StringHash("current speed"), GetUnitMoveSpeed(c))
+                        call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED, GetUnitMoveSpeed(c))
                     endif
-                    if LoadReal(hs, GetHandleId(c), StringHash("current speed")) != 0 then
-                        set r3 = LoadReal(hs, GetHandleId(c), StringHash("current speed"))
-                        call SaveReal(hs, GetHandleId(c), StringHash("current speed"), 0)
+                    if LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED) != 0 then
+                        set r3 = LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED)
+                        call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED, 0)
                     endif
                     if IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
-                        if GetHeroLevel(c) >= 35 then
-                            set r5 = OkarunF_MaxSpeed4
-                        elseif GetHeroLevel(c) >= 25 then
-                            set r5 = OkarunF_MaxSpeed3
-                        elseif GetHeroLevel(c) >= 18 then
-                            set r5 = OkarunF_MaxSpeed2    
-                        elseif GetHeroLevel(c) >= 12 then
-                            set r5 = OkarunF_MaxSpeed1
-                        else
-                            set r5 = OkarunF_MaxSpeed0
+                        set r5 = OkarunF_MaxSpeed(c)
+                        set order = GetUnitCurrentOrder(c)
+                        set moving = order == OrderId("move") or order == OrderId("smart") or order == OrderId("attack") or order == OrderId(OkarunQ_Order) or order == OrderId(OkarunW_Order) or order == OrderId(OkarunE_Order) or order == OrderId(OkarunR_Order) or order == OrderId(OkarunT_Order)
+                        set x = LoadReal(hs, GetHandleId(c), SH_REAL_X)
+                        set y = LoadReal(hs, GetHandleId(c), SH_REAL_Y)
+                        set td = LoadUnitHandle(hs, GetHandleId(c), SH_UNIT_TARGET)
+                        if td != null and GetUnitTypeId(td) != 0 and GetWidgetLife(td) > 0.405 then
+                            set x = GetUnitX(td)
+                            set y = GetUnitY(td)
                         endif
-                        call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r5 + 1)
-                        set x = LoadReal(hs, GetHandleId(c), StringHash("real x"))
-                        set y = LoadReal(hs, GetHandleId(c), StringHash("real y"))
-                        if x != 0 then
-                            set a = GAngle2(c, x, y)
-                            if GetHeroLevel(c)>= 35 then                             
-                            set r3 = r3 + r5 * ((OkarunF_AddSpeedPercentPerSec+1) * 0.01) * 0.03
+                        if moving then
+                            if GetHeroLevel(c) >= 35 then
+                                set r3 = r3 + r5 * ((OkarunF_AddSpeedPercentPerSec + 1) * 0.01) * 0.03
                             else
-                            set r3 = r3 + r5 * (OkarunF_AddSpeedPercentPerSec * 0.01) * 0.03
+                                set r3 = r3 + r5 * (OkarunF_AddSpeedPercentPerSec * 0.01) * 0.03
                             endif
-                            if r3 > r5 then
-                                set r3 = r5
-                            endif
-                            if GetUnitAbilityLevel(c, OkarunT_Buff_ID) > 0 then
-                                set r3 = r5*OkarunT_bonusspeed
-                            endif
-                            call SaveReal(hs, GetHandleId(c), StringHash("current speed1"), r3)
-                            set extraSpeed = r3 - GetUnitMoveSpeed(c)
-                            if extraSpeed < 0 then
-                                set extraSpeed = 0
-                            endif
-                            set move = extraSpeed * 0.03
-                            if move != 0 then
-                                if SR3(c, x, y) > 55 and GetUnitCurrentOrder(c) != OrderId("stop") and GetUnitCurrentOrder(c) != 0 and GetUnitAbilityLevel(c, 'BPSE') == 0 and GetUnitAbilityLevel(c, 'BEer') == 0 then
-                                    if r4 > r6 then
-                                        set r4 = 0.03
-                                        if (GetUnitCurrentOrder(c) == OrderId("smart") or GetUnitCurrentOrder(c) == OrderId("attack")) then 
-                                        if  SR3(c,x,y)>120 then 
-                                        call SetUnitAnimationByIndex(c, 0)
-                                        endif
-                                        else
-                                        call SetUnitAnimationByIndex(c, 0)
-                                        endif
-                                    else
-                                        set r4 = r4 + 0.03
-                                    endif
-                                    set td = null
-                                    if GetUnitCurrentOrder(c) == OrderId("smart") or GetUnitCurrentOrder(c) == OrderId("move") then
-                                    if r7> 0.21  then 
-                                    set r7 = 0
-                                    set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))
-                                        if td != null then 
-                                        set a = GAngle(c, td)
-                                        call IssueTargetOrder(c, "attack", td)
-                                        set x = GetUnitX(td)
-                                        set y = GetUnitY(td)
-                                        else
-                                        set a = GAngle2(c, x,y)
-                                        call IssuePointOrder(c, "move", x,y)
-                                        endif
-                                      else
-                                      set r7 = r7 + 0.03
-                                      endif
-                                      set r6 = 0.21
-                                    elseif GetUnitCurrentOrder(c) == OrderId(OkarunQ_Order) then
-                                        call IssuePointOrder(c, OkarunQ_Order, x, y)
-                                        set r6 = 0.15
-                                    elseif GetUnitCurrentOrder(c) == OrderId(OkarunW_Order) then
-                                        set r6 = 0.15
-                                        set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))
-                                        if td != null then
-                                            set a = GAngle(c, td)
-                                        endif
-                                        if r7> 0.21  then 
-                                    set r7 = 0
-                                    set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))                                        
-                                        if td != null then
-                                        call IssueTargetOrder(c, OkarunW_Order, td)
-                                        endif
-                                      else
-                                      set r7 = r7 + 0.03
-                                      endif
-                                    elseif GetUnitCurrentOrder(c) == OrderId(OkarunE_Order) then
-                                        set r6 = 0.15
-                                        set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))
-                                        if td != null then
-                                        set a = GAngle(c, td)
-                                        endif
-                                        if r7> 0.21  then 
-                                    set r7 = 0
-                                    set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))                                        
-                                        if td != null then
-                                        call IssueTargetOrder(c, OkarunE_Order, td)
-                                        endif
-                                      else
-                                      set r7 = r7 + 0.03
-                                      endif
-                                    elseif GetUnitCurrentOrder(c) == OrderId(OkarunR_Order) then
-                                        set r6 = 0.15
-                                        set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))
-                                        if td != null then
-                                        set a = GAngle(c, td)
-                                        endif
-                                        if r7> 0.21  then 
-                                    set r7 = 0
-                                    set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))                                        
-                                        if td != null then
-                                        call IssueTargetOrder(c, OkarunR_Order, td)
-                                        endif
-                                      else
-                                      set r7 = r7 + 0.03
-                                      endif
-                                    elseif GetUnitCurrentOrder(c) == OrderId(OkarunT_Order) then
-                                        set r6 = 0.15
-                                        call IssuePointOrder(c, OkarunT_Order, x, y)
-                                    elseif GetUnitCurrentOrder(c) == OrderId("attack") then
-                                        set r6 = 0.15
-                                        set td = LoadUnitHandle(hs, GetHandleId(c), StringHash("unit target"))
-                                        if td != null then 
-                                        set a = GAngle(c, td)
-                                        call IssueTargetOrder(c, "attack", td)
-                                        set x = GetUnitX(td)
-                                        set y = GetUnitY(td)
-                                        else
-                                        set a = GAngle2(c, x,y)
-                                        call IssuePointOrder(c, "attack", x,y)
-                                        endif
-                                    endif
-                                    if SR3(c,x,y)>150 then 
-                                    set a = GetUnitFacing(c)*bj_DEGTORAD
-                                   //call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
-                                    call MoveUnit(c, move, a)
-                                    set rkek = move*2
-                                    if rkek> 20 then 
-                                    set rkek = 20 
-                                    endif
-                                    if PathableCheck(GetUnitX(c)+rkek*Cos(a),GetUnitY(c)+rkek*Sin(a)) == false then 
-                                    //call MoveUnit(c, rkek, a)
-                                    endif
-                                    endif
-                                else                        
-                                    call SetUnitAnimation(c, "stand")
-                                    call IssueImmediateOrder(c, "stop")
-                                    call SaveReal(hs, GetHandleId(c), StringHash("real x"), 0)
-                                    call SaveReal(hs, GetHandleId(c), StringHash("real y"), 0)
+                            set r3 = RMinBJ(r3, r5)
+                        endif
+                        if GetUnitAbilityLevel(c, OkarunT_Buff_ID) > 0 then
+                            set r3 = OkarunT_Speed(c)
+                        endif
+                        call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED1, r3)
+                        if moving and LoadInteger(hs, GetHandleId(c), SH_SPELL_P) == 0 then
+                            set r7 = r7 + 0.03
+                            if r7 + 0.0001 >= OkarunF_OrderRepeatPeriod and SR3(c, x, y) > 150.00 then
+                                set r7 = 0.00
+                                if td != null and GetUnitTypeId(td) != 0 and GetWidgetLife(td) > 0.405 then
+                                    call IssueTargetOrderById(c, order, td)
+                                else
+                                    call IssuePointOrderById(c, order, x, y)
                                 endif
+                            endif
+                        else
+                            set r7 = 0.00
+                        endif
+                        if moving and GetUnitAbilityLevel(c, 'BPSE') == 0 and GetUnitAbilityLevel(c, 'BEer') == 0 then
+                            set distance = SR3(c, x, y)
+                            // Measure native travel since our previous post-boost position.
+                            // Order retries are separately rate-limited and skip active casts.
+                            set nativeStep = SquareRoot((GetUnitX(c) - lastX) * (GetUnitX(c) - lastX) + (GetUnitY(c) - lastY) * (GetUnitY(c) - lastY))
+                            set move = RMaxBJ(0.00, r3 * 0.03 - nativeStep)
+                            set move = RMinBJ(move, RMaxBJ(0.00, distance - 150.00))
+                            set a = GAngle2(c, x, y)
+                            if move > 0.00 and PathableCheck3(GetUnitX(c) + move * Cos(a), GetUnitY(c) + move * Sin(a)) then
+                                call SetUnitX(c, GetUnitX(c) + move * Cos(a))
+                                call SetUnitY(c, GetUnitY(c) + move * Sin(a))
                             endif
                         endif
                     endif
-                    
+
                     if r2 > 0.06 then
                         set r2 = 0.03
                         if GetUnitAbilityLevel(c, OkarunT_Buff_ID) > 0 then
-                                set r3 = r5*OkarunT_bonusspeed
+                                set r3 = OkarunT_Speed(c)
                             endif
-                        call BlzFrameSetValue(frame_pas3[k2], r3)
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(r3, 0, 2) + "|r")
+                        call WUI_HeroProgressText(c, OkarunF_ID, "Current speed", r3, r5, false, R2SW(r3, 0, 2))
                     else
                         set r2 = r2 + 0.03
                     endif
-                    if GetUnitAbilityLevel(c, OkarunT_Buff_ID) == 0 and ( GetUnitCurrentOrder(c) == OrderId("stop") or GetUnitCurrentOrder(c) == 0 or IsUnitPaused(c) == true or GetUnitAbilityLevel(c, 'BPSE') == 1) and LoadInteger(hs,GetHandleId(c),StringHash("spell p")) == 0 then
+                    if GetUnitAbilityLevel(c, OkarunT_Buff_ID) == 0 and ( GetUnitCurrentOrder(c) == OrderId("stop") or GetUnitCurrentOrder(c) == 0 or IsUnitPaused(c) == true or GetUnitAbilityLevel(c, 'BPSE') == 1) and LoadInteger(hs,GetHandleId(c),SH_SPELL_P) == 0 then
                         set r3 = r3 - (r5 * (OkarunF_DecreaseSpeedPercentPerSec/100))
                         if r3 < GetUnitMoveSpeed(c) then
                       //  if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false and IsUnitType(c,UNIT_TYPE_DEAD)== false and IntegerCd(c,"sound cd",40)  then 
@@ -1022,18 +1039,19 @@ library OkarunSpells uses GearSystems
                             set r3 = GetUnitMoveSpeed(c)
                         endif
                     endif
+                    set lastX = GetUnitX(c)
+                    set lastY = GetUnitY(c)
                 else
-                     if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], false)
-                endif
+                    call WUI_HeroProgress(c, OkarunF_ID, "Current speed", 0.00, 0.00, true)
                     call DestroyEffect(e)
                     set c = null
                     set td = null
                     set e = null
                     set m_OkarunF[i] = m_OkarunF[MUI_OkarunF]
                     set MUI_OkarunF = MUI_OkarunF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_OkarunF == -1 then
-                        call PauseTimer(t_OkarunF)
+                        call OkarunTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1045,6 +1063,8 @@ library OkarunSpells uses GearSystems
             set MUI_OkarunF = MUI_OkarunF + 1
             set m_OkarunF[MUI_OkarunF] = this
             set c = NewC
+            set lastX = GetUnitX(c)
+            set lastY = GetUnitY(c)
             set td = null
             set check = GetUnitTypeId(c)
             set r = 0
@@ -1053,46 +1073,9 @@ library OkarunSpells uses GearSystems
             set r7 = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set r3 = GetUnitMoveSpeed(c) // СЃС‚Р°СЂС‚РѕРІР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ (РєР°Рї РґРІРёР¶РєР°)
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, r2)
-                call BlzFrameSetValue(frame_pas3[k2], 0)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Okarun_F", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Current speed:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], r2)
-            endif
             set e = AddSpecialEffectTarget("war3mapimported\\wos_windwalk blood.mdx", c, "origin")
             if MUI_OkarunF == 0 then
-                call TimerStart(t_OkarunF, 0.03, true, function thistype.Loop_OkarunF)
+                call OkarunTick_On(6)
             endif
         endmethod
     endstruct
@@ -1128,6 +1111,37 @@ library OkarunSpells uses GearSystems
     function OkarunT_Start takes unit c, real x, real y returns nothing
         call OkarunT_KS.OkarunT_Start( c, x, y)
     endfunction
+
+    private struct OkarunTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if OkarunTick_Active[0] then
+                call OkarunQ_KS.Loop_OkarunQ()
+            endif
+            if OkarunTick_Active[1] then
+                call OkarunW_KS.Loop_OkarunW()
+            endif
+            if OkarunTick_Active[2] then
+                call OkarunE_KS.Loop_OkarunE()
+            endif
+            if OkarunTick_Active[3] then
+                call OkarunR_KS.Loop_OkarunR()
+            endif
+            if OkarunTick_Active[4] then
+                call OkarunTBuff_KS.Loop_OkarunTBuff()
+            endif
+            if OkarunTick_Active[5] then
+                call OkarunT_KS.Loop_OkarunT()
+            endif
+            if OkarunTick_Active[6] then
+                call OkarunF_KS.Loop_OkarunF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set OkarunTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

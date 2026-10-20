@@ -1,5 +1,56 @@
 library AinzSpells initializer InitAinzSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer AinzTick_Timer = CreateTimer()
+        private boolean array AinzTick_Active
+        private integer AinzTick_Users = 0
+        private code AinzTick_Callback = null
+    endglobals
+
+    private function AinzTick_On takes integer k returns nothing
+        if not AinzTick_Active[k] then
+            set AinzTick_Active[k] = true
+            set AinzTick_Users = AinzTick_Users + 1
+            if AinzTick_Users == 1 then
+                call TimerStart(AinzTick_Timer, 0.03, true, AinzTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function AinzTick_Off takes integer k returns nothing
+        if AinzTick_Active[k] then
+            set AinzTick_Active[k] = false
+            set AinzTick_Users = AinzTick_Users - 1
+            if AinzTick_Users <= 0 then
+                set AinzTick_Users = 0
+                call PauseTimer(AinzTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_AINZTQ_USERS = StringHash("AinzTQ users")
+        private integer SH_AINZW2_ALLY_CASTER = StringHash("AinzW2 ally caster")
+        private integer SH_AINZW_CASTER = StringHash("AinzW caster")
+        private integer SH_AINZW_TARGET = StringHash("AinzW target")
+        private integer SH_AINZW_TIMER_PAUSE = StringHash("AinzW timer pause")
+        private integer SH_AINZW_W3_READY = StringHash("AinzW W3 ready")
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_KNIGHT_GROUP = StringHash("knight group")
+        private integer SH_KNIGHT_ULT = StringHash("knight ult")
+        private integer SH_LVL4 = StringHash("lvl4")
+        private integer SH_MODE_T = StringHash("mode t")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+        private integer SH_SHIELD = StringHash("shield")
+        private integer SH_STOP_MOVE = StringHash("stop move")
+        private integer SH_STOP_R = StringHash("stop r")
+    endglobals
+    globals
         private timer AinzTimer03
         private code AinzTimer03Callback
         private integer AinzTimer03Users = 0
@@ -10,8 +61,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------Q ability (Explosive Land Mine)-------------------------------
         integer AinzQ_ID = 'A0FH'
-        real AinzQ_DamageIntBase = 1.2
-        real AinzQ_DamageIntStep = 0.25
+        real AinzQ_DamageIntBase = 1.25
+        real AinzQ_DamageIntStep = 0.4
         real AinzQ_Damage2StaticBase = 100.0
         real AinzQ_Damage2StaticStep = 0.0
         real AinzQ_DamageAoe = 375.00
@@ -34,8 +85,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 //---------------TQ / Q3 ability (Twin Dragon Lightning - T Mode)--------------
         integer AinzQ3_ID = 'A0FJ'
         private group AinzTQEnumGroup
-        real AinzTQ_DamageIntBase = 5.0
-        real AinzTQ_DamageIntBase2 = 5.00
+        real AinzTQ_DamageIntBase = 5.5
+        real AinzTQ_DamageIntBase2 = 5.5
         real AinzTQ_DamageAoe = 250.00
         real AinzTQ_DamageAoe2 = 750.00
         real AinzTQ_SearchAoe = 1000.00
@@ -67,7 +118,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         integer AinzW2_ID = 'A0FL'
         integer AinzW_Buff_ID = 'B02P'
         real AinzW2_DamageIntBase = 1
-        real AinzW2_DamageIntStep = 0.25
+        real AinzW2_DamageIntStep = 0.35
         real AinzW2_Damage2StaticBase = 100.0
         real AinzW2_Damage2StaticStep = 0.0
         real AinzW_KnightSearchRange = 1800.00
@@ -137,7 +188,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------TE / E3 ability (Black Hole - T Mode)-------------------------
         integer AinzE3_ID = 'A0FQ'
-        real AinzTE_DamageIntBase = 5.0
+        real AinzTE_DamageIntBase = 6.0
         real AinzTE_DamageIntStep = 0.0
         real AinzTE_DamageAoe = 750.00
         real AinzTE_DamagePeriod = 0.20
@@ -169,7 +220,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------TR / R2 ability (Reality Slash - T Mode)----------------------
         integer AinzR2_ID = 'A0FS'
-        real AinzTR_DamageIntBase = 4.0
+        real AinzTR_DamageIntBase = 5.0
         real AinzTR_DamageIntStep = 1.0
         real AinzTR_MaxRange = 1900.00
         real AinzTR_StartRange = 80.00
@@ -241,10 +292,10 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Ainz_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -256,9 +307,9 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Ainz_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -270,7 +321,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Ainz_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
@@ -278,7 +329,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
     endfunction
 
     function Ainz_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -287,19 +338,19 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         local unit tu
 
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -399,32 +450,32 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
     endfunction
 
     private function AinzSwapPatch takes unit c, integer oldId, integer state returns nothing
-        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(oldId)), state)
+        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), GearKey(GEAR_KEY_I2S, "", oldId), state)
     endfunction
 
     private function AinzFinishSwap takes unit c, integer oldId returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(oldId)), 1)
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
+            call SaveInteger(hs, GetHandleId(c), GearKey(GEAR_KEY_AINZ_PENDING_SWAP, "Ainz pending swap ", oldId), 1)
         else
             call AinzSwapPatch(c, oldId, 1)
         endif
     endfunction
 
     private function AinzFlushPendingSwaps takes unit c returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzQ_ID))) == 1 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzQ_ID)), 0)
+        if LoadInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZQ_ID) == 1 then
+            call SaveInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZQ_ID, 0)
             call AinzSwapPatch(c, AinzQ_ID, 1)
         endif
-        if LoadInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzW_ID))) == 1 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzW_ID)), 0)
+        if LoadInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZW_ID) == 1 then
+            call SaveInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZW_ID, 0)
             call AinzSwapPatch(c, AinzW_ID, 1)
         endif
-        if LoadInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzW2_ID))) == 1 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzW2_ID)), 0)
+        if LoadInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZW2_ID) == 1 then
+            call SaveInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZW2_ID, 0)
             call AinzSwapPatch(c, AinzW2_ID, 1)
         endif
-        if LoadInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzE_ID))) == 1 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("Ainz pending swap " + I2S(AinzE_ID)), 0)
+        if LoadInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZE_ID) == 1 then
+            call SaveInteger(hs, GetHandleId(c), SH_Ainz_AINZ_PENDING_SWAP_AINZE_ID, 0)
             call AinzSwapPatch(c, AinzE_ID, 1)
         endif
     endfunction
@@ -529,7 +580,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             call IssueImmediateOrder(NewC, "stop")
             call BlzEndUnitAbilityCooldown(NewC, AinzQ_ID)
             call SetUnitState(NewC, UNIT_STATE_MANA, GetUnitState(NewC, UNIT_STATE_MANA) + I2R(manaCost))
-            if IntegerCd(NewC, "cd warning", 5) then 
+            if IntegerCdKey(NewC, SH_ICD_CD_WARNING, 5) then 
                 call DisplayTimedTextToPlayer(GetOwningPlayer(NewC), 0.00, 0.00, 1.00, "|cffffcc00Mine placement cancelled: another active mine is too close.|r")
             endif
         endmethod
@@ -577,13 +628,13 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set e2 = null
 
             if mineKind == MINE_KIND_Q2 then
-                if IntegerCd(c, "cd sound", 15) then
+                if IntegerCdKey(c, SH_ICD_CD_SOUND, 15) then
                     call MakeSound("war3mapimported\\Hero_Ainz_Q4")
                 endif
                 call MakeSound("war3mapimported\\Hero_Ainz_Q3")
             else
                 call MakeSound("war3mapimported\\Hero_Ainz_Q1")
-                if IntegerCd(c, "cd sound", 10) then
+                if IntegerCdKey(c, SH_ICD_CD_SOUND, 10) then
                     call MakeSound("war3mapimported\\Hero_Ainz_Q2")
                 endif
             endif
@@ -600,6 +651,11 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 set u = FirstOfGroup(g)
                 exitwhen u == null
                 if SpellBool(u) and IsUnitEnemy(u, owner) then
+                    if mineKind == MINE_KIND_Q2 then
+                        call DamageSource(AinzQ2_ID)
+                    else
+                        call DamageSource(AinzQ_ID)
+                    endif
                     call dmgmag(c, u, dmg)
                 endif
                 call GroupRemoveUnit(g, u)
@@ -783,7 +839,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         private static integer array m_AinzW2
         private static integer MUI_AinzW2 = -1
         private static trigger knightAcquireTrig = CreateTrigger()
-        private static trigger knightDamageTrig = CreateTrigger()
         private static integer array m_AinzW
         private static integer MUI_AinzW = -1
         private static integer array m_AinzW3
@@ -798,12 +853,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         real y
         real x1
         real y1
-        framehandle array frame1_pas1 [10]
-        framehandle array frame1_pas2 [10]
-        framehandle array frame1_pas3 [10]
-        framehandle array frame1_pas4 [10]
-        framehandle array frame1_pas5 [10]
-        framehandle array frame1_pas6 [10]
         real r2
         integer k
         integer k2
@@ -831,30 +880,26 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         private static method OnknightAcquire takes nothing returns nothing
             local unit knight = GetTriggerUnit()
             local unit target = GetEventTargetUnit()
-            local unit caster = LoadUnitHandle(hs, GetHandleId(knight), StringHash("AinzW caster"))
+            local unit caster = LoadUnitHandle(hs, GetHandleId(knight), SH_AINZW_CASTER)
             if caster != null and target != null and SpellBool(target) and IsUnitEnemy(target, GetOwningPlayer(caster)) then
-                call SaveUnitHandle(hs, GetHandleId(knight), StringHash("AinzW target"), target)
+                call SaveUnitHandle(hs, GetHandleId(knight), SH_AINZW_TARGET, target)
             endif
             set knight = null
             set target = null
             set caster = null
         endmethod
 
-        private static method OnknightDamage takes nothing returns nothing
-            local unit knight = GetEventDamageSource()
-            local unit target = GetTriggerUnit()
-            local unit caster = LoadUnitHandle(hs, GetHandleId(knight), StringHash("AinzW caster"))
-            if caster != null and target != null and BlzGetEventIsAttack() and SpellBool(target) and IsUnitEnemy(target, GetOwningPlayer(caster)) then
-                call SaveUnitHandle(hs, GetHandleId(knight), StringHash("AinzW target"), target)
+        // Called by DmgSys for a knight's attack hit (no per-knight damage trigger).
+        public static method OnKnightHit takes unit knight, unit target returns nothing
+            local unit caster = LoadUnitHandle(hs, GetHandleId(knight), SH_AINZW_CASTER)
+            if caster != null and target != null and SpellBool(target) and IsUnitEnemy(target, GetOwningPlayer(caster)) then
+                call SaveUnitHandle(hs, GetHandleId(knight), SH_AINZW_TARGET, target)
             endif
-            set knight = null
-            set target = null
             set caster = null
         endmethod
 
         public static method InitknightEvents takes nothing returns nothing
             call TriggerAddAction(knightAcquireTrig, function thistype.OnknightAcquire)
-            call TriggerAddAction(knightDamageTrig, function thistype.OnknightDamage)
         endmethod
 
         public static method Loop_AinzW2 takes nothing returns nothing
@@ -883,7 +928,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         if r2 >= 0.06 then
                             set r2 = 0
                             call DecorRemove(c, GetUnitX(d), GetUnitY(d), AinzW_KnightHitAoe, AinzW2_DecorDamage)
-                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf1.mdl", GetUnitX(d) + 1 * Cos(a), GetUnitY(d) + 1 * Sin(a), GetRandomReal(0, 359), 1, 1.25, 0))
+                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf2.mdl", GetUnitX(d) + 1 * Cos(a), GetUnitY(d) + 1 * Sin(a), GetRandomReal(0, 359), 1, 1.25, 0))
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_DanGe_Wid_ChongFengQiLiu.mdl", GetUnitX(d) + 350 * Cos(a), GetUnitY(d) + 350 * Sin(a), a * bj_RADTODEG, 1.5, 1.95, 0, 255, 255, 255, 125))
                         endif
                         if r3 >= 0.12 then
@@ -900,12 +945,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 if not IsUnitInGroup(u, g2) then
                                     call GroupAddUnit(g2, u)
+                                    call DamageSource('A0FL')
                                     call dmgphys(c, u, dmg)
                                 endif
                                 set wallMove = UnitMoveWall.GetMoveDistance(d, GetUnitX(d), GetUnitY(d), a, AinzW_KnightSpeed)
                                 if wallMove < AinzW_KnightSpeed then
                                     if not IsUnitInGroup(u, g3) then
                                         call GroupAddUnit(g3, u)
+                                        call DamageSource(AinzE_ID)
                                         call dmgmag(c, u, GetHeroInt(c, true) * AinzE_WallHitDamageInt)
                                         call StunUnit(c, u, AinzE_WallHitStun)
                                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 0.75, 1.35, 0))
@@ -921,7 +968,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endloop
                     endif
                 else
-                    set wolves = LoadGroupHandle(hs, GetHandleId(c), StringHash("knight group"))
+                    set wolves = LoadGroupHandle(hs, GetHandleId(c), SH_KNIGHT_GROUP)
                     call AinzFinishSwap(c, AinzW2_ID)
                     if d != null and GetUnitState(d, UNIT_STATE_LIFE) > 0.405 then
                         call KillUnit(d)
@@ -931,7 +978,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     if wolves != null and d != null then
                         call GroupRemoveUnit(wolves, d)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("AinzW timer pause"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     call DestroyGroup(g3)
@@ -956,7 +1003,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
         public static method AinzW2_Start takes unit NewC, unit NewTeleportUnit, unit NewTd returns nothing
             local thistype this = thistype.create()
-            local group wolves = LoadGroupHandle(hs, GetHandleId(NewC), StringHash("knight group"))
+            local group wolves = LoadGroupHandle(hs, GetHandleId(NewC), SH_KNIGHT_GROUP)
             local unit teleportUnit = NewTeleportUnit
             local real near = 0.00
             local real cur
@@ -1012,18 +1059,18 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             call EffectSpawn2("war3mapImported\\wos_raidenei-4.mdl", GetUnitX(d), GetUnitY(d), a * bj_RADTODEG, 2, 1.5, 0, 0.3)
             call BlzSetUnitFacingEx(d, a * bj_RADTODEG)
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", GetUnitX(d), GetUnitY(d), a * bj_RADTODEG, 1, 1.25, 0))
-            call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf1.mdl", GetUnitX(d), GetUnitY(d), a * bj_RADTODEG, 1, 1.25, 0))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf2.mdl", GetUnitX(d), GetUnitY(d), a * bj_RADTODEG, 1, 1.25, 0))
             call UnitAddAbility(c, AinzW3_ID)
             call SetUnitAbilityLevel(c, AinzW3_ID, GetUnitAbilityLevel(c, AinzW_ID))
             call SetUnitTimeScale(d, 0.2)
             call SetUnitAnimationByIndex(d, 1)
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW2_ID, false)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW3_ID, true)
                 call BlzStartUnitAbilityCooldown(c, AinzW3_ID, 1.5)
             endif
-            call SaveInteger(hs, GetHandleId(c), StringHash("AinzW W3 ready"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("AinzW timer pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_W3_READY, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 1)
             set MUI_AinzW2 = MUI_AinzW2 + 1
             set m_AinzW2[MUI_AinzW2] = this
             if MUI_AinzW2 == 0 then
@@ -1064,7 +1111,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 endif
                                 if r2 >= 0.06 then
                                     call DecorRemove(c, GetUnitX(dd[k]), GetUnitY(dd[k]), AinzW_KnightHitAoe, AinzW3_DecorDamage)
-                                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf1.mdl", GetUnitX(dd[k]) + 1 * Cos(a), GetUnitY(dd[k]) + 1 * Sin(a), GetRandomReal(0, 359), 1, 1.25, 0))
+                                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf2.mdl", GetUnitX(dd[k]) + 1 * Cos(a), GetUnitY(dd[k]) + 1 * Sin(a), GetRandomReal(0, 359), 1, 1.25, 0))
                                     call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_DanGe_Wid_ChongFengQiLiu.mdl", GetUnitX(dd[k]) + 300 * Cos(a), GetUnitY(dd[k]) + 300 * Sin(a), a * bj_RADTODEG, 1.5, 1.95, 0, 255, 255, 255, 125))
                                 endif
                                 if r3 >= 0.12 then
@@ -1079,12 +1126,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                         if not IsUnitInGroup(u, g2) then
                                             call GroupAddUnit(g2, u)
+                                            call DamageSource('A0FM')
                                             call dmgphys(c, u, dmg)
                                         endif
                                         set wallMove = UnitMoveWall.GetMoveDistance(dd[k], GetUnitX(dd[k]), GetUnitY(dd[k]), a, AinzW_KnightSpeed)
                                         if wallMove < AinzW_KnightSpeed then
                                             if not IsUnitInGroup(u, g3) then
                                                 call GroupAddUnit(g3, u)
+                                                call DamageSource(AinzE_ID)
                                                 call dmgmag(c, u, GetHeroInt(c, true) * AinzE_WallHitDamageInt)
                                                 call StunUnit(c, u, AinzE_WallHitStun)
                                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 0.75, 1.35, 0))
@@ -1114,7 +1163,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
                 if not SpellBoolCaster(c) or (b and (distance >= AinzW_KnightRunRange or alive == 0)) then
                     call AinzFinishSwap(c, AinzW2_ID)
-                    set wolves = LoadGroupHandle(hs, GetHandleId(c), StringHash("knight group"))
+                    set wolves = LoadGroupHandle(hs, GetHandleId(c), SH_KNIGHT_GROUP)
                     set k = 0
                     loop
                         exitwhen k == count
@@ -1129,7 +1178,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         set dd[k] = null
                         set k = k + 1
                     endloop
-                    call SaveInteger(hs, GetHandleId(c), StringHash("AinzW timer pause"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 0)
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
                     call DestroyGroup(g3)
@@ -1152,7 +1201,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
         public static method AinzW3_Start takes unit NewC, real tx, real ty returns nothing
             local thistype this = thistype.create()
-            local group wolves = LoadGroupHandle(hs, GetHandleId(NewC), StringHash("knight group"))
+            local group wolves = LoadGroupHandle(hs, GetHandleId(NewC), SH_KNIGHT_GROUP)
             local real cur
             local real side
             local integer k = 0
@@ -1231,14 +1280,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 call SetUnitAnimationByIndex(dd[k], 1)
                 call SetUnitTimeScale(dd[k], 0.5)
                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), a * bj_RADTODEG, 1, 1.25, 0))
-                call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf1.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), a * bj_RADTODEG, 1, 1.25, 0))
+                call DestroyEffect(EffectSpawn("war3mapimported\\wos_cf2.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), a * bj_RADTODEG, 1, 1.25, 0))
                 set k = k + 1
             endloop
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW3_ID, false)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW2_ID, true)
-            call SaveInteger(hs, GetHandleId(c), StringHash("AinzW W3 ready"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_W3_READY, 0)
             call BlzStartUnitAbilityCooldown(c, AinzW3_ID, 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("AinzW timer pause"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 1)
             set MUI_AinzW3 = MUI_AinzW3 + 1
             set m_AinzW3[MUI_AinzW3] = this
             if MUI_AinzW3 == 0 then
@@ -1259,10 +1308,10 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 exitwhen i > MUI_AinzW
                 set this = m_AinzW[i]
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
-                    if LoadInteger(hs, GetHandleId(c), StringHash("AinzW timer pause")) == 0 then
+                    if LoadInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE) == 0 then
                         set r = r + 0.03
                     endif
-                    set r = S2R(R2SW(r, 0, 3))
+                    set r = RoundReal(r, 3)
 
                     if r == 0.03 then
                         set k = 0
@@ -1276,9 +1325,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             call SetHpCurrent(dd[k], 999999)            
                             call UnitAddAbility(dd[k], 'A0FZ')
                             call SetUnitAbilityLevel(dd[k], 'A0FZ', GetUnitAbilityLevel(c, AinzW_ID))
-                            call SaveUnitHandle(hs, GetHandleId(dd[k]), StringHash("AinzW caster"), c)
+                            call SaveUnitHandle(hs, GetHandleId(dd[k]), SH_AINZW_CASTER, c)
                             call TriggerRegisterUnitEvent(knightAcquireTrig, dd[k], EVENT_UNIT_ACQUIRED_TARGET)
-                            call TriggerRegisterUnitEvent(knightDamageTrig, dd[k], EVENT_UNIT_DAMAGED)
                             call GroupAddUnit(g2, dd[k])
                             call SetScale(dd[k], 1.35)
                             call SetUnitVertexColor(dd[k], 255, 255, 255, 0)
@@ -1290,49 +1338,10 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         set r4 = 10
                         set r5 = 0
                         set kek1 = 0.0375
-                        if frame1_pas1[check2] == null then
-                            set frame1_pas1[check2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas1[check2], FRAMEPOINT_CENTER, 0.055, 0.18 + kek1)
-                            call BlzFrameSetSize(frame1_pas1[check2], 0.135, 0.035)
-                            call BlzFrameSetTexture(frame1_pas1[check2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                            call BlzFrameSetVisible(frame1_pas1[check2], false)
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame1_pas1[check2], true)
-                            endif
-                            set frame1_pas2[check2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1_pas1[check2], 0, 0)
-                            call BlzFrameSetAbsPoint(frame1_pas2[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
-                            call BlzFrameSetSize(frame1_pas2[check2], 0.1, 0.019)
-                            set frame1_pas3[check2] = BlzCreateFrameByType("STATUSBAR", "", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetSize(frame1_pas3[check2], 0.1, 0.035)
-                            call BlzFrameSetScale(frame1_pas3[check2], 0.5)
-                            call BlzFrameSetModel(frame1_pas3[check2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas3[check2], FRAMEPOINT_CENTER, 0.05, 0.175 + kek1)
-                            call BlzFrameSetMinMaxValue(frame1_pas3[check2], 0, rmax + 2)
-                            call BlzFrameSetValue(frame1_pas3[check2], rmax)
-                            set frame1_pas4[check2] = BlzCreateFrameByType("BACKDROP", "SS", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas4[check2], FRAMEPOINT_CENTER, 0.005, 0.18 + kek1)
-                            call BlzFrameSetSize(frame1_pas4[check2], 0.03, 0.03)
-                            call BlzFrameSetTexture(frame1_pas4[check2], "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_W", 0, false)
-                            set frame1_pas5[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas5[check2], FRAMEPOINT_CENTER, 0.07, 0.185 + kek1)
-                            call BlzFrameSetText(frame1_pas5[check2], "|c00FFFF00" + "knights Time Left:" + "|r")
-                            call BlzFrameSetScale(frame1_pas5[check2], 0.9)
-                            set frame1_pas6[check2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1_pas1[check2], "", 0)
-                            call BlzFrameSetAbsPoint(frame1_pas6[check2], FRAMEPOINT_CENTER, 0.07, 0.17 + kek1)
-                            call BlzFrameSetText(frame1_pas6[check2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                            call BlzFrameSetScale(frame1_pas6[check2], 0.9)
-                        else
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame1_pas1[check2], true)
-                            endif
-                            call BlzFrameSetMinMaxValue(frame1_pas3[check2], 0, rmax + 2)
-                            call BlzFrameSetValue(frame1_pas3[check2], rmax)
-                        endif
                     endif
                     if r > 0.03 then
-                        call BlzFrameSetValue(frame1_pas3[check2], rmax - (r + 0.1))
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame1_pas6[check2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, AinzW_ID, "Knights Time Left", rmax - r, rmax, true)
                         endif
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -1347,8 +1356,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 set k = k + 1
                                 call GroupAddUnit(g3, u)
                             else
-                                call RemoveSavedHandle(hs, GetHandleId(u), StringHash("AinzW caster"))
-                                call RemoveSavedHandle(hs, GetHandleId(u), StringHash("AinzW target"))
+                                call RemoveSavedHandle(hs, GetHandleId(u), SH_AINZW_CASTER)
+                                call RemoveSavedHandle(hs, GetHandleId(u), SH_AINZW_TARGET)
                                 call EffectSpawn2("war3mapImported\\wos_raidenei-4.mdl", GetUnitX(u), GetUnitY(u), a * bj_RADTODEG, 2, 1.5, 0, 0.3)
                                 call ColorDummy3(u, 0, 255, 255, 255, 0.5)
                             endif
@@ -1361,12 +1370,12 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endloop
                         set u = null
 
-                        if k < 3 and LoadInteger(hs, GetHandleId(c), StringHash("AinzW W3 ready")) == 1 then
-                            if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0 then
+                        if k < 3 and LoadInteger(hs, GetHandleId(c), SH_AINZW_W3_READY) == 1 then
+                            if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW3_ID, false)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzW2_ID, true)
                             endif
-                            call SaveInteger(hs, GetHandleId(c), StringHash("AinzW W3 ready"), 0)
+                            call SaveInteger(hs, GetHandleId(c), SH_AINZW_W3_READY, 0)
                         endif
                         if FirstOfGroup(g2) == null then
                             set r = 99999
@@ -1382,14 +1391,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 if IsUnitInGroup(u, g2) and IsUnitPaused(u) == false then
                                     set kek1 = GetRandomReal(0, 359) * bj_DEGTORAD
                                     set kek2 = GetRandomReal(475, 1050)
-                                    set td = LoadUnitHandle(hs, GetHandleId(u), StringHash("AinzW target"))
+                                    set td = LoadUnitHandle(hs, GetHandleId(u), SH_AINZW_TARGET)
                                     if td != null and (not SpellBool(td) or not IsUnitEnemy(td, GetOwningPlayer(c))) then
-                                        call RemoveSavedHandle(hs, GetHandleId(u), StringHash("AinzW target"))
+                                        call RemoveSavedHandle(hs, GetHandleId(u), SH_AINZW_TARGET)
                                         set td = null
                                     endif
-                                    if td == null and GetUnitCurrentOrder(u) != OrderId("move") and LoadInteger(hs, GetHandleId(u), StringHash("stop move")) == 0 then
-                                        call SaveInteger(hs, GetHandleId(u), StringHash("stop move"), 1)
-                                        call MyFlush(GetHandleId(u), StringHash("stop move"), 0, 1.5)
+                                    if td == null and GetUnitCurrentOrder(u) != OrderId("move") and LoadInteger(hs, GetHandleId(u), SH_STOP_MOVE) == 0 then
+                                        call SaveInteger(hs, GetHandleId(u), SH_STOP_MOVE, 1)
+                                        call MyFlush(GetHandleId(u), SH_STOP_MOVE, 0, 1.5)
                                         set x1 = GetUnitX(c) + kek2 * Cos(kek1)
                                         set y1 = GetUnitY(c) + kek2 * Sin(kek1)
                                     endif
@@ -1404,11 +1413,11 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             endloop
                             set u = null
                         else
-                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("knight ult")) == 0 then
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_KNIGHT_ULT) == 0 then
                                 set r4 = r4 + 0.03
                             endif
                         endif
-                        if r5 > 1.95 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("knight ult")) == 0 then
+                        if r5 > 1.95 and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_KNIGHT_ULT) == 0 then
                             set r5 = 0
                             set k3 = 0
                             set k2 = 0
@@ -1444,22 +1453,20 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 set u = null
                             endif
                         else
-                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("knight ult")) == 0 then
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_KNIGHT_ULT) == 0 then
                                 set r5 = r5 + 0.03
                             endif
                         endif
                     endif
                 else
                     call AinzFinishSwap(c, AinzW_ID)
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame1_pas1[check2], false)
-                    endif
+                        call WUI_HeroProgress(c, AinzW_ID, "Knights Time Left", 0.00, 0.00, true)
 
                     call MakeSound("war3mapimported\\Hero_Ainz_W4")
-                    call SetPlayerAbilityAvailable(Player(check2), AinzW_ID, LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0)
+                    call SetPlayerAbilityAvailable(Player(check2), AinzW_ID, LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0)
                     call SetPlayerAbilityAvailable(Player(check2), AinzW2_ID, false)
                     call SetPlayerAbilityAvailable(Player(check2), AinzW3_ID, false)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("AinzW W3 ready"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_AINZW_W3_READY, 0)
                     call UnitRemoveAbility(c, AinzW2_ID)
                     call UnitRemoveAbility(c, AinzW3_ID)
                     set k = 0
@@ -1467,15 +1474,15 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         exitwhen k == count
                         if dd[k] != null and GetWidgetLife(dd[k]) > 1 then
                             call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_raidenei-4.mdl", dd[k], "chest"))
-                            call RemoveSavedHandle(hs, GetHandleId(dd[k]), StringHash("AinzW caster"))
-                            call RemoveSavedHandle(hs, GetHandleId(dd[k]), StringHash("AinzW target"))
+                            call RemoveSavedHandle(hs, GetHandleId(dd[k]), SH_AINZW_CASTER)
+                            call RemoveSavedHandle(hs, GetHandleId(dd[k]), SH_AINZW_TARGET)
                             call EffectSpawn2("war3mapImported\\wos_raidenei-4.mdl", GetUnitX(dd[k]), GetUnitY(dd[k]), a * bj_RADTODEG, 2, 1.5, 0, 0.3)
                             call ColorDummy3(dd[k], 0, 255, 255, 255, 0.5)
                         endif
                         set dd[k] = null
                         set k = k + 1
                     endloop
-                    call SaveGroupHandle(hs, GetHandleId(c), StringHash("knight group"), null)
+                    call SaveGroupHandle(hs, GetHandleId(c), SH_KNIGHT_GROUP, null)
                     call DestroyGroup(g)
                     set g = null
                     call DestroyGroup(g2)
@@ -1514,7 +1521,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set g = CreateGroup()
             set g2 = CreateGroup()
             set g3 = CreateGroup()
-            call SaveGroupHandle(hs, GetHandleId(c), StringHash("knight group"), g2)
+            call SaveGroupHandle(hs, GetHandleId(c), SH_KNIGHT_GROUP, g2)
             set aoe = 444
             set count = GetUnitAbilityLevel(c, AinzW_ID)
             call SetPlayerAbilityAvailable(Player(check2), AinzW_ID, false)
@@ -1683,7 +1690,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 if spellType == 1 then
                     set active = active and r <= rmax
                     if active then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r2 > 0.9 then
                             set r2 = 0
                             call DecorRemove(c, x, y, aoe, AinzE_DecorDamage)
@@ -1692,6 +1699,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and IsInsideRectangle(u) then
+                                    call DamageSource('A0FO')
                                     call dmgphys(c, u, dmg)
                                     call SlowUnit(c, u, AinzE_Slow, 1)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1704,13 +1712,14 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endif
                     endif
                 elseif spellType == 2 then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if not active or td == null or GetWidgetLife(td) <= 5.00 then
                         set active = false
                     elseif not rootSeen then
                         if GetUnitAbilityLevel(td, AinzE2_RootBuff_ID) > 0 then
                             set rootSeen = true
                             set r2 = 0.00
+                            call DamageSource('A0FO')
                             call dmgphys(c, td, dmg * AinzE2_DamagePeriod / AinzE2_RootDuration)
                         elseif r >= AinzE2_RootApplyGrace then
                             set active = false
@@ -1721,6 +1730,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         set r2 = r2 + 0.03
                         if r2 >= AinzE2_DamagePeriod then
                             set r2 = r2 - AinzE2_DamagePeriod
+                            call DamageSource('A0FO')
                             call dmgphys(c, td, dmg * (AinzE2_DamagePeriod / AinzE2_RootDuration))
                         endif
                     endif
@@ -1733,7 +1743,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         call UnitMoveWall.Remove(this)
                     endif
                     call AinzFinishSwap(c, AinzE_ID)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzE_ID, LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 0)
+                    call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzE_ID, LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AinzE2_ID, false)
                     call UnitRemoveAbility(c, AinzE2_ID)
                     call DestroyEffect(e)
@@ -1871,7 +1881,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 exitwhen i > MUI_AinzR
                 set this = m_AinzR[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < AinzR_CastTime then
                         if AinzR_IsInvul then
                             call DebugUnit(c)
@@ -1887,15 +1897,17 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3_x2.mdl", x, y, GetRandomReal(0, 359), 1, 1, 1))
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (431232).mdl", x, y, GetRandomReal(0, 359), 1.15, 2.35, 15))
                         call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_by_wood_effect_order_dange_yueyun_2withoutblue2.mdl", x, y, GetRandomReal(0, 359), 1.25, 1.1, 1, 255, 255, 255, 255))
-                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_by_wood_effect_yubanmeiqin_lightning_zhenzhengdeluolei_blue.mdl", x, y, 1, 1, 3, 1), 0.6, 255, 255, 255, 0.35)
+                        // removed: wos_by_wood_effect_yubanmeiqin_lightning_zhenzhengdeluolei_blue.mdl is not imported
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0FR')
                                 call dmgmag(c, u, dmg)
                                 if AinzR_Debuff > 0 then
+                                    call DamageSource('A0FR')
                                     call ErzaPassive(c, u, AinzR_Debuff)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1977,12 +1989,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         private static integer MUI_AinzT = -1
         unit c
         integer k2
-        private static framehandle array frame_pas1
-        private static framehandle array frame_pas2
-        private static framehandle array frame_pas3
-        private static framehandle array frame_pas4
-        private static framehandle array frame_pas5
-        private static framehandle array frame_pas6
         real r
         group g
         unit u
@@ -2039,7 +2045,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             call MakeSound("war3mapimported\\Hero_Ainz_T4")
                         endif
                         if r < rmax then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             if r == 0.03 then
                                 call thistype.SetMode(c, true)
                             elseif r == 0.06 then
@@ -2066,8 +2072,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             if remaining < 0 then
                                 set remaining = 0
                             endif
-                            call BlzFrameSetValue(frame_pas3[k2], remaining)
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(remaining, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, AinzT_ID, "The Goal of All Life is Death", remaining, rmax, true)
                         else
                             set check = 1
                             set r = 0
@@ -2077,7 +2082,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endif
                     elseif check == 1 then
                         call DebugUnit(c)
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r == 0.03 then
                             call AnimDummyEff(e, 0.24, 0)
                             call ScaleEffDummy(e, 0.3, 2.55, 1.6)
@@ -2109,21 +2114,18 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             set check = 2
                             set r = 0
                             set rmax = AinzT_AddDuration
-                            call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax + 0.25)
-                            call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Swap Ability Time:" + "|r")
                             call StopSpellUnit(c)
                         endif
                     elseif check == 2 then
                         if IsUnitPaused(c) == false then
-                            set r = RoundReal(r + 0.03, 3)
+                            set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         endif
                         call thistype.SetMode(c, true)
                         set remaining = rmax - r
                         if remaining < 0 then
                             set remaining = 0
                         endif
-                        call BlzFrameSetValue(frame_pas3[k2], remaining)
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(remaining, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, AinzT_ID, "Swap Ability Time", remaining, rmax, true)
                         set a = GetUnitFacing(c) * bj_DEGTORAD
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -2133,20 +2135,18 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 else
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, AinzT_ID, "Swap Ability Time", 0.00, 0.00, true)
 
                     call DestroyEffect(e)
                     call BlzSetSpecialEffectTimeScale(e, 3)
                     if check < 2 then                     
                         call ColorEffDummy3(e2, 0, 255, 255, 255, 0.21)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("lvl4"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_LVL4, 0)
                     if check == 1 then
                         call StopSpellUnit(c)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 0)
                     call thistype.SetMode(c, false)
                     call AAUniversalTooltips_SetUnitForm(c, 0)
                     call SpellStacksShowAndResume(c)
@@ -2184,48 +2184,11 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             call AinzSwapPatch(c, AinzW_ID, 0)
             call AinzSwapPatch(c, AinzW2_ID, 0)
             call AinzSwapPatch(c, AinzE_ID, 0)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 1)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AinzQ_ID)), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Ainz_AINZQ_ID, 1)
             call thistype.SetMode(c, true)
             call AAUniversalTooltips_SetUnitForm(c, 1)
             set check = 0
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_Icon2.blp", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Goal All Life is Death:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-            else
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-            endif
 
             call MakeSound("war3mapimported\\Hero_Ainz_T")
             call MakeSound("war3mapimported\\Hero_Ainz_T2")
@@ -2233,7 +2196,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set e2 = EffectSpawnScale("war3mapImported\\wos_clockwisetimer3.mdl", GetUnitX(c), GetUnitY(c), 0, 0.97, 0.01, 5, 0.45, 0.01, 7.5)
             call BlzPlaySpecialEffect(e2, ANIM_TYPE_STAND)
             call BlzSetSpecialEffectAlpha(e2, 90)
-            call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Ainz_T.blp", 0, false)
             set aoe = 1600
 
             if MUI_AinzT == 0 then
@@ -2290,7 +2252,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 set dealDamage = false
 
                 if check2 == 0 then
-                    set r = RoundReal(r + 0.03, 2)
+                    set r = I2R(R2I((r + 0.03) * 100.0 + 0.5)) / 100.0
                     if r >= AinzTQ_CastTime then
                         set r = 0
                         call DestroyEffect(e2)
@@ -2347,7 +2309,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endif
                     endif
 
-                    set r2 = RoundReal(r2 + 0.03, 2)
+                    set r2 = I2R(R2I((r2 + 0.03) * 100.0 + 0.5)) / 100.0
                     if r2 >= AinzTQ_DamagePeriod then
                         set r2 = 0
                         set dealDamage = true
@@ -2361,6 +2323,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, p) and not IsUnitInGroup(u, g) then
                                 call GroupAddUnit(g, u)
+                                call DamageSource('A0FJ')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(AinzTQEnumGroup, u)
@@ -2407,7 +2370,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         endif
                     endif
                     if check2 == 1 then
-                        set r3 = RoundReal(r3 + 0.03, 2)
+                        set r3 = I2R(R2I((r3 + 0.03) * 100.0 + 0.5)) / 100.0
                         if r3 >= AinzTQ_EffectPeriod then
                             set r3 = 0
                             call DecorRemove(c, x, y, 450, AinzTQ_DecorDamage)
@@ -2435,7 +2398,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_blue--zhendi31_3_x2.mdl", x, y, GetRandomReal(0, 359), 1, 1, 1))
                     call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (431232).mdl", x, y, GetRandomReal(0, 359), 1.15, 2.35, 15))
                     call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_by_wood_effect_order_dange_yueyun_2withoutblue2.mdl", x, y, GetRandomReal(0, 359), 1.25, 1.1, 1, 255, 255, 255, 255))
-                    call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_by_wood_effect_yubanmeiqin_lightning_zhenzhengdeluolei_blue.mdl", x, y, 1, 1, 3, 1), 0.6, 255, 255, 255, 0.35)
+                    // removed: wos_by_wood_effect_yubanmeiqin_lightning_zhenzhengdeluolei_blue.mdl is not imported
 
                     call GroupClear(AinzTQEnumGroup)
                     call GroupEnumUnitsInRange(AinzTQEnumGroup, x, y, AinzTQ_DamageAoe2, NoDecor_Cond)
@@ -2444,19 +2407,20 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, p) and not IsUnitInGroup(u, g) then
                             call GroupAddUnit(g, u)
+                            call DamageSource('A0FJ')
                             call dmgmag(c, u, dmg)
                         endif
                         call GroupRemoveUnit(AinzTQEnumGroup, u)
                     endloop
 
-                    set check3 = LoadInteger(hs, GetHandleId(g), StringHash("AinzTQ users")) - 1
+                    set check3 = LoadInteger(hs, GetHandleId(g), SH_AINZTQ_USERS) - 1
                     if check3 <= 0 then
                         call FlushChildHashtable(hs, GetHandleId(g))
                         call DestroyGroup(g)
                         call DestroyGroup(g2)
                         call DestroyGroup(g3)
                     else
-                        call SaveInteger(hs, GetHandleId(g), StringHash("AinzTQ users"), check3)
+                        call SaveInteger(hs, GetHandleId(g), SH_AINZTQ_USERS, check3)
                     endif
                     set g = null
                     set g2 = null
@@ -2531,7 +2495,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set g4 = CreateGroup()
             set g5 = CreateGroup()
             set g6 = CreateGroup()
-            call SaveInteger(hs, GetHandleId(g4), StringHash("AinzTQ users"), 2)
+            call SaveInteger(hs, GetHandleId(g4), SH_AINZTQ_USERS, 2)
             loop
                 exitwhen k >= 2
                 if k == 0 or td2 == null then
@@ -2615,7 +2579,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 exitwhen i > MUI_AinzTW
                 set this = m_AinzTW[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if AinzTW_IsInvul then
                         call DebugUnit(c)
                     else
@@ -2643,6 +2607,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0FN')
                                 call dmgphys(c, u, dmg)
                                 call SlowUnit(c, u, AinzTW_Slow, AinzTW_Duration)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -2709,7 +2674,6 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
     endstruct
 
     private struct AinzTE_KS
-        private static timer t_AinzTE = CreateTimer()
         private static integer array m_AinzTE
         private static integer MUI_AinzTE = -1
         unit c
@@ -2735,10 +2699,10 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 exitwhen i > MUI_AinzTE
                 set this = m_AinzTE[i]
                 if SpellBoolCaster(c) and r < rmax and k < AinzTE_PulseCount then
-                    set r = RoundReal(r + 0.03, 3)
-                    set r2 = RoundReal(r2 + 0.03, 3)
-                    set r3 = RoundReal(r3 + 0.03, 3)
-                    set r4 = RoundReal(r4 + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r< 0.45 then 
                         call DebugUnit2(c)
                     endif
@@ -2779,6 +2743,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0FQ')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -2797,7 +2762,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     set m_AinzTE[MUI_AinzTE] = 0
                     set MUI_AinzTE = MUI_AinzTE - 1
                     if MUI_AinzTE == -1 then
-                        call PauseTimer(t_AinzTE)
+                        call AinzTick_Off(0)
                     endif
                     call deallocate(this)
                     set i = i - 1
@@ -2846,7 +2811,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Ainz_TE")
             call MakeSound("war3mapimported\\Hero_Ainz_TE2")
             if MUI_AinzTE == 0 then
-                call TimerStart(t_AinzTE, 0.03, true, function thistype.Loop_AinzTE)
+                call AinzTick_On(0)
             endif
             call Ainz_RestoreOrder(NewC, -1)
         endmethod
@@ -2889,7 +2854,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 set this = m_AinzTR[i]
                 set checkUnits = false
                 if SpellBoolCaster(c) and (front < AinzTR_MaxRange or r3 < 0.50) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < AinzTR_CastTime then
                         if AinzTR_IsInvul then
                             call DebugUnit(c)
@@ -2938,7 +2903,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                 set r2 = 0.00
                             endif
                         else
-                            set r3 = RoundReal(r3 + 0.03, 3)
+                            set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
                             set r2 = r2 + 0.03
                             if r2 >= AinzTR_EffectPeriod then
                                 set r2 = 0.00
@@ -2964,11 +2929,13 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                                     endif
                                     if forward >= lastFront - AinzTR_HitWidth and forward <= front + AinzTR_HitWidth and forward >= 0.00 and side <= forward * AinzTR_ConeWidth + AinzTR_HitWidth then
                                         call GroupAddUnit(g2, u)
+                                        call DamageSource('A0FS')
                                         call dmgmag(c, u, dmg)
                                         set wallMove = UnitMoveWall.GetMoveDistance(u, GetUnitX(u), GetUnitY(u), a, AinzR_PushRange)
                                         if wallMove < AinzR_PushRange then
                                             if not IsUnitInGroup(u, g3) then
                                                 call GroupAddUnit(g3, u)
+                                                call DamageSource(AinzE_ID)
                                                 call dmgmag(c, u, GetHeroInt(c, true) * AinzE_WallHitDamageInt)
                                                 call StunUnit(c, u, AinzE_WallHitStun)
                                                 call DestroyEffect(EffectSpawn("war3mapimported\\wos_1baozha_90.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1.00, 1.50, 0))
@@ -3037,7 +3004,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set g2 = CreateGroup()
             set g3 = CreateGroup()
             set u = null
-            set e = AddSpecialEffect("war3mapImported\\droch (876).mdl", x + 250.00 * Cos(a), y + 250.00 * Sin(a))
+            set e = null // droch (876).mdl is not imported
             call BlzSetSpecialEffectYaw(e, a)
             call BlzSetSpecialEffectScale(e, 0.10)
             call BlzSetSpecialEffectTimeScale(e, 0.85)
@@ -3084,17 +3051,17 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                 call AinzSwapPatch(whichUnit, AinzQ_ID, 0)
                 call SwapAbility(whichUnit, AinzF_Q2Duration, AinzQ2_ID, AinzQ_ID)
                 call SetUnitAbilityLevel(whichUnit, AinzQ2_ID, GetUnitAbilityLevel(whichUnit, AinzQ_ID))
-                if LoadInteger(hs, GetHandleId(whichUnit), StringHash("mode t")) == 1 then
+                if LoadInteger(hs, GetHandleId(whichUnit), SH_MODE_T) == 1 then
                     call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ2_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ3_ID, true)
                 endif
             else
-                if LoadInteger(hs, GetHandleId(whichUnit), StringHash("mode t")) == 0 then
+                if LoadInteger(hs, GetHandleId(whichUnit), SH_MODE_T) == 0 then
                     call AinzFinishSwap(whichUnit, AinzQ_ID)
-                    call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ_ID, LoadInteger(hs, GetHandleId(whichUnit), StringHash("mode t")) == 0)
+                    call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ_ID, LoadInteger(hs, GetHandleId(whichUnit), SH_MODE_T) == 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(whichUnit), AinzQ2_ID, false)
-                    if LoadInteger(hs, GetHandleId(whichUnit), StringHash("mode t")) == 0 then
+                    if LoadInteger(hs, GetHandleId(whichUnit), SH_MODE_T) == 0 then
                         call SpellStacksShowAndResume(whichUnit)
                     endif
                 endif
@@ -3108,10 +3075,13 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             loop
                 exitwhen i > MUI_AinzF
                 set this = m_AinzF[i]
+                if phase == 0 then
+                    call WUI_HeroProgress(c, AinzF_ID, "Body of Effulgent Beryl+Dozen Layer Buffs", RMinBJ(9.00, rmax) - r, RMinBJ(9.00, rmax), true)
+                endif
                 set remove = false
                 if phase == 0 then
                     if SpellBoolCaster(c) and GetUnitCurrentOrder(c) == OrderId("magicdefense") then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                         if r == 0.30 then
                             call thistype.ClearBuffs(c)
                             call BuffUnit01(c, c, AinzF_BuffSpell_ID, "bloodlust", 2)
@@ -3164,7 +3134,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                         set r = 0.00
                     endif
                 elseif r < AinzF_Q2Duration then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                 else
                     call thistype.SetQ2Mode(c, false)
                     set remove = true
@@ -3189,7 +3159,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set c = NewC
             set r = 0.00
             set phase = 0            
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(AinzQ_ID)), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Ainz_AINZQ_ID, 0)
             call SpellStacksHideAndPause(c)
             call SetUnitAnimationByIndex(c, 9)
             call SetUnitTimeScale(c, 1.10)
@@ -3238,8 +3208,9 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             loop
                 exitwhen i > MUI_AinzG
                 set this = m_AinzG[i]
-                if SpellBoolCaster(c) and count < AinzG_DamageCount and LoadInteger(hs,GetHandleId(c),StringHash("stop r"))== 0 then
-                    set r = RoundReal(r + 0.03, 3)
+                if SpellBoolCaster(c) and count < AinzG_DamageCount and LoadInteger(hs,GetHandleId(c),SH_STOP_R)== 0 then
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
+                    call WUI_HeroProgress(c, AinzG_ID, "Fallen Down", RMaxBJ(0.00, AinzG_PrepareTime + AinzG_Duration - r), AinzG_PrepareTime + AinzG_Duration, true)
                     if r < AinzG_PrepareTime then
                         if AinzG_IsInvul then
                             call DebugUnit(c)
@@ -3284,6 +3255,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0FV')
                                 call dmgmag(c, u, dmg)
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -3305,15 +3277,16 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     else
                         call StopSpellUnit2(c)
                     endif
+                    call WUI_HeroProgress(c, AinzG_ID, "Fallen Down", 0.00, 0.00, true)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.15)
                     call DestroyEffect(e2)
                     call DestroyEffect(e3)
                     call BlzSetSpecialEffectTimeScale(e2,1.5)
                     call BlzSetSpecialEffectTimeScale(e3,1.5)
                     call DestroyGroup(g)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("shield"),0)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),0)
+                    call SaveInteger(hs,GetHandleId(c),SH_STOP_R,0)
+                    call SaveInteger(hs,GetHandleId(c),SH_SHIELD,0)
+                    call SaveInteger(hs,GetHandleId(c),SH_CAST_R,0)
                     set c = null
                     set e = null
                     set e2 = null
@@ -3355,8 +3328,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set e = EffectSpawn("war3mapImported\\wos_gatmofazhen.mdl", GetUnitX(c), GetUnitY(c), 0, 1.5, 1, 0)
             call BlzSetSpecialEffectAlpha(e, 0)
             call ColorEffDummy4(e, 0, 255, 255, 255, 0.51)
-                    call SaveInteger(hs,GetHandleId(c),StringHash("shield"),1)
-            call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),1)
+                    call SaveInteger(hs,GetHandleId(c),SH_SHIELD,1)
+            call SaveInteger(hs,GetHandleId(c),SH_CAST_R,1)
             call BlzSetSpecialEffectScale(e, 2.25)
             call SetUnitAnimationByIndex(c, 13)
             call SetUnitTimeScale(c, 0.55)
@@ -3420,11 +3393,16 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         call AinzW_KS.AinzW_Start(c)
     endfunction
 
+    // DmgSys: an AinzW knight landed an attack on target.
+    function AinzW_KnightHit takes unit knight, unit target returns nothing
+        call AinzW_KS.OnKnightHit(knight, target)
+    endfunction
+
     function AinzW2SaveCaster takes unit ainz, unit protectedUnit returns nothing
         if ainz == null or protectedUnit == null then
             return
         endif
-        call SaveUnitHandle(hs, GetHandleId(protectedUnit), StringHash("AinzW2 ally caster"), ainz)
+        call SaveUnitHandle(hs, GetHandleId(protectedUnit), SH_AINZW2_ALLY_CASTER, ainz)
     endfunction
 
     function AinzW2_Start takes unit c, unit td returns nothing
@@ -3438,7 +3416,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
     function AinzW2ClearCaster takes unit protectedUnit returns nothing
         if protectedUnit != null then
-            call RemoveSavedHandle(hs, GetHandleId(protectedUnit), StringHash("AinzW2 ally caster"))
+            call RemoveSavedHandle(hs, GetHandleId(protectedUnit), SH_AINZW2_ALLY_CASTER)
         endif
     endfunction
 
@@ -3449,8 +3427,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             return
         endif
 
-        set ainz = LoadUnitHandle(hs, GetHandleId(protectedUnit), StringHash("AinzW2 ally caster"))
-        call RemoveSavedHandle(hs, GetHandleId(protectedUnit), StringHash("AinzW2 ally caster"))
+        set ainz = LoadUnitHandle(hs, GetHandleId(protectedUnit), SH_AINZW2_ALLY_CASTER)
+        call RemoveSavedHandle(hs, GetHandleId(protectedUnit), SH_AINZW2_ALLY_CASTER)
 
         if ainz != null and GetUnitTypeId(ainz) == Ainz_ID and GetWidgetLife(ainz) > 0.405 and attacker != null and GetWidgetLife(attacker) > 0.405 then
             call AinzW_KS.AinzW2_Start(ainz, protectedUnit, attacker)
@@ -3499,4 +3477,26 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
     function AinzG_Start takes unit c returns nothing
         call AinzG_KS.AinzG_Start(c)
     endfunction
+
+    private struct AinzTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if AinzTick_Active[0] then
+                call AinzTE_KS.Loop_AinzTE()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set AinzTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Ainz_AINZQ_ID = StringHash(I2S(AinzQ_ID))
+        integer SH_Ainz_AINZ_PENDING_SWAP_AINZE_ID = StringHash("Ainz pending swap " + I2S(AinzE_ID))
+        integer SH_Ainz_AINZ_PENDING_SWAP_AINZQ_ID = StringHash("Ainz pending swap " + I2S(AinzQ_ID))
+        integer SH_Ainz_AINZ_PENDING_SWAP_AINZW2_ID = StringHash("Ainz pending swap " + I2S(AinzW2_ID))
+        integer SH_Ainz_AINZ_PENDING_SWAP_AINZW_ID = StringHash("Ainz pending swap " + I2S(AinzW_ID))
+    endglobals
+
 endlibrary

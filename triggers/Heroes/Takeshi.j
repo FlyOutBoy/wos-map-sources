@@ -1,16 +1,85 @@
 library TakeshiSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer TakeshiTick10_Timer = CreateTimer()
+        private boolean array TakeshiTick10_Active
+        private integer TakeshiTick10_Users = 0
+        private code TakeshiTick10_Callback = null
+    endglobals
+
+    private function TakeshiTick10_On takes integer k returns nothing
+        if not TakeshiTick10_Active[k] then
+            set TakeshiTick10_Active[k] = true
+            set TakeshiTick10_Users = TakeshiTick10_Users + 1
+            if TakeshiTick10_Users == 1 then
+                call TimerStart(TakeshiTick10_Timer, 0.1, true, TakeshiTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TakeshiTick10_Off takes integer k returns nothing
+        if TakeshiTick10_Active[k] then
+            set TakeshiTick10_Active[k] = false
+            set TakeshiTick10_Users = TakeshiTick10_Users - 1
+            if TakeshiTick10_Users <= 0 then
+                set TakeshiTick10_Users = 0
+                call PauseTimer(TakeshiTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer TakeshiTick_Timer = CreateTimer()
+        private boolean array TakeshiTick_Active
+        private integer TakeshiTick_Users = 0
+        private code TakeshiTick_Callback = null
+    endglobals
+
+    private function TakeshiTick_On takes integer k returns nothing
+        if not TakeshiTick_Active[k] then
+            set TakeshiTick_Active[k] = true
+            set TakeshiTick_Users = TakeshiTick_Users + 1
+            if TakeshiTick_Users == 1 then
+                call TimerStart(TakeshiTick_Timer, 0.03, true, TakeshiTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TakeshiTick_Off takes integer k returns nothing
+        if TakeshiTick_Active[k] then
+            set TakeshiTick_Active[k] = false
+            set TakeshiTick_Users = TakeshiTick_Users - 1
+            if TakeshiTick_Users <= 0 then
+                set TakeshiTick_Users = 0
+                call PauseTimer(TakeshiTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_DEF_T = StringHash("def t")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_STYLE = StringHash("style")
+        private integer SH_TAKESHI_DMG = StringHash("takeshi dmg")
+        private integer SH_CAMBIO_EXT = StringHash("takeshi cambio ext")
+        private integer SH_CAMBIO_PENDING = StringHash("takeshi cambio pending")
+        private integer SH_CAMBIO_CAST = StringHash("takeshi cambio cast serial")
+        private integer SH_CAMBIO_HIT = StringHash("takeshi cambio hit serial")
+        private integer SH_TAKESHI_ESC = StringHash("takeshi esc")
+        private integer SH_TARGET = StringHash("target")
+        private integer SH_T_X = StringHash("t x")
+        private integer SH_T_Y = StringHash("t y")
+        private integer SH_YAMAMOTO_FR = StringHash("yamamoto fr")
+        private integer SH_YAMA_T = StringHash("yama t")
+    endglobals
+    globals
 //--------------------------------------Takeshi--------------------------------------------------------------
         integer Takeshi_ID = 'H01H'
         integer Takeshi2_ID = 'H01I'
         integer TakeshiDummy_ID ='h00P'
         unit TakeshiDummy = null
-        framehandle array frameTakeshi_pas1 [10]
-        framehandle array frameTakeshi_pas2 [10]
-        framehandle array frameTakeshi_pas3 [10]
-        framehandle array frameTakeshi_pas4 [10]
-        framehandle array frameTakeshi_pas5 [10]
-        framehandle array frameTakeshi_pas6 [10]
 //===============Offensive Form======================================================
 //---------------Q ability-----------------------------------------------------
         integer TakeshiQ_ID = 'A08S'
@@ -92,8 +161,10 @@ library TakeshiSpells uses GearSystems
 //---------------G ability-----------------------------------------------------
         integer TakeshiG_ID = 'A08Y'
         real TakeshiG_Duration = 20
-        real TakeshiG_TakenDamageToEnter = 6000
+        real TakeshiG_TakenDamageToEnter = 5000
         real TakeshiG_ReduceCD = 15
+        real TakeshiG_ExtendPerCast = 1 // with a full gauge: sec added to the next Cambio form per damaging cast
+        real TakeshiG_ExtendMax = 15 // max extra seconds
 //---------------G2 ability-----------------------------------------------------
         integer TakeshiG2_ID = 'A09A'
 //---------------GQ ability-----------------------------------------------------
@@ -124,76 +195,33 @@ library TakeshiSpells uses GearSystems
         real TakeshiGF_Root = 1
 //--------------------------------------------------------------------------------        
     endglobals
-    function TakeshiGAdd_Start takes unit c,real dmg returns nothing 
-local integer k2 = GetPlayerId(GetOwningPlayer(c))
-local real dmg2 = LoadReal(hs,GetHandleId(c),StringHash("takeshi dmg"))+dmg
-local real rmax = TakeshiG_TakenDamageToEnter
-if GetHeroLevel(c)>=35 then 
-if frameTakeshi_pas1 [k2] == null then
-                set frameTakeshi_pas1 [k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas1 [k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frameTakeshi_pas1 [k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frameTakeshi_pas1 [k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frameTakeshi_pas1 [k2], false)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frameTakeshi_pas1 [k2], true)
+    function TakeshiGAdd_Start takes unit c, real dmg returns nothing
+        local real dmg2 = LoadReal(hs, GetHandleId(c), SH_TAKESHI_DMG) + dmg
+        local real rmax = TakeshiG_TakenDamageToEnter
+        if GetHeroLevel(c) >= 35 and LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 0 then
+            set dmg2 = RMaxBJ(0.00, RMinBJ(rmax, dmg2))
+            if dmg2 >= rmax then
+                if TakeshiDummy == null then
+                    set TakeshiDummy = CreateUnit(GetOwningPlayer(c), TakeshiDummy_ID, GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 1)
                 endif
-                set frameTakeshi_pas2 [k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frameTakeshi_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas2 [k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frameTakeshi_pas2 [k2], 0.1, 0.019)
-                set frameTakeshi_pas3 [k2] = BlzCreateFrameByType("STATUSBAR", "", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetSize(frameTakeshi_pas3 [k2], 0.1, 0.035)
-                call BlzFrameSetScale(frameTakeshi_pas3 [k2], 0.5)
-                call BlzFrameSetModel(frameTakeshi_pas3 [k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas3 [k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frameTakeshi_pas3 [k2], 0, rmax+2)
-                call BlzFrameSetValue(frameTakeshi_pas3 [k2], 0)
-                set frameTakeshi_pas4 [k2] = BlzCreateFrameByType("BACKDROP", "SS", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas4 [k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frameTakeshi_pas4 [k2], 0.03, 0.03)
-                call BlzFrameSetTexture(frameTakeshi_pas4 [k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_G2", 0, false)
-                set frameTakeshi_pas5 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas5 [k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frameTakeshi_pas5 [k2], "|c00FFFF00" + "Cambio Damage:" + "|r")
-                call BlzFrameSetScale(frameTakeshi_pas5 [k2], 0.9)
-                set frameTakeshi_pas6 [k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frameTakeshi_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frameTakeshi_pas6 [k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frameTakeshi_pas6 [k2], "|c00FFFF00" +I2S(R2I(dmg2))+"/"+I2S(R2I(rmax))+ "|r")
-                call BlzFrameSetScale(frameTakeshi_pas6 [k2], 0.9)
-            else
-                /*if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frameTakeshi_pas1[k2], true)
-                endif*/
-                if LoadInteger(hs, GetHandleId(c), StringHash("mode g"))== 0 then 
-                if dmg2>=rmax then 
-                set dmg2 = rmax
-                if TakeshiDummy == null then 
-                set TakeshiDummy = CreateUnit(GetOwningPlayer(c),TakeshiDummy_ID,GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster),1)
-                endif
-                else  
-                if dmg2<0 then 
-                set dmg2 = 0
-                endif
-                if TakeshiDummy != null then 
+            elseif TakeshiDummy != null then
                 call RemoveUnit(TakeshiDummy)
                 set TakeshiDummy = null
-                endif
-                endif                
-                call SaveReal(hs,GetHandleId(c),StringHash("takeshi dmg"),dmg2)
-                call BlzFrameSetText(frameTakeshi_pas6 [k2], "|c00FFFF00" +I2S(R2I(dmg2))+"/"+I2S(R2I(rmax))+ "|r")
-                call BlzFrameSetValue(frameTakeshi_pas3[k2],dmg2 )
-                endif
             endif
+            call SaveReal(hs, GetHandleId(c), SH_TAKESHI_DMG, dmg2)
+            if dmg2 >= rmax then
+                call WUI_HeroProgressDualCounter(c, TakeshiG2_ID, "Cambio Damage", dmg2, rmax, LoadReal(hs, GetHandleId(c), SH_CAMBIO_EXT), TakeshiG_ExtendMax, "+" + I2S(R2I(LoadReal(hs, GetHandleId(c), SH_CAMBIO_EXT))) + " / " + I2S(R2I(TakeshiG_ExtendMax)) + " sec")
+            else
+                call WUI_HeroProgressSingle(c, TakeshiG2_ID)
+                call WUI_HeroProgressCounter(c, TakeshiG2_ID, "Cambio Damage", dmg2, rmax)
             endif
-endfunction
+        endif
+    endfunction
     private struct TakeshiSpells_Q
-        private static timer t_TakeshiQ = CreateTimer()
         private static integer array m_TakeshiQ
         private static integer MUI_TakeshiQ = -1
-        private static timer t_TakeshiQ2 = CreateTimer()
         private static integer array m_TakeshiQ2
         private static integer MUI_TakeshiQ2 = -1
-        private static timer t_TakeshiQ3 = CreateTimer()
         private static integer array m_TakeshiQ3
         private static integer MUI_TakeshiQ3 = -1
         unit c
@@ -222,7 +250,7 @@ endfunction
         real a
         real rmax
 
-        private static method Loop_TakeshiQ takes nothing returns nothing
+        static method Loop_TakeshiQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -255,9 +283,9 @@ endfunction
                         if r5 >= r8 then
                             set r = rmax
                         endif
-                        if LoadInteger(hs,GetHandleId(c),StringHash("def t"))>0 then 
-                        set x2 = LoadReal(hs,GetHandleId(c),StringHash("t x"))
-                        set y2 = LoadReal(hs,GetHandleId(c),StringHash("t y"))
+                        if LoadInteger(hs,GetHandleId(c),SH_DEF_T)>0 then 
+                        set x2 = LoadReal(hs,GetHandleId(c),SH_T_X)
+                        set y2 = LoadReal(hs,GetHandleId(c),SH_T_Y)
                         if SR0(GetUnitX(c)+move*Cos(a),GetUnitY(c)+move*Sin(a),x2,y2)< TakeshiT_DamageAoe-220 then
                         call MoveUnit(c, move, a)
                         endif
@@ -275,9 +303,10 @@ endfunction
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
                                 call GroupAddUnit(g2, u)
+                                call DamageSource('A08S')
                                 call dmgphys(c, u, dmg)
                                 if IsUnitIllusion(u) == false and IsUnitType(u,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                             endif
@@ -301,6 +330,7 @@ endfunction
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A08S')
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -325,8 +355,9 @@ endfunction
                     set u = null
                     set m_TakeshiQ[i] = m_TakeshiQ[ MUI_TakeshiQ]
                     set MUI_TakeshiQ = MUI_TakeshiQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiQ == -1 then
-                        call PauseTimer( t_TakeshiQ)
+                        call TakeshiTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -363,16 +394,17 @@ endfunction
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Takeshi_Q")
             if MUI_TakeshiQ == 0 then
-                call TimerStart( t_TakeshiQ, 0.03, true, function thistype.Loop_TakeshiQ)
+                call TakeshiTick_On(0)
             endif
         endmethod
 
-        private static method Loop_TakeshiQ2 takes nothing returns nothing
+        static method Loop_TakeshiQ2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_TakeshiQ2
                 set this = m_TakeshiQ2[i]
+                call WUI_HeroProgress(c, TakeshiQ3_ID, "9th form: Utsushi Ame (Q)", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.1
                     if r == 0.2 then
@@ -401,6 +433,7 @@ endfunction
                                 call HeightSet2(u, 0.42, 0, 0.45)
                                 call SetAnim(u, 0.03, "death")
                                 call MUE(u, TakeshiQ2_PushDistance - SR3(u, x, y), TakeshiQ2_PushTime, GAngle3(x, y, u))
+                                call DamageSource('A08Z')
                                 call ErzaPassive(c, u, 2)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -437,7 +470,7 @@ endfunction
                     call UnitRemoveAbility(c, TakeshiQ2_Armor_ID)
                     call UnitRemoveAbility(c, TakeshiQ3_Buff_ID)
                     
-                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("style")) == 1 and LoadInteger(hs,GetHandleId(c),StringHash("mode g")) == 0 then
+                    if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_STYLE) == 1 and LoadInteger(hs,GetHandleId(c),SH_MODE_G) == 0 then
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiQ3_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiQ2_ID, true)
                     endif
@@ -447,8 +480,9 @@ endfunction
                     set u = null
                     set m_TakeshiQ2[i] = m_TakeshiQ2[MUI_TakeshiQ2]
                     set MUI_TakeshiQ2 = MUI_TakeshiQ2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiQ2 == -1 then
-                        call PauseTimer( t_TakeshiQ2 )
+                        call TakeshiTick10_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -477,11 +511,11 @@ endfunction
             call MakeSound("war3mapImported\\Hero_Takeshi_FQ")
             call MakeSound("war3mapImported\\Hero_Takeshi_FQ2")
             if MUI_TakeshiQ2 == 0 then
-                call TimerStart( t_TakeshiQ2, 0.1, true, function thistype.Loop_TakeshiQ2 )
+                call TakeshiTick10_On(0)
             endif
         endmethod
 
-        private static method Loop_TakeshiQ3 takes nothing returns nothing
+        static method Loop_TakeshiQ3 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -498,9 +532,10 @@ endfunction
                     call MoveUnit(c, r6, a)
                 else
                     call StunUnit(c, td, TakeshiQ3_Stun)
+                    call DamageSource('A093')
                     call dmgphys(c, td, dmg)
                     if IsUnitIllusion(td) == false and IsUnitType(td,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
                     set x = x1
                     set y = y1
@@ -514,8 +549,9 @@ endfunction
                     set td = null
                     set m_TakeshiQ3[i] = m_TakeshiQ3[MUI_TakeshiQ3]
                     set MUI_TakeshiQ3 = MUI_TakeshiQ3 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiQ3 == -1 then
-                        call PauseTimer( t_TakeshiQ3 )
+                        call TakeshiTick_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -565,17 +601,15 @@ endfunction
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_obr08 (214).mdl", x, y, GetRandomReal(0, 359), 1.75, 1.5, 1))
             call DestroyEffect(EffectSpawn("war3mapimported\\wos_tidalerruption.mdl", x, y, 1, 1, 2.75, 1))
             if MUI_TakeshiQ3 == 0 then
-                call TimerStart( t_TakeshiQ3, 0.03, true, function thistype.Loop_TakeshiQ3 )
+                call TakeshiTick_On(1)
             endif
         endmethod
 
     endstruct
 
     private struct TakeshiSpells_W
-        private static timer t_TakeshiW = CreateTimer()
         private static integer array m_TakeshiW
         private static integer MUI_TakeshiW = -1
-        private static timer t_TakeshiW2 = CreateTimer()
         private static integer array m_TakeshiW2
         private static integer MUI_TakeshiW2 = -1
         unit c
@@ -601,7 +635,7 @@ endfunction
         real a
         real rmax
 
-        private static method Loop_TakeshiW takes nothing returns nothing
+        static method Loop_TakeshiW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -667,9 +701,10 @@ endfunction
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_tx-shqy21.mdl" , x - 265 * Cos(a), y - 265 * Sin(a), a * bj_RADTODEG, 1., 4.2, 130))
                             call EffectSpawn2("war3mapImported\\wos_Bubbles2.mdx", x , y, GetRandomReal(0, 359), 1, 6, GetRandomReal(50, 150), 0.21)
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun0.mdl", x + 10 * Cos(a), y + 10 * Sin(a), a * bj_RADTODEG, 0.5, 2.5, 75))
+                            call DamageSource('A08T')
                             call dmgatk(c, td, dmg)
                             if IsUnitIllusion(td) == false and IsUnitType(td,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
                             call EUTU2(e, TakeshiW_PushDuration, 100, td)
                             call MUE(td, TakeshiW_PushRange, TakeshiW_PushDuration, a)
@@ -690,8 +725,9 @@ endfunction
                     set u = null
                     set m_TakeshiW[i] = m_TakeshiW[ MUI_TakeshiW]
                     set MUI_TakeshiW = MUI_TakeshiW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiW == -1 then
-                        call PauseTimer( t_TakeshiW)
+                        call TakeshiTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -727,11 +763,11 @@ endfunction
             call MakeSound("war3mapimported\\Hero_Takeshi_W")
             call NextSound("war3mapimported\\Hero_Takeshi_W2", 0.6)
             if MUI_TakeshiW == 0 then
-                call TimerStart( t_TakeshiW, 0.03, true, function thistype.Loop_TakeshiW)
+                call TakeshiTick_On(2)
             endif
         endmethod
 
-        private static method Loop_TakeshiW2 takes nothing returns nothing
+        static method Loop_TakeshiW2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -771,9 +807,10 @@ endfunction
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_yc_bluemorphcircle2.mdl", x, y, GetRandomReal(0, 359), 1, 1.4, 1))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_1mt_shui1.mdl", GetUnitX(c) + 70 * Cos(a), GetUnitY(c) + 70 * Sin(a), a * bj_RADTODEG, 1, 2.25, 150))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_2-[tx]-03-03jianta (3)_1.mdl", x, y, 1, 2, 1, 1))
+                            call DamageSource('A090')
                             call dmgphys(c, td, dmg)
                              if IsUnitIllusion(td) == false and IsUnitType(td,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
                             call MakeSound("war3mapimported\\Hero_Takeshi_FW")
                             set r = 9999
@@ -790,8 +827,9 @@ endfunction
                     set e3 = null
                     set m_TakeshiW2[i] = m_TakeshiW2[ MUI_TakeshiW2]
                     set MUI_TakeshiW2 = MUI_TakeshiW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiW2 == -1 then
-                        call PauseTimer( t_TakeshiW2)
+                        call TakeshiTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -824,14 +862,13 @@ endfunction
             call MakeSound("war3mapimported\\Hero_Takeshi_FW3")
             call NextSound("war3mapimported\\Hero_Takeshi_FW4", 0.6)
             if MUI_TakeshiW2 == 0 then
-                call TimerStart( t_TakeshiW2, 0.03, true, function thistype.Loop_TakeshiW2)
+                call TakeshiTick_On(3)
             endif
         endmethod
 
     endstruct
 
     private struct TakeshiSpells_E
-        private static timer t_TakeshiE = CreateTimer()
         private static integer array m_TakeshiE
         private static integer MUI_TakeshiE = -1
         unit c
@@ -853,7 +890,7 @@ endfunction
         real a
         real rmax
 
-        private static method Loop_TakeshiE takes nothing returns nothing
+        static method Loop_TakeshiE takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rk1 = 0
@@ -925,9 +962,10 @@ endfunction
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A08U')
                                     call dmgphys(c, u, dmg)
                                     if IsUnitIllusion(u) == false and IsUnitType(u,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -950,8 +988,9 @@ endfunction
                     set u = null
                     set m_TakeshiE[i] = m_TakeshiE[ MUI_TakeshiE]
                     set MUI_TakeshiE = MUI_TakeshiE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiE == -1 then
-                        call PauseTimer( t_TakeshiE)
+                        call TakeshiTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -992,17 +1031,15 @@ endfunction
             call SetUnitFacing( c , a * bj_RADTODEG)
             
             if MUI_TakeshiE == 0 then
-                call TimerStart( t_TakeshiE, 0.03, true, function thistype.Loop_TakeshiE)
+                call TakeshiTick_On(4)
             endif
         endmethod
 
     endstruct
 
     private struct TakeshiSpells_R
-        private static timer t_TakeshiR = CreateTimer()
         private static integer array m_TakeshiR
         private static integer MUI_TakeshiR = -1
-        private static timer t_TakeshiR2 = CreateTimer()
         private static integer array m_TakeshiR2
         private static integer MUI_TakeshiR2 = -1
         unit c
@@ -1029,7 +1066,7 @@ endfunction
         real a
         real rmax
 
-        private static method Loop_TakeshiR takes nothing returns nothing
+        static method Loop_TakeshiR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -1119,10 +1156,12 @@ endfunction
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A08V')
                                     call dmgmag(c, u, dmg)
                                     if IsUnitIllusion(u) == false and IsUnitType(u,UNIT_TYPE_HERO) then 
-                                call TakeshiGAdd_Start(c,dmg)
+                                // Cambio gauge: fed by DmgSys from the final damage (TakeshiDmg_OnHit)
                                 endif
+                                    call DamageSource('A08V')
                                     call ErzaPassive(c,u,2)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -1153,8 +1192,9 @@ endfunction
                     set u = null
                     set m_TakeshiR[i] = m_TakeshiR[ MUI_TakeshiR]
                     set MUI_TakeshiR = MUI_TakeshiR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiR == -1 then
-                        call PauseTimer( t_TakeshiR)
+                        call TakeshiTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -1191,17 +1231,18 @@ endfunction
             set e2 = EffectSpawn("war3mapImported\\wos_takeshiswallow.mdl", GetUnitX(c) + 35 * Cos(a), GetUnitY(c) + 35 * Sin(a), a * bj_RADTODEG, 1, 2.25, r5)
             set e3 = EffectSpawn("war3mapImported\\wos_Windwalk Blue Soul.mdl", GetUnitX(c) + 35 * Cos(a), GetUnitY(c) + 35 * Sin(a), a * bj_RADTODEG, 1, 1.5, r5 - 80)
             if MUI_TakeshiR == 0 then
-                call TimerStart( t_TakeshiR, 0.03, true, function thistype.Loop_TakeshiR)
+                call TakeshiTick_On(5)
             endif
         endmethod
 
-        private static method Loop_TakeshiR2 takes nothing returns nothing
+        static method Loop_TakeshiR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_TakeshiR2
                 set this = m_TakeshiR2[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("takeshi esc")) == 0 then
+                call WUI_HeroProgress(c, TakeshiR2_ID, "7th form: Shibuki Ame", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TAKESHI_ESC) == 0 then
                     set r = r + 0.03
                     call DebugUnit2(c)
                     set x = GetUnitX(c)
@@ -1220,16 +1261,17 @@ endfunction
                         set r2 = r2 + 0.03
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("yamamoto fr"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_YAMAMOTO_FR, 0)
                     call StopSpellUnit2(c)
                     call DestroyEffect(e)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("takeshi esc"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TAKESHI_ESC, 0)
                     set e = null
                     set c = null
                     set m_TakeshiR2[i] = m_TakeshiR2[ MUI_TakeshiR2]
                     set MUI_TakeshiR2 = MUI_TakeshiR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TakeshiR2 == -1 then
-                        call PauseTimer( t_TakeshiR2)
+                        call TakeshiTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1247,12 +1289,12 @@ endfunction
             set r2 = 10
             set r3 = 1
             set check = 0
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("takeshi esc"), 0)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TAKESHI_ESC, 0)
             call StartSpellUnit2(c)
             set rmax = TakeshiR2_DurationBase + TakeshiR2_DurationStep * (GetUnitAbilityLevel(c, TakeshiR2_ID) - 1)
             set a = GetUnitFacing(c) * bj_DEGTORAD // Angle Between points
             call SetUnitAnimationByIndex( c , 5)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("yamamoto fr"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_YAMAMOTO_FR, 1)
             call MakeSound("war3mapimported\\Hero_Takeshi_FR")
             call SetUnitTimeScale( c , 1.1)
             call DecorRemove(c, x, y, 500, 20)
@@ -1260,14 +1302,13 @@ endfunction
             call SetUnitFacing( c , a * bj_RADTODEG)
             set r5 = 0
             if MUI_TakeshiR2 == 0 then
-                call TimerStart( t_TakeshiR2, 0.03, true, function thistype.Loop_TakeshiR2)
+                call TakeshiTick_On(6)
             endif
         endmethod
 
     endstruct
 
     private struct TakeshiSpells_T
-        private static timer t_TakeshiT = CreateTimer()
         private static integer array m_TakeshiT
         private static integer MUI_TakeshiT = -1
         unit c
@@ -1297,13 +1338,14 @@ endfunction
         real a
         real rmax
 
-        private static method Loop_TakeshiT takes nothing returns nothing
+        static method Loop_TakeshiT takes nothing returns nothing
             local integer this
             local integer i = 0
             local integer kk = 0
             loop
                 exitwhen i > MUI_TakeshiT
                 set this = m_TakeshiT[i]
+                call WUI_HeroProgress(c, TakeshiT_ID, "Aggregate Art: Jiunoka", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then // and GetUnitState(c, UNIT_STATE_MANA) > 50 then
                     set r = r + 0.03
                     if check >= 1 then
@@ -1321,7 +1363,7 @@ endfunction
                     if r3 > 0.91 then
                         set r3 = 0
                         if SR3(c, x, y) < aoe then
-                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("style")) == 0 then
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_STYLE) == 0 then
                                 call ReduceCooldown(c, TakeshiQ_ID, TakeshiT_ReduceCD)
                                 call ReduceCooldown(c, TakeshiW_ID, TakeshiT_ReduceCD)
                                 call ReduceCooldown(c, TakeshiE_ID, TakeshiT_ReduceCD)
@@ -1401,14 +1443,14 @@ endfunction
                     if SR3(c, x, y) > aoe then
                         if check3 == 0 then
                             set check3 = 1
-                            call SaveInteger(hs,GetHandleId(c),StringHash("def t"),0)
+                            call SaveInteger(hs,GetHandleId(c),SH_DEF_T,0)
                         endif
                         if IsUnitPaused(c) == false then
                             call UnitRemoveAbility(c, TakeshiT_Buff_ID)
                         endif
                     else
                         set check3 = 0
-                            call SaveInteger(hs,GetHandleId(c),StringHash("def t"),1)
+                            call SaveInteger(hs,GetHandleId(c),SH_DEF_T,1)
                         call BuffUnit1(c, c, 8)
                     endif
                 elseif check == 2 then
@@ -1433,7 +1475,9 @@ endfunction
                             call GroupRemoveUnit(g2, td)
                             set x1 = GetUnitX(td)
                             set y1 = GetUnitY(td)
+                            call DamageSource('A08W')
                             call dmgphys(c, td, dmg)
+                            call DamageSource('A08W')
                             call ErzaPassive(c, td, 2)
                             call MakeSound("war3mapimported\\Hero_Takeshi_FW")
                             call DestroyEffect(EffectSpawn("war3mapimported\\wos_yc_shockwave_b.mdl", x1, y1, 1, 0.8, 2, 175))
@@ -1450,14 +1494,14 @@ endfunction
                     if SR3(c, x, y) > aoe then
                         if check3 == 0 then
                             set check3 = 1
-                            call SaveInteger(hs,GetHandleId(c),StringHash("def t"),0)
+                            call SaveInteger(hs,GetHandleId(c),SH_DEF_T,0)
                         endif
                         if IsUnitPaused(c) == false then
                             call UnitRemoveAbility(c, TakeshiT_Buff_ID)
                         endif
                     else
                         set check3 = 0
-                            call SaveInteger(hs,GetHandleId(c),StringHash("def t"),1)
+                            call SaveInteger(hs,GetHandleId(c),SH_DEF_T,1)
                         call BuffUnit1(c, c, 8)
                     endif
                     if r4 > 0.8 and IsUnitPaused(c) == false and SR3(c, x, y) <= aoe then
@@ -1471,6 +1515,7 @@ endfunction
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
                                 call GroupAddUnit(g2, u)
                                 set kk = kk + 1
+                                    call DamageSource('A08W')
                                     call ErzaPassive(c,u,2)
                                 call SlowUnit(c, u, TakeshiT_Slow, TakeshiT_SlowDuration)
                             endif
@@ -1497,10 +1542,10 @@ endfunction
                     call StopSpellUnit(c)
                 endif
                 
-        call SaveReal(hs,GetHandleId(c),StringHash("t x"),0)
-        call SaveReal(hs,GetHandleId(c),StringHash("t y"),0)
-                call SaveInteger(hs,GetHandleId(c),StringHash("def t"),0)
-                call SaveInteger(hs, GetHandleId(c), StringHash("yama t"), 0)
+        call SaveReal(hs,GetHandleId(c),SH_T_X,0)
+        call SaveReal(hs,GetHandleId(c),SH_T_Y,0)
+                call SaveInteger(hs,GetHandleId(c),SH_DEF_T,0)
+                call SaveInteger(hs, GetHandleId(c), SH_YAMA_T, 0)
                 call DestroyGroup(g)
                 call DestroyGroup(g2)
                 set g = null
@@ -1512,8 +1557,9 @@ endfunction
                 set c = null
                 set m_TakeshiT[i] = m_TakeshiT[ MUI_TakeshiT]
                 set MUI_TakeshiT = MUI_TakeshiT - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiT == -1 then
-                    call PauseTimer( t_TakeshiT)
+                    call TakeshiTick_Off(7)
                 endif
                 call deallocate(this)
             endif
@@ -1529,8 +1575,8 @@ endfunction
         set c = NewC
         set x = NewX
         set y = NewY
-        call SaveReal(hs,GetHandleId(c),StringHash("t x"),x)
-        call SaveReal(hs,GetHandleId(c),StringHash("t y"),y)
+        call SaveReal(hs,GetHandleId(c),SH_T_X,x)
+        call SaveReal(hs,GetHandleId(c),SH_T_Y,y)
         set r = 0
         set r4 = 0.
         set r6 = 10
@@ -1542,12 +1588,12 @@ endfunction
         set check = 0
         set check2 = 0
         call StartSpellUnit2(c)        
-        call SaveInteger(hs,GetHandleId(c),StringHash("def t"),0)
+        call SaveInteger(hs,GetHandleId(c),SH_DEF_T,0)
         set scale = (GetUnitState(c, UNIT_STATE_MAX_MANA) * (TakeshiGW_Time / 100)) / 33
         set rmax = 3
         set aoe = TakeshiT_DamageAoe
         set a = GAngle2(c, x, y) // Angle Between points
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 0 then
             call SetUnitAnimationByIndex( c , 3 )
             set check2 = 0
             call MakeSound("war3mapimported\\Hero_Takeshi_T")
@@ -1555,7 +1601,7 @@ endfunction
         else
             call MakeSound("war3mapimported\\Hero_Takeshi_GT")
             set check2 = 1
-            call SaveInteger(hs, GetHandleId(c), StringHash("yama t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_YAMA_T, 1)
             call SetUnitAnimationByIndex( c , 17 )
             set dmg = GetHeroAgi( c , true) * TakeshiGT_DamageAgiBase
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", c, "hand right")
@@ -1564,35 +1610,27 @@ endfunction
         call SetUnitFacing( c , a * bj_RADTODEG)
         set r5 = 0
         if MUI_TakeshiT == 0 then
-            call TimerStart( t_TakeshiT, 0.03, true, function thistype.Loop_TakeshiT)
+            call TakeshiTick_On(7)
         endif
     endmethod
 
     endstruct
 
     private struct TakeshiSpells_G
-        private static timer t_TakeshiG = CreateTimer()
         private static integer array m_TakeshiG
         private static integer MUI_TakeshiG = -1
-        private static timer t_TakeshiGQ = CreateTimer()
         private static integer array m_TakeshiGQ
         private static integer MUI_TakeshiGQ = -1
-        private static timer t_TakeshiGW2 = CreateTimer()
         private static integer array m_TakeshiGW2
         private static integer MUI_TakeshiGW2 = -1
-        private static timer t_TakeshiGW = CreateTimer()
         private static integer array m_TakeshiGW
         private static integer MUI_TakeshiGW = -1
-        private static timer t_TakeshiGE2 = CreateTimer()
         private static integer array m_TakeshiGE2
         private static integer MUI_TakeshiGE2 = -1
-        private static timer t_TakeshiGE = CreateTimer()
         private static integer array m_TakeshiGE
         private static integer MUI_TakeshiGE = -1
-        private static timer t_TakeshiGR = CreateTimer()
         private static integer array m_TakeshiGR
         private static integer MUI_TakeshiGR = -1
-        private static timer t_TakeshiGF = CreateTimer()
         private static integer array m_TakeshiGF
         private static integer MUI_TakeshiGF = -1
         unit c
@@ -1629,25 +1667,20 @@ endfunction
         real a
         real a2
         real rmax
-        framehandle array frame2_pas1 [10]
-        framehandle array frame2_pas2 [10]
-        framehandle array frame2_pas3 [10]
-        framehandle array frame2_pas4 [10]
-        framehandle array frame2_pas5 [10]
-        framehandle array frame2_pas6 [10]
 
-    private static method Loop_TakeshiG takes nothing returns nothing
+    static method Loop_TakeshiG takes nothing returns nothing
         local integer this
         local integer i = 0
         local real tmp_y = 0.0375
         loop
             exitwhen i > MUI_TakeshiG
             set this = m_TakeshiG[i]
+            set rmax = TakeshiG_Duration + LoadReal(hs, GetHandleId(c), SH_CAMBIO_EXT)
             if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
                 if check == 0 then
                     call DebugUnit(c)
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r == 0.39 then
                         call MakeSound("war3mapimported\\Hero_Takeshi_G2")
                     endif
@@ -1690,65 +1723,28 @@ endfunction
                         call OkarunEggCd(c,TakeshiGE_ID,BlzGetUnitAbilityCooldownRemaining(c, TakeshiE_ID) - TakeshiG_ReduceCD)
                         call OkarunEggCd(c,TakeshiGR_ID,BlzGetUnitAbilityCooldownRemaining(c, TakeshiR_ID) - TakeshiG_ReduceCD)
                         call BlzSetUnitSkin(c, Takeshi2_ID)
-                        call AddSpecialEffectTarget("war3mapImported\\wos_Takeshiaura.mdl", c, "origin")
+                        // wos_Takeshiaura.mdl is not imported: the call only leaked an invisible effect per Cambio.
                         call FixAura(c)
                         call DecorRemove(c, x, y, 800, 50)
                         call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                         set check = 1
                         call StopSpellUnit(c)
                         set r = 0
-                        if frame2_pas1[k2] == null then
-                            set frame2_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas1[k2], 0.135, 0.035)
-                            call BlzFrameSetTexture(frame2_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                            call BlzFrameSetVisible(frame2_pas1[k2], false)
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame2_pas1[k2], true)
-                            endif
-                            set frame2_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame2_pas1[k2], 0, 0)
-                            call BlzFrameSetAbsPoint(frame2_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas2[k2], 0.1, 0.019)
-                            set frame2_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetSize(frame2_pas3[k2], 0.1, 0.035)
-                            call BlzFrameSetScale(frame2_pas3[k2], 0.5)
-                            call BlzFrameSetModel(frame2_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175 + tmp_y)
-                            call BlzFrameSetMinMaxValue(frame2_pas3[k2], 0, rmax)
-                            call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                            set frame2_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18 + tmp_y)
-                            call BlzFrameSetSize(frame2_pas4[k2], 0.03, 0.03)
-                            call BlzFrameSetTexture(frame2_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Takeshi_G", 0, false)
-                            set frame2_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185 + tmp_y)
-                            call BlzFrameSetText(frame2_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                            call BlzFrameSetScale(frame2_pas5[k2], 0.9)
-                            set frame2_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame2_pas1[k2], "", 0)
-                            call BlzFrameSetAbsPoint(frame2_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17 + tmp_y)
-                            call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                            call BlzFrameSetScale(frame2_pas6[k2], 0.9)
-                        else
-                            if GetLocalPlayer() == GetOwningPlayer(c) then
-                                call BlzFrameSetVisible(frame2_pas1[k2], true)
-                            endif
-                            call BlzFrameSetValue(frame2_pas3[k2], rmax)
-                        endif
                     endif
                 elseif check == 1 then
-                    if IsUnitPaused(c) == false and LoadInteger(hs, GetHandleId(c), StringHash("yama t")) == 0 then
+                    if IsUnitPaused(c) == false and LoadInteger(hs, GetHandleId(c), SH_YAMA_T) == 0 then
                         set r = r + 0.03
                     endif
-                    set r = S2R( R2SW( r , 0, 3 ) )
-                    call BlzFrameSetValue(frame2_pas3[k2], rmax - (r + 0.1))
+                    set r = RoundReal(r, 3)
                     if rmax - r >= 0 then
-                        call BlzFrameSetText(frame2_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                        call WUI_HeroProgress(c, TakeshiG_ID, "Cambio Forma Vongola Gear Version", rmax - r, rmax, true)
                     endif
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                 endif
             else
-                call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 0)
+                call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 0)
+                call SaveReal(hs, GetHandleId(c), SH_CAMBIO_EXT, 0)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiG2_ID, false)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiGQ_ID, false)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiGW_ID, false)
@@ -1758,7 +1754,7 @@ endfunction
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiG_ID, true)
                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiF_ID, true)
                 call SetUnitAbilityLevel(c, TakeshiT_ID, 1)
-                if LoadInteger(hs, GetHandleId(Player(k2)), StringHash("style")) == 0 then
+                if LoadInteger(hs, GetHandleId(Player(k2)), SH_STYLE) == 0 then
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiQ_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiW_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), TakeshiE_ID, true)
@@ -1774,9 +1770,7 @@ endfunction
                  call BlzStartUnitAbilityCooldown(c, TakeshiE_ID, BlzGetUnitAbilityCooldownRemaining(c, TakeshiGE_ID))
                  call BlzStartUnitAbilityCooldown(c, TakeshiR_ID, BlzGetUnitAbilityCooldownRemaining(c, TakeshiGR_ID))
                 call BlzSetUnitSkin(c, Takeshi_ID)
-                if GetLocalPlayer() == GetOwningPlayer(c) then
-                    call BlzFrameSetVisible(frame2_pas1[k2], false)
-                endif
+                    call WUI_HeroProgress(c, TakeshiG_ID, "Cambio Forma Vongola Gear Version", 0.00, 0.00, true)
                 call IssueImmediateOrder(c, "stop")
                 if check == 0 then
                     call StopSpellUnit(c)
@@ -1786,8 +1780,9 @@ endfunction
                 set e = null
                 set m_TakeshiG[i] = m_TakeshiG[ MUI_TakeshiG]
                 set MUI_TakeshiG = MUI_TakeshiG - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiG == -1 then
-                    call PauseTimer( t_TakeshiG)
+                    call TakeshiTick_Off(8)
                 endif
                 call deallocate(this)
             endif
@@ -1807,18 +1802,17 @@ endfunction
         set r = 0
         set k2 = GetPlayerId(GetOwningPlayer(c))
         set r2 = 10
-        call UnitRemoveAbility(c, TsunaW_Buff_ID)
-        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TsunaG_ID)), 1)
-        call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 1)
+        call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 1)
         set e = AddSpecialEffectTarget("war3mapImported\\wos_blueauraichigo.mdl", c, "origin")
-        set rmax = TakeshiG_Duration
+        set rmax = TakeshiG_Duration + LoadReal(hs, GetHandleId(c), SH_CAMBIO_EXT)
+        call SaveInteger(hs, GetHandleId(c), SH_CAMBIO_PENDING, 0)
         call MakeSound("war3mapimported\\Hero_Takeshi_G")
         if MUI_TakeshiG == 0 then
-            call TimerStart( t_TakeshiG, 0.03, true, function thistype.Loop_TakeshiG)
+            call TakeshiTick_On(8)
         endif
     endmethod
 
-    private static method Loop_TakeshiGQ takes nothing returns nothing
+    static method Loop_TakeshiGQ takes nothing returns nothing
         local integer this
         local integer i = 0
         local real rk1 = 0
@@ -1889,9 +1883,9 @@ endfunction
                         set r4 = r4 + 0.03
                     endif
                     set r5 = r5 + move
-                    if LoadInteger(hs,GetHandleId(c),StringHash("def t"))>0 then 
-                        set x2 = LoadReal(hs,GetHandleId(c),StringHash("t x"))
-                        set y2 = LoadReal(hs,GetHandleId(c),StringHash("t y"))
+                    if LoadInteger(hs,GetHandleId(c),SH_DEF_T)>0 then 
+                        set x2 = LoadReal(hs,GetHandleId(c),SH_T_X)
+                        set y2 = LoadReal(hs,GetHandleId(c),SH_T_Y)
                         if SR0(GetUnitX(c)+move*Cos(a),GetUnitY(c)+move*Sin(a),x2,y2)< TakeshiT_DamageAoe-220 then
                         call MoveUnit(c, move, a)
                         else
@@ -1915,7 +1909,9 @@ endfunction
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A095')
                                 call dmgphys(c, u, dmg)
+                                call DamageSource('A095')
                                 call ErzaPassive(c, u, 2)
                                 call StunUnit(c, u, TakeshiGQ_Stun)
                                 if kkk == 0 then 
@@ -1944,8 +1940,9 @@ endfunction
                 set u = null
                 set m_TakeshiGQ[i] = m_TakeshiGQ[ MUI_TakeshiGQ]
                 set MUI_TakeshiGQ = MUI_TakeshiGQ - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGQ == -1 then
-                    call PauseTimer( t_TakeshiGQ)
+                    call TakeshiTick_Off(9)
                 endif
                 call deallocate(this)
             endif
@@ -1980,11 +1977,11 @@ endfunction
         set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
         call MakeSound("war3mapimported\\Hero_Takeshi_GQ")
         if MUI_TakeshiGQ == 0 then
-            call TimerStart( t_TakeshiGQ, 0.03, true, function thistype.Loop_TakeshiGQ)
+            call TakeshiTick_On(9)
         endif
     endmethod
 
-    private static method Loop_TakeshiGW2 takes nothing returns nothing
+    static method Loop_TakeshiGW2 takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
@@ -2015,6 +2012,7 @@ endfunction
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A096')
                                 call dmgphys(c, u, dmg)
                                 call GroupAddUnit(g2, u)
                                     //call MUE(u,TakeshiGW_PushRange,TakeshiGW_PushDuration,a)
@@ -2037,6 +2035,7 @@ endfunction
                     set u = FirstOfGroup( g )
                     exitwhen u == null
                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                        call DamageSource('A096')
                         call dmgphys(c, u, dmg)
                         call GroupAddUnit(g2, u)
                                     //call MUE(u,TakeshiGW_PushRange,TakeshiGW_PushDuration,a)
@@ -2049,6 +2048,7 @@ endfunction
                 call DestroyGroup(g2)
                 set x = GetUnitX(td)
                 set y = GetUnitY(td)
+                call DamageSource('A096')
                 call ErzaPassive(c, td, 2)
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_BrightBlueSlash.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(0.7, 1.1), GetRandomReal(1, 3), 55))
                 call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b.mdl", x, y, GetRandomReal(0, 359), 1.25, 2, 205, -30))
@@ -2065,8 +2065,9 @@ endfunction
                 set u = null
                 set m_TakeshiGW2[i] = m_TakeshiGW2[ MUI_TakeshiGW2]
                 set MUI_TakeshiGW2 = MUI_TakeshiGW2 - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGW2 == -1 then
-                    call PauseTimer( t_TakeshiGW2)
+                    call TakeshiTick_Off(10)
                 endif
                 call deallocate(this)
             endif
@@ -2102,11 +2103,11 @@ endfunction
         set g2 = CreateGroup()
         set u = null
         if MUI_TakeshiGW2 == 0 then
-            call TimerStart( t_TakeshiGW2, 0.03, true, function thistype.Loop_TakeshiGW2)
+            call TakeshiTick_On(10)
         endif
     endmethod
 
-    private static method Loop_TakeshiGW takes nothing returns nothing
+    static method Loop_TakeshiGW takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
@@ -2138,7 +2139,7 @@ endfunction
                 call DestroyEffect(e)
                 call DestroyEffect(e2)
                 call StopSpellUnit2(c)
-                call SaveUnitHandle(hs, GetHandleId(c), StringHash("target"), td)
+                call SaveUnitHandle(hs, GetHandleId(c), SH_TARGET, td)
                 call SetUnitTimeScale( c , 1)
                 set c = null
                 set td = null
@@ -2147,8 +2148,9 @@ endfunction
                 set u = null
                 set m_TakeshiGW[i] = m_TakeshiGW[ MUI_TakeshiGW]
                 set MUI_TakeshiGW = MUI_TakeshiGW - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGW == -1 then
-                    call PauseTimer( t_TakeshiGW)
+                    call TakeshiTick_Off(11)
                 endif
                 call deallocate(this)
             endif
@@ -2177,7 +2179,7 @@ endfunction
         set check = 0
         set dmg = dmg / (check2-3)
         set rmax = 3.3
-        call RemoveSavedHandle(hs, GetHandleId(c), StringHash("target"))
+        call RemoveSavedHandle(hs, GetHandleId(c), SH_TARGET)
         call SetUnitAnimationByIndex(c, 16)
         call SetUnitTimeScale(c, 0.95)
         set e = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", c, "hand right")
@@ -2185,11 +2187,11 @@ endfunction
         call MakeSound("war3mapimported\\Hero_Takeshi_GW")
         call MakeSound("war3mapimported\\Hero_Takeshi_GW2")
         if MUI_TakeshiGW == 0 then
-            call TimerStart( t_TakeshiGW, 0.03, true, function thistype.Loop_TakeshiGW)
+            call TakeshiTick_On(11)
         endif
     endmethod
 
-    private static method Loop_TakeshiGE2 takes nothing returns nothing
+    static method Loop_TakeshiGE2 takes nothing returns nothing
         local integer this
         local integer i = 0
         local real tilt = 0
@@ -2250,6 +2252,7 @@ endfunction
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                    call DamageSource('A097')
                                     call dmgmag(c, u, dmg)
                                     call GroupAddUnit(g2, u)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -2272,6 +2275,7 @@ endfunction
                     set u = FirstOfGroup( g )
                     exitwhen u == null
                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                        call DamageSource('A097')
                         call dmgmag(c, u, dmg)
                         call GroupAddUnit(g2, u)
                         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -2281,6 +2285,7 @@ endfunction
                 set u = null
                 call DestroyGroup(g)
                 call DestroyGroup(g2)
+                call DamageSource('A097')
                 call ErzaPassive(c, td, 2)
                 set x = GetUnitX(td)
                 set y = GetUnitY(td)
@@ -2300,8 +2305,9 @@ endfunction
                 set u = null
                 set m_TakeshiGE2[i] = m_TakeshiGE2[ MUI_TakeshiGE2]
                 set MUI_TakeshiGE2 = MUI_TakeshiGE2 - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGE2 == -1 then
-                    call PauseTimer( t_TakeshiGE2)
+                    call TakeshiTick_Off(12)
                 endif
                 call deallocate(this)
             endif
@@ -2342,11 +2348,11 @@ endfunction
         set g2 = CreateGroup()
         set u = null
         if MUI_TakeshiGE2 == 0 then
-            call TimerStart( t_TakeshiGE2, 0.03, true, function thistype.Loop_TakeshiGE2)
+            call TakeshiTick_On(12)
         endif
     endmethod
 
-    private static method Loop_TakeshiGE takes nothing returns nothing
+    static method Loop_TakeshiGE takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
@@ -2381,8 +2387,9 @@ endfunction
                 set u = null
                 set m_TakeshiGE[i] = m_TakeshiGE[ MUI_TakeshiGE]
                 set MUI_TakeshiGE = MUI_TakeshiGE - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGE == -1 then
-                    call PauseTimer( t_TakeshiGE)
+                    call TakeshiTick_Off(13)
                 endif
                 call deallocate(this)
             endif
@@ -2417,7 +2424,7 @@ endfunction
         set e2 = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdl", c, "hand left")
         call MakeSound("war3mapimported\\Hero_Takeshi_GE")
         if MUI_TakeshiGE == 0 then
-            call TimerStart( t_TakeshiGE, 0.03, true, function thistype.Loop_TakeshiGE)
+            call TakeshiTick_On(13)
         endif
     endmethod
 
@@ -2431,13 +2438,14 @@ endfunction
         return diff
     endmethod
 
-    private static method Loop_TakeshiGR takes nothing returns nothing
+    static method Loop_TakeshiGR takes nothing returns nothing
         local integer this
         local integer i = 0
         local real rkek = 0
         loop
             exitwhen i > MUI_TakeshiGR
             set this = m_TakeshiGR[i]
+            call WUI_HeroProgress(c, TakeshiGR_ID, "10th form: Scontro di Rondine", rmax - r, rmax, true)
             if SpellBoolCaster(c) and r <= rmax then
                 set r = r + 0.03
                 if r > 0.5 then
@@ -2545,9 +2553,11 @@ endfunction
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A098')
                                 call dmgmag(c, u, dmg)
                                 set x = GetUnitX(u)
                                 set y = GetUnitY(u)
+                                call DamageSource('A098')
                                 call ErzaPassive(c, u, 2)
                                 call StunUnit(c, u, TakeshiGR_Stun)
                                 call GroupAddUnit(g2, u)
@@ -2593,8 +2603,9 @@ endfunction
                 set u = null
                 set m_TakeshiGR[i] = m_TakeshiGR[ MUI_TakeshiGR]
                 set MUI_TakeshiGR = MUI_TakeshiGR - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGR == -1 then
-                    call PauseTimer( t_TakeshiGR)
+                    call TakeshiTick_Off(14)
                 endif
                 call deallocate(this)
             endif
@@ -2632,11 +2643,11 @@ endfunction
         set e2 = EffectSpawn("war3mapImported\\wos_takeshiswallow.mdl", GetUnitX(c) + 35 * Cos(a), GetUnitY(c) + 35 * Sin(a), a * bj_RADTODEG, 1, 2.25, r5)
         set e3 = EffectSpawn("war3mapImported\\wos_Windwalk Blue Soul.mdl", GetUnitX(c) + 35 * Cos(a), GetUnitY(c) + 35 * Sin(a), a * bj_RADTODEG, 1, 1.5, r5 - 80)
         if MUI_TakeshiGR == 0 then
-            call TimerStart( t_TakeshiGR, 0.03, true, function thistype.Loop_TakeshiGR)
+            call TakeshiTick_On(14)
         endif
     endmethod
 
-    private static method Loop_TakeshiGF takes nothing returns nothing
+    static method Loop_TakeshiGF takes nothing returns nothing
         local integer this
         local integer i = 0
         loop
@@ -2679,7 +2690,9 @@ endfunction
                         call DestroyEffect(EffectSpawn("war3mapimported\\wos_yc_bluemorphcircle2.mdl", x, y, GetRandomReal(0, 359), 1, 1.4, 1))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_1mt_shui1.mdl", GetUnitX(c) + 0 * Cos(a), GetUnitY(c) + 0 * Sin(a), a * bj_RADTODEG, 1, 2.25, 150))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_2-[tx]-03-03jianta (3)_1.mdl", x, y, 1, 2, 1, 1))
+                        call DamageSource('A099')
                         call dmgphys(c, td, dmg)
+                        call DamageSource('A099')
                         call ErzaPassive(c, td, 2)
                         call RootUnit(c, td, TakeshiGF_Root)
                         call MakeSound("war3mapimported\\Hero_Takeshi_GR2")
@@ -2695,8 +2708,9 @@ endfunction
                 set e = null
                 set m_TakeshiGF[i] = m_TakeshiGF[ MUI_TakeshiGF]
                 set MUI_TakeshiGF = MUI_TakeshiGF - 1
+                set i = i - 1 // revisit: the moved instance must not skip this tick
                 if MUI_TakeshiGF == -1 then
-                    call PauseTimer( t_TakeshiGF)
+                    call TakeshiTick_Off(15)
                 endif
                 call deallocate(this)
             endif
@@ -2727,7 +2741,7 @@ endfunction
         set e = AddSpecialEffectTarget("war3mapImported\\wos_Windwalk Blue Soul.mdx", c, "hand right")
         call MakeSound("war3mapimported\\Hero_Takeshi_GF")
         if MUI_TakeshiGF == 0 then
-            call TimerStart( t_TakeshiGF, 0.03, true, function thistype.Loop_TakeshiGF)
+            call TakeshiTick_On(15)
         endif
     endmethod
 
@@ -2834,9 +2848,9 @@ function TakeshiT_Start takes unit c, real x, real y returns nothing
 endfunction
 function TakeshiF_Start takes unit c returns nothing
     local player p = GetOwningPlayer(c)
-    if LoadInteger(hs, GetHandleId(p), StringHash("style")) == 0 then
+    if LoadInteger(hs, GetHandleId(p), SH_STYLE) == 0 then
   //  call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TakeshiQ2_ID)),0)
-        call SaveInteger(hs, GetHandleId(p), StringHash("style"), 1)
+        call SaveInteger(hs, GetHandleId(p), SH_STYLE, 1)
         call SetPlayerAbilityAvailable(p, TakeshiQ_ID, false)
         call SetPlayerAbilityAvailable(p, TakeshiW_ID, false)
         call SetPlayerAbilityAvailable(p, TakeshiE_ID, false)
@@ -2873,7 +2887,7 @@ function TakeshiF_Start takes unit c returns nothing
         call SetPlayerAbilityAvailable(p, TakeshiW_ID, true)
         call SetPlayerAbilityAvailable(p, TakeshiE_ID, true)
         call SetPlayerAbilityAvailable(p, TakeshiR_ID, true)
-        call SaveInteger(hs, GetHandleId(p), StringHash("style"), 0)
+        call SaveInteger(hs, GetHandleId(p), SH_STYLE, 0)
     endif
     set p = null
 endfunction
@@ -2882,10 +2896,11 @@ function TakeshiGOff_Start takes unit c returns nothing
 local integer k2 = GetPlayerId(GetOwningPlayer(c))
 local real dmg2 = 0
 local real rmax = TakeshiG_TakenDamageToEnter
-if frameTakeshi_pas1 [k2] != null then
-                call SaveReal(hs,GetHandleId(c),StringHash("takeshi dmg"),dmg2)
-                call BlzFrameSetText(frameTakeshi_pas6 [k2], "|c00FFFF00" +I2S(R2I(dmg2))+"/"+I2S(R2I(rmax))+ "|r")
-                call BlzFrameSetValue(frameTakeshi_pas3[k2],dmg2 )
+                call SaveReal(hs,GetHandleId(c),SH_TAKESHI_DMG,dmg2)
+                // The Cambio gauge exists from hero level 35 only.
+                if GetHeroLevel(c) >= 35 then
+                call WUI_HeroProgressSingle(c, TakeshiG2_ID)
+                call WUI_HeroProgressCounter(c, TakeshiG2_ID, "Cambio Damage", dmg2, rmax)
                 endif
                 if TakeshiDummy != null then 
                 call RemoveUnit(TakeshiDummy)
@@ -2894,9 +2909,29 @@ if frameTakeshi_pas1 [k2] != null then
 endfunction
 
 function TakeshiG_Start takes unit c returns nothing
-    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(TakeshiQ2_ID)),1)
+    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Takeshi_TAKESHIQ2_ID,1)
     call TakeshiSpells_G.TakeshiG_Start( c )
     call TakeshiGOff_Start(c)
+endfunction
+// Cambio form: the next damage of this cast extends the form (TakeshiDmg_OnHit).
+// Full gauge, not yet in the form: the next damage of this cast stores +1 sec for the form.
+// Every enemy hero hit by that cast adds +1 sec (once per target per cast).
+function TakeshiCambio_MarkCast takes unit c returns nothing
+    if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 0 and LoadReal(hs, GetHandleId(c), SH_TAKESHI_DMG) >= TakeshiG_TakenDamageToEnter then
+        call SaveInteger(hs, GetHandleId(c), SH_CAMBIO_PENDING, 1)
+        call SaveInteger(hs, GetHandleId(c), SH_CAMBIO_CAST, LoadInteger(hs, GetHandleId(c), SH_CAMBIO_CAST) + 1)
+    endif
+endfunction
+// Called by DmgSys with the final (post-resist) damage of Takeshi's own abilities.
+function TakeshiDmg_OnHit takes unit c, unit td, real dmg returns nothing
+    if IsUnitType(td, UNIT_TYPE_HERO) and not IsUnitIllusion(td) then
+        call TakeshiGAdd_Start(c, dmg)
+    endif
+    if LoadInteger(hs, GetHandleId(c), SH_CAMBIO_PENDING) == 1 and LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 0 and IsUnitType(td, UNIT_TYPE_HERO) and not IsUnitIllusion(td) and LoadInteger(hs, GetHandleId(td), SH_CAMBIO_HIT) != LoadInteger(hs, GetHandleId(c), SH_CAMBIO_CAST) then
+        call SaveInteger(hs, GetHandleId(td), SH_CAMBIO_HIT, LoadInteger(hs, GetHandleId(c), SH_CAMBIO_CAST))
+        call SaveReal(hs, GetHandleId(c), SH_CAMBIO_EXT, RMinBJ(TakeshiG_ExtendMax, LoadReal(hs, GetHandleId(c), SH_CAMBIO_EXT) + TakeshiG_ExtendPerCast))
+        call TakeshiGAdd_Start(c, 0) // refresh the two-row panel
+    endif
 endfunction
 function TakeshiGQ_Start takes unit c, real x, real y returns nothing
     call TakeshiSpells_G.TakeshiGQ_Start( c, x, y )
@@ -2905,7 +2940,7 @@ function TakeshiGW_Start takes unit c, unit td returns nothing
     call TakeshiSpells_G.TakeshiGW_Start( c, td )
 endfunction
 function TakeshiGE_Start takes unit c returns nothing
-    call TakeshiSpells_G.TakeshiGE_Start( c, LoadUnitHandle(hs, GetHandleId(c), StringHash("target")) )
+    call TakeshiSpells_G.TakeshiGE_Start( c, LoadUnitHandle(hs, GetHandleId(c), SH_TARGET) )
 endfunction
 function TakeshiGR_Start takes unit c returns nothing
     call TakeshiSpells_G.TakeshiGR_Start( c )
@@ -2913,6 +2948,82 @@ endfunction
 function TakeshiGF_Start takes unit c, unit td returns nothing
     call TakeshiSpells_G.TakeshiGF_Start( c, td )
 endfunction
+
+    private struct TakeshiTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TakeshiTick_Active[0] then
+                call TakeshiSpells_Q.Loop_TakeshiQ()
+            endif
+            if TakeshiTick_Active[1] then
+                call TakeshiSpells_Q.Loop_TakeshiQ3()
+            endif
+            if TakeshiTick_Active[2] then
+                call TakeshiSpells_W.Loop_TakeshiW()
+            endif
+            if TakeshiTick_Active[3] then
+                call TakeshiSpells_W.Loop_TakeshiW2()
+            endif
+            if TakeshiTick_Active[4] then
+                call TakeshiSpells_E.Loop_TakeshiE()
+            endif
+            if TakeshiTick_Active[5] then
+                call TakeshiSpells_R.Loop_TakeshiR()
+            endif
+            if TakeshiTick_Active[6] then
+                call TakeshiSpells_R.Loop_TakeshiR2()
+            endif
+            if TakeshiTick_Active[7] then
+                call TakeshiSpells_T.Loop_TakeshiT()
+            endif
+            if TakeshiTick_Active[8] then
+                call TakeshiSpells_G.Loop_TakeshiG()
+            endif
+            if TakeshiTick_Active[9] then
+                call TakeshiSpells_G.Loop_TakeshiGQ()
+            endif
+            if TakeshiTick_Active[10] then
+                call TakeshiSpells_G.Loop_TakeshiGW2()
+            endif
+            if TakeshiTick_Active[11] then
+                call TakeshiSpells_G.Loop_TakeshiGW()
+            endif
+            if TakeshiTick_Active[12] then
+                call TakeshiSpells_G.Loop_TakeshiGE2()
+            endif
+            if TakeshiTick_Active[13] then
+                call TakeshiSpells_G.Loop_TakeshiGE()
+            endif
+            if TakeshiTick_Active[14] then
+                call TakeshiSpells_G.Loop_TakeshiGR()
+            endif
+            if TakeshiTick_Active[15] then
+                call TakeshiSpells_G.Loop_TakeshiGF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TakeshiTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct TakeshiTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TakeshiTick10_Active[0] then
+                call TakeshiSpells_Q.Loop_TakeshiQ2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TakeshiTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Takeshi_TAKESHIQ2_ID = StringHash(I2S(TakeshiQ2_ID))
+    endglobals
+
 endlibrary
 
 

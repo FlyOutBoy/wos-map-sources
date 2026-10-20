@@ -1,3 +1,7 @@
+globals
+    // Hashed once at map load (was StringHash(...) on every call).
+        integer SH_ArrowLeft_DONAT_LEFT = StringHash("donat left")
+endglobals
 function Trig_ArrowLeft_Actions takes nothing returns nothing
     local player p = GetTriggerPlayer()
     local integer i = GetPlayerId(p)
@@ -16,7 +20,7 @@ function Trig_ArrowLeft_Actions takes nothing returns nothing
                 set AttachDonat1[i] = null
                 set AttachDonat3[i] = null
                 set AttachDonat4[i] = null
-                set id = LoadInteger(hs, GetHandleId(Player(i)), StringHash("donat left"))
+                set id = LoadInteger(hs, GetHandleId(Player(i)), SH_ArrowLeft_DONAT_LEFT)
                 call SetActiveDonat(i, 2, id)
                 if id == 0 then
                     set AttachDonat2[i] = AddSpecialEffectTarget("war3mapimported\\wos_qpanda_putong_san01.mdx", Hero[i], "origin")
@@ -31,7 +35,7 @@ function Trig_ArrowLeft_Actions takes nothing returns nothing
                 if id > 3 then
                     set id = 0
                 endif
-                call SaveInteger(hs, GetHandleId(Player(i)), StringHash("donat left"), id)
+                call SaveInteger(hs, GetHandleId(Player(i)), SH_ArrowLeft_DONAT_LEFT, id)
             else
                 call DestroyEffect(AttachDonat2[i])
                 set AttachDonat2[i] = null

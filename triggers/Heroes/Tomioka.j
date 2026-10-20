@@ -1,11 +1,80 @@
 library TomiokaSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.1 timers (runs only while any is active).
+        private timer TomiokaTick10_Timer = CreateTimer()
+        private boolean array TomiokaTick10_Active
+        private integer TomiokaTick10_Users = 0
+        private code TomiokaTick10_Callback = null
+    endglobals
+
+    private function TomiokaTick10_On takes integer k returns nothing
+        if not TomiokaTick10_Active[k] then
+            set TomiokaTick10_Active[k] = true
+            set TomiokaTick10_Users = TomiokaTick10_Users + 1
+            if TomiokaTick10_Users == 1 then
+                call TimerStart(TomiokaTick10_Timer, 0.1, true, TomiokaTick10_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TomiokaTick10_Off takes integer k returns nothing
+        if TomiokaTick10_Active[k] then
+            set TomiokaTick10_Active[k] = false
+            set TomiokaTick10_Users = TomiokaTick10_Users - 1
+            if TomiokaTick10_Users <= 0 then
+                set TomiokaTick10_Users = 0
+                call PauseTimer(TomiokaTick10_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer TomiokaTick_Timer = CreateTimer()
+        private boolean array TomiokaTick_Active
+        private integer TomiokaTick_Users = 0
+        private code TomiokaTick_Callback = null
+    endglobals
+
+    private function TomiokaTick_On takes integer k returns nothing
+        if not TomiokaTick_Active[k] then
+            set TomiokaTick_Active[k] = true
+            set TomiokaTick_Users = TomiokaTick_Users + 1
+            if TomiokaTick_Users == 1 then
+                call TimerStart(TomiokaTick_Timer, 0.03, true, TomiokaTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function TomiokaTick_Off takes integer k returns nothing
+        if TomiokaTick_Active[k] then
+            set TomiokaTick_Active[k] = false
+            set TomiokaTick_Users = TomiokaTick_Users - 1
+            if TomiokaTick_Users <= 0 then
+                set TomiokaTick_Users = 0
+                call PauseTimer(TomiokaTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_SKILL_Q = StringHash("skill q")
+        private integer SH_SKILL_W = StringHash("skill w")
+        private integer SH_TOMIOKA_ADD_DMG = StringHash("tomioka add dmg")
+        private integer SH_TOMIOKA_ESC = StringHash("tomioka esc")
+        private integer SH_TOMIOKA_F_DMG_ACT = StringHash("tomioka f dmg act")
+        private integer SH_TOMIOKA_F_INVUL = StringHash("tomioka f invul")
+        private integer SH_TOMIOKA_G_CD = StringHash("tomioka g cd")
+    endglobals
+    globals
 //--------------------------------------Tomioka--------------------------------------------------------------
         integer Tomioka_ID = 'H00A'
 //---------------G ability-----------------------------------------------------
         integer TomiokaG_ID = 'A026'
-        real Tomioka_G_AddDamageBase = 0.4 // x agi after cast 1 spell
-        real Tomioka_G_AddDamageStep = 0.3 // x agi additional after cast 1 spell
+        real Tomioka_G_AddDamageBase = 0.25 // x agi after cast 1 spell
+        real Tomioka_G_AddDamageStep = 0.25 // x agi additional after cast 1 spell
+        integer Tomioka_G_EStacksPerHit = 3 // one extra E strike per three G stacks
         integer Tomioka_G_AddDamageMaxStacks = 6 // 4 stacks = 2. x agi damage per skill additional
         real Tomioka_G_BuffDuration = 4 // in seconds
         real Tomioka_G_CD = 20 // in seconds
@@ -13,10 +82,10 @@ library TomiokaSpells uses GearSystems
         integer TomiokaQ_ID = 'A021'
         real TomiokaQ_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real TomiokaQ_DamageAgiStep = 1 // additional number x Agi damage for each next level
-        real TomiokaQ_Damage2StaticBase = 175 // base static damage for 1 level
+        real TomiokaQ_Damage2StaticBase = 150 // base static damage for 1 level
         real TomiokaQ_Damage2StaticStep = 0 // additional static damage for each next level
         real TomiokaQ_DamageAoe = 150
-        real TomiokaQ_Stun = 1
+        real TomiokaQ_Stun = 0.7
 //---------------W ability-----------------------------------------------------
         integer TomiokaW_ID = 'A022'
         boolean TomiokaW_InvulGain = false // false = no invul, true = have invul
@@ -31,11 +100,14 @@ library TomiokaSpells uses GearSystems
         real TomiokaW_PushDuration = 0.51 // Stun time from combo QW
 //---------------E ability-----------------------------------------------------
         integer TomiokaE_ID = 'A023'
-        real TomiokaE_DamageAgiBase = 1 // base number x Agi damage for 1 level
-        real TomiokaE_DamageAgiStep = 0 // additional number x Agi damage for each next level
-        real TomiokaE_DamageAoe = 875
+        real TomiokaE_DamageAtkBase = 0.9 // base number x Attack damage for 1 level
+        real TomiokaE_DamageAtkStep = 0 // additional number x Attack damage for each next level
+        real TomiokaE_StrikeInterval = 0.21 // seconds between strikes
+        integer TomiokaE_SlashVolume = 70 // slash sounds are bass-heavy (full volume 127)
+        real TomiokaE_DamageAoe = 1050
         integer TomiokaE_AtkCountBase = 2
         integer TomiokaE_AtkCountStep = 1
+        integer TomiokaE_AtkCountMax = 5
 //---------------R ability-----------------------------------------------------
         integer TomiokaR_ID = 'A024'
         real TomiokaR_DamageAgiBase = 3 // base number x Agi damage for 1 level
@@ -60,7 +132,6 @@ library TomiokaSpells uses GearSystems
     endglobals
 
     private struct TomiokaQ_KS
-        private static timer t_TomiokaQ = CreateTimer( )
         private static integer array m_TomiokaQ
         private static integer MUI_TomiokaQ = -1
         unit c
@@ -78,7 +149,7 @@ library TomiokaSpells uses GearSystems
         real a
         real r5 
         real rmax
-        private static method Loop_TomiokaQ takes nothing returns nothing
+        static method Loop_TomiokaQ takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -115,6 +186,7 @@ library TomiokaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A021')
                                     call dmgphys(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -134,8 +206,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaQ[i] = m_TomiokaQ[ MUI_TomiokaQ]
                     set MUI_TomiokaQ = MUI_TomiokaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaQ == -1 then
-                        call PauseTimer( t_TomiokaQ)
+                        call TomiokaTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -164,29 +237,27 @@ library TomiokaSpells uses GearSystems
             call SetUnitTimeScale(c, 0.19)
             endif
             set a = GAngle2( c , x , y ) // Angle Between points
-            if LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
+            if LoadInteger(hs, GetHandleId(c), SH_SKILL_W) > 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_SKILL_W, 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+Q combo! Target gain stun at the end|r")
             endif
             set aoe = TomiokaQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TomiokaQ_DamageAgiBase + ( TomiokaQ_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaQ_ID) - 1 ) ) )
             set dmg = dmg + TomiokaQ_Damage2StaticBase + ( TomiokaQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , TomiokaQ_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )
+            if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
+                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) - 1 ) ) )
             endif
             set rmax = 2.9
             call SetUnitAnimationByIndex(c, 5)
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Tomioka_Q1")
             if MUI_TomiokaQ == 0 then
-                call TimerStart( t_TomiokaQ, 0.03, true, function thistype.Loop_TomiokaQ)
+                call TomiokaTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct TomiokaW_KS
-        private static timer t_TomiokaW = CreateTimer( )
         private static integer array m_TomiokaW
         private static integer MUI_TomiokaW = -1
         unit c
@@ -204,7 +275,7 @@ library TomiokaSpells uses GearSystems
         real r5
         real a
         real rmax
-        private static method Loop_TomiokaW takes nothing returns nothing
+        static method Loop_TomiokaW takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -243,6 +314,7 @@ library TomiokaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A022')
                                     call dmgphys(c, u, dmg)
                                     if check2 == 0 then
                                         call MUE(u, TomiokaW_PushRange, TomiokaW_PushDuration, a)
@@ -274,8 +346,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaW[i] = m_TomiokaW[ MUI_TomiokaW]
                     set MUI_TomiokaW = MUI_TomiokaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaW == -1 then
-                        call PauseTimer( t_TomiokaW)
+                        call TomiokaTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -310,26 +383,24 @@ library TomiokaSpells uses GearSystems
             set aoe = TomiokaW_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TomiokaW_DamageAgiBase + ( TomiokaW_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaW_ID) - 1 ) ) )
             set dmg = dmg + TomiokaW_Damage2StaticBase + ( TomiokaW_Damage2StaticStep * ( GetUnitAbilityLevel( c , TomiokaW_ID) - 1 ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )
+            if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
+                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) - 1 ) ) )
             endif
             set rmax = 1.2
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
+            if LoadInteger(hs, GetHandleId(c), SH_SKILL_Q) > 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_SKILL_Q, 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+W combo! enemy additionally pushed away|r")
             endif
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Tomioka_W1")
             if MUI_TomiokaW == 0 then
-                call TimerStart( t_TomiokaW, 0.03, true, function thistype.Loop_TomiokaW)
+                call TomiokaTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct TomiokaE_KS
-        private static timer t_TomiokaE = CreateTimer( )
         private static integer array m_TomiokaE
         private static integer MUI_TomiokaE = -1
         unit c
@@ -351,13 +422,60 @@ library TomiokaSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_TomiokaE takes nothing returns nothing
+        private method chooseTarget takes nothing returns nothing
+            set k = 0
+            call GroupClear(g)
+            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(g)
+                exitwhen u == null
+                if SpellBool(u) and not BlzIsUnitInvulnerable(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                    set k = k + 1
+                endif
+                call GroupRemoveUnit(g, u)
+            endloop
+            set td = null
+            if k > 0 then
+                set k2 = GetRandomInt(1, k)
+                call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
+                loop
+                    set u = FirstOfGroup(g)
+                    exitwhen u == null
+                    if SpellBool(u) and not BlzIsUnitInvulnerable(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                        set k2 = k2 - 1
+                        if k2 == 0 then
+                            set td = u
+                        endif
+                    endif
+                    call GroupRemoveUnit(g, u)
+                endloop
+            elseif d != null and GetUnitTypeId(d) != 0 and SpellBool(d) and not BlzIsUnitInvulnerable(d) then
+                set td = d
+            endif
+            set u = null
+        endmethod
+
+        static method Loop_TomiokaE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_TomiokaE
                 set this = m_TomiokaE[i]
-                if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax and check < check3 then
+                call WUI_HeroProgress(c, TomiokaE_ID, "Fourth Form: Striking Tide", I2R(IMaxBJ(0, check3 - check)), I2R(check3), false)
+                if GetUnitTypeId(td) != 0 then
+                    set x = GetUnitX(td)
+                    set y = GetUnitY(td)
+                endif
+                if SpellBoolCaster(c) and r <= rmax and check < check3 then
+                    if GetUnitTypeId(td) != 0 and SpellBoolCaster(td) and BlzIsUnitInvulnerable(td) then
+                        set r = rmax + 1
+                    elseif GetUnitTypeId(td) == 0 or not SpellBoolCaster(td) then
+                        call chooseTarget()
+                    elseif check > 0 and r2 > TomiokaE_StrikeInterval then
+                        call chooseTarget()
+                    endif
+                endif
+                if SpellBoolCaster(c) and td != null and SpellBool(td) and not BlzIsUnitInvulnerable(td) and r <= rmax and check < check3 then
                     set r = r + 0.03
                     call DebugUnit2(c)
                     if r == 0.6 then
@@ -366,54 +484,17 @@ library TomiokaSpells uses GearSystems
                     if r == 1.2 then
                         call MakeSound("war3mapimported\\Hero_Tomioka_E03")
                     endif
-                    if r2 > 0.12 then
+                    if r2 > TomiokaE_StrikeInterval then
                         set r2 = 0
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
-                        set k = 0
-                        if check > 0 then
-                            call GroupClear(g)
-                            call GroupEnumUnitsInRange( g , x, y , aoe , NoDecor_Cond)
-                            loop
-                                set u = FirstOfGroup( g )
-                                exitwhen u == null
-                                if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
-                                    set k = k + 1
-                                endif
-                                call GroupRemoveUnit( g , u )
-                            endloop
-                            set u = null
-                            if k > 0 then
-                                set k2 = GetRandomInt(1, k)
-                                call GroupClear(g)
-                                call GroupEnumUnitsInRange( g , x, y , aoe , NoDecor_Cond)
-                                loop
-                                    set u = FirstOfGroup( g )
-                                    exitwhen u == null
-                                    if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
-                                        set k2 = k2 + 1
-                                        if k2 == k then
-                                            set td = u
-                                        endif
-                                    endif
-                                    call GroupRemoveUnit( g , u )
-                                endloop
-                            else
-                            if SpellBoolCaster(d) then 
-                            set td = d 
-                            else
-                                set r = 9999
-                            endif
-                            endif
-                           
-                        endif
                         set u = null
                         call SetUnitTimeScale(c, 3)
                         call SetUnitAnimation(c, "attack")
                         if GetRandomInt(1, 2) == 1 then
-                            call MakeSound("war3mapimported\\Hero_Tomioka_E3")
+                            call MakeSoundVolume("war3mapimported\\Hero_Tomioka_E3", TomiokaE_SlashVolume)
                         else
-                            call MakeSound("war3mapimported\\Hero_Tomioka_E2")
+                            call MakeSoundVolume("war3mapimported\\Hero_Tomioka_E2", TomiokaE_SlashVolume)
                         endif
                         set x = GetUnitX(td)
                         set y = GetUnitY(td)
@@ -423,7 +504,8 @@ library TomiokaSpells uses GearSystems
                         call PosUnit(c, x - 125 * Cos(a), y - 125 * Sin(a))
                         set a = GAngle(c, td)
                         call SetUnitFacing(c, a * bj_RADTODEG)
-                        call dmgphys(c, td, dmg)
+                        call DamageSource('A023')
+                        call dmgatk(c, td, dmg)
                         if check2 == 1 then
                             call StunUnit(c, td, TomiokaCombo_QE_Stun )
                         elseif check2 == 2 then
@@ -438,6 +520,7 @@ library TomiokaSpells uses GearSystems
                         set r2 = r2 + 0.03
                     endif
                 else
+                    call WUI_HeroProgress(c, TomiokaE_ID, "Fourth Form: Striking Tide", 0.0, 0.0, false)
                     call StopSpellUnit(c)
                     call SetUnitTimeScale( c , 1)
                     call DestroyEffect(e)
@@ -450,8 +533,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaE[i] = m_TomiokaE[ MUI_TomiokaE]
                     set MUI_TomiokaE = MUI_TomiokaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaE == -1 then
-                        call PauseTimer( t_TomiokaE)
+                        call TomiokaTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -471,40 +555,33 @@ library TomiokaSpells uses GearSystems
             set r2 = 0
             call StartSpellUnit(c)
             set g = CreateGroup()
-            set check = R2I(LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))/2)
-            set check3 = TomiokaE_AtkCountBase + ( TomiokaE_AtkCountStep * ( GetUnitAbilityLevel( c , TomiokaE_ID) - 1 ) )+check//+ check
-            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FFAdditional attacks: |r"+I2S(check))
+            set check = R2I(LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) / Tomioka_G_EStacksPerHit)
+            set check3 = IMinBJ(TomiokaE_AtkCountMax, TomiokaE_AtkCountBase + TomiokaE_AtkCountStep * (GetUnitAbilityLevel(c, TomiokaE_ID) - 1)) + check
             set u = null
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = TomiokaE_DamageAoe
-            set dmg = GetHeroAgi( c , true) * ( TomiokaE_DamageAgiBase + ( TomiokaE_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaE_ID) - 1 ) ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + (GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )) / (check3-1)
-            endif
+            set dmg = GetAttack(c) * ( TomiokaE_DamageAtkBase + ( TomiokaE_DamageAtkStep * ( GetUnitAbilityLevel( c , TomiokaE_ID) - 1 ) ) )
             set rmax = 15
             call SetUnitAnimationByIndex(c, 5)
             call SetUnitTimeScale(c, 0.5)
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("skill q")) > 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 0)
+            if LoadInteger(hs, GetHandleId(c), SH_SKILL_Q) > 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_SKILL_Q, 0)
                 set check2 = 1
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF Q+E combo! enemy additionally stuned each hit|r")
-            elseif LoadInteger(hs, GetHandleId(c), StringHash("skill w")) > 0 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 0)
+            elseif LoadInteger(hs, GetHandleId(c), SH_SKILL_W) > 0 then
+                call SaveInteger(hs, GetHandleId(c), SH_SKILL_W, 0)
                 set check2 = 2
-                call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 1, "|c0084D7FF W+E combo! enemy slowed each hit|r")
             endif
             set check = 0
             set e = AddSpecialEffectTarget("war3mapImported\\wos_e tanjiro (4).mdl", c, "weapon")
             call MakeSound("war3mapimported\\Hero_Tomioka_E01")
             if MUI_TomiokaE == 0 then
-                call TimerStart( t_TomiokaE, 0.03, true, function thistype.Loop_TomiokaE)
+                call TomiokaTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct TomiokaR_KS
-        private static timer t_TomiokaR = CreateTimer( )
         private static integer array m_TomiokaR
         private static integer MUI_TomiokaR = -1
         unit c
@@ -519,7 +596,7 @@ library TomiokaSpells uses GearSystems
         real r
         effect e
         real rmax
-        private static method Loop_TomiokaR takes nothing returns nothing
+        static method Loop_TomiokaR takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -570,7 +647,9 @@ library TomiokaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A024')
                                     call dmgphys(c, u, dmg)
+                                    call DamageSource('A024')
                                     call ErzaPassive(c,u,2)
                                 endif
                                 call GroupRemoveUnit( g , u )
@@ -592,8 +671,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaR[i] = m_TomiokaR[ MUI_TomiokaR]
                     set MUI_TomiokaR = MUI_TomiokaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaR == -1 then
-                        call PauseTimer( t_TomiokaR)
+                        call TomiokaTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -614,8 +694,8 @@ library TomiokaSpells uses GearSystems
             set u = null
             set aoe = TomiokaR_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( TomiokaR_DamageAgiBase + ( TomiokaR_DamageAgiStep * ( GetUnitAbilityLevel( c , TomiokaR_ID) - 1 ) ) )
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )
+            if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
+                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) - 1 ) ) )
             endif
             set dmg = dmg / 5
             set rmax = 2.62
@@ -625,13 +705,12 @@ library TomiokaSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Tomioka_R4")
             call MakeSound("war3mapimported\\Hero_Tomioka_R3")
             if MUI_TomiokaR == 0 then
-                call TimerStart( t_TomiokaR, 0.03, true, function thistype.Loop_TomiokaR)
+                call TomiokaTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct TomiokaT_KS
-        private static timer t_TomiokaT = CreateTimer( )
         private static integer array m_TomiokaT
         private static integer MUI_TomiokaT = -1
         unit c
@@ -655,7 +734,7 @@ library TomiokaSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_TomiokaT takes nothing returns nothing
+        static method Loop_TomiokaT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real cz = 0
@@ -742,7 +821,9 @@ library TomiokaSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                    call DamageSource('A025')
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource('A025')
                                     call ErzaPassive(c,u,2)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
                                 endif
@@ -764,8 +845,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaT[i] = m_TomiokaT[ MUI_TomiokaT]
                     set MUI_TomiokaT = MUI_TomiokaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaT == -1 then
-                        call PauseTimer( t_TomiokaT)
+                        call TomiokaTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -790,8 +872,8 @@ library TomiokaSpells uses GearSystems
             set a = GAngle2( c , x , y ) // Angle Between points
             set aoe = TomiokaT_DamageAoe
             set dmg = GetHeroAgi( c , true) * TomiokaT_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )
+            if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
+                set dmg = dmg + GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) - 1 ) ) )
             endif
             set rmax = 6
             call SetUnitAnimationByIndex(c, 5)
@@ -806,13 +888,12 @@ library TomiokaSpells uses GearSystems
             call ScaleEffDummy(e, 1.2, 0.75, 1)
             call MakeSound("war3mapimported\\Hero_Tomioka_T")
             if MUI_TomiokaT == 0 then
-                call TimerStart( t_TomiokaT, 0.03, true, function thistype.Loop_TomiokaT)
+                call TomiokaTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct TomiokaF_KS
-        private static timer t_TomiokaF = CreateTimer( )
         private static integer array m_TomiokaF
         private static integer MUI_TomiokaF = -1
         unit c
@@ -833,20 +914,21 @@ library TomiokaSpells uses GearSystems
         effect e2
         effect array ee [40]
         real rmax
-        private static method Loop_TomiokaF takes nothing returns nothing
+        static method Loop_TomiokaF takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_TomiokaF
                 set this = m_TomiokaF[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka esc")) == 0 then
+                call WUI_HeroProgress(c, TomiokaF_ID, "Eleventh Form: Dead Calm", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_ESC) == 0 then
                     set r = r + 0.03
                     call DebugUnit2(c)
                     call SetUnitX(c,x)
                     call SetUnitY(c,y)
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka f invul"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_F_INVUL, 1)
                     if r == 0.6 then 
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka f invul"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_F_INVUL, 1)
                     endif
                     if r == 0.9 then
                         call MakeSound("war3mapimported\\Hero_Tomioka_F2")
@@ -873,10 +955,10 @@ library TomiokaSpells uses GearSystems
                     if r == 2.76 or r == 2.82 or r == 2.85 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_modelgh (2).mdl", x, y, 1, 1, 7, 11))
                     endif
-                    if r2 > 0.2 and LoadInteger(hs, GetHandleId(c), StringHash("tomioka f dmg act")) == 1 then
+                    if r2 > 0.2 and LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_F_DMG_ACT) == 1 then
                         set r2 = 0
                         call MakeSound("war3mapimported\\Hero_Tomioka_F_Cut")
-                        call SaveInteger(hs, GetHandleId(c), StringHash("tomioka f dmg act"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_F_DMG_ACT, 0)
                         call DecorRemove(c,x,y,aoe,40)
                         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_arthur-sfx-1.mdl", x, y, GetRandomReal(0, 359), GetRandomReal(1, 1.5), 6., 165, 125, 155, 255, 155))
                         call GroupClear(g)
@@ -885,6 +967,7 @@ library TomiokaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A027')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -904,6 +987,7 @@ library TomiokaSpells uses GearSystems
                             set u = FirstOfGroup( g )
                             exitwhen u == null
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) then
+                                call DamageSource('A027')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -914,7 +998,7 @@ library TomiokaSpells uses GearSystems
                     endif
                 else
                     call DebuffClear(c)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("tomioka f dmg act"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_F_DMG_ACT, 0)
                     call ColorEffDummy3(e, 0, 255, 255, 255, 0.3)
                     call ColorEffDummy3(e2, 0, 255, 255, 255, 0.3)
                     if r < 2.7 then
@@ -935,8 +1019,8 @@ library TomiokaSpells uses GearSystems
                         call EffectSpawn2("war3mapImported\\wos_BY_Wood_Effect_YuZhiBoYou_Water_ShuiLongDan_2", x + aoe * Cos(k * (360 / k2) * bj_DEGTORAD), y + aoe * Sin(k * (360 / k2) * bj_DEGTORAD), GetRandomReal(0, 359), 1, 4.85, 25, 0.15)
                         set k = k + 1
                     endloop
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka esc"), 0)
-                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka f invul"), 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_ESC, 0)
+                    call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_F_INVUL, 0)
                     call StopSpellUnit2(c)
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup( g )
@@ -946,8 +1030,9 @@ library TomiokaSpells uses GearSystems
                     set u = null
                     set m_TomiokaF[i] = m_TomiokaF[ MUI_TomiokaF]
                     set MUI_TomiokaF = MUI_TomiokaF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaF == -1 then
-                        call PauseTimer( t_TomiokaF)
+                        call TomiokaTick_Off(5)
                     endif
                     call deallocate(this)
                 endif
@@ -963,12 +1048,12 @@ library TomiokaSpells uses GearSystems
             set y = GetUnitY(c)
             set r = 0
             set r2 = 0
-            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash("tomioka f invul"), 1)
+            call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_TOMIOKA_F_INVUL, 1)
             call StartSpellUnit2(c)
             set g = CreateGroup()
-            call SaveInteger(hs, GetHandleId(c), StringHash("tomioka esc"), 0)
+            call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ESC, 0)
             set u = null
-            set k3 = LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))
+            set k3 = LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)
             set r5 = 3
             set r4 = 0
             if k3 == 1 then 
@@ -987,8 +1072,8 @@ library TomiokaSpells uses GearSystems
             set r4 = 0
             set aoe = TomiokaF_DamageAoe
             set dmg = GetHeroAgi( c , true) * TomiokaF_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
-                set dmg = dmg + ((GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) - 1 ) ) )) / 10)
+            if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
+                set dmg = dmg + ((GetHeroAgi( c , true) * ( Tomioka_G_AddDamageBase + ( Tomioka_G_AddDamageStep * ( LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) - 1 ) ) )) / 10)
             endif
             set rmax = TomiokaF_Duration
             call SetUnitAnimationByIndex(c, 7)
@@ -1007,84 +1092,72 @@ library TomiokaSpells uses GearSystems
                 set k = k + 1
             endloop
             if MUI_TomiokaF == 0 then
-                call TimerStart( t_TomiokaF, 0.03, true, function thistype.Loop_TomiokaF)
+                call TomiokaTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct TomiokaG_KS
-        private static timer t_TomiokaG = CreateTimer( )
         private static integer array m_TomiokaG
         private static integer MUI_TomiokaG = -1
         unit c
-        framehandle array frame_pas1 [12]
-        framehandle array frame_pas2 [12]
-        framehandle array frame_pas3 [12]
-        framehandle array frame_pas4 [12]
-        framehandle array frame_pas5 [12]
-        framehandle array frame_pas6 [12]
         integer k2
         real dmg
         integer check
         real r
         effect e
         real rmax
-        private static method Loop_TomiokaG takes nothing returns nothing
+        static method Loop_TomiokaG takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
                 exitwhen i > MUI_TomiokaG
                 set this = m_TomiokaG[i]
-                if r < rmax and IsUnitType(c, UNIT_TYPE_DEAD) == false and Hero[k2] != null then
+                if r < rmax and IsUnitType(c, UNIT_TYPE_DEAD) == false and Hero[k2] == c then
                     if IsUnitPaused(c) == false then
                         set r = r + 0.1
-                        set r = S2R(R2SW(r,0,2))
+                        set r = RoundReal(r, 2)
                     endif
-                        call  BlzFrameSetValue(frame_pas3[k2], rmax-(r+0.1))
                         if rmax -r >=0 then 
-                        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax-r,0,2) + "|r")
+                        call WUI_HeroProgress(c, TomiokaG_ID, "Flowing Water (" + I2S(check) + " stacks)", rmax-r, rmax, true)
                     endif
                     if check < 2 then 
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + I2S(check)+" Stack" + "|r")
                     else
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + I2S(check)+" Stacks" + "|r")
                     endif
                     if CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) or IsUnitType(c, UNIT_TYPE_DEAD) then
                         set r = 99999
                     endif
-                    if check < LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) and LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 then
+                    if check < LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) and LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 then
                         set r = 0
-                        set check = LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))
+                        set check = LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)
                         if check > Tomioka_G_AddDamageMaxStacks then
                             set check = Tomioka_G_AddDamageMaxStacks
                             set r = 0
-                            call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), check)
+                            call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG, check)
                         endif
-                        call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
                     endif
                 else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))-2)
-                    if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))>0 then
+                    call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG, LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)-1)
+                    if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)>0 then
                     set r = 0
-                    set check = LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))
+                    set check = LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)
                     if check < 2 then 
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + I2S(check)+" Stack" + "|r")
                     else
-                    call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + I2S(check)+" Stacks" + "|r")
                     endif
                     else
-                    call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG, 0)
                     call DestroyEffect(e)
                     if GetLocalPlayer() == Player(k2) then 
-                    call BlzFrameSetVisible(frame_pas1[k2],false)
+                    call WUI_HeroProgress(c, TomiokaG_ID, "Flowing Water (" + I2S(check) + " stacks)", 0.00, 0.00, true)
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("tomioka g cd"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_G_CD, 0)
                     set c = null
                     set e = null
                     set m_TomiokaG[i] = m_TomiokaG[ MUI_TomiokaG]
                     set MUI_TomiokaG = MUI_TomiokaG - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_TomiokaG == -1 then
-                        call PauseTimer( t_TomiokaG)
+                        call TomiokaTick10_Off(0)
                     endif
                     call deallocate(this)
                endif
@@ -1098,51 +1171,13 @@ library TomiokaSpells uses GearSystems
             set m_TomiokaG[ MUI_TomiokaG] = this
             set c = NewC
             set e = AddSpecialEffectTarget("war3mapImported\\wos_aurapartblue.mdl", c, "origin")
-            call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG, 1)
             set check = 1
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set rmax = Tomioka_G_BuffDuration
-            if frame_pas1[k2] == null then 
-        set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS",main_frame, "", 0)
-        call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-        call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-        call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-        call BlzFrameSetVisible(frame_pas1[k2],false)
-        if GetLocalPlayer() == GetOwningPlayer(c) then 
-        call BlzFrameSetVisible(frame_pas1[k2],true)
-        endif
-        set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-        call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-        call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-        set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-        call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-        call BlzFrameSetScale(frame_pas3[k2], 0.5)
-        call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-        call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-        call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-        call  BlzFrameSetValue(frame_pas3[k2], rmax)
-        set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS",frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-        call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-        call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Tomioka_G", 0, false)
-        set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-        call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "1 Stack" + "|r")
-        call BlzFrameSetScale(frame_pas5[k2],0.9)
-        set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-        call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-        call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(Test_real,0,2) + "|r")
-        call BlzFrameSetScale(frame_pas6[k2],0.9)
-        else
-        if GetLocalPlayer() == GetOwningPlayer(c) then 
-        call BlzFrameSetVisible(frame_pas1[k2],true)
-        endif
-        call  BlzFrameSetValue(frame_pas3[k2], rmax)
-        endif
         set r = 0
-            call DisplayTimedTextToPlayer(GetOwningPlayer(c), 0, 0, 0.01, "|c00FF0303G: " + R2SW(Tomioka_G_AddDamageBase + (Tomioka_G_AddDamageStep * (check - 1)), 1, 1) + " *Agi" + "|r")
             if MUI_TomiokaG == 0 then
-                call TimerStart( t_TomiokaG, 0.1, true, function thistype.Loop_TomiokaG)
+                call TomiokaTick10_On(0)
             endif
         endmethod
     endstruct
@@ -1162,13 +1197,13 @@ library TomiokaSpells uses GearSystems
     12 - strong hit
      */ 
     function TomiokaPass_Start takes unit c returns nothing
-        local integer i = LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"))
+        local integer i = LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG)
         if GetHeroLevel(c)>=0 then 
-        if LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("tomioka add dmg")) < 9999 then
-            call SaveInteger(hs, GetHandleId(c), StringHash("tomioka add dmg"), i + 1)
+        if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) > 0 and LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG) < 9999 then
+            call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_ADD_DMG, i + 1)
         endif
-        if LoadInteger(hs, GetHandleId(c), StringHash("tomioka g cd")) == 0  then
-            call SaveInteger(hs, GetHandleId(c), StringHash("tomioka g cd"), 1)
+        if LoadInteger(hs, GetHandleId(c), SH_TOMIOKA_G_CD) == 0  then
+            call SaveInteger(hs, GetHandleId(c), SH_TOMIOKA_G_CD, 1)
             call TomiokaG_KS.TomiokaG_Start(c)
         endif
         endif
@@ -1177,16 +1212,16 @@ library TomiokaSpells uses GearSystems
         call TomiokaPass_Start(c)
         call TomiokaQ_KS.TomiokaQ_Start( c, td )
         if GetHeroLevel(c)>=0 then 
-        call SaveInteger(hs, GetHandleId(c), StringHash("skill q"), 1)
-        call MyFlush(GetHandleId(c), StringHash("skill q"), 0, 3)
+        call SaveInteger(hs, GetHandleId(c), SH_SKILL_Q, 1)
+        call MyFlush(GetHandleId(c), SH_SKILL_Q, 0, 3)
         endif
     endfunction
     function TomiokaW_Start takes unit c, real x, real y returns nothing
         call TomiokaPass_Start(c)
         call TomiokaW_KS.TomiokaW_Start( c, x, y )
         if GetHeroLevel(c)>=0 then 
-        call SaveInteger(hs, GetHandleId(c), StringHash("skill w"), 1)
-        call MyFlush(GetHandleId(c), StringHash("skill w"), 0, 3)
+        call SaveInteger(hs, GetHandleId(c), SH_SKILL_W, 1)
+        call MyFlush(GetHandleId(c), SH_SKILL_W, 0, 3)
         endif
     endfunction
     function TomiokaE_Start takes unit c, unit td returns nothing
@@ -1205,6 +1240,47 @@ library TomiokaSpells uses GearSystems
         call TomiokaPass_Start(c)
         call TomiokaF_KS.TomiokaF_Start( c)
     endfunction
+
+    private struct TomiokaTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TomiokaTick_Active[0] then
+                call TomiokaQ_KS.Loop_TomiokaQ()
+            endif
+            if TomiokaTick_Active[1] then
+                call TomiokaW_KS.Loop_TomiokaW()
+            endif
+            if TomiokaTick_Active[2] then
+                call TomiokaE_KS.Loop_TomiokaE()
+            endif
+            if TomiokaTick_Active[3] then
+                call TomiokaR_KS.Loop_TomiokaR()
+            endif
+            if TomiokaTick_Active[4] then
+                call TomiokaT_KS.Loop_TomiokaT()
+            endif
+            if TomiokaTick_Active[5] then
+                call TomiokaF_KS.Loop_TomiokaF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TomiokaTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct TomiokaTick10_Loop extends array
+        static method Loop takes nothing returns nothing
+            if TomiokaTick10_Active[0] then
+                call TomiokaG_KS.Loop_TomiokaG()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set TomiokaTick10_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

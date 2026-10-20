@@ -64,7 +64,7 @@ def root_names(table, suffix):
 
 def classification(path, table):
     caller, native = path[-2:]
-    if native == 'TriggerExecute' and (caller == 'WUI_OnReady' or re.fullmatch(r'WOSUI_+WUI_Bootstrap', caller)):
+    if native == 'TriggerExecute' and (caller == 'WUI_OnReady' or re.fullmatch(r'WOSUI_+WUI_(Bootstrap|DrainReadyStep)', caller)):
         return 'shared UI startup allocation'
     if native == 'ExecuteFunc' and caller == 'PrepareNormalPick':
         targets = re.findall(r'ExecuteFunc\s*\(\s*"([^"]+)"\s*\)', table[caller])

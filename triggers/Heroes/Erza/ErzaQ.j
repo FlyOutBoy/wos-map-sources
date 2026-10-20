@@ -1,5 +1,71 @@
 library ErzaQSpells uses GearSystems, ErzaTSpells
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer ErzaQTick05_Timer = CreateTimer()
+        private boolean array ErzaQTick05_Active
+        private integer ErzaQTick05_Users = 0
+        private code ErzaQTick05_Callback = null
+    endglobals
+
+    private function ErzaQTick05_On takes integer k returns nothing
+        if not ErzaQTick05_Active[k] then
+            set ErzaQTick05_Active[k] = true
+            set ErzaQTick05_Users = ErzaQTick05_Users + 1
+            if ErzaQTick05_Users == 1 then
+                call TimerStart(ErzaQTick05_Timer, 0.05, true, ErzaQTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaQTick05_Off takes integer k returns nothing
+        if ErzaQTick05_Active[k] then
+            set ErzaQTick05_Active[k] = false
+            set ErzaQTick05_Users = ErzaQTick05_Users - 1
+            if ErzaQTick05_Users <= 0 then
+                set ErzaQTick05_Users = 0
+                call PauseTimer(ErzaQTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer ErzaQTick_Timer = CreateTimer()
+        private boolean array ErzaQTick_Active
+        private integer ErzaQTick_Users = 0
+        private code ErzaQTick_Callback = null
+    endglobals
+
+    private function ErzaQTick_On takes integer k returns nothing
+        if not ErzaQTick_Active[k] then
+            set ErzaQTick_Active[k] = true
+            set ErzaQTick_Users = ErzaQTick_Users + 1
+            if ErzaQTick_Users == 1 then
+                call TimerStart(ErzaQTick_Timer, 0.03, true, ErzaQTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaQTick_Off takes integer k returns nothing
+        if ErzaQTick_Active[k] then
+            set ErzaQTick_Active[k] = false
+            set ErzaQTick_Users = ErzaQTick_Users - 1
+            if ErzaQTick_Users <= 0 then
+                set ErzaQTick_Users = 0
+                call PauseTimer(ErzaQTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_FIRE_ARMOR_PAS = StringHash("fire armor pas")
+        private integer SH_FIRE_ARMOR_PAS_CD = StringHash("fire armor pas cd")
+        private integer SH_FIRE_X = StringHash("fire x")
+        private integer SH_FIRE_Y = StringHash("fire y")
+        private integer SH_Q_ARMOR_ACTIVE = StringHash("q armor active")
+    endglobals
+    globals
 //---------------Q ability-----------------------------------------------------
         integer Erza1Q_ID = 'A032'
         real Erza1Q_DamageAgiBase = 1  // base number x Agi damage for 1 level
@@ -42,7 +108,6 @@ library ErzaQSpells uses GearSystems, ErzaTSpells
     
 
     private struct ErzaPas_KS
-        private static timer t_ErzaE2 = CreateTimer( )
         private static integer array m_ErzaE2
         private static integer MUI_ErzaE2 = -1
         unit c
@@ -58,7 +123,7 @@ library ErzaQSpells uses GearSystems, ErzaTSpells
         real r
         effect e
         real rmax
-        private static method Loop_ErzaE2 takes nothing returns nothing
+        static method Loop_ErzaE2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -73,7 +138,9 @@ library ErzaQSpells uses GearSystems, ErzaTSpells
                         set u = FirstOfGroup(g)
                         exitwhen u == null
                         if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                            call DamageSource('A034')
                             call dmgmag(c, u, dmg)
+                            call DamageSource('A034')
                             call ErzaPassive(c, u, 1)
                             call GroupAddUnit(g2, u)
                         endif
@@ -88,8 +155,9 @@ library ErzaQSpells uses GearSystems, ErzaTSpells
                     set u = null
                     set m_ErzaE2[i] = m_ErzaE2[MUI_ErzaE2]
                     set MUI_ErzaE2 = MUI_ErzaE2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE2 == -1 then
-                        call PauseTimer( t_ErzaE2 )
+                        call ErzaQTick_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -121,23 +189,22 @@ library ErzaQSpells uses GearSystems, ErzaTSpells
             set u = null
             set rmax = 0.54
             if MUI_ErzaE2 == 0 then
-                call TimerStart( t_ErzaE2, 0.03, true, function thistype.Loop_ErzaE2 )
+                call ErzaQTick_On(0)
             endif
         endmethod
     endstruct
 function ErzaEPas takes unit c, real x , real y returns nothing
         local real cd = Erza1E_CD_TIME_Base - (Erza1E_CD_TIME_Step * (GetUnitAbilityLevel(c, Erza1Q_ID) - 1))
         if GetHeroLevel(c)>= 6 then 
-            if LoadInteger(hs, GetHandleId(c), StringHash("fire armor pas")) == 1 then
-                call SaveInteger(hs, GetHandleId(c), StringHash("fire armor pas"), 0)
-                call SaveInteger(hs, GetHandleId(c), StringHash("fire armor pas cd"), 999)
-                call MyFlush(GetHandleId(c), StringHash("fire armor pas cd"), 0, cd)
+            if LoadInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS) == 1 then
+                call SaveInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS, 0)
+                call SaveInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS_CD, 999)
+                call MyFlush(GetHandleId(c), SH_FIRE_ARMOR_PAS_CD, 0, cd)
                 call ErzaPas_KS.ErzaPas_Start(c, x, y)
             endif
         endif    
     endfunction
     private struct ErzaQ_KS
-        private static timer t_ErzaQ = CreateTimer( )
         private static integer array m_ErzaQ
         private static integer MUI_ErzaQ = -1
         unit c
@@ -153,7 +220,7 @@ function ErzaEPas takes unit c, real x , real y returns nothing
         real r
         real a
         real rmax
-        private static method Loop_ErzaQ takes nothing returns nothing
+        static method Loop_ErzaQ takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -205,6 +272,7 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_fantasybattle (1650).mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 0.75, 4, 155))
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
+                                    call DamageSource('A032')
                                     call dmgphys(c, u, dmg)
                                   //  call ErzaPassive(c, u, 1)
                                 endif
@@ -221,8 +289,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                     set u = null
                     set m_ErzaQ[i] = m_ErzaQ[MUI_ErzaQ]
                     set MUI_ErzaQ = MUI_ErzaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaQ == -1 then
-                        call PauseTimer( t_ErzaQ )
+                        call ErzaQTick_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -253,13 +322,12 @@ function ErzaEPas takes unit c, real x , real y returns nothing
             call SetUnitAnimationByIndex(c, 4)
             call MakeSound("war3mapImported\\Hero_Erza1_Q")
             if MUI_ErzaQ == 0 then
-                call TimerStart( t_ErzaQ, 0.03, true, function thistype.Loop_ErzaQ )
+                call ErzaQTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct ErzaW_KS
-        private static timer t_ErzaW = CreateTimer( )
         private static integer array m_ErzaW
         private static integer MUI_ErzaW = -1
         unit c
@@ -277,7 +345,7 @@ function ErzaEPas takes unit c, real x , real y returns nothing
         real r
         real a
         real rmax
-        private static method Loop_ErzaW takes nothing returns nothing
+        static method Loop_ErzaW takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -309,7 +377,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A033')
                                 call dmgphys(c, u, dmg)
+                                call DamageSource('A033')
                                 call ErzaPassive(c, u, 1)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -324,8 +394,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                     set u = null
                     set m_ErzaW[i] = m_ErzaW[MUI_ErzaW]
                     set MUI_ErzaW = MUI_ErzaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaW == -1 then
-                        call PauseTimer( t_ErzaW )
+                        call ErzaQTick_Off(2)
                     endif
                     call destroy( )
                 endif
@@ -361,28 +432,27 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                 call MakeSound("war3mapImported\\Hero_Erza1_W2")
             endif
             if MUI_ErzaW == 0 then
-                call TimerStart( t_ErzaW, 0.03, true, function thistype.Loop_ErzaW )
+                call ErzaQTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct ErzaE_KS
-        private static timer t_ErzaE = CreateTimer( )
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
         unit c
         effect e
-        private static method Loop_ErzaE takes nothing returns nothing
+        static method Loop_ErzaE takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaE
                 set this = m_ErzaE[i]
-                if SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(c), StringHash("q armor active")) == 1 then
-                    if LoadInteger(hs, GetHandleId(c), StringHash("fire armor pas")) == 0 and LoadInteger(hs, GetHandleId(c), StringHash("fire armor pas cd")) == 0 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("fire armor pas"), 1)
+                if SpellBoolCaster(c) and LoadInteger(hs, GetHandleId(c), SH_Q_ARMOR_ACTIVE) == 1 then
+                    if LoadInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS) == 0 and LoadInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS_CD) == 0 then
+                        call SaveInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS, 1)
                         set e = AddSpecialEffectTarget("war3mapImported\\wos_buff_fire_big2.mdx", c, "weapon")
-                    elseif LoadInteger(hs, GetHandleId(c), StringHash("fire armor pas")) == 0 then
+                    elseif LoadInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS) == 0 then
                         if e != null then
                             call DestroyEffect(e)
                             set e = null
@@ -394,8 +464,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                     set e = null
                     set m_ErzaE[i] = m_ErzaE[MUI_ErzaE]
                     set MUI_ErzaE = MUI_ErzaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE == -1 then
-                        call PauseTimer( t_ErzaE )
+                        call ErzaQTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -407,17 +478,16 @@ function ErzaEPas takes unit c, real x , real y returns nothing
             set MUI_ErzaE = MUI_ErzaE + 1
             set m_ErzaE[MUI_ErzaE] = this
             set c = NewC
-            if LoadInteger(hs, GetHandleId(c), StringHash("fire armor pas")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_FIRE_ARMOR_PAS) == 1 then
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_buff_fire_big2.mdx", c, "weapon")
             endif
             if MUI_ErzaE == 0 then
-                call TimerStart( t_ErzaE, 0.05, true, function thistype.Loop_ErzaE )
+                call ErzaQTick05_On(0)
             endif
         endmethod
     endstruct
 
     private struct ErzaR_KS
-        private static timer t_ErzaR = CreateTimer( )
         private static integer array m_ErzaR
         private static integer MUI_ErzaR = -1
         unit c
@@ -433,12 +503,13 @@ function ErzaEPas takes unit c, real x , real y returns nothing
         effect e
         real a
         real rmax
-        private static method Loop_ErzaR takes nothing returns nothing
+        static method Loop_ErzaR takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaR
                 set this = m_ErzaR[i]
+                call WUI_HeroProgress(c, Erza1R_ID, "Flame Area", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.05
                     if r == 0.35 or r == 0.45 or r == 0.55 then
@@ -455,8 +526,8 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                         set r2 = 10
                         call VisionTimed(GetOwningPlayer(c), x , y , 1200, rmax+2)
                         call MakeSound("war3mapImported\\Hero_Erza1_R2")
-                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire x"), x)
-                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire y"), y)
+                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_X, x)
+                        call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_Y, y)
                         set e = EffectSpawn("war3mapImported\\wos_muramasa1.mdx", x, y, GetRandomReal(0, 359), 1.35, 1.35, 0)
                         call StopSpellUnit2(c)
                     endif
@@ -481,7 +552,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A035')
                                 call dmgmag(c, u, dmg)
+                                call DamageSource('A035')
                                 call ErzaPassive(c, u, 1)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -495,8 +568,8 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                         set ErzaElementalFireDummy = null
                     endif
                     call DestroyEffect(e)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire x"), 0)
-                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire y"), 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_X, 0)
+                    call SaveReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_Y, 0)
                     if r < 0.5 then
                         call StopSpellUnit(c)
                     endif
@@ -507,8 +580,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                     set u = null
                     set m_ErzaR[i] = m_ErzaR[MUI_ErzaR]
                     set MUI_ErzaR = MUI_ErzaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR == -1 then
-                        call PauseTimer( t_ErzaR )
+                        call ErzaQTick05_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -541,13 +615,12 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                 call MakeSound("war3mapImported\\Hero_Erza1_R3")
             endif
             if MUI_ErzaR == 0 then
-                call TimerStart( t_ErzaR, 0.05, true, function thistype.Loop_ErzaR )
+                call ErzaQTick05_On(1)
             endif
         endmethod
     endstruct
 
     private struct ErzaT_KS
-        private static timer t_ErzaT = CreateTimer( )
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
         unit c
@@ -571,7 +644,7 @@ function ErzaEPas takes unit c, real x , real y returns nothing
         effect e3
         real a
         real rmax
-        private static method Loop_ErzaT takes nothing returns nothing
+        static method Loop_ErzaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -618,7 +691,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A036')
                                     call dmgmag(c, u, dmg)
+                                    call DamageSource('A036')
                                     call ErzaPassive(c, u, 1)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -648,7 +723,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                                call DamageSource('A036')
                                 call dmgmag(c, u, dmg2)
+                                call DamageSource('A036')
                                 call ErzaPassive(c, u, 1)
                                 call GroupAddUnit(g2, u)
                             endif
@@ -675,8 +752,9 @@ function ErzaEPas takes unit c, real x , real y returns nothing
                     set u = null
                     set m_ErzaT[i] = m_ErzaT[MUI_ErzaT]
                     set MUI_ErzaT = MUI_ErzaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaT == -1 then
-                        call PauseTimer( t_ErzaT )
+                        call ErzaQTick_Off(3)
                     endif
                     call destroy( )
                 endif
@@ -707,15 +785,15 @@ function ErzaEPas takes unit c, real x , real y returns nothing
             call SetUnitTimeScale(c, 0.65)
             call SetUnitAnimationByIndex(c, 1)
             call MakeSound("war3mapImported\\Hero_Erza1_T")
-            set x1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire x"))
-            set y1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire y"))
+            set x1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_X)
+            set y1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_Y)
             if SR3(c, x1, y1) <= Erza1R_DamageAoe and x1 != 0 then
                 set k2 = 1
             else
                 set k2 = 0
             endif
             if MUI_ErzaT == 0 then
-                call TimerStart( t_ErzaT, 0.03, true, function thistype.Loop_ErzaT )
+                call ErzaQTick_On(3)
             endif
         endmethod
     endstruct
@@ -746,6 +824,44 @@ function ErzaEPas takes unit c, real x , real y returns nothing
         call ErzaT_KS.ErzaT_Start( c, td)
     endfunction
    
+
+    private struct ErzaQTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaQTick_Active[0] then
+                call ErzaPas_KS.Loop_ErzaE2()
+            endif
+            if ErzaQTick_Active[1] then
+                call ErzaQ_KS.Loop_ErzaQ()
+            endif
+            if ErzaQTick_Active[2] then
+                call ErzaW_KS.Loop_ErzaW()
+            endif
+            if ErzaQTick_Active[3] then
+                call ErzaT_KS.Loop_ErzaT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaQTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaQTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaQTick05_Active[0] then
+                call ErzaE_KS.Loop_ErzaE()
+            endif
+            if ErzaQTick05_Active[1] then
+                call ErzaR_KS.Loop_ErzaR()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaQTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

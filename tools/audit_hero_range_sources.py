@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def audit():
-    rules=(ROOT/'test_map/ability_range/HeroRangeRules.j').read_text(encoding='utf-8-sig')
+    rules=(ROOT/'triggers/WOS_Start/UniversalTooltips.j').read_text(encoding='utf-8-sig')
     heroes=[];mutations=[];native=[]
     files=sorted((ROOT/'triggers/Heroes').rglob('*.j'))
     for p in files:

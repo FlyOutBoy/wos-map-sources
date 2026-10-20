@@ -1,5 +1,10 @@
 library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSystems2, AAADest, TasAbilityChargeBox
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_CAST_R = StringHash("cast r")
+        private integer SH_STOP_R = StringHash("stop r")
+    endglobals
+    globals
 //================================ Crocodile Core ========================================
         integer Crocodile_ID = 'H02M'
         private constant integer CrocodileCore_DataKey = 0
@@ -28,6 +33,12 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         integer CrocodileSand_Alpha = 128
         private constant real CrocodileSand_TrackPeriod = 0.15
         private group CrocodileSand_ScanGroup = null
+        // Spatial grid: each sand is listed in every 512x512 cell its box touches,
+        // so point queries read one short cell list instead of every sand.
+        private constant real CrocodileSand_Cell = 512.0
+        private hashtable CrocodileSand_Grid = InitHashtable()
+        private rect CrocodileSand_ScanRect = null
+        private real CrocodileSand_PulseClock = 0.0
         constant real CrocodileSand_MinDistance = 180.0
         integer CrocodileSand_Slow = 10
         integer CrocodileSand_SlowLevel25 = 20
@@ -43,6 +54,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         integer CrocodileQ_GroundSandCount = 8
         real CrocodileQ_GroundSandAoe = 255.0
         real CrocodileQ_Move = 75.0
+        real CrocodileQ_DamageEndPadding = 200.0 // Cover the visible end of the slash.
         real CrocodileQ_Distance = 1655.0
         real CrocodileQ_CastTime = 0.42
         real CrocodileQ_PauseTime = 0.54
@@ -52,9 +64,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileQ_EffectStopDistance = 550.0
         real CrocodileQ_ExplosionSpacing = 350.0
         real CrocodileQ_ScanOverlap = 5.0 // AoE 300 -> scan every 295 distance.
-        real CrocodileQ_Aoe = 255.0
+        real CrocodileQ_Aoe = 285.0
         real CrocodileQ_DamageAgiBase = 1.0
         real CrocodileQ_DamageAgiStep = 1.0
+        real CrocodileQ_DamageStatic = 150.0 // Flat physical damage added at every level.
         integer CrocodileQ_Slow = 30
         integer CrocodileQ_SharedMarkHeroLevel = 35
         real CrocodileQ_PullDistance = 55.0
@@ -73,7 +86,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileW_CastTime = 0.45
         integer CrocodileW_Hits = 6
         real CrocodileW_Aoe = 600.0
-        real CrocodileW_PullSpeed = 187.5
+        real CrocodileW_PullSpeed = 210
         real CrocodileW_EdgePullMultiplier = 0.50
         real CrocodileW_DecorDamage = 20.0
         real CrocodileW_DecorPeriod = 1.0
@@ -87,22 +100,22 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 //================================ Crocodile E ========================================
         integer CrocodileE_ID = 'A0I9'
         private constant integer CrocodileE_DataKey = 1
-        real CrocodileE_Distance = 750.0
-        real CrocodileE_Duration = 0.24
-        real CrocodileE_MoveDelay = 0.09
+        real CrocodileE_Distance = 850.0
+        real CrocodileE_Duration = 0.21
+        real CrocodileE_MoveDelay = 0.03
         real CrocodileE_AnimationSpeed = 0.46
         real CrocodileE_SlashScale = 0.4025
         real CrocodileE_Aoe = 375.0
         real CrocodileE_SandAoe = 515.0 // Previous E sand radius 415 + 100.
-        real CrocodileE_HitDelay = 0.12
+        real CrocodileE_HitDelay = 0.09
         integer CrocodileE_HitTicks = 5
         real CrocodileE_HitOffset = 150.0
         real CrocodileE_HitAnimationSpeed = 0.01
         real CrocodileE_HitSlowTime = 0.51 // Seconds from cast start; affects animation only during E damage.
-        real CrocodileE_DamageAgiBase = 2.0
-        real CrocodileE_DamageAgiStep = 0.5
+        real CrocodileE_DamageAgiBase = 1.25
+        real CrocodileE_DamageAgiStep = 0.25
         integer CrocodileE_ThirdChargeHeroLevel = 25
-        real CrocodileE_UseCD = 1.5
+        real CrocodileE_UseCD = 2
         integer CrocodileE_Slow = 35
         integer CrocodileE_Animation = 2
 
@@ -111,11 +124,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileR_Speed = 750.0
         real CrocodileR_SandSpacing = 100.0
         real CrocodileR_Duration = 2.5
-        real CrocodileR_StartScale = 0.10
-        real CrocodileR_EndScale = 0.85
+        real CrocodileR_StartScale = 0.15
+        real CrocodileR_EndScale = 0.95
         real CrocodileR_CastTime = 0.45
         real CrocodileR_StartAoe = 200.0
-        real CrocodileR_EndAoe = 400.0
+        real CrocodileR_EndAoe = 475.0
         real CrocodileR_DamageAgi = 0.5
         real CrocodileR_DamageStep = 0.2
         integer CrocodileR_Hits = 6
@@ -134,7 +147,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileWR_ComboEffectScale = 1.0
         real CrocodileWR_ComboEffectHeight = 30.0
         real CrocodileWR_ComboEffectPeriod = 0.12
-        real CrocodileWR_DurationBonus = 1.0
+        real CrocodileWR_DurationBonus = 1.5
         integer CrocodileSandColorR = 255
         integer CrocodileSandColorG = 205
         integer CrocodileSandColorB = 120
@@ -147,9 +160,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileT_Duration = 4.0
         real CrocodileT_ManaDrain = 0.08
         real CrocodileT_ManaDrainPeriod = 1.0
-        integer CrocodileT_InvulnerabilityHeroLevel = 35
-        real CrocodileT_DamageReduction = 0.20
-        real CrocodileT_MaxAoe = 1700.0
+        integer CrocodileT_DamageReductionHeroLevel = 35
+        real CrocodileT_DamageReduction = 0.35
+        real CrocodileT_DamageReduction35 = 0.70 // replaces the old Lv.35 invulnerability
+        real CrocodileT_MaxAoe = 1900.0
         real CrocodileT_RingSpacing = 475.0
         real CrocodileT_PatchSpacing = 475.0
         real CrocodileT_MinDistance = 180.0
@@ -179,7 +193,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileT2_UnlockTime = 1.0
         real CrocodileT2_CheckPeriod = 0.1
         real CrocodileT2_Window = 10.0
-        real CrocodileT2_DamageAgi = 11.0
+        real CrocodileT2_DamageAgi = 10.0
         real CrocodileT2_MergeDistance = 450.0
         integer CrocodileT2_MergeMaxPatches = 32
         real CrocodileT2_ExplosionBaseRadius = 50.0
@@ -202,9 +216,9 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         private constant integer CrocodileF_DataKey = 2
         integer CrocodileF_MaxStacks = 3
         integer CrocodileF_MinHeroLevel = 12
-        real CrocodileF_Range = 800.0
+        real CrocodileF_Range = 900.0
         real CrocodileF_AttackSpeed = 3.0
-        real CrocodileF_DamageAgi = 2.0
+        real CrocodileF_DamageAgi = 1.5
         real CrocodileF_InternalCD = 2.0
         real CrocodileF_ProjectileSpeed = 2484.0 // Previous speed + 15%.
         real CrocodileF_BladeMoveDelay = 0.15
@@ -281,6 +295,71 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         effect e
         boolean endNow
         boolean largeVisual
+        integer gx0
+        integer gx1
+        integer gy0
+        integer gy1
+
+        static method CellOf takes real v returns integer
+            return R2I((v+65536.0)/CrocodileSand_Cell)
+        endmethod
+
+        // Box half-size >= MinDistance keeps the spacing query on one cell too.
+        method GridAdd takes nothing returns nothing
+            local real half = RMaxBJ(radius,CrocodileSand_MinDistance)
+            local integer cx
+            local integer cy
+            local integer key
+            local integer n
+            set gx0 = CellOf(x-half)
+            set gx1 = CellOf(x+half)
+            set gy0 = CellOf(y-half)
+            set gy1 = CellOf(y+half)
+            set cx = gx0
+            loop
+                exitwhen cx > gx1
+                set cy = gy0
+                loop
+                    exitwhen cy > gy1
+                    set key = cx*512+cy
+                    set n = LoadInteger(CrocodileSand_Grid,key,0)+1
+                    call SaveInteger(CrocodileSand_Grid,key,0,n)
+                    call SaveInteger(CrocodileSand_Grid,key,n,this)
+                    set cy = cy+1
+                endloop
+                set cx = cx+1
+            endloop
+        endmethod
+
+        method GridRemove takes nothing returns nothing
+            local integer cx = gx0
+            local integer cy
+            local integer key
+            local integer n
+            local integer j
+            loop
+                exitwhen cx > gx1
+                set cy = gy0
+                loop
+                    exitwhen cy > gy1
+                    set key = cx*512+cy
+                    set n = LoadInteger(CrocodileSand_Grid,key,0)
+                    set j = 1
+                    loop
+                        exitwhen j > n
+                        if LoadInteger(CrocodileSand_Grid,key,j) == this then
+                            call SaveInteger(CrocodileSand_Grid,key,j,LoadInteger(CrocodileSand_Grid,key,n))
+                            call RemoveSavedInteger(CrocodileSand_Grid,key,n)
+                            call SaveInteger(CrocodileSand_Grid,key,0,n-1)
+                            exitwhen true
+                        endif
+                        set j = j+1
+                    endloop
+                    set cy = cy+1
+                endloop
+                set cx = cx+1
+            endloop
+        endmethod
 
         method CrocodileSand_CreateVisual takes nothing returns nothing
             set largeVisual = radius >= CrocodileSand_LargeAoe
@@ -291,15 +370,17 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 
 
         static method CrocodileSand_IsOnGround takes unit u, unit source returns boolean
-            local integer i = 0
             local thistype this
             local real px = GetUnitX(u)
             local real py = GetUnitY(u)
             local real dx
             local real dy
+            local integer key = CellOf(px)*512+CellOf(py)
+            local integer n = LoadInteger(CrocodileSand_Grid,key,0)
+            local integer i = 1
             loop
-                exitwhen i > MUI
-                set this = m[i]
+                exitwhen i > n
+                set this = LoadInteger(CrocodileSand_Grid,key,i)
                 if (source == null or c == source) and not endNow and r < rmax then
                     set dx = px-x
                     set dy = py-y
@@ -312,34 +393,90 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             return false
         endmethod
 
-        static method Loop_CrocodileSand takes nothing returns nothing
+        // Every 0.5 sec: ONE enumeration over the box of all live sand, then each unit
+        // reads only its own grid cell (was one GroupEnum per sand patch).
+        static method CrocodileSand_Pulse takes nothing returns nothing
             local integer i = 0
             local thistype this
             local unit u
+            local unit lastOwner
+            local real minX = 1000000.0
+            local real minY = 1000000.0
+            local real maxX = -1000000.0
+            local real maxY = -1000000.0
+            local real dx
+            local real dy
+            local integer key
+            local integer n
+            loop
+                exitwhen i > MUI
+                set this = m[i]
+                if not endNow and r < rmax then
+                    set minX = RMinBJ(minX,x-radius)
+                    set minY = RMinBJ(minY,y-radius)
+                    set maxX = RMaxBJ(maxX,x+radius)
+                    set maxY = RMaxBJ(maxY,y+radius)
+                endif
+                set i = i+1
+            endloop
+            if minX > maxX then
+                return
+            endif
+            if CrocodileSand_ScanRect == null then
+                set CrocodileSand_ScanRect = Rect(minX,minY,maxX,maxY)
+            else
+                call SetRect(CrocodileSand_ScanRect,minX,minY,maxX,maxY)
+            endif
+            if CrocodileSand_ScanGroup == null then
+                set CrocodileSand_ScanGroup = CreateGroup()
+            endif
+            call GroupEnumUnitsInRect(CrocodileSand_ScanGroup,CrocodileSand_ScanRect,NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(CrocodileSand_ScanGroup)
+                exitwhen u == null
+                call GroupRemoveUnit(CrocodileSand_ScanGroup,u)
+                if SpellBool(u) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) then
+                    set key = CellOf(GetUnitX(u))*512+CellOf(GetUnitY(u))
+                    set n = LoadInteger(CrocodileSand_Grid,key,0)
+                    set lastOwner = null
+                    set i = 1
+                    loop
+                        exitwhen i > n
+                        set this = LoadInteger(CrocodileSand_Grid,key,i)
+                        if c != lastOwner and not endNow and r < rmax and IsUnitEnemy(u,GetOwningPlayer(c)) then
+                            set dx = GetUnitX(u)-x
+                            set dy = GetUnitY(u)-y
+                            if dx*dx+dy*dy <= radius*radius then
+                                // One slow per owner per pulse, however many patches overlap.
+                                call CrocodileSand_SlowTarget(c,u)
+                                set lastOwner = c
+                            endif
+                        endif
+                        set i = i+1
+                    endloop
+                endif
+            endloop
+            set u = null
+            set lastOwner = null
+        endmethod
+
+        static method Loop_CrocodileSand takes nothing returns nothing
+            local integer i = 0
+            local thistype this
+            set CrocodileSand_PulseClock = CrocodileSand_PulseClock + CrocodilePeriod
+            if CrocodileSand_PulseClock + 0.001 >= 0.5 then
+                set CrocodileSand_PulseClock = 0.0
+                call CrocodileSand_Pulse()
+            endif
             loop
                 exitwhen i > MUI
                 set this = m[i]
                 set r = RoundReal(r+CrocodilePeriod,3)
-                set pulse = pulse + CrocodilePeriod
-                if not endNow and r < rmax and pulse + 0.001 >= 0.5 then
-                    set pulse = 0.0
-                    if CrocodileSand_ScanGroup == null then
-                        set CrocodileSand_ScanGroup = CreateGroup()
-                    endif
-                    call GroupEnumUnitsInRange(CrocodileSand_ScanGroup,x,y,radius,NoDecor_Cond)
-                    loop
-                        set u = FirstOfGroup(CrocodileSand_ScanGroup)
-                        exitwhen u == null
-                        call GroupRemoveUnit(CrocodileSand_ScanGroup,u)
-                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
-                            call CrocodileSand_SlowTarget(c,u)
-                        endif
-                    endloop
-                endif
                 if endNow or r + 0.001 >= rmax or GetUnitTypeId(c) == 0 or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
                     if e != null then
                         call ColorEffDummy3(e,0.0,255,255,255,CrocodileSand_FadeTime)
                     endif
+                    call GridRemove()
                     set c = null
                     set e = null
                     set m[i] = m[MUI]
@@ -350,29 +487,35 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             call DestroyGroup(CrocodileSand_ScanGroup)
                             set CrocodileSand_ScanGroup = null
                         endif
+                        set CrocodileSand_PulseClock = 0.0
                         call GearTimer03Release()
                     endif
                 else
                     set i = i + 1
                 endif
             endloop
-            set u = null
         endmethod
 
         static method CrocodileSand_Start takes unit NewC, real NewX, real NewY, real NewAoe, boolean qHit returns nothing
-            local integer i = 0
+            local integer key = CellOf(NewX)*512+CellOf(NewY)
+            local integer n = LoadInteger(CrocodileSand_Grid,key,0)
+            local integer i = 1
             local thistype this
             local real dx
             local real dy
             loop
-                exitwhen i > MUI
-                set this = m[i]
+                exitwhen i > n
+                set this = LoadInteger(CrocodileSand_Grid,key,i)
                 set dx = x-NewX
                 set dy = y-NewY
                 if not endNow and r < rmax and dx*dx+dy*dy+0.001 < CrocodileSand_MinDistance*CrocodileSand_MinDistance then
                     // All existing sand objects enforce spacing. Only refresh our own.
                     if c == NewC and not qHit then
-                        set radius = RMaxBJ(radius,NewAoe)
+                        if NewAoe > radius then
+                            call GridRemove()
+                            set radius = NewAoe
+                            call GridAdd()
+                        endif
                         set r = 0.0
                         set rmax = CrocodileSand_GroundDuration
                         set largeVisual = radius >= CrocodileSand_LargeAoe
@@ -396,6 +539,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set pulse = 0.0
             set endNow = false
             set rmax = CrocodileSand_GroundDuration
+            call GridAdd()
             call CrocodileSand_CreateVisual()
         endmethod
 
@@ -722,6 +866,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             local real py
             local real amount
             local real section
+            local real damageDistance
             local CrocodileQ_Trail trail
             local boolean removeNow
             loop
@@ -804,11 +949,12 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             
             call MakeSound("war3mapImported\\Hero_Crocodile_Q3")
 //---------------- Q damage: independent of VFX count; same AoE scan step -----
-                            call CrocodileQ_ExplosionDecor.CrocodileQExplosionDecor_Start(c,startX,startY,a,distance,radius,scanStep)
+                            set damageDistance = distance + CrocodileQ_DamageEndPadding
+                            call CrocodileQ_ExplosionDecor.CrocodileQExplosionDecor_Start(c,startX,startY,a,damageDistance,radius,scanStep)
                             set amount = 0.0
                             loop
-                                exitwhen amount >= distance
-                                set section = RMinBJ(scanStep,distance-amount)
+                                exitwhen amount >= damageDistance
+                                set section = RMinBJ(scanStep,damageDistance-amount)
                                 call GroupEnumUnitsInRange(g,startX+(amount+section/2)*Cos(a),startY+(amount+section/2)*Sin(a),radius+section/2,NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
@@ -824,6 +970,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                                             call CrocodileQ_HitSand(u)
                                             call SlowUnit(c,u,CrocodileQ_Slow,2)
                                         endif
+                                        call DamageSource('A0I7')
                                         call dmgphys(c,u,dmg)
                                     endif
                                 endloop
@@ -906,7 +1053,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set decorKey = CrocodileDecor_NewKey()
             set radius = CrocodileQ_Aoe
             set scanStep = RMaxBJ(1.0,radius-CrocodileQ_ScanOverlap)
-            set dmg = GetHeroAgi(c,true)*(CrocodileQ_DamageAgiBase+CrocodileQ_DamageAgiStep*(GetUnitAbilityLevel(c,CrocodileQ_ID)-1))
+            set dmg = GetHeroAgi(c,true)*(CrocodileQ_DamageAgiBase+CrocodileQ_DamageAgiStep*(GetUnitAbilityLevel(c,CrocodileQ_ID)-1))+CrocodileQ_DamageStatic
             set r = 0.0
             // At least 3 sec; large distance/slow movement gets a longer deadline.
             set rmax = RMaxBJ(CrocodileQ_DebugTime,CrocodileQ_CastTime+maxDistance/move*CrocodilePeriod+1.0)
@@ -974,6 +1121,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 exitwhen u == null
                 call GroupRemoveUnit(g,u)
                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) then
+                    call DamageSource('A0I8')
                     call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi,manaKey)
                     call Crocodile_ApplySharedMark(c,u)
                     call GroupAddUnit(pullGroup,u)
@@ -1079,6 +1227,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             exitwhen u == null
                             call GroupRemoveUnit(g,u)
                             if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) then
+                                call DamageSource('A0I8')
                                 call Crocodile_SpellDamage(c,u,dmg,manaKey)
                                 call Crocodile_ApplySharedMark(c,u)
                                 call SlowUnit(c,u,CrocodileW_Slow,2)
@@ -1263,7 +1412,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             call FlushChildHashtable(CrocodileDecorHits,decorKey)
             if castPauseHeld then
                 set castPauseHeld = false
-                call StopSpellUnit(c)
+                call StopSpellUnit2(c)
             endif
             if LoadInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey) == 0 then
                 call SetUnitTimeScale(c,1.0)
@@ -1294,6 +1443,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 exitwhen u == null or cancelDash or not SpellBoolCaster(c)
                 call GroupRemoveUnit(g,u)
                 if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) then
+                    call DamageSource('A0I9')
                     call dmgphys(c,u,pulseDamage)
                     call SlowUnit(c,u,CrocodileE_Slow,2)
                     call DestroyEffect(AddSpecialEffectTarget("Units\\Critters\\Albatross\\Albatross.mdl",u,"chest"))
@@ -1597,7 +1747,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set e2 = null
             set e3 = null
             set castPauseHeld = true
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
 //---------------- E effect --------------------------------------------------
             //set e = AddSpecialEffectTarget("war3mapImported\\wos_Death_Spell2.mdl",c,"hand right")
             set e = AddSpecialEffectTarget("war3mapImported\\wos_[DoFT]CrocodileSandSekiro.mdl",c,"hand right")
@@ -1747,7 +1897,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 set damageTick = hits < maxHits and r+0.001 >= (hits+1)*baseDuration/maxHits
                 if castPauseHeld and (r + 0.001 >= CrocodileR_CastTime or endNow or not SpellBoolCaster(c)) then
                     set castPauseHeld = false
-                    call StopSpellUnit2(c)
+                    call StopSpellUnit(c)
                 endif
                 if not endNow and SpellBoolCaster(c) and LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 then
                     set step = 0.0
@@ -1871,6 +2021,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             set targetY = y+radius*CrocodileR_OrbitRadius*Sin(angle)
                             call MoveUnit(u,RMinBJ(CrocodileR_PullSpeed*CrocodilePeriod,SR3(u,targetX,targetY)),Atan2(targetY-GetUnitY(u),targetX-GetUnitX(u)))
                             if damageTick then
+                                call DamageSource('A0IA')
                                 call dmgphys(c,u,dmg)
                                 call Crocodile_ApplySharedMark(c,u)
                             endif
@@ -1884,7 +2035,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 if endNow or r + 0.001 >= rmax or not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
                     if castPauseHeld then
                         set castPauseHeld = false
-                        call StopSpellUnit2(c)
+                        call StopSpellUnit(c)
                     endif
                     call CrocodileR_ReleaseAll()
                     call DestroyEffect(e)
@@ -1949,7 +2100,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set g = CreateGroup()
             set captured = 0
             set castPauseHeld = true
-            call StartSpellUnit2(c)
+            call StartSpellUnit(c)
             set endNow = false
 //---------------- R effect --------------------------------------------------
             set e = EffectSpawn("war3mapImported\\wos_file00000867.mdl",x,y,0,1,CrocodileR_StartScale,0)
@@ -2327,6 +2478,7 @@ endmethod
                 return
             endif
             set channelActive = false
+            call SaveBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL, false)
             if invulnerabilityHeld then
                 set invulnerabilityHeld = false
                 call UnitRemoveAbility(c,'Avul')
@@ -2335,8 +2487,8 @@ endmethod
             set endTime = r+windowTime
             call RemoveSavedInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey)
             // Asta E's generic active-cast marker; it is separate from CC immunity.
-            call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),0)
-            call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_CAST_R,0)
+            call SaveInteger(hs,GetHandleId(c),SH_STOP_R,0)
             call GearCCProtect(c,false)
             if manaGroup != null then
                 call DestroyGroup(manaGroup)
@@ -2436,6 +2588,7 @@ endmethod
                     set sand.pulse = 0.0
                     set sand.endNow = false
                     set sand.largeVisual = patch.radius >= CrocodileSand_LargeAoe
+                    call sand.GridAdd()
                     set sand.e = patch.e
                     set patch.e = null
                     call patch.destroy()
@@ -2463,6 +2616,11 @@ endmethod
             loop
                 exitwhen i > MUI
                 set this = m[i]
+                if channelActive then
+                    call WUI_HeroProgress(c, CrocodileT_ID, "Ground Secco", CrocodileT_Duration - r, CrocodileT_Duration, true)
+                elseif not t2Pending then
+                    call WUI_HeroProgress(c, CrocodileT_ID, "Ground Secco", endTime - r, windowTime, true)
+                endif
                 set r = RoundReal(r+CrocodilePeriod,3)
                 if not endNow then
                     if not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
@@ -2581,6 +2739,7 @@ endmethod
             set maxReach = 0.0
             set spreading = true
             set channelActive = true
+            call SaveBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL, true)
             set invulnerabilityHeld = false
             set spreadComplete = false
             set manaPulse = 0.0
@@ -2599,8 +2758,8 @@ endmethod
             set endNow = false
             call SaveInteger(CrocodileTable,GetHandleId(c),CrocodileT_DataKey,this)
             call SaveInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey,1)
-            call SaveInteger(hs,GetHandleId(c),StringHash("cast r"),1)
-            call SaveInteger(hs,GetHandleId(c),StringHash("stop r"),0)
+            call SaveInteger(hs,GetHandleId(c),SH_CAST_R,1)
+            call SaveInteger(hs,GetHandleId(c),SH_STOP_R,0)
             call GearCCProtect(c,true)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c),CrocodileT2_ID,false)
             set t2Timer = CreateTimer()
@@ -2609,10 +2768,6 @@ endmethod
             if dash != 0 and dash.active then
                 set dash.cancelDash = true
                 call dash.CrocodileE_Finish()
-            endif
-            if GetHeroLevel(c) >= CrocodileT_InvulnerabilityHeroLevel and GetUnitAbilityLevel(c,'Avul') == 0 then
-                set invulnerabilityHeld = true
-                call UnitAddAbility(c,'Avul')
             endif
             set aura = AddSpecialEffectTarget("war3mapImported\\wos_AjeelAura2.mdl",c,"origin")
             call SetUnitTimeScale(c,1.0)
@@ -2803,6 +2958,7 @@ endmethod
                 set u = FirstOfGroup(scan)
                 exitwhen u == null
                 call GroupRemoveUnit(scan,u)
+                call DamageSource('A0IC')
                 call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileT2_DamageAgi,-1)
                 call Crocodile_ApplySharedMark(c,u)
             endloop
@@ -2884,6 +3040,7 @@ endmethod
                 if SpellBool(u) and IsUnitEnemy(u,GetOwningPlayer(c)) and not IsUnitType(u,UNIT_TYPE_STRUCTURE) and not IsUnitInGroup(u,g2) and SR3(u,px,py) <= radius then
                     // A shared group covers all three blades: one 3x hit per enemy.
                     call GroupAddUnit(g2,u)
+                    call DamageSource('A0ID')
                     call dmgatk(c,u,dmg)
                 endif
             endloop
@@ -3028,6 +3185,7 @@ endmethod
         call MakeSound("war3mapImported\\Hero_Crocodile_F5")
 
         if SpellBool(target) and IsUnitEnemy(target,GetOwningPlayer(c)) and not IsUnitType(target,UNIT_TYPE_STRUCTURE) then
+            call DamageSource('A0ID')
             call dmgatk(c,target,GetHeroAgi(c,true)*CrocodileF_DamageAgi)
         endif
     endmethod
@@ -3456,9 +3614,23 @@ endstruct
         return LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) != 0 and not IsUnitIllusion(c)
     endfunction
 
+    globals
+        // The 0.03 listener is registered when a Crocodile hero is initialised.
+        private boolean Crocodile_ListenerOn = false
+    endglobals
+
+    private function Crocodile_Listener03 takes nothing returns boolean
+        call CrocodileCore_Struct.Loop_Crocodile()
+        return false
+    endfunction
+
     function Crocodile_InitializeHero takes unit c returns nothing
         if c == null or GetUnitTypeId(c) != Crocodile_ID or not IsUnitType(c,UNIT_TYPE_HERO) or IsUnitIllusion(c) then
             return
+        endif
+        if not Crocodile_ListenerOn then
+            set Crocodile_ListenerOn = true
+            call TriggerAddCondition(GearTimer03Listeners, Condition(function Crocodile_Listener03))
         endif
         if GetUnitAbilityLevel(c,CrocodileF_ID) == 0 then
             call UnitAddAbility(c,CrocodileF_ID)
@@ -3535,7 +3707,6 @@ endstruct
         local trigger finish = CreateTrigger()
         set CrocodileW_QContact = CreateTrigger()
         call TriggerAddCondition(CrocodileW_QContact,Condition(function CrocodileW_ReceiveQ))
-        call TriggerAddAction(GearTimer03Listeners,function CrocodileCore_Struct.Loop_Crocodile)
         call TriggerRegisterAnyUnitEventBJ(summon,EVENT_PLAYER_UNIT_SUMMON)
         call TriggerAddAction(summon,function CrocodileCore_Struct.Crocodile_Summon)
         call TriggerRegisterAnyUnitEventBJ(attackStart,EVENT_PLAYER_UNIT_ATTACKED)

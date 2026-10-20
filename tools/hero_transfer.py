@@ -300,6 +300,17 @@ def add_picker_sounds(text: str, hero: str, category_index: int, slot: int) -> s
     part = marker(hero, "OnClick sounds")
     if part in text:
         return text
+    # CP43 moved voice dispatch out of OnClick into a shared resolver.
+    if re.search(r"(?m)^function WOS_HeroVoicePath takes", text):
+        def modern(body: str) -> str:
+            lines = "\n".join(
+                f"        {'if' if i == 0 else 'elseif'} i == {i} then\n"
+                f'            return "war3mapimported\\\\Hero_{hero}_Pick{i + 1}"'
+                for i in range(5)
+            )
+            block = f"    // {part}\n    elseif heroId == {hero}_ID then\n{lines}\n        endif\n"
+            return insert_once(body, '    endif\n    return ""', block, "Hero voice resolver")
+        return edit_function(text, "WOS_HeroVoicePath", modern)
     def editor(body: str) -> str:
         anchor = "        endif\n    endif\n    if clicked == FRAME_Pick[3] then"
         sound_lines = "\n".join(

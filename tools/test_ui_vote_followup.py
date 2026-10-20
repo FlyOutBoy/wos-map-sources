@@ -33,7 +33,7 @@ class RealBuffs(unittest.TestCase):
         vm.g.update(Hero={0:hero},hs={},StringHash=lambda s:s,GetPlayerId=lambda p:p,
                     RimuruDodgeHero=defaultdict(lambda:None),RimuruDodgeAbility=defaultdict(int),
                     RimuruDodgeBuff=defaultdict(int),RimuruDodgeSeen=defaultdict(bool),RimuruDodgeGrace=defaultdict(float),
-                    RimuruDodgeCount=0, GearTimer03Acquire=lambda:clock.append(1),GearTimer03Release=lambda:clock.append(-1),
+                    RimuruDodgeCount=0, RimuruDodgeListenerOn=True, GearTimer03Acquire=lambda:clock.append(1),GearTimer03Release=lambda:clock.append(-1),
                     WUI_HeroProgress=lambda *a:calls.append(a), I2R=float)
         for aid,buff in [('RimuruQ2_ID','RimuruQ2_Buff_ID'),('RimuruF3_ID','RimuruF3_Buff_ID')]:
             vm.run('RimuruTrackDodges',(hero,vm.g[aid],vm.g[buff]))

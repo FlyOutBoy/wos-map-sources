@@ -2,6 +2,7 @@
 from collections import defaultdict
 from pathlib import Path
 import re
+import json
 import unittest
 from test_crocodile import JassState
 
@@ -9,6 +10,92 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AllyAbilityUI(unittest.TestCase):
+    def test_tooltip_cache_reuses_text_across_hovers_and_skips_unchanged_layout(self):
+        self.allies.clear();self.refresh();g=self.vm.g
+        g['AHUI_HoveredSlot'][0]=0
+        metadata=[];writes=[];sizes=[]
+        for name in ('BlzGetAbilityTooltip','BlzGetAbilityExtendedTooltip','BlzGetAbilityManaCost'):
+            old=g[name]
+            g[name]=lambda *args,n=name,fn=old:(metadata.append(n),fn(*args))[1]
+        old_text=g['BlzFrameSetText'];old_size=g['BlzFrameSetSize']
+        g['BlzFrameSetText']=lambda *a:(writes.append(a),old_text(*a))
+        g['BlzFrameSetSize']=lambda *a:(sizes.append(a),old_size(*a))
+        self.vm.run('AHUI_RefreshTooltip',(0,));first_writes=len(writes);first_sizes=len(sizes)
+        for _ in range(200):self.vm.run('AHUI_RefreshTooltip',(0,))
+        self.assertEqual(3,len(metadata));self.assertEqual(first_writes,len(writes));self.assertEqual(first_sizes,len(sizes))
+        g['AHUI_TipEpoch']+=1;self.vm.run('AHUI_RefreshTooltip',(0,))
+        self.assertEqual(6,len(metadata));self.assertEqual(first_writes,len(writes));self.assertEqual(first_sizes,len(sizes))
+        # Another ability, then return: text comes from the fixed per-slot cache.
+        g['AHUI_HoveredSlot'][0]=1;self.vm.run('AHUI_RefreshTooltip',(0,));before=len(metadata)
+        g['AHUI_HoveredSlot'][0]=0;self.vm.run('AHUI_RefreshTooltip',(0,));self.assertEqual(before,len(metadata))
+        g['BlzGetAbilityExtendedTooltip']=lambda *_:'Updated formula'
+        g['TooltipTextRevision']+=1;self.vm.run('AHUI_RefreshTooltip',(0,))
+        self.assertIn('Updated formula',self.value('AHUI_TooltipText',0,'text'))
+
+    def test_cooldown_visual_reads_once_per_second_and_uses_whole_seconds(self):
+        self.refresh();self.reads.clear()
+        for _ in range(3):self.refresh()
+        self.assertEqual([],self.reads)
+        self.refresh();self.assertEqual(7,len(self.reads))
+        for raw,expected in ((9.5,'10'),(.1,'1'),(10.,'10'),(0.,'0')):
+            self.assertEqual(expected,self.vm.run('AHUI_FormatCooldown',(raw,)))
+
+    def test_rimuru_black_flame_is_native_g_not_a_locked_custom_preview(self):
+        import war3_object_workspace as workspace
+        docs,_=workspace.prepare_documents(ROOT/'object-data',ROOT/'.object-data-raw')
+        positions={}
+        for doc in docs:
+            if doc['source_file'] not in ('war3map.w3a','war3mapSkin.w3a'):continue
+            for obj in doc['custom_objects']:
+                fields=positions.setdefault(workspace.object_id(obj),{})
+                fields.update({m['field']['text']:workspace.value_for_user(m) for m in obj['modifications']
+                               if m['field']['text'] in ('abpx','abpy')})
+        g=self.vm.g;self.c.owner=0;self.c.type=g['Rimuru_ID'];self.c.hero_level=35
+        old,new=g['RimuruG3_ID'],g['RimuruG3_2_ID']
+        self.c.abilities={old:{'level':1,'remaining':30},new:{'level':1,'remaining':0}}
+        g['BlzGetAbilityPosX']=lambda a:positions.get(a,{}).get('abpx',0)
+        g['BlzGetAbilityPosY']=lambda a:positions.get(a,{}).get('abpy',0)
+        g['hs'][id(0),'AHUI swap '+old]=new
+        self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(0,old,False))
+        self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(0,new,True))
+        self.refresh()
+        self.assertEqual(new,g['AHUI_CurrentAbility'][6])
+        self.assertTrue(g['AHUI_NativeCommandShown'][6])
+        self.assertFalse(self.value('AHUI_CooldownFill',6,'visible'))
+        g['AHUI_HoveredSlot'][0]=6
+        self.vm.run('AHUI_RefreshTooltip',(0,))
+        self.assertFalse(self.value('AHUI_TooltipRoot',0,'visible'))
+
+    def test_takaoni_swap_renders_e_icon_and_description_then_restores_e(self):
+        g=self.vm.g
+        obj=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))['A114']
+        base,shadow,takaoni=g['KyorakuE_ID'],g['KyorakuE2_ID'],g['KyorakuE4_ID']
+        g['BlzGetAbilityIcon']=lambda a:obj['icon'] if a==takaoni else 'BTN'+a
+        g['BlzGetAbilityTooltip']=lambda a,l:obj[f'tooltip level {l+1}'] if a==takaoni else 'Title '+a
+        g['BlzGetAbilityExtendedTooltip']=lambda a,l:obj[f'extended_tooltip level {l+1}'] if a==takaoni else 'Description '+a
+        self.c.type=g['Kyoraku_ID']
+        self.c.abilities={base:{'level':3,'remaining':15},shadow:{'level':3,'remaining':20},takaoni:{'level':3,'remaining':0}}
+        for own in (True,False):
+            self.c.owner=0 if own else 1
+            owner=self.c.owner
+            g['hs'][id(owner),'AHUI swap '+base]=takaoni
+            for ability,enabled in ((base,False),(shadow,False),(takaoni,True)):
+                self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(owner,ability,enabled))
+            self.refresh()
+            self.assertEqual(takaoni,g['AHUI_CurrentAbility'][2])
+            if own:
+                self.assertTrue(g['AHUI_NativeCommandShown'][2])
+            else:
+                self.assertEqual(obj['icon'],self.value('AHUI_Icon',2,'texture'))
+                g['AHUI_HoveredSlot'][0]=2
+                self.vm.run('AHUI_RefreshTooltip',(0,))
+                self.assertIn('Takaoni',self.value('AHUI_TooltipTitle',0,'text'))
+                self.assertIn('650 range past its center',self.value('AHUI_TooltipText',0,'text'))
+            self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(owner,takaoni,False))
+            self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(owner,base,True))
+            self.refresh()
+            self.assertEqual(base,g['AHUI_CurrentAbility'][2])
+
     def setUp(self):
         source = (ROOT/'triggers/WOS_Start/ShowCD.j').read_text(encoding='utf-8-sig')
         self.vm = JassState(source)
@@ -49,22 +136,24 @@ class AllyAbilityUI(unittest.TestCase):
         g.update({
             'WUI_COMMAND_X':0.354,'WUI_COMMAND_STEP':0.040,'WUI_HUD_Y':0.044,
             'AHUI_AbilityAvailability':{},'AHUI_UnitAbilityHidden':{},'AHUI_UnitAbilityDisabled':{},'hs':{},
-            'AHUI_TooltipsReady':True,'AHUI_AllowCooldownRead':False,
+            'AHUI_TooltipsReady':True,'AHUI_AllowCooldownRead':False,'TooltipTextRevision':0,'WUI_SettingsRevision':0,
             'AHUI_GameUI':'game','AHUI_ConsoleBackdrop':'console',
             'bj_MAX_PLAYER_SLOTS':24,'Player':lambda i:i,'GetPlayerId':lambda p:p,
             'GetLocalPlayer':lambda:self.viewer,
             'BlzGetMouseScreenPosX':lambda:0,'BlzGetMouseScreenPosY':lambda:0,
             'BlzPixelToFrameX':lambda v:v,'BlzPixelToFrameY':lambda v:v,
             'IsPlayerAlly':lambda v,o:v==o or (v,o) in self.allies,
-            'IsUnitType':lambda u,t:u.type!='ordinary', 'IsUnitIllusion':lambda u:u.illusion,
+            'IsUnitType':lambda u,t:t!='UNIT_TYPE_DEAD' and u.type!='ordinary', 'IsUnitIllusion':lambda u:u.illusion,
             'TestMode':False,'TestUnit':None,'TestAllyUnit':None,
             'HaveSavedBoolean':lambda h,k,c:(k,c) in h,
             'StringHash':lambda s:s,'I2R':float,'R2SW':lambda v,w,p:f'{v:.{p}f}',
             'BlzGetUnitAbilityCooldownRemaining':self.cooldown,
             'BlzGetAbilityIcon':lambda a:'BTN'+a, 'ConvertBTNtoDISBTN':lambda s:'DIS'+s,
             'BlzFrameSetVisible':lambda f,v:self.frame(f,'visible',v),
+            'BlzFrameIsVisible':lambda f:self.frames.get((f,'visible'),False),
             'BlzFrameSetAlpha':lambda f,v:self.frame(f,'alpha',v),
             'BlzFrameSetText':lambda f,v:self.frame(f,'text',v),
+            'BlzFrameGetText':lambda f:self.frames.get((f,'text'),''),
             'BlzFrameSetTextAlignment':lambda f,v,h:None,
             'TEXT_JUSTIFY_TOP':'top', 'TEXT_JUSTIFY_CENTER':'center', 'TEXT_JUSTIFY_LEFT':'left',
             'BlzFrameSetTexture':lambda f,v,*_:self.frame(f,'texture',v),
@@ -207,7 +296,7 @@ class AllyAbilityUI(unittest.TestCase):
             'BlzFrameSetPoint': point, 'BlzFrameSetAllPoints': lambda *_: None,
             'BlzFrameSetLevel': lambda *_: None, 'BlzFrameSetEnable': lambda *_: None,
             'BlzFrameSetScale': lambda *_: None, 'BlzFrameSetTextAlignment': lambda *_: None,
-            'ORIGIN_FRAME_COMMAND_BUTTON': 'commands', 'FRAMEPOINT_CENTER': 'center',
+            'ORIGIN_FRAME_COMMAND_BUTTON': 'commands', 'FRAMEPOINT_CENTER': 'center', 'FRAMEPOINT_LEFT': 'left', 'BlzFrameSetModel': lambda *_: None,
             'TEXT_JUSTIFY_MIDDLE': 'middle', 'TEXT_JUSTIFY_CENTER': 'center',
             'TEXT_JUSTIFY_TOP': 'top', 'TEXT_JUSTIFY_LEFT': 'left',
         })
@@ -260,6 +349,99 @@ class AllyAbilityUI(unittest.TestCase):
         self.assertFalse(self.value('AHUI_CooldownFill',5,'visible'))
         self.assertFalse(self.value('AHUI_CooldownText',5,'visible'))
         self.assertFalse(self.reads)
+
+    def hover_tooltip(self, slot):
+        self.vm.g['AHUI_HoveredSlot'][0] = slot
+        self.vm.run('AHUI_RefreshTooltip', (0,))
+        return bool(self.value('AHUI_TooltipRoot',0,'visible'))
+
+    def test_granted_fg_use_only_native_tooltips_including_zero_requirement(self):
+        g = self.vm.g
+        self.c.owner = self.viewer
+        for hero in ('Laxus', 'Erza'):
+            self.c.type = g[hero+'_ID']
+            for slot, key in ((5,'F'), (6,'G')):
+                ability = g[hero+key+'_ID']
+                self.c.abilities[ability] = {'level':1,'remaining':0}
+                # These abilities are already granted, irrespective of skill points.
+                self.c.hero_level = max(1, g['AHUI_LevelData'].get((ability,1),1))
+                self.refresh()
+                with self.subTest(hero=hero, slot=key):
+                    self.assertTrue(g['AHUI_NativeCommandShown'][slot])
+                    self.assertTrue(self.value('AHUI_KeyText',slot,'visible'))
+                    self.assertFalse(self.hover_tooltip(slot))
+
+    def test_missing_ability_preview_closes_when_learned_without_mouse_leave(self):
+        self.c.owner = self.viewer
+        ability = self.vm.g['CrocodileW_ID']
+        del self.c.abilities[ability]
+        self.refresh()
+        self.assertTrue(self.hover_tooltip(1))
+        self.c.abilities[ability] = {'level':1,'remaining':0}
+        self.refresh()
+        self.assertFalse(self.hover_tooltip(1))
+        self.assertEqual('',self.vm.g['AHUI_TooltipKey'][0])
+
+    def test_fg_native_guard_closes_cached_preview_and_survives_variant_swap(self):
+        g = self.vm.g
+        self.c.owner = self.viewer
+        self.refresh()
+        g['AHUI_TooltipKey'][0] = 'cached'
+        self.frame(g['AHUI_TooltipRoot'][0],'visible',True)
+        self.assertFalse(self.hover_tooltip(6))
+        # A different granted ability in the same native cell owns its tooltip too.
+        g['AHUI_CurrentAbility'][4] = g['CrocodileT2_ID']
+        self.c.abilities[g['CrocodileT2_ID']] = {'level':1,'remaining':0}
+        self.vm.run('AHUI_RefreshSlot',(0,4))
+        self.assertTrue(g['AHUI_NativeCommandShown'][4])
+        self.assertFalse(self.hover_tooltip(4))
+
+    def test_custom_command_replacement_still_has_its_only_tooltip(self):
+        self.c.owner = self.viewer
+        self.vm.g['WUI_SlotKeyLabel'] = lambda pid,slot:'Z'
+        self.refresh()
+        self.assertFalse(self.vm.g['AHUI_NativeCommandShown'][6])
+        self.assertTrue(self.hover_tooltip(6))
+
+    def test_owned_fg_below_requirement_retains_locked_preview(self):
+        g = self.vm.g
+        self.c.owner = self.viewer
+        ability = g['CrocodileG_ID']
+        g['AHUI_LevelData'][ability,1] = 35
+        self.c.hero_level = 1
+        self.refresh()
+        self.assertFalse(g['AHUI_NativeCommandShown'][6])
+        self.assertTrue(self.hover_tooltip(6))
+        self.c.hero_level = 35
+        self.refresh()
+        self.assertFalse(self.hover_tooltip(6))
+
+    def test_other_hero_fg_retains_custom_tooltip_after_own_selection(self):
+        self.c.owner = self.viewer
+        self.refresh()
+        self.assertFalse(self.hover_tooltip(6))
+        self.c.owner = 1
+        self.refresh()
+        self.assertFalse(self.vm.g['AHUI_NativeCommandShown'][6])
+        self.assertTrue(self.hover_tooltip(6))
+
+    def test_frieren_milim_native_hover_requests_current_ranges_including_swaps(self):
+        g=self.vm.g;self.c.owner=self.viewer;self.c.hero_level=35
+        requests=[]
+        g.update(WUI_ItemX=lambda s:-1.,WUI_ItemY=lambda s:-1.,WUI_ITEM_SIZE=.033,
+                 WUI_RangeNativeItemVisible=lambda s:False,
+                 WUI_RangeNativeSlotVisible=lambda s:self.frames.get((('native',s),'visible'),False),
+                 AR_Request=lambda *args:requests.append(args))
+        for hero,key,slot in (('Frieren','Q',0),('Frieren','Q2',0),('Frieren','Q3',0),('Frieren','W2',1),('Frieren','T2',4),('Milim','Q',0),('Milim','W',1),('Milim','E',2)):
+            with self.subTest(hero=hero,ability=key):
+                self.c.type=g[hero+'_ID'];ability=g[hero+key+'_ID']
+                self.c.abilities={ability:{'level':1,'remaining':0}}
+                self.refresh()
+                self.assertEqual(ability,g['AHUI_CurrentAbility'][slot])
+                g['BlzGetMouseScreenPosX']=lambda:self.vm.run('AHUI_GetSlotCenterX',(slot,))
+                g['BlzGetMouseScreenPosY']=lambda:self.vm.run('AHUI_GetSlotCenterY',(slot,))
+                self.vm.run('AHUI_UpdateHoveredSlot',(0,))
+                self.assertEqual((0,self.c,ability),requests[-1])
 
     def test_empty_slot_has_no_icon_or_native_learn_button(self):
         self.c.owner = self.viewer

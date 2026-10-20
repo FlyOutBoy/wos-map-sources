@@ -16,7 +16,7 @@ python tools/sync_war3_project.py --config object-data.config.json export
 ```
 - Перечитывает объекты карты в `object-data/*.json`. Несохранённые JSON-правки молча не затираются.
 - TEST: тот же вызов с `object-data.test.config.json` — готовит профиль, печатает `TEST profile ready` и путь JSON.
-- Импорт J-кода из сохранённой карты — это задачи VS Code «WOS Sources: Import…» / «TEST: Получить из карты…»
+- Импорт J-кода из сохранённой карты — это задачи VS Code «MAIN: 1. Карта → проект…» / «TEST: 1. Карта → проект…»
   (интерактивные PowerShell-скрипты); их запускает пользователь, не я.
 
 ## 2. check (без записи в карту)
@@ -38,6 +38,13 @@ python tools/sync_war3_project.py --config object-data.config.json check
 Ошибка: `ERROR: …` в stderr, код 1 — сообщить причину, не продолжать к save.
 `new J files` > 0 — убедиться, что это ожидаемые новые триггеры. Карту check не меняет; единственная
 возможная запись — `trigger-settings.json` при переименовании J-файлов (строки `SETTING old -> new`).
+
+Для восстановления/импорта MAIN не считать вложенный WCT автоматически
+актуальным: CP59 выявил рабочую STABLE с новым исполняемым скриптом и старым WCT.
+Импортный PowerShell предварительно запускает `tools/check_main_source_parity.py`;
+несовпадение останавливает замену проекта. MAIN build также требует WCT/source
+identity и compiled/source parity. Проверки не отключать; актуальные исходники
+искать по проектным backup и подтверждать сравнением с исполняемыми функциями.
 
 ## 3. save (запись в карту)
 Пишет бинарные файлы карты — выполнять только по явной просьбе пользователя и только после успешного check.
@@ -64,3 +71,13 @@ python tools/sync_war3_project.py --config object-data.config.json check
 - Регрессии: `python tools/run_ui_regressions.py`.
 
 Итог пользователю — 2–4 строки: какие шаги прошли, ключевые числа, что требует внимания.
+
+## Основные задачи VS Code
+
+`TEST/MAIN: 1` получает код, WCT/WTG и объекты сохранённой карты в проект.
+`TEST/MAIN: 2` проверяет и сохраняет все JSON/J, собирает и запускает карту.
+`TEST/MAIN: 3` делает то же без запуска. Вспомогательные операции — `COMMON | ...`.
+Общая точка входа — `tools/wos_map_workflow.py receive|build --target Test|Main`;
+`--no-launch` для сборки без игры, `receive --validate-only` для проверки импорта
+без замены проекта. MAIN parity не обходится. TEST `check-save --no-build`
+используется только как часть общей сборки; обычный TEST check-save собирает сам.

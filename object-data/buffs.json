@@ -199,7 +199,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Turbo Speed",
-    "extended_tooltip": "Okarun have max movement speed.",
+    "extended_tooltip": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Okarun_T.blp",
     "target_art": "war3mapImported\\wos_aurafbred.mdx",
     "editor_suffix": "Okarun",
@@ -581,7 +581,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Dark Holy Grail",
-    "extended_tooltip": "+25 hp/sec\n+6 mp/sec\n+25% MS",
+    "extended_tooltip": "+20 HP/sec (heroes only)\n+6 MP/sec\n+20% movement speed\nAura radius: 1500",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_DarkGrail.blp",
     "target_art": ""
   },
@@ -589,7 +589,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Dark Holy Grail",
-    "extended_tooltip": "active heal reduced by 30%",
+    "extended_tooltip": "Receives 30% less active healing.\nDark Holy Grail aura radius: 1500.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_DarkGrail.blp",
     "target_art": "",
     "editor_suffix": "ENEMY"
@@ -606,7 +606,7 @@
     "name": "1 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-7% active healing",
+    "extended_tooltip": "-5.5% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -614,7 +614,7 @@
     "name": "2 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-14% active healing",
+    "extended_tooltip": "-11% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -622,7 +622,7 @@
     "name": "3 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-21% active healing",
+    "extended_tooltip": "-16.5% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -630,7 +630,7 @@
     "name": "4 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-28% active healing",
+    "extended_tooltip": "-22% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -638,7 +638,7 @@
     "name": "5 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-35% active healing",
+    "extended_tooltip": "-27.5% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -820,7 +820,7 @@
     "name": "6 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-42% active healing",
+    "extended_tooltip": "-33% healing and HP regeneration",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -828,7 +828,7 @@
     "name": "7 Hell Blaze",
     "base_id": "BHds",
     "tooltip": "Hell Blaze",
-    "extended_tooltip": "-49% active healing and burn 10 mana per sec",
+    "extended_tooltip": "-38.5% healing and HP regeneration; burns 1.35% of max mana per second",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_HellBlaze.blp",
     "target_art": "war3mapimported\\wos_a (155).mdl"
   },
@@ -1143,6 +1143,52 @@
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Crocodile_G.blp",
     "target_art": "",
     "editor_suffix": "big"
+  },
+  "B03F": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Shun Shun Rikka",
+    "extended_tooltip": "Receives 18% more HP regeneration and healing; stuns last 0.5 sec shorter.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ShunShunRikka.blp",
+    "target_art": ""
+  },
+  "B040": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Frozen Heart Blessing",
+    "extended_tooltip": "Receives 20% more mana regeneration and mana restoration.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Frozen_Heart.blp",
+    "target_art": ""
+  },
+  "B041": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Ashisogi Jizo",
+    "extended_tooltip": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
+    "target_art": ""
+  },
+  "B042": {
+    "name": "Cold",
+    "base_id": "BHds",
+    "tooltip": "Cold",
+    "extended_tooltip": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+    "target_art": "",
+    "target_attachments": "origin",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+    "field_feft": ""
+  },
+  "B043": {
+    "name": "Frostbite",
+    "base_id": "BHds",
+    "tooltip": "Frostbite",
+    "extended_tooltip": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "",
+    "target_attachments": "origin",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+    "field_feft": ""
   },
   "BEer": {
     "name": "",

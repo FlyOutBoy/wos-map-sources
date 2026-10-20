@@ -34,6 +34,7 @@ public static class TestMpq {
     [DllImport("$dll", CharSet=CharSet.Ansi)] public static extern bool MpqAddFileToArchive(IntPtr archive, string source, string name, uint flags);
     [DllImport("$dll", CharSet=CharSet.Ansi)] public static extern IntPtr MpqOpenArchiveForUpdate(string name, uint flags, uint capacity);
     [DllImport("$dll")] public static extern uint MpqCloseUpdatedArchive(IntPtr archive, uint flags);
+    [DllImport("$dll")] public static extern bool MpqCompactArchive(IntPtr archive);
 }
 "@
 if ($Mode -eq 'Pack') {
@@ -51,6 +52,9 @@ if ($Mode -eq 'Pack') {
             $name = $item.FullName.Substring($root.Length)
             if (-not [TestMpq]::MpqAddFileToArchive($archive, $item.FullName, $name, 0x201)) { throw "Cannot pack $name" }
         }
+        # SFmpq leaves slack after almost every compressed block (~50% of a
+        # big map); compacting rewrites the blocks back to back.
+        if (-not [TestMpq]::MpqCompactArchive($archive)) { throw "Cannot compact $destination" }
     } finally { [void][TestMpq]::MpqCloseUpdatedArchive($archive, 0) }
     # Warcraft's pre-archive header: use this scenario's W3I/WTS and player
     # count, never the template TEST map's title or metadata.
@@ -101,6 +105,15 @@ try {
     $names = @('war3map.j', 'war3map.wtg', 'war3map.wct')
     foreach ($prefix in @('war3map', 'war3mapSkin')) {
         foreach ($extension in @('w3u','w3t','w3b','w3d','w3a','w3h','w3q')) { $names += "$prefix.$extension" }
+    }
+    if ($Mode -eq 'Update' -and -not $NamesFile) {
+        # Keep imports and their staged assets with the editor/object payload.
+        # war3map.j is still replaced only by the compiler below this update.
+        $names += 'war3map.imp'
+        $assetRoot = [IO.Path]::GetFullPath($Directory).TrimEnd('\') + '\'
+        $names += @(Get-ChildItem -LiteralPath $Directory -Recurse -File | Where-Object {
+            $_.Extension.ToLowerInvariant() -in @('.blp', '.mdx', '.mdl', '.tga', '.fdf', '.toc', '.ttf')
+        } | ForEach-Object { $_.FullName.Substring($assetRoot.Length) })
     }
     if ($NamesFile) { $names = Get-Content -LiteralPath $NamesFile -Raw -Encoding UTF8 | ConvertFrom-Json }
     foreach ($name in $names) {

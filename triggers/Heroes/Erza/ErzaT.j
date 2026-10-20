@@ -1,5 +1,78 @@
 library ErzaTSpells uses GearSystems
     globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer ErzaTTick05_Timer = CreateTimer()
+        private boolean array ErzaTTick05_Active
+        private integer ErzaTTick05_Users = 0
+        private code ErzaTTick05_Callback = null
+    endglobals
+
+    private function ErzaTTick05_On takes integer k returns nothing
+        if not ErzaTTick05_Active[k] then
+            set ErzaTTick05_Active[k] = true
+            set ErzaTTick05_Users = ErzaTTick05_Users + 1
+            if ErzaTTick05_Users == 1 then
+                call TimerStart(ErzaTTick05_Timer, 0.05, true, ErzaTTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaTTick05_Off takes integer k returns nothing
+        if ErzaTTick05_Active[k] then
+            set ErzaTTick05_Active[k] = false
+            set ErzaTTick05_Users = ErzaTTick05_Users - 1
+            if ErzaTTick05_Users <= 0 then
+                set ErzaTTick05_Users = 0
+                call PauseTimer(ErzaTTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer ErzaTTick_Timer = CreateTimer()
+        private boolean array ErzaTTick_Active
+        private integer ErzaTTick_Users = 0
+        private code ErzaTTick_Callback = null
+    endglobals
+
+    private function ErzaTTick_On takes integer k returns nothing
+        if not ErzaTTick_Active[k] then
+            set ErzaTTick_Active[k] = true
+            set ErzaTTick_Users = ErzaTTick_Users + 1
+            if ErzaTTick_Users == 1 then
+                call TimerStart(ErzaTTick_Timer, 0.03, true, ErzaTTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function ErzaTTick_Off takes integer k returns nothing
+        if ErzaTTick_Active[k] then
+            set ErzaTTick_Active[k] = false
+            set ErzaTTick_Users = ErzaTTick_Users - 1
+            if ErzaTTick_Users <= 0 then
+                set ErzaTTick_Users = 0
+                call PauseTimer(ErzaTTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_ADD_SPELL_DMG_ERZA4_F = StringHash("add spell dmg erza4 f")
+        private integer SH_ERZA_5_TT = StringHash("erza 5 tt")
+        private integer SH_ERZA_5_TT2 = StringHash("erza 5 tt2")
+        private integer SH_FIRE_X = StringHash("fire x")
+        private integer SH_FIRE_Y = StringHash("fire y")
+        private integer SH_LIGHTNING_X = StringHash("lightning x")
+        private integer SH_LIGHTNING_Y = StringHash("lightning y")
+        private integer SH_R_CANCEL = StringHash("r cancel")
+        private integer SH_TYPE_SWORD = StringHash("type sword")
+        private integer SH_T_ARMOR_ACTIVE = StringHash("t armor active")
+        private integer SH_WATER_X = StringHash("water x")
+        private integer SH_WATER_Y = StringHash("water y")
+    endglobals
+    globals
 //--------------------------------------Erza--------------------------------------------------------------
 //---------------Q ability-----------------------------------------------------
         integer Erza5Q_ID = 'A03N'
@@ -65,7 +138,6 @@ library ErzaTSpells uses GearSystems
         endfunction
 
     private struct Erza5Q_KS
-        private static timer t_ErzaQ = CreateTimer( )
         private static integer array m_ErzaQ
         private static integer MUI_ErzaQ = -1
         unit c
@@ -90,7 +162,7 @@ library ErzaTSpells uses GearSystems
         effect array ee[20]
         real a
         real rmax
-        private static method Loop_ErzaQ takes nothing returns nothing
+        static method Loop_ErzaQ takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real random
@@ -229,8 +301,10 @@ library ErzaTSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A03N')
                                     call dmgphys(c, u, dmg)
                                     if check4 > 0 then
+                                        call DamageSource('A03N')
                                         call ErzaPassive(c, u, check4)
                                     endif
                                 endif
@@ -261,8 +335,9 @@ library ErzaTSpells uses GearSystems
                     set u = null
                     set m_ErzaQ[i] = m_ErzaQ[MUI_ErzaQ]
                     set MUI_ErzaQ = MUI_ErzaQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaQ == -1 then
-                        call PauseTimer( t_ErzaQ )
+                        call ErzaTTick_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -289,17 +364,17 @@ library ErzaTSpells uses GearSystems
             set check2 = 0
             set check3 = 0
             set check4 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + (GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element)
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + (GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element)
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set check4 = PassiveType(check2, check3)
@@ -353,13 +428,12 @@ library ErzaTSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 10)
             call MakeSound("war3mapImported\\Hero_Erza5_Q01")
             if MUI_ErzaQ == 0 then
-                call TimerStart( t_ErzaQ, 0.03, true, function thistype.Loop_ErzaQ )
+                call ErzaTTick_On(0)
             endif
         endmethod
     endstruct
 
     private struct Erza5W_KS
-        private static timer t_ErzaW = CreateTimer( )
         private static integer array m_ErzaW
         private static integer MUI_ErzaW = -1
         unit c
@@ -382,12 +456,13 @@ library ErzaTSpells uses GearSystems
         effect array ee[20]
         real a
         real rmax
-        private static method Loop_ErzaW takes nothing returns nothing
+        static method Loop_ErzaW takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaW
                 set this = m_ErzaW[i]
+                call WUI_HeroProgress(c, Erza5W_ID, "Tenrin Circle Sword", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
                     if r == 0.39 then
@@ -484,12 +559,14 @@ library ErzaTSpells uses GearSystems
                                     set u = FirstOfGroup( g )
                                     exitwhen u == null
                                     if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u, g2) == false then
+                                        call DamageSource('A03O')
                                         call dmgphys(c, u, dmg)
                                         set k2 = k2 + 1
                                         if k2 == 1 then
                                             call MakeSound("war3mapImported\\Hero_Erza5_W3")
                                         endif
                                         if check4 > 0 then
+                                            call DamageSource('A03O')
                                             call ErzaPassive(c, u, check4)
                                         endif
                                         call GroupAddUnit(g2, u)
@@ -521,8 +598,9 @@ library ErzaTSpells uses GearSystems
                     set g2 = null
                     set m_ErzaW[i] = m_ErzaW[MUI_ErzaW]
                     set MUI_ErzaW = MUI_ErzaW - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaW == -1 then
-                        call PauseTimer( t_ErzaW )
+                        call ErzaTTick_Off(1)
                     endif
                     call destroy( )
                 endif
@@ -546,17 +624,17 @@ library ErzaTSpells uses GearSystems
             set check4 = 0
             call StartSpellUnit(c)
             set dmg = GetHeroAgi(c, true) * Erza5W_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set check4 = PassiveType(check2, check3)
@@ -564,13 +642,12 @@ library ErzaTSpells uses GearSystems
             call SetUnitTimeScale(c, 1)
             call MakeSound("war3mapImported\\Hero_Erza5_W02")
             if MUI_ErzaW == 0 then
-                call TimerStart( t_ErzaW, 0.03, true, function thistype.Loop_ErzaW )
+                call ErzaTTick_On(1)
             endif
         endmethod
     endstruct
 
     private struct Erza5E_KS
-        private static timer t_ErzaE = CreateTimer( )
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
         unit c
@@ -592,7 +669,7 @@ library ErzaTSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaE takes nothing returns nothing
+        static method Loop_ErzaE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -600,7 +677,7 @@ library ErzaTSpells uses GearSystems
                 set this = m_ErzaE[i]
                 if SpellBoolCaster(c) and r < rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     if r == 0.45 then
@@ -682,7 +759,7 @@ library ErzaTSpells uses GearSystems
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_zhanji-blue.mdl", x - 300 * Cos(a), y - 300 * Sin(a), a * bj_RADTODEG, 0.5, 0.95, 185))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_zhanji-blue.mdl", x + 300 * Cos(a + 90 * bj_DEGTORAD), y + 300 * Sin(a + 90 * bj_DEGTORAD), a * bj_RADTODEG + 250, 0.5, 0.95, 185))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_zhanji-blue.mdl", x - 300 * Cos(a + 90 * bj_DEGTORAD), y - 300 * Sin(a + 90 * bj_DEGTORAD), a * bj_RADTODEG + 125, 0.5, 0.95, 185))
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_32F1D1EAB79EF38E_2.mdl", x, y, a * bj_RADTODEG, 0.75, 4.25, 225))
+                                // removed: wos_32F1D1EAB79EF38E_2.mdl is not imported
                             endif
                             call GroupClear(g)
                             call DecorRemove(c,x,y,aoe,80)
@@ -691,8 +768,10 @@ library ErzaTSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A03P')
                                     call dmgmag(c, u, dmg)
                                     if check4 > 0 then
+                                        call DamageSource('A03P')
                                         call ErzaPassive(c, u, check4)
                                     endif
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -719,8 +798,9 @@ library ErzaTSpells uses GearSystems
                     set c = null
                     set m_ErzaE[i] = m_ErzaE[ MUI_ErzaE]
                     set MUI_ErzaE = MUI_ErzaE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaE == -1 then
-                        call PauseTimer( t_ErzaE)
+                        call ErzaTTick_Off(2)
                     endif
                     call deallocate(this)
                 endif
@@ -745,17 +825,17 @@ library ErzaTSpells uses GearSystems
             set check2 = 0
             set check3 = 0
             set dmg = GetHeroAgi(c, true) * Erza5E_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set check4 = PassiveType(check2, check3)
@@ -771,13 +851,12 @@ library ErzaTSpells uses GearSystems
             call SetUnitTimeScale( c , 1)
             call VisionTimed(GetOwningPlayer(c), x, y, 750, 6)
             if MUI_ErzaE == 0 then
-                call TimerStart( t_ErzaE, 0.03, true, function thistype.Loop_ErzaE)
+                call ErzaTTick_On(2)
             endif
         endmethod
     endstruct
 
     private struct Erza5R2_KS
-        private static timer t_ErzaR2 = CreateTimer( )
         private static integer array m_ErzaR2
         private static integer MUI_ErzaR2 = -1
         unit d
@@ -794,7 +873,7 @@ library ErzaTSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaR2 takes nothing returns nothing
+        static method Loop_ErzaR2 takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -802,7 +881,7 @@ library ErzaTSpells uses GearSystems
                 set this = m_ErzaR2[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r > 0.24 then
                         call MoveUnit(d, r3, a)
                         call MoveUnit(d2, r4, a)
@@ -847,8 +926,9 @@ library ErzaTSpells uses GearSystems
                    set c = null
                     set m_ErzaR2[i] = m_ErzaR2[ MUI_ErzaR2]
                     set MUI_ErzaR2 = MUI_ErzaR2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR2 == -1 then
-                        call PauseTimer( t_ErzaR2)
+                        call ErzaTTick_Off(3)
                     endif
                     call deallocate(this)
                 endif
@@ -918,13 +998,12 @@ library ErzaTSpells uses GearSystems
             endif
             set rmax = 0.45
             if MUI_ErzaR2 == 0 then
-                call TimerStart( t_ErzaR2, 0.03, true, function thistype.Loop_ErzaR2)
+                call ErzaTTick_On(3)
             endif
         endmethod
     endstruct
 
     private struct Erza5R_KS
-        private static timer t_ErzaR = CreateTimer( )
         private static integer array m_ErzaR
         private static integer MUI_ErzaR = -1
         unit c
@@ -945,7 +1024,7 @@ library ErzaTSpells uses GearSystems
         real r
         real a
         real rmax
-        private static method Loop_ErzaR takes nothing returns nothing
+        static method Loop_ErzaR takes nothing returns nothing
             local integer this
             local integer i = 0
             local real ra1 = GetRandomReal(0, 365)
@@ -953,10 +1032,11 @@ library ErzaTSpells uses GearSystems
             loop
                 exitwhen i > MUI_ErzaR
                 set this = m_ErzaR[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(Player(k2)), StringHash("r cancel")) == 0 then
+                call WUI_HeroProgress(c, Erza5R_ID, "100 Swords attack", rmax - r, rmax, true)
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(Player(k2)), SH_R_CANCEL) == 0 then
                     set r = r + 0.03
                     call DebugUnit2(c)
-                    set r = S2R( R2SW( r , 0, 3 ) )
+                    set r = RoundReal(r, 3)
                     if r == 1.8 then
                         call MakeSound("war3mapImported\\Hero_Erza_R3")
                     endif
@@ -981,8 +1061,10 @@ library ErzaTSpells uses GearSystems
                                 set u = FirstOfGroup( g )
                                 exitwhen u == null
                                 if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup( u , g2 ) == false then
+                                    call DamageSource('A03Q')
                                     call dmgmag(c, u, dmg)
                                     if check4 > 0 then
+                                        call DamageSource('A03Q')
                                         call ErzaPassive(c, u, check4)
                                     endif
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1005,8 +1087,9 @@ library ErzaTSpells uses GearSystems
                     set c = null
                     set m_ErzaR[i] = m_ErzaR[ MUI_ErzaR]
                     set MUI_ErzaR = MUI_ErzaR - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaR == -1 then
-                        call PauseTimer( t_ErzaR)
+                        call ErzaTTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1027,17 +1110,17 @@ library ErzaTSpells uses GearSystems
             set check2 = 0
             set check3 = 0
             set dmg = GetHeroAgi( c , true) * Erza5R_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set check4 = PassiveType(check2, check3)
@@ -1058,13 +1141,12 @@ library ErzaTSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 9)
             
             if MUI_ErzaR == 0 then
-                call TimerStart( t_ErzaR, 0.03, true, function thistype.Loop_ErzaR)
+                call ErzaTTick_On(4)
             endif
         endmethod
     endstruct
 
     private struct Erza5T_KS
-        private static timer t_ErzaT = CreateTimer( )
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
         unit c
@@ -1094,7 +1176,7 @@ library ErzaTSpells uses GearSystems
         effect array ee[20]
         real a
         real rmax
-        private static method Loop_ErzaT takes nothing returns nothing
+        static method Loop_ErzaT takes nothing returns nothing
             local thistype this
             local integer i = 0
             local real rng = 355
@@ -1208,8 +1290,10 @@ library ErzaTSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A03R')
                                     call dmgphys(c, u, dmg)
                                     if check4 > 0 then
+                                        call DamageSource('A03R')
                                         call ErzaPassive(c, u, check4)
                                     endif
                                 endif
@@ -1233,8 +1317,9 @@ library ErzaTSpells uses GearSystems
                     set u = null
                     set m_ErzaT[i] = m_ErzaT[MUI_ErzaT]
                     set MUI_ErzaT = MUI_ErzaT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaT == -1 then
-                        call PauseTimer( t_ErzaT )
+                        call ErzaTTick_Off(5)
                     endif
                     call destroy( )
                 endif
@@ -1262,17 +1347,17 @@ library ErzaTSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             set aoe = Erza5T_DamageAoe
             set dmg = GetHeroAgi(c, true) * Erza5T_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set rmax = 5
@@ -1311,7 +1396,7 @@ library ErzaTSpells uses GearSystems
                         set s2 = "war3mapImported\\wos_zhanji-blue.mdl"
                         set s1 = "war3mapImported\\wos_zhanji-blue.mdl"
                     elseif check2 == 3 then
-                        set s3 = "war3mapimported\\wos_blue--zhendi31_3_x1.5.mdl"
+                        set s3 = "" // wos_blue--zhendi31_3_x1.5.mdl is not imported
                         set s2 = "war3mapImported\\wos_zhanji-water_ice.mdl"
                         set s1 = "war3mapImported\\wos_zhanji-water_ice.mdl"
                     endif
@@ -1326,13 +1411,12 @@ library ErzaTSpells uses GearSystems
             call SetUnitAnimationByIndex(c, 6)
             call MakeSound("war3mapImported\\Hero_Erza5_T")
             if MUI_ErzaT == 0 then
-                call TimerStart( t_ErzaT, 0.03, true, function thistype.Loop_ErzaT )
+                call ErzaTTick_On(5)
             endif
         endmethod
     endstruct
 
     private struct Erza5F_KS
-        private static timer t_ErzaF = CreateTimer( )
         private static integer array m_ErzaF
         private static integer MUI_ErzaF = -1
         unit c
@@ -1349,7 +1433,7 @@ library ErzaTSpells uses GearSystems
         effect e
         real a
         real rmax
-        private static method Loop_ErzaF takes nothing returns nothing
+        static method Loop_ErzaF takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rand1 = 0
@@ -1359,7 +1443,7 @@ library ErzaTSpells uses GearSystems
                 set this = m_ErzaF[i]
                 if SpellBoolCaster(c) and r < rmax then
                     set r = r + 0.03
-                    set r = S2R( R2SW( r , 0, 3 ) )                 
+                    set r = RoundReal(r, 3)                 
                     if r == 0.21 then
                         call GroupClear(g)
                         call DecorRemove(c,x,y, aoe ,50)
@@ -1368,8 +1452,10 @@ library ErzaTSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                call DamageSource('A03S')
                                 call dmgphys(c, u, dmg)
                                 if check4 > 0 then
+                                    call DamageSource('A03S')
                                     call ErzaPassive(c, u, check4)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -1385,8 +1471,9 @@ library ErzaTSpells uses GearSystems
                     set c = null
                     set m_ErzaF[i] = m_ErzaF[ MUI_ErzaF]
                     set MUI_ErzaF = MUI_ErzaF - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_ErzaF == -1 then
-                        call PauseTimer( t_ErzaF)
+                        call ErzaTTick_Off(6)
                     endif
                     call deallocate(this)
                 endif
@@ -1405,17 +1492,17 @@ library ErzaTSpells uses GearSystems
             set check2 = 0
             set check3 = 0
             set dmg = GetHeroAgi(c, true) * Erza5F_DamageAgiBase
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) == 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) == 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_1Element
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 and LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) > 0 then
-                set check2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt"))
-                set check3 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+            if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 and LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) > 0 then
+                set check2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT)
+                set check3 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
                 set dmg = dmg + GetHeroAgi(c, true) * Erza5_AddSpellDamage_2Element
             endif
             set check4 = PassiveType(check2, check3)
@@ -1430,24 +1517,17 @@ library ErzaTSpells uses GearSystems
             call SetUnitTimeScale( c , 1)
             call VisionTimed(GetOwningPlayer(c), x, y, 750, 6)
             if MUI_ErzaF == 0 then
-                call TimerStart( t_ErzaF, 0.03, true, function thistype.Loop_ErzaF)
+                call ErzaTTick_On(6)
             endif
         endmethod
     endstruct
 
     private struct Erza5TT_KS
-        private static timer t_ErzaTT = CreateTimer( )
         private static integer array m_ErzaTT
         private static integer MUI_ErzaTT = -1
         unit c
         integer k2
         integer k3
-        private static framehandle array frame_pas1
-        private static framehandle array frame_pas2
-        private static framehandle array frame_pas3
-        private static framehandle array frame_pas4
-        private static framehandle array frame_pas5
-        private static framehandle array frame_pas6
         integer check
         integer check2
         integer check3
@@ -1457,21 +1537,20 @@ library ErzaTSpells uses GearSystems
         effect e
         effect e2
         real rmax
-        private static method Loop_ErzaTT takes nothing returns nothing
+        static method Loop_ErzaTT takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
                 exitwhen i > MUI_ErzaTT
                 set this = m_ErzaTT[i]
-                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), StringHash("t armor active")) == 1 then
+                if SpellBoolCaster(c) and r <= rmax and LoadInteger(hs, GetHandleId(c), SH_T_ARMOR_ACTIVE) == 1 then
                     set r = r + 0.05
-                    set r = S2R( R2SW( r , 0, 3 ) )
-                    call BlzFrameSetValue(frame_pas3[check], rmax - (r + 0.1))
+                    set r = RoundReal(r, 3)
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[check], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, Erza5T_ID, "Elemental infusion", rmax - r, rmax, true)
                         endif
                     if k3 == 1 then
-                        if LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2")) > 0 then
+                        if LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2) > 0 then
                             if e2 != null then
                                 call DestroyEffect(e2)
                                 set e2 = null
@@ -1490,20 +1569,18 @@ library ErzaTSpells uses GearSystems
                     endif
                     set i = i + 1
                 else
-                     if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[check], false)
-                                endif
+                                    call WUI_HeroProgress(c, Erza5T_ID, "Elemental infusion", 0.00, 0.00, true)
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
-                    call SaveReal(hs, GetHandleId(c), StringHash("add spell dmg erza4 f"), 0)
-                    call SaveInteger(hs, GetHandleId(c), StringHash("type sword"), 0)
+                    call SaveReal(hs, GetHandleId(c), SH_ADD_SPELL_DMG_ERZA4_F, 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_TYPE_SWORD, 0)
                     if k3 == 0 or k3 == 4 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt"), 0)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT, 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT2, 0)
                     elseif k3 == 1 then
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT, 0)
                     else
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"), 0)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT2, 0)
                     endif
                     set c = null
                     set e = null
@@ -1511,7 +1588,7 @@ library ErzaTSpells uses GearSystems
                     set m_ErzaTT[i] = m_ErzaTT[MUI_ErzaTT]
                     set MUI_ErzaTT = MUI_ErzaTT - 1
                     if MUI_ErzaTT == -1 then
-                        call PauseTimer( t_ErzaTT )
+                        call ErzaTTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -1583,47 +1660,10 @@ library ErzaTSpells uses GearSystems
                     set e = AddSpecialEffectTarget("war3mapImported\\wos_obr08 (166).mdx", c, "hand left")
                 endif
             endif
-            call SaveReal(hs, GetHandleId(c), StringHash("add spell dmg erza4 f"), r5 / 100)
-            call SaveInteger(hs, GetHandleId(c), StringHash("type sword"), check2)
-            if frame_pas1[check] == null then
-                                set frame_pas1[check] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[check], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[check], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[check], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[check], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[check], true)
-                                endif
-                                set frame_pas2[check] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[check], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[check], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[check], 0.1, 0.019)
-                                set frame_pas3[check] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[check], "", 0)
-                                call BlzFrameSetSize(frame_pas3[check], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[check], 0.5)
-                                call BlzFrameSetModel(frame_pas3[check], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[check], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[check], 0, rmax)
-                                call BlzFrameSetValue(frame_pas3[check], rmax)
-                                set frame_pas4[check] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[check], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[check], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[check], 0.025, 0.025)
-                                call BlzFrameSetTexture(frame_pas4[check], "ReplaceableTextures\\CommandButtons\\BTNHero_Erza5_Icon", 0, false)
-                                set frame_pas5[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[check], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[check], "|c00FFFF00" + "Elemental infusion:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[check], 0.9)
-                                set frame_pas6[check] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[check], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[check], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[check], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[check], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[check], true)
-                                endif
-                                call BlzFrameSetValue(frame_pas3[check], rmax)
-                            endif
+            call SaveReal(hs, GetHandleId(c), SH_ADD_SPELL_DMG_ERZA4_F, r5 / 100)
+            call SaveInteger(hs, GetHandleId(c), SH_TYPE_SWORD, check2)
             if MUI_ErzaTT == 0 then
-                call TimerStart( t_ErzaTT, 0.05, true, function thistype.Loop_ErzaTT )
+                call ErzaTTick05_On(0)
             endif
         endmethod
     endstruct
@@ -1669,17 +1709,17 @@ library ErzaTSpells uses GearSystems
         local real y = GetUnitY(c)
         local unit u = null
         local group g = CreateGroup()
-        local integer counter1 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt")) // 1 - fire, 2 - water, 3 - lightning
-        local integer counter2 = LoadInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"))
+        local integer counter1 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT) // 1 - fire, 2 - water, 3 - lightning
+        local integer counter2 = LoadInteger(hs, GetHandleId(c), SH_ERZA_5_TT2)
         local boolean start1 = false
         local boolean start2 = false
-        local real x1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire x"))
-        local real y1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("fire y"))
-        local real x2 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water x"))
-        local real y2 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("water y"))
-        local real x3 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("lightning x"))
-        local real y3 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), StringHash("lightning y"))
-        if LoadInteger(hs, GetHandleId(c), StringHash("t armor active")) == 1 then
+        local real x1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_X)
+        local real y1 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_FIRE_Y)
+        local real x2 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_X)
+        local real y2 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_WATER_Y)
+        local real x3 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_LIGHTNING_X)
+        local real y3 = LoadReal(hs, GetHandleId(GetOwningPlayer(c)), SH_LIGHTNING_Y)
+        if LoadInteger(hs, GetHandleId(c), SH_T_ARMOR_ACTIVE) == 1 then
             call GroupEnumUnitsInRange(g, x, y, 1800, NoDecor_Cond)
             loop
                 set u = FirstOfGroup(g)
@@ -1699,9 +1739,9 @@ library ErzaTSpells uses GearSystems
             endloop
             if k1 > 0 and k2 > 0 then // Natsu + Gray, same attach as R form
                 if counter1 == 0 and counter2 == 0 then
-                    if IntegerCd(c,"elem gain cd",60) then 
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt"), 7)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"), 7)
+                    if IntegerCdKey(c, SH_ICD_ELEM_GAIN_CD,60) then 
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT, 7)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT2, 7)
                         call Erza5TT_KS.ErzaTT_Start(c, 0, 0)
                     else
                         call DisplayTimedTextToPlayer(GetOwningPlayer(c),0,0,1,"Elemental gain on cooldown")
@@ -1711,9 +1751,9 @@ library ErzaTSpells uses GearSystems
                 // Store the pair as regular fire + lightning so every T-form
                 // ability creates exactly the same ErzaPassive effects.
                 if counter1 == 0 and counter2 == 0 then
-                    if IntegerCd(c,"elem gain cd",60) then 
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt"), 1)
-                        call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"), 3)
+                    if IntegerCdKey(c, SH_ICD_ELEM_GAIN_CD,60) then 
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT, 1)
+                        call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT2, 3)
                         call Erza5TT_KS.ErzaTT_Start(c, 4, 4)
                     else
                         call DisplayTimedTextToPlayer(GetOwningPlayer(c),0,0,1,"Elemental gain on cooldown")
@@ -1748,11 +1788,11 @@ library ErzaTSpells uses GearSystems
                     endif
                 endif
                 if start1 then
-                    call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt"), counter1)
+                    call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT, counter1)
                     call Erza5TT_KS.ErzaTT_Start(c, counter1, 1)
                 endif
                 if start2 then
-                    call SaveInteger(hs, GetHandleId(c), StringHash("erza 5 tt2"), counter2)
+                    call SaveInteger(hs, GetHandleId(c), SH_ERZA_5_TT2, counter2)
                     call Erza5TT_KS.ErzaTT_Start(c, counter2, 2)
                 endif
             endif
@@ -1764,6 +1804,50 @@ library ErzaTSpells uses GearSystems
     function Erza5F_Start takes unit c, real x, real y returns nothing
         call Erza5F_KS.ErzaF_Start( c, x, y )
     endfunction
+
+    private struct ErzaTTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaTTick_Active[0] then
+                call Erza5Q_KS.Loop_ErzaQ()
+            endif
+            if ErzaTTick_Active[1] then
+                call Erza5W_KS.Loop_ErzaW()
+            endif
+            if ErzaTTick_Active[2] then
+                call Erza5E_KS.Loop_ErzaE()
+            endif
+            if ErzaTTick_Active[3] then
+                call Erza5R2_KS.Loop_ErzaR2()
+            endif
+            if ErzaTTick_Active[4] then
+                call Erza5R_KS.Loop_ErzaR()
+            endif
+            if ErzaTTick_Active[5] then
+                call Erza5T_KS.Loop_ErzaT()
+            endif
+            if ErzaTTick_Active[6] then
+                call Erza5F_KS.Loop_ErzaF()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaTTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct ErzaTTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if ErzaTTick05_Active[0] then
+                call Erza5TT_KS.Loop_ErzaTT()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set ErzaTTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
 endlibrary
 
 

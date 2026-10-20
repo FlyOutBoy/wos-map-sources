@@ -1043,3 +1043,50 @@ synchronized allocation/cleanup. Ping labels follow current bounds. Compile and
 218 regressions PASS; final targeted camera/icon and ping checks PASS; 164 packed
 entries match MAIN/assets. Native visual/multiplayer acceptance remains pending,
 including alignment of the existing full-map background. Details in RESUME.md.
+
+
+## CP66 — minimap/F2/Kyoraku follow-up, 2026-10-19
+
+Restored startup minimap terrain replacement; F2 Expand/Opacity/Close use the
+existing clicked-button reset. Kyoraku bankai cleans up Skip Stage G on all
+exits, publishes act names/icons to all viewers, and sizes description height
+from its rendered text. MAIN STABLE published with backup;111-source compile,
+727 regressions (5 skips),5203-function parity and6720 packed payloads PASS.
+Only map J/WCT changed. Warcraft visual/input/multiplayer checks remain pending;
+see RESUME CP66 for exact files, evidence and acceptance cases.
+
+
+## CP67 — 0.33c source follow-up, 2026-10-20
+
+Implemented gold fold/header swap, compact portrait controls and generated gold
+hero-lock glyph, optional local auto-selection, early Raiden counters/readiness,
+long-range MAIN ability previews, explicit Brandish delayed CD repair, same-tick
+Laxus Q/Q2 release, Okarun T -200 speed and no order replay. Balance and native
+tooltip changes are in docs/CHANGELOG_0.33c.txt. Compile/dispatch PASS; production
+VM tests added to the UI runner. No MAIN/STABLE publication or game launch.
+Final aggregate verification is recorded in RESUME CP67.
+
+
+CP67 publication (2026-10-20): all accumulated 0.33c edits, including the final
+dead-hero HP fill correction, were saved to MAIN and built without game launch.
+Final sync: 0 binary changes / 0 source differences / 0 new J files.
+Build packed6721 files; WCT/source identity and compiled/source parity PASS5253
+functions. Eight relevant packed payloads (script, WCT/WTG, changed object files,
+imports and new icon) match MAIN; icon bytes also match the project asset.
+Quick-launch WOS2_MAIN_STABLE.w3x now matches the built archive byte-for-byte.
+Publication evidence: _build/publish-033c-{build.log,result.json,payloads.json}.
+Backup: C:\Users\Gear\Desktop\WOS\VS WOS\backups\publish-033c-20261020-020711
+SHA256: 5B1DE1BDC8BE80AA307A2850FCD371CD3E93AE86A1D91D98642860E88F4AF3EF
+Root J/WCT/WTG snapshots updated after backing them up. No game launch; native
+visual/input/multiplayer acceptance remains pending. This publication supersedes
+the source-only status stated earlier in CP67.
+
+
+## CP68 — portrait/Q2/Okarun follow-up, 2026-10-20
+
+Moved four portrait controls right; auto-selection now uses a demanded .25s
+clock. Q2 releases on lightning launch and retains next-cast pause at cleanup.
+Okarun retries approach orders every .75s outside active casts; per-target/caster
+T tackle cooldown .75s, push450 over unchanged .35s.753 tests PASS (5 skips),
+compile/dispatch and5254-function parity PASS. MAIN and quick-launch STABLE
+published with backup; see RESUME CP68 and English CHANGELOG_0.33c.txt.

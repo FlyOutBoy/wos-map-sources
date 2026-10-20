@@ -15,6 +15,11 @@ Python 3 и Windows PowerShell. Работай из корня проекта.
 
 ## Читать по задаче
 
+- Импорт/восстановление MAIN: сначала `docs/ai/KNOWLEDGE.md` → CP59 и
+  `docs/ui-redesign/RESUME.md` → CP59. Рабочий `war3map.j` может быть новее WCT;
+  импортировать WCT как актуальную основу без compiled/source parity нельзя.
+  `tools/check_main_source_parity.py` блокирует такой импорт и несогласованную сборку.
+
 - Устройство, зависимости, точка входа неизвестной системы: [ARCHITECTURE](docs/ai/ARCHITECTURE.md).
 - Компиляция, тесты, сборка и побочные эффекты команд: [VALIDATION](docs/ai/VALIDATION.md).
 - Известный сложный сбой или прежнее решение: [KNOWLEDGE](docs/ai/KNOWLEDGE.md).
@@ -43,8 +48,15 @@ Python 3 и Windows PowerShell. Работай из корня проекта.
 - Сохраняй кодировку/окончания строк, не исправляй массово старые комментарии.
   Особые требования TOC/Laxus — `.gitattributes`; личные пути не переносить в общие файлы.
 - Не утверждай, что UI/мультиплеер проверены в игре, по одной компиляции или статическим тестам.
+- Объекты предметов/способностей 2026-10-18 (Kusanagi, Hashirama Cells, Shun Shun Rikka, Ashisogi Jizo,
+  Takaoni, Laxus G AS…) уже в `object-data/` + `.object-data-raw/`; их генератор — `tools/stage_items_2026_10_18.py`
+  (идемпотентный, id в `object-data/items-2026-10-18-ids.json`). Иконки и копии эффектов лежат готовыми в
+  `assets/ReplaceableTextures/` и `assets/effects/`; BUILD MAIN ставит их сам (`tools/install_project_assets.py`).
+  Пересборка иконок — `tools/build_item_icons.py`, эффектов — `tools/build_kusanagi_effects.py`.
 
 ## Поддержание памяти
+
+- Changelog-файлы пиши только на английском языке. Только изменения для сообщества: без служебных сведений о сборке, проверках и обновлении описаний/баффов.
 
 - Используй указатели и проверяй затронутый код. Повторный аудит — при смене архитектуры
   или противоречии; не загружай всю документацию сразу.

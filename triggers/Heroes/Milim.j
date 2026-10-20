@@ -1,7 +1,72 @@
 // @ignore-file-errors
 // VS Code jass.jass 1.9.21 incorrectly reports valid vJASS `local thistype this`
 // declarations as keyword conflicts. JassHelper remains the source of truth.
-library MilimSpells uses GearSystems
+library MilimSpells uses GearSystems, WOSUI
+    globals
+        // One hero tick replaces the per-ability 0.05 timers (runs only while any is active).
+        private timer MilimTick05_Timer = CreateTimer()
+        private boolean array MilimTick05_Active
+        private integer MilimTick05_Users = 0
+        private code MilimTick05_Callback = null
+    endglobals
+
+    private function MilimTick05_On takes integer k returns nothing
+        if not MilimTick05_Active[k] then
+            set MilimTick05_Active[k] = true
+            set MilimTick05_Users = MilimTick05_Users + 1
+            if MilimTick05_Users == 1 then
+                call TimerStart(MilimTick05_Timer, 0.05, true, MilimTick05_Callback)
+            endif
+        endif
+    endfunction
+
+    private function MilimTick05_Off takes integer k returns nothing
+        if MilimTick05_Active[k] then
+            set MilimTick05_Active[k] = false
+            set MilimTick05_Users = MilimTick05_Users - 1
+            if MilimTick05_Users <= 0 then
+                set MilimTick05_Users = 0
+                call PauseTimer(MilimTick05_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
+        private timer MilimTick_Timer = CreateTimer()
+        private boolean array MilimTick_Active
+        private integer MilimTick_Users = 0
+        private code MilimTick_Callback = null
+    endglobals
+
+    private function MilimTick_On takes integer k returns nothing
+        if not MilimTick_Active[k] then
+            set MilimTick_Active[k] = true
+            set MilimTick_Users = MilimTick_Users + 1
+            if MilimTick_Users == 1 then
+                call TimerStart(MilimTick_Timer, 0.03, true, MilimTick_Callback)
+            endif
+        endif
+    endfunction
+
+    private function MilimTick_Off takes integer k returns nothing
+        if MilimTick_Active[k] then
+            set MilimTick_Active[k] = false
+            set MilimTick_Users = MilimTick_Users - 1
+            if MilimTick_Users <= 0 then
+                set MilimTick_Users = 0
+                call PauseTimer(MilimTick_Timer)
+            endif
+        endif
+    endfunction
+
+    globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_INVUL = StringHash("invul")
+        private integer SH_MILIMR_PROJECTILES_LEFT = StringHash("MilimR projectiles left")
+        private integer SH_MILIM_G_DMG = StringHash("milim g dmg")
+        private integer SH_MODE_T = StringHash("mode t")
+    endglobals
     globals
 //--------------------------------------Milim--------------------------------------------------------------
         integer Milim_ID = 'H02K'
@@ -12,6 +77,7 @@ library MilimSpells uses GearSystems
         real MilimQ_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real MilimQ_Damage2StaticBase = 175 // base static damage for 1 level
         real MilimQ_Damage2StaticStep = 0 // additional static damage for each next level
+        real MilimQ_ThresholdAgiBonus = 0.70 // +Agi x per passive (G) threshold reached
         real MilimQ_DamageAoe = 155
         real MilimQ_DamageAoe2 = 350
         real MilimQ_Range = 1255
@@ -49,7 +115,7 @@ library MilimSpells uses GearSystems
         real MilimR_DamageAgiBase = 4 // base number x Agi damage for 1 level
         real MilimR_DamageAgiStep = 1 // additional number x Agi damage for each next level
         integer MilimR_Slow = 45
-        real MilimR_DamageAoe = 700.00
+        real MilimR_DamageAoe = 660.00
         integer MilimR_SlowDuration = 2
         real MilimR_CarryAoe = 180.00
         real MilimR_CarryScanPeriod = 0.06
@@ -63,7 +129,8 @@ library MilimSpells uses GearSystems
         real MilimT_DmgAdd = 1.00 // per abi dmg from morph
 //---------------T2 ability-----------------------------------------------------
         integer MilimT2_ID = 'A0HM' //
-        real MilimT2_DamageAgiBase = 10 // overall
+        real MilimT2_ThresholdAgiBonus = 1.00 // +Agi x per passive (G) threshold reached
+        real MilimT2_DamageAgiBase = 12 // overall
         real MilimT2_DamageAoe = 500 // 
         integer MilimT2_Slow = 40 // Caused slow %
         integer MilimT2_SlowDuration = 2 // slow time 2, 3, 4 sec only
@@ -81,13 +148,35 @@ library MilimSpells uses GearSystems
         integer MilimG_Stat_ID1 = 'A0HP'
         integer MilimG_Stat_ID2 = 'A0HR'
         integer MilimG_Stat_ID3 = 'A0HQ'
-        real MilimG_DamagetoStats1 = 4000 //when absorbdamage
-        real MilimG_DamagetoStats2 = 8000 //when absorbdamage
-        real MilimG_DamagetoStats3 = 12000 //when absorbdamage
+        real MilimG_DamagetoStats1 = 3500 //when absorbdamage
+        real MilimG_DamagetoStats2 = 7000 //when absorbdamage
+        real MilimG_DamagetoStats3 = 10500 //when absorbdamage
     endglobals
        
+    // Passive (G) bar divisions already passed: 0..3.
+    function MilimG_GetThresholdCount takes unit c returns integer
+        local real damage = LoadReal(hs, GetHandleId(c), SH_MILIM_G_DMG)
+        local integer count = 0
+        if damage >= MilimG_DamagetoStats1 then
+            set count = count + 1
+        endif
+        if damage >= MilimG_DamagetoStats2 then
+            set count = count + 1
+        endif
+        if damage >= MilimG_DamagetoStats3 then
+            set count = count + 1
+        endif
+        return count
+    endfunction
+
+    function MilimT2_GetThresholdBonus takes unit c returns real
+        if GetHeroLevel(c) < 35 then
+            return 0.00
+        endif
+        return MilimT2_ThresholdAgiBonus * I2R(MilimG_GetThresholdCount(c))
+    endfunction
+
     private struct MilimQKS
-        private static timer t_MilimQ = CreateTimer( )
         private static integer array m_MilimQ
         private static integer MUI_MilimQ = -1
         unit c
@@ -116,7 +205,7 @@ library MilimSpells uses GearSystems
         effect e3
         real a
         real rmax
-        private static method Loop_MilimQ takes nothing returns nothing
+        static method Loop_MilimQ takes nothing returns nothing
             local integer this
             local integer i = 0
             
@@ -133,7 +222,7 @@ library MilimSpells uses GearSystems
                 call SetUnitTimeScale(c,1.25)
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_bdef (383).mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 1, 1))
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_DustWindFaster3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 1, 1))
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_cf1.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 1, 1))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_cf2.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.25, 1, 1))
                         endif
                         if r == 0.54 then 
                         call SetUnitTimeScale(c,0)
@@ -200,6 +289,7 @@ library MilimSpells uses GearSystems
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0HG')
                                 call dmgphys(c, u, dmg)
                                 call MUE(u, MilimQ_PushRange, MilimQ_PushDuration, a)
                             endif
@@ -225,8 +315,9 @@ library MilimSpells uses GearSystems
                     set u = null
                     set m_MilimQ[i] = m_MilimQ[ MUI_MilimQ]
                     set MUI_MilimQ = MUI_MilimQ - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MilimQ == -1 then
-                        call PauseTimer( t_MilimQ)
+                        call MilimTick_Off(0)
                     endif
                     call deallocate(this)
                 endif
@@ -257,7 +348,8 @@ library MilimSpells uses GearSystems
             set aoe = MilimQ_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( MilimQ_DamageAgiBase + ( MilimQ_DamageAgiStep * ( GetUnitAbilityLevel( c , MilimQ_ID) - 1 ) ) )
             set dmg = dmg + MilimQ_Damage2StaticBase + ( MilimQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , MilimQ_ID) - 1 ) )
-            if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+            set dmg = dmg + MilimQ_ThresholdAgiBonus * I2R(MilimG_GetThresholdCount(c)) * GetHeroAgi( c , true)
+            if LoadInteger(hs,GetHandleId(c),SH_MODE_T) == 1 then
                 set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
             endif
             set rmax = 2.1
@@ -268,7 +360,7 @@ library MilimSpells uses GearSystems
                 call SetUnitTimeScale(c,1.5)
                 call MakeSound("war3mapimported\\Hero_Milim_Q 1")
             if MUI_MilimQ == 0 then
-                call TimerStart( t_MilimQ, 0.03, true, function thistype.Loop_MilimQ)
+                call MilimTick_On(0)
             endif
         endmethod
     endstruct
@@ -280,7 +372,6 @@ private struct MilimWKS
     private static constant real JUMP_HEIGHT     = 4000.00
     private static constant real EFFECT_Z_OFFSET = 240.00
 
-    private static timer t_MilimW = CreateTimer()
     private static integer array m_MilimW
     private static integer MUI_MilimW = -1
 
@@ -308,7 +399,7 @@ private struct MilimWKS
         return (4.00 * h / d) * (d - x) * (x / d)
     endmethod
 
-    private static method Loop_MilimW takes nothing returns nothing
+    static method Loop_MilimW takes nothing returns nothing
         local integer this
         local integer i = 0
         local real currentX
@@ -406,6 +497,7 @@ private struct MilimWKS
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0HH')
                                 call dmgphys(c, u, dmg)
                                 call MUE(u,MilimW_PushRange,MilimW_PushTime,GAngle(c,u))
                             endif
@@ -438,7 +530,7 @@ private struct MilimWKS
                 set m_MilimW[i] = m_MilimW[MUI_MilimW]
                 set MUI_MilimW = MUI_MilimW - 1
                 if MUI_MilimW == -1 then
-                    call PauseTimer(t_MilimW)
+                    call MilimTick_Off(6)
                 endif
                 call deallocate(this)
 
@@ -469,11 +561,11 @@ private struct MilimWKS
         set progress = 0.00
         set effectProgress = 0.00
 
-        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MilimW_ID)), 0)
+        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Milim_MILIMW_ID, 0)
         set aoe = MilimW_DamageAoe
         set dmg = GetHeroAgi(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
         set dmg = dmg + MilimW2_Damage2StaticBase + (MilimW2_Damage2StaticStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1))
-        if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+        if LoadInteger(hs,GetHandleId(c),SH_MODE_T) == 1 then
            set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
         endif
         call StartSpellUnit2(c)
@@ -486,13 +578,12 @@ private struct MilimWKS
         call MakeSound("war3mapimported\\Hero_Milim_W 1")
 
         if MUI_MilimW == 0 then
-            call TimerStart(t_MilimW, TIMER_PERIOD, true, function thistype.Loop_MilimW)
+            call MilimTick_On(6)
         endif
     endmethod
 endstruct
 
  private struct MilimW2KS
-        private static timer t_MilimW2 = CreateTimer()
         private static integer array m_MilimW2
         private static integer MUI_MilimW2 = -1
         unit c
@@ -518,7 +609,7 @@ endstruct
         real a
         real rmax
 
-        private static method Loop_MilimW2 takes nothing returns nothing
+        static method Loop_MilimW2 takes nothing returns nothing
             local thistype this
             local integer i = 0
             loop
@@ -554,6 +645,7 @@ endstruct
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                                 if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
+                                    call DamageSource('A0HI')
                                     call dmgmag(c, u, dmg)
                                     call SlowUnit(c, u, MilimW2_Slow , MilimW2_SlowDuration )
                                     call MUE(u,MilimW2_TightRange,MilimW2_TightDuration,GAngle(u,c))
@@ -591,7 +683,7 @@ endstruct
                     call ColorEffDummy3(e2,0,255,255,255,0.3)
                     call ColorEffDummy3(e3,0,255,255,255,0.3)
                     call StopSpellUnit2(c)
-                call SaveInteger(hs,GetHandleId(c),StringHash("invul"),0)
+                call SaveInteger(hs,GetHandleId(c),SH_INVUL,0)
                     call DestroyGroup(g)
                     if g2 != null then
                         call DestroyGroup(g2)
@@ -605,8 +697,9 @@ endstruct
                     set u = null
                     set m_MilimW2[i] = m_MilimW2[MUI_MilimW2]
                     set MUI_MilimW2 = MUI_MilimW2 - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MilimW2 == -1 then
-                        call PauseTimer( t_MilimW2 )
+                        call MilimTick05_Off(0)
                     endif
                     call destroy( )
                 endif
@@ -631,7 +724,7 @@ endstruct
                 set check = 0
                 set aoe = MilimW2_DamageAoe
                 set dmg = GetHeroInt(c, true) * (MilimW2_DamageAgiBase + (MilimW2_DamageAgiStep * (GetUnitAbilityLevel(c, MilimW_ID) - 1)))
-                if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+                if LoadInteger(hs,GetHandleId(c),SH_MODE_T) == 1 then
                     set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)    
                 endif
                 set dmg = dmg / 4
@@ -641,10 +734,10 @@ endstruct
                 call MakeSound("war3mapimported\\Hero_Milim_W2 1")
                 //call MakeSound("war3mapimported\\Hero_Barragan_R2")
                 call StartSpellUnit2(c)
-                call SaveInteger(hs,GetHandleId(c),StringHash("invul"),1)
+                call SaveInteger(hs,GetHandleId(c),SH_INVUL,1)
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 2000, rmax)
             if MUI_MilimW2 == 0 then
-                call TimerStart( t_MilimW2, 0.05, true, function thistype.Loop_MilimW2 )
+                call MilimTick05_On(0)
             endif
         endmethod
 
@@ -652,7 +745,6 @@ endstruct
 
 
     private struct MilimEKS
-        private static timer t_MilimE = CreateTimer( )
         private static integer array m_MilimE
         private static integer MUI_MilimE = -1
         unit c
@@ -684,7 +776,7 @@ endstruct
         effect e
         real a
         real rmax
-        private static method Loop_MilimE takes nothing returns nothing
+        static method Loop_MilimE takes nothing returns nothing
             local integer this
             local integer i = 0
             loop
@@ -763,6 +855,7 @@ endstruct
                             exitwhen u == null or r == 999
                             if SpellBool( u ) and IsUnitEnemy( u , GetOwningPlayer( c )) and IsUnitInGroup(u,g2)==false then
                             call GroupAddUnit(g2,u)
+                            call DamageSource('A0HJ')
                             call dmgmag(c,u,dmg)
                             endif
                             call GroupRemoveUnit( g , u )
@@ -779,8 +872,10 @@ endstruct
                     
                      //   call BlzSetSpecialEffectPitch(e,-120*bj_DEGTORAD)
                     //call BlzPlaySpecialEffect(e,ANIM_TYPE_DEATH)
-                    if check< 20 then 
-                    call ColorEffDummy3(e,0,255,255,255,0.35)
+                    // Fade/destroy the beam unless the check==20 branch already did (21).
+                    // A death on the tick check reached 20 used to leave it forever.
+                    if e != null and check < 21 then
+                        call ColorEffDummy3(e,0,255,255,255,0.35)
                     endif
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup( g )
@@ -792,8 +887,9 @@ endstruct
                     set u = null
                     set m_MilimE[i] = m_MilimE[ MUI_MilimE]
                     set MUI_MilimE = MUI_MilimE - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MilimE == -1 then
-                        call PauseTimer( t_MilimE)
+                        call MilimTick_Off(1)
                     endif
                     call deallocate(this)
                 endif
@@ -833,7 +929,7 @@ endstruct
             set u = null
             set aoe = MilimE_DamageAoe
             set dmg = GetHeroAgi( c , true) * ( MilimE_DamageAgiBase + ( MilimE_DamageAgiStep * ( GetUnitAbilityLevel( c , MilimE_ID) - 1 ) ) )
-            if LoadInteger(hs,GetHandleId(c),StringHash("mode t")) == 1 then
+            if LoadInteger(hs,GetHandleId(c),SH_MODE_T) == 1 then
                 set dmg = dmg + MilimT_DmgAdd * GetHeroAgi( c , true)
             endif
             
@@ -842,7 +938,7 @@ endstruct
             call SetUnitTimeScale(c, 0.95)
             call MakeSound("war3mapimported\\Hero_Milim_E")
             if MUI_MilimE == 0 then
-                call TimerStart( t_MilimE, 0.03, true, function thistype.Loop_MilimE)
+                call MilimTick_On(1)
             endif
         endmethod
     endstruct
@@ -852,7 +948,6 @@ endstruct
 
 // Ïîëíîñòüþ îòâå÷àåò çà ïîë¸ò îäíîãî ñíàðÿäà, çàäåðæêó è âçðûâ.
 private struct MilimRProjectileKS
-    private static timer t_MilimRProjectile = CreateTimer()
     private static integer array m_MilimRProjectile
     private static integer MUI_MilimRProjectile = -1
 
@@ -883,7 +978,7 @@ private struct MilimRProjectileKS
     integer check
     boolean showExplosionFx
 
-    private static method Loop_MilimRProjectile takes nothing returns nothing
+    static method Loop_MilimRProjectile takes nothing returns nothing
         local integer this
         local integer i = 0
         local real progress
@@ -983,7 +1078,7 @@ private struct MilimRProjectileKS
                 endif
             else
                 set r = r + 0.03
-                if r == 0.06 and IntegerCd(c,"cd exp",2) then 
+                if r == 0.06 and IntegerCdKey(c, SH_ICD_CD_EXP,2) then 
                 call MakeSound("war3mapimported\\Hero_Milim_R 4")
                 endif
                 if r >= 0.15 then
@@ -1007,6 +1102,7 @@ private struct MilimRProjectileKS
                         exitwhen u == null
                         if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                             call GroupAddUnit(g2, u)
+                            call DamageSource('A0HK')
                             call dmgmag(c, u, dmg)
                             call SlowUnit(c, u, MilimR_Slow, MilimR_SlowDuration)
                         endif
@@ -1015,13 +1111,13 @@ private struct MilimRProjectileKS
 
                     // Îáùàÿ ãðóïïà æèâ¸ò, ïîêà íå âçîðâ¸òñÿ ïîñëåäíèé ñíàðÿä êàñòà.
                     set sharedGroupId = GetHandleId(g2)
-                    set remainingProjectiles = LoadInteger(hs, sharedGroupId, StringHash("MilimR projectiles left")) - 1
+                    set remainingProjectiles = LoadInteger(hs, sharedGroupId, SH_MILIMR_PROJECTILES_LEFT) - 1
                     if remainingProjectiles <= 0 then
                         call FlushChildHashtable(hs, sharedGroupId)
                         call DestroyGroup(g2)
                         call DestroyGroup(g4)
                     else
-                        call SaveInteger(hs, sharedGroupId, StringHash("MilimR projectiles left"), remainingProjectiles)
+                        call SaveInteger(hs, sharedGroupId, SH_MILIMR_PROJECTILES_LEFT, remainingProjectiles)
                     endif
 
                     call DestroyGroup(g)
@@ -1039,7 +1135,7 @@ private struct MilimRProjectileKS
                     set m_MilimRProjectile[i] = m_MilimRProjectile[MUI_MilimRProjectile]
                     set MUI_MilimRProjectile = MUI_MilimRProjectile - 1
                     if MUI_MilimRProjectile == -1 then
-                        call PauseTimer(t_MilimRProjectile)
+                        call MilimTick_Off(2)
                     endif
                     call deallocate(this)
                     set i = i - 1
@@ -1083,7 +1179,7 @@ private struct MilimRProjectileKS
         set e2 = EffectSpawn("war3mapImported\\wos_file00004263.mdl", startX, startY, (a + arcSide * 90.00 * bj_DEGTORAD) * bj_RADTODEG, 1.00, 2.75, fly)
 
         if MUI_MilimRProjectile == 0 then
-            call TimerStart(t_MilimRProjectile, 0.03, true, function thistype.Loop_MilimRProjectile)
+            call MilimTick_On(2)
         endif
     endmethod
 endstruct
@@ -1099,7 +1195,6 @@ private struct MilimRKS
     private static constant real ARC_MIN = 220.00
     private static constant real ARC_MAX = 520.00
 
-    private static timer t_MilimR = CreateTimer()
     private static integer array m_MilimR
     private static integer MUI_MilimR = -1
 
@@ -1116,7 +1211,7 @@ private struct MilimRKS
     real dmg
     integer launched
 
-    private static method Loop_MilimR takes nothing returns nothing
+    static method Loop_MilimR takes nothing returns nothing
         local integer this
         local integer i = 0
         local integer slotIndex
@@ -1153,7 +1248,7 @@ private struct MilimRKS
                 set releaseInterval = MISSILE_RELEASE_WINDOW / I2R(MISSILE_COUNT - 1)
                 set releaseOffset = I2R(launched) * releaseInterval
                 if r == CAST_DELAY + releaseOffset then
-                if IntegerCd(c,"cd start",1.5) then 
+                if IntegerCdKey(c, SH_ICD_CD_START,1.5) then 
         call MakeSound("war3mapimported\\Hero_Milim_R 3")
         endif
         endif
@@ -1185,7 +1280,7 @@ private struct MilimRKS
 
                     // ÇÀÒÛ×ÊÀ: êîðîòêèé ýôôåêò ïðè âûïóñêå êàæäîãî ñíàðÿäà.
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_effect lvse-magic-shousuo blue.mdl", GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), GetRandomReal(0, 359), 1.00, 2.00, 120.00))
-                    call SaveInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left"), LoadInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left")) + 1)
+                    call SaveInteger(hs, GetHandleId(g), SH_MILIMR_PROJECTILES_LEFT, LoadInteger(hs, GetHandleId(g), SH_MILIMR_PROJECTILES_LEFT) + 1)
                     call MilimRProjectileKS.MilimRProjectile_Start(c, GetUnitX(c)+add*Cos(a), GetUnitY(c)+add*Sin(a), targetX, targetY, arcSide, GetRandomReal(ARC_MIN, ARC_MAX), GetUnitFlyHeight(c) + GetRandomReal(110.00, 230.00), flightTime, dmg, g, g2, createExplosionFx)
                     set launched = launched + 1
                 endif
@@ -1196,7 +1291,7 @@ private struct MilimRKS
                 call DestroyEffect(e)
                 call DestroyEffect(e2)
                 call DestroyEffect(e3)
-                if LoadInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left")) <= 0 then
+                if LoadInteger(hs, GetHandleId(g), SH_MILIMR_PROJECTILES_LEFT) <= 0 then
                     call FlushChildHashtable(hs, GetHandleId(g))
                     call DestroyGroup(g)
                     call DestroyGroup(g2)
@@ -1211,7 +1306,7 @@ private struct MilimRKS
                 set m_MilimR[i] = m_MilimR[MUI_MilimR]
                 set MUI_MilimR = MUI_MilimR - 1
                 if MUI_MilimR == -1 then
-                    call PauseTimer(t_MilimR)
+                    call MilimTick_Off(3)
                 endif
                 call deallocate(this)
                 set i = i - 1
@@ -1235,14 +1330,14 @@ private struct MilimRKS
 
         // Ëþáîé þíèò ïîëó÷àåò ýòîò ïîëíûé óðîí òîëüêî îò ïåðâîãî ïîïàâøåãî ñíàðÿäà.
         set dmg = GetHeroAgi(c, true) * (MilimR_DamageAgiBase + MilimR_DamageAgiStep * (GetUnitAbilityLevel(c, MilimR_ID) - 1))
-        if LoadInteger(hs, GetHandleId(c), StringHash("mode t")) == 1 then
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1 then
             set dmg = dmg + MilimT_DmgAdd * GetHeroAgi(c, true) 
         endif
         set g = CreateGroup()
         set g2 = CreateGroup()
-        call SaveInteger(hs, GetHandleId(g), StringHash("MilimR projectiles left"), 0)
+        call SaveInteger(hs, GetHandleId(g), SH_MILIMR_PROJECTILES_LEFT, 0)
 
-        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), StringHash(I2S(MilimR_ID)), 0)
+        call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_Milim_MILIMR_ID, 0)
         call StartSpellUnit(c)
         call SetUnitAnimationByIndex(c, 7)
         call MakeSound("war3mapimported\\Hero_Milim_R 1")
@@ -1250,7 +1345,7 @@ private struct MilimRKS
         // ÇÀÒÛ×ÊÀ: ýôôåêò ïîäãîòîâêè ê âûïóñêó ñíàðÿäîâ.
 
         if MUI_MilimR == 0 then
-            call TimerStart(t_MilimR, 0.03, true, function thistype.Loop_MilimR)
+            call MilimTick_On(3)
         endif
     endmethod
 endstruct
@@ -1258,18 +1353,11 @@ endstruct
 
 
 private struct MilimTKS
-        private static timer t_MilimT = CreateTimer( )
         private static integer array m_MilimT
         private static integer MUI_MilimT = -1
         unit c
         real x
         real y
-        framehandle array frame_pas1 [10]
-        framehandle array frame_pas2 [10]
-        framehandle array frame_pas3 [10]
-        framehandle array frame_pas4 [10]
-        framehandle array frame_pas5 [10]
-        framehandle array frame_pas6 [10]
         integer k2
         integer check
         real r
@@ -1278,7 +1366,7 @@ private struct MilimTKS
         effect e2
         effect e3
         real rmax
-        private static method Loop_MilimT takes nothing returns nothing
+        static method Loop_MilimT takes nothing returns nothing
             local integer this
             local integer i = 0
             local real hp
@@ -1291,7 +1379,7 @@ private struct MilimTKS
                         set r = r + 0.03
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
-                        set r = S2R( R2SW( r , 0, 3 ) )
+                        set r = RoundReal(r, 3)
                         call BlzSetSpecialEffectPosition(e,x,y,0)
                         if r2> 0.15 then
                         set r2 = 0
@@ -1316,53 +1404,15 @@ private struct MilimTKS
                             set check = 1
                             set r = 0
                             
-                            if frame_pas1[k2] == null then
-                                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", BlzGetFrameByName("ConsoleUIBackdrop", 0), "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                                call BlzFrameSetVisible(frame_pas1[k2], false)
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetSize(frame_pas2[k2], 0.1, 0.019)
-                                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                                call BlzFrameSetSize(frame_pas3[k2], 0.1, 0.035)
-                                call BlzFrameSetScale(frame_pas3[k2], 0.5)
-                                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0, rmax)
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                                call BlzFrameSetSize(frame_pas4[k2], 0.03, 0.03)
-                                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T", 0, false)
-                                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                                call BlzFrameSetScale(frame_pas5[k2], 0.9)
-                                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0, 0, 2) + "|r")
-                                call BlzFrameSetScale(frame_pas6[k2], 0.9)
-                            else
-                                if GetLocalPlayer() == GetOwningPlayer(c) then
-                                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                                endif
-                                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                            endif
                             call DestroyEffect(EffectSpawn3("war3mapImported\\wos_mei-qqsfx-5.mdl", GetUnitX(c), GetUnitY(c), 1, 0.85, 4, 1, -90))
                         endif
                     elseif check == 1 then
                         if IsUnitPaused(c) == false then
                             set r = r + 0.03
                         endif
-                        set r = S2R( R2SW( r , 0, 3 ) )
-                        call BlzFrameSetValue(frame_pas3[k2], rmax - (r + 0.1))
+                        set r = RoundReal(r, 3)
                         if rmax - r >= 0 then
-                            call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(rmax - r, 0, 2) + "|r")
+                            call WUI_HeroProgress(c, MilimT_ID, "True Form", rmax - r, rmax, true)
                         endif
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
@@ -1375,7 +1425,7 @@ private struct MilimTKS
                     call BlzSetUnitSkin(c, Milim_ID)
                     //call FixAura(c)
                     call BlzSetAbilityIcon(Milim_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_Icon.blp")
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 0)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), MilimT_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), MilimT2_ID, false)
                     if check == 0 then
@@ -1384,17 +1434,16 @@ private struct MilimTKS
                     else
                         call DestroyEffect(e3)
                     endif
-                    if GetLocalPlayer() == GetOwningPlayer(c) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, MilimT_ID, "True Form", 0.00, 0.00, true)
                     set c = null
                     set e = null
                     set e2 = null
                     set e3 = null
                     set m_MilimT[i] = m_MilimT[ MUI_MilimT]
                     set MUI_MilimT = MUI_MilimT - 1
+                    set i = i - 1 // revisit: the moved instance must not skip this tick
                     if MUI_MilimT == -1 then
-                        call PauseTimer( t_MilimT)
+                        call MilimTick_Off(4)
                     endif
                     call deallocate(this)
                 endif
@@ -1418,7 +1467,7 @@ private struct MilimTKS
             set r2 = 0
             set r = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode t"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 1)
             set rmax = MilimT_Duration
             call MakeSound("war3mapimported\\Hero_Milim_T 1")
             call MakeSound("war3mapimported\\Hero_Milim_T 2")
@@ -1426,7 +1475,7 @@ private struct MilimTKS
             set e = EffectSpawn("war3mapImported\\wos_ZK-SM_XL8.mdl", GetUnitX(c), GetUnitY(c), 1, 1.25, 2, 0)
             call BlzSetAbilityIcon(Milim_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_T.blp")          
             if MUI_MilimT == 0 then
-                call TimerStart( t_MilimT, 0.03, true, function thistype.Loop_MilimT)
+                call MilimTick_On(4)
             endif
         endmethod
     endstruct
@@ -1438,7 +1487,6 @@ private struct MilimT2KS
     private static constant real AOE_START_FACTOR = 0.50 // 20% áàçîâîãî AOE âîçëå êàñòåðà
     private static constant real AOE_END_FACTOR = 0.65 // 65% áàçîâîãî AOE â êîíöå ëó÷à
 
-    private static timer t_MilimT2 = CreateTimer()
     private static integer array m_MilimT2
     private static integer MUI_MilimT2 = -1
 
@@ -1470,10 +1518,11 @@ private struct MilimT2KS
     real beamRingTimer
     real move
     real dmg
+    real thresholdBonus
     real aoe
     integer check
 
-    private static method Loop_MilimT2 takes nothing returns nothing
+    static method Loop_MilimT2 takes nothing returns nothing
         local integer this
         local integer i = 0
         local integer damageCount
@@ -1493,6 +1542,10 @@ private struct MilimT2KS
         loop
             exitwhen i > MUI_MilimT2
             set this = m_MilimT2[i]
+            if check == 0 then
+                // Нижняя строка — время каста, верхняя (красная) — доп. урон AGI от порогов G.
+                call WUI_HeroProgressDualText(c, MilimT2_ID, "Drago Nova", MilimT2_ChargeTime - r, MilimT2_ChargeTime, thresholdBonus, MilimT2_ThresholdAgiBonus * 3.00, "+AGI x " + R2SW(thresholdBonus, 0, 2))
+            endif
 
             if SpellBoolCaster(c) and check < 2 then
                 call DebugUnit(c)
@@ -1689,6 +1742,7 @@ private struct MilimT2KS
     
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 if damageCount < MilimT2_DamageTicks then
+                                    call DamageSource('A0HM')
                                     call dmgmag(c, u, dmg)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
 
@@ -1740,7 +1794,7 @@ private struct MilimT2KS
                 set m_MilimT2[i] = m_MilimT2[MUI_MilimT2]
                 set MUI_MilimT2 = MUI_MilimT2 - 1
                 if MUI_MilimT2 == -1 then
-                    call PauseTimer(t_MilimT2)
+                    call MilimTick_Off(5)
                 endif
                 call deallocate(this)
                 set i = i - 1
@@ -1774,7 +1828,8 @@ private struct MilimT2KS
         set castFrontGlowFx = null
         set castFrontBallFx = null
         set aoe = MilimT2_DamageAoe * AOE_START_FACTOR
-        set dmg = GetHeroAgi(c, true) * MilimT2_DamageAgiBase / I2R(MilimT2_DamageTicks)
+        set thresholdBonus = MilimT2_GetThresholdBonus(c)
+        set dmg = GetHeroAgi(c, true) * (MilimT2_DamageAgiBase + thresholdBonus) / I2R(MilimT2_DamageTicks)
         call SetFly(c,150)
         set g = CreateGroup()
         set g2 = CreateGroup()
@@ -1795,18 +1850,12 @@ private struct MilimT2KS
         set e4 = EffectSpawn("war3mapImported\\wos_4xpinkpillar_3.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1.50, 4.50, 255.00)
 
         if MUI_MilimT2 == 0 then
-            call TimerStart(t_MilimT2, 0.03, true, function thistype.Loop_MilimT2)
+            call MilimTick_On(5)
         endif
     endmethod
 endstruct
 
 private struct MilimGKS
-    private static framehandle array frame1
-    private static framehandle array frame2
-    private static framehandle array frame3
-    private static framehandle array frame4
-    private static framehandle array frame5
-    private static framehandle array frame6
 
     private static method GetMaxDamage takes unit c returns real
         if GetHeroLevel(c) >= 35 then
@@ -1820,17 +1869,14 @@ private struct MilimGKS
     private static method UpdateFrame takes unit c returns nothing
         local integer pid = GetPlayerId(GetOwningPlayer(c))
         local real maxDamage = thistype.GetMaxDamage(c)
-        local real damage = LoadReal(hs, GetHandleId(c), StringHash("milim g dmg"))
+        local real damage = LoadReal(hs, GetHandleId(c), SH_MILIM_G_DMG)
 
         if damage > maxDamage then
             set damage = maxDamage
-            call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), damage)
+            call SaveReal(hs, GetHandleId(c), SH_MILIM_G_DMG, damage)
         endif
-        if frame1[pid] != null then
-            call BlzFrameSetMinMaxValue(frame3[pid], 0.00, maxDamage)
-            call BlzFrameSetValue(frame3[pid], damage)
-            call BlzFrameSetText(frame6[pid], "|c00FFFF00" + I2S(R2I(damage)) + "/" + I2S(R2I(maxDamage)) + "|r")
-        endif
+            call WUI_HeroProgressCounter(c, MilimG_ID, "Damage received", damage, maxDamage)
+            call WUI_HeroProgressThresholds(c, MilimG_ID, maxDamage, MilimG_DamagetoStats1, MilimG_DamagetoStats2, MilimG_DamagetoStats3, false)
     endmethod
 
     public static method Start takes unit c returns nothing
@@ -1844,43 +1890,7 @@ private struct MilimGKS
 
         set pid = GetPlayerId(GetOwningPlayer(c))
         set maxDamage = thistype.GetMaxDamage(c)
-        if frame1[pid] == null then
-            set frame1[pid] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-            call BlzFrameSetAbsPoint(frame1[pid], FRAMEPOINT_CENTER, 0.055, 0.18 + tmpY)
-            call BlzFrameSetSize(frame1[pid], 0.135, 0.035)
-            call BlzFrameSetTexture(frame1[pid], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-            call BlzFrameSetVisible(frame1[pid], false)
 
-            set frame2[pid] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame1[pid], 0, 0)
-            call BlzFrameSetAbsPoint(frame2[pid], FRAMEPOINT_CENTER, 0.07, 0.185 + tmpY)
-            call BlzFrameSetSize(frame2[pid], 0.1, 0.019)
-
-            set frame3[pid] = BlzCreateFrameByType("STATUSBAR", "", frame1[pid], "", 0)
-            call BlzFrameSetSize(frame3[pid], 0.1, 0.035)
-            call BlzFrameSetScale(frame3[pid], 0.5)
-            call BlzFrameSetModel(frame3[pid], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-            call BlzFrameSetAbsPoint(frame3[pid], FRAMEPOINT_CENTER, 0.05, 0.175 + tmpY)
-            call BlzFrameSetMinMaxValue(frame3[pid], 0.00, maxDamage+10)
-            call BlzFrameSetValue(frame3[pid], 0.00)
-
-            set frame4[pid] = BlzCreateFrameByType("BACKDROP", "SS", frame1[pid], "", 0)
-            call BlzFrameSetAbsPoint(frame4[pid], FRAMEPOINT_CENTER, 0.005, 0.18 + tmpY)
-            call BlzFrameSetSize(frame4[pid], 0.03, 0.03)
-            call BlzFrameSetTexture(frame4[pid], "ReplaceableTextures\\CommandButtons\\BTNHero_Milim_G.blp", 0, false)
-
-            set frame5[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1[pid], "", 0)
-            call BlzFrameSetAbsPoint(frame5[pid], FRAMEPOINT_CENTER, 0.07, 0.185 + tmpY)
-            call BlzFrameSetText(frame5[pid], "|c00FFFF00Damage received:|r")
-            call BlzFrameSetScale(frame5[pid], 0.9)
-
-            set frame6[pid] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame1[pid], "", 0)
-            call BlzFrameSetAbsPoint(frame6[pid], FRAMEPOINT_CENTER, 0.07, 0.17 + tmpY)
-            call BlzFrameSetScale(frame6[pid], 0.9)
-        endif
-
-        if GetLocalPlayer() == GetOwningPlayer(c) then
-            call BlzFrameSetVisible(frame1[pid], true)
-        endif
         call thistype.UpdateFrame(c)
     endmethod
 
@@ -1893,13 +1903,13 @@ private struct MilimGKS
             return
         endif
 
-        set oldDamage = LoadReal(hs, GetHandleId(c), StringHash("milim g dmg"))
+        set oldDamage = LoadReal(hs, GetHandleId(c), SH_MILIM_G_DMG)
         set maxDamage = thistype.GetMaxDamage(c)
         set newDamage = oldDamage + amount
         if newDamage > maxDamage then
             set newDamage = maxDamage
         endif
-        call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), newDamage)
+        call SaveReal(hs, GetHandleId(c), SH_MILIM_G_DMG, newDamage)
 
         if oldDamage < MilimG_DamagetoStats1 and newDamage >= MilimG_DamagetoStats1 then
             if GetUnitAbilityLevel(c, MilimG_Stat_ID1) == 0 then
@@ -1933,7 +1943,7 @@ private struct MilimGKS
         call UnitRemoveAbility(c, MilimG_Stat_ID1)
         call UnitRemoveAbility(c, MilimG_Stat_ID2)
         call UnitRemoveAbility(c, MilimG_Stat_ID3)
-        call SaveReal(hs, GetHandleId(c), StringHash("milim g dmg"), 0.00)
+        call SaveReal(hs, GetHandleId(c), SH_MILIM_G_DMG, 0.00)
         if GetHeroLevel(c) >= 12 then
             call thistype.Start(c)
         endif
@@ -1995,6 +2005,56 @@ endfunction
         call MilimGKS.Reset(c)
     endfunction
    
+
+    private struct MilimTick_Loop extends array
+        static method Loop takes nothing returns nothing
+            if MilimTick_Active[0] then
+                call MilimQKS.Loop_MilimQ()
+            endif
+            if MilimTick_Active[1] then
+                call MilimEKS.Loop_MilimE()
+            endif
+            if MilimTick_Active[2] then
+                call MilimRProjectileKS.Loop_MilimRProjectile()
+            endif
+            if MilimTick_Active[3] then
+                call MilimRKS.Loop_MilimR()
+            endif
+            if MilimTick_Active[4] then
+                call MilimTKS.Loop_MilimT()
+            endif
+            if MilimTick_Active[5] then
+                call MilimT2KS.Loop_MilimT2()
+            endif
+            if MilimTick_Active[6] then
+                call MilimWKS.Loop_MilimW()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set MilimTick_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+
+    private struct MilimTick05_Loop extends array
+        static method Loop takes nothing returns nothing
+            if MilimTick05_Active[0] then
+                call MilimW2KS.Loop_MilimW2()
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set MilimTick05_Callback = function thistype.Loop
+        endmethod
+    endstruct
+
+    globals
+        // Static ability ids: these keys are hashed once, after the ids are set.
+        integer SH_Milim_MILIMR_ID = StringHash(I2S(MilimR_ID))
+        integer SH_Milim_MILIMW_ID = StringHash(I2S(MilimW_ID))
+    endglobals
+
 endlibrary
 
 

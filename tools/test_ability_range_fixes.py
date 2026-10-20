@@ -203,7 +203,7 @@ class HeroRequirements(unittest.TestCase):
         s=(ROOT/'triggers/WOS_Start/ShowCD.j').read_text(encoding='utf-8-sig')
         if 'function AHUI_RequirementLocked' not in s:s=requirements(s)
         vm=JassState(s);damage=[5999]
-        vm.g.update(TakeshiG_ID=1,TakeshiG_TakenDamageToEnter=6000,hs={},
+        vm.g.update(RaidenF_ID=99,TakeshiG_ID=1,TakeshiG_TakenDamageToEnter=6000,hs={},
             GetHandleId=lambda u:u,StringHash=lambda s:s,LoadReal=lambda *a:damage[0])
         self.assertTrue(vm.run('AHUI_RequirementLocked',('hero',1)))
         damage[0]=6000;self.assertFalse(vm.run('AHUI_RequirementLocked',('hero',1)))

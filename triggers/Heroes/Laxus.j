@@ -1,11 +1,25 @@
 library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
     globals
+        // Hashed once at map load (was StringHash(...) on every call).
+        private integer SH_LVL4 = StringHash("lvl4")
+        private integer SH_LVL5 = StringHash("lvl5")
+        private integer SH_MODE_G = StringHash("mode g")
+        private integer SH_ORD_ID = StringHash("ord_id")
+        private integer SH_ORD_MODE = StringHash("ord_mode")
+        private integer SH_ORD_TARGET = StringHash("ord_target")
+        private integer SH_ORD_X = StringHash("ord_x")
+        private integer SH_ORD_Y = StringHash("ord_y")
+    endglobals
+    globals
         private timer LaxusTimer03
         private code LaxusTimer03Callback
         private integer LaxusTimer03Users = 0
 
 //--------------------------------------Laxus Core--------------------------------------------------------
         integer Laxus_ID = 'H02C'
+        real Laxus_LightningManaRestore = 120.00
+        real Laxus_LightningGReduceCD = 1.00
+        real Laxus_LightningQReduceCD = 1.00
         boolean LaxusPicked = false
         boolean LaxusFActive = false
 
@@ -120,7 +134,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         real LaxusT_DamageStrBase = 10.0
         real LaxusT_DamageAoe = 1400.0
         real LaxusT_Silence = 2.00
-        boolean LaxusT_IsInvul = true
+        boolean LaxusT_IsInvul = false // shielded (KEY_SHIELD) instead of invulnerable
         real LaxusT_CastTime = 2.10
         real LaxusT_DecorDamage = 100.0
         integer LaxusT_Debuff = 0
@@ -130,6 +144,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         real LaxusG_Duration = 15.0
         integer LaxusG_HpBonus35 = 1000
         boolean LaxusG_IsInvul = false
+        integer LaxusG_MsLevels = 4 // levels of A01C (Hero MS Base, +10 ms each): +40 ms
+        integer LaxusG_MsLevels35 = 6 // Red Lightning (lv 35): +60 ms
+        integer LaxusG_AttackSpeed_ID = 'A111' // Gloves of Haste copy +15%
+        integer LaxusG_AttackSpeed35_ID = 'A112' // Gloves of Haste copy +30%
         real LaxusG_CastTime = 0.00
         real LaxusG_DecorDamage = 0.0
 
@@ -159,10 +177,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Laxus_ID then
             if ord == 851971 or ord == 851986 or ord == 851990 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 1)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_x"), GetOrderPointX())
-                call SaveReal(hs, GetHandleId(u), StringHash("ord_y"), GetOrderPointY())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 1)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveReal(hs, GetHandleId(u), SH_ORD_X, GetOrderPointX())
+                call SaveReal(hs, GetHandleId(u), SH_ORD_Y, GetOrderPointY())
             endif
         endif
         set u = null
@@ -174,9 +192,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Laxus_ID then
             if ord == 851971 or ord == 851983 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 2)
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_id"), ord)
-                call SaveUnitHandle(hs, GetHandleId(u), StringHash("ord_target"), GetOrderTargetUnit())
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 2)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_ID, ord)
+                call SaveUnitHandle(hs, GetHandleId(u), SH_ORD_TARGET, GetOrderTargetUnit())
             endif
         endif
         set u = null
@@ -188,15 +206,24 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         local integer ord = GetIssuedOrderId()
         if GetUnitTypeId(u) == Laxus_ID then
             if ord == 851972 or ord == 851993 then
-                call SaveInteger(hs, GetHandleId(u), StringHash("ord_mode"), 0)
+                call SaveInteger(hs, GetHandleId(u), SH_ORD_MODE, 0)
             endif
         endif
         set u = null
         return false
     endfunction
 
+    private function LaxusQ_Release takes unit c, boolean invulnerable returns nothing
+        if invulnerable then
+            call UnitRemoveAbility(c, 'Avul')
+        endif
+        call SetUnitTimeScale(c, 1.00)
+        call PauseUnit(c, false)
+        call GearSelectOnlyHero(c)
+    endfunction
+
     function Laxus_RestoreOrder takes unit c, integer animIndex returns nothing
-        local integer mode = LoadInteger(hs, GetHandleId(c), StringHash("ord_mode"))
+        local integer mode = LoadInteger(hs, GetHandleId(c), SH_ORD_MODE)
         local real ox
         local real oy
         local real dx
@@ -205,19 +232,19 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         local unit tu
 
         if mode == 1 then
-            set ox = LoadReal(hs, GetHandleId(c), StringHash("ord_x"))
-            set oy = LoadReal(hs, GetHandleId(c), StringHash("ord_y"))
+            set ox = LoadReal(hs, GetHandleId(c), SH_ORD_X)
+            set oy = LoadReal(hs, GetHandleId(c), SH_ORD_Y)
             set dx = ox - GetUnitX(c)
             set dy = oy - GetUnitY(c)
             if (dx * dx + dy * dy) > 5625.0 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssuePointOrderById(c, oid, ox, oy)
                 return
             endif
         elseif mode == 2 then
-            set tu = LoadUnitHandle(hs, GetHandleId(c), StringHash("ord_target"))
+            set tu = LoadUnitHandle(hs, GetHandleId(c), SH_ORD_TARGET)
             if tu != null and GetWidgetLife(tu) > 0.405 then
-                set oid = LoadInteger(hs, GetHandleId(c), StringHash("ord_id"))
+                set oid = LoadInteger(hs, GetHandleId(c), SH_ORD_ID)
                 call IssueTargetOrderById(c, oid, tu)
                 set tu = null
                 return
@@ -316,6 +343,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         private static integer MUI_LaxusQ2 = -1
 
         unit c
+        boolean casterReleased
         unit u
         group g
         group g2
@@ -351,7 +379,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 set this = m_LaxusQ2[i]
 
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if check == 0 then
                         if r == LaxusQ2_CastTime then
@@ -368,6 +396,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             else
                                 set l = AddLightningEx("LX02", false, GetUnitX(c) + 10.0 * Cos(a), GetUnitY(c) + 10.0 * Sin(a), GetUnitFlyHeight(c) + LaxusQ_CasterLightningHeight2, x, y, GetUnitFlyHeight(c) + LaxusQ_CasterLightningHeight2)
                             endif
+                            call LaxusQ_Release(c, LaxusQ2_IsInvul)
+                            set casterReleased = true
+                            call Laxus_RestoreOrder(c, 0)
                             call NextSound("war3mapimported\\Hero_Laxus_Q4", 0.15)
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_tx-ha_nitu.mdl", GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 2.0, 1.25, 1.0, 255, 255, 255, 225))
                         endif
@@ -435,15 +466,17 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             endif
 
                             call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                             loop
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                     call GroupAddUnit(g2, u)
-                                    if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 and LaxusQ2_Debuff > 0 then
+                                    if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 and LaxusQ2_Debuff > 0 then
+                                        call DamageSource('A0F1')
                                         call ErzaPassive(c, u, LaxusQ2_Debuff)
                                     endif
+                                    call DamageSource('A0F1')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 call GroupRemoveUnit(g, u)
@@ -470,12 +503,13 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                                 call DecorRemove(c, x, y, LaxusQ2_DamageAoe2, LaxusQ2_ExplosionDecorDamage)
 
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, x, y, LaxusQ2_DamageAoe2, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, x, y, LaxusQ2_DamageAoe2, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                         call GroupAddUnit(g2, u)
+                                        call DamageSource('A0F1')
                                         call dmgmag(c, u, dmg)
                                     endif
                                     call GroupRemoveUnit(g, u)
@@ -488,11 +522,6 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             endif
                         endif
                     elseif check == 1 then
-                        if LaxusQ2_IsInvul then
-                            call DebugUnit(c)
-                        else
-                            call DebugUnit2(c)
-                        endif
                         set r2 = r2 + 180.0
                         if r2 > r7 + 10.0 then
                             set r2 = r7 + 10.0
@@ -504,13 +533,13 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             set r = 999999.0
                         endif
                     endif
-                else
-                    call SetUnitAnimation(c, "stand")
-                    call SetUnitTimeScale(c, 1.0)
-                    if LaxusQ2_IsInvul then
-                        call StopSpellUnit(c)
-                    else
-                        call StopSpellUnit2(c)
+                endif
+                // Retracted beam: cleanup now, without an extra paused timer tick.
+                if not SpellBoolCaster(c) or r > rmax then
+                    if not casterReleased then
+                        call LaxusQ_Release(c, LaxusQ2_IsInvul)
+                        set casterReleased = true
+                        call Laxus_RestoreOrder(c, 0)
                     endif
                     if e != null then
                         call DestroyEffect(e)
@@ -548,6 +577,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set MUI_LaxusQ2 = MUI_LaxusQ2 + 1
             set m_LaxusQ2[MUI_LaxusQ2] = this
             set c = NewC
+            set casterReleased = false
             set x = NewX
             set y = NewY
             set r = 0.0
@@ -576,9 +606,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set dmg = GetHeroStr(c, true) * (LaxusQ_DamageStrBase + (LaxusQ_DamageStrStep * (GetUnitAbilityLevel(c, LaxusQ_ID) - 1)))
             set dmg = dmg + LaxusQ_Damage2StaticBase + (LaxusQ_Damage2StaticStep * (GetUnitAbilityLevel(c, LaxusQ_ID) - 1))
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGQ_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set check2 = 1
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGQ2_DamageStrBonus
                 endif
@@ -606,7 +636,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 set this = m_LaxusQ[i]
 
                 if SpellBoolCaster(c) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
 
                     if LaxusQ_IsInvul then
                         call DebugUnit(c)
@@ -637,23 +667,25 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                     call MoveLightningEx(l, false, GetUnitX(c) + r2 * Cos(a), GetUnitY(c) + r2 * Sin(a), GetUnitFlyHeight(c) + LaxusQ_CasterLightningHeight - (120.0 * progress), x, y, effectZ + 200.0)
                 endif
 
-                if not SpellBoolCaster(c) or fallTime >= LaxusQ_FallTime then
-                    if SpellBoolCaster(c) and fallTime >= LaxusQ_FallTime then
+                if not SpellBoolCaster(c) or r + 0.0001 >= LaxusQ_WaitTime + LaxusQ_FallTime then
+                    if SpellBoolCaster(c) and r + 0.0001 >= LaxusQ_WaitTime + LaxusQ_FallTime then
                         call MakeSound("war3mapimported\\Hero_Laxus_Q2")
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 0.65, 1.0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_[DoFT]EF501Item.mdl", x, y, GetRandomReal(0.0, 359.0), 1.0, 4.0, 1.0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_File00229.mdl", x, y, GetRandomReal(0.0, 359.0), 0.50, 8.0, 1.0))
                         call DecorRemove(c, x, y, aoe, LaxusQ_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
 
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 if LaxusQ_Debuff > 0 then
+                                    call DamageSource('A0ES')
                                     call ErzaPassive(c, u, LaxusQ_Debuff)
                                 endif
+                                call DamageSource('A0ES')
                                 call dmgmag(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -662,13 +694,8 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call ColorEffDummy3(EffectSpawnColor("war3mapimported\\wos_almagest1.mdl", x, y, 1.0, 2.0, 3.0 * scale, 155.0, 75, 225, 255, 0), 0.30, 255, 225, 95, 0.30)
                     endif
 
-                    if LaxusQ_IsInvul then
-                        call StopSpellUnit(c)
-                    else
-                        call StopSpellUnit2(c)
-                    endif
-                    call SetUnitAnimation(c, "stand")
-                    call SetUnitTimeScale(c, 1.0)
+                    call LaxusQ_Release(c, LaxusQ_IsInvul)
+                    call Laxus_RestoreOrder(c, 0)
                     if l != null then
                         call DestroyLightning(l)
                     endif
@@ -734,9 +761,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set dmg = GetHeroStr(c, true) * (LaxusQ_DamageStrBase + LaxusQ_DamageStrStep * (level - 1))
             set dmg = dmg + LaxusQ_Damage2StaticBase + LaxusQ_Damage2StaticStep * (level - 1)
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGQ_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set check2 = 1
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGQ2_DamageStrBonus
                 endif
@@ -796,7 +823,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusW2
                 set this = m_LaxusW2[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if r == 0.30 then
@@ -832,15 +859,17 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         endloop
                         call DecorRemove(c, x, y, aoe, LaxusW2_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
 
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                                if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 and LaxusW2_Debuff > 0 then
+                                if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 and LaxusW2_Debuff > 0 then
+                                    call DamageSource('A0EU')
                                     call ErzaPassive(c, u, LaxusW2_Debuff)
                                 endif
+                                call DamageSource('A0EU')
                                 call dmgphys(c, u, dmg)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -867,15 +896,17 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                     if r == LaxusW2_SecondExplosionDelay then
                         call DecorRemove(c, x, y, aoe, LaxusW2_DecorDamage)
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
 
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                                if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 and LaxusW2_Debuff > 0 then
+                                if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 and LaxusW2_Debuff > 0 then
+                                    call DamageSource('A0EU')
                                     call ErzaPassive(c, u, LaxusW2_Debuff)
                                 endif
+                                call DamageSource('A0EU')
                                 call dmgmag(c, u, dmg2)
                             endif
                             call GroupRemoveUnit(g, u)
@@ -964,10 +995,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set a = GAngle(c, td)
             call PosUnit(c, GetUnitX(td) - 150.0 * Cos(a), GetUnitY(td) - 150.0 * Sin(a))
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGW2_DamageStrBonus
                 set dmg2 = dmg2 + GetHeroStr(c, true) * LaxusGW2_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set check2 = 1
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGW2_DamageStrBonus2
                     set dmg2 = dmg2 + GetHeroStr(c, true) * LaxusGW2_DamageStrBonus2
@@ -992,7 +1023,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusW
                 set this = m_LaxusW[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if r == LaxusW_CastTime then
@@ -1006,9 +1037,11 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         if SR2(c, td) > 100.0 then
                             call MoveUnit(c, move, a)
                         else
+                            call DamageSource('A0ET')
                             call dmgphys(c, td, dmg)
                             call StunUnit(c, td, LaxusW_Stun)
-                            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 and LaxusW_Debuff > 0 then
+                            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 and LaxusW_Debuff > 0 then
+                                call DamageSource('A0ET')
                                 call ErzaPassive(c, td, LaxusW_Debuff)
                             endif
                             call MUE(td, LaxusW_PushRange, LaxusW_PushDuration, a)
@@ -1105,9 +1138,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set dmg = GetHeroStr(c, true) * (LaxusW_DamageStrBase + (LaxusW_DamageStrStep * (GetUnitAbilityLevel(c, LaxusW_ID) - 1)))
             set dmg = dmg + LaxusW_Damage2StaticBase + (LaxusW_Damage2StaticStep * (GetUnitAbilityLevel(c, LaxusW_ID) - 1))
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGW_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGW_DamageStrBonus2
                     set check2 = 1
                 endif
@@ -1156,7 +1189,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusE
                 set this = m_LaxusE[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if LaxusE_IsInvul then
                         call DebugUnit(c)
                     else
@@ -1204,13 +1237,15 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_ljq_jn_lsfgxs02_red.mdl", x, y, GetRandomReal(0.0, 359.0), 4.0, 0.65, 1.0))
                         endif
                         call DecorRemove(c, x, y, aoe, LaxusE_DecorDamage)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                                call DamageSource('A0EV')
                                 call dmgphys(c, u, dmg)
                                 if LaxusE_Debuff > 0 then
+                                    call DamageSource('A0EV')
                                     call ErzaPassive(c, u, LaxusE_Debuff)
                                 endif
                                 call SlowUnit(c, u, LaxusE_Slow, LaxusE_Duration)
@@ -1282,9 +1317,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 call MakeSound("war3mapimported\\Hero_Laxus_E2")
             endif
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGE_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set check2 = 1
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGE_DamageStrBonus2
                 endif
@@ -1338,7 +1373,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusR
                 set this = m_LaxusR[i]
                 if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < LaxusR_CastTime then
                         if LaxusR_IsInvul then
                             call DebugUnit(c)
@@ -1401,17 +1436,20 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                                 call VisionTimed(GetOwningPlayer(c), GetEffX(e4), GetEffY(e4), aoe, 1.0)
                                 call DecorRemove(c, GetEffX(e4), GetEffY(e4), aoe, LaxusR_DecorDamage)
                                 call GroupClear(g)
-                                call GroupEnumUnitsInRange(g, GetEffX(e4), GetEffY(e4), aoe, Condition(function NoDecor_Filter))
+                                call GroupEnumUnitsInRange(g, GetEffX(e4), GetEffY(e4), aoe, NoDecor_Cond)
                                 loop
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                         if GetUnitAbilityLevel(u, 'B008') > 0 then 
+                                            call DamageSource('A0EW')
                                             call dmgmag(c, u, dmg * (1.0 + (LaxusR_DamageBonus / 100.0)))
                                         else
+                                            call DamageSource('A0EW')
                                             call dmgmag(c, u, dmg)
                                         endif
                                         if LaxusR_Debuff > 0 then
+                                            call DamageSource('A0EW')
                                             call ErzaPassive(c, u, LaxusR_Debuff)
                                         endif
                                         call StunUnit(c, u, LaxusR_Stun)
@@ -1483,17 +1521,20 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                             call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 5.0*scale, 175.0, 45, 0, 0, 255))
                         endif
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, LaxusR_DamageAoe2, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, LaxusR_DamageAoe2, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                 if GetUnitAbilityLevel(u, 'B008') > 0 then 
+                                    call DamageSource('A0EW')
                                     call dmgmag(c, u, dmg * (1.0 + (LaxusR_DamageBonus / 100.0)))
                                 else
+                                    call DamageSource('A0EW')
                                     call dmgmag(c, u, dmg)
                                 endif
                                 if LaxusR_Debuff > 0 then
+                                    call DamageSource('A0EW')
                                     call ErzaPassive(c, u, LaxusR_Debuff)
                                 endif
                                 call StunUnit(c, u, LaxusR_Stun)
@@ -1564,9 +1605,9 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             set r2 = 10.0
             set dmg = GetHeroStr(c, true) * (LaxusR_DamageStrBase + LaxusR_DamageStrStep * (GetUnitAbilityLevel(c, LaxusR_ID) - 1))
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGR_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set check2 = 1
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGR_DamageStrBonus2
                 endif
@@ -1615,7 +1656,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusT
                 set this = m_LaxusT[i]
                 if r <= rmax then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if LaxusT_IsInvul then
                         call DebugUnit(c)
                     else
@@ -1641,14 +1682,16 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_HakkeStartWhite.mdx", x, y, GetRandomReal(0.0, 359.0), 1.40, 2.75 * scale, 0.0, 255, 255, 125, 255))
                         call DestroyEffect(EffectSpawnScale("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", x, y, GetRandomReal(0.0, 359.0), 0.65, 1.0, 1.0, 0.30, 0.01, 2.80 * scale))
                         call GroupClear(g)
-                        call GroupEnumUnitsInRange(g, x, y, aoe, Condition(function NoDecor_Filter))
+                        call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
                         loop
                             set u = FirstOfGroup(g)
                             exitwhen u == null
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 if LaxusT_Debuff > 0 then
+                                    call DamageSource('A0EX')
                                     call ErzaPassive(c, u, LaxusT_Debuff)
                                 endif
+                                call DamageSource('A0EX')
                                 call dmgmag(c, u, dmg)
                                 call SilenceUnit(c, u, LaxusT_Silence)
                             endif
@@ -1665,6 +1708,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call UnitRemoveAbility(c, 'Avul')
                     else
                         call StopSpellUnit2(c)
+                        call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 0)
                     endif
                     if e != null then
                         call DestroyEffect(e)
@@ -1713,6 +1757,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 call UnitAddAbility(c, 'Avul')
             else
                 call StartSpellUnit2(c)
+                call SaveInteger(hs, GetHandleId(c), KEY_SHIELD, 1)
             endif
             set aoe = LaxusT_DamageAoe
             call SetUnitAnimationByIndex(c, 8)
@@ -1758,7 +1803,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 exitwhen i > MUI_LaxusF
                 set this = m_LaxusF[i]
                 if SpellBoolCaster(c) and r <= rmax and SpellBoolCaster(td) then
-                    set r = RoundReal(r + 0.03, 3)
+                    set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
 
@@ -1830,8 +1875,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
 
                         // ИСПРАВЛЕНИЕ: проверка через >= исключает пропуск кадра
                         if r >= LaxusF_HitDelay then
+                            call DamageSource('A0EY')
                             call dmgphys(c, td, dmg)
                             if LaxusF_Debuff > 0 then
+                                call DamageSource('A0EY')
                                 call ErzaPassive(c, td, LaxusF_Debuff)
                             endif
                             call StunUnit(c, td, LaxusF_Stun)
@@ -1848,7 +1895,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_SlamYellow.mdl", x, y, 1.0, 1.0, 4.0, 1.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_YellowMissile.mdl", x, y, 1.0, 1.0, 4.0, 100.0))
                                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0.0, 359.0), 2.0, 0.80, 1.0))
-                                call DestroyEffect(EffectSpawn("war3mapImported\\modelgh (1).mdl", x, y, 0.0, 3.0, 1.25, 100.0))
+                                // removed: modelgh (1).mdl is not imported
                                 set k = 0
                                 loop
                                     exitwhen k == 6
@@ -1943,14 +1990,14 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             call SetUnitTimeScale(c, 1.10)
             set dmg = GetHeroStr(c, true) * LaxusF_DamageStrBase
             set check2 = 0
-            if LoadInteger(hs, GetHandleId(c), StringHash("mode g")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 then
                 set dmg = dmg + GetHeroStr(c, true) * LaxusGF_DamageStrBonus
-                if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+                if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                     set dmg = dmg + GetHeroStr(c, true) * LaxusGF_DamageStrBonus2
                     set check2 = 1
                 endif
             endif
-            if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 1 then
+            if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 1 then
                 call MakeSound("war3mapimported\\Hero_Laxus_GW3")
             else
                 call MakeSound("war3mapimported\\Hero_Laxus_F1")
@@ -1974,14 +2021,10 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
     private struct LaxusG_KS
         private static integer array m_LaxusG
         private static integer MUI_LaxusG = -1
+        integer msLv
+        integer asAbi
         unit c
         integer k2
-        private static framehandle array frame_pas1
-        private static framehandle array frame_pas2
-        private static framehandle array frame_pas3
-        private static framehandle array frame_pas4
-        private static framehandle array frame_pas5
-        private static framehandle array frame_pas6
         real r
         unit d 
         integer scale
@@ -1998,20 +2041,17 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 set this = m_LaxusG[i]
                 if SpellBoolCaster(c) and r <= rmax and not CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
                     if not IsUnitPaused(c) then
-                        set r = RoundReal(r + 0.03, 3)
+                        set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     endif
                     set remaining = rmax - r
                     if remaining < 0.0 then
                         set remaining = 0.0
                     endif
-                    call BlzFrameSetValue(frame_pas3[k2], remaining)
-                    call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(remaining, 0, 2) + "|r")
+                    call WUI_HeroProgress(c, LaxusG_ID, "Dragon Force", remaining, rmax, true)
                 else
-                    if GetLocalPlayer() == Player(k2) then
-                        call BlzFrameSetVisible(frame_pas1[k2], false)
-                    endif
+                        call WUI_HeroProgress(c, LaxusG_ID, "Dragon Force", 0.00, 0.00, true)
 
-                    call SaveInteger(hs, GetHandleId(c), StringHash("lvl4"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_LVL4, 0)
                     call IssueImmediateOrder(c, "stop")
                     if GetLocalPlayer() == Player(k2) then
                         call BlzSetAbilityIcon(LaxusQ2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_Q2.blp")
@@ -2021,7 +2061,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                         call BlzSetAbilityIcon(LaxusR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_R.blp")
                         call BlzSetAbilityIcon(LaxusF_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_F.blp")
                     endif
-                    call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 0)
+                    call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 0)
                     if e != null then
                         call DestroyEffect(e)
                     endif
@@ -2029,6 +2069,8 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                     call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) - scale)
                     call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
                     call UnitRemoveAbility(c, 'A0F0')
+                    call AddSpellLevel(c, 'A01C', msLv, false)
+                    call UnitRemoveAbility(c, asAbi)
 
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), LaxusQ_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), LaxusQ2_ID, false)
@@ -2078,50 +2120,13 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
             call BlzStartUnitAbilityCooldown(c, LaxusQ2_ID, BlzGetUnitAbilityCooldownRemaining(c, LaxusQ_ID))
               
             set hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
-            call SaveInteger(hs, GetHandleId(c), StringHash("mode g"), 1)
-            call SaveInteger(hs, GetHandleId(c), StringHash("lvl4"), 1)
+            call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 1)
+            call SaveInteger(hs, GetHandleId(c), SH_LVL4, 1)
             if GetLocalPlayer() == Player(k2) then
                 call BlzSetAbilityIcon(LaxusQ2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_Q2.blp")
             endif
-            if frame_pas1[k2] == null then
-                set frame_pas1[k2] = BlzCreateFrameByType("BACKDROP", "SS", main_frame, "", 0)
-                call BlzFrameSetAbsPoint(frame_pas1[k2], FRAMEPOINT_CENTER, 0.055, 0.18)
-                call BlzFrameSetSize(frame_pas1[k2], 0.135, 0.035)
-                call BlzFrameSetTexture(frame_pas1[k2], "UI\\Feedback\\XPBar\\human-xpbar-border.blp", 0, false)
-                call BlzFrameSetVisible(frame_pas1[k2], false)
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                set frame_pas2[k2] = BlzCreateFrame("EscMenuControlBackdropTemplate", frame_pas1[k2], 0, 0)
-                call BlzFrameSetAbsPoint(frame_pas2[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetSize(frame_pas2[k2], 0.10, 0.019)
-                set frame_pas3[k2] = BlzCreateFrameByType("STATUSBAR", "", frame_pas1[k2], "", 0)
-                call BlzFrameSetSize(frame_pas3[k2], 0.10, 0.035)
-                call BlzFrameSetScale(frame_pas3[k2], 0.50)
-                call BlzFrameSetModel(frame_pas3[k2], "ui/feedback/XpBar/XpBarConsole.mdx", 0)
-                call BlzFrameSetAbsPoint(frame_pas3[k2], FRAMEPOINT_CENTER, 0.05, 0.175)
-                call BlzFrameSetMinMaxValue(frame_pas3[k2], 0.0, rmax)
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-                set frame_pas4[k2] = BlzCreateFrameByType("BACKDROP", "SS", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas4[k2], FRAMEPOINT_CENTER, 0.005, 0.18)
-                call BlzFrameSetSize(frame_pas4[k2], 0.0275, 0.0275)
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_Icon2.blp", 0, false)
-                set frame_pas5[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas5[k2], FRAMEPOINT_CENTER, 0.07, 0.185)
-                call BlzFrameSetText(frame_pas5[k2], "|c00FFFF00" + "Morph Time Left:" + "|r")
-                call BlzFrameSetScale(frame_pas5[k2], 0.90)
-                set frame_pas6[k2] = BlzCreateFrameByType("TEXT", "MyPlayerName", frame_pas1[k2], "", 0)
-                call BlzFrameSetAbsPoint(frame_pas6[k2], FRAMEPOINT_CENTER, 0.07, 0.17)
-                call BlzFrameSetText(frame_pas6[k2], "|c00FFFF00" + R2SW(0.0, 0, 2) + "|r")
-                call BlzFrameSetScale(frame_pas6[k2], 0.90)
-            else
-                if GetLocalPlayer() == Player(k2) then
-                    call BlzFrameSetVisible(frame_pas1[k2], true)
-                endif
-                call BlzFrameSetValue(frame_pas3[k2], rmax)
-            endif
 
-            if LoadInteger(hs, GetHandleId(c), StringHash("lvl5")) == 0 then
+            if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 0 then
                 set scale = 0
                 if GetRandomInt(1, 4) == 2 then
                     call MakeSound("war3mapimported\\Hero_Laxus_G4")
@@ -2130,7 +2135,6 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 endif
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_YellowMissile.mdl", GetUnitX(c), GetUnitY(c), 1.0, 1.0, 4.0, 100.0))
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_laxus1.mdl", c, "origin")
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_G.blp", 0, false)
 
                 // Точка 1: Вход в Форму 1 (Mode G)
                 call AAUniversalTooltips_SetUnitForm(c, 1)
@@ -2145,7 +2149,6 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 call BlzSetUnitMaxHP(c, BlzGetUnitMaxHP(c) + rr)
                 call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_MAX_LIFE) * hp)
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_laxus2.mdl", c, "origin")
-                call BlzFrameSetTexture(frame_pas4[k2], "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_G2.blp", 0, false)
                 if GetLocalPlayer() == Player(k2) then
                     call BlzSetAbilityIcon(LaxusQ2_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_GQ.blp")
                     call BlzSetAbilityIcon(LaxusW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Laxus_GW.blp")
@@ -2159,11 +2162,30 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 call AAUniversalTooltips_SetUnitForm(c, 2)
             endif
 
+            if LoadInteger(hs, GetHandleId(c), SH_LVL5) == 0 then
+                set msLv = LaxusG_MsLevels
+                set asAbi = LaxusG_AttackSpeed_ID
+            else
+                set msLv = LaxusG_MsLevels35
+                set asAbi = LaxusG_AttackSpeed35_ID
+            endif
+            call AddSpellLevel(c, 'A01C', msLv, true)
+            call UnitAddAbility(c, asAbi)
+            call UnitMakeAbilityPermanent(c, true, asAbi)
+
             if MUI_LaxusG == 0 then
                 call LaxusTimer03Acquire()
             endif
         endmethod
     endstruct
+
+    // Dragon Force (G): every attack applies the Lightning debuff.
+    function LaxusG_OnAttack takes unit c, unit td returns nothing
+        if LoadInteger(hs, GetHandleId(c), SH_MODE_G) == 1 and IsUnitEnemy(td, GetOwningPlayer(c)) then
+            call DamageSource(LaxusG_ID)
+            call ErzaPassive(c, td, 3)
+        endif
+    endfunction
 
     private function LaxusTimer03Loop takes nothing returns nothing
         call LaxusW2_Revert.Loop()
@@ -2204,7 +2226,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
                 set dx = GetUnitX(responder) - damagedX
                 set dy = GetUnitY(responder) - damagedY
 
-                if dx * dx + dy * dy <= rangeSquared and IntegerCd(responder, "pas f", 5.0) then
+                if dx * dx + dy * dy <= rangeSquared and IntegerCdKey(responder, SH_ICD_PAS_F, 5.0) then
                     call MyRemoveUnit(CreateUnit(GetOwningPlayer(responder), 'h02D', GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 1.0), 30.0)
                 endif
             endif
@@ -2217,7 +2239,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
     endfunction
 
     function LaxusQ_Start takes unit c, real x, real y returns nothing
-        if LoadInteger(hs, GetHandleId(c), StringHash("lvl4")) == 0 then
+        if LoadInteger(hs, GetHandleId(c), SH_LVL4) == 0 then
             call LaxusQ_KS.LaxusQ_Start(c, x, y)
         else
             call LaxusQ_KS.LaxusQ2_Start(c, x, y)
@@ -2245,7 +2267,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         local real y = GetUnitY(td)
         local integer i2 = 0
         local integer id = LaxusR_ID
-        if IsUnitAlly(td, GetOwningPlayer(c)) and GetHeroLevel(td) >= 25 and GetUnitTypeId(td) == Natsu_ID and LoadInteger(hs, GetHandleId(td), StringHash("mode g")) == 0 and IntegerCd(c, "natsu mode raien", 60.0) then 
+        if IsUnitAlly(td, GetOwningPlayer(c)) and GetHeroLevel(td) >= 25 and GetUnitTypeId(td) == Natsu_ID and LoadInteger(hs, GetHandleId(td), SH_MODE_G) == 0 and IntegerCdKey(c, SH_ICD_NATSU_MODE_RAIEN, 60.0) then 
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YellowBoom.mdx", x, y, 1.0, 1.25, 4.0, 110.0))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_yubanmeiqin_lightning_zhenzhengdeluolei_yellow.mdl", x, y, 1.0, 1.0, 2.0, 1.0))
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_YellowMissile.mdl", x, y, 1.0, 1.0, 6.0, 100.0))

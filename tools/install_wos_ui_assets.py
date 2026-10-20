@@ -45,6 +45,10 @@ ASSET_NAMES.update(DAMAGE_FILL_NAMES)
 ASSET_NAMES.update(['invis-label', 'vote-ff', 'vote-kick', 'wos-app-link', 'help-arrow-up', 'help-arrow-down', 'cast-range-red'])
 ASSET_NAMES.update(f'pick-{kind}-wide{state}' for kind in ('confirm', 'random') for state in ('', '-off'))
 ASSET_NAMES.add('slider-track-h')  # rotated camera slider track (music sliders)
+# History rank bars (tools/build_rank_bar_textures.py): 5 rank blends x 10 steps + gold.
+ASSET_NAMES.update(f'rank-fill-{rank}-{step}' for rank in range(5) for step in range(10))
+ASSET_NAMES.add('rank-gold')
+ASSET_NAMES.add('glyph-hero-lock')
 CONSOLE_MODEL = 'UI/WOS/empty-clock.mdx'
 FRAME_RESOURCES = ['UI/WOS/WOSHUD.fdf', 'UI/WOS/WOSHUD.toc', 'UI/WOS/Music.fdf', 'UI/WOS/Music.toc', 'UI/WOS/Charges.fdf', 'UI/WOS/Charges.toc', 'UI/WOS/WOSControls.fdf', 'UI/WOS/Templates.toc']
 BLANK_TEXTURE = r'UI\Widgets\EscMenu\Human\blank-background.blp'
