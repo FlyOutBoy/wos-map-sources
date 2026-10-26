@@ -101,10 +101,6 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I02M') // Sacred Gear Booster
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I02F') // Hell Blaze
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I021') // Holy Grail
-    call ShopCat(SHOP_TAB_UNIVERSAL,     'I00V') // Bunshin Scroll
-    call ShopCat(SHOP_TAB_UNIVERSAL,     'I02A') // Turbo Neko
-    call ShopCat(SHOP_TAB_UNIVERSAL,     'I00Z') // Naofumi Shield
-    call ShopCat(SHOP_TAB_UNIVERSAL,     'I00M') // Cup of Tea
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I01Q') // Ryujin Jakka
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I01X') // Nejibana
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I01Y') // Gonryomaru
@@ -128,9 +124,9 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I03W') // Sakura Sesshou
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I040') // Philosopher's Stone
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I041') // Demon-Dweller Sword
-    call ShopCat(SHOP_TAB_UNIVERSAL,     'I043') // Cup of Tea Evolved
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I044') // Death Note
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I04B') // Shun Shun Rikka
+    call ShopCat(SHOP_TAB_UNIVERSAL,     'I04E') // Core Drill
     // ---------------- Defensive ---------------------------------------------------
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00I') // Midnight Cloak
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00K') // Mizukage Hat
@@ -142,6 +138,16 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I013') // Black Clover
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I02N') // Susanoo Shield
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I045') // Avalon Evolved
+    // Empty cells finish the 7-wide row: the items below start a row of their own.
+    call ShopCat(SHOP_TAB_DEFENSIVE,     0)
+    call ShopCat(SHOP_TAB_DEFENSIVE,     0)
+    call ShopCat(SHOP_TAB_DEFENSIVE,     0)
+    call ShopCat(SHOP_TAB_DEFENSIVE,     0)
+    call ShopCat(SHOP_TAB_DEFENSIVE,     'I00Z') // Naofumi Shield
+    call ShopCat(SHOP_TAB_DEFENSIVE,     'I02A') // Turbo Neko
+    call ShopCat(SHOP_TAB_DEFENSIVE,     'I00V') // Bunshin Scroll
+    call ShopCat(SHOP_TAB_DEFENSIVE,     'I00M') // Cup of Tea
+    call ShopCat(SHOP_TAB_DEFENSIVE,     'I043') // Cup of Tea Evolved
     // ---------------- Attack ------------------------------------------------------
     call ShopCat(SHOP_TAB_ATTACK,        'I03Z') // Katana
     call ShopCat(SHOP_TAB_ATTACK,        'I00P') // Tsuchikage Hat
@@ -345,6 +351,8 @@ integer array ItemsSearchAll_Index
     hashtable ShopTooltipTable = InitHashtable()
     integer array ShopInventoryLastId
     integer array ShopInventoryLastRefund
+    // Synced price per inventory cell, refreshed only when the item type changes.
+    integer array ShopInventoryLastCost
     // Handle героя, чей инвентарь сейчас показан конкретному игроку.
     integer array ShopTargetUnitId
     integer array ShopRenderedItemId
@@ -353,7 +361,8 @@ integer array ItemsSearchAll_Index
     integer array AutoBuyRecommendedIndex
     integer array AutoBuyRecommendedUnitId
     boolean array AutoBuyRecommendedDone
-    integer array ShopRefundKey
+    // Six bounded purchase records per unit; item identity survives inventory moves.
+    hashtable ShopRefundData = InitHashtable()
     integer ShopTooltipContext = 7000
     real ShopTooltipVerticalOffset = -0.01 // Меняйте это значение для точной высоты подсказки.
     constant integer CRAFT_UPGRADE_COUNT = 0
@@ -378,6 +387,7 @@ integer array ItemsSearchAll_Index
     constant integer SHOP_SEARCH_PAGE_SIZE = 35
     constant integer SHOP_SEARCH_MAX_RESULTS = 210
     constant integer SHOP_CATEGORY_MAX_ITEMS = 210
+    constant integer SHOP_CATALOGUE_COLUMNS = 7 // items per catalogue row
     constant integer SHOP_RECOMMENDED_COUNT = 6
     constant integer SHOP_FIRST_ROUND_BUY_LIMIT = 2
     real RefundPercent = 85 // 85 = 85% of item cost
@@ -1319,50 +1329,76 @@ function ShopGetSectionPageCount takes integer page returns integer
     return 1
 endfunction
 
+// Empty cells (ShopCat 0) in a category definition split it into groups: each
+// group is sorted by price on its own and starts on a new catalogue row, so a
+// set of items can be kept on a separate row. Stray holes are compacted away.
 function SortShopPageByPrice takes integer page returns nothing
+    local integer array ids
+    local integer array groupOf
     local integer read = 0
     local integer count = 0
+    local integer groups = 0
+    local boolean gap = false
     local integer left = 0
     local integer right
     local integer itemId
-    local integer leftId
-    local integer rightId
     local integer leftValue
     local integer rightValue
+    local integer currentGroup
+    local integer position = 0
 
-    // Compact sparse category definitions first. Without this pass, categories
-    // that use slots 0 and 14+ keep empty holes and can render stale item frames.
     loop
         exitwhen read >= SHOP_CATEGORY_MAX_ITEMS
         set itemId = ShopGetPageItem(page, read)
-        if itemId != 0 then
-            if read != count then
-                call ShopSetPageItem(page, count, itemId)
-                call ShopSetPageItem(page, read, 0)
+        if itemId == 0 then
+            set gap = count > 0
+        else
+            if gap then
+                set groups = groups + 1
+                set gap = false
             endif
+            set ids[count] = itemId
+            set groupOf[count] = groups
             set count = count + 1
         endif
+        call ShopSetPageItem(page, read, 0)
         set read = read + 1
     endloop
 
+    // Selection sort by price inside each group (groups stay in definition order).
     loop
         exitwhen left >= count - 1
-        set leftId = ShopGetPageItem(page, left)
-        set leftValue = GetItemValue(leftId)
+        set leftValue = GetItemValue(ids[left])
         set right = left + 1
         loop
-            exitwhen right >= count
-            set rightId = ShopGetPageItem(page, right)
-            set rightValue = GetItemValue(rightId)
+            exitwhen right >= count or groupOf[right] != groupOf[left]
+            set rightValue = GetItemValue(ids[right])
             if rightValue < leftValue then
-                call ShopSetPageItem(page, left, rightId)
-                call ShopSetPageItem(page, right, leftId)
-                set leftId = rightId
+                set itemId = ids[left]
+                set ids[left] = ids[right]
+                set ids[right] = itemId
                 set leftValue = rightValue
             endif
             set right = right + 1
         endloop
         set left = left + 1
+    endloop
+
+    set read = 0
+    set currentGroup = 0
+    loop
+        exitwhen read >= count
+        if groupOf[read] != currentGroup then
+            set currentGroup = groupOf[read]
+            if ModuloInteger(position, SHOP_CATALOGUE_COLUMNS) != 0 then
+                set position = position + SHOP_CATALOGUE_COLUMNS - ModuloInteger(position, SHOP_CATALOGUE_COLUMNS)
+            endif
+        endif
+        if position < SHOP_CATEGORY_MAX_ITEMS then
+            call ShopSetPageItem(page, position, ids[read])
+        endif
+        set position = position + 1
+        set read = read + 1
     endloop
 endfunction
 
@@ -1598,6 +1634,37 @@ function HasCraftComponents takes integer itemId returns boolean
     return GetCraftComponentCount(itemId) > 0
 endfunction
 
+// Read-only on every client, including the inventory price renderer.
+function ShopFullRefundRecord takes unit u, item it returns integer
+    local integer record = 0
+    local integer uid = GetHandleId(u)
+    local real now = TimerGetElapsed(ShopClock)
+    if it == null then
+        return -1
+    endif
+    loop
+        exitwhen record >= 6
+        if LoadItemHandle(ShopRefundData, uid, record) == it and now < LoadReal(ShopRefundData, uid, record + 6) then
+            return record
+        endif
+        set record = record + 1
+    endloop
+    return -1
+endfunction
+
+function ShopClearFullRefund takes unit u, item it returns nothing
+    local integer record = 0
+    local integer uid = GetHandleId(u)
+    loop
+        exitwhen record >= 6
+        if LoadItemHandle(ShopRefundData, uid, record) == it then
+            call RemoveSavedHandle(ShopRefundData, uid, record)
+            call RemoveSavedReal(ShopRefundData, uid, record + 6)
+        endif
+        set record = record + 1
+    endloop
+endfunction
+
 function ReduceCostRecursive takes unit u, integer id, integer cost, boolean remove returns integer
     local integer componentCount = GetCraftComponentCount(id)
     local integer componentIndex = 0
@@ -1618,13 +1685,13 @@ function ReduceCostRecursive takes unit u, integer id, integer cost, boolean rem
                 set UsedSlot[inventorySlot] = true
                 set found = true
                 if remove then
-                    if LoadInteger(hs, GetHandleId(u), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", inventorySlot)) == componentId then
+                    if ShopFullRefundRecord(u, it) != -1 then
                         set ShopCraftRefundCredit = ShopCraftRefundCredit + GetItemValue(componentId)
-                        call RemoveSavedInteger(hs, GetHandleId(u), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", inventorySlot))
                     endif
                     if componentId == 'I00M' then
                         set ShopCraftTeaCharges = GetItemCharges(it)
                     endif
+                    call ShopClearFullRefund(u, it)
                     call RemoveItem(it)
                 endif
             endif
@@ -1658,16 +1725,91 @@ function ShopRoundLocked takes integer id returns boolean
     return id == ScrollOfMastery_ID and CurrentRound < ScrollOfMastery_Round
 endfunction
 
+// Instant stat purchases do not create an inventory item or depend on pickup events.
+function ShopInstantStatPurchase takes unit u, integer id returns boolean
+    local integer pid = GetPlayerId(GetOwningPlayer(u))
+    return u != null and id == ScrollOfMastery_ID and pid < 10 and u == Hero[pid]
+endfunction
+
+function ShopDeliverPurchase takes unit u, integer id returns nothing
+    if ShopInstantStatPurchase(u, id) then
+        call SetHeroStr(u, GetHeroStr(u, false) + 2, true)
+        call SetHeroAgi(u, GetHeroAgi(u, false) + 2, true)
+        call SetHeroInt(u, GetHeroInt(u, false) + 2, true)
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIam\\AIamTarget.mdl", u, "origin"))
+    else
+        call UnitAddItemById(u, id)
+    endif
+endfunction
+
+// Price and removal must refer to the same live item, even while timers are paused.
+function ShopSellInventorySlot takes player p, unit u, integer slot returns boolean
+    local item sold
+    local integer id
+    local integer value
+    if u == null or slot < 0 or slot >= 6 then
+        return false
+    endif
+    // Test heroes retain their combat owner; only their current test controller may sell.
+    if GetOwningPlayer(u) != p then
+        if not TestMode then
+            return false
+        endif
+        if GetSelectedHeroForPlayer(p) != u or not ((u == TestUnit and TestUnitController == p) or (u == TestAllyUnit and TestAllyUnitController == p)) then
+            return false
+        endif
+    endif
+    set sold = UnitItemInSlot(u, slot)
+    if sold == null then
+        return false
+    endif
+    set id = GetItemTypeId(sold)
+    set value = GetItemValue(id)
+    if ShopFullRefundRecord(u, sold) == -1 then
+        set value = R2I(value * (RefundPercent / 100))
+    endif
+    call ShopClearFullRefund(u, sold)
+    // Consume the exact handle before crediting gold; a stale click cannot sell it twice.
+    call RemoveItem(sold)
+    call AddGold(p, value, true)
+    set sold = null
+    return true
+endfunction
+
 // After UnitAddItemById: the item sells back at full price for Refund100Time when the
 // whole value was paid within the window (gold now + components still under their mark).
 // Quick Buy / Auto Buy assemble from parts, so they now get the same refund as one click.
 function ShopMarkFullRefund takes unit u, integer id, integer paid returns nothing
     local integer slot = IsItemInInventory3(u, id)
+    local integer record = 0
+    local integer freeRecord = -1
+    local integer uid = GetHandleId(u)
+    local real now = TimerGetElapsed(ShopClock)
+    local item it = null
+    local item previous = null
     if slot != -1 and paid + ShopCraftRefundCredit >= GetItemValue(id) then
-        call SaveInteger(hs, GetHandleId(u), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", slot), id)
-        call MyFlush(GetHandleId(u), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", slot), 0, Refund100Time)
+        set it = UnitItemInSlot(u, slot)
+        loop
+            exitwhen record >= 6
+            set previous = LoadItemHandle(ShopRefundData, uid, record)
+            if previous == it then
+                set freeRecord = record
+                exitwhen true
+            elseif previous == null or not UnitHasItem(u, previous) or now >= LoadReal(ShopRefundData, uid, record + 6) then
+                call RemoveSavedHandle(ShopRefundData, uid, record)
+                call RemoveSavedReal(ShopRefundData, uid, record + 6)
+                set freeRecord = record
+            endif
+            set record = record + 1
+        endloop
+        if freeRecord != -1 then
+            call SaveItemHandle(ShopRefundData, uid, freeRecord, it)
+            call SaveReal(ShopRefundData, uid, freeRecord + 6, now + Refund100Time)
+        endif
     endif
     set ShopCraftRefundCredit = 0
+    set previous = null
+    set it = null
 endfunction
 
 function CheckBanGroup takes unit c, integer id, integer item1, integer item2, integer item3 returns boolean
@@ -1815,6 +1957,7 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I04A', "I02K I02Y") // Hashirama Cells: Avalon + Tome of Strength +10 (+1500)
     call RegisterCraft('I04B', "I000 I036") // Shun Shun Rikka: Necklace +500 + Pakkun +15 (+1250)
     call RegisterCraft('I04C', "I031 I034") // Ashisogi Jizo: Tome of Agility +10 + Pakkun +10 (+2000)
+    call RegisterCraft('I04E', "I037") // Core Drill: Pakkun +20 (+4000)
 endfunction
 
 function SetPlayerCraftSlot takes integer pid, integer slot, integer itemId returns nothing
@@ -3190,8 +3333,6 @@ function OnClickItem takes nothing returns nothing
     local integer baseCost
     local integer remainingCost
     local integer newSlot
-    local integer refundSlot
-    local integer refundCheck
     local integer section
     local integer pageCount
     local unit d = GetSelectedHeroForPlayer(p)
@@ -3384,11 +3525,11 @@ if frameCode >= 100 and frameCode <= 100 + SHOP_PAGE_LAST then
             else
                 set baseCost = GetItemValue(id)
                 set remainingCost = CheckItemsReduceCostCraft(d, baseCost, id, false)
-                if remainingCost < baseCost or CheckSlotAvailable(d) then
+                if remainingCost < baseCost or CheckSlotAvailable(d) or ShopInstantStatPurchase(d, id) then
                     if GetGold(p) >= remainingCost then
                         call CheckItemsReduceCostCraft(d, baseCost, id, true)
                         call AddGold(p, remainingCost, false)
-                        call UnitAddItemById(d, id)
+                        call ShopDeliverPurchase(d, id)
                         call ShopMarkFullRefund(d, id, remainingCost)
                         set costStr = "|c00FFFF00" + I2S(baseCost) + "|r"
                         if GetLocalPlayer() == p then
@@ -3411,20 +3552,10 @@ if frameCode >= 100 and frameCode <= 100 + SHOP_PAGE_LAST then
 
     // Inventory buttons are read-only for observers, so selling is impossible too.
     if frameCode == 307 and not IsObserverSlot(pid) and ItemsCurrentItemBag_ID[pid] != 0 and UnitItemInSlot(d, ItemsCurrentItemBag_ID[pid] - 1) != null then
-        set id = ItemsCurrentItem_ID[pid]
-        set baseCost = GetItemValue(id)
-
         call SaveInteger(hs, GetHandleId(d), SH_WoS_Shop_Init_SOLD_CD, 1)
         call MyFlush(GetHandleId(d), SH_WoS_Shop_Init_SOLD_CD, 1, 0.1)
-        set refundSlot = ItemsCurrentItemBag_ID[pid] - 1
-        set refundCheck = LoadInteger(hs, GetHandleId(d), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", refundSlot))
-        if refundCheck == id then
-            call AddGold(p, baseCost, true)
-            call RemoveSavedInteger(hs, GetHandleId(d), GearKey(GEAR_KEY_FULLREFUND, "fullrefund_", refundSlot))
-        else
-            call AddGold(p, R2I(baseCost * (RefundPercent/100)), true)
-        endif
-        call RemoveItem(UnitItemInSlot(d, refundSlot))
+        call ShopSellInventorySlot(p, d, ItemsCurrentItemBag_ID[pid] - 1)
+        set ItemsCurrentItemBag_ID[pid] = 0
         call RefreshItemCache2(d)
         call ShopClearItemTree(p)
         call StartSoundForPlayerBJ(p, gg_snd_ReceiveGold)
@@ -3521,7 +3652,7 @@ function BuyAuto takes unit c, integer id returns nothing
     set remainingCost = CheckItemsReduceCostCraft(c, cost, id, false)
     set pGold = GetGold(p)
     if pGold >= remainingCost then
-        set canAssemble = CheckSlotAvailable(c)
+        set canAssemble = CheckSlotAvailable(c) or ShopInstantStatPurchase(c, id)
         if not canAssemble and HasCraftComponents(id) then
             set componentIndex = 0
             loop
@@ -3536,7 +3667,8 @@ function BuyAuto takes unit c, integer id returns nothing
         if canAssemble then
             call AddGold(p, remainingCost, false) 
             call CheckItemsReduceCostCraft(c, cost, id, true) 
-            call UnitAddItemById(c, id) 
+            call ShopDeliverPurchase(c, id)
+            call ShopMarkFullRefund(c, id, remainingCost)
             call StartSoundForPlayerBJ(p, gg_snd_AlchemistTransmuteDeath1)
         endif
     endif
@@ -3581,7 +3713,7 @@ function BuyAutoLimited takes unit c, integer id, integer remaining returns inte
     set remainingCost = CheckItemsReduceCostCraft(c, cost, id, false)
     set pGold = GetGold(p)
     if pGold >= remainingCost then
-        set canAssemble = CheckSlotAvailable(c)
+        set canAssemble = CheckSlotAvailable(c) or ShopInstantStatPurchase(c, id)
         if not canAssemble and HasCraftComponents(id) then
             set componentIndex = 0
             loop
@@ -3596,8 +3728,7 @@ function BuyAutoLimited takes unit c, integer id, integer remaining returns inte
         if canAssemble then
             call AddGold(p, remainingCost, false)
             call CheckItemsReduceCostCraft(c, cost, id, true)
-            call UnitAddItemById(c, id)
-            call ShopMarkFullRefund(c, id, remainingCost)
+            call ShopDeliverPurchase(c, id)
             call ShopMarkFullRefund(c, id, remainingCost)
             call StartSoundForPlayerBJ(p, gg_snd_AlchemistTransmuteDeath1)
             set remaining = remaining - 1
@@ -3693,6 +3824,70 @@ function QB_RemoveTarget takes integer pid, integer index returns nothing
     call QB_ClearExcluded(pid, QB_Count[pid])
 endfunction
 
+// Purchase order of a recipe's parts: sub-recipes first, the more valuable one
+// first (the previous tier, e.g. Tsuchikage Hat before Pakkun +8 for the Evolved
+// hat); plain parts keep the recipe order. Both walkers below use it, so the
+// postorder node keys stay stable and subtrees stay contiguous.
+function QB_PartKey takes integer id returns integer
+    if GetCraftComponentCount(id) > 0 then
+        return 10000000 + LoadInteger(QB_Data, id, 1)
+    endif
+    return 0
+endfunction
+
+// The order is computed once per recipe and kept in QB_Data (key 4 = cached,
+// 10 + rank = part): recipes and QB_Data prices are fixed after bootstrap, and
+// both walkers ask for it on every node of every rebuild. It is cached only when
+// every part already has its price, so an early call cannot freeze a wrong order.
+function QB_OrderedComponent takes integer id, integer rank returns integer
+    local integer n
+    local integer i = 0
+    local integer j
+    local integer key
+    local integer other
+    local integer position
+    local integer result
+    local boolean complete = true
+    if LoadBoolean(QB_Data, id, 4) then
+        return LoadInteger(QB_Data, id, 10 + rank)
+    endif
+    set n = GetCraftComponentCount(id)
+    set result = GetCraftComponent(id, rank)
+    loop
+        exitwhen i >= n
+        set complete = complete and LoadBoolean(QB_Data, GetCraftComponent(id, i), 0)
+        set i = i + 1
+    endloop
+    set i = 0
+    loop
+        exitwhen i >= n
+        set key = QB_PartKey(GetCraftComponent(id, i))
+        set position = 0
+        set j = 0
+        loop
+            exitwhen j >= n
+            if j != i then
+                set other = QB_PartKey(GetCraftComponent(id, j))
+                if other > key or (other == key and j < i) then
+                    set position = position + 1
+                endif
+            endif
+            set j = j + 1
+        endloop
+        if position == rank then
+            set result = GetCraftComponent(id, i)
+        endif
+        if complete then
+            call SaveInteger(QB_Data, id, 10 + position, GetCraftComponent(id, i))
+        endif
+        set i = i + 1
+    endloop
+    if complete and n > 0 then
+        call SaveBoolean(QB_Data, id, 4, true)
+    endif
+    return result
+endfunction
+
 function QB_SkipOwnedNodes takes integer id, integer depth returns nothing
     local integer i = 0
     if depth >= 32 or QB_BuildNode >= QB_MAX_STEPS or QB_BuildError then
@@ -3711,7 +3906,7 @@ function QB_SkipOwnedNodes takes integer id, integer depth returns nothing
     set i = 0
     loop
         exitwhen i >= GetCraftComponentCount(id) or QB_BuildError
-        call QB_SkipOwnedNodes(GetCraftComponent(id, i), depth + 1)
+        call QB_SkipOwnedNodes(QB_OrderedComponent(id, i), depth + 1)
         set i = i + 1
     endloop
     set QB_BuildNode = QB_BuildNode + 1
@@ -3726,6 +3921,7 @@ function QB_Expand takes integer id, integer depth returns nothing
     local integer endNode
     local integer cost = LoadInteger(QB_Data, id, 1)
     local integer offset = QB_BuildPid * QB_MAX_STEPS
+    local integer part
     local boolean missing = false
     set QB_ExpansionMissing = false
     set QB_DeferredCost = 0
@@ -3765,9 +3961,10 @@ function QB_Expand takes integer id, integer depth returns nothing
     set i = 0
     loop
         exitwhen i >= n or QB_BuildError
-        call QB_Expand(GetCraftComponent(id, i), depth + 1)
+        set part = QB_OrderedComponent(id, i)
+        call QB_Expand(part, depth + 1)
         set missing = missing or QB_ExpansionMissing
-        set cost = cost - LoadInteger(QB_Data, GetCraftComponent(id, i), 1) + QB_DeferredCost
+        set cost = cost - LoadInteger(QB_Data, part, 1) + QB_DeferredCost
         set i = i + 1
     endloop
     set node = QB_BuildNode
@@ -5602,7 +5799,7 @@ endfunction
 
 function QB_BuyWhole takes integer pid, unit c, integer id, integer cost returns integer
     local integer slot = 0
-    local boolean space = CheckSlotAvailable(c)
+    local boolean space = CheckSlotAvailable(c) or ShopInstantStatPurchase(c, id)
     // The preceding agreed cost calculation populated UsedSlot.
     loop
         exitwhen slot >= 6 or space
@@ -5614,7 +5811,7 @@ function QB_BuyWhole takes integer pid, unit c, integer id, integer cost returns
     endif
     call AddGold(Player(pid), cost, false)
     call CheckItemsReduceCostCraft(c, LoadInteger(QB_Data, id, 1), id, true)
-    call UnitAddItemById(c, id)
+    call ShopDeliverPurchase(c, id)
     call ShopMarkFullRefund(c, id, cost)
     call StartSoundForPlayerBJ(Player(pid), gg_snd_AlchemistTransmuteDeath1)
     return 0
@@ -5735,7 +5932,7 @@ function QB_Tick takes integer pid, unit c returns boolean
         set QB_Status[pid] = 2
         return true
     endif
-    if not CheckSlotAvailable(c) then
+    if not CheckSlotAvailable(c) and not ShopInstantStatPurchase(c, QB_Step[pid * QB_MAX_STEPS]) then
         set result = QB_TryFullAssembly(pid, c)
         if result != 0 then
             set QB_Status[pid] = result
@@ -5789,7 +5986,10 @@ function QB_Tick takes integer pid, unit c returns boolean
         endif
         set i = i + 1
     endloop
-    if result == 0 and changed then
+    if result == 0 and ShopInstantStatPurchase(c, id) then
+        call QB_RemoveTarget(pid, QB_Group[pid * QB_MAX_STEPS + step])
+        call QB_Rebuild(pid)
+    elseif result == 0 and changed then
         call QB_Rebuild(pid)
     elseif result == 0 then
         // A purchase attempted but its inventory result was not confirmed.
@@ -5889,6 +6089,7 @@ endfunction
 function RecommendedAutoBuyTick takes unit c, integer pid returns nothing
     local integer index = AutoBuyRecommendedIndex[pid]
     local integer itemId
+    local integer goldBefore
 
     if AutoBuyRecommendedDone[pid] then
         return
@@ -5916,9 +6117,10 @@ function RecommendedAutoBuyTick takes unit c, integer pid returns nothing
 
     // BuyAuto recursively assembles only this target and all of its parts.
     // The next recommendation is never touched by this timer tick.
+    set goldBefore = GetGold(Player(pid))
     call BuyAuto(c, itemId)
 
-    if IsItemInInventory(c, itemId) > 0 then
+    if IsItemInInventory(c, itemId) > 0 or (ShopInstantStatPurchase(c, itemId) and GetGold(Player(pid)) < goldBefore) then
         set index = index + 1
         set AutoBuyRecommendedIndex[pid] = index
         if index >= SHOP_RECOMMENDED_COUNT then
@@ -5993,11 +6195,22 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                 exitwhen slot >= 6
                 set id = ShopGetInventoryItemId(u, slot)
                 set refundFlag = 0
+                set cost = 0
+                set cacheIndex = pid * 6 + slot
                 if id != 0 then
-                    set refundFlag = LoadInteger(hs, GetHandleId(u), ShopRefundKey[slot])
+                    // Synced on purpose: the first GetItemValue of a type creates and
+                    // sells a pricing item and caches it in hs. Inside the local block
+                    // below it did that on one client only (desync at round end, when
+                    // every shop opens and a never-priced item is in the inventory).
+                    if ShopInventoryLastId[cacheIndex] != id then
+                        set ShopInventoryLastCost[cacheIndex] = GetItemValue(id)
+                    endif
+                    set cost = ShopInventoryLastCost[cacheIndex]
+                    if ShopFullRefundRecord(u, UnitItemInSlot(u, slot)) != -1 then
+                        set refundFlag = id
+                    endif
                 endif
 
-                set cacheIndex = pid * 6 + slot
                 
                 if GetLocalPlayer() == p then
                     if ShopInventoryLastId[cacheIndex] != id or ShopInventoryLastRefund[cacheIndex] != refundFlag then
@@ -6010,7 +6223,6 @@ function PlayerInventoryPeriodic takes nothing returns nothing
                         set tooltip = FRAME_ShopInventoryTooltipBox[slot]
                 
                         if id != 0 then
-                            set cost = GetItemValue(id)
                             set invCost1 = "|c0000FF00" + I2S(cost) + "|r"
                             set invCost2 = "|c00FFFF00" + I2S(R2I(cost * (RefundPercent/100))) + "|r"
                             set invPlate = ShopPricePlateWidth(cost)
@@ -6516,12 +6728,6 @@ set ShopSearchDeadQuery[pid] = ""
         exitwhen i >= 60
         set ShopInventoryLastId[i] = -1
         set ShopInventoryLastRefund[i] = -1
-        set i = i + 1
-    endloop
-    set i = 0
-    loop
-        exitwhen i >= 6
-        set ShopRefundKey[i] = StringHash("fullrefund_" + I2S(i))
         set i = i + 1
     endloop
     set i = 0

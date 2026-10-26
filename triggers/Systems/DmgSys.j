@@ -344,10 +344,23 @@ globals
     timer DmgSys_Clock = null
     constant real DMGSYS_AUTOSELECT_CD = 2.00
 endglobals
-// A hit on the player's own hero re-selects it when something else is selected
-// (target clicked to inspect), so the next orders do not go to the enemy.
+// Damage-triggered selection follows the same opt-in MAIN setting as the HUD.
+// TEST never changes selection in response to damage.
 function DmgSys_AutoSelectHero takes integer pid, unit hero returns nothing
     local real now
+    static if LIBRARY_WOSTestMinimalRuntime then
+        return
+    endif
+    if pid < 0 or pid >= 10 or hero == null then
+        return
+    endif
+    static if LIBRARY_HeroUnitPanelStats then
+        if not WUI_AutoSelectHero[pid] then
+            return
+        endif
+    else
+        return
+    endif
     if DmgSys_Clock == null then
         set DmgSys_Clock = CreateTimer()
         call TimerStart(DmgSys_Clock, 1000000.00, false, null)
@@ -465,6 +478,9 @@ function Trig_DmgSys_Actions takes nothing returns nothing
             endif
         endif
     endif
+    static if LIBRARY_AltairSpells then
+        set dmg = Altair_IncomingDamage(c, td, dmg, typedmg)
+    endif
     set dmg = GearDamageRun(c, td, dmg, typedmg, 2)
     // Предварительный урон со всеми усилениями атакующего, но ещё без резистов цели.
     // DamageCheck в текущей реализации не изменяет состояние.
@@ -514,6 +530,12 @@ if LoadInteger(hs, targetHid, KEY_SHIELD) == 1 then
     set dmg = ApplyFullDamageShield(c, td, dmg, 0.1, typedmg, DAMAGE_SHIELD_TYPE_ALL)
 endif
 
+    static if LIBRARY_FrostnovaSpells then
+        if isEnemy and dmg > 0.0 and GetUnitAbilityLevel(td, FrostnovaT_ShieldBuffID) > 0 and not shieldPen then
+            call UnitRemoveAbility(td, FrostnovaT_ShieldBuffID)
+            set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+        endif
+    endif
     if isEnemy and GetUnitAbilityLevel(td, AlterSaberEBuff_ID) > 0 and not shieldPen then
         call UnitRemoveAbility(td, AlterSaberEBuff_ID)
         call AlterSaberE_Act_Start(td, c)
@@ -622,6 +644,11 @@ endif
     // Полные щиты внутри DamageBlock вызывают LustSin непосредственно.
     set DamageShieldPierceTriggerDamage = penetrationTrigger
     set dmg = DamageBlock(c, td, dmg, typedmg, false)
+    static if LIBRARY_FrostnovaSpells then
+        if GetUnitAbilityLevel(td, FrostnovaE_ResistBuffID) > 0 then
+            set dmg = dmg * (1.0-FrostnovaE_Resist)
+        endif
+    endif
     set DamageShieldPierceTriggerDamage = 0.0
     if GetUnitAbilityLevel(td,AinzW_Buff_ID)>0 then 
     set shieldInput = dmg
@@ -755,6 +782,10 @@ endif
         if KurikaraTrigger == false and isEnemy and HasCachedItem(c, 'I00W') > 0 and dmg >= Kurikara_MinDmg then
             call KurikaraFlame(c, td)
         endif
+    endif
+    // Core Drill: ability damage (not attacks or item procs) stacks its own type.
+    if (typedmg == 1 or typedmg == 2) and not eventIsAttack and dmg > 1 and isEnemy and not IsUnitIllusion(c) and HasCachedItem(c, CoreDrill_ID) > 0 then
+        call CoreDrill_AddStack(c, typedmg)
     endif
 endif
     

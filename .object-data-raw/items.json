@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "54ff4827b6029c3f5c55a77cfc45f86e01737dd396b34747e91b866ae0cbb728",
+  "source_sha256": "3bc8f7aed3f6aed1e36c2e0f47518d764b34c56e894e9cf106629112e590a8f9",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -12738,6 +12738,73 @@
         }
       ],
       "display_name": "Scroll of Mastery"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04E",
+        "hex": "49303445"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00W",
+            "_original_value": "A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwVw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill"
     }
   ]
 }

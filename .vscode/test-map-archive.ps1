@@ -27,21 +27,40 @@ using System.Runtime.InteropServices;
 public static class TestMpq {
     [DllImport("$dll", CharSet=CharSet.Ansi, SetLastError=true)] public static extern bool SFileOpenArchive(string name, uint priority, uint flags, out IntPtr handle);
     [DllImport("$dll")] public static extern bool SFileCloseArchive(IntPtr handle);
-    [DllImport("$dll", CharSet=CharSet.Ansi)] public static extern bool SFileOpenFileEx(IntPtr archive, string name, uint scope, out IntPtr file);
+    [DllImport("$dll")] public static extern bool SFileOpenFileEx(IntPtr archive, byte[] name, uint scope, out IntPtr file);
     [DllImport("$dll")] public static extern uint SFileGetFileSize(IntPtr file, IntPtr high);
     [DllImport("$dll")] public static extern bool SFileReadFile(IntPtr file, byte[] buffer, uint size, out uint read, IntPtr overlapped);
     [DllImport("$dll")] public static extern bool SFileCloseFile(IntPtr file);
     [DllImport("$dll", CharSet=CharSet.Ansi)] public static extern bool MpqAddFileToArchive(IntPtr archive, string source, string name, uint flags);
+    [DllImport("$dll")] public static extern bool MpqAddFileFromBuffer(IntPtr archive, byte[] data, uint size, byte[] name, uint flags);
     [DllImport("$dll", CharSet=CharSet.Ansi)] public static extern IntPtr MpqOpenArchiveForUpdate(string name, uint flags, uint capacity);
     [DllImport("$dll")] public static extern uint MpqCloseUpdatedArchive(IntPtr archive, uint flags);
     [DllImport("$dll")] public static extern bool MpqCompactArchive(IntPtr archive);
 }
 "@
+function Get-MpqNameBytes([string]$Name) {
+    # Warcraft script/import strings and MPQ listfiles use UTF-8, not the local
+    # Windows ANSI code page. Buffer writes also avoid ANSI source-path loss.
+    return ,([Text.Encoding]::UTF8.GetBytes($Name + [char]0))
+}
 if ($Mode -eq 'Pack') {
     $root = [IO.Path]::GetFullPath($Directory).TrimEnd('\') + '\'
     $destination = [IO.Path]::GetFullPath($Map)
     if ($destination.StartsWith($root, [StringComparison]::OrdinalIgnoreCase)) { throw 'Archive output must be outside the source scenario folder.' }
-    $files = @(Get-ChildItem -LiteralPath $Directory -File -Recurse | Where-Object { $_.Name -notin @('conversation.json', '(listfile)', '(attributes)', '(signature)') })
+    if ($NamesFile) {
+        # Explicit repacks use only entries from the saved archive plus authorized
+        # additions. Preserve opaque payloads too; never scan a stale unpack cache.
+        $explicitNames = Get-Content -LiteralPath $NamesFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $files = @($explicitNames | Sort-Object -Unique | ForEach-Object {
+            $resolved = [IO.Path]::GetFullPath((Join-Path $root $_))
+            if (-not $resolved.StartsWith($root, [StringComparison]::OrdinalIgnoreCase)) { throw "Unsafe pack entry: $_" }
+            if ([IO.Path]::GetFileName($resolved) -in @('(listfile)', '(attributes)', '(signature)')) { throw "Reserved pack entry: $_" }
+            if (-not (Test-Path -LiteralPath $resolved -PathType Leaf)) { throw "Missing pack entry: $_" }
+            Get-Item -LiteralPath $resolved
+        })
+    } else {
+        $files = @(Get-ChildItem -LiteralPath $Directory -File -Recurse | Where-Object { $_.Name -notin @('conversation.json', '(listfile)', '(attributes)', '(signature)') })
+    }
     $capacity = 16
     while ($capacity -lt ($files.Count + 1)*2) { $capacity *= 2 }
     # CREATE_ALWAYS | MAINTAIN_LISTFILE; bundled SFmpq, same as Extract/Update.
@@ -50,7 +69,8 @@ if ($Mode -eq 'Pack') {
     try {
         foreach ($item in $files) {
             $name = $item.FullName.Substring($root.Length)
-            if (-not [TestMpq]::MpqAddFileToArchive($archive, $item.FullName, $name, 0x201)) { throw "Cannot pack $name" }
+            $payload = [IO.File]::ReadAllBytes($item.FullName)
+            if (-not [TestMpq]::MpqAddFileFromBuffer($archive, $payload, $payload.Length, (Get-MpqNameBytes $name), 0x201)) { throw "Cannot pack $name" }
         }
         # SFmpq leaves slack after almost every compressed block (~50% of a
         # big map); compacting rewrites the blocks back to back.
@@ -106,15 +126,9 @@ try {
     foreach ($prefix in @('war3map', 'war3mapSkin')) {
         foreach ($extension in @('w3u','w3t','w3b','w3d','w3a','w3h','w3q')) { $names += "$prefix.$extension" }
     }
-    if ($Mode -eq 'Update' -and -not $NamesFile) {
-        # Keep imports and their staged assets with the editor/object payload.
-        # war3map.j is still replaced only by the compiler below this update.
-        $names += 'war3map.imp'
-        $assetRoot = [IO.Path]::GetFullPath($Directory).TrimEnd('\') + '\'
-        $names += @(Get-ChildItem -LiteralPath $Directory -Recurse -File | Where-Object {
-            $_.Extension.ToLowerInvariant() -in @('.blp', '.mdx', '.mdl', '.tga', '.fdf', '.toc', '.ttf')
-        } | ForEach-Object { $_.FullName.Substring($assetRoot.Length) })
-    }
+    # Automatic updates touch native gameplay data only. Asset/import writes
+    # require an explicit NamesFile supplied by a separate, authorized operation.
+    if ($Mode -eq 'Extract') { $names += 'war3map.wts' }
     if ($NamesFile) { $names = Get-Content -LiteralPath $NamesFile -Raw -Encoding UTF8 | ConvertFrom-Json }
     foreach ($name in $names) {
         # SFmpq hashes Windows archive paths; JSON lists may use forward slashes.
@@ -126,12 +140,13 @@ try {
         if ($Mode -eq 'Update') {
             # The compiler replaces war3map.j after this step.
             if ($name -ne 'war3map.j' -and (Test-Path -LiteralPath $path -PathType Leaf)) {
-                if (-not [TestMpq]::MpqAddFileToArchive($handle, $path, $name, 1)) { throw "Cannot replace $name in $Map" }
+                $payload = [IO.File]::ReadAllBytes($path)
+                if (-not [TestMpq]::MpqAddFileFromBuffer($handle, $payload, $payload.Length, (Get-MpqNameBytes $name), 1)) { throw "Cannot replace $name in $Map" }
             }
             continue
         }
         $file = [IntPtr]::Zero
-        if (-not [TestMpq]::SFileOpenFileEx($handle, $name, 0, [ref]$file)) {
+        if (-not [TestMpq]::SFileOpenFileEx($handle, (Get-MpqNameBytes $name), 0, [ref]$file)) {
             if ($NamesFile) { throw "Requested archive entry is missing: $name" }
             continue
         }

@@ -21,7 +21,65 @@ def functions(text, *names):
         r' takes[^\n]*\n[\s\S]*?^\s*endfunction', text)[0] for name in names)
 
 
-class MainRangeRuntime(range_fixture.RangeRuntime):
+class TwoRingLifecycle:
+    """MAIN preview: each hero owns a red (click) and a white (reach) ring: a=1/2, b=3/4."""
+    def two_ring_globals(self):
+        self.cast = None
+        self.vm.g.update(AR_Outer=defaultdict(lambda: None), AR_OuterScale=0., AR_MODEL_OUTER='outer.mdx', AR_MAX_RADIUS=4000.,
+            AAUniversalTooltips_GetPreviewCastRange=lambda u, a: self.cast if self.cast is not None else self.radius)
+
+    def test_synced_create_hidden_deduplicated_and_reused(self):
+        self.vm.g['TestUnit'] = 'a'
+        self.vm.g['Hero'][2] = 'b'
+        self.runj('AR_Reconcile')
+        self.assertEqual(self.number, 4)
+        self.assertEqual([c for c in self.calls if c[0] == 'alpha'], [('alpha', i, 0) for i in (1, 2, 3, 4)])
+        self.show()
+        self.radius = 1024
+        self.show()
+        self.assertEqual(self.number, 4)
+        self.assertIn(('scale', 1, 1.0), self.calls)
+        self.assertIn(('scale', 1, 2.0), self.calls)
+        self.assertIn(('position', 1, 123.0, 456.0, 50.0), self.calls)
+
+    def test_only_owner_can_show_and_wrong_client_does_nothing(self):
+        self.calls.clear(); self.show('b')
+        self.assertFalse(self.calls)
+        self.local = 1; self.show('a', 0)
+        self.assertFalse(self.calls)
+        self.show('b', 1)
+        self.assertIn(('alpha', 3, 255), self.calls)
+
+    def test_swap_retires_all_old_effects_before_creating_replacements(self):
+        self.calls.clear()
+        self.vm.g['Hero'][0] = 'b'; self.vm.g['Hero'][1] = 'a'
+        self.runj('AR_Reconcile')
+        lifecycle = [c[0] for c in self.calls if c[0] in ('create', 'destroy')]
+        self.assertEqual(lifecycle, ['destroy'] * 4 + ['create'] * 4)
+
+    def test_hover_cancel_and_other_player_leave_are_local_only(self):
+        self.show(); self.runj('AR_Hide', 1)
+        self.assertEqual(self.vm.g['AR_Visible'], 0)
+        self.runj('AR_Cancel', 0)
+        self.assertEqual(self.vm.g['AR_Visible'], -1)
+        self.assertEqual(self.number, 4)
+
+    def test_red_click_range_and_larger_white_reach(self):
+        self.cast = 1000.; self.radius = 1400.; self.show()
+        self.assertEqual(1000/512., self.vm.g['AR_Scale'])
+        self.assertEqual(1400/512., self.vm.g['AR_OuterScale'])
+        self.cast = 0.; self.radius = 600.; self.show()
+        self.assertEqual(0., self.vm.g['AR_Scale'])
+        self.assertEqual(600/512., self.vm.g['AR_OuterScale'])
+        self.cast = 900.; self.radius = 900.; self.show()
+        self.assertEqual(900/512., self.vm.g['AR_Scale'])
+        self.assertEqual(0., self.vm.g['AR_OuterScale'])
+        self.runj('AR_Hide', 0)
+        self.assertEqual(0., self.vm.g['AR_OuterScale'])
+
+
+
+class MainRangeRuntime(TwoRingLifecycle, range_fixture.RangeRuntime):
     SOURCE = 'triggers/WOS_Start/AbilityRangePreview.j'
 
     def configure_vm(self):
@@ -29,13 +87,15 @@ class MainRangeRuntime(range_fixture.RangeRuntime):
             AR_CachedItem=defaultdict(lambda: None), AR_ItemAbility=defaultdict(lambda: None),
             AR_RequestedItemSlot=defaultdict(lambda: -1), UnitItemInSlot=lambda *_: None,
             AR_LastX=0., AR_LastY=0.)
+        self.two_ring_globals()
 
     def test_thresholds_no_clamping_and_no_hidden_position_updates(self):
-        for radius in (-1, 0, 32768.01, 99999):
+        # Circles are drawn up to 4000 inclusive; larger/global ranges are hidden.
+        for radius in (-1, 0, 4000.01, 5000, 32768, 99999):
             self.calls.clear(); self.radius = radius; self.show()
             self.assertFalse(any(c[0] in ('position', 'scale') for c in self.calls))
             self.assertEqual(-1, self.vm.g['AR_Visible'])
-        for radius in (1, 2500, 2500.01, 2700, 5000, 32768):
+        for radius in (1, 2500, 2500.01, 2700, 3999, 4000):
             self.radius = radius; self.show()
             self.assertEqual(radius/512., self.vm.g['AR_Scale'])
 
@@ -52,14 +112,14 @@ class MainRangeRuntime(range_fixture.RangeRuntime):
 class FollowupRuntime(unittest.TestCase):
     def test_hell_blaze_all_stacks_match_active_healing_and_regeneration(self):
         text=source('Systems/Systems2.j')
-        code=functions(text,'GetHellBlazeCut','SetHpCurrent2','GetHealMultiplierNoBlock')
+        code=functions(text,'GetHellBlazeCut','SetHpCurrent2','GetHealMultiplierNoBlock').replace('static if ','if ')
         constant=re.search(r'constant real HellBlaze_HealCutPerStack = [\d.]+',text)[0]
         buffs=['B01S','B01T','B01U','B01V','B01W','B02E','B02F']
         for stacks in range(8):
             vm=JassState('globals\n'+constant+'\nendglobals\n'+code)
             caster=vm.unit(owner=0);target=vm.unit(owner=1);target.life=100.
             for buff in buffs[:stacks]:vm.add_ability(target,buff)
-            vm.g.update(HellBlaze_HealCutPerStack=float(constant.rsplit('=',1)[1]),
+            vm.g.update(LIBRARY_FrostnovaSpells=False,HellBlaze_HealCutPerStack=float(constant.rsplit('=',1)[1]),
                 GetHealAmp=lambda u:0.,DarkHolyGrail_HpRegenReduce=30.,
                 GetPlayerId=lambda p:p,
                 IsUnitType=lambda *_:False,CheckCoordsInRect=lambda *_:True,
@@ -130,32 +190,30 @@ class FollowupRuntime(unittest.TestCase):
             GAngle2=lambda u,x,y:math.atan2(y-u.y,x-u.x),
             R2SW=lambda value,*_:str(value),
             GetUnitCurrentOrder=lambda u:order,OrderId=lambda s:s,
-            OkarunF_OrderRepeatPeriod=.75,IssuePointOrderById=lambda *_:None,
+            GetUnitFacing=lambda u:0.,IssuePointOrderById=lambda *_:None,
             IssueTargetOrderById=lambda *_:None,
             IsUnitPaused=lambda u:False,CheckCoordsInRect=lambda *_:False,
             PathableCheck3=lambda *_:True,WUI_HeroProgressText=lambda *_:None,
-            OkarunT_bonusspeed=1.25,OkarunT_SpeedReduction=200.,
-            OkarunF_MaxSpeed0=600.,OkarunF_MaxSpeed1=700.,OkarunF_MaxSpeed2=800.,
-            OkarunF_MaxSpeed3=900.,OkarunF_MaxSpeed4=1500.,
             OkarunF_AddSpeedPercentPerSec=5.,OkarunF_DecreaseSpeedPercentPerSec=1.2)
         vm.g['hs'][id(hero),'x']=10000.;vm.g['hs'][id(hero),'y']=0.
         return vm,hero,data
 
-    def test_okarun_buff_speed_reduced_200_at_every_progression_stage(self):
-        for level,expected in ((1,550.),(12,675.),(18,800.),(25,925.),(35,1675.)):
+    def test_okarun_t_is_fixed_and_f_caps_total_speed_at_hero_level_thresholds(self):
+        for level,expected in ((1,300.),(5,300.),(6,500.),(11,500.),(12,600.),(18,700.),(25,800.),(35,900.)):
             vm,hero,_ = self.okarun_fixture(level=level)
-            self.assertEqual(expected,vm.run('OkarunT_Speed',(hero,)))
+            self.assertEqual(1200.,vm.run('OkarunT_Speed',(hero,)))
+            self.assertEqual(expected,vm.run('OkarunF_MaxSpeed',(hero,)))
 
-    def test_okarun_point_orders_keep_total_speed_even_when_native_travel_stalls(self):
+    def test_okarun_legacy_control_adds_only_extra_speed_and_respects_stop(self):
         for order in ('move','smart','attack','absorb','ambush'):
-            for native_step in (0., 9., 15.66):
-                vm,hero,data = self.okarun_fixture(order=order)
+            for native_speed in (0.,300.,522.):
+                vm,hero,data = self.okarun_fixture(order=order,native_speed=native_speed)
                 for _ in range(100):
-                    hero.x += native_step
+                    hero.x += native_speed*.03
                     vm.run('Loop_OkarunF')
-                self.assertAlmostEqual(550.*3.,hero.x)
+                self.assertAlmostEqual(1200.*3.,hero.x)
                 self.assertAlmostEqual(0.,hero.y)
-                self.assertAlmostEqual(550.,vm.g['hs'][id(hero),'current speed'])
+                self.assertAlmostEqual(1200.,vm.g['hs'][id(hero),'current speed'])
         # Stop/hold and immobilization must never be converted into movement.
         for order in ('stop','holdposition',0):
             vm,hero,_ = self.okarun_fixture(order=order)
@@ -169,10 +227,44 @@ class FollowupRuntime(unittest.TestCase):
         vm,hero,data=self.okarun_fixture();orders=[]
         vm.g['IssuePointOrderById']=lambda *args:orders.append(args)
         for _ in range(100):vm.run('Loop_OkarunF')
-        self.assertEqual(4,len(orders));self.assertTrue(all(a[1]=='move' for a in orders))
+        self.assertEqual(14,len(orders));self.assertTrue(all(a[1]=='move' for a in orders))
         vm.g['hs'][id(hero),'spell pause']=1
         for _ in range(100):vm.run('Loop_OkarunF')
-        self.assertEqual(4,len(orders))
+        self.assertEqual(14,len(orders))
+
+    def test_okarun_f_turning_never_boosts_back_toward_old_target_or_during_cast(self):
+        vm,hero,data=self.okarun_fixture()
+        stale=vm.unit(owner=1,x=-2000.)
+        vm.g['hs'][id(hero),'target']=stale
+        vm.g['GetUnitFacing']=lambda u:90.
+        vm.run('Loop_OkarunF')
+        self.assertAlmostEqual(0.,hero.x)
+        self.assertAlmostEqual(27.,hero.y)
+        self.assertIsNone(data.td) # A point move must not track an old unit target.
+        vm.g['hs'][id(hero),'spell pause']=1
+        vm.run('Loop_OkarunF')
+        self.assertAlmostEqual(27.,hero.y)
+
+    def test_okarun_normal_speed_never_adds_native_speed_and_t_expiry_clamps_immediately(self):
+        for level,cap in ((6,500.),(12,600.),(18,700.),(25,800.),(35,900.)):
+            for order in ('move','stop','holdposition'):
+                vm,hero,data=self.okarun_fixture(order=order,native_speed=342.,level=level)
+                vm.run('Loop_OkarunF')
+                self.assertEqual(1200.,data.r3)
+                hero.abilities.pop(vm.g['OkarunT_Buff_ID'])
+                vm.g['hs'][id(hero),'speed seed']=1242.
+                vm.run('Loop_OkarunF')
+                self.assertLessEqual(data.r3,cap)
+                self.assertEqual(cap,data.r5)
+                self.assertLessEqual(vm.g['hs'][id(hero),'current speed'],cap)
+                vm.g['IsUnitPaused']=lambda u:True
+                vm.g['hs'][id(hero),'speed seed']=1242.
+                vm.run('Loop_OkarunF')
+                self.assertLessEqual(data.r3,cap)
+                self.assertLessEqual(vm.g['hs'][id(hero),'current speed'],cap)
+                data.r3=cap
+                for _ in range(100):vm.run('Loop_OkarunF')
+                self.assertLessEqual(data.r3,cap)
 
     def test_okarun_tackle_has_per_target_caster_cooldown_and_stronger_same_time_push(self):
         text=source('Heroes/Okarun.j')+'\n'+functions(source('Systems/Systems2.j'),'IntegerCdKey')
@@ -205,9 +297,9 @@ class FollowupRuntime(unittest.TestCase):
         hero.paused=False;tick(2.25);self.assertEqual(4,len(pushes))
 
     def test_auto_selection_is_local_alive_only(self):
-        vm = JassState(functions(source('WOS_Start/DefaultArmorChangeStable_Copy.j'), 'UNITSTAT_AutoSelectTick'))
+        vm = JassState(functions(source('WOS_Start/DefaultArmorChangeStable_Copy.j'), 'UNITSTAT_AutoSelectTick').replace('static if ', 'if '))
         hero = vm.unit(owner=1); alive = [True]; calls = []
-        vm.g.update(UNITSTAT_AutoSelectElapsed=0., UNITSTAT_SeenSettingsRevision=0,
+        vm.g.update(TestMode=False,LIBRARY_WOSTestMinimalRuntime=False,WUI_AutoSelectHero=defaultdict(bool,{1:True}),UNITSTAT_AutoSelectElapsed=0., UNITSTAT_SeenSettingsRevision=0,
             WUI_SettingsRevision=0, UNITSTAT_AutoSelect=defaultdict(bool, {1: True}),
             Hero=defaultdict(lambda: None, {1: hero}), bj_MAX_PLAYER_SLOTS=10,
             GetPlayerSlotState=lambda p: 'playing', PLAYER_SLOT_STATE_PLAYING='playing',
@@ -231,7 +323,7 @@ class FollowupRuntime(unittest.TestCase):
     def test_auto_selection_timer_runs_at_quarter_second_only_while_enabled(self):
         vm=JassState(functions(source('WOS_Start/DefaultArmorChangeStable_Copy.j'), 'UNITSTAT_SetAutoSelect', 'UNITSTAT_OnAutoSelect'))
         started=[];paused=[]
-        vm.g.update(GetPlayerId=lambda p:p,GetTriggerPlayer=lambda:0,GetLocalPlayer=lambda:0,
+        vm.g.update(TestMode=False,GetPlayerId=lambda p:p,GetTriggerPlayer=lambda:0,GetLocalPlayer=lambda:0,
             Player=lambda p:p,UNITSTAT_AutoSelect=defaultdict(bool),WUI_AutoSelectHero=defaultdict(bool),UNITSTAT_AutoSelectUsers=0,
             UNITSTAT_AutoSelectTimer=None,UNITSTAT_AutoSelectToggle='button',
             UNITSTAT_AutoSelectTick=lambda:None,CreateTimer=lambda:'timer',

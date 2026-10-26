@@ -2676,5 +2676,18 @@
         "abilities": [],
         "mode": "none",
         "reason": "Consumed on purchase: permanent stats, no ability and no reach."
+    },
+    {
+        "item": "I04E",
+        "name": "Core Drill",
+        "abilities": [
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats and a self damage-stack passive."
     }
 ]

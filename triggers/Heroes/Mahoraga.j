@@ -410,6 +410,7 @@ library MahoragaSpells uses GearSystems
         endmethod
 
     endstruct
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
   private struct MahoragaSpells_E
         private static integer array m_MahoragaE3
         private static integer MUI_MahoragaE3 = -1

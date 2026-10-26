@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "629d57cd1e4e331d1bd136704f10275ef61e1d746bc16c9fdaff363be29b99f3",
+  "source_sha256": "32722c848e279cf5db00553e261a292c06777045d7ba716ad41fc240ad50ba0b",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3582,129 +3582,8 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "ftip",
-            "hex": "66746970"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Cold"
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters."
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "ftat",
-            "hex": "66746174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "fart",
-            "hex": "66617274"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp"
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "fnam",
-            "hex": "666E616D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Cold"
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "feat",
-            "hex": "66656174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "feft",
-            "hex": "66656674"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        },
-        {
-          "field": {
-            "text": "ftac",
-            "hex": "66746163"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "origin"
-          },
-          "sanity_check": {
-            "text": "B042",
-            "hex": "42303432"
-          }
-        }
-      ],
-      "display_name": ""
+      "modifications": [],
+      "display_name": "Frostnova F (1/5)"
     },
     {
       "old_id": {
@@ -3718,129 +3597,323 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [
-        {
-          "field": {
-            "text": "ftip",
-            "hex": "66746970"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostbite"
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "fube",
-            "hex": "66756265"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters."
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "ftat",
-            "hex": "66746174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "fart",
-            "hex": "66617274"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp"
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "fnam",
-            "hex": "666E616D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostbite"
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "feat",
-            "hex": "66656174"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "feft",
-            "hex": "66656674"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        },
-        {
-          "field": {
-            "text": "ftac",
-            "hex": "66746163"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "origin"
-          },
-          "sanity_check": {
-            "text": "B043",
-            "hex": "42303433"
-          }
-        }
+      "modifications": [],
+      "display_name": "Frostnova TF (1/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B045",
+        "hex": "42303435"
+      },
+      "v3_unknown": [
+        0
       ],
-      "display_name": ""
+      "modifications": [],
+      "display_name": "Frostnova F (2/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B046",
+        "hex": "42303436"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova F (3/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B047",
+        "hex": "42303437"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova F (4/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B048",
+        "hex": "42303438"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova F (5/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B049",
+        "hex": "42303439"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova TF (2/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04A",
+        "hex": "42303441"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova TF (3/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04B",
+        "hex": "42303442"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova TF (4/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04C",
+        "hex": "42303443"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova TF (5/5)"
+    },
+    {
+      "old_id": {
+        "text": "Binf",
+        "hex": "42696E66"
+      },
+      "new_id": {
+        "text": "B0F0",
+        "hex": "42304630"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova E - Frozen Shelter"
+    },
+    {
+      "old_id": {
+        "text": "Bcri",
+        "hex": "42637269"
+      },
+      "new_id": {
+        "text": "B0F1",
+        "hex": "42304631"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova E - Frozen Recovery"
+    },
+    {
+      "old_id": {
+        "text": "BUfa",
+        "hex": "42556661"
+      },
+      "new_id": {
+        "text": "B0F3",
+        "hex": "42304633"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Frostnova T - Song Shield"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04D",
+        "hex": "42303444"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Physical 1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04E",
+        "hex": "42303445"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Physical 2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04F",
+        "hex": "42303446"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Physical 3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B050",
+        "hex": "42303530"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Physical 4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B051",
+        "hex": "42303531"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Physical 5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B052",
+        "hex": "42303532"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Magic 1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B053",
+        "hex": "42303533"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Magic 2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B054",
+        "hex": "42303534"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Magic 3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B055",
+        "hex": "42303535"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Magic 4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B056",
+        "hex": "42303536"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Core Drill Magic 5"
     }
   ]
 }

@@ -1185,6 +1185,7 @@ private struct MilimRProjectileKS
 endstruct
 
 // Îñíîâíàÿ ñòðóêòóðà: êàñò, íåóÿçâèìîñòü, ïàóçà è âûïóñê âñåõ ñíàðÿäîâ.
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
 private struct MilimRKS
     private static constant integer MISSILE_COUNT = 12
     private static constant real CAST_DELAY = 1.0
@@ -1481,6 +1482,7 @@ private struct MilimTKS
     endstruct
     // Ýòè ïàðàìåòðû äîáàâèòü â ñóùåñòâóþùèé globals áèáëèîòåêè MilimSpells.
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
 private struct MilimT2KS
     private static constant real AIM_TURN_SPEED = 90.00 // ãðàäóñîâ â ñåêóíäó
     private static constant real AIM_TURN_LIMIT = 120.00 // ïðåäåë îò óãëà òî÷êè íàæàòèÿ â êàæäóþ ñòîðîíó

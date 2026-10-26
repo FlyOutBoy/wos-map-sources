@@ -207,6 +207,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endif
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BambiettaSpells_Q
         private static integer array m_BambiettaQ
         private static integer MUI_BambiettaQ = -1
@@ -612,6 +613,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BambiettaSpells_W
         private static integer array m_BambiettaW2
         private static integer MUI_BambiettaW2 = -1
@@ -1038,6 +1040,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BambiettaSpells_E
         private static integer array m_BambiettaE2
         private static integer MUI_BambiettaE2 = -1
@@ -1546,6 +1549,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BambiettaSpells_R
         private static integer array m_BambiettaR
         private static integer MUI_BambiettaR = -1
@@ -1810,6 +1814,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BambiettaSpells_T
         private static integer array m_BambiettaT
         private static integer MUI_BambiettaT = -1
@@ -1906,6 +1911,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             call MySpellStacks(c, BambiettaG_StacksT, BambiettaG_CD)
                             set rmax = BambiettaT_Duration
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_T, 1)
+                            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                             set r = 0
                             call BlzSetAbilityIcon(BambiettaQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_TQ.blp")
                             call BlzSetAbilityIcon(BambiettaW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Bambietta_TW.blp")

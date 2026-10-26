@@ -4,22 +4,22 @@
     {
       "category": "abilities",
       "file": "abilities.json",
-      "objects": 674
+      "objects": 705
     },
     {
       "category": "units",
       "file": "units.json",
-      "objects": 99
+      "objects": 100
     },
     {
       "category": "items",
       "file": "items.json",
-      "objects": 150
+      "objects": 158
     },
     {
       "category": "buffs",
       "file": "buffs.json",
-      "objects": 128
+      "objects": 144
     },
     {
       "category": "upgrades",
@@ -29,7 +29,7 @@
     {
       "category": "destructables",
       "file": "destructables.json",
-      "objects": 48
+      "objects": 49
     },
     {
       "category": "doodads",

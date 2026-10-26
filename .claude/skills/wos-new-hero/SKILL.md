@@ -21,13 +21,23 @@ argument-hint: "<HeroName> [test|transfer]"
    Запуск игры (`build-run-w3-map.ps1 -Target Test`) — только по просьбе; поведение в игре проверяет пользователь.
 
 ## B. Перенос в MAIN
+Для уже подготовленного героя: задача `HERO: TEST → MAIN — перенести код героя и собрать карту`
+или `python tools/hero_transfer.py --active-test-hero --build-main`. Берёт текущий testHero,
+первый раз спрашивает параметры/покупателя и запоминает их в локальном
+`.vscode/wos-build.json:heroTransferProfiles`; последующие запуски используют ответы.
+`--dry-run` не пишет и не собирает. В BuildsForChars.j флаг WOS_EnableTestHero
+управляет общим пик-каталогом текущего WOS_TestHeroId; задачу он не переключает.
+Команда собирает MAIN без игры и не копирует TEST объекты/импорты вместо MAIN.
+Для нового героя по-прежнему обязательны пункты3–4 ниже. Обычный перенос выбранного
+J через COMMON остаётся доступен отдельно.
+
 1. Предпросмотр без записи (скрипт интерактивный; в моей оболочке нет stdin, поэтому все ответы — флагами):
-   `python tools/hero_transfer.py --hero-file test_map/heroes/<Hero>.j --category N --difficulty N --items default --dry-run --yes`
+   `python tools/hero_transfer.py --hero-file test_map/heroes/<Hero>.j --category N --difficulty N --items default --buyer-name "<BuyerNickname>" --dry-run --yes`
    Категории: 1 Gacha, 2 Bleach, 3 Fairy Tail, 4 One Piece, 5 Jujutsu Kaisen, 6 Other; сложность 1 Easy, 2 Normal, 3 Hard —
    значения взять у пользователя. `--yes` здесь нужен, т.к. вопрос «Apply?» задаётся до проверки `--dry-run`;
    с `--dry-run` файлы не пишутся.
 2. Применение — та же команда без `--dry-run` с `--yes` только после подтверждения пользователя.
-   Бэкап — `backups/hero-transfer`. Повторный запуск не дублирует код (маркеры `HERO TRANSFER`).
+   Бэкап — `backups/hero-transfer`. Скрипт также заменяет BanImmuneHero1 на <Hero>_ID и обновляет приоритетный пик: ThunderGear + ник покупателя. Интерактивно ник запрашивается; с --yes его обязательно передать через --buyer-name. Повторный запуск не дублирует код (маркеры `HERO TRANSFER`).
 3. Ручная интеграция (Hero Transfer её не делает):
    - `triggers/Systems/CastCheck.j`: ветка `static if LIBRARY_<Hero>Spells` по образцу Crocodile (Grep `Crocodile_ID`).
    - `triggers/WOS_Start/UniversalTooltips.j`: `SpellData.createSimple(...)` на каждую способность (Grep `CrocodileQ_ID`).

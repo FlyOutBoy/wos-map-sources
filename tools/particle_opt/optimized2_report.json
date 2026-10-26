@@ -1,0 +1,1361 @@
+[
+ {
+  "tier": "decor_model",
+  "path": "land_wos\\RoadTunnel.mdx",
+  "factor": 0.23,
+  "peak": 130,
+  "peak_after": 30,
+  "fill": 0.1,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_1baozha_90.mdx",
+  "factor": 0.71,
+  "peak": 254,
+  "peak_after": 180,
+  "fill": 0.6,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_1huo_92_01.mdx",
+  "factor": 0.5,
+  "peak": 500,
+  "peak_after": 250,
+  "fill": 0.6,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_1jinse_93.mdx",
+  "factor": 0.83,
+  "peak": 300,
+  "peak_after": 250,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_1lanse_99.mdx",
+  "factor": 0.73,
+  "peak": 341,
+  "peak_after": 253,
+  "fill": 9.5,
+  "fill_after": 8.9
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_1shui_2_1.mdx",
+  "factor": 0.4,
+  "peak": 620,
+  "peak_after": 250,
+  "fill": 1.2,
+  "fill_after": 0.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_2-[tx]-03-03jianta (3)_1.mdx",
+  "factor": 0.5,
+  "peak": 503,
+  "peak_after": 256,
+  "fill": 6.4,
+  "fill_after": 4.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_452.mdx",
+  "factor": 0.71,
+  "peak": 350,
+  "peak_after": 250,
+  "fill": 5.4,
+  "fill_after": 4.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_5731-sl_8bc718f-F1_5.mdx",
+  "factor": 0.73,
+  "peak": 50,
+  "peak_after": 44,
+  "fill": 13.7,
+  "fill_after": 12.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_5731-sl_8bc718f-F2.mdx",
+  "factor": 0.55,
+  "peak": 50,
+  "peak_after": 39,
+  "fill": 38.4,
+  "fill_after": 32.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_5731-sl_8bc718f-F2_red.mdx",
+  "factor": 0.55,
+  "peak": 44,
+  "peak_after": 34,
+  "fill": 23.4,
+  "fill_after": 23.4
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_ade (blue).mdx",
+  "factor": 0.86,
+  "peak": 140,
+  "peak_after": 129,
+  "fill": 0.0,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_AFB (1896)1.mdx",
+  "factor": 0.55,
+  "peak": 160,
+  "peak_after": 88,
+  "fill": 25.4,
+  "fill_after": 14.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_AFB (2634).mdx",
+  "factor": 0.42,
+  "peak": 590,
+  "peak_after": 264,
+  "fill": 1.4,
+  "fill_after": 1.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_afbbxks2.mdx",
+  "factor": 0.73,
+  "peak": 193,
+  "peak_after": 152,
+  "fill": 13.8,
+  "fill_after": 13.4
+ },
+ {
+  "tier": "unit_model",
+  "path": "war3mapImported\\wos_akainu.mdx",
+  "factor": 0.5,
+  "peak": 2937,
+  "peak_after": 1472,
+  "fill": 36.6,
+  "fill_after": 25.9
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_AlucardRiver.mdx",
+  "factor": 0.4,
+  "peak": 2986,
+  "peak_after": 1216,
+  "fill": 8.5,
+  "fill_after": 5.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Aluc_Explode_blood.mdx",
+  "factor": 0.76,
+  "peak": 331,
+  "peak_after": 250,
+  "fill": 5.4,
+  "fill_after": 4.7
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_arcaneorb.mdx",
+  "factor": 0.48,
+  "peak": 248,
+  "peak_after": 126,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_az-ice-zhendi.mdx",
+  "factor": 0.54,
+  "peak": 463,
+  "peak_after": 256,
+  "fill": 0.6,
+  "fill_after": 0.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_az_chongci-red%2E.mdx",
+  "factor": 0.48,
+  "peak": 521,
+  "peak_after": 250,
+  "fill": 1.0,
+  "fill_after": 0.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_az_f076big.mdx",
+  "factor": 0.88,
+  "peak": 27,
+  "peak_after": 25,
+  "fill": 11.4,
+  "fill_after": 10.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_az_nevermoreice_x.mdx",
+  "factor": 0.88,
+  "peak": 284,
+  "peak_after": 251,
+  "fill": 0.8,
+  "fill_after": 0.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_AZ_TS_TZRed.MDX",
+  "factor": 0.5,
+  "peak": 48,
+  "peak_after": 24,
+  "fill": 2.5,
+  "fill_after": 1.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_A_P_blast3.mdx",
+  "factor": 0.55,
+  "peak": 50,
+  "peak_after": 28,
+  "fill": 27.6,
+  "fill_after": 23.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_A_P_blast3red.mdx",
+  "factor": 0.55,
+  "peak": 50,
+  "peak_after": 28,
+  "fill": 27.6,
+  "fill_after": 23.7
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx",
+  "factor": 0.82,
+  "peak": 220,
+  "peak_after": 180,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_bankaimess.mdx",
+  "factor": 0.4,
+  "peak": 3250,
+  "peak_after": 1300,
+  "fill": 0.0,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_bankaimess_black2.mdx",
+  "factor": 0.4,
+  "peak": 3250,
+  "peak_after": 1300,
+  "fill": 0.0,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_BDEF (178).mdx",
+  "factor": 0.46,
+  "peak": 544,
+  "peak_after": 268,
+  "fill": 5.6,
+  "fill_after": 4.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_blacklightningarea3.mdx",
+  "factor": 0.55,
+  "peak": 176,
+  "peak_after": 100,
+  "fill": 21.9,
+  "fill_after": 12.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_blacksphereexp.mdx",
+  "factor": 0.4,
+  "peak": 825,
+  "peak_after": 333,
+  "fill": 0.2,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_blood-rou-wu.MDX",
+  "factor": 0.27,
+  "peak": 438,
+  "peak_after": 124,
+  "fill": 1.3,
+  "fill_after": 0.7
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_bloodex-special-23.mdx",
+  "factor": 0.35,
+  "peak": 598,
+  "peak_after": 209,
+  "fill": 1.4,
+  "fill_after": 0.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_blue--zhendi31_3.mdx",
+  "factor": 0.56,
+  "peak": 159,
+  "peak_after": 101,
+  "fill": 17.9,
+  "fill_after": 15.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_blue--zhendi31_3_x2.mdx",
+  "factor": 0.55,
+  "peak": 179,
+  "peak_after": 111,
+  "fill": 72.5,
+  "fill_after": 64.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_blue-shoot.mdx",
+  "factor": 0.63,
+  "peak": 398,
+  "peak_after": 252,
+  "fill": 0.2,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_brandi_sandq.mdx",
+  "factor": 0.5,
+  "peak": 884,
+  "peak_after": 442,
+  "fill": 2.5,
+  "fill_after": 1.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_bwaxec2.mdx",
+  "factor": 0.55,
+  "peak": 217,
+  "peak_after": 129,
+  "fill": 44.4,
+  "fill_after": 36.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_DaYanJieYanDi_3.mdx",
+  "factor": 0.55,
+  "peak": 392,
+  "peak_after": 216,
+  "fill": 35.8,
+  "fill_after": 19.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_YanJieHuoZhu_2.mdx",
+  "factor": 0.53,
+  "peak": 474,
+  "peak_after": 252,
+  "fill": 16.3,
+  "fill_after": 12.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutblue2.mdx",
+  "factor": 0.86,
+  "peak": 291,
+  "peak_after": 250,
+  "fill": 5.4,
+  "fill_after": 5.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutpurple3.mdx",
+  "factor": 0.86,
+  "peak": 291,
+  "peak_after": 250,
+  "fill": 5.4,
+  "fill_after": 5.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdx",
+  "factor": 0.6,
+  "peak": 69,
+  "peak_after": 41,
+  "fill": 3.7,
+  "fill_after": 2.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_by_wood_effect_yuzhiboyou_fire_babangouyu_1_kong.mdx",
+  "factor": 0.4,
+  "peak": 1543,
+  "peak_after": 634,
+  "fill": 8.0,
+  "fill_after": 5.5
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_by_wood_effect_yuzhiboyou_unusual_fenshendabaopo_2.mdx",
+  "factor": 0.15,
+  "peak": 525,
+  "peak_after": 88,
+  "fill": 4.7,
+  "fill_after": 1.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_BY_Wood_Effect_YuZhiBoYou_Water_ShuiLongDan_3.mdx",
+  "factor": 0.41,
+  "peak": 615,
+  "peak_after": 250,
+  "fill": 7.2,
+  "fill_after": 4.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_by_wood_neff_odr_sla_jianqi_1-4ly1.mdx",
+  "factor": 0.73,
+  "peak": 344,
+  "peak_after": 256,
+  "fill": 8.1,
+  "fill_after": 7.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_chushou_by_wood_effect_blood_xuebao.mdx",
+  "factor": 0.79,
+  "peak": 316,
+  "peak_after": 250,
+  "fill": 1.9,
+  "fill_after": 1.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_chushou_by_wood_effect_huozhu_black.mdx",
+  "factor": 0.42,
+  "peak": 589,
+  "peak_after": 269,
+  "fill": 6.5,
+  "fill_after": 5.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_corpse explosion.mdx",
+  "factor": 0.53,
+  "peak": 473,
+  "peak_after": 256,
+  "fill": 1.7,
+  "fill_after": 1.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_crimson explosion with bats.mdx",
+  "factor": 0.83,
+  "peak": 302,
+  "peak_after": 250,
+  "fill": 2.0,
+  "fill_after": 1.9
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Cz14_1.mdx",
+  "factor": 0.48,
+  "peak": 518,
+  "peak_after": 250,
+  "fill": 1.7,
+  "fill_after": 1.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_DragonTobirama.mdx",
+  "factor": 0.52,
+  "peak": 480,
+  "peak_after": 250,
+  "fill": 3.4,
+  "fill_after": 2.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_eff (119)brand.mdx",
+  "factor": 0.58,
+  "peak": 432,
+  "peak_after": 255,
+  "fill": 1.1,
+  "fill_after": 1.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Eff (134).mdx",
+  "factor": 0.4,
+  "peak": 1290,
+  "peak_after": 516,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_effect_az_laser3.mdx",
+  "factor": 0.84,
+  "peak": 296,
+  "peak_after": 253,
+  "fill": 3.3,
+  "fill_after": 3.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_FantasyBattle (1517).mdx",
+  "factor": 0.59,
+  "peak": 92,
+  "peak_after": 63,
+  "fill": 16.9,
+  "fill_after": 13.6
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_FBT-dilie22.mdx",
+  "factor": 0.6,
+  "peak": 300,
+  "peak_after": 185,
+  "fill": 4.2,
+  "fill_after": 2.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_FBT-dilie2big.mdx",
+  "factor": 0.59,
+  "peak": 424,
+  "peak_after": 255,
+  "fill": 12.2,
+  "fill_after": 9.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_FGO jg.mdx",
+  "factor": 0.42,
+  "peak": 590,
+  "peak_after": 264,
+  "fill": 1.4,
+  "fill_after": 1.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_file00000862.mdx",
+  "factor": 0.59,
+  "peak": 424,
+  "peak_after": 250,
+  "fill": 3.6,
+  "fill_after": 2.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_file00000867.mdx",
+  "factor": 0.78,
+  "peak": 224,
+  "peak_after": 173,
+  "fill": 12.9,
+  "fill_after": 10.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_file00001145.mdx",
+  "factor": 0.5,
+  "peak": 502,
+  "peak_after": 251,
+  "fill": 8.4,
+  "fill_after": 6.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_file00007439.mdx",
+  "factor": 0.73,
+  "peak": 342,
+  "peak_after": 254,
+  "fill": 6.2,
+  "fill_after": 5.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_file00007439_yel.mdx",
+  "factor": 0.73,
+  "peak": 342,
+  "peak_after": 254,
+  "fill": 6.2,
+  "fill_after": 5.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_fire explosion.mdx",
+  "factor": 0.87,
+  "peak": 289,
+  "peak_after": 250,
+  "fill": 1.4,
+  "fill_after": 1.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_firefly-rq-sfx-5.mdx",
+  "factor": 0.61,
+  "peak": 205,
+  "peak_after": 129,
+  "fill": 16.5,
+  "fill_after": 10.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_firefly-rq-sfx2.mdx",
+  "factor": 0.76,
+  "peak": 327,
+  "peak_after": 254,
+  "fill": 3.4,
+  "fill_after": 3.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_firefly-rw-sfx4.mdx",
+  "factor": 0.47,
+  "peak": 527,
+  "peak_after": 257,
+  "fill": 2.3,
+  "fill_after": 1.9
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_hit-juhuang1.mdx",
+  "factor": 0.26,
+  "peak": 306,
+  "peak_after": 80,
+  "fill": 1.9,
+  "fill_after": 0.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_hqn5_w.mdx",
+  "factor": 0.4,
+  "peak": 684,
+  "peak_after": 278,
+  "fill": 11.7,
+  "fill_after": 7.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_icestomp.mdx",
+  "factor": 0.65,
+  "peak": 384,
+  "peak_after": 250,
+  "fill": 7.9,
+  "fill_after": 6.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_icesword.mdx",
+  "factor": 0.71,
+  "peak": 351,
+  "peak_after": 250,
+  "fill": 0.5,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx",
+  "factor": 0.4,
+  "peak": 752,
+  "peak_after": 303,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_JY-Shio_Super_Saiyan_JN_ZiRed.mdx",
+  "factor": 0.25,
+  "peak": 751,
+  "peak_after": 190,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_Kirito_Buff_main.mdx",
+  "factor": 0.73,
+  "peak": 109,
+  "peak_after": 80,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_laz (167).mdx",
+  "factor": 0.9,
+  "peak": 134,
+  "peak_after": 120,
+  "fill": 1.2,
+  "fill_after": 1.2
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_LD2209 (129).mdx",
+  "factor": 0.55,
+  "peak": 327,
+  "peak_after": 183,
+  "fill": 2.3,
+  "fill_after": 1.6
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_LD2209 (96)_ws2.mdx",
+  "factor": 0.58,
+  "peak": 400,
+  "peak_after": 232,
+  "fill": 17.3,
+  "fill_after": 10.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_LDeff (11)1.mdx",
+  "factor": 0.4,
+  "peak": 900,
+  "peak_after": 364,
+  "fill": 28.2,
+  "fill_after": 17.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_LDeff (5).mdx",
+  "factor": 0.75,
+  "peak": 332,
+  "peak_after": 265,
+  "fill": 0.3,
+  "fill_after": 0.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_LightBlueLand.mdx",
+  "factor": 0.55,
+  "peak": 266,
+  "peak_after": 158,
+  "fill": 27.9,
+  "fill_after": 27.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Lightgreen.mdx",
+  "factor": 0.42,
+  "peak": 599,
+  "peak_after": 250,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_lightningStomp.mdx",
+  "factor": 0.47,
+  "peak": 530,
+  "peak_after": 252,
+  "fill": 0.8,
+  "fill_after": 0.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_ly-r-sg.mdx",
+  "factor": 0.4,
+  "peak": 1443,
+  "peak_after": 585,
+  "fill": 2.2,
+  "fill_after": 2.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_mard effect 2.mdx",
+  "factor": 0.54,
+  "peak": 461,
+  "peak_after": 250,
+  "fill": 1.1,
+  "fill_after": 0.8
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_mei-torb.mdx",
+  "factor": 0.65,
+  "peak": 184,
+  "peak_after": 121,
+  "fill": 3.7,
+  "fill_after": 3.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_moon_texiao_shengguangweimu_01_22.mdx",
+  "factor": 0.4,
+  "peak": 1268,
+  "peak_after": 517,
+  "fill": 19.2,
+  "fill_after": 16.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Muramasa1.mdx",
+  "factor": 0.42,
+  "peak": 602,
+  "peak_after": 284,
+  "fill": 23.5,
+  "fill_after": 15.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_ncds (179).mdx",
+  "factor": 0.4,
+  "peak": 1135,
+  "peak_after": 479,
+  "fill": 15.5,
+  "fill_after": 15.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_NewDirtEXNofire.mdx",
+  "factor": 0.6,
+  "peak": 92,
+  "peak_after": 56,
+  "fill": 0.8,
+  "fill_after": 0.6
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_obr08 (171).mdx",
+  "factor": 0.38,
+  "peak": 208,
+  "peak_after": 80,
+  "fill": 1.9,
+  "fill_after": 0.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_obr08 (171)44.mdx",
+  "factor": 0.55,
+  "peak": 142,
+  "peak_after": 80,
+  "fill": 56.4,
+  "fill_after": 33.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_obr08 (171)44_small.mdx",
+  "factor": 0.55,
+  "peak": 406,
+  "peak_after": 226,
+  "fill": 61.6,
+  "fill_after": 36.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_obr08 (171)4_short2.mdx",
+  "factor": 0.55,
+  "peak": 142,
+  "peak_after": 80,
+  "fill": 56.4,
+  "fill_after": 33.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_opbr0326 (344).mdx",
+  "factor": 0.4,
+  "peak": 1135,
+  "peak_after": 470,
+  "fill": 24.9,
+  "fill_after": 18.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_opbr0326 (347).mdx",
+  "factor": 0.4,
+  "peak": 1388,
+  "peak_after": 555,
+  "fill": 13.3,
+  "fill_after": 8.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_opbr0326 (762).mdx",
+  "factor": 0.83,
+  "peak": 302,
+  "peak_after": 251,
+  "fill": 7.0,
+  "fill_after": 6.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Opdef (100)11.mdx",
+  "factor": 0.55,
+  "peak": 135,
+  "peak_after": 106,
+  "fill": 29.7,
+  "fill_after": 29.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Opdef (652).mdx",
+  "factor": 0.61,
+  "peak": 411,
+  "peak_after": 255,
+  "fill": 1.4,
+  "fill_after": 1.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_OPm (513).mdx",
+  "factor": 0.63,
+  "peak": 134,
+  "peak_after": 88,
+  "fill": 15.8,
+  "fill_after": 11.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_OPm (513)red.mdx",
+  "factor": 0.63,
+  "peak": 134,
+  "peak_after": 88,
+  "fill": 15.8,
+  "fill_after": 11.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_OPm (583).mdx",
+  "factor": 0.69,
+  "peak": 294,
+  "peak_after": 228,
+  "fill": 14.6,
+  "fill_after": 12.9
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_poisonbeam.mdx",
+  "factor": 0.84,
+  "peak": 296,
+  "peak_after": 250,
+  "fill": 8.4,
+  "fill_after": 7.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Purp_Mdx_Effect_BY_Mutou_Huozhu_Siwang.mdx",
+  "factor": 0.52,
+  "peak": 484,
+  "peak_after": 250,
+  "fill": 2.0,
+  "fill_after": 1.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_raidenei-18.mdx",
+  "factor": 0.55,
+  "peak": 263,
+  "peak_after": 147,
+  "fill": 28.6,
+  "fill_after": 15.8
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_raiden_tx_yln_hit8_1.mdx",
+  "factor": 0.81,
+  "peak": 148,
+  "peak_after": 124,
+  "fill": 0.8,
+  "fill_after": 0.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_rain-0631C2.mdx",
+  "factor": 0.4,
+  "peak": 966,
+  "peak_after": 387,
+  "fill": 28.7,
+  "fill_after": 18.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_saber_attach.mdx",
+  "factor": 0.4,
+  "peak": 908,
+  "peak_after": 363,
+  "fill": 0.2,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_SandPoff.mdx",
+  "factor": 0.6,
+  "peak": 100,
+  "peak_after": 60,
+  "fill": 0.4,
+  "fill_after": 0.3
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_SasukeYh-41.mdx",
+  "factor": 0.61,
+  "peak": 295,
+  "peak_after": 185,
+  "fill": 0.4,
+  "fill_after": 0.3
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Satsu-Hit-red.mdx",
+  "factor": 0.6,
+  "peak": 135,
+  "peak_after": 82,
+  "fill": 0.2,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Satsu-RSFX-4.mdx",
+  "factor": 0.6,
+  "peak": 62,
+  "peak_after": 44,
+  "fill": 1.4,
+  "fill_after": 1.1
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_shachen1.mdx",
+  "factor": 0.1,
+  "peak": 2880,
+  "peak_after": 288,
+  "fill": 21.6,
+  "fill_after": 2.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_shadowexplosion.mdx",
+  "factor": 0.4,
+  "peak": 879,
+  "peak_after": 352,
+  "fill": 5.9,
+  "fill_after": 3.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_2.mdx",
+  "factor": 0.4,
+  "peak": 751,
+  "peak_after": 302,
+  "fill": 0.6,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_laxus1.mdx",
+  "factor": 0.5,
+  "peak": 504,
+  "peak_after": 254,
+  "fill": 0.5,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_Shio_Super_Saiyan_JN_SS-2_laxus2.mdx",
+  "factor": 0.5,
+  "peak": 504,
+  "peak_after": 254,
+  "fill": 0.5,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_shootgb1afx.mdx",
+  "factor": 0.63,
+  "peak": 398,
+  "peak_after": 252,
+  "fill": 0.2,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_shulao.mdx",
+  "factor": 0.67,
+  "peak": 120,
+  "peak_after": 80,
+  "fill": 0.4,
+  "fill_after": 0.3
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_shutu.mdx",
+  "factor": 0.1,
+  "peak": 1027,
+  "peak_after": 103,
+  "fill": 3.2,
+  "fill_after": 0.3
+ },
+ {
+  "tier": "decor_hard",
+  "path": "war3mapImported\\wos_solaire_lightning_impact.mdx",
+  "factor": 0.2,
+  "peak": 402,
+  "peak_after": 82,
+  "fill": 0.1,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_SparkRErza.mdx",
+  "factor": 0.45,
+  "peak": 559,
+  "peak_after": 250,
+  "fill": 3.2,
+  "fill_after": 2.1
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_steam.mdx",
+  "factor": 0.62,
+  "peak": 192,
+  "peak_after": 120,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_stenpafx3.mdx",
+  "factor": 0.4,
+  "peak": 857,
+  "peak_after": 343,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_summon3missle.mdx",
+  "factor": 0.78,
+  "peak": 320,
+  "peak_after": 250,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "decor_shared",
+  "path": "war3mapImported\\wos_t8_by_wood_effect_order_dange_daoguang_baozha_2_2_clear.mdx",
+  "factor": 0.46,
+  "peak": 353,
+  "peak_after": 166,
+  "fill": 13.2,
+  "fill_after": 9.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_te-leilv-diliepurple.mdx",
+  "factor": 0.4,
+  "peak": 1444,
+  "peak_after": 593,
+  "fill": 13.3,
+  "fill_after": 8.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_teaeff.mdx",
+  "factor": 0.7,
+  "peak": 358,
+  "peak_after": 250,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_TidalErruption.MDX",
+  "factor": 0.45,
+  "peak": 559,
+  "peak_after": 258,
+  "fill": 3.1,
+  "fill_after": 2.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_tx-liuying03_pink3.mdx",
+  "factor": 0.62,
+  "peak": 402,
+  "peak_after": 253,
+  "fill": 1.9,
+  "fill_after": 1.5
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_TX-RedSlashGinBlack.mdx",
+  "factor": 0.67,
+  "peak": 263,
+  "peak_after": 175,
+  "fill": 15.0,
+  "fill_after": 10.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_TX027.mdx",
+  "factor": 0.71,
+  "peak": 351,
+  "peak_after": 262,
+  "fill": 9.0,
+  "fill_after": 8.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_TXfiretuxi2.mdx",
+  "factor": 0.59,
+  "peak": 425,
+  "peak_after": 258,
+  "fill": 1.0,
+  "fill_after": 0.7
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_UltimateDarkFlash.mdx",
+  "factor": 0.71,
+  "peak": 350,
+  "peak_after": 253,
+  "fill": 1.8,
+  "fill_after": 1.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_waterbeam.mdx",
+  "factor": 0.59,
+  "peak": 384,
+  "peak_after": 227,
+  "fill": 16.9,
+  "fill_after": 10.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_watertornado.mdx",
+  "factor": 0.69,
+  "peak": 364,
+  "peak_after": 253,
+  "fill": 13.9,
+  "fill_after": 13.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_xie_baozha.mdx",
+  "factor": 0.53,
+  "peak": 475,
+  "peak_after": 257,
+  "fill": 10.3,
+  "fill_after": 7.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_yc_firebeam2.mdx",
+  "factor": 0.54,
+  "peak": 465,
+  "peak_after": 250,
+  "fill": 11.4,
+  "fill_after": 8.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_yc_firebeam2_black.mdx",
+  "factor": 0.54,
+  "peak": 465,
+  "peak_after": 250,
+  "fill": 11.4,
+  "fill_after": 8.4
+ },
+ {
+  "tier": "buff_art",
+  "path": "war3mapImported\\wos_yelshadowbuff3.mdx",
+  "factor": 0.69,
+  "peak": 175,
+  "peak_after": 120,
+  "fill": 0.1,
+  "fill_after": 0.1
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_yz-leimitx13.mdx",
+  "factor": 0.6,
+  "peak": 106,
+  "peak_after": 64,
+  "fill": 0.3,
+  "fill_after": 0.2
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_ZarakiWCrack1.mdx",
+  "factor": 0.55,
+  "peak": 106,
+  "peak_after": 59,
+  "fill": 5.1,
+  "fill_after": 2.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_zdgq.mdx",
+  "factor": 0.4,
+  "peak": 1170,
+  "peak_after": 476,
+  "fill": 0.4,
+  "fill_after": 0.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_zk_shiki_dash.mdx",
+  "factor": 0.61,
+  "peak": 410,
+  "peak_after": 254,
+  "fill": 0.1,
+  "fill_after": 0.0
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_zz-fire-ore-hit1-zihei_big4.mdx",
+  "factor": 0.45,
+  "peak": 554,
+  "peak_after": 250,
+  "fill": 48.2,
+  "fill_after": 32.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_[DoFT]CrocodileSanding2.mdx",
+  "factor": 0.82,
+  "peak": 304,
+  "peak_after": 250,
+  "fill": 0.9,
+  "fill_after": 0.8
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_[DoFT]CrocodileSanding3.mdx",
+  "factor": 0.5,
+  "peak": 1280,
+  "peak_after": 640,
+  "fill": 1.9,
+  "fill_after": 1.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_[dz_spell]002_blue5.mdx",
+  "factor": 0.61,
+  "peak": 413,
+  "peak_after": 251,
+  "fill": 1.8,
+  "fill_after": 1.4
+ },
+ {
+  "tier": "effect",
+  "path": "war3mapImported\\wos_[skillm]explosion ice.mdx",
+  "factor": 0.4,
+  "peak": 780,
+  "peak_after": 312,
+  "fill": 6.5,
+  "fill_after": 5.4
+ }
+]

@@ -23,6 +23,9 @@ paths:
 `BuildsForChars.j` (слот `Hero_ID<cat>[slot]`), `WoS_Pick_Init.j` (пик, звуки, подсказки гайда),
 `Systems1.j` (регистр магазина, `LearnHeroSpells`, рекомендуемые предметы), `Death.j` (звук смерти),
 `LvlUpCheck.j` (выдача F/G-способностей при наличии), запись в `trigger-settings.json`.
+Также заменяет BanImmuneHero1 на текущий <Hero>_ID и меняет второго участника
+приоритетного пика на введённый ник покупателя; ThunderGear сохраняется.
+В автоматическом запуске с --yes нужен явный --buyer-name.
 (`Crocodile_InitializeHero` в `LvlUpCheck.j` дописан вручную — Hero Transfer такой вызов не создаёт.)
 
 Вручную (Hero Transfer этого НЕ делает):

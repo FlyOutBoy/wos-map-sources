@@ -336,6 +336,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
     //===========================================================================
     // СТРУКТУРЫ СПОСОБНОСТЕЙ
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusQ_KS
         private static integer array m_LaxusQ
         private static integer MUI_LaxusQ = -1
@@ -791,6 +792,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusW_KS
         private static integer array m_LaxusW
         private static integer MUI_LaxusW = -1
@@ -1160,6 +1162,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusE_KS
         private static integer array m_LaxusE
         private static integer MUI_LaxusE = -1
@@ -1337,6 +1340,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusR_KS
         private static integer array m_LaxusR
         private static integer MUI_LaxusR = -1
@@ -1631,6 +1635,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusT_KS
         private static integer array m_LaxusT
         private static integer MUI_LaxusT = -1
@@ -1771,6 +1776,7 @@ library LaxusSpells initializer InitLaxusSpells uses GearSystems, NatsuSpells
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct LaxusF_KS
         private static integer array m_LaxusF
         private static integer MUI_LaxusF = -1

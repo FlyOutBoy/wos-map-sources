@@ -353,6 +353,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
     //===========================================================================
     // Q - Sand Wave
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BrandishSpells_Q
         private static integer array m_BrandishQ
         private static integer MUI_BrandishQ = -1
@@ -868,6 +869,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
     //===========================================================================
     // T - Command T (Gigantification)
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BrandishSpells_T
         private static integer array m_BrandishT
         private static integer MUI_BrandishT = -1

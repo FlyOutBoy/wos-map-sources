@@ -159,7 +159,7 @@ class CommonPerformance(unittest.TestCase):
             AR_Hero={0:'hero'},AR_Effect={0:'effect'},AR_Visible=-1,AR_Scale=0.,AR_LastX=0.,AR_LastY=0.,AR_Ground='ground',
             Player=lambda x:x,GetLocalPlayer=lambda:0,WUI_RangePreviewBlocked=lambda:False,
             GetUnitTypeId=lambda _:1,GetOwningPlayer=lambda _:0,IsUnitHidden=lambda _:False,IsUnitType=lambda *_:False,
-            UNIT_TYPE_DEAD='dead',AAUniversalTooltips_GetPreviewRadius=lambda *_:1000.,MilimT2_ID='other',
+            UNIT_TYPE_DEAD='dead',AAUniversalTooltips_GetPreviewRadius=lambda *_:1000.,AAUniversalTooltips_GetPreviewCastRange=lambda *_:1000.,AR_Outer={0:'outer'},AR_OuterScale=0.,AR_MAX_RADIUS=4000.,MilimT2_ID='other',
             GetUnitX=lambda _:vm.g['heroX'],GetUnitY=lambda _:200.,heroX=100.,
             MoveLocation=lambda *a:moves.append(a),GetLocationZ=lambda _:5.,
             BlzSetSpecialEffectPosition=lambda *_:None,BlzSetSpecialEffectScale=lambda *_:None,

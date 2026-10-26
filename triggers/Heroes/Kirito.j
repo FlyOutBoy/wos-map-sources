@@ -336,6 +336,7 @@ library KiritoSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct KiritoSpells_W
         private static integer array m_KiritoW
         private static integer MUI_KiritoW = -1
@@ -477,6 +478,7 @@ library KiritoSpells uses GearSystems
         call ColorDummy3(d, 0, 255, 255, 255, 0.4)
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct KiritoSpells_E
         private static integer array m_KiritoE2
         private static integer MUI_KiritoE2 = -1
@@ -1170,6 +1172,7 @@ library KiritoSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct KiritoSpells_T
         private static integer array m_KiritoT
         private static integer MUI_KiritoT = -1

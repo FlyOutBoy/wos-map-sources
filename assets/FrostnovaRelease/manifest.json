@@ -1,0 +1,2241 @@
+{
+  "paths": {
+    "Kaldr_T2.blp": "war3mapImported\\wos_kaldr_t2.blp",
+    "Textures\\Dust3.blp": "war3mapImported\\wos_Frostnova_Dust3.blp",
+    "az_kaldr_blast_t2small.mdl": "war3mapImported\\wos_az_kaldr_blast_t2small.mdx",
+    "war3mapImported\\a6555bc61ff4_Flare.blp": "war3mapImported\\wos_a6555bc61ff4_Flare.blp",
+    "war3mapImported\\AZ_RibbonNE1_blue.blp": "war3mapImported\\wos_AZ_RibbonNE1_blue.blp",
+    "Textures\\GenericGlow2_64_blue.blp": "war3mapImported\\wos_GenericGlow2_64_blue.blp",
+    "war3mapImported\\[skillm]als-tx (6).mdx": "war3mapImported\\wos_[skillm]als-tx (6).mdx",
+    "AZ_Snowflake3.blp": "war3mapImported\\wos_AZ_Snowflake3.blp",
+    "war3mapImported\\az_snowflake01.mdl": "war3mapImported\\wos_az_snowflake01.mdx",
+    "war3mapimported\\Tsubaki-11_0.blp": "war3mapImported\\wos_Tsubaki-11_0.blp",
+    "war3mapimported\\Tsubaki-11_1.blp": "war3mapImported\\wos_file00002226_0.blp",
+    "war3mapimported\\Tsubaki-11_2.blp": "war3mapImported\\wos_MH218104746.blp",
+    "war3mapimported\\Tsubaki-11_3.blp": "war3mapImported\\wos_Tsubaki-11_3.blp",
+    "war3mapimported\\Tsubaki-11_4.blp": "war3mapImported\\wos_Tsubaki-11_4.blp",
+    "war3mapimported\\Tsubaki-11_5.blp": "war3mapImported\\wos_Tsubaki-11_5.blp",
+    "war3mapimported\\Tsubaki-11_6.blp": "war3mapImported\\wos_Tsubaki-11_6.blp",
+    "war3mapimported\\Tsubaki-11_7.blp": "war3mapImported\\wos_Tsubaki-11_7.blp",
+    "war3mapimported\\Tsubaki-11_8.blp": "war3mapImported\\wos_Tsubaki-11_8.blp",
+    "war3mapimported\\Tsubaki-11_9.blp": "war3mapImported\\wos_Tsubaki-11_9.blp",
+    "war3mapImported\\file00000456.mdx": "war3mapImported\\wos_file00000456.mdx",
+    "AZ_Shockwave1White3.blp": "war3mapImported\\wos_AZ_Shockwave1White3.blp",
+    "flare1_tc.blp": "war3mapImported\\wos_flare1_tc.blp",
+    "AZ_Shockwave2White.blp": "war3mapImported\\wos_AZ_Shockwave2White.blp",
+    "GF_476.blp": "war3mapImported\\wos_Frostnova_GF_476.blp",
+    "war3mapImported\\6548d1b4b9a5_Zap1.blp": "war3mapImported\\wos_6548d1b4b9a5_Zap1.blp",
+    "Textures\\white.blp": "war3mapImported\\wos_LiuYing-R-SG_0.blp",
+    "war3mapImported\\file00000883_1.mdl": "war3mapImported\\wos_file00000883_1.mdx",
+    "BY_Wood_Effect_Texture_Currency_Smoke_1.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+    "BY_Wood_Effect_Texture_Currency_Ice_1.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+    "BY_Wood_Effect_Texture_Currency_Glow_2.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+    "BY_Wood_Effect_Texture_Currency_Smoke_3.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+    "BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+    "war3mapImported\\file00002579.mdl": "war3mapImported\\wos_file00002579.mdx",
+    "war3mapImported\\file00002579_1.mdx": "war3mapImported\\wos_file00002579_1.mdx",
+    "Textures\\TX_Star20.blp": "war3mapImported\\wos_Frostnova_TX_Star20.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_bing1.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_glow.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_suolian.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_ring1.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_xue1.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+    "war3mapImported\\file00003801.mdx": "war3mapImported\\wos_file00003801.mdx",
+    "war3mapImported\\TX-YXJN-WYW-bltx-fanwei_0.blp": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_0.blp",
+    "Textures\\Shockwave1White.blp": "war3mapImported\\wos_Frostnova_Shockwave1White.blp",
+    "war3mapImported\\TX-YXJN-WYW-bltx-fanwei_3.blp": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_3.blp",
+    "Textures\\Flare.blp": "war3mapImported\\wos_TX_Star2004.blp",
+    "war3mapImported\\file00004977.mdx": "war3mapImported\\wos_file00004977.mdx",
+    "Textures\\Hero_AcientApparition_N2S_T_Glow4.blp": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Glow4.blp",
+    "Textures\\Hero_AcientApparition_N2S_T_Grain19.blp": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Grain19.blp",
+    "Textures\\Hero_AcientApparition_N5S_T_Star_qiu.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_T_Star_qiu.blp",
+    "Textures\\Hero_AcientApparition_N5_huo.blp": "war3mapImported\\wos_Hero_AcientApparition_N5_huo.blp",
+    "Textures\\Hero_AcientApparition_N5S_C_Target_yan.blp": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Target_yan.blp",
+    "Textures\\Hero_AcientApparition_N5_jiaodi.blp": "war3mapImported\\wos_Hero_AcientApparition_N5_jiaodi.blp",
+    "war3mapImported\\file00005537_3.mdx": "war3mapImported\\wos_file00005537_3.mdx",
+    "war3mapImported\\FrostnovaDarkFrost.tga": "war3mapImported\\wos_FrostnovaDarkFrost.tga",
+    "war3mapImported\\FrostnovaDarkGlow.tga": "war3mapImported\\wos_FrostnovaDarkGlow.tga",
+    "war3mapImported\\FrostnovaBlackIce.tga": "war3mapImported\\wos_FrostnovaBlackIce.tga",
+    "war3mapImported\\FrostnovaDarkStar.tga": "war3mapImported\\wos_FrostnovaDarkStar.tga",
+    "war3mapImported\\FrostnovaDarkRing.tga": "war3mapImported\\wos_FrostnovaDarkRing.tga",
+    "war3mapImported\\ice_shard-7716D-dark.mdx": "war3mapImported\\wos_ice_shard-7716D-dark.mdx",
+    "Textures\\snowflake2.blp": "war3mapImported\\wos_snowflake2.blp",
+    "Textures\\Blue_Glow2.blp": "war3mapImported\\wos_Frostnova_Blue_Glow2.blp",
+    "Textures\\Ice.blp": "war3mapImported\\wos_ice.blp",
+    "Textures\\Blue_Star2.blp": "war3mapImported\\wos_Blue_Star2.blp",
+    "Textures\\ShockwaveWater1.blp": "war3mapImported\\wos_ShockwaveWater1.blp",
+    "war3mapImported\\ice_shard-7716D.mdx": "war3mapImported\\wos_ice_shard-7716D.mdx",
+    "Textures\\Smoke.blp": "war3mapImported\\wos_smoke.blp",
+    "TX025.blp": "war3mapImported\\wos_TX025.blp",
+    "war3mapImported\\tx026_1.mdx": "war3mapImported\\wos_tx026_1.mdx",
+    "Textures\\Frost3.blp": "war3mapImported\\wos_Frost3.blp",
+    "Textures\\CloudSingle.blp": "war3mapImported\\wos_Frostnova_CloudSingle.blp",
+    "war3mapimported\\wos_effect_stx1.blp": "war3mapImported\\wos_effect_stx1.blp",
+    "war3mapImported\\wos_a (81).mdl": "war3mapImported\\wos_Frostnova_a (81).mdx",
+    "Textures\\GenericGlow2_64.blp": "war3mapImported\\wos_Frostnova_GenericGlow2_64.blp",
+    "Textures\\firering6.blp": "war3mapImported\\wos_firering6.blp",
+    "war3mapimported\\AZ_UV_Snow.blp": "war3mapImported\\wos_AZ_UV_Snow.blp",
+    "Textures\\Tornado1.blp": "war3mapImported\\wos_Tornado1.blp",
+    "Textures\\GenericGlowFaded.blp": "war3mapImported\\wos_GenericGlowFaded.blp",
+    "Textures\\Shockwave11.blp": "war3mapImported\\wos_Frostnova_Shockwave11.blp",
+    "war3mapimported\\AZ_Shockwave21.blp": "war3mapImported\\wos_Frostnova_AZ_Shockwave21.blp",
+    "war3mapImported\\wos_az_aachristmas_t1_700_1.mdx": "war3mapImported\\wos_az_aachristmas_t1_700_1.mdx",
+    "war3mapImported\\wos_YS-sllh-sq1.blp": "war3mapImported\\wos_YS-sllh-sq1.blp",
+    "war3mapImported\\wos_YS-sllh-xh.3-3.blp": "war3mapImported\\wos_YS-sllh-xh.3-3.blp",
+    "war3mapImported\\wos_AZ_Smoke1E.blp": "war3mapImported\\wos_AZ_Smoke1E.blp",
+    "war3mapImported\\wos_AZ_snowflake01.blp": "war3mapImported\\wos_AZ_snowflake01.blp",
+    "war3mapImported\\wos_YS-sllh-szlz.blp": "war3mapImported\\wos_Tsubaki-11_6.blp",
+    "war3mapImported\\wos_YS-sllh-xh1.blp": "war3mapImported\\wos_YS-sllh-xh1.blp",
+    "war3mapImported\\wos_YS-sllh-sq2.blp": "war3mapImported\\wos_YS-sllh-sq2.blp",
+    "war3mapImported\\wos_AZ_Tornado1E.blp": "war3mapImported\\wos_AZ_Tornado1E.blp",
+    "war3mapImported\\wos_AZ_Smoke3_2x2.blp": "war3mapImported\\wos_AZ_Smoke3_2x2.blp",
+    "war3mapImported\\wos_YS-sllh-yh.blp": "war3mapImported\\wos_YS-sllh-yh.blp",
+    "Textures\\star4_32.blp": "war3mapImported\\wos_star4_32.blp",
+    "war3mapImported\\wos_YS-sllh-sp.blp": "war3mapImported\\wos_Tsubaki-11_8.blp",
+    "war3mapImported\\wos_emt-8.mdl": "war3mapImported\\wos_emt-8.mdx",
+    "war3mapImported\\wos_file00003436_2-dark.mdx": "war3mapImported\\wos_file00003436_2-dark.mdx",
+    "war3mapimported\\wos_file00002017_0.blp": "war3mapImported\\wos_file00002017_0.blp",
+    "war3mapimported\\wos_file00002017_1.blp": "war3mapImported\\wos_file00002017_1.blp",
+    "war3mapimported\\wos_file00002017_2.blp": "war3mapImported\\wos_Frostnova_file00002017_2.blp",
+    "war3mapimported\\wos_file00002017_3.blp": "war3mapImported\\wos_file00002017_3.blp",
+    "war3mapimported\\wos_file00002017_4.blp": "war3mapImported\\wos_file00002017_4.blp",
+    "war3mapimported\\wos_file00002017_5.blp": "war3mapImported\\wos_file00002017_5.blp",
+    "war3mapimported\\wos_file00002017_6.blp": "war3mapImported\\wos_Frostnova_file00002017_6.blp",
+    "war3mapImported\\wos_file00003436_2.mdx": "war3mapImported\\wos_file00003436_2.mdx",
+    "war3mapImported\\wos_ui_bar_shadow.blp": "war3mapImported\\wos_ui_bar_shadow.blp",
+    "war3mapImported\\wos_shadow.blp": "war3mapImported\\wos_Frostnova_shadow.blp",
+    "war3mapImported\\wos_AZ_MagicMatrix21.blp": "war3mapImported\\wos_AZ_MagicMatrix21.blp",
+    "war3mapimported\\wos_title_shielded.blp": "war3mapImported\\wos_Frostnova_title_shielded.blp",
+    "war3mapImported\\wos_title_shielded.mdl": "war3mapImported\\wos_Frostnova_title_shielded.mdx",
+    "war3mapimported\\wos_BY_Wood_Effect_Texture_Integration_Ring_1.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Integration_Ring_1.blp",
+    "war3mapimported\\wos_BY_Wood_Effect_Texture_Unusual_Flare_1.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Unusual_Flare_1.blp",
+    "war3mapimported\\wos_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp",
+    "war3mapimported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp": "war3mapImported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp",
+    "war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx": "war3mapImported\\wos_Frostnova_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx",
+    "Arknights_sx1.blp": "war3mapImported\\wos_Arknights_sx1.blp",
+    "Arknights_sxwq.blp": "war3mapImported\\wos_Arknights_sxwq.blp",
+    "wos_Frostnova.mdx": "war3mapImported\\wos_Frostnova.mdx",
+    "war3mapimported\\wos_Frostnova_port.blp": "war3mapImported\\wos_Frostnova_port.blp",
+    "wos_Frostnova_Portrait.mdx": "war3mapImported\\wos_Frostnova_Portrait.mdx"
+  },
+  "models": [
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\az_kaldr_blast_t2small.mdx",
+      "target": "war3mapImported\\wos_az_kaldr_blast_t2small.mdx",
+      "before": 3096,
+      "after": 3096,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\[skillm]als-tx (6).mdx",
+      "target": "war3mapImported\\wos_[skillm]als-tx (6).mdx",
+      "before": 18388,
+      "after": 18388,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\az_snowflake01.mdx",
+      "target": "war3mapImported\\wos_az_snowflake01.mdx",
+      "before": 2569,
+      "after": 2569,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00000456.mdx",
+      "target": "war3mapImported\\wos_file00000456.mdx",
+      "before": 23361,
+      "after": 23361,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00000883_1.mdx",
+      "target": "war3mapImported\\wos_file00000883_1.mdx",
+      "before": 38455,
+      "after": 38455,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00002579.mdx",
+      "target": "war3mapImported\\wos_file00002579.mdx",
+      "before": 5232,
+      "after": 5232,
+      "particles": [
+        {
+          "emitter": 1,
+          "before": 200.0,
+          "after": 38.46153846153847
+        },
+        {
+          "emitter": 2,
+          "before": 120.0,
+          "after": 23.076923076923077
+        },
+        {
+          "emitter": 4,
+          "before": 60.0,
+          "after": 11.538461538461538
+        },
+        {
+          "emitter": 6,
+          "before": 200.0,
+          "after": 38.46153846153847
+        },
+        {
+          "emitter": 7,
+          "before": 200.0,
+          "after": 38.46153846153847
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00002579_1.mdx",
+      "target": "war3mapImported\\wos_file00002579_1.mdx",
+      "before": 5104,
+      "after": 5104,
+      "particles": [
+        {
+          "emitter": 1,
+          "before": 200.0,
+          "after": 38.46153846153847
+        },
+        {
+          "emitter": 2,
+          "before": 120.0,
+          "after": 23.076923076923077
+        },
+        {
+          "emitter": 4,
+          "before": 60.0,
+          "after": 11.538461538461538
+        },
+        {
+          "emitter": 6,
+          "before": 200.0,
+          "after": 38.46153846153847
+        },
+        {
+          "emitter": 7,
+          "before": 200.0,
+          "after": 38.46153846153847
+        }
+      ],
+      "skin": null,
+      "followup": "Original W particle emission and original-resolution textures; paths only remapped"
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00003801.mdx",
+      "target": "war3mapImported\\wos_file00003801.mdx",
+      "before": 635770,
+      "after": 635770,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00004977.mdx",
+      "target": "war3mapImported\\wos_file00004977.mdx",
+      "before": 38335,
+      "after": 38335,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\file00005537_3.mdx",
+      "target": "war3mapImported\\wos_file00005537_3.mdx",
+      "before": 113120,
+      "after": 113120,
+      "particles": [
+        {
+          "emitter": 2,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 3,
+          "before": 100.0,
+          "after": 33.45454545454545
+        },
+        {
+          "emitter": 4,
+          "before": 100.0,
+          "after": 33.45454545454545
+        },
+        {
+          "emitter": 5,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 6,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 7,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 11,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 12,
+          "before": 50.0,
+          "after": 16.727272727272727
+        },
+        {
+          "emitter": 13,
+          "before": 50.0,
+          "after": 16.727272727272727
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\ice_shard-7716D-dark.mdx",
+      "target": "war3mapImported\\wos_ice_shard-7716D-dark.mdx",
+      "before": 10387,
+      "after": 10387,
+      "particles": [
+        {
+          "emitter": 1,
+          "before": 2500.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 3,
+          "before": 1500.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 5,
+          "before": 150.0,
+          "after": 6.8674698795180715
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\ice_shard-7716D.mdx",
+      "target": "war3mapImported\\wos_ice_shard-7716D.mdx",
+      "before": 10387,
+      "after": 10387,
+      "particles": [
+        {
+          "emitter": 1,
+          "before": 2500.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 3,
+          "before": 1500.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 5,
+          "before": 150.0,
+          "after": 6.8674698795180715
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\tx026_1.mdx",
+      "target": "war3mapImported\\wos_tx026_1.mdx",
+      "before": 2126,
+      "after": 2126,
+      "particles": [
+        {
+          "emitter": 0,
+          "before": 75.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 1,
+          "before": 90.0,
+          "after": 60.0
+        }
+      ],
+      "skin": null,
+      "followup": "Original W particle emission and original-resolution textures; paths only remapped"
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_a (81).mdx",
+      "target": "war3mapImported\\wos_Frostnova_a (81).mdx",
+      "before": 205006,
+      "after": 205006,
+      "particles": [
+        {
+          "emitter": 0,
+          "before": 500.0,
+          "after": 60.0
+        },
+        {
+          "emitter": 1,
+          "before": 100.0,
+          "after": 24.10958904109589
+        },
+        {
+          "emitter": 3,
+          "before": 65.0,
+          "after": 15.67123287671233
+        },
+        {
+          "emitter": 4,
+          "before": 65.0,
+          "after": 15.67123287671233
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_az_aachristmas_t1_700_1.mdx",
+      "target": "war3mapImported\\wos_az_aachristmas_t1_700_1.mdx",
+      "before": 41298,
+      "after": 41298,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_emt-8.mdx",
+      "target": "war3mapImported\\wos_emt-8.mdx",
+      "before": 27318,
+      "after": 27318,
+      "particles": [
+        {
+          "emitter": 0,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 1,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 2,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 3,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 4,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 5,
+          "before": 100.0,
+          "after": 12.272727272727273
+        },
+        {
+          "emitter": 7,
+          "before": 70.0,
+          "after": 8.590909090909092
+        },
+        {
+          "emitter": 8,
+          "before": 70.0,
+          "after": 8.590909090909092
+        },
+        {
+          "emitter": 10,
+          "before": 70.0,
+          "after": 8.590909090909092
+        },
+        {
+          "emitter": 11,
+          "before": 70.0,
+          "after": 8.590909090909092
+        }
+      ],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_file00003436_2-dark.mdx",
+      "target": "war3mapImported\\wos_file00003436_2-dark.mdx",
+      "before": 8110,
+      "after": 8110,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_file00003436_2.mdx",
+      "target": "war3mapImported\\wos_file00003436_2.mdx",
+      "before": 8110,
+      "after": 8110,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_title_shielded.mdx",
+      "target": "war3mapImported\\wos_Frostnova_title_shielded.mdx",
+      "before": 3976,
+      "after": 3976,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx",
+      "target": "war3mapImported\\wos_Frostnova_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx",
+      "before": 8610,
+      "after": 8610,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\Buttons TRUE\\wos_Frostnova.mdx",
+      "target": "war3mapImported\\wos_Frostnova.mdx",
+      "before": 971215,
+      "after": 971215,
+      "particles": [],
+      "skin": {
+        "original_groups": [
+          255,
+          9,
+          19,
+          1,
+          1,
+          9
+        ],
+        "fixed_groups": [
+          255,
+          9,
+          19,
+          1,
+          1,
+          9
+        ],
+        "split_geosets": {},
+        "original_triangles": 7613,
+        "fixed_triangles": 7613
+      }
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\Buttons TRUE\\wos_Frostnova_Portrait.mdx",
+      "target": "war3mapImported\\wos_Frostnova_Portrait.mdx",
+      "before": 1284,
+      "after": 1284,
+      "particles": [],
+      "skin": {
+        "original_groups": [
+          1
+        ],
+        "fixed_groups": [
+          1
+        ],
+        "split_geosets": {},
+        "original_triangles": 2,
+        "fixed_triangles": 2
+      }
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\WOS\\VS WOS\\assets\\FrostnovaRelease\\source-followup\\wos_file00000883_1.mdx",
+      "target": "war3mapImported\\wos_Frostnova_TE_Aura.mdx",
+      "bakedScale": 1.2,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\WOS\\VS WOS\\assets\\FrostnovaRelease\\source-followup\\wos_az_aachristmas_t1_700_1.mdx",
+      "target": "war3mapImported\\wos_Frostnova_TE_Area.mdx",
+      "bakedScale": 1.2,
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\WOS\\VS WOS\\_build\\frostnova-followup\\full\\war3mapImported\\Ice_Shard-6CC27.mdx",
+      "target": "war3mapImported\\wos_Frostnova_Ice_Shard-6CC27.mdx",
+      "particles": [],
+      "skin": null
+    },
+    {
+      "source": "source-polish\\wos_ice_shard-7716D-dark.mdx",
+      "target": "war3mapImported\\wos_Frostnova_TQ_Smoke.mdx",
+      "particles": [],
+      "skin": null
+    }
+  ],
+  "textures": [
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\kaldr_t2.blp",
+      "target": "war3mapImported\\wos_kaldr_t2.blp",
+      "before": 5569,
+      "after": 5569
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Dust3.blp",
+      "target": "war3mapImported\\wos_Frostnova_Dust3.blp",
+      "before": 71275,
+      "after": 71275
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\a6555bc61ff4_Flare.blp",
+      "target": "war3mapImported\\wos_a6555bc61ff4_Flare.blp",
+      "before": 4250,
+      "after": 4250
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\AZ_RibbonNE1_blue.blp",
+      "target": "war3mapImported\\wos_AZ_RibbonNE1_blue.blp",
+      "before": 12203,
+      "after": 12203
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\GenericGlow2_64_blue.blp",
+      "target": "war3mapImported\\wos_GenericGlow2_64_blue.blp",
+      "before": 5962,
+      "after": 5962
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\AZ_Snowflake3.blp",
+      "target": "war3mapImported\\wos_AZ_Snowflake3.blp",
+      "before": 10022,
+      "after": 10022
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_0.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_0.blp",
+      "before": 7276,
+      "after": 7276
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_1.blp",
+      "target": "war3mapImported\\wos_file00002226_0.blp",
+      "before": 4789,
+      "after": 4789
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_2.blp",
+      "target": "war3mapImported\\wos_MH218104746.blp",
+      "before": 7192,
+      "after": 7192
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_3.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_3.blp",
+      "before": 86773,
+      "after": 72276
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_4.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_4.blp",
+      "before": 7792,
+      "after": 7792
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_5.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_5.blp",
+      "before": 5334,
+      "after": 5334
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_6.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_6.blp",
+      "before": 26196,
+      "after": 23437
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_7.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_7.blp",
+      "before": 46570,
+      "after": 46570
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_8.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_8.blp",
+      "before": 336241,
+      "after": 86690
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\Tsubaki-11_9.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_9.blp",
+      "before": 236274,
+      "after": 80048
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\AZ_Shockwave1White3.blp",
+      "target": "war3mapImported\\wos_AZ_Shockwave1White3.blp",
+      "before": 11384,
+      "after": 11384
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\flare1_tc.blp",
+      "target": "war3mapImported\\wos_flare1_tc.blp",
+      "before": 6955,
+      "after": 6955
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\AZ_Shockwave2White.blp",
+      "target": "war3mapImported\\wos_AZ_Shockwave2White.blp",
+      "before": 11848,
+      "after": 11848
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\GF_476.blp",
+      "target": "war3mapImported\\wos_Frostnova_GF_476.blp",
+      "before": 23429,
+      "after": 23429
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\6548d1b4b9a5_Zap1.blp",
+      "target": "war3mapImported\\wos_6548d1b4b9a5_Zap1.blp",
+      "before": 19590,
+      "after": 19590
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\white.blp",
+      "target": "war3mapImported\\wos_LiuYing-R-SG_0.blp",
+      "before": 1496,
+      "after": 1496
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+      "before": 85113,
+      "after": 59705
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+      "before": 182059,
+      "after": 91185
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+      "before": 141890,
+      "after": 57213
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+      "before": 28251,
+      "after": 28251
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+      "before": 124151,
+      "after": 51972
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\TX_Star20.blp",
+      "target": "war3mapImported\\wos_Frostnova_TX_Star20.blp",
+      "before": 70571,
+      "after": 70571
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+      "before": 24778,
+      "after": 24778
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+      "before": 14156,
+      "after": 14156
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+      "before": 8107,
+      "after": 8107
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+      "before": 3713,
+      "after": 3713
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+      "before": 8345,
+      "after": 8345
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+      "before": 33349,
+      "after": 33349
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+      "before": 19587,
+      "after": 19587
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\TX-YXJN-WYW-bltx-fanwei_0.blp",
+      "target": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_0.blp",
+      "before": 88700,
+      "after": 88700
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Shockwave1White.blp",
+      "target": "war3mapImported\\wos_Frostnova_Shockwave1White.blp",
+      "before": 21243,
+      "after": 21243
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\TX-YXJN-WYW-bltx-fanwei_3.blp",
+      "target": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_3.blp",
+      "before": 113497,
+      "after": 72530
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\flare.blp",
+      "target": "war3mapImported\\wos_TX_Star2004.blp",
+      "before": 3408,
+      "after": 3408
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N2S_T_Glow4.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Glow4.blp",
+      "before": 5143,
+      "after": 5143
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N2S_T_Grain19.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Grain19.blp",
+      "before": 16690,
+      "after": 16690
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_T_Star_qiu.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_T_Star_qiu.blp",
+      "before": 17029,
+      "after": 17029
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5_huo.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5_huo.blp",
+      "before": 217911,
+      "after": 93707
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5S_C_Target_yan.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Target_yan.blp",
+      "before": 10126,
+      "after": 10126
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Textures\\Hero_AcientApparition_N5_jiaodi.blp",
+      "target": "war3mapImported\\wos_Hero_AcientApparition_N5_jiaodi.blp",
+      "before": 7855,
+      "after": 7855
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\FrostnovaDarkFrost.tga",
+      "target": "war3mapImported\\wos_FrostnovaDarkFrost.tga",
+      "before": 262188,
+      "after": 126937
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\FrostnovaDarkGlow.tga",
+      "target": "war3mapImported\\wos_FrostnovaDarkGlow.tga",
+      "before": 262188,
+      "after": 181910
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\FrostnovaBlackIce.tga",
+      "target": "war3mapImported\\wos_FrostnovaBlackIce.tga",
+      "before": 196652,
+      "after": 196652
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\FrostnovaDarkStar.tga",
+      "target": "war3mapImported\\wos_FrostnovaDarkStar.tga",
+      "before": 262188,
+      "after": 104193
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\FrostnovaDarkRing.tga",
+      "target": "war3mapImported\\wos_FrostnovaDarkRing.tga",
+      "before": 262188,
+      "after": 151438
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\snowflake2.blp",
+      "target": "war3mapImported\\wos_snowflake2.blp",
+      "before": 16682,
+      "after": 16682
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Blue_Glow2.blp",
+      "target": "war3mapImported\\wos_Frostnova_Blue_Glow2.blp",
+      "before": 3910,
+      "after": 3910
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\ice.blp",
+      "target": "war3mapImported\\wos_ice.blp",
+      "before": 9705,
+      "after": 9705
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Blue_Star2.blp",
+      "target": "war3mapImported\\wos_Blue_Star2.blp",
+      "before": 3824,
+      "after": 3824
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\ShockwaveWater1.blp",
+      "target": "war3mapImported\\wos_ShockwaveWater1.blp",
+      "before": 17158,
+      "after": 17158
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\smoke.blp",
+      "target": "war3mapImported\\wos_smoke.blp",
+      "before": 88009,
+      "after": 76956
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\TX025.blp",
+      "target": "war3mapImported\\wos_TX025.blp",
+      "before": 4774,
+      "after": 4774
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Frost3.blp",
+      "target": "war3mapImported\\wos_Frost3.blp",
+      "before": 7353,
+      "after": 7353
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\CloudSingle.blp",
+      "target": "war3mapImported\\wos_Frostnova_CloudSingle.blp",
+      "before": 6360,
+      "after": 6360
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_effect_stx1.blp",
+      "target": "war3mapImported\\wos_effect_stx1.blp",
+      "before": 36734,
+      "after": 36734
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\GenericGlow2_64.blp",
+      "target": "war3mapImported\\wos_Frostnova_GenericGlow2_64.blp",
+      "before": 5942,
+      "after": 5942
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\firering6.blp",
+      "target": "war3mapImported\\wos_firering6.blp",
+      "before": 5912,
+      "after": 5912
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\AZ_UV_Snow.blp",
+      "target": "war3mapImported\\wos_AZ_UV_Snow.blp",
+      "before": 85129,
+      "after": 85129
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Tornado1.blp",
+      "target": "war3mapImported\\wos_Tornado1.blp",
+      "before": 26680,
+      "after": 26680
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\GenericGlowFaded.blp",
+      "target": "war3mapImported\\wos_GenericGlowFaded.blp",
+      "before": 11884,
+      "after": 11884
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\Shockwave11.blp",
+      "target": "war3mapImported\\wos_Frostnova_Shockwave11.blp",
+      "before": 15231,
+      "after": 15231
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\AZ_Shockwave21.blp",
+      "target": "war3mapImported\\wos_Frostnova_AZ_Shockwave21.blp",
+      "before": 129322,
+      "after": 61033
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-sq1.blp",
+      "target": "war3mapImported\\wos_YS-sllh-sq1.blp",
+      "before": 12093,
+      "after": 12093
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-xh.3-3.blp",
+      "target": "war3mapImported\\wos_YS-sllh-xh.3-3.blp",
+      "before": 99798,
+      "after": 99798
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_AZ_Smoke1E.blp",
+      "target": "war3mapImported\\wos_AZ_Smoke1E.blp",
+      "before": 48707,
+      "after": 48707
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_AZ_snowflake01.blp",
+      "target": "war3mapImported\\wos_AZ_snowflake01.blp",
+      "before": 4424,
+      "after": 4424
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-szlz.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_6.blp",
+      "before": 23437,
+      "after": 23437
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-xh1.blp",
+      "target": "war3mapImported\\wos_YS-sllh-xh1.blp",
+      "before": 96977,
+      "after": 96977
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-sq2.blp",
+      "target": "war3mapImported\\wos_YS-sllh-sq2.blp",
+      "before": 9543,
+      "after": 9543
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_AZ_Tornado1E.blp",
+      "target": "war3mapImported\\wos_AZ_Tornado1E.blp",
+      "before": 36921,
+      "after": 36921
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_AZ_Smoke3_2x2.blp",
+      "target": "war3mapImported\\wos_AZ_Smoke3_2x2.blp",
+      "before": 19242,
+      "after": 19242
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-yh.blp",
+      "target": "war3mapImported\\wos_YS-sllh-yh.blp",
+      "before": 100918,
+      "after": 100918
+    },
+    {
+      "source": "E:\\WAR3REF\\Warcraft III\\_retail_\\ZZZZZZ\\star4_32.blp",
+      "target": "war3mapImported\\wos_star4_32.blp",
+      "before": 2694,
+      "after": 2694
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\war3mapImported\\wos_YS-sllh-sp.blp",
+      "target": "war3mapImported\\wos_Tsubaki-11_8.blp",
+      "before": 86690,
+      "after": 86690
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_0.blp",
+      "target": "war3mapImported\\wos_file00002017_0.blp",
+      "before": 45732,
+      "after": 45732
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_1.blp",
+      "target": "war3mapImported\\wos_file00002017_1.blp",
+      "before": 14333,
+      "after": 14333
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_2.blp",
+      "target": "war3mapImported\\wos_Frostnova_file00002017_2.blp",
+      "before": 61589,
+      "after": 19559
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_3.blp",
+      "target": "war3mapImported\\wos_file00002017_3.blp",
+      "before": 17962,
+      "after": 17962
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_4.blp",
+      "target": "war3mapImported\\wos_file00002017_4.blp",
+      "before": 39929,
+      "after": 39929
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_5.blp",
+      "target": "war3mapImported\\wos_file00002017_5.blp",
+      "before": 53957,
+      "after": 53957
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_file00002017_6.blp",
+      "target": "war3mapImported\\wos_Frostnova_file00002017_6.blp",
+      "before": 70223,
+      "after": 57742
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_ui_bar_shadow.blp",
+      "target": "war3mapImported\\wos_ui_bar_shadow.blp",
+      "before": 3525,
+      "after": 3525
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_shadow.blp",
+      "target": "war3mapImported\\wos_Frostnova_shadow.blp",
+      "before": 41367,
+      "after": 5883
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_AZ_MagicMatrix21.blp",
+      "target": "war3mapImported\\wos_AZ_MagicMatrix21.blp",
+      "before": 38127,
+      "after": 38127
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_title_shielded.blp",
+      "target": "war3mapImported\\wos_Frostnova_title_shielded.blp",
+      "before": 105998,
+      "after": 39421
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_BY_Wood_Effect_Texture_Integration_Ring_1.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Integration_Ring_1.blp",
+      "before": 93502,
+      "after": 77599
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_BY_Wood_Effect_Texture_Unusual_Flare_1.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Unusual_Flare_1.blp",
+      "before": 83855,
+      "after": 57334
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp",
+      "target": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp",
+      "before": 77918,
+      "after": 20089
+    },
+    {
+      "source": "C:\\Users\\Gear\\Documents\\Warcraft III\\Maps\\WoS\\Anime_WOS2_0.32.w3x\\war3mapImported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp",
+      "target": "war3mapImported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp",
+      "before": 31080,
+      "after": 31080
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Arknights_sx1.blp",
+      "target": "war3mapImported\\wos_Arknights_sx1.blp",
+      "before": 547903,
+      "after": 100377
+    },
+    {
+      "source": "_build\\frostnova-release\\test-full\\Arknights_sxwq.blp",
+      "target": "war3mapImported\\wos_Arknights_sxwq.blp",
+      "before": 83424,
+      "after": 36645
+    },
+    {
+      "source": "C:\\Users\\Gear\\Desktop\\Buttons TRUE\\wos_Frostnova_port.blp",
+      "target": "war3mapImported\\wos_Frostnova_port.blp",
+      "before": 126068,
+      "after": 45549
+    }
+  ],
+  "imports": [
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Death.mp3",
+      "bytes": 39120,
+      "sha256": "0bbd0a633e4edf2afe93769dc977acddc53bcfc94d6f85749d4aa4e37f1d7bea"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_E.mp3",
+      "bytes": 64196,
+      "sha256": "a9b699c34e611ef8281649fe185d571433ab73e0ee925770e20c5b5ee28d0366"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_E2.mp3",
+      "bytes": 32851,
+      "sha256": "d1eb9e2338164fabfe9f6936e59b5daa589a292a4ee4f3767c8b6ba1a45940df"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_E3.mp3",
+      "bytes": 35985,
+      "sha256": "9c08d3c7b24456e0ea078da368efec716a0baadc4e6feebf808830e802c2583f"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_E4.mp3",
+      "bytes": 35986,
+      "sha256": "b7500bfabe71fd5828fd2275eca475433227fc1a57344e7d99464ae4430e974c"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Pick1.mp3",
+      "bytes": 102440,
+      "sha256": "56daec17ef89fce2e875bed4207dee8f5a14d77286726d6b9c1d2b80f2e30733"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Pick2.mp3",
+      "bytes": 90528,
+      "sha256": "abd9033ce668ef4f0406d8a5b09cb0f3c08dbb5ace88c7c3faa6b429dd6b90af"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Pick3.mp3",
+      "bytes": 64196,
+      "sha256": "03ae6fc53d61fb9434d2f5335857661927a02f88280ec1aa9619eb99e9d1f5b3"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Pick4.mp3",
+      "bytes": 73600,
+      "sha256": "e94c867de86733d4830b100f68ab0910facf41e4156cace3ce5d000599793519"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Pick5.mp3",
+      "bytes": 93036,
+      "sha256": "aeb1562d956afbb013d5c25b91cd126cf57a9800780b469ab894b004af31b817"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q1.mp3",
+      "bytes": 34103,
+      "sha256": "a1fa4f0b331673cba6845a54362e73635bb1bd6a569b2dcb04870e62f64ec27d"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q2.mp3",
+      "bytes": 42880,
+      "sha256": "65444caff4144d15bf64b9eeaf825f63845af57e7cf2775aa33ec969fe96daee"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q3.mp3",
+      "bytes": 52285,
+      "sha256": "a1926b044f039c1950ba7e265b7dfa07279366b5a56d7997b7833d3b3365a213"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q4.mp3",
+      "bytes": 43507,
+      "sha256": "ac8a4838e71cf6c6e7f4896a60d75cd2a1492a8a1de184472cf6764f0cd74c93"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q5.mp3",
+      "bytes": 20938,
+      "sha256": "9c2defd656adffbea224a309e1b1dea8b23dccfb8c9cc979b2ded5eb1b97443a"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q6.mp3",
+      "bytes": 20312,
+      "sha256": "bd9a61274602e7d2f9c33973059262ff9b0f350577a758c6d2249da57177e9cb"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_Q7.mp3",
+      "bytes": 32224,
+      "sha256": "4f371d985b6819761eda29fb2710d76741d63d47403224448a14aa9f85ebf2f9"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_R.mp3",
+      "bytes": 73600,
+      "sha256": "55b07e8aa71dc1bf7ebd066d0cfcb79694a5bb70a7397957a0eb5561135f6be5"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_R2.mp3",
+      "bytes": 40374,
+      "sha256": "48477c3d9909816f091c7d67a201025bd7e5dcc15e9f049b9088d646451d2d83"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_R3.mp3",
+      "bytes": 123130,
+      "sha256": "62f312ad98bed144e1c6f4106bc148a918ff91df312db9084c39e261ce252157"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_T1.mp3",
+      "bytes": 105575,
+      "sha256": "5e7c853894f911fadd4be54ffccdfc04c9e9f105971169d7cf5fb47738978fc7"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_T2.mp3",
+      "bytes": 98052,
+      "sha256": "b2e46b24c3e62003ceee7f9a325a5343239365d8c8d38820b79e3ddb8686a489"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_T3.mp3",
+      "bytes": 113099,
+      "sha256": "3d89d96ace10854ab37162c78036916788fc822ac202342078e4d1782732c36a"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_T4.mp3",
+      "bytes": 126891,
+      "sha256": "ea838ec145dbc2b75b4a2948ccab787cd4c20d991a709a73aa3865638f40e48b"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_T5.mp3",
+      "bytes": 35358,
+      "sha256": "99d1bb54d87c9e0ff7245d9a95543cf6563dc9a98c8a19eb7a73b920d2dcea0a"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_W.mp3",
+      "bytes": 62316,
+      "sha256": "7fa4db39fb1d808b485a3e17a66be6ddc7b3647355427105d886e25660d51365"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_W2.mp3",
+      "bytes": 16551,
+      "sha256": "1be7b15f3154853336140fedcd6f0d3bd9265fae75a9c1233c8f16cf6db2befe"
+    },
+    {
+      "path": "war3mapImported\\Hero_Frostnova_W3.mp3",
+      "bytes": 46643,
+      "sha256": "19b80a6251abda0d9c46c61c163739655d97c05649b3009573643d43b734e035"
+    },
+    {
+      "path": "war3mapImported\\wos_6548d1b4b9a5_Zap1.blp",
+      "bytes": 19590,
+      "sha256": "6548d1b4b9a550e7432f084e3a4298e7a43258a9a91efe0de680f35556f6310e"
+    },
+    {
+      "path": "war3mapImported\\wos_a6555bc61ff4_Flare.blp",
+      "bytes": 4250,
+      "sha256": "a6555bc61ff41487f0488243bf9aebcc2f7f93887e643e136b1057741479a3fc"
+    },
+    {
+      "path": "war3mapImported\\wos_Arknights_sx1.blp",
+      "bytes": 100377,
+      "sha256": "7c386fdfe8ef26243735b48eb81e37e3afc3458197a0506c088fba6c4647c5e1"
+    },
+    {
+      "path": "war3mapImported\\wos_Arknights_sxwq.blp",
+      "bytes": 36645,
+      "sha256": "8c91f69be1c97b8726598cedc2b5b582dd7868117dfea56dfff8df7feba81392"
+    },
+    {
+      "path": "war3mapImported\\wos_az_aachristmas_t1_700_1.mdx",
+      "bytes": 41298,
+      "sha256": "b2177b39dd47229f79c5bedc50010590f7a870abe88c29209624aa3389415f72"
+    },
+    {
+      "path": "war3mapImported\\wos_az_kaldr_blast_t2small.mdx",
+      "bytes": 3096,
+      "sha256": "8ba7de2fbf1f122f84c62ac016e8bc6a94de9e56498e230aed0913ac837f17a2"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_MagicMatrix21.blp",
+      "bytes": 38127,
+      "sha256": "ec8a83fbd92f3b1170d229312098eae33ed689267f357b179e2bd9d56cebf36e"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_RibbonNE1_blue.blp",
+      "bytes": 12203,
+      "sha256": "e12be044f71e9cb19d58185c1896cfc7a825e3b17129e43c9039dc447d76caa2"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Shockwave1White3.blp",
+      "bytes": 11384,
+      "sha256": "573ddf4abe295e315f9515530dc16565de8c35a68b4f84793d2d889ce0481018"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Shockwave2White.blp",
+      "bytes": 11848,
+      "sha256": "81b5f6da0a1b3a8d5802c269451e36416990407b0744fbb2fe2bf92fe73a0a5b"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Smoke1E.blp",
+      "bytes": 48707,
+      "sha256": "36e5fbc1f08122c306dd1569ccd34cc1cd5426675f80b74d6fd451e9d5f53b3b"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Smoke3_2x2.blp",
+      "bytes": 19242,
+      "sha256": "424433d7371a9432b29ded636fb526611d3db66a1c01f9640f2551e1a0298f85"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_snowflake01.blp",
+      "bytes": 4424,
+      "sha256": "ec95182a00b212f65fa449efee6a6a124ed239c9f89d47f0d6b8b114df3a2b98"
+    },
+    {
+      "path": "war3mapImported\\wos_az_snowflake01.mdx",
+      "bytes": 2569,
+      "sha256": "944fd526acfecd2dd8e521e16c19fa700a8f0af4e1104359592dd6ae2bf9da89"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Snowflake3.blp",
+      "bytes": 10022,
+      "sha256": "6485cb4fd1735c9efaad53aaee83400f3078e00761bcb0c948593264894da09e"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_Tornado1E.blp",
+      "bytes": 36921,
+      "sha256": "b369a18894ff916cd1eb84cc7801dc340e73ffc2514619195027216ffea2ae0f"
+    },
+    {
+      "path": "war3mapImported\\wos_AZ_UV_Snow.blp",
+      "bytes": 85129,
+      "sha256": "c0532c1b33392e7e2c87f6c2176df8feed6151852fb56a57a2d96475c165ab3a"
+    },
+    {
+      "path": "war3mapImported\\wos_Blue_Star2.blp",
+      "bytes": 3824,
+      "sha256": "8af7eaa151e58ca6d6bff9e054aad48d233d67b86d98d81e8b632768e3c389f5"
+    },
+    {
+      "path": "war3mapImported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp",
+      "bytes": 31080,
+      "sha256": "e026c8b94b711bbe4bb5b2031b175715b9c86164a199dca9275fd669ef17f647"
+    },
+    {
+      "path": "war3mapImported\\wos_effect_stx1.blp",
+      "bytes": 36734,
+      "sha256": "5091d0701cf77596df94616ddadeeaf86ed74046f9dbfe4ee0187601fa65f758"
+    },
+    {
+      "path": "war3mapImported\\wos_emt-8.mdx",
+      "bytes": 27318,
+      "sha256": "368d6de84ec33d0101b410d58724843db61ed4ad0a02edf536d8fc55bd5df713"
+    },
+    {
+      "path": "war3mapImported\\wos_file00000456.mdx",
+      "bytes": 23361,
+      "sha256": "d92895ba155cd7d8c91dd2d12e9b57b63faf14a5422fa554ec056db832779253"
+    },
+    {
+      "path": "war3mapImported\\wos_file00000883_1.mdx",
+      "bytes": 38455,
+      "sha256": "4b9e3d2ecd1bc570d5699b5a44e0b60ec1187e47bc7a1220170823db7385a543"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002017_0.blp",
+      "bytes": 45732,
+      "sha256": "17f9aede82a2ca67dc8c9017b271ddf53054820ada3f490c87623ed82a848dbc"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002017_1.blp",
+      "bytes": 14333,
+      "sha256": "90ee9adc31f327d3ba632dc2e9738a5549c719a42337b764742dac312e7265b2"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002017_3.blp",
+      "bytes": 17962,
+      "sha256": "0d4beda6e2da589e164f39658b7e823d6fd77edd8e0cd981649ca89a07bbad0b"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002017_4.blp",
+      "bytes": 39929,
+      "sha256": "e09a1bb7fd36b3f7893f3b9382b568643a0eac81bf39d04f5fec5b4df439f684"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002017_5.blp",
+      "bytes": 53957,
+      "sha256": "368960e09f93b3439418e43d131c5ab9d1afb251a305e05dceff285d6fde3595"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002226_0.blp",
+      "bytes": 4789,
+      "sha256": "7a74a231aab8dfdd2c0b52e1864ceb62f973f3b5413edb1991e9b0e794bc917e"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002579.mdx",
+      "bytes": 5232,
+      "sha256": "3a6a9cfc98e3956eade38a73c602d5faff75216aa154291132b1d455cac026f6"
+    },
+    {
+      "path": "war3mapImported\\wos_file00002579_1.mdx",
+      "bytes": 5104,
+      "sha256": "1d40c15c6fc44c9f6cd00c086a3e4e4eaadeed3b0c60db5bed5cea43f5c4bc6d"
+    },
+    {
+      "path": "war3mapImported\\wos_file00003436_2-dark.mdx",
+      "bytes": 8110,
+      "sha256": "f77b4460aca64ffbe71b14a8822394a8f90d3ac17aad8687d139749e5e1b89d6"
+    },
+    {
+      "path": "war3mapImported\\wos_file00003436_2.mdx",
+      "bytes": 8110,
+      "sha256": "179a7ae0e2d874a1a0bc49826dccfc1d69426d69157ec9bf2de4954d13fb633b"
+    },
+    {
+      "path": "war3mapImported\\wos_file00003801.mdx",
+      "bytes": 635770,
+      "sha256": "5ec8b45c0c7cd2f5822eac68b19878e9a2b6b8ccca6453b8241aad8c7b4c9494"
+    },
+    {
+      "path": "war3mapImported\\wos_file00004977.mdx",
+      "bytes": 38335,
+      "sha256": "0fb74b0d46644de87f16ac6088dca13111c419e87681edd20bbf49c194769ef0"
+    },
+    {
+      "path": "war3mapImported\\wos_file00005537_3.mdx",
+      "bytes": 113120,
+      "sha256": "3d7934ecf8f8d103bb1dbd039bbfb2822024516c444d0463d4f4d1cc897b8d01"
+    },
+    {
+      "path": "war3mapImported\\wos_firering6.blp",
+      "bytes": 5912,
+      "sha256": "521313493c8ea5e53120739907524875689d0df80d656f6a49598c4a59d96bc6"
+    },
+    {
+      "path": "war3mapImported\\wos_flare1_tc.blp",
+      "bytes": 6955,
+      "sha256": "93d0f6dcec129aaf95df60c52e66ef6f1227a546abaa8a35fac6512392b36773"
+    },
+    {
+      "path": "war3mapImported\\wos_Frost3.blp",
+      "bytes": 7353,
+      "sha256": "604fb45c21484032e7af4fbc42eff213cfd4e958672aec9f962d1919a3e11527"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova.mdx",
+      "bytes": 971351,
+      "sha256": "e713e5d3642de6075a052089ec79e39314779e06e54e981866ca4162c7d2255f"
+    },
+    {
+      "path": "war3mapImported\\wos_FrostnovaBlackIce.tga",
+      "bytes": 196652,
+      "sha256": "ddb03b6229fd851d9882fdb4216f0af1f11761fa9fe79cf19739c06b03f97fc7"
+    },
+    {
+      "path": "war3mapImported\\wos_FrostnovaDarkFrost.tga",
+      "bytes": 126937,
+      "sha256": "40630c3e073ad11404ff5be8aa22246d8a85fbb1fb3c9498db0ece4ea49c1140"
+    },
+    {
+      "path": "war3mapImported\\wos_FrostnovaDarkGlow.tga",
+      "bytes": 181910,
+      "sha256": "46ab1a28fe3934a98701079408f7fe8d51f812ac86e349180b44d5ceba2cad80"
+    },
+    {
+      "path": "war3mapImported\\wos_FrostnovaDarkRing.tga",
+      "bytes": 151438,
+      "sha256": "54cde9273c7e1360c819ecb35b222bc69bb108ec8c2d4f8546a6ac0fdf93acc7"
+    },
+    {
+      "path": "war3mapImported\\wos_FrostnovaDarkStar.tga",
+      "bytes": 104193,
+      "sha256": "fae26f0567ec846f13a683fe6f337b5149edf345ea121fd55cf4694d8a6500ce"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_a (81).mdx",
+      "bytes": 205006,
+      "sha256": "dc1fd1842d869e0912480538e8c73e2e3020f8c729fb3eaf4415713b5dfe89e1"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_AZ_Shockwave21.blp",
+      "bytes": 61033,
+      "sha256": "a53aad4a9caa51289c236720afd5bb73710bcf02504412e6cc164cad90e97c4f"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Blue_Glow2.blp",
+      "bytes": 3910,
+      "sha256": "aefc9b94f233d7340c666a515bb583b48deb7d6215e012469105d0310c01492a"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+      "bytes": 57213,
+      "sha256": "7bc70ac10e7a25ff649802f3d9c1d078850922c1e8a620e4e0d468364ec902b5"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+      "bytes": 91185,
+      "sha256": "d38e636ce66bf8d4e819423d1aca4adc0f4b94bdde9d8e48f03280dd373c66d6"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+      "bytes": 59705,
+      "sha256": "3827382a10d2ec734ac5e0b34645dca966b6b00421205f3066f71a333d28be29"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+      "bytes": 28251,
+      "sha256": "bd473b710c6892b0a8cb75aa1c6e802ba8483814782002d994db8aaec1a2d976"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Integration_Ring_1.blp",
+      "bytes": 77599,
+      "sha256": "6202ff4a1c5ca256502f1a132572b90ea68dde7a7a623c2c22ddc86180703a2c"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+      "bytes": 51972,
+      "sha256": "b3d4388fd1a746006c686765c297628d8aeb6d4dea5d819c37cf8951de986b62"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp",
+      "bytes": 20089,
+      "sha256": "980439860758682f002d4a5c2ac83944ccf5740b93bbfa333d60ee3bdd1feff3"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Unusual_Flare_1.blp",
+      "bytes": 57334,
+      "sha256": "4d9da4b4d8c544f9d6f8cd769a1b8a3f5663090aa7351ab5358bcb1647f44482"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx",
+      "bytes": 8610,
+      "sha256": "c38f298b2e81d27a9379b9d48189a6b2c4b8aabfb8693a86545f5533b7cfd879"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_CloudSingle.blp",
+      "bytes": 6360,
+      "sha256": "2a6cbc226f8c3f51b0d7f0bfa862dd2b99abcf581d1afda2c41c352f6311cf32"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Dust3.blp",
+      "bytes": 71275,
+      "sha256": "001f320ef465bfebe45ce2977ef34e06a202e2beacaec2e0ccf02b13fdf17aef"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_file00002017_2.blp",
+      "bytes": 19559,
+      "sha256": "3055c3d0d364a06d8410908ead3926d53c6d29012ff14f0822c3a29fb5a9b82f"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_file00002017_6.blp",
+      "bytes": 57742,
+      "sha256": "f86342522f7cfcad863e801085fd855e27498558dad30a91b29135fa5def9160"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_GenericGlow2_64.blp",
+      "bytes": 5942,
+      "sha256": "024eecda7a83f8b44012dbaf265db69c2310a9eb49b8ffe291ea4a357ec39765"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_GF_476.blp",
+      "bytes": 23429,
+      "sha256": "efaaa5d19da7f424b309db9db22dcb5619db62a279500b7bdffbda46c565370c"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Ice_Shard-6CC27.mdx",
+      "bytes": 33940,
+      "sha256": "3c20428dbffe426b2da42dbca12c7345383d0224cb9a8bfd33790fce2a738ffd"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_port.blp",
+      "bytes": 45549,
+      "sha256": "676ee6dce7ed779f0d8022d372a5be92f7345f311e3b391cfec0d18be5e65f07"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Portrait.mdx",
+      "bytes": 1284,
+      "sha256": "7d1570ae724ea9e5c534ebe3f40b260020f6d955fd7322a28398a23f99b4bf93"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_shadow.blp",
+      "bytes": 5883,
+      "sha256": "682bc41bd54726a4197e8a941d1fb872de421b4c4af9814d94bd0c2ea4857873"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Shockwave11.blp",
+      "bytes": 15231,
+      "sha256": "d955d688aae2192b1a06669582f44f093f405b3f79224b350bed628709719092"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_Shockwave1White.blp",
+      "bytes": 21243,
+      "sha256": "3fc4c44cd4c4e42b6e4941cd4b9dfd0e6e2181facc68ae2384c9835e10b13b82"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_TE_Area.mdx",
+      "bytes": 41298,
+      "sha256": "fb71d6db473e87f0ef089f94015835e074c31e1dc63c1754917e9a00ea665ae4"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_TE_Aura.mdx",
+      "bytes": 38455,
+      "sha256": "e27d7c30ceda225c2ad46f797212ffd687157a585e739aaece49f0b6a7710800"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_title_shielded.blp",
+      "bytes": 39421,
+      "sha256": "21b142a84b87b32d8c5832652c3634ed6e379b182d22ae57eb00141c32958448"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_title_shielded.mdx",
+      "bytes": 3976,
+      "sha256": "fee6b39b2066da2d1c7a2bd0608f1b1a9ca3fa3c9163fc7c592982ac12775d8a"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_TQ_Smoke.mdx",
+      "bytes": 6158,
+      "sha256": "8845ae7b16edd4d31af903c3274939acc9f3d55ce2ef5d419a1f8fce68036e57"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_TX_Star20.blp",
+      "bytes": 70571,
+      "sha256": "18f814270ca7e9d932dbc22ac3d3773037f2e52e895c8f41b2080d930c499f2d"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+      "bytes": 141890,
+      "sha256": "0b72a3a04e02c8aee1348ab2f0e08f6d4dedc6b2d98cea60e33e7c06d76d99f1"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+      "bytes": 182059,
+      "sha256": "32db6df8aac88c329d368f0ab7a746a0ff319ee38615ab58e8427213640da0e5"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+      "bytes": 85113,
+      "sha256": "6cb09b268e640ec72eac77ecfca92a47209379f6087b9257602ac002c8394de1"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+      "bytes": 28251,
+      "sha256": "bd473b710c6892b0a8cb75aa1c6e802ba8483814782002d994db8aaec1a2d976"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+      "bytes": 124151,
+      "sha256": "d25450c695eab3a62086af960fa2e8a1bd5fee28cd9e960463b4c07562b3ceae"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_smoke.blp",
+      "bytes": 88009,
+      "sha256": "60d207638ed0904e539a74b805f8475dfac49b2f0cddc0c7ea2413d4d570a03c"
+    },
+    {
+      "path": "war3mapImported\\wos_Frostnova_W_TX025.blp",
+      "bytes": 4774,
+      "sha256": "3a96923b2edeb76a4a04dbd5fe893c1c4f2859febf73b12bcbd9e66db3d38a95"
+    },
+    {
+      "path": "war3mapImported\\wos_GenericGlow2_64_blue.blp",
+      "bytes": 5962,
+      "sha256": "3be1da685b0a95faa8ea30ddd436ee30d33a66ec2a1045cac4d1c635fb60bc55"
+    },
+    {
+      "path": "war3mapImported\\wos_GenericGlowFaded.blp",
+      "bytes": 11884,
+      "sha256": "e1d8cacbe5205d8f262aef5b79add363b6342d9cde1ff2bfab01f8af27499a57"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Glow4.blp",
+      "bytes": 5143,
+      "sha256": "9d97494caa54739023abfa8820f5a1aa565a03a8b1fb12afabf941a026a6f17c"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Grain19.blp",
+      "bytes": 16690,
+      "sha256": "029545b8526c02591bb7fe368d410adc88974ba7e4c7e8072987c757c8d6d233"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+      "bytes": 24778,
+      "sha256": "6702ac73db6629e791b0d79aea58b5235c8328c269cafd6ddfb8f51889fb5b35"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+      "bytes": 14156,
+      "sha256": "6f3d252ce752a3ba0ddddb0bbfc0a816d2ea45003ab1abab3aef5538e2b3f302"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+      "bytes": 3713,
+      "sha256": "c9352d6b2d6057c3690309d2b822d35108f2ed50fa843e20d170aaedacc7b465"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+      "bytes": 8345,
+      "sha256": "ed45d8138f2a012ded75411ca851f64b5ae46b98b8c0c648c395b9269b94c4d4"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+      "bytes": 8107,
+      "sha256": "66e01e9dc66c78e74c9a1f8efc15d26a300ecd41e03b836c2d553a7eba2aa0d0"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+      "bytes": 33349,
+      "sha256": "b419c33b1e788fcad974b59c47026d9ba7b21ac0cba3b87d14042231ec428557"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+      "bytes": 19587,
+      "sha256": "855186636ec457addf668f8ff2c69c47f304d641382d370176f729236c9209af"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Target_yan.blp",
+      "bytes": 10126,
+      "sha256": "26132db6bcea9199a34a28a864dd8b47cd2b8bba78ffebc4d6dacddf3968dd36"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5S_T_Star_qiu.blp",
+      "bytes": 17029,
+      "sha256": "03a4af2e2c6fff3cd263e44feea35a1cfb97be02e3984fcc419b4bd0ee406e15"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5_huo.blp",
+      "bytes": 93707,
+      "sha256": "976b64115ee99b716d09799e7ba3bdc2e11555bf6c1afadde0472c5edb5c8694"
+    },
+    {
+      "path": "war3mapImported\\wos_Hero_AcientApparition_N5_jiaodi.blp",
+      "bytes": 7855,
+      "sha256": "c7d38bbb1ebbcf340165cf69000bea766abe4ca07b5eca8ece126691049249ee"
+    },
+    {
+      "path": "war3mapImported\\wos_ice.blp",
+      "bytes": 9705,
+      "sha256": "78f5838c4c9b72b99eb90eeff5f11bb5e717ce965b19dff5090dd73ecfbc2f30"
+    },
+    {
+      "path": "war3mapImported\\wos_ice_shard-7716D-dark.mdx",
+      "bytes": 10683,
+      "sha256": "4280e58c325d23451425455e8bcafac58f3e3e3751a81efb82ef45cec3a11ddf"
+    },
+    {
+      "path": "war3mapImported\\wos_ice_shard-7716D.mdx",
+      "bytes": 10387,
+      "sha256": "dc59f9f10c93129d03757158cbb349d3870aa9925ac8fc9f6a2d2327c0d1d57e"
+    },
+    {
+      "path": "war3mapImported\\wos_kaldr_t2.blp",
+      "bytes": 5569,
+      "sha256": "da28562db7ad0a29c43fb6707da6ee659004fddbdf15a48abf9764434aacdb22"
+    },
+    {
+      "path": "war3mapImported\\wos_LiuYing-R-SG_0.blp",
+      "bytes": 1496,
+      "sha256": "bf79cb6e7ed75e7cd38c61252d25ca1adda3a9e5b980d5573065a7fc78e111bc"
+    },
+    {
+      "path": "war3mapImported\\wos_MH218104746.blp",
+      "bytes": 7192,
+      "sha256": "2801dbf5072c495e08a129d9e900a0558b39d3b4ad776de36a7f8e19aa30d54d"
+    },
+    {
+      "path": "war3mapImported\\wos_ShockwaveWater1.blp",
+      "bytes": 17158,
+      "sha256": "764aaadc65dbd6840c964db5b975e68c506a2755adfa7340a0b42ecdb4978cdd"
+    },
+    {
+      "path": "war3mapImported\\wos_smoke.blp",
+      "bytes": 76956,
+      "sha256": "bbbfdebf669f8242b2015c4e3687e6f34644036eee476be7a29abf3164da5f12"
+    },
+    {
+      "path": "war3mapImported\\wos_snowflake2.blp",
+      "bytes": 16682,
+      "sha256": "d1fb3a2ead9bef8511d20f97b8b514d094a7a238ebaac72f20959d22a21acd01"
+    },
+    {
+      "path": "war3mapImported\\wos_star4_32.blp",
+      "bytes": 2694,
+      "sha256": "ca7db78cef97391d42daa4b7750b630a14742695e7f59f4dd77bc53380d20286"
+    },
+    {
+      "path": "war3mapImported\\wos_Tornado1.blp",
+      "bytes": 26680,
+      "sha256": "088275a909265a7e83bab3cd08e60a851968b2e97bf5b099bf5e35175522c4a8"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_0.blp",
+      "bytes": 7276,
+      "sha256": "f44d5d993a657c1561f2507167560abae912da95e78f7916037b0259da8aaae4"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_3.blp",
+      "bytes": 72276,
+      "sha256": "485143fbd5ea23f5e879da8e6cf283e2d40f39db3b0221c4d7a500bfdb6e3fcf"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_4.blp",
+      "bytes": 7792,
+      "sha256": "080fbfc2799f1364f70c14e4dc869bf124e55b0533b7b3ef039b6c3ddb12b3fc"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_5.blp",
+      "bytes": 5334,
+      "sha256": "82ab444fd2addbe77006bd11079aa4309efde89774cb2ca74ee24999d3d5aa09"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_6.blp",
+      "bytes": 23437,
+      "sha256": "1a6d7e1c1a3c7aa269b6da7aecf438fbad932ab1a990aba1004e22d654625ad5"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_7.blp",
+      "bytes": 46570,
+      "sha256": "1cb218dcfe988af2d4e7c3cfa702124443eb95f7cc93fb10178ac70712d7e426"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_8.blp",
+      "bytes": 86690,
+      "sha256": "bd2564ce2bf38d14b855935738af44f3bcb7eb253d2f4164904e042a885aa3da"
+    },
+    {
+      "path": "war3mapImported\\wos_Tsubaki-11_9.blp",
+      "bytes": 80048,
+      "sha256": "ba760b90bd50a9ccec8262e47a08ce705f5e0ee0293771b54b326fd4049cd57f"
+    },
+    {
+      "path": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_0.blp",
+      "bytes": 88700,
+      "sha256": "056b8abb7a79e62667699476fdf7d332eb02d6f580679ed6a223bf1d6a3d224d"
+    },
+    {
+      "path": "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_3.blp",
+      "bytes": 72530,
+      "sha256": "735479017a7b497dcb0755d732972c735738fe4b66a1bfd949c2000b7f926795"
+    },
+    {
+      "path": "war3mapImported\\wos_TX025.blp",
+      "bytes": 4774,
+      "sha256": "3a96923b2edeb76a4a04dbd5fe893c1c4f2859febf73b12bcbd9e66db3d38a95"
+    },
+    {
+      "path": "war3mapImported\\wos_tx026_1.mdx",
+      "bytes": 2126,
+      "sha256": "50f0f6002e530bab41733aa3dea6eb16b236160b8646a81b1a527b4c06764604"
+    },
+    {
+      "path": "war3mapImported\\wos_TX_Star2004.blp",
+      "bytes": 3408,
+      "sha256": "34a6a011fa55180e4da848660d62cfaa555fa2f1d005e07c4f090870b0034cc0"
+    },
+    {
+      "path": "war3mapImported\\wos_ui_bar_shadow.blp",
+      "bytes": 3525,
+      "sha256": "d613eb1981db5fcb20a933be41ffa450ffe25cdf39c87ed113804a385448b0be"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-sp.blp",
+      "bytes": 86690,
+      "sha256": "bd2564ce2bf38d14b855935738af44f3bcb7eb253d2f4164904e042a885aa3da"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-sq1.blp",
+      "bytes": 12093,
+      "sha256": "31f7619994479ada4b9f531412c3e8709878ddc05f287bff3e225d598af87022"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-sq2.blp",
+      "bytes": 9543,
+      "sha256": "ebf53f2b0097ec4d2d9ef748867a5a0af292de6deb4c8396807ee7a5fb6676a1"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-szlz.blp",
+      "bytes": 23437,
+      "sha256": "1a6d7e1c1a3c7aa269b6da7aecf438fbad932ab1a990aba1004e22d654625ad5"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-xh.3-3.blp",
+      "bytes": 99798,
+      "sha256": "880da823e7ef115935010e5978a98d9215fb42cc4bf007534551b278bf286862"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-xh1.blp",
+      "bytes": 96977,
+      "sha256": "a4a98931a94f656b43c97f5d2a644f985d0f30ca6afee3e4ef3065de31b6beb2"
+    },
+    {
+      "path": "war3mapImported\\wos_YS-sllh-yh.blp",
+      "bytes": 100918,
+      "sha256": "656dd65358dc44590f5663d8f675bfa7cf8f9035880410f0966799717db1cdf3"
+    },
+    {
+      "path": "war3mapImported\\wos_[skillm]als-tx (6).mdx",
+      "bytes": 18388,
+      "sha256": "eb19bdc9f127f306486f03d63b4d7601917e14c25effb49d17328ac293a156a4"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+      "bytes": 5103,
+      "sha256": "92da23232bc8ec0332dfdba5aec3a3f0659c4a7f79579c7b4f42b201a5b523c1"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+      "bytes": 4101,
+      "sha256": "32032dea4ec13d1f3978d9d875ca3919cb9f6b795b135701e98f9d9997ee88df"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp",
+      "bytes": 42812,
+      "sha256": "1b7bc1ffef6530b3fd3b0de8fcef50b17cf06cc9e5885a3bac961a48cd539d8f"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Q.blp",
+      "bytes": 5178,
+      "sha256": "6b787d6bba66d517121df47f76c31f69bfd7fc0427971851c769a8889b1473ae"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_R.blp",
+      "bytes": 6300,
+      "sha256": "8553da65846aef1e7980ab561e88e8b0e2486863edd7a2737cef42a1a1e66aad"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+      "bytes": 4768,
+      "sha256": "4b30c7e0f6355a0a2591b5f147082d04fe42a57445bcebc842084d06021f24c0"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_TE.blp",
+      "bytes": 4784,
+      "sha256": "b9198574ed544a506aa528ec0eb57d4b56d75a49c74ee4e5c0ef8a319e9dbf09"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_TQ.blp",
+      "bytes": 4242,
+      "sha256": "d04551d36565b7d074a21a70400daab8d13327871125b1cb390431200345922d"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_TR.blp",
+      "bytes": 4343,
+      "sha256": "fc66aeaaae8bf1505701c3153a5f258e145db31ffbe28258734b2c24a37b44d9"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_TW.blp",
+      "bytes": 4014,
+      "sha256": "7653b479b0272c2b190ca837b8562b9435cfdb0fec9062a3f4feb0205027f35e"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_W.blp",
+      "bytes": 4689,
+      "sha256": "56001ce18a27732c53920afabdd40ce14a4bb05c63e4d414fc9015c8b1622927"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_E.blp",
+      "bytes": 3252,
+      "sha256": "69f73178165931b9a824d78375283f3ccd674be6d6cd4baa795e911ffecf3297"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_F.blp",
+      "bytes": 2948,
+      "sha256": "4558d83b6e3d6248d4bffde3ab2834dbe7427666d35c86c8b153b46f0bd047c0"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_Icon.blp",
+      "bytes": 2423,
+      "sha256": "a097c6c968237f75a8417f29c5f817dfebc479c501118dd3748aad9939782ad0"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_Q.blp",
+      "bytes": 3565,
+      "sha256": "7cda8602b7f7f39bc143ec4da72b9beb14c3535942bfe893cf9e59eff68c1016"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_R.blp",
+      "bytes": 6300,
+      "sha256": "231fe21b98231a3e2f4ab7b2d8faa2d57f091a9d876809df121f270c13c9b294"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_T.blp",
+      "bytes": 3251,
+      "sha256": "d77f453a2ce277dabc480b6f01c7487d70520ad7e96c11fa68ddcfddd4ea878a"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_TE.blp",
+      "bytes": 3325,
+      "sha256": "b3e36cd067254935c4e84c956436b4831d5a3f46f0e53c41123c61e0bbae1748"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_TQ.blp",
+      "bytes": 2635,
+      "sha256": "4120ce6766d20426380afdf41ee3bc1fc39d3a407447122e2931c635ffcf16b8"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_TR.blp",
+      "bytes": 2731,
+      "sha256": "d0266717280a7885e0435882fcbbf14304e677847f1e99f778ce066444f38c01"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_TW.blp",
+      "bytes": 6300,
+      "sha256": "05f95a4cc972e33fdff7905f427c9c72a4186fde8597d841bc8533f5c8f5fe4f"
+    },
+    {
+      "path": "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNHero_Frostnova_W.blp",
+      "bytes": 2978,
+      "sha256": "6953535942f2aade4ae0bbeb8af5f42fa52e11b9e0f2e9f661806c440e8eb18c"
+    }
+  ],
+  "reused": [
+    "war3mapImported\\wos_kaldr_t2.blp",
+    "war3mapImported\\wos_Frostnova_Dust3.blp",
+    "war3mapImported\\wos_az_kaldr_blast_t2small.mdx",
+    "war3mapImported\\wos_a6555bc61ff4_Flare.blp",
+    "war3mapImported\\wos_AZ_RibbonNE1_blue.blp",
+    "war3mapImported\\wos_GenericGlow2_64_blue.blp",
+    "war3mapImported\\wos_[skillm]als-tx (6).mdx",
+    "war3mapImported\\wos_AZ_Snowflake3.blp",
+    "war3mapImported\\wos_az_snowflake01.mdx",
+    "war3mapImported\\wos_Tsubaki-11_0.blp",
+    "war3mapImported\\wos_file00002226_0.blp",
+    "war3mapImported\\wos_MH218104746.blp",
+    "war3mapImported\\wos_Tsubaki-11_3.blp",
+    "war3mapImported\\wos_Tsubaki-11_4.blp",
+    "war3mapImported\\wos_Tsubaki-11_5.blp",
+    "war3mapImported\\wos_Tsubaki-11_6.blp",
+    "war3mapImported\\wos_Tsubaki-11_7.blp",
+    "war3mapImported\\wos_Tsubaki-11_8.blp",
+    "war3mapImported\\wos_Tsubaki-11_9.blp",
+    "war3mapImported\\wos_file00000456.mdx",
+    "war3mapImported\\wos_AZ_Shockwave1White3.blp",
+    "war3mapImported\\wos_flare1_tc.blp",
+    "war3mapImported\\wos_AZ_Shockwave2White.blp",
+    "war3mapImported\\wos_Frostnova_GF_476.blp",
+    "war3mapImported\\wos_6548d1b4b9a5_Zap1.blp",
+    "war3mapImported\\wos_LiuYing-R-SG_0.blp",
+    "war3mapImported\\wos_file00000883_1.mdx",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+    "war3mapImported\\wos_file00002579.mdx",
+    "war3mapImported\\wos_file00002579_1.mdx",
+    "war3mapImported\\wos_Frostnova_TX_Star20.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+    "war3mapImported\\wos_file00003801.mdx",
+    "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_0.blp",
+    "war3mapImported\\wos_Frostnova_Shockwave1White.blp",
+    "war3mapImported\\wos_TX-YXJN-WYW-bltx-fanwei_3.blp",
+    "war3mapImported\\wos_TX_Star2004.blp",
+    "war3mapImported\\wos_file00004977.mdx",
+    "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Glow4.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N2S_T_Grain19.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_T_Star_qiu.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5_huo.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5S_C_Target_yan.blp",
+    "war3mapImported\\wos_Hero_AcientApparition_N5_jiaodi.blp",
+    "war3mapImported\\wos_file00005537_3.mdx",
+    "war3mapImported\\wos_FrostnovaDarkFrost.tga",
+    "war3mapImported\\wos_FrostnovaDarkGlow.tga",
+    "war3mapImported\\wos_FrostnovaBlackIce.tga",
+    "war3mapImported\\wos_FrostnovaDarkStar.tga",
+    "war3mapImported\\wos_FrostnovaDarkRing.tga",
+    "war3mapImported\\wos_snowflake2.blp",
+    "war3mapImported\\wos_Frostnova_Blue_Glow2.blp",
+    "war3mapImported\\wos_ice.blp",
+    "war3mapImported\\wos_Blue_Star2.blp",
+    "war3mapImported\\wos_ShockwaveWater1.blp",
+    "war3mapImported\\wos_smoke.blp",
+    "war3mapImported\\wos_TX025.blp",
+    "war3mapImported\\wos_tx026_1.mdx",
+    "war3mapImported\\wos_Frost3.blp",
+    "war3mapImported\\wos_Frostnova_CloudSingle.blp",
+    "war3mapImported\\wos_effect_stx1.blp",
+    "war3mapImported\\wos_Frostnova_a (81).mdx",
+    "war3mapImported\\wos_Frostnova_GenericGlow2_64.blp",
+    "war3mapImported\\wos_firering6.blp",
+    "war3mapImported\\wos_AZ_UV_Snow.blp",
+    "war3mapImported\\wos_Tornado1.blp",
+    "war3mapImported\\wos_GenericGlowFaded.blp",
+    "war3mapImported\\wos_Frostnova_Shockwave11.blp",
+    "war3mapImported\\wos_Frostnova_AZ_Shockwave21.blp",
+    "war3mapImported\\wos_az_aachristmas_t1_700_1.mdx",
+    "war3mapImported\\wos_YS-sllh-sq1.blp",
+    "war3mapImported\\wos_YS-sllh-xh.3-3.blp",
+    "war3mapImported\\wos_AZ_Smoke1E.blp",
+    "war3mapImported\\wos_AZ_snowflake01.blp",
+    "war3mapImported\\wos_Tsubaki-11_6.blp",
+    "war3mapImported\\wos_YS-sllh-xh1.blp",
+    "war3mapImported\\wos_YS-sllh-sq2.blp",
+    "war3mapImported\\wos_AZ_Tornado1E.blp",
+    "war3mapImported\\wos_AZ_Smoke3_2x2.blp",
+    "war3mapImported\\wos_YS-sllh-yh.blp",
+    "war3mapImported\\wos_star4_32.blp",
+    "war3mapImported\\wos_Tsubaki-11_8.blp",
+    "war3mapImported\\wos_file00003436_2-dark.mdx",
+    "war3mapImported\\wos_file00002017_0.blp",
+    "war3mapImported\\wos_file00002017_1.blp",
+    "war3mapImported\\wos_Frostnova_file00002017_2.blp",
+    "war3mapImported\\wos_file00002017_3.blp",
+    "war3mapImported\\wos_file00002017_4.blp",
+    "war3mapImported\\wos_file00002017_5.blp",
+    "war3mapImported\\wos_Frostnova_file00002017_6.blp",
+    "war3mapImported\\wos_file00003436_2.mdx",
+    "war3mapImported\\wos_ui_bar_shadow.blp",
+    "war3mapImported\\wos_Frostnova_shadow.blp",
+    "war3mapImported\\wos_AZ_MagicMatrix21.blp",
+    "war3mapImported\\wos_Frostnova_title_shielded.blp",
+    "war3mapImported\\wos_Frostnova_title_shielded.mdx",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Integration_Ring_1.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Unusual_Flare_1.blp",
+    "war3mapImported\\wos_Frostnova_BY_Wood_Effect_Texture_Sequence_Glow_1_8x1.blp",
+    "war3mapImported\\wos_BY_Wood_Effect_Texture_Frame_Glow_5.blp",
+    "war3mapImported\\wos_Frostnova_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx",
+    "war3mapImported\\wos_Arknights_sx1.blp",
+    "war3mapImported\\wos_Arknights_sxwq.blp",
+    "war3mapImported\\wos_Frostnova.mdx",
+    "war3mapImported\\wos_Frostnova_port.blp",
+    "war3mapImported\\wos_Frostnova_Portrait.mdx"
+  ],
+  "polish": {
+    "tq": "Original blue ice plus a 40% black-ice material; separate dark particles",
+    "fog": {
+      "wos_file00002579_1.mdx": [
+        {
+          "texture": "war3mapimported\\wos_frostnova_w_by_wood_effect_texture_sequence_fog_3_8x8.blp",
+          "emission_factor": 1.0666666666666667,
+          "alpha_before": [
+            0,
+            100,
+            0
+          ],
+          "alpha_after": [
+            0,
+            170,
+            0
+          ]
+        },
+        {
+          "texture": "war3mapimported\\wos_frostnova_w_by_wood_effect_texture_currency_smoke_3.blp",
+          "emission_factor": 1.1199999999999999,
+          "alpha_before": [
+            30,
+            30,
+            0
+          ],
+          "alpha_after": [
+            170,
+            170,
+            0
+          ]
+        },
+        {
+          "texture": "war3mapimported\\wos_frostnova_w_by_wood_effect_texture_currency_smoke_3.blp",
+          "emission_factor": 0.8,
+          "alpha_before": [
+            0,
+            30,
+            0
+          ],
+          "alpha_after": [
+            0,
+            170,
+            0
+          ]
+        }
+      ],
+      "wos_tx026_1.mdx": [
+        {
+          "texture": "war3mapimported\\wos_frostnova_w_smoke.blp",
+          "emission_factor": 1.1199999999999999,
+          "alpha_before": [
+            0,
+            100,
+            0
+          ],
+          "alpha_after": [
+            0,
+            170,
+            0
+          ]
+        }
+      ]
+    }
+  }
+}

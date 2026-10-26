@@ -112,7 +112,7 @@ globals
     private framehandle array WOS_STATS_RowContent
     private framehandle array WOS_STATS_HeroIcon
     private framehandle array WOS_STATS_MvpText
-    // Checkpoint 25b: SVP = best player of the team without the MVP.
+    // MVP belongs to the leading team; SVP belongs to the trailing team.
     private integer WOS_STATS_SvpPid = -1
     private framehandle array WOS_STATS_MvpHover
     private framehandle array WOS_STATS_PlayerName
@@ -144,6 +144,11 @@ globals
     private boolean array WOS_STATS_IsOpaque
     private boolean array WOS_STATS_IsExpanded
     private boolean array WOS_STATS_IsFinal
+    // Periodic refresh gate (local, read-only over synced data): the open window is
+    // redrawn only when its data signature changes. On base heroes are invulnerable,
+    // nothing changes, so only the clock moves.
+    private integer array WOS_STATS_LastDataSig
+    private integer WOS_STATS_ArenaRefreshTicks = 0
 
     // Запоминаем состояние старого F2-интерфейса и возвращаем после закрытия.
     private boolean array WOS_STATS_OldTopVisible
@@ -159,6 +164,14 @@ endglobals
 globals
     private hashtable WOS_STATS_Cache = InitHashtable()
     private integer array WOS_STATS_LayoutKey
+    // Synchronized snapshot of heroes and items (pid * 6 + slot). The local
+    // window only reads these, it never touches units, items or object data.
+    private integer array WOS_STATS_SnapHeroType
+    private boolean array WOS_STATS_SnapHeroDead
+    private string array WOS_STATS_SnapHeroIcon
+    private integer array WOS_STATS_SnapItemId
+    private string array WOS_STATS_SnapItemName
+    private string array WOS_STATS_SnapItemIcon
 endglobals
 
 private function WOS_STATS_Text takes framehandle frame, string text returns nothing
@@ -724,7 +737,7 @@ private function WOS_STATS_GetTeamBestPid takes integer viewerPid, integer team 
         exitwhen pid >= WOS_STATS_PLAYER_COUNT
         if Hero[pid] != null and WOS_STATS_ShouldDisplayPid(pid) and IsInTeam1(pid) == (team == 0) then
             set score = WOS_STATS_MvpScore(viewerPid, pid)
-            if score > bestScore or (score == bestScore and bestPid >= 0 and PlayerKill[pid] > PlayerKill[bestPid]) then
+            if bestPid < 0 or score > bestScore or (score == bestScore and PlayerKill[pid] > PlayerKill[bestPid]) then
                 set bestScore = score
                 set bestPid = pid
             endif
@@ -735,62 +748,96 @@ private function WOS_STATS_GetTeamBestPid takes integer viewerPid, integer team 
 endfunction
 
 private function WOS_STATS_GetMvpPid takes integer viewerPid returns integer
-    local integer pid = 0
-    local integer bestPid = -1
-    local real score
-    local real bestScore = 0.00
-
-    loop
-        exitwhen pid >= WOS_STATS_PLAYER_COUNT
-        if Hero[pid] != null and WOS_STATS_ShouldDisplayPid(pid) then
-            set score = WOS_STATS_MvpScore(viewerPid, pid)
-            if score > bestScore then
-                set bestScore = score
-                set bestPid = pid
-            elseif score == bestScore and bestPid >= 0 then
-                if PlayerKill[pid] > PlayerKill[bestPid] then
-                    set bestPid = pid
-                elseif PlayerKill[pid] == PlayerKill[bestPid] and WOS_STATS_GetDamagePhysical(viewerPid, pid) + WOS_STATS_GetDamageMagical(viewerPid, pid) > WOS_STATS_GetDamagePhysical(viewerPid, bestPid) + WOS_STATS_GetDamageMagical(viewerPid, bestPid) then
-                    set bestPid = pid
-                endif
-            endif
-        endif
-        set pid = pid + 1
-    endloop
-    return bestPid
+    if Team1Round > Team2Round then
+        return WOS_STATS_GetTeamBestPid(viewerPid, 0)
+    elseif Team2Round > Team1Round then
+        return WOS_STATS_GetTeamBestPid(viewerPid, 1)
+    endif
+    // No winning or losing side at a tied score.
+    return -1
 endfunction
 
 //===========================================================================
 // Обновление строк, предметов и итогов
 //===========================================================================
-private function WOS_STATS_UpdateItems takes integer row, unit heroUnit returns nothing
-    local integer slot = 0
+// Synchronized: runs on every client before any local refresh. Item handles,
+// object names and icons are read here, so a death or round end that changes
+// heroes/items while one player has F2 open cannot diverge that client.
+private function WOS_STATS_Snapshot takes nothing returns nothing
+    local integer pid = 0
+    local integer slot
     local integer index
     local integer itemId
-    local string itemName
+    local integer heroType
+    local unit heroUnit
     local item whichItem
+
+    loop
+        exitwhen pid >= WOS_STATS_PLAYER_COUNT
+        set heroUnit = Hero[pid]
+        set heroType = 0
+        if heroUnit != null then
+            set heroType = GetUnitTypeId(heroUnit)
+        endif
+        if heroType != WOS_STATS_SnapHeroType[pid] then
+            set WOS_STATS_SnapHeroType[pid] = heroType
+            if heroType != 0 then
+                set WOS_STATS_SnapHeroIcon[pid] = BlzGetAbilityIcon(heroType)
+            endif
+        endif
+        set WOS_STATS_SnapHeroDead[pid] = heroType != 0 and IsUnitType(heroUnit, UNIT_TYPE_DEAD)
+        set slot = 0
+        loop
+            exitwhen slot >= WOS_STATS_ITEM_COUNT
+            set index = pid * WOS_STATS_ITEM_COUNT + slot
+            set itemId = 0
+            if heroType != 0 then
+                set whichItem = UnitItemInSlot(heroUnit, slot)
+                if whichItem != null then
+                    set itemId = GetItemTypeId(whichItem)
+                endif
+                set whichItem = null
+            endif
+            if itemId != WOS_STATS_SnapItemId[index] then
+                set WOS_STATS_SnapItemId[index] = itemId
+                if itemId != 0 then
+                    set WOS_STATS_SnapItemName[index] = GetObjectName(itemId)
+                    set WOS_STATS_SnapItemIcon[index] = BlzGetAbilityIcon(itemId)
+                endif
+            endif
+            set slot = slot + 1
+        endloop
+        set pid = pid + 1
+    endloop
+    set heroUnit = null
+endfunction
+
+private function WOS_STATS_UpdateItems takes integer row, integer pid returns nothing
+    local integer slot = 0
+    local integer index
+    local integer snap
+    local integer itemId
+    local string itemName
 
     loop
         exitwhen slot >= WOS_STATS_ITEM_COUNT
         set index = row * WOS_STATS_ITEM_COUNT + slot
-        set whichItem = UnitItemInSlot(heroUnit, slot)
+        set snap = pid * WOS_STATS_ITEM_COUNT + slot
+        set itemId = WOS_STATS_SnapItemId[snap]
 
-        if whichItem == null then
-            set itemId = 0
+        if itemId == 0 then
             call WOS_STATS_Show(WOS_STATS_ItemButton[index], false)
         else
-            set itemId = GetItemTypeId(whichItem)
             call WOS_STATS_Show(WOS_STATS_ItemButton[index], true)
             if WOS_STATS_LastItemId[index] != itemId then
-                set itemName = GetObjectName(itemId)
-                call WOS_STATS_Tex(WOS_STATS_ItemIcon[index], BlzGetAbilityIcon(itemId), 0, false)
+                set itemName = WOS_STATS_SnapItemName[snap]
+                call WOS_STATS_Tex(WOS_STATS_ItemIcon[index], WOS_STATS_SnapItemIcon[snap], 0, false)
                 call WOS_STATS_ResizeItemTooltip(index, itemName)
                 call WOS_STATS_Text(WOS_STATS_ItemTooltipText[index], "|cffffffff" + itemName + "|r")
             endif
         endif
 
         set WOS_STATS_LastItemId[index] = itemId
-        set whichItem = null
         set slot = slot + 1
     endloop
 endfunction
@@ -816,7 +863,6 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     local integer takenPhysical
     local integer takenMagical
     local integer rowAlpha
-    local unit heroUnit
     local string heroTexture
     local string playerName
     local boolean playerLeft
@@ -834,7 +880,7 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
         return
     endif
 
-    set heroUnit = Hero[pid]
+    set heroType = WOS_STATS_SnapHeroType[pid]
     set damagePhysical = WOS_STATS_GetDamagePhysical(viewerPid, pid)
     set damageMagical = WOS_STATS_GetDamageMagical(viewerPid, pid)
     set takenPhysical = WOS_STATS_GetTakenPhysical(viewerPid, pid)
@@ -842,7 +888,7 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     call WOS_STATS_Show(WOS_STATS_RowBack[row], true)
     call WOS_STATS_Show(WOS_STATS_RowContent[row], true)
 
-    if heroUnit == null then
+    if heroType == 0 then
         if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != 0 or WOS_STATS_LastHeroDead[row] then
             call WOS_STATS_Tex(WOS_STATS_HeroIcon[row], WOS_STATS_TEX_EMPTY, 0, false)
         endif
@@ -850,10 +896,9 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
         set WOS_STATS_LastHeroDead[row] = false
         call WOS_STATS_ClearItems(row)
     else
-        set heroType = GetUnitTypeId(heroUnit)
-        set heroDead = IsUnitType(heroUnit, UNIT_TYPE_DEAD)
+        set heroDead = WOS_STATS_SnapHeroDead[pid]
         if WOS_STATS_LastRowPid[row] != pid or WOS_STATS_LastHeroType[row] != heroType or WOS_STATS_LastHeroDead[row] != heroDead then
-            set heroTexture = BlzGetAbilityIcon(heroType)
+            set heroTexture = WOS_STATS_SnapHeroIcon[pid]
             if heroDead then
                 set heroTexture = ConvertBTNtoDISBTN(heroTexture)
             endif
@@ -871,6 +916,7 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     // поскольку движок уже может пометить игроков как вышедших.
     set playerLeft = GetPlayerSlotState(Player(pid)) != PLAYER_SLOT_STATE_PLAYING and not WOS_STATS_IsFinal[viewerPid]
 
+    // Rows without a label hide the empty text and its hint area (fewer drawn frames).
     if pid == mvpPid then
         call WOS_STATS_Text(WOS_STATS_MvpText[row], "|cffffd36bMVP|r")
     elseif pid == WOS_STATS_SvpPid then
@@ -878,6 +924,8 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     else
         call WOS_STATS_Text(WOS_STATS_MvpText[row], "")
     endif
+    call WOS_STATS_Show(WOS_STATS_MvpText[row], pid == mvpPid or pid == WOS_STATS_SvpPid)
+    call WOS_STATS_Show(WOS_STATS_MvpHover[row], pid == mvpPid or pid == WOS_STATS_SvpPid)
 
     // Р‘РµР»Р°СЏ С‚РµРєСЃС‚СѓСЂР° РѕРєСЂР°С€РёРІР°РµС‚СЃСЏ РІ С†РІРµС‚ СЃР»РѕС‚Р° РІ РѕР±РѕРёС… СЂРµР¶РёРјР°С… С„РѕРЅР°.
     // РњРµРЅСЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ Р°Р»СЊС„Р°: РЅР° РЅРµРїСЂРѕР·СЂР°С‡РЅРѕРј С„РѕРЅРµ РїРѕР»РѕСЃС‹ РЅР°СЃС‹С‰РµРЅРЅРµРµ.
@@ -942,12 +990,11 @@ private function WOS_STATS_UpdateRow takes integer row, integer viewerPid, integ
     call WOS_STATS_Text(WOS_STATS_HealText[row], WOS_STATS_FormatK(WOS_STATS_GetHeal(viewerPid, pid)))
     call WOS_STATS_SetDamageTooltip(row, damagePhysical, damageMagical)
     call WOS_STATS_SetTakenTooltip(row, takenPhysical, takenMagical)
-    if heroUnit != null then
-        call WOS_STATS_UpdateItems(row, heroUnit)
+    if heroType != 0 then
+        call WOS_STATS_UpdateItems(row, pid)
     endif
 
     set WOS_STATS_LastRowPid[row] = pid
-    set heroUnit = null
 endfunction
 
 private function WOS_STATS_UpdateTeamTotal takes integer viewerPid, integer team, boolean expanded returns nothing
@@ -1399,11 +1446,68 @@ private function WOS_STATS_LayoutSignature takes integer viewerPid returns integ
     return key + 1
 endfunction
 
+private function WOS_STATS_SigMix takes integer sig, integer value returns integer
+    set sig = sig * 31 + value - (value / 1000003) * 1000003
+    return sig - (sig / 1000003) * 1000003
+endfunction
+
+// Everything an F2 refresh reads: per-player stats (own and "All" variants), slot
+// state, team, snapshot heroes/items, score, round and the viewer's view toggles.
+private function WOS_STATS_DataSignature takes integer viewerPid returns integer
+    local integer sig = WOS_STATS_LayoutSignature(viewerPid)
+    local integer pid = 0
+    local integer slot
+    loop
+        exitwhen pid >= WOS_STATS_PLAYER_COUNT
+        set sig = WOS_STATS_SigMix(sig, PlayerKill[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerDeath[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerDamagePhys[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerDamagePhysAll[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerDamageMag[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerDamageMagAll[pid])
+        set sig = WOS_STATS_SigMix(sig, R2I(PlayerDamageTakenPhys[pid]))
+        set sig = WOS_STATS_SigMix(sig, R2I(PlayerDamageTakenPhysAll[pid]))
+        set sig = WOS_STATS_SigMix(sig, R2I(PlayerDamageTakenMag[pid]))
+        set sig = WOS_STATS_SigMix(sig, R2I(PlayerDamageTakenMagAll[pid]))
+        set sig = WOS_STATS_SigMix(sig, PlayerHeal[pid])
+        set sig = WOS_STATS_SigMix(sig, PlayerHealAll[pid])
+        if GetPlayerSlotState(Player(pid)) == PLAYER_SLOT_STATE_PLAYING then
+            set sig = WOS_STATS_SigMix(sig, 4)
+        endif
+        if IsInTeam1(pid) then
+            set sig = WOS_STATS_SigMix(sig, 1)
+        endif
+        if Hero[pid] != null then
+            set sig = WOS_STATS_SigMix(sig, 2)
+        endif
+        set sig = WOS_STATS_SigMix(sig, WOS_STATS_SnapHeroType[pid])
+        if WOS_STATS_SnapHeroDead[pid] then
+            set sig = WOS_STATS_SigMix(sig, 3)
+        endif
+        set slot = 0
+        loop
+            exitwhen slot >= WOS_STATS_ITEM_COUNT
+            set sig = WOS_STATS_SigMix(sig, WOS_STATS_SnapItemId[pid * WOS_STATS_ITEM_COUNT + slot])
+            set slot = slot + 1
+        endloop
+        set pid = pid + 1
+    endloop
+    set sig = WOS_STATS_SigMix(sig, CurrentRound)
+    set sig = WOS_STATS_SigMix(sig, Team1Round)
+    set sig = WOS_STATS_SigMix(sig, Team2Round)
+    set sig = WOS_STATS_SigMix(sig, END1)
+    if WOS_STATS_IsOpaque[viewerPid] then
+        set sig = WOS_STATS_SigMix(sig, 5)
+    endif
+    return sig
+endfunction
+
 private function WOS_STATS_UpdateForPlayer takes integer viewerPid returns nothing
     local integer row = 0
     local integer layoutKey = WOS_STATS_LayoutSignature(viewerPid)
     local integer mvpPid = WOS_STATS_GetMvpPid(viewerPid)
     local integer screenshotSeconds = 20 - END2
+    set WOS_STATS_LastDataSig[viewerPid] = WOS_STATS_DataSignature(viewerPid)
     set WOS_STATS_SvpPid = -1
     if mvpPid >= 0 then
         if IsInTeam1(mvpPid) then
@@ -1476,13 +1580,25 @@ private function WOS_STATS_Periodic takes nothing returns nothing
         call PauseTimer(WOS_STATS_UpdateTimer)
         return
     endif
+    call WOS_STATS_Snapshot()
+    // Synced counter (0.5 s ticks): data is checked every 5 s (10 ticks); in the
+    // arena an unchanged window still gets a full refresh every 10 s. The clock
+    // and the final screen countdown keep the 0.5 s step.
+    set WOS_STATS_ArenaRefreshTicks = WOS_STATS_ArenaRefreshTicks + 1
     if viewer < WOS_STATS_VIEWER_COUNT and WOS_STATS_IsOpen[viewer] then
         if WOS_STATS_IsFinal[viewer] then
             call ClearTextMessages()
         endif
         call WOS_STATS_HideLegacyUI()
         call WOS_STATS_Show(WOS_STATS_Main,true)
-        call WOS_STATS_UpdateForPlayer(viewer)
+        if WOS_STATS_IsFinal[viewer] or (ModuloInteger(WOS_STATS_ArenaRefreshTicks, 10) == 0 and (WOS_STATS_LastDataSig[viewer] != WOS_STATS_DataSignature(viewer) or (CondArena != 0 and WOS_STATS_ArenaRefreshTicks >= 20))) then
+            call WOS_STATS_UpdateForPlayer(viewer)
+        else
+            call WOS_STATS_Text(WOS_STATS_GameClock, "|cffc6cbd1" + WOS_STATS_GameTime() + "|r")
+        endif
+    endif
+    if WOS_STATS_ArenaRefreshTicks >= 20 then
+        set WOS_STATS_ArenaRefreshTicks = 0
     endif
 endfunction
 
@@ -1499,6 +1615,7 @@ function WOS_STATS_ShowFinal takes nothing returns nothing
     call WOS_STATS_WakeTimer()
     // Всегда оставляем десять строк, включая игроков без активного героя.
     set WOS_STATS_SHOW_INACTIVE_PLAYERS = true
+    call WOS_STATS_Snapshot()
 
     loop
         exitwhen pid >= WOS_STATS_VIEWER_COUNT
@@ -1553,6 +1670,7 @@ private function WOS_STATS_SetOpen takes player whichPlayer, boolean open return
     if open then
         call WOS_STATS_WakeTimer()
         call WUI_EnterExclusiveWindow(1, whichPlayer)
+        call WOS_STATS_Snapshot()
     endif
     if GetLocalPlayer() == whichPlayer then
         if open then
@@ -1611,6 +1729,7 @@ private function WOS_STATS_OnOpacity takes nothing returns nothing
         return
     endif
     set WOS_STATS_IsOpaque[pid] = not WOS_STATS_IsOpaque[pid]
+    call WOS_STATS_Snapshot()
     if GetLocalPlayer() == whichPlayer then
         call WOS_STATS_UpdateForPlayer(pid)
     endif
@@ -1628,6 +1747,7 @@ private function WOS_STATS_OnExpand takes nothing returns nothing
         return
     endif
     set WOS_STATS_IsExpanded[pid] = not WOS_STATS_IsExpanded[pid]
+    call WOS_STATS_Snapshot()
     if GetLocalPlayer() == whichPlayer then
         call WOS_STATS_UpdateForPlayer(pid)
     endif
@@ -1668,6 +1788,7 @@ private function WOS_STATS_OnData takes nothing returns nothing
         set PlayerDamageMag[id] = PlayerDamageMagAll[id]
         set PlayerHeal[id] = PlayerHealAll[id]
     endif
+    call WOS_STATS_Snapshot()
     if GetLocalPlayer() == whichPlayer then
         if WOS_STATS_IsOpen[id] then
             call WOS_STATS_UpdateForPlayer(id)

@@ -413,6 +413,7 @@ library HarribelSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HarribelSpells_W
         private static integer array m_HarribelW
         private static integer MUI_HarribelW = -1
@@ -708,6 +709,7 @@ library HarribelSpells uses GearSystems
                             
                             call WUI_RefreshDocks()
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E, 1)
+                            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                             set r = 0
                             set d = CreateUnit(Player(k2), HarribelE_IdDummy, 1, 1, 1)
                             set r2 = 9999
@@ -891,6 +893,7 @@ library HarribelSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HarribelSpells_R
         private static integer array m_HarribelR
         private static integer MUI_HarribelR = -1
@@ -1185,6 +1188,7 @@ library HarribelSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HarribelSpells_T
         private static integer array m_HarribelT
         private static integer MUI_HarribelT = -1

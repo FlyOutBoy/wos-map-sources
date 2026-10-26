@@ -111,12 +111,15 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         if val == 0 then 
             return "" 
         endif
-        return "|cffffcc00Invulnerability:|r " + FormatReal(val) + " sec|n"
+        return "|cffff3333Iframe: " + FormatReal(val) + " sec|r|n"
     endfunction
 
     public function T_Bonus takes string source, string text returns string
         if text == "" then 
             return "" 
+        endif
+        if source == "Winter's Scar" then
+            return "|n|cffffa500[" + source + "]:|r " + text + "|n"
         endif
         return "|cffffa500[" + source + "]:|r " + text + "|n"
     endfunction
@@ -131,6 +134,9 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
     public function T_PropS takes string name, string val returns string
         if val == "" or val == null then
             return ""
+        endif
+        if name == "Iframe" then
+            return "|cffff3333Iframe: " + val + "|r|n"
         endif
         return "|cffffcc00" + name + ":|r " + val + "|n"
     endfunction
@@ -223,14 +229,14 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         if val == 0 then 
             return "" 
         endif
-        return "|cffffcc00Cast Time:|r " + FormatReal(val) + " sec (Invulnerable)|n"
+        return T_Cast(val) + T_Invul(val)
     endfunction
 
     public function T_DurationInvul takes real val returns string
         if val == 0 then 
             return "" 
         endif
-        return "|cffffcc00Duration:|r " + FormatReal(val) + " sec (Invulnerable)|n"
+        return T_Duration(val) + T_Invul(val)
     endfunction
     
     public function FormatInt takes real val returns string
@@ -258,7 +264,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
             return "" 
         endif
         if isInvul then
-            return "|cffffcc00Duration:|r " + FormatReal(val) + " sec (Invulnerable)|n"
+            return T_Duration(val) + T_Invul(val)
         endif
         return "|cffffcc00Duration:|r " + FormatReal(val) + " sec|n"
     endfunction
@@ -268,7 +274,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
             return "" 
         endif
         if isInvul then
-            return "|cffffcc00Cast Time:|r " + FormatReal(val) + " sec (Invulnerable)|n"
+            return T_Cast(val) + T_Invul(val)
         endif
         return "|cffffcc00Cast Time:|r " + FormatReal(val) + " sec|n"
     endfunction
@@ -277,7 +283,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         if not isInvul or val == 0 then 
             return "" 
         endif
-        return "|cffffcc00Invulnerability:|r " + FormatReal(val) + " sec|n"
+        return T_Invul(val)
     endfunction
     
     public function T_Debuff takes string debuffName returns string
@@ -692,10 +698,6 @@ function ARules_GetCastRange takes unit hero, integer abilId, ability ab, intege
         return TsunaE_RangeBase + TsunaE_RangeAdd * (level - 1)
     elseif abilId == DarkShikiQ_ID then
         return DarkShikiQ_RangeBase + DarkShikiQ_RangeStep * (level - 1)
-    elseif abilId == FrostnovaQ_ID then
-        return FrostnovaQ_Range
-    elseif abilId == FrostnovaW_ID then
-        return FrostnovaW_Range
     elseif abilId == FrostnovaR_ID then
         return FrostnovaR_Range
     elseif abilId == FrierenW2_ID then
@@ -777,6 +779,16 @@ function ARules_GetCastRange takes unit hero, integer abilId, ability ab, intege
     endif
     // Native live field already covers Barragan W and all untouched point/unit
     // casts. Push/pull, attack, leash/search and secondary travel are not cast range.
+    return BlzGetAbilityRealLevelField(ab, ABILITY_RLF_CAST_RANGE, level - 1)
+endfunction
+
+// Click range (red circle / first Range number): the live native cast range,
+// i.e. where the Object Editor lets the player click. Scripted travel, spawn
+// offsets and areas belong to the white reach (ARules_GetCastRange + impact).
+function ARules_GetClickRange takes unit hero, integer abilId, ability ab, integer level returns real
+    if ab == null or level <= 0 then
+        return 0.0
+    endif
     return BlzGetAbilityRealLevelField(ab, ABILITY_RLF_CAST_RANGE, level - 1)
 endfunction
 
@@ -874,6 +886,38 @@ endfunction
     //===========================================================================
     // База Данных Способностей и Героев
     //===========================================================================
+    // Shared notices are placed after lore and before the first stat block.
+    private function FilterIframe takes string text, boolean notices returns string
+        local integer i = 0
+        local integer start = 0
+        local integer length = StringLength(text)
+        local string line
+        local string result = ""
+        loop
+            exitwhen i > length
+            if i == length or SubString(text, i, i+2) == "|n" then
+                set line = SubString(text, start, i)
+                if (SubString(line, 0, 17) == "|cffff3333Iframe:") == notices then
+                    if result != "" then
+                        set result = result + "|n"
+                    endif
+                    set result = result + line
+                endif
+                set i = i+2
+                set start = i
+            else
+                set i = i+1
+            endif
+        endloop
+        set i = StringLength(result)
+        loop
+            exitwhen i < 2 or SubString(result, i-2, i) != "|n"
+            set result = SubString(result, 0, i-2)
+            set i = i-2
+        endloop
+        return result
+    endfunction
+
     struct SpellData
         integer abilId
         integer maxLv
@@ -950,6 +994,8 @@ endfunction
         endmethod
 
         private method SetInitialTips takes nothing returns nothing
+            local string mechanic
+            local string bonus
             local string desc
             local TooltipBuilder builder
             local integer i = 1
@@ -977,8 +1023,13 @@ endfunction
 
             // Меню изучения (V)
             set builder = TooltipBuilder.create()
-            call builder.addDescription(desc)
-            call builder.addBonus(ParseLevelTags(bns, 0))
+            set mechanic = ParseLevelTags(this.mecha, 0)
+            set bonus = ParseLevelTags(bns, 0)
+            call builder.addDescription(FilterIframe(desc, false))
+            call builder.addBonus(FilterIframe(bonus, false))
+            call builder.addIframe(FilterIframe(desc, true))
+            call builder.addIframe(FilterIframe(bonus, true))
+            call builder.addIframe(FilterIframe(mechanic, true))
             if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
                 call builder.addDamage(this.dmgType, FormulaList(this.statType, this.statBase, this.statStep, this.staticBase, this.staticStep, this.maxLv))
             endif
@@ -986,7 +1037,7 @@ endfunction
                 call builder.addCustomDamage(this.dmgType2, this.dmgName2, FormulaList(this.statType2, this.statBase2, this.statStep2, this.staticBase2, this.staticStep2, this.maxLv))
             endif
             call builder.addRange(ListRealField(ab, ABILITY_RLF_CAST_RANGE, 1, this.maxLv))
-            call builder.addMechanic(ParseLevelTags(this.mecha, 0))
+            call builder.addMechanic(FilterIframe(mechanic, false))
             if this.cdFrom != 0 then
                 call builder.addCooldownEx(ListCooldown(this.cdFrom, 1, 1), this.cdAfterDur)
             else
@@ -1009,8 +1060,13 @@ endfunction
             loop
                 exitwhen i > this.maxLv
                 set builder = TooltipBuilder.create()
-                call builder.addDescription(desc)
-                call builder.addBonus(ParseLevelTags(bns, i))
+                set mechanic = ParseLevelTags(this.mecha, i)
+                set bonus = ParseLevelTags(bns, i)
+                call builder.addDescription(FilterIframe(desc, false))
+                call builder.addBonus(FilterIframe(bonus, false))
+                call builder.addIframe(FilterIframe(desc, true))
+                call builder.addIframe(FilterIframe(bonus, true))
+                call builder.addIframe(FilterIframe(mechanic, true))
                 if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
                     call builder.addDamage(this.dmgType, FormulaStr(this.statType, this.statBase, this.statStep, this.staticBase, this.staticStep, i))
                 endif
@@ -1018,7 +1074,7 @@ endfunction
                     call builder.addCustomDamage(this.dmgType2, this.dmgName2, FormulaStr(this.statType2, this.statBase2, this.statStep2, this.staticBase2, this.staticStep2, i))
                 endif
                 call builder.addRange(ListRealField(ab, ABILITY_RLF_CAST_RANGE, i, i))
-                call builder.addMechanic(ParseLevelTags(this.mecha, i))
+                call builder.addMechanic(FilterIframe(mechanic, false))
                 if this.cdFrom != 0 then
                     call builder.addCooldownEx(ListCooldown(this.cdFrom, 1, 1), this.cdAfterDur)
                 else
@@ -1555,6 +1611,50 @@ endfunction
         return radius
     endfunction
 
+    // Red circle: where the ability can be clicked. Self-centred channels
+    // (no target) have no click range; only their area is previewed.
+    public function GetPreviewCastRange takes unit hero, integer abilId returns real
+        local SpellData data
+        local integer level
+        local integer formId
+        local integer sourceId
+        local ability ab
+        local real range = 0.0
+        if HT_DATA == null or hero == null or abilId == 0 then
+            return 0.0
+        endif
+        set level = GetUnitAbilityLevel(hero, abilId)
+        if level <= 0 then
+            return 0.0
+        endif
+        set formId = LoadInteger(HT_DATA, GetHandleId(hero), 8888)
+        set sourceId = ARules_GetPreviewSource(abilId)
+        set data = LoadInteger(HT_DATA, sourceId, formId)
+        if data == 0 then
+            set data = LoadInteger(HT_DATA, sourceId, 0)
+        endif
+        if data == 0 or (data.previewChannel and not data.previewDirected) then
+            return 0.0
+        endif
+        set ab = BlzGetUnitAbility(hero, abilId)
+        if ab != null then
+            set range = ARules_GetClickRange(hero, abilId, ab, level)
+        endif
+        set ab = null
+        return range
+    endfunction
+
+    // Tooltip Range: click range, then the actual reach (travel, offsets, area) in brackets.
+    private function FormatRangePair takes real clickRange, real reach returns string
+        if clickRange <= 0.0 then
+            return FormatReal(reach)
+        endif
+        if reach > 0.0 and R2I(reach) != R2I(clickRange) then
+            return FormatReal(clickRange) + " (" + FormatReal(reach) + ")"
+        endif
+        return FormatReal(clickRange)
+    endfunction
+
     // Only abilities registered with this builder, including its form fallback.
     // Read live instance data, not the global tooltip text or an ability-ID table.
     public function GetDisplayedRange takes unit hero, integer abilId returns real
@@ -1576,6 +1676,8 @@ endfunction
         local string cdStr = ""
         local integer formId
         local string bns = ""
+        local string mechanic
+        local string description
         
         local integer heroHandle
         local integer keyStat
@@ -1583,6 +1685,7 @@ endfunction
         local integer keyLvl
         local integer keyDamage
         local real previewRadius
+        local real clickRange
         local integer milimSteps
         local real milimDamage
 
@@ -1673,9 +1776,10 @@ endif
         set keyDamage = abilId + 3000000 
         
         set previewRadius = GetPreviewRadius(hero, abilId)
+        set clickRange = GetPreviewCastRange(hero, abilId)
         if HaveSavedReal(HT_DATA, heroHandle, keyStat) then
             if (data.statBase != 0.0 or data.staticBase != 0.0 or cdBase > 0.0) then
-                if (LoadReal(HT_DATA, heroHandle, keyStat) == heroStat) and (LoadReal(HT_DATA, heroHandle, keyCd) == cdReal) and (LoadInteger(HT_DATA, heroHandle, keyLvl) == lvl) and (LoadReal(HT_DATA, heroHandle, keyDamage) == formulaBase) and HaveSavedReal(HT_DATA, heroHandle, abilId + 4000000) and (LoadReal(HT_DATA, heroHandle, abilId + 4000000) == previewRadius) then
+                if (LoadReal(HT_DATA, heroHandle, keyStat) == heroStat) and (LoadReal(HT_DATA, heroHandle, keyCd) == cdReal) and (LoadInteger(HT_DATA, heroHandle, keyLvl) == lvl) and (LoadReal(HT_DATA, heroHandle, keyDamage) == formulaBase) and HaveSavedReal(HT_DATA, heroHandle, abilId + 4000000) and (LoadReal(HT_DATA, heroHandle, abilId + 4000000) == previewRadius) and (LoadReal(HT_DATA, heroHandle, abilId + 6000000) == clickRange) then
                     set ab = null
                     return 
                 endif
@@ -1687,6 +1791,7 @@ endif
         call SaveInteger(HT_DATA, heroHandle, keyLvl, lvl)
         call SaveReal(HT_DATA, heroHandle, keyDamage, formulaBase)
         call SaveReal(HT_DATA, heroHandle, abilId + 4000000, previewRadius)
+        call SaveReal(HT_DATA, heroHandle, abilId + 6000000, clickRange)
 
         if (data.statBase != 0 or data.statStep != 0 or data.staticBase != 0 or data.staticStep != 0) then
             if (data.statType != 0) then
@@ -1718,8 +1823,14 @@ endif
         endif
         
         set builder = TooltipBuilder.create()
-        call builder.addDescription(GetDesc(abilId))
-        call builder.addBonus(ParseLevelTags(bns, lvl))
+        set description = GetDesc(abilId)
+        set bns = ParseLevelTags(bns, lvl)
+        set mechanic = PreviewMechanic(hero, data, lvl)
+        call builder.addDescription(FilterIframe(description, false))
+        call builder.addBonus(FilterIframe(bns, false))
+        call builder.addIframe(FilterIframe(description, true))
+        call builder.addIframe(FilterIframe(bns, true))
+        call builder.addIframe(FilterIframe(mechanic, true))
         
         if (dmgStr != "") then
             call builder.addDamage(data.dmgType, dmgStr)
@@ -1729,8 +1840,8 @@ endif
             call builder.addCustomDamage(data.dmgType2, data.dmgName2, dmgStr2)
         endif
         
-        call builder.addRange(FormatReal(previewRadius)) 
-        call builder.addMechanic(PreviewMechanic(hero, data, lvl))
+        call builder.addRange(FormatRangePair(clickRange, previewRadius))
+        call builder.addMechanic(FilterIframe(mechanic, false))
         call builder.addCooldownEx(cdStr, data.cdAfterDur)
 
         if (data.decor != "") then
@@ -1900,6 +2011,12 @@ endif
                     call SaveReal(HT_DATA, GetHandleId(hero), key, radius)
                     set changed = true
                 endif
+                // Click range changes with morph flags and live cast-range writes.
+                set radius = GetPreviewCastRange(hero, abilityId)
+                if not HaveSavedReal(HT_DATA, GetHandleId(hero), key + 2000000) or LoadReal(HT_DATA, GetHandleId(hero), key + 2000000) != radius then
+                    call SaveReal(HT_DATA, GetHandleId(hero), key + 2000000, radius)
+                    set changed = true
+                endif
                 set i = i + 1
             endloop
         endif
@@ -1935,15 +2052,15 @@ endif
     endfunction
 
     function WOS_UTB_Init_002_CrocodileW_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage and " + FormatReal(CrocodileW_ComboStun) + " sec stun.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage and " + FormatReal(CrocodileW_ComboStun) + " sec stun.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_003_CrocodileE_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileE_ID, 5, 1, 2, CrocodileE_DamageAgiBase, CrocodileE_DamageAgiStep, T_Rad(CrocodileE_Aoe) + T_Prop("Dash Range", CrocodileE_Distance) + T_PropS("Charges", "<L:1/1/2/2/2>; 3 at Hero Lv. " + FormatInt(CrocodileE_ThirdChargeHeroLevel)) + T_PropS("Recharge", "Matches ability cooldown") + T_Dur("Use Cooldown", CrocodileE_UseCD) + T_Prop("Hits", I2R(CrocodileE_HitTicks)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), "Invulnerable during the dash.").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileE_ID, 5, 1, 2, CrocodileE_DamageAgiBase, CrocodileE_DamageAgiStep, T_Rad(CrocodileE_Aoe) + T_Invul(CrocodileE_Duration) + T_Prop("Dash Range", CrocodileE_Distance) + T_PropS("Charges", "<L:1/1/2/2/2>; 3 at Hero Lv. " + FormatInt(CrocodileE_ThirdChargeHeroLevel)) + T_PropS("Recharge", "Matches ability cooldown") + T_Dur("Use Cooldown", CrocodileE_UseCD) + T_Prop("Hits", I2R(CrocodileE_HitTicks)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_004_CrocodileR_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileR_ID, 5, 1, 2, CrocodileR_DamageAgi, CrocodileR_DamageStep, T_RadExp(CrocodileR_StartAoe, CrocodileR_EndAoe) + T_Dur("Duration", CrocodileR_Duration) + T_Prop("Hits", I2R(CrocodileR_Hits)) + T_Stun(CrocodileR_StunTime) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("W Combo", "Combines with quicksand; extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileR_ID, 5, 1, 2, CrocodileR_DamageAgi, CrocodileR_DamageStep, T_RadExp(CrocodileR_StartAoe, CrocodileR_EndAoe) + T_Dur("Duration", CrocodileR_Duration) + T_Prop("Hits per Target", I2R(CrocodileR_Hits)) + T_Dur("Damage Window", CrocodileR_HitDuration) + T_PropS("After Hits", "Pull only, toward the center") + T_Stun(CrocodileR_StunTime) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("W Combo", "Combines with quicksand; extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_005_CrocodileT_ID takes nothing returns nothing
@@ -2508,7 +2625,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_123_StarrkR3_ID takes nothing returns nothing
-        call SpellData.createSimple(StarrkR3_ID, 1, 2, 2, StarrkTR_DamageAgiBase, 0.0, T_Rad(StarrkT_DamageAoe) + T_Dur("Invulnerability", 1.6) + "Damage is multiplied by the number of active wolves (Max 10)", T_Bonus("Form", "|cffFF0000Wolf State|r")).setPreviewChannel()
+        call SpellData.createSimple(StarrkR3_ID, 1, 2, 2, StarrkTR_DamageAgiBase, 0.0, T_Rad(StarrkT_DamageAoe) + T_Invul(1.6) + "Damage is multiplied by the number of active wolves (Max 10)", T_Bonus("Form", "|cffFF0000Wolf State|r")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_124_Starrk_ID takes nothing returns nothing
@@ -2553,7 +2670,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_131_TakeshiT_ID takes nothing returns nothing
-        call SpellData.createUtility(TakeshiT_ID, 1, T_Dur("Duration", TakeshiT_Duration) + T_Slow(TakeshiT_Slow, TakeshiT_SlowDuration), "Reduces all CDs by " + FormatReal(TakeshiT_ReduceCD) + " sec per second|nAdds Agility x" + FormatReal(TakeshiT_AddDmg) + " to abilities").setPreviewChannel().setPreviewDirected()
+        call SpellData.createUtility(TakeshiT_ID, 1, T_Rad(TakeshiT_DamageAoe) + T_Dur("Duration", TakeshiT_Duration) + T_Slow(TakeshiT_Slow, TakeshiT_SlowDuration), "Reduces all CDs by " + FormatReal(TakeshiT_ReduceCD) + " sec per second|nAdds Agility x" + FormatReal(TakeshiT_AddDmg) + " to abilities").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_132_TakeshiF_ID takes nothing returns nothing
@@ -2634,7 +2751,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_149_BarraganR_ID takes nothing returns nothing
-        call SpellData.create(BarraganR_ID, 5, 2, 3, BarraganR_DamageIntBase, BarraganR_DamageIntStep, BarraganR_Damage2StaticBase, BarraganR_Damage2StaticStep, T_Rad(BarraganR_DamageAoe) + "Invulnerability: <L:" + FormatReal(BarraganR_DamageInvulBase) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*2) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*3) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*4) + "> sec|nRestores " + FormatReal(BarraganR_ManaRestore) + "% Max MP|n" + T_Slow(BarraganR_Slow, BarraganR_SlowDuration), "").setPreviewChannel()
+        call SpellData.create(BarraganR_ID, 5, 2, 3, BarraganR_DamageIntBase, BarraganR_DamageIntStep, BarraganR_Damage2StaticBase, BarraganR_Damage2StaticStep, T_Rad(BarraganR_DamageAoe) + "|cffff3333Iframe: <L:" + FormatReal(BarraganR_DamageInvulBase) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*2) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*3) + "/" + FormatReal(BarraganR_DamageInvulBase+BarraganR_DamageInvulStep*4) + "> sec|r|nRestores " + FormatReal(BarraganR_ManaRestore) + "% Max MP|n" + T_Slow(BarraganR_Slow, BarraganR_SlowDuration), "").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_150_BarraganT_ID takes nothing returns nothing
@@ -2912,7 +3029,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_208_RimuruT_ID takes nothing returns nothing
-        call SpellData.createSimple(RimuruT_ID, 1, 2, 3, RimuruT_DamageIntBase, 0.0, T_Rad(RimuruT_DamageAoe), "").setPreviewChannel()
+        call SpellData.createSimple(RimuruT_ID, 1, 2, 3, RimuruT_DamageIntBase, 0.0, T_Rad(RimuruT_DamageAoe), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_209_RimuruF_ID takes nothing returns nothing
@@ -2941,7 +3058,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_215_RimuruT2_ID takes nothing returns nothing
-        call SpellData.createSimple(RimuruT2_ID, 1, 2, 3, RimuruT2_DamageIntBase, 0.0, T_Rad(RimuruT2_DamageAoe) + T_Root(RimuruT2_Root) + T_Slow(RimuruT2_SlowPercent, RimuruT2_SlowTime), "").setPreviewChannel()
+        call SpellData.createSimple(RimuruT2_ID, 1, 2, 3, RimuruT2_DamageIntBase, 0.0, T_Rad(RimuruT2_DamageAoe) + T_Root(RimuruT2_Root) + T_Slow(RimuruT2_SlowPercent, RimuruT2_SlowTime), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_216_RimuruF2_ID takes nothing returns nothing
@@ -3130,11 +3247,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_255_OkarunT_ID takes nothing returns nothing
-        call SpellData.createSimple(OkarunT_ID, 1, 1, 3, OkarunT_DamageIntBase, 0.0, T_Rad(OkarunT_DamageAoe) + T_Slow(OkarunT_Slow, OkarunT_SlowDuration) + "Self Speed: x" + FormatReal(OkarunT_bonusspeed) + " Max Speed - " + FormatReal(OkarunT_SpeedReduction) + " (at least native speed) for " + FormatReal(OkarunT_Buff_Duration) + " sec", "").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(OkarunT_ID, 1, 1, 3, OkarunT_DamageIntBase, 0.0, T_Rad(OkarunT_DamageAoe) + T_Slow(OkarunT_Slow, OkarunT_SlowDuration) + "Movement Speed: " + FormatReal(OkarunT_MoveSpeed) + " (fixed; does not decay) for " + FormatReal(OkarunT_Buff_Duration) + " sec", "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_256_OkarunF_ID takes nothing returns nothing
-        call SpellData.createUtility(OkarunF_ID, 1, "Passive|nGradually increases Movement Speed up to a cap while running continuously|nSpeed Cap: 600/700/800/900/1000 (Lv. 1/12/18/25/35)|nAccelerates by " + FormatReal(OkarunF_AddSpeedPercentPerSec) + "% per sec|nDecelerates by " + FormatReal(OkarunF_DecreaseSpeedPercentPerSec) + "% per tick when stopped", "")
+        call SpellData.createUtility(OkarunF_ID, 1, "Passive|nRunning builds up total Movement Speed up to 500/600/700/800/900 at Hero Lv. 6/12/18/25/35|nAccelerates by " + FormatReal(OkarunF_AddSpeedPercentPerSec) + "% per sec|nDecelerates by " + FormatReal(OkarunF_DecreaseSpeedPercentPerSec) + "% per tick when stopped", "")
     endfunction
 
     function WOS_UTB_Init_257_Okarun_ID takes nothing returns nothing
@@ -3347,7 +3464,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_302_RaidenE_ID takes nothing returns nothing
-        call SpellData.create(RaidenE_ID, 5, 2, 2, RaidenE_DamageAgiBase, RaidenE_DamageAgiStep, RaidenE_Damage2StaticBase, RaidenE_Damage2StaticStep, T_Rad(RaidenE_DamageAoe) + T_CastAuto(RaidenE_CastTime, RaidenE_IsInvul) + T_Slow(RaidenE_Slow, RaidenE_Duration) + T_Push(RaidenE_PushRange), T_Bonus("Morph (T)", "Invulnerable shadow barrage (Radius " + FormatInt(RaidenTE_DamageAoe) + ", +Agility x " + FormatReal(RaidenTE_DamageAgiBonus) + " Dmg)") + T_Bonus("Morph (TT)", "Cataclysmic cleave (+Agility x " + FormatReal(RaidenTTE_DamageAgiBonus) + " Dmg) revealing 3000 range")).setDecor(T_Decor(RaidenE_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(RaidenE_ID, 5, 2, 2, RaidenE_DamageAgiBase, RaidenE_DamageAgiStep, RaidenE_Damage2StaticBase, RaidenE_Damage2StaticStep, T_Rad(RaidenE_DamageAoe) + T_CastAuto(RaidenE_CastTime, RaidenE_IsInvul) + T_Slow(RaidenE_Slow, RaidenE_Duration) + T_Push(RaidenE_PushRange), T_PropS("Iframe", "during Morph (T)") + T_Bonus("Morph (T)", "Shadow barrage (Radius " + FormatInt(RaidenTE_DamageAoe) + ", +Agility x " + FormatReal(RaidenTE_DamageAgiBonus) + " Dmg)") + T_Bonus("Morph (TT)", "Cataclysmic cleave (+Agility x " + FormatReal(RaidenTTE_DamageAgiBonus) + " Dmg) revealing 3000 range")).setDecor(T_Decor(RaidenE_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_303_RaidenR_ID takes nothing returns nothing
@@ -3842,7 +3959,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_409_Erza4E_ID takes nothing returns nothing
-        call SpellData.createSimple(Erza4E_ID, 5, 1, 2, Erza4E_DamageAgiFastBase, Erza4E_DamageAgiFastStep, T_Rad(Erza4E_DamageAoe) + "Stun: " + FormatReal(Erza4E_Stun) + " sec per tick", T_Bonus("Chargeable", "3 Stacks: Casts instantly, grants Invulnerability, and deals Agility x <L:" + FormatReal(Erza4E_DamageAgiLongBase) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*2) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*3) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*4) + ">.")).setPreviewChannel()
+        call SpellData.createSimple(Erza4E_ID, 5, 1, 2, Erza4E_DamageAgiFastBase, Erza4E_DamageAgiFastStep, T_Rad(Erza4E_DamageAoe) + "Stun: " + FormatReal(Erza4E_Stun) + " sec per tick", T_PropS("Iframe", "at 3 stacks") + T_Bonus("Chargeable", "3 Stacks: Casts instantly and deals Agility x <L:" + FormatReal(Erza4E_DamageAgiLongBase) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*2) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*3) + "/" + FormatReal(Erza4E_DamageAgiLongBase+Erza4E_DamageAgiLongStep*4) + ">.")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_410_Erza4R_ID takes nothing returns nothing
@@ -4190,14 +4307,33 @@ endif
         call SpellData.createUtility(AlterSaberF_Active_ID, 1, "Toggle (F)|nAlways: " + FormatReal(AlterSaberF_DamageFromCurrentMana) + "% Current Mana as bonus attack damage|nOn: each hit also burns " + FormatReal(AlterSaberF_ManaBurnBase) + "% Current Mana (" + FormatReal(AlterSaberF_ManaBurnMorph) + "% in R form) and deals x" + FormatReal(AlterSaberF_BurnDamageMultiplier) + " of the burned mana as bonus damage", "Hero Lv. 35: attacks reduce Q cooldown by 1 sec")
     endfunction
 
-    function WOS_UTB_Init_484_Frostnova takes nothing returns nothing
+    // One job per ability: a single Frostnova job exceeded the op limit and skipped T/F/HeroData.
+    function WOS_UTB_Init_484_FrostnovaQ_ID takes nothing returns nothing
+        call SpellData.create(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, FrostnovaQ_DamageStatic, 0.0, T_Rad(FrostnovaQ_Aoe) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_PropS("Recharge", "<L:17/16/15/14/13> sec"), T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "Pierces enemies, +30% speed.")).setDecor(T_Decor(FrostnovaQ_DecorDamage)).setPreviewChannel().setPreviewDirected()
+    endfunction
+
+    function WOS_UTB_Init_485_FrostnovaW_ID takes nothing returns nothing
+        call SpellData.create(FrostnovaW_ID, 5, 2, 3, FrostnovaW_DamageIntBase, FrostnovaW_DamageIntStep, FrostnovaW_DamageStatic, 0.0, T_Rad(FrostnovaW_Aoe) + T_CastAuto(FrostnovaW_Preparation, FrostnovaW_IsInvul) + T_Push(FrostnovaW_Push), "Knockback weakens the farther the wave travels (x" + FormatReal(FrostnovaW_PushFalloff) + " at max range)." + T_Bonus("Hero Lv. 25", "+20% wave speed.") + T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "3 waves, knockback " + FormatInt(FrostnovaTW_Push) + "; does not push enemies out of Icefield.") + T_PropS("Iframe", FormatReal(FrostnovaW_Preparation) + " sec (Winter's Scar)")).setDecor(T_Decor(FrostnovaW_DecorDamage)).setPreviewChannel().setPreviewDirected()
+    endfunction
+
+    function WOS_UTB_Init_486_FrostnovaE_ID takes nothing returns nothing
+        call SpellData.createSimple(FrostnovaE_ID, 5, 2, 3, FrostnovaE_BurstDamageIntBase, FrostnovaE_BurstDamageIntStep, T_Cast(FrostnovaE_Preparation) + T_PropS("Field damage / sec", "INT x <L:0.30/0.35/0.40/0.45/0.50>") + T_Rad(FrostnovaE_Aoe) + T_Invul(FrostnovaE_Preparation + FrostnovaE_Invulnerability) + T_Dur("Field", FrostnovaE_Duration), "Inside the field: enemies get -35% healing, Frostnova takes -30% damage." + T_Bonus("Winter's Scar", "Burst stuns for " + FormatReal(FrostnovaTE_Stun) + " sec when the cast ends. Aura (" + FormatInt(FrostnovaTE_Aoe) + "): INT x " + FormatReal(FrostnovaTE_DamageInt) + "/sec.")).setDecor(T_Decor(FrostnovaE_DecorDamage)).setPreviewChannel()
+    endfunction
+
+    function WOS_UTB_Init_487_FrostnovaR_ID takes nothing returns nothing
+        call SpellData.createSimple(FrostnovaR_ID, 5, 2, 3, FrostnovaR_DamageIntBase, FrostnovaR_DamageIntStep, T_Rad(FrostnovaR_Aoe) + T_PropS("Duration", "<L:4/5/6/7/8> sec") + T_PropS("Total damage", "INT x <L:4/5/6/7/8>"), "+INT x " + FormatReal(FrostnovaR_StackDamageInt) + " damage per second for each Yeti Princess stack on the target." + T_Bonus("Winter's Scar", "Root " + FormatReal(FrostnovaTR_StartRoot) + " sec on cast; exiting into the " + FormatInt(FrostnovaTR_ExitBand) + "-range outer band roots for " + FormatReal(FrostnovaTR_ExitRoot) + " sec (once per target per field). Random bursts every " + FormatReal(FrostnovaTR_BurstPeriod) + " sec: INT x " + FormatReal(FrostnovaTR_BurstDamageInt) + " in " + FormatInt(FrostnovaTR_BurstAoe) + ".")).setDecor(T_Decor(FrostnovaR_DecorDamage)).setPreviewChannel().setPreviewDirected()
+    endfunction
+
+    function WOS_UTB_Init_488_FrostnovaT_ID takes nothing returns nothing
+        call SpellData.createUtility(FrostnovaT_ID, 1, T_Dur("Duration", FrostnovaT_Duration) + T_Dur("Shield", FrostnovaT_ShieldDuration) + T_Prop("W/E/R cooldown cut", FrostnovaT_CooldownReduction), "Refills Q, cuts W/E/R cooldowns. Shield blocks one hit; renewed by each song verse.").setPreviewChannel()
+    endfunction
+
+    function WOS_UTB_Init_489_FrostnovaF_ID takes nothing returns nothing
+        call SpellData.createUtility(FrostnovaF_ID, 1, T_Prop("Max stacks", I2R(FrostnovaF_MaxStacks)), "5% slow per stack, " + FormatReal(FrostnovaF_Duration) + " sec. Stacks carry into Winter's Scar." + T_Bonus("Winter's Scar", "6% per stack, " + FormatReal(FrostnovaTF_Duration) + " sec, INT x " + FormatReal(FrostnovaTF_DamageInt) + " magic damage/stack/sec. Dispellable.") + T_Bonus("Hero Lv. 35", "Normal form also deals INT x " + FormatReal(FrostnovaTF_DamageInt) + " magic damage/stack/sec; Winter's Scar adds INT x " + FormatReal(FrostnovaTF_DamageBonus35) + " per sec, once per target, not per stack."))
+    endfunction
+
+    function WOS_UTB_Init_490_Frostnova takes nothing returns nothing
         local HeroData form
-        call SpellData.createSimple(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, T_Rad(FrostnovaQ_Aoe) + T_Prop("Range", FrostnovaQ_Range) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_Dur("Recharge per Charge", FrostnovaQ_Recharge), "Stops at the first enemy. Applies Cold; Winter's Scar applies Frostbite.").setPreviewChannel().setPreviewDirected()
-        call SpellData.createSimple(FrostnovaW_ID, 5, 2, 3, FrostnovaW_DamageIntBase, FrostnovaW_DamageIntStep, T_Rad(FrostnovaW_Aoe) + T_Prop("Range", FrostnovaW_Range) + T_Prop("Push", FrostnovaW_Push), T_Bonus("Winter's Scar", "Pushes 350 range.")).setPreviewChannel().setPreviewDirected()
-        call SpellData.createSimple(FrostnovaE_ID, 5, 2, 3, FrostnovaE_DamageIntBase, FrostnovaE_DamageIntStep, T_Rad(FrostnovaE_Aoe) + T_Dur("Field", FrostnovaE_Duration) + T_Dur("Invulnerability", FrostnovaE_Invulnerability), "Damage is dealt once per second. Applies Cold. Winter's Scar: initial 1 sec stun.").setPreviewChannel()
-        call SpellData.createSimple(FrostnovaR_ID, 5, 2, 3, FrostnovaR_DamageIntBase, FrostnovaR_DamageIntStep, T_Rad(FrostnovaR_Aoe) + T_Dur("Field", FrostnovaR_Duration), "Damage is dealt once per second. Applies Cold. Winter's Scar: grows blocking ice crystals.").setPreviewChannel().setPreviewDirected()
-        call SpellData.createUtility(FrostnovaT_ID, 1, T_Dur("Duration", FrostnovaT_Duration), "Fully restores Q charges and resets Q cooldown. Enhances all spells and replaces Cold with Frostbite. No HP loss.").setPreviewChannel()
-        call SpellData.createUtility(FrostnovaF_ID, 1, T_Prop("Max Stacks", I2R(FrostnovaF_MaxStacks)) + T_Dur("Cold", FrostnovaF_Duration) + T_Dur("Frostbite", FrostnovaTF_Duration), "Cold: 5% movement slow per stack. Frostbite: 8% per stack and Int x 0.12 magic damage per stack each second. Can be dispelled.")
         set form = HeroData.create(Frostnova_ID, 0, FrostnovaQ_ID, FrostnovaW_ID, FrostnovaE_ID, FrostnovaR_ID, FrostnovaT_ID, FrostnovaF_ID, 0, 0, 0, 0)
     endfunction
 
@@ -4685,8 +4821,14 @@ endif
         set UTB_InitJobs[481] = "WOS_UTB_Init_481_KyorakuE4_ID"
         set UTB_InitJobs[482] = "WOS_UTB_Init_482_RimuruG3_2_ID"
         set UTB_InitJobs[483] = "WOS_UTB_Init_483_AlterSaberF_Active_ID"
-        set UTB_InitJobs[484] = "WOS_UTB_Init_484_Frostnova"
-        set UTB_InitJobCount = 484
+        set UTB_InitJobs[484] = "WOS_UTB_Init_484_FrostnovaQ_ID"
+        set UTB_InitJobs[485] = "WOS_UTB_Init_485_FrostnovaW_ID"
+        set UTB_InitJobs[486] = "WOS_UTB_Init_486_FrostnovaE_ID"
+        set UTB_InitJobs[487] = "WOS_UTB_Init_487_FrostnovaR_ID"
+        set UTB_InitJobs[488] = "WOS_UTB_Init_488_FrostnovaT_ID"
+        set UTB_InitJobs[489] = "WOS_UTB_Init_489_FrostnovaF_ID"
+        set UTB_InitJobs[490] = "WOS_UTB_Init_490_Frostnova"
+        set UTB_InitJobCount = 490
         set UTB_InitJobIndex = 1
     endfunction
 

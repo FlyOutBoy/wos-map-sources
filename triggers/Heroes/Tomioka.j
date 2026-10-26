@@ -257,6 +257,7 @@ library TomiokaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TomiokaW_KS
         private static integer array m_TomiokaW
         private static integer MUI_TomiokaW = -1
@@ -400,6 +401,7 @@ library TomiokaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TomiokaE_KS
         private static integer array m_TomiokaE
         private static integer MUI_TomiokaE = -1
@@ -710,6 +712,7 @@ library TomiokaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TomiokaT_KS
         private static integer array m_TomiokaT
         private static integer MUI_TomiokaT = -1

@@ -3727,6 +3727,29 @@ else
             endloop
         endmethod
 
+        // Timed spell icons share the existing buff clock; recasts reuse their slot.
+        public static method SetDuration takes unit caster, real duration, string icon, integer slot returns nothing
+            local integer i = 0
+            local thistype this
+            loop
+                exitwhen i > MUI_28
+                set this = m_28[i]
+                if c == caster and k3 == slot and check2 == 1 then
+                    set r = 0.0
+                    set rmax = RMaxBJ(0.0, duration)
+                    call WUI_FrameSetMinMaxValue(frame0_pas3[k2], 0.0, RMaxBJ(0.01, rmax))
+                    call WUI_FrameSetValue(frame0_pas3[k2], 0.0)
+                    call BlzFrameSetText(frame0_pas4[k2], R2SW(rmax, 0, 1))
+                    call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\"+icon+".blp", 0, false)
+                    return
+                endif
+                set i = i + 1
+            endloop
+            if duration > 0.0 then
+                call thistype.MyBuffTime_Start(caster, 0, duration, icon, false, -1, 1, 0, slot)
+            endif
+        endmethod
+
         public static method MyBuffTime_Start takes unit NewC,integer NewId, real NewRmax, string NewS,boolean NewPauseCount, integer NewPlayerId, integer IgnoreBuff, integer NewSh, integer count  returns nothing
             local thistype this = thistype.create()
             local real tmp_x = 0
@@ -4744,6 +4767,9 @@ endfunction
     function MyFrame takes unit c,real rmax, string icon_path, boolean pauseunitcount,integer numberframe returns nothing
         call KS_BuffTimer.MyBuffTime_Start(c,0,rmax,icon_path,pauseunitcount,-1,1,0,numberframe)
     endfunction
+    function MyFrameTimed takes unit c, real duration, string icon, integer slot returns nothing
+        call KS_BuffTimer.SetDuration(c, duration, icon, slot)
+    endfunction
     function MyFrameBuff takes unit c,integer buff_id,real rmax, string icon_path, boolean pauseunitcount returns nothing
         call KS_BuffTimer.MyBuffTime_Start(c,buff_id,rmax,icon_path,pauseunitcount,-1,0,0,0)
     endfunction
@@ -4852,6 +4878,11 @@ endfunction
             set m = m * 0.60
         endif
         set m = m * (1.00 - GetHellBlazeCut(u))
+        static if LIBRARY_FrostnovaSpells then
+            if GetUnitAbilityLevel(u, FrostnovaE_HealCutBuffID) > 0 then
+                set m = m * (1.0-FrostnovaE_HealCut)
+            endif
+        endif
         return m
     endfunction
     function GetHealMultiplier takes unit u returns real

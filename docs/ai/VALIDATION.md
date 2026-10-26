@@ -38,6 +38,14 @@ compiled ↔ source parity перед заменой сценарного скр
 `3. Проект → карта — сохранить ВСЁ и собрать без запуска`.
 Они вызывают `tools/wos_map_workflow.py receive/build --target Test|Main`.
 Для сборки без игры добавляется `--no-launch`. `Ctrl+Shift+B` — TEST: 3.
+Готовый герой из активного TEST переносится и собирается одной задачей
+`HERO: TEST → MAIN — перенести код героя и собрать карту` или
+`python tools/hero_transfer.py --active-test-hero --build-main`.
+Параметры переноса запоминаются по герою в локальном `heroTransferProfiles`;
+MAIN объекты/импорты не подменяются TEST-данными. Видимость героя всем игрокам —
+`WOS_EnableTestHero` в BuildsForChars.j; `WOS_TestHeroId` обновляется задачей.
+Dry-run не пишет и не собирает. При сбое MAIN build завершённый перенос проекта
+и его backup сохраняются; устрани причину и повтори задачу.
 Объекты, J и WCT/WTG сохраняются перед каждой основной сборкой;
 TEST использует `check-save --no-build`, затем один вызов build/run.
 MAIN parity остаётся обязательной. Import MAIN проверяет оба набора до замены,
@@ -50,6 +58,34 @@ live source roots и сохраняет порядок включённых MAIN
 trigger-settings.json: старые plain JASS ссылки не описаны в library-зависимостях.
 Бэкапы и TEST-снимки не являются провайдерами MAIN.
 TEST по умолчанию использует стандартный UI (`testNativeUI: true`).
+Автовыбор героя отключён при LIBRARY_WOSTestMinimalRuntime для облегчённого TEST: ни настройка
+из сейва, ни обработчик урона не должны менять выделение. MAIN сохраняет опцию, в том числе при TestMode;
+периодический выбор и DmgSys обязаны проверять WUI_AutoSelectHero. Проверки —
+`test_auto_select_policy.py` и выборочные случаи `test_followup_033c.py`.
+С 2026-10-21 `testMinimalRuntime: true` также является дефолтом каждого профиля:
+сборка подавляет общие tooltip jobs/poller, прочих героев/предметы, музыку,
+TOC/прогрузку и лишние InitTrig, сохраняя ядро боя и выбранного героя.
+Проверки: `test_test_map_runtime.py`, `test_test_map_profile.py`, TEST check-save.
+TooltipBuilder/UniversalTooltips/WOSUI исключаются из closure и помечаются
+выключенными в WTG. Generated MinimalUI оставляет пустые API для совместимости;
+проверять packed WTG flags и отсутствие bootstrap/tooltip jobs в war3map.j.
+Генерируемые guards обратимы при импорте; оригиналы MAIN не переписываются.
+Minimal CastCheck подписывается на SPELL_EFFECT напрямую: обычный LvlUpCheck
+отключён. Escape использует generated TestHero_Reset с адресным сбросом КД и
+зарядов; старый UnitResetCooldown не вызывается. Проверять эти пути также в
+упакованном war3map.j, поскольку компиляция не подтверждает регистрацию событий
+и не доказывает устранение зависания в движке.
+Обычная TEST-сборка не пишет war3map.imp и импортированные файлы вообще.
+Default MPQ Update меняет только нативные объекты/триггеры; ассеты — отдельная
+явно разрешённая операция с NamesFile. Проверка — test_test_map_imports.py.
+Если для новых ассетов не хватает MPQ hash slots, Pack -NamesFile пересобирает
+архив с увеличенной ёмкостью: список берётся из сохранённой карты плюс явно
+добавляемые файлы. Сначала извлечь все исходные payloads в свежую папку и
+проверить их хеши; даже opaque-файлы должны сохраниться. Сканировать старый
+unpacked cache для такой пересборки нельзя.
+Перед object save перечитываются только native objects/WTS сохранённого архива,
+чтобы lossless merge не пропустил изменения World Editor из-за старого cache.
+
 
 Процедура с ожидаемыми результатами уже находится в
 [общем wos-sync](../../.claude/skills/wos-sync/SKILL.md), доступном Codex через
@@ -60,9 +96,12 @@ TEST по умолчанию использует стандартный UI (`te
 - MAIN `save` пишет объекты и триггеры, но сам не запускает MAIN-сборку.
 - TEST `check-save` пишет данные, затем собирает выбранную карту без игры;
   сборка также обновляет выбранный архив героя с бэкапом.
-  TEST build также устанавливает `assets/ReplaceableTextures`/`assets/effects`
-  через `install_project_assets.py`; `war3map.imp` и staged-ассеты входят в архив.
-  Проверять новые импорты нужно в готовом `.w3x`, а не только в `unpacked`.
+  Имя `<testHero> — TEST` записывается в W3I, generated SetMapName и имеющийся
+  заголовок лобби; остальные W3I/WTS данные сохраняются. Проверка формата —
+  `test_test_map_identity.py`, итоговое имя проверять в собранном архиве.
+  Импорты TEST принадлежат сохранённому архиву: автоматически не копировать
+  `assets/` и cached war3map.imp. Новые импорты добавлять отдельно по запросу,
+  затем проверять их хэши и пути в готовом `.w3x`.
 - MAIN-сборка без игры:
   `powershell -NoProfile -ExecutionPolicy Bypass -File .vscode/build-run-w3-map.ps1 -Target Main -NoLaunch`.
   `-NoLaunch` исключает запуск игры, но не запись карты/ресурсов/артефактов.

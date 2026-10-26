@@ -48,6 +48,19 @@ class TestSourceStaging(unittest.TestCase):
             self.assertEqual([],sources.read_json(output/"dependency-manifest.json")["unresolved_required"])
             self.assertEqual(before,{p:p.read_bytes() for p in main.glob("*.j")})
 
+            # Switching to minimal mode must also disable earlier closure entries
+            # and materialize a disabled WOSUI snapshot absent from the base profile.
+            (main/'WOSUI.j').write_text('library WOSUI\nendlibrary\n')
+            report.write_text(json.dumps({'resolvedSources':[str(output/'Systems_Copy.j')],
+                'disabledSources':[str(main/n) for n in ['TooltipBuilder.j','UniversalTooltips.j','WOSUI.j']]}))
+            minimal = sources.include_resolved(root,output,report)
+            self.assertEqual(minimal,sources.include_resolved(root,output,report))
+            self.assertEqual([str(output/'Systems_Copy.j')],minimal['resolvedSources'])
+            settings=sources.read_json(output/'trigger-settings.json')['triggers']
+            for name in ['TooltipBuilder.j','UniversalTooltips.j','WOSUI.j']:
+                self.assertFalse(settings[name])
+                self.assertEqual((main/name).read_bytes(),(output/name).read_bytes())
+
     def test_shared_freshness_override_and_removed_source(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -101,6 +114,7 @@ class ValidateBeforeSave(unittest.TestCase):
             return callback
         with patch("sys.argv", ["sync", "--config", str(config), "check-save"] + (["--no-build"] if no_build else [])), \
              patch.object(profile, "ensure", return_value={"buildDir": "_build"}), \
+             patch.object(profile, "refresh_objects", side_effect=mark("native-refresh")), \
              patch.object(profile, "powershell", side_effect=mark("test-build")), \
              patch.object(project.objects, "load_config", return_value=(Path("map"),) * 5), \
              patch.object(project.objects, "check_workspace", side_effect=mark("object-check")), \
@@ -116,7 +130,7 @@ class ValidateBeforeSave(unittest.TestCase):
         self.assertEqual((0, ["object-check", "trigger-check", "object-save", "trigger-save"]), self.run_wrapper())
 
     def test_test_save_can_defer_build_to_combined_launcher(self):
-        saved = ["object-check", "trigger-check", "object-save", "trigger-save"]
+        saved = ["native-refresh", "object-check", "trigger-check", "object-save", "trigger-save"]
         self.assertEqual((0, saved), self.run_wrapper(test_profile=True, no_build=True))
         self.assertEqual((0, saved + ["test-build"]), self.run_wrapper(test_profile=True))
 

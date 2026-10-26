@@ -1,0 +1,167 @@
+{
+  "Icon": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img00.png",
+    "frame": 0,
+    "crop_pixels": [
+      248,
+      0,
+      480,
+      254
+    ]
+  },
+  "Q": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img01.gif",
+    "frame": 46,
+    "crop_pixels": [
+      192,
+      0,
+      550,
+      360
+    ]
+  },
+  "W": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img02.gif",
+    "frame": 24,
+    "crop_pixels": [
+      76,
+      0,
+      243,
+      170
+    ]
+  },
+  "E": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img05.gif",
+    "frame": 38,
+    "crop_pixels": [
+      68,
+      0,
+      240,
+      174
+    ]
+  },
+  "R": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img04.gif",
+    "frame": 144,
+    "crop_pixels": [
+      67,
+      0,
+      238,
+      172
+    ]
+  },
+  "T": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img09.gif",
+    "frame": 48,
+    "crop_pixels": [
+      70,
+      0,
+      246,
+      178
+    ]
+  },
+  "F": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img07.gif",
+    "frame": 162,
+    "crop_pixels": [
+      92,
+      0,
+      265,
+      174
+    ]
+  },
+  "G": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img01.gif",
+    "frame": 13,
+    "crop_pixels": [
+      141,
+      0,
+      499,
+      360
+    ]
+  },
+  "SQ": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img05.gif",
+    "frame": 66,
+    "crop_pixels": [
+      92,
+      0,
+      265,
+      174
+    ]
+  },
+  "SW": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img05.gif",
+    "frame": 0,
+    "crop_pixels": [
+      0,
+      0,
+      172,
+      174
+    ]
+  },
+  "SE": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img06.gif",
+    "frame": 19,
+    "crop_pixels": [
+      141,
+      0,
+      499,
+      356
+    ]
+  },
+  "SR": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img05.gif",
+    "frame": 28,
+    "crop_pixels": [
+      68,
+      0,
+      240,
+      174
+    ]
+  },
+  "ST": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img03.gif",
+    "frame": 113,
+    "crop_pixels": [
+      136,
+      17,
+      308,
+      174
+    ]
+  },
+  "SF": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img03.gif",
+    "frame": 102,
+    "crop_pixels": [
+      92,
+      17,
+      265,
+      174
+    ]
+  },
+  "SG": {
+    "document": "https://docs.google.com/document/d/1Br-1wiwCY5iTqmFx5Wnyy8dhQRFSd0Cz4Cfxu-x6FFU",
+    "image": "img08.gif",
+    "frame": 16,
+    "crop_pixels": [
+      74,
+      0,
+      216,
+      139
+    ]
+  }
+}

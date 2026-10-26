@@ -1,5 +1,5 @@
-// Main.vj - complete MAIN map source based on reference-full
-// World Editor initialization comes from reference-full/war3map.j.
+// Main.vj - complete MAIN map source based on Anime_WOS2_0.32.w3x
+// World Editor initialization comes from Anime_WOS2_0.32.w3x/war3map.j.
 // Current external files under triggers are the source of truth.
 
 // BEGIN AUTO TRIGGER IMPORTS
@@ -118,7 +118,7 @@
 // END AUTO TRIGGER IMPORTS
 
 globals
-    // World Editor generated handles from reference-full
+    // World Editor generated handles from Anime_WOS2_0.32.w3x
 rect gg_rct_Caster= null
 rect gg_rct_Base= null
 rect gg_rct_Test= null
@@ -204,6 +204,12 @@ trigger gg_trg_BuildsForChars= null
 trigger gg_trg_TestUnit= null
 trigger gg_trg_WoS_Hero_Icons_Init= null
 trigger gg_trg_Leave= null
+trigger gg_trg_TeamMapPings= null
+trigger gg_trg_WOSUI= null
+trigger gg_trg_ArenaMinimap= null
+trigger gg_trg_AbilityRangePreview= null
+trigger gg_trg_MatchVotes= null
+trigger gg_trg_DamageStats= null
 trigger gg_trg_RoundEnd= null
 trigger gg_trg_CastAItems= null
 trigger gg_trg_TasBox= null
@@ -287,6 +293,7 @@ trigger gg_trg_ErzaG2_Fairy= null
 trigger gg_trg_ErzaBase= null
 trigger gg_trg_Milim= null
 trigger gg_trg_Crocodile= null
+trigger gg_trg_Frostnova= null
 endglobals
 
 //   Warcraft III map script
@@ -343,72 +350,72 @@ function InitSounds takes nothing returns nothing
     call SetSoundDuration(gg_snd_Error, 614)
     call SetSoundVolume(gg_snd_Error, 127)
     set gg_snd_Hero_Raiden_W_1=CreateSound("war3mapImported/Hero_Raiden_W_1.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Raiden_W_1, 1728)
+    call SetSoundDuration(gg_snd_Hero_Raiden_W_1, 1704)
     call SetSoundChannel(gg_snd_Hero_Raiden_W_1, 0)
     call SetSoundVolume(gg_snd_Hero_Raiden_W_1, 127)
     call SetSoundPitch(gg_snd_Hero_Raiden_W_1, 1.0)
     set gg_snd_Hero_Raiden_T_Atk1=CreateSound("war3mapImported/Hero_Raiden_T_Atk1.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk1, 1200)
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk1, 1176)
     call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk1, 0)
     call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk1, 127)
     call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk1, 1.0)
     set gg_snd_Hero_Raiden_T_Atk2=CreateSound("war3mapImported/Hero_Raiden_T_Atk2.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk2, 1680)
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk2, 1656)
     call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk2, 0)
     call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk2, 127)
     call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk2, 1.0)
     set gg_snd_Hero_Raiden_T_Atk3=CreateSound("war3mapImported/Hero_Raiden_T_Atk3.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk3, 1008)
+    call SetSoundDuration(gg_snd_Hero_Raiden_T_Atk3, 984)
     call SetSoundChannel(gg_snd_Hero_Raiden_T_Atk3, 0)
     call SetSoundVolume(gg_snd_Hero_Raiden_T_Atk3, 127)
     call SetSoundPitch(gg_snd_Hero_Raiden_T_Atk3, 1.0)
     set gg_snd_wos_shopenter=CreateSound("war3mapImported/wos_shopenter.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_wos_shopenter, 2424)
+    call SetSoundDuration(gg_snd_wos_shopenter, 2412)
     call SetSoundChannel(gg_snd_wos_shopenter, 0)
     call SetSoundVolume(gg_snd_wos_shopenter, 127)
     call SetSoundPitch(gg_snd_wos_shopenter, 1.0)
     set gg_snd_SadTrombone=CreateSound("Shop/SadTrombone.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_SadTrombone, 3264)
+    call SetSoundDuration(gg_snd_SadTrombone, 3216)
     call SetSoundChannel(gg_snd_SadTrombone, 0)
     call SetSoundVolume(gg_snd_SadTrombone, 127)
     call SetSoundPitch(gg_snd_SadTrombone, 1.0)
     set gg_snd_Loose=CreateSound("Game/Loose.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Loose, 60504)
+    call SetSoundDuration(gg_snd_Loose, 60480)
     call SetSoundChannel(gg_snd_Loose, 0)
     call SetSoundVolume(gg_snd_Loose, 127)
     call SetSoundPitch(gg_snd_Loose, 1.0)
     set gg_snd_Win=CreateSound("Game/Win.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Win, 66144)
+    call SetSoundDuration(gg_snd_Win, 66120)
     call SetSoundChannel(gg_snd_Win, 0)
     call SetSoundVolume(gg_snd_Win, 127)
     call SetSoundPitch(gg_snd_Win, 1.0)
     set gg_snd_Hero_Natsu_G=CreateSound("war3mapImported/Hero_Natsu_G.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Natsu_G, 3672)
+    call SetSoundDuration(gg_snd_Hero_Natsu_G, 3648)
     call SetSoundChannel(gg_snd_Hero_Natsu_G, 0)
     call SetSoundVolume(gg_snd_Hero_Natsu_G, 127)
     call SetSoundPitch(gg_snd_Hero_Natsu_G, 1.0)
     set gg_snd_Hero_Natsu_GQ0=CreateSound("war3mapImported/Hero_Natsu_GQ0.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Natsu_GQ0, 2832)
+    call SetSoundDuration(gg_snd_Hero_Natsu_GQ0, 2808)
     call SetSoundChannel(gg_snd_Hero_Natsu_GQ0, 0)
     call SetSoundVolume(gg_snd_Hero_Natsu_GQ0, 127)
     call SetSoundPitch(gg_snd_Hero_Natsu_GQ0, 1.0)
     set gg_snd_Round_Sukuna=CreateSound("war3mapImported/Round_Sukuna.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Round_Sukuna, 58512)
+    call SetSoundDuration(gg_snd_Round_Sukuna, 58488)
     call SetSoundChannel(gg_snd_Round_Sukuna, 0)
     call SetSoundVolume(gg_snd_Round_Sukuna, 127)
     call SetSoundPitch(gg_snd_Round_Sukuna, 1.0)
     set gg_snd_Hero_Erza6_G1=CreateSound("war3mapImported/Hero_Erza6_G1.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Erza6_G1, 1896)
+    call SetSoundDuration(gg_snd_Hero_Erza6_G1, 1872)
     call SetSoundChannel(gg_snd_Hero_Erza6_G1, 0)
     call SetSoundVolume(gg_snd_Hero_Erza6_G1, 127)
     call SetSoundPitch(gg_snd_Hero_Erza6_G1, 1.0)
     set gg_snd_Hero_Erza7_G2=CreateSound("war3mapImported/Hero_Erza7_G2.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Erza7_G2, 2016)
+    call SetSoundDuration(gg_snd_Hero_Erza7_G2, 1992)
     call SetSoundChannel(gg_snd_Hero_Erza7_G2, 0)
     call SetSoundVolume(gg_snd_Hero_Erza7_G2, 127)
     call SetSoundPitch(gg_snd_Hero_Erza7_G2, 1.0)
     set gg_snd_Hero_Kyoraku_T6=CreateSound("war3mapImported/Hero_Kyoraku_T6.mp3", false, false, false, 1, 1, "SpellsEAX")
-    call SetSoundDuration(gg_snd_Hero_Kyoraku_T6, 8832)
+    call SetSoundDuration(gg_snd_Hero_Kyoraku_T6, 8808)
     call SetSoundChannel(gg_snd_Hero_Kyoraku_T6, 0)
     call SetSoundVolume(gg_snd_Hero_Kyoraku_T6, 127)
     call SetSoundPitch(gg_snd_Hero_Kyoraku_T6, 1.0)
@@ -418,17 +425,17 @@ function InitSounds takes nothing returns nothing
     call SetSoundVolume(gg_snd_Hero_Kyoraku_T14, 127)
     call SetSoundPitch(gg_snd_Hero_Kyoraku_T14, 1.0)
     set gg_snd_Hero_Inori_W_2=CreateSound("war3mapImported/Hero_Inori_W 2.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Inori_W_2, 7416)
+    call SetSoundDuration(gg_snd_Hero_Inori_W_2, 7392)
     call SetSoundChannel(gg_snd_Hero_Inori_W_2, 0)
     call SetSoundVolume(gg_snd_Hero_Inori_W_2, 127)
     call SetSoundPitch(gg_snd_Hero_Inori_W_2, 1.0)
     set gg_snd_Hero_Inori_R=CreateSound("war3mapImported/Hero_Inori_R.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Inori_R, 21792)
+    call SetSoundDuration(gg_snd_Hero_Inori_R, 21768)
     call SetSoundChannel(gg_snd_Hero_Inori_R, 0)
     call SetSoundVolume(gg_snd_Hero_Inori_R, 127)
     call SetSoundPitch(gg_snd_Hero_Inori_R, 1.0)
     set gg_snd_Hero_Kyoraku_T14__2=CreateSound("war3mapImported/Hero_Kyoraku_T14 _2.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Kyoraku_T14__2, 19200)
+    call SetSoundDuration(gg_snd_Hero_Kyoraku_T14__2, 19128)
     call SetSoundChannel(gg_snd_Hero_Kyoraku_T14__2, 0)
     call SetSoundVolume(gg_snd_Hero_Kyoraku_T14__2, 127)
     call SetSoundPitch(gg_snd_Hero_Kyoraku_T14__2, 1.0)
@@ -450,12 +457,12 @@ function InitSounds takes nothing returns nothing
     call SetSoundChannel(gg_snd_BattleNetTick, 0)
     call SetSoundVolume(gg_snd_BattleNetTick, 127)
     set gg_snd_Hero_Laxus_T=CreateSound("war3mapImported/Hero_Laxus_T.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Laxus_T, 4824)
+    call SetSoundDuration(gg_snd_Hero_Laxus_T, 4800)
     call SetSoundChannel(gg_snd_Hero_Laxus_T, 0)
     call SetSoundVolume(gg_snd_Hero_Laxus_T, 127)
     call SetSoundPitch(gg_snd_Hero_Laxus_T, 1.0)
     set gg_snd_Hero_Ainz_F=CreateSound("war3mapImported/Hero_Ainz_F.mp3", false, false, false, 0, 0, "DefaultEAXON")
-    call SetSoundDuration(gg_snd_Hero_Ainz_F, 9432)
+    call SetSoundDuration(gg_snd_Hero_Ainz_F, 9408)
     call SetSoundChannel(gg_snd_Hero_Ainz_F, 0)
     call SetSoundVolume(gg_snd_Hero_Ainz_F, 127)
     call SetSoundPitch(gg_snd_Hero_Ainz_F, 1.0)
@@ -508,6 +515,7 @@ endfunction
 //*  Custom Script Code
 //*
 //***************************************************************************
+
 //***************************************************************************
 //*
 //*  Triggers
@@ -537,6 +545,12 @@ function InitCustomTriggers takes nothing returns nothing
     call InitTrig_TestUnit()
     //Function not found: call InitTrig_WoS_Hero_Icons_Init()
     call InitTrig_Leave()
+    //Function not found: call InitTrig_TeamMapPings()
+    //Function not found: call InitTrig_WOSUI()
+    //Function not found: call InitTrig_ArenaMinimap()
+    //Function not found: call InitTrig_AbilityRangePreview()
+    //Function not found: call InitTrig_MatchVotes()
+    //Function not found: call InitTrig_DamageStats()
     //Function not found: call InitTrig_RoundEnd()
     //Function not found: call InitTrig_CastAItems()
     //Function not found: call InitTrig_TasBox()
@@ -620,6 +634,7 @@ function InitCustomTriggers takes nothing returns nothing
     //Function not found: call InitTrig_ErzaBase()
     //Function not found: call InitTrig_Milim()
     //Function not found: call InitTrig_Crocodile()
+    //Function not found: call InitTrig_Frostnova()
 endfunction
 
 //===========================================================================
@@ -1208,8 +1223,6 @@ function main takes nothing returns nothing
     call InitSounds()
     call CreateRegions()
     call InitBlizzard()
-
-
 
 
     call InitGlobals()

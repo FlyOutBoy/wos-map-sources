@@ -24,7 +24,7 @@
         },
         {
             "label": "TEST: 2. Проект → карта — сохранить ВСЁ, собрать и ЗАПУСТИТЬ",
-            "detail": "Одна задача: проверяет JSON/J, сохраняет объекты + WCT/WTG, компилирует, импортирует ассеты и собирает Heroes/<testHero>.w3x. Перед запуском закройте World Editor без сохранения.",
+            "detail": "Одна задача: проверяет JSON/J, сохраняет объекты + WCT/WTG, компилирует, импортирует ассеты и собирает Heroes/<testHero>.w3x. Перед запуском закройте World Editor без сохранения. По умолчанию облегчённый TEST: стандартный UI, без музыки, общей прогрузки и автозапуска остальных героев.",
             "type": "process",
             "command": "python",
             "args": [
@@ -45,7 +45,7 @@
         },
         {
             "label": "TEST: 3. Проект → карта — сохранить ВСЁ и собрать без запуска",
-            "detail": "Одна задача: проверяет JSON/J, сохраняет объекты + WCT/WTG, компилирует, импортирует ассеты и собирает Heroes/<testHero>.w3x. Перед запуском закройте World Editor без сохранения.",
+            "detail": "Одна задача: проверяет JSON/J, сохраняет объекты + WCT/WTG, компилирует, импортирует ассеты и собирает Heroes/<testHero>.w3x. Перед запуском закройте World Editor без сохранения. По умолчанию облегчённый TEST: стандартный UI, без музыки, общей прогрузки и автозапуска остальных героев.",
             "type": "process",
             "command": "python",
             "args": [
@@ -129,6 +129,27 @@
             "presentation": {
                 "reveal": "always",
                 "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "HERO: TEST → MAIN — перенести код героя и собрать карту",
+            "detail": "Берёт выбранного testHero и его TEST J. Первый раз спрашивает раздел, сложность, предметы и ник покупателя; затем помнит ответы. Обновляет регистрацию и BanImmuneHero1/приоритет пика, сохраняет MAIN JSON + WCT/WTG и собирает без запуска. Видимость всем: WOS_EnableTestHero в BuildsForChars.j. Объекты и импорты MAIN не заменяет данными TEST. Закройте World Editor перед сборкой.",
+            "type": "process",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}\\tools\\hero_transfer.py",
+                "--active-test-hero",
+                "--build-main"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "focus": true,
                 "clear": true
             },
             "problemMatcher": []
@@ -377,7 +398,7 @@
         },
         {
             "label": "COMMON | Герой: Перенести открытый J из TEST в MAIN (Hero Transfer)",
-            "detail": "Выберите J героя в редакторе. Интерактивный перенос героя и зависимостей в MAIN.",
+            "detail": "Выберите J героя. Переносит код и регистрацию в MAIN, заменяет нового героя в BanImmuneHero1, спрашивает ник покупателя и обновляет приоритетный пик рядом с ThunderGear.",
             "type": "process",
             "command": "python",
             "args": [

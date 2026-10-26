@@ -574,6 +574,7 @@ library NatsuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NatsuE_KS
         private static integer array m_NatsuE
         private static integer MUI_NatsuE = -1
@@ -804,6 +805,7 @@ library NatsuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NatsuR_KS
         private static integer array m_NatsuR
         private static integer MUI_NatsuR = -1
@@ -1303,6 +1305,7 @@ library NatsuSpells uses GearSystems
                     call BlzSetAbilityIcon(NatsuR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_R.blp")
                     call BlzSetAbilityIcon(NatsuT_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_T.blp")
                     call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 0)
+                    call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                     call EUTU2_3(e, 0.3, 0, c)
                     call DestroyEffect(e2)
                     call DestroyEffect(e3)
@@ -1336,6 +1339,7 @@ library NatsuSpells uses GearSystems
             set e2 = EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 1, 0.35, 0.5, 15)
             set e3 = EffectSpawn("war3mapImported\\wos_lb_hg2-E12B5.mdl", x, y, 90, 0.35, 0.4, 125)
             call SaveInteger(hs, GetHandleId(c), SH_MODE_G, 1)
+            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
             call BlzSetAbilityIcon(Natsu_ID,"ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_Icon2.blp")
             call BlzSetAbilityIcon(NatsuQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GQ.blp")
             call BlzSetAbilityIcon(NatsuW_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Natsu_GW.blp")
@@ -1428,6 +1432,7 @@ library NatsuSpells uses GearSystems
                     set u = null
                     if r == 2.8 and k2 == 1 then
                         call SaveInteger(hs, GetHandleId(c), SH_REV_Q, 1)
+                        call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                         call MyFlush(GetHandleId(c), SH_REV_Q, 0, 5)
                         call WUI_HeroDuration(c, NatsuQ_ID, "Raienryuu no Hoko", 5.00, 0, "rev q", c)
                     endif
@@ -1603,6 +1608,7 @@ library NatsuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NatsuFR_KS
         private static integer array m_NatsuFR
         private static integer MUI_NatsuFR = -1
@@ -1915,6 +1921,7 @@ library NatsuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NatsuFT_KS
         private static integer array m_NatsuFT
         private static integer MUI_NatsuFT = -1

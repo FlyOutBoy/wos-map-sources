@@ -372,8 +372,35 @@ library ItemsSpells uses GearSystems
         integer AshisogiJizo_Curse_ID = 'A110'
         integer AshisogiJizo_Buff_ID = 'B041'
         real AshisogiJizo_MinDmg = 100
-        real AshisogiJizo_DamageAgi = 0.4 // x agi physical damage per tick
-        real AshisogiJizo_Duration = 5 // ticks, one per second
+        real AshisogiJizo_DamageAgi = 0.5 // x agi physical damage per tick
+        real AshisogiJizo_Duration = 5 // sec: native curse A110 duration (buff B041), refreshed per hit
+//----------------------Core Drill (Gurren Lagann)----------------------------------------------
+        // Ability damage of a type grants a stack of that type; each stack: +5% damage of the same type.
+        integer CoreDrill_ID = 'I04E'
+        real CoreDrill_BonusPerStack = 5 // % per stack
+        integer CoreDrill_MaxStacks = 5
+        real CoreDrill_Duration = 4 // sec, refreshed by each new stack
+        // Synced game clock for stack expiry; started on the first stack.
+        timer CoreDrill_Clock = CreateTimer()
+        boolean CoreDrill_ClockStarted = false
+        integer SH_CORE_DRILL_PHYS = StringHash("core drill phys")
+        integer SH_CORE_DRILL_PHYS_END = StringHash("core drill phys end")
+        integer SH_CORE_DRILL_MAG = StringHash("core drill mag")
+        integer SH_CORE_DRILL_MAG_END = StringHash("core drill mag end")
+        // Last shown buff level / last dummy cast per type: repeated hits within
+        // CoreDrill_RecastGap at the same level do not recast the visual buff.
+        integer SH_CORE_DRILL_PHYS_SHOWN = StringHash("core drill phys shown")
+        integer SH_CORE_DRILL_PHYS_CAST = StringHash("core drill phys cast")
+        integer SH_CORE_DRILL_MAG_SHOWN = StringHash("core drill mag shown")
+        integer SH_CORE_DRILL_MAG_CAST = StringHash("core drill mag cast")
+        real CoreDrill_RecastGap = 0.25
+        // Visible stacks: a dummy casts an Inner Fire copy (zero bonuses) whose level picks the buff.
+        integer CoreDrill_PhysAbi = 'A12C' // buffs B04D..B051 = 1..5 stacks
+        integer CoreDrill_MagAbi = 'A12D'  // buffs B052..B056 = 1..5 stacks
+        // One permanent dummy per player. Both copies share the "innerfire" order,
+        // so it holds only the type it casts now (swapped on a type change).
+        unit array CoreDrill_Dummy // [pid]
+        integer array CoreDrill_DummyAbi // ability currently on CoreDrill_Dummy[pid]
 //----------------------Rhitta strength stacks----------------------------------------------
         integer array Rhitta_Str_ID // [1..7] +5 str each
         integer Rhitta_StrMaxStacks = 7
@@ -915,6 +942,101 @@ library ItemsSpells uses GearSystems
         endloop
         call DestroyGroup(g)
         set g = null
+    endfunction
+
+    function CoreDrill_Buff takes integer typedmg, integer level returns integer
+        if typedmg == 1 then
+            if level == 1 then
+                return 'B052'
+            elseif level == 2 then
+                return 'B053'
+            elseif level == 3 then
+                return 'B054'
+            elseif level == 4 then
+                return 'B055'
+            endif
+            return 'B056'
+        endif
+        if level == 1 then
+            return 'B04D'
+        elseif level == 2 then
+            return 'B04E'
+        elseif level == 3 then
+            return 'B04F'
+        elseif level == 4 then
+            return 'B050'
+        endif
+        return 'B051'
+    endfunction
+
+    // Shows the current stack count of one type on the holder; the previously shown
+    // level's buff is removed first, so only one icon per type remains. Multi-hit
+    // abilities do not recast it on every hit: same level within the gap is skipped
+    // (the visual buff still has >= Duration - Gap left; stacks live in hs anyway).
+    private function CoreDrill_ShowBuff takes unit c, integer typedmg, integer stacks, real now returns nothing
+        local integer h = GetHandleId(c)
+        local integer pid = GetPlayerId(GetOwningPlayer(c))
+        local integer abi = CoreDrill_PhysAbi
+        local unit d
+        local integer shownKey = SH_CORE_DRILL_PHYS_SHOWN
+        local integer castKey = SH_CORE_DRILL_PHYS_CAST
+        local integer shown
+        if typedmg == 1 then
+            set abi = CoreDrill_MagAbi
+            set shownKey = SH_CORE_DRILL_MAG_SHOWN
+            set castKey = SH_CORE_DRILL_MAG_CAST
+        endif
+        set shown = LoadInteger(hs, h, shownKey)
+        if shown == stacks and HaveSavedReal(hs, h, castKey) and now - LoadReal(hs, h, castKey) < CoreDrill_RecastGap then
+            return
+        endif
+        if shown != 0 and shown != stacks then
+            call UnitRemoveAbility(c, CoreDrill_Buff(typedmg, shown))
+        endif
+        call SaveInteger(hs, h, shownKey, stacks)
+        call SaveReal(hs, h, castKey, now)
+        if CoreDrill_Dummy[pid] == null or GetUnitTypeId(CoreDrill_Dummy[pid]) == 0 or GetWidgetLife(CoreDrill_Dummy[pid]) < 1 then
+            set CoreDrill_Dummy[pid] = CreateUnit(Player(pid), 'h0C9', GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 0)
+            set CoreDrill_DummyAbi[pid] = 0
+        endif
+        set d = CoreDrill_Dummy[pid]
+        if CoreDrill_DummyAbi[pid] != abi then
+            if CoreDrill_DummyAbi[pid] != 0 then
+                call UnitRemoveAbility(d, CoreDrill_DummyAbi[pid])
+            endif
+            call UnitAddAbility(d, abi)
+            set CoreDrill_DummyAbi[pid] = abi
+        endif
+        call SetUnitAbilityLevel(d, abi, stacks)
+        call SetUnitFacing(d, GAngle(d, c) * bj_RADTODEG)
+        call IssueTargetOrder(d, "innerfire", c)
+        set d = null
+    endfunction
+
+    // Core Drill: physical (2) or magic (1) ability damage adds a stack of that type.
+    // Expired stacks restart at 1; each new stack refreshes the duration of its type.
+    function CoreDrill_AddStack takes unit c, integer typedmg returns nothing
+        local integer h = GetHandleId(c)
+        local integer stacksKey = SH_CORE_DRILL_PHYS
+        local integer endKey = SH_CORE_DRILL_PHYS_END
+        local integer stacks = 0
+        local real now
+        if not CoreDrill_ClockStarted then
+            set CoreDrill_ClockStarted = true
+            call TimerStart(CoreDrill_Clock, 1000000.0, false, null)
+        endif
+        set now = TimerGetElapsed(CoreDrill_Clock)
+        if typedmg == 1 then
+            set stacksKey = SH_CORE_DRILL_MAG
+            set endKey = SH_CORE_DRILL_MAG_END
+        endif
+        if now < LoadReal(hs, h, endKey) then
+            set stacks = LoadInteger(hs, h, stacksKey)
+        endif
+        set stacks = IMinBJ(CoreDrill_MaxStacks, stacks + 1)
+        call SaveInteger(hs, h, stacksKey, stacks)
+        call SaveReal(hs, h, endKey, now + CoreDrill_Duration)
+        call CoreDrill_ShowBuff(c, typedmg, stacks, now)
     endfunction
 
     function RhittaStr_Add takes unit c, integer hits returns nothing

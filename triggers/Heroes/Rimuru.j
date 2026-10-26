@@ -492,6 +492,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct RimuruE_KS
         private static integer array m_RimuruE
         private static integer MUI_RimuruE = -1
@@ -832,6 +833,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct RimuruR_KS
         private static integer array m_RimuruR
         private static integer MUI_RimuruR = -1
@@ -1145,6 +1147,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct Rimuru2Q_KS
         private static integer array m_Rimuru2Q
         private static integer MUI_Rimuru2Q = -1
@@ -3004,6 +3007,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
     endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct Rimuru3R_KS
         private static integer array m_Rimuru3R
         private static integer MUI_Rimuru3R = -1

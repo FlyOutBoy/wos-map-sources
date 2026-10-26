@@ -33,12 +33,18 @@ ICONS = {
     'HashiramaCells': ('hashirama_cells.png', (0.25, 0.12, 0.75, 0.95), None),
     'ShunShunRikka': ('shun_shun_rikka.png', (0.36, 0.26, 0.84, 0.90), None),
     'AshisogiJizo': ('ashisogi_jizo.png', (0.10, 0.00, 0.90, 0.90), None),
+    'CoreDrill': ('core_drill.png', (0.00, 0.00, 1.00, 1.00), None),
+    'CoreDrillPhys': ('core_drill_phys.png', (0.00, 0.00, 1.00, 1.00), None),  # physical stack buff (red)
+    'CoreDrillMag': ('core_drill_mag.png', (0.00, 0.00, 1.00, 1.00), None),    # magic stack buff (blue)
 }
 SOURCES = {  # where the frames come from (fandom wikis)
     'kusanagi_sword.png': 'naruto.fandom.com File:Kusanagi_no_Tsurugi.PNG',
     'hashirama_cells.png': "naruto.fandom.com File:Hashirama's_Cells.png",
     'shun_shun_rikka.png': 'bleach.fandom.com File:Ep13OrihimesClip.png',
     'ashisogi_jizo.png': 'bleach.fandom.com File:Ashisogi_Jizo_(spirit)_Full_body_1.png',
+    'core_drill.png': 'drawn procedurally (Gurren Lagann Core Drill), no external image',
+    'core_drill_phys.png': 'drawn procedurally, red background (physical buff)',
+    'core_drill_mag.png': 'drawn procedurally, blue background (magic buff)',
 }
 TINTS = {
     'fire': ('#1a0200', '#ff4a00', '#ffe27a'),

@@ -10,8 +10,10 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 
 import test_map_sources as sources
+import test_map_runtime as runtime
 import war3_object_workspace as objects
 
 
@@ -41,6 +43,32 @@ def powershell(workspace: Path, script: Path, *args: str) -> None:
     subprocess.run([str(exe),"-NoProfile","-ExecutionPolicy","Bypass","-File",str(script),*map(str,args)],
                    cwd=workspace, check=True, stdout=sys.stderr,
                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
+
+
+def refresh_objects(workspace: Path, profile: dict) -> None:
+    """Read current saved native objects without exporting JSON or touching imports.
+
+    The lossless writer can then merge WE-only changes instead of overwriting
+    them from a stale extracted cache. WCT/J still come from the project.
+    """
+    destination = Path(profile["testMapDirectory"]).resolve()
+    if not destination.is_relative_to(workspace.resolve()/"test_map"):
+        raise ValueError("TEST native cache must stay inside test_map")
+    build = absolute(workspace, profile.get("buildDir", "_build"))
+    build.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="test-native-refresh-", dir=build) as temporary:
+        source = Path(temporary)
+        library = absolute(workspace, profile["jassHelper"]).parent/"sfmpq.dll"
+        powershell(workspace, workspace/".vscode/test-map-archive.ps1", "-Mode", "Extract",
+                   "-Map", profile["testMap"], "-Directory", str(source), "-Library", str(library))
+        names = [prefix+"."+ext for prefix in ("war3map", "war3mapSkin")
+                 for ext in ("w3u", "w3t", "w3b", "w3d", "w3a", "w3h", "w3q")]
+        for name in [*names, "war3map.wts"]:
+            target = destination/name
+            if (source/name).is_file():
+                shutil.copy2(source/name, target)
+            elif target.is_file():
+                target.unlink()
 
 
 def seed_map(target: Path, candidates: list[Path]) -> Path | None:
@@ -158,13 +186,45 @@ def ensure(workspace: Path, config_path: Path | None = None) -> dict:
     registration = f"{hero}_Register"
     has_registration = any(re.search(rf"^[ \t]*function\s+{re.escape(registration)}\s+takes\s+unit\s+\w+\s+returns\s+nothing", p.read_text(encoding="utf-8-sig"), re.MULTILINE) for p in hero_files)
     call = f"    call {registration}.evaluate(u)\n" if has_registration else ""
+    minimal_runtime = config.get("testMinimalRuntime", True)
+    if not isinstance(minimal_runtime, bool):
+        raise ValueError("testMinimalRuntime must be true or false")
     native_ui = config.get("testNativeUI", True)
     if not isinstance(native_ui, bool):
         raise ValueError("testNativeUI must be true or false")
+    native_ui = native_ui or minimal_runtime
+    effective["testMinimalRuntime"] = minimal_runtime
+    runtime_policy = ("library WOSTestMinimalRuntime initializer InitWOSTestMinimalRuntime\n"
+                      "private function InitWOSTestMinimalRuntime takes nothing returns nothing\n"
+                      "    call StopMusic(false)\n    call ClearMapMusic()\n"
+                      "endfunction\nendlibrary\n\n") if minimal_runtime else ""
     ui_policy = "library WOSTestNativeUI\nendlibrary\n\n" if native_ui else ""
-    hook.write_text(ui_policy + f"library TestHeroAdapter\nfunction TestHero_Register takes unit u returns nothing\n{call}endfunction\nendlibrary\n",encoding="utf-8")
+    reset = ""
+    if minimal_runtime:
+        reset_name = f"{hero}_ResetForTest"
+        has_reset = any(re.search(rf"^[ \t]*function\s+{re.escape(reset_name)}\s+takes\s+unit\s+\w+\s+returns\s+nothing", p.read_text(encoding="utf-8-sig"), re.MULTILINE) for p in hero_files)
+        reset = ("function TestHero_Reset takes unit u returns nothing\n"
+                 "    if u == null then\n        return\n    endif\n"
+                 "    if IsUnitType(u, UNIT_TYPE_DEAD) then\n"
+                 "        call ReviveHero(u, GetUnitX(u), GetUnitY(u), false)\n    endif\n"
+                 "    call SetUnitState(u, UNIT_STATE_LIFE, GetUnitState(u, UNIT_STATE_MAX_LIFE))\n"
+                 "    call SetUnitState(u, UNIT_STATE_MANA, GetUnitState(u, UNIT_STATE_MAX_MANA))\n"
+                 "")
+        if has_reset:
+            reset += f"    call {reset_name}.evaluate(u)\n"
+        else:
+            reset += "    call SpellStacksResetForEscape.evaluate(u)\n"
+        reset += "".join(f"    call BlzEndUnitAbilityCooldown(u, {slot}_ID)\n" for slot in "QWERTFG")
+        reset += "    call ClearTextMessages()\nendfunction\n"
+    hook.write_text(runtime_policy + ui_policy + f"library TestHeroAdapter\nfunction TestHero_Register takes unit u returns nothing\n{call}endfunction\n{reset}endlibrary\n",encoding="utf-8")
     effective["testNativeUI"] = native_ui
-    effective["testOnlySources"] = [*config.get("testOnlySources",[]),str(hook)]
+    ui_sources = []
+    if minimal_runtime:
+        ui_stub = hook.with_name("MinimalUI.j")
+        runtime.minimal_ui(workspace, ui_stub)
+        ui_sources.append(str(ui_stub))
+    effective["testDisabledSourceNames"] = list(runtime.DISABLED_UI_SOURCES) if minimal_runtime else []
+    effective["testOnlySources"] = [*config.get("testOnlySources",[]),*ui_sources,str(hook)]
     effective_path = build/"test-profile.json"
     write(effective_path,effective)
     sync = {"build_config":str(effective_path),"map_key":"testMapDirectory",

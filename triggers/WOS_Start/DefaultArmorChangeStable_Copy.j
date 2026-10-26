@@ -56,7 +56,7 @@ globals
     // Checkpoint 21: gold underline under the primary attribute value.
     private framehandle array UNITSTAT_PrimaryMark
     private trigger UNITSTAT_PortraitClick = null
-    // Checkpoint 22: the whole portrait + level plate is one click target
+    // Level-plate click target; the portrait surface retains native spell input
     // (only its lower half reacted before); voice toggle like the picker's.
     private framehandle UNITSTAT_PortraitHit = null
     private framehandle UNITSTAT_VoiceToggle = null
@@ -162,6 +162,7 @@ private function UNITSTAT_OnSelectVoice takes nothing returns nothing
     // Local re-render only for this player and only when the picked unit changed.
     if UNITSTAT_Picked[pid] != u and GetLocalPlayer() == Player(pid) then
         set WUI_ShopRenderSerial = WUI_ShopRenderSerial + 1
+        call WUI_PinNativePortrait()
     endif
     set UNITSTAT_Picked[pid] = u
     set u = null
@@ -190,6 +191,7 @@ private function UNITSTAT_OnDeselectVoice takes nothing returns nothing
         endif
         if GetLocalPlayer() == Player(pid) then
             set WUI_ShopRenderSerial = WUI_ShopRenderSerial + 1
+            call WUI_PinNativePortrait()
         endif
     endif
     set u = null
@@ -574,9 +576,12 @@ endfunction
 
 private function UNITSTAT_AutoSelectTick takes nothing returns nothing
     local integer pid = 0
+    static if LIBRARY_WOSTestMinimalRuntime then
+        return
+    endif
     loop
         exitwhen pid >= 10
-        if GetLocalPlayer() == Player(pid) and UNITSTAT_AutoSelect[pid] and Hero[pid] != null and GetUnitTypeId(Hero[pid]) != 0 and GetOwningPlayer(Hero[pid]) == Player(pid) and not IsUnitHidden(Hero[pid]) and not IsUnitType(Hero[pid], UNIT_TYPE_DEAD) and GetWidgetLife(Hero[pid]) > 0.405 then
+        if GetLocalPlayer() == Player(pid) and UNITSTAT_AutoSelect[pid] and WUI_AutoSelectHero[pid] and Hero[pid] != null and GetUnitTypeId(Hero[pid]) != 0 and GetOwningPlayer(Hero[pid]) == Player(pid) and not IsUnitHidden(Hero[pid]) and not IsUnitType(Hero[pid], UNIT_TYPE_DEAD) and GetWidgetLife(Hero[pid]) > 0.405 then
             call GearSelectOnlyHero(Hero[pid])
         endif
         set pid = pid + 1
@@ -584,6 +589,9 @@ private function UNITSTAT_AutoSelectTick takes nothing returns nothing
 endfunction
 
 private function UNITSTAT_SetAutoSelect takes integer pid, boolean enabled returns nothing
+    static if LIBRARY_WOSTestMinimalRuntime then
+        set enabled = false
+    endif
     if UNITSTAT_AutoSelect[pid] == enabled then
         return
     endif
@@ -707,9 +715,6 @@ private function UNITSTAT_Render takes unit selected, integer pid returns nothin
         set readable = IsPlayerAlly(GetOwningPlayer(selected), Player(pid)) or IsUnitVisible(selected, Player(pid))
     endif
     call WUI_Show(UNITSTAT_Root, readable)
-    if readable then
-        call WUI_SetPortraitIcon(BlzGetAbilityIcon(GetUnitTypeId(selected)))
-    endif
     call WUI_ShowNativePortrait(readable)
     if readable then
         call WUI_SetPortraitInvisible(WUI_UnitHasInvisibility(selected))
@@ -747,9 +752,9 @@ private function UNITSTAT_Render takes unit selected, integer pid returns nothin
     endif
     set UNITSTAT_Compact = hero
     if UNITSTAT_VoiceOn[pid] then
-        set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r|n|cff9aa0a8Click: camera + hero voice|r"
+        set UNITSTAT_Help[6] = "|cffd5b876Click: camera + voice|r"
     else
-        set UNITSTAT_Help[6] = "|cffd5b876" + GetUnitName(selected) + "|r|n|cff9aa0a8Click: camera to selected unit|r"
+        set UNITSTAT_Help[6] = "|cffd5b876Click: camera|r"
     endif
     // Engine-drawn tooltip (no hover events: those made the cursor stutter).
     call WUI_SetText(UNITSTAT_PortraitTipText, UNITSTAT_Help[6])
@@ -932,10 +937,11 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     set UNITSTAT_Root = WUI_Passive("WOSSelectedUnitHUD", WUI_GetRoot())
     // Portrait column: .160-.2285. Larger portrait with a flush gold frame and a
     // separate level plate below it (no badge covering the portrait art).
-    set UNITSTAT_Widget[6] = BlzCreateFrameByType("BUTTON", "WOSSelectedUnitIcon", UNITSTAT_Root, "", 0)
+    set UNITSTAT_Widget[6] = WUI_Passive("WOSSelectedUnitIcon", UNITSTAT_Root)
+    call BlzFrameSetEnable(UNITSTAT_Widget[6], true)
     // Checkpoint 25: portrait a little lower, level plate right under it,
     // the hero voice toggle above it.
-    call WUI_PlaceShiftLeft(UNITSTAT_Widget[6], 0.1945, 0.0550, 0.050, 0.050)
+    call WUI_PlaceShiftLeft(UNITSTAT_Widget[6], 0.1945, 0.0550, 0.05125, 0.05125)
     set UNITSTAT_Portrait = WUI_BindNativePortrait(UNITSTAT_Widget[6])
     set back = WUI_GoldFrame("WOSSelectedUnitBorder", UNITSTAT_Widget[6], 0.0045, 0.0090)
     set UNITSTAT_LevelBadge = BlzCreateFrameByType("BACKDROP", "WOSSelectedUnitLevelBadge", UNITSTAT_Root, "", 0)
@@ -999,25 +1005,24 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     endloop
     set i = 0
     set UNITSTAT_PortraitClick = CreateTrigger()
-    call BlzTriggerRegisterFrameEvent(UNITSTAT_PortraitClick, UNITSTAT_Widget[6], FRAMEEVENT_CONTROL_CLICK)
-    // Transparent click target over portrait and level plate. Local mouse
-    // polling clears its tooltip independently of native button focus.
+    // Keep the native portrait unobstructed for spell targeting.
+    // Camera/voice clicks live only on the separate level plate; hover still
+    // covers only the level plate via the existing coordinate poll.
     set UNITSTAT_PortraitHit = BlzCreateFrameByType("BUTTON", "WOSPortraitHit", WUI_GetRoot(), "", 0)
-    call WUI_PlaceShiftLeft(UNITSTAT_PortraitHit, 0.1945, 0.0430, 0.056, 0.070)
-    set UNITSTAT_WidgetLeft[6] = 0.1665
-    set UNITSTAT_WidgetY[6] = 0.0430
-    set UNITSTAT_WidgetWidth[6] = 0.056
-    set UNITSTAT_WidgetHeight[6] = 0.070
+    call WUI_PlaceShiftLeft(UNITSTAT_PortraitHit, 0.1945, 0.0192, 0.050, 0.019)
+    set UNITSTAT_WidgetLeft[6] = 0.1695
+    set UNITSTAT_WidgetY[6] = 0.0192
+    set UNITSTAT_WidgetWidth[6] = 0.050
+    set UNITSTAT_WidgetHeight[6] = 0.019
     call BlzFrameSetLevel(UNITSTAT_PortraitHit, 50)
     call BlzTriggerRegisterFrameEvent(UNITSTAT_PortraitClick, UNITSTAT_PortraitHit, FRAMEEVENT_CONTROL_CLICK)
-    set UNITSTAT_PortraitTip = WUI_TooltipBox(WUI_GetRoot(), 0.132, 0.041)
-    // Clear of the HUD's top ornaments.
-    call BlzFrameSetAbsPoint(UNITSTAT_PortraitTip, FRAMEPOINT_BOTTOMLEFT, 0.1665, WUI_CHASSIS_TOP + 0.010)
+    set UNITSTAT_PortraitTip = WUI_TooltipBox(WUI_GetRoot(), 0.112, 0.025)
+    call BlzFrameSetPoint(UNITSTAT_PortraitTip, FRAMEPOINT_BOTTOM, UNITSTAT_PortraitHit, FRAMEPOINT_TOP, 0.000, 0.006)
     call BlzFrameSetLevel(UNITSTAT_PortraitTip, 60)
     set UNITSTAT_PortraitTipText = BlzCreateFrameByType("TEXT", "WOSPortraitTipText", UNITSTAT_PortraitTip, "", 0)
     // Checkpoint 26: more room between the frame top and the unit name.
-    call BlzFrameSetPoint(UNITSTAT_PortraitTipText, FRAMEPOINT_TOPLEFT, UNITSTAT_PortraitTip, FRAMEPOINT_TOPLEFT, 0.007, -0.0105)
-    call BlzFrameSetSize(UNITSTAT_PortraitTipText, 0.118 / 0.80, 0.024 / 0.80)
+    call BlzFrameSetPoint(UNITSTAT_PortraitTipText, FRAMEPOINT_TOPLEFT, UNITSTAT_PortraitTip, FRAMEPOINT_TOPLEFT, 0.007, -0.006)
+    call BlzFrameSetSize(UNITSTAT_PortraitTipText, 0.098 / 0.80, 0.013 / 0.80)
     call BlzFrameSetScale(UNITSTAT_PortraitTipText, 0.80)
     call BlzFrameSetTextAlignment(UNITSTAT_PortraitTipText, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(UNITSTAT_PortraitTipText, false)
@@ -1034,7 +1039,6 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     endloop
     set i = 0
     call WUI_SetToggleState(UNITSTAT_VoiceToggle, true)
-    call WUI_Tooltip(UNITSTAT_VoiceToggle, "|cffd5b876HERO VOICE|r|nON: clicking the portrait plays the selected hero's pick lines in turn (only you hear them).|nOFF: the portrait moves the camera.")
     set voiceClick = CreateTrigger()
     call BlzTriggerRegisterFrameEvent(voiceClick, UNITSTAT_VoiceToggle, FRAMEEVENT_CONTROL_CLICK)
     call TriggerAddAction(voiceClick, function UNITSTAT_OnVoiceToggle)
@@ -1047,6 +1051,9 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     call TriggerAddAction(voiceClick, function UNITSTAT_OnModeClick)
     set UNITSTAT_AutoSelectToggle = WUI_ToggleButton("WOSAutoSelectHero", 0.21525, 0.0870, 0.012, "UI\\WOS\\glyph-hero-lock.tga")
     call WUI_PlaceShiftLeft(UNITSTAT_AutoSelectToggle, 0.21525, 0.0870, 0.012, 0.012)
+    static if LIBRARY_WOSTestMinimalRuntime then
+        call BlzFrameSetVisible(UNITSTAT_AutoSelectToggle, false)
+    endif
     call WUI_Tooltip(UNITSTAT_AutoSelectToggle, "|cffd5b876AUTO SELECT HERO|r|nWhen enabled, selects your living hero every 0.25 sec. Click again to turn off.")
     call WUI_SetToggleState(UNITSTAT_AutoSelectToggle, UNITSTAT_AutoSelect[GetPlayerId(GetLocalPlayer())])
     set voiceClick = CreateTrigger()

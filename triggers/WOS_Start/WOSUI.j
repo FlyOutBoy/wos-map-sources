@@ -135,8 +135,9 @@ globals
     private boolean WUI_CompactCommands = false
     private framehandle WUI_Console = null
     private framehandle WUI_Portrait = null
-    private framehandle WUI_PortraitIcon = null
-    private string WUI_PortraitTexture = ""
+    private framehandle WUI_PortraitOwner = null
+    private integer WUI_PortraitSlot = -1
+    private boolean WUI_PortraitShown = false
     private framehandle WUI_InvisLabel = null
     private framehandle WUI_InvisBacking = null
     private real WUI_FeedRight = -1.0
@@ -3184,16 +3185,36 @@ struct WOSHeroMeter
     endmethod
 endstruct
 
+// Portrait X uses the full viewport 0..0.8, unlike normal centred 4:3 frames.
+// Reassert after selection/engine layout changes; reuse the HUD tick, no timer.
+function WUI_PinNativePortrait takes nothing returns nothing
+    local integer width = BlzGetLocalClientWidth()
+    local integer height = BlzGetLocalClientHeight()
+    local real factor
+    local real left
+    local real bottom
+    if WUI_Portrait == null or WUI_PortraitOwner == null or WUI_PortraitSlot < 0 or width <= 0 or height <= 0 then
+        return
+    endif
+    set factor = 4.00 * I2R(height) / (3.00 * I2R(width))
+    set left = WUI_ShiftBaseX[WUI_PortraitSlot] + WUI_HudLeft - WUI_ShiftBaseW[WUI_PortraitSlot] * 0.50
+    // Raised 5% of its height: hero art sat on the frame's bottom edge.
+    set bottom = WUI_ShiftBaseY[WUI_PortraitSlot] - WUI_ShiftBaseH[WUI_PortraitSlot] * 0.45
+    call BlzEnableUIAutoPosition(false)
+    call BlzFrameSetParent(WUI_Portrait, WUI_PortraitOwner)
+    call BlzFrameClearAllPoints(WUI_Portrait)
+    call BlzFrameSetScale(WUI_Portrait, 1.00)
+    call BlzFrameSetAbsPoint(WUI_Portrait, FRAMEPOINT_BOTTOMLEFT, 0.40 + (left - 0.40) * factor, bottom)
+    call BlzFrameSetAbsPoint(WUI_Portrait, FRAMEPOINT_TOPRIGHT, 0.40 + (left + WUI_ShiftBaseW[WUI_PortraitSlot] - 0.40) * factor, bottom + WUI_ShiftBaseH[WUI_PortraitSlot])
+    call BlzFrameSetEnable(WUI_Portrait, true)
+endfunction
+
 // The engine keeps the selected unit's animated portrait up to date.
 // ORIGIN_FRAME_PORTRAIT is reserved during the synchronous controls bootstrap.
 function WUI_BindNativePortrait takes framehandle parent returns framehandle
-    // The native 3D portrait does not render inside the custom chassis; the
-    // cell shows the selected unit's command icon (BTN) instead.
-    if WUI_PortraitIcon == null then
-        set WUI_PortraitIcon = BlzCreateFrameByType("BACKDROP", "WOSPortraitIcon", parent, "", 0)
-        call BlzFrameSetAllPoints(WUI_PortraitIcon, parent)
-        call BlzFrameSetEnable(WUI_PortraitIcon, false)
-        call BlzFrameSetVisible(WUI_PortraitIcon, false)
+    // Keep engine portrait input: unit-target spells resolve the selected unit.
+    // Only passive decorations may cover this surface.
+    if WUI_InvisBacking == null then
         // A separate dark translucent strip keeps the label pixels crisp.
         set WUI_InvisBacking = BlzCreateFrameByType("BACKDROP", "WOSInvisBacking", parent, "", 0)
         call BlzFrameSetTexture(WUI_InvisBacking, "UI\\WOS\\bar-back.tga", 0, true)
@@ -3210,26 +3231,22 @@ function WUI_BindNativePortrait takes framehandle parent returns framehandle
         call BlzFrameSetVisible(WUI_InvisLabel, false)
     endif
     if WUI_Portrait != null then
-        call BlzFrameSetParent(WUI_Portrait, parent)
-        call WUI_Place(WUI_Portrait, 0.1945, 0.0550, 0.050, 0.050)
-        call BlzFrameSetEnable(WUI_Portrait, false)
+        set WUI_PortraitOwner = parent
+        set WUI_PortraitSlot = LoadInteger(WUI_ShiftTable, GetHandleId(parent), 0) - 1
+        call BlzFrameSetLevel(parent, 10)
+        call WUI_PinNativePortrait()
     endif
     return WUI_Portrait
 endfunction
 
 function WUI_ShowNativePortrait takes boolean visible returns nothing
-    call WUI_Show(WUI_Portrait, false)
-    call WUI_Show(WUI_PortraitIcon, visible)
+    set WUI_PortraitShown = visible
+    if visible then
+        call WUI_PinNativePortrait()
+    endif
+    call WUI_Show(WUI_Portrait, visible)
     call WUI_Show(WUI_InvisLabel, visible and WUI_InvisPortrait)
     call WUI_Show(WUI_InvisBacking, visible and WUI_InvisPortrait)
-endfunction
-
-// Local; the texture is touched only when the selected unit type changes.
-function WUI_SetPortraitIcon takes string texture returns nothing
-    if WUI_PortraitIcon != null and texture != null and texture != "" and texture != WUI_PortraitTexture then
-        set WUI_PortraitTexture = texture
-        call BlzFrameSetTexture(WUI_PortraitIcon, texture, 0, true)
-    endif
 endfunction
 
 // Presence is authoritative for the granted permanent invisibility abilities.
@@ -3243,13 +3260,13 @@ function WUI_SetPortraitInvisible takes boolean invisible returns nothing
     if WUI_InvisPortrait != invisible then
         set WUI_InvisPortrait = invisible
         if invisible then
-            call BlzFrameSetAlpha(WUI_PortraitIcon, 85)
+            call BlzFrameSetAlpha(WUI_Portrait, 85)
         else
-            call BlzFrameSetAlpha(WUI_PortraitIcon, 255)
+            call BlzFrameSetAlpha(WUI_Portrait, 255)
         endif
     endif
-    call WUI_Show(WUI_InvisLabel, invisible and WUI_PortraitIcon != null and BlzFrameIsVisible(WUI_PortraitIcon))
-    call WUI_Show(WUI_InvisBacking, invisible and WUI_PortraitIcon != null and BlzFrameIsVisible(WUI_PortraitIcon))
+    call WUI_Show(WUI_InvisLabel, invisible and WUI_Portrait != null and BlzFrameIsVisible(WUI_Portrait))
+    call WUI_Show(WUI_InvisBacking, invisible and WUI_Portrait != null and BlzFrameIsVisible(WUI_Portrait))
 endfunction
 
 function WUI_ShowNativeBuffs takes boolean visible returns nothing
@@ -3678,7 +3695,8 @@ function WUI_InstallNativeLayout takes nothing returns nothing
         call BlzFrameSetVisible(systemBar, true)
     endif
     if WUI_Portrait != null then
-        call BlzFrameSetVisible(WUI_Portrait, false)
+        call WUI_PinNativePortrait()
+        call BlzFrameSetVisible(WUI_Portrait, WUI_PortraitShown)
     endif
     if WUI_Resource != null then
         call WUI_ParkResourceBar()
@@ -4769,7 +4787,8 @@ function WUI_RestoreCompactNative takes player p returns nothing
         call BlzFrameSetVisible(WUI_HeroBar, false)
     endif
     if WUI_Portrait != null then
-        call BlzFrameSetVisible(WUI_Portrait, false)
+        call WUI_PinNativePortrait()
+        call BlzFrameSetVisible(WUI_Portrait, WUI_PortraitShown)
     endif
     call BlzFrameSetVisible(WUI_CommandBar, true)
     call BlzFrameSetVisible(WUI_NativeDetailParent, true)
@@ -5638,6 +5657,7 @@ function WUI_SetHud takes real shift, real left returns nothing
     local integer i = 0
     set WUI_HudShift = shift
     set WUI_HudLeft = left
+    call WUI_PinNativePortrait()
     call WUI_PlaceGroupButtons()
     loop
         exitwhen i >= WUI_ShiftCount

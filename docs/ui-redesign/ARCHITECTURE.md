@@ -421,7 +421,7 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
 | Source | Responsibility / data |
 |---|---|
 | WOS_Start/WoS_Hero_Icons_Init.j (`heroicon`) | Existing ten-player HeroIcons, train/round scores/timers, camera slider, player statistics, Discord. `Hero[]`, Team1Round/Team2Round/TrainKill/CurrentRound. `UpdateStatusHeroSlotOptimized`, `PlayerStatusHeroPeriodic`, manual initialization from map start. |
-| WOS_Start/DefaultArmorChangeStable_Copy.j (`HeroUnitPanelStats`) | Existing selected unit overlay now compact icon/stats/vitals/gold HUD. `GetHpRegen`, `GetMpRegen`, `GetPhysRes`, `GetMagRes`, Avul/base exception. Native damage text context 0; local visibility guard. |
+| WOS_Start/DefaultArmorChangeStable_Copy.j (`HeroUnitPanelStats`) | Existing selected unit overlay now native portrait/stats/vitals/gold HUD. `GetHpRegen`, `GetMpRegen`, `GetPhysRes`, `GetMagRes`, Avul/base exception. Native damage text context 0; local visibility guard. |
 | WOS_Start/ShowCD.j (`AllyHeroAbilityUI`) | Command-slot mapping QWERTFG, genuine origin commands for own selected unit, presentation overlays/tooltips for other units; enemies never expose cooldown. `AHUI_GetOriginSlot`, `AHUI_UpdateOriginState`, `AHUI_Periodic`. |
 | WOS_Start/WoS_Pick_Init.j (`AAINIT`) | Actual category/page/hero preview/confirm/random/ban/repick/swap UI; normal/captain/draft bindings; map-start initialization. |
 | WOS_Start/WoS_Shop_Init.j | Actual shop tabs/search, recipes/craft, auto-buy, inventory; existing input/event handlers. |
@@ -432,7 +432,7 @@ Checkpoint 13 has compile/archive evidence, NOT successful input/visual acceptan
 | WOS_Start/ChatCommand.j | Emoji palette, local enable/disable; frame toggles and sync commands. |
 | WOS_Start/EMOTES.j | Existing emote palette/sync/effects; K key-up and toolbar share Emoji_ToggleMenu. Obsolete K key-down/null FRAME_Chat0 handler removed. |
 | WOS_Start/Player_Pick_Mode.j, Captain_Draft.j | Mode-specific selection/vote interfaces and handlers. |
-| WOS_Start/UI_CAREER.j, MusicPlayer.j, UniversalTooltips.j | Career UI/music controls/shared tooltips. |
+| WOS_Start/UI_CAREER.j, MusicPlayer.j, UniversalTooltips.j | Career UI/music controls/shared tooltips. UniversalTooltips separates positive red Iframe notices from lore/mechanics in learn, initial and live generation; TooltipBuilder places them before the stat separator. Abilities without invulnerability have no notice. |
 | Systems/Systems2.j, TasBox.j | Hero ability/counter bars, charge box library; some SIMPLEFRAME children under native Console. |
 | Heroes/*.j | Spell loops publish authoritative remaining time/resources through WUI_HeroProgress/Text/Counter; public spells use WUI_HeroProgressPublic. WUI_HeroProgressIcon updates public artwork for all viewers and private artwork only for its owner. Kyoraku supplies act captions/art and measures its description text for WUI_ColumnHeight (CP66). WOSUI owns keyed FRAME creation, captions, formatting, visibility and expiry. |
 
@@ -815,6 +815,19 @@ or local gameplay state was introduced. Engine rendering/pause acceptance is
 outside the compile/static regression evidence.
 
 
+TEST-only partial meters (2026-10-22): the user enabled hero bars while keeping
+the native HUD. The generated MinimalUI routes HeroProgress/Text to an isolated
+bar renderer, with private copies of the current Passive/Piece/Pin/GoldFrame
+style helpers. It allocates on synchronized spell callbacks; local state only
+changes presentation. It has no bootstrap, input or timer. Frostnova T provides
+its actual remaining duration and explicit zero on end/death. The built TEST
+meter anchors its bottom-left above ORIGIN_FRAME_MINIMAP with a 0.006 gap,
+following the native HUD instead of floating at screen centre. No reparenting
+of the native minimap or new layout timer is involved. The built TEST
+archive receives only six missing bar textures; existing imports win. MAIN's
+renderer, docks, ownership and HUD initialization are unchanged. Rendering and
+multiplayer acceptance still require engine testing.
+
 ## Match votes, invisibility and dual meters — checkpoint 39 (2026-10-16)
 
 WOS_Start/MatchVotes.j owns synchronized unanimous vote state (WOSVOTE sync),
@@ -1184,3 +1197,39 @@ jump is removed; ranges/targeting and full-charge effect threshold stay unchange
 - Saber G charging starts from base entry and LvlUpCheck through the same
   idempotent AlterSaberW_Start; the unit flag is cleared in loop cleanup. Its
   autoattack proc is magic NextDmg route0 and numeric source A02F, not W2/A05F.
+
+CP71 supersedes CP69 AllPoints portrait anchoring: WUI_BindNativePortrait caches
+the enabled passive owner and its WUI_Shift slot. WUI_PinNativePortrait projects
+the normal centred4:3 rectangle into native full-viewport coordinates using
+factor=4*height/(3*width), nativeX=.4+(normalX-.4)*factor, width*=factor.
+Explicit BOTTOMLEFT + TOPRIGHT, scale1 and disabled UI auto-position are reasserted
+on readable HUD paint, changed local selection, layout restore and HUD shift. Zero-size clients skip
+projection; no new timer or local handle creation. Native input remains enabled. Current portrait owner size .05125 square (+2.5%),
+center (.1945,.0550); level plate stays .050x.019 at (.1945,.0192). No BTN substitute or full-surface BUTTON. The separate
+level-plate button owns camera/voice clicks and stays below the portrait bounds.
+Only level bounds participate in the one-line hint; voice toggle has no long tip.
+WUI_PortraitShown preserves readable selection visibility across native layout
+restores; invisibility alpha/label now use the native portrait. Engine spell
+targeting and 3D rendering still require Warcraft acceptance.
+
+
+## CP72 — item-owned refund windows and normal ban input (2026-10-22)
+
+WoS_Shop_Init owns ShopRefundData: at most six item-handle/deadline records per
+unit. ShopFullRefundRecord is read-only and shared by PlayerInventoryPeriodic,
+ShopSellInventorySlot and ReduceCostRecursive. Slot rearrangement cannot move
+eligibility to another item; repurchase cannot inherit an old MyFlush deadline.
+Sale/craft clears the exact handle before removal; new purchases reclaim expired
+or no-longer-held records. Regular Auto Buy, limited Auto Buy, manual purchase and
+Quick Buy all mark eligible delivered items once. Fresh component value carries
+to a fully paid result; old component value does not. No new timer or frame handle.
+
+Normal/Player Pick use WOS_ProposeHeroBan. The intended three-second cutoff
+locks replacement/cancellation of existing proposals. An empty player may submit
+once after the cutoff; that proposal locks immediately. The synchronized phase
+transition closes all new proposals. WOS_LockBanSelection runs once from the
+existing countdown, shows a pre-created noninteractive TEXT at the root top-left
+and disables BAN only for each locked owner. StartBanPhase hides the notice. Duplicate/protected/unavailable/unselected hero clicks give
+sender-specific feedback. BAN now uses the same event-owner focus reset as
+CONFIRM/RANDOM. Captain Draft retains its own validation/turn ownership.
+Engine mouse hit testing and multiplayer acceptance are still required.

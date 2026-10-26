@@ -1140,6 +1140,7 @@ library StarrkSpells uses GearSystems
                             call UnitMakeAbilityPermanent(c, true, StarrkE_Atk_ID)
                            // call UnitMakeAbilityPermanent(c, true, StarrkE_AS_ID)
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E, 1)
+                            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                             set r = 0
                             if GetHeroLevel(c) >= 35 then
                                 call AddHpRegen(c, 20, true)
@@ -1247,6 +1248,7 @@ library StarrkSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct StarrkSpells_R
         private static integer array m_StarrkR3
         private static integer MUI_StarrkR3 = -1
@@ -1773,6 +1775,7 @@ library StarrkSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct StarrkSpells_T
         private static integer array m_StarrkT2
         private static integer MUI_StarrkT2 = -1

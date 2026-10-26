@@ -1316,6 +1316,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AstaSpells_R
         private static integer array m_AstaR
         private static integer MUI_AstaR = -1
@@ -1577,6 +1578,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AstaSpells_T
         private static integer array m_AstaT
         private static integer MUI_AstaT = -1

@@ -67,6 +67,9 @@ try {
         $sourceMap = [IO.Path]::GetFullPath($MapDirectory)
         & python $extractor --wtg (Join-Path $sourceMap 'war3map.wtg') --wct (Join-Path $sourceMap 'war3map.wct') --output $temporaryTriggers --allow-stale-counts
         if ($LASTEXITCODE -ne 0) { throw 'TEST WTG/WCT extraction failed' }
+        & python (Join-Path $workspaceRoot 'tools/test_map_runtime.py') restore-import --workspace $workspaceRoot --stage $temporaryTriggers
+        if ($LASTEXITCODE -ne 0) { throw 'TEST runtime guard restoration failed' }
+
         $base = [string]$config.base
         # Local overrides survive subsequent imports. MAIN sources are never written.
         $policy = Get-Content (Join-Path $base 'test-source-manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json

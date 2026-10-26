@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "350c5a06330c9b74edcb8f93a2679c249da775a29f06dc35b0d6910a5a653fcf",
+  "source_sha256": "9cd18b095ac24c632ca2736f6995586f229f6079e5b28cc2d6ea5a69e63f8657",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -25614,6 +25614,348 @@
         }
       ],
       "display_name": "Dummy Train Thomas"
+    },
+    {
+      "old_id": {
+        "text": "Hpal",
+        "hex": "4870616C"
+      },
+      "new_id": {
+        "text": "H002",
+        "hex": "48303032"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "umdl",
+            "hex": "756D646C"
+          },
+          "field_name": "Model / Модель",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_Frostnova.mdx",
+            "_original_value": "war3mapImported\\wos_Frostnova.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Gcm9zdG5vdmEubWR4"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uico",
+            "hex": "7569636F"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9JY29uLmJscA=="
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ussi",
+            "hex": "75737369"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9JY29uLmJscA=="
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_139",
+            "_original_value": "TRIGSTR_139",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMzk=",
+            "resolved_value": "Frostnova",
+            "_original_resolved_value": "Frostnova"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "upro",
+            "hex": "7570726F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_141",
+            "_original_value": "TRIGSTR_141",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xNDE=",
+            "resolved_value": "Yeti Princess",
+            "_original_resolved_value": "Yeti Princess"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "upru",
+            "hex": "75707275"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uawt",
+            "hex": "75617774"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_276",
+            "_original_value": "TRIGSTR_276",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yNzY=",
+            "resolved_value": "Frostnova",
+            "_original_resolved_value": "Frostnova"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utpr",
+            "hex": "75747072"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_277",
+            "_original_value": "TRIGSTR_277",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yNzc=",
+            "resolved_value": "Arknights | Difficulty: Normal. A frost mage who controls space with stacking slows and empowers her spells with Winter's Scar.",
+            "_original_resolved_value": "Arknights | Difficulty: Normal. A frost mage who controls space with stacking slows and empowers her spells with Winter's Scar."
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uhas",
+            "hex": "75686173"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uspa",
+            "hex": "75737061"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uhot",
+            "hex": "75686F74"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "usnd",
+            "hex": "75736E64"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1m",
+            "hex": "7561316D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Weapons\\LichMissile\\LichMissile.mdl",
+            "_original_value": "Abilities\\Weapons\\LichMissile\\LichMissile.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFdlYXBvbnNcTGljaE1pc3NpbGVcTGljaE1pc3NpbGUubWRs"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "uimz",
+            "hex": "75696D7A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 150.0,
+            "_original_value": 150.0,
+            "_raw_hex": "00001643"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ulpz",
+            "hex": "756C707A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 150.0,
+            "_original_value": 150.0,
+            "_raw_hex": "00001643"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        },
+        {
+          "field": {
+            "text": "ussc",
+            "hex": "75737363"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 3.0,
+            "_original_value": 3.0,
+            "_raw_hex": "00004040"
+          },
+          "sanity_check": {
+            "text": "H002",
+            "hex": "48303032"
+          }
+        }
+      ],
+      "display_name": "Frostnova"
     }
   ]
 }

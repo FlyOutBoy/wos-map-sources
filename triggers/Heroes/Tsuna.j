@@ -544,6 +544,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
         
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaQ2KS
         private static integer array m_TsunaQ2
         private static integer MUI_TsunaQ2 = -1
@@ -781,6 +782,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
         
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaWKS
         private static integer array m_TsunaW
         private static integer MUI_TsunaW = -1
@@ -1415,6 +1417,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaRKS
         private static integer array m_TsunaR
         private static integer MUI_TsunaR = -1
@@ -1547,6 +1550,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaR2KS
         private static integer array m_TsunaR2
         private static integer MUI_TsunaR2 = -1
@@ -1714,6 +1718,7 @@ library TsunaSpells uses GearSystems
         return RMinBJ(TsunaT_OverchargeDmgPct, 100.00 + (TsunaT_OverchargeDmgPct - 100.00) * (elapsed - fullAt) / RMaxBJ(0.01, TsunaT_OverchargeTime - fullAt))
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaTKS
         private static real TsunaT_Size = 1
         private static integer array m_TsunaT
@@ -2209,6 +2214,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaT2KS
         private static integer array m_TsunaT2
         private static integer MUI_TsunaT2 = -1
@@ -2666,6 +2672,7 @@ library TsunaSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TsunaG2KS
         private static integer array m_TsunaG2
         private static integer MUI_TsunaG2 = -1

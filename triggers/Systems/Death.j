@@ -23,11 +23,17 @@ function Trig_Death_Actions takes nothing returns nothing
     local integer k = 0
     local integer k2 = 0
     local boolean death = true 
+    static if LIBRARY_AkainuSpells then
+        call Akainu_Death(td)
+    endif
     static if LIBRARY_FrostnovaSpells then
         call Frostnova_Death(td)
     endif
     static if LIBRARY_CrocodileSpells then
         call Crocodile_Death(td)
+    endif
+    static if LIBRARY_AltairSpells then
+        call Altair_Death(td)
     endif
     if IsUnitType(td, UNIT_TYPE_HERO) == true  and IsUnitIllusion(td)== false then 
     
@@ -107,6 +113,9 @@ endloop
     call MakeSound("war3mapimported\\Hero_BazzB_Death")  
     elseif td_id == Takeshi_ID then
     call MakeSound("war3mapimported\\Hero_Takeshi_Death")  
+    // HERO TRANSFER: Frostnova / Death
+    elseif td_id == Frostnova_ID then
+    call MakeSound("war3mapimported\\Hero_Frostnova_Death")
     else
     call MakeSound("war3mapimported\\Hero_Gojo_RW3")
     endif

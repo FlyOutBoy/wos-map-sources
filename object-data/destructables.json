@@ -961,7 +961,7 @@
   "B044": {
     "name": "Frostnova Ice Crystal",
     "base_id": "YTct",
-    "field_bfil": "Doodads\\Icecrown\\Terrain\\Icecrown_Crystal\\Icecrown_Crystal0.mdl",
+    "field_bfil": "war3mapImported\\Ice_Shard-6CC27.mdx",
     "field_bflh": 0.0,
     "field_bfvi": 1,
     "field_bhps": 500.0,

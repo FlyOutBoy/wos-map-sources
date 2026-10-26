@@ -165,6 +165,7 @@ class FocusContract(unittest.TestCase):
                 vm.g.update(self.vm.g)
                 vm.g.update(END1=0, GetPlayerId=lambda p:p,
                     WOS_STATS_UpdateForPlayer=lambda *a:None,
+                    WOS_STATS_Snapshot=lambda:None,
                     WOS_STATS_SetOpen=lambda *a:None,
                     WUI_ResetClickedButtonFocus=lambda:self.vm.run('WUI_ResetClickedButtonFocus'))
                 self.frame = handler + '-button'

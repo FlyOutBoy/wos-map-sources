@@ -1,0 +1,530 @@
+{
+  "models": {
+    "binding ice/file00003801.mdx": "war3mapImported\\file00003801.mdx",
+    "blue particles projectile/Abilities/Custom/AncientApparition/Missile/AAMissile.MDX": "war3mapImported\\AAMissile.MDX",
+    "File00000211.mdx": "war3mapImported\\File00000211.mdx",
+    "File00000502.mdx": "war3mapImported\\File00000502.mdx",
+    "ice aura/file00000456.mdx": "war3mapImported\\file00000456.mdx",
+    "ice charge/file00003436.mdx": "war3mapImported\\file00003436.mdx",
+    "ice projectile/file00002579.mdx": "war3mapImported\\file00002579.mdx",
+    "ice shard impact/txtx002.mdx": "war3mapImported\\txtx002.mdx",
+    "ice shards storm dome/file00005537.mdx": "war3mapImported\\file00005537.mdx",
+    "ice tornado/file00000883.mdx": "war3mapImported\\file00000883.mdx",
+    "Ice_Shard-6CC27.mdx": "war3mapImported\\Ice_Shard-6CC27.mdx",
+    "ice_shard-7716D.mdx": "war3mapImported\\ice_shard-7716D.mdx",
+    "IcePath.MDX": "war3mapImported\\IcePath.MDX",
+    "icicle projectile/freezingsplinter体.mdx": "war3mapImported\\freezingsplinter体.mdx",
+    "particles blue spiral projectile/[skillm]als-tx (6).mdx": "war3mapImported\\[skillm]als-tx (6).mdx",
+    "rotating ice and air/file00008417.mdx": "war3mapImported\\file00008417.mdx",
+    "tx026.mdx": "war3mapImported\\tx026.mdx"
+  },
+  "entries": [
+    {
+      "importPath": "Textures\\TX_Star20.blp",
+      "sha256": "18f814270ca7e9d932dbc22ac3d3773037f2e52e895c8f41b2080d930c499f2d",
+      "bytes": 70571
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_bing1.blp",
+      "sha256": "6702ac73db6629e791b0d79aea58b5235c8328c269cafd6ddfb8f51889fb5b35",
+      "bytes": 24778
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_glow.blp",
+      "sha256": "6f3d252ce752a3ba0ddddb0bbfc0a816d2ea45003ab1abab3aef5538e2b3f302",
+      "bytes": 14156
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_suolian.blp",
+      "sha256": "66e01e9dc66c78e74c9a1f8efc15d26a300ecd41e03b836c2d553a7eba2aa0d0",
+      "bytes": 8107
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_lizi1.blp",
+      "sha256": "c9352d6b2d6057c3690309d2b822d35108f2ed50fa843e20d170aaedacc7b465",
+      "bytes": 3713
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_ring1.blp",
+      "sha256": "ed45d8138f2a012ded75411ca851f64b5ae46b98b8c0c648c395b9269b94c4d4",
+      "bytes": 8345
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_xue1.blp",
+      "sha256": "b419c33b1e788fcad974b59c47026d9ba7b21ac0cba3b87d14042231ec428557",
+      "bytes": 33349
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Point_effect_xuehua1.blp",
+      "sha256": "855186636ec457addf668f8ff2c69c47f304d641382d370176f729236c9209af",
+      "bytes": 19587
+    },
+    {
+      "importPath": "war3mapImported\\file00003801.mdx",
+      "sha256": "57c4a7acd44b9c398cac8e5bd2870c7bd4242f9e9dd61f2dcf3d8552279faf71",
+      "bytes": 635770
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFaamissileLight.blp",
+      "sha256": "4c24a3c77784035753b51a76f22ef4b1aa50b06d25d47cc946cad18d81a9e535",
+      "bytes": 3139
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFBlueGlow.blp",
+      "sha256": "cd76542a3a4aa7341a59ee404222843819e154776c799c8a16680ad9a33298bd",
+      "bytes": 1664
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFTealGlow.blp",
+      "sha256": "f72276f3bf6bb1a90c618c45e1b8c05110c651401203187276e15a7227cbc0de",
+      "bytes": 1625
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFaamissilePart.blp",
+      "sha256": "935336b200e567035ee25471053c9fc7c1330ce2cb6ebcd96d3e15deb01e81d8",
+      "bytes": 2144
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFaamissileExplode.blp",
+      "sha256": "4a40e81697644e55852ce3dcc056bb00211648adb511083e499f791361c6d66c",
+      "bytes": 2119
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFaamissileRibbon.blp",
+      "sha256": "283951ffe23d3ba460243ff34e2242bc093104075b8e035899dc81628f92e223",
+      "bytes": 2081
+    },
+    {
+      "importPath": "Abilities\\Custom\\AncientApparition\\Missile\\ICEWOLFaamissileCross.blp",
+      "sha256": "09c6f87981a6075cb4b8929265281af85c98a3f5de6dfa00e75b42a8648a82b8",
+      "bytes": 3441
+    },
+    {
+      "importPath": "war3mapImported\\AAMissile.MDX",
+      "sha256": "c69115d93d176dc2f8ed66b55b13de8bf3d2e61afe10bdeb1c03dd07f57a15d6",
+      "bytes": 10744
+    },
+    {
+      "importPath": "DRAGONBLIGHT_ICESHARD_01.blp",
+      "sha256": "b70bbed39d3dc40238ba0dfabaca029db237bb27669f7606766c446df2278a2f",
+      "bytes": 289733
+    },
+    {
+      "importPath": "war3mapImported\\File00000211.mdx",
+      "sha256": "b4ea63d1718d88f4b5a4857ed8309b8af887054c49815057175c865f733fd4f8",
+      "bytes": 579709
+    },
+    {
+      "importPath": "BD_shuijing.blp",
+      "sha256": "db6cf925f53fbabb8a03c09d6a73e81dcd010a4c0c0bcd57027d1a00cc89cc05",
+      "bytes": 14494
+    },
+    {
+      "importPath": "bd_Smoke1E.blp",
+      "sha256": "3a26090af1a6d9f6768c4025c8ce6ed2268a9633a80d6615ff41ab145150ea18",
+      "bytes": 39889
+    },
+    {
+      "importPath": "bd_snowflake01.blp",
+      "sha256": "db29c8ca8bed06a4fb54769a5fd7900adeec0fa6f44a50c38a0090f45599f4a8",
+      "bytes": 1826
+    },
+    {
+      "importPath": "bd_Star3.blp",
+      "sha256": "fccdb1b324fcfccd4de11890b69cf8b89263f9cededa7318e808b608b4e37797",
+      "bytes": 2467
+    },
+    {
+      "importPath": "war3mapImported\\File00000502.mdx",
+      "sha256": "42c2ef5d4d09697454c64a85991863a3a86444ac810a2f443421dde5d9aba954",
+      "bytes": 237468
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_0.blp",
+      "sha256": "f44d5d993a657c1561f2507167560abae912da95e78f7916037b0259da8aaae4",
+      "bytes": 7276
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_1.blp",
+      "sha256": "7a74a231aab8dfdd2c0b52e1864ceb62f973f3b5413edb1991e9b0e794bc917e",
+      "bytes": 4789
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_2.blp",
+      "sha256": "2801dbf5072c495e08a129d9e900a0558b39d3b4ad776de36a7f8e19aa30d54d",
+      "bytes": 7192
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_3.blp",
+      "sha256": "fe028edf8f8b914f0a72e0705184609f6bb4f93aff86c6548712d3ca12e4be34",
+      "bytes": 86773
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_4.blp",
+      "sha256": "080fbfc2799f1364f70c14e4dc869bf124e55b0533b7b3ef039b6c3ddb12b3fc",
+      "bytes": 7792
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_5.blp",
+      "sha256": "82ab444fd2addbe77006bd11079aa4309efde89774cb2ca74ee24999d3d5aa09",
+      "bytes": 5334
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_6.blp",
+      "sha256": "9b7ae0c715e30f38919cc15a17f854a48e82356328c52deadff0632ce4b0e428",
+      "bytes": 26196
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_7.blp",
+      "sha256": "1cb218dcfe988af2d4e7c3cfa702124443eb95f7cc93fb10178ac70712d7e426",
+      "bytes": 46570
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_8.blp",
+      "sha256": "61cd85cd4330b5695b54562eb56a6610cd1c1b3604e68b6baaa1f74df1f419a9",
+      "bytes": 336241
+    },
+    {
+      "importPath": "war3mapimported\\Tsubaki-11_9.blp",
+      "sha256": "57de0d91ad5e2a005378e7d8da681c8df0484c14c42088af3f89279ec7be5ed6",
+      "bytes": 236274
+    },
+    {
+      "importPath": "war3mapImported\\file00000456.mdx",
+      "sha256": "e4dbef76068dde5abe0dbe593177685de1ccf98a2de1e3c6977d70bd5e8d63ba",
+      "bytes": 23361
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_0.blp",
+      "sha256": "0520653221803ca84a6650c4b11db7f9437a964a8880cbed7ba97bf47d2e8665",
+      "bytes": 264182
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_1.blp",
+      "sha256": "b2b34cb98400167d71076504630bd8a2982e9c16b84416cb3ccf16701b78b7e6",
+      "bytes": 14259
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_2.blp",
+      "sha256": "4f9ef70548b23917d34b16590743f0381eeee2403ac15546aaf55f19432be12b",
+      "bytes": 61540
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_3.blp",
+      "sha256": "6b38ff6c66b106c22c9d0b2d2858e2db29fb5b5dbd04a8a0c6a507bdc265805e",
+      "bytes": 17933
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_4.blp",
+      "sha256": "64fb479b76d6a8ed60c297089a7dcb2fa6788f24b63a55fef46989bc01a0f9da",
+      "bytes": 40442
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_5.blp",
+      "sha256": "0d9bc1b852d1abace66d487eddf6dae251879ee377af6f771408f15488af47a4",
+      "bytes": 53650
+    },
+    {
+      "importPath": "war3mapimported\\file00002017_6.blp",
+      "sha256": "3fc5629599a40d2bb0b491f823ac15d0370fbfb016cd98468d708df19f3b4e08",
+      "bytes": 69957
+    },
+    {
+      "importPath": "war3mapImported\\file00003436.mdx",
+      "sha256": "bc74a5b2e9018b735470228e8c2d4912a6a2a1c17e08b8e5456df4ca36a90252",
+      "bytes": 8110
+    },
+    {
+      "importPath": "BY_Wood_Effect_Texture_Currency_Smoke_1.blp",
+      "sha256": "fed13dd066acafcf700445d61a3bb827ac12f1114824c83431dbd534980743d9",
+      "bytes": 207119
+    },
+    {
+      "importPath": "BY_Wood_Effect_Texture_Currency_Ice_1.blp",
+      "sha256": "0c5edac10124a1978da1a81de60b2907f61eb36c6243ee71e555d5877d00cf54",
+      "bytes": 90921
+    },
+    {
+      "importPath": "BY_Wood_Effect_Texture_Currency_Glow_2.blp",
+      "sha256": "4eb869695e004119103c8bffe7929a983f63231ca1a7cf53a0482b1e501a6c6c",
+      "bytes": 81640
+    },
+    {
+      "importPath": "BY_Wood_Effect_Texture_Currency_Smoke_3.blp",
+      "sha256": "da3f6e8ad74032edc325dbb3747970b8195a231115fb31bca3417fbadb8f08df",
+      "bytes": 38425
+    },
+    {
+      "importPath": "BY_Wood_Effect_Texture_Sequence_Fog_3_8x8.blp",
+      "sha256": "174382200f5a917812b37a27aeab1916cf29f42a041e4d5064bed18389fd4c12",
+      "bytes": 61604
+    },
+    {
+      "importPath": "war3mapImported\\file00002579.mdx",
+      "sha256": "46583c07c6c372024a35862231d3f4ed89b377e1bf319c7c3785e46b5ed93341",
+      "bytes": 5232
+    },
+    {
+      "importPath": "war3mapImported\\SnowFlake4X4.blp",
+      "sha256": "5c2993e10d0ff5198cc86d0c4c796f22db17e28e3d28df78b538d66da86efd5b",
+      "bytes": 90219
+    },
+    {
+      "importPath": "war3mapImported\\Blizzard.blp",
+      "sha256": "9dcf30f5ff86e416d8900f245560f18b80e12ebd9e892dbf88942bb981ced202",
+      "bytes": 26188
+    },
+    {
+      "importPath": "war3mapImported\\RibbonSmokeBlue.blp",
+      "sha256": "515f312330b8e614272a15154f05e3e5b14e02f70e7929bcb21727d946455189",
+      "bytes": 9840
+    },
+    {
+      "importPath": "war3mapImported\\Smoke.blp",
+      "sha256": "c5cbf0ef97b02a034379fbf7753b11c5b3af73faaef8f4fd10311c0da515b62d",
+      "bytes": 8936
+    },
+    {
+      "importPath": "war3mapImported\\CrystalDebrisr1x2.blp",
+      "sha256": "709877476103ea1a47bac57d6cf67e061e685da9a12b10f134f5085967c132a2",
+      "bytes": 16496
+    },
+    {
+      "importPath": "war3mapImported\\txtx002.mdx",
+      "sha256": "43b8b5c9af0e8d3141666b6c336c99a8aac01493b6849718b9bc683e9449d897",
+      "bytes": 34403
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N2S_T_Glow4.blp",
+      "sha256": "9d97494caa54739023abfa8820f5a1aa565a03a8b1fb12afabf941a026a6f17c",
+      "bytes": 5143
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N2S_T_Grain19.blp",
+      "sha256": "029545b8526c02591bb7fe368d410adc88974ba7e4c7e8072987c757c8d6d233",
+      "bytes": 16690
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_T_Star_qiu.blp",
+      "sha256": "03a4af2e2c6fff3cd263e44feea35a1cfb97be02e3984fcc419b4bd0ee406e15",
+      "bytes": 17029
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5_huo.blp",
+      "sha256": "c8550efc6a349b677c0a5a4c96ee6e6e5c22cf58cc424e64ad9810614a4f4917",
+      "bytes": 217911
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5S_C_Target_yan.blp",
+      "sha256": "26132db6bcea9199a34a28a864dd8b47cd2b8bba78ffebc4d6dacddf3968dd36",
+      "bytes": 10126
+    },
+    {
+      "importPath": "Textures\\Hero_AcientApparition_N5_jiaodi.blp",
+      "sha256": "c7d38bbb1ebbcf340165cf69000bea766abe4ca07b5eca8ece126691049249ee",
+      "bytes": 7855
+    },
+    {
+      "importPath": "war3mapImported\\file00005537.mdx",
+      "sha256": "aec3981c8cd2491d237c741356cb67c6658bcc43aebf56cac17e1909d1c3005a",
+      "bytes": 143716
+    },
+    {
+      "importPath": "AZ_Shockwave1White3.blp",
+      "sha256": "573ddf4abe295e315f9515530dc16565de8c35a68b4f84793d2d889ce0481018",
+      "bytes": 11384
+    },
+    {
+      "importPath": "flare1_tc.blp",
+      "sha256": "93d0f6dcec129aaf95df60c52e66ef6f1227a546abaa8a35fac6512392b36773",
+      "bytes": 6955
+    },
+    {
+      "importPath": "AZ_Shockwave2White.blp",
+      "sha256": "81b5f6da0a1b3a8d5802c269451e36416990407b0744fbb2fe2bf92fe73a0a5b",
+      "bytes": 11848
+    },
+    {
+      "importPath": "GF_476.blp",
+      "sha256": "9afb4d61b980b951df84b0fb760954fd03ab5f4541739a3e48f0d28187b5edac",
+      "bytes": 15106
+    },
+    {
+      "importPath": "war3mapImported\\6548d1b4b9a5_Zap1.blp",
+      "sha256": "6548d1b4b9a550e7432f084e3a4298e7a43258a9a91efe0de680f35556f6310e",
+      "bytes": 19590
+    },
+    {
+      "importPath": "war3mapImported\\file00000883.mdx",
+      "sha256": "555c3caf2aba831ee8b88ce1dcb3d0626572a61f01dfd467798e71a413731ea6",
+      "bytes": 39127
+    },
+    {
+      "importPath": "war3mapImported\\Ice_Shard-6CC27.mdx",
+      "sha256": "3c20428dbffe426b2da42dbca12c7345383d0224cb9a8bfd33790fce2a738ffd",
+      "bytes": 33940
+    },
+    {
+      "importPath": "war3mapImported\\ice_shard-7716D.mdx",
+      "sha256": "1b01abb3e0dfeb3498db5108ef2613596cdee6ed32fb9238eb381da80e0b0432",
+      "bytes": 10387
+    },
+    {
+      "importPath": "war3mapImported\\ICEWOLFIce.blp",
+      "sha256": "6c11f1b02477cbbe2f167e3a2e2ab5024259b5488ae52a5a56f7ee95749108a1",
+      "bytes": 170540
+    },
+    {
+      "importPath": "war3mapImported\\ICEWOLFJakiro2sLight.blp",
+      "sha256": "dbfab2248de6085715b33d970d7c69fd621e24e095fffe263fe33c9925477d2e",
+      "bytes": 175942
+    },
+    {
+      "importPath": "war3mapImported\\CloudSingle.blp",
+      "sha256": "e33cf711a07d9459c08a37c1fcc4b56a113c1bfe507cc9a56a0f277220347b87",
+      "bytes": 4034
+    },
+    {
+      "importPath": "war3mapImported\\IcePath.MDX",
+      "sha256": "027f7ffc5f6922e45a1679757addf7bd0711b4ea6ed4834b78d58f3ea7846335",
+      "bytes": 22017
+    },
+    {
+      "importPath": "war3mapImported\\2a6578f2be7f_Flare.blp",
+      "sha256": "2a6578f2be7f2847fdf3fbd9c82dad830a174e1fcc1dcd412ddbe47b078316ff",
+      "bytes": 3240
+    },
+    {
+      "importPath": "war3mapImported\\47ccc163b6c6_RibbonBlur1.blp",
+      "sha256": "47ccc163b6c6478993a7b099da27ff8dcfb7d117098d0dcd085b465cb92c719e",
+      "bytes": 2261
+    },
+    {
+      "importPath": "war3mapImported\\freezingsplinter体.mdx",
+      "sha256": "5b1441bd230f92dd49517b59ae2a9b9bdfcb1b7c6485d95e291cc14745f55a38",
+      "bytes": 17565
+    },
+    {
+      "importPath": "war3mapImported\\a6555bc61ff4_Flare.blp",
+      "sha256": "a6555bc61ff41487f0488243bf9aebcc2f7f93887e643e136b1057741479a3fc",
+      "bytes": 4250
+    },
+    {
+      "importPath": "war3mapImported\\AZ_RibbonNE1_blue.blp",
+      "sha256": "fd9be6ebb37d20ad1d2c77b184013a2baeb945ffbfd187c2ed88a28f244f0bcb",
+      "bytes": 12217
+    },
+    {
+      "importPath": "war3mapImported\\[skillm]als-tx (6).mdx",
+      "sha256": "4eb99126e7b6b03023e8a2f06b360794bc7f3f25765cdf905fd8ec4e72803fbd",
+      "bytes": 18388
+    },
+    {
+      "importPath": "war3mapImported\\1f3e8fd3b419_Clouds8x8Grey.blp",
+      "sha256": "1f3e8fd3b419220614a434598dcf9846933e7fa2fc23422976afe113e41bba07",
+      "bytes": 41477
+    },
+    {
+      "importPath": "Moon_texiao_wenyiyunwu_01_guangyun_guangyun.blp",
+      "sha256": "c4c91458a73b2da26010fe0d8f2762c27c07bdcd7175b21a90dd7bf6b0cfc95c",
+      "bytes": 44215
+    },
+    {
+      "importPath": "Moon_texiao_binglingshu_01_xulie_piaosanguangli.blp",
+      "sha256": "a98ed64a6cebceb5f6997f6f2558d29fa863ba548cca16008183d6ed455a9afc",
+      "bytes": 56747
+    },
+    {
+      "importPath": "Moon_texiao_fengqie_01_xulie_fengge_baise.blp",
+      "sha256": "78e4433b8cf94355804adfae6324d7f4e41494037f5323b9e6dbb043097a55d1",
+      "bytes": 187532
+    },
+    {
+      "importPath": "Moon_texiao_fengqie_01_xulie_shanguang_baise.blp",
+      "sha256": "3c7234fab006ea705f37979449b483166d1c4b68c06c937c61a75c91013dca3d",
+      "bytes": 22393
+    },
+    {
+      "importPath": "war3mapImported\\file00008417.mdx",
+      "sha256": "ff58520c35a2c658380b42cb06a78da1df35a66e1a58bd7e395150ac42211d1f",
+      "bytes": 3444
+    },
+    {
+      "importPath": "TX025.blp",
+      "sha256": "3a96923b2edeb76a4a04dbd5fe893c1c4f2859febf73b12bcbd9e66db3d38a95",
+      "bytes": 4774
+    },
+    {
+      "importPath": "war3mapImported\\tx026.mdx",
+      "sha256": "6e6c124df2514589ab90ebbd9243f4e022a9e47f52eb93db4197222cfb607810",
+      "bytes": 2126
+    }
+  ],
+  "remapped": [
+    {
+      "model": "ice tornado/file00000883.mdx",
+      "before": "Textures\\Zap1.blp",
+      "after": "war3mapImported\\6548d1b4b9a5_Zap1.blp"
+    },
+    {
+      "model": "icicle projectile/freezingsplinter体.mdx",
+      "before": "Textures\\Flare.blp",
+      "after": "war3mapImported\\2a6578f2be7f_Flare.blp"
+    },
+    {
+      "model": "icicle projectile/freezingsplinter体.mdx",
+      "before": "Textures\\RibbonBlur1.blp",
+      "after": "war3mapImported\\47ccc163b6c6_RibbonBlur1.blp"
+    },
+    {
+      "model": "particles blue spiral projectile/[skillm]als-tx (6).mdx",
+      "before": "Textures\\Flare.blp",
+      "after": "war3mapImported\\a6555bc61ff4_Flare.blp"
+    },
+    {
+      "model": "rotating ice and air/file00008417.mdx",
+      "before": "Textures\\Clouds8x8Grey.blp",
+      "after": "war3mapImported\\1f3e8fd3b419_Clouds8x8Grey.blp"
+    }
+  ],
+  "normalized": [
+    {
+      "model": "ice aura/file00000456.mdx",
+      "globalSequence": 0,
+      "duration": 1
+    },
+    {
+      "model": "icicle projectile/freezingsplinter体.mdx",
+      "globalSequence": 1,
+      "duration": 1
+    },
+    {
+      "model": "particles blue spiral projectile/[skillm]als-tx (6).mdx",
+      "globalSequence": 1,
+      "duration": 1
+    }
+  ],
+  "builtinReferences": [
+    "Textures\\Blue_Glow2.blp",
+    "Textures\\Blue_Star2.blp",
+    "Textures\\Dust3.blp",
+    "Textures\\Flare.blp",
+    "Textures\\Frost2.blp",
+    "Textures\\GenericGlow2_64_blue.blp",
+    "Textures\\GenericGlow64.blp",
+    "Textures\\Ice.blp",
+    "Textures\\Ice3b.blp",
+    "Textures\\RibbonNE1_White.blp",
+    "Textures\\RibbonNE1_blue.blp",
+    "Textures\\Shockwave10.blp",
+    "Textures\\Shockwave1White.blp",
+    "Textures\\ShockwaveWater1.blp",
+    "Textures\\Smoke.blp",
+    "Textures\\snowflake.blp",
+    "Textures\\snowflake2.blp",
+    "Textures\\white.blp",
+    "UI\\Feedback\\Resources\\ResourceManaStone.blp",
+    "UI\\Glues\\SinglePlayer\\Orc_Exp\\SKY1b.blp",
+    "UI\\MiniMap\\ping4.blp"
+  ]
+}

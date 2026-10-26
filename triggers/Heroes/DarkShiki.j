@@ -755,6 +755,7 @@ library DarkShikiSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct DarkShikiR_KS
         private static integer array m_DarkShikiR
         private static integer MUI_DarkShikiR = -1
@@ -1131,6 +1132,7 @@ library DarkShikiSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct DarkShikiG_KS
         private static integer array m_DarkShikiG
         private static integer MUI_DarkShikiG = -1

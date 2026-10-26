@@ -149,6 +149,17 @@ class ShopCentering(unittest.TestCase):
 
 
 class ScoreboardKeys(unittest.TestCase):
+    def test_local_refresh_reads_only_the_synchronized_snapshot(self):
+        s=(ROOT/'triggers/WOS_Start/Scoreboard.j').read_text(encoding='utf-8-sig')
+        def body(name):
+            m=re.search(r'function '+name+r' takes.*?\nendfunction',s,re.S);self.assertIsNotNone(m,name);return m.group(0)
+        for name in ('WOS_STATS_UpdateForPlayer','WOS_STATS_UpdateRow','WOS_STATS_UpdateItems'):
+            for native in ('UnitItemInSlot','GetObjectName','BlzGetAbilityIcon','GetUnitTypeId','IsUnitType'):
+                self.assertNotIn(native+'(',body(name),name)
+        for name in ('WOS_STATS_Periodic','WOS_STATS_ShowFinal','WOS_STATS_SetOpen','WOS_STATS_OnOpacity','WOS_STATS_OnExpand','WOS_STATS_OnData'):
+            text=body(name);self.assertIn('call WOS_STATS_Snapshot()',text,name)
+            self.assertLess(text.index('call WOS_STATS_Snapshot()'),text.index('call WOS_STATS_UpdateForPlayer('),name)
+
     def test_keyboard_source_ignores_last_clicked_frame_and_does_not_reset_focus(self):
         s=(ROOT/'triggers/WOS_Start/Scoreboard.j').read_text(encoding='utf-8-sig')
         if 'if GetTriggeringTrigger() == WOS_STATS_DataKeys then' not in s:s=statistics_keys(s)
@@ -161,7 +172,8 @@ class ScoreboardKeys(unittest.TestCase):
             WOS_STATS_ClearButton='clear',WOS_STATS_DataKeys='keys',WOS_STATS_DataTrigger='click',
             GetTriggeringTrigger=lambda:'keys',BlzGetTriggerPlayerKey=lambda:key[0],
             WUI_GetHotkey=lambda c,p:'F3' if c==3 else 'F4',WUI_HOTKEY_CLEAR=3,WUI_HOTKEY_LOAD=5,
-            GetLocalPlayer=lambda:1,WUI_ResetClickedButtonFocus=lambda:focus.append('focus'))
+            GetLocalPlayer=lambda:1,WUI_ResetClickedButtonFocus=lambda:focus.append('focus'),
+            WOS_STATS_Snapshot=lambda:None)
         vm.run('WOS_STATS_OnData');self.assertEqual(g['PlayerDamagePhys'][0],0)
         key[0]='F4';vm.run('WOS_STATS_OnData');self.assertEqual(g['PlayerDamagePhys'][0],100)
         self.assertFalse(focus)

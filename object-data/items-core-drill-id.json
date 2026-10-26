@@ -1,0 +1,15 @@
+{
+  "CoreDrill": "I04E",
+  "CoreDrillPhysBuff1": "B04D",
+  "CoreDrillPhysBuff2": "B04E",
+  "CoreDrillPhysBuff3": "B04F",
+  "CoreDrillPhysBuff4": "B050",
+  "CoreDrillPhysBuff5": "B051",
+  "CoreDrillMagBuff1": "B052",
+  "CoreDrillMagBuff2": "B053",
+  "CoreDrillMagBuff3": "B054",
+  "CoreDrillMagBuff4": "B055",
+  "CoreDrillMagBuff5": "B056",
+  "CoreDrillPhysAbi": "A12C",
+  "CoreDrillMagAbi": "A12D"
+}

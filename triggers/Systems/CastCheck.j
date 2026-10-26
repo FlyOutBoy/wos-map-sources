@@ -167,13 +167,13 @@ function ManaFix_AfterEffects takes unit c, real before, real scriptedBefore ret
         set ManaFixBefore[slot] = ManaFixBefore[slot]+GetUnitState(c,UNIT_STATE_MANA)-before-(LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)-scriptedBefore)
     endif
 endfunction
-function DisableMoveRoot takes unit c, integer id returns boolean 
+function DisableMoveRoot takes unit c, integer id returns boolean
 local boolean b = true
 local integer idc = GetUnitTypeId(c)
 if GearCCProtected(c) then
     return true
 endif
-if GetUnitAbilityLevel(c,'BEer') >0 then
+if GetUnitAbilityLevel(c,'BEer') > 0 then
 if id == 'A01B' or id == 'A076' or id == 'A00Y' or id == OkarunQ_ID or id == GojoRQ_ID or id == Erza4W_Start or id == Erza5E_ID or id == Erza7W_ID then 
  set b = false
 endif
@@ -256,7 +256,7 @@ function CastHero_Conditions takes nothing returns boolean
         return false
     endif
     set b = DisableMoveRoot(c,id)
-if  IsUnitType(c,UNIT_TYPE_HERO) and b then //(cd == 0  ) and
+if b then // non-heroes already left above
 //call SaveInteger(hs,GetHandleId(Player(i)),StringHash("ahk pidor"),1)
 //call MyFlush(GetHandleId(Player(i)),StringHash("ahk pidor"),0,ahk_delay )
     if (CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and CheckCoordsInRect(gg_rct_Cage,GetUnitX(c),GetUnitY(c)) == false) or SpellExtension(c,id) then 
@@ -1449,6 +1449,58 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     endif
     endif
+    static if LIBRARY_AltairSpells then
+    if heroType == Altair_ID then
+    if id == AltairQ_ID then
+    set check = 1
+    call AltairQ_Start(c,x,y)
+    elseif id == AltairW_ID then
+    if AltairW_Start(c,td) then
+    set check = 1
+    endif
+    elseif id == AltairE_ID then
+    set check = 1
+    call AltairE_Start(c)
+    elseif id == AltairR_ID then
+    if AltairR_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == AltairT_ID then
+    if AltairT_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == AltairF_ID then
+    set check = 1
+    call AltairF_Start(c)
+    elseif id == AltairG_ID then
+    call AltairG_Start(c)
+    elseif id == AltairSQ_ID then
+    if AltairSQ_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == AltairSW_ID then
+    if AltairSW_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == AltairSE_ID then
+    if AltairSE_Start(c) then
+    set check = 1
+    endif
+    elseif id == AltairSR_ID then
+    if AltairSR_Start(c,x,y) then
+    set check = 1
+    endif
+    elseif id == AltairST_ID then
+    if AltairST_Start(c) then
+    set check = 1
+    endif
+    elseif id == AltairSF_ID then
+    call AltairSF_Start(c)
+    elseif id == AltairSG_ID then
+    call AltairSG_Start(c)
+    endif
+    endif
+    endif
     endif // shared dispatch
     if heroType == Starrk_ID and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3 then
     call StarrkPas(c)
@@ -1500,7 +1552,7 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     
     endif
-    elseif IsUnitType(c,UNIT_TYPE_HERO)  and BlzGetUnitAbilityCooldownRemaining(c,id)==0 then 
+    elseif BlzGetUnitAbilityCooldownRemaining(c,id)==0 then
     call IssueImmediateOrder(c,"stop")
     set i2 = BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(c,id),ABILITY_ILF_MANA_COST,GetUnitAbilityLevel(c,id)-1)
     

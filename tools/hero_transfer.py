@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime
@@ -64,6 +65,39 @@ class TextFile:
 
 def marker(hero: str, part: str) -> str:
     return f"HERO TRANSFER: {hero} / {part}"
+
+
+def choose_buyer_name(supplied: str | None, automatic: bool = False) -> str:
+    if supplied is None:
+        if automatic:
+            raise TransferError("Provide --buyer-name with --yes; the buyer nickname cannot be inferred")
+        supplied = input("Buyer nickname for priority pick (ThunderGear is always retained): ")
+    value = supplied.strip()
+    if not value or any(ord(char) < 32 for char in value):
+        raise TransferError("Buyer nickname must be nonempty and contain no control characters")
+    return value
+
+
+def update_new_hero_access(text: str, hero: str, buyer: str) -> str:
+    # Only the rotating new-hero slot changes; additional immunity slots survive.
+    text, count = re.subn(r"(?m)^([ \t]*integer\s+BanImmuneHero1\s*=\s*)[^\n/]+",
+                         lambda m: m[1] + hero + "_ID", text)
+    if count != 1:
+        raise TransferError(f"New-hero immunity: expected one BanImmuneHero1 declaration, found {count}")
+    escaped = buyer.replace("\\", "\\\\").replace('"', '\\"')
+
+    def edit(block: str) -> str:
+        pattern = r'(?m)^([ \t]*)if\s+\(FramePlayerFirstName\[i\][^\n]*\)\s+and\s+\(PlayerFrameCurrent_ID\[i\]\s*==\s*[^\n]+?\)\s+then[^\n]*'
+        matches = [match for match in re.finditer(pattern, block)
+                   if '"ThunderGear"' in match.group() or '"Thunder.Gear"' in match.group()]
+        if len(matches) != 1:
+            raise TransferError(f"Priority pick: expected one ThunderGear/new-hero condition, found {len(matches)}")
+        match = matches[0]
+        condition = (f'{match[1]}if (FramePlayerFirstName[i] == "ThunderGear" or '
+                     f'FramePlayerFirstName[i] == "{escaped}") and (PlayerFrameCurrent_ID[i] == {hero}_ID) then')
+        return block[:match.start()] + condition + block[match.end():]
+
+    return edit_function(text, "PrepareStart", edit)
 
 
 def function_span(text: str, name: str) -> tuple[int, int]:
@@ -299,6 +333,11 @@ def add_picker_details(text: str, hero: str, page: int, mode: int, difficulty_te
 def add_picker_sounds(text: str, hero: str, category_index: int, slot: int) -> str:
     part = marker(hero, "OnClick sounds")
     if part in text:
+        # Older transfers left an empty resolver when pick voices were missing.
+        # A later repeat must activate the imported voices without duplicating
+        # the marked branch or changing hand-written voice implementations.
+        empty = re.compile(r'(?m)^(    // '+re.escape(part)+r'\n    elseif heroId == '+re.escape(hero)+r'_ID then\n)        return ""(?=\n)')
+        text = empty.sub(lambda match: match[1] + f'        return "war3mapimported\\\\Hero_{hero}_Pick" + I2S(i + 1)', text)
         return text
     # CP43 moved voice dispatch out of OnClick into a shared resolver.
     if re.search(r"(?m)^function WOS_HeroVoicePath takes", text):
@@ -550,6 +589,51 @@ def main_hero_file(workspace: Path, source: Path, hero: str) -> TextFile:
     return selected
 
 
+def active_test_source(workspace: Path) -> Path:
+    config = json.loads((workspace/'.vscode/wos-build.json').read_text(encoding='utf-8-sig'))
+    hero = config.get('testHero', '')
+    if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', hero):
+        raise TransferError('Set a valid testHero in .vscode/wos-build.json')
+    state_path = workspace/'test_map/profiles/state.json'
+    profile = json.loads(state_path.read_text(encoding='utf-8-sig')).get('profiles',{}).get(hero,{}) if state_path.is_file() else {}
+    selected = profile.get('heroSource')
+    if selected:
+        path = (workspace/selected).resolve()
+        if path.is_file():
+            return path
+    for relative in (f'test_map/heroes/{hero}.j', f'test_map/profiles/{hero}/imported-hero/{hero}.j', f'triggers/Heroes/{hero}.j'):
+        if (workspace/relative).is_file():
+            return (workspace/relative).resolve()
+    raise TransferError(f'No selected TEST source found for {hero}')
+
+
+def test_hero_gate(text: str, hero: str) -> str:
+    """One public switch for the current TEST hero; retain prior hero entries."""
+    text = text.replace('WOS_FrostnovaMainPick', 'WOS_EnableTestHero')
+    if not re.search(r'\bboolean WOS_EnableTestHero\s*=',text):
+        text = 'globals\n    constant boolean WOS_EnableTestHero = false\nendglobals\n\n'+text
+    if re.search(r'\binteger WOS_TestHeroId\s*=',text):
+        text = re.sub(r'(\binteger WOS_TestHeroId\s*=\s*)\w+',lambda m:m[1]+hero+'_ID',text)
+    else:
+        text = text.replace('endglobals',f'    integer WOS_TestHeroId = {hero}_ID // Updated by the active TEST hero task.\nendglobals',1)
+    # Migrate the existing Frostnova-only guard without changing its enabled state.
+    text = text.replace('if WOS_EnableTestHero then', 'if WOS_EnableTestHero or WOS_TestHeroId != Frostnova_ID then')
+    condition = f'if WOS_EnableTestHero or WOS_TestHeroId != {hero}_ID then'
+    if condition in text:
+        return text
+    start = text.find('    // '+marker(hero,'BuildsForChars'))
+    if start < 0:
+        raise TransferError(f'No generated catalog block for {hero}; cannot safely guard an unmarked entry')
+    matches = list(re.finditer(r'(?m)^    call UnitAddAbility\(Hero_ID[0-5]_Dummy\[n\], '+re.escape(hero)+r'\w+_ID\)\n',text[start:]))
+    if not matches:
+        raise TransferError(f'No ability tail for the {hero} catalog block')
+    # Only this contiguous generated block is wrapped, not subsequent heroes.
+    boundary = text.find('// HERO TRANSFER:',start+8)
+    tails = [m for m in matches if boundary < 0 or start+m.start() < boundary]
+    finish = start+tails[-1].end()
+    return text[:start]+'    '+condition+'\n'+text[start:finish]+'    endif\n'+text[finish:]
+
+
 def file_changed(file: TextFile) -> bool:
     return not file.path.is_file() or file.encoded() != file.path.read_bytes()
 
@@ -604,18 +688,29 @@ def write_transaction(files: list[TextFile], workspace: Path, hero: str) -> Path
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--hero-file")
+    parser.add_argument('--active-test-hero', action='store_true', help='Use testHero, remember transfer answers, and guard its MAIN pick with WOS_EnableTestHero')
+    parser.add_argument('--build-main', action='store_true', help='After transfer, save and build MAIN without launching Warcraft')
     parser.add_argument("--workspace", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--category", type=int)
     parser.add_argument("--difficulty", type=int)
     parser.add_argument("--items", help="default, or six rawcodes separated by spaces/commas")
+    parser.add_argument("--buyer-name", help="Purchaser nickname; replaces the previous buyer in priority pick")
     parser.add_argument("--yes", action="store_true", help="accept confirmations (for automated tests)")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     try:
         workspace = args.workspace.resolve()
-        hero_file = resolve_hero_file(workspace, args.hero_file)
+        if args.active_test_hero and args.hero_file:
+            raise TransferError('Choose --active-test-hero or --hero-file, not both')
+        hero_file = active_test_source(workspace) if args.active_test_hero else resolve_hero_file(workspace, args.hero_file)
         hero, declarations = parse_hero(hero_file)
+        config_file = TextFile.load(workspace/'.vscode/wos-build.json') if args.active_test_hero else None
+        config = json.loads(config_file.text) if config_file else {}
+        remembered = config.get('heroTransferProfiles',{}).get(hero,{})
+        for option, key in (('category','category'),('difficulty','difficulty'),('items','items'),('buyer_name','buyerName')):
+            if getattr(args,option) is None and key in remembered:
+                setattr(args,option,remembered[key])
         main_source = main_hero_file(workspace, hero_file, hero)
         has_f = f"{hero}F_ID" in declarations
         has_g = f"{hero}G_ID" in declarations
@@ -625,7 +720,7 @@ def main() -> int:
         print(f"MAIN target:    {main_source.path}")
         print(f"Detected hero:  {hero} ({hero}_ID = '{declarations[f'{hero}_ID']}')")
         print("Abilities:      " + ", ".join(letter for letter in "QWERTFG" if f"{hero}{letter}_ID" in declarations))
-        if not confirm("Use exactly this J file for Hero Transfer? Type Y to continue: ", args.yes):
+        if not confirm("Use exactly this J file for Hero Transfer? Type Y to continue: ", args.yes or args.active_test_hero):
             print("CANCELLED: no files were changed")
             return 0
 
@@ -643,6 +738,7 @@ def main() -> int:
 
         item_names = load_items(workspace)
         items = choose_items(item_names, args.items)
+        buyer = choose_buyer_name(args.buyer_name, args.yes)
 
         paths = {
             "builds": workspace / "triggers" / "WOS_Start" / "BuildsForChars.j",
@@ -680,6 +776,8 @@ def main() -> int:
         print(f"  G ability:   {'yes' if has_g else 'no'}")
         print(f"  UI mode b:   {mode}")
         print(f"  Difficulty:  {difficulty_name}")
+        print(f"  Ban immunity: BanImmuneHero1 = {hero}_ID (replaces the previous new hero)")
+        print(f"  Priority pick: ThunderGear + {buyer}, hero {hero}_ID")
         print(f"  Death sound: {'found; Death.j will be updated' if death_sound else 'not found; Death.j will not be changed'}")
         print("  Items:")
         for rawcode in items:
@@ -692,19 +790,22 @@ def main() -> int:
                 args.yes,
             )
 
-        if not confirm("\nApply this Hero Transfer? Type Y to write the files: ", args.yes):
+        if not confirm("\nApply this Hero Transfer? Type Y to write the files: ", args.yes or args.active_test_hero):
             print("CANCELLED: no files were changed")
             return 0
 
         files["builds"].text = add_build_entry(
             files["builds"].text, hero, category_index, slot, has_f, has_g
         )
+        if args.active_test_hero:
+            files['builds'].text = test_hero_gate(files['builds'].text,hero)
         picker = files["picker"].text
         picker = add_random_pick(picker, hero, category_index, slot)
         picker = add_picker_details(picker, hero, page, mode, difficulty_text)
         picker = add_picker_sounds(picker, hero, category_index, slot)
         picker = add_confirm_pick(picker, hero, category_index, slot)
         picker = add_guide_tooltips(picker, hero, category_index, slot, has_f, has_g)
+        picker = update_new_hero_access(picker, hero, buyer)
         files["picker"].text = picker
 
         systems = files["systems"].text
@@ -718,6 +819,10 @@ def main() -> int:
         files["level"].text = add_level_up(files["level"].text, hero, has_f, has_g)
 
         write_files = [main_source, *files.values()]
+        if config_file:
+            config.setdefault('heroTransferProfiles',{})[hero] = dict(category=category,difficulty=difficulty,items=' '.join(items),buyerName=buyer)
+            config_file.text = json.dumps(config,ensure_ascii=False,indent=4)+'\n'
+            write_files.append(config_file)
         if add_trigger:
             settings_file = update_trigger_setting(workspace, main_source.path, True)
             if settings_file is not None:
@@ -736,9 +841,16 @@ def main() -> int:
         else:
             print("\nHERO TRANSFER OK")
             print(f"Backup: {backup}")
-            print("Next: run 'WOS Objects: 3. Save JSON and J into map folder' with World Editor closed.")
+            if not args.build_main:
+                print("Next: run MAIN: 2 (save/build/run) or MAIN: 3 (save/build) with World Editor closed.")
             print("That task will create/update the WTG trigger under Heroes and write the J source into WCT.")
+        if args.build_main:
+            import wos_map_workflow
+            wos_map_workflow.build(workspace,'Main',no_launch=True)
         return 0
+    except subprocess.CalledProcessError as exc:
+        print(f'\nMAIN BUILD FAILED: {exc}. Completed project transfer and its backup are retained; fix the build error and repeat the same command.',file=sys.stderr)
+        return 1
     except (TransferError, OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"\nHERO TRANSFER FAILED: {exc}", file=sys.stderr)
         print("No partial Hero Transfer changes were intentionally kept.", file=sys.stderr)

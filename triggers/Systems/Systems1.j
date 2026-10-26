@@ -1828,12 +1828,13 @@ if id == Crocodile_ID then
 endif
 // HERO TRANSFER: Frostnova / RecommenedItems
 if id == Frostnova_ID then
-    set ItemsPage0_ID[i2+0] = 'I00O' // Urahara Set
-    set ItemsPage0_ID[i2+1] = 'I024' // Prison Realm (Active)
-    set ItemsPage0_ID[i2+2] = 'I00M' // Cup of Tea
-    set ItemsPage0_ID[i2+3] = 'I00T' // Raikage Hat
-    set ItemsPage0_ID[i2+4] = 'I01Q' // Ryujin Jakka
-    set ItemsPage0_ID[i2+5] = 'I03T' // Hogyoku
+
+    set ItemsPage0_ID[i2+0] = 'I00O' // urahara set
+    set ItemsPage0_ID[i2+1] = 'I00H' // Oken
+    set ItemsPage0_ID[i2+2] = 'I023' // ryujin jakka
+    set ItemsPage0_ID[i2+3] = 'I01L' // kazekage hat
+    set ItemsPage0_ID[i2+4] = 'I011' // okarun egg
+    set ItemsPage0_ID[i2+5] = 'I03T' // hogyoku
 endif
 set ItemsFrameCurrentPage_ID[i] = 0
 set ItemsCraftPlayerDebug_ID[i] = -1
@@ -3298,6 +3299,11 @@ function GetPhysRes takes unit c returns real
 local real result = 0
 local real check = 0
 set check = 1-DamageBlock(null,c,1.00,2,true)*HeroChannelDamageFactor(c)
+static if LIBRARY_FrostnovaSpells then
+    if GetUnitAbilityLevel(c, FrostnovaE_ResistBuffID) > 0 then
+        set check = 1.0-(1.0-check)*(1.0-FrostnovaE_Resist)
+    endif
+endif
 set result = (check) * 100
  return result
 endfunction
@@ -3305,6 +3311,11 @@ function GetMagRes takes unit c returns real
 local real result = 0
 local real check = 0
 set check = 1-DamageBlock(null,c,1.00,1,true)*HeroChannelDamageFactor(c)
+static if LIBRARY_FrostnovaSpells then
+    if GetUnitAbilityLevel(c, FrostnovaE_ResistBuffID) > 0 then
+        set check = 1.0-(1.0-check)*(1.0-FrostnovaE_Resist)
+    endif
+endif
 set result = (check) * 100
  return result
 endfunction
@@ -3334,6 +3345,24 @@ function MahoragaT_GetStacks takes unit u returns integer
         return 2
     elseif GetUnitAbilityLevel(u, MahoragaT_Abi_ID1) > 0 then
         return 1
+    endif
+    return 0
+endfunction
+
+// Core Drill stacks of one damage type (1 magic, 2 physical); 0 once expired.
+function CoreDrill_GetStacks takes unit c, integer typedmg returns integer
+    local integer h = GetHandleId(c)
+    if not CoreDrill_ClockStarted then
+        return 0
+    endif
+    if typedmg == 1 then
+        if TimerGetElapsed(CoreDrill_Clock) < LoadReal(hs, h, SH_CORE_DRILL_MAG_END) then
+            return LoadInteger(hs, h, SH_CORE_DRILL_MAG)
+        endif
+    elseif typedmg == 2 then
+        if TimerGetElapsed(CoreDrill_Clock) < LoadReal(hs, h, SH_CORE_DRILL_PHYS_END) then
+            return LoadInteger(hs, h, SH_CORE_DRILL_PHYS)
+        endif
     endif
     return 0
 endfunction
@@ -3467,6 +3496,14 @@ function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg r
             endif
 
             set dmg = dmg * (1.0 + multiplier / 100.0)
+        endif
+    endif
+
+    // Core Drill: live stacks of this damage type (read-only; stacks are added in DmgSys).
+    if (typedmg == 1 or typedmg == 2) and HasCachedItem(c, CoreDrill_ID) > 0 then
+        set stacks = CoreDrill_GetStacks(c, typedmg)
+        if stacks > 0 then
+            set dmg = dmg * (1.0 + stacks * CoreDrill_BonusPerStack / 100.0)
         endif
     endif
 

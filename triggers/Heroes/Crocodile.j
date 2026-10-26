@@ -55,6 +55,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileQ_GroundSandAoe = 255.0
         real CrocodileQ_Move = 75.0
         real CrocodileQ_DamageEndPadding = 200.0 // Cover the visible end of the slash.
+        real CrocodileQ_LastExplosionBack = 150.0 // Last sand explosion drawn closer; damage reach is unchanged.
         real CrocodileQ_Distance = 1655.0
         real CrocodileQ_CastTime = 0.42
         real CrocodileQ_PauseTime = 0.54
@@ -67,7 +68,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileQ_Aoe = 285.0
         real CrocodileQ_DamageAgiBase = 1.0
         real CrocodileQ_DamageAgiStep = 1.0
-        real CrocodileQ_DamageStatic = 150.0 // Flat physical damage added at every level.
+        real CrocodileQ_DamageStatic = 100.0 // Flat physical damage added at every level.
         integer CrocodileQ_Slow = 30
         integer CrocodileQ_SharedMarkHeroLevel = 35
         real CrocodileQ_PullDistance = 55.0
@@ -85,7 +86,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileW_Duration = 3.0
         real CrocodileW_CastTime = 0.45
         integer CrocodileW_Hits = 6
-        real CrocodileW_Aoe = 600.0
+        real CrocodileW_Aoe = 800.0
         real CrocodileW_PullSpeed = 210
         real CrocodileW_EdgePullMultiplier = 0.50
         real CrocodileW_DecorDamage = 20.0
@@ -121,7 +122,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
 
 //================================ Crocodile R ========================================
         integer CrocodileR_ID = 'A0IA'
-        real CrocodileR_Speed = 750.0
+        real CrocodileR_Speed = 900.0
         real CrocodileR_SandSpacing = 100.0
         real CrocodileR_Duration = 2.5
         real CrocodileR_StartScale = 0.15
@@ -129,11 +130,12 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileR_CastTime = 0.45
         real CrocodileR_StartAoe = 200.0
         real CrocodileR_EndAoe = 475.0
-        real CrocodileR_DamageAgi = 0.5
+        real CrocodileR_DamageAgi = 0.3
         real CrocodileR_DamageStep = 0.2
-        integer CrocodileR_Hits = 6
+        real CrocodileR_HitDuration = 1.0
+        integer CrocodileR_Hits = 5
         real CrocodileR_StunTime = 1.0
-        real CrocodileR_PullSpeed = 1200.0
+        real CrocodileR_PullSpeed = 1800.0
         private constant integer CrocodileR_TargetKey = 5
         real CrocodileR_OrbitSpeed = 400.0
         real CrocodileR_LiftSpeed = 700.0
@@ -164,17 +166,17 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileT_DamageReduction = 0.35
         real CrocodileT_DamageReduction35 = 0.70 // replaces the old Lv.35 invulnerability
         real CrocodileT_MaxAoe = 1900.0
-        real CrocodileT_RingSpacing = 475.0
-        real CrocodileT_PatchSpacing = 475.0
-        real CrocodileT_MinDistance = 180.0
-        real CrocodileT_ScaleMin = 2
+        real CrocodileT_RingSpacing = 700.0 // was 475: ~20 larger patches instead of ~45, same coverage
+        real CrocodileT_PatchSpacing = 700.0
+        real CrocodileT_MinDistance = 300.0
+        real CrocodileT_ScaleMin = 3.0
         real CrocodileT_PatchBehindWave = 150.0
-        real CrocodileT_ScaleMax = 3
+        real CrocodileT_ScaleMax = 4.2
         real CrocodileT_SandVisualScale = 1.4
         real CrocodileT_GrowTime = 0.4
         real CrocodileT_RingBuildTime = 0.18
         real CrocodileT_WaveSpacing = 450.0
-        integer CrocodileT_MaxWaves = 16
+        integer CrocodileT_MaxWaves = 10 // was 16; each wave front is ~640 particles
         real CrocodileT_WaveScaleMin = 1.7
         real CrocodileT_WaveScaleMax = 2.6
         real CrocodileT_WaveFadeTime = 0.45
@@ -193,14 +195,14 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileT2_UnlockTime = 1.0
         real CrocodileT2_CheckPeriod = 0.1
         real CrocodileT2_Window = 10.0
-        real CrocodileT2_DamageAgi = 10.0
+        real CrocodileT2_DamageAgi = 9.0
         real CrocodileT2_MergeDistance = 450.0
         integer CrocodileT2_MergeMaxPatches = 32
         real CrocodileT2_ExplosionBaseRadius = 50.0
         real CrocodileT2_FireScaleMax = 5.0
         real CrocodileT2_PoffScaleMax = 7.5
         real CrocodileT2_KrkScaleMax = 3
-        integer CrocodileT2_MaxMainBlasts = 12
+        integer CrocodileT2_MaxMainBlasts = 8 // was 12; every blast is two screen-sized particle effects
         integer CrocodileT2_MinMainBlasts = 3
         real CrocodileT2_BlastDistance = 0.55
         real CrocodileT2_KrkCountMultiplier = 1.5
@@ -218,7 +220,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         integer CrocodileF_MinHeroLevel = 12
         real CrocodileF_Range = 900.0
         real CrocodileF_AttackSpeed = 3.0
-        real CrocodileF_DamageAgi = 1.5
+        real CrocodileF_DamageAgi = 1.25
         real CrocodileF_InternalCD = 2.0
         real CrocodileF_ProjectileSpeed = 2484.0 // Previous speed + 15%.
         real CrocodileF_BladeMoveDelay = 0.15
@@ -867,6 +869,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             local real amount
             local real section
             local real damageDistance
+            local real explosionAt
             local CrocodileQ_Trail trail
             local boolean removeNow
             loop
@@ -941,7 +944,12 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             set sectionCount = 0
                             loop
                                 exitwhen amount > distance or sectionCount >= 6
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_sandSlashUp.mdl",startX+amount*Cos(a),startY+amount*Sin(a),a*bj_RADTODEG,1,CrocodileQ_ExplosionScale,0))
+                                set explosionAt = amount
+                                // The last explosion's art reaches ~150 past its point: pull it back.
+                                if amount+RMaxBJ(1.0,CrocodileQ_ExplosionSpacing) > distance or sectionCount >= 5 then
+                                    set explosionAt = RMaxBJ(250.0, amount-CrocodileQ_LastExplosionBack)
+                                endif
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_sandSlashUp.mdl",startX+explosionAt*Cos(a),startY+explosionAt*Sin(a),a*bj_RADTODEG,1,CrocodileQ_ExplosionScale,0))
                                 set amount = amount+RMaxBJ(1.0,CrocodileQ_ExplosionSpacing)
                                 set sectionCount = sectionCount+1
                             endloop
@@ -1089,6 +1097,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real r
         real rmax
         integer hits
+        real castTime
         boolean castPauseHeld
         real scanTime
         real dmg
@@ -1181,7 +1190,7 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 endloop
                 endif
                 set r = RoundReal(r+CrocodilePeriod,3)
-                if castPauseHeld and (r + 0.001 >= CrocodileW_CastTime or not SpellBoolCaster(c)) then
+                if castPauseHeld and (r + 0.001 >= castTime or not SpellBoolCaster(c)) then
                     set castPauseHeld = false
                     call StopSpellUnit2(c)
                 endif
@@ -1294,6 +1303,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             call VisionTimed(GetOwningPlayer(c),x,y,radius*1.5,3.0)
             set damageRmax = rmax // Freeze the six original damage times; rmax may extend for R.
             set hits = 0
+            set castTime = CrocodileW_CastTime
+            if GetHeroLevel(c) >= 35 then
+                set castTime = castTime * 0.5
+            endif
             set castPauseHeld = true
             call StartSpellUnit2(c)
             set scanTime = 0.0
@@ -1779,8 +1792,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         integer next
         real a
         real lift
+        real hitTime
+        integer hits
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct CrocodileR_Struct
         static integer array m
         static integer MUI = -1
@@ -1798,8 +1814,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real visionX
         real visionY
         real visionPulse
-        integer hits
-        integer maxHits
         real sandDistance
         real radius
         real dmg
@@ -1881,7 +1895,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             local real trailOffset
             local real targetX
             local real targetY
-            local boolean damageTick
             local integer j
             local CrocodileW_Struct pit
             local CrocodileW_Struct nearest
@@ -1894,7 +1907,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                 exitwhen i > MUI
                 set this = m[i]
                 set r = RoundReal(r+CrocodilePeriod,3)
-                set damageTick = hits < maxHits and r+0.001 >= (hits+1)*baseDuration/maxHits
                 if castPauseHeld and (r + 0.001 >= CrocodileR_CastTime or endNow or not SpellBoolCaster(c)) then
                     set castPauseHeld = false
                     call StopSpellUnit(c)
@@ -1993,6 +2005,8 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             set target.owner = this
                             set target.a = Atan2(GetUnitY(u)-y,GetUnitX(u)-x)
                             set target.lift = 0.0
+                            set target.hitTime = 0.0
+                            set target.hits = 0
                             set target.previous = 0
                             set target.next = captured
                             if captured != 0 then
@@ -2020,7 +2034,9 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                             set targetX = x+radius*CrocodileR_OrbitRadius*Cos(angle)
                             set targetY = y+radius*CrocodileR_OrbitRadius*Sin(angle)
                             call MoveUnit(u,RMinBJ(CrocodileR_PullSpeed*CrocodilePeriod,SR3(u,targetX,targetY)),Atan2(targetY-GetUnitY(u),targetX-GetUnitX(u)))
-                            if damageTick then
+                            set target.hitTime = target.hitTime + CrocodilePeriod
+                            if target.hits < CrocodileR_Hits and target.hitTime + 0.001 >= target.hits * CrocodileR_HitDuration / IMaxBJ(1, CrocodileR_Hits) then
+                                set target.hits = target.hits + 1
                                 call DamageSource('A0IA')
                                 call dmgphys(c,u,dmg)
                                 call Crocodile_ApplySharedMark(c,u)
@@ -2028,9 +2044,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                         endif
                         set target = next
                     endloop
-                    if damageTick then
-                        set hits = hits+1
-                    endif
                 endif
                 if endNow or r + 0.001 >= rmax or not SpellBoolCaster(c) or LoadInteger(CrocodileTable,GetHandleId(c),CrocodileCore_DataKey) == 0 then
                     if castPauseHeld then
@@ -2092,8 +2105,6 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
             set wCenterX = x
             set wCenterY = y
             set nextComboEffect = 0.0
-            set hits = 0
-            set maxHits = IMaxBJ(1,CrocodileR_Hits)
             set sandDistance = 0.0
             set radius = CrocodileR_StartAoe
             set dmg = GetHeroAgi(c,true)*(CrocodileR_DamageAgi+(CrocodileR_DamageStep*(GetUnitAbilityLevel(c,CrocodileR_ID)-1)))

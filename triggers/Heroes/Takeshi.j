@@ -217,6 +217,7 @@ library TakeshiSpells uses GearSystems
             endif
         endif
     endfunction
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TakeshiSpells_Q
         private static integer array m_TakeshiQ
         private static integer MUI_TakeshiQ = -1
@@ -868,6 +869,7 @@ library TakeshiSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TakeshiSpells_E
         private static integer array m_TakeshiE
         private static integer MUI_TakeshiE = -1
@@ -1037,6 +1039,7 @@ library TakeshiSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TakeshiSpells_R
         private static integer array m_TakeshiR
         private static integer MUI_TakeshiR = -1
@@ -1616,6 +1619,7 @@ library TakeshiSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TakeshiSpells_G
         private static integer array m_TakeshiG
         private static integer MUI_TakeshiG = -1

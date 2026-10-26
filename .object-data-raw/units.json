@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "07b0d812b16f41711b226e6429d0baf18af4cc307900e8b2bf99d0ff4a9c8208",
+  "source_sha256": "cd7ec62f44bfc351505e1499ca00dee6cf100c47b38fc93c45120273f9487c03",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -45712,7 +45712,10 @@
           "field_name": "Hero abilities / Способности героя",
           "type": "string",
           "data": {
-            "value": "A116,A117,A118,A119,A11A"
+            "value": "A116,A117,A118,A119,A11A",
+            "_original_value": "A116,A117,A118,A119,A11A",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTExNixBMTE3LEExMTgsQTExOSxBMTFB"
           },
           "sanity_check": {
             "text": "",
@@ -45744,9 +45747,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 1.4500000476837158,
-            "_original_value": 1.4500000476837158,
-            "_raw_hex": "9A99B93F"
+            "value": 1.2000000476837158,
+            "_original_value": 1.2000000476837158,
+            "_raw_hex": "9A99993F"
           },
           "sanity_check": {
             "text": "",
@@ -45840,7 +45843,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "INT"
+            "value": "INT",
+            "_original_value": "INT",
+            "_encoding": "utf-8",
+            "_raw_base64": "SU5U"
           },
           "sanity_check": {
             "text": "",
@@ -45872,7 +45878,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": ""
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
           },
           "sanity_check": {
             "text": "",
@@ -45887,7 +45896,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": ""
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
           },
           "sanity_check": {
             "text": "",
@@ -46086,7 +46098,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "debris,ground,item,structure,ward"
+            "value": "debris,ground,item,structure,ward",
+            "_original_value": "debris,ground,item,structure,ward",
+            "_encoding": "utf-8",
+            "_raw_base64": "ZGVicmlzLGdyb3VuZCxpdGVtLHN0cnVjdHVyZSx3YXJk"
           },
           "sanity_check": {
             "text": "",
@@ -46101,9 +46116,9 @@
           "field_name": "",
           "type": "unreal",
           "data": {
-            "value": 2.0,
-            "_original_value": 2.0,
-            "_raw_hex": "00000040"
+            "value": 2.25,
+            "_original_value": 2.25,
+            "_raw_hex": "00001040"
           },
           "sanity_check": {
             "text": "",
@@ -46193,7 +46208,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "missile"
+            "value": "missile",
+            "_original_value": "missile",
+            "_encoding": "utf-8",
+            "_raw_base64": "bWlzc2lsZQ=="
           },
           "sanity_check": {
             "text": "",
@@ -46238,7 +46256,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": ""
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
           },
           "sanity_check": {
             "text": "",
@@ -46326,283 +46347,16 @@
         },
         {
           "field": {
-            "text": "umdl",
-            "hex": "756D646C"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "war3mapImported\\wos_Frieren.mdl"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uico",
-            "hex": "7569636F"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "ussi",
-            "hex": "75737369"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_Icon.blp"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "unam",
-            "hex": "756E616D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostnova"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "upro",
-            "hex": "7570726F"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Yeti Princess"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "upru",
-            "hex": "75707275"
-          },
-          "field_name": "",
-          "type": "int",
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uawt",
-            "hex": "75617774"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "utip",
-            "hex": "75746970"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostnova"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "utpr",
-            "hex": "75747072"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "utub",
-            "hex": "75747562"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostnova - frost mage. Placeholder model; replace ufil when the model is ready."
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uhas",
-            "hex": "75686173"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uspa",
-            "hex": "75737061"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uhot",
-            "hex": "75686F74"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "usnd",
-            "hex": "75736E64"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Jaina"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "ua1m",
-            "hex": "7561316D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Abilities\\Weapons\\LichMissile\\LichMissile.mdl"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "uimz",
-            "hex": "75696D7A"
-          },
-          "field_name": "",
-          "type": "unreal",
-          "data": {
-            "value": 150.0
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "ulpz",
-            "hex": "756C707A"
-          },
-          "field_name": "",
-          "type": "unreal",
-          "data": {
-            "value": 150.0
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "ussc",
-            "hex": "75737363"
-          },
-          "field_name": "",
-          "type": "real",
-          "data": {
-            "value": 3.0
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
             "text": "ufil",
             "hex": "7566696C"
           },
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "units\\human\\Jaina\\Jaina.mdl"
+            "value": "war3mapImported\\wos_Frostnova.mdx",
+            "_original_value": "war3mapImported\\wos_Frostnova.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19Gcm9zdG5vdmEubWR4"
           },
           "sanity_check": {
             "text": "H002",
@@ -46614,25 +46368,13 @@
             "text": "uabi",
             "hex": "75616269"
           },
-          "field_name": "",
+          "field_name": "Normal abilities / Обычные способности",
           "type": "string",
           "data": {
-            "value": "A11B"
-          },
-          "sanity_check": {
-            "text": "H002",
-            "hex": "48303032"
-          }
-        },
-        {
-          "field": {
-            "text": "usca",
-            "hex": "75736361"
-          },
-          "field_name": "",
-          "type": "real",
-          "data": {
-            "value": 1.0
+            "value": "AInv,A11B",
+            "_original_value": "AInv,A11B",
+            "_encoding": "utf-8",
+            "_raw_base64": "QUludixBMTFC"
           },
           "sanity_check": {
             "text": "H002",
@@ -46640,7 +46382,7 @@
           }
         }
       ],
-      "display_name": "Frieren"
+      "display_name": "Frostnova"
     }
   ]
 }

@@ -122,19 +122,19 @@ class HoverAndHandles(unittest.TestCase):
         fixture.vm.g['BlzGetUnitAbility'] = lambda *_: self.fail('local handle reservation')
         self.assertEqual(1, fixture.vm.run('AHUI_MaxLevel', (fixture.c, 'unknown')))
 
-    def test_hover_clears_when_mouse_leaves_clicked_portrait(self):
+    def test_hover_is_only_on_level_plate_and_clears_on_portrait(self):
         vm = ui.load_source('DefaultArmorChangeStable_Copy.j')
         visible = {}
-        pos = [.19, .05]
+        pos = [.19, .0192]
         vm.g.update(UNITSTAT_Root='hud', UNITSTAT_PortraitTip='portrait-tip', UNITSTAT_Tooltip='stat-tip', UNITSTAT_Hover=-1,
                     BlzFrameIsVisible=lambda _: True,
                     BlzGetMouseScreenPosX=lambda: pos[0], BlzGetMouseScreenPosY=lambda: pos[1],
                     BlzFrameSetVisible=lambda f, shown: visible.update({f: shown}))
-        for key, value in (('Left', .1665), ('Y', .043), ('Width', .056), ('Height', .070)):
+        for key, value in (('Left', .1695), ('Y', .0192), ('Width', .050), ('Height', .019)):
             vm.g['UNITSTAT_Widget' + key][6] = value
         vm.run('UNITSTAT_PollHover')
         self.assertTrue(visible['portrait-tip'])
-        pos[:] = [.4, .3]
+        pos[:] = [.19, .055]
         vm.run('UNITSTAT_PollHover')
         self.assertEqual(-1, vm.g['UNITSTAT_Hover'])
         self.assertFalse(visible['portrait-tip'])

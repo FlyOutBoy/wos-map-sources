@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3b",
-  "source_sha256": "c829b5ced44a69d2f58da0b57ab204ae13e60c69896d52cce04ca16cab6b239d",
+  "source_sha256": "aa1a1817c55663311ec933b754256fb7f92c08a0e09dcda0eacbfd3e607347fb",
   "kind": "destructables",
   "record_mode": "simple",
   "format_version": 3,
@@ -4771,7 +4771,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "*"
+            "value": "*",
+            "_original_value": "*",
+            "_encoding": "utf-8",
+            "_raw_base64": "Kg=="
           },
           "sanity_check": {
             "text": "",
@@ -4786,7 +4789,9 @@
           "field_name": "",
           "type": "real",
           "data": {
-            "value": 500.0
+            "value": 500.0,
+            "_original_value": 500.0,
+            "_raw_hex": "0000FA43"
           },
           "sanity_check": {
             "text": "",
@@ -4841,114 +4846,9 @@
             "text": "",
             "hex": "00000000"
           }
-        },
-        {
-          "field": {
-            "text": "bnam",
-            "hex": "626E616D"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Frostnova Ice Crystal"
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "bfil",
-            "hex": "6266696C"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Doodads\\Icecrown\\Terrain\\Icecrown_Crystal\\Icecrown_Crystal0.mdl"
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "bptx",
-            "hex": "62707478"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "PathTextures\\4x4SimpleSolid.tga"
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "btxf",
-            "hex": "62747866"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": ""
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "bvar",
-            "hex": "62766172"
-          },
-          "field_name": "",
-          "type": "int",
-          "data": {
-            "value": 1
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "bmis",
-            "hex": "626D6973"
-          },
-          "field_name": "",
-          "type": "real",
-          "data": {
-            "value": 1.0
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
-        },
-        {
-          "field": {
-            "text": "bmas",
-            "hex": "626D6173"
-          },
-          "field_name": "",
-          "type": "real",
-          "data": {
-            "value": 1.0
-          },
-          "sanity_check": {
-            "text": "B044",
-            "hex": "42303434"
-          }
         }
       ],
-      "display_name": "Дерево_1"
+      "display_name": "Frostnova Ice Crystal"
     }
   ]
 }

@@ -108,6 +108,17 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     //===========================================================================
     // Прок пассивной способности F (Lv. 35)
     //===========================================================================
+    // An attached model can keep rendering its death animation on a paused corpse.
+    // Hide the magma hand before destroying its handle, on every exit path.
+    private function Akainu_ClearHandEffect takes effect hand returns nothing
+        if hand != null then
+            call BlzSetSpecialEffectAlpha(hand, 0)
+            call BlzSetSpecialEffectScale(hand, 0.00)
+            call BlzSetSpecialEffectTimeScale(hand, 1.00)
+            call DestroyEffect(hand)
+        endif
+    endfunction
+
     function AkainuF_Start takes unit c, unit td returns nothing
         if BlzGetUnitAbilityCooldownRemaining(c, AkainuF_ID) == 0 then
             call DestroyEffect(EffectSpawn("war3mapImported\\wos_GZ_jntxn (11)_R1-200.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 2, 1))
@@ -205,7 +216,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call SetUnitTimeScale(c, 1.00)
                     endif
                     if e != null then
-                        call DestroyEffect(e)
+                        call Akainu_ClearHandEffect(e)
                     endif
                     if g != null then
                         call DestroyGroup(g)
@@ -268,6 +279,21 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
             if MUI_AkainuQ == 0 then
                 call AkainuTimer03Acquire()
             endif
+        endmethod
+        public static method OnDeath takes unit dying returns nothing
+            local integer i = 0
+            local thistype this
+            loop
+                exitwhen i > MUI_AkainuQ
+                set this = m_AkainuQ[i]
+                if c == dying then
+                    // Cancel even if the hero revives before the next timer tick.
+                    set r = rmax + 1.00
+                    call Akainu_ClearHandEffect(e)
+                    set e = null
+                endif
+                set i = i + 1
+            endloop
         endmethod
     endstruct
 
@@ -459,10 +485,10 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call SetUnitTimeScale(c, 1.00)
                     endif
                     if e != null then
-                        call DestroyEffect(e)
+                        call Akainu_ClearHandEffect(e)
                     endif
                     if e2 != null then
-                        call DestroyEffect(e2)
+                        call Akainu_ClearHandEffect(e2)
                     endif
                     set c = null
                     set e = null
@@ -510,6 +536,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     //===========================================================================
     // E Способность
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AkainuSpells_E
         private static integer array m_AkainuE
         private static integer MUI_AkainuE = -1
@@ -560,11 +587,11 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Akainu_E2")
                         call StopSpellUnit(c)
                         if e != null then
-                            call DestroyEffect(e)
+                            call Akainu_ClearHandEffect(e)
                             set e = null
                         endif
                         if e2 != null then
-                            call DestroyEffect(e2)
+                            call Akainu_ClearHandEffect(e2)
                             set e2 = null
                         endif
                     endif
@@ -608,10 +635,10 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                     if r < AkainuE_CastTime then
                         call StopSpellUnit2(c)
                         if e != null then
-                            call DestroyEffect(e)
+                            call Akainu_ClearHandEffect(e)
                         endif
                         if e2 != null then
-                            call DestroyEffect(e2)
+                            call Akainu_ClearHandEffect(e2)
                         endif
                     endif
 
@@ -719,6 +746,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     //===========================================================================
     // R Способность
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AkainuSpells_R
         private static integer array m_AkainuR
         private static integer MUI_AkainuR = -1
@@ -800,7 +828,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
 
                 if remove then
                     if e != null then
-                        call DestroyEffect(e)
+                        call Akainu_ClearHandEffect(e)
                     endif
                     if c != null and GetUnitTypeId(c) != 0 then
                         call StopSpellUnit(c)
@@ -863,6 +891,21 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
             if MUI_AkainuR == 0 then
                 call AkainuTimer03Acquire()
             endif
+        endmethod
+        public static method OnDeath takes unit dying returns nothing
+            local integer i = 0
+            local thistype this
+            loop
+                exitwhen i > MUI_AkainuR
+                set this = m_AkainuR[i]
+                if c == dying then
+                    // Cancel even if the hero revives before the next timer tick.
+                    set r = rmax + 1.00
+                    call Akainu_ClearHandEffect(e)
+                    set e = null
+                endif
+                set i = i + 1
+            endloop
         endmethod
     endstruct
 
@@ -969,6 +1012,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     //===========================================================================
     // T Способность
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AkainuSpells_T
         private static integer array m_AkainuT
         private static integer MUI_AkainuT = -1
@@ -1042,11 +1086,11 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                         call VisionTimed(GetOwningPlayer(c), x, y, aoe + 600.00, 4.50)
                         call StopSpellUnit(c)
                         if e != null then
-                            call DestroyEffect(e)
+                            call Akainu_ClearHandEffect(e)
                             set e = null
                         endif
                         if e2 != null then
-                            call DestroyEffect(e2)
+                            call Akainu_ClearHandEffect(e2)
                             set e2 = null
                         endif
                     endif
@@ -1085,13 +1129,11 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
                 endif
 
                 if remove then
-                    if r < 1.68 then
-                        if e != null then
-                            call DestroyEffect(e)
-                        endif
-                        if e2 != null then
-                            call DestroyEffect(e2)
-                        endif
+                    if e != null then
+                        call Akainu_ClearHandEffect(e)
+                    endif
+                    if e2 != null then
+                        call Akainu_ClearHandEffect(e2)
                     endif
                     if c != null and GetUnitTypeId(c) != 0 then
                         call StopSpellUnit(c)
@@ -1150,6 +1192,13 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
     //===========================================================================
     // Инициализация и публичный интерфейс
     //===========================================================================
+    function Akainu_Death takes unit dying returns nothing
+        if GetUnitTypeId(dying) == Akainu_ID then
+            call AkainuSpells_Q.OnDeath(dying)
+            call AkainuSpells_R.OnDeath(dying)
+        endif
+    endfunction
+
     private function AkainuTimer03Loop takes nothing returns nothing
         call AkainuSpells_Q.Loop_AkainuQ()
         call AkainuSpells_W.Loop_AkainuW()

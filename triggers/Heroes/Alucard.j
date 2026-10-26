@@ -854,6 +854,7 @@ library AlucardSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AlucardSpells_W
         private static integer array m_AlucardW
         private static integer MUI_AlucardW = -1
@@ -1197,6 +1198,33 @@ library AlucardSpells uses GearSystems
         real a
         real rmax
 
+        method Hit takes real hitX, real hitY returns nothing
+            call GroupClear(g)
+            call GroupEnumUnitsInRange(g, hitX, hitY, aoe, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(g)
+                exitwhen u == null
+                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
+                    call GroupAddUnit(g2, u)
+                    if IsUnitType(u, UNIT_TYPE_HERO) then
+                        if k2 == 0 then
+                            set k2 = k2 + 1
+                            set x = GetUnitX(u)
+                            set y = GetUnitY(u)
+                            call BlzSetSpecialEffectPosition(e, x - 180 * Cos(a), y - 180 * Sin(a), 0)
+                            call DamageSource(src)
+                            call dmgphys(c, u, dmg)
+                            call SlowUnit(c,u,AlucardE_Slow,AlucardE_Duration)
+                        endif
+                    else
+                        call DamageSource(src)
+                        call dmgphys(c, u, dmg)
+                    endif
+                endif
+                call GroupRemoveUnit(g, u)
+            endloop
+        endmethod
+
         static method Loop_AlucardE takes nothing returns nothing
             local integer this
             local integer i = 0
@@ -1210,10 +1238,17 @@ library AlucardSpells uses GearSystems
                     if r == 0.3 then 
                     call StopSpellUnit2(c)
                     call BlzPlaySpecialEffect(e, ANIM_TYPE_WALK)
+                    call Hit(GetEffX(e), GetEffY(e))
+                    set r2 = 0.06
+                    if k2 > 0 then
+                        call BlzSetSpecialEffectTimeScale(e, 2)
+                        call BlzPlaySpecialEffect(e, ANIM_TYPE_ATTACK)
+                        set r = 9999
+                    endif
                     call DestroyEffect(EffectSpawn("war3mapImported\\wos_BY_Wood_Effect_Kula_2_YiYingCun1.mdl", GetUnitX(c) + 255 * Cos(a), GetUnitY(c) + 255 * Sin(a), a * bj_RADTODEG, 0.9, 3.75, 115))
                 call DestroyEffect(EffectSpawn("war3mapImported\\wos_crimson explosion with bats.mdl", GetUnitX(c) + 255 * Cos(a), GetUnitY(c) + 255 * Sin(a), a * bj_RADTODEG, 0.9, 0.5, 1))
                     endif
-                    if r>0.3 then 
+                    if r>0.3 and r <= rmax then
                         set r5 = r5 + move
                         if r5 >= r7 or k2 > 0 then
                             set r = 9999
@@ -1235,30 +1270,7 @@ library AlucardSpells uses GearSystems
                         endif
                         if r2 > 0.03 then
                             set r2 = 0
-                            call GroupClear(g)
-                            call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
-                            loop
-                                set u = FirstOfGroup(g)
-                                exitwhen u == null
-                                if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) and IsUnitInGroup(u, g2) == false then
-                                    call GroupAddUnit(g2, u)
-                                    if IsUnitType(u, UNIT_TYPE_HERO) then
-                                        if k2 == 0 then
-                                            set k2 = k2 + 1
-                                            set x = GetUnitX(u)
-                                            set y = GetUnitY(u)
-                                            call BlzSetSpecialEffectPosition(e, x - 180 * Cos(a), y - 180 * Sin(a), 0)
-                                            call DamageSource(src)
-                                            call dmgphys(c, u, dmg)
-                                            call SlowUnit(c,u,AlucardE_Slow,AlucardE_Duration)
-                                        endif
-                                    else
-                                        call DamageSource(src)
-                                        call dmgphys(c, u, dmg)
-                                    endif
-                                endif
-                                call GroupRemoveUnit(g, u)
-                            endloop
+                            call Hit(x, y)
                         else
                             set r2 = r2 + 0.03
                         endif   
@@ -1524,6 +1536,7 @@ library AlucardSpells uses GearSystems
                             call SetUnitVertexColor(c, 255, 255, 255, 255)
                             call StopSpellUnit2(c)
                             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R, 1)
+                            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                             set r = 0
                             set rmax = AlucardR_DurationBase + (AlucardR_DurationStep * ( GetUnitAbilityLevel( c , AlucardR_ID) - 1 )) + 0.2
                             set r5 = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)

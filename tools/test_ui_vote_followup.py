@@ -118,9 +118,51 @@ class DualMeters(unittest.TestCase):
         self.assertTrue(any(p[0]=='lower-real-fill' and p[-1]==-.0105 for p in points))
 
 class PortraitAndAssets(unittest.TestCase):
+    def portrait_fixture(self):
+        fixture=ui.DeferredUIStartup();fixture.setUp();vm=fixture.vm
+        vm.g.update(WUI_Portrait='native',WUI_InvisBacking='backing',WUI_InvisLabel='label',
+            WUI_InvisPortrait=False,WUI_ShiftTable={(1,0):1},GetHandleId=lambda _:1,
+            LoadInteger=lambda t,k,c:t.get((k,c),0))
+        for key,value in [('X',.1945),('Y',.055),('W',.05125),('H',.05125)]:
+            vm.g['WUI_ShiftBase'+key][0]=value
+        vm.run('WUI_BindNativePortrait',('owner',))
+        return fixture,vm
+
+    def test_native_portrait_reprojects_and_repins_after_engine_changes(self):
+        fixture,vm=self.portrait_fixture()
+        for call in [('BlzFrameSetParent',('native','owner')),
+                     ('BlzFrameClearAllPoints',('native',)),
+                     ('BlzFrameSetEnable',('native',True))]:self.assertIn(call,fixture.calls)
+        self.assertFalse(any(n=='BlzFrameSetAllPoints' for n,_ in fixture.calls))
+        for name in ('BlzCreateFrameByType','BlzGetFrameByName','BlzGetOriginFrame','CreateTimer','CreateTrigger'):
+            vm.g[name]=lambda *_,n=name:self.fail('local allocation: '+n)
+        for width,height in [(1024,768),(1920,1080),(1920,1200),(2560,1080),(3840,1080)]:
+            vm.g.update(BlzGetLocalClientWidth=lambda:width,BlzGetLocalClientHeight=lambda:height)
+            for shift in (0.,-.021,.014):
+                vm.g['WUI_HudLeft']=shift;fixture.calls.clear()
+                vm.run('WUI_ShowNativePortrait',(True,))
+                points=[args for name,args in fixture.calls if name=='BlzFrameSetAbsPoint']
+                point,top=points[-2:]
+                factor=4*height/(3*width)
+                self.assertEqual('FRAMEPOINT_BOTTOMLEFT',point[1])
+                self.assertAlmostEqual(.1945+shift-.05125/2,.4+(point[2]-.4)/factor)
+                self.assertAlmostEqual(.055-.05125*.45,point[3])  # raised 5% of its height
+                self.assertEqual('FRAMEPOINT_TOPRIGHT',top[1])
+                self.assertAlmostEqual(.05125,(top[2]-point[2])/factor)
+                self.assertAlmostEqual(.05125,top[3]-point[3])
+                # A second HUD paint must repair anchors overwritten by the engine.
+                fixture.calls.clear();vm.run('WUI_ShowNativePortrait',(True,))
+                self.assertIn(('BlzFrameClearAllPoints',('native',)),fixture.calls)
+                self.assertIn(('BlzFrameSetAbsPoint',point),fixture.calls)
+        for width,height in [(0,1080),(1920,0),(0,0)]:
+            vm.g.update(BlzGetLocalClientWidth=lambda:width,BlzGetLocalClientHeight=lambda:height)
+            fixture.calls.clear();vm.run('WUI_PinNativePortrait')
+            self.assertFalse(fixture.calls)
+        vm.run('WUI_ShowNativePortrait',(False,));self.assertFalse(vm.g['WUI_PortraitShown'])
+
     def test_invis_alpha_and_label_restore_on_end_or_selected_unit_change(self):
         vm=ui.load_source('WOSUI.j');alpha={};visible={'portrait':True}
-        vm.g.update(WUI_PortraitIcon='portrait',WUI_InvisLabel='label',WUI_InvisBacking='backing',WUI_InvisPortrait=False,
+        vm.g.update(WUI_Portrait='portrait',WUI_InvisLabel='label',WUI_InvisBacking='backing',WUI_InvisPortrait=False,
                     BlzFrameSetAlpha=lambda f,a:alpha.update({f:a}),
                     BlzFrameSetVisible=lambda f,v:visible.update({f:v}),BlzFrameIsVisible=lambda f:visible.get(f,False))
         vm.run('WUI_SetPortraitInvisible',(True,));self.assertEqual(85,alpha['portrait']);self.assertTrue(visible['label']);self.assertTrue(visible['backing'])
@@ -169,5 +211,25 @@ class HitCoverage(unittest.TestCase):
         vm.run('Fire')
         self.assertEqual(1,sum(t is target for _,t,_ in vm.damage))
         self.assertEqual(1,sum(t is far for _,t,_ in vm.damage))
+
+class TeamAwards(unittest.TestCase):
+    def test_awards_follow_leading_team_with_mixed_slots_and_negative_scores(self):
+        text=source('WOS_Start/Scoreboard.j')
+        names=('WOS_STATS_GetTeamBestPid','WOS_STATS_GetMvpPid')
+        code='\n'.join(re.search(r'private function '+n+r' takes[^\n]*\n[\s\S]*?endfunction',text)[0] for n in names)
+        vm=JassState(code);scores={i:-100-i for i in range(10)}
+        scores[8]=1000; scores[3]=-10
+        team1={0,3,5,7,9}
+        vm.g.update(WOS_STATS_PLAYER_COUNT=10,Hero={i:object() for i in range(10)},
+            IsInTeam1=lambda p:p in team1,WOS_STATS_ShouldDisplayPid=lambda _:True,
+            WOS_STATS_MvpScore=lambda viewer,p:scores[p],PlayerKill=defaultdict(int))
+        vm.g.update(Team1Round=10,Team2Round=9)
+        self.assertEqual(3,vm.run('WOS_STATS_GetMvpPid',(0,)))
+        self.assertEqual(8,vm.run('WOS_STATS_GetTeamBestPid',(0,1)))
+        vm.g.update(Team1Round=9,Team2Round=10)
+        self.assertEqual(8,vm.run('WOS_STATS_GetMvpPid',(0,)))
+        self.assertEqual(3,vm.run('WOS_STATS_GetTeamBestPid',(0,0)))
+        vm.g.update(Team1Round=10,Team2Round=10)
+        self.assertEqual(-1,vm.run('WOS_STATS_GetMvpPid',(0,)))
 
 if __name__=='__main__':unittest.main()

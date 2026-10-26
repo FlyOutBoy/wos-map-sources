@@ -121,11 +121,12 @@ class Shop(unittest.TestCase):
 class HUD(unittest.TestCase):
     def test_portrait_hit_target_and_voice_toggle(self):
         hud = read('DefaultArmorChangeStable_Copy.j')
-        self.assertIn('call WUI_PlaceShiftLeft(UNITSTAT_PortraitHit, 0.1945, 0.0430, 0.056, 0.070)', hud)
+        self.assertIn('call WUI_PlaceShiftLeft(UNITSTAT_PortraitHit, 0.1945, 0.0192, 0.050, 0.019)', hud)
         self.assertIn('WOS_PlayNextHeroVoice(p, GetUnitTypeId(Hero[pid]))', hud)
-        # portrait .0345-.0845 and level plate .011-.030 are inside the target
-        self.assertLessEqual(0.0480 - 0.038, 0.011)
-        self.assertGreaterEqual(0.0480 + 0.038, 0.0845)
+        # Level-plate button ends below the native portrait: no spell interception.
+        self.assertLess(.0192 + .019/2, .0550 - .05125/2)
+        self.assertNotIn('BlzTriggerRegisterFrameEvent(UNITSTAT_PortraitClick, UNITSTAT_Widget[6]',hud)
+        self.assertIn('WUI_Passive("WOSSelectedUnitIcon", UNITSTAT_Root)',hud)
 
     def test_learn_strip_spans_pips_to_icon(self):
         cd = read('ShowCD.j')

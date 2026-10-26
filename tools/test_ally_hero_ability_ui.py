@@ -90,7 +90,7 @@ class AllyAbilityUI(unittest.TestCase):
                 g['AHUI_HoveredSlot'][0]=2
                 self.vm.run('AHUI_RefreshTooltip',(0,))
                 self.assertIn('Takaoni',self.value('AHUI_TooltipTitle',0,'text'))
-                self.assertIn('650 range past its center',self.value('AHUI_TooltipText',0,'text'))
+                self.assertIn('Bushogoma cage',self.value('AHUI_TooltipText',0,'text'))
             self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(owner,takaoni,False))
             self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(owner,base,True))
             self.refresh()

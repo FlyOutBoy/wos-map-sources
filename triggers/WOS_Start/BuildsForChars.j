@@ -1,3 +1,8 @@
+globals
+    constant boolean WOS_EnableTestHero = true
+    integer WOS_TestHeroId = Frostnova_ID // Updated by the active TEST hero task.
+endglobals
+
 function MyHeroIdInit takes nothing returns nothing
     local integer page = 0 // 0 genshin, 1 ft, 2 bleach, 3 one piece, 4 other
     local integer i = 0
@@ -45,6 +50,8 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotT_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotF_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], PatriotG_ID)
+    // MAIN pick visibility only; the hero and TEST integration remain available.
+    if WOS_EnableTestHero or WOS_TestHeroId != Frostnova_ID then
     // HERO TRANSFER: Frostnova / BuildsForChars
     set n = 3
     set MaxHeroes = MaxHeroes + 1
@@ -57,6 +64,7 @@ set MaxHeroes = MaxHeroes + 1
     call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaR_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaT_ID)
     call UnitAddAbility(Hero_ID0_Dummy[n], FrostnovaF_ID)
+    endif
 //=========Bleach==============
     set n = 0
 set MaxHeroes = MaxHeroes + 1

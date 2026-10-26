@@ -319,6 +319,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         endif
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TojiSpells_Q
         private static integer array m_TojiQ
         private static integer MUI_TojiQ = -1
@@ -1909,6 +1910,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct TojiSpells_T
         private static integer array m_TojiT
         private static integer MUI_TojiT = -1

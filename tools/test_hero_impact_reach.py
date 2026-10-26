@@ -54,7 +54,7 @@ class ImpactReach(unittest.TestCase):
         self.assertNotRegex(helpers,r'\b(?:GetRandom\w*|Save\w*|Create\w*|Set\w*|BlzSet\w*|Destroy\w*)\(')
         self.assertIn('n == 64',helpers)
         self.assertIn('return GetPreviewRadius(hero, abilId)',self.text)
-        self.assertIn('call builder.addRange(FormatReal(previewRadius))',self.text)
+        self.assertIn('call builder.addRange(FormatRangePair(clickRange, previewRadius))',self.text)
 
 
 if __name__=='__main__':unittest.main()

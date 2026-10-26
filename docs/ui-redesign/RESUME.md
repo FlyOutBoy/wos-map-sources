@@ -2902,6 +2902,13 @@ WOSUI owns WUI_AutoSelectHero; SaveLoad serializes and validates the sender's fl
 HeroUnitPanelStats applies it via idempotent UNITSTAT_SetAutoSelect. The existing
 0.25s timer starts only for the first enabled user and pauses after the last;
 selection remains local, own living hero only. Old saves default off; no new frames.
+October 24 policy correction: auto-select is MAIN-only. TestMode prevents timer
+activation/selection and hides the toggle. The timer also checks the saved
+WUI_AutoSelectHero flag, so a stale internal mirror cannot force selection.
+DmgSys_AutoSelectHero previously ignored that setting entirely; it now exits
+before creating its clock in TEST, when the option is off, or without the MAIN
+HeroUnitPanelStats owner. Tests: test_auto_select_policy / test_followup_033c;
+MAIN and TEST compilation, scoped TEST J/WCT preservation audit.
 App uses the original glyph-hero-lock icon next to voices/HUD columns.
 Validation: MAIN compile/dispatch PASS; shop-fast-settings10 and followup033c22
 runtime tests PASS; app30 save /486 UI assertions and7 catalog tests PASS.
@@ -2957,3 +2964,184 @@ Evidence: _build/balance-033c-{build.log,result.json}.
 Backup: C:\Users\Gear\Desktop\WOS\VS WOS\backups\balance-033c-20261020-164609
 SHA256: 0a095e56b220a005b5368f394618471d6bfcb56d84cdcc5cd903d1d92b26cb07
 No game launch; Warcraft visual/multiplayer acceptance remains pending.
+
+
+## CP69 — native selected-unit portrait and spell input (2026-10-20)
+
+WUI_BindNativePortrait now uses the enabled cached ORIGIN_FRAME_PORTRAIT,
+AllPoints-bound to the enabled passive selected-unit owner. Removed BTN art
+and its per-unit texture setter. Native portrait keeps engine input; no custom
+frame click trigger is attached to it. The custom camera/voice button is now
+only on the level plate (top.0287 below portrait bottom.0300); hover metadata
+still covers the column. CP70 follow-up corrects both hover messages to
+"Click level"; enabled hero voice remains bound to the level-plate handler.
+Selection11 + checkpoint22 input20 tests and compile/dispatch PASS. Native layout restore uses WUI_PortraitShown instead
+of unconditionally hiding the portrait. Invisibility alpha/label target the
+native portrait; pause and gold-frame decorations remain passive.
+
+Validation:112-source compile,436-frame-function dispatch audit and5283-function
+compiled/source parity PASS. Focused vote/invisibility11, checkpoint22 input20,
+checkpoint14 layout5 tests PASS. Aggregate762 tests initially had one fixture
+error (the passive owner name; corrected and focused suite rerun PASS) plus6
+unrelated failures. All6 reproduce with pre-change WCT portrait sources through
+read-only Path.read_text substitution: hero count/Frostnova, Crocodile T, Rimuru
+G, registration count and raw object snapshot. Do not describe the whole suite
+as passing or repair these unrelated changes here.
+
+MAIN saved2 sources, built6735 files, final sync0 differences. Nine extracted
+payloads equal MAIN. Root J/WCT/WTG snapshots refreshed after backup; STABLE
+byte-identical to build. Evidence:_build/native-portrait-{build.log,result.json,
+baseline.txt}; aggregate log:_build/ui-redesign/checkpoint23-tests.txt.
+Backup: C:\Users\Gear\Desktop\WOS\VS WOS\backups\native-portrait-20261020-231605
+SHA256: e41075067eae6c42631d4827ee2986f49f3752425b4fdff79301d1470f236cc9
+No game launch. Next engine acceptance: selected hero 3D portrait at normal and
+wide resolutions, changing HUD columns/selection, cast a unit-target skill on
+self via portrait, paused/invisible presentation and level-plate camera/voice.
+
+
+## CP70 — full-inventory Mastery, pause sale and team awards (2026-10-20)
+
+WoS_Shop_Init ShopInstantStatPurchase / ShopDeliverPurchase directly grant
+Mastery's +2 base Str/Agi/Int to the owner hero, without inventory insertion or
+pickup-event dependence. Manual, BuyAuto, limited and whole-assembly paths allow
+this item with six occupied slots; round15 gate stays. Quick Buy consumes its
+purchased goal; recommended Auto Buy advances after payment, so consumed items
+cannot repeat every tick. Existing ItemEnter pickup remains for ground items.
+ShopSellInventorySlot takes the live slot item, prices its actual type, checks
+its matching refund mark, clears that mark, removes the captured handle then
+credits gold. No sale price is taken from ItemsCurrentItem_ID, which can remain
+stale while paused. Sale clears selected bag slot immediately; no timer needed.
+Scoreboard MVP is the best eligible score-leading-team member; SVP uses the
+trailing team. Tied score has neither award. IsInTeam1 handles mixed draft slots;
+team selection accepts negative best scores.
+
+Eight focused shop/award tests PASS. Aggregate768: six unchanged prior failures,
+five skips, no errors. See CP69 baseline; no unrelated repairs. Compile112
+sources /436 frame functions PASS; MAIN save2 sources,6735 packed files and
+5286-function parity PASS. Final sync0 differences;9 payloads match MAIN.
+STABLE and root snapshots updated after backup. Changelog is community English.
+Evidence: _build/shop-awards-{tests.txt,build.log,result.json}.
+Backup: C:\Users\Gear\Desktop\WOS\VS WOS\backups\shop-awards-20261020-233525
+SHA256: 739266115aeba4d660704a17e10de58779b1513fb7ae10219dd6372b01904cc6
+No game launch. Verify round15 Mastery with full slots, paused high-price sale /
+cheap purchase cycle, refund window, Quick Buy and team-award display in Warcraft.
+
+
+## CP71 — native portrait bounds and level-only hint (2026-10-21)
+
+User screenshots of newly picked Erza/Kirito confirmed CP69 AllPoints produced
+large/off-cell portraits; the earlier enlargement did not fix native coordinates.
+WUI_PinNativePortrait now derives both corners from the registered normal owner
+rectangle, converts X/width by4*clientHeight/(3*clientWidth) around centre.4,
+clears old anchors, resets scale1 and explicitly sets native BOTTOMLEFT/TOPRIGHT.
+Owner dimensions still.05125 square; every hero uses the same visible cell.
+Repin on readable .20 HUD paint, changed local selection/deselection fallback,
+HUD mode shift and native layout restore. Held same-unit selection keeps its
+cheap early return. No new timer, local frame lookup or handle allocation.
+Zero-size/minimized clients skip projection until a valid viewport returns.
+
+Level hover bounds are now only(.1695..2195, centreY.0192,height.019). The hint
+is one line: Click: camera + voice (or Click: camera with voice disabled).
+Removed the long mic-toggle tooltip and name/header from the compact hint;
+tip anchors above the level plate. Native portrait spell input stays enabled.
+
+User additionally requested Frostnova hidden from MAIN pick for now. The
+reversible WOS_EnableTestHero=false guard in BuildsForChars disables only
+catalog slot/dummy/MaxHeroes registration. Hero/TEST code and integrations stay.
+MyHeroIdInit VM verified flag off/on: exactly one slot/count difference and no
+Frostnova dummy when off. Random/captain pools use the same catalog arrays.
+
+Focused vote/geometry12, selection12, hover14, layout5 and input20 tests PASS.
+Projection tests cover5 resolutions x3 HUD shifts, repeated repair, minimized
+windows and no allocation; selection test switches Erza/Kirito and fallback.
+Aggregate769:7 baseline failures,5 skips,0 errors. All7 reproduced with pre-change
+portrait source substitution (_build/portrait-anchor-baseline.txt); the extra
+TasBox startup-fixture failure is unrelated to this patch. Existing other edits
+were preserved. Do not report the entire suite as passing.
+Compile112 sources /437 frame functions and5300-function source parity PASS.
+MAIN saved and built6735 files, final sync0 differences;9 extracted payloads equal
+MAIN. STABLE and project root snapshots updated after backup.
+Evidence:_build/portrait-anchor-{final-build.log,final-tests.txt,result.json}.
+Backup: C:\Users\Gear\Desktop\WOS\VS WOS\backups\portrait-anchor-20261021-175639
+SHA256: 03f30625ddcb5bce65b7a23667c914358aa42fbb4f84188cf00ea440e45ae73d
+No game launch. Next acceptance: freshly pick Erza/Kirito, switch heroes/forms,
+resize window/change HUD columns; confirm image stays inside the frame, native
+self-targeting works and only the level plate shows the short hint.
+
+
+## CP72 — full-refund identity and Normal/Player Pick ban input (2026-10-22)
+
+Refund marks previously named inventory slots and used shared MyFlush resets.
+Moving items lost eligibility; reusing a slot could let an earlier reset expire
+a later purchase. ShopRefundData now bounds records to six per unit and records
+actual item handles with independent ShopClock deadlines. Renderer, sale and
+craft query the same read-only helper; consumed/sold marks are cleared. Regular
+BuyAuto was also missing ShopMarkFullRefund entirely; it now marks delivery once,
+as do limited/manual/Quick Buy paths (removed the duplicate limited-path call).
+Regular refund percentage stays85; full window stays15 seconds.
+
+User confirms ban issue in Normal and Player Pick and explicitly requires the
+last3-second lock. The initial removal of that intentional cutoff was reverted.
+WOS_LockBanSelection now freezes existing proposals once at3 seconds; late empty
+players may submit once, then their button locks too. A noninteractive TEXT frame
+created synchronously with the picker announces the cutoff at root TOPLEFT
+(.012,-.035). StartBanPhase hides it. WOS_ProposeHeroBan gives
+feedback for duplicate, protected, unavailable or missing selection. BAN now
+uses the same clicked-control focus reset as Confirm/Random. Captain Draft's
+separate handler and turn rules remain intact.
+
+Initial16 production-function tests PASS: UI green price vs credited gold, exact
+expiry, repurchase, inventory swap/replacement, six-record bounds, fresh/old
+component craft credit, recursive ordinary Auto Buy and ban competition across
+all10 slots/phase guards/focus routing. Existing performance10, focus18 and
+checkpoint22 geometry20 checks PASS. Compile112 sources /437 frame functions PASS.
+Aggregate784 (before the final added Auto Buy test):7 prior failures,5 skips,
+0 errors. All7 reproduce with the pre-change picker source substituted; unrelated
+owners/objects are unchanged by this fix. Old FIX6 standalone inherited suite:
+7 prior failures and1 prior fixture error also reproduced on prior affected-code
+substitution. Do not report either whole suite as passing.
+
+MAIN saved/built without launching Warcraft; source/compiled parity5303 functions
+PASS. Packed9 script/editor/object payloads compared to MAIN; STABLE and root
+snapshots updated after backup. Final check shows0 binary/source differences.
+Evidence: _build/refund-bans-{build.log,result.json,regressions.txt,
+aggregate-baseline.txt,quickbuy.txt,quickbuy-baseline.txt}.
+No native multiplayer/input validation. Verify green-price sale, repeated buy,
+slot moves, Normal/Player Pick BAN before the cutoff, the top-left warning at3
+seconds and blocked replacement/cancellation during the final3 seconds in game.
+
+Cutoff correction:20 focused refund/ban tests, focus18 and checkpoint22 geometry20
+PASS. Compile112 sources /441 frame functions PASS. No new timer or local frame
+allocation; cutoff and guard execute from synchronized state. MAIN/STABLE rebuilt
+without game launch; evidence: _build/ban-lock-{build.log,result.json}.
+
+
+## CP73 — picker gold text and Kyoraku final-act recovery (2026-10-23)
+
+RandomPick feed now uses AddRandom; Repick feed and button hint use the exact
+R2I(AddRandom /2) expression charged by Repick. Current amounts are+500/-250;
+no gold payment/balance logic changed. Tests also change AddRandom to750/501/0.
+
+Kyoraku final G/A059 retains unit targeting and10xAgi physical damage /1.5s stun.
+After contact it previously delegated the700-distance/1.25s pass to shared MUE,
+which can stop on walls/CC, while its own movement waited on proximity/time.
+Animation events used exact float equality; cleanup could deal damage on an
+interruption and miss releasing the target at exactly1.8s. New integer phases
+own the movement and finite lifetime in the existing hero tick; no extra timer.
+The pass-through direction freezes at launch, is bounded by remaining distance,
+and respects arena coordinates without going through the forced-move controller.
+Cleanup after205 updates (on callback206, ~6.18s) releases both before one physical
+hit/stun only when contact happened and both still qualify as live casters.
+Blocked/invalid/dead/interrupted casts terminate with no execution damage.
+
+Seven new actual-source regression tests PASS; three fail on prior source:
+wrong gold text, external forced-move pass and capture-tick cancellation.
+Ability range17 and existing refund/ban20 PASS. Hero balance20 has one unchanged
+prior tooltip-init budget fixture failure; no new errors. Compile112 sources /
+441 frame functions PASS. Native rendering/multiplayer/damage remain engine QA.
+MAIN/STABLE build and payload/hash evidence: _build/kyoraku-final-{build.log,
+result.json,baseline.txt,hero-tests.txt}. No game launch.
+
+MAIN publication complete: parity5306 functions PASS,6735 packed files,10 checked
+payloads equal MAIN, STABLE/root snapshots updated after backup. Final sync check
+reports0 binary/source differences. SHA256 and backup path are in result.json.

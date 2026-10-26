@@ -34,13 +34,49 @@ class Performance(unittest.TestCase):
             GetPlayerId=lambda p:p,GetLocalPlayer=lambda:viewer,
             TimerStart=lambda *a:starts.append(a),PauseTimer=pauses.append,
             WOS_STATS_HideLegacyUI=lambda:None,WOS_STATS_Show=lambda *a:None,WOS_STATS_Main='main',
-            WOS_STATS_UpdateForPlayer=render.append)
+            WOS_STATS_UpdateForPlayer=render.append,WOS_STATS_Snapshot=lambda:None,
+            # 8: the second periodic below lands on the 5 s data check (tick 10).
+            WOS_STATS_ArenaRefreshTicks=8,CondArena=0,WOS_STATS_LastDataSig=defaultdict(int),
+            WOS_STATS_DataSignature=lambda p:1,WOS_STATS_Text=lambda *a:None,WOS_STATS_GameClock='clock text',
+            ModuloInteger=lambda a,b:a%b,WOS_STATS_GameTime=lambda:'00:00')
         vm.run('WOS_STATS_WakeTimer');vm.run('WOS_STATS_WakeTimer');self.assertEqual(1,len(starts))
         vm.g['WOS_STATS_IsOpen'][5]=True;vm.run('WOS_STATS_Periodic');self.assertFalse(render);self.assertFalse(pauses)
         viewer=5;vm.run('WOS_STATS_Periodic');self.assertEqual([5],render)
         vm.g['WOS_STATS_IsOpen'][5]=False;vm.run('WOS_STATS_Periodic')
         self.assertEqual(['clock'],pauses);self.assertFalse(vm.g['WOS_STATS_TimerRunning'])
         vm.run('WOS_STATS_WakeTimer');self.assertEqual(2,len(starts))
+
+    def test_open_stats_redraw_only_on_data_change_and_base_only_moves_the_clock(self):
+        vm=JassState(functions('WOS_Start/Scoreboard.j','WOS_STATS_Periodic'))
+        render=[];clock=[];sig={'value':7}
+        def update(p):
+            render.append(p);vm.g['WOS_STATS_LastDataSig'][p]=sig['value']
+        vm.g.update(WOS_STATS_UpdateTimer='clock',WOS_STATS_VIEWER_COUNT=24,WOS_STATS_IsOpen=defaultdict(bool),
+            WOS_STATS_IsFinal=defaultdict(bool),GetPlayerId=lambda p:p,GetLocalPlayer=lambda:3,
+            WOS_STATS_HideLegacyUI=lambda:None,WOS_STATS_Show=lambda *a:None,WOS_STATS_Main='main',
+            WOS_STATS_UpdateForPlayer=update,WOS_STATS_Snapshot=lambda:None,
+            WOS_STATS_ArenaRefreshTicks=0,CondArena=0,WOS_STATS_LastDataSig=defaultdict(int),
+            WOS_STATS_DataSignature=lambda p:sig['value'],WOS_STATS_Text=lambda f,t:clock.append(t),
+            WOS_STATS_GameClock='clock text',ModuloInteger=lambda a,b:a%b,WOS_STATS_GameTime=lambda:'12:34')
+        vm.g['WOS_STATS_IsOpen'][3]=True
+        # Data is checked on every 10th tick (5 s); the first check sees the new window.
+        for _ in range(10):vm.run('WOS_STATS_Periodic')
+        self.assertEqual([3],render);self.assertEqual(9,len(clock))
+        # Base: invulnerable heroes, unchanged data -> only the clock text, for any number of ticks.
+        for _ in range(60):vm.run('WOS_STATS_Periodic')
+        self.assertEqual([3],render);self.assertEqual(69,len(clock))
+        # A change waits for the next 5 s check, then redraws once.
+        sig['value']=8
+        for _ in range(9):vm.run('WOS_STATS_Periodic')
+        self.assertEqual([3],render)
+        vm.run('WOS_STATS_Periodic');self.assertEqual([3,3],render)
+        # Arena: unchanged data still gets a safety refresh every 20 ticks (10 s).
+        vm.g['CondArena']=1;vm.g['WOS_STATS_ArenaRefreshTicks']=0
+        for _ in range(40):vm.run('WOS_STATS_Periodic')
+        self.assertEqual(4,len(render))
+        # The final screen always redraws (screenshot countdown).
+        vm.g['CondArena']=0;vm.g['WOS_STATS_IsFinal'][3]=True;vm.g['ClearTextMessages']=lambda:None
+        vm.run('WOS_STATS_Periodic');self.assertEqual(5,len(render))
 
     def test_range_inventory_scan_is_four_hz_while_hover_remains_twenty_hz(self):
         vm=JassState(functions('WOS_Start/ShowCD.j','AHUI_Periodic'));scan=[];render=[]
@@ -93,8 +129,9 @@ class Performance(unittest.TestCase):
         vm.g.update(Player=lambda p:p,Hero=defaultdict(lambda:'hero'),ShopSearchActive=defaultdict(bool),
             Shop_Active=defaultdict(bool,{0:True}),ShopTargetUnitId=defaultdict(lambda:100),
             IsActivePlayerSlot=lambda p:True,GetSelectedHeroForPlayer=lambda p:'hero',GetHandleId=lambda u:100,
-            ShopGetInventoryItemId=lambda u,s:ids[s],hs={},LoadInteger=lambda *a:0,ShopRefundKey=defaultdict(int),
-            ShopInventoryLastId=defaultdict(int,{s:100+s for s in range(6)}),ShopInventoryLastRefund=defaultdict(int),
+            ShopGetInventoryItemId=lambda u,s:ids[s],hs={},LoadInteger=lambda *a:0,
+            UnitItemInSlot=lambda u,s:ids[s],ShopFullRefundRecord=lambda u,it:-1,
+            ShopInventoryLastId=defaultdict(int,{s:100+s for s in range(6)}),ShopInventoryLastRefund=defaultdict(int),ShopInventoryLastCost=defaultdict(int),
             GetLocalPlayer=lambda:0,GetItemValue=lambda i:(metadata.append(('cost',i)),600)[1],
             GetObjectName=lambda i:(metadata.append(('name',i)),'Item')[1],
             BlzGetAbilityIcon=lambda i:(metadata.append(('icon',i)),'icon')[1],

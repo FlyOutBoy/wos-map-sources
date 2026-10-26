@@ -238,6 +238,7 @@ library InoriSpells uses GearSystems
             endif
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct InoriQ_KS
         integer src
         private static integer array m_InoriQ
@@ -1295,6 +1296,7 @@ library InoriSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct InoriR_KS
         private static integer array m_InoriR
         private static integer MUI_InoriR = -1
@@ -1568,6 +1570,7 @@ library InoriSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct InoriR2_KS
         private static integer array m_InoriR2
         private static integer MUI_InoriR2 = -1
@@ -1771,6 +1774,7 @@ library InoriSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct InoriT_KS
         private static integer array m_InoriT
         private static integer MUI_InoriT = -1
@@ -1955,6 +1959,7 @@ library InoriSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct InoriT2_KS
         private static integer array m_InoriT2
         private static integer MUI_InoriT2 = -1

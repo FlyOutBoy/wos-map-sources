@@ -28,5 +28,6 @@
     "testOnlySources": [
         "test_map/compatibility/KyorakuSounds.j"
     ],
-    "testMapTemplate": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes\\Crocodile.w3x"
+    "testMapTemplate": "C:\\Path\\To\\Warcraft III\\Maps\\WoS\\Heroes\\Crocodile.w3x",
+    "testMinimalRuntime": true
 }

@@ -30,10 +30,11 @@ foreach ($entry in $Manifest.sources) {
 }
 # A mapped disabled TEST source must not reappear from MAIN dependency discovery.
 $settings = Get-Content (Join-Path ([string]$Config.base) 'trigger-settings.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$disabledSourceNames = @($Config.testDisabledSourceNames)
 $enabledImports = @($Manifest.enabledImports | Where-Object {
     $setting = $settings.triggers.PSObject.Properties[$_]
     if ($setting -and $setting.Value -isnot [bool]) { throw "Invalid TEST trigger setting: $_" }
-    -not $setting -or $setting.Value
+    ([IO.Path]::GetFileName($_) -notin $disabledSourceNames) -and (-not $setting -or $setting.Value)
 })
 $candidates = @($enabledImports | ForEach-Object { Join-Path $stage $_ })
 $candidates += @(Get-ChildItem (Join-Path $Root 'triggers') -Recurse -File -Filter '*.j' | Where-Object { -not $shadowed.ContainsKey($_.FullName) } | ForEach-Object { $_.FullName })
@@ -61,6 +62,7 @@ $testOnly = @($Config.testOnlySources | ForEach-Object { Project-Path ([string]$
 $candidates += $testOnly
 # Imported gameplay implementations are snapshots; companion heroes come from MAIN.
 $candidates = @($candidates | Where-Object {
+    [IO.Path]::GetFileName($_) -notin $disabledSourceNames -and
     -not ($_.StartsWith($stage, [StringComparison]::OrdinalIgnoreCase) -and
         (($_.Substring($stage.Length) -split '[\\/]') | Where-Object { $_ -in $Manifest.excludedGameplayCategories }))
 } | Sort-Object -Unique)
@@ -74,6 +76,7 @@ foreach ($path in $candidates) {
 }
 $seeds = @($enabledImports | ForEach-Object { Join-Path $stage $_ }) + $heroFiles + $testOnly
 foreach ($shared in $Config.sharedSources) {
+    if ([IO.Path]::GetFileName([string]$shared) -in $disabledSourceNames) { continue }
     $sharedPath = Project-Path ([string]$shared)
     if ($mappedSources.ContainsKey($sharedPath)) { $seeds += $mappedSources[$sharedPath] }
     else { $seeds += $sharedPath }
@@ -88,16 +91,15 @@ foreach ($family in $Config.testCompanionSourceDirs) {
 foreach ($path in ($seeds | Select-Object -Unique)) { Visit-Source $path }
 $source = Join-Path $OutputDirectory 'TestCurrent.vj'
 $resolutionPath = Join-Path $OutputDirectory 'test-resolution.json'
-$report = [ordered]@{ hero = $hero; source = $source; resolvedSources = @($ResolvedFiles); stage = $stage } | ConvertTo-Json -Depth 5
+$disabledSources = @($disabledSourceNames | ForEach-Object { Join-Path $Root "triggers/WOS_Start/$_" } | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })
+$report = [ordered]@{ hero = $hero; source = $source; resolvedSources = @($ResolvedFiles); disabledSources = $disabledSources; stage = $stage } | ConvertTo-Json -Depth 5
 [IO.File]::WriteAllText($resolutionPath, $report, [Text.UTF8Encoding]::new($false))
 & python (Join-Path $Root 'tools/test_map_sources.py') include-resolved --workspace $Root --output $stage --resolution $resolutionPath | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'TEST editor closure staging failed' }
 $ResolvedFiles = @((Get-Content $resolutionPath -Raw -Encoding UTF8 | ConvertFrom-Json).resolvedSources)
-$imports = @($ResolvedFiles | ForEach-Object { '//! import "' + $_ + '"' }) -join "`r`n"
-$base = [IO.File]::ReadAllText((Project-Path ([string]$Config.testBaseSource)))
-$marker = '// __TEST_SOURCE_IMPORTS__'
-if ([regex]::Matches($base, [regex]::Escape($marker)).Count -ne 1) { throw "TEST template must contain exactly one $marker" }
-$text = $base.Replace($marker, $imports)
-[IO.File]::WriteAllText($source, $text, [Text.UTF8Encoding]::new($false))
+$runtimeArguments = @('apply', '--workspace', $Root, '--resolution', $resolutionPath, '--template', (Project-Path ([string]$Config.testBaseSource)), '--source', $source)
+if ($Config.testMinimalRuntime) { $runtimeArguments += '--minimal' }
+& python (Join-Path $Root 'tools/test_map_runtime.py') @runtimeArguments | Out-Host
+if ($LASTEXITCODE -ne 0) { throw 'TEST runtime isolation failed' }
 Write-Host "TEST / $hero dependencies resolved: $($ResolvedFiles.Count)"
 return $source

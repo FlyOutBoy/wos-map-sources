@@ -259,13 +259,16 @@ try {
 
     if ($Target -eq 'Test') {
         $unpacked = Resolve-WorkspacePath ([string]$config.testMapDirectory)
-        if (-not (Test-Path -LiteralPath (Join-Path $unpacked 'war3map.imp') -PathType Leaf)) {
-            $importNames = Join-Path $buildDir 'test-import-names.json'
-            [IO.File]::WriteAllText($importNames, '["war3map.imp"]', [Text.UTF8Encoding]::new($false))
-            & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $originalMap -Directory $unpacked -NamesFile $importNames -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
-        }
-        & python (Join-Path $workspaceRoot 'tools/install_project_assets.py') --map $unpacked
-        if ($LASTEXITCODE -ne 0) { throw 'TEST project asset installation failed' }
+        # Refresh editor metadata from the saved archive, then name this TEST hero.
+        $identityNames = Join-Path $buildDir 'test-identity-names.json'
+        [IO.File]::WriteAllText($identityNames, '["war3map.w3i"]', [Text.UTF8Encoding]::new($false))
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Extract -Map $originalMap -Directory $unpacked -NamesFile $identityNames -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+        & python (Join-Path $workspaceRoot 'tools/test_map_identity.py') --hero $testHero --directory $unpacked --source $source
+        if ($LASTEXITCODE -ne 0) { throw 'TEST map naming failed' }
+        & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Update -Map $builtMap -Directory $unpacked -NamesFile $identityNames -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+
+        # The saved TEST archive owns every import and asset. Update native
+        # objects/triggers only; never install project assets or cached imports.
         & (Join-Path $PSScriptRoot 'test-map-archive.ps1') -Mode Update -Map $builtMap -Directory $unpacked -Library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
         # Materialize the same resolved source set into the copied map's editor
         # payload. Never save into the input map or the original unpacked folder.
@@ -344,6 +347,14 @@ try {
         if (Get-Process -Name 'World Editor','WorldEditorTESH' -ErrorAction SilentlyContinue) {
             throw "Close World Editor before updating the selected Heroes map. Compiled copy: $builtMap"
         }
+        if ($config.testMinimalRuntime) {
+            & python (Join-Path $workspaceRoot 'tools/test_hero_bar_assets.py') `
+                --archive $builtMap --stage (Join-Path $buildDir 'test-hero-bar-assets') `
+                --library (Join-Path (Split-Path -Parent $jassHelper) 'sfmpq.dll')
+            if ($LASTEXITCODE -ne 0) { throw 'TEST hero-bar texture installation failed' }
+        }
+        & python (Join-Path $workspaceRoot 'tools/test_map_identity.py') --hero $testHero --archive $builtMap
+        if ($LASTEXITCODE -ne 0) { throw 'TEST lobby header naming failed' }
         $backupDirectory = Join-Path $workspaceRoot "backups/test-maps/$testHero"
         New-Item -ItemType Directory -Path $backupDirectory -Force | Out-Null
         $backupMap = Join-Path $backupDirectory ((Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '.w3x')

@@ -1,0 +1,36 @@
+{
+  "original_groups": [
+    256,
+    9,
+    19,
+    1,
+    1
+  ],
+  "fixed_groups": [
+    255,
+    9,
+    19,
+    1,
+    1,
+    9
+  ],
+  "split_geosets": {
+    "0": [
+      0,
+      5
+    ]
+  },
+  "original_triangles": 7613,
+  "fixed_triangles": 7613,
+  "importPath": "war3mapImported\\arknights_sx01.mdx",
+  "originalSha256": "8dac4da65aa9d42a31c270d57a44ecae6441194249a3139e766e036f06001066",
+  "fixedSha256": "b0febd03de80c5d9d154ad767a600924957f50df683c64eab577fd86e398d102",
+  "nativePC": [
+    "0x2cc64b",
+    "0x2cc615",
+    "0x2cc5e8"
+  ],
+  "nativeCounterLimit": 256,
+  "triangleAttributesPreserved": true,
+  "otherChunksPreserved": true
+}

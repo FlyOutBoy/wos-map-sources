@@ -1,13 +1,45 @@
 # ⚔️ WAR OF SOULS 2 — PATCH 0.33c
 
 ## 🖥️ Interface
+- Hero portraits sit **5%** higher in the portrait frame (no longer touching its bottom edge).
+- Fixed full-price item refunds after moving inventory slots or buying again; each eligible purchase keeps its own **15-second** refund window.
+- Added a top-left warning when ban choices lock with **3 seconds remaining**; conflicting selections explain why a ban was rejected.
+- Restored the **animated hero portrait** with **spell targeting**, enlarged by **2.5%**. Camera and voice clicks now use the level plate.
+- Fixed portrait position and size drifting; moved the short camera/voice hint to the level plate.
 - Dead heroes now show an **empty HP bar** in the top panel.
 - Collapsing **Common Info** moves gold and next-round income into the inventory header.
 - Centered the four buttons above the portrait.
 - Added optional **auto-select** for your living hero every **0.25s**.
 - Fixed missing range circles for long-range abilities.
+- Fixed normal and fast item sales from the currently controlled enemy or allied test hero.
 
 ## 🦸 Heroes
+**Frostnova**
+- **F:** replacing a slow preserves its stacks across Winter's Scar and removes older tiers after the new buff applies.
+- **F — Lv. 35:** normal stacks also deal **0.15× Intelligence magic damage per stack each second**; enhanced stacks add **0.25× Intelligence per second once per target**.
+- **F:** enhanced (Winter's Scar) slow **8% → 6%** per stack (max **40% → 30%**); debuff lasts **6 → 5 sec**; the final damage tick of the debuff is no longer lost.
+- **E:** field damage **0.35–0.75 → 0.30–0.50× Intelligence** per second.
+- **E / TE:** field duration **10 → 8 sec**.
+- **Q:** base range **+100** (1500 / 1550 / 1600 / 1650 / 1700).
+- **TE:** field damage **0.75 → 0.5× Intelligence**.
+- **TR:** initial and exit roots **2 → 1 sec**. Enemies inside the field are treated as rooted: Urahara Set and other movement abilities are cancelled without cooldown.
+- **Q / W — Lv. 35:** **+150 range**. **W — Lv. 25:** **+20% wave speed**.
+- Q and W stop at the arena boundary.
+- **Q:** recharge **20/19/18/17/16 → 17/16/15/14/13 sec**; Intelligence scaling per level **0.3 → 0.5**; base damage **50 → 75**; mana cost **100–140 → 70** at every level. Javelins in flight and orbiting charges now disappear when Frostnova dies.
+- **W:** cast time **0.6 → 0.51s**, wave speed **1100 → 1430**, radius **250 → 300**, wave effect **+10%** larger.
+- Portrait raised slightly (now part of the 5% raise for every hero portrait).
+- **T:** fixed the shield lasting indefinitely; each application lasts **4s**. Combined the duration and red shield-readiness timer in one two-row panel.
+- Recommended items now match Barragan's build.
+
+**Mahoraga**
+- All mana costs **−10%**.
+
+**Alucard**
+- **E:** fixed missing enemies at point-blank range; the attack checks its launch area before moving.
+
+**Kyoraku**
+- **Bankai — Final G:** fixed the dash stopping at the target and leaving the participants locked; restored the pass-through and proper finishing hit.
+
 **Akainu**
 - **T:** cooldown **45 → 40s**; fists **30 → 36**.
 - **R:** cooldown scales **30 / 28.5 / 27 / 25.5 / 24s**.
@@ -32,13 +64,30 @@
 - **W — Lv. 35:** ally-target healing gains an additional **2× Intelligence**.
 
 **Okarun**
-- **T:** movement speed reduced by **200**.
-- Fixed slow movement and repeated order interruptions.
+- **F:** has a total movement speed cap of **500 / 600 / 700 / 800 / 900** at hero levels **6 / 12 / 18 / 25 / 35**.
+- **T:** fixes movement speed at **1200** without decay for **10s**.
+- Restored running control to reduce backtracking and interrupted movement.
 - **T:** tackle cooldown is **0.75s per enemy**.
 - Knockback **400 → 450** over the same **0.35s**.
 - Tackle damage and knockback stop while Okarun is paused.
 
+**Crocodile**
+- **Q:** flat damage **150 → 100**.
+- **Q:** the last sand explosion is drawn 150 closer, so the art no longer runs past the damage area.
+- **W:** radius **600 → 800**; cast pause is halved at hero level **35**.
+- **E:** charge recovery **21 / 20 / 19 / 18 / 17s**.
+- **R:** travels **20% faster**, strikes each captured enemy **5 times within 1s**, then continues pulling them toward the centre.
+- **R:** damage **0.5 → 0.3 × Agility** (+0.2 per level unchanged).
+- **T2:** detonation damage **10 → 9 × Agility**.
+- **F (La Spada):** damage **1.5 → 1.25 × Agility**.
+
+**Toji**
+- **R:** cast range **1800 → 1600**.
+
 ## 🗡️ Items
+**Core Drill** (new, Universal, 7500: Pakkun +20 + 4000)
+- **+20 allstats.** Physical or magic ability damage grants a stack of that type: **+5%** damage of the same type per stack, up to **5 stacks (+25%)**. Physical and magic stacks are separate, each shown as its own buff on the holder; **4s**, refreshed by each new stack.
+
 **Hell Blaze**
 - Healing and HP regeneration reduction: **7% → 5.5% per stack**, up to **38.5%** at 7 stacks.
 - Mana burn at full stacks: **1.5% → 1.35% max mana per second**.
@@ -48,3 +97,23 @@
 
 **Shiki Knife Evolved**
 - Active projectile hit radius **150 → 190**.
+
+**Ashisogi Jizo**
+- Poison damage **0.4 → 0.5 × Agility** per second. The poison is now a dispellable debuff like Kurikara: each hit refreshes it, and dispelling it stops the damage.
+
+## ⚙️ Performance
+- Destroyed decor now restores gradually over ~1.5s at round end instead of all at once.
+
+## 🛠️ Shop Fixes
+- Naofumi Shield, Turbo Neko, Bunshin Scroll, Cup of Tea and Cup of Tea Evolved moved from Universal to Defensive (own row).
+- **Quick Buy:** builds intermediate recipes first (the more valuable one first), then upgrade parts, then the final item — e.g. Tsuchikage Hat before Pakkun +8 for the Evolved hat.
+- Fixed a desync when a shop was open at round end with a never-priced item in the inventory.
+- Scoreboard (F2) no longer reads heroes and items on one client only (possible desync when opened at round end).
+- **Scroll of Mastery:** fixed purchases from round **15**, including with a full inventory. Grants **+2 to all stats**.
+- Fixed a **paused-game gold exploit** involving repeated sales and purchases.
+
+## 🏅 Team Awards
+- **MVP** now comes from the winning team; **SVP** comes from the losing team. Neither is assigned at a tied score.
+
+- Frostnova: added compact duration icons for Icefield and Frost Nova fields/aura; Winter's Scar and its shield now retain duration while paused. Enhanced Icefield catches blinks farther beyond its edge.
+- Fixed the auto-select toggle in MAIN sandbox mode.

@@ -1,0 +1,1280 @@
+[
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Rock0.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 339,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Rock1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 342,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Rock2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 356,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Shop.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1753,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone0.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 264,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 142,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 233,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone3.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 248,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone4.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 229,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Stone5.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 231,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Trees0.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 140,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Trees1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 444,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Trees2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 279,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\000_Trees3.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 134,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\21118050.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 5784,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ArcheryRange.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 641,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Barrel.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 144,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Barrel Explosive.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 144,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\biwutai.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2250,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Bridge_01.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1780,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\chengshi (12).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 400,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\chengshi (13).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 728,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\chengshi (14).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1472,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_11.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1950,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_13.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 6235,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_15.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2084,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_15_01.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2086,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_15_02.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2086,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\city_abandonedbuilding_17.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 577,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\DBObox2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 60,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\DBORRbox.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 60,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\fengbaoshangren.mdx",
+  "peak": 56,
+  "fill": 0.8,
+  "faces": 9087,
+  "hero": false,
+  "nemit": 16
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\File00000368.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 213,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\File00006676.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 485,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\File00006677.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 742,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\File00006679.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 36,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\garden bush.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 148,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Hokage_Door.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2002,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\HokageWall.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1405,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\huachi1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1034,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\huachi4.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 132,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\hy_zs_fanguanb.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 7179,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\hy_zs_jiuguanb.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 7680,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\hy_zs_qiangti1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 136,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\hy_zs_yuchang.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 12966,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\hy_zs_yuchangb.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 12100,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ironfencec.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 22,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ironfencec1_1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 97,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ironfencec1_2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 97,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\jzu19.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1183,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\naruto_house1-1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 5013,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\naruto_house2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 4490,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\naruto_house3.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 3990,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\naruto_house5-1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2324,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\naruto_house5-2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2324,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Opdef17 (450).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 872,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Opdef17 (478).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 726,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Pack Targets 1.mdx",
+  "peak": 8,
+  "fill": 0.1,
+  "faces": 756,
+  "hero": false,
+  "nemit": 1
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\PickRect_GREEN.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 8,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\PickRect_RED.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 8,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Pirate island house.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 294,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\plastic chair.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 252,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\plastic table.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 124,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Poneglyph.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 6452,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\RoadTunnel.mdx",
+  "peak": 130,
+  "fill": 0.1,
+  "faces": 148,
+  "hero": false,
+  "nemit": 2
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ruin donut.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1464,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ruins_flower3.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 3124,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\stone stair (2).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1282,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\stone stair (3).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 635,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Whitebeard and ace grave.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 15511,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Wood Fence 1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 196,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Wood Fence 2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 196,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Wood Fence 3.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 196,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\Wood Fence 4.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 196,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-040.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 3244,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-041.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1686,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-063.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 275,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-129.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 992,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-758.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 808,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-762.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1227,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-763.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1002,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-765.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 963,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-769.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2872,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-796.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 722,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-797.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 286,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-798.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 99,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "land_wos\\ZS-804.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 217,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "Pick\\ArrowSpeed.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 6,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "war3mapImported\\wos_BankaiTextureKyoraku.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "war3mapImported\\wos_ggap1.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 130,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "war3mapImported\\Wos_InoriCrystall.mdx",
+  "peak": 11,
+  "fill": 0.0,
+  "faces": 992,
+  "hero": true,
+  "nemit": 1
+ },
+ {
+  "group": "decor_model",
+  "path": "war3mapImported\\wos_jiejin.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 120,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "decor_model",
+  "path": "war3mapImported\\wos_Model Thomas.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2465,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_1baozha_90.mdx",
+  "peak": 254,
+  "fill": 0.6,
+  "faces": 44,
+  "hero": true,
+  "nemit": 14
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 400,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_by_wood_effect_yuzhiboyou_unusual_fenshendabaopo_2.mdx",
+  "peak": 130,
+  "fill": 3.3,
+  "faces": 8,
+  "hero": false,
+  "nemit": 26
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_darkdustgroundeffect.mdx",
+  "peak": 14,
+  "fill": 1.0,
+  "faces": 0,
+  "hero": false,
+  "nemit": 1
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_dizhen-qiquan.mdx",
+  "peak": 24,
+  "fill": 0.5,
+  "faces": 0,
+  "hero": false,
+  "nemit": 3
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_dustbrown.mdx",
+  "peak": 13,
+  "fill": 0.1,
+  "faces": 1,
+  "hero": false,
+  "nemit": 1
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_Effect Pieces.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 566,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_FantasyBattle (1644).mdx",
+  "peak": 81,
+  "fill": 0.5,
+  "faces": 0,
+  "hero": true,
+  "nemit": 12
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_FBT-dilie22.mdx",
+  "peak": 252,
+  "fill": 3.6,
+  "faces": 2,
+  "hero": true,
+  "nemit": 9
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_GZ_jntxn (11)_R1-200.mdx",
+  "peak": 44,
+  "fill": 1.5,
+  "faces": 6,
+  "hero": true,
+  "nemit": 8
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_hit wave white.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_hit-juhuang1.mdx",
+  "peak": 124,
+  "fill": 0.8,
+  "faces": 2,
+  "hero": false,
+  "nemit": 6
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_item_goldcredit.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 102,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_LD2209 (129).mdx",
+  "peak": 252,
+  "fill": 1.9,
+  "faces": 96,
+  "hero": true,
+  "nemit": 30
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_obr08 (171).mdx",
+  "peak": 122,
+  "fill": 1.2,
+  "faces": 36,
+  "hero": false,
+  "nemit": 2
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_OPm (431232).mdx",
+  "peak": 99,
+  "fill": 0.9,
+  "faces": 568,
+  "hero": true,
+  "nemit": 9
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_Razor_leaf-A392F3.mdx",
+  "peak": 76,
+  "fill": 0.1,
+  "faces": 128,
+  "hero": false,
+  "nemit": 1
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_SasukeYh-41.mdx",
+  "peak": 253,
+  "fill": 0.4,
+  "faces": 14,
+  "hero": true,
+  "nemit": 18
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_shachen1.mdx",
+  "peak": 360,
+  "fill": 3.8,
+  "faces": 2,
+  "hero": false,
+  "nemit": 12
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_solaire_lightning_impact.mdx",
+  "peak": 122,
+  "fill": 0.0,
+  "faces": 1,
+  "hero": false,
+  "nemit": 7
+ },
+ {
+  "group": "decor_fx",
+  "path": "war3mapImported\\wos_T_dustgaraa2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 128,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "land_wos\\Train Metro.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1294,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_124saq2_2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 16,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Astasword.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2232,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_bloodex-special-23.mdx",
+  "peak": 250,
+  "fill": 0.7,
+  "faces": 0,
+  "hero": true,
+  "nemit": 8
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_cd (706).mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 3394,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_DarkShiki.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 4814,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Erza_Sword2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 204,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Kirito.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 12176,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Kirito_Buff_main.mdx",
+  "peak": 109,
+  "fill": 0.3,
+  "faces": 1,
+  "hero": false,
+  "nemit": 3
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Model Thomas.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2465,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_RaidenShogun.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 29499,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_shulao.mdx",
+  "peak": 120,
+  "fill": 0.4,
+  "faces": 600,
+  "hero": false,
+  "nemit": 4
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_shutu.mdx",
+  "peak": 128,
+  "fill": 0.6,
+  "faces": 750,
+  "hero": false,
+  "nemit": 6
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Starkwolf.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1412,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_Sukuna.MDX",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 13728,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_ulqashar.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 2,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "dummy",
+  "path": "war3mapImported\\wos_YC_Shockwave_b_red.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 48,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_1hongse_2red.mdx",
+  "peak": 94,
+  "fill": 0.0,
+  "faces": 64,
+  "hero": true,
+  "nemit": 2
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx",
+  "peak": 220,
+  "fill": 0.3,
+  "faces": 8,
+  "hero": true,
+  "nemit": 11
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_az_jingzi_jiansheng01_e1_l2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 400,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_BY_Wood_Effect_OnePiece_AiSi_DaYanJieYanDi_2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 1600,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_by_wood_effect_yuzhiboyou_unusual_fenshendabaopo_2.mdx",
+  "peak": 130,
+  "fill": 3.3,
+  "faces": 8,
+  "hero": false,
+  "nemit": 26
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx",
+  "peak": 33,
+  "fill": 1.3,
+  "faces": 32,
+  "hero": true,
+  "nemit": 11
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_hakkestart.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 4,
+  "hero": true,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_OuterCircleRed.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 4,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_SukunaDomain.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 11808,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_SukunaDomainArea2.mdx",
+  "peak": 0,
+  "fill": 0.0,
+  "faces": 3624,
+  "hero": false,
+  "nemit": 0
+ },
+ {
+  "group": "sukuna_roundend",
+  "path": "war3mapImported\\wos_t8_by_wood_effect_order_dange_daoguang_baozha_2_2_clear.mdx",
+  "peak": 218,
+  "fill": 10.3,
+  "faces": 206,
+  "hero": true,
+  "nemit": 15
+ }
+]

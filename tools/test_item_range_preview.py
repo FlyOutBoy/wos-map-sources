@@ -7,6 +7,7 @@ import unittest
 
 from test_crocodile import JassState
 import test_ability_range_preview as prior
+from test_followup_033c import TwoRingLifecycle
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,7 +59,7 @@ class Rules(unittest.TestCase):
         abilities = json.loads((ROOT / 'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         audit = json.loads((ROOT / 'assets/AbilityRange/item-rules.json').read_text(encoding='utf-8'))
         self.assertEqual(set(items), {r['item'] for r in audit})
-        self.assertEqual(158, len(audit))
+        self.assertEqual(159, len(audit))
         for row in audit:
             ids = items[row['item']].get('abilities', '').split(',')
             self.assertEqual([a['id'] for a in row['abilities']], [a for a in ids if a])
@@ -69,8 +70,8 @@ class Rules(unittest.TestCase):
         self.assertEqual(33, sum(r['mode'] != 'none' for r in audit))
 
 
-class Runtime(prior.RangeRuntime):
-    MAX_RADIUS = 32768
+class Runtime(TwoRingLifecycle, prior.RangeRuntime):
+    MAX_RADIUS = 4000
     """Also rerun every existing lifecycle test on MAIN, rather than the old TEST template."""
     def setUp(self):
         super().setUp()
@@ -89,6 +90,11 @@ class Runtime(prior.RangeRuntime):
                          ItemsSpells_GetPreviewAbility=lambda iid: rules.run('GetPreviewAbility', (iid,)),
                          ItemsSpells_GetItemPreviewRadius=lambda iid, a: rules.run('GetItemPreviewRadius', (iid, a)),
                          BlzGetItemAbility=lambda i, a: self.lookups.append((i, a)) or None)
+        self.two_ring_globals()
+        # Fresh MAIN lifecycle: effects numbered per hero as red/white pairs.
+        self.vm.g.update(AR_Hero=defaultdict(lambda: None), AR_Effect=defaultdict(lambda: None))
+        self.number = 0
+        self.calls.clear()
         self.runj('AR_Reconcile')
 
     def item(self, name='grail', slot=0):
@@ -100,11 +106,11 @@ class Runtime(prior.RangeRuntime):
     def test_item_reuses_existing_ring_and_switches_back_to_ability(self):
         self.item()
         self.assertAlmostEqual(1200 / 512, self.vm.g['AR_Scale'])
-        self.assertEqual(2, self.number)
+        self.assertEqual(4, self.number)
         self.show()
         self.assertEqual(1, self.vm.g['AR_Scale'])
         self.assertEqual(-1, self.vm.g['AR_RequestedItemSlot'][0])
-        self.assertEqual(2, self.number)
+        self.assertEqual(4, self.number)
 
     def test_ability_handles_only_on_changed_slots_in_shared_reconcile_not_hover(self):
         self.item()

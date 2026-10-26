@@ -287,6 +287,51 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
     // ===========================================================================
     // Core Helpers
     // ===========================================================================
+    // Keep the logical stance, native ability set and presentation in one transition.
+    // Reapplying attack stance for Perseverance must not stack its movement bonus
+    // or copy the inactive defensive ultimate's stale cooldown over the active one.
+    private function Patriot_SetStance takes unit c, boolean attack returns nothing
+        local boolean wasAttack = LoadInteger(hs, GetHandleId(c), SH_PATRIOT_E) == 1
+        local real cooldown
+
+        if attack then
+            call UnitAddAbility(c, PatriotF2_ID)
+            if GetUnitAbilityLevel(c, PatriotT_ID) > 0 then
+                call UnitAddAbility(c, PatriotT2_ID)
+                if not wasAttack then
+                    set cooldown = BlzGetUnitAbilityCooldownRemaining(c, PatriotT_ID)
+                    call BlzStartUnitAbilityCooldown(c, PatriotT2_ID, cooldown)
+                endif
+            endif
+            if not wasAttack then
+                call AddSpellLevel(c, 'A01C', 10, true)
+            endif
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 1)
+            call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2.blp")
+            if LoadInteger(hs, GetHandleId(c), SH_PATRIOT_EE) == 1 then
+                call AAUniversalTooltips_SetUnitForm(c, 2)
+            else
+                call AAUniversalTooltips_SetUnitForm(c, 1)
+            endif
+        else
+            if wasAttack then
+                if GetUnitAbilityLevel(c, PatriotT_ID) > 0 and GetUnitAbilityLevel(c, PatriotT2_ID) > 0 then
+                    set cooldown = BlzGetUnitAbilityCooldownRemaining(c, PatriotT2_ID)
+                    call BlzStartUnitAbilityCooldown(c, PatriotT_ID, cooldown)
+                endif
+                call AddSpellLevel(c, 'A01C', 10, false)
+            endif
+            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 0)
+            call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E.blp")
+            call AAUniversalTooltips_SetUnitForm(c, 0)
+        endif
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF_ID, not attack)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT_ID, not attack)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF2_ID, attack)
+        call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT2_ID, attack)
+        call AddUnitAnimationProperties(c, "alternate", attack)
+    endfunction
+
     function PatriotPas takes unit c, unit td returns nothing
         local real x
         local real y
@@ -873,9 +918,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                         call KillUnit(c)
                             call WUI_HeroProgress(c, PatriotE_ID, "Perseverance Stance", 0.00, 0.00, true)
                         call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_EE, 0)
-                        call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 0)
-                        call AddUnitAnimationProperties(c, "alternate", false)
-                        call AAUniversalTooltips_SetUnitForm(c, 0)
+                        call Patriot_SetStance(c, false)
                     endif
                     if e2 != null then
                         call DestroyEffect(e2)
@@ -898,7 +941,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         public static method PatriotE_Start takes unit NewC, unit NewTd returns nothing
             local thistype this = thistype.create()
             local real tmp_y = 0.0
-            local real cd1
             local real dmg
 
             set MUI_PatriotE = MUI_PatriotE + 1
@@ -907,7 +949,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set td = NewTd
             set id = GetPlayerId(GetOwningPlayer(td))
             set id2 = GetPlayerId(GetOwningPlayer(c))
-            set cd1 = BlzGetUnitAbilityCooldownRemaining(c, PatriotT_ID)
             set r = 0.0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             set rmax = PatriotEE_Duration
@@ -916,25 +957,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             set dmg = GetUnitState(c, UNIT_STATE_MAX_LIFE) * 0.10
             call SetUnitState(c, UNIT_STATE_LIFE, dmg)
 
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF_ID, false)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT_ID, false)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF2_ID, true)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT2_ID, true)
-            call UnitAddAbility(c, PatriotF2_ID)
-            if GetUnitAbilityLevel(c, PatriotT_ID) > 0 then
-                call UnitAddAbility(c, PatriotT2_ID)
-                call BlzStartUnitAbilityCooldown(c, PatriotT2_ID, cd1)
-            endif
-
-            call AddUnitAnimationProperties(c, "alternate", true)
-            call Patriot_RestoreOrder(c, 4)
-            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 1)
             call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_EE, 1)
-            call AddSpellLevel(c, 'A01C', 10, true)
-            call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2.blp")
-
-            call AAUniversalTooltips_SetUnitForm(c, 2)
-
+            call Patriot_SetStance(c, true)
+            call Patriot_RestoreOrder(c, 4)
 
             set e2 = AddSpecialEffectTarget("war3mapimported\\wos_DingZhi_BY_Wood_Effect_Bleach_LvSeQiLiu2.mdx", c, "origin")
             call MakeSound("war3mapImported\\Hero_Patriot_EE")
@@ -1435,6 +1460,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct PatriotSpells_T2
         private static integer array m_PatriotT2
         private static integer MUI_PatriotT2 = -1
@@ -1933,8 +1959,6 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         local integer rand = GetRandomInt(1, 3)
         local real x = GetUnitX(c)
         local real y = GetUnitY(c)
-        local real cd1 = BlzGetUnitAbilityCooldownRemaining(c, PatriotT_ID)
-        local real cd2 = BlzGetUnitAbilityCooldownRemaining(c, PatriotT2_ID)
         local real a = GetUnitFacing(c) * bj_DEGTORAD
         local integer oldrand = LoadInteger(hs, GetHandleId(c), SH_OLD_RANDOM)
 
@@ -1951,34 +1975,11 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         endif
         call SaveInteger(hs, GetHandleId(c), SH_OLD_RANDOM, rand)
 
+        call Patriot_SetStance(c, e == 0)
         if e == 0 then
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF_ID, false)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT_ID, false)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF2_ID, true)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT2_ID, true)
-            call UnitAddAbility(c, PatriotF2_ID)
-            if GetUnitAbilityLevel(c, PatriotT_ID) > 0 then
-                call UnitAddAbility(c, PatriotT2_ID)
-                call BlzStartUnitAbilityCooldown(c, PatriotT2_ID, cd1)
-            endif
-            call AddUnitAnimationProperties(c, "alternate", true)
             call Patriot_RestoreOrder(c, 8)
-            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 1)
-            call AddSpellLevel(c, 'A01C', 10, true)
-            call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E2.blp")
-            call AAUniversalTooltips_SetUnitForm(c, 1)
         else
-            call AddSpellLevel(c, 'A01C', 10, false)
-            call BlzSetAbilityIcon(PatriotE_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_E.blp")
-            call BlzStartUnitAbilityCooldown(c, PatriotT_ID, cd2)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF_ID, true)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT_ID, true)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotF2_ID, false)
-            call SetPlayerAbilityAvailable(GetOwningPlayer(c), PatriotT2_ID, false)
-            call AddUnitAnimationProperties(c, "alternate", false)
             call Patriot_RestoreOrder(c, 3)
-            call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_E, 0)
-            call AAUniversalTooltips_SetUnitForm(c, 0)
         endif
 
         if GetHeroLevel(c) >= 35 then

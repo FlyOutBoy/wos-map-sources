@@ -1178,6 +1178,7 @@ library RaidenSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct RaidenE_KS
         private static integer array m_RaidenE
         private static integer MUI_RaidenE = -1
@@ -1531,6 +1532,7 @@ library RaidenSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct RaidenR_KS
         private static integer array m_RaidenR
         private static integer MUI_RaidenR = -1

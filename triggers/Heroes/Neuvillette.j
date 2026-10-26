@@ -104,6 +104,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
     //===========================================================================
     // Q Ability Struct
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NeuvilletteSpells_Q
         private static integer array m_NeuvilletteQ
         private static integer MUI_NeuvilletteQ = -1
@@ -254,6 +255,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
     //===========================================================================
     // W Ability Struct
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NeuvilletteSpells_W
         private static integer array m_NeuvilletteW
         private static integer MUI_NeuvilletteW = -1
@@ -556,6 +558,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
     //===========================================================================
     // R Ability Struct (Two-Phase: Charge -> Hydro Pump Beam)
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NeuvilletteSpells_R
         private static integer array m_NeuvilletteR
         private static integer MUI_NeuvilletteR = -1
@@ -829,6 +832,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
     //===========================================================================
     // T Ability Struct (Pillar Deluge)
     //===========================================================================
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct NeuvilletteSpells_T
         private static integer array m_NeuvilletteT
         private static integer MUI_NeuvilletteT = -1

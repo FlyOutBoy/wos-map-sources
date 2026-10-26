@@ -302,6 +302,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BazzBSpells_W
         private static integer array m_BazzBW
         private static integer MUI_BazzBW = -1
@@ -535,6 +536,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BazzBSpells_E
         private static integer array m_BazzBE
         private static integer MUI_BazzBE = -1
@@ -655,6 +657,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BazzBSpells_R
         private static integer array m_BazzBR
         private static integer MUI_BazzBR = -1
@@ -827,6 +830,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct BazzBSpells_T
         private static integer array m_BazzBT
         private static integer MUI_BazzBT = -1

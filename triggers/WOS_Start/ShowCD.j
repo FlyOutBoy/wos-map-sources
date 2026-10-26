@@ -1279,6 +1279,12 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A0HM', 1, 25, 3)
     call AHUI_SetLevelInfo('A0HN', 1, 1, 0)
     call AHUI_SetLevelInfo('A0HO', 1, 1, 0)
+    call AHUI_SetLevelInfo('A116', 5, 1, 4)
+    call AHUI_SetLevelInfo('A117', 5, 1, 4)
+    call AHUI_SetLevelInfo('A118', 5, 6, 4)
+    call AHUI_SetLevelInfo('A119', 5, 10, 4)
+    call AHUI_SetLevelInfo('A11A', 1, 25, 3)
+    call AHUI_SetLevelInfo('A11B', 1, 1, 3)
     // END GENERATED ABILITY LEVELS
 endfunction
 

@@ -1,0 +1,26 @@
+# ⚔️ WAR OF SOULS 2 — PATCH 0.34a
+
+## 🦸 Heroes
+**❄️ Frostnova** — buffs
+- **Q:** damage **50 + 1/1.3/1.6/1.9/2.2× INT → 75 + 1/1.5/2/2.5/3× INT**
+- **Q:** range per level **+50 → +75** (max **1600 → 1700**), projectile speed **2310 → 2410**
+- **Q:** recharge **20/19/18/17/16 → 17/16/15/14/13 sec**, mana cost **100–140 → 70**
+- **W:** wave speed **1100 → 1730**, radius **80→250 → 150→410**
+- **W:** cast time / Winter's Scar iframe **0.6 → 0.51 sec**
+- 🛠️ A dead Frostnova no longer keeps Q charges orbiting her corpse; javelins, waves, E and T stop when she dies.
+
+**🐊 Crocodile** — nerfs
+- **R:** damage per hit **0.5/0.7/0.9/1.1/1.3 → 0.3/0.5/0.7/0.9/1.1× AGI** (5 hits)
+- **T2:** detonation **10 → 9× AGI**
+- **F:** enhanced attack **1.5 → 1.25× AGI** (triple blades **4.5 → 3.75× AGI**)
+
+## 🗡️ Items
+- **Ashisogi Jizo:** poison **0.4 → 0.45× AGI** per second.
+
+## 🔧 Fixes & Performance
+- **Patriot:** fixed stance and ultimate mismatches after level-35 Perseverance ends; the first stance switch after revival now works correctly. Perseverance no longer stacks the attack stance's movement speed bonus or overwrites its active ultimate cooldown.
+- **Akainu:** Q/R magma-hand effects are cleared immediately on death, including fast revivals. Fixed lingering hand effects when T is interrupted near the end of its cast.
+- **F2 scoreboard:** heroes and items are now read from a synchronized snapshot — fixes a possible **desync** when someone had F2 open during a death or round end.
+- **Round reset:** damaged decor now restores gradually over ~1.5 sec instead of in one frame — no more lag spike at round start.
+
+*GL HF! 💙*

@@ -43,11 +43,22 @@ class Fix6(prior.Fix5):
   for prefix in ['WScU','WScC']:g['BlzGetTriggerSyncPrefix']=lambda p=prefix:p;self.vm.run('SyncDataHandler')
  def sell(self,full_refund=False):
   g=self.vm.g;self.units[0]['inv'][0]=1;g['ItemsCurrentItem_ID'][0]=1;g['ItemsCurrentItem_ID_BACKUP'][0]=0;g['ItemsCurrentItemBag_ID'][0]=1
-  g.update(BlzGetTriggerFrame=lambda:77,GetHandleId=lambda o:o['pid']+1 if isinstance(o,dict) else o,ShopFrameTable={(77,0):307},ShopFastAction=lambda p,code,id:code,IsObserverSlot=lambda _:False,hs={},StringHash=lambda s:s,MyFlush=lambda *_:None,RemoveSavedInteger=lambda t,k,c:t.pop((k,c),None),RefundPercent=85,RefreshItemCache2=lambda _:None,ReloadItemPage2=lambda *_:None,RemoveItem=lambda it:self.units[0]['inv'].__setitem__(self.units[0]['inv'].index(it),0),GetItemValue=lambda id:self.prices[id] if id else self.fail('looked up sold backup zero'),AddGold=lambda p,c,credit:self.gold.update({p:self.gold[p]+(c if credit else -c)}))
-  if full_refund:g['hs'][1,'fullrefund_0']=1
+  g.update(BlzGetTriggerFrame=lambda:77,GetHandleId=lambda o:o['pid']+1 if isinstance(o,dict) else o,ShopFrameTable={(77,0):307},SHOP_PAGE_LAST=7,ShopFastAction=lambda p,code,id:code,IsObserverSlot=lambda _:False,hs={},StringHash=lambda s:s,MyFlush=lambda *_:None,RemoveSavedInteger=lambda t,k,c:t.pop((k,c),None),RefundPercent=85,RefreshItemCache2=lambda _:None,ReloadItemPage2=lambda *_:None,RemoveItem=lambda it:self.units[0]['inv'].__setitem__(self.units[0]['inv'].index(it),0),GetItemValue=lambda id:self.prices[id] if id else self.fail('looked up sold backup zero'),AddGold=lambda p,c,credit:self.gold.update({p:self.gold[p]+(c if credit else -c)}))
+  if full_refund:g['ShopRefundData'].update({(1,0):1,(1,6):g['TimerGetElapsed'](g['ShopClock'])+15})
   self.vm.run('OnClickItem')
  def test_fast_sell_clears_tree_without_invalid_backup_lookup(self):
   self.sell();g=self.vm.g;self.assertEqual(self.units[0]['inv'][0],0);self.assertEqual(self.gold[0],3085);self.assertEqual(g['ItemsCurrentItem_ID'][0],0);self.assertEqual(g['ItemsCurrentItem_ID_BACKUP'][0],0);self.assertEqual(g['ItemsCurrentItemBag_ID'][0],0);self.assertFalse(self.visible[g['FRAME_ShopItem'][42]])
+ def test_fast_and_button_sale_use_selected_controlled_test_unit(self):
+  self.sell();g=self.vm.g;test={'pid':6,'inv':[1,0,0,0,0,0]};self.units[0]['inv'][0]=5
+  g.update(TestMode=True,TestUnit=test,TestAllyUnit=None,TestUnitController=0,TestAllyUnitController=None,
+   GetSelectedHeroForPlayer=lambda p:test,RemoveItem=lambda it:test['inv'].__setitem__(test['inv'].index(it),0))
+  for fast in (False,True):
+   test['inv'][0]=1;g['ItemsCurrentItemBag_ID'][0]=1;g['ItemsCurrentItem_ID'][0]=1
+   g['ShopFrameTable'][77,0]=300 if fast else 307
+   g['ShopFastSell'][0]=fast;g['ShopLastClickItem'][0]=1;g['ShopLastClickCode'][0]=300;g['ShopLastClickTime'][0]=g['TimerGetElapsed'](g['ShopClock'])
+   g['ShopFastAction']=lambda *args:self.vm.run('ShopFastAction',args)
+   before=self.gold[0];self.vm.run('OnClickItem')
+   self.assertEqual(before+85,self.gold[0]);self.assertEqual(0,test['inv'][0]);self.assertEqual(5,self.units[0]['inv'][0])
  def test_full_refund_sale_preserves_refund_and_clears_tree(self):
   self.sell(True);self.assertEqual(self.gold[0],3100);self.assertEqual(self.vm.g['ItemsCurrentItem_ID'][0],0)
  def test_next_inspection_restores_centre_after_clear(self):
@@ -59,5 +70,50 @@ class Fix6(prior.Fix5):
   s=(ui.ROOT/'triggers/WOS_Start/WoS_Shop_Init.j').read_text(encoding='utf-8');self.assertNotIn('Need space/base',s);self.assertIn('WOSRecommendedDragHint',s);self.assertIn('WOSQuickBuyDragHint',s);self.assertIn('Hold RMB: drag left / right / up / down',s)
   body=s.split('function ShopClearItemTree takes',1)[1].split('endfunction',1)[0]
   for token in ['GetItemValue','GetObjectName','CreateItem','CreateUnit','CreateGroup','CreateTimer','TimerStart','BlzCreate','BlzGetFrameByName','GetRandom']:self.assertNotIn(token,body)
+ def test_paused_sale_uses_live_item_not_stale_expensive_selection(self):
+  self.sell(True);g=self.vm.g
+  g['ItemsCurrentItem_ID'][0]=5
+  for _ in range(8):
+   self.units[0]['inv'][0]=6;before=self.gold[0]
+   self.assertTrue(self.vm.run('ShopSellInventorySlot',(0,self.units[0],0)))
+   self.assertEqual(before+51,self.gold[0])
+   self.assertFalse(self.vm.run('ShopSellInventorySlot',(0,self.units[0],0)))
+  self.units[1]['inv'][0]=5;before=self.gold[0]
+  self.assertFalse(self.vm.run('ShopSellInventorySlot',(0,self.units[1],0)))
+  self.assertEqual(before,self.gold[0]);self.assertEqual(5,self.units[1]['inv'][0])
+ def stat_purchase(self):
+  g=self.vm.g;hero=self.units[0];hero.update(str=10,agi=20,int=30)
+  g.update(CurrentRound=15,GetHeroStr=lambda u,*_:u['str'],GetHeroAgi=lambda u,*_:u['agi'],GetHeroInt=lambda u,*_:u['int'],
+   SetHeroStr=lambda u,v,*_:u.update(str=v),SetHeroAgi=lambda u,v,*_:u.update(agi=v),SetHeroInt=lambda u,v,*_:u.update(int=v),
+   DestroyEffect=lambda *_:None,AddSpecialEffectTarget=lambda *_:None,IsItemInInventory3=lambda *_:-1)
+  tome=g['ScrollOfMastery_ID'];self.prices[tome]=5000;self.gold[0]=10000
+  hero['inv']=[6]*6
+  return g,hero,tome
+ def test_mastery_round_gate_full_inventory_and_exact_payment(self):
+  g,hero,tome=self.stat_purchase();before=list(hero['inv'])
+  g['CurrentRound']=14;self.assertTrue(self.vm.run('ShopRoundLocked',(tome,)))
+  self.vm.run('BuyAutoLimited',(hero,tome,1));self.assertEqual(10000,self.gold[0]);self.assertEqual(10,hero['str'])
+  g['CurrentRound']=15;self.assertFalse(self.vm.run('ShopRoundLocked',(tome,)))
+  self.assertEqual(0,self.vm.run('BuyAutoLimited',(hero,tome,1)))
+  self.assertEqual((12,22,32),(hero['str'],hero['agi'],hero['int']))
+  self.assertEqual(before,hero['inv']);self.assertEqual(5000,self.gold[0]);self.assertFalse(self.adds)
+  self.gold[0]=4999;self.assertEqual(1,self.vm.run('BuyAutoLimited',(hero,tome,1)));self.assertEqual(12,hero['str'])
+ def test_mastery_quickbuy_consumes_goal_once_with_full_inventory(self):
+  g,hero,tome=self.stat_purchase();g['QB_Data'][tome,0]=True;g['QB_Data'][tome,1]=5000
+  self.goals([tome]);self.tick(3)
+  self.assertEqual(5000,self.gold[0]);self.assertEqual(12,hero['str']);self.assertEqual(0,g['QB_Count'][0])
+ def test_mastery_manual_buy_at_round_15_full_inventory(self):
+  g,hero,tome=self.stat_purchase();g['ItemsCurrentItem_ID'][0]=tome
+  g.update(BlzGetTriggerFrame=lambda:77,GetHandleId=lambda o:o['pid']+1 if isinstance(o,dict) else o,
+   ShopFrameTable={(77,0):306},SHOP_PAGE_LAST=7,ShopFastAction=lambda p,code,id:code,IsObserverSlot=lambda _:False,
+   ShopShowItemDescription=lambda *_:None,CraftItemCheck=lambda *_:None,ReloadItemPage2=lambda *_:None)
+  self.vm.run('OnClickItem')
+  self.assertEqual((12,22,32),(hero['str'],hero['agi'],hero['int']))
+  self.assertEqual(5000,self.gold[0]);self.assertEqual([6]*6,hero['inv']);self.assertFalse(self.adds)
+ def test_mastery_recommended_buys_once_and_advances(self):
+  g,hero,tome=self.stat_purchase();g['ItemsPage0_ID'][0]=tome
+  for _ in range(3):self.vm.run('RecommendedAutoBuyTick',(hero,0))
+  self.assertEqual(5000,self.gold[0]);self.assertEqual(12,hero['str'])
+  self.assertEqual(1,g['AutoBuyRecommendedIndex'][0]);self.assertTrue(g['AutoBuyRecommendedDone'][0])
 class SaveRequest(prior.SaveRequest):pass
 if __name__=='__main__':unittest.main()

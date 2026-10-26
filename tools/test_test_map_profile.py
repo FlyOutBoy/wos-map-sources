@@ -4,11 +4,44 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from types import SimpleNamespace
+import re
 
 import test_map_profile as profiles
+from test_crocodile import JassState
 
 
 class TestHeroProfiles(unittest.TestCase):
+    def test_generated_escape_restores_dead_hero_and_only_resets_test_slots(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(profiles,'initialize'), contextlib.redirect_stderr(io.StringIO()):
+            root = Path(temp)
+            self.fixture(root)
+            selected = profiles.ensure(root)
+            hook = Path(selected['testOnlySources'][-1]).read_text()
+            body = re.search(r'function TestHero_Reset takes[\s\S]*?endfunction', hook)[0]
+            vm = JassState(body.replace('.evaluate(', '('))
+            calls = []
+            hero = SimpleNamespace(dead=True, life=0, mana=0)
+            def revive(u, *args):
+                u.dead = False
+                calls.append('revive')
+            vm.g.update(UNIT_TYPE_DEAD='dead', UNIT_STATE_LIFE='life', UNIT_STATE_MANA='mana',
+                        UNIT_STATE_MAX_LIFE=100, UNIT_STATE_MAX_MANA=50,
+                        IsUnitType=lambda u,t:u.dead, ReviveHero=revive,
+                        GetUnitX=lambda u:0, GetUnitY=lambda u:0,
+                        GetUnitState=lambda u,t:t, SetUnitState=lambda u,t,v:setattr(u,t,v),
+                        SpellStacksResetForEscape=lambda u:calls.append('charges'),
+                        BlzEndUnitAbilityCooldown=lambda u,a:calls.append(a),
+                        ClearTextMessages=lambda:None, **{f'{slot}_ID':slot for slot in 'QWERTFG'})
+            vm.run('TestHero_Reset',(None,))
+            self.assertEqual([], calls)
+            vm.run('TestHero_Reset',(hero,))
+            self.assertEqual(['revive','charges',*'QWERTFG'], calls)
+            self.assertEqual((100,50),(hero.life,hero.mana))
+            calls.clear()
+            vm.run('TestHero_Reset',(hero,))
+            self.assertEqual(['charges',*'QWERTFG'], calls)
+
     def test_native_ui_is_default_and_can_be_explicitly_disabled(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(profiles,'initialize'), contextlib.redirect_stderr(io.StringIO()):
             root=Path(temp)
@@ -19,12 +52,42 @@ class TestHeroProfiles(unittest.TestCase):
             self.assertIn('library WOSTestNativeUI',hook.read_text())
             values=profiles.read(config)
             values['testNativeUI']=False
+            values['testMinimalRuntime']=False
             profiles.write(config,values)
             selected=profiles.ensure(root)
             self.assertFalse(selected['testNativeUI'])
             self.assertNotIn('library WOSTestNativeUI',hook.read_text())
 
+    def test_minimal_runtime_is_default_and_forces_native_ui_until_explicit_opt_out(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(profiles,'initialize'), contextlib.redirect_stderr(io.StringIO()):
+            root = Path(temp)
+            config = self.fixture(root)
+            values = profiles.read(config)
+            values['testNativeUI'] = False
+            profiles.write(config, values)
+            selected = profiles.ensure(root)
+            self.assertTrue(selected['testMinimalRuntime'])
+            self.assertTrue(selected['testNativeUI'])
+            self.assertEqual(['TooltipBuilder.j','UniversalTooltips.j','WOSUI.j'],selected['testDisabledSourceNames'])
+            self.assertEqual('MinimalUI.j',Path(selected['testOnlySources'][-2]).name)
+            self.assertIn('library WOSTestMinimalRuntime', Path(selected['testOnlySources'][-1]).read_text())
+            values['testMinimalRuntime'] = False
+            profiles.write(config, values)
+            selected = profiles.ensure(root)
+            self.assertFalse(selected['testMinimalRuntime'])
+            self.assertFalse(selected['testNativeUI'])
+            self.assertEqual([],selected['testDisabledSourceNames'])
+            self.assertFalse(any(Path(p).name == 'MinimalUI.j' for p in selected['testOnlySources']))
+            self.assertNotIn('WOSTestMinimalRuntime', Path(selected['testOnlySources'][-1]).read_text())
+            values['testMinimalRuntime'] = 'false'
+            profiles.write(config, values)
+            with self.assertRaises(ValueError):
+                profiles.ensure(root)
+
     def fixture(self, root, hero="Crocodile"):
+        ui = root/'triggers/WOS_Start/WOSUI.j'
+        ui.parent.mkdir(parents=True,exist_ok=True)
+        ui.write_bytes((Path(profiles.__file__).resolve().parents[1]/'triggers/WOS_Start/WOSUI.j').read_bytes())
         template = root/"template.w3x"
         template.write_bytes(b"original map")
         config = root/".vscode/wos-build.json"

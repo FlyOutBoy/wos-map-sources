@@ -47,6 +47,8 @@ def main() -> int:
         if selected_profile:
             import test_map_profile
             context = test_map_profile.ensure(workspace)
+            if args.command != "export":
+                test_map_profile.refresh_objects(workspace, context)
             config = test_map_profile.absolute(workspace,context.get("buildDir","_build"))/"test-profile-sync.json"
             options = json.loads(config.read_text(encoding="utf-8-sig"))
         map_dir, output_dir, raw_dir, backup_dir, common_j = objects.load_config(config)

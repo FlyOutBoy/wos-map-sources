@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "52587f5050694509033ecf05e50c529f7c7645249583f4e1480757966f41928e",
+  "source_sha256": "82fb3e67afae01fcc3e35afe480fe8b231ef156fe21b60f4b9c1f7ef6749c7d7",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -2322,12 +2322,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2453",
-            "_original_value": "TRIGSTR_2453",
+            "value": "TRIGSTR_3402",
+            "_original_value": "TRIGSTR_3402",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNDUz",
-            "resolved_value": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed).",
-            "_original_resolved_value": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed)."
+            "_raw_base64": "VFJJR1NUUl8zNDAy",
+            "resolved_value": "Movement speed is fixed at 1200 without decay.",
+            "_original_resolved_value": "Movement speed is fixed at 1200 without decay."
           },
           "sanity_check": {
             "text": "",
@@ -9790,12 +9790,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2480",
-            "_original_value": "TRIGSTR_2480",
+            "value": "TRIGSTR_3507",
+            "_original_value": "TRIGSTR_3507",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yNDgw",
+            "_raw_base64": "VFJJR1NUUl8zNTA3",
             "resolved_value": "-38.5% healing and HP regeneration; burns 1.35% of max mana per second",
-            "_original_resolved_value": "-38.5% healing and HP regeneration; burns 1.5% of max mana per second"
+            "_original_resolved_value": "-38.5% healing and HP regeneration; burns 1.35% of max mana per second"
           },
           "sanity_check": {
             "text": "",
@@ -14038,12 +14038,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1970",
-            "_original_value": "TRIGSTR_1970",
+            "value": "TRIGSTR_2855",
+            "_original_value": "TRIGSTR_2855",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTcw",
-            "resolved_value": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec.",
-            "_original_resolved_value": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec."
+            "_raw_base64": "VFJJR1NUUl8yODU1",
+            "resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
+            "_original_resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled."
           },
           "sanity_check": {
             "text": "",
@@ -14088,6 +14088,2978 @@
         }
       ],
       "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B042",
+        "hex": "42303432"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3510",
+            "_original_value": "TRIGSTR_3510",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTEw",
+            "resolved_value": "Frostnova F (1/5)",
+            "_original_resolved_value": "Frostnova F (1/5)"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3513",
+            "_original_value": "TRIGSTR_3513",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTEz",
+            "resolved_value": "Frostnova F (1/5)",
+            "_original_resolved_value": "Frostnova F (1/5)"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6235",
+            "_original_value": "TRIGSTR_6235",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjM1",
+            "resolved_value": "F stack 1/5. Movement slowed. At Frostnova Lv. 35: INT x 0.15 magic damage/sec.",
+            "_original_resolved_value": "F stack 1/5. Movement slowed. At Frostnova Lv. 35: INT x 0.15 magic damage/sec."
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxGcm9zdERhbWFnZVxGcm9zdERhbWFnZS5tZGw="
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "ftac",
+            "hex": "66746163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "B042",
+            "hex": "42303432"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova F (1/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B043",
+        "hex": "42303433"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3521",
+            "_original_value": "TRIGSTR_3521",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTIx",
+            "resolved_value": "Frostnova TF (1/5)",
+            "_original_resolved_value": "Frostnova TF (1/5)"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3522",
+            "_original_value": "TRIGSTR_3522",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTIy",
+            "resolved_value": "Frostnova TF (1/5)",
+            "_original_resolved_value": "Frostnova TF (1/5)"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_888",
+            "_original_value": "TRIGSTR_888",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84ODg=",
+            "resolved_value": "F stack 1/5. Stronger slow; INT x 0.15 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+            "_original_resolved_value": "F stack 1/5. Stronger slow; INT x 0.15 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack."
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "ftac",
+            "hex": "66746163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "B043",
+            "hex": "42303433"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova TF (1/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B045",
+        "hex": "42303435"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3535",
+            "_original_value": "TRIGSTR_3535",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTM1",
+            "resolved_value": "Frostnova F (2/5)",
+            "_original_resolved_value": "Frostnova F (2/5)"
+          },
+          "sanity_check": {
+            "text": "B045",
+            "hex": "42303435"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3538",
+            "_original_value": "TRIGSTR_3538",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTM4",
+            "resolved_value": "Frostnova F (2/5)",
+            "_original_resolved_value": "Frostnova F (2/5)"
+          },
+          "sanity_check": {
+            "text": "B045",
+            "hex": "42303435"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6244",
+            "_original_value": "TRIGSTR_6244",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQ0",
+            "resolved_value": "F stack 2/5. Movement slowed. At Frostnova Lv. 35: INT x 0.30 magic damage/sec.",
+            "_original_resolved_value": "F stack 2/5. Movement slowed. At Frostnova Lv. 35: INT x 0.30 magic damage/sec."
+          },
+          "sanity_check": {
+            "text": "B045",
+            "hex": "42303435"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B045",
+            "hex": "42303435"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxGcm9zdERhbWFnZVxGcm9zdERhbWFnZS5tZGw="
+          },
+          "sanity_check": {
+            "text": "B045",
+            "hex": "42303435"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova F (2/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B046",
+        "hex": "42303436"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3566",
+            "_original_value": "TRIGSTR_3566",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTY2",
+            "resolved_value": "Frostnova F (3/5)",
+            "_original_resolved_value": "Frostnova F (3/5)"
+          },
+          "sanity_check": {
+            "text": "B046",
+            "hex": "42303436"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3567",
+            "_original_value": "TRIGSTR_3567",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTY3",
+            "resolved_value": "Frostnova F (3/5)",
+            "_original_resolved_value": "Frostnova F (3/5)"
+          },
+          "sanity_check": {
+            "text": "B046",
+            "hex": "42303436"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6245",
+            "_original_value": "TRIGSTR_6245",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQ1",
+            "resolved_value": "F stack 3/5. Movement slowed. At Frostnova Lv. 35: INT x 0.45 magic damage/sec.",
+            "_original_resolved_value": "F stack 3/5. Movement slowed. At Frostnova Lv. 35: INT x 0.45 magic damage/sec."
+          },
+          "sanity_check": {
+            "text": "B046",
+            "hex": "42303436"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B046",
+            "hex": "42303436"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxGcm9zdERhbWFnZVxGcm9zdERhbWFnZS5tZGw="
+          },
+          "sanity_check": {
+            "text": "B046",
+            "hex": "42303436"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova F (3/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B047",
+        "hex": "42303437"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3612",
+            "_original_value": "TRIGSTR_3612",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjEy",
+            "resolved_value": "Frostnova F (4/5)",
+            "_original_resolved_value": "Frostnova F (4/5)"
+          },
+          "sanity_check": {
+            "text": "B047",
+            "hex": "42303437"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3613",
+            "_original_value": "TRIGSTR_3613",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjEz",
+            "resolved_value": "Frostnova F (4/5)",
+            "_original_resolved_value": "Frostnova F (4/5)"
+          },
+          "sanity_check": {
+            "text": "B047",
+            "hex": "42303437"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6246",
+            "_original_value": "TRIGSTR_6246",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQ2",
+            "resolved_value": "F stack 4/5. Movement slowed. At Frostnova Lv. 35: INT x 0.60 magic damage/sec.",
+            "_original_resolved_value": "F stack 4/5. Movement slowed. At Frostnova Lv. 35: INT x 0.60 magic damage/sec."
+          },
+          "sanity_check": {
+            "text": "B047",
+            "hex": "42303437"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B047",
+            "hex": "42303437"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxGcm9zdERhbWFnZVxGcm9zdERhbWFnZS5tZGw="
+          },
+          "sanity_check": {
+            "text": "B047",
+            "hex": "42303437"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova F (4/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B048",
+        "hex": "42303438"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3625",
+            "_original_value": "TRIGSTR_3625",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjI1",
+            "resolved_value": "Frostnova F (5/5)",
+            "_original_resolved_value": "Frostnova F (5/5)"
+          },
+          "sanity_check": {
+            "text": "B048",
+            "hex": "42303438"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3626",
+            "_original_value": "TRIGSTR_3626",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjI2",
+            "resolved_value": "Frostnova F (5/5)",
+            "_original_resolved_value": "Frostnova F (5/5)"
+          },
+          "sanity_check": {
+            "text": "B048",
+            "hex": "42303438"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6247",
+            "_original_value": "TRIGSTR_6247",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQ3",
+            "resolved_value": "F stack 5/5. Movement slowed. At Frostnova Lv. 35: INT x 0.75 magic damage/sec.",
+            "_original_resolved_value": "F stack 5/5. Movement slowed. At Frostnova Lv. 35: INT x 0.75 magic damage/sec."
+          },
+          "sanity_check": {
+            "text": "B048",
+            "hex": "42303438"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9GLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B048",
+            "hex": "42303438"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxGcm9zdERhbWFnZVxGcm9zdERhbWFnZS5tZGw="
+          },
+          "sanity_check": {
+            "text": "B048",
+            "hex": "42303438"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova F (5/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B049",
+        "hex": "42303439"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3628",
+            "_original_value": "TRIGSTR_3628",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjI4",
+            "resolved_value": "Frostnova TF (2/5)",
+            "_original_resolved_value": "Frostnova TF (2/5)"
+          },
+          "sanity_check": {
+            "text": "B049",
+            "hex": "42303439"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3629",
+            "_original_value": "TRIGSTR_3629",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjI5",
+            "resolved_value": "Frostnova TF (2/5)",
+            "_original_resolved_value": "Frostnova TF (2/5)"
+          },
+          "sanity_check": {
+            "text": "B049",
+            "hex": "42303439"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_889",
+            "_original_value": "TRIGSTR_889",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84ODk=",
+            "resolved_value": "F stack 2/5. Stronger slow; INT x 0.30 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+            "_original_resolved_value": "F stack 2/5. Stronger slow; INT x 0.30 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack."
+          },
+          "sanity_check": {
+            "text": "B049",
+            "hex": "42303439"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B049",
+            "hex": "42303439"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00003801.mdx",
+            "_original_value": "war3mapImported\\wos_file00003801.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDM4MDEubWR4"
+          },
+          "sanity_check": {
+            "text": "B049",
+            "hex": "42303439"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova TF (2/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04A",
+        "hex": "42303441"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3640",
+            "_original_value": "TRIGSTR_3640",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjQw",
+            "resolved_value": "Frostnova TF (3/5)",
+            "_original_resolved_value": "Frostnova TF (3/5)"
+          },
+          "sanity_check": {
+            "text": "B04A",
+            "hex": "42303441"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3659",
+            "_original_value": "TRIGSTR_3659",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjU5",
+            "resolved_value": "Frostnova TF (3/5)",
+            "_original_resolved_value": "Frostnova TF (3/5)"
+          },
+          "sanity_check": {
+            "text": "B04A",
+            "hex": "42303441"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_916",
+            "_original_value": "TRIGSTR_916",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MTY=",
+            "resolved_value": "F stack 3/5. Stronger slow; INT x 0.45 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+            "_original_resolved_value": "F stack 3/5. Stronger slow; INT x 0.45 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack."
+          },
+          "sanity_check": {
+            "text": "B04A",
+            "hex": "42303441"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B04A",
+            "hex": "42303441"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00003801.mdx",
+            "_original_value": "war3mapImported\\wos_file00003801.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDM4MDEubWR4"
+          },
+          "sanity_check": {
+            "text": "B04A",
+            "hex": "42303441"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova TF (3/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04B",
+        "hex": "42303442"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3688",
+            "_original_value": "TRIGSTR_3688",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjg4",
+            "resolved_value": "Frostnova TF (4/5)",
+            "_original_resolved_value": "Frostnova TF (4/5)"
+          },
+          "sanity_check": {
+            "text": "B04B",
+            "hex": "42303442"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3698",
+            "_original_value": "TRIGSTR_3698",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjk4",
+            "resolved_value": "Frostnova TF (4/5)",
+            "_original_resolved_value": "Frostnova TF (4/5)"
+          },
+          "sanity_check": {
+            "text": "B04B",
+            "hex": "42303442"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_934",
+            "_original_value": "TRIGSTR_934",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzQ=",
+            "resolved_value": "F stack 4/5. Stronger slow; INT x 0.60 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+            "_original_resolved_value": "F stack 4/5. Stronger slow; INT x 0.60 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack."
+          },
+          "sanity_check": {
+            "text": "B04B",
+            "hex": "42303442"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B04B",
+            "hex": "42303442"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00003801.mdx",
+            "_original_value": "war3mapImported\\wos_file00003801.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDM4MDEubWR4"
+          },
+          "sanity_check": {
+            "text": "B04B",
+            "hex": "42303442"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova TF (4/5)"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04C",
+        "hex": "42303443"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3705",
+            "_original_value": "TRIGSTR_3705",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzA1",
+            "resolved_value": "Frostnova TF (5/5)",
+            "_original_resolved_value": "Frostnova TF (5/5)"
+          },
+          "sanity_check": {
+            "text": "B04C",
+            "hex": "42303443"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3715",
+            "_original_value": "TRIGSTR_3715",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzE1",
+            "resolved_value": "Frostnova TF (5/5)",
+            "_original_resolved_value": "Frostnova TF (5/5)"
+          },
+          "sanity_check": {
+            "text": "B04C",
+            "hex": "42303443"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_984",
+            "_original_value": "TRIGSTR_984",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85ODQ=",
+            "resolved_value": "F stack 5/5. Stronger slow; INT x 0.75 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+            "_original_resolved_value": "F stack 5/5. Stronger slow; INT x 0.75 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack."
+          },
+          "sanity_check": {
+            "text": "B04C",
+            "hex": "42303443"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B04C",
+            "hex": "42303443"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00003801.mdx",
+            "_original_value": "war3mapImported\\wos_file00003801.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDM4MDEubWR4"
+          },
+          "sanity_check": {
+            "text": "B04C",
+            "hex": "42303443"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002579.mdx",
+            "_original_value": "war3mapImported\\wos_file00002579.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI1NzkubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fta0",
+            "hex": "66746130"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "chest",
+            "_original_value": "chest",
+            "_encoding": "utf-8",
+            "_raw_base64": "Y2hlc3Q="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Frostnova TF (5/5)"
+    },
+    {
+      "old_id": {
+        "text": "Binf",
+        "hex": "42696E66"
+      },
+      "new_id": {
+        "text": "B0F0",
+        "hex": "42304630"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3717",
+            "_original_value": "TRIGSTR_3717",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzE3",
+            "resolved_value": "Frostnova E - Frozen Shelter",
+            "_original_resolved_value": "Frostnova E - Frozen Shelter"
+          },
+          "sanity_check": {
+            "text": "B0F0",
+            "hex": "42304630"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3718",
+            "_original_value": "TRIGSTR_3718",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzE4",
+            "resolved_value": "Frostnova E - Frozen Shelter",
+            "_original_resolved_value": "Frostnova E - Frozen Shelter"
+          },
+          "sanity_check": {
+            "text": "B0F0",
+            "hex": "42304630"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3726",
+            "_original_value": "TRIGSTR_3726",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzI2",
+            "resolved_value": "All incoming damage reduced by 30% while Frostnova is inside her E field.",
+            "_original_resolved_value": "All incoming damage reduced by 30% while Frostnova is inside her E field."
+          },
+          "sanity_check": {
+            "text": "B0F0",
+            "hex": "42304630"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9FLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B0F0",
+            "hex": "42304630"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "B0F0",
+            "hex": "42304630"
+          }
+        }
+      ],
+      "display_name": "Frostnova E - Frozen Shelter"
+    },
+    {
+      "old_id": {
+        "text": "Bcri",
+        "hex": "42637269"
+      },
+      "new_id": {
+        "text": "B0F1",
+        "hex": "42304631"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3743",
+            "_original_value": "TRIGSTR_3743",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzQz",
+            "resolved_value": "Frostnova E - Frozen Recovery",
+            "_original_resolved_value": "Frostnova E - Frozen Recovery"
+          },
+          "sanity_check": {
+            "text": "B0F1",
+            "hex": "42304631"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3751",
+            "_original_value": "TRIGSTR_3751",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzUx",
+            "resolved_value": "Frostnova E - Frozen Recovery",
+            "_original_resolved_value": "Frostnova E - Frozen Recovery"
+          },
+          "sanity_check": {
+            "text": "B0F1",
+            "hex": "42304631"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3752",
+            "_original_value": "TRIGSTR_3752",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzUy",
+            "resolved_value": "Health restoration reduced by 35% inside the E field.",
+            "_original_resolved_value": "Health restoration reduced by 35% inside the E field."
+          },
+          "sanity_check": {
+            "text": "B0F1",
+            "hex": "42304631"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9FLmJscA=="
+          },
+          "sanity_check": {
+            "text": "B0F1",
+            "hex": "42304631"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "B0F1",
+            "hex": "42304631"
+          }
+        }
+      ],
+      "display_name": "Frostnova E - Frozen Recovery"
+    },
+    {
+      "old_id": {
+        "text": "BUfa",
+        "hex": "42556661"
+      },
+      "new_id": {
+        "text": "B0F3",
+        "hex": "42304633"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3753",
+            "_original_value": "TRIGSTR_3753",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzUz",
+            "resolved_value": "Frostnova T - Song Shield",
+            "_original_resolved_value": "Frostnova T - Song Shield"
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3754",
+            "_original_value": "TRIGSTR_3754",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzU0",
+            "resolved_value": "Song Shield",
+            "_original_resolved_value": "Song Shield"
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2280",
+            "_original_value": "TRIGSTR_2280",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yMjgw",
+            "resolved_value": "Blocks the next hit. Lasts 4 sec.",
+            "_original_resolved_value": "Blocks the next hit. Lasts 4 sec."
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0Zyb3N0bm92YV9ULmJscA=="
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        },
+        {
+          "field": {
+            "text": "ftac",
+            "hex": "66746163"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "origin",
+            "_original_value": "origin",
+            "_encoding": "utf-8",
+            "_raw_base64": "b3JpZ2lu"
+          },
+          "sanity_check": {
+            "text": "B0F3",
+            "hex": "42304633"
+          }
+        }
+      ],
+      "display_name": "Frostnova T - Song Shield"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04D",
+        "hex": "42303444"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2856",
+            "_original_value": "TRIGSTR_2856",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yODU2",
+            "resolved_value": "Core Drill: Physical (1/5)",
+            "_original_resolved_value": "Core Drill: Physical (1/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2857",
+            "_original_value": "TRIGSTR_2857",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yODU3",
+            "resolved_value": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbFBoeXMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2858",
+            "_original_value": "TRIGSTR_2858",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yODU4",
+            "resolved_value": "Core Drill Physical 1",
+            "_original_resolved_value": "Core Drill Physical 1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Physical 1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04E",
+        "hex": "42303445"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3019",
+            "_original_value": "TRIGSTR_3019",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMDE5",
+            "resolved_value": "Core Drill: Physical (2/5)",
+            "_original_resolved_value": "Core Drill: Physical (2/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3023",
+            "_original_value": "TRIGSTR_3023",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMDIz",
+            "resolved_value": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbFBoeXMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3102",
+            "_original_value": "TRIGSTR_3102",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTAy",
+            "resolved_value": "Core Drill Physical 2",
+            "_original_resolved_value": "Core Drill Physical 2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Physical 2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B04F",
+        "hex": "42303446"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3103",
+            "_original_value": "TRIGSTR_3103",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTAz",
+            "resolved_value": "Core Drill: Physical (3/5)",
+            "_original_resolved_value": "Core Drill: Physical (3/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3104",
+            "_original_value": "TRIGSTR_3104",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTA0",
+            "resolved_value": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbFBoeXMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3105",
+            "_original_value": "TRIGSTR_3105",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMTA1",
+            "resolved_value": "Core Drill Physical 3",
+            "_original_resolved_value": "Core Drill Physical 3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Physical 3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B050",
+        "hex": "42303530"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3227",
+            "_original_value": "TRIGSTR_3227",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMjI3",
+            "resolved_value": "Core Drill: Physical (4/5)",
+            "_original_resolved_value": "Core Drill: Physical (4/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3228",
+            "_original_value": "TRIGSTR_3228",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMjI4",
+            "resolved_value": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbFBoeXMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3283",
+            "_original_value": "TRIGSTR_3283",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMjgz",
+            "resolved_value": "Core Drill Physical 4",
+            "_original_resolved_value": "Core Drill Physical 4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Physical 4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B051",
+        "hex": "42303531"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3284",
+            "_original_value": "TRIGSTR_3284",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMjg0",
+            "resolved_value": "Core Drill: Physical (5/5)",
+            "_original_resolved_value": "Core Drill: Physical (5/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3332",
+            "_original_value": "TRIGSTR_3332",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMzMy",
+            "resolved_value": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbFBoeXMuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3337",
+            "_original_value": "TRIGSTR_3337",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zMzM3",
+            "resolved_value": "Core Drill Physical 5",
+            "_original_resolved_value": "Core Drill Physical 5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Physical 5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B052",
+        "hex": "42303532"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3520",
+            "_original_value": "TRIGSTR_3520",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTIw",
+            "resolved_value": "Core Drill: Magic (1/5)",
+            "_original_resolved_value": "Core Drill: Magic (1/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3534",
+            "_original_value": "TRIGSTR_3534",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTM0",
+            "resolved_value": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbE1hZy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3539",
+            "_original_value": "TRIGSTR_3539",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNTM5",
+            "resolved_value": "Core Drill Magic 1",
+            "_original_resolved_value": "Core Drill Magic 1"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Magic 1"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B053",
+        "hex": "42303533"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3611",
+            "_original_value": "TRIGSTR_3611",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjEx",
+            "resolved_value": "Core Drill: Magic (2/5)",
+            "_original_resolved_value": "Core Drill: Magic (2/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3614",
+            "_original_value": "TRIGSTR_3614",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjE0",
+            "resolved_value": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbE1hZy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3627",
+            "_original_value": "TRIGSTR_3627",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjI3",
+            "resolved_value": "Core Drill Magic 2",
+            "_original_resolved_value": "Core Drill Magic 2"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Magic 2"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B054",
+        "hex": "42303534"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3638",
+            "_original_value": "TRIGSTR_3638",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjM4",
+            "resolved_value": "Core Drill: Magic (3/5)",
+            "_original_resolved_value": "Core Drill: Magic (3/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3660",
+            "_original_value": "TRIGSTR_3660",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNjYw",
+            "resolved_value": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbE1hZy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3704",
+            "_original_value": "TRIGSTR_3704",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzA0",
+            "resolved_value": "Core Drill Magic 3",
+            "_original_resolved_value": "Core Drill Magic 3"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Magic 3"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B055",
+        "hex": "42303535"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_3716",
+            "_original_value": "TRIGSTR_3716",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8zNzE2",
+            "resolved_value": "Core Drill: Magic (4/5)",
+            "_original_resolved_value": "Core Drill: Magic (4/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_5714",
+            "_original_value": "TRIGSTR_5714",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NzE0",
+            "resolved_value": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbE1hZy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_5731",
+            "_original_value": "TRIGSTR_5731",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl81NzMx",
+            "resolved_value": "Core Drill Magic 4",
+            "_original_resolved_value": "Core Drill Magic 4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Magic 4"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B056",
+        "hex": "42303536"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6243",
+            "_original_value": "TRIGSTR_6243",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQz",
+            "resolved_value": "Core Drill: Magic (5/5)",
+            "_original_resolved_value": "Core Drill: Magic (5/5)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6248",
+            "_original_value": "TRIGSTR_6248",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjQ4",
+            "resolved_value": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+            "_original_resolved_value": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvcmVEcmlsbE1hZy5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_6259",
+            "_original_value": "TRIGSTR_6259",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl82MjU5",
+            "resolved_value": "Core Drill Magic 5",
+            "_original_resolved_value": "Core Drill Magic 5"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Core Drill Magic 5"
     }
   ]
 }

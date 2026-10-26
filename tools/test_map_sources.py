@@ -150,7 +150,11 @@ def include_resolved(workspace: Path, output: Path, resolution: Path) -> dict:
     for s in provenance["sources"]:
         origins.setdefault(Path(s["source"]).resolve(), []).append(s["path"])
     resolved = []
-    for source_path in report["resolvedSources"]:
+    # Retain explicitly excluded MAIN libraries as disabled editor snapshots,
+    # including entries introduced by an earlier dependency-closure build.
+    inputs = [(p, True) for p in report["resolvedSources"]]
+    inputs += [(p, False) for p in report.get("disabledSources", [])]
+    for source_path, in_closure in inputs:
         source = Path(source_path).resolve()
         if source.is_relative_to(output):
             relative = source.relative_to(output).as_posix()
@@ -185,7 +189,8 @@ def include_resolved(workspace: Path, output: Path, resolution: Path) -> dict:
             entries[relative] = entry
             manifest["sources"].append(entry)
             provenance["sources"].append({"path": relative, "source": str(source), "kind": kind, "sha256": digest})
-        resolved.append(str(inside(output, relative)))
+        if in_closure:
+            resolved.append(str(inside(output, relative)))
     enabled_paths = {Path(p).relative_to(output).as_posix() for p in resolved}
     # The editor must compile exactly the same source set as JassHelper, retaining
     # historical triggers as disabled snapshots rather than duplicate providers.

@@ -3,6 +3,9 @@
 Covers files that are generated once and kept in the project:
   assets/ReplaceableTextures/**      item icons (tools/build_item_icons.py)
   assets/effects/war3mapImported/**  Kusanagi slash/aura copies (tools/build_kusanagi_effects.py)
+  assets/FrostnovaRelease/files/war3mapImported/**  reviewed Frostnova models/textures/audio
+  assets/optimized/{war3mapImported,land_wos}/**  particle-reduced copies of map models (2026-10-24);
+      kept here because a World Editor re-save rewrites war3mapImported with older copies
 Idempotent: identical files are skipped, registered imports are not duplicated.
 Called by .vscode/build-run-w3-map.ps1 (MAIN) before packing.
 
@@ -18,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCES = [
     (ROOT / 'assets', 'ReplaceableTextures'),
     (ROOT / 'assets/effects', 'war3mapImported'),
+    (ROOT / 'assets/FrostnovaRelease/files', 'war3mapImported'),
+    (ROOT / 'assets/optimized', 'war3mapImported'),
+    (ROOT / 'assets/optimized', 'land_wos'),
 ]
 
 
@@ -27,7 +33,7 @@ def collect():
         root = base / folder
         if root.is_dir():
             for path in sorted(root.rglob('*')):
-                if path.is_file() and path.suffix.lower() in ('.blp', '.mdx', '.mdl', '.tga'):
+                if path.is_file() and path.suffix.lower() in ('.blp', '.mdx', '.mdl', '.tga', '.mp3'):
                     files.append((path, path.relative_to(base).as_posix()))
     return files
 

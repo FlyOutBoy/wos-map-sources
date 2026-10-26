@@ -61,9 +61,17 @@ FIX4 Save Keys was confirmed without desync by the user; FIX5 preserves the exac
 
 ### Quick Buy FIX6 — empty tree and safe preference/chat boundaries (2026-10-14)
 
-Cause/solution: Fast Sell restored ItemsCurrentItem_ID_BACKUP even when zero/stale, generating an invalid tree. Clear all agreed selection/scroll/branch caches, then owner paint, and guard zero-id/delayed scroll; actual refund/gameplay remains unchanged. HUD icon covered minus near original rim: FIX6 makes preview .028 and moves own SIMPLEBUTTON below art to ItemY-.0190; engine input still unconfirmed.
+Cause/solution: Fast Sell restored ItemsCurrentItem_ID_BACKUP even when zero/stale, generating an invalid tree. Clear all agreed selection/scroll/branch caches, then owner paint, and guard zero-id/delayed scroll; CP70 sale uses ShopSellInventorySlot: price/refund lookup and removal refer to the same live slot handle; clear refund before removal and credit only once. Never price a sale from ItemsCurrentItem_ID (stale during pause). Full refunds now use six bounded item-handle/deadline records per unit (ShopRefundData), read by the price renderer, sale and component consumption. Slot-only marks lost identity on moves and reused MyFlush deadlines could expire a later purchase early. A new purchase gets its own 15 seconds; cleared/consumed records cannot transfer refund credit to replacements. See test_shop_refund_bans.py; native input remains unverified. HUD icon covered minus near original rim: FIX6 makes preview .028 and moves own SIMPLEBUTTON below art to ItemY-.0190; engine input still unconfirmed.
 
 User confirmed earlier NOQB/FIX4/FIX5 Save Keys no desync. FIX6 adds only packed F fast buy/sell flags to existing settings flow, never QB queue save; agreed sync is required because these modes affect actions. Old settings remain supported; new extension needs native two-player retest. P ability-chat commands likewise resolve identity/CD only after agreed sender/hero/sequence validation; local hit testing sends command slot, cached frame rectangle and held-edge guards avoid gameplay/handle allocations. Existing .05 timer fallback and mouse event are deduped; independent 10sec per-sender gate uses ShopClock. No new periodic process. Evidence: 349 mock/static checks, compile and MPQ/WCT audit; 4133 protected functions unchanged; MAIN/old maps preserved. Source/report: C:/Users/Gear/Desktop/WOS_DIAGNOSTICS/20261014-quickbuy-fix6/REPORT_QUICKBUY_FIX6.md. Native hover/input/chat/preferences remain untested.
+
+October24 test-unit sale: GetSelectedHeroForPlayer correctly returned TestUnit /
+TestAllyUnit, but ShopSellInventorySlot rejected their combat owner. Its exception
+now requires TestMode, the currently selected test hero and that hero's current
+controller. Gold/refund go to the controller; combat ownership stays unchanged.
+Normal and fast sell share this gate; unrelated foreign heroes remain forbidden.
+Evidence: test_shop_refund_bans.py and the controlled-test-unit fast/button case
+in test_quickbuy_fix6.py. Native multiplayer/frame input still needs game QA.
 
 ### FIX7 — catalogue reset, deferred price and model import paths (2026-10-15)
 
@@ -243,6 +251,20 @@ changes force a new stat read; a repeated F1
 selection does not invalidate the timer. Selection handlers skip same-unit work;
 TestUnit only reconfigures alliances when the controller actually changes.
 Portrait camera resolves the currently selected portrait rather than Hero[pid].
+CP69 moves custom camera/voice clicks to the level plate: the enabled native
+portrait must remain free of BUTTON overlays for engine spell targeting. Bind
+it to the passive owner for visibility/layering; CP71 replaces AllPoints with
+explicit native BOTTOMLEFT/TOPRIGHT bounds and viewport conversion. Native portrait X spans
+0..0.8 across the whole screen; normal frames use the centred4:3 region.
+WUI_PinNativePortrait reads the registered owner geometry, scales X/width by
+4*height/(3*width) around .4, and reasserts on each readable HUD paint, HUD shift
+and native restore. Skip zero-size windows; use cached handles only.
+Reason: user screenshots confirmed large/off-cell native portraits after CP69.
+Level-only hover carries a one-line camera/voice hint; long voice tooltip removed.
+Checks: test_ui_vote_followup projects five resolutions and three HUD shifts,
+repeated repairs, minimized clients and no allocation; checkpoint30 hover bounds.
+Engine acceptance remains pending. Coordinate reference (Tasyen):
+https://www.hiveworkshop.com/threads/problem-with-re-positionating-the-unit-portrait.355103/
 Tomioka lower +damage plate was a separate native TasBox frame, now removed along
 with its creation/polling; corner stack count/gameplay remain. Dark Grail B01P
 text now20 HP/sec (heroes),6 MP/sec,20% MS,1500 radius; B01Q30% less active healing.
@@ -266,7 +288,15 @@ unchanged epoch no writes, changed native description and integer1s CD cadence.
 
 Kyoraku third-act final ability A059/KyorakuT4 has G, replacing A0DY/Skip Stage;
 mapping it to T hides the enabled real G and its initial CD. Register both variants
-in G, retain gameplay availability hooks. Harribel's morph code still had six old
+in G, retain gameplay availability hooks. Finisher motion now stays inside KyorakuT4_KS:
+integer cinematic ticks (60/90/191/200, cleanup after205), bounded700-distance
+pass-through over1.25 seconds after contact, no wall/CC-controlled external MUE.
+Previous cleanup executed damage even on cancellation and skipped target release
+at exactly1.8 seconds. Now release captured units before one10xAgi physical hit /
+1.5s stun only on successful completion; cancellation/dead/invalid targets never
+execute. Source/mock evidence: tools/test_pick_kyoraku_final.py (including movement
+blocked, simultaneous casts and exact capture-tick cancellation). The user's
+engine-level indefinite stall is not independently reproduced in Warcraft. Harribel's morph code still had six old
 absolute anchors after WUI_HeroMeter; remove them so shared dock owns all children,
 refresh on reuse too. Source transition/CD and layout contract regression tests:
 tools/test_ability_range_fixes.py. These changes are installed in isolated TEST
@@ -842,15 +872,33 @@ subtraction could also defer impact completion. Q now completes with an epsilon
 on total elapsed time, directly unpauses and restores the recorded order. Q2 releases the caster at lightning launch. Its casterReleased guard prevents
 retraction/cleanup from re-pausing or unpausing a subsequent cast.
 
-Okarun F repeatedly reissued point/target/spell orders while adding speed, resetting
-native movement/cast windups. It now retries approach orders at most once per .75s, skips active casts,
-samples actual native travel since its previous post-boost position and adds
-the missing distance. T tackle scans use a per-target/per-caster .75s cooldown
-with450 knockback over the unchanged .35s duration (CP68).
-The T speed formula is shared by grant/movement/meter: cap*1.25-200, floored at
-native speed. VM cases cover native travel0/300/522, movement/attack/skill orders,
-stop/hold/root, and all passive speed tiers. Engine pathing/turning/cast timing
-still require real Warcraft verification; see RESUME CP67.
+Alucard normal E now scans its launch area at the existing0.3s release before
+moving the dog. Previously the first throttled scan happened after several100-unit
+steps and skipped point-blank enemies. Launch/flight share Hit and g2, so a unit
+cannot receive duplicate damage. RE's behavior is retained. Evidence:
+test_hero_movement_followup.py covers close targets on both sides and distant hits.
+
+Okarun F control was restored from the read-only 0.31c2 reference on 2026-10-24:
+add only speed above native movement through MoveUnit along the current facing,
+without interpreting knockbacks/native travel as missing forward movement.
+Approach order retries use the reference .21s period and skip active casts.
+Point moves do not follow saved unit targets. F caps total movement speed at
+500/600/700/800/900 at hero levels6/12/18/25/35; the native T buff fixes total speed at1200
+without decay. The normal cap is reapplied immediately when T expires, including
+while stopped or paused. The imported MAIN T tackle/trail block remains unchanged:
+per-target/per-caster .75s cooldown,450 knockback over.35s, no tackle while paused
+(CP68). Source/VM evidence: Okarun.j, ClickEvent.j, test_followup_033c.py.
+Engine pathing/turning/cast timing still require Warcraft; see RESUME CP67.
+
+MAIN Crocodile R owns its hit clock/count per captured target: five hits within1s,
+then pull only. Late contact no longer inherits a nearly finished global hit
+clock; release/death cleanup retains the existing ownership list. W uses its800
+radius in Q-contact/combo scans, with its pause snapshot halved at hero level35.
+E recovery reads native cooldowns21/20/19/18/17. Evidence:
+test_hero_movement_followup.py executes MAIN methods. The older
+test_crocodile_balance suite has8 failures/1 error against both the imported map
+baseline and this patch (older balance/native-field assumptions); do not restore
+its previous mana drain, E/T or combo values over the saved map.
 
 
 ## Hell Blaze healing reduction (2026-10-20)
@@ -869,6 +917,88 @@ and compile/parity PASS. Native gameplay remains an engine acceptance boundary.
 
 ## Frostnova and current TEST shared sources (2026-10-20)
 
+2026-10-24 release supersedes older asset/balance notes below. Canonical packet:
+`assets/FrostnovaRelease/manifest.json`; current balance is in test_map/README.md.
+Saved TEST objects require WTS resolution and war3mapSkin merging. MAIN gets Ainz
+spell mana while TEST remains zero; helper mana/cooldown must stay explicitly zero
+in both. The old transfer stripped helper `amcs=0`, restoring native costs and
+preventing dummy buff casts. Dedicated F/anti-heal casters belong to Frostnova's
+owner and use the working common-helper target flags. Rawcodes are collision
+checked. T's A1F2/B0F3 uses native Frost Armor (five-second normal/hero durations),
+so it cannot replace E's Inner Fire marker. Starts owns MAIN Shielded art; TEST
+uses native buff art. DmgSys consumes one positive enemy damage event under the
+normal full-shield/piercing rules; actual T2/T3/T4 playback renews it.
+
+MAIN-only shield follow-up: the shared FrostnovaDummy also receives Slow/E buff
+orders, which can replace a queued native Frost Armor cast. FrostnovaState now
+owns one dedicated shieldCaster, moves it to the hero, recreates the native spell,
+disables autocast and resets its cooldown on renewal. Do not remove the existing
+hero buff before recasting: a rejected/interrupted recast must not erase it.
+The native five-second object duration remains authoritative; no extra timer or
+forced Shielded graphic. Starts reads the real buff. The caster is freed when
+its hero is removed. Tests simulate same-frame native order replacement for each
+T2/T3/T4, renewal after consumption, preserved existing protection and Starts art
+eligibility. Native engine playback still requires manual acceptance.
+Frostnova maintenance now targets MAIN only; leave its old TEST snapshot and
+Altair's active profile/files/archive unchanged. Growth: STR 1.20 / INT 2.25,
+AGI unchanged. W_FOG_EMISSION_SCALE=.8 trims W fog density without texture edits.
+
+Object rank skip is explicit (4), F requires `h002` / `12 lvl` and a level-12
+guard, T uses the same button slot as Frieren. Native descriptions are brief;
+TooltipBuilder owns damage/mechanics. Q recharge/range and R lifetime scale by
+rank in both native objects and code. R's preview uses its actual radius, not
+cast range plus radius. TQ uses mixed blue/black material only in flight; the white orbit remains intact.
+TR's edge tracker roots each target once per field when it crosses from inside
+into the 100-range outer band, retaining four trap crystals until expiry on the
+existing 0.03 listener. Crossing within the field or blinking beyond the outer
+band does not apply the exit root. Keep the negative target-handle marker until
+field cleanup; a two-second rearm caused repeat roots. CastCheck must only gate
+movement on the real BEer buff (with its existing CC-protection exceptions): the
+removed Frostnova_TrapsMovement hook treated mere presence in TR as a permanent
+root, suppressing blinks/dashes after the native root expired or was dispelled.
+The start/exit RootUnit calls belong to FrostnovaR_KS, not the global cast gate.
+Checks: test_frostnova.py executes DisableMoveRoot with both field variants,
+root expiry/removal and outer-band crossings; engine timing still needs game QA.
+Environment effects use ordinary DecorRemove (Natsu/Milim), not Crocodile's
+DecorRemoveLine: real AoE, 0.12 sampling on Q/W and one-second R decor pulses.
+VisionTimed uses 2x Q/W radius and 1.5x E/R radius. Burst E and field DPS are
+separate formulas; R is 1x INT/sec, TF 0.15x INT/stack/sec, TE 0.75x INT/sec.
+Orbiting ice stays white with separate mesh-free dark particles; TQ flight keeps
+blue source textures and adds one translucent black-ice material layer.
+polish_frostnova_effects.py changes only fog emitters in W, retaining ice records.
+Shared tooltip notices now use red Iframe lines after description/bonuses and
+before the blank stat separator. T_CastAuto/T_DurAuto/T_Invul keep their existing
+gameplay metadata; false/zero invulnerability emits no notice. FilterIframe splits
+those lines in all three generation paths (learn, initial learned, live refresh).
+Winter's Scar bonuses always start on a new line. Tests execute real formatter
+functions/TooltipBuilder and retain paragraph breaks, damage/stat sections.
+Compile Frostnova with an explicit isolated profile when another hero is active;
+never switch the user's .vscode/wos-build.json or profile state to build it.
+No new timer or attachment scaling: TE's +20% is baked into dedicated art copies
+by `resize_frostnova_te_model.py`, preserving alpha, UVs and particle lifetimes.
+MDX MODL extent starts at byte 340 (name[80] + animationFile[260]), not 260;
+writing at 260 corrupted the animation filename instead of fixing culling.
+Both extent tools/tests now preserve that whole string region and check the
+actual bounds. Layout reference: [MDLX parser](https://github.com/flowtsohg/mdx-m3-viewer/blob/master/src/parsers/mdlx/model.ts).
+W's original emission and source-resolution textures are restored in isolated
+imports after visible degradation from the initial optimization.
+
+The Q shard's final geoset contained vertex group 1 with only one palette (index
+0). The packet corrects GNDX alone, preserving all other mesh attributes. The new
+supplied hero has a maximum 255-group palette and no particles; do not resplit or
+blindly decimate its geometry. PRE2 emission optimization must scale animated
+emission values AND interpolation tangents, never particle lifespan/alpha/UVs.
+Keep standalone texture alpha through BLP conversion and lossless TGA encoding.
+Model/texture remaps are explicit, deduplicate byte-identical MAIN wos_ imports,
+and isolate conflicting shared filenames instead of replacing another hero's
+effect. Asset preparation does not modify the user's source folders.
+
+Verification: focused actual-code Q/W/E/R/T/F and shield tests, binary transform
+tests, native object/asset preservation audit, independent TEST compile/pjass,
+normal Hero Transfer MAIN build and packed source parity. Native rendering and
+multiplayer still require Warcraft. Empty legacy pick-voice resolver branches
+must be upgraded on repeat transfer once the clips have been imported.
+
 Cause: new TEST profiles inherited the frozen Crocodile CastCheck override.
 It lacked Frostnova dispatch and called the old DarkShiki T signature. Current
 WOSUI also requires EnvironmentRoundRules and a few absent shop/picker globals.
@@ -880,6 +1010,23 @@ Keep arena startup/keys as TEST overrides and supply the missing UI globals in
 TEST Start. Do not resolve this by disabling dependency or WTG/WCT validation.
 Hero Transfer now recognizes WOS_HeroVoicePath after the picker voice refactor.
 
+Frostnova is hidden from MAIN selection while WOS_EnableTestHero=false in
+BuildsForChars.j (2026-10-21 user request). The guarded registration does not
+add a catalog dummy, slot or MaxHeroes count, excluding random/captain pools.
+Hero source, objects, dispatch and TEST are retained; re-enable the flag only
+when the user wants MAIN availability. MyHeroIdInit VM verified both flag states.
+On2026-10-22 the former hero-specific visibility switch was generalized to
+WOS_EnableTestHero plus task-managed WOS_TestHeroId. Active TEST transfer guards
+the selected catalog block; previous hero guards become visible when the selected
+ID rotates. Existing false visibility is retained. New VS Code HERO task invokes
+hero_transfer --active-test-hero --build-main: it reads the persisted selected
+TEST source, remembers category/difficulty/items/buyer in local build config,
+performs the transactional source/registration update, then calls ordinary MAIN
+save/build without launch. Dry-run never writes or builds. MAIN JSON/imports
+stay authoritative; brand-new objects/assets/custom dispatch hooks still need
+initial preparation. Evidence: test_hero_transfer covers remembered no-prompt
+repeats, active dry-run, single build invocation, and actual catalog guard in all
+three visibility/rotation cases; test_vscode_tasks and MAIN compilation pass.
 Frostnova's MAIN source is triggers/Heroes/Frostnova.j; the selected local TEST
 copy is test_map/heroes/Frostnova.j. IDs and reproducible object staging live in
 object-data/frostnova-ids.json and tools/stage_frostnova.py. Its single shared
@@ -962,3 +1109,515 @@ the verification is retained. test_vscode_tasks.py tests actual digest values
 for different payloads with PSModulePath cleared. Battle.net helper startup is
 hidden. Real TEST and MAIN no-launch builds are verified separately from game
 launch/UI acceptance; TEST compiles once in the combined workflow.
+
+## Instant stat purchases and team awards (2026-10-20)
+Scroll of Mastery bypasses inventory insertion through ShopDeliverPurchase;
+ShopInstantStatPurchase permits full-slot purchase only for the owner hero.
+Round gate remains CurrentRound>=15. Direct base-stat increments avoid native
+pickup-event dependence during pause. ItemEnter keeps legacy ground pickup.
+Quick Buy removes the consumed goal; RecommendedAutoBuyTick advances once on
+confirmed payment, preventing repeat purchases without an inventory result.
+MVP selects the best eligible player of the score-leading team, SVP the other
+team; ties assign neither. Team membership uses IsInTeam1 (mixed draft slots).
+Negative scores still select a team best. Runtime fixtures: quickbuy_fix6,
+ui_vote_followup.TeamAwards; engine/multiplayer acceptance remains pending.
+
+## Minimal TEST runtime and rotating Hero Transfer access (2026-10-21)
+
+2026-10-22 native hang diagnosis (supersedes the earlier event/timer theories):
+three live snapshots of nonresponsive Warcraft PID 31632 found the main thread
+at executable RVAs 0x2cc64b / 0x2cc615 / 0x2cc5e8 with the same stack pointer.
+The renderer's loop increments DL (8-bit) then compares it with R14D=0x100;
+DL wraps before reaching 256. The earlier hang dump also stopped at 0x2cc615.
+Saved hero model war3mapImported/arknights_sx01.mdx has exactly 256 MTGC matrix
+groups in geoset 0, all distinct and used. Effects have smaller palettes.
+This connects the hard hang to hero model skinning, rather than proving a
+Q recharge, level-up, R, dummy or damage-system loop. Do not prune gameplay
+initializers or replace shared charge logic again based on those timing clues.
+
+tools/fix_frostnova_model.py splits MDX 800 triangle lists into palettes of at
+most 255 groups, preserving triangle vertices/normals/UVs and exact bone groups.
+For this asset, palettes become [255,9,19,1,1,9], with all 7613 triangles intact.
+Original geoset indices remain stable, split parts are appended, their GEOA is
+copied, and affected bone geoset bindings become Multiple; node animations,
+sequences, materials, textures and other chunks remain unchanged. Prepared file
+and source/fixed hashes are in assets/FrostnovaModel/; original model files are
+not edited. Replace only the existing model payload under its original import
+path; preserve war3map.imp and every unrelated archive payload. Ordinary builds
+still preserve saved imports, rather than reinstalling this packet. Coverage:
+test_fix_frostnova_model plus real before/after triangle-attribute comparison;
+native captures and archive audit are under _build/frostnova-q-recharge.
+Final engine acceptance still requires opening the corrected TEST model.
+
+Cause: native HUD mode alone did not stop the shared universal-tooltip
+initializer (484 queued jobs plus polling) or all companion hero/module startup.
+Historical TEST startup still loaded a custom TOC, charge UI and foreign audio;
+the native map template also created imported sounds and selected map music.
+The user reported a hard hang after4-5 seconds and requested a minimal default.
+
+Initial solution (historical; gameplay cuts withdrawn on 2026-10-22): every
+profile defaults to testMinimalRuntime=true, forces native UI,
+and supplies WOSTestMinimalRuntime. After dependency resolution, the TEST-only
+runtime pass guards foreign hero/item auto-init, universal-tooltip startup,
+noncombat editor initializers, transform preloads and native sound/music/TOC
+startup. GearSystems/GearSystems2, cast/damage/death, keys/arena startup and the
+selected hero stay active. StopMusic/ClearMapMusic run at minimal initialization.
+Legacy companion declarations remain for plain shared calls but their startup
+callbacks do no work. MAIN sources are untouched. The pass refreshes staged
+WCT metadata; import removes the exact generated guards before origin matching,
+preventing accidental frozen shared overrides. Explicit full UI testing needs
+both testMinimalRuntime=false and testNativeUI=false.
+
+2026-10-22 current policy correction (supersedes broad cuts above): the user
+explicitly requested normal gameplay with only custom UI/UniversalTooltips/
+TooltipBuilder disabled. Removed gameplay guards from CastCheck, Death, level-up,
+item/unit/mouse events, regeneration and foreign hero/module initialization or
+timer registration. Only named presentation owners, music/audio probing and the
+old TEST Escape implementation remain guarded. The three original heavy UI
+libraries stay excluded with inert API compatibility. The legacy
+testMinimalRuntime name now controls presentation, not gameplay pruning.
+CreateKeys still runs before TEST hero creation and hs is never replaced. TEST
+has one direct all-player SPELL_EFFECT subscription; the full level-up handler
+skips only its duplicate subscription to the same trigger. CastCheck/DmgSys/
+Death/Systems1 preservation is covered by test_test_map_runtime. Runtime guards
+are reversed before source import. Reports are under _build/frostnova-r-freeze.
+
+The user isolated a native hard hang after ordinary R (without T). Its ordinary
+field has no crystal branch. A deterministic integration executes actual packed
+DmgSys, damage helpers and shared timer callbacks for a complete15-second R
+scenario (11,497 script calls) without a script loop failure; native rendering
+and native order execution remain mocked. This does not prove the native hang
+resolved. Warcraft was already closed before a process stack could be captured.
+Do not declare the dummy or model the root cause without runtime evidence;
+experimental unused dummy staging was removed. Q now has actual circular motion
+at1.4 rad/sec, with the same orbit formula used for the launch position.
+
+2026-10-23 Frostnova cast/audio follow-up: W has 0.6-second right-hand preparation
+with the existing StartSpellUnit2/StopSpellUnit2 pair and a travelling wave whose
+visual scale and hit radius grow together from 80 to 220. E delays its burst by
+0.75 seconds and leaves a seven-second field. R forms over 0.5 seconds, then
+lives eight seconds with one-second pulses. These stages and per-hero voice locks
+use the existing GearTimer03 listener; no new timers or UI owners were added.
+Current audio policy (user correction): normal Q cycles Q1-Q5 on every cast,
+normal W/E/R groups bypass the voice lock, and Q6/Q7 remain independent. T lasts
+20 seconds and T1/T5 always play. Only T2/T3/T4 during T use mutual exclusion,
+including T1's duration; only the primary R voice is silent during T. T2 lasts
+4.049 seconds. ffmpeg silencedetect found initial silence in Q1-Q5 of
+0.268/0.250/0.306/0.145/0.255 seconds; game copies trim 0.248/0.229/0.286/0.125/
+0.235 seconds, leaving about 20ms before onset. Q6 has no initial silence.
+Original MP3s and trim amounts are in assets/FrostnovaAudio/{source,manifest.json}.
+The initial dark copy changed only Ice.blp, but Additive materials and six
+unchanged PRE2 emitters kept it bright. tools/tune_frostnova_shards.py now reduces
+particle scales 20% in both models. T uses dark semi-transparent particle colors,
+Blend materials (enum2) and PRE2 Blend (enum0), remapping all textures to an ice
+surface and four true-alpha sprites. Geometry, nodes, animation and global
+sequences are unchanged. Inputs are explicit untuned MDX plus imagegen atlas;
+do not feed the tuned output back into this size transform. Generated source
+assets/FrostnovaEffects/dark-particles-source.png is a 2x2 dark-ice halo/star/
+snowflake/ring atlas with transparent gaps and charcoal/glacial-blue fractures.
+The tool slices it to four 256px RGBA TGA files. black-ice-source.png supplies the
+surface. wos_aurapartblue.mdx remains the existing MAIN aura copied into TEST.
+T rebuilds idle shards at mode boundaries, clears Q cooldown and normalizes its
+duration to exact zero before cleanup to avoid retaining dark shards due to a
+floating-point remainder. Start follows Loop in each Q/W/E/R/T struct.
+The isolated TEST meter now anchors above ORIGIN_FRAME_MINIMAP instead of fixed
+screen-centre coordinates, following stock HUD/aspect ratio without custom HUD.
+Validation: 39 executable Frostnova tests, model/alpha/bar/runtime tests, MAIN
+source compile and real TEST build. The archive audit allows only the two Q
+models, Q1-Q5 and four new sprites in addition to native script/import changes;
+the other 18 MP3 payloads, original IMP records and WTG remain intact.
+The local TEST unpacked WTG root name was stale Crocodile.w3x; restoring the
+saved Frostnova.w3x root prevents future builds from reverting the editor title.
+No MAIN map write. Live audio/rendering still require in-game acceptance.
+
+2026-10-23 saved-map preservation / F-only follow-up: the user edited Frostnova's
+saved WCT (range/radius/push, models, animation calls and hit attachment), units,
+effects and audio. Adopt the actual FrostnovaSpells WCT block before patching;
+project J was older. The focused update compiled the new library then replaced
+only matching Frostnova functions/globals in the saved compiled script. Private
+JassHelper underscore spelling was mapped to the saved symbols, including shared
+dependencies; pjass and the real TEST map compiler passed. Compiled parity
+confirmed zero changed non-Frostnova functions/globals, preserving native unit
+placement/config/sound initialization. WCT changed only block93; WTG stayed exact.
+Do not run a broad object save or restore cached imports for a code-only request.
+The same scoped operation applied the user's explicit F cleanup and 23 exact MP3
+copies from folder (16), without trimming/re-encoding (supersedes prior trim).
+Archive evidence is _build/frostnova-f-only/audit.json; every model/texture,
+unit payload and import table stayed byte-identical to the user's saved map.
+
+Q readiness formerly reacted only to an increase in observed charge count. A
+late native cooldown write after that observation could leave a positive charge
+blocked. FrostnovaState.qUsePause tracks only the shared .25s use pause (+one tick);
+charge gains clear it. The existing hero tick then clears any positive Q cooldown
+while charges exist outside that pause, including a late write on a later tick.
+Regression executes the missed ordering explicitly. Zero charges retain recharge.
+Q last-charge follow-up: a shared 0.05 callback could run before the deferred
+0.03 cooldown callback after the last throw. Its zero-count/zero-CD fallback
+returned a free charge; Q Start had the same optimistic auto-grant. This allowed
+rapid repeats on the last charge. Q Start no longer grants charges from native
+cooldown alone, and immediately seeds FrostnovaQ_Recharge when consumption leaves
+zero charges. The existing deferred callback then installs the exact remaining
+recharge time. Other heroes' shared fallback is unchanged. Two regressions force
+the 0.05-before-0.03 order and repeated same-frame empty casts;42 tests pass.
+The focused compiled patch changes only Q Start and one WCT block; every object,
+audio/model/import payload and WTG is preserved (_build/frostnova-q-zero/audit.json).
+
+2026-10-23 T voice / R traps (updated after queue correction): only primary
+_W/_E/_R voices are muted in T. W2/W3, E2/E3/E4 and R2/R3 remain unconditional.
+Only a successful Q/W/E/R cast can start the next T2/T3/T4 line. Casts while
+another voice is active are skipped without advancing the cycle. The State
+clock only decreases the voice lock; it never automatically starts a line.
+Enhanced R places blocking crystals at synchronized random points, using a
+bounded eight-attempt loop and 48-unit body clearance. Each is a one-use trap:
+0.10-second scans use the existing field group, RootUnit(1s) plus F/crystal hit
+damage consume one target and remove that handle. Other crystals remain armed;
+all unused handles are removed at R end. Null consumed handles are skipped.
+The old crystal pulse could damage targets but never rooted or consumed traps;
+old 160-unit occupancy rejection also prevented spawns in crowded locations.
+Fresh saved WCT was adopted again, retaining the user's new E visuals, -40 Q
+trail offset, 650 E radius, 1200 R radius and model references. E recast now
+also cleans the user's art2 handle before replacing it. Only runtime J and the
+Frostnova WCT block changed; all object/import/audio/model payloads and WTG
+remain byte-identical. Evidence:45 hero tests, source and actual TEST compile,
+_build/frostnova-r-traps/audit.json. Actual engine rendering/root behavior needs QA.
+October 23 field follow-up: the saved hero WCT was adopted before editing, so
+its R radius 1050, file00005537_3.mdx, alpha, E effects and animations are retained.
+E refreshes a 0.36-second native marker every 0.12 seconds: B0F0 gives the caster
+30% all-damage resistance in its own stationary field; B0F1 reduces enemy health
+restoration by 35%. DmgSys applies the reduction after DamageBlock; GetPhysRes /
+GetMagRes compose the same factor, and GetHealMultiplierNoBlock handles the cut.
+Helpers A1F0/A1F1 have no native armor, damage, attack-speed or movement modifiers.
+TE attaches file00000883_1.mdl to origin after preparation and deals Int x 0.25
+damage each second in radius 700 around the moving caster for the saved E duration;
+the stationary field remains. Recasting and death release the attached effect.
+TW uses StartSpellUnit / StopSpellUnit, preserving preexisting invulnerability.
+W clips its push distance to the active Icefields that contained the victim.
+TQ pierces with a per-flight hit group, one hit per target; normal Q still stops.
+Its hit art is a separate wos_file00003436_2-dark.mdx copy using the existing
+transparent dark particle textures. Its original 2x2 / 4x4 emitter UV sheets
+are reset to single-sprite intervals. The opaque BlackIce surface must never be
+assigned to a Blend particle: that caused the reported expanding square.
+One geoset also retained 0..1/3 UVs and texture animation 0 from a 3x3 atlas.
+The dark copy normalizes its UVs to 0..1 and disables atlas translation;
+positions/bones/animation tracks stay intact. TQ scales only hit effects to 0.5.
+E creates its eight-spike ring only once. EffectSpawn's sixth argument is scale,
+not playback speed: the accidental scale 4 is now 1, with timescale 1.25.
+The Splat model has a one-second looping Stand, so its burst handle is removed
+at 0.75 seconds. Its fixed scale 1 is independent of gameplay AOE; the separate
+snow field and TE aura retain the saved E duration and all damage pulses.
+Build it with build_frostnova_impact.py
+from assets/FrostnovaEffects/source/wos_file00003436_2.mdx; the original stays intact.
+F rejects friendly targets, and its dedicated dummy explicitly disables Slow autocast.
+October 24 revision supersedes the TR crystal/cage mechanic: there are no
+spawned shards, collision objects, edge cages or radius increments. R retains
+its fixed gameplay radius and only scales visually during initial formation.
+The saved wos_emt-8.mdl effect at scale 2 and a two-second initial RootUnit pass
+run only for TR. During its active lifetime TR adds a random radius-180
+microburst every 0.25 seconds, each dealing Int x 0.25 extra magic damage plus F.
+The old helper objects/imports remain untouched and simply are not instantiated.
+E now deals its ordinary damage immediately alongside initial F/push, in addition
+to periodic damage. The saved E radius 850, duration 10, model scale 3.25, spike
+scale 4 and retained field art are user edits and must not be reset to older values.
+TE additionally attaches the independent FrostnovaTE_Area.mdx placeholder to origin;
+replace that import in World Editor to choose the final AOE art. Its model path
+is a separate global; unit attachments inherit native scale, and recast/death/end clean it with the original aura.
+TE visibility follow-up: the current saved model is wos_az_aachristmas_t1_700_1.mdx.
+Its Stand opacity stays at 1, but the ring lies at Z~10 with ordinary depth testing;
+the retained E splat can occlude it. MODL also has zero bounds despite valid
+sequence extents. fix_frostnova_te_area.py enables NoDepthTest/NoDepthSet and
+fills MODL from sequence bounds, preserving geometry, textures, alpha and tracks.
+E explicitly plays Stand on its area/aura after attaching. No attached effect
+receives BlzSetSpecialEffectScale; T's old attachment scale was removed too.
+TQ retains its requested half-size hit as a short-lived world effect at the
+victim's position/height, avoiding scaling the target's attachment transform.
+Normal Q's hit now also uses world space at victim height+80 and MyRemoveEff(1s):
+immediate DestroyEffect on its attachment could hide the one-second animation.
+The imported hit model/textures remain unchanged; test_frostnova.py checks its lifetime.
+October24 MAIN F follow-up: recover the visible count from all10 native tiers;
+keep the previous Slow until the expected replacement appears, then clear every
+other F/TF tier. A0.15s pending-order grace prevents the shared03 loop from
+treating native cast latency as a dispel. Actual dispels still reset stacks.
+At hero35 normal F also ticks0.15*INT*stacks; TF adds0.5*INT once per tick, not
+per stack. Q/W snapshot+150 range at35; RefreshRange updates all native ability
+ranks only on threshold changes. W gains20% speed at25, including all TW lanes.
+MoveEff2 itself is unbounded: Q/W explicitly check PathableCheck before moving,
+and terminate at the boundary without advancing collision/visual coordinates.
+The saved A1F2 helper had4s adur/ahdu in gameplay but no corresponding Skin values.
+Both native layers now explicitly use4s. FrostnovaState also caps its shield to4s
+after the latest grant on the existing03 listener, including if native expiry
+fails. Hero pause freezes both this cap and Winter's Scar duration, while actual
+voice playback/readiness continues in real time. Damage/dispels never grant a shield; a later accepted verse resets its cap.
+Winter's Scar uses one WUI_HeroProgressDualText panel keyed by FrostnovaT_ID:
+main duration plus a red voiceRemaining/voiceDuration row with Shield Ready
+once the voice ends. It does not itself grant a shield; the next accepted
+Q/W/E/R verse does. Death/T expiry clear it. E field/TE aura/R publish small
+MyFrameTimed icons in slots2/3/4 using KS_BuffTimer's existing10 clock. Recasts
+reuse the unit/slot timed entry, E cleanup cancels both icons, and only the latest
+R instance owns its icon. R icon starts after formation. TR checks the outer
+100-range band and tracks prior occupants to observe long blinks without stale
+exit markers; only exits landing in that band root. Damage/bursts retain their radii.
+Evidence: test_frostnova.py and test_auto_select_policy.py.
+Auto-select must gate on LIBRARY_WOSTestMinimalRuntime, not TestMode: MAIN's
+sandbox also sets TestMode, so the old guard hid the button and rejected settings.
+Both HUD mirror/tick and DmgSys now permit opted-in MAIN sandbox selection.
+The saved W angle/visual-radius edits and TR model/rate/scale edits were adopted
+before patching. Only the selected area model and hero source/runtime changed;
+objects, other imports, WTG and import records stay byte-identical. Native
+visibility in Warcraft still needs confirmation; deterministic checks establish
+lifetime/attachment ownership and exact binary preservation, not rendered pixels.
+
+Enhanced W's radius is at least StartAoe + travelled*sin(half lane angle), closing
+the gaps between the three rays near and far. All three retain one shared hit set:
+a victim receives W damage, F and push only once per cast.
+The scoped TEST write changed only Frostnova plus four shared buff hooks in WCT /
+compiled J, appended those five objects and one model import, and preserved every
+existing object/import payload. WTG is byte-identical. Verification: 52 executed
+hero tests, additive-object/model checks, MAIN/TEST compilation, pjass and packed
+payload/source audits. Native rendering and buff timing still need a game test.
+
+F has one ten-tier buff array:1-5 normal /6-10 enhanced. Q/W/E/R all call the same
+F Apply. TEST reuses A11C and the ten existing buff IDs as F/TF tiers, keeping their
+edited icons/effects and numerical slow properties; unused A11D is deleted.
+No separate Cold/Frostbite state or extra native debuff ability remains in TEST.
+T keeps normal shard art and adds a second existing dark model source, storing
+idle handles at200+slot and transferring them to the projectile at launch. It
+shares position/yaw, visibility and growth, and cleans up on hit/range/death/end.
+No new effect imports, model edits or timers. Forty executable hero tests pass.
+
+2026-10-22 low orbit / partial TEST bars: orbit base lowered from 180 to 25,
+35-unit layers retained. Low charges rise and high charges descend to flight
+height 150 with the same 0.30-second interpolation. Q speed is 2100 (+40%). T
+now feeds WUI_HeroProgress at start, each gameplay tick and explicit zero on
+end/death, matching AlterSaber R's real remaining-duration contract.
+At the user's explicit request MinimalUI now enables only HeroProgress/Text.
+It clones/renames the current MAIN Passive/Piece/Pin/GoldFrame style helpers into
+private TEST helpers and includes tools/templates/test_hero_bars.j. Original
+public helpers and all other heavy UI APIs remain inert; there is no HUD/TOC
+bootstrap, UI timer, input callback or global frame allocation. Bars allocate
+synchronously on first use and present only to their owner; caption/time strings
+are cached. tools/test_hero_bar_assets.py is called on the built TEST archive
+only in minimal mode. It adds six missing UI/WOS textures and import records,
+using fresh listfile/IMP data; existing payloads/records always win. It does not
+run the MAIN UI installer or change native skins. The normal-build preservation
+rule now has this explicit six-texture exception, not general asset restoration.
+Evidence: test_test_hero_bars, test_test_map_runtime, profile/workflow/task tests,
+separate MAIN and TEST compilation. Live rendering remains to be checked.
+
+2026-10-22 Q visual tuning: removed backward orbit offsets from both visual
+and launch formulas so each opposite pair is centered on the hero XY. Orbit
+scale is ModelScale/OrbitScaleDivisor (default 3). ScaleEffDummy restores flight
+size over GrowTime (0.18 s). Height interpolates from the detached slot to 150
+in 0.30 s, anchored to the launch ground Z; the secondary effect stays 25 lower.
+Orbit base height is 180, with existing 35-unit layers and bobbing retained.
+FrostnovaState caches previousCharges only to observe shared SpellStacks growth;
+any positive gain clears Q cooldown on the shared 0.03 tick. Casting updates the
+cache immediately after TryUse, so consumption is not mistaken for recovery.
+No private timer or second gameplay charge tracker was added. Evidence:
+test_frostnova orbit center/scale/flight path and early-charge cooldown cases.
+
+2026-10-22 orbit model follow-up: the user selected ice_shard-7716D in saved
+Frostnova WCT. Its code path had a duplicated .mdl.mdx suffix; the archive only
+contains war3mapImported/ice_shard-7716D.mdx. Preserve the user's selection with
+that exact saved import name. Remove the old Extra13-specific 1.0-second effect
+seek from orbit and fallback projectile creation: this model's Stand interval
+is 41-833 ms, so that seek falls outside it. BlzPlaySpecialEffect(STAND) selects
+the model's own animation interval. Compare saved WCT with the project before
+updating and use a fresh archive listfile for preservation audits: the user also
+removed the old freezingsplinter model, which must not be restored by a build.
+
+2026-10-22 Q/ESC correction: the user reproduced the hang after learning Q and
+pressing Escape to refill charges. The earlier TEST pass replaced Start's reset
+but still registered MAIN `InitTrig_ESC`, so the same key also executed legacy
+`UnitResetCooldown`. TEST now guards that duplicate initializer and retains one
+targeted reset owner. Frostnova's independent charge/capacity/recharge fields and
+Q-specific CD_Start jobs were removed. It now uses actual KS_SpellStacks through
+SpellStacksStart/TryUse, like TojiE; T/death use Fill and TEST uses
+ResetForEscape. Rank capacities stay 2/2/4/4/6 and increasing max grants the
+difference. The shared 0.25-second use pause and delayed native cooldown writes
+are unchanged. Existing Toji/Ainz code and the shared tracker were not modified.
+The hero tests now execute the real tracker, including its delayed callbacks,
+and cover repeated learning -> cast -> Escape without duplicate instances.
+Orbit alpha no longer depends on a neutral observer; Extra13 explicitly starts
+its visible Stand at 1000 ms. Asset basenames/import payloads remain unchanged.
+A local minidump was captured from a nonresponsive Warcraft process, but it did
+not identify a symbolic JASS call chain; these changes still need engine replay
+of the reported sequence. Reports: _build/frostnova-q-reset.
+
+UI exclusion follow-up: guarding initializers still left TooltipBuilder,
+UniversalTooltips and WOSUI enabled in the editor and included their heavy bodies
+and global handle allocations. Minimal profiles now provide generated MinimalUI
+compatibility: public MAIN API signatures with empty/default returns and public
+WUI constants, with no handle allocation, callbacks, frames or timers. Resolver
+candidates and seeds exclude all three original filenames, including explicit
+sharedSources. include_resolved retains them as disabled WTG/WCT snapshots even
+when an earlier closure introduced WOSUI outside the base manifest. Full mode
+does not include the adapter or apply these exclusions. Native TasChargeBox stays
+independent and active. Evidence: test_test_map_runtime, test_test_map_profile,
+test_test_map_workflow; real packed TEST audit in _build/test-no-heavy-ui confirms
+all three WTG enabled flags false, empty compatibility APIs, absent tooltip jobs
+and WUI bootstrap, preserved cast subscription and39 unchanged protected entries.
+Engine frame-rate/hang acceptance still requires a running game.
+
+Historical follow-up (level-up initialization is now restored): the first
+minimal policy also disabled InitTrig_LvlUpCheck, which
+owned the SPELL_EFFECT subscription to gg_trg_CastCheck. Keeping CastCheck's
+initializer was insufficient: casts never reached hero code. The generated
+minimal initializer now registers SPELL_EFFECT directly, without enabling the
+foreign level-up helper units. The generated Start suppresses its historical
+hs reinitialization so library state survives arena startup. Generated Escape
+calls TestHero_Reset instead of the legacy UnitResetCooldown path: native
+HP/mana restoration, normal charge refill, optional <Hero>_ResetForTest, and
+seven explicit cooldown endings. Frostnova's hook restores its own Q pool and
+recharge progress without activating T. Combat hook markers are stripped before
+import alongside the older guards; full runtime retains its original routes.
+Evidence: test_test_map_runtime executes the real CastCheck initializer and
+repeated Escape routing; test_test_map_profile exercises generated revive/reset;
+test_frostnova exercises Q pool reset. Separate MAIN compilation and real TEST
+build passed. Packed archive checks under _build/test-cast-escape confirm one
+active cast subscription, targeted Escape and all39 protected payloads unchanged.
+The exact engine cause of the reported Escape hang remains unconfirmed; these
+checks establish the replacement path, not an in-game freeze reproduction.
+
+TEST imports belong to the saved archive. The initial implementation incorrectly
+reused a cached war3map.imp and installed project assets during builds: the user's
+22 imports became150 and the model disappeared from the editor import list even
+though all three payloads remained intact. Recovered the exact user manifest
+from the pre-build archive. Default MPQ Update now touches only native objects
+and triggers; TEST never runs the MAIN asset installer. Explicit NamesFile writes
+are reserved for separately authorized asset operations. Deleted imports must
+never be revived from unpacked caches. The copied source archive preserves all
+custom payloads. Native objects/WTS refresh separately before lossless save so
+fresh WE model/object edits are not overwritten from stale binary caches.
+
+Frostnova's TEST model property (native umdl) points to arknights_sx01.mdx;
+its two root BLP textures match the supplied files. The 2026-10-22 follow-up
+replaces the stock effect placeholders with assets/FrostnovaEffects:17 MDX and
+71 unique BLP payloads, preserving required texture paths. Models retain original
+basenames under war3mapImported; the initial Frostnova/Effects aliases were
+removed only after matching their saved payload hashes. Other saved payloads
+and unrelated import records are preserved. Conflicting custom
+textures, including two different Flare.blp files, receive independent paths
+inside copied MDX TEXS records; supplied originals remain unchanged. The packet
+manifest records hashes, remaps and validated native texture dependencies.
+Three MDX exports used zero-duration global animation cycles for constant
+transforms; copied GLBS periods are normalized to1ms without changing poses or
+source files. Archive named payload I/O uses explicit UTF-8 byte buffers so the
+original freezingsplinter体.mdx name is not corrupted by Windows ANSI marshaling.
+The saved TEST had only64 MPQ hash slots, insufficient for88 new payloads.
+Explicit Pack -NamesFile expands capacity using a fresh extraction of all53
+saved payloads plus the packet, preserving opaque files too. The110-entry IMP
+retains the original22 records byte-for-byte. Default native-only updates still
+never restore assets from cached folders. test_test_map_imports covers explicit
+pack preservation and exclusion of unlisted stale files.
+
+Q now uses freezingsplinter体.mdx (old Extra13), with [skillm]als-tx (6).mdx
+(old Extra14) added during flight only. W uses file00008417.mdx (NorthernWinds)
+plus tx026.mdx (old Extra16). Q keeps charge shards beside the hero, follows position/facing with staggered
+height, hides only their alpha locally during invisibility/fog, removes them on
+death, and launches the selected existing effect from deterministic orbit XY/Z.
+Every slot has a separate height; successive pairs have distinct side/back
+offsets. Position updates use one native XYZ call. Q level changes are observed
+on the shared clock; the former HERO_SKILL registration and repeated passive
+ability writes during learning were removed. Walking/learning tests retain
+existing effect handles and one clock user across rank1 ->2.
+One registered hero state remains on the shared clock through death to detect
+revival; removal releases it. Enhanced W shares one hit group among three waves
+at -30/0/+30 degrees. Enhanced R crystals each add50 radius (800 ->1200) and
+deal Int x0.25 damage per second in180 range. Native Slow A11C has ten levels:
+Cold1-5 uses5/10/15/20/25%, Frostbite6-10 uses8/16/24/32/40%; ten separate
+buffs carry F/T icons. A11D remains an unused historical object. Follow-up object
+staging is tools/stage_frostnova_followup.py, not the initial hero stager.
+Evidence:26 deterministic hero tests, effect packet/import tests, MAIN compile
+and actual minimal TEST build. Final packed payload/hash checks live under
+_build/frostnova-effects-import. Engine rendering and live hang behavior remain
+unverified by these checks.
+
+Frostnova E follow-up: the user reported a hard hang after repeated E casts.
+The previous generic Field structure added an independent six-second field per
+cast and spawned periodic FrostNova bursts. Refactored the one hero library into
+shared state plus ordered F/Q/W/E/R/T structures, each owning Start/Loop; public
+CastCheck entry functions remain grouped at the bottom. Q/W and E/R no longer
+mix ability-specific branches inside generic missile/field structures. E keeps
+one instance at the caster handle/key2: recast refreshes/moves it, reuses its
+group and aura, replaces its birth burst, and owns burst/immunity cleanup in the
+shared tick. No per-E MyRemoveEff jobs or periodic birth-effect accumulation.
+T similarly refreshes one mode instance at key3; common state retains Q charges
+and the shared mode flag only. F is the common debuff above Q. MAIN/TEST hero
+sources match; imports and lightweight TEST policy are unchanged.
+Evidence: test_frostnova executes100 rapid recasts, repeat cleanup cycles, two
+casters and repeated enemy hits with bounded fields/groups/effects/dummies and
+balanced shared clock users. MAIN112-source compilation and actual TEST build
+pass; _build/frostnova-e-refactor verifies packed entry points, disabled heavy UI
+and39 unchanged protected archive entries. This corrects the measured resource
+growth; the exact engine hang and its resolution have not been reproduced live.
+
+Native TEST now permits the small TasChargeBox using stock frame definitions,
+background and font. SetValue/selection events refresh it without a private timer
+or WOSUI bootstrap; unchanged values and reentrant refresh are suppressed.
+Frostnova Q capacity is2/2/4/4/6 at ability ranks1-5, with no use cooldown while
+charges remain. The empty pool waits for its next6-second charge restoration.
+Evidence: test_native_charge_box, test_frostnova, test_test_map_imports and the
+real packed-map audit under _build/test-import-preservation:39 protected archive
+entries unchanged, exact22-entry manifest, native model binding and zero Q object
+cooldown. Actual effects/counter rendering still require in-game acceptance.
+
+Hero Transfer now requires the purchaser nickname (interactive prompt, or
+--buyer-name with --yes), replaces only BanImmuneHero1 with <Hero>_ID, and rotates
+the previous priority buyer to that name while retaining the correct ThunderGear
+account. The priority condition uses <Hero>_ID directly rather than a stale hero
+array slot. Existing transactional backups cover these edits and repeat runs
+remain idempotent. The task update does not transfer an unspecified buyer into
+MAIN on its own.
+
+Evidence: focused runtime/profile/assets/transfer tests; real minimal Frostnova
+build and import validation under _build/test-minimal/. Packed source checks
+confirm disabled startup bodies, preserved cast/damage and Frostnova registration.
+A live engine run is still needed to establish that the reported hang is gone.
+
+## Item description parity (2026-10-23)
+
+Item text had drifted from script constants, item enter/leave bonuses and merged
+native ability fields. Editable ability JSON omits some native fields; use
+war3_object_workspace.prepare_documents with the raw metadata rather than treating
+missing convenient fields as zero. Fairy Tail Emblem's A0D2 inherits AI2m's
+200 mana. Idef grants armor points; the itemMagRes pool is a resistance rating,
+not a flat percentage reduction. Separate scripted multipliers still are percent
+reductions. Cosmetic fire lifetime is not the Fire debuff duration.
+
+tools/check_item_descriptions.py reviews all 158 item headers, regenerates selected
+semantic descriptions and binds reviewed numeric claims to current MAIN values.
+--fix changes only description/extended_tooltip, with a whole-document guard;
+the default invocation checks without modifying the catalog. Run
+python -B -m unittest discover -s tools -p test_item_descriptions.py for source
+constant/native-field mutation checks and repeatability. Remaining free prose and
+new gameplay branches still require manual semantic review; this is source parity,
+not an engine or multiplayer test. The October audit corrected 35 item entries,
+including Okarun Egg's 14% cooldown reduction and cumulative Susanoo damage.
+
+
+### Patriot stance / Akainu attached-effect lifecycle — 2026-10-26
+
+Patriot's level-35 Perseverance cleanup reset only `patriot e`, animation and
+form, leaving offensive F/T availability, the E icon and the movement bonus.
+The first E after revival therefore repeated the active ability set. All three
+transitions (manual E, Perseverance entry/exit) now use `Patriot_SetStance` in
+`triggers/Heroes/Patriot.j`. Reapplying a stance refreshes its full presentation
+without adding/removing the A01C bonus twice or copying an inactive ultimate CD.
+Cleanup returns to defense and transfers the current attacking ultimate CD.
+`tools/test_patriot_stance.py` executes production transitions and death-loop
+cleanup from both stances, including early interruption and switching during EE.
+
+Akainu Q/R already destroyed their hand effects during timer cleanup. Their
+new `Akainu_Death` hook in `Systems/Death.j` immediately hides/destroys/nulls the
+attachment and expires matching Q/R instances, so revival before the next tick
+cannot continue the old cast. `Akainu_ClearHandEffect` hides the model before
+DestroyEffect on Q/W/E/R/T exits. T had a proven cleanup gap: its old r < 1.68
+check missed death at 1.68–1.77 before the normal 1.80 removal; cleanup now
+releases any remaining hand handles unconditionally. Native model persistence
+on a corpse is not reproduced by mocks; its engine cause remains unconfirmed.
+`tools/test_akainu_attachments.py` covers immediate Q/R cancellation, fast revive,
+independent casters, timer fallbacks and the entire T windup. Both new suites,
+20 `test_hero_balance_followup.py` tests and MAIN compile/dispatch audit passed.
+MAIN WCT/source and compiled/source parity passed; packed J/WCT/WTG hashes
+matched the saved scenario, and STABLE matched the verified build. Warcraft
+visual/multiplayer validation remains required.

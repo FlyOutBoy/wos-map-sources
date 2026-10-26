@@ -41,6 +41,10 @@ class Fix4(unittest.TestCase):
   g=self.vm.g;messages=self.messages[:];self.messages.clear()
   for prefix,data in messages:
    g['BlzGetTriggerSyncPrefix']=lambda q=prefix:q;g['GetTriggerPlayer']=lambda:p;g['BlzGetTriggerSyncData']=lambda q=data:q;self.vm.run('QB_OnSync')
+ def test_previous_tier_recipe_is_built_before_the_upgrade_part(self):
+  # Tsuchikage Hat Evolved = Pakkun +8 (from Pakkun +5) + Tsuchikage Hat (Rock Lee Weights + Pakkun +5).
+  self.recipes.update({20:[11],21:[12,11],22:[20,21]});self.prices.update({11:1000,12:1500,20:1500,21:2500,22:5000})
+  self.vm.run('QB_CacheItem',(22,0));self.goals([22]);self.assertEqual(self.steps(),[12,11,21,11,20,22])
  def test_recipe_buy_and_advance_one_item_per_tick(self):
   self.goals([5])
   for expected in [1,2,3,4,5]:

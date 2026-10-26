@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3b",
-  "source_sha256": "92602a6578afb4e05d7056f974aed41fcf7840d2fca966c3e88042c28e6b3dec",
+  "source_sha256": "7bc5f02a3dd6d7f29bf5c87ac6c865c5464e2534115e75f95976e95326eb20bd",
   "kind": "destructables",
   "record_mode": "simple",
   "format_version": 3,
@@ -10628,6 +10628,145 @@
         }
       ],
       "display_name": "Здание_3_zesu"
+    },
+    {
+      "old_id": {
+        "text": "YTct",
+        "hex": "59546374"
+      },
+      "new_id": {
+        "text": "B044",
+        "hex": "42303434"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "bnam",
+            "hex": "626E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_2789",
+            "_original_value": "TRIGSTR_2789",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8yNzg5",
+            "resolved_value": "Frostnova Ice Crystal",
+            "_original_resolved_value": "Frostnova Ice Crystal"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bfil",
+            "hex": "6266696C"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\Ice_Shard-6CC27.mdx",
+            "_original_value": "war3mapImported\\Ice_Shard-6CC27.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXEljZV9TaGFyZC02Q0MyNy5tZHg="
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bptx",
+            "hex": "62707478"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PathTextures\\4x4SimpleSolid.tga",
+            "_original_value": "PathTextures\\4x4SimpleSolid.tga",
+            "_encoding": "utf-8",
+            "_raw_base64": "UGF0aFRleHR1cmVzXDR4NFNpbXBsZVNvbGlkLnRnYQ=="
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "btxf",
+            "hex": "62747866"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bvar",
+            "hex": "62766172"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bmis",
+            "hex": "626D6973"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        },
+        {
+          "field": {
+            "text": "bmas",
+            "hex": "626D6173"
+          },
+          "field_name": "",
+          "type": "real",
+          "data": {
+            "value": 1.0,
+            "_original_value": 1.0,
+            "_raw_hex": "0000803F"
+          },
+          "sanity_check": {
+            "text": "B044",
+            "hex": "42303434"
+          }
+        }
+      ],
+      "display_name": "Frostnova Ice Crystal"
     }
   ]
 }

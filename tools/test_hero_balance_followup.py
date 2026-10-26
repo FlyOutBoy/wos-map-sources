@@ -84,7 +84,7 @@ class HeroBalanceFollowup(unittest.TestCase):
             self.assertEqual('ReplaceableTextures\\CommandButtons\\BTNHero_Kyoraku_E2.blp',fields['aart',0])
             for level in range(1,6):
                 self.assertIn('Takaoni',fields['atp1',level])
-                self.assertIn('650 range past its center',fields['aub1',level])
+                self.assertIn('Bushogoma cage',fields['aub1',level])
 
     def test_bazz_tiers_and_every_damage_site_applies_fire_only_at_35(self):
         text=source('Heroes/BazzB.j');vm=JassState(text);hero=vm.unit(owner=0)
@@ -263,10 +263,11 @@ class HeroBalanceFollowup(unittest.TestCase):
         obj=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))['A0EZ']
         for level in (1,2):
             tip=obj[f'extended_tooltip level {level}']
-            self.assertIn('restores 120 mana',tip)
-            self.assertIn('Q (both forms) and G cooldowns by 1 sec each',tip)
-            self.assertIn('preventing its stun and mana burn',tip)
+            # Absorption numbers come from the builder; the white lore no longer repeats them.
+            self.assertNotIn('restores 120 mana',tip)
         builder=source('WOS_Start/UniversalTooltips.j')
+        self.assertIn('"Incoming Electro restores " + FormatReal(Laxus_LightningManaRestore)',builder)
+        self.assertIn('preventing its stun and mana burn'.replace('preventing','prevents'),builder)
         self.assertIn('createUtility(LaxusG_ID, 2,',builder)
         self.assertIn('FormatReal(Laxus_LightningQReduceCD)',builder)
 
@@ -380,7 +381,6 @@ class HeroBalanceFollowup(unittest.TestCase):
         # Native point targeting remains 2000; TW's scripted travel is capped at 1800.
         for raw in ('A0GO','A0GT'):
             self.assertEqual(2000.,obj[raw]['cast_range level 1'])
-            self.assertIn('2000',obj[raw]['extended_tooltip level 1'])
         builder=source('WOS_Start/UniversalTooltips.j')
         self.assertIn('return FrierenW2_Range',builder)
         self.assertIn('return FrierenT2_Range',builder)
@@ -402,13 +402,13 @@ class HeroBalanceFollowup(unittest.TestCase):
     def test_all_tooltip_registrations_have_separate_staggered_operation_budgets(self):
         text=source('WOS_Start/UniversalTooltips.j')
         jobs=dict(re.findall(r'(?m)^    function (WOS_UTB_Init_\w+) takes[^\n]*\n([\s\S]*?)^    endfunction',text))
-        self.assertEqual(483,len(jobs))
+        self.assertEqual(490,len(jobs))
         spell_jobs=[body for body in jobs.values() if 'call SpellData.' in body]
-        self.assertEqual(432,len(spell_jobs))
+        self.assertEqual(438,len(spell_jobs))
         for body in jobs.values():
             self.assertLessEqual(body.count('call SpellData.'),1)
             self.assertLessEqual(body.count('HeroData.create('),1)
-        for hero in ('Milim','Frieren','Tsuna','Inori','AlterSaber','Kenjaku','Mahoraga','Toji','Brandish','Laxus','Harribel','Barragan','Patriot'):
+        for hero in ('Milim','Frieren','Tsuna','Inori','AlterSaber','Kenjaku','Mahoraga','Toji','Brandish','Laxus','Harribel','Barragan','Patriot','Frostnova'):
             self.assertTrue(any('HeroData.create('+hero+'_ID' in body for body in jobs.values()),hero)
         queue='\n'.join(re.findall(r'(?m)^    private function InitTooltip(?:Queue|Step) takes[^\n]*\n[\s\S]*?^    endfunction',text))
         vm=JassState(queue);called=[];destroyed=[]
@@ -438,7 +438,7 @@ class HeroBalanceFollowup(unittest.TestCase):
                     AR_Hero=defaultdict(lambda:None,{0:hero}),AR_Effect={0:'ring'},AR_Visible=-1,AR_Scale=0.,AR_LastX=0.,AR_LastY=0.,AR_Ground='ground',
                     GetLocalPlayer=lambda:0,Player=lambda p:p,IsUnitHidden=lambda _:False,IsUnitType=lambda *_:False,
                     WUI_RangePreviewBlocked=lambda:False,MilimT2_ID='finisher',MilimT2_BeamRange=2700.,
-                    AAUniversalTooltips_GetPreviewRadius=lambda *_:2700.,
+                    AAUniversalTooltips_GetPreviewRadius=lambda *_:2700.,AAUniversalTooltips_GetPreviewCastRange=lambda *_:2700.,AR_Outer={0:'outer'},AR_OuterScale=0.,AR_MAX_RADIUS=4000.,
                     MoveLocation=lambda *_:None,GetLocationZ=lambda _:0.,
                     BlzSetSpecialEffectPosition=lambda *_:None,
                     BlzSetSpecialEffectScale=lambda e,s:scale.append(s),BlzSetSpecialEffectAlpha=lambda e,a:visible.append(a))

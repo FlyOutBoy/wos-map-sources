@@ -12,15 +12,12 @@ endglobals
 
 globals
     integer array BanCandidateHero
-endglobals
-globals
-    
     integer BanLockTime = 3
-boolean BanSelectionLocked = false
+    boolean BanSelectionLocked = false
+    framehandle FRAME_BanLockNotice = null
 endglobals
-
 globals
-    constant string MAP_VERSION = "0.33b"
+    constant string MAP_VERSION = "0.34"
 endglobals
 globals
     integer MaxHeroBans = 4          // Р РЋР С“Р В РЎвЂќР В РЎвЂўР В Р’В»Р РЋР Р‰Р В РЎвЂќР В РЎвЂў Р В РЎвЂ“Р В Р’ВµР РЋР вЂљР В РЎвЂўР В Р’ВµР В Р вЂ  Р В Р’В±Р В Р’В°Р В Р вЂ¦Р В РЎвЂР РЋРІР‚С™Р РЋР С“Р РЋР РЏ Р В Р’В·Р В Р’В° Р В РЎвЂР В РЎвЂ“Р РЋР вЂљР РЋРЎвЂњ Р Р†Р вЂљРІР‚Сњ Р В РЎВР В Р’ВµР В Р вЂ¦Р РЋР РЏР В РІвЂћвЂ“ Р РЋРІР‚С™Р РЋРЎвЂњР РЋРІР‚С™
@@ -28,7 +25,7 @@ globals
     // BAN IMMUNITY: put the three protected hero rawcodes here.
     // Example: integer BanImmuneHero1 = 'H00A'
     // Leave a slot equal to 0 when it is not used.
-    integer BanImmuneHero1 = Crocodile_ID
+    integer BanImmuneHero1 = Frostnova_ID
     integer BanImmuneHero2 = 0
     integer BanImmuneHero3 = 0
     // =========================================================================
@@ -870,7 +867,7 @@ function WOS_HeroVoicePath takes integer heroId, integer i returns string
         endif
     // HERO TRANSFER: Frostnova / OnClick sounds
     elseif heroId == Frostnova_ID then
-        return ""
+        return "war3mapimported\\Hero_Frostnova_Pick" + I2S(i + 1)
     endif
     return ""
 endfunction
@@ -1969,9 +1966,9 @@ call BlzFrameSetVisible(EmojiToggle, true)
           set PlayerFrameCurrent_ID[pid] = 0
         if PickedOnce[pid] == 1 then
             call AddGold(p, AddRandom, true)
-            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r randomed |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and gain +1000 gold|r", 1 )
+            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r randomed |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and gain +" + I2S(AddRandom) + " gold|r", 1 )
         else
-            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r repicked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and lost -500 gold|r", 1 )
+            call WUI_Feed( GetPlayerColorString(p) + GetPlayerName(p) + "|r repicked |c00FFFF00" + BlzGetUnitStringField(Hero[pid], UNIT_SF_NAME) + " and lost -" + I2S(R2I(AddRandom / 2)) + " gold|r", 1 )
         endif
         call EUTU2_3(EffectSpawn("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", GetUnitX(Hero[pid]), GetUnitY(Hero[pid]), 270, 0.85, 1.45, 0), 2.5, 0, Hero[pid])
         
@@ -2034,6 +2031,66 @@ call BlzFrameSetTexture(FRAME_PlayerPickBack[pid],BlzGetAbilityIcon(heroId),0,fa
 endif
 endfunction
 
+function WOS_DisableBanProposalButton takes player p returns nothing
+    if GetLocalPlayer() == p then
+        call BlzFrameSetEnable(FRAME_Pick[4], false)
+        call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
+        call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
+    endif
+endfunction
+
+// Existing proposals freeze at three seconds; an empty slot may still submit once.
+function WOS_LockBanSelection takes integer timeLeft returns nothing
+    local integer pid = 0
+    if BanSelectionLocked or timeLeft > BanLockTime or timeLeft <= 0 or CanPickRandom != 0 or PickPhaseActive or BanPhaseActive or BanPhaseTriggered or TestMode or CaptainDraftMode then
+        return
+    endif
+    set BanSelectionLocked = true
+    call BlzFrameSetText(FRAME_BanLockNotice, "|cffffd36b" + I2S(BanLockTime) + " SECONDS LEFT|r|n|cffffffffBan choices cannot be changed or cancelled.|r")
+    call BlzFrameSetVisible(FRAME_BanLockNotice, true)
+    loop
+        exitwhen pid >= 10
+        if BanProposalHero[pid] != 0 then
+            call WOS_DisableBanProposalButton(Player(pid))
+        endif
+        set pid = pid + 1
+    endloop
+endfunction
+
+// The three-second cutoff owns changes/cancellation; the phase end owns new submissions.
+// A stale shared candidate must give feedback instead of silently losing a click.
+function WOS_ProposeHeroBan takes player p returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer id = PlayerFrameCurrent_ID[pid]
+    if IsObserverSlot(pid) or PickPhaseActive or BanPhaseActive or BanPhaseTriggered then
+        return
+    endif
+    if BanSelectionLocked and BanProposalHero[pid] != 0 then
+        call DisplayTimedTextToPlayer(p, 0, 0, 2, "|cffff6060Ban choice locked: you can no longer change or cancel it.|r")
+    elseif id == 0 or id == 12 then
+        call DisplayTimedTextToPlayer(p, 0, 0, 2, "|cffff6060Select a hero to ban first.|r")
+    elseif IsHeroBanImmune(id) then
+        call DisplayTimedTextToPlayer(p, 0, 0, 2, "|cffff6060This hero is protected from bans.|r")
+    elseif BanProposalHero[pid] == id then
+        set BanProposalHero[pid] = 0
+        call MakeSoundLocal("Pick\\PickCount5", p)
+        call UpdateBanProposalSlot(pid)
+        call RefreshAllPlayersHeroPage()
+    elseif not IsHeroAvailableForPick(id) then
+        call DisplayTimedTextToPlayer(p, 0, 0, 2, "|cffff6060This hero is no longer available.|r")
+    elseif IsHeroIdBanProposed(id, pid) then
+        call DisplayTimedTextToPlayer(p, 0, 0, 2, "|cffff6060Another player already proposed this hero. Choose a different hero.|r")
+    else
+        set BanProposalHero[pid] = id
+        if BanSelectionLocked then
+            call WOS_DisableBanProposalButton(p)
+        endif
+        call MakeSoundLocal("Pick\\PickCount3", p)
+        call UpdateBanProposalSlot(pid)
+        call RefreshAllPlayersHeroPage()
+    endif
+endfunction
+
 // Checkpoint 22: pick voice lines in turn (index 0..4), local to p. Used by
 // the hero name button in the picker and by the HUD portrait toggle.
 
@@ -2042,7 +2099,7 @@ endfunction
 
 function WOS_FinishPickerClick takes nothing returns nothing
     local framehandle frame = BlzGetTriggerFrame()
-    if frame == FRAME_Pick[2] or frame == FRAME_Pick[3] or frame == FRAME_Repick[GetPlayerId(GetTriggerPlayer())] or frame == FRAME_Swap[GetPlayerId(GetTriggerPlayer())] then
+    if frame == FRAME_Pick[2] or frame == FRAME_Pick[3] or frame == FRAME_Pick[4] or frame == FRAME_Repick[GetPlayerId(GetTriggerPlayer())] or frame == FRAME_Swap[GetPlayerId(GetTriggerPlayer())] then
         call WUI_ResetClickedButtonFocus()
     else
         call WUI_ReleaseClickFocus()
@@ -3021,26 +3078,7 @@ function OnClick takes nothing returns nothing
   
  
 if clicked == FRAME_Pick[4] then
-    if not PickPhaseActive and not BanPhaseActive and not BanPhaseTriggered and PlayerFrameCurrent_ID[pid] != 0 and PlayerFrameCurrent_ID[pid] != 12 and not IsHeroBanImmune(PlayerFrameCurrent_ID[pid]) then
-        set id = PlayerFrameCurrent_ID[pid]
-
-        // После отсечки нельзя ни добавить, ни снять, ни заменить предложение.
-        if not BanSelectionLocked or BanProposalHero[pid] == 0 then
-            if BanProposalHero[pid] == id  then
-                set BanProposalHero[pid] = 0
-                call MakeSoundLocal("Pick\\PickCount5", p)
-                call UpdateBanProposalSlot(pid)
-                call RefreshAllPlayersHeroPage()
-            elseif not IsHeroIdBanProposed(id, pid) then
-                // Замена происходит одним присваиванием: старый герой сразу
-                // освобождается при общем обновлении страниц выбора.
-                set BanProposalHero[pid] = id
-                call MakeSoundLocal("Pick\\PickCount3", p)
-                call UpdateBanProposalSlot(pid)
-                call RefreshAllPlayersHeroPage()
-            endif
-        endif
-    endif
+    call WOS_ProposeHeroBan(p)
 endif
 
     set k3 = 0
@@ -3901,13 +3939,25 @@ function WOS_LayoutHeroPick takes nothing returns nothing
         // heroicon library shows disabled plates in the same spots.
         call WOS_StylePickIconButton(FRAME_Repick[i], FRAME_RepickHover[i], FRAME_RepickText[i], "UI\\WOS\\glyph-repick.tga", "", WOS_REPICK_X, WOS_SWAP_Y)
         call WOS_StylePickIconButton(FRAME_Swap[i], FRAME_SwapHover[i], FRAME_SwapText[i], "UI\\WOS\\glyph-swap.tga", "", WOS_SWAP_X, WOS_SWAP_Y)
-        call WUI_TooltipBelow(FRAME_Repick[i], "|cffd5b876REPICK|r|nReturn to the hero selection (costs 500 gold).")
+        call WUI_TooltipBelow(FRAME_Repick[i], "|cffd5b876REPICK|r|nReturn to the hero selection (costs " + I2S(R2I(AddRandom / 2)) + " gold).")
         call WUI_TooltipBelow(FRAME_Swap[i], "|cffd5b876SWAP|r|nChoose an ally; they accept or decline.")
         set i = i + 1
     endloop
     call WOS_CreatePickBans(FRAME_MAIN)
     call WOS_PickBanLayout(MaxHeroBans, true)
     set part = null
+endfunction
+
+// Created synchronously with the picker; the cutoff only shows this existing text.
+function WOS_CreateBanLockNotice takes nothing returns nothing
+    set FRAME_BanLockNotice = BlzCreateFrameByType("TEXT", "WOSBanLockNotice", WUI_GetRoot(), "", 0)
+    call BlzFrameSetPoint(FRAME_BanLockNotice, FRAMEPOINT_TOPLEFT, WUI_GetRoot(), FRAMEPOINT_TOPLEFT, 0.012, -0.035)
+    call BlzFrameSetSize(FRAME_BanLockNotice, 0.380, 0.034)
+    call BlzFrameSetTextAlignment(FRAME_BanLockNotice, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+    call BlzFrameSetScale(FRAME_BanLockNotice, 0.90)
+    call BlzFrameSetLevel(FRAME_BanLockNotice, 12500)
+    call BlzFrameSetEnable(FRAME_BanLockNotice, false)
+    call BlzFrameSetVisible(FRAME_BanLockNotice, false)
 endfunction
 
 function WOS_CreatePickShell takes nothing returns nothing
@@ -3918,6 +3968,7 @@ function WOS_CreatePickShell takes nothing returns nothing
     local real y = -0.05
     local framehandle border
     set FrameClick = CreateTrigger()
+    call WOS_CreateBanLockNotice()
 
     call WOS_PickStatsInit()
     // === Р В РІР‚СљР В Р’В»Р В Р’В°Р В Р вЂ Р В Р вЂ¦Р РЋРІР‚в„–Р В РІвЂћвЂ“ Р В РЎвЂќР В РЎвЂўР В Р вЂ¦Р РЋРІР‚С™Р В Р’ВµР В РІвЂћвЂ“Р В Р вЂ¦Р В Р’ВµР РЋР вЂљ ===
@@ -4835,6 +4886,7 @@ endfunction
 
 
 function StartBanPhase takes nothing returns nothing
+    call BlzFrameSetVisible(FRAME_BanLockNotice, false)
     // Сначала фиксируются капитанские предложения. Рулетка разыгрывает только
     // оставшиеся места до общего лимита MaxHeroBans.
     set BannedHeroCount = 0
@@ -5006,23 +5058,7 @@ if PickPhaseActive == false then
     call StartSound(gg_snd_BattleNetTick)
         call BlzFrameSetText(FRAME_TimerToStart, "|c00FFFF00Time to pick: " + I2S(timeLeft) + "|r")
         endif
-        if CanPickRandom == 0 and timeLeft <= BanLockTime and not BanSelectionLocked then
-    set BanSelectionLocked = true
-    set i = 0
-
-    loop
-        exitwhen i == 10
-        if BanProposalHero[i] != 0 then 
-        // Кнопка блокируется для всех, даже если игрок не успел предложить героя.
-        if GetLocalPlayer() == Player(i) then
-            call BlzFrameSetEnable(FRAME_Pick[4], false)
-            call BlzFrameSetEnable(FRAME_ICON_Pick[4], false)
-            call BlzFrameSetTexture(FRAME_ICON_Pick[4], "UI\\WOS\\pick-ban-off.tga", 0, true)
-        endif
-        endif
-        set i = i + 1
-    endloop
-endif
+        call WOS_LockBanSelection(timeLeft)
         if timeLeft == 1 and CanPickRandom == 1 then
             set i = 0
             loop
@@ -5031,7 +5067,7 @@ endif
                     call BlzFrameSetTexture(FRAME_ICON_Pick[3], "UI\\WOS\\pick-random-wide.tga", 0, true)
                     call BlzFrameSetEnable(FRAME_Pick[3], true)
                   
-                    if (FramePlayerFirstName[i] == "Hansel" or FramePlayerFirstName[i] == "ThunderGear") and (PlayerFrameCurrent_ID[i] == Hero_ID3[1]) then
+                    if (FramePlayerFirstName[i] == "ThunderGear" or FramePlayerFirstName[i] == "soldiersPL") and (PlayerFrameCurrent_ID[i] == Frostnova_ID) then
                         call BlzFrameSetTexture(FRAME_ICON_Pick[2], "UI\\WOS\\pick-confirm-wide.tga", 0, true)
                         call BlzFrameSetEnable(FRAME_Pick[2], true)
                     endif

@@ -586,3 +586,30 @@ CP68 DONE (implementation and MAIN/STABLE publication): portrait controls moved
 right, demanded .25s auto-select, Q2 launch release, Okarun .75s order retries
 and per-target tackle cooldown with450/.35s push.753 regressions PASS,5 skips.
 Native visual/input/multiplayer acceptance remains pending; see RESUME CP68.
+
+CP69 native portrait: enabled ORIGIN_FRAME_PORTRAIT replaces BTN art; camera/voice
+button restricted to level plate, no portrait input overlay. Implementation and
+focused tests complete; Warcraft rendering/self-target acceptance pending.
+
+CP70 shop/awards: instant Mastery full-slot delivery, live-handle sale pricing
+and leading/trailing team awards implemented and MAIN/STABLE published.
+Focused tests PASS; six pre-existing aggregate failures; engine QA pending.
+
+CP71 native portrait geometry: replace AllPoints with viewport-correct explicit
+corner bounds from the existing frame registration, repeated on HUD/selection/
+restore/shift. Level-only one-line hover hint. Frostnova MAIN pick registration
+is hidden by WOS_EnableTestHero=false; TEST and hero logic remain available.
+Focused geometry/selection/input tests PASS; MAIN/STABLE published, engine QA pending.
+
+
+CP72 refund/ban follow-up: item identity and independent purchase deadlines now
+own full refunds across moves, repurchases and all shop purchase paths. Normal /
+Player Pick proposals lock changes/cancellation with3 seconds remaining; a
+pre-created top-left notice announces the cutoff. Rejection feedback and BAN
+focus reset remain; an empty player may still submit once before phase end. Focused tests/compile PASS; native QA pending.
+
+
+CP73 picker gold text now derives from AddRandom and the actual repick charge.
+Kyoraku final G owns a bounded pass-through and integer cinematic lifetime;
+release and finishing damage distinguish successful completion from cancellation.
+Focused regressions/compile PASS; engine acceptance pending (RESUME CP73).

@@ -30,6 +30,8 @@ globals
     framehandle main_frame 
     timer RegenTimer = null
     timer FullShieldEffectTimer = null
+    timer FullShieldFollowTimer = null
+    boolean FullShieldFollowRunning = false
     effect array ShieldEff
     unit array ShieldEffTarget
     string FullShieldEffectModel = "war3mapimported\\wos_title_shielded.mdl"
@@ -125,6 +127,11 @@ function HasFullShieldVisual takes unit u returns boolean
     endif
 
     // Full blocks represented by buffs/abilities on the damaged unit.
+    static if LIBRARY_FrostnovaSpells then
+        if GetUnitAbilityLevel(u, FrostnovaT_ShieldBuffID) > 0 then
+            return true
+        endif
+    endif
     if GetUnitAbilityLevel(u, AinzF_Buff0_ID) > 0 /*
     */ or GetUnitAbilityLevel(u, AlterSaberEBuff_ID) > 0 /*
     */ or GetUnitAbilityLevel(u, KyorakuR_BuffId) > 0 /*
@@ -181,6 +188,32 @@ function HasFullShieldVisual takes unit u returns boolean
     return false
 endfunction
 
+// The title is a free effect, not an "origin" attachment, so hero animations never move it.
+function FollowFullShieldEffects takes nothing returns nothing
+    local integer i = 0
+    local integer alive = 0
+    local unit u
+    loop
+        exitwhen i == 10
+        set u = ShieldEffTarget[i]
+        if ShieldEff[i] != null and u != null then
+            call BlzSetSpecialEffectPosition(ShieldEff[i], GetUnitX(u), GetUnitY(u), BlzGetUnitZ(u))
+            if IsUnitHidden(u) then
+                call BlzSetSpecialEffectAlpha(ShieldEff[i], 0)
+            else
+                call BlzSetSpecialEffectAlpha(ShieldEff[i], 255)
+            endif
+            set alive = alive + 1
+        endif
+        set i = i + 1
+    endloop
+    if alive == 0 then
+        call PauseTimer(FullShieldFollowTimer)
+        set FullShieldFollowRunning = false
+    endif
+    set u = null
+endfunction
+
 function UpdateFullShieldEffects takes nothing returns nothing
     local integer i = 0
     local unit u
@@ -211,9 +244,14 @@ function UpdateFullShieldEffects takes nothing returns nothing
 
         if u != null and HasFullShieldVisual(u) then
             if ShieldEff[i] == null then
-                set ShieldEff[i] = AddSpecialEffectTarget(FullShieldEffectModel, u, "origin")
+                set ShieldEff[i] = AddSpecialEffect(FullShieldEffectModel, GetUnitX(u), GetUnitY(u))
                 set ShieldEffTarget[i] = u
                 set ShieldEffSkin[i] = skin
+                call BlzSetSpecialEffectPosition(ShieldEff[i], GetUnitX(u), GetUnitY(u), BlzGetUnitZ(u))
+                if not FullShieldFollowRunning then
+                    set FullShieldFollowRunning = true
+                    call TimerStart(FullShieldFollowTimer, 0.03, true, function FollowFullShieldEffects)
+                endif
             endif
         elseif ShieldEff[i] != null then
             call DestroyEffect(ShieldEff[i])
@@ -702,6 +740,7 @@ endloop
      call Preload(FullShieldEffectModel)
      call Preload(OutsideBaseInvulEffectModel)
      set FullShieldEffectTimer = CreateTimer()
+     set FullShieldFollowTimer = CreateTimer()
      call TimerStart(FullShieldEffectTimer, 0.10, true, function UpdateFullShieldEffects)
      call InitCloneVisualCleanup()
      call InitTransformVisualOptimization()

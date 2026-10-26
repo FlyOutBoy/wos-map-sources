@@ -199,7 +199,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Turbo Speed",
-    "extended_tooltip": "Movement speed: 1.25x maximum passive speed - 200 (at least native movement speed).",
+    "extended_tooltip": "Movement speed is fixed at 1200 without decay.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Okarun_T.blp",
     "target_art": "war3mapImported\\wos_aurafbred.mdx",
     "editor_suffix": "Okarun",
@@ -1164,31 +1164,215 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Ashisogi Jizo",
-    "extended_tooltip": "Poisoned: takes 0.4x the attacker's Agility physical damage every second for 5 sec.",
+    "extended_tooltip": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
     "target_art": ""
   },
   "B042": {
-    "name": "Cold",
+    "name": "Frostnova F (1/5)",
     "base_id": "BHds",
-    "tooltip": "Cold",
-    "extended_tooltip": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters.",
+    "tooltip": "Frostnova F (1/5)",
+    "extended_tooltip": "F stack 1/5. Movement slowed. At Frostnova Lv. 35: INT x 0.15 magic damage/sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
     "target_art": "",
+    "target_attachment_point_1": "chest",
     "target_attachments": "origin",
-    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
-    "field_feft": ""
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
   },
   "B043": {
-    "name": "Frostbite",
+    "name": "Frostnova TF (1/5)",
     "base_id": "BHds",
-    "tooltip": "Frostbite",
-    "extended_tooltip": "Spells apply Cold: each hit adds one stack, up to 5, slowing movement by 5% per stack for 4 sec (max 25%). Winter's Scar replaces Cold with Frostbite: 8% slow per stack for 6 sec (max 40%) and 0.12x Intelligence magic damage per stack each second. New stacks refresh duration; dispelling the debuff removes the stacks. Cold does not downgrade existing Frostbite. The strongest current stack count is shared between Frostnova casters.",
+    "tooltip": "Frostnova TF (1/5)",
+    "extended_tooltip": "F stack 1/5. Stronger slow; INT x 0.15 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "target_attachments": "origin"
+  },
+  "B045": {
+    "name": "Frostnova F (2/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova F (2/5)",
+    "extended_tooltip": "F stack 2/5. Movement slowed. At Frostnova Lv. 35: INT x 0.30 magic damage/sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+  },
+  "B046": {
+    "name": "Frostnova F (3/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova F (3/5)",
+    "extended_tooltip": "F stack 3/5. Movement slowed. At Frostnova Lv. 35: INT x 0.45 magic damage/sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+  },
+  "B047": {
+    "name": "Frostnova F (4/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova F (4/5)",
+    "extended_tooltip": "F stack 4/5. Movement slowed. At Frostnova Lv. 35: INT x 0.60 magic damage/sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+  },
+  "B048": {
+    "name": "Frostnova F (5/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova F (5/5)",
+    "extended_tooltip": "F stack 5/5. Movement slowed. At Frostnova Lv. 35: INT x 0.75 magic damage/sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_F.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl"
+  },
+  "B049": {
+    "name": "Frostnova TF (2/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova TF (2/5)",
+    "extended_tooltip": "F stack 2/5. Stronger slow; INT x 0.30 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "war3mapImported\\wos_file00003801.mdx"
+  },
+  "B04A": {
+    "name": "Frostnova TF (3/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova TF (3/5)",
+    "extended_tooltip": "F stack 3/5. Stronger slow; INT x 0.45 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "war3mapImported\\wos_file00003801.mdx"
+  },
+  "B04B": {
+    "name": "Frostnova TF (4/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova TF (4/5)",
+    "extended_tooltip": "F stack 4/5. Stronger slow; INT x 0.60 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "war3mapImported\\wos_file00003801.mdx"
+  },
+  "B04C": {
+    "name": "Frostnova TF (5/5)",
+    "base_id": "BHds",
+    "tooltip": "Frostnova TF (5/5)",
+    "extended_tooltip": "F stack 5/5. Stronger slow; INT x 0.75 magic damage/sec. At Frostnova Lv. 35: +INT x 0.25/sec once, not per stack.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
+    "target_art": "war3mapImported\\wos_file00002579.mdx",
+    "target_attachment_point_1": "chest",
+    "field_feat": "war3mapImported\\wos_file00003801.mdx"
+  },
+  "B04D": {
+    "name": "Core Drill Physical 1",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Physical (1/5)",
+    "extended_tooltip": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+    "target_art": ""
+  },
+  "B04E": {
+    "name": "Core Drill Physical 2",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Physical (2/5)",
+    "extended_tooltip": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+    "target_art": ""
+  },
+  "B04F": {
+    "name": "Core Drill Physical 3",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Physical (3/5)",
+    "extended_tooltip": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+    "target_art": ""
+  },
+  "B050": {
+    "name": "Core Drill Physical 4",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Physical (4/5)",
+    "extended_tooltip": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+    "target_art": ""
+  },
+  "B051": {
+    "name": "Core Drill Physical 5",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Physical (5/5)",
+    "extended_tooltip": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
+    "target_art": ""
+  },
+  "B052": {
+    "name": "Core Drill Magic 1",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Magic (1/5)",
+    "extended_tooltip": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+    "target_art": ""
+  },
+  "B053": {
+    "name": "Core Drill Magic 2",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Magic (2/5)",
+    "extended_tooltip": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+    "target_art": ""
+  },
+  "B054": {
+    "name": "Core Drill Magic 3",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Magic (3/5)",
+    "extended_tooltip": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+    "target_art": ""
+  },
+  "B055": {
+    "name": "Core Drill Magic 4",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Magic (4/5)",
+    "extended_tooltip": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+    "target_art": ""
+  },
+  "B056": {
+    "name": "Core Drill Magic 5",
+    "base_id": "BHds",
+    "tooltip": "Core Drill: Magic (5/5)",
+    "extended_tooltip": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
+    "target_art": ""
+  },
+  "B0F0": {
+    "name": "Frostnova E - Frozen Shelter",
+    "base_id": "Binf",
+    "tooltip": "Frostnova E - Frozen Shelter",
+    "extended_tooltip": "All incoming damage reduced by 30% while Frostnova is inside her E field.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+    "target_art": ""
+  },
+  "B0F1": {
+    "name": "Frostnova E - Frozen Recovery",
+    "base_id": "Bcri",
+    "tooltip": "Frostnova E - Frozen Recovery",
+    "extended_tooltip": "Health restoration reduced by 35% inside the E field.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_E.blp",
+    "target_art": ""
+  },
+  "B0F3": {
+    "name": "Frostnova T - Song Shield",
+    "base_id": "BUfa",
+    "tooltip": "Song Shield",
+    "extended_tooltip": "Blocks the next hit. Lasts 4 sec.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Frostnova_T.blp",
     "target_art": "",
-    "target_attachments": "origin",
-    "field_feat": "Abilities\\Spells\\Other\\FrostDamage\\FrostDamage.mdl",
-    "field_feft": ""
+    "target_attachments": "origin"
   },
   "BEer": {
     "name": "",

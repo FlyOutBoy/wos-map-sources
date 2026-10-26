@@ -1246,6 +1246,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                     call BlzSetAbilityIcon(AlterSaberQ_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_Q.blp")
                     call BlzSetAbilityIcon(AlterSaberR_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_AlterSaber_R.blp")
                     call SaveInteger(hs, GetHandleId(c), SH_MODE_R, 0)
+                    call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberR_ID, true)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberRR_ID, false)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberW_ID, true)
@@ -1285,6 +1286,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
             set r = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
             call SaveInteger(hs, GetHandleId(c), SH_MODE_R, 1)
+            call AAUniversalTooltips_UpdateHeroTooltips(c) // range preview/tooltip follow the new state
             set rmax = AlterSaberR_DurationBase + (AlterSaberR_DurationStep * (GetUnitAbilityLevel(c, AlterSaberR_ID) - 1))
             call MakeSound("war3mapimported\\Hero_AlterSaber_R")
             if GetUnitAbilityLevel(c,AlterSaberR_ID) >= 5 then 

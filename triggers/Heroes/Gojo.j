@@ -154,6 +154,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
         endif
     endfunction
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct GojoSpells_Q
         private static integer array m_GojoQ
         private static integer MUI_GojoQ = -1
@@ -702,6 +703,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct GojoSpells_W
         private static integer array m_GojoW
         private static integer MUI_GojoW = -1
@@ -1363,6 +1365,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct GojoSpells_R
         private static integer array m_GojoR2
         private static integer MUI_GojoR2 = -1
@@ -1737,6 +1740,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct GojoSpells_T
         private static integer array m_GojoT
         private static integer MUI_GojoT = -1

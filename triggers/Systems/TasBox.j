@@ -27,6 +27,8 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       public hashtable Hash = InitHashtable()
       private timer UpdateTimer = null
       private boolean Initialized = false
+      private code NativeUpdate = null
+      private boolean NativeRefreshing = false
       public string TocPath ="UI\\WOS\\Charges.toc" // Loaded once by WOSUI before this owner creates frames.
       public framehandle array FrameBox
       public framehandle array FrameText
@@ -74,10 +76,21 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       return count
    endfunction
 
+
    public function SetValue takes unit u, integer spellCode, string value returns nothing
       local integer unitId = GetHandleId(u)
       call GetUnitSpellCodeKey(unitId, spellCode)
+      static if LIBRARY_WOSTestNativeUI then
+         if LoadStr(Hash, unitId, spellCode) == value then
+            return
+         endif
+      endif
       call SaveStr(Hash, unitId, spellCode, value)
+      static if LIBRARY_WOSTestNativeUI then
+         if Initialized and not NativeRefreshing then
+            call ForForce(bj_FORCE_PLAYER[0], NativeUpdate)
+         endif
+      endif
    endfunction
 
    public function GetValue takes unit u, integer spellCode returns string
@@ -233,6 +246,10 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
       local integer spellCode
       local string value
     
+      static if LIBRARY_WOSTestNativeUI then
+         set NativeRefreshing = true
+      endif
+
       // Checkpoint 27d: decide first, then touch only boxes whose state
       // changed (hiding and re-showing all 12 every tick was costly).
       loop
@@ -264,7 +281,11 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
          set i = i + 1
       endloop
       set display = null
+      static if LIBRARY_WOSTestNativeUI then
+         set NativeRefreshing = false
+      endif
    endfunction
+
 
    private function Create takes nothing returns nothing
       local framehandle commandButton
@@ -286,7 +307,11 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
             call BlzFrameClearAllPoints(FrameIcon[i])
             call BlzFrameSetPoint(FrameIcon[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
             call BlzFrameSetSize(FrameIcon[i], BOX_SIZE, BOX_SIZE)
+            static if LIBRARY_WOSTestNativeUI then
+               call BlzFrameSetTexture(FrameIcon[i], "UI\\Widgets\\ToolTips\\Human\\human-tooltip-background.blp", 0, true)
+            else
             call BlzFrameSetTexture(FrameIcon[i], "UI\\WOS\\button.tga", 0, true)
+            endif
 
             call BlzFrameClearAllPoints(FrameText[i])
             call BlzFrameSetPoint(FrameText[i], FRAMEPOINT_TOPRIGHT, commandButton, FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
@@ -324,6 +349,9 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
 
    public function Select takes nothing returns nothing
       set Unit[GetPlayerId(GetTriggerPlayer())] = GetTriggerUnit()
+      static if LIBRARY_WOSTestNativeUI then
+         call Update()
+      endif
    endfunction
 
    private function StartFrames takes nothing returns nothing
@@ -337,8 +365,14 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
          return
       endif
       set Initialized = true
-      set UpdateTimer = CreateTimer()
-      call WUI_OnReady(function StartFrames)
+      static if LIBRARY_WOSTestNativeUI then
+         // Small stock counters only: no TOC, WOSUI bootstrap or private timer.
+         set NativeUpdate = function Update
+         call Create()
+      else
+         set UpdateTimer = CreateTimer()
+         call WUI_OnReady(function StartFrames)
+      endif
       set trig = CreateTrigger()
       call TriggerAddAction(trig, function Select)
       call TriggerRegisterAnyUnitEventBJ(trig, EVENT_PLAYER_UNIT_SELECTED)

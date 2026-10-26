@@ -70,6 +70,11 @@ library TooltipBuilder
             if (text != "" and text != null) then
                 set len = StringLength(text)
                 loop
+                    exitwhen len < 2 or SubString(text, 0, 2) != "|n"
+                    set text = SubString(text, 2, len)
+                    set len = len - 2
+                endloop
+                loop
                     exitwhen len < 2 or SubString(text, len - 2, len) != "|n"
                     set text = SubString(text, 0, len - 2)
                     set len = len - 2
@@ -82,6 +87,16 @@ library TooltipBuilder
                         set this.buffer = thistype.lore(text)
                     endif
                 endif
+            endif
+            return this
+        endmethod
+
+        method addIframe takes string text returns thistype
+            if text != "" and text != null then
+                if this.buffer != "" then
+                    set this.buffer = this.buffer + "|n"
+                endif
+                set this.buffer = this.buffer + text
             endif
             return this
         endmethod

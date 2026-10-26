@@ -1851,6 +1851,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AinzR_KS
         private static integer array m_AinzR
         private static integer MUI_AinzR = -1
@@ -1984,6 +1985,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AinzT_KS
         private static integer array m_AinzT
         private static integer MUI_AinzT = -1
@@ -2557,6 +2559,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AinzTW_KS
         private static integer array m_AinzTW
         private static integer MUI_AinzTW = -1
@@ -2817,6 +2820,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AinzTR_KS
         private static integer array m_AinzTR
         private static integer MUI_AinzTR = -1
@@ -3183,6 +3187,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct AinzG_KS
         private static integer array m_AinzG
         private static integer MUI_AinzG = -1

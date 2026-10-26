@@ -17,7 +17,6 @@ library AAADest uses GearSystems, EnvironmentRoundRules
         integer SH_WATER_PENDING = StringHash("water pending")
         private integer SH_MURASAME_LEFT = StringHash("murasame left")
         private integer SH_MURASAME_BONUS = StringHash("murasame bonus")
-        private integer SH_ASHISOGI_LEFT = StringHash("ashisogi left")
         private integer SH_ASHISOGI_ACTIVE = StringHash("ashisogi active")
         private integer SH_NAOFUMI_SHIELD = StringHash("naofumi shield")
     endglobals
@@ -417,11 +416,10 @@ library AAADest uses GearSystems, EnvironmentRoundRules
                 exitwhen i > MUI_ErzaPas
                 set this = m_ErzaPas[i]
                 set r = r + 0.1
-                // Murasame / Ashisogi run on their own tick counters, not on buff time.
+                // Murasame runs on its own tick counter; Ashisogi lives on its buff like
+                // Kurikara: each hit refreshes the curse, a dispel ends the poison.
                 if k2 == 10 then
                     set alive = GetWidgetLife(td) > 0.405 and LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) > 0
-                elseif k2 == 11 then
-                    set alive = GetWidgetLife(td) > 0.405 and LoadReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT) > 0
                 else
                     set alive = GetUnitAbilityLevel(td, id) > 0
                 endif
@@ -453,7 +451,6 @@ library AAADest uses GearSystems, EnvironmentRoundRules
                                     call DamageSource(damageSource)
                                     call dmgphys(c, td, dmg)
                                     set AshisogiTrigger = false
-                                    call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, LoadReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT) - 1)
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\PoisonSting\\PoisonStingTarget.mdl", td, "chest"))
                                 else
                                     call DamageSource(damageSource)
@@ -511,7 +508,6 @@ elseif k2 == 10 then
     call UnitRemoveAbility(td, 'B03C')
 elseif k2 == 11 then
     call SaveInteger(hs, GetHandleId(td), SH_ASHISOGI_ACTIVE, 0)
-    call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, 0)
     call UnitRemoveAbility(td, AshisogiJizo_Buff_ID)
 endif
                     call DestroyEffect(e)
@@ -831,9 +827,9 @@ call SaveReal(hs, h, SH_MURASAME_LEFT, Murasame_Duration)
 call SaveReal(hs, h, SH_MURASAME_BONUS, 0)
 call ErzaPassive(c, td, 10)
 endfunction
-// Ashisogi Jizo: poison for AshisogiJizo_Duration ticks; a new hit refreshes, never stacks.
+// Ashisogi Jizo: dispellable poison debuff like Kurikara (native curse buff, 5 sec);
+// a new hit refreshes it, never stacks.
 function AshisogiJizo_Poison takes unit c, unit td returns nothing
-call SaveReal(hs, GetHandleId(td), SH_ASHISOGI_LEFT, AshisogiJizo_Duration)
 call ErzaPassive(c, td, 11)
 endfunction
 function ErzaBuffNakagami_Start takes unit c, unit u returns nothing
@@ -1214,9 +1210,72 @@ if id == 'B01A' or id == 'B019' then // inori crystall
 endif
 set d = null
 endfunction
+// Round reset: damaged decor is queued in one read-only pass and restored in
+// small batches over ~1.5 s, so the birth animations no longer land in one frame.
+globals
+    private constant real DECOR_RESTORE_PERIOD = 0.05
+    private constant integer DECOR_RESTORE_TICKS = 30
+    private constant integer DECOR_RESTORE_MAX = 8190
+    private destructable array DecorRestoreQueue
+    private integer DecorRestoreCount = 0
+    private integer DecorRestoreNext = 0
+    private integer DecorRestorePerTick = 1
+    private timer DecorRestoreTimer = CreateTimer()
+endglobals
+
+private function DecorQueueDamaged takes nothing returns nothing
+local destructable d = GetEnumDestructable()
+if DecorRestoreCount < DECOR_RESTORE_MAX and GetDestructableLife(d) < GetDestructableMaxLife(d) then
+    set DecorRestoreQueue[DecorRestoreCount] = d
+    set DecorRestoreCount = DecorRestoreCount + 1
+endif
+set d = null
+endfunction
+
+private function DecorRestoreStep takes nothing returns nothing
+local integer last = IMinBJ(DecorRestoreCount, DecorRestoreNext + DecorRestorePerTick)
+local destructable d
+local real life
+local real maxLife
+loop
+    exitwhen DecorRestoreNext >= last
+    set d = DecorRestoreQueue[DecorRestoreNext]
+    set DecorRestoreQueue[DecorRestoreNext] = null
+    // Removed meanwhile (Inori crystals...) or already whole: skip.
+    if d != null and GetDestructableTypeId(d) != 0 then
+        set life = GetDestructableLife(d)
+        set maxLife = GetDestructableMaxLife(d)
+        if life < maxLife then
+            call DestructableRestoreLife(d, maxLife, life <= 0.405)
+        endif
+    endif
+    set DecorRestoreNext = DecorRestoreNext + 1
+endloop
+set d = null
+if DecorRestoreNext >= DecorRestoreCount then
+    set DecorRestoreCount = 0
+    set DecorRestoreNext = 0
+else
+    call TimerStart(DecorRestoreTimer, DECOR_RESTORE_PERIOD, false, function DecorRestoreStep)
+endif
+endfunction
+
 function DecorRestore takes nothing returns nothing
 local integer i = 0
-call EnumDestructablesInRect( bj_mapInitialPlayableArea, null, function decordrevive )
+// A restore still in progress is dropped: the new pass queues whatever is still damaged.
+call PauseTimer(DecorRestoreTimer)
+loop
+    exitwhen DecorRestoreNext >= DecorRestoreCount
+    set DecorRestoreQueue[DecorRestoreNext] = null
+    set DecorRestoreNext = DecorRestoreNext + 1
+endloop
+set DecorRestoreCount = 0
+set DecorRestoreNext = 0
+call EnumDestructablesInRect( bj_mapInitialPlayableArea, null, function DecorQueueDamaged )
+set DecorRestorePerTick = IMaxBJ(1, (DecorRestoreCount + DECOR_RESTORE_TICKS - 1) / DECOR_RESTORE_TICKS)
+if DecorRestoreCount > 0 then
+    call DecorRestoreStep()
+endif
 loop
     exitwhen i >= DecorCooldownSourceCount
     call FlushChildHashtable(DecorCooldownTable, DecorCooldownSources[i])

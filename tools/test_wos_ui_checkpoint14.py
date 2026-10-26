@@ -100,7 +100,7 @@ class RestoredPickAndHUD(unittest.TestCase):
         vm.g.update(WUI_GetRoot=lambda: 'root', WUI_GOLD='gold', WUI_TEXT='text',
                     CreateTrigger=list, TriggerRegisterPlayerUnitEvent=lambda *_: None, EVENT_PLAYER_UNIT_SELECTED='sel', EVENT_PLAYER_UNIT_DESELECTED='desel', Player=lambda i: i, CreateTimer=lambda: 'timer', CreateGroup=lambda: 'group',
                     UNITSTAT_CreateToolbar=lambda: None, UNITSTAT_WidgetCreate=lambda i, t, x, y, w, _: positions.update({i: (x, y, w)}),
-                    WUI_Passive=lambda *_: 'stat-root', WUI_Panel=lambda name, *args: name,
+                    WUI_Passive=lambda name,*_: name, WUI_Panel=lambda name, *args: name,
                     WUI_OrnateWindow=lambda *_: 'edge', WUI_Border=lambda *_: 'edge', WUI_Divider=lambda *_: 'divider', WUI_CHASSIS_TOP=0.094, WUI_EMPTY_TEXTURE='empty', WUI_SetToggleState=lambda *_: None, WUI_SetToggleGlyph=lambda *_: None, BlzFrameGetChildrenCount=lambda *_: 0, BlzFrameGetWidth=lambda *_: 0.0, bj_MAX_PLAYER_SLOTS=28, WUI_TopActionX=lambda i: .638 + i * .036, WUI_TOGGLE_HOTKEY_Y=.0185, BlzFrameSetVisible=lambda *_: None, WUI_TooltipBox=lambda *_: 'tooltip', WUI_Pin=lambda *_: None,
                     UNITSTAT_Text=lambda *_: 'text', WUI_CreateFill=lambda *_: 'fill', I2R=float,
                     TasAbilityChargeBox_CreatePortraitLabel=lambda *_: 'level-text',
@@ -119,8 +119,8 @@ class RestoredPickAndHUD(unittest.TestCase):
         self.assertEqual(1, len({positions[i][0] for i in (3, 4, 5)}))
         self.assertGreater(positions[3][1], positions[4][1])
         self.assertGreater(positions[4][1], positions[5][1])
-        # Checkpoint 20: larger .050 portrait with its own level plate below.
-        self.assertEqual(positions['WOSSelectedUnitIcon'][2:], (.050, .050))
+        # Native portrait enlarged 2.5%; level plate remains separate.
+        self.assertEqual(positions['WOSSelectedUnitIcon'][2:], (.05125, .05125))
         self.assertLess(positions['WOSSelectedUnitLevelBadge'][1], positions['WOSSelectedUnitIcon'][1] - .025)
         self.assertIn('\"WOSGoldIcon\", UNITSTAT_Widget[7]', source)
         self.assertIn('BlzFrameSetPoint(back, FRAMEPOINT_LEFT, UNITSTAT_Widget[7]', source)

@@ -1,0 +1,71 @@
+War of Souls 2 - v0.34 (changes since 0.33e)
+
+NEW HERO: FROSTNOVA
+Q Ice Javelins: 2/2/4/4/6 charges, recharge 20/19/18/17/16 sec, stops at the first enemy.
+  Winter's Scar: pierces enemies, +30% projectile speed.
+W Northern Winds: widening wave, knockback 450 that fades with distance (x0.35 at max range).
+  Winter's Scar: 3 waves, knockback 750, each enemy is hit once, enemies inside Icefield are not pushed out.
+E Frost Nova: frost burst and a 10 sec freezing field (INT x 0.35-0.75 per sec).
+  Inside the field Frostnova takes 30% less damage, enemies receive 35% less healing.
+  Winter's Scar: 1 sec stun when the cast ends, frost aura around her (INT x 0.75 per sec).
+R Icefield: 4-8 sec blizzard, INT x 1 per sec, +INT x 0.05 per sec for each Yeti Princess stack.
+  Winter's Scar: 2 sec root on cast, 2 sec root on the first attempt to leave, random bursts every 0.36 sec (INT x 0.5, 450 radius).
+T Winter's Scar: 20 sec, refills Q, W/E/R cooldowns -10 sec, Song Shield blocks one hit for 4 sec and is renewed by each song verse.
+F Yeti Princess: stacking slow, up to 5 stacks (5% for 4 sec each).
+  Winter's Scar: 8% for 6 sec, INT x 0.15 damage per stack per sec, dispellable.
+
+BALANCE
+Crocodile
+  Q: static damage 150 -> 100
+  W: radius 650 -> 800, cast pause halved at hero level 35
+  E: recharge 18/16/14/12/10 -> 21/20/19/18/17 sec
+  R: speed 750 -> 900, 6 hits -> 5 hits per target within 1 sec, pull speed 1200 -> 1800
+  T: sand field ~45 -> ~20 larger patches (same area), spread waves 16 -> 10, T2 main blasts 12 -> 8
+Okarun
+  F: bonus movement speed +500/600/700/800/900 at hero levels 6/12/18/25/35 (was fixed 600-1500 caps)
+  T: movement speed fixed at 1200
+Toji
+  R: cast range 1800 -> 1600
+Kyoraku
+  T: final dash is now smooth and respects pathing; the final strike lands only if both units are still valid
+
+GAMEPLAY AND UI
+Ban phase: on-screen notice for the last 3 seconds, locked ban choices can no longer be changed.
+Random/repick messages and the repick tooltip now show the real gold amounts (+500 / -250).
+Shop: the 15 sec full refund now follows the purchased item, not the inventory slot.
+Tooltips: invulnerability windows are shown as a separate "Iframe" line.
+"Shielded" label no longer moves with hero animations.
+
+PERFORMANCE
+Particle effects reduced in 137 models. Values are peak particles per cast, before -> after.
+Decor and world
+  Decor destruction effects: 5497 -> 1351 (-75%), destruction dust 2880 -> 288
+  Decor explosion dummies: 1027 -> 103 (-90%)
+  Round end (Sukuna): 1098 -> 434 (-60%)
+  Road tunnel decor (always active): 130 -> 30
+  Shared hit blood effect (most heroes): 598 -> 209 (-65%)
+  Item effects: 4014 -> 2261 (-44%)
+Heroes
+  Kenjaku   R 7756 -> 3533, E 684 -> 278
+  Alucard   T 3459 -> 1472, W 1704 -> 965
+  Akainu    W 2825 -> 1276, T 1388 -> 555, hero model 2937 -> 1472
+  Natsu     F 2750 -> 1311
+  Bambietta T 2469 -> 1389
+  Frieren   T 1943 -> 1189, W 465 -> 250
+  Harribel  R 1901 -> 859
+  Raiden    T 1788 -> 849, W 263 -> 147
+  Barragan  W 1713 -> 855, R 1503 -> 605, T 1043 -> 553
+  Milim     T 1697 -> 765, W 1254 -> 554
+  Erza      E 1582 -> 915, R 1183 -> 685, T 590 -> 264
+  Rimuru    T 1515 -> 812, W 1093 -> 496, E 465 -> 250
+  Crocodile T 1472 -> 756, R 648 -> 423, W 451 -> 275
+  Takeshi   Q 1468 -> 740, W 1123 -> 506, R 903 -> 488
+  Inori     R 1436 -> 634, W 1170 -> 476, Q 664 -> 410
+  Laxus     G 1008 -> 508, W 684 -> 508
+  Neuvillette E 966 -> 387, Q 559 -> 258
+  AlterSaber T 857 -> 343, W 656 -> 356
+  Patriot   T 821 -> 435
+  Kyoraku   T 818 -> 389, E 690 -> 272
+  Mahoraga  E 1298 -> 720, W 818 -> 389
+  Tomioka   T 480 -> 250
+  Ainz, Asta, BazzB, Brandish, DarkShiki, Gojo, Kirito, Okarun, Starrk, Toji, Tsuna: -18% to -46%

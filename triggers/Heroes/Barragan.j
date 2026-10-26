@@ -175,6 +175,7 @@ library BarraganSpells uses GearSystems
         call EffectSpawnTarget("war3mapImported\\wos_zz-fire-ore-hit1-zihei_2.mdx", td, "origin", GetRandomReal(0, 359), 1.15, 2, 0, BarraganG_DamageDuration)
     endfunction
     
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HeroSpells_Q
         private static integer array m_BarraganQ
         private static integer MUI_BarraganQ = -1
@@ -516,6 +517,7 @@ library BarraganSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HeroSpells_W
         private static integer array m_BarraganW
         private static integer MUI_BarraganW = -1
@@ -1318,6 +1320,7 @@ library BarraganSpells uses GearSystems
 
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct HeroSpells_T
         private static integer array m_BarraganT
         private static integer MUI_BarraganT = -1

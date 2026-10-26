@@ -734,6 +734,7 @@ library KenjakuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct KenjakuE_KS
         private static integer array m_KenjakuE
         private static integer MUI_KenjakuE = -1
@@ -1446,6 +1447,7 @@ library KenjakuSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct KenjakuT_KS
         private static integer array m_KenjakuT
         private static integer MUI_KenjakuT = -1

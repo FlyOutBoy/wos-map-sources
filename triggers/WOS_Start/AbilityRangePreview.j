@@ -1,10 +1,13 @@
 // Shared hover-only range/AoE preview. Approved Range3 integration.
+// Red ring = click (cast) range; white ring = actual reach with offsets and area.
 library AbilityRangePreview initializer AR_Init requires AAUniversalTooltips, WOSUI, ItemsSpells
 globals
     private constant string AR_MODEL = "war3mapImported\\WOSRange\\wos_tx-tsqyuanxing2.mdx"
     private unit array AR_Hero
     private unit array AR_NextHero
+    private constant string AR_MODEL_OUTER = "war3mapImported\\WOSRange\\wos_range_white.mdx"
     private effect array AR_Effect
+    private effect array AR_Outer
     private unit array AR_RequestedHero
     private integer array AR_RequestedItemSlot
     private unit array AR_ItemOwner
@@ -13,6 +16,8 @@ globals
     private integer array AR_RequestedAbility
     private integer AR_Visible = -1
     private real AR_Scale = 0.0
+    private real AR_OuterScale = 0.0
+    private constant real AR_MAX_RADIUS = 4000.0
     private real AR_LastX = 0.0
     private real AR_LastY = 0.0
     private location AR_Ground = Location(0.0, 0.0)
@@ -92,10 +97,16 @@ function AR_Reconcile takes nothing returns nothing
                 call DestroyEffect(AR_Effect[i])
             endif
             set AR_Effect[i] = null
+            if AR_Outer[i] != null then
+                call BlzSetSpecialEffectAlpha(AR_Outer[i], 0)
+                call DestroyEffect(AR_Outer[i])
+            endif
+            set AR_Outer[i] = null
             set AR_Hero[i] = AR_NextHero[i]
             if AR_Visible == i then
                 set AR_Visible = -1
                 set AR_Scale = 0.0
+                set AR_OuterScale = 0.0
             endif
         endif
         set i = i + 1
@@ -108,6 +119,11 @@ function AR_Reconcile takes nothing returns nothing
             set AR_Effect[i] = AddSpecialEffect(AR_MODEL, GetUnitX(hero), GetUnitY(hero))
             call BlzSetSpecialEffectAlpha(AR_Effect[i], 0)
             call BlzPlaySpecialEffect(AR_Effect[i], ANIM_TYPE_STAND)
+        endif
+        if hero != null and AR_Outer[i] == null then
+            set AR_Outer[i] = AddSpecialEffect(AR_MODEL_OUTER, GetUnitX(hero), GetUnitY(hero))
+            call BlzSetSpecialEffectAlpha(AR_Outer[i], 0)
+            call BlzPlaySpecialEffect(AR_Outer[i], ANIM_TYPE_STAND)
         endif
         call AR_CacheItems(i, hero)
         set i = i + 1
@@ -137,8 +153,10 @@ endfunction
 private function AR_Conceal takes nothing returns nothing
     if AR_Visible >= 0 then
         call BlzSetSpecialEffectAlpha(AR_Effect[AR_Visible], 0)
+        call BlzSetSpecialEffectAlpha(AR_Outer[AR_Visible], 0)
         set AR_Visible = -1
         set AR_Scale = 0.0
+        set AR_OuterScale = 0.0
     endif
 endfunction
 
@@ -161,9 +179,11 @@ function AR_Cancel takes integer pid returns nothing
 endfunction
 
 // Invoked after the existing hover/tooltip pass, at 0.05 s. No hidden positioning.
+// A hidden ring keeps scale 0 so a later show re-applies its scale.
 function AR_Render takes integer pid returns nothing
     local unit hero = AR_RequestedHero[pid]
     local real radius = 0.0
+    local real reach = 0.0
     local integer i = 0
     local integer found = -1
     local integer abilityId = AR_RequestedAbility[pid]
@@ -183,7 +203,7 @@ function AR_Render takes integer pid returns nothing
         set hero = null
         return
     endif
-    if hero != null and GetUnitTypeId(hero) != 0 and GetOwningPlayer(hero) == Player(pid) and not IsUnitHidden(hero) and not IsUnitType(hero, UNIT_TYPE_DEAD) and not WUI_RangePreviewBlocked() then
+    if hero != null then
         loop
             exitwhen i >= 14
             if AR_Hero[i] == hero then
@@ -200,10 +220,17 @@ function AR_Render takes integer pid returns nothing
                 endif
             endif
         else
-            set radius = AAUniversalTooltips_GetPreviewRadius(hero, abilityId)
+            set reach = AAUniversalTooltips_GetPreviewRadius(hero, abilityId)
+            set radius = AAUniversalTooltips_GetPreviewCastRange(hero, abilityId)
         endif
-        // Render long-range skills too; reject global targeting sentinels.
-        if radius <= 0.0 or radius > 32768.0 or (itemSlot >= 0 and radius > 2500.0) then
+        // Circles up to AR_MAX_RADIUS inclusive; larger/global ranges are not drawn.
+        if radius > AR_MAX_RADIUS then
+            set radius = 0.0
+        endif
+        if reach > AR_MAX_RADIUS or R2I(reach) == R2I(radius) then
+            set reach = 0.0
+        endif
+        if radius <= 0.0 and reach <= 0.0 then
             set found = -1
         endif
     endif
@@ -213,20 +240,38 @@ function AR_Render takes integer pid returns nothing
         return
     endif
     if AR_Visible >= 0 and AR_Visible != found then
-        call BlzSetSpecialEffectAlpha(AR_Effect[AR_Visible], 0)
+        call AR_Conceal()
     endif
     if AR_Visible != found or AR_LastX != GetUnitX(hero) or AR_LastY != GetUnitY(hero) then
         set AR_LastX = GetUnitX(hero)
         set AR_LastY = GetUnitY(hero)
         call MoveLocation(AR_Ground, AR_LastX, AR_LastY)
         call BlzSetSpecialEffectPosition(AR_Effect[found], AR_LastX, AR_LastY, GetLocationZ(AR_Ground) + 3.0)
+        call BlzSetSpecialEffectPosition(AR_Outer[found], AR_LastX, AR_LastY, GetLocationZ(AR_Ground) + 2.0)
     endif
-    if AR_Visible != found or AR_Scale != radius / 512.0 then
-        set AR_Scale = radius / 512.0
-        call BlzSetSpecialEffectScale(AR_Effect[found], AR_Scale)
+    if radius > 0.0 then
+        if AR_Scale != radius / 512.0 then
+            if AR_Scale == 0.0 then
+                call BlzSetSpecialEffectAlpha(AR_Effect[found], 255)
+            endif
+            set AR_Scale = radius / 512.0
+            call BlzSetSpecialEffectScale(AR_Effect[found], AR_Scale)
+        endif
+    elseif AR_Scale != 0.0 then
+        call BlzSetSpecialEffectAlpha(AR_Effect[found], 0)
+        set AR_Scale = 0.0
     endif
-    if AR_Visible != found then
-        call BlzSetSpecialEffectAlpha(AR_Effect[found], 255)
+    if reach > 0.0 then
+        if AR_OuterScale != reach / 512.0 then
+            if AR_OuterScale == 0.0 then
+                call BlzSetSpecialEffectAlpha(AR_Outer[found], 255)
+            endif
+            set AR_OuterScale = reach / 512.0
+            call BlzSetSpecialEffectScale(AR_Outer[found], AR_OuterScale)
+        endif
+    elseif AR_OuterScale != 0.0 then
+        call BlzSetSpecialEffectAlpha(AR_Outer[found], 0)
+        set AR_OuterScale = 0.0
     endif
     set AR_Visible = found
     set hero = null

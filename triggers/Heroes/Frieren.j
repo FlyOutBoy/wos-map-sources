@@ -736,6 +736,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             endif
         endmethod
     endstruct
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct FrierenSpells_TQ
         private static integer array m_FrierenTQ
         private static integer MUI_FrierenTQ = -1
@@ -1792,6 +1793,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         endmethod
 
     endstruct
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct FrierenSpells_T
         private static integer array m_FrierenT
         private static integer MUI_FrierenT = -1

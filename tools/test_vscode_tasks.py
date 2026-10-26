@@ -42,7 +42,11 @@ class VscodeTasks(unittest.TestCase):
                 self.assertEqual(0, result.returncode, result.stderr.decode(errors='replace'))
 
     def test_main_and_test_routes_and_checked_save(self):
-        primary = [task for task in self.tasks if not task['label'].startswith('COMMON |')]
+        hero = [task for task in self.tasks if task['label'].startswith('HERO:')]
+        self.assertEqual(1,len(hero))
+        self.assertIn('--active-test-hero',hero[0]['args'])
+        self.assertIn('--build-main',hero[0]['args'])
+        primary = [task for task in self.tasks if task['label'].startswith(('MAIN:', 'TEST:'))]
         self.assertEqual(6, len(primary))
         for target in ('Test', 'Main'):
             selected = [t for t in primary if t['label'].startswith(target.upper()+':')]

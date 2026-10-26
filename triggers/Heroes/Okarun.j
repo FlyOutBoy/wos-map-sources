@@ -97,24 +97,23 @@ library OkarunSpells uses GearSystems
         string OkarunT_Order = "ambush"
         real OkarunT_DamageIntBase = 10 // for each punch
         real OkarunT_DamageAoe = 700 // for each punch
-        real OkarunT_bonusspeed = 1.25 // 125%
-        real OkarunT_SpeedReduction = 200.00
+        real OkarunT_MoveSpeed = 1200.00 // Fixed total speed while the native T buff lasts
         integer OkarunT_Slow = 50 // Caused slow %
         integer OkarunT_SlowDuration = 2 // slow time 2, 3, 4 sec only
         real OkarunT_PushInterval = 0.75 // per-target tackle cooldown
         real OkarunT_PushScanPeriod = 0.09
-        real OkarunF_OrderRepeatPeriod = 0.75
+        real OkarunF_OrderRepeatPeriod = 0.21
         real OkarunT_PushAoe = 350
         real OkarunT_PushRange = 450
         real OkarunT_PushDuration = 0.35
         real OkarunT_PushDamageInt = 2.0 // x Int damage per tackle
 //---------------F ability-----------------------------------------------------
         integer OkarunF_ID = 'A07C'
-        real OkarunF_MaxSpeed0 = 600
-        real OkarunF_MaxSpeed1 = 700
-        real OkarunF_MaxSpeed2 = 800
-        real OkarunF_MaxSpeed3 = 900
-        real OkarunF_MaxSpeed4 = 1500 // lv 35
+        real OkarunF_MaxSpeed0 = 500
+        real OkarunF_MaxSpeed1 = 600
+        real OkarunF_MaxSpeed2 = 700
+        real OkarunF_MaxSpeed3 = 800
+        real OkarunF_MaxSpeed4 = 900
         real OkarunF_AddSpeedPercentPerSec = 5 // gain 10% of max speed per second
         real OkarunF_DecreaseSpeedPercentPerSec = 1.2 // 2% of max speed decreased
     endglobals
@@ -129,11 +128,14 @@ library OkarunSpells uses GearSystems
         elseif level >= 12 then
             return OkarunF_MaxSpeed1
         endif
-        return OkarunF_MaxSpeed0
+        if level >= 6 then
+            return OkarunF_MaxSpeed0
+        endif
+        return GetUnitMoveSpeed(c)
     endfunction
 
     function OkarunT_Speed takes unit c returns real
-        return RMaxBJ(GetUnitMoveSpeed(c), OkarunF_MaxSpeed(c) * OkarunT_bonusspeed - OkarunT_SpeedReduction)
+        return OkarunT_MoveSpeed
     endfunction
 
     private struct OkarunQ_KS
@@ -493,6 +495,7 @@ library OkarunSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct OkarunR_KS
         private static integer array m_OkarunR
         private static integer MUI_OkarunR = -1
@@ -800,6 +803,7 @@ library OkarunSpells uses GearSystems
         endmethod
     endstruct
 
+    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
     private struct OkarunT_KS
         private static integer array m_OkarunT
         private static integer MUI_OkarunT = -1
@@ -950,12 +954,9 @@ library OkarunSpells uses GearSystems
         real r
         effect e
         real a
-        real lastX
-        real lastY
         static method Loop_OkarunF takes nothing returns nothing
             local integer this
             local integer i = 0
-            local real nativeStep
             local real distance
             local integer order
             local boolean moving
@@ -970,13 +971,24 @@ library OkarunSpells uses GearSystems
                         set r3 = LoadReal(hs, GetHandleId(c), SH_CURRENT_SPEED)
                         call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED, 0)
                     endif
+                    set r5 = OkarunF_MaxSpeed(c)
+                    if GetUnitAbilityLevel(c, OkarunT_Buff_ID) > 0 then
+                        set r5 = OkarunT_Speed(c)
+                        set r3 = r5
+                    else
+                        // Clamp immediately when T expires, including while stopped or paused.
+                        set r3 = RMinBJ(r3, r5)
+                    endif
                     if IsUnitPaused(c) == false and GetUnitAbilityLevel(c, 'Avul') == 0 and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
-                        set r5 = OkarunF_MaxSpeed(c)
                         set order = GetUnitCurrentOrder(c)
                         set moving = order == OrderId("move") or order == OrderId("smart") or order == OrderId("attack") or order == OrderId(OkarunQ_Order) or order == OrderId(OkarunW_Order) or order == OrderId(OkarunE_Order) or order == OrderId(OkarunR_Order) or order == OrderId(OkarunT_Order)
                         set x = LoadReal(hs, GetHandleId(c), SH_REAL_X)
                         set y = LoadReal(hs, GetHandleId(c), SH_REAL_Y)
-                        set td = LoadUnitHandle(hs, GetHandleId(c), SH_UNIT_TARGET)
+                        set td = null
+                        // Only unit-target orders may follow the saved target.
+                        if order == OrderId("smart") or order == OrderId("attack") or order == OrderId(OkarunW_Order) or order == OrderId(OkarunE_Order) or order == OrderId(OkarunR_Order) then
+                            set td = LoadUnitHandle(hs, GetHandleId(c), SH_UNIT_TARGET)
+                        endif
                         if td != null and GetUnitTypeId(td) != 0 and GetWidgetLife(td) > 0.405 then
                             set x = GetUnitX(td)
                             set y = GetUnitY(td)
@@ -991,8 +1003,8 @@ library OkarunSpells uses GearSystems
                         endif
                         if GetUnitAbilityLevel(c, OkarunT_Buff_ID) > 0 then
                             set r3 = OkarunT_Speed(c)
+                            set r5 = r3
                         endif
-                        call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED1, r3)
                         if moving and LoadInteger(hs, GetHandleId(c), SH_SPELL_P) == 0 then
                             set r7 = r7 + 0.03
                             if r7 + 0.0001 >= OkarunF_OrderRepeatPeriod and SR3(c, x, y) > 150.00 then
@@ -1006,17 +1018,15 @@ library OkarunSpells uses GearSystems
                         else
                             set r7 = 0.00
                         endif
-                        if moving and GetUnitAbilityLevel(c, 'BPSE') == 0 and GetUnitAbilityLevel(c, 'BEer') == 0 then
+                        if moving and LoadInteger(hs, GetHandleId(c), SH_SPELL_P) == 0 and GetUnitAbilityLevel(c, 'BPSE') == 0 and GetUnitAbilityLevel(c, 'BEer') == 0 then
                             set distance = SR3(c, x, y)
-                            // Measure native travel since our previous post-boost position.
-                            // Order retries are separately rate-limited and skip active casts.
-                            set nativeStep = SquareRoot((GetUnitX(c) - lastX) * (GetUnitX(c) - lastX) + (GetUnitY(c) - lastY) * (GetUnitY(c) - lastY))
-                            set move = RMaxBJ(0.00, r3 * 0.03 - nativeStep)
+                            // 0.31c2 control: add only the speed above native movement,
+                            // along the current facing so turns and pathing stay native.
+                            set move = RMaxBJ(0.00, r3 - GetUnitMoveSpeed(c)) * 0.03
                             set move = RMinBJ(move, RMaxBJ(0.00, distance - 150.00))
-                            set a = GAngle2(c, x, y)
-                            if move > 0.00 and PathableCheck3(GetUnitX(c) + move * Cos(a), GetUnitY(c) + move * Sin(a)) then
-                                call SetUnitX(c, GetUnitX(c) + move * Cos(a))
-                                call SetUnitY(c, GetUnitY(c) + move * Sin(a))
+                            if move > 0.00 then
+                                set a = GetUnitFacing(c) * bj_DEGTORAD
+                                call MoveUnit(c, move, a)
                             endif
                         endif
                     endif
@@ -1039,8 +1049,8 @@ library OkarunSpells uses GearSystems
                             set r3 = GetUnitMoveSpeed(c)
                         endif
                     endif
-                    set lastX = GetUnitX(c)
-                    set lastY = GetUnitY(c)
+                    set r3 = RMinBJ(r3, r5)
+                    call SaveReal(hs, GetHandleId(c), SH_CURRENT_SPEED1, r3)
                 else
                     call WUI_HeroProgress(c, OkarunF_ID, "Current speed", 0.00, 0.00, true)
                     call DestroyEffect(e)
@@ -1063,8 +1073,6 @@ library OkarunSpells uses GearSystems
             set MUI_OkarunF = MUI_OkarunF + 1
             set m_OkarunF[MUI_OkarunF] = this
             set c = NewC
-            set lastX = GetUnitX(c)
-            set lastY = GetUnitY(c)
             set td = null
             set check = GetUnitTypeId(c)
             set r = 0
@@ -1072,6 +1080,7 @@ library OkarunSpells uses GearSystems
             set r6 = 0.2
             set r7 = 0
             set k2 = GetPlayerId(GetOwningPlayer(c))
+            set r5 = OkarunF_MaxSpeed(c)
             set r3 = GetUnitMoveSpeed(c) // СЃС‚Р°СЂС‚РѕРІР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ (РєР°Рї РґРІРёР¶РєР°)
             set e = AddSpecialEffectTarget("war3mapimported\\wos_windwalk blood.mdx", c, "origin")
             if MUI_OkarunF == 0 then

@@ -121,4 +121,4 @@ Regenerate with `python tools/extract_war3_triggers.py` from the project root.
 | 111 | Erza | ErzaBase | [Heroes/Erza/ErzaBase.j](Heroes/Erza/ErzaBase.j) | ErzaBase | GearSystems, ErzaQSpells |
 | 112 | Heroes | Milim | [Heroes/Milim.j](Heroes/Milim.j) | MilimSpells | GearSystems, WOSUI |
 | 113 | Heroes | Crocodile | [Heroes/Crocodile.j](Heroes/Crocodile.j) | CrocodileSpells | GearSystems, GearSystems2, AAADest, TasAbilityChargeBox |
-| 114 | Heroes | Frostnova | [Heroes/Frostnova.j](Heroes/Frostnova.j) | FrostnovaSpells | GearSystems |
+| 114 | Heroes | Frostnova | [Heroes/Frostnova.j](Heroes/Frostnova.j) | FrostnovaSpells | GearSystems, AAADest |

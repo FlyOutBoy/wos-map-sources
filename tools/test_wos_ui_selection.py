@@ -24,6 +24,15 @@ class Selection(unittest.TestCase):
   self.vm.run('UNITSTAT_OnPortraitClick');self.assertEqual(3,len(centers))
   self.local=1;u=self.u('other-client');u.x=1;u.y=2;self.select(0,u)
   self.vm.run('UNITSTAT_OnPortraitClick');self.assertEqual(3,len(centers))
+ def test_changed_local_hero_repins_portrait_but_held_selection_does_not(self):
+  calls=[];self.vm.g['WUI_PinNativePortrait']=lambda:calls.append(self.local)
+  erza,kirito=self.u('erza'),self.u('kirito')
+  self.select(0,erza);self.assertEqual([0],calls)
+  self.select(0,kirito);self.assertEqual([0,0],calls)
+  for _ in range(20):self.select(0,kirito)
+  self.assertEqual([0,0],calls)
+  self.deselect(0,kirito);self.assertEqual([0,0,0],calls)
+  self.select(1,self.u('foreign'));self.assertEqual([0,0,0],calls)
  def test_independent_two_players(self):
   a,b=self.u('a'),self.u('b');self.select(0,a);self.select(1,b)
   self.assertIs(self.resolve(0),a);self.assertIs(self.resolve(1),b)

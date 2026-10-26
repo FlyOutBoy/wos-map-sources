@@ -5,17 +5,17 @@
     {
       "json": "units.json",
       "binary": "war3map.w3u",
-      "sha256": "5d3162d177f0f19c90b37c14606698bf33c72857f9777e7afdc69b973f7771a9"
+      "sha256": "cd7ec62f44bfc351505e1499ca00dee6cf100c47b38fc93c45120273f9487c03"
     },
     {
       "json": "items.json",
       "binary": "war3map.w3t",
-      "sha256": "54ff4827b6029c3f5c55a77cfc45f86e01737dd396b34747e91b866ae0cbb728"
+      "sha256": "3bc8f7aed3f6aed1e36c2e0f47518d764b34c56e894e9cf106629112e590a8f9"
     },
     {
       "json": "destructables.json",
       "binary": "war3map.w3b",
-      "sha256": "ae2a64583204ff71ad4fb2a8c076d52219c4277577c485b5988c3b9f801bf3e4"
+      "sha256": "aa1a1817c55663311ec933b754256fb7f92c08a0e09dcda0eacbfd3e607347fb"
     },
     {
       "json": "doodads.json",
@@ -25,12 +25,12 @@
     {
       "json": "abilities.json",
       "binary": "war3map.w3a",
-      "sha256": "2b4fdee4e0effd9aed80d03012bffa19d607fc096fb5fc85cab0633dd2e41f37"
+      "sha256": "8ad3bd387ea978b97e0fb24af2f6edeadf1f35666262f3710e052df8cd1f802e"
     },
     {
       "json": "buffs.json",
       "binary": "war3map.w3h",
-      "sha256": "8527861e64868c9e0192eb3f2231e657c46fb65974129e3d980293e0119359ea"
+      "sha256": "32722c848e279cf5db00553e261a292c06777045d7ba716ad41fc240ad50ba0b"
     },
     {
       "json": "upgrades.json",
@@ -40,17 +40,17 @@
     {
       "json": "units-skin.json",
       "binary": "war3mapSkin.w3u",
-      "sha256": "350c5a06330c9b74edcb8f93a2679c249da775a29f06dc35b0d6910a5a653fcf"
+      "sha256": "9cd18b095ac24c632ca2736f6995586f229f6079e5b28cc2d6ea5a69e63f8657"
     },
     {
       "json": "items-skin.json",
       "binary": "war3mapSkin.w3t",
-      "sha256": "be022e10be84ef642926c383d3726618383f9e4d910f049267cc3a6090bfe707"
+      "sha256": "2f8dfcb15801b287a1576e8522906fc36b7a23504d0860c0994f97f09f3b422a"
     },
     {
       "json": "destructables-skin.json",
       "binary": "war3mapSkin.w3b",
-      "sha256": "92602a6578afb4e05d7056f974aed41fcf7840d2fca966c3e88042c28e6b3dec"
+      "sha256": "7bc5f02a3dd6d7f29bf5c87ac6c865c5464e2534115e75f95976e95326eb20bd"
     },
     {
       "json": "doodads-skin.json",
@@ -60,12 +60,12 @@
     {
       "json": "abilities-skin.json",
       "binary": "war3mapSkin.w3a",
-      "sha256": "172de6696ce662010c351c16dce8df13fbb8db764f5fbbc785bd0a9e57c298ff"
+      "sha256": "12d3c82a9104aa6183eac3959366120f95b4c7a195c87b0c465e40c49a9ea47f"
     },
     {
       "json": "buffs-skin.json",
       "binary": "war3mapSkin.w3h",
-      "sha256": "077c08c8012742ca60ab1e3f4bdeb8f9a1d7080f5bca37e27923374b1a85f444"
+      "sha256": "82fb3e67afae01fcc3e35afe480fe8b231ef156fe21b60f4b9c1f7ef6749c7d7"
     },
     {
       "json": "upgrades-skin.json",

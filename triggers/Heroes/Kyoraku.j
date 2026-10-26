@@ -1462,6 +1462,8 @@ endfunction
         real y
         real dmg
         integer check
+        integer tick
+        real dashRemaining
         real move
         real r
         effect e
@@ -1470,42 +1472,43 @@ endfunction
         effect e4
         effect e5
         real a
-        real rmax
         static method Loop_KyorakuT4 takes nothing returns nothing
             local integer this
             local integer i = 0
+            local real step
             loop
                 exitwhen i > MUI_KyorakuT2
                 set this = m_KyorakuT2[i]
-                if SpellBoolCaster(.c) and  SpellBoolCaster(.td) and  .r <= .rmax then
-                    set .r = .r + 0.03
-                    set .r = RoundReal(.r, 3)
-                    if .r < 2.68 then
+                if SpellBoolCaster(.c) and SpellBoolCaster(.td) and .tick < 205 then
+                    set .tick = .tick + 1
+                    set .r = I2R(.tick) * 0.03
+                    if .tick <= 90 then
                         set .a = GAngle(.c, .td)
                         call SetUnitFacing(.c, .a * bj_RADTODEG)
                     endif
                     call DebugUnit(.c)
-                    if .r >= 1.8 then
+                    if .tick >= 60 then
                         set .x = GetUnitX(.td)
                         set .y = GetUnitY(.td)
                         call DebugUnit(.td)
                     endif
-                    if .r == 1.8 then
+                    if .tick == 60 then
                         call MakeSound3("war3mapimported\\Hero_Kyoraku_T17")
                         call EMUE(EffectSpawn2("war3mapImported\\wos_whiteauralance.mdl", .x - 600 * Cos(0 * bj_DEGTORAD), .y - 600 * Sin(0 * bj_DEGTORAD), 0, 1, 2.5, 100, 1.25), 600, 1, 0 * bj_DEGTORAD)
                         call EMUE(EffectSpawn2("war3mapImported\\wos_whiteauralance.mdl", .x + 600 * Cos(0 * bj_DEGTORAD), .y + 600 * Sin(0 * bj_DEGTORAD), 0, 1, 2.5, 100, 1.25), 600, 1, 180 * bj_DEGTORAD)
                         set .e5 = EffectSpawn("war3mapimported\\wos_throatsilk.mdx", .x, .y, 1, 0.25, 3, 110)
                     endif
-                    if .r == 2.7 then
+                    if .tick == 90 then
                         call SetUnitAnimationByIndex( .c , 21)
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_3")
                     endif
-                    if .r > 2.7 and .check == 0 then
+                    if .tick > 90 and .check == 0 then
                         call MoveUnit(.c, .move, .a)
                         if SR2(.c, .td) < 100 then
                             set .check = 1
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_5")
-                            call MUE(.c, 700, 1.25, .a)
+                            // Own cinematic movement must not become a wall/CC-controlled MUE.
+                            set .dashRemaining = 700
                             call DecorRemove(.c, .x, .y, 900, 100)
                     
                             set .e3 = AddSpecialEffectTarget("war3mapImported\\wos_whiteauralance_red.mdl", .c, "hand right")
@@ -1517,10 +1520,19 @@ endfunction
                             set .e4 = EffectSpawnColor("war3mapImported\\wos_LXY_ZK_BM_flash_gai2red.mdl", .x - 00 * Cos(.a + bj_RADTODEG * 90), .y - 00 * Sin(.a + bj_RADTODEG * 90), .a * bj_RADTODEG, 0.5, 3.5, 120, 255, 15, 15, 255)
                             call AnimDummyEff(.e4, 1, 0)
                         endif
+                    elseif .check == 1 and .dashRemaining > 0 then
+                        // Finish the fixed-direction pass-through in 1.25 seconds at most.
+                        set step = RMinBJ(.dashRemaining, 700 * 0.03 / 1.25)
+                        if PathableCheck3(GetUnitX(.c) + step * Cos(.a), GetUnitY(.c) + step * Sin(.a)) then
+                            call SetUnitX(.c, GetUnitX(.c) + step * Cos(.a))
+                            call SetUnitY(.c, GetUnitY(.c) + step * Sin(.a))
+                        endif
+                        set .dashRemaining = .dashRemaining - step
                     endif
-                    if .r == 5.73 then
+                    if .tick == 191 then
                     call MakeSound3("war3mapimported\\Hero_Kyoraku_T16_4")
                         call DestroyEffect(.e2)
+                        set .e2 = null
                         if GetLocalPlayer() == GetOwningPlayer(.td) then
                             call CameraSetTargetNoise(30.0, 30.0)
                         endif
@@ -1528,7 +1540,7 @@ endfunction
                             call CameraSetTargetNoise(30.0, 30.0)
                         endif
                     endif
-                    if .r == 6 then
+                    if .tick == 200 then
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_Satsu-WSFX-1_1.mdl", .x, .y, 0, 1, 1, 1))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_Shockwave_b_red.mdl", .x, .y, 0, 1, 3, 110))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_bdef (124)2.mdl", .x, .y, 0, 1, 3, 110))
@@ -1536,7 +1548,7 @@ endfunction
                         call DecorRemove(.c, .x, .y, 900, 100)
                         call BlzSetSpecialEffectTimeScale(.e4, 2)
                         call DestroyEffect(.e4)
-                        set r = rmax - 0.15
+                        set .e4 = null
                     endif
                 else
                     if GetLocalPlayer() == GetOwningPlayer(.td) then
@@ -1546,28 +1558,29 @@ endfunction
                         call CameraSetTargetNoise(0.0, 0.0)
                     endif
                     call StopSpellUnit(.c)
-                    if .r > 1.8 then
+                    if .tick >= 60 then
                         call StopSpellUnit(.td)
                     endif
                     call DecorRemove(.c, .x, .y, 900, 100)
-                    call MakeSound3("war3mapimported\\Hero_Kyoraku_T18")
-                    call StunUnit(.c, .td, KyorakuT_DanFinal_Stun)
-                    call DamageSource('A059')
-                    call dmgphys(.c, .td, .dmg)
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_fuxuan-21.mdl", .x, .y, 0, 1, 4.75, 150))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", .x, .y, 0, 1, 1.75, 10))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", .x, .y, 0, 1, 5, 10))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_1jinse_97.mdl", .x, .y, 0, 3.5, 3, 0))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_CrackWhitee.mdl", .x, .y, 0, 0.75, 1, 0))
+                    // Cancellation releases both units, but cannot execute the target.
+                    if .check == 1 and .tick >= 200 and SpellBoolCaster(.c) and SpellBoolCaster(.td) then
+                        call MakeSound3("war3mapimported\\Hero_Kyoraku_T18")
+                        call StunUnit(.c, .td, KyorakuT_DanFinal_Stun)
+                        call DamageSource('A059')
+                        call dmgphys(.c, .td, .dmg)
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_fuxuan-21.mdl", .x, .y, 0, 1, 4.75, 150))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_3yellowlightclear.mdl", .x, .y, 0, 1, 1.75, 10))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_bloodex-special-23.mdl", .x, .y, 0, 1, 5, 10))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_1jinse_97.mdl", .x, .y, 0, 3.5, 3, 0))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_CrackWhitee.mdl", .x, .y, 0, 0.75, 1, 0))
+                    endif
                     call SaveInteger(hs, GetHandleId(.c), SH_LAST_DAN, 0)
                     call SaveInteger(hs, GetHandleId(.c), SH_BANKAI_END, 1)
                     call DestroyEffect(.e)
                     call DestroyEffect(.e2)
                     call DestroyEffect(.e3)
                     call DestroyEffect(.e5)
-                    if .r < 14.25 then
-                        call DestroyEffect(.e4)
-                    endif
+                    call DestroyEffect(.e4)
                     set .c = null
                     set .td = null
                     set .e = null
@@ -1587,12 +1600,18 @@ endfunction
             endloop
         endmethod
         public static method KyorakuT4_Start takes unit NewC, unit NewTd returns nothing
-            local thistype this = thistype.create( )
+            local thistype this
+            if NewC == null or NewTd == null or not SpellBoolCaster(NewC) or not SpellBoolCaster(NewTd) then
+                return
+            endif
+            set this = thistype.create( )
             set MUI_KyorakuT2 = MUI_KyorakuT2 + 1
             set m_KyorakuT2[ MUI_KyorakuT2] = this
             set .c = NewC
             set .td = NewTd
             set .r = 0
+            set .tick = 0
+            set .dashRemaining = 0
             set .x = GetUnitX(.td)
             set .y = GetUnitY(.td)
             set .check = 0
@@ -1605,7 +1624,6 @@ endfunction
             set .e = AddSpecialEffectTarget("war3mapImported\\wos_whiteauralance_white.mdl", .c, "hand right")
             set .a = GAngle( .c , .td ) // Angle Between points
             set .dmg = GetHeroAgi( .c , true) * KyorakuT_DanFinal_Dmg
-            set .rmax = 14.4
             call SetUnitAnimationByIndex( .c , 20)
             call SetUnitTimeScale( .c , 0.25)
             if MUI_KyorakuT2 == 0 then

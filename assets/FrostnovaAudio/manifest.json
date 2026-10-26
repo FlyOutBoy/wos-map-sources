@@ -1,0 +1,117 @@
+[
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Death.mp3",
+    "sha256": "0bbd0a633e4edf2afe93769dc977acddc53bcfc94d6f85749d4aa4e37f1d7bea",
+    "bytes": 39120
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_E.mp3",
+    "sha256": "a9b699c34e611ef8281649fe185d571433ab73e0ee925770e20c5b5ee28d0366",
+    "bytes": 64196
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_E2.mp3",
+    "sha256": "d1eb9e2338164fabfe9f6936e59b5daa589a292a4ee4f3767c8b6ba1a45940df",
+    "bytes": 32851
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_E3.mp3",
+    "sha256": "9c08d3c7b24456e0ea078da368efec716a0baadc4e6feebf808830e802c2583f",
+    "bytes": 35985
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_E4.mp3",
+    "sha256": "b7500bfabe71fd5828fd2275eca475433227fc1a57344e7d99464ae4430e974c",
+    "bytes": 35986
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q1.mp3",
+    "sha256": "a1fa4f0b331673cba6845a54362e73635bb1bd6a569b2dcb04870e62f64ec27d",
+    "bytes": 34103
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q2.mp3",
+    "sha256": "b7f7353c12388dd823940b56e0234710db18ca9744991ae8697dc9151ab26773",
+    "bytes": 42880
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q3.mp3",
+    "sha256": "a1926b044f039c1950ba7e265b7dfa07279366b5a56d7997b7833d3b3365a213",
+    "bytes": 52285
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q4.mp3",
+    "sha256": "cb0b36048207f0595d72ec15a62cbfe846b14158c0618e102a1ce8c5dff8feb3",
+    "bytes": 43507
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q5.mp3",
+    "sha256": "9c2defd656adffbea224a309e1b1dea8b23dccfb8c9cc979b2ded5eb1b97443a",
+    "bytes": 20938
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q6.mp3",
+    "sha256": "bd9a61274602e7d2f9c33973059262ff9b0f350577a758c6d2249da57177e9cb",
+    "bytes": 20312
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_Q7.mp3",
+    "sha256": "4f371d985b6819761eda29fb2710d76741d63d47403224448a14aa9f85ebf2f9",
+    "bytes": 32224
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_R.mp3",
+    "sha256": "66ffbe7998d6cfbf2f9554abcbe4b31ec199921040ce72686f1871264ce46e63",
+    "bytes": 73600
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_R2.mp3",
+    "sha256": "48477c3d9909816f091c7d67a201025bd7e5dcc15e9f049b9088d646451d2d83",
+    "bytes": 40374
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_R3.mp3",
+    "sha256": "62f312ad98bed144e1c6f4106bc148a918ff91df312db9084c39e261ce252157",
+    "bytes": 123130
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_T1.mp3",
+    "sha256": "5e7c853894f911fadd4be54ffccdfc04c9e9f105971169d7cf5fb47738978fc7",
+    "bytes": 105575
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_T2.mp3",
+    "sha256": "b2e46b24c3e62003ceee7f9a325a5343239365d8c8d38820b79e3ddb8686a489",
+    "bytes": 98052
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_T3.mp3",
+    "sha256": "3d89d96ace10854ab37162c78036916788fc822ac202342078e4d1782732c36a",
+    "bytes": 113099
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_T4.mp3",
+    "sha256": "ea838ec145dbc2b75b4a2948ccab787cd4c20d991a709a73aa3865638f40e48b",
+    "bytes": 126891
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_T5.mp3",
+    "sha256": "99d1bb54d87c9e0ff7245d9a95543cf6563dc9a98c8a19eb7a73b920d2dcea0a",
+    "bytes": 35358
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_W.mp3",
+    "sha256": "7fa4db39fb1d808b485a3e17a66be6ddc7b3647355427105d886e25660d51365",
+    "bytes": 62316
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_W2.mp3",
+    "sha256": "1be7b15f3154853336140fedcd6f0d3bd9265fae75a9c1233c8f16cf6db2befe",
+    "bytes": 16551
+  },
+  {
+    "importPath": "war3mapImported\\Hero_Frostnova_W3.mp3",
+    "sha256": "19b80a6251abda0d9c46c61c163739655d97c05649b3009573643d43b734e035",
+    "bytes": 46643
+  }
+]

@@ -81,7 +81,7 @@ class AreaSource(unittest.TestCase):
         self.data.mecha='|cffffcc00Radius:|r 1000|nHeals allies'
         self.assertEqual(self.radius(),1000)
         self.heroLevel=35;self.assertEqual(self.radius(),1250)
-        self.assertIn('builder.addMechanic(PreviewMechanic(hero, data, lvl))',self.source)
+        self.assertIn('set mechanic = PreviewMechanic(hero, data, lvl)',self.source)
 
     def test_unregistered_unlearned_and_passive_gates(self):
         self.level=0;self.assertEqual(self.radius(),0)
@@ -108,7 +108,7 @@ class AreaSource(unittest.TestCase):
         self.level=5;self.assertEqual(self.radius(),1800)
         self.hs[(7,'stark t')]=1;self.castRange=2100
         self.assertEqual(self.radius(),2100)
-        self.assertIn('builder.addRange(FormatReal(previewRadius))',self.source)
+        self.assertIn('builder.addRange(FormatRangePair(clickRange, previewRadius))',self.source)
         self.assertIn('set rangeChanged = CheckAndSaveRangeState(u)',self.source)
 
     def test_examples_are_inferred_from_real_object_data_not_an_exception_table(self):

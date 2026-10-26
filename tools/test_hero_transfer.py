@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from test_crocodile import JassState
 
 import hero_transfer as transfer
 
@@ -50,7 +51,7 @@ class HeroTransferTests(unittest.TestCase):
     def run_transfer(self, source=None, dry_run=False):
         args = ["hero_transfer", "--workspace", str(self.workspace), "--hero-file",
                 str(source or self.source), "--category", "4", "--difficulty", "1",
-                "--items", "default", "--yes"]
+                "--items", "default", "--buyer-name", "FixtureBuyer", "--yes"]
         if dry_run:
             args.append("--dry-run")
         self.output = io.StringIO()
@@ -61,6 +62,98 @@ class HeroTransferTests(unittest.TestCase):
     def snapshot(self):
         return {path.relative_to(self.workspace): path.read_bytes()
                 for path in self.workspace.rglob("*") if path.is_file()}
+
+    def test_transfer_rotates_ban_immunity_and_priority_buyer(self):
+        self.assertEqual(0, self.run_transfer())
+        text = (self.workspace/"triggers/WOS_Start/WoS_Pick_Init.j").read_text('utf-8-sig')
+        self.assertIn(f"integer BanImmuneHero1 = {HERO}_ID", text)
+        self.assertIn('integer BanImmuneHero2 = 0', text)
+        self.assertIn('integer BanImmuneHero3 = 0', text)
+        priority = next(line for line in text.splitlines() if '"ThunderGear"' in line and 'FramePlayerFirstName[i]' in line)
+        self.assertIn('"FixtureBuyer"', priority)
+        self.assertIn(f"PlayerFrameCurrent_ID[i] == {HERO}_ID", priority)
+        self.assertNotIn('"Hansel"', priority)
+        updated = transfer.update_new_hero_access(text, "NextFixture", 'NewBuyer')
+        self.assertIn("integer BanImmuneHero1 = NextFixture_ID", updated)
+        self.assertNotIn('"FixtureBuyer"', updated)
+        self.assertEqual(updated, transfer.update_new_hero_access(updated, "NextFixture", 'NewBuyer'))
+
+    def test_active_task_remembers_answers_and_builds_main_once(self):
+        config=self.workspace/'.vscode/wos-build.json'
+        config.parent.mkdir()
+        config.write_text(json.dumps({'testHero':HERO,'unrelated':'preserve'}))
+        first=['hero_transfer','--workspace',str(self.workspace),'--active-test-hero',
+            '--build-main','--category','4','--difficulty','1','--items','default',
+            '--buyer-name','FixtureBuyer','--yes']
+        with patch('sys.argv',first),patch('wos_map_workflow.build') as build,contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(0,transfer.main())
+            build.assert_called_once_with(self.workspace,'Main',no_launch=True)
+        values=json.loads(config.read_text())
+        self.assertEqual('preserve',values['unrelated'])
+        self.assertEqual('FixtureBuyer',values['heroTransferProfiles'][HERO]['buyerName'])
+        builds=(self.workspace/'triggers/WOS_Start/BuildsForChars.j').read_text('utf-8-sig')
+        self.assertIn(f'if WOS_EnableTestHero or WOS_TestHeroId != {HERO}_ID then',builds)
+        self.assertIn(f'integer WOS_TestHeroId = {HERO}_ID',builds)
+        self.assertEqual(self.payload,self.destination.read_bytes())
+        second=['hero_transfer','--workspace',str(self.workspace),'--active-test-hero','--build-main','--yes']
+        before=self.snapshot()
+        with patch('sys.argv',second),patch('wos_map_workflow.build') as build,contextlib.redirect_stdout(io.StringIO()),patch('builtins.input',side_effect=AssertionError('Unexpected repeated prompt')):
+            self.assertEqual(0,transfer.main())
+            build.assert_called_once()
+        self.assertEqual(before,self.snapshot())
+
+    def test_test_hero_gate_retains_off_flag_and_rotates_without_duplicates(self):
+        original=(ROOT/'triggers/WOS_Start/BuildsForChars.j').read_text('utf-8-sig')
+        original=original.replace('WOS_EnableTestHero = true','WOS_EnableTestHero = false')
+        gated=transfer.test_hero_gate(original,'Frostnova')
+        self.assertEqual(gated,transfer.test_hero_gate(gated,'Frostnova'))
+        self.assertIn('constant boolean WOS_EnableTestHero = false',gated)
+        self.assertNotIn('WOS_FrostnovaMainPick',gated)
+        self.assertIn('if WOS_EnableTestHero or WOS_TestHeroId != Frostnova_ID then',gated)
+        on=gated.replace('WOS_EnableTestHero = false','WOS_EnableTestHero = true')
+        self.assertIn('WOS_EnableTestHero = true',transfer.test_hero_gate(on,'Frostnova'))
+
+    def test_repeat_transfer_activates_a_previously_empty_voice_resolver(self):
+        source='function WOS_HeroVoicePath takes integer heroId, integer i returns string\n    if heroId == 0 then\n        return ""\n    // HERO TRANSFER: Frostnova / OnClick sounds\n    elseif heroId == Frostnova_ID then\n        return ""\n    endif\n    return ""\nendfunction\n'
+        updated=transfer.add_picker_sounds(source,'Frostnova',0,3)
+        self.assertIn('Hero_Frostnova_Pick',updated)
+        self.assertIn('I2S(i + 1)',updated)
+        self.assertEqual(updated,transfer.add_picker_sounds(updated,'Frostnova',0,3))
+
+    def test_real_frostnova_catalog_guard_hides_only_selected_test_hero(self):
+        source=(ROOT/'triggers/WOS_Start/BuildsForChars.j').read_text('utf-8-sig')
+        start=source.index('    if WOS_EnableTestHero or WOS_TestHeroId != Frostnova_ID then')
+        end=source.index('    endif',start)+len('    endif')
+        vm=JassState('function TestHeroCatalog takes nothing returns nothing\n'+source[start:end]+'\nendfunction')
+        vm.g.update(Hero_ID0=[0]*10,Hero_ID0_Dummy=[None]*10,MaxHeroes=0,
+            WOS_EnableTestHero=False,WOS_TestHeroId=123,Frostnova_ID=123,
+            CreateUnit=lambda *args:object(),Player=lambda p:p,GetRectCenterX=lambda r:0,GetRectCenterY=lambda r:0,
+            gg_rct_Test=object(),ShowUnit=lambda *args:None,UnitAddAbility=lambda *args:None,
+            **{f'Frostnova{slot}_ID':i for i,slot in enumerate('QWERTF')})
+        for enabled,identity,expected in [(False,123,0),(True,123,1),(False,456,1)]:
+            vm.g.update(WOS_EnableTestHero=enabled,WOS_TestHeroId=identity,MaxHeroes=0,n=0)
+            vm.run('TestHeroCatalog')
+            self.assertEqual(expected,vm.g['MaxHeroes'])
+
+    def test_active_dry_run_changes_nothing_and_never_builds(self):
+        config=self.workspace/'.vscode/wos-build.json';config.parent.mkdir()
+        config.write_text(json.dumps({'testHero':HERO}))
+        before=self.snapshot()
+        args=['hero_transfer','--workspace',str(self.workspace),'--active-test-hero','--build-main',
+            '--category','4','--difficulty','1','--items','default','--buyer-name','FixtureBuyer','--yes','--dry-run']
+        with patch('sys.argv',args),patch('wos_map_workflow.build') as build,contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(0,transfer.main())
+            build.assert_not_called()
+        self.assertEqual(before,self.snapshot())
+
+    def test_buyer_prompt_and_automation_require_explicit_name(self):
+        with patch('builtins.input', return_value=' Buyer '):
+            self.assertEqual('Buyer', transfer.choose_buyer_name(None))
+        with self.assertRaises(transfer.TransferError):
+            transfer.choose_buyer_name(None, automatic=True)
+        for invalid in ('', '   ', 'bad\nname'):
+            with self.assertRaises(transfer.TransferError):
+                transfer.choose_buyer_name(invalid)
 
     def test_test_source_replaces_stale_main_and_backs_it_up(self):
         self.destination.parent.mkdir()
