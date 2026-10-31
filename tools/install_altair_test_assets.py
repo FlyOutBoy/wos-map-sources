@@ -114,8 +114,8 @@ def collect(main):
             elif not texture.replace('/', '\\').casefold().startswith(('textures\\', 'ui\\')) \
                     and texture.replace('/', '\\').split('\\')[-1].casefold() in library:
                 files[texture.replace('/', '\\')] = library[texture.replace('/', '\\').split('\\')[-1].casefold()]
-    # Icons and the Hero_Altair_*.mp3 voice lines cut from the anime.
-    for path in [*ICONS.rglob('*.blp'), *ICONS.rglob('*.mp3')]:
+    # Icons, the hero model with its textures and the Hero_Altair_*.mp3 voice lines cut from the anime.
+    for path in [*ICONS.rglob('*.blp'), *ICONS.rglob('*.mdx'), *ICONS.rglob('*.mp3')]:
         files[path.relative_to(ICONS).as_posix().replace('/', '\\')] = path
     return files, missing
 

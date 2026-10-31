@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3u",
-  "source_sha256": "cd7ec62f44bfc351505e1499ca00dee6cf100c47b38fc93c45120273f9487c03",
+  "source_sha256": "586a1dd61bb5c31cdbec6da984a25224d01a172d9b6f7e2073fa49e368f5cb5e",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -1056,7 +1056,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -1528,7 +1528,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -2370,6 +2370,23 @@
             "_original_value": "orc",
             "_encoding": "utf-8",
             "_raw_base64": "b3Jj"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "umvh",
+            "hex": "756D7668"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 5.0,
+            "_original_value": 5.0,
+            "_raw_hex": "0000A040"
           },
           "sanity_check": {
             "text": "",
@@ -3377,7 +3394,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -4560,7 +4577,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -5137,7 +5154,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -5729,7 +5746,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -7215,7 +7232,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -7999,7 +8016,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -8593,7 +8610,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -9170,7 +9187,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -9747,7 +9764,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -10324,7 +10341,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -10901,7 +10918,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -12387,7 +12404,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -12964,7 +12981,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -14181,7 +14198,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -16081,7 +16098,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -19045,10 +19062,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "MetalMediumSlice",
-            "_original_value": "MetalMediumSlice",
+            "value": "",
+            "_original_value": "",
             "_encoding": "utf-8",
-            "_raw_base64": "TWV0YWxNZWRpdW1TbGljZQ=="
+            "_raw_base64": ""
           },
           "sanity_check": {
             "text": "",
@@ -19412,7 +19429,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -19459,11 +19476,91 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 125
+            "value": 725
           },
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1w",
+            "hex": "75613177"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "missile",
+            "_original_value": "missile",
+            "_encoding": "utf-8",
+            "_raw_base64": "bWlzc2lsZQ=="
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
+        },
+        {
+          "field": {
+            "text": "ua2r",
+            "hex": "75613272"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 575
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1z",
+            "hex": "7561317A"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1800
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
+        },
+        {
+          "field": {
+            "text": "umh1",
+            "hex": "756D6831"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
+        },
+        {
+          "field": {
+            "text": "uacq",
+            "hex": "75616371"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 700.0,
+            "_original_value": 700.0,
+            "_raw_hex": "00002F44"
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
           }
         }
       ],
@@ -19622,10 +19719,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "MetalMediumSlice",
-            "_original_value": "MetalMediumSlice",
+            "value": "",
+            "_original_value": "",
             "_encoding": "utf-8",
-            "_raw_base64": "TWV0YWxNZWRpdW1TbGljZQ=="
+            "_raw_base64": ""
           },
           "sanity_check": {
             "text": "",
@@ -20006,7 +20103,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -20036,11 +20133,91 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 165
+            "value": 725
           },
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1w",
+            "hex": "75613177"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "missile",
+            "_original_value": "missile",
+            "_encoding": "utf-8",
+            "_raw_base64": "bWlzc2lsZQ=="
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
+          }
+        },
+        {
+          "field": {
+            "text": "ua2r",
+            "hex": "75613272"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 575
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1z",
+            "hex": "7561317A"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1800
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
+          }
+        },
+        {
+          "field": {
+            "text": "umh1",
+            "hex": "756D6831"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
+          }
+        },
+        {
+          "field": {
+            "text": "uacq",
+            "hex": "75616371"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 700.0,
+            "_original_value": 700.0,
+            "_raw_hex": "00002F44"
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
           }
         }
       ],
@@ -20886,7 +21063,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -21497,7 +21674,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -22074,7 +22251,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -22651,7 +22828,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -23531,7 +23708,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -24093,7 +24270,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -24670,7 +24847,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -25247,7 +25424,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -26127,7 +26304,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -27056,7 +27233,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -27633,7 +27810,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -28210,7 +28387,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -28772,7 +28949,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -29349,7 +29526,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -29909,7 +30086,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -30486,7 +30663,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -32307,7 +32484,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -32884,7 +33061,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -33524,7 +33701,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -34163,7 +34340,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -34791,7 +34968,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -35671,7 +35848,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -36869,7 +37046,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -37446,7 +37623,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -38008,7 +38185,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -38871,7 +39048,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -39465,7 +39642,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -39994,7 +40171,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -40952,7 +41129,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -42507,7 +42684,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -43681,7 +43858,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -44241,7 +44418,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -44818,7 +44995,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -45427,7 +45604,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",
@@ -45929,7 +46106,7 @@
           "field_name": "Movement speed / Скорость движения",
           "type": "int",
           "data": {
-            "value": 290
+            "value": 275
           },
           "sanity_check": {
             "text": "",
@@ -46291,7 +46468,7 @@
           "field_name": "Maximum hit points / Максимум здоровья",
           "type": "int",
           "data": {
-            "value": 250
+            "value": 450
           },
           "sanity_check": {
             "text": "",

@@ -100,3 +100,5 @@ if __name__ == '__main__':
     build_checkpoint21()
     from build_hero_lock_icon import build as build_hero_lock
     build_hero_lock()
+    from build_silence_label import build as build_silence_label
+    build_silence_label()

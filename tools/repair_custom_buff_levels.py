@@ -114,7 +114,7 @@ def stage(apply=False):
         description(buff,f'Deals {level*reduction:g}% less damage to Mahoraga while adaptation is active.')
     for rank,buff in enumerate(('B01Y','B021','B022','B023','B024'),1):
         description(buff,f'Normal attacks and physical spells deal {2+rank*2}% more damage. Health regeneration is reduced by {rank*5} HP/sec.')
-    description('B01X','Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.')
+    description('B01X','Physical resistance +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.')
     description('B03D','Marked for 5 sec. Leaves ground sand while moving. All ground sand lasts 20 sec and slows by 10% / 20% / 30% at Crocodile hero levels 1 / 25 / 35.')
     description('B03E','Movement speed +80 while standing on active sand. Removed after leaving the sand.')
     description('B00K','Active healing received is reduced by 40%; mana restored is reduced by 25%.')

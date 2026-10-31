@@ -38,9 +38,25 @@ def load_source(filename):
     vm.g.setdefault('WUI_GetTopActionOwner', lambda: 'top-actions')
     vm.g.setdefault('WUI_TopShown', lambda: True)
     vm.g.setdefault('WUI_RegisterRangeCover', lambda *_: None)
+    # Hero meters redraw at most every 0.10 s of WUI_InputClock: every fixture read
+    # advances game time, so behavioural tests see each call land.
+    clock = [0.0]
+    def elapsed(_):
+        clock[0] += 1.0
+        return clock[0]
+    vm.g.setdefault('WUI_InputClock', 'wui-clock')
+    vm.g.setdefault('TimerGetElapsed', elapsed)
+    # Dual meter rows cache their last label (slot 26) next to the reals.
+    vm.g.setdefault('SaveStr', lambda table, key, child, v: table.update({(key, child, 's'): v}))
+    vm.g.setdefault('LoadStr', lambda table, key, child: table.get((key, child, 's'), ''))
     # Shop: round-gated Scroll of Mastery and refund credit of consumed components.
     if filename == 'WoS_Shop_Init.j':
         vm.g.update(ScrollOfMastery_ID=-404, ScrollOfMastery_Round=15, ShopCraftRefundCredit=0, ShopCraftTeaCharges=0)
+        # Item rawcode globals (Kusanagi element swap, 2026-10-27 bans/recipes) as the VM spells literals.
+        for items_file in ('Items/Items.j', 'Items/ItemsAnime.j'):
+            items_text = (ROOT / 'triggers' / items_file).read_text(encoding='utf-8-sig')
+            for name, code in re.findall(r"^\s+integer (\w+_ID) = '(\w{4})'", items_text, re.M):
+                vm.g.setdefault(name, code)
         vm.g.setdefault('CurrentRound', 1)
         vm.g.setdefault('TestMode', False)
         vm.g['ShopMarkFullRefund'] = lambda *_: None
@@ -105,6 +121,8 @@ def load_source(filename):
     # External native-portrait owner; tests that exercise it install real helpers.
     vm.g.setdefault('WUI_ShowNativePortrait', lambda *_: None)
     vm.g.setdefault('WUI_SetPortraitInvisible', lambda *_: None)
+    vm.g.setdefault('WUI_SetPortraitSilenced', lambda *_: None)
+    vm.g.setdefault('WUI_UnitSilenced', lambda *_: False)
     vm.g.setdefault('WUI_BindNativePortrait', lambda *_: 'native-portrait')
     vm.g.setdefault('WUI_PinNativePortrait', lambda *_: None)
     vm.g.setdefault('BlzGetMouseScreenPosX', lambda: 2.0)

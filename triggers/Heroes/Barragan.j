@@ -1178,7 +1178,7 @@ library BarraganSpells uses GearSystems
                         set r2 = 0.05
                         call DecorRemove(c, x, y, aoe + 200, 35)
                         if check == 0 then
-                            call SetMpCurrent(c, scale)
+                            call SetMpCurrentQuiet(c, scale)
                         endif
                         call GroupEnumUnitsInRange(g, x, y, aoe, null)
                         loop

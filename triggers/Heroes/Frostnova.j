@@ -12,14 +12,14 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         // ==================== Q: Ice Javelins ====================
         integer FrostnovaQ_ID = 'A116'
         real FrostnovaQ_DamageIntBase = 1.0
-        real FrostnovaQ_DamageIntStep = 0.5
+        real FrostnovaQ_DamageIntStep = 0.35
         real FrostnovaQ_DamageStatic = 75.0
         boolean FrostnovaQ_IsInvul = false
         real FrostnovaQ_Range = 1500.0
         real FrostnovaQ_RangeStep = 50.0
         real FrostnovaQ_RangeBonus35 = 150.0
         real FrostnovaQ_Speed = 2310.0
-        real FrostnovaTQ_SpeedMultiplier = 1.30
+        real FrostnovaTQ_SpeedMultiplier = 1.15
         real FrostnovaQ_DecorDamage = 20.0
         real FrostnovaQ_Aoe = 150.0
         real FrostnovaQ_Recharge = 17.0
@@ -58,7 +58,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         real FrostnovaW_DecorDamage = 50.0
         real FrostnovaW_Range = 1600.0
         real FrostnovaW_RangeBonus35 = 150.0
-        real FrostnovaW_Speed = 1430.0
+        real FrostnovaW_Speed = 1540.0
         real FrostnovaW_SpeedBonus25 = 1.20
         real FrostnovaW_Aoe = 300.0
         real FrostnovaW_StartAoe = 80.0
@@ -141,7 +141,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         real FrostnovaT_CooldownReduction = 10.0
         integer FrostnovaT_ShieldBuffID = 'B0F3'
         integer FrostnovaT_ShieldAbilityID = 'A1F2'
-        real FrostnovaT_ShieldDuration = 4.0 // Native A1F2 duration; the "Shielded" title comes from Starts' full-shield visual.
+        real FrostnovaT_ShieldDuration = 2.0 // Native A1F2 duration; the "Shielded" title comes from Starts' full-shield visual.
         boolean FrostnovaT_IsInvul = false
         string FrostnovaT_Model = "war3mapImported\\wos_file00000456.mdx"
 
@@ -163,8 +163,8 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         integer FrostnovaF_RequiredLevel = 12
         real FrostnovaF_Duration = 4.0
         real FrostnovaTF_Duration = 5.0
-        real FrostnovaTF_DamageInt = 0.15
-        real FrostnovaTF_DamageBonus35 = 0.25 // Flat INT multiplier per tick, not per stack.
+        real FrostnovaTF_DamageInt = 0.12
+        real FrostnovaTF_DamageBonus35 = 0.12 // Flat INT multiplier per tick, not per stack.
         real FrostnovaF_ApplyGrace = 0.15 // Native Slow order may resolve after Apply returns.
 
         // ==================== G: no ability assigned ====================
@@ -1612,7 +1612,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
                     call GearTimer03Release()
                 else
                     if state.voiceRemaining > 0.0001 then
-                        call WUI_HeroProgressDualText(hero, FrostnovaT_ID, "Winter's Scar", state.winterRemaining, FrostnovaT_Duration, state.voiceRemaining, state.voiceDuration, "|cffffffffShield: " + R2SW(state.voiceRemaining, 0, 1) + "s|r")
+                        call WUI_HeroProgressDualText(hero, FrostnovaT_ID, "Winter's Scar", state.winterRemaining, FrostnovaT_Duration, state.shieldRemaining, FrostnovaT_ShieldDuration, "|cffffffffShield: " + R2SW(state.shieldRemaining, 0, 1) + "s|r")
                     else
                         call WUI_HeroProgressDualText(hero, FrostnovaT_ID, "Winter's Scar", state.winterRemaining, FrostnovaT_Duration, 0.0, 1.0, "|cffffffffShield Ready|r")
                     endif
@@ -1646,7 +1646,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
             call BlzStartUnitAbilityCooldown(hero, FrostnovaW_ID, RMaxBJ(0.0, BlzGetUnitAbilityCooldownRemaining(hero, FrostnovaW_ID)-FrostnovaT_CooldownReduction))
             call BlzStartUnitAbilityCooldown(hero, FrostnovaE_ID, RMaxBJ(0.0, BlzGetUnitAbilityCooldownRemaining(hero, FrostnovaE_ID)-FrostnovaT_CooldownReduction))
             call BlzStartUnitAbilityCooldown(hero, FrostnovaR_ID, RMaxBJ(0.0, BlzGetUnitAbilityCooldownRemaining(hero, FrostnovaR_ID)-FrostnovaT_CooldownReduction))
-            call WUI_HeroProgressDualText(hero, FrostnovaT_ID, "Winter's Scar", state.winterRemaining, FrostnovaT_Duration, state.voiceRemaining, state.voiceDuration, "|cffffffffShield: " + R2SW(state.voiceRemaining, 0, 1) + "s|r")
+            call WUI_HeroProgressDualText(hero, FrostnovaT_ID, "Winter's Scar", state.winterRemaining, FrostnovaT_Duration, state.shieldRemaining, FrostnovaT_ShieldDuration, "|cffffffffShield: " + R2SW(state.shieldRemaining, 0, 1) + "s|r")
             call SpellStacksFill(hero)
             set state.qCastDelay = 0.0
             call SetAnimIndex(hero,0.03,6)

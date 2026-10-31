@@ -674,7 +674,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                 set this = m_BrandishE[i]
                 if SpellBoolCaster(td) and GetUnitAbilityLevel(td, check) > 0 and r < rmax and not CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) then
                     set r = r + 1.0
-                    call SetHpCurrent2(c, td, heal)
+                    call SetHpCurrent2Quiet(c, td, heal)
                 else
                     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_eff (119)brand.mdx", td, "chest"))
                     set c = null

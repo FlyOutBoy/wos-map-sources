@@ -143,7 +143,7 @@ endif
 if id == 'I01B' then
 endif
 if id == 'I011' then
-call AddHpRegen(c,20,true) 
+call AddHpRegen(c,15,true) 
 endif
 if id == 'I020' then
 call AddHpRegen(c,15,true) 
@@ -152,10 +152,10 @@ if id == 'I021' then
 //call AddMpRegen(c,4,true) 
 endif
 if id == 'I024' then
-call AddHpRegen(c,20,true) 
+call AddHpRegen(c,15,true) 
 endif
 if id == 'I025' then
-call AddHpRegen(c,20,true) 
+call AddHpRegen(c,15,true) 
 endif
 if id == 'I00D' then
 call AddMpRegen(c,2,true) 
@@ -185,8 +185,13 @@ call AddSpellLevel(c,'A01C',7,true)
     endif
 if id == 'I00T' then
 endif
+if id == Tekkai_ID then
+call AddHpRegen(c,Tekkai_HpRegen,true)
+endif
 if id == 'I00E' then 
 call AddSpellLevel(c,'A01C',10,true)
+call AddHpRegen(c,Incursio_HpRegen,true)
+call AddMpRegen(c,Incursio_MpRegen,true)
 endif
 if id == 'I007' then 
 call AddSpellLevel(c,'A01C',5,true)
@@ -253,6 +258,16 @@ call IsItemInInventory42(c,'I024','I025','ZZZZ')
 call IsItemInInventory42(c,'I00E','I00O','I01N')
 call IsItemInInventory42(c,'I00J','I01M','ZZZZ')
 call IsItemInInventory42(c,'I00R','I01L','ZZZZ')
+call IsItemInInventory42(c,'I00V','I02A','ZZZZ') // Bunshin Scroll / Turbo Neko
+call IsItemInInventory42(c,ArmamentHaki_ID,ArmamentHakiEvolved_ID,'ZZZZ')
+call IsItemInInventory42(c,'I00Z',NaofumiShieldEvolved_ID,'ZZZZ')
+call IsItemInInventory42(c,'I012',FairyTailEvolved_ID,'ZZZZ')
+call IsItemInInventory42(c,'I02H',YataMirrorEvolved_ID,'ZZZZ')
+call IsItemInInventory42(c,'I040',PhilosopherEvolved_ID,'ZZZZ')
+call IsItemInInventory42(c,RyujinJakkaEvolved_ID,NejibanaEvolved_ID,GonryomaruEvolved_ID)
+call IsItemInInventory42(c,'I01Q',NejibanaEvolved_ID,GonryomaruEvolved_ID)
+call IsItemInInventory42(c,'I01X',RyujinJakkaEvolved_ID,GonryomaruEvolved_ID)
+call IsItemInInventory42(c,'I01Y',RyujinJakkaEvolved_ID,NejibanaEvolved_ID)
 call IsItemInInventory42(c,'I02T','I03F','I03E')
 call IsItemInInventory42(c,KusanagiFire_ID,KusanagiWater_ID,KusanagiElectro_ID) // one elemental Kusanagi
 

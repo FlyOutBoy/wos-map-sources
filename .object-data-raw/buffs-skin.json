@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "82fb3e67afae01fcc3e35afe480fe8b231ef156fe21b60f4b9c1f7ef6749c7d7",
+  "source_sha256": "1c2ed462dc7db731f30805d03b1d06ffda115dc4c2b8f27df33362d4d834c328",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -1966,12 +1966,12 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_12658",
-            "_original_value": "TRIGSTR_12658",
+            "value": "TRIGSTR_9213",
+            "_original_value": "TRIGSTR_9213",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xMjY1OA==",
-            "resolved_value": "Void Instability",
-            "_original_resolved_value": "Void Instability"
+            "_raw_base64": "VFJJR1NUUl85MjEz",
+            "resolved_value": "Void Aura",
+            "_original_resolved_value": "Void Aura"
           },
           "sanity_check": {
             "text": "",
@@ -1986,12 +1986,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_4407",
-            "_original_value": "TRIGSTR_4407",
+            "value": "TRIGSTR_9214",
+            "_original_value": "TRIGSTR_9214",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl80NDA3",
-            "resolved_value": "Gain Additional physical and magic resistance",
-            "_original_resolved_value": "Gain Additional physical and magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjE0",
+            "resolved_value": "Allies within 1400 radius gain 5% physical resistance and 5% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 5% physical resistance and 5% magic resistance."
           },
           "sanity_check": {
             "text": "",
@@ -2434,12 +2434,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1897",
-            "_original_value": "TRIGSTR_1897",
+            "value": "TRIGSTR_9215",
+            "_original_value": "TRIGSTR_9215",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODk3",
-            "resolved_value": "Unit gain 3 armor and 4% magic resistance",
-            "_original_resolved_value": "Unit gain 3 armor and 4% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjE1",
+            "resolved_value": "Unit gain 3 physical resistance and 4% magic resistance",
+            "_original_resolved_value": "Unit gain 3 physical resistance and 4% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -2566,12 +2566,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1898",
-            "_original_value": "TRIGSTR_1898",
+            "value": "TRIGSTR_9218",
+            "_original_value": "TRIGSTR_9218",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODk4",
-            "resolved_value": "Unit gain 6 armor and 8% magic resistance",
-            "_original_resolved_value": "Unit gain 6 armor and 8% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjE4",
+            "resolved_value": "Unit gain 6 physical resistance and 8% magic resistance",
+            "_original_resolved_value": "Unit gain 6 physical resistance and 8% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -2698,12 +2698,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1899",
-            "_original_value": "TRIGSTR_1899",
+            "value": "TRIGSTR_9221",
+            "_original_value": "TRIGSTR_9221",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xODk5",
-            "resolved_value": "Unit gain 9 armor and 12% magic resistance",
-            "_original_resolved_value": "Unit gain 9 armor and 12% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjIx",
+            "resolved_value": "Unit gain 9 physical resistance and 12% magic resistance",
+            "_original_resolved_value": "Unit gain 9 physical resistance and 12% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -2830,12 +2830,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1900",
-            "_original_value": "TRIGSTR_1900",
+            "value": "TRIGSTR_9238",
+            "_original_value": "TRIGSTR_9238",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTAw",
-            "resolved_value": "Unit gain 12 armor and 16% magic resistance",
-            "_original_resolved_value": "Unit gain 12 armor and 16% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjM4",
+            "resolved_value": "Unit gain 12 physical resistance and 16% magic resistance",
+            "_original_resolved_value": "Unit gain 12 physical resistance and 16% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -2962,12 +2962,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1902",
-            "_original_value": "TRIGSTR_1902",
+            "value": "TRIGSTR_9241",
+            "_original_value": "TRIGSTR_9241",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTAy",
-            "resolved_value": "Unit gain 15 armor and 20% magic resistance",
-            "_original_resolved_value": "Unit gain 15 armor and 20% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjQx",
+            "resolved_value": "Unit gain 15 physical resistance and 20% magic resistance",
+            "_original_resolved_value": "Unit gain 15 physical resistance and 20% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -3498,12 +3498,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1903",
-            "_original_value": "TRIGSTR_1903",
+            "value": "TRIGSTR_9253",
+            "_original_value": "TRIGSTR_9253",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTAz",
-            "resolved_value": "Unit gain 18 armor and 24% magic resistance",
-            "_original_resolved_value": "Unit gain 18 armor and 24% magic resistance"
+            "_raw_base64": "VFJJR1NUUl85MjUz",
+            "resolved_value": "Unit gain 18 physical resistance and 24% magic resistance",
+            "_original_resolved_value": "Unit gain 18 physical resistance and 24% magic resistance"
           },
           "sanity_check": {
             "text": "",
@@ -7686,12 +7686,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7460",
-            "_original_value": "TRIGSTR_7460",
+            "value": "TRIGSTR_9254",
+            "_original_value": "TRIGSTR_9254",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83NDYw",
-            "resolved_value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.",
-            "_original_resolved_value": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank."
+            "_raw_base64": "VFJJR1NUUl85MjU0",
+            "resolved_value": "Physical resistance +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.",
+            "_original_resolved_value": "Physical resistance +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank."
           },
           "sanity_check": {
             "text": "B01X",
@@ -17060,6 +17060,1782 @@
         }
       ],
       "display_name": "Core Drill Magic 5"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B057",
+        "hex": "42303537"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8747",
+            "_original_value": "TRIGSTR_8747",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzQ3",
+            "resolved_value": "Armament Haki",
+            "_original_resolved_value": "Armament Haki"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8748",
+            "_original_value": "TRIGSTR_8748",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzQ4",
+            "resolved_value": "Immune to debuffs.",
+            "_original_resolved_value": "Immune to debuffs."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ArmamentHakiEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ArmamentHakiEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0FybWFtZW50SGFraUV2b2x2ZWQuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B058",
+        "hex": "42303538"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8749",
+            "_original_value": "TRIGSTR_8749",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzQ5",
+            "resolved_value": "Sukuna's Curse",
+            "_original_resolved_value": "Sukuna's Curse"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8750",
+            "_original_value": "TRIGSTR_8750",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzUw",
+            "resolved_value": "Cannot restore HP (healing and HP regeneration -100%); slowed by 15%.",
+            "_original_resolved_value": "Cannot restore HP (healing and HP regeneration -100%); slowed by 15%."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00003018.mdx",
+            "_original_value": "war3mapImported\\wos_file00003018.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDMwMTgubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_SukunaFinger.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_SukunaFinger.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1N1a3VuYUZpbmdlci5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B059",
+        "hex": "42303539"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8751",
+            "_original_value": "TRIGSTR_8751",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzUx",
+            "resolved_value": "Five Elements Seal: Mana",
+            "_original_resolved_value": "Five Elements Seal: Mana"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8752",
+            "_original_value": "TRIGSTR_8752",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzUy",
+            "resolved_value": "Mana regeneration and restoration -100%. Cannot be dispelled.",
+            "_original_resolved_value": "Mana regeneration and restoration -100%. Cannot be dispelled."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0ZpdmVFbGVtZW50c1NlYWwuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05A",
+        "hex": "42303541"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8753",
+            "_original_value": "TRIGSTR_8753",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzUz",
+            "resolved_value": "Tekkai",
+            "_original_resolved_value": "Tekkai"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8754",
+            "_original_value": "TRIGSTR_8754",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzU0",
+            "resolved_value": "Blocks basic attack damage and all on-hit effects.",
+            "_original_resolved_value": "Blocks all damage from basic attacks."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002838_p.mdx",
+            "_original_value": "war3mapImported\\wos_file00002838_p.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDI4MzhfcC5tZHg="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Tekkai.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Tekkai.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1Rla2thaS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05B",
+        "hex": "42303542"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8757",
+            "_original_value": "TRIGSTR_8757",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzU3",
+            "resolved_value": "Will of D.",
+            "_original_resolved_value": "Will of D."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8758",
+            "_original_value": "TRIGSTR_8758",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzU4",
+            "resolved_value": "HP cannot drop below 1.",
+            "_original_resolved_value": "HP cannot drop below 1."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_WillOfD.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_WillOfD.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1dpbGxPZkQuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05C",
+        "hex": "42303543"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8765",
+            "_original_value": "TRIGSTR_8765",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzY1",
+            "resolved_value": "Kairoseki",
+            "_original_resolved_value": "Kairoseki"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8766",
+            "_original_value": "TRIGSTR_8766",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzY2",
+            "resolved_value": "Deals 18% less damage.",
+            "_original_resolved_value": "Deals 18% less damage."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Kairoseki.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Kairoseki.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0thaXJvc2VraS5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05D",
+        "hex": "42303544"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8767",
+            "_original_value": "TRIGSTR_8767",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84NzY3",
+            "resolved_value": "Ice Coffin",
+            "_original_resolved_value": "Ice Coffin"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8771",
+            "_original_value": "TRIGSTR_8771",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzcx",
+            "resolved_value": "Sealed in ice: paused and invulnerable.",
+            "_original_resolved_value": "Sealed in ice: paused and invulnerable."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_IceCoffin.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_IceCoffin.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0ljZUNvZmZpbi5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05E",
+        "hex": "42303545"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8790",
+            "_original_value": "TRIGSTR_8790",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzkw",
+            "resolved_value": "Chogurt",
+            "_original_resolved_value": "Chogurt"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8793",
+            "_original_value": "TRIGSTR_8793",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzkz",
+            "resolved_value": "+8 mana regeneration.",
+            "_original_resolved_value": "+8 mana regeneration."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Chogurt_Evolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Chogurt_Evolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0Nob2d1cnRfRXZvbHZlZC5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B05F",
+        "hex": "42303546"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8794",
+            "_original_value": "TRIGSTR_8794",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzk0",
+            "resolved_value": "Mirror of Yata",
+            "_original_resolved_value": "Mirror of Yata"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8795",
+            "_original_value": "TRIGSTR_8795",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzk1",
+            "resolved_value": "Reflects 75% of damage taken.",
+            "_original_resolved_value": "Reflects 75% of damage taken."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_zdgq.mdx",
+            "_original_value": "war3mapImported\\wos_zdgq.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc196ZGdxLm1keA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorYataEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorYataEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX01pcnJvcllhdGFFdm9sdmVkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B060",
+        "hex": "42303630"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8796",
+            "_original_value": "TRIGSTR_8796",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84Nzk2",
+            "resolved_value": "Philosopher's Stone",
+            "_original_resolved_value": "Philosopher's Stone"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8801",
+            "_original_value": "TRIGSTR_8801",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84ODAx",
+            "resolved_value": "Restores an additional 18% of damage dealt as HP.",
+            "_original_resolved_value": "Restores an additional 18% of damage dealt as HP."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhilosopherStoneEvolved.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhilosopherStoneEvolved.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1BoaWxvc29waGVyU3RvbmVFdm9sdmVkLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B061",
+        "hex": "42303631"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8803",
+            "_original_value": "TRIGSTR_8803",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84ODAz",
+            "resolved_value": "Five Elements Seal: Lock",
+            "_original_resolved_value": "Five Elements Seal: Lock"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_8804",
+            "_original_value": "TRIGSTR_8804",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl84ODA0",
+            "resolved_value": "Removing this seal or casting an ability silences for 2 sec.",
+            "_original_resolved_value": "Removing this seal or casting an ability silences for 2 sec."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapImported\\wos_file00002273.mdx",
+            "_original_value": "war3mapImported\\wos_file00002273.mdx",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19maWxlMDAwMDIyNzMubWR4"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0ZpdmVFbGVtZW50c1NlYWwuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B062",
+        "hex": "42303632"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9257",
+            "_original_value": "TRIGSTR_9257",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjU3",
+            "resolved_value": "Mana Ascension",
+            "_original_resolved_value": "Mana Ascension"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9258",
+            "_original_value": "TRIGSTR_9258",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjU4",
+            "resolved_value": "Nearby Inori in T2: -10% physical resistance and -10% magic resistance.",
+            "_original_resolved_value": "Nearby Inori in T2: -10% physical resistance and -10% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX1QyLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9259",
+            "_original_value": "TRIGSTR_9259",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjU5",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B063",
+        "hex": "42303633"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9260",
+            "_original_value": "TRIGSTR_9260",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjYw",
+            "resolved_value": "Return by Death",
+            "_original_resolved_value": "Return by Death"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9261",
+            "_original_value": "TRIGSTR_9261",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjYx",
+            "resolved_value": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return.",
+            "_original_resolved_value": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ReturnByDeath.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ReturnByDeath.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1JldHVybkJ5RGVhdGguYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B064",
+        "hex": "42303634"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9262",
+            "_original_value": "TRIGSTR_9262",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjYy",
+            "resolved_value": "Void Aura",
+            "_original_resolved_value": "Void Aura"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9269",
+            "_original_value": "TRIGSTR_9269",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MjY5",
+            "resolved_value": "Allies within 1400 radius gain 1% physical resistance and 5% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 1% physical resistance and 5% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX0UuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9277",
+            "_original_value": "TRIGSTR_9277",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjc3",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B065",
+        "hex": "42303635"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9280",
+            "_original_value": "TRIGSTR_9280",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjgw",
+            "resolved_value": "Void Aura",
+            "_original_resolved_value": "Void Aura"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9281",
+            "_original_value": "TRIGSTR_9281",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjgx",
+            "resolved_value": "Allies within 1400 radius gain 2% physical resistance and 5% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 2% physical resistance and 5% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX0UuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9282",
+            "_original_value": "TRIGSTR_9282",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjgy",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B066",
+        "hex": "42303636"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9283",
+            "_original_value": "TRIGSTR_9283",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjgz",
+            "resolved_value": "Void Aura",
+            "_original_resolved_value": "Void Aura"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9284",
+            "_original_value": "TRIGSTR_9284",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjg0",
+            "resolved_value": "Allies within 1400 radius gain 3% physical resistance and 5% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 3% physical resistance and 5% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX0UuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9286",
+            "_original_value": "TRIGSTR_9286",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjg2",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B067",
+        "hex": "42303637"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9287",
+            "_original_value": "TRIGSTR_9287",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjg3",
+            "resolved_value": "Void Aura",
+            "_original_resolved_value": "Void Aura"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9288",
+            "_original_value": "TRIGSTR_9288",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjg4",
+            "resolved_value": "Allies within 1400 radius gain 4% physical resistance and 5% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 4% physical resistance and 5% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX0UuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9289",
+            "_original_value": "TRIGSTR_9289",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjg5",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B068",
+        "hex": "42303638"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9296",
+            "_original_value": "TRIGSTR_9296",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjk2",
+            "resolved_value": "Void Aura (T1)",
+            "_original_resolved_value": "Void Aura (T1)"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9297",
+            "_original_value": "TRIGSTR_9297",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85Mjk3",
+            "resolved_value": "Allies within 1400 radius gain 10% physical resistance and 10% magic resistance.",
+            "_original_resolved_value": "Allies within 1400 radius gain 10% physical resistance and 10% magic resistance."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_original_value": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "QWJpbGl0aWVzXFNwZWxsc1xPdGhlclxHZW5lcmFsQXVyYVRhcmdldFxHZW5lcmFsQXVyYVRhcmdldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5IZXJvX0lub3JpX0UuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnsf",
+            "hex": "666E7366"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_9300",
+            "_original_value": "TRIGSTR_9300",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl85MzAw",
+            "resolved_value": "Inori",
+            "_original_resolved_value": "Inori"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
     }
   ]
 }

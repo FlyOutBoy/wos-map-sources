@@ -295,7 +295,7 @@ library ErzaESpells uses GearSystems, ErzaTSpells
                     if r == Erza3W_AbilityDelay then
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
-                        call SetMpCurrent(c, r5)
+                        call SetMpCurrentQuiet(c, r5)
                         call VisionTimed(GetOwningPlayer(c), x, y, 750, rmax+1.5)
                         call UnitRemoveBuffsEx(c, false, true, true, true, true, true, true)
                         call MakeSound("war3mapImported\\Hero_Erza3_W3")

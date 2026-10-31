@@ -537,7 +537,7 @@ library ErzaG2Spells uses GearSystems
                     endif
                     if r2 > 0.15 then
                         set r2 = 0
-                        call SetMpCurrent(c,r5)
+                        call SetMpCurrentQuiet(c,r5)
                         call DecorRemove(c,x,y, aoe,20)
                         call GroupClear( g )
                         call GroupEnumUnitsInRange( g , x, y , aoe , NoDecor_Cond)

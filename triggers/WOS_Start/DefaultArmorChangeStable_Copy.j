@@ -718,8 +718,10 @@ private function UNITSTAT_Render takes unit selected, integer pid returns nothin
     call WUI_ShowNativePortrait(readable)
     if readable then
         call WUI_SetPortraitInvisible(WUI_UnitHasInvisibility(selected))
+        call WUI_SetPortraitSilenced(WUI_UnitSilenced(selected))
     else
         call WUI_SetPortraitInvisible(false)
+        call WUI_SetPortraitSilenced(false)
     endif
     call WUI_ShowHeroIndicator(readable and selected == Hero[pid] and GetHeroSkillPoints(selected) > 0)
     call WUI_ShowNativeBuffs(readable)

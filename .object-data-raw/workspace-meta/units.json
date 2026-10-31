@@ -3832,6 +3832,19 @@
           "variation": null,
           "data_pointer": null
         },
+        "field_umvh": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 4,
+            "modification_index": 12
+          },
+          "field_id": "umvh",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
         "field_upgr": {
           "source": {
             "file": "war3map.w3u",
@@ -22010,6 +22023,19 @@
           "variation": null,
           "data_pointer": null
         },
+        "weapon_bf_attack_projectile_homing_enabled": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 38
+          },
+          "field_id": "umh1",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
         "weapon_if_attack_targets_allowed": {
           "source": {
             "file": "war3map.w3u",
@@ -22031,6 +22057,32 @@
             "modification_index": 8
           },
           "field_id": "ucs1",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "weapon_rf_attack_projectile_speed": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 37
+          },
+          "field_id": "ua1z",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "weapon_sf_attack_projectile_art": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 15
+          },
+          "field_id": "ua1m",
           "type": "string",
           "level": null,
           "variation": null,
@@ -22070,6 +22122,19 @@
             "modification_index": 34
           },
           "field_id": "ua1r",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "attack_2_range": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 36
+          },
+          "field_id": "ua2r",
           "type": "int",
           "level": null,
           "variation": null,
@@ -22123,6 +22188,19 @@
           },
           "field_id": "ua1c",
           "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_ua1w": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 35
+          },
+          "field_id": "ua1w",
+          "type": "string",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -22201,6 +22279,19 @@
           },
           "field_id": "uhot",
           "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uimz": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 16
+          },
+          "field_id": "uimz",
+          "type": "unreal",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -22439,6 +22530,19 @@
           "variation": null,
           "data_pointer": null
         },
+        "acquisition_range": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 44,
+            "modification_index": 39
+          },
+          "field_id": "uacq",
+          "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
         "movement_speed": {
           "source": {
             "file": "war3map.w3u",
@@ -22658,6 +22762,19 @@
           "variation": null,
           "data_pointer": null
         },
+        "weapon_bf_attack_projectile_homing_enabled": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 38
+          },
+          "field_id": "umh1",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
         "weapon_if_attack_targets_allowed": {
           "source": {
             "file": "war3map.w3u",
@@ -22679,6 +22796,32 @@
             "modification_index": 8
           },
           "field_id": "ucs1",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "weapon_rf_attack_projectile_speed": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 37
+          },
+          "field_id": "ua1z",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "weapon_sf_attack_projectile_art": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 16
+          },
+          "field_id": "ua1m",
           "type": "string",
           "level": null,
           "variation": null,
@@ -22718,6 +22861,19 @@
             "modification_index": 34
           },
           "field_id": "ua1r",
+          "type": "int",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "attack_2_range": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 36
+          },
+          "field_id": "ua2r",
           "type": "int",
           "level": null,
           "variation": null,
@@ -22771,6 +22927,19 @@
           },
           "field_id": "ua1c",
           "type": "unreal",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_ua1w": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 35
+          },
+          "field_id": "ua1w",
+          "type": "string",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -22849,6 +23018,19 @@
           },
           "field_id": "uhot",
           "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "field_uimz": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 17
+          },
+          "field_id": "uimz",
+          "type": "unreal",
           "level": null,
           "variation": null,
           "data_pointer": null
@@ -23083,6 +23265,19 @@
           },
           "field_id": "utpr",
           "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "acquisition_range": {
+          "source": {
+            "file": "war3map.w3u",
+            "group": "custom_objects",
+            "object_index": 45,
+            "modification_index": 39
+          },
+          "field_id": "uacq",
+          "type": "unreal",
           "level": null,
           "variation": null,
           "data_pointer": null

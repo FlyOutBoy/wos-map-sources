@@ -747,7 +747,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                     else
                                         call BuffUnitPat(c, u, GetUnitAbilityLevel(c, PatriotW_ID))
                                     endif
-                                    call SetHpCurrent2(c, u, dmg2)
+                                    call SetHpCurrent2Quiet(c, u, dmg2)
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop

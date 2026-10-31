@@ -10,6 +10,44 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AllyAbilityUI(unittest.TestCase):
+    def test_silence_chains_replace_owned_native_commands_and_clear_on_dispel(self):
+        self.c.owner = self.viewer
+        self.refresh()
+        self.assertTrue(self.frames[('native', 0), 'visible'])
+        self.vm.add_ability(self.c, 'BNsi')
+        self.refresh()
+        self.assertFalse(self.frames[('native', 0), 'visible'])
+        self.assertTrue(self.value('AHUI_Icon', 0, 'visible'))
+        self.assertTrue(self.value('AHUI_PausedText', 0, 'visible'))
+        self.vm.remove_ability(self.c, 'BNsi')
+        self.refresh()
+        self.assertTrue(self.frames[('native', 0), 'visible'])
+        self.assertFalse(self.value('AHUI_PausedText', 0, 'visible'))
+        self.assertFalse(self.value('AHUI_Icon', 0, 'visible'))
+
+    def test_enemy_silence_shows_chains_without_reading_cooldowns_and_selection_clears_them(self):
+        self.allies.clear()
+        self.vm.add_ability(self.c, 'BNsi')
+        self.refresh()
+        self.assertTrue(self.value('AHUI_PausedText', 0, 'visible'))
+        self.assertFalse(self.reads)
+        self.vm.run('AHUI_ClearSelection', (self.viewer,))
+        self.assertFalse(self.value('AHUI_PausedText', 0, 'visible'))
+
+    def test_pause_and_silence_restore_only_after_both_have_ended(self):
+        self.c.owner = self.viewer
+        self.c.paused = True
+        self.vm.add_ability(self.c, 'BNsi')
+        self.refresh()
+        self.vm.remove_ability(self.c, 'BNsi')
+        self.refresh()
+        self.assertTrue(self.value('AHUI_PausedText', 0, 'visible'))
+        self.assertFalse(self.frames[('native', 0), 'visible'])
+        self.c.paused = False
+        self.refresh()
+        self.assertFalse(self.value('AHUI_PausedText', 0, 'visible'))
+        self.assertTrue(self.frames[('native', 0), 'visible'])
+
     def test_tooltip_cache_reuses_text_across_hovers_and_skips_unchanged_layout(self):
         self.allies.clear();self.refresh();g=self.vm.g
         g['AHUI_HoveredSlot'][0]=0
@@ -98,14 +136,16 @@ class AllyAbilityUI(unittest.TestCase):
 
     def setUp(self):
         source = (ROOT/'triggers/WOS_Start/ShowCD.j').read_text(encoding='utf-8-sig')
-        self.vm = JassState(source)
+        wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
+        silence = re.search(r'function WUI_UnitSilenced takes.*?endfunction', wui, re.S)[0]
+        self.vm = JassState(source+'\n'+silence)
         self.viewer = 0
         self.allies = {(0,1)}
         self.frames = {}
         self.reads = []
         g = self.vm.g
         g.update({'AR_Cancel':lambda *_:None,'AR_Hide':lambda *_:None,'AR_Request':lambda *_:None,'AR_Render':lambda *_:None,'AR_Reconcile':lambda:None,'WUI_RangePreviewBlocked':lambda:False,'WUI_RangeNativeSlotVisible':lambda *_:False})
-        g.update(AHUI_SelGroup=[],AHUI_MultiShown=False)
+        g.update(AHUI_SelGroup=[],AHUI_MultiShown=False,QB_PreviewStep=defaultdict(lambda:-1),AHUI_QBIntentHeld=defaultdict(bool))
         g.setdefault('AHUI_DeselectPending', __import__('collections').defaultdict(bool))
         g.setdefault('WUI_ReleaseClickFocus', lambda: None)  # Shared button owner, checked by test_wos_ui_focus.
         wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')

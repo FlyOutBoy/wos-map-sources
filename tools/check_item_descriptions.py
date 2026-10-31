@@ -11,9 +11,10 @@ import json
 import re
 
 import war3_object_workspace as workspace
+from balance_active_items import ELEMENT_ITEMS
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_PATHS = ('Items/Items.j', 'Systems/ItemEnter.j', 'Systems/Systems1.j',
+SOURCE_PATHS = ('Items/Items.j', 'Items/ItemsAnime.j', 'Items/ItemsElements.j', 'Systems/ItemEnter.j', 'Systems/Systems1.j',
                 'Systems/Systems2.j', 'Systems/DmgSys.j', 'Systems/CastAItems.j',
                 'Systems/CastCheck.j', 'Systems/DecorDestroy_and_Erza_Debuff.j',
                 'WOS_Start/Starts.j', 'WOS_Start/WoS_Shop_Init.j')
@@ -76,7 +77,7 @@ class Audit:
 
     def stats(self, identity):
         totals = defaultdict(float)
-        fields = dict(Istr='str', Iagi='agi', Iint='int', Ilif='hp', Iman='mp', Iatt='atk', Idef='physical armor')
+        fields = dict(Istr='str', Iagi='agi', Iint='int', Ilif='hp', Iman='mp', Iatt='atk', Idef='physical resistance')
         for ability in self.items[identity].get('abilities', '').split(','):
             for field, stat in fields.items():
                 inherited = NATIVE_STAT_DEFAULTS.get(self.base_ids.get(ability), {}).get(field, 0)
@@ -85,7 +86,7 @@ class Audit:
         for id_, rating in (('I00K', 10), ('I00L', 20), ('I020', 20)):
             if identity == id_:
                 block = self.sources['Systems/Systems1.j'].split("if HasCachedItem(td, '"+id_+"') > 0 then", 1)[1]
-                totals['magic resistance rating'] = float(re.search(r'itemMagRes = itemMagRes \+ ([\d.]+)', block)[1])
+                totals['magic resistance'] = float(re.search(r'itemMagRes = itemMagRes \+ ([\d.]+)', block)[1])
         if identity == 'I013':
             totals['magic damage reduction'] = 10
         # Preserve the established header's allstats/individual-stat presentation.
@@ -98,8 +99,8 @@ class Audit:
 
     def header(self, identity, original):
         totals = self.stats(identity)
-        aliases = {'phys resistance': 'physical armor', 'armor': 'physical armor',
-                   'mag resistance': 'magic damage reduction' if identity == 'I013' else 'magic resistance rating'}
+        aliases = {'phys resistance': 'physical resistance', 'armor': 'physical resistance',
+                   'mag resistance': 'magic damage reduction' if identity == 'I013' else 'magic resistance'}
         old = [line for line in original.splitlines() if line.startswith('+')]
         lines, used = [], set()
         for line in old:
@@ -126,17 +127,18 @@ class Audit:
             f"Active: Creates a field within {v('Chogurt_Aoe')} range that restores "
             f"{v('Chogurt_MpRestoreStatic')} + {v('Chogurt_MpRestore')}% of max MP per second to allies"
             + (" (as HP instead when their mana is full)" if evolved else "")
-            + f", grants +{n('A0G2', 'Inf2', 2 if evolved else 1)} physical armor and "
+            + f", grants +{n('A0G2', 'Inf2', 2 if evolved else 1)} physical resistance and "
             + v('ChogurtEvolved_DmgReduct' if evolved else 'Chogurt_DmgReduct')
             + "% magic damage reduction, grants 20% movement speed and removes the Slow debuff.\n"
             + f"Field duration: {v('Chogurt_Duration')} sec.\n"
-            + f"Armor/protection buff: {n('A0G2','ahdu',2 if evolved else 1)} sec; movement buff: {n('A00D','ahdu',5)} sec.\n"
+            + f"Physical resistance/protection buff: {n('A0G2','ahdu',2 if evolved else 1)} sec; movement buff: {n('A00D','ahdu',5)} sec.\n"
             + f"Cooldown: {n('A06R','acdn')} sec.")
         return {
-            'I00B': 'Passive: Reduces incoming physical damage by 11% and grants 11 magic resistance rating. Each hit also restores HP equal to 10% of the incoming damage over 5 sec.',
+            'I00W': f"Passive: Dealing {v('Kurikara_MinDmg')} or more magic damage sets the enemy on fire, dealing {v('Kurikara_MaxManaDmg')}% of your max mana as magic damage every second. New hits refresh the burn without stacking it.\nDuration: 5 sec.",
+            'I00B': 'Passive: Reduces incoming physical damage by 11% and grants 11 magic resistance. Each hit also restores HP equal to 10% of the incoming damage over 5 sec.',
             'I011': f"Passive |cffff0000(Intelligence heroes only)|r: Reduces ability cooldowns by {v('OkarunEggReduceCD')}% after use.",
             'I012': f"Passive: Casting an ability with a cooldown of at least 3 sec while at 95% mana or less restores {v('FairyTailEmblem_ManaRestoreStatic')} + {v('FairyTailEmblem_ManaRestorePercent')}% of max MP and {v('FairyTailEmblem_HpRestoreStatic')} HP.\nCooldown: {v('FairyTailEmblem_CD')} sec.",
-            'I013': f"Passive: Taking magic or physical ability damage grants a stack. Each stack grants +{n('A07D','Inf2')} physical armor and +4 magic resistance rating.\nMax stacks: 6.\nDuration: {n('A07D','ahdu')} sec.",
+            'I013': f"Passive: Taking magic or physical ability damage grants a stack. Each stack grants +{n('A07D','Inf2')} physical resistance and +4 magic resistance and {v('BlackClover_StackReduce')}% damage reduction.\nMax stacks: 6.\nDuration: {n('A07D','ahdu')} sec.",
             'I017': chogurt(False), 'I03U': chogurt(True),
             'I019': f"Passive: Dealing at least {v('Earth_Power_MinDmg')} physical damage summons an earth hand that strikes after a short delay, dealing {v('Earth_Power_DamageBase')}x main stat physical damage.\nCooldown: {v('Earth_Power_CD')} sec per target.",
             'I01K': f"Passive: Each decoration you destroy restores {v('FrozenHeart_hp')} HP and {v('FrozenHeart_mp')} MP. After {v('FrozenHeart_stack')} uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within {n('A07M','aare')} range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within {n('A10F','aare')} range receive {v('FrozenHeart_ManaAmp')}% more mana regeneration and mana restoration.\nCooldown: {v('FrozenHeart_cd')} sec.",
@@ -149,6 +151,8 @@ class Audit:
             'I02O': f"Passive: During combat, restores {v('ElixirOfLife_HpRegen')} HP per second while ready. Taking damage interrupts this restoration for {v('ElixirOfLife_CD')} sec.",
             'I041': f"Passive: Dealing at least {v('DemonDwellerSword_MinDmg')} physical or magic damage grants +{v('DemonDwellerSword_Bonus')}% damage of the opposite type.\nDuration: 3 sec.\nCooldown: {v('DemonDwellerSword_CD')} sec.",
             'I042': f"Active: Throws a knife dealing {v('ShikiKnifeEvolved_DmgAgi')}x ({v('ShikiKnifeEvolved_DmgBase')} + {v('ShikiKnifeEvolved_DmgAgi')}x Agility) attack damage on hit; it can also trigger the passive when ready.\nPassive: Dealing physical damage to an enemy within {v('ShikiKnifeEvolved_RangeCheck')} range deals an additional {v('ShikiKnifeEvolved_DmgBase')} + {v('ShikiKnifeEvolved_DmgAgi')}x Agility physical damage.\nCooldown: Active {n('A0HY','acdn')} sec, Passive {v('ShikiKnifeEvolved_CD')} sec.",
+            'I068': f"Active: Fires a lightning needle: {v('VoltThread_Damage')}x Agility magic damage and Lightning. For 3 sec, other enemies within {v('VoltThread_LineRadius')} of the thread between you and the target take {v('VoltThread_LineDamage')}x Agility magic damage every second. Your attacks on the target add Static Needle charges (once per 0.4 sec); at 3 charges it takes {v('VoltThread_Bonus')}x Agility magic damage and a 20% slow for 1 sec.\nCooldown: 20 sec.",
+            'I06C': f"Active: Fires a lightning projectile in a straight line up to {v('ConstellationCoil_Range')} range. Each enemy within {v('ConstellationCoil_Width')} of its path is hit once for {v('ConstellationCoil_Damage')}x Intelligence magic damage, receives Lightning and a {v('ConstellationCoil_Slow')}% slow for {v('ConstellationCoil_SlowDuration')} sec.\nCooldown: 20 sec.",
             'I04D': f"Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot.\nAvailable from round {v('ScrollOfMastery_Round')}.",
         }
 
@@ -161,6 +165,12 @@ class Audit:
             body = re.sub(r'Duration: [\d.]+ sec', f"Duration: {self.n('A00D','ahdu',5)} sec", body)
         if identity == 'I00U':
             body = re.sub(r'burns [\d.]+ mana', f"burns {self.v('HokageHat_Manaburn')} mana", body)
+        if identity in ('I02H', 'I05E'):
+            note = 'Does not reflect damage to an attacker protected by an active Naofumi Shield. Reflected damage cannot trigger offensive item effects.'
+            if note not in body:
+                body += '\n' + note
+        if identity in ('I00Z', 'I051'):
+            body = re.sub(r'Cooldown: [\d.]+ sec', f"Cooldown: {self.n('A02T','acdn')} sec", body)
         if identity == 'I01Q':
             body = re.sub(r'Cooldown: [\d.]+ sec', f"Cooldown: {self.v('RyijinJakka_CD')} sec", body)
         if identity == 'I00X':
@@ -171,6 +181,16 @@ class Audit:
             body = re.sub(r'(?<!at or )above the threshold', 'at or above the threshold', body)
         if identity == 'I02C':
             body = body.replace('slows the first target', 'slows each target')
+            body = re.sub(r'bounces up to [\d.]+ times',
+                          "bounces once per " + self.v('TsuchikageHatEvolve_AttackPerBounce') + " ATK (rounded down, counted on cast)", body)
+        if identity == 'I065':
+            body = body.replace('Throws a burning blade:', 'Launches a phoenix projectile:')
+        if identity == 'I069':
+            body = body.replace('a homing phoenix:', 'a homing fire projectile:')
+        if identity == 'I054':
+            body = body.replace('blocks all damage from basic attacks', 'blocks basic attack damage and all on-hit effects')
+        if identity == 'I055' and 'Does not work with or against clones.' not in body:
+            body += ' Does not work with or against clones. Starrk: triggers on the attack that fires Cero, not on Cero hits.'
         if identity == 'I03X':
             body = body.replace('Attacks repeat after 0.5 sec, dealing the same attack damage.',
                                 'Attacks trigger an additional hit after 0.5 sec, dealing 1x ATK as attack damage.')
@@ -179,6 +199,15 @@ class Audit:
             if not match:
                 raise ValueError(f'{identity}: reviewed numeric claim missing: {pattern}')
             body = body[:match.start('n')]+self.v(expression)+body[match.end('n'):]
+        # Shared elemental rules live in Game Info, never in every item tooltip.
+        body = '\n'.join(line for line in body.splitlines() if not line.startswith((
+            'Item damage can refresh a debuff once before it expires;',
+            'Elemental debuff and poison damage cannot trigger offensive item effects.')))
+        if identity == 'I067':
+            body = body.replace('water mirror (450 range)', f"water mirror ({self.v('MirrorTide_Aoe')} range)")
+        body = '\n'.join(line for line in body.splitlines() if not line.startswith('Shared CD:'))
+        if identity in ELEMENT_ITEMS:
+            body += '\nShared CD: ' + ELEMENT_ITEMS[identity] + ' items.'
         return '\n'.join(self.header(identity, original)+([body] if body else []))
 
     def numeric_rules(self):
@@ -189,6 +218,22 @@ class Audit:
         def add(ids, pattern, variable):
             for identity in ids.split():
                 rules.setdefault(identity, []).append((pattern.replace('#', q), variable))
+        add('I060', r'deals #x Strength physical', 'Emberbreaker_Impact')
+        add('I060', r'for #x Strength over', 'Emberbreaker_Burn')
+        add('I060', r'takes #x Strength magic damage back', 'Emberbreaker_Retaliate')
+        add('I061', r': #x Strength physical', 'LeviathanGrasp_Impact')
+        add('I061', r'squeezes it for #x Strength', 'LeviathanGrasp_Squeeze')
+        add('I063', r'sec, #x Strength magic', 'ThunderVerdict_Damage')
+        add('I063', r'takes #x Strength magic', 'ThunderVerdict_Bonus')
+        add('I064', r'pulses, #x Strength magic', 'ThunderBastion_Damage')
+        add('I064', r'taking #x Strength magic', 'ThunderBastion_Counter')
+        add('I065', r'projectile: #x Agility physical', 'CinderFang_Impact')
+        add('I065', r'deals #x Agility bonus', 'CinderFang_Bonus')
+        add('I067', r'take #x Agility physical', 'MirrorTide_Damage')
+        add('I067', r'reflects #x Agility physical', 'MirrorTide_Reflect')
+        add('I069', r'for #x Intelligence over', 'PhoenixSeal_Burn')
+        add('I069', r'explodes for #x Intelligence', 'PhoenixSeal_Bonus')
+        add('I06A', r'take #x Intelligence more', 'CrimsonScripture_Burning')
         add('I00G', r'dealing # magic damage', 'FunnyBarrel_Damage')
         add('I00G', r'for # damage per second', 'ErzaFire_DamageBase')
         add('I00J', r'Ignores #% of', 'KanshoandBakuya_Decrease')
@@ -234,7 +279,7 @@ class Audit:
         add('I02A', r'Duration: # sec', 'TurboNeko_Time')
         add('I02C', r'\+ #x main stat', 'TsuchikageHatEvolve_DamageBaseMain')
         add('I02C', r'by #%, then', 'TsuchikageHatEvolve_Slow')
-        add('I02C', r'up to # times', 'TsuchikageHatEvolve_BounceTimes')
+        add('I02C', r'once per # ATK', 'TsuchikageHatEvolve_AttackPerBounce')
         add('I02C', r'deals #% less', 'TsuchikageHatEvolve_DamageReducePerBounce')
         add('I02C', r'Slow duration: # sec', 'TsuchikageHatEvolve_SlowTime')
         add('I02D', r'ignores #%', 'EnvySin_IgnoreAmount')

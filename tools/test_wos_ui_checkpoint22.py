@@ -152,12 +152,12 @@ class HUD(unittest.TestCase):
 
     def test_items_scale_by_the_stock_icon(self):
         wui = read('WOSUI.j')
-        self.assertIn('constant real WUI_ITEM_SIZE = 0.033', wui)
+        self.assertIn('constant real WUI_ITEM_SIZE = 0.031', wui)
         self.assertIn('call WUI_PlaceNativeItem(WUI_Item[i], WUI_ItemX(i), WUI_ItemY(i), WUI_ITEM_SIZE)', wui)
         self.assertIn('|cffe9cf8fINVENTORY|r', wui)
-        # three .033 cells fit between the .591 and .697 dividers
+        # three .031 cells (0.0355 step) fit between the .591 and .697 dividers
         for i in (-1, 1):
-            edge = 0.644 + i * 0.0345 + i * 0.033 / 2
+            edge = 0.644 + i * 0.0355 + i * 0.031 / 2
             self.assertTrue(0.5925 < edge < 0.6955)
 
 

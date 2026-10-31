@@ -2000,7 +2000,7 @@ endfunction
         call MilimGKS.Start(c)
     endfunction
     function MilimGAddDmg takes unit c, real amount returns nothing
-    call SetMpCurrent(c,amount*0.05)
+    call SetMpCurrentQuiet(c,amount*0.05)
         call MilimGKS.AddDamage(c, amount)
     endfunction
     function MilimGOff_Start takes unit c returns nothing

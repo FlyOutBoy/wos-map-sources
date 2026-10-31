@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "3bc8f7aed3f6aed1e36c2e0f47518d764b34c56e894e9cf106629112e590a8f9",
+  "source_sha256": "51a867b64df716eae91dafd8beb44d36dd8fea2920ca85f3289b71550e1b4c89",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -1245,10 +1245,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09N",
-            "_original_value": "A09N",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA5Tg=="
+            "value": "A145"
           },
           "sanity_check": {
             "text": "",
@@ -1613,7 +1610,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 6000
           },
           "sanity_check": {
             "text": "",
@@ -2660,7 +2657,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 6000
           },
           "sanity_check": {
             "text": "",
@@ -2976,10 +2973,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0G5",
-            "_original_value": "A0G5",
+            "value": "A00T",
+            "_original_value": "A00T",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBHNQ=="
+            "_raw_base64": "QTAwVA=="
           },
           "sanity_check": {
             "text": "",
@@ -2994,7 +2991,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 7500
+            "value": 5500
           },
           "sanity_check": {
             "text": "",
@@ -3328,10 +3325,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06O,A074,A07X",
-            "_original_value": "A06O,A074,A07X",
+            "value": "A06O,A074,A00M",
+            "_original_value": "A06O,A074,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA2TyxBMDc0LEEwN1g="
+            "_raw_base64": "QTA2TyxBMDc0LEEwME0="
           },
           "sanity_check": {
             "text": "",
@@ -3346,7 +3343,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -3361,10 +3358,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06O",
-            "_original_value": "A06O",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA2Tw=="
+            "value": "A148"
           },
           "sanity_check": {
             "text": "",
@@ -3428,7 +3422,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -3443,10 +3437,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06P,A00X,A074",
-            "_original_value": "A06P,A00X,A074",
+            "value": "A06P,A00M,A074",
+            "_original_value": "A06P,A00M,A074",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA2UCxBMDBYLEEwNzQ="
+            "_raw_base64": "QTA2UCxBMDBNLEEwNzQ="
           },
           "sanity_check": {
             "text": "",
@@ -3479,10 +3473,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06P",
-            "_original_value": "A06P",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA2UA=="
+            "value": "A146"
           },
           "sanity_check": {
             "text": "",
@@ -5208,10 +5199,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09L,A00X,A075",
-            "_original_value": "A09L,A00X,A075",
+            "value": "A09L,A00M,A075",
+            "_original_value": "A09L,A00M,A075",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA5TCxBMDBYLEEwNzU="
+            "_raw_base64": "QTA5TCxBMDBNLEEwNzU="
           },
           "sanity_check": {
             "text": "",
@@ -5226,7 +5217,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -5241,10 +5232,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09L",
-            "_original_value": "A09L",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA5TA=="
+            "value": "A146"
           },
           "sanity_check": {
             "text": "",
@@ -5375,7 +5363,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -5390,10 +5378,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09M,A00X,A075",
-            "_original_value": "A09M,A00X,A075",
+            "value": "A09M,A00M,A075",
+            "_original_value": "A09M,A00M,A075",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA5TSxBMDBYLEEwNzU="
+            "_raw_base64": "QTA5TSxBMDBNLEEwNzU="
           },
           "sanity_check": {
             "text": "",
@@ -5426,10 +5414,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09M",
-            "_original_value": "A09M",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA5TQ=="
+            "value": "A148"
           },
           "sanity_check": {
             "text": "",
@@ -5508,10 +5493,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A09N",
-            "_original_value": "A09N",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA5Tg=="
+            "value": "A145"
           },
           "sanity_check": {
             "text": "",
@@ -5888,7 +5870,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 4500
+            "value": 6000
           },
           "sanity_check": {
             "text": "",
@@ -6189,10 +6171,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0BZ,A0G3",
-            "_original_value": "A0BZ,A0G3",
+            "value": "A0BZ,A00R",
+            "_original_value": "A0BZ,A00R",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBCWixBMEcz"
+            "_raw_base64": "QTBCWixBMDBS"
           },
           "sanity_check": {
             "text": "",
@@ -6207,7 +6189,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 7500
+            "value": 5500
           },
           "sanity_check": {
             "text": "",
@@ -6304,10 +6286,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0BZ,A0G3",
-            "_original_value": "A0BZ,A0G3",
+            "value": "A0BZ,A00R",
+            "_original_value": "A0BZ,A00R",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBCWixBMEcz"
+            "_raw_base64": "QTBCWixBMDBS"
           },
           "sanity_check": {
             "text": "",
@@ -6322,7 +6304,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 7500
+            "value": 5500
           },
           "sanity_check": {
             "text": "",
@@ -7249,7 +7231,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 7500
+            "value": 6000
           },
           "sanity_check": {
             "text": "",
@@ -7532,10 +7514,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0F5,A072,A00X",
-            "_original_value": "A0F5,A072,A00X",
+            "value": "A0F5,A072,A00M",
+            "_original_value": "A0F5,A072,A00M",
             "_encoding": "utf-8",
-            "_raw_base64": "QTBGNSxBMDcyLEEwMFg="
+            "_raw_base64": "QTBGNSxBMDcyLEEwME0="
           },
           "sanity_check": {
             "text": "",
@@ -7565,7 +7547,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5000
+            "value": 7500
           },
           "sanity_check": {
             "text": "",
@@ -7598,10 +7580,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A0F5",
-            "_original_value": "A0F5",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTBGNQ=="
+            "value": "A145"
           },
           "sanity_check": {
             "text": "",
@@ -11006,10 +10985,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A06R,A07Y",
-            "_original_value": "A06R,A07Y",
+            "value": "A06R,A07Y,A13F",
+            "_original_value": "A06R,A07Y,A13F",
             "_encoding": "utf-8",
-            "_raw_base64": "QTA2UixBMDdZ"
+            "_raw_base64": "QTA2UixBMDdZLEExM0Y="
           },
           "sanity_check": {
             "text": "",
@@ -11522,7 +11501,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 6000
+            "value": 5000
           },
           "sanity_check": {
             "text": "",
@@ -12150,10 +12129,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102",
-            "_original_value": "A102",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTEwMg=="
+            "value": "A145"
           },
           "sanity_check": {
             "text": "",
@@ -12265,10 +12241,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102",
-            "_original_value": "A102",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTEwMg=="
+            "value": "A146"
           },
           "sanity_check": {
             "text": "",
@@ -12380,10 +12353,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A102",
-            "_original_value": "A102",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTEwMg=="
+            "value": "A148"
           },
           "sanity_check": {
             "text": "",
@@ -12805,6 +12775,3445 @@
         }
       ],
       "display_name": "Core Drill"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I04F",
+        "hex": "49303446"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A12E,A00X",
+            "_original_value": "A12E,A00X",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEyRSxBMDBY"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 3500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A12E",
+            "_original_value": "A12E",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEyRQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Armament Haki"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I050",
+        "hex": "49303530"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A12F,A00W",
+            "_original_value": "A12F,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEyRixBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A12F",
+            "_original_value": "A12F",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEyRg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Armament Haki Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I051",
+        "hex": "49303531"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A02T,A00W",
+            "_original_value": "A02T,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAyVCxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A02T",
+            "_original_value": "A02T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAyVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Naofumi Shield Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I052",
+        "hex": "49303532"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A131,A00U,A074,A01Y",
+            "_original_value": "A131,A00U,A074,A01Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzMSxBMDBVLEEwNzQsQTAxWQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 8000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A131",
+            "_original_value": "A131",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzMQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Sukuna's Finger"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I053",
+        "hex": "49303533"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A133,A00R,A071",
+            "_original_value": "A133,A00R,A071",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzMyxBMDBSLEEwNzE="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A133",
+            "_original_value": "A133",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzMw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Five Elements Seal"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I054",
+        "hex": "49303534"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A135,A00M",
+            "_original_value": "A135,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzNSxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A135",
+            "_original_value": "A135",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzNQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Rokushiki: Tekkai"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I055",
+        "hex": "49303535"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A137,A00M",
+            "_original_value": "A137,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzNyxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A03T",
+            "_original_value": "A03T",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAzVA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Samehada"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I056",
+        "hex": "49303536"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A138,A072,A00R,A01Y",
+            "_original_value": "A138,A072,A00R,A01Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzOCxBMDcyLEEwMFIsQTAxWQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A138",
+            "_original_value": "A138",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzOA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Will of D."
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I057",
+        "hex": "49303537"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13A,A00M",
+            "_original_value": "A13A,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzQSxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 6000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13A",
+            "_original_value": "A13A",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzQQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kairoseki Cuffs"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I058",
+        "hex": "49303538"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13C,A00M",
+            "_original_value": "A13C,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzQyxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 12500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13C",
+            "_original_value": "A13C",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzQw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Hyorinmaru Ice Coffin"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I059",
+        "hex": "49303539"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13E,A00M",
+            "_original_value": "A13E,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzRSxBMDBN"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 4500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A13E",
+            "_original_value": "A13E",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTEzRQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Return by Death"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05A",
+        "hex": "49303541"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A04Y,A0D2,A00W",
+            "_original_value": "A04Y,A0D2,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA0WSxBMEQyLEEwMFc="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A04Y",
+            "_original_value": "A04Y",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA0WQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Fairy Tail Emblem Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05B",
+        "hex": "49303542"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A080,A00W",
+            "_original_value": "A080,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA4MCxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A080",
+            "_original_value": "A080",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA4MA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ryujin Jakka Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05C",
+        "hex": "49303543"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A09P,A00W",
+            "_original_value": "A09P,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA5UCxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A09P",
+            "_original_value": "A09P",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA5UA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Nejibana Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05D",
+        "hex": "49303544"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A081,A00W",
+            "_original_value": "A081,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA4MSxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A081",
+            "_original_value": "A081",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTA4MQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Gonryomaru Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05E",
+        "hex": "49303545"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A140,A04W,A04S,A0G8",
+            "_original_value": "A140,A04W,A04S,A0G8",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0MCxBMDRXLEEwNFMsQTBHOA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 12000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A140",
+            "_original_value": "A140",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0MA=="
+          },
+          "sanity_check": {
+            "text": "I05E",
+            "hex": "49303545"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "I05E",
+            "hex": "49303545"
+          }
+        }
+      ],
+      "display_name": "Mirror of Yata Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I05F",
+        "hex": "49303546"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A142,A00W",
+            "_original_value": "A142,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0MixBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 10000
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A142",
+            "_original_value": "A142",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Mg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "I05F",
+            "hex": "49303546"
+          }
+        }
+      ],
+      "display_name": "Philosopher's Stone Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I060",
+        "hex": "49303630"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145,A072,A00M",
+            "_original_value": "A145,A072,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NSxBMDcyLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Emberbreaker"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I061",
+        "hex": "49303631"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A146,A072,A00M",
+            "_original_value": "A146,A072,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NixBMDcyLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A146"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Leviathan's Grasp"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I062",
+        "hex": "49303632"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A147,A072,A00M",
+            "_original_value": "A147,A072,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NyxBMDcyLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A146"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Leviathan's Anchor"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I063",
+        "hex": "49303633"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A148,A072,A00M",
+            "_original_value": "A148,A072,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OCxBMDcyLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A148"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Thunder Verdict"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I064",
+        "hex": "49303634"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A149,A072,A00M",
+            "_original_value": "A149,A072,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OSxBMDcyLEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A148"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Thunder Bastion"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I065",
+        "hex": "49303635"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14A,A074,A00M",
+            "_original_value": "A14A,A074,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0QSxBMDc0LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
+            "_encoding": "utf-8",
+            "_raw_base64": "UHVyY2hhc2FibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Cinder Fang"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I066",
+        "hex": "49303636"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14B,A074,A00M",
+            "_original_value": "A14B,A074,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0QixBMDc0LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
+            "_encoding": "utf-8",
+            "_raw_base64": "UHVyY2hhc2FibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Ashen Crossfire"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I067",
+        "hex": "49303637"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14C,A074,A00M",
+            "_original_value": "A14C,A074,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0QyxBMDc0LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
+            "_encoding": "utf-8",
+            "_raw_base64": "UHVyY2hhc2FibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A146"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Mirror Tide"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I068",
+        "hex": "49303638"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14D,A074,A00M",
+            "_original_value": "A14D,A074,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0RCxBMDc0LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable",
+            "_original_value": "Purchasable",
+            "_encoding": "utf-8",
+            "_raw_base64": "UHVyY2hhc2FibGU="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A148"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Volt Thread"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I069",
+        "hex": "49303639"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14E,A075,A00M",
+            "_original_value": "A14E,A075,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0RSxBMDc1LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Campaign",
+            "_original_value": "Campaign",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2FtcGFpZ24="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Phoenix Seal"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06A",
+        "hex": "49303641"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A14F,A075,A00M",
+            "_original_value": "A14F,A075,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0RixBMDc1LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Campaign",
+            "_original_value": "Campaign",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2FtcGFpZ24="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A145"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Crimson Scripture"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06B",
+        "hex": "49303642"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A150,A075,A00M",
+            "_original_value": "A150,A075,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1MCxBMDc1LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Campaign",
+            "_original_value": "Campaign",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2FtcGFpZ24="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A146"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Siren's Tear"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06C",
+        "hex": "49303643"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A151,A075,A00M",
+            "_original_value": "A151,A075,A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1MSxBMDc1LEEwME0="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Campaign",
+            "_original_value": "Campaign",
+            "_encoding": "utf-8",
+            "_raw_base64": "Q2FtcGFpZ24="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A148"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Constellation Coil"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06D",
+        "hex": "49303644"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A152,A06T,A020",
+            "_original_value": "A152,A06T,A020",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1MixBMDZULEEwMjA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 2500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A152",
+            "_original_value": "A152",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1Mg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Blood Pact Ring"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06E",
+        "hex": "49303645"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "I06E",
+            "_original_value": "I06E",
+            "_encoding": "utf-8",
+            "_raw_base64": "STA2RQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Zanka no Tachi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I06F",
+        "hex": "49303646"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "I06F",
+            "_original_value": "I06F",
+            "_encoding": "utf-8",
+            "_raw_base64": "STA2Rg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Kyoka Suigetsu"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I070",
+        "hex": "49303730"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "I070",
+            "_original_value": "I070",
+            "_encoding": "utf-8",
+            "_raw_base64": "STA3MA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Koko Gonryo Rikyu"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I071",
+        "hex": "49303731"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "I071",
+            "_original_value": "I071",
+            "_encoding": "utf-8",
+            "_raw_base64": "STA3MQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Tobiume"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I072",
+        "hex": "49303732"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A00M",
+            "_original_value": "A00M",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTAwTQ=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 5500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "I072",
+            "_original_value": "I072",
+            "_encoding": "utf-8",
+            "_raw_base64": "STA3Mg=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Suzumebachi"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I073",
+        "hex": "49303733"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A154,A00W",
+            "_original_value": "A154,A00W",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1NCxBMDBX"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ihtp",
+            "hex": "69687470"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 111
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Miscellaneous",
+            "_original_value": "Miscellaneous",
+            "_encoding": "utf-8",
+            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A154",
+            "_original_value": "A154",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE1NA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": "Blood Pact Ring Evolved"
     }
   ]
 }

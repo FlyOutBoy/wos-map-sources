@@ -1,0 +1,6 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-10-28",
+  "prompt": "Use case: stylized-concept. Asset type: square Warcraft III inventory item icon artwork, Blood Pact Ring. Primary request: a single custom dark fantasy blood pact ring, large tilted heavy blackened silver ring with a prominent glowing deep crimson teardrop bloodstone, the ring's hollow center clearly visible, small red magical wisps suggesting exchanging life for mana. Hand-painted Warcraft III item icon aesthetic, bold readable silhouette at 64x64, dramatic high contrast red highlights on metal, near-black burgundy background, object centered filling 85% of frame with minimal margin. No text, no letters, no numbers, no watermark, no UI frame or border; the border will be added later by Button Manager. Generate one square image.",
+  "borders": "Button Manager v1.8.2 automatic border and disabled-pair PNG export; encoded to project BLP1 palette/mipmaps. Evolved adds the existing project gold frame."
+}

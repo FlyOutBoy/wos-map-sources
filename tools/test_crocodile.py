@@ -130,6 +130,7 @@ class JassState:
             "R2I": int,
             "I2R": float,  # inlined RoundReal(r + step, digits) in hero ticks
             # External attribution API; collector tests load its real body.
+            "GearManaFloorApply": lambda *_: None,
             "DamageSource": lambda source:self.g.update(GearDamageNextSource=source),
             "GetRandomInt": lambda a,b:a,
             "GetRandomReal": lambda a,b:(a+b)/2,

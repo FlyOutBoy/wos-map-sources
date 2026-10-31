@@ -14,9 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def rules_vm():
     source = (ROOT / 'triggers/Items/Items.j').read_text(encoding='utf-8-sig')
-    functions = re.findall(r'(?m)^\s*public function (?:GetPreviewAbility|GetItemPreviewRadius) takes[^\n]*\n[\s\S]*?^\s*endfunction', source)
+    functions = re.findall(r'(?m)^\s*public function (?:GetPreviewAbility|GetItemPreviewRadius|GetItemPreviewReach) takes[^\n]*\n[\s\S]*?^\s*endfunction', source)
     vm = JassState('\n'.join(functions))
-    for name, value in re.findall(r"^\s+(?:integer|real) (\w+) = ('[^']+'|[0-9.]+)", ''.join(re.findall(r'globals(.*?)endglobals', source, re.S)), re.M):
+    # 2026-10-27 item rawcodes live in ItemsAnime.j.
+    anime = (ROOT / 'triggers/Items/ItemsAnime.j').read_text(encoding='utf-8-sig') + (ROOT / 'triggers/Items/ItemsElements.j').read_text(encoding='utf-8-sig')
+    globals_text = ''.join(re.findall(r'globals(.*?)endglobals', source + anime, re.S))
+    for name, value in re.findall(r"^\s+(?:integer|real) (\w+) = ('[^']+'|[0-9.]+)", globals_text, re.M):
         vm.g[name] = value[1:-1] if value.startswith("'") else float(value)
     vm.g.update(ABILITY_RLF_CAST_RANGE='cast', ABILITY_RLF_AREA_OF_EFFECT='area',
                 BlzGetAbilityRealLevelField=lambda a, field, level: a[field])
@@ -59,7 +62,7 @@ class Rules(unittest.TestCase):
         abilities = json.loads((ROOT / 'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         audit = json.loads((ROOT / 'assets/AbilityRange/item-rules.json').read_text(encoding='utf-8'))
         self.assertEqual(set(items), {r['item'] for r in audit})
-        self.assertEqual(159, len(audit))
+        self.assertEqual(196, len(audit))
         for row in audit:
             ids = items[row['item']].get('abilities', '').split(',')
             self.assertEqual([a['id'] for a in row['abilities']], [a for a in ids if a])
@@ -67,7 +70,7 @@ class Rules(unittest.TestCase):
                 self.assertIn(row['ability'], ids)
                 self.assertEqual(abilities[row['ability']].get(row['field'], 0), row['fallback'])
                 self.assertEqual(row['fallback'], self.radius(row['item']))
-        self.assertEqual(33, sum(r['mode'] != 'none' for r in audit))
+        self.assertEqual(49, sum(r['mode'] != 'none' for r in audit))
 
 
 class Runtime(TwoRingLifecycle, prior.RangeRuntime):
@@ -89,6 +92,7 @@ class Runtime(TwoRingLifecycle, prior.RangeRuntime):
                          UnitItemInSlot=lambda u, s: self.inventory[u, s], GetItemTypeId=lambda i: self.item_types[i],
                          ItemsSpells_GetPreviewAbility=lambda iid: rules.run('GetPreviewAbility', (iid,)),
                          ItemsSpells_GetItemPreviewRadius=lambda iid, a: rules.run('GetItemPreviewRadius', (iid, a)),
+                         ItemsSpells_GetItemPreviewReach=lambda iid, a: rules.run('GetItemPreviewReach', (iid, a)),
                          BlzGetItemAbility=lambda i, a: self.lookups.append((i, a)) or None)
         self.two_ring_globals()
         # Fresh MAIN lifecycle: effects numbered per hero as red/white pairs.

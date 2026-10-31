@@ -35,6 +35,9 @@ globals
     // Hero meters are fed every 0.03 s by many loops: write natives only on change.
     private real array WUI_ProgressLastTotal
     private real array WUI_ProgressLastValue
+    // Game time before which a hero meter fill is not redrawn again (0.10 s gate).
+    private real array WUI_ProgressNextWrite
+    private real array WUI_ProgressNextText
     private integer array WUI_ProgressTextKey
     private string array WUI_ProgressLastText
     private boolean array WUI_ProgressPublic
@@ -142,6 +145,8 @@ globals
     private framehandle WUI_InvisBacking = null
     private real WUI_FeedRight = -1.0
     private boolean WUI_InvisPortrait = false
+    private framehandle WUI_SilenceLabel = null
+    private boolean WUI_SilencePortrait = false
     private framehandle WUI_Resource = null
     private framehandle WUI_HeroBar = null
     private framehandle array WUI_HeroIndicator
@@ -289,6 +294,9 @@ globals
     constant real WUI_ALLY_COLOR_Y = 0.0170
     constant real WUI_ALLY_COLOR_SIZE = 0.018
     private framehandle WUI_AllyColor = null
+    // Glyph variant per GetAllyColorFilterState(): the top gem changes with the mode.
+    private framehandle WUI_AllyColorGlyph = null
+    private integer WUI_AllyColorState = 0
     // Checkpoint 22: per-slot custom hotkeys (0..6 skills, 7..12 items).
     constant integer WUI_SLOT_KEYS = 13
     constant real WUI_TOGGLE_X = 0.2885
@@ -301,6 +309,18 @@ globals
     private integer array WUI_SlotCapture
     private trigger array WUI_SlotCaptureTrigger
     private trigger WUI_SlotKeyTrigger = null
+    // Synced item-slot key press for item code (Ice Coffin while stunned); set by ItemsAnime.
+    trigger WUI_ItemKeyHook = null
+    integer WUI_ItemKeyPlayer = -1
+    integer WUI_ItemKeySlot = -1
+    // Ice Coffin item key (ItemsAnime): custom key per player; null = digit of the slot it was picked up in.
+    oskeytype array WUI_CoffinKey
+    string array WUI_CoffinKeyName
+    // Key events of every player's coffin keys; ItemsAnime adds the condition (no dispatch from WOSUI).
+    trigger WUI_CoffinKeyTrigger = CreateTrigger()
+    private boolean array WUI_CoffinKeyReg
+    constant integer WUI_CAPTURE_COFFIN = 15
+    private boolean array WUI_CoffinCapturing
     private trigger WUI_SlotClick = null
     private hashtable WUI_SlotKeyRegistered = InitHashtable()
     private framehandle WUI_HotkeyToggle = null
@@ -320,11 +340,12 @@ globals
     constant real WUI_COMMAND_STEP = 0.040
     constant real WUI_ICON_SIZE = 0.034
     // Checkpoint 22: items as large as the cell allows, "Inventory" above.
-    constant real WUI_ITEM_SIZE = 0.033
+    // 2026-10-28: 0.008 gap between the rows (CHANGE / Quick Buy minus sit under a cell).
+    constant real WUI_ITEM_SIZE = 0.031
     constant real WUI_ITEM_X = 0.676
-    constant real WUI_ITEM_STEP_X = 0.0345
+    constant real WUI_ITEM_STEP_X = 0.0355
     constant real WUI_ITEM_Y = 0.0625
-    constant real WUI_ITEM_STEP_Y = 0.0350
+    constant real WUI_ITEM_STEP_Y = 0.0390
     // The stock inventory button is a .039 wrapper whose icon is only .031 and
     // sits in its TOP-LEFT corner (screenshots: icon 80% of the cell, shifted
     // up-left). Scale by the icon and shift the wrapper so the icon is centred.
@@ -1750,6 +1771,7 @@ private function WUI_RenderHeroProgress takes unit hero, integer abilityId, stri
     local framehandle icon = null
     local framehandle caption = null
     local real captionScale
+    local real shown
     if hero == null or not WUI_Ready then
         return
     endif
@@ -1806,6 +1828,8 @@ private function WUI_RenderHeroProgress takes unit hero, integer abilityId, stri
             else
                 if WUI_ProgressRawTitle[index] != title then
                     set WUI_ProgressRawTitle[index] = title
+                    // A new phase shows its own label at once.
+                    set WUI_ProgressNextText[index] = 0.00
                     set WUI_ProgressTitle[index] = WUI_StripLevel(title)
                     call BlzFrameSetText(WUI_ProgressCaption[index], "|cffffd36b" + WUI_ProgressTitle[index] + "|r")
                     set captionScale = RMinBJ(0.70, 20.00 / I2R(IMaxBJ(1, StringLength(WUI_ProgressTitle[index]))))
@@ -1818,21 +1842,30 @@ private function WUI_RenderHeroProgress takes unit hero, integer abilityId, stri
                     set WUI_ProgressLastValue[index] = -1.00
                     call WUI_FrameSetMinMaxValue(WUI_ProgressBar[index], 0, total)
                 endif
-                if WUI_ProgressLastValue[index] != RMaxBJ(0.00, remaining) then
-                    set WUI_ProgressLastValue[index] = RMaxBJ(0.00, remaining)
-                    call WUI_FrameSetValue(WUI_ProgressBar[index], WUI_ProgressLastValue[index])
+                // Spell loops call this every 0.03 s; each write resizes the fill frame.
+                // Redraw at most every 0.10 s and after 1/50 of the bar; ends always.
+                set shown = RMaxBJ(0.00, remaining)
+                if WUI_ProgressLastValue[index] != shown then
+                    if WUI_ProgressLastValue[index] < 0.00 or shown <= 0.00 or shown >= total or (RAbsBJ(shown - WUI_ProgressLastValue[index]) >= total / 50.00 and TimerGetElapsed(WUI_InputClock) >= WUI_ProgressNextWrite[index]) then
+                        set WUI_ProgressLastValue[index] = shown
+                        set WUI_ProgressNextWrite[index] = TimerGetElapsed(WUI_InputClock) + 0.10
+                        call WUI_FrameSetValue(WUI_ProgressBar[index], shown)
+                    endif
                 endif
-                // Text only when the shown number changes (0.1 s steps), never a new string per tick.
+                // Text only when the shown number changes, never a new string per tick.
                 if valueText != "" then
-                    if WUI_ProgressTextKey[index] != -1 or WUI_ProgressLastText[index] != valueText then
+                    // Custom labels (mana %, stacks) follow the same 0.10 s gate as the fill.
+                    if WUI_ProgressTextKey[index] != -1 or (WUI_ProgressLastText[index] != valueText and TimerGetElapsed(WUI_InputClock) >= WUI_ProgressNextText[index]) then
+                        set WUI_ProgressNextText[index] = TimerGetElapsed(WUI_InputClock) + 0.10
                         set WUI_ProgressTextKey[index] = -1
                         set WUI_ProgressLastText[index] = valueText
                         call BlzFrameSetText(WUI_ProgressValue[index], "|cffffff00" + valueText + "|r")
                     endif
                 elseif seconds then
-                    if WUI_ProgressTextKey[index] != R2I(remaining * 10.0 + 0.5) then
-                        set WUI_ProgressTextKey[index] = R2I(remaining * 10.0 + 0.5)
-                        call BlzFrameSetText(WUI_ProgressValue[index], "|cffffff00" + R2SW(remaining, 0, 1) + "s|r")
+                    // 0.2 s text steps: five text writes per second at most.
+                    if WUI_ProgressTextKey[index] != R2I(remaining * 5.0 + 0.5) then
+                        set WUI_ProgressTextKey[index] = R2I(remaining * 5.0 + 0.5)
+                        call BlzFrameSetText(WUI_ProgressValue[index], "|cffffff00" + R2SW(I2R(WUI_ProgressTextKey[index]) / 5.0, 0, 1) + "s|r")
                     endif
                 elseif WUI_ProgressTextKey[index] != R2I(remaining) * 65536 + R2I(total) then
                     set WUI_ProgressTextKey[index] = R2I(remaining) * 65536 + R2I(total)
@@ -1950,6 +1983,22 @@ private function WUI_HeroDualRow takes unit hero, integer abilityId, real amount
             set i = i + 1
         endloop
     endif
+    // Same gate as the lower row: explicit text changes and the ends always land,
+    // otherwise at most every 0.10 s after 1/50 of the bar (slots 23-26).
+    if HaveSavedReal(WUI_MeterEdges, key, 23) and LoadReal(WUI_MeterEdges, key, 24) == maximum and LoadStr(WUI_MeterEdges, key, 26) == valueText then
+        if LoadReal(WUI_MeterEdges, key, 23) == amount then
+            set panel = null
+            return
+        endif
+        if amount > 0.00 and amount < maximum and (RAbsBJ(amount - LoadReal(WUI_MeterEdges, key, 23)) < maximum / 50.00 or TimerGetElapsed(WUI_InputClock) < LoadReal(WUI_MeterEdges, key, 25)) then
+            set panel = null
+            return
+        endif
+    endif
+    call SaveReal(WUI_MeterEdges, key, 23, amount)
+    call SaveReal(WUI_MeterEdges, key, 24, maximum)
+    call SaveReal(WUI_MeterEdges, key, 25, TimerGetElapsed(WUI_InputClock) + 0.10)
+    call SaveStr(WUI_MeterEdges, key, 26, valueText)
     set fill = LoadFrameHandle(WUI_MeterEdges, key, 21)
     set label = LoadFrameHandle(WUI_MeterEdges, key, 22)
     if valueText == "" then
@@ -2495,6 +2544,9 @@ endfunction
 private function WUI_BindingConflict takes integer pid, integer channel, integer slot, oskeytype key, string name returns string
     local integer other = 0
     local string title
+    if channel != WUI_CAPTURE_COFFIN and key != null and WUI_CoffinKey[pid] == key then
+        return name + " is already used by Ice Coffin"
+    endif
     loop
         exitwhen other >= WUI_HOTKEY_CHANNELS
         if other != channel and WUI_HotkeyKey[other * 16 + pid] == key then
@@ -2662,6 +2714,7 @@ private function WUI_CancelPendingCapture takes player p returns nothing
     endif
     set WUI_CaptureChannel[pid] = -1
     set WUI_SlotCapture[pid] = -1
+    set WUI_CoffinCapturing[pid] = false
     if GetLocalPlayer() == p then
         if channel >= 0 and channel < WUI_HOTKEY_CHANNELS then
             call BlzFrameSetText(WUI_HotkeyLabel[channel], WUI_GOLD + WUI_HotkeyName[channel * 16 + pid] + "|r")
@@ -3198,8 +3251,8 @@ function WUI_PinNativePortrait takes nothing returns nothing
     endif
     set factor = 4.00 * I2R(height) / (3.00 * I2R(width))
     set left = WUI_ShiftBaseX[WUI_PortraitSlot] + WUI_HudLeft - WUI_ShiftBaseW[WUI_PortraitSlot] * 0.50
-    // Raised 5% of its height: hero art sat on the frame's bottom edge.
-    set bottom = WUI_ShiftBaseY[WUI_PortraitSlot] - WUI_ShiftBaseH[WUI_PortraitSlot] * 0.45
+    // Raised 3.5% of its height: hero art sat on the frame's bottom edge.
+    set bottom = WUI_ShiftBaseY[WUI_PortraitSlot] - WUI_ShiftBaseH[WUI_PortraitSlot] * 0.465
     call BlzEnableUIAutoPosition(false)
     call BlzFrameSetParent(WUI_Portrait, WUI_PortraitOwner)
     call BlzFrameClearAllPoints(WUI_Portrait)
@@ -3230,6 +3283,15 @@ function WUI_BindNativePortrait takes framehandle parent returns framehandle
         call BlzFrameSetEnable(WUI_InvisLabel, false)
         call BlzFrameSetVisible(WUI_InvisLabel, false)
     endif
+    if WUI_SilenceLabel == null then
+        // Transparent lettering is centered over the native portrait; INVIS stays below.
+        set WUI_SilenceLabel = BlzCreateFrameByType("BACKDROP", "WOSSilenceLabel", parent, "", 0)
+        call BlzFrameSetTexture(WUI_SilenceLabel, "UI\\WOS\\silence-label.tga", 0, true)
+        call WUI_Pin(WUI_SilenceLabel, parent, 0.00, 0.0018, 0.059, 0.016)
+        call BlzFrameSetLevel(WUI_SilenceLabel, 20)
+        call BlzFrameSetEnable(WUI_SilenceLabel, false)
+        call BlzFrameSetVisible(WUI_SilenceLabel, false)
+    endif
     if WUI_Portrait != null then
         set WUI_PortraitOwner = parent
         set WUI_PortraitSlot = LoadInteger(WUI_ShiftTable, GetHandleId(parent), 0) - 1
@@ -3247,12 +3309,23 @@ function WUI_ShowNativePortrait takes boolean visible returns nothing
     call WUI_Show(WUI_Portrait, visible)
     call WUI_Show(WUI_InvisLabel, visible and WUI_InvisPortrait)
     call WUI_Show(WUI_InvisBacking, visible and WUI_InvisPortrait)
+    call WUI_Show(WUI_SilenceLabel, visible and WUI_SilencePortrait)
 endfunction
 
 // Presence is authoritative for the granted permanent invisibility abilities.
 // Object data: A03W (Erza water), A0HZ (Evolved Cup of Tea), Apiv (Toji R).
 function WUI_UnitHasInvisibility takes unit u returns boolean
     return u != null and (GetUnitAbilityLevel(u, 'Apiv') > 0 or GetUnitAbilityLevel(u, 'A03W') > 0 or GetUnitAbilityLevel(u, 'A0HZ') > 0 or GetUnitAbilityLevel(u, 'Binv') > 0 or GetUnitAbilityLevel(u, 'BOwk') > 0 or IsUnitInvisible(u, GetOwningPlayer(u)))
+endfunction
+
+// SilenceUnit delivers BNsi; watch the native buff so expiry/dispels restore UI together.
+function WUI_UnitSilenced takes unit u returns boolean
+    return u != null and GetUnitAbilityLevel(u, 'BNsi') > 0
+endfunction
+
+function WUI_SetPortraitSilenced takes boolean silenced returns nothing
+    set WUI_SilencePortrait = silenced
+    call WUI_Show(WUI_SilenceLabel, silenced and WUI_Portrait != null and BlzFrameIsVisible(WUI_Portrait))
 endfunction
 
 // Selected-unit presentation; grant/removal restores the portrait on the next HUD tick.
@@ -3764,6 +3837,11 @@ function WUI_ShowNativeAbilitySlot takes integer slot, boolean visible returns n
     endif
 endfunction
 
+// Solid state fill of a text button (the engine still draws its hover on top).
+function WUI_SetButtonFill takes framehandle control, string texture returns nothing
+    call BlzFrameSetTexture(LoadFrameHandle(WUI_ButtonStyle, GetHandleId(control), 0), texture, 0, true)
+endfunction
+
 function WUI_SetButtonSelected takes framehandle control, boolean selected returns nothing
     local integer key = GetHandleId(control)
     call SaveBoolean(WUI_ButtonStyle, key, 2, selected)
@@ -4142,6 +4220,11 @@ private function WUI_OnSlotKey takes nothing returns nothing
         endif
         set slot = slot + 1
     endloop
+    if found >= 7 and WUI_ItemKeyHook != null then
+        set WUI_ItemKeyPlayer = pid
+        set WUI_ItemKeySlot = found - 7
+        call TriggerEvaluate(WUI_ItemKeyHook)
+    endif
     if found >= 0 and GetLocalPlayer() == p then
         call WUI_UseSlot(found)
     endif
@@ -4291,6 +4374,124 @@ function WUI_KeyByLabel takes string label returns oskeytype
     return null
 endfunction
 
+// Synced: key events (both edges, any modifiers) for one of p's coffin keys, once per key.
+function WUI_RegisterCoffinKey takes integer pid, oskeytype key returns nothing
+    local integer meta = 0
+    if key == null or pid < 0 or pid >= 16 or GetHandleId(key) < 0 or GetHandleId(key) >= 256 then
+        return
+    endif
+    if WUI_CoffinKeyReg[pid * 256 + GetHandleId(key)] then
+        return
+    endif
+    set WUI_CoffinKeyReg[pid * 256 + GetHandleId(key)] = true
+    loop
+        exitwhen meta > 15
+        call BlzTriggerRegisterPlayerKeyEvent(WUI_CoffinKeyTrigger, Player(pid), key, meta, true)
+        call BlzTriggerRegisterPlayerKeyEvent(WUI_CoffinKeyTrigger, Player(pid), key, meta, false)
+        set meta = meta + 1
+    endloop
+endfunction
+
+// Ice Coffin key is free for p: not a map/skill/item/stock key ("" = free).
+function WUI_CoffinKeyConflict takes integer pid, oskeytype key, string name returns string
+    if key == null or name == "" then
+        return "only letters, digits and F1-F9 can be used"
+    endif
+    return WUI_SlotKeyConflict(pid, -1, key, name)
+endfunction
+
+// Synced: set (label) or clear ("" = slot digit) p's Ice Coffin key. Returns false when refused.
+function WUI_SetCoffinKey takes player p, string label, boolean announce returns boolean
+    local integer pid = GetPlayerId(p)
+    local oskeytype key = null
+    local string conflict
+    if pid < 0 or pid >= 16 then
+        return false
+    endif
+    if label != "" then
+        set key = WUI_KeyByLabel(label)
+        if key != WUI_CoffinKey[pid] then
+            set WUI_CoffinKey[pid] = null
+            set conflict = WUI_CoffinKeyConflict(pid, key, label)
+            if conflict != "" then
+                set WUI_CoffinKey[pid] = WUI_KeyByLabel(WUI_CoffinKeyName[pid])
+                if announce then
+                    call DisplayTimedTextToPlayer(p, 0, 0, 4.00, "|cffff7a6aKey taken: " + conflict + ". Ice Coffin hotkey unchanged.|r")
+                endif
+                set key = null
+                return false
+            endif
+        endif
+    endif
+    set WUI_CoffinKey[pid] = key
+    set WUI_CoffinKeyName[pid] = label
+    call WUI_RegisterCoffinKey(pid, key)
+    if announce then
+        if label == "" then
+            call DisplayTimedTextToPlayer(p, 0, 0, 3.00, WUI_GOLD + "Ice Coffin hotkey: the number of the slot it was picked up in.|r " + WUI_TEXT + "Save Keys keeps it.|r")
+        else
+            call DisplayTimedTextToPlayer(p, 0, 0, 3.00, WUI_GOLD + "Ice Coffin hotkey changed to " + label + "|r " + WUI_TEXT + "Save Keys keeps it.|r")
+        endif
+    endif
+    set key = null
+    return true
+endfunction
+
+// Synced: the key pressed after CHANGE on the Ice Coffin item. Backspace = slot digit.
+private function WUI_OnCoffinCapture takes nothing returns nothing
+    local player p = GetTriggerPlayer()
+    local integer pid = GetPlayerId(p)
+    local oskeytype key = BlzGetTriggerPlayerKey()
+    local integer i = 1
+    local string name = ""
+    call DisableTrigger(GetTriggeringTrigger())
+    if pid >= 0 and pid < 16 and WUI_CoffinCapturing[pid] then
+        set WUI_CoffinCapturing[pid] = false
+        if key == OSKEY_BACKSPACE then
+            call WUI_SetCoffinKey(p, "", true)
+        elseif key == OSKEY_ESCAPE then
+            call DisplayTimedTextToPlayer(p, 0, 0, 1.00, WUI_TEXT + "Ice Coffin hotkey unchanged.|r")
+        else
+            loop
+                exitwhen i > WUI_KeyCount
+                if WUI_KeyCode[i] == key then
+                    set name = WUI_KeyLabel[i]
+                endif
+                set i = i + 1
+            endloop
+            if name == "" then
+                call DisplayTimedTextToPlayer(p, 0, 0, 3.00, "|cffff7a6aOnly letters, digits and F1-F9 can be used. Ice Coffin hotkey unchanged.|r")
+            else
+                call WUI_SetCoffinKey(p, name, true)
+            endif
+        endif
+    endif
+    set p = null
+    set key = null
+endfunction
+
+// Synced click on CHANGE under the Ice Coffin item: the next key becomes its hotkey.
+function WUI_BeginCoffinCapture takes player p returns nothing
+    local integer pid = GetPlayerId(p)
+    local integer i = 1
+    if pid < 0 or pid >= 16 then
+        return
+    endif
+    call WUI_CancelPendingCapture(p)
+    call WUI_InitKeyTable()
+    set WUI_CaptureTrigger[pid] = CreateTrigger()
+    set WUI_CoffinCapturing[pid] = true
+    loop
+        exitwhen i > WUI_KeyCount
+        call BlzTriggerRegisterPlayerKeyEvent(WUI_CaptureTrigger[pid], p, WUI_KeyCode[i], 0, true)
+        set i = i + 1
+    endloop
+    call BlzTriggerRegisterPlayerKeyEvent(WUI_CaptureTrigger[pid], p, OSKEY_ESCAPE, 0, true)
+    call BlzTriggerRegisterPlayerKeyEvent(WUI_CaptureTrigger[pid], p, OSKEY_BACKSPACE, 0, true)
+    call TriggerAddAction(WUI_CaptureTrigger[pid], function WUI_OnCoffinCapture)
+    call DisplayTimedTextToPlayer(p, 0, 0, 4.00, WUI_GOLD + "Ice Coffin: press a new hotkey (letter, digit or F1-F9).|r " + WUI_TEXT + "Backspace = slot number, Esc keeps the current one.|r")
+endfunction
+
 // Synced (sync-data handler): restore one saved channel hotkey of p.
 function WUI_ApplySavedHotkey takes player p, integer channel, string label returns nothing
     local integer pid = GetPlayerId(p)
@@ -4355,6 +4556,9 @@ function WUI_ResetHotkeys takes player p returns nothing
     set WUI_CaptureChannel[pid] = -1
     set WUI_SlotCapture[pid] = -1
     set WUI_HotkeyEdit[pid] = false
+    set WUI_CoffinCapturing[pid] = false
+    set WUI_CoffinKey[pid] = null
+    set WUI_CoffinKeyName[pid] = ""
     loop
         exitwhen channel >= WUI_HOTKEY_CHANNELS
         if WUI_HotkeyTrigger[channel] != null and WUI_HotkeyDefaultKey[channel] != null then
@@ -4423,6 +4627,9 @@ function WUI_SavedSettingsString takes integer pid returns string
         endif
         set i = i + 1
     endloop
+    if WUI_CoffinKeyName[pid] != null and WUI_CoffinKeyName[pid] != "" then
+        set result = result + "Y," + WUI_CoffinKeyName[pid] + "|"
+    endif
     return result
 endfunction
 
@@ -4694,10 +4901,11 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     call WUI_RegisterInfoPart(WUI_InfoChrome)
     set edge = WUI_Divider("WOSHUDDivider", panel, 0.3355, 0.047, 0.078, true)
     call WUI_PlaceShift(edge, 0.3355, 0.047, 0.004, 0.078)
-    set edge = WUI_Divider("WOSHUDDivider", panel, 0.6230, 0.047, 0.078, true)
-    call WUI_PlaceShift(edge, 0.6230, 0.047, 0.004, 0.078)
-    set edge = WUI_Divider("WOSHUDDivider", panel, 0.7290, 0.047, 0.078, true)
-    call WUI_PlaceShift(edge, 0.7290, 0.047, 0.004, 0.078)
+    // Inventory dividers reach down past the lowered bottom item row.
+    set edge = WUI_Divider("WOSHUDDivider", panel, 0.6230, 0.0435, 0.085, true)
+    call WUI_PlaceShift(edge, 0.6230, 0.0435, 0.004, 0.085)
+    set edge = WUI_Divider("WOSHUDDivider", panel, 0.7290, 0.0435, 0.085, true)
+    call WUI_PlaceShift(edge, 0.7290, 0.0435, 0.004, 0.085)
     set edge = WUI_Divider("WOSHUDDivider", WUI_InfoChrome, 0.7790, 0.0655, 0.084, false)
     call WUI_PlaceShift(edge, 0.7790, 0.0655, 0.084, 0.004)
     // "INVENTORY" title with gold flourishes above the 3x2 item grid.
@@ -4726,6 +4934,7 @@ private function WUI_CreateHUDChrome takes nothing returns nothing
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
     set edge = WUI_Piece("WOSAllyColorGlyph", panel, "UI\\WOS\\glyph-allycolor.tga")
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE - 0.004, WUI_ALLY_COLOR_SIZE - 0.004)
+    set WUI_AllyColorGlyph = edge
     set edge = WUI_Passive("WOSAllyColorEdgeOwner", panel)
     call WUI_Place(edge, WUI_ALLY_COLOR_X, WUI_ALLY_COLOR_Y, WUI_ALLY_COLOR_SIZE, WUI_ALLY_COLOR_SIZE)
     call BlzFrameSetEnable(edge, false)
@@ -5422,12 +5631,13 @@ private function WUI_InfoShowPage takes nothing returns nothing
         call WUI_InfoRow(0, WUI_InfoSourceIcon(-101), "Fire  |cff7caefa[MAGIC]|r", "40 magic damage per second for 5 s.")
         call WUI_InfoRow(1, WUI_InfoSourceIcon(-102), "Water  |cff7caefa[MAGIC]|r", "100 magic damage on hit and 10% slow for 5 s.")
         call WUI_InfoRow(2, WUI_InfoSourceIcon(-103), "Lightning", "no damage: after 5 s a 0.6 s stun and 120 mana burned.")
-        call WUI_InfoRow(3, "UI\\WOS\\toolbar-chat.tga", "-help  |cffd5b876BEGINNER GUIDE|r", "Open controls, hotkeys and UI tips. Closes automatically in 40s.")
+        call WUI_InfoRow(3, "UI\\WOS\\toolbar-chat.tga", "Debuff refresh", "Items: one refresh per debuff. Abilities and Fire: unlimited.")
     elseif WUI_InfoPage == 1 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "ELEMENT COMBOS|r")
         call WUI_InfoRow(0, WUI_InfoSourceIcon(-104), "Vape (Water + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, +10% physical damage taken for 8 s.")
         call WUI_InfoRow(1, WUI_InfoSourceIcon(-105), "Overload (Lightning + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, 1.25 s stun (2.5 s lockout).")
         call WUI_InfoRow(2, WUI_InfoSourceIcon(-106), "Electrized (Lightning + Water)  |cff7caefa[MAGIC]|r", "10% slow, 0.4 x main stat magic damage per second for 5 s.")
+        call WUI_InfoRow(3, "ReplaceableTextures\\CommandButtons\\BTNElem_Fire.blp", "Item effects", "Debuffs/poison do not trigger offensive items. Explosions cannot trigger themselves.")
     elseif WUI_InfoPage == 2 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "DESTRUCTIBLE DECOR|r")
         call WUI_InfoRow(0, WUI_InfoSourceIcon(-11), "Red barrel  |cff7caefa[MAGIC]|r", "100 base magic damage in 350 range; +25 each next round. Sets the ground on fire." + WUI_InfoCurrentDamage(100, 25))
@@ -5754,8 +5964,26 @@ function WUI_ReleaseGhost takes integer which returns nothing
     endif
 endfunction
 
+// Alt+A and the button click belong to the engine; the mode is per client,
+// so only the local texture follows it (no sync event).
+private function WUI_WatchAllyColor takes nothing returns nothing
+    local integer state = GetAllyColorFilterState()
+    if state == WUI_AllyColorState or WUI_AllyColorGlyph == null then
+        return
+    endif
+    set WUI_AllyColorState = state
+    if state == 1 then
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-1.tga", 0, true)
+    elseif state == 2 then
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor-2.tga", 0, true)
+    else
+        call BlzFrameSetTexture(WUI_AllyColorGlyph, "UI\\WOS\\glyph-allycolor.tga", 0, true)
+    endif
+endfunction
+
 private function WUI_CoreTick takes nothing returns nothing
     call WUI_WatchCover()
+    call WUI_WatchAllyColor()
     call WUI_RefreshDocks()
 endfunction
 

@@ -72,6 +72,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
         real BazzBT_Duration = 1.00
         boolean BazzBT_IsInvul = true
         real BazzBT_DecorDamage = 100.00
+        integer BazzB_FireLevel = 12 // damaging abilities apply the Fire debuff from this hero level
     endglobals
 
     private function BazzBTimer03Acquire takes nothing returns nothing
@@ -203,7 +204,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                 call DamageSource('A08M')
                                 call dmgmag(c, u, dmg)
-                                if GetHeroLevel(c) >= 35 then
+                                if GetHeroLevel(c) >= BazzB_FireLevel then
                                     call ErzaPassive(c, u, 1)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -393,7 +394,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                     call DamageSource('A08N')
                                     call dmgmag(c, u, dmg)
-                                    if GetHeroLevel(c) >= 35 then
+                                    if GetHeroLevel(c) >= BazzB_FireLevel then
                                         call ErzaPassive(c, u, 1)
                                     endif
                                     call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -438,7 +439,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                 call DamageSource('A08N')
                                 call dmgmag(c, u, dmg)
-                                if GetHeroLevel(c) >= 35 then
+                                if GetHeroLevel(c) >= BazzB_FireLevel then
                                     call ErzaPassive(c, u, 1)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -590,7 +591,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             if IsUnitEnemy(u, GetOwningPlayer(c)) and SpellBool(u) then
                                 call DamageSource('A08O')
                                 call dmgmag(c, u, dmg)
-                                if GetHeroLevel(c) >= 35 then
+                                if GetHeroLevel(c) >= BazzB_FireLevel then
                                     call ErzaPassive(c, u, 1)
                                 endif
                                 call MUE(u, BazzBE_PushRange, BazzBE_PushDuration, GAngle(c, u))
@@ -744,7 +745,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                             if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 call DamageSource('A08P')
                                 call dmgmag(c, u, dmg)
-                                if GetHeroLevel(c) >= 35 then
+                                if GetHeroLevel(c) >= BazzB_FireLevel then
                                     call ErzaPassive(c, u, 1)
                                 endif
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", u, "chest"))
@@ -937,7 +938,7 @@ library BazzBSpells initializer InitBazzBSpells uses GearSystems
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) and not IsUnitInGroup(u, g2) then
                                     call DamageSource('A08Q')
                                     call dmgmag(c, u, dmg)
-                                    if GetHeroLevel(c) >= 35 then
+                                    if GetHeroLevel(c) >= BazzB_FireLevel then
                                         call ErzaPassive(c, u, 1)
                                     endif
                                     call MUE(u, BazzBT_Push, BazzBT_PushDuration, a)

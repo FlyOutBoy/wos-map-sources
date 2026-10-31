@@ -73,11 +73,12 @@ DESCRIPTIONS = {
                     f'returns to its origin, all their cooldowns are reduced by 5 sec. Enemies take {num(lv(1.5,0.4,l))} x '
                     f'Intelligence magic damage. Destroyed decorations inside the aura are restored.'),
     'R': lambda l: (f'Places a marker over the target area (radius 600): every decoration inside it is destroyed and '
-                    f'perfectly copied. Recast within 30 sec: a blue portal opens behind Altair and the copies stream out of '
-                    f'it one after another (every 0.06 sec) to the target point, smashing decorations and enemies on their way '
-                    f'(35% damage). Each impact deals {num(lv(2.5,0.5,l))} x Intelligence + {num(lv(100,50,l))} physical '
-                    f'damage and stuns; heavy objects hit harder and wider, explosive barrels explode, hydrants burst. Every extra '
-                    f'copy landing on the same enemy overloads it: +0.5 sec stun. Heavy objects glide level, light ones tumble. '
+                    f'perfectly copied. Recast within 30 sec: a big blue portal opens behind Altair, the copies materialise in it '
+                    f'and the whole volley flies out at once to the target point (light objects faster, heavy ones slower), '
+                    f'smashing decorations, hitting enemies on the way (35% damage) and dragging them along. Each impact deals '
+                    f'Intelligence x object factor + {num(lv(100,50,l))} physical damage and stuns: barrels and small objects x2, '
+                    f'trees x2.5, small houses x3, houses, buildings and the bus x4, the train x8. Explosive barrels explode, '
+                    f'hydrants burst; every extra copy landing on the same enemy overloads it (+0.5 sec stun). '
                     f'At hero level 35 she can store the round-end train. Range: 1800.'),
     'T': lambda l: ('Summons a giant portal at the target point that drags up to 4 allies or enemies (Altair cannot enter) '
                     'into an alternate realm for 20 sec (25 sec at hero level 35). Others may walk into the portal while it '
@@ -144,8 +145,8 @@ def stage():
     hero = clone_object(combined(test, test_strings, 'units', 'H002'), ids['hero'], {}, test_strings)
     for field, value in {'unam':'Altair', 'upro':'Military Uniform Princess', 'utip':'Altair',
                          'utub':'Re:Creators | Intelligence. Switches between the Holopsicon (battlefield control) '
-                                'and Sword Princess (sword stacks) forms. Placeholder model.',
-                         'ufil':r'units\human\Jaina\Jaina.mdl', 'umdl':r'units\human\Jaina\Jaina.mdl',
+                                'and Sword Princess (sword stacks) forms.',
+                         'ufil':r'war3mapImported\wos_Altair.mdx', 'umdl':r'war3mapImported\wos_Altair.mdx',
                          'uico':ICON.format('Icon'), 'ussi':ICON.format('Icon'),
                          'uhab':','.join(ids[s] for s in 'QWERT'), 'uabi':''}.items():
         set_field(hero, field, value, leveled=False)

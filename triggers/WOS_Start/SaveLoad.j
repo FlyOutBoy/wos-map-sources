@@ -2185,6 +2185,13 @@ function SaveSystem_OnSettingsSync takes nothing returns nothing
                 else
                     call WUI_ApplySavedSlotKey(p, a, label)
                 endif
+            elseif kind == "Y" then
+                // Ice Coffin item key (WUI_SetCoffinKey re-checks conflicts).
+                set label = SaveSystem_SettingsField(record)
+                if not ss_HotkeysReset[pid] and label != "" then
+                    call WUI_SetCoffinKey(p, label, false)
+                endif
+                set applied = applied + 1
             elseif kind == "S" then
                 set a = S2I(SaveSystem_SettingsField(record))
                 if a >= 1 and a <= 3 and not WUI_ModeTouched[pid] then
@@ -3141,7 +3148,7 @@ private function SaveSystem_CreateHelp takes nothing returns nothing
         elseif pid == 2 then
             call BlzFrameSetText(text, "|cffffd36bEXTRA HERO STATS|r|nClick this button beside your portrait to cycle through 1, 2 or 3 stat columns.")
         elseif pid == 3 then
-            call BlzFrameSetText(text, "|cffffd36bAUTO BUY|r|nTurn AUTO ON to build recommended items as you earn gold. Tab opens the shop.")
+            call BlzFrameSetText(text, "|cffffd36bAUTO BUY|r|nTurn AUTOBUY on to build recommended items as you earn gold. Tab opens the shop.")
         else
             call BlzFrameSetText(text, "|cffffd36bWOS APP|r|nView global match statistics and set custom music for your games. Click WOS App to get the application link.")
         endif

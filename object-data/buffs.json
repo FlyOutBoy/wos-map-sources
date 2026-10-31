@@ -168,8 +168,8 @@
   "B00I": {
     "name": "",
     "base_id": "BHds",
-    "tooltip": "Void Instability",
-    "extended_tooltip": "Gain Additional physical and magic resistance",
+    "tooltip": "Void Aura",
+    "extended_tooltip": "Allies within 1400 radius gain 5% physical resistance and 5% magic resistance.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
     "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
     "editor_suffix": "Inori",
@@ -209,7 +209,7 @@
     "name": "1",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 3 armor and 4% magic resistance",
+    "extended_tooltip": "Unit gain 3 physical resistance and 4% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -218,7 +218,7 @@
     "name": "2",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 6 armor and 8% magic resistance",
+    "extended_tooltip": "Unit gain 6 physical resistance and 8% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -227,7 +227,7 @@
     "name": "3",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 9 armor and 12% magic resistance",
+    "extended_tooltip": "Unit gain 9 physical resistance and 12% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -236,7 +236,7 @@
     "name": "4",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 12 armor and 16% magic resistance",
+    "extended_tooltip": "Unit gain 12 physical resistance and 16% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -245,7 +245,7 @@
     "name": "5",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 15 armor and 20% magic resistance",
+    "extended_tooltip": "Unit gain 15 physical resistance and 20% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -280,7 +280,7 @@
     "name": "6",
     "base_id": "BHds",
     "tooltip": "Black Clover",
-    "extended_tooltip": "Unit gain 18 armor and 24% magic resistance",
+    "extended_tooltip": "Unit gain 18 physical resistance and 24% magic resistance",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNitem_item_Black_Clover1.blp",
     "target_art": "war3mapImported\\wos_sparkleaura.mdx",
     "editor_suffix": "Black Clover"
@@ -646,7 +646,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Sarkaz Sorcery",
-    "extended_tooltip": "Armor +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.",
+    "extended_tooltip": "Physical resistance +1/2/3/4/5 and health regeneration +5/10/15/20/25 HP/sec, according to Sarkaz Sorcery rank.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Patriot_W.blp",
     "target_art": "war3mapImported\\wos_tx238.mdx",
     "editor_suffix": "Def",
@@ -1348,6 +1348,162 @@
     "extended_tooltip": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
+  },
+  "B057": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Armament Haki",
+    "extended_tooltip": "Immune to debuffs.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ArmamentHakiEvolved.blp",
+    "target_art": ""
+  },
+  "B058": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Sukuna's Curse",
+    "extended_tooltip": "Cannot restore HP (healing and HP regeneration -100%); slowed by 15%.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_SukunaFinger.blp",
+    "target_art": "war3mapImported\\wos_file00003018.mdx"
+  },
+  "B059": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Five Elements Seal: Mana",
+    "extended_tooltip": "Mana regeneration and restoration -100%. Cannot be dispelled.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+    "target_art": ""
+  },
+  "B05A": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Tekkai",
+    "extended_tooltip": "Blocks basic attack damage and all on-hit effects.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Tekkai.blp",
+    "target_art": "war3mapImported\\wos_file00002838_p.mdx"
+  },
+  "B05B": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Will of D.",
+    "extended_tooltip": "HP cannot drop below 1.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_WillOfD.blp",
+    "target_art": ""
+  },
+  "B05C": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Kairoseki",
+    "extended_tooltip": "Deals 18% less damage.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Kairoseki.blp",
+    "target_art": ""
+  },
+  "B05D": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Ice Coffin",
+    "extended_tooltip": "Sealed in ice: paused and invulnerable.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_IceCoffin.blp",
+    "target_art": ""
+  },
+  "B05E": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Chogurt",
+    "extended_tooltip": "+8 mana regeneration.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Chogurt_Evolved.blp",
+    "target_art": ""
+  },
+  "B05F": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Mirror of Yata",
+    "extended_tooltip": "Reflects 75% of damage taken.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorYataEvolved.blp",
+    "target_art": "war3mapImported\\wos_zdgq.mdx"
+  },
+  "B060": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Philosopher's Stone",
+    "extended_tooltip": "Restores an additional 18% of damage dealt as HP.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_PhilosopherStoneEvolved.blp",
+    "target_art": ""
+  },
+  "B061": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Five Elements Seal: Lock",
+    "extended_tooltip": "Removing this seal or casting an ability silences for 2 sec.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_FiveElementsSeal.blp",
+    "target_art": "war3mapImported\\wos_file00002273.mdx"
+  },
+  "B062": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Mana Ascension",
+    "extended_tooltip": "Nearby Inori in T2: -10% physical resistance and -10% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B063": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Return by Death",
+    "extended_tooltip": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ReturnByDeath.blp",
+    "target_art": ""
+  },
+  "B064": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Aura",
+    "extended_tooltip": "Allies within 1400 radius gain 1% physical resistance and 5% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B065": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Aura",
+    "extended_tooltip": "Allies within 1400 radius gain 2% physical resistance and 5% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B066": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Aura",
+    "extended_tooltip": "Allies within 1400 radius gain 3% physical resistance and 5% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B067": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Aura",
+    "extended_tooltip": "Allies within 1400 radius gain 4% physical resistance and 5% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
+  },
+  "B068": {
+    "name": "",
+    "base_id": "BHds",
+    "tooltip": "Void Aura (T1)",
+    "extended_tooltip": "Allies within 1400 radius gain 10% physical resistance and 10% magic resistance.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_E.blp",
+    "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
+    "editor_suffix": "Inori",
+    "race": "orc"
   },
   "B0F0": {
     "name": "Frostnova E - Frozen Shelter",

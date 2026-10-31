@@ -1075,7 +1075,7 @@ library RimuruSpells initializer InitRimuruSpells uses GearSystems
                         set y = GetUnitY(c)
                         set a = GAngle5(e, x, y)
                         if SR5(e, x, y) < 50 then
-                            call SetHpCurrent2(c, c, dmg)
+                            call SetHpCurrent2Quiet(c, c, dmg)
                             set r = 9999
                             call BlzSetSpecialEffectPosition(e, x, y, 0)
                           //  call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_az_lifebloom.mdx", c, "origin"))

@@ -44,8 +44,8 @@ class InputAndNativeGeometry(unittest.TestCase):
         for i in range(6):
             frame = 'named:InventoryButton_' + str(i)
             # Checkpoint 22: the stock .031 icon (top-left of its .039
-            # wrapper) is scaled to .033 and centred in its cell.
-            self.assertAlmostEqual(.033/.031, scales[frame])
+            # wrapper) is scaled to WUI_ITEM_SIZE (.031 since 2026-10-28) and centred in its cell.
+            self.assertAlmostEqual(.031/.031, scales[frame])
             self.assertEqual((.039, .039), sizes[frame])
             x, y = positions[frame]
             x, y = x - .004 * scales[frame], y + .004 * scales[frame]

@@ -114,13 +114,14 @@ class HeroPacket(unittest.TestCase):
     def test_ashisogi_only_tagged_physical_spell_hits_exclude_normal_and_tagged_attacks(self):
         text=source('Systems/DmgSys.j')
         block=re.search(r'(?m)^        if typedmg == 2 and not eventIsAttack.*\n'
+                        r'            call DamageSource\(damageSourceId\)\n'
                         r'            call AshisogiJizo_Poison\(c, td\)\n        endif',text)[0]
         vm=JassState('function Hit takes nothing returns nothing\n'+block+'\nendfunction')
         procs=[];attack=[False]
         vm.g.update(c='caster',td='target',AshisogiTrigger=False,MurasameTrigger=False,
                     AshisogiJizo_ID='jizo',AshisogiJizo_MinDmg=100.,isEnemy=True,dmg=100.,
                     damageSourceId='spell',HasCachedItem=lambda *_:1,BlzGetEventIsAttack=lambda:attack[0],
-                    AshisogiJizo_Poison=lambda *args:procs.append(args))
+                    ItemDamageCanProc=lambda *_:True, AshisogiJizo_Poison=lambda *args:procs.append(args))
         for damage_type,is_attack,tagged,expected in ((0,True,False,0),(0,True,True,0),
                 (2,True,True,0),(1,False,True,0),(2,False,True,1),(2,False,False,0)):
             vm.g.update(typedmg=damage_type,damageSourceId='spell' if tagged else 0)

@@ -88,6 +88,7 @@ function ManaFix_Check takes nothing returns boolean
                     call SetUnitState(c,UNIT_STATE_MANA,RMaxBJ(0.0,mana-missing))
                 endif
             endif
+            call GearManaFloorApply(c)
             call RemoveSavedInteger(hs,GetHandleId(c),SH_CastCheck_MANA_FIX_SLOT)
             call RemoveSavedReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
             set last = ManaFixCount
@@ -194,16 +195,51 @@ endif
 if (id == BambiettaW_ID and LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_CastCheck_MORPH_T) > 0) then 
  set b = false
 endif
-if idc == Raiden_ID then 
-if id == RaidenQ_ID  then 
+if idc == Raiden_ID then
+if id == RaidenQ_ID  then
 set b = false
 endif
-          
+
+endif
+static if LIBRARY_CrocodileSpells then
+if id == CrocodileE_ID then
+set b = false
+endif
 endif
 
 
  endif
- return b 
+ return b
+endfunction
+// Refund of a cancelled cast: only the mana the engine really took since the
+// SPELL_CAST snapshot, never more than the cost (no free mana when the patched
+// engine skipped the payment).
+function CastCancel_Refund takes unit c, integer id returns nothing
+    local integer h = GetHandleId(c)
+    local real paid
+    if LoadInteger(hs,h,SH_CastCheck_MANA_FIX_ABILITY) == id then
+        set paid = RMinBJ(I2R(LoadInteger(hs,h,SH_CastCheck_MANA_FIX_COST)),LoadReal(hs,h,SH_CastCheck_MANA_FIX_BEFORE)-GetUnitState(c,UNIT_STATE_MANA))
+        if paid > 0.01 then
+            call MyAddMana(c,paid,0.03)
+        endif
+    endif
+    call ManaFix_ClearSnapshot(c)
+endfunction
+// SPELL_CAST comes before the native mana payment and cooldown: a rooted
+// movement cast is cancelled here, so nothing is spent. The SPELL_EFFECT
+// branch in CastHero_Conditions stays as a refunding fallback.
+function RootCancel_OnCast takes nothing returns boolean
+    local unit c = GetSpellAbilityUnit()
+    if IsUnitType(c,UNIT_TYPE_HERO) and GetUnitAbilityLevel(c,'BEer') > 0 and not IsUnitPaused(c) and not DisableMoveRoot(c,GetSpellAbilityId()) then
+        call PauseUnit(c,true)
+        call IssueImmediateOrder(c,"stop")
+        call PauseUnit(c,false)
+        if IntegerCdKey(c, SH_ICD_CANCEL_TOOLTIP,3) then
+            call DisplayTimedTextToPlayer(GetOwningPlayer(c),0,0,0.01,"|c00FF0000Can't use this ability while rooted!|r")
+        endif
+    endif
+    set c = null
+    return false
 endfunction
 function SpellExtension takes unit c, integer id returns boolean
 local integer check = 0
@@ -261,6 +297,7 @@ if b then // non-heroes already left above
 //call MyFlush(GetHandleId(Player(i)),StringHash("ahk pidor"),0,ahk_delay )
     if (CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and CheckCoordsInRect(gg_rct_Cage,GetUnitX(c),GetUnitY(c)) == false) or SpellExtension(c,id) then 
     call ManaFix_Add(c,id)
+    call GearManaFloorApply(c)
     set manaBeforeEffects = GetUnitState(c,UNIT_STATE_MANA)
     set manaScriptBeforeEffects = LoadReal(hs,GetHandleId(c),SH_MANA_FIX_SCRIPT_DELTA)
     call ItemsCast(c,td,x,y,id)
@@ -1543,6 +1580,16 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     if check == 0 and SacredGearBooster_Proc then
     call CD_Start(c,0.03,id,RMaxBJ(0.01,rr-SacredGearBooster_ItemCDReduce))
     endif
+    static if LIBRARY_ItemsSpells then
+        if check == 1 then
+            call ItemsAnime_OnHeroCast(c)
+        endif
+    endif
+    static if LIBRARY_ItemsSpells then
+        if check == 1 then
+            call ItemsElements_OnHeroCast(c)
+        endif
+    endif
     call ManaFix_AfterEffects(c,manaBeforeEffects,manaScriptBeforeEffects)
     set SacredGearBooster_Proc = false
     if check == 1 and HasCachedItem(c,'I01K')>0  then
@@ -1552,14 +1599,20 @@ call BlzStartUnitAbilityCooldown(c,id,BlzGetUnitAbilityCooldown(c,id,GetUnitAbil
     endif
     
     endif
-    elseif BlzGetUnitAbilityCooldownRemaining(c,id)==0 then
+    elseif b == false then
+    // Rooted: by SPELL_EFFECT the engine has already started the native CD and
+    // may have taken the mana. Cancel, clear the CD (again after 0.03 s in case
+    // it lands late) and refund only what was really paid since SPELL_CAST.
     call IssueImmediateOrder(c,"stop")
-    set i2 = BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(c,id),ABILITY_ILF_MANA_COST,GetUnitAbilityLevel(c,id)-1)
-    
-    call MyAddMana(c,I2R(i2),0.03)
-    if b == false and IntegerCdKey(c, SH_ICD_CANCEL_TOOLTIP,3) then 
+    call BlzEndUnitAbilityCooldown(c,id)
+    call CD_Start(c,0.03,id,0.01)
+    call CastCancel_Refund(c,id)
+    if IntegerCdKey(c, SH_ICD_CANCEL_TOOLTIP,3) then
     call DisplayTimedTextToPlayer(Player(i),0,0,0.01,"|c00FF0000Can't use this ability while rooted!|r")
     endif
+    elseif BlzGetUnitAbilityCooldownRemaining(c,id)==0 then
+    call IssueImmediateOrder(c,"stop")
+    call CastCancel_Refund(c,id)
     endif
     set c = null
     set td = null
@@ -1570,8 +1623,13 @@ endfunction
 //===========================================================================
 function InitTrig_CastCheck takes nothing returns nothing
     local integer index = 0
+    local trigger rootCast = CreateTrigger()
     local trigger manaCast = CreateTrigger()
     local trigger manaEnd = CreateTrigger()
+    // Registered first: runs before the mana snapshot of the same SPELL_CAST.
+    call TriggerRegisterAnyUnitEventBJ(rootCast,EVENT_PLAYER_UNIT_SPELL_CAST)
+    call TriggerAddCondition(rootCast,Condition(function RootCancel_OnCast))
+    set rootCast = null
     call TriggerRegisterAnyUnitEventBJ(manaCast,EVENT_PLAYER_UNIT_SPELL_CAST)
     call TriggerAddCondition(manaCast,Condition(function ManaFix_Snapshot))
     call TriggerRegisterAnyUnitEventBJ(manaEnd,EVENT_PLAYER_UNIT_SPELL_ENDCAST)

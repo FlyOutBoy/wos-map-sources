@@ -530,18 +530,18 @@ function Regen takes nothing returns nothing
         call MeraMeraNoMi(u)
        endif
           if AinzF_HasHpRegenBuff(u) then
-            call SetHpCurrent2(u,u,15)
+            call SetHpCurrent2Quiet(u,u,15)
         endif
         
        if GetUnitAbilityLevel(u,'A0F9')>0 and BlzGetUnitAbilityCooldownRemaining(u,'A0F9')==0 then 
-        call SetHpCurrent2(u,u,ElixirOfLife_HpRegen)
+        call SetHpCurrent2Quiet(u,u,ElixirOfLife_HpRegen)
        endif
        if GetUnitAbilityLevel(u,'B01P')> 0 then 
-        call SetHpCurrent2(u,u,DarkHolyGrail_HpRegen)
-        call SetMpCurrent(u,DarkHolyGrail_MpRegen)
+        call SetHpCurrent2Quiet(u,u,DarkHolyGrail_HpRegen)
+        call SetMpCurrentQuiet(u,DarkHolyGrail_MpRegen)
         elseif GetUnitAbilityLevel(u,'B013')> 0 then 
-        call SetHpCurrent2(u,u,HolyGrail_HpRegen)
-        call SetMpCurrent(u,HolyGrail_MpRegen)
+        call SetHpCurrent2Quiet(u,u,HolyGrail_HpRegen)
+        call SetMpCurrentQuiet(u,HolyGrail_MpRegen)
         endif
         endif
         

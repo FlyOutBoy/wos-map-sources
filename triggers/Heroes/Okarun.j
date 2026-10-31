@@ -114,7 +114,7 @@ library OkarunSpells uses GearSystems
         real OkarunF_MaxSpeed2 = 700
         real OkarunF_MaxSpeed3 = 800
         real OkarunF_MaxSpeed4 = 900
-        real OkarunF_AddSpeedPercentPerSec = 5 // gain 10% of max speed per second
+        real OkarunF_AddSpeedPercentPerSec = 4.25 // % of max speed gained per second
         real OkarunF_DecreaseSpeedPercentPerSec = 1.2 // 2% of max speed decreased
     endglobals
     function OkarunF_MaxSpeed takes unit c returns real
@@ -495,7 +495,7 @@ library OkarunSpells uses GearSystems
         endmethod
     endstruct
 
-    // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
+    // Invulnerability: only the combo phase (after the dash catches a target) is Avul.
     private struct OkarunR_KS
         private static integer array m_OkarunR
         private static integer MUI_OkarunR = -1
@@ -524,7 +524,8 @@ library OkarunSpells uses GearSystems
                 if SpellBoolCaster(c)  and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c))== false and r <= rmax then
                     set r = r + 0.03
                     if check2 == 0 then
-                    call DebugUnit(c)
+                    // Dash: paused but hittable; invulnerability returns with the combo.
+                    call DebugUnit2(c)
                             if r> 0.36 then 
                             call MoveUnit(c, move, a)
                             if r4<OkarunR_Range then 
@@ -546,6 +547,7 @@ library OkarunSpells uses GearSystems
                                 set td = u
                                 set r = 0
                                 set check2 = 1
+                                call UnitAddAbility(c, 'Avul')
                                 set x = GetUnitX(td)
                                 set y = GetUnitY(td)                                
             call SaveInteger(hs,GetHandleId(c),SH_SPELL_P,0)
@@ -678,7 +680,7 @@ library OkarunSpells uses GearSystems
             set check = 0
             set check2 = 0
             set move = 100
-            call StartSpellUnit(c)
+            call StartSpellUnit2(c)
             set u = null
             set g = CreateGroup()
             set r4 = 0            

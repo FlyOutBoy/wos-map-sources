@@ -8,6 +8,9 @@ library GearSystems initializer Init uses GearSystems2
         private integer SH_FIRE_ARMOR_PAS = StringHash("fire armor pas")
         private integer SH_GOJO_E = StringHash("gojo e")
         private integer SH_INORI_E_ACTIVE = StringHash("Inori E Active")
+        private integer SH_INORI_AURA_DISABLED = StringHash("Inori aura disabled")
+        private integer SH_INORI_AURA_MODE_T = StringHash("mode t")
+        private integer SH_INORI_AURA_CURRENT_T = StringHash("current t")
         private integer SH_KIT_TYPE = StringHash("kit type")
         private integer SH_MODE_G = StringHash("mode g")
         private integer SH_MODE_T = StringHash("mode t")
@@ -615,6 +618,60 @@ function WOS_ProbeStart takes string label returns nothing
     call WOS_ProbeDump()
 endfunction
 
+    function InoriE_AuraResistance takes unit u, boolean magic returns real
+        local integer rank = 0
+        if u == null then
+            return 0.0
+        endif
+        if GetUnitAbilityLevel(u, InoriE_AuraRank6_ID) > 0 then
+            return 10.0
+        elseif GetUnitAbilityLevel(u, InoriE_Aura_ID) > 0 then
+            set rank = 5
+        elseif GetUnitAbilityLevel(u, InoriE_AuraRank4_ID) > 0 then
+            set rank = 4
+        elseif GetUnitAbilityLevel(u, InoriE_AuraRank3_ID) > 0 then
+            set rank = 3
+        elseif GetUnitAbilityLevel(u, InoriE_AuraRank2_ID) > 0 then
+            set rank = 2
+        elseif GetUnitAbilityLevel(u, InoriE_AuraRank1_ID) > 0 then
+            set rank = 1
+        endif
+        if magic and rank > 0 then
+            return InoriE_DmgMagResistFromPas
+        endif
+        return I2R(rank)
+    endfunction
+
+    function InoriE_ApplyAuraResistance takes unit u, real amount, integer damageType returns real
+        if damageType < 0 or damageType > 2 then
+            return amount
+        endif
+        set amount = amount * (1.0 - InoriE_AuraResistance(u, damageType == 1) / 100.0)
+        if GetUnitAbilityLevel(u, InoriT2_AuraBuff_ID) > 0 then
+            set amount = amount * (1.0 + InoriT2_AuraResistDown / 100.0)
+        endif
+        return amount
+    endfunction
+
+    function InoriE_UpdateAura takes unit c returns nothing
+        local integer rank = IMinBJ(5, GetUnitAbilityLevel(c, InoriE_ID))
+        local integer hid = GetHandleId(c)
+        local boolean disabled = LoadInteger(hs, hid, SH_INORI_AURA_MODE_T) == 1
+        if rank > 0 then
+            if not disabled and rank == 5 and GetHeroLevel(c) >= 25 and LoadInteger(hs, hid, SH_INORI_AURA_CURRENT_T) != InoriT2_ID then
+                set rank = 6
+            endif
+            if GetUnitAbilityLevel(c, InoriEAlt2_ID) != rank then
+                call SetUnitAbilityLevel(c, InoriEAlt2_ID, rank)
+            endif
+        endif
+        if not HaveSavedBoolean(hs, hid, SH_INORI_AURA_DISABLED) or LoadBoolean(hs, hid, SH_INORI_AURA_DISABLED) != disabled then
+            call SaveBoolean(hs, hid, SH_INORI_AURA_DISABLED, disabled)
+            call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriEAlt2_ID, not disabled)
+            call BlzUnitDisableAbility(c, InoriEAlt2_ID, disabled, disabled)
+        endif
+    endfunction
+
 function LearnHeroSpells takes unit c returns nothing
 local integer id = GetUnitTypeId(c)
 local integer i = 0
@@ -941,7 +998,7 @@ endif
 endif
 endif
 if id == Inori_ID then 
-    call SetUnitAbilityLevel(c,InoriEAlt2_ID,GetUnitAbilityLevel(c,InoriE_ID))
+    call InoriE_UpdateAura(c)
 endif
 if HasCachedItem(c, 'I00Q') > 0 and GetItemCharges(UnitItemInSlot(c, IsItemInInventory3(c, 'I00Q'))) > 0 then
         call SetItemCharges(UnitItemInSlot(c, IsItemInInventory3(c, 'I00Q')), 0)
@@ -1197,13 +1254,23 @@ return result
 endfunction
 // Displayed/total regen: heal amplifiers (Ainz F, Shun Shun Rikka) also boost passive regen.
 function GetHpRegen takes unit c returns real
-return GetHpRegenBase(c) * RMaxBJ(0.00, GetHealMultiplier(c)) // amps and all heal cuts (Grail, Inori T, Kirito T, Rimuru Q...)
+// Scripted restores (Elixir, HPS items, lifesteal, hero heals) are already amplified.
+return GetHpRegenBase(c) * RMaxBJ(0.00, GetHealMultiplier(c)) + GetScriptHpRegen(c) // amps and all heal cuts (Grail, Inori T, Kirito T, Rimuru Q...)
 endfunction
-function GetMpRegenBase takes unit c returns real
+function GetMpRegenNative takes unit c returns real
  return BlzGetUnitRealField(c,UNIT_RF_MANA_REGENERATION)+GetHeroInt(c,true)*int_mpregen
 endfunction
+function GetMpRegenBase takes unit c returns real
+ if GetUnitAbilityLevel(c,ChogurtEvolved_AuraBuff_ID) > 0 then // Chogurt Evolved aura (added by HealAmp_Apply)
+  return GetMpRegenNative(c) + ChogurtEvolved_AuraMpRegen
+ endif
+ return GetMpRegenNative(c)
+endfunction
 function GetMpRegen takes unit c returns real
- return GetMpRegenBase(c) * (1.00 + GetManaAmp(c))
+ if GetUnitAbilityLevel(c,FiveElementsSeal_Buff_ID) > 0 then // Five Elements Seal: no mana regeneration
+  return 0.00
+ endif
+ return GetMpRegenBase(c) * (1.00 + GetManaAmp(c)) + GetScriptMpRegen(c)
 endfunction
 
 globals
@@ -1229,12 +1296,22 @@ private function HealAmp_Apply takes unit u returns nothing
             call SetUnitState(u, UNIT_STATE_LIFE, RMaxBJ(1.00, GetUnitState(u, UNIT_STATE_LIFE) + r))
         endif
     endif
-    set amp = GetManaAmp(u)
-    if amp > 0.00 and GetUnitState(u, UNIT_STATE_MANA) < GetUnitState(u, UNIT_STATE_MAX_MANA) then
-        set r = GetMpRegenBase(u) * amp * HEAL_AMP_PERIOD
+    if GetUnitAbilityLevel(u, FiveElementsSeal_Buff_ID) > 0 then
+        // Five Elements Seal: cancel the native mana regeneration of this period.
+        set r = GetMpRegenNative(u) * HEAL_AMP_PERIOD
         if r > 0.00 then
-            call SetUnitState(u, UNIT_STATE_MANA, GetUnitState(u, UNIT_STATE_MANA) + r)
+            call SetUnitState(u, UNIT_STATE_MANA, RMaxBJ(0.00, GetUnitState(u, UNIT_STATE_MANA) - r))
         endif
+        return
+    endif
+    set amp = GetManaAmp(u)
+    // Amplified part of the regeneration plus the scripted Chogurt Evolved aura.
+    set r = GetMpRegenBase(u) * RMaxBJ(0.00, amp) * HEAL_AMP_PERIOD
+    if GetUnitAbilityLevel(u, ChogurtEvolved_AuraBuff_ID) > 0 then
+        set r = r + ChogurtEvolved_AuraMpRegen * HEAL_AMP_PERIOD
+    endif
+    if r > 0.00 and GetUnitState(u, UNIT_STATE_MANA) < GetUnitState(u, UNIT_STATE_MAX_MANA) then
+        call SetUnitState(u, UNIT_STATE_MANA, GetUnitState(u, UNIT_STATE_MANA) + r)
     endif
 endfunction
 
@@ -1296,6 +1373,9 @@ set base = base + 40
 endif
 if GetUnitAbilityLevel(c,KusanagiGrade_Atk_ID) > 0 then
 set base = base + 60
+endif
+if GetUnitAbilityLevel(c,Samehada_Atk_ID) > 0 then
+set base = base + 45
 endif
 
 return base 
@@ -2103,6 +2183,7 @@ endfunction
     function DebuffImmune_Start takes unit c, integer level returns integer
 local integer k = level 
 local real cd = 0
+local unit d
 if GearCCProtected(c) then
     return 0
 endif
@@ -2153,6 +2234,26 @@ endif
 endif
 if LoadInteger(hs,GetHandleId(c),SH_DEBUFF_IMMUNE) == 1 then 
 set k = 0
+endif
+if k > 0 then
+    if LoadInteger(hs,GetHandleId(c),SH_ARMAMENT_HAKI_IMMUNE) == 1 then
+        set k = 0
+    elseif HasCachedItem(c,ArmamentHakiEvolved_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c,ArmamentHakiEvolved_CD_ID) == 0 then
+        set k = 0
+        call BlzStartUnitAbilityCooldown(c,ArmamentHakiEvolved_CD_ID,ArmamentHaki_CD)
+        call SaveInteger(hs,GetHandleId(c),SH_ARMAMENT_HAKI_IMMUNE,1)
+        call MyFlush(GetHandleId(c),SH_ARMAMENT_HAKI_IMMUNE,0,ArmamentHaki_ImmuneTime)
+        set d = CreateUnit(GetOwningPlayer(c),'h0C9',GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster),0)
+        call UnitAddAbility(d,ArmamentHaki_BuffAbi_ID)
+        call IssueTargetOrder(d,"innerfire",c)
+        call MyRemoveUnit(d,0.5)
+        set d = null
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl",c,"origin"))
+    elseif HasCachedItem(c,ArmamentHaki_ID) > 0 and BlzGetUnitAbilityCooldownRemaining(c,ArmamentHaki_CD_ID) == 0 then
+        set k = 0
+        call BlzStartUnitAbilityCooldown(c,ArmamentHaki_CD_ID,ArmamentHaki_CD)
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl",c,"origin"))
+    endif
 endif
 return k 
 endfunction
@@ -2246,7 +2347,7 @@ endfunction
         call DebuffClear(u)        
         call UnitAddAbility(u,'A0E1')
         call MyRemoveAbility(u,1.5,'A0E1',1)
-        call SetHpCurrent2(c,c,500)
+        call SetHpCurrent2(u,u,Jewel_HpRestore + GetUnitState(u,UNIT_STATE_MAX_LIFE)*Jewel_HpRestorePercent/100.0)
         call BlzStartUnitAbilityCooldown(u,'A09U',18)
         call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_[tx]_sishu_d.mdl",u,"origin"),5)
         endif
@@ -2405,7 +2506,7 @@ endfunction
         call DebuffClear(u)        
         call UnitAddAbility(u,'A0E1')
         call MyRemoveAbility(u,1.5,'A0E1',1)
-        call SetHpCurrent2(c,c,500)
+        call SetHpCurrent2(u,u,Jewel_HpRestore + GetUnitState(u,UNIT_STATE_MAX_LIFE)*Jewel_HpRestorePercent/100.0)
         call BlzStartUnitAbilityCooldown(u,'A09U',18)
         call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_[tx]_sishu_d.mdl",u,"origin"),5)
         endif
@@ -2975,6 +3076,25 @@ function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean t
         endif
     endif
 
+    // Black Clover: every resist stack (buff level of A07D = stacks) also cuts damage taken.
+    if HasCachedItem(td, 'I013') > 0 then
+        set stacks = 0
+        if GetUnitAbilityLevel(td, 'B00U') > 0 then
+            set stacks = 6
+        elseif GetUnitAbilityLevel(td, 'B00Q') > 0 then
+            set stacks = 5
+        elseif GetUnitAbilityLevel(td, 'B00P') > 0 then
+            set stacks = 4
+        elseif GetUnitAbilityLevel(td, 'B00O') > 0 then
+            set stacks = 3
+        elseif GetUnitAbilityLevel(td, 'B00N') > 0 then
+            set stacks = 2
+        elseif GetUnitAbilityLevel(td, 'B00M') > 0 then
+            set stacks = 1
+        endif
+        set dmg = dmg * (1.0 - BlackClover_StackReduce * I2R(stacks) / 100.0)
+    endif
+
     // Harribel G2
     if LoadInteger(hs, targetHid, KEY_HARI_G2) == 1 then
         set dmg = dmg * (1.0 - Harribel_Pas_DmgReduct / 100.0)
@@ -3032,7 +3152,7 @@ endif
 
         // Р С’Р С”РЎвЂљР С‘Р Р†Р Р…Р С•Р Вµ РЎРѓР С•Р С—РЎР‚Р С•РЎвЂљР С‘Р Р†Р В»Р ВµР Р…Р С‘Р Вµ Blue Emperor
         if LoadInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES) == 1 then
-            set dmg = dmg * 0.8
+            set dmg = dmg * (1.0 - BlueEmperor_PhysReduce / 100.0)
         endif
 
         // Р С’Р С”РЎвЂљР С‘Р Р†Р В°РЎвЂ Р С‘РЎРЏ Blue Emperor
@@ -3041,7 +3161,7 @@ endif
         */ and HasCachedItem(td, 'I00X') > 0 /*
         */ and BlzGetUnitAbilityCooldownRemaining(td, 'A04Q') == 0.0 then
 
-            set dmg = dmg * 0.8
+            set dmg = dmg * (1.0 - BlueEmperor_PhysReduce / 100.0)
 
             call SaveInteger(hs, targetHid, KEY_BLUE_EMPEROR_RES, 1)
             call MyFlush(targetHid, KEY_BLUE_EMPEROR_RES, 0, 4.0)
@@ -3160,11 +3280,6 @@ endif
             set itemMagRes = itemMagRes + 4.0
         endif
         
-        // Inori E
-        if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 then
-            set dmg = dmg * (1.0 - InoriE_DmgMagResistFromPas / 100.0)
-        endif
-
         // Р вЂ”Р В°РЎвЂ°Р С‘РЎвЂљР В° dummy-РЎР‹Р Р…Р С‘РЎвЂљР С•Р Р† Kenjaku
         if targetId == KenjakuE2_Dummy_ID then
             if GetUnitAbilityLevel(Hero[targetPid], KenjakuE_ID) >= 5 then
@@ -3216,7 +3331,7 @@ endif
         endif
 
         if GetUnitAbilityLevel(td, 'A019') > 0 then
-            set dmg = dmg * 0.82
+            set dmg = dmg * (1.0 - WitchSin_MagicReduce / 100.0)
         endif
 
      if TestMode == true and HaveSavedReal(hs, targetHid, KEY_MAG_RES) then
@@ -3276,6 +3391,9 @@ endif
 
    
     
+    // Native aura buffs carry the rank; percentage resistance applies to both damage families.
+    set dmg = InoriE_ApplyAuraResistance(td, dmg, typedmg)
+
     set dmg = ApplyGearSystemFullShields(c, td, dmg, shieldTriggerDmg, typedmg, test)
 
     set targetOwner = null
@@ -3462,7 +3580,11 @@ function DamageCheckModifiers takes unit c, unit td, real dmg, integer typedmg r
         endif
 
         if GetUnitAbilityLevel(td, ErzaWape_ID) > 0 then
-            set dmg = dmg * (1.0 + ErzaWape_IncreaseDmg / 100.0)
+            if HasCachedItem(c, KyokaSuigetsu_ID) > 0 then
+                set dmg = dmg * (1.0 + (ErzaWape_IncreaseDmg + KyokaSuigetsu_SteamBonus) / 100.0)
+            else
+                set dmg = dmg * (1.0 + ErzaWape_IncreaseDmg / 100.0)
+            endif
         endif
     endif
 
@@ -3787,6 +3909,17 @@ function PreloadTransformSkins takes nothing returns nothing
     // Starrk base/E morph.
     call TransformPreloadUnit('H01X')
     call TransformPreloadUnit('H01Y')
+
+    // Gojo T (Purple): first cast no longer loads these models mid-fight.
+    call Preload("war3mapImported\\wos_m2 (573).mdx")
+    call Preload("war3mapimported\\wos_wtw-whitethunder-zi.mdl")
+    call Preload("war3mapImported\\wos_Bubbles2_1purp.mdl")
+    call Preload("war3mapImported\\wos_BubbleCamera.mdl")
+    call Preload("war3mapimported\\wos_rasenganbiru_purp4.mdl")
+    call Preload("war3mapimported\\wos_WTW-Wood_NEF_Odr-Ci.mdl")
+    call Preload("war3mapImported\\wos_T_Button.mdx")
+    call Preload("war3mapimported\\wos_opm (664).mdl")
+    call Preload("war3mapImported\\wos_opdef (100)11.mdl")
 
     // Common effects created/recreated by transforms and FixAura.
     call Preload("war3mapimported\\wos_[dz_spell]002_blue5.mdl")

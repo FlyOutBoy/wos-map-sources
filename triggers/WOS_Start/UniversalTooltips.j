@@ -2052,7 +2052,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_002_CrocodileW_ID takes nothing returns nothing
-        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage and " + FormatReal(CrocodileW_ComboStun) + " sec stun.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(CrocodileW_ID, 5, 1, 2, CrocodileW_DamageAgi, 0.0, T_Dur("Cast Time", CrocodileW_CastTime) + T_Rad(CrocodileW_Aoe) + T_Dur("Duration", CrocodileW_Duration) + T_Prop("Hits", I2R(CrocodileW_Hits)) + T_Slow(I2R(CrocodileW_Slow), CrocodileW_Duration) + T_Prop("Max Passive Mana Burns", I2R(CrocodileW_ManaBurnHits)) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("Q Combo", "Agility x " + FormatReal(CrocodileW_ComboDamageAgi) + " physical damage, " + FormatReal(CrocodileW_ComboStunEarly) + " sec stun and a partial pull.") + T_Bonus("Hero Lv. " + I2S(CrocodileW_ComboFullLevel), "Q Combo stun " + FormatReal(CrocodileW_ComboStun) + " sec and pulls enemies all the way to the center.") + T_Bonus("R Combo", "Extends both abilities by " + FormatReal(CrocodileWR_DurationBonus) + " sec.") + T_Bonus("Hero Lv. 35", "Cast pause is halved. Applies Q's 5 sec sand mark; marked enemies leave ground sand as they move.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_003_CrocodileE_ID takes nothing returns nothing
@@ -2155,7 +2155,7 @@ endif
 
     function WOS_UTB_Init_024_AinzQ2_ID takes nothing returns nothing
         // --- ДОПОЛНИТЕЛЬНЫЕ И СВЯЗАННЫЕ СПОСОБНОСТИ ---
-        call SpellData.create(AinzQ2_ID, 5, 2, 3, AinzQ_DamageIntBase, AinzQ_DamageIntStep, AinzQ_Damage2StaticBase, AinzQ_Damage2StaticStep, T_Rad(AinzQ_DamageAoe) + T_Prop("Ring Radius", AinzQ2_MineOffset) + T_Prop("Mines Placed", AinzQ2_MineCount) + T_Dur("Mine Lifetime", AinzQ_MineDuration), T_Bonus("Formation", "Places 6 mines in a ring around target area")).setDecor(T_Decor(AinzQ2_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AinzQ2_ID, 5, 2, 3, AinzQ_DamageIntBase, AinzQ_DamageIntStep, AinzQ_Damage2StaticBase, AinzQ_Damage2StaticStep, T_Rad(AinzQ_DamageAoe) + T_Prop("Ring Radius", AinzQ2_MineOffset) + T_Prop("Mines Placed", AinzQ2_MineCount) + T_Dur("Mine Lifetime", AinzQ2_MineDuration), T_Bonus("Formation", "Places " + I2S(AinzQ2_MineCount) + " mines in a ring around target area")).setDecor(T_Decor(AinzQ2_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_025_AinzW2_ID takes nothing returns nothing
@@ -2452,7 +2452,7 @@ endif
 
     function WOS_UTB_Init_085_KiritoR_ID takes nothing returns nothing
         
-        call SpellData.createSimple(KiritoR_ID, 5, 1, 2, KiritoR_DamageAgiBase, KiritoR_DamageAgiStep, "Duration: <L:" + FormatReal(KiritoR_DurationBase) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 2) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 3) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 4) + "> sec|n" + T_Rad(KiritoR_DamageAoe), T_Bonus("Final Strike (13th)", "Agility x <L:" + FormatReal(KiritoR_Damage2AgiBase) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 2) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 3) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 4) + "> Dmg")).setPreviewChannel()
+        call SpellData.createSimple(KiritoR_ID, 5, 1, 2, KiritoR_DamageAgiBase, KiritoR_DamageAgiStep, "Duration: <L:" + FormatReal(KiritoR_DurationBase) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 2) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 3) + "/" + FormatReal(KiritoR_DurationBase + KiritoR_DurationStep * 4) + "> sec|n" + T_Rad(KiritoR_DamageAoe) + "|nQuick strikes: " + I2S(KiritoR_QuickHits) + " hits; strong strike: " + I2S(KiritoR_StrongHits) + " hits. Each hit counts as a basic attack.", T_Bonus("Final Strike (13th)", "Agility x <L:" + FormatReal(KiritoR_Damage2AgiBase) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 2) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 3) + "/" + FormatReal(KiritoR_Damage2AgiBase + KiritoR_Damage2AgiStep * 4) + "> Dmg")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_086_KiritoT_ID takes nothing returns nothing
@@ -2828,7 +2828,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_166_MahoragaR_ID takes nothing returns nothing
-        call SpellData.createUtility(MahoragaR_ID, 5, "Heal: Agility x <L:" + FormatReal(MahoragaR_HealAgiBase) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*2) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*3) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*4) + ">|n" + T_Dur("Duration", MahoragaR_Duration), T_Bonus("Lv. 35", "Dispels debuffs and grants Debuff Immunity")).setPreviewChannel()
+        call SpellData.createUtility(MahoragaR_ID, 5, "Heal: Agility x <L:" + FormatReal(MahoragaR_HealAgiBase) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*2) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*3) + "/" + FormatReal(MahoragaR_HealAgiBase+MahoragaR_HealAgiStep*4) + ">|n" + T_Dur("Duration", MahoragaR_Duration) + T_PropS("Heal Ticks", "every " + FormatReal(MahoragaR_HealPeriod) + " sec"), T_Bonus("Lv. 35", "Dispels debuffs and grants Debuff Immunity")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_167_MahoragaT_ID takes nothing returns nothing
@@ -3182,7 +3182,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_242_BazzBG_ID takes nothing returns nothing
-        call SpellData.createUtility(BazzBG_ID, 1, "", T_Bonus("The Heat", "Casting abilities reduces all cooldowns by " + FormatReal(BazzBG_CdReduce1) + "/" + FormatReal(BazzBG_CdReduce2) + "/" + FormatReal(BazzBG_CdReduce3) + " sec (Lv. 12/25/35)") + T_Bonus("Lv. 35", "All damaging abilities apply the Fire debuff."))
+        call SpellData.createUtility(BazzBG_ID, 1, "", T_Bonus("The Heat", "Casting abilities reduces all cooldowns by " + FormatReal(BazzBG_CdReduce1) + "/" + FormatReal(BazzBG_CdReduce2) + "/" + FormatReal(BazzBG_CdReduce3) + " sec (Lv. 12/25/35)") + T_Bonus("Lv. " + I2S(BazzB_FireLevel), "All damaging abilities apply the Fire debuff."))
     endfunction
 
     function WOS_UTB_Init_243_BazzB_ID takes nothing returns nothing
@@ -3243,7 +3243,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_254_OkarunR_ID takes nothing returns nothing
-        call SpellData.createSimple(OkarunR_ID, 5, 1, 3, OkarunR_DamageIntBase, OkarunR_DamageIntStep, T_Prop("Dash Range", OkarunR_Range) + "Throws target " + I2S(R2I(OkarunR_PushFly)) + " units in the air and knocks back " + I2S(R2I(OkarunR_PushRange)) + " units|n" + T_Stun(OkarunR_StunFinal), "Damage increased by <L:" + I2S(R2I(OkarunR_DamageSpeedBonusBase)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*2)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*3)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*4)) + ">% of Current Speed").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(OkarunR_ID, 5, 1, 3, OkarunR_DamageIntBase, OkarunR_DamageIntStep, T_Prop("Dash Range", OkarunR_Range) + "Throws target " + I2S(R2I(OkarunR_PushFly)) + " units in the air and knocks back " + I2S(R2I(OkarunR_PushRange)) + " units|n" + T_Stun(OkarunR_StunFinal) + T_PropS("Iframe", "combo only, not during the dash"), "Damage increased by <L:" + I2S(R2I(OkarunR_DamageSpeedBonusBase)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*2)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*3)) + "/" + I2S(R2I(OkarunR_DamageSpeedBonusBase+OkarunR_DamageSpeedBonusStep*4)) + ">% of Current Speed").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_255_OkarunT_ID takes nothing returns nothing
@@ -3273,7 +3273,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_260_InoriE_ID takes nothing returns nothing
-        call SpellData.createUtility(InoriE_ID, 5, "Passive: Gains a stack when allies within " + I2S(R2I(InoriE_AoeSearch)) + " range take damage|nActive: Consumes stacks to upgrade basic abilities and gain HP Regeneration for " + FormatReal(InoriE_Duration) + " sec", "")
+        call SpellData.createUtility(InoriE_ID, 5, "Aura: +<L:1/2/3/4/5>% physical resistance and +5% magic resistance to allies within " + I2S(R2I(InoriE_AuraRange)) + " range|nPassive: Gains Instability when allied heroes in the aura take at least " + I2S(R2I(InoriE_DmgCap)) + " damage|nActive: Consumes stacks to upgrade basic abilities and gain HP Regeneration for " + FormatReal(InoriE_Duration) + " sec|nThe allied aura and Instability are disabled during T2", T_Bonus("Lv. 25, T1 selected", "Aura automatically becomes non-learnable rank 6: +10% physical and +10% magic resistance. Selecting T2 restores rank 5."))
     endfunction
 
     function WOS_UTB_Init_261_InoriR_ID takes nothing returns nothing
@@ -3325,7 +3325,7 @@ endif
         local HeroData form
         
         set form = HeroData.create(Inori_ID, 0, InoriQ_ID, InoriW_ID, InoriE_ID, InoriR_ID, InoriT_ID, InoriF_ID, InoriG_ID, InoriT2_ID, InoriQ2_ID, InoriW2_ID)
-        call form.addExtra(InoriER_ID, InoriQ3_ID, InoriW3_ID, InoriR2_ID, 0, 0, 0, 0, 0, 0)
+        call form.addExtra(InoriER_ID, InoriQ3_ID, InoriW3_ID, InoriR2_ID, InoriE2_ID, 0, 0, 0, 0, 0)
     endfunction
 
     function WOS_UTB_Init_273_KenjakuQ_ID takes nothing returns nothing
@@ -3417,7 +3417,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_292_AlterSaberR_ID takes nothing returns nothing
-        call SpellData.createUtility(AlterSaberR_ID, 5, "Morph Duration: <L:" + I2S(AlterSaberR_DurationBase) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*2) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*3) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*4) + "> sec", "").setPreviewChannel()
+        call SpellData.createUtility(AlterSaberR_ID, 5, "Morph Duration: <L:" + I2S(AlterSaberR_DurationBase) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*2) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*3) + "/" + I2S(AlterSaberR_DurationBase+AlterSaberR_DurationStep*4) + "> sec|n" + T_Dur("Transformation", AlterSaberR_MorphTime), "").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_293_AlterSaberT_ID takes nothing returns nothing
@@ -3911,7 +3911,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_398_Erza2W_ID takes nothing returns nothing
-        call SpellData.createUtility(Erza2W_ID, 5, T_Rad(Erza2W_Aoe) + T_Push(Erza2W_PushDistance) + T_Dur("Jump Duration", Erza2W_DurationBase), "Applies Water debuff to enemies.|nGrants nearby allies Bonus Armor, Invisibility, and heals " + FormatReal(Erza2W_AllyBuffHealBase) + " HP over " + FormatReal(Erza2W_AllyBuffDurationBase) + " sec.").setPreviewChannel()
+        call SpellData.createUtility(Erza2W_ID, 5, T_Rad(Erza2W_Aoe) + T_Push(Erza2W_PushDistance) + T_Dur("Jump Duration", Erza2W_DurationBase), "Applies Water debuff to enemies.|nGrants nearby allies Bonus Physical Resistance, Invisibility, and heals " + FormatReal(Erza2W_AllyBuffHealBase) + " HP over " + FormatReal(Erza2W_AllyBuffDurationBase) + " sec.").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_399_Erza2E_ID takes nothing returns nothing
@@ -4309,7 +4309,7 @@ endif
 
     // One job per ability: a single Frostnova job exceeded the op limit and skipped T/F/HeroData.
     function WOS_UTB_Init_484_FrostnovaQ_ID takes nothing returns nothing
-        call SpellData.create(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, FrostnovaQ_DamageStatic, 0.0, T_Rad(FrostnovaQ_Aoe) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_PropS("Recharge", "<L:17/16/15/14/13> sec"), T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "Pierces enemies, +30% speed.")).setDecor(T_Decor(FrostnovaQ_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, FrostnovaQ_DamageStatic, 0.0, T_Rad(FrostnovaQ_Aoe) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_PropS("Recharge", "<L:17/16/15/14/13> sec"), T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "Pierces enemies, +" + I2S(R2I((FrostnovaTQ_SpeedMultiplier - 1.0) * 100.0 + 0.5)) + "% speed.")).setDecor(T_Decor(FrostnovaQ_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_485_FrostnovaW_ID takes nothing returns nothing
@@ -4335,6 +4335,10 @@ endif
     function WOS_UTB_Init_490_Frostnova takes nothing returns nothing
         local HeroData form
         set form = HeroData.create(Frostnova_ID, 0, FrostnovaQ_ID, FrostnovaW_ID, FrostnovaE_ID, FrostnovaR_ID, FrostnovaT_ID, FrostnovaF_ID, 0, 0, 0, 0)
+    endfunction
+
+    function WOS_UTB_Init_491_InoriE2_ID takes nothing returns nothing
+        call SpellData.createUtility(InoriE2_ID, 1, "T2 enemy aura: -" + FormatReal(InoriT2_AuraResistDown) + "% physical resistance and -" + FormatReal(InoriT2_AuraResistDown) + "% magic resistance|n" + T_Rad(InoriT2_AuraRange) + "The allied E aura and Instability passive are disabled|nEvery 0.5 sec, an Apocalypse beam hits a random point within " + I2S(R2I(InoriT_CrystalMaxRange)) + " range: Intelligence x " + FormatReal(InoriT2_DamageIntBase) + " magic damage", "")
     endfunction
 
     private function InitTooltipQueue takes nothing returns nothing
@@ -4828,7 +4832,8 @@ endif
         set UTB_InitJobs[488] = "WOS_UTB_Init_488_FrostnovaT_ID"
         set UTB_InitJobs[489] = "WOS_UTB_Init_489_FrostnovaF_ID"
         set UTB_InitJobs[490] = "WOS_UTB_Init_490_Frostnova"
-        set UTB_InitJobCount = 490
+        set UTB_InitJobs[491] = "WOS_UTB_Init_491_InoriE2_ID"
+        set UTB_InitJobCount = 491
         set UTB_InitJobIndex = 1
     endfunction
 

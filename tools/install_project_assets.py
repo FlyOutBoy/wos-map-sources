@@ -2,7 +2,7 @@
 
 Covers files that are generated once and kept in the project:
   assets/ReplaceableTextures/**      item icons (tools/build_item_icons.py)
-  assets/effects/war3mapImported/**  Kusanagi slash/aura copies (tools/build_kusanagi_effects.py)
+  assets/effects/war3mapImported/**  Kusanagi copies and the repaired Ashen Crossfire model
   assets/FrostnovaRelease/files/war3mapImported/**  reviewed Frostnova models/textures/audio
   assets/optimized/{war3mapImported,land_wos}/**  particle-reduced copies of map models (2026-10-24);
       kept here because a World Editor re-save rewrites war3mapImported with older copies

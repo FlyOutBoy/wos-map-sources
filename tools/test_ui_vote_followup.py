@@ -80,6 +80,7 @@ class DualMeters(unittest.TestCase):
         self.assertIn('6.0s',f.texts[vm.g['WUI_ProgressValue'][1]])
         top=vm.g['WUI_MeterEdges'][key,22]
         self.assertIn('2 / 4',f.texts[top])
+        vm.elapsed+=1.0  # rows redraw at most every 0.10 s of game time
         vm.run('WUI_HeroProgressDual',(f.hero,10,'Eye',5.,7.,3.,4.))
         self.assertEqual(count,len(f.created))
         self.assertIn('3 / 4',f.texts[top])
@@ -146,7 +147,7 @@ class PortraitAndAssets(unittest.TestCase):
                 factor=4*height/(3*width)
                 self.assertEqual('FRAMEPOINT_BOTTOMLEFT',point[1])
                 self.assertAlmostEqual(.1945+shift-.05125/2,.4+(point[2]-.4)/factor)
-                self.assertAlmostEqual(.055-.05125*.45,point[3])  # raised 5% of its height
+                self.assertAlmostEqual(.055-.05125*.465,point[3])  # raised 3.5% of its height
                 self.assertEqual('FRAMEPOINT_TOPRIGHT',top[1])
                 self.assertAlmostEqual(.05125,(top[2]-point[2])/factor)
                 self.assertAlmostEqual(.05125,top[3]-point[3])

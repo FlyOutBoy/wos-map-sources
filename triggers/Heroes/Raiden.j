@@ -2105,7 +2105,7 @@ library RaidenSpells uses GearSystems
                     endif
                     call BlzSetSpecialEffectScale(e, scale)
                     if r2 > 0.90 then
-                        call SetMpCurrent(c, ((RaidenW_ManaRestore / 100.0) * GetUnitState(c, UNIT_STATE_MAX_MANA)) / rmax)
+                        call SetMpCurrentQuiet(c, ((RaidenW_ManaRestore / 100.0) * GetUnitState(c, UNIT_STATE_MAX_MANA)) / rmax)
                         set r2 = 0
                     else
                         set r2 = r2 + 0.03

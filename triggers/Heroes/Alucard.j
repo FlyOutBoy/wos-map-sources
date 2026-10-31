@@ -930,7 +930,7 @@ library AlucardSpells uses GearSystems
                     if check == 1 then 
                     set x = GetUnitX(td)
                     set y = GetUnitY(td)
-                    call SetHpCurrent2(c,c, r5)
+                    call SetHpCurrent2Quiet(c,c, r5)
                     call GroupClear(g)
                                 call GroupEnumUnitsInRange(g, x, y, 2000, NoDecor_Cond)
                                 loop
@@ -945,7 +945,7 @@ library AlucardSpells uses GearSystems
                                     endif
                                     call GroupRemoveUnit(g, u)
                                 endloop
-                     call SetHpCurrent2(c,c, r5)
+                     call SetHpCurrent2Quiet(c,c, r5)
                                             else
                         call MakeSound("war3mapimported\\Hero_Alucard_W3")
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_blood impact.mdl", GetUnitX(td), GetUnitY(td), a * bj_RADTODEG, 1, 2.5, 0))
@@ -955,7 +955,7 @@ library AlucardSpells uses GearSystems
                         set y = GetUnitY(td)
                         call DamageSource(src)
                         call dmgphys(c, td, dmg)                  
-                        call SetHpCurrent2(c,c, r5)
+                        call SetHpCurrent2Quiet(c,c, r5)
                         call CurseUnit(c,td,5)
                         endif
                     endif

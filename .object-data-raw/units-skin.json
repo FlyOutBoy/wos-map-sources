@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3u",
-  "source_sha256": "9cd18b095ac24c632ca2736f6995586f229f6079e5b28cc2d6ea5a69e63f8657",
+  "source_sha256": "2d7d60cac9705909d829d465ae61a900bc4171a821275d8a545f68ec6cf51390",
   "kind": "units",
   "record_mode": "simple",
   "format_version": 3,
@@ -1188,10 +1188,10 @@
           "field_name": "Model / Модель",
           "type": "string",
           "data": {
-            "value": "war3mapImported\\wos_shulao.mdl",
-            "_original_value": "war3mapImported\\wos_shulao.mdl",
+            "value": "war3mapimported\\wos_file00001323.mdl",
+            "_original_value": "war3mapimported\\wos_file00001323.mdl",
             "_encoding": "utf-8",
-            "_raw_base64": "d2FyM21hcEltcG9ydGVkXHdvc19zaHVsYW8ubWRs"
+            "_raw_base64": "d2FyM21hcGltcG9ydGVkXHdvc19maWxlMDAwMDEzMjMubWRs"
           },
           "sanity_check": {
             "text": "",
@@ -11360,6 +11360,41 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ua1m",
+            "hex": "7561316D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapimported\\wos_alucard bullet.mdl",
+            "_original_value": "war3mapimported\\wos_alucard bullet.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcGltcG9ydGVkXHdvc19hbHVjYXJkIGJ1bGxldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
+        },
+        {
+          "field": {
+            "text": "uimz",
+            "hex": "75696D7A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 90.0,
+            "_original_value": 90.0,
+            "_raw_hex": "0000B442"
+          },
+          "sanity_check": {
+            "text": "H017",
+            "hex": "48303137"
+          }
         }
       ],
       "display_name": "Yuzuriha Inori"
@@ -11667,6 +11702,41 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ua1m",
+            "hex": "7561316D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "war3mapimported\\wos_alucard bullet.mdl",
+            "_original_value": "war3mapimported\\wos_alucard bullet.mdl",
+            "_encoding": "utf-8",
+            "_raw_base64": "d2FyM21hcGltcG9ydGVkXHdvc19hbHVjYXJkIGJ1bGxldC5tZGw="
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
+          }
+        },
+        {
+          "field": {
+            "text": "uimz",
+            "hex": "75696D7A"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 90.0,
+            "_original_value": 90.0,
+            "_raw_hex": "0000B442"
+          },
+          "sanity_check": {
+            "text": "H018",
+            "hex": "48303138"
           }
         }
       ],

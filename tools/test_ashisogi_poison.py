@@ -11,7 +11,7 @@ class AshisogiPoison(unittest.TestCase):
         src = (ROOT / 'triggers/Systems/DecorDestroy_and_Erza_Debuff.j').read_text(encoding='utf-8-sig')
         self.assertNotIn('SH_ASHISOGI_LEFT', src)  # no private tick counter: a dispel must end it
         loop = re.search(r'method Loop_Elemental takes.*?endmethod', src, re.S).group(0)
-        alive = re.search(r'if k2 == 10 then\s*\n\s*set alive = [^\n]*\n\s*else\s*\n\s*set alive = GetUnitAbilityLevel\(td, id\) > 0', loop)
+        alive = re.search(r'if k2 == 10 then\s*\n\s*set alive = [^\n]*\n\s*else\s*\n\s*set alive = GetWidgetLife\(td\) > 0\.405 and GetUnitAbilityLevel\(td, id\) > 0', loop)
         self.assertIsNotNone(alive)
         self.assertIn('set id = AshisogiJizo_Buff_ID', src)
 

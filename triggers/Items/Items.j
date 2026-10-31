@@ -1,4 +1,4 @@
-library ItemsSpells uses GearSystems
+library ItemsSpells initializer ItemsAnime_Init uses GearSystems
     globals
         // One hero tick replaces the per-ability 0.03 timers (runs only while any is active).
         private timer ItemsTick_Timer = CreateTimer()
@@ -110,7 +110,7 @@ library ItemsSpells uses GearSystems
         unit array MeraMeraDummy
 //----------------------Yata Mirror----------------------------------------------
         real YataMirror_Range = 1000       
-        real YataMirror_ReversedDmg = 35// %
+        real YataMirror_ReversedDmg = 30// %
 //----------------------FairyTailEmblem----------------------------------------------
         real FairyTailEmblem_CD = 18
         real FairyTailEmblem_ManaRestoreStatic = 250
@@ -136,7 +136,7 @@ library ItemsSpells uses GearSystems
 //----------------------Sacred_Gear_Booster----------------------------------------------
         integer SacredGearBooster_Item_ID = 'I02M'
         integer SacredGearBooster_CDAbility_ID = 'A0GB'
-        real SacredGearBooster_Damage = 3// how much damage dealt x mainstat added to active dmg items
+        real SacredGearBooster_Damage = 2.5// how much damage dealt x mainstat added to active dmg items
         real SacredGearBooster_CD = 1// how much damage dealt x mainstat added to active dmg items
         real SacredGearBooster_ItemCDReduce = 5 // proc reduces the cooldown of the cast item active by this many seconds
         integer SacredGearBooster_CastAbil = 0 // item active being cast right now (set by ItemsCast)
@@ -145,7 +145,7 @@ library ItemsSpells uses GearSystems
         integer SusanooShield_Item_ID = 'I02N'
         integer SusanooShield_TresholdDamage = 2000// how much damage dealt x mainstat added to active dmg items
         real SusanooShield_CD = 8// how much damage dealt x mainstat added to active dmg items
-        real SusanooShield_Manacost = 125// how much damage dealt x mainstat added to active dmg items
+        real SusanooShield_Manacost = 150// how much damage dealt x mainstat added to active dmg items
 //----------------------Funny_Barrel----------------------------------------------
         integer Rhitta_ID = 'A0F5'
         real Rhitta_Damage = 5.5// how much damage dealt x mainstat
@@ -182,7 +182,7 @@ library ItemsSpells uses GearSystems
         real GutsArmor_CD = 2 // how much damage dealt x agi
         real GutsArmor_DmgTreshold = 200 // max travel time
 //----------------------QuincyCross----------------------------------------------
-        real QuincyCross_DamageBase = 40 // how much damage static
+        real QuincyCross_DamageBase = 45 // how much damage static
         real QuincyCross_MaxDmg = 99999 // from which dmg amount it will work
         real QuincyCross_CD = 0 // how much damage dealt x main
         integer QuincyCross_MaxStacks = 0
@@ -233,6 +233,15 @@ library ItemsSpells uses GearSystems
         real ShikiKnifeEvolved_RangeCheck = 650
         real ShikiKnifeEvolved_Range = 2100
         real ShikiKnifeEvolved_Aoe = 190
+//----------------------Defensive passives----------------------------------------------
+        real PhilosopherStone_Lifesteal = 18 // % of final damage dealt restored as HP
+        real BlackClover_StackReduce = 1 // % damage reduction per resist stack (max 6)
+        real Incursio_HpRegen = 5
+        real Incursio_MpRegen = 2.5
+        real WitchSin_MagicReduce = 21 // % magic damage reduction for 5 sec after the stun proc
+        real BlueEmperor_PhysReduce = 23 // % physical damage reduction of Emperor's Patience
+        real Jewel_HpRestore = 500 // static heal of the root/silence proc
+        real Jewel_HpRestorePercent = 3 // + % of the holder's max HP
 //----------------------Hungry Sin----------------------------------------------
         real HungrySin_hp = 25
         real HungrySin_mp = 10
@@ -244,7 +253,7 @@ library ItemsSpells uses GearSystems
         integer FrozenHeart_stack = 15
         real FrozenHeart_cd = 4
 //----------------------Lust_Sin----------------------------------------------
-        real LustSin_CD = 5
+        real LustSin_CD = 7
         real LustSin_MinDmg = 400 // from which dmg amount it will work
         real LustSin_IgnoreAmount = 100 // ignore 90% of shield
 //----------------------Envy_Sin----------------------------------------------
@@ -275,7 +284,7 @@ library ItemsSpells uses GearSystems
         real TsuchikageHatEvolve_DamageBase = 100 // static
         real TsuchikageHatEvolve_DamageBaseMain = 2.25 // x mainstat
         real TsuchikageHatEvolve_DamageReducePerBounce = 15 // 20%
-        integer TsuchikageHatEvolve_BounceTimes = 5 // 
+        real TsuchikageHatEvolve_AttackPerBounce = 100 // one extra bounce per full 100 ATK
         real TsuchikageHatEvolve_Time = 2.1 // max travel time
         real TsuchikageHatEvolve_AoeFindToBounce = 800 // max travel time
         real TsuchikageHatEvolve_Speed = 1600 // traveled for 1 sec   
@@ -352,7 +361,7 @@ library ItemsSpells uses GearSystems
 //----------------------Hashirama Cells----------------------------------------------
         integer HashiramaCells_ID = 'I04A'
         integer HashiramaCells_Abi_ID = 'A10D'
-        integer HashiramaCells_Str_ID = 'A10C' // +15 str while active
+        integer HashiramaCells_Str_ID = 'A10C' // +20 str while active
         real HashiramaCells_HpCost = 10 // % of current hp
         real HashiramaCells_HpRegen = 10 // ItemEnter / ItemLeave
         real HashiramaCells_Duration = 10
@@ -405,12 +414,291 @@ library ItemsSpells uses GearSystems
         integer array Rhitta_Str_ID // [1..7] +5 str each
         integer Rhitta_StrMaxStacks = 7
         real Rhitta_StrDuration = 10
+//----------------------Anime items (2026-10-27 / 10-28)-----------------------------------
+    // 2026-10-27 items. Rawcodes: object-data/items-2026-10-27-ids.json (tools/stage_items_2026_10_27.py).
+    // Hooks: DmgSys (ItemsAnime_FinalDamage / ItemsAnime_OnAttack), CastAItems (ItemsAnime_Cast),
+    // CastCheck (ItemsAnime_OnHeroCast), WoS_Pick_Init (ItemsAnime_RoundEnd). Systems1/2 read the buff
+    // and item globals directly (heal/mana cuts, Armament Haki in DebuffImmune_Start, auras).
+        integer ArmamentHaki_ID = 'I04F'
+        integer ArmamentHakiEvolved_ID = 'I050'
+        integer ArmamentHaki_CD_ID = 'A12E'
+        integer ArmamentHakiEvolved_CD_ID = 'A12F'
+        integer ArmamentHaki_BuffAbi_ID = 'A130'
+        integer ArmamentHaki_Buff_ID = 'B057'
+        real ArmamentHaki_CD = 15
+        real ArmamentHaki_ImmuneTime = 3 // Evolved only
+        integer SH_ARMAMENT_HAKI_IMMUNE = StringHash("armament haki immune")
+
+        integer NaofumiShieldEvolved_ID = 'I051'
+        real NaofumiShieldEvolved_Block = 40 // flat damage blocked from every hit
+        real NaofumiShieldEvolved_BlockActive = 100 // while the shield active (A02T) runs
+        integer SH_ItemsAnime_NAOFUMI_SHIELD = StringHash("naofumi shield")
+
+        integer SukunaFinger_ID = 'I052'
+        integer SukunaFinger_Abi_ID = 'A131'
+        integer SukunaFinger_Curse_ID = 'A132'
+        integer SukunaFinger_Buff_ID = 'B058' // healing and HP regeneration -100% (Systems1/2)
+        real SukunaFinger_Duration = 7
+        integer SukunaFinger_Slow = 15
+
+        integer FiveElementsSeal_ID = 'I053'
+        integer FiveElementsSeal_Abi_ID = 'A133'
+        integer FiveElementsSeal_Curse_ID = 'A134'
+        integer FiveElementsSeal_Buff_ID = 'B059' // mana regeneration and restoration -100% (Systems1/2)
+        real FiveElementsSeal_Duration = 7
+        real FiveElementsSeal_Silence = 2
+
+        integer Tekkai_ID = 'I054'
+        integer Tekkai_Abi_ID = 'A135'
+        integer Tekkai_BuffAbi_ID = 'A136'
+        integer Tekkai_Buff_ID = 'B05A'
+        real Tekkai_HpRegen = 30 // ItemEnter / ItemLeave
+
+        integer Samehada_ID = 'I055'
+        integer Samehada_Atk_ID = 'A137' // +45 atk (GetAttack mirrors it)
+        real Samehada_ManaRestore = 4 // % of own max MP per attack
+        real Samehada_ManaDrain = 4 // % of the target's max MP per attack
+
+        integer WillOfD_ID = 'I056'
+        integer WillOfD_CD_ID = 'A138'
+        integer WillOfD_BuffAbi_ID = 'A139'
+        integer WillOfD_Buff_ID = 'B05B'
+        real WillOfD_Duration = 3 // game time: does not grow while the hero is paused
+        real WillOfD_CD = 600
+        integer SH_WILL_OF_D_END = StringHash("will of d end")
+
+        integer Kairoseki_ID = 'I057'
+        integer Kairoseki_Abi_ID = 'A13A'
+        integer Kairoseki_Curse_ID = 'A13B'
+        integer Kairoseki_Buff_ID = 'B05C'
+        real Kairoseki_DamageReduce = 18 // % less damage dealt by the target
+
+        integer IceCoffin_ID = 'I058'
+        integer IceCoffin_Abi_ID = 'A13C'
+        integer IceCoffin_BuffAbi_ID = 'A13D'
+        integer IceCoffin_Buff_ID = 'B05D'
+        real IceCoffin_Duration = 2
+
+        integer ReturnByDeath_ID = 'I059'
+        integer ReturnByDeath_Abi_ID = 'A13E'
+        integer ReturnByDeath_BuffAbi_ID = 'A155'
+        integer ReturnByDeath_Buff_ID = 'B063'
+        real ReturnByDeath_Delay = 4
+        integer ReturnByDeath_FrameSlot = 5 // MyFrame icon slot (heroes use 0-2)
+
+        integer FairyTailEvolved_ID = 'I05A'
+        real FairyTailEvolved_ManaAmp = 20 // % mana regeneration and restoration
+        real FairyTailEvolved_HpRestorePercent = 4 // % max HP added to the 350 HP of the proc
+        real FairyTailEvolved_HeroHealAmp = 1 // % HP restoration for Fairy Tail heroes
+
+        integer ChogurtEvolved_AuraBuff_ID = 'B05E'
+
+        // 2026-10-28 (object-data/items-2026-10-28-ids.json, tools/stage_items_2026_10_28.py)
+        integer FiveElementsSeal_LockCurse_ID = 'A144'
+        integer FiveElementsSeal_LockBuff_ID = 'B061' // dispellable: removing it (or casting) silences once
+        integer RyujinJakkaEvolved_ID = 'I05B'
+        integer NejibanaEvolved_ID = 'I05C'
+        integer GonryomaruEvolved_ID = 'I05D'
+        real ZanpakutoEvolved_CdReduce = 1 // explosion cooldown -1 sec; the element applies on every 200+ hit
+        integer YataMirrorEvolved_ID = 'I05E'
+        integer YataMirrorEvolved_Abi_ID = 'A140'
+        integer YataMirrorEvolved_BuffAbi_ID = 'A141'
+        integer YataMirrorEvolved_Buff_ID = 'B05F'
+        real YataMirrorEvolved_ReflectActive = 75 // % while the active buff lasts (no range limit)
+        integer PhilosopherEvolved_ID = 'I05F'
+        integer PhilosopherEvolved_Abi_ID = 'A142'
+        integer PhilosopherEvolved_BuffAbi_ID = 'A143'
+        integer PhilosopherEvolved_Buff_ID = 'B060'
+        real PhilosopherEvolved_BonusLifesteal = 18 // % on top of the base 18% while active
+        trigger ItemsAnime_NumpadKeys = null
+        // Ice Coffin own hotkey: WUI_CoffinKey (custom, saved) or the digit of the slot it was picked up in.
+        integer array ItemsAnime_CoffinDigit
+        trigger ItemsAnime_CoffinClick = null
+        timer ItemsAnime_CoffinBadgeClock = null
+        framehandle array ItemsAnime_CoffinButton
+        framehandle array ItemsAnime_CoffinBox
+        framehandle array ItemsAnime_CoffinIcon
+        framehandle array ItemsAnime_CoffinText
+        framehandle array ItemsAnime_CoffinChange
+        framehandle array ItemsAnime_CoffinHit
+        string array ItemsAnime_CoffinShown
+        real ChogurtEvolved_AuraMpRegen = 8 // mana per second for allies in 1500 range
+//----------------------Elemental actives (2026-10-28b)-------------------------------------
+        // Fire / Water / Lightning x single target / AOE for every stat (with Rhitta, Shark Trail,
+        // Raijin's Wrath, Red Cup, Red Flower). Objects: tools/stage_2026_10_28b.py; logic at the end
+        // of this library (ItemsElements_*). Nothing lands instantly: projectiles, delays, pulses and
+        // burns spread the damage; displacements are smooth (0.03 s steps). Each item has its own cooldown.
+        integer Emberbreaker_ID = 'I060'
+        integer Emberbreaker_Abi_ID = 'A145'
+        integer LeviathanGrasp_ID = 'I061'
+        integer LeviathanGrasp_Abi_ID = 'A146'
+        integer LeviathanAnchor_ID = 'I062'
+        integer LeviathanAnchor_Abi_ID = 'A147'
+        integer ThunderVerdict_ID = 'I063'
+        integer ThunderVerdict_Abi_ID = 'A148'
+        integer ThunderBastion_ID = 'I064'
+        integer ThunderBastion_Abi_ID = 'A149'
+        integer CinderFang_ID = 'I065'
+        integer CinderFang_Abi_ID = 'A14A'
+        integer AshenCrossfire_ID = 'I066'
+        integer AshenCrossfire_Abi_ID = 'A14B'
+        integer MirrorTide_ID = 'I067'
+        integer MirrorTide_Abi_ID = 'A14C'
+        integer VoltThread_ID = 'I068'
+        integer VoltThread_Abi_ID = 'A14D'
+        integer PhoenixSeal_ID = 'I069'
+        integer PhoenixSeal_Abi_ID = 'A14E'
+        integer CrimsonScripture_ID = 'I06A'
+        integer CrimsonScripture_Abi_ID = 'A14F'
+        integer SirenTear_ID = 'I06B'
+        integer SirenTear_Abi_ID = 'A150'
+        integer ConstellationCoil_ID = 'I06C'
+        integer ConstellationCoil_Abi_ID = 'A151'
+        integer BloodPactRing_ID = 'I06D'
+        integer BloodPactRing_Abi_ID = 'A152'
+        integer BloodPactRingEvolved_ID = 'I073'
+        integer BloodPactRingEvolved_Abi_ID = 'A154'
+        real BloodPactRingEvolved_Duration = 5
+        real BloodPactRingEvolved_ManaFloor = 25
+        // Own damage per cast <= 6x stat per target, including item follow-ups; external bonuses are separate.
+        real Emberbreaker_Impact = 4.0
+        real Emberbreaker_Burn = 1.25 // over 2 sec
+        real Emberbreaker_Knock = 120 // pushed back over 0.25 sec
+        real Emberbreaker_Retaliate = 0.75
+        real LeviathanGrasp_Impact = 3.75
+        real LeviathanGrasp_Squeeze = 2.25 // when the 0.5 sec drag ends
+        real LeviathanGrasp_Pull = 250
+        real LeviathanGrasp_Heal = 15 // % of the damage dealt, at most 1.2x STR
+        real LeviathanGrasp_HealCap = 1.2
+        real LeviathanAnchor_Damage = 5.75 // 3 waves
+        real LeviathanAnchor_Aoe = 500
+        real LeviathanAnchor_PullSpeed = 190 // per sec towards the centre, 1.5 sec
+        real ThunderVerdict_Damage = 5.5 // 3 strikes
+        real ThunderVerdict_Leash = 500
+        real ThunderVerdict_Bonus = 0.5
+        real ThunderBastion_Damage = 5.25 // 4 pulses
+        real ThunderBastion_Aoe = 475
+        real ThunderBastion_Counter = 0.25
+        real CinderFang_Impact = 5.0
+        real CinderFang_Ricochet = 2.5
+        real CinderFang_Bonus = 1.0
+        real AshenCrossfire_Damage = 5.5
+        real AshenCrossfire_Aoe = 400
+        real AshenCrossfire_Return = 3.8
+        constant string MirrorTide_ProjectileModel = "war3mapImported\\wos_file00012198.mdx"
+        real MirrorTide_ProjectileScale = 0.66
+        constant string AshenCrossfire_ProjectileModel = "war3mapImported\\wos_mx-yx-tsw-a-1_fire.mdx"
+        real AshenCrossfire_ProjectileScale = 1.0
+        real AshenCrossfire_ProjectileHeight = 220
+        constant string ConstellationCoil_ProjectileModel = "war3mapImported\\wos_tx28.mdx"
+        real ConstellationCoil_ProjectileScale = 1.0
+        real MirrorTide_Damage = 5.5
+        real MirrorTide_Aoe = 600
+        real MirrorTide_WaveAoe = 300
+        real MirrorTide_Range = 1600
+        real MirrorTide_Push = 150 // over 0.3 sec, along the wave
+        real MirrorTide_Reflect = 0.5
+        real VoltThread_Damage = 5.5
+        real VoltThread_Bonus = 0.5
+        real VoltThread_LineDamage = 0.9 // x AGI per second
+        real VoltThread_LineRadius = 300
+        real PhoenixSeal_Impact = 3.75
+        real PhoenixSeal_Burn = 1.75 // over 2 sec
+        real PhoenixSeal_Bonus = 0.5
+        real CrimsonScripture_Damage = 4.0
+        real CrimsonScripture_Ground = 1.5 // over 1.5 sec
+        real CrimsonScripture_Aoe = 450
+        real CrimsonScripture_Burning = 0.5
+        real SirenTear_Damage = 6.0
+        real SirenTear_IntCap = 2.5
+        real SirenTear_MaxMpCap = 8 // % of the target's max mana
+        real SirenTear_Return = 60 // % of the drained mana
+        real ConstellationCoil_Damage = 5.5 // one hit per enemy along the projectile
+        real ConstellationCoil_Range = 1800
+        real ConstellationCoil_Width = 200
+        real ConstellationCoil_Speed = 1400
+        integer ConstellationCoil_Slow = 25
+        integer ConstellationCoil_SlowDuration = 2
+        real ConstellationCoil_Aoe = 450
+        real ConstellationCoil_Spin = 260 // sideways speed of the spiral
+        real ConstellationCoil_PullSpeed = 120
+        real ConstellationCoil_Break = 650
+        real ConstellationCoil_Bonus = 0.9
+        real BloodPactRing_Cost = 400
+        real BloodPactRing_Mana = 400
+        group ItemsElements_Group = CreateGroup()
+        // Universal Bleach zanpakuto for the element debuffs (read by AAADest ErzaPassive and Systems1).
+        integer ZankaNoTachi_ID = 'I06E'
+        real ZankaNoTachi_Stack = 40 // Fire damage per second added by each re-application on a burning enemy
+        real ZankaNoTachi_MaxDamage = 300 // Fire damage per second cap
+        real ZankaNoTachi_Extend = 2 // Fire lasts 5 + 2 = 7 sec with the item (each application restarts it)
+        integer KyokaSuigetsu_ID = 'I06F'
+        real KyokaSuigetsu_Bonus = 0.6 // x main stat when Water meets Steam
+        real KyokaSuigetsu_CD = 1 // per target
+        real KyokaSuigetsu_SteamBonus = 8 // % physical damage on enemies in Steam (on top of ErzaWape_IncreaseDmg)
+        real KyokaSuigetsu_SteamCD = 3 // a lone Fire / Water turns into Steam once per 3 sec per target
+        integer KokoGonryo_ID = 'I070'
+        real KokoGonryo_Damage = 0.2 // x main stat each second of the Lightning debuff
+        integer Tobiume_ID = 'I071'
+        real Tobiume_DamageMult = 2.0 // Overload 1x -> 2x main stat (~ +1x per reaction, like the other zanpakuto)
+        real Tobiume_Stun = 0.4
+        integer Suzumebachi_ID = 'I072'
+        real Suzumebachi_DamageMult = 1.8 // Electrized 0.3x -> 0.54x main stat per sec (6 sec)
 //---------------W ability-----------------------------------------------------
     endglobals
     // Item hover rules: audited item->ability links in assets/AbilityRange/item-rules.json.
     // CD-only Channel abilities often contain a dummy range of 900: never infer from them.
     // Returned native ability is cached synchronously by AbilityRangePreview, not on hover.
     public function GetPreviewAbility takes integer itemId returns integer
+        // 2026-10-28b elemental actives (ItemsElements.j).
+        if itemId == Emberbreaker_ID then
+            return Emberbreaker_Abi_ID
+        endif
+        if itemId == LeviathanGrasp_ID then
+            return LeviathanGrasp_Abi_ID
+        endif
+        if itemId == LeviathanAnchor_ID then
+            return LeviathanAnchor_Abi_ID
+        endif
+        if itemId == ThunderVerdict_ID then
+            return ThunderVerdict_Abi_ID
+        endif
+        if itemId == ThunderBastion_ID then
+            return ThunderBastion_Abi_ID
+        endif
+        if itemId == CinderFang_ID then
+            return CinderFang_Abi_ID
+        endif
+        if itemId == AshenCrossfire_ID then
+            return AshenCrossfire_Abi_ID
+        endif
+        if itemId == MirrorTide_ID then
+            return MirrorTide_Abi_ID
+        endif
+        if itemId == VoltThread_ID then
+            return VoltThread_Abi_ID
+        endif
+        if itemId == PhoenixSeal_ID then
+            return PhoenixSeal_Abi_ID
+        endif
+        if itemId == CrimsonScripture_ID then
+            return CrimsonScripture_Abi_ID
+        endif
+        if itemId == SirenTear_ID then
+            return SirenTear_Abi_ID
+        endif
+        if itemId == ConstellationCoil_ID then
+            return ConstellationCoil_Abi_ID
+        endif
+        if itemId == SukunaFinger_ID then
+            return SukunaFinger_Abi_ID
+        endif
+        if itemId == FiveElementsSeal_ID then
+            return FiveElementsSeal_Abi_ID
+        endif
+        if itemId == Kairoseki_ID then
+            return Kairoseki_Abi_ID
+        endif
         if itemId == ShunShunRikka_ID then
             return 'A10E'
         endif
@@ -473,9 +761,64 @@ library ItemsSpells uses GearSystems
 
     // Pure presentation read. Script reach wins; native instances supply live cast/aura fields.
     // Exported fallback keeps passive item auras available if a native ability is absent.
-    public function GetItemPreviewRadius takes integer itemId, ability nativeAbility returns real
+    // Outer (grey) ring of an item preview: cast range + area for point-target dashes; 0 = none.
+    public function GetItemPreviewReach takes integer itemId, ability nativeAbility returns real
+        local real range = 1400.00
+        if nativeAbility != null then
+            set range = BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0)
+        endif
+        // Elemental AOE actives: white ring = click range + blast radius.
+        if itemId == LeviathanAnchor_ID then
+            return range + LeviathanAnchor_Aoe
+        endif
+        if itemId == ThunderBastion_ID then
+            return range + ThunderBastion_Aoe
+        endif
+        if itemId == AshenCrossfire_ID then
+            return range + AshenCrossfire_Aoe
+        endif
+        if itemId == MirrorTide_ID then
+            return range + MirrorTide_Aoe
+        endif
+        if itemId == CrimsonScripture_ID then
+            return range + CrimsonScripture_Aoe
+        endif
+        if itemId == ConstellationCoil_ID then
+            return ConstellationCoil_Range + ConstellationCoil_Width
+        endif
         if itemId == Kusanagi_ID or itemId == KusanagiFire_ID or itemId == KusanagiWater_ID or itemId == KusanagiElectro_ID then
-            return Kusanagi_Aoe
+            if nativeAbility != null then
+                return BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0) + Kusanagi_Aoe
+            endif
+            return 1425.00 + Kusanagi_Aoe
+        endif
+        return 0.00
+    endfunction
+
+    public function GetItemPreviewRadius takes integer itemId, ability nativeAbility returns real
+        if itemId == Emberbreaker_ID or itemId == LeviathanGrasp_ID or itemId == LeviathanAnchor_ID or itemId == ThunderVerdict_ID or itemId == ThunderBastion_ID or itemId == CinderFang_ID or itemId == AshenCrossfire_ID or itemId == MirrorTide_ID or itemId == VoltThread_ID or itemId == PhoenixSeal_ID or itemId == CrimsonScripture_ID or itemId == SirenTear_ID or itemId == ConstellationCoil_ID then
+            if nativeAbility != null then
+                return BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0)
+            endif
+            if itemId == MirrorTide_ID then
+                return MirrorTide_Range
+            elseif itemId == ConstellationCoil_ID then
+                return ConstellationCoil_Range
+            endif
+            return 1400.00
+        endif
+        if itemId == SukunaFinger_ID or itemId == FiveElementsSeal_ID or itemId == Kairoseki_ID then
+            if nativeAbility != null then
+                return BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0)
+            endif
+            return 900.00
+        endif
+        // Kusanagi: red ring = click range; the grey ring (GetItemPreviewReach) adds the 700 dash area.
+        if itemId == Kusanagi_ID or itemId == KusanagiFire_ID or itemId == KusanagiWater_ID or itemId == KusanagiElectro_ID then
+            if nativeAbility != null then
+                return BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0)
+            endif
+            return 1425.00
         endif
         if itemId == HashiramaCells_ID then
             return HashiramaCells_AllyAoe
@@ -541,7 +884,7 @@ library ItemsSpells uses GearSystems
             if nativeAbility != null then
                 return BlzGetAbilityRealLevelField(nativeAbility, ABILITY_RLF_CAST_RANGE, 0)
             endif
-            return 1750.00
+            return 1600.00
         endif
         if itemId == 'I016' then
             if nativeAbility != null then
@@ -1925,14 +2268,14 @@ library ItemsSpells uses GearSystems
                         if check == 1 then 
                         if GetUnitState(u,UNIT_STATE_MANA)>=GetUnitState(u,UNIT_STATE_MAX_MANA) then 
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_HealGreen.mdl",u,"origin"))
-                        call SetHpCurrent2(c,u, dmg)
+                        call SetHpCurrent2Quiet(c,u, dmg)
                         else
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_HealBlue.mdl",u,"origin"))
-                        call SetMpCurrent(u, dmg)
+                        call SetMpCurrentQuiet(u, dmg)
                         endif
                         else                        
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_HealBlue.mdl",u,"origin"))
-                        call SetMpCurrent(u, dmg)
+                        call SetMpCurrentQuiet(u, dmg)
                         endif                            
                             call BuffUnitMS(u,u,0.2)                            
                     call UnitRemoveAbility(c,'B00T')
@@ -2946,7 +3289,7 @@ library ItemsSpells uses GearSystems
             set check = 0
             set k3 = 0
             set aoe = TsuchikageHatEvolve_AoeFindToBounce
-            set check2 = TsuchikageHatEvolve_BounceTimes 
+            set check2 = IMaxBJ(0, R2I(GetAttack(c) / TsuchikageHatEvolve_AttackPerBounce))
             set r2 = 0
             set r3 = 0
             set dmg = SacredGearBooster(c,dmg)
@@ -3494,6 +3837,1706 @@ endfunction
             set ItemsTick_Callback = function thistype.Loop
         endmethod
     endstruct
+
+    // ================= Anime items (2026-10-27 / 10-28): effects, casts, hooks =================
+
+    // Enemy debuff: a curse copy cast by a far dummy of the caster's owner (range 99999).
+    function ItemsAnime_Curse takes unit c, unit u, integer abil returns nothing
+        local unit d = CreateUnit(GetOwningPlayer(c), 'h0C9', GetRectCenterX(gg_rct_Caster), GetRectCenterY(gg_rct_Caster), 0)
+        call UnitAddAbility(d, abil)
+        call IssueTargetOrder(d, "curse", u)
+        call MyRemoveUnit(d, 0.5)
+        set d = null
+    endfunction
+
+    private function IsFairyTailHero takes unit u returns boolean
+        local integer id = GetUnitTypeId(u)
+        return id == Natsu_ID or id == Erza_ID or id == Laxus_ID
+    endfunction
+
+    // HP restoration bonus of Fairy Tail Emblem Evolved (added to GetHealAmp).
+    function ItemsAnime_HealAmp takes unit u returns real
+        if HasCachedItem(u, FairyTailEvolved_ID) > 0 and IsFairyTailHero(u) then
+            return FairyTailEvolved_HeroHealAmp / 100.0
+        endif
+        return 0.0
+    endfunction
+
+    private struct ItemsAnimeEffect
+        static constant integer KIND_SUKUNA = 1
+        static constant integer KIND_SEAL = 2
+        static constant integer KIND_COFFIN = 3
+        static constant integer KIND_RETURN = 4
+        static thistype array list
+        static integer count = 0
+        static timer clock = CreateTimer()
+        integer kind
+        unit c
+        unit u
+        real left
+        real step
+        real x
+        real y
+        integer round
+        boolean armed
+        real returnAt
+        effect e
+        effect e2
+
+        static method Find takes integer kind, unit u returns thistype
+            local integer i = 0
+            loop
+                exitwhen i >= count
+                if list[i].kind == kind and list[i].u == u then
+                    return list[i]
+                endif
+                set i = i + 1
+            endloop
+            return 0
+        endmethod
+
+        method Finish takes integer index returns nothing
+            if .kind == KIND_SUKUNA then
+                call UnitRemoveAbility(.u, SukunaFinger_Buff_ID)
+            elseif .kind == KIND_SEAL then
+                call UnitRemoveAbility(.u, FiveElementsSeal_Buff_ID)
+                call UnitRemoveAbility(.u, FiveElementsSeal_LockBuff_ID)
+            elseif .kind == KIND_COFFIN then
+                call UnitRemoveAbility(.u, 'Avul')
+                call UnitRemoveAbility(.u, IceCoffin_Buff_ID)
+                call BlzPauseUnitEx(.u, false)
+            elseif .kind == KIND_RETURN then
+                call UnitRemoveAbility(.u, ReturnByDeath_Buff_ID)
+            endif
+            if .e != null then
+                call DestroyEffect(.e)
+            endif
+            if .e2 != null then
+                call DestroyEffect(.e2)
+            endif
+            set .e = null
+            set .e2 = null
+            set .c = null
+            set .u = null
+            set count = count - 1
+            set list[index] = list[count]
+            if count == 0 then
+                call PauseTimer(clock)
+            endif
+            call .destroy()
+        endmethod
+
+        static method Tick takes nothing returns nothing
+            local integer i = count - 1
+            local thistype this
+            loop
+                exitwhen i < 0
+                set this = list[i]
+                set .left = .left - 0.10
+                set .step = .step + 0.10
+                if GetUnitTypeId(.u) == 0 or IsUnitType(.u, UNIT_TYPE_DEAD) then
+                    call .Finish(i)
+                elseif .kind == KIND_SUKUNA then
+                    if .left <= 0.0 then
+                        call .Finish(i)
+                    else
+                        // Not in DebuffClear; a dispel (e.g. Bunshin Scroll) only hides it until the next tick.
+                        if GetUnitAbilityLevel(.u, SukunaFinger_Buff_ID) == 0 then
+                            call ItemsAnime_Curse(.c, .u, SukunaFinger_Curse_ID)
+                        endif
+                        if .step >= 0.95 then
+                            set .step = 0.0
+                            call SlowUnit(.c, .u, SukunaFinger_Slow, 1)
+                        endif
+                    endif
+                elseif .kind == KIND_SEAL then
+                    if .left <= 0.0 then
+                        call .Finish(i)
+                    else
+                        // The mana seal cannot be dispelled: a dispel only hides it until this tick.
+                        if GetUnitAbilityLevel(.u, FiveElementsSeal_Buff_ID) == 0 then
+                            call ItemsAnime_Curse(.c, .u, FiveElementsSeal_Curse_ID)
+                        endif
+                        if .armed and .step >= 0.3 and GetUnitAbilityLevel(.u, FiveElementsSeal_LockBuff_ID) == 0 then
+                            // The lock was removed: it snaps shut once.
+                            set .armed = false
+                            call SilenceUnit(.c, .u, FiveElementsSeal_Silence)
+                        endif
+                    endif
+                elseif .kind == KIND_COFFIN then
+                    if .left > 0.0 and GetUnitAbilityLevel(.u, 'Avul') == 0 then
+                        call UnitAddAbility(.u, 'Avul') // a spell ending its own pause may have taken it
+                    endif
+                    if .left <= 0.0 then
+                        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget.mdl", GetUnitX(.u), GetUnitY(.u)))
+                        call .Finish(i)
+                    endif
+                elseif .kind == KIND_RETURN then
+                    // A positive-buff dispel permanently cancels this pending return.
+                    if .round != CurrentRound or GetUnitAbilityLevel(.u, ReturnByDeath_Buff_ID) == 0 then
+                        call .Finish(i)
+                    elseif TimerGetElapsed(HealRegenClock) >= .returnAt then
+                        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportCaster.mdl", GetUnitX(.u), GetUnitY(.u)))
+                        call SetUnitPosition(.u, .x, .y)
+                        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportCaster.mdl", .x, .y))
+                        call MakeSound("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget")
+                        call .Finish(i)
+                    endif
+                endif
+                set i = i - 1
+            endloop
+        endmethod
+
+        static method Add takes integer kind, unit c, unit u, real duration returns thistype
+            local thistype this = thistype.create()
+            set .kind = kind
+            set .c = c
+            set .u = u
+            set .left = duration
+            set .step = 0.0
+            set .e = null
+            set .e2 = null
+            set .armed = false
+            set list[count] = this
+            set count = count + 1
+            if count == 1 then
+                call TimerStart(clock, 0.10, true, function thistype.Tick)
+            endif
+            return this
+        endmethod
+
+        // Seal: a hero ability cast while the lock is on silences once; the mana seal stays.
+        static method OnHeroCast takes unit u returns nothing
+            local integer i = 0
+            loop
+                exitwhen i >= count
+                if list[i].kind == KIND_SEAL and list[i].u == u and list[i].armed then
+                    set list[i].armed = false
+                    call UnitRemoveAbility(u, FiveElementsSeal_LockBuff_ID)
+                    call SilenceUnit(list[i].c, u, FiveElementsSeal_Silence)
+                    return
+                endif
+                set i = i + 1
+            endloop
+        endmethod
+    endstruct
+
+    private function SukunaStart takes unit c, unit td returns nothing
+        local ItemsAnimeEffect fx
+        if td == null or not SpellBool(td) or not IsUnitEnemy(td, GetOwningPlayer(c)) or DebuffImmune_Start(td, 1) == 0 then
+            return
+        endif
+        set fx = ItemsAnimeEffect.Find(ItemsAnimeEffect.KIND_SUKUNA, td)
+        if fx == 0 then
+            set fx = ItemsAnimeEffect.Add(ItemsAnimeEffect.KIND_SUKUNA, c, td, SukunaFinger_Duration)
+        else
+            set fx.c = c
+            set fx.left = SukunaFinger_Duration
+        endif
+        call ItemsAnime_Curse(c, td, SukunaFinger_Curse_ID)
+        call SlowUnit(c, td, SukunaFinger_Slow, 1)
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\DeathCoil\\DeathCoilSpecialArt.mdl", td, "chest"))
+    endfunction
+
+    private function SealStart takes unit c, unit td returns nothing
+        local ItemsAnimeEffect fx
+        if td == null or not SpellBool(td) or not IsUnitEnemy(td, GetOwningPlayer(c)) or DebuffImmune_Start(td, 1) == 0 then
+            return
+        endif
+        set fx = ItemsAnimeEffect.Find(ItemsAnimeEffect.KIND_SEAL, td)
+        if fx == 0 then
+            set fx = ItemsAnimeEffect.Add(ItemsAnimeEffect.KIND_SEAL, c, td, FiveElementsSeal_Duration)
+        else
+            set fx.c = c
+            set fx.left = FiveElementsSeal_Duration
+            set fx.step = 0.0
+        endif
+        set fx.armed = true
+        call ItemsAnime_Curse(c, td, FiveElementsSeal_Curse_ID)
+        call ItemsAnime_Curse(c, td, FiveElementsSeal_LockCurse_ID)
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaFlare\\ManaFlareBoltImpact.mdl", td, "chest"))
+    endfunction
+
+    private function KairosekiStart takes unit c, unit td returns nothing
+        if td == null or not SpellBool(td) or not IsUnitEnemy(td, GetOwningPlayer(c)) then
+            return
+        endif
+        // Every positive buff (incl. buff-backed shields); hero states without a buff stay.
+        call UnitRemoveBuffs(td, true, false)
+        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Human\\DispelMagic\\DispelMagicTarget.mdl", td, "origin"))
+        if DebuffImmune_Start(td, 1) == 1 then
+            call ItemsAnime_Curse(c, td, Kairoseki_Curse_ID)
+        endif
+    endfunction
+
+    private function CoffinStart takes unit c returns nothing
+        local ItemsAnimeEffect fx
+        if ItemsAnimeEffect.Find(ItemsAnimeEffect.KIND_COFFIN, c) != 0 then
+            return
+        endif
+        set fx = ItemsAnimeEffect.Add(ItemsAnimeEffect.KIND_COFFIN, c, c, IceCoffin_Duration)
+        call IssueImmediateOrder(c, "stop")
+        call BlzPauseUnitEx(c, true)
+        call UnitAddAbility(c, 'Avul')
+        call BuffUnit01(c, c, IceCoffin_BuffAbi_ID, "innerfire", 1)
+        set fx.e = AddSpecialEffectTarget("Abilities\\Spells\\Undead\\FreezingBreath\\FreezingBreathTargetArt.mdl", c, "origin")
+        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Undead\\FrostNova\\FrostNovaTarget.mdl", GetUnitX(c), GetUnitY(c)))
+    endfunction
+
+    private function ReturnStart takes unit c returns nothing
+        local ItemsAnimeEffect fx = ItemsAnimeEffect.Find(ItemsAnimeEffect.KIND_RETURN, c)
+        if fx != 0 then
+            // Recast: the new position replaces the old one.
+            call DestroyEffect(fx.e)
+            call DestroyEffect(fx.e2)
+            set fx.left = ReturnByDeath_Delay
+        else
+            set fx = ItemsAnimeEffect.Add(ItemsAnimeEffect.KIND_RETURN, c, c, ReturnByDeath_Delay)
+        endif
+        call BuffUnit01(c, c, ReturnByDeath_BuffAbi_ID, "innerfire", 1)
+        set fx.returnAt = TimerGetElapsed(HealRegenClock) + ReturnByDeath_Delay
+        set fx.x = GetUnitX(c)
+        set fx.y = GetUnitY(c)
+        set fx.round = CurrentRound
+        set fx.e = AddSpecialEffect("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", fx.x, fx.y)
+        set fx.e2 = AddSpecialEffectTarget("Abilities\\Spells\\Undead\\Curse\\CurseTarget.mdl", c, "overhead")
+        call MyFrameBuffSlot(c, ReturnByDeath_Buff_ID, ReturnByDeath_Delay, "BTNItem_ReturnByDeath", false, ReturnByDeath_FrameSlot)
+    endfunction
+
+    // Item actives (CastAItems.ItemsCast).
+    function ItemsAnime_Cast takes unit c, unit td, real x, real y, integer id returns nothing
+        if id == SukunaFinger_Abi_ID then
+            call SukunaStart(c, td)
+        elseif id == FiveElementsSeal_Abi_ID then
+            call SealStart(c, td)
+        elseif id == Kairoseki_Abi_ID then
+            call KairosekiStart(c, td)
+        elseif id == Tekkai_Abi_ID then
+            call BuffUnit01(c, c, Tekkai_BuffAbi_ID, "innerfire", 1)
+            call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", c, "origin"), 4.0)
+        elseif id == IceCoffin_Abi_ID then
+            call CoffinStart(c)
+        elseif id == ReturnByDeath_Abi_ID then
+            call ReturnStart(c)
+        elseif id == YataMirrorEvolved_Abi_ID then
+            call BuffUnit01(c, c, YataMirrorEvolved_BuffAbi_ID, "innerfire", 1)
+            call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster.mdl", c, "origin"), 4.0)
+        elseif id == PhilosopherEvolved_Abi_ID then
+            call BuffUnit01(c, c, PhilosopherEvolved_BuffAbi_ID, "innerfire", 1)
+            call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\VampiricAura\\VampiricAuraTarget.mdl", c, "origin"), 3.0)
+        endif
+    endfunction
+
+    // Ice Coffin from an item hotkey while stunned or paused (the native button is disabled then).
+    private function CanUseOnlyByKey takes unit u returns boolean
+        return IsUnitPaused(u) or GetUnitAbilityLevel(u, 'BPSE') > 0 or GetUnitAbilityLevel(u, 'BSTN') > 0
+    endfunction
+
+    function ItemsAnime_ItemKey takes integer pid, integer slot returns nothing
+        local unit u
+        local item it
+        if pid < 0 or pid >= 10 or slot < 0 or slot > 5 then
+            return
+        endif
+        set u = Hero[pid]
+        if u != null and not IsUnitType(u, UNIT_TYPE_DEAD) and CanUseOnlyByKey(u) then
+            set it = UnitItemInSlot(u, slot)
+            if GetItemTypeId(it) == IceCoffin_ID and BlzGetUnitAbilityCooldownRemaining(u, IceCoffin_Abi_ID) == 0.0 then
+                call BlzStartUnitAbilityCooldown(u, IceCoffin_Abi_ID, BlzGetUnitAbilityCooldown(u, IceCoffin_Abi_ID, 0))
+                call CoffinStart(u)
+            endif
+            set it = null
+        endif
+        set u = null
+    endfunction
+
+    private function OnItemKeyHook takes nothing returns boolean
+        call ItemsAnime_ItemKey(WUI_ItemKeyPlayer, WUI_ItemKeySlot)
+        return false
+    endfunction
+
+    // Stock inventory keys (Numpad 7 8 / 4 5 / 1 2) for players without custom item hotkeys.
+    private function OnNumpadKey takes nothing returns boolean
+        local oskeytype key = BlzGetTriggerPlayerKey()
+        local integer slot = -1
+        if key == OSKEY_NUMPAD7 then
+            set slot = 0
+        elseif key == OSKEY_NUMPAD8 then
+            set slot = 1
+        elseif key == OSKEY_NUMPAD4 then
+            set slot = 2
+        elseif key == OSKEY_NUMPAD5 then
+            set slot = 3
+        elseif key == OSKEY_NUMPAD1 then
+            set slot = 4
+        elseif key == OSKEY_NUMPAD2 then
+            set slot = 5
+        endif
+        call ItemsAnime_ItemKey(GetPlayerId(GetTriggerPlayer()), slot)
+        set key = null
+        return false
+    endfunction
+
+    private function CoffinDigitKey takes integer digit returns oskeytype
+        if digit == 1 then
+            return OSKEY_1
+        elseif digit == 2 then
+            return OSKEY_2
+        elseif digit == 3 then
+            return OSKEY_3
+        elseif digit == 4 then
+            return OSKEY_4
+        elseif digit == 5 then
+            return OSKEY_5
+        elseif digit == 6 then
+            return OSKEY_6
+        endif
+        return null
+    endfunction
+
+    // Key that fires Ice Coffin for pid (null: none; the slot digit is skipped when another key uses it).
+    function ItemsAnime_CoffinKey takes integer pid returns oskeytype
+        if WUI_CoffinKey[pid] != null then
+            return WUI_CoffinKey[pid]
+        elseif ItemsAnime_CoffinDigit[pid] > 0 and WUI_CoffinKeyConflict(pid, CoffinDigitKey(ItemsAnime_CoffinDigit[pid]), I2S(ItemsAnime_CoffinDigit[pid])) == "" then
+            return CoffinDigitKey(ItemsAnime_CoffinDigit[pid])
+        endif
+        return null
+    endfunction
+
+    function ItemsAnime_CoffinKeyLabel takes integer pid returns string
+        if WUI_CoffinKey[pid] != null then
+            return WUI_CoffinKeyName[pid]
+        elseif ItemsAnime_CoffinKey(pid) != null then
+            return I2S(ItemsAnime_CoffinDigit[pid])
+        endif
+        return "-"
+    endfunction
+
+    // Synced key: Ice Coffin from its own hotkey. Stunned/paused: scripted cast (ItemsAnime_ItemKey);
+    // otherwise the native item use. Needs the item in the inventory and its cooldown ready.
+    private function OnCoffinKey takes nothing returns boolean
+        local integer pid = GetPlayerId(GetTriggerPlayer())
+        local integer slot = 0
+        local unit u
+        local item it
+        if not WUI_AcceptKeyDown() or pid < 0 or pid >= 10 then
+            return false
+        endif
+        if BlzGetTriggerPlayerKey() != ItemsAnime_CoffinKey(pid) then
+            return false
+        endif
+        set u = Hero[pid]
+        if u == null or IsUnitType(u, UNIT_TYPE_DEAD) or BlzGetUnitAbilityCooldownRemaining(u, IceCoffin_Abi_ID) > 0.0 then
+            set u = null
+            return false
+        endif
+        loop
+            exitwhen slot > 5
+            set it = UnitItemInSlot(u, slot)
+            if GetItemTypeId(it) == IceCoffin_ID then
+                if CanUseOnlyByKey(u) then
+                    call ItemsAnime_ItemKey(pid, slot)
+                else
+                    call UnitUseItem(u, it)
+                endif
+                exitwhen true
+            endif
+            set slot = slot + 1
+        endloop
+        set it = null
+        set u = null
+        return false
+    endfunction
+
+    // Default key = the digit of the slot the item landed in when picked up / bought.
+    private function OnCoffinPickup takes nothing returns boolean
+        local unit u = GetTriggerUnit()
+        local item it = GetManipulatedItem()
+        local integer pid = GetPlayerId(GetOwningPlayer(u))
+        local integer slot = 0
+        if GetItemTypeId(it) == IceCoffin_ID and pid >= 0 and pid < 10 and u == Hero[pid] then
+            loop
+                exitwhen slot > 5
+                if UnitItemInSlot(u, slot) == it then
+                    set ItemsAnime_CoffinDigit[pid] = slot + 1
+                    call WUI_RegisterCoffinKey(pid, CoffinDigitKey(slot + 1))
+                    exitwhen true
+                endif
+                set slot = slot + 1
+            endloop
+        endif
+        set it = null
+        set u = null
+        return false
+    endfunction
+
+    private function OnCoffinChange takes nothing returns nothing
+        call WUI_BeginCoffinCapture(GetTriggerPlayer())
+        call WUI_ResetClickedButtonFocus()
+    endfunction
+
+    // -coffin <key> | -coffin default | -coffin
+    private function OnCoffinChat takes nothing returns nothing
+        local player p = GetTriggerPlayer()
+        local string arg = GetEventPlayerChatString()
+        if SubString(arg, 0, 7) != "-coffin" then
+            set p = null
+            return
+        endif
+        set arg = StringCase(SubString(arg, 7, StringLength(arg)), true)
+        loop
+            exitwhen SubString(arg, 0, 1) != " "
+            set arg = SubString(arg, 1, StringLength(arg))
+        endloop
+        loop
+            exitwhen StringLength(arg) == 0 or SubString(arg, StringLength(arg) - 1, StringLength(arg)) != " "
+            set arg = SubString(arg, 0, StringLength(arg) - 1)
+        endloop
+        if arg == "" then
+            call DisplayTimedTextToPlayer(p, 0, 0, 6.00, WUI_GOLD + "Ice Coffin hotkey: " + ItemsAnime_CoffinKeyLabel(GetPlayerId(p)) + "|r|n" + WUI_TEXT + "-coffin <key> sets it (letter, digit, F1-F9), -coffin default = number of its slot. Or click CHANGE on the item.|r")
+        elseif arg == "DEFAULT" or arg == "RESET" then
+            call WUI_SetCoffinKey(p, "", true)
+        else
+            call WUI_SetCoffinKey(p, arg, true)
+        endif
+        set p = null
+    endfunction
+
+    // Shared 0.25 s clock, frame work local only: key badge in the corner of the Ice Coffin item
+    // and CHANGE on its lower edge, for the own hero while it is the displayed unit.
+    private function CoffinBadges takes nothing returns nothing
+        local integer pid = GetPlayerId(GetLocalPlayer())
+        local unit u = null
+        local integer slot = 0
+        local string label = null
+        local string want
+        if ItemsAnime_CoffinChange[0] == null then
+            return
+        endif
+        if pid >= 0 and pid < 10 then
+            set u = Hero[pid]
+            static if LIBRARY_TasAbilityChargeBox then
+                if TasAbilityChargeBox_Unit[pid] != u then
+                    set u = null
+                endif
+            endif
+        endif
+        loop
+            exitwhen slot > 5
+            set want = ""
+            if u != null and GetItemTypeId(UnitItemInSlot(u, slot)) == IceCoffin_ID and WUI_RangeNativeItemVisible(slot) then
+                if label == null then
+                    set label = ItemsAnime_CoffinKeyLabel(pid)
+                endif
+                set want = label
+                if WUI_SlotKeyLabel(pid, 7 + slot) != "" then
+                    // The custom item-slot key badge owns the top-right corner.
+                    set want = label + "<"
+                endif
+            endif
+            if want != ItemsAnime_CoffinShown[slot] then
+                set ItemsAnime_CoffinShown[slot] = want
+                call BlzFrameSetVisible(ItemsAnime_CoffinChange[slot], want != "")
+                call BlzFrameSetVisible(ItemsAnime_CoffinHit[slot], want != "")
+                if ItemsAnime_CoffinBox[slot] != null then
+                    if want != "" then
+                        call BlzFrameSetText(ItemsAnime_CoffinText[slot], WUI_GOLD + label + "|r")
+                        call BlzFrameClearAllPoints(ItemsAnime_CoffinIcon[slot])
+                        call BlzFrameClearAllPoints(ItemsAnime_CoffinText[slot])
+                        if want == label then
+                            call BlzFrameSetPoint(ItemsAnime_CoffinIcon[slot], FRAMEPOINT_TOPRIGHT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+                            call BlzFrameSetPoint(ItemsAnime_CoffinText[slot], FRAMEPOINT_TOPRIGHT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+                        else
+                            call BlzFrameSetPoint(ItemsAnime_CoffinIcon[slot], FRAMEPOINT_TOPLEFT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPLEFT, -0.001, 0.001)
+                            call BlzFrameSetPoint(ItemsAnime_CoffinText[slot], FRAMEPOINT_TOPLEFT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPLEFT, -0.001, 0.001)
+                        endif
+                    endif
+                    call BlzFrameSetVisible(ItemsAnime_CoffinBox[slot], want != "")
+                endif
+            endif
+            set slot = slot + 1
+        endloop
+        set u = null
+    endfunction
+
+    // Synchronous, once the HUD exists: 6 badges (charge-box look) on the item buttons + 6 CHANGE buttons.
+    private function CoffinFrames takes nothing returns nothing
+        local integer slot = 0
+        local framehandle back
+        local framehandle text
+        local real size = 0.0135
+        local real font = 0.009
+        static if LIBRARY_TasAbilityChargeBox then
+            set size = TasAbilityChargeBox_BOX_SIZE
+            set font = TasAbilityChargeBox_FONT_SIZE
+        endif
+        set ItemsAnime_CoffinClick = CreateTrigger()
+        call TriggerAddAction(ItemsAnime_CoffinClick, function OnCoffinChange)
+        loop
+            exitwhen slot > 5
+            set ItemsAnime_CoffinButton[slot] = BlzGetOriginFrame(ORIGIN_FRAME_ITEM_BUTTON, slot)
+            if WUI_HasChargeDefinitions() and ItemsAnime_CoffinButton[slot] != null then
+                set ItemsAnime_CoffinBox[slot] = BlzCreateSimpleFrame("TasAbilityChargeBox", ItemsAnime_CoffinButton[slot], 40 + slot)
+                set ItemsAnime_CoffinText[slot] = BlzGetFrameByName("TasAbilityChargeBoxText", 40 + slot)
+                set ItemsAnime_CoffinIcon[slot] = BlzGetFrameByName("TasAbilityChargeBoxTexture", 40 + slot)
+                call BlzFrameClearAllPoints(ItemsAnime_CoffinIcon[slot])
+                call BlzFrameSetPoint(ItemsAnime_CoffinIcon[slot], FRAMEPOINT_TOPRIGHT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+                call BlzFrameSetSize(ItemsAnime_CoffinIcon[slot], size, size)
+                call BlzFrameSetTexture(ItemsAnime_CoffinIcon[slot], "UI\\WOS\\button.tga", 0, true)
+                call BlzFrameClearAllPoints(ItemsAnime_CoffinText[slot])
+                call BlzFrameSetPoint(ItemsAnime_CoffinText[slot], FRAMEPOINT_TOPRIGHT, ItemsAnime_CoffinButton[slot], FRAMEPOINT_TOPRIGHT, 0.001, 0.001)
+                call BlzFrameSetSize(ItemsAnime_CoffinText[slot], size, size)
+                call BlzFrameSetFont(ItemsAnime_CoffinText[slot], "Fonts/FRIZQT__.TTF", font, 0)
+                call BlzFrameSetVisible(ItemsAnime_CoffinBox[slot], false)
+            endif
+            // CHANGE under the cell, in the gap between the item rows (below the screen-bottom row too).
+            set ItemsAnime_CoffinHit[slot] = BlzCreateSimpleFrame("WOSQBHUDRemove", WUI_GetSimpleRoot(), 9320 + slot)
+            call WUI_PlaceShift(ItemsAnime_CoffinHit[slot], WUI_ITEM_X + I2R(ModuloInteger(slot, 3) - 1) * WUI_ITEM_STEP_X, WUI_ITEM_Y - I2R(slot / 3) * WUI_ITEM_STEP_Y - WUI_ITEM_SIZE * 0.5 - 0.0040, 0.0260, 0.0062)
+            call BlzFrameSetLevel(ItemsAnime_CoffinHit[slot], 55)
+            call BlzTriggerRegisterFrameEvent(ItemsAnime_CoffinClick, ItemsAnime_CoffinHit[slot], FRAMEEVENT_CONTROL_CLICK)
+            call BlzFrameSetVisible(ItemsAnime_CoffinHit[slot], false)
+            set ItemsAnime_CoffinChange[slot] = BlzCreateFrameByType("BUTTON", "WOSCoffinChange", WUI_GetRoot(), "", slot)
+            call WUI_PlaceShift(ItemsAnime_CoffinChange[slot], WUI_ITEM_X + I2R(ModuloInteger(slot, 3) - 1) * WUI_ITEM_STEP_X, WUI_ITEM_Y - I2R(slot / 3) * WUI_ITEM_STEP_Y - WUI_ITEM_SIZE * 0.5 - 0.0040, 0.0260, 0.0062)
+            call BlzFrameSetLevel(ItemsAnime_CoffinChange[slot], 46)
+            set back = BlzCreateFrameByType("BACKDROP", "WOSCoffinChangeBack", ItemsAnime_CoffinChange[slot], "", slot)
+            call BlzFrameSetAllPoints(back, ItemsAnime_CoffinChange[slot])
+            call BlzFrameSetTexture(back, WUI_FILL_NORMAL, 0, true)
+            call BlzFrameSetAlpha(back, 225)
+            call BlzFrameSetEnable(back, false)
+            set text = BlzCreateFrameByType("TEXT", "WOSCoffinChangeText", ItemsAnime_CoffinChange[slot], "", slot)
+            call BlzFrameSetAllPoints(text, ItemsAnime_CoffinChange[slot])
+            call BlzFrameSetTextAlignment(text, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+            call BlzFrameSetScale(text, 0.55)
+            call BlzFrameSetText(text, "|cffe8e8e8CHANGE|r")
+            call BlzFrameSetEnable(text, false)
+            call WUI_Tooltip(ItemsAnime_CoffinChange[slot], "|cffd5b876ICE COFFIN HOTKEY|r|nClick, then press a letter, digit or F1-F9.|nBackspace: number of its slot, Esc: keep.|nChat: -coffin <key> / -coffin default.|nWorks while stunned or paused; Save Keys keeps it.")
+            // The face only draws: input goes to the SIMPLEBUTTON below it.
+            call BlzFrameSetEnable(ItemsAnime_CoffinChange[slot], false)
+            call BlzFrameSetVisible(ItemsAnime_CoffinChange[slot], false)
+            set ItemsAnime_CoffinShown[slot] = "?"
+            set slot = slot + 1
+        endloop
+        set ItemsAnime_CoffinBadgeClock = CreateTimer()
+        call TimerStart(ItemsAnime_CoffinBadgeClock, 0.25, true, function CoffinBadges)
+        set back = null
+        set text = null
+    endfunction
+
+    function ItemsAnime_OnHeroCast takes unit c returns nothing
+        call ItemsAnimeEffect.OnHeroCast(c)
+    endfunction
+
+    // Applied damage (DmgSys, before phase 3 listeners).
+    function ItemsAnime_FinalDamage takes unit c, unit td, real dmg, integer typedmg, boolean isAttack returns real
+        local integer h
+        local real now
+        local real life
+        if dmg <= 0.0 then
+            return dmg
+        endif
+        if ItemsAnimeEffect.Find(ItemsAnimeEffect.KIND_COFFIN, td) != 0 then
+            return 0.0
+        endif
+        if c != null and GetUnitAbilityLevel(c, Kairoseki_Buff_ID) > 0 then
+            set dmg = dmg * (1.0 - Kairoseki_DamageReduce / 100.0)
+        endif
+        // Tekkai: every basic attack, whatever its damage type (magic attacks, Starrk's Cero).
+        if (typedmg == 0 or isAttack) and GetUnitAbilityLevel(td, Tekkai_Buff_ID) > 0 then
+            set dmg = ApplyFullDamageShield(c, td, dmg, dmg, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+        endif
+        if dmg > 0.0 and HasCachedItem(td, NaofumiShieldEvolved_ID) > 0 then
+            if LoadInteger(hs, GetHandleId(td), SH_ItemsAnime_NAOFUMI_SHIELD) == 1 then
+                set dmg = RMaxBJ(0.0, dmg - NaofumiShieldEvolved_BlockActive)
+            else
+                set dmg = RMaxBJ(0.0, dmg - NaofumiShieldEvolved_Block)
+            endif
+        endif
+        if dmg > 0.0 and HasCachedItem(td, WillOfD_ID) > 0 and IsUnitType(td, UNIT_TYPE_HERO) and not IsUnitIllusion(td) then
+            set h = GetHandleId(td)
+            set now = TimerGetElapsed(HealRegenClock)
+            set life = GetWidgetLife(td)
+            if now < LoadReal(hs, h, SH_WILL_OF_D_END) then
+                set dmg = RMinBJ(dmg, RMaxBJ(0.0, life - 1.0))
+            elseif dmg >= life - 1.0 and BlzGetUnitAbilityCooldownRemaining(td, WillOfD_CD_ID) == 0.0 then
+                call SaveReal(hs, h, SH_WILL_OF_D_END, now + WillOfD_Duration)
+                call BlzStartUnitAbilityCooldown(td, WillOfD_CD_ID, WillOfD_CD)
+                call BuffUnit01(td, td, WillOfD_BuffAbi_ID, "innerfire", 1)
+                call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Human\\DivineShield\\DivineShieldTarget.mdl", td, "origin"), WillOfD_Duration)
+                set dmg = RMaxBJ(0.0, life - 1.0)
+            endif
+        endif
+        return dmg
+    endfunction
+
+    // Basic attack that hit an enemy (DmgSys).
+    function ItemsAnime_OnAttack takes unit c, unit td returns nothing
+        if c != null and td != null and not IsUnitIllusion(c) and not IsUnitIllusion(td) and IsUnitEnemy(td, GetOwningPlayer(c)) and GetUnitAbilityLevel(td, Tekkai_Buff_ID) == 0 and HasCachedItem(c, Samehada_ID) > 0 then
+            call SetMpCurrentQuiet(c, GetUnitState(c, UNIT_STATE_MAX_MANA) * Samehada_ManaRestore / 100.0)
+            call SetMpCurrent(td, -GetUnitState(td, UNIT_STATE_MAX_MANA) * Samehada_ManaDrain / 100.0)
+        endif
+    endfunction
+
+    // Will of D.: one cooldown reset at the end of every round.
+    function ItemsAnime_RoundEnd takes nothing returns nothing
+        local integer i = 0
+        loop
+            exitwhen i >= 10
+            if Hero[i] != null and HasCachedItem(Hero[i], WillOfD_ID) > 0 then
+                call BlzEndUnitAbilityCooldown(Hero[i], WillOfD_CD_ID)
+                call SaveReal(hs, GetHandleId(Hero[i]), SH_WILL_OF_D_END, 0.0)
+            endif
+            set i = i + 1
+        endloop
+    endfunction
+
+    private function ItemsAnime_Init takes nothing returns nothing
+        local integer pid = 0
+        local trigger t
+        local trigger chat
+        set WUI_ItemKeyHook = CreateTrigger()
+        call TriggerAddCondition(WUI_ItemKeyHook, Condition(function OnItemKeyHook))
+        set ItemsAnime_NumpadKeys = CreateTrigger()
+        loop
+            exitwhen pid >= 10
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD7, 0, true)
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD8, 0, true)
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD4, 0, true)
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD5, 0, true)
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD1, 0, true)
+            call BlzTriggerRegisterPlayerKeyEvent(ItemsAnime_NumpadKeys, Player(pid), OSKEY_NUMPAD2, 0, true)
+            set pid = pid + 1
+        endloop
+        call TriggerAddCondition(ItemsAnime_NumpadKeys, Condition(function OnNumpadKey))
+        call TriggerAddCondition(WUI_CoffinKeyTrigger, Condition(function OnCoffinKey))
+        set t = CreateTrigger()
+        call TriggerAddCondition(t, Condition(function OnCoffinPickup))
+        set chat = CreateTrigger()
+        call TriggerAddAction(chat, function OnCoffinChat)
+        set pid = 0
+        loop
+            exitwhen pid >= 10
+            call TriggerRegisterPlayerUnitEvent(t, Player(pid), EVENT_PLAYER_UNIT_PICKUP_ITEM, null)
+            call TriggerRegisterPlayerChatEvent(chat, Player(pid), "-coffin", false)
+            set pid = pid + 1
+        endloop
+        call WUI_OnReady(function CoffinFrames)
+        set t = null
+        set chat = null
+    endfunction
+
+    // ================= Elemental actives (2026-10-28b): casts, marks, reactions =================
+    // Hooks: CastAItems (ItemsElements_Cast), DmgSys (ItemsElements_OnDamage), CastCheck
+    // (ItemsElements_OnHeroCast). Sacred Gear Booster is added once per cast to its first damage.
+    private function ElemStr takes unit c returns real
+        return I2R(GetHeroStr(c, true))
+    endfunction
+
+    private function ElemAgi takes unit c returns real
+        return I2R(GetHeroAgi(c, true))
+    endfunction
+
+    private function ElemInt takes unit c returns real
+        return I2R(GetHeroInt(c, true))
+    endfunction
+
+    private function ElemValid takes unit c, unit u returns boolean
+        return u != null and GetUnitTypeId(u) != 0 and SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c))
+    endfunction
+
+    private function ElemAlive takes unit u returns boolean
+        return u != null and GetUnitTypeId(u) != 0 and not IsUnitType(u, UNIT_TYPE_DEAD)
+    endfunction
+
+    // One damage instance credited to the item, then its element. Returns the HP actually lost.
+    private function ElemHit takes unit c, unit u, integer itemId, real dmg, boolean magic, integer element returns real
+        local real life = GetWidgetLife(u)
+        call DamageSource(itemId)
+        if magic then
+            call dmgmag(c, u, dmg)
+        else
+            call dmgphys(c, u, dmg)
+        endif
+        if element > 0 then
+            call DamageSource(itemId)
+            call ErzaPassive(c, u, element)
+        endif
+        return RMaxBJ(0.0, life - GetWidgetLife(u))
+    endfunction
+
+    private function ElemFx takes string model, real x, real y, real scale returns nothing
+        call DestroyEffect(EffectSpawn(model, x, y, GetRandomReal(0, 359), 1, scale, 0))
+    endfunction
+
+    // Distance to the finite thread segment, including a radius around its endpoints.
+    private function ElemNearSegment takes real px, real py, real ax, real ay, real bx, real by, real radius returns boolean
+        local real dx = bx - ax
+        local real dy = by - ay
+        local real length2 = dx * dx + dy * dy
+        local real t = 0.0
+        if length2 > 0.0 then
+            set t = RMaxBJ(0.0, RMinBJ(1.0, ((px - ax) * dx + (py - ay) * dy) / length2))
+        endif
+        set dx = px - ax - t * dx
+        set dy = py - ay - t * dy
+        return dx * dx + dy * dy <= radius * radius
+    endfunction
+
+    // One smooth displacement step; walkable ground inside the playable map only.
+    private function ElemStep takes unit u, real dx, real dy returns boolean
+        local real nx = GetUnitX(u) + dx
+        local real ny = GetUnitY(u) + dy
+        if IsUnitType(u, UNIT_TYPE_STRUCTURE) or IsTerrainPathable(nx, ny, PATHING_TYPE_WALKABILITY) then
+            return false
+        endif
+        if nx <= GetRectMinX(bj_mapInitialPlayableArea) or nx >= GetRectMaxX(bj_mapInitialPlayableArea) or ny <= GetRectMinY(bj_mapInitialPlayableArea) or ny >= GetRectMaxY(bj_mapInitialPlayableArea) then
+            return false
+        endif
+        call SetUnitX(u, nx)
+        call SetUnitY(u, ny)
+        return true
+    endfunction
+
+    struct ItemsElementsFx
+        static constant real DT = 0.03
+        // movers / damage carriers
+        static constant integer PROJ = 1
+        static constant integer MOVE = 2
+        static constant integer DOT = 3
+        static constant integer ANCHOR = 4
+        static constant integer STORM = 5
+        static constant integer RUNE = 6
+        static constant integer SPIRAL = 7
+        static constant integer ASHEN = 8
+        static constant integer WAVE = 9
+        static constant integer STRIKES = 10
+        static constant integer COILSHOT = 11
+        // marks
+        static constant integer EMBER = 20
+        static constant integer VERDICT = 21
+        static constant integer BASTION = 22
+        static constant integer CINDER = 23
+        static constant integer MIRROR = 24
+        static constant integer VOLT = 25
+        static constant integer PHOENIX = 26
+        static constant integer SIREN = 27
+        static constant integer COIL = 28
+        static thistype array list
+        static integer count = 0
+        static timer clock = CreateTimer()
+        static code tickCode = null
+        integer kind
+        integer src // item id (damage source / behaviour of PROJ and DOT)
+        integer phase
+        integer charges
+        unit c
+        unit u
+        unit u2
+        real left
+        real x
+        real y
+        real tx
+        real ty
+        real vx
+        real vy
+        real dmg
+        real dmg2
+        real step
+        real next
+        group g
+        group g2
+        effect e
+        effect e2
+        effect e3
+        lightning ln
+
+        method finish takes nothing returns nothing
+            if .e != null then
+                call DestroyEffect(.e)
+            endif
+            if .e2 != null then
+                call DestroyEffect(.e2)
+            endif
+            if .e3 != null then
+                call DestroyEffect(.e3)
+            endif
+            if .ln != null then
+                call DestroyLightning(.ln)
+            endif
+            if .g != null then
+                call DestroyGroup(.g)
+            endif
+            if .g2 != null then
+                call DestroyGroup(.g2)
+            endif
+            set .e = null
+            set .e2 = null
+            set .e3 = null
+            set .ln = null
+            set .g = null
+            set .g2 = null
+            set .c = null
+            set .u = null
+            set .u2 = null
+            call .destroy()
+        endmethod
+
+        static method Add takes integer kind, integer src, unit c, unit u, real duration returns thistype
+            local thistype this = thistype.create()
+            set .kind = kind
+            set .src = src
+            set .phase = 0
+            set .charges = 0
+            set .c = c
+            set .u = u
+            set .u2 = null
+            set .left = duration
+            set .x = 0.0
+            set .y = 0.0
+            set .tx = 0.0
+            set .ty = 0.0
+            set .vx = 0.0
+            set .vy = 0.0
+            set .dmg = 0.0
+            set .dmg2 = 0.0
+            set .step = 0.0
+            set .next = 0.0
+            set .g = null
+            set .g2 = null
+            set .e = null
+            set .e2 = null
+            set .e3 = null
+            set .ln = null
+            set list[count] = this
+            set count = count + 1
+            if count == 1 then
+                call TimerStart(clock, DT, true, tickCode)
+            endif
+            return this
+        endmethod
+
+        static method Find takes integer kind, unit c, unit u returns thistype
+            local integer i = 0
+            loop
+                exitwhen i >= count
+                if list[i].kind == kind and list[i].left > 0.0 and (c == null or list[i].c == c) and (u == null or list[i].u == u) then
+                    return list[i]
+                endif
+                set i = i + 1
+            endloop
+            return 0
+        endmethod
+
+        // A repeat cast refreshes the mark on the same target instead of stacking a second one.
+        static method Mark takes integer kind, integer src, unit c, unit u, real duration, string model returns thistype
+            local thistype this = Find(kind, c, u)
+            if this == 0 then
+                set this = Add(kind, src, c, u, duration)
+                if model != "" then
+                    set .e = AddSpecialEffectTarget(model, u, "overhead")
+                endif
+            else
+                set .left = duration
+                set .charges = 0
+            endif
+            return this
+        endmethod
+
+        // Smooth push / pull of u over `time`.
+        static method Push takes unit c, unit u, real angle, real dist, real time returns nothing
+            local thistype this
+            local integer ticks = IMaxBJ(1, R2I(time / DT + 0.5))
+            if dist <= 0.0 or not ElemAlive(u) then
+                return
+            endif
+            set this = Add(MOVE, 0, c, u, time + DT)
+            set .charges = ticks
+            set .vx = dist / I2R(ticks) * Cos(angle)
+            set .vy = dist / I2R(ticks) * Sin(angle)
+        endmethod
+
+        static method Burn takes integer src, unit c, unit u, real total, integer pulses, real interval, boolean magic returns thistype
+            local thistype this = Add(DOT, src, c, u, I2R(pulses) * interval + 0.1)
+            set .charges = pulses
+            set .dmg = total / I2R(pulses)
+            set .step = interval
+            set .next = interval
+            set .phase = IntegerTertiaryOp(magic, 1, 0)
+            return this
+        endmethod
+
+        static method Missile takes integer src, unit c, real fromX, real fromY, unit u, real speed, string model, real dmg returns thistype
+            local thistype this = Add(PROJ, src, c, u, 4.0)
+            set .x = fromX
+            set .y = fromY
+            set .vx = speed * DT
+            set .dmg = dmg
+            set .e = EffectSpawn(model, fromX, fromY, Atan2(GetUnitY(u) - fromY, GetUnitX(u) - fromX) * bj_RADTODEG, 1, 1.0, 70)
+            if src == Emberbreaker_ID then
+                call BlzSetSpecialEffectScale(.e, 2.0)
+                call BlzSetSpecialEffectZ(.e, BlzGetLocalSpecialEffectZ(.e) + 100.0)
+            elseif src == VoltThread_ID then
+                call BlzSetSpecialEffectZ(.e, BlzGetLocalSpecialEffectZ(.e) + 80.0) // 70 + 80 = 150
+            elseif src == CinderFang_ID then
+                call BlzSetSpecialEffectZ(.e, BlzGetLocalSpecialEffectZ(.e) + 150.0)
+            elseif src == MirrorTide_ID then
+                call BlzSetSpecialEffectScale(.e, MirrorTide_ProjectileScale)
+            elseif src == SirenTear_ID then
+                call BlzSetSpecialEffectScale(.e, 2.0)
+            endif
+            return this
+        endmethod
+
+        // Damage pulse on enemies in range; heroes hit are remembered in .g (Bastion charges, Coil chain).
+        method Pulse takes real radius, real dmg, boolean magic, integer element, integer slow returns nothing
+            local unit v
+            call GroupEnumUnitsInRange(ItemsElements_Group, .x, .y, radius, NoDecor_Cond)
+            loop
+                set v = FirstOfGroup(ItemsElements_Group)
+                exitwhen v == null
+                call GroupRemoveUnit(ItemsElements_Group, v)
+                if ElemValid(.c, v) then
+                    call ElemHit(.c, v, .src, dmg, magic, element)
+                    if slow > 0 then
+                        call SlowUnit(.c, v, slow, 1)
+                    endif
+                    if .g != null and IsUnitType(v, UNIT_TYPE_HERO) and not IsUnitIllusion(v) then
+                        call GroupAddUnit(.g, v)
+                    endif
+                endif
+            endloop
+        endmethod
+
+        // Drag enemies in range towards (x, y); `spin` adds a sideways (spiral) component.
+        method Drag takes real radius, real inward, real spin returns nothing
+            local unit v
+            local real a
+            local real d
+            local real m
+            call GroupEnumUnitsInRange(ItemsElements_Group, .x, .y, radius, NoDecor_Cond)
+            loop
+                set v = FirstOfGroup(ItemsElements_Group)
+                exitwhen v == null
+                call GroupRemoveUnit(ItemsElements_Group, v)
+                if ElemValid(.c, v) then
+                    set a = Atan2(.y - GetUnitY(v), .x - GetUnitX(v))
+                    set d = SquareRoot((.x - GetUnitX(v)) * (.x - GetUnitX(v)) + (.y - GetUnitY(v)) * (.y - GetUnitY(v)))
+                    set m = RMinBJ(inward * DT, RMaxBJ(0.0, d - 60.0))
+                    call ElemStep(v, m * Cos(a) + spin * DT * Cos(a + bj_PI * 0.5), m * Sin(a) + spin * DT * Sin(a + bj_PI * 0.5))
+                endif
+            endloop
+        endmethod
+
+        // A shuriken / wave at (px, py) hits enemies not yet in `hit` (and not in `skip`).
+        method Sweep takes real px, real py, real radius, group hit, group skip, real dmg, boolean magic, integer element, real push, integer slow returns nothing
+            local unit v
+            call GroupEnumUnitsInRange(ItemsElements_Group, px, py, radius, NoDecor_Cond)
+            loop
+                set v = FirstOfGroup(ItemsElements_Group)
+                exitwhen v == null
+                call GroupRemoveUnit(ItemsElements_Group, v)
+                if ElemValid(.c, v) and not IsUnitInGroup(v, hit) and (skip == null or not IsUnitInGroup(v, skip)) then
+                    call GroupAddUnit(hit, v)
+                    call ElemHit(.c, v, .src, dmg, magic, element)
+                    if slow > 0 then
+                        call SlowUnit(.c, v, slow, ConstellationCoil_SlowDuration)
+                    endif
+                    if push > 0.0 then
+                        call thistype.Push(.c, v, Atan2(.vy, .vx), push, 0.3)
+                    endif
+                endif
+            endloop
+        endmethod
+
+        method ThreadPulse takes nothing returns nothing
+            local real ax = GetUnitX(.c)
+            local real ay = GetUnitY(.c)
+            local real bx = GetUnitX(.u)
+            local real by = GetUnitY(.u)
+            local real dx = bx - ax
+            local real dy = by - ay
+            local unit v
+            call GroupEnumUnitsInRange(.g, (ax + bx) * 0.5, (ay + by) * 0.5, SquareRoot(dx * dx + dy * dy) * 0.5 + VoltThread_LineRadius, NoDecor_Cond)
+            loop
+                set v = FirstOfGroup(.g)
+                exitwhen v == null
+                call GroupRemoveUnit(.g, v)
+                if v != .u and ElemValid(.c, v) and ElemNearSegment(GetUnitX(v), GetUnitY(v), ax, ay, bx, by, VoltThread_LineRadius) then
+                    call ElemHit(.c, v, .src, .dmg, true, 0)
+                endif
+            endloop
+            set v = null
+        endmethod
+
+        // Homing projectile reached its target.
+        method Arrive takes nothing returns nothing
+            local thistype m
+            local real dealt
+            local real best = 250000.0
+            local real d
+            local unit v
+            local unit near = null
+            if .src == Emberbreaker_ID then
+                call ElemFx("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", GetUnitX(.u), GetUnitY(.u), 1.0)
+                call ElemHit(.c, .u, .src, .dmg, false, 1)
+                call thistype.Push(.c, .u, Atan2(GetUnitY(.u) - GetUnitY(.c), GetUnitX(.u) - GetUnitX(.c)), Emberbreaker_Knock, 0.25)
+                call thistype.Burn(.src, .c, .u, Emberbreaker_Burn * ElemStr(.c), 4, 0.5, true)
+                set m = thistype.Mark(EMBER, .src, .c, .u, 3.0, "Abilities\\Spells\\Other\\Incinerate\\IncinerateBuff.mdl")
+                set m.dmg2 = Emberbreaker_Retaliate * ElemStr(.c)
+            elseif .src == LeviathanGrasp_ID then
+                call ElemFx("Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveDamage.mdl", GetUnitX(.u), GetUnitY(.u), 2.4)
+                set dealt = ElemHit(.c, .u, .src, .dmg, false, 2)
+                // The claw drags the target in, then squeezes (heal on both hits, capped per cast).
+                set m = thistype.Burn(.src, .c, .u, LeviathanGrasp_Squeeze * ElemStr(.c), 1, 0.5, false)
+                set m.dmg2 = LeviathanGrasp_HealCap * ElemStr(.c)
+                set m.phase = 2
+                set d = SquareRoot((GetUnitX(.c) - GetUnitX(.u)) * (GetUnitX(.c) - GetUnitX(.u)) + (GetUnitY(.c) - GetUnitY(.u)) * (GetUnitY(.c) - GetUnitY(.u)))
+                call thistype.Push(.c, .u, Atan2(GetUnitY(.c) - GetUnitY(.u), GetUnitX(.c) - GetUnitX(.u)), RMinBJ(LeviathanGrasp_Pull, d - 120.0), 0.5)
+                set dealt = RMinBJ(dealt * LeviathanGrasp_Heal / 100.0, m.dmg2)
+                if dealt > 0.0 then
+                    set m.dmg2 = m.dmg2 - dealt
+                    call SetHpCurrent2(.c, .c, dealt)
+                endif
+                set m.e = AddSpecialEffectTarget("Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveDamage.mdl", .u, "origin")
+            elseif .src == CinderFang_ID and .phase == 0 then
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\PhoenixMissile\\Phoenix_Missile.mdl", .u, "chest"))
+                call ElemHit(.c, .u, .src, .dmg, false, 1)
+                set m = thistype.Mark(CINDER, .src, .c, .u, 3.0, "Environment\\SmallBuildingFire\\SmallBuildingFire2.mdl")
+                set m.dmg2 = CinderFang_Bonus * ElemAgi(.c)
+                // Ricochet to the nearest other enemy.
+                call GroupEnumUnitsInRange(ItemsElements_Group, GetUnitX(.u), GetUnitY(.u), 500, NoDecor_Cond)
+                loop
+                    set v = FirstOfGroup(ItemsElements_Group)
+                    exitwhen v == null
+                    call GroupRemoveUnit(ItemsElements_Group, v)
+                    if v != .u and ElemValid(.c, v) then
+                        set d = (GetUnitX(v) - GetUnitX(.u)) * (GetUnitX(v) - GetUnitX(.u)) + (GetUnitY(v) - GetUnitY(.u)) * (GetUnitY(v) - GetUnitY(.u))
+                        if d < best then
+                            set best = d
+                            set near = v
+                        endif
+                    endif
+                endloop
+                if near != null then
+                    set m = thistype.Missile(.src, .c, GetUnitX(.u), GetUnitY(.u), near, 2200, "Abilities\\Weapons\\PhoenixMissile\\Phoenix_Missile.mdl", CinderFang_Ricochet * ElemAgi(.c))
+                    set m.phase = 1
+                endif
+            elseif .src == CinderFang_ID then
+                call ElemHit(.c, .u, .src, .dmg, false, 1)
+            elseif .src == MirrorTide_ID then
+                call ElemFx("Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveDamage.mdl", GetUnitX(.u), GetUnitY(.u), 2.0)
+                call ElemHit(.c, .u, .src, .dmg, false, 0)
+            elseif .src == VoltThread_ID then
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\Bolt\\BoltImpact.mdl", .u, "chest"))
+                call ElemHit(.c, .u, .src, .dmg, true, 3)
+                set m = thistype.Mark(VOLT, .src, .c, .u, 3.0, "")
+                set m.dmg2 = VoltThread_Bonus * ElemAgi(.c)
+                set m.dmg = VoltThread_LineDamage * ElemAgi(.c)
+                set m.next = 1.0
+                if m.g == null then
+                    set m.g = CreateGroup()
+                endif
+                set m.step = -1.0
+                if m.ln == null then
+                    set m.ln = AddLightningEx("CLSB", true, GetUnitX(.c), GetUnitY(.c), 60, GetUnitX(.u), GetUnitY(.u), 60)
+                endif
+            elseif .src == PhoenixSeal_ID then
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", .u, "chest"))
+                call ElemHit(.c, .u, .src, .dmg, true, 1)
+                call thistype.Burn(.src, .c, .u, PhoenixSeal_Burn * ElemInt(.c), 4, 0.5, true)
+                set m = thistype.Mark(PHOENIX, .src, .c, .u, 3.0, "Abilities\\Spells\\Other\\SoulBurn\\SoulBurnbuff.mdl")
+                set m.dmg2 = PhoenixSeal_Bonus * ElemInt(.c)
+            elseif .src == SirenTear_ID then
+                call ElemFx("Abilities\\Spells\\Other\\CrushingWave\\CrushingWaveDamage.mdl", GetUnitX(.u), GetUnitY(.u), 2.0)
+                call ElemHit(.c, .u, .src, .dmg, true, 2)
+                if GetWidgetLife(.u) > 0.405 then
+                    set m = thistype.Mark(SIREN, .src, .c, .u, 2.0, "Abilities\\Spells\\Other\\Drain\\ManaDrainTarget.mdl")
+                    // 8 drains over 2 sec: min(2.5x INT, 8% max mana) in total.
+                    set m.dmg2 = RMinBJ(SirenTear_IntCap * ElemInt(.c), GetUnitState(.u, UNIT_STATE_MAX_MANA) * SirenTear_MaxMpCap / 100.0) / 8.0
+                    set m.next = 0.25
+                endif
+            endif
+            set v = null
+            set near = null
+        endmethod
+
+        // Returns true when the instance is finished.
+        method update takes nothing returns boolean
+            local real dx
+            local real dy
+            local real d
+            local real a
+            local real take
+            local thistype m
+            local unit v
+            local unit a1
+            local unit b1
+            local real best
+            local real px
+            local real py
+            local unit array hits
+            set .left = .left - DT
+            if .c == null or GetUnitTypeId(.c) == 0 then
+                return true
+            endif
+            if .kind == PROJ then
+                if not ElemAlive(.u) then
+                    return true
+                endif
+                set dx = GetUnitX(.u) - .x
+                set dy = GetUnitY(.u) - .y
+                if dx * dx + dy * dy <= (.vx + 40.0) * (.vx + 40.0) then
+                    call .Arrive()
+                    return true
+                endif
+                set a = Atan2(dy, dx)
+                set .x = .x + .vx * Cos(a)
+                set .y = .y + .vx * Sin(a)
+                call BlzSetSpecialEffectX(.e, .x)
+                call BlzSetSpecialEffectY(.e, .y)
+                call BlzSetSpecialEffectYaw(.e, a)
+                return .left <= 0.0
+            elseif .kind == MOVE then
+                if not ElemAlive(.u) or .charges <= 0 or not ElemStep(.u, .vx, .vy) then
+                    return true
+                endif
+                set .charges = .charges - 1
+                return .charges <= 0
+            elseif .kind == DOT then
+                if not ElemAlive(.u) then
+                    return true
+                endif
+                set .next = .next - DT
+                if .next <= 0.0 then
+                    set .next = .step
+                    set .charges = .charges - 1
+                    if SpellBool(.u) then
+                        set d = ElemHit(.c, .u, .src, .dmg, .phase == 1, 0)
+                        if .phase == 2 and .dmg2 > 0.0 then
+                            set d = RMinBJ(d * LeviathanGrasp_Heal / 100.0, .dmg2)
+                            set .dmg2 = .dmg2 - d
+                            if d > 0.0 then
+                                call SetHpCurrent2(.c, .c, d)
+                            endif
+                        endif
+                    endif
+                    return .charges <= 0
+                endif
+                return .left <= 0.0
+            elseif .kind == ANCHOR then
+                // Absolute impact times: 0.60, 1.10, 1.60 sec; motion and damage share the clock.
+                set .step = .step + DT
+                if .charges > 0 then
+                    call .Drag(LeviathanAnchor_Aoe, LeviathanAnchor_PullSpeed, 0.0)
+                endif
+                if .charges < 3 then
+                    if .step >= .next then
+                        call BlzSetSpecialEffectZ(.e, .dmg2)
+                        call BlzSetSpecialEffectPitch(.e, 0.0)
+                        set .charges = .charges + 1
+                        set .next = .next + 0.5
+                        if .charges == 1 then
+                            set .e2 = EffectSpawn("Abilities\\Spells\\Other\\Tornado\\TornadoElementalSmall.mdl", .x, .y, 0, 1, 2.2, 0)
+                        endif
+                        call ElemFx("war3mapImported\\wos_ZarakiWCrack1.mdx", .x, .y, 1.5)
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_obr08 (214).mdx", .x, .y, GetRandomReal(0, 359), 0.65, 1.5, 1))
+                        call .Pulse(LeviathanAnchor_Aoe, .dmg, false, IntegerTertiaryOp(.charges == 1, 2, 0), 15)
+                        if .charges == 3 then
+                            call DestroyEffect(.e)
+                            set .e = null
+                        endif
+                    elseif .charges == 0 then
+                        set d = RMaxBJ(0.0, 1.0 - .step / 0.6)
+                        call BlzSetSpecialEffectZ(.e, .dmg2 + 1200.0 * d)
+                        call BlzSetSpecialEffectPitch(.e, -0.5 * bj_PI * d)
+                    else
+                        set d = RMaxBJ(0.0, RMinBJ(1.0, (.step - (.next - 0.5)) / 0.5))
+                        call BlzSetSpecialEffectZ(.e, .dmg2 + 2880.0 * d * (1.0 - d))
+                        call BlzSetSpecialEffectPitch(.e, -0.5 * bj_PI * Sin(bj_PI * d))
+                    endif
+                endif
+                return .left <= 0.0
+            elseif .kind == STORM or .kind == SPIRAL then
+                if .kind == SPIRAL then
+                    call .Drag(ConstellationCoil_Aoe, ConstellationCoil_PullSpeed, ConstellationCoil_Spin)
+                endif
+                set .next = .next - DT
+                if .next <= 0.0 and .charges < 4 then
+                    set .next = .step
+                    set .charges = .charges + 1
+                    set a = GetRandomReal(0, 2 * bj_PI)
+                    call ElemFx("war3mapimported\\wos_longskill_point_10.mdl", .x + 160 * Cos(a), .y + 160 * Sin(a), 1.0)
+                    call ElemFx("war3mapimported\\wos_longskill_point_10.mdl", .x - 160 * Cos(a), .y - 160 * Sin(a), 1.0)
+                    if .kind == STORM then
+                        call .Pulse(ThunderBastion_Aoe, .dmg, true, IntegerTertiaryOp(.charges == 1, 3, 0), 0)
+                    else
+                        call .Pulse(ConstellationCoil_Aoe, .dmg, true, IntegerTertiaryOp(.charges == 1, 3, 0), 0)
+                    endif
+                endif
+                if .left > 0.0 then
+                    return false
+                endif
+                if .kind == STORM then
+                    set .charges = 0
+                    loop
+                        set v = FirstOfGroup(.g)
+                        exitwhen v == null
+                        call GroupRemoveUnit(.g, v)
+                        set .charges = .charges + 1
+                    endloop
+                    if .charges > 0 then
+                        set m = Find(BASTION, .c, null)
+                        if m == 0 then
+                            set m = Add(BASTION, ThunderBastion_ID, .c, null, 4.0)
+                            set m.e = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\LightningShield\\LightningShieldTarget.mdl", .c, "origin")
+                        endif
+                        set m.left = 4.0
+                        set m.charges = IMinBJ(3, m.charges + .charges)
+                        set m.dmg2 = ThunderBastion_Counter * ElemStr(.c)
+                    endif
+                else
+                    // Chain the nearest pair of the living enemy heroes the spiral caught.
+                    set best = 99999999.0
+                    set a1 = null
+                    set b1 = null
+                    set d = 0
+                    loop
+                        set v = FirstOfGroup(.g)
+                        exitwhen v == null or d >= 10
+                        call GroupRemoveUnit(.g, v)
+                        if ElemAlive(v) then
+                            set hits[R2I(d)] = v
+                            set d = d + 1
+                        endif
+                    endloop
+                    set dx = 0
+                    loop
+                        exitwhen dx >= d
+                        set dy = dx + 1
+                        loop
+                            exitwhen dy >= d
+                            set px = GetUnitX(hits[R2I(dx)]) - GetUnitX(hits[R2I(dy)])
+                            set py = GetUnitY(hits[R2I(dx)]) - GetUnitY(hits[R2I(dy)])
+                            if px * px + py * py < best then
+                                set best = px * px + py * py
+                                set a1 = hits[R2I(dx)]
+                                set b1 = hits[R2I(dy)]
+                            endif
+                            set dy = dy + 1
+                        endloop
+                        set hits[R2I(dx)] = null
+                        set dx = dx + 1
+                    endloop
+                    if a1 != null and b1 != null then
+                        set m = Add(COIL, ConstellationCoil_ID, .c, a1, 3.0)
+                        set m.u2 = b1
+                        set m.dmg2 = ConstellationCoil_Bonus * ElemInt(.c)
+                        set m.ln = AddLightningEx("CLSB", true, GetUnitX(a1), GetUnitY(a1), 60, GetUnitX(b1), GetUnitY(b1), 60)
+                    endif
+                endif
+                return true
+            elseif .kind == RUNE then
+                if .phase == 0 then
+                    if .left <= 1.5 then
+                        set .phase = 1
+                        set .next = 0.5
+                        set .e2 = EffectSpawn("Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeEmbers.mdl", .x, .y, 0, 1, 1.6, 0)
+                        call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_yc_firebeam2.mdx", .x, .y, 0, 2.0, 0.7, 0), 0.3, 255, 255, 255, 0.5)
+                        // Eruption: burning before it adds the bonus.
+                        call GroupEnumUnitsInRange(ItemsElements_Group, .x, .y, CrimsonScripture_Aoe, NoDecor_Cond)
+                        loop
+                            set v = FirstOfGroup(ItemsElements_Group)
+                            exitwhen v == null
+                            call GroupRemoveUnit(ItemsElements_Group, v)
+                            if ElemValid(.c, v) then
+                                if GetUnitAbilityLevel(v, ErzaFire_ID) > 0 then
+                                    call ElemHit(.c, v, .src, .dmg + CrimsonScripture_Burning * ElemInt(.c), true, 1)
+                                else
+                                    call ElemHit(.c, v, .src, .dmg, true, 1)
+                                endif
+                            endif
+                        endloop
+                    endif
+                    return false
+                endif
+                set .next = .next - DT
+                if .next <= 0.0 and .charges < 3 then
+                    set .next = 0.5
+                    set .charges = .charges + 1
+                    call .Pulse(CrimsonScripture_Aoe, .dmg2, true, 0, 0)
+                endif
+                return .left <= 0.0
+            elseif .kind == ASHEN or .kind == WAVE then
+                // .step = travelled distance, .next = total distance; .vx / .vy = unit direction.
+                set .step = .step + IntegerTertiaryOp(.phase == 0, 1, -1) * 1100.0 * DT
+                if .kind == WAVE then
+                    set px = .x + .vx * .step
+                    set py = .y + .vy * .step
+                    call BlzSetSpecialEffectX(.e, px)
+                    call BlzSetSpecialEffectY(.e, py)
+                    call .Sweep(px, py, MirrorTide_WaveAoe, .g, null, .dmg, false, 2, MirrorTide_Push, 0)
+                    if .step >= .next then
+                        set m = Add(MIRROR, MirrorTide_ID, .c, null, 3.0)
+                        set m.x = .tx
+                        set m.y = .ty
+                        set m.charges = 1
+                        set m.dmg2 = MirrorTide_Reflect * ElemAgi(.c)
+                        set m.e = EffectSpawn("Abilities\\Spells\\Other\\Monsoon\\MonsoonRain.mdl", .tx, .ty, 0, 0.6, 0.8, 0)
+                        return true
+                    endif
+                    return false
+                endif
+                set a = Atan2(.vy, .vx)
+                set px = .x + .step * Cos(a - 0.35)
+                set py = .y + .step * Sin(a - 0.35)
+                call BlzSetSpecialEffectX(.e, px)
+                call BlzSetSpecialEffectY(.e, py)
+                if .phase == 0 then
+                    call .Sweep(px, py, 110, .g, null, .dmg, false, 1, 0.0, 0)
+                else
+                    call .Sweep(px, py, 110, .g2, .g, .dmg2, false, 1, 0.0, 0)
+                endif
+                set px = .x + .step * Cos(a)
+                set py = .y + .step * Sin(a)
+                call BlzSetSpecialEffectX(.e2, px)
+                call BlzSetSpecialEffectY(.e2, py)
+                if .phase == 0 then
+                    call .Sweep(px, py, 110, .g, null, .dmg, false, 1, 0.0, 0)
+                else
+                    call .Sweep(px, py, 110, .g2, .g, .dmg2, false, 1, 0.0, 0)
+                endif
+                set px = .x + .step * Cos(a + 0.35)
+                set py = .y + .step * Sin(a + 0.35)
+                call BlzSetSpecialEffectX(.e3, px)
+                call BlzSetSpecialEffectY(.e3, py)
+                if .phase == 0 then
+                    call .Sweep(px, py, 110, .g, null, .dmg, false, 1, 0.0, 0)
+                else
+                    call .Sweep(px, py, 110, .g2, .g, .dmg2, false, 1, 0.0, 0)
+                endif
+                if .phase == 0 and .step >= .next then
+                    set .phase = 1
+                endif
+                return .phase == 1 and .step <= 0.0
+            elseif .kind == COILSHOT then
+                set .step = RMinBJ(.next, .step + ConstellationCoil_Speed * DT)
+                set px = .x + .vx * .step
+                set py = .y + .vy * .step
+                call BlzSetSpecialEffectX(.e, px)
+                call BlzSetSpecialEffectY(.e, py)
+                call .Sweep(px, py, ConstellationCoil_Width, .g, null, .dmg, true, 3, 0.0, ConstellationCoil_Slow)
+                return .step >= .next or .left <= 0.0
+            elseif .kind == STRIKES then
+                if not ElemAlive(.u) then
+                    return true
+                endif
+                set .next = .next - DT
+                if .next <= 0.0 then
+                    set .next = 0.3
+                    set .charges = .charges + 1
+                    call ElemFx("war3mapimported\\wos_WTW-whitethunder-Zi.mdx", GetUnitX(.u), GetUnitY(.u), 1.0)
+                    if SpellBool(.u) then
+                        call ElemHit(.c, .u, .src, .dmg, true, IntegerTertiaryOp(.charges == 1, 3, 0))
+                    endif
+                    if .charges == 1 then
+                        set m = Mark(VERDICT, .src, .c, .u, 3.0, "Abilities\\Spells\\Orc\\Purge\\PurgeBuffTarget.mdl")
+                        set m.x = GetUnitX(.u)
+                        set m.y = GetUnitY(.u)
+                        set m.dmg2 = ThunderVerdict_Bonus * ElemStr(.c)
+                    endif
+                    return .charges >= 3
+                endif
+                return false
+            endif
+            // ---- marks
+            if .kind != BASTION and .kind != MIRROR and not ElemAlive(.u) then
+                return true
+            endif
+            if .kind == VERDICT then
+                set dx = GetUnitX(.u) - .x
+                set dy = GetUnitY(.u) - .y
+                if dx * dx + dy * dy > ThunderVerdict_Leash * ThunderVerdict_Leash then
+                    call ElemFx("war3mapimported\\wos_WTW-whitethunder-Zi.mdx", GetUnitX(.u), GetUnitY(.u), 1.0)
+                    call ElemHit(.c, .u, ThunderVerdict_ID, .dmg2, true, 0)
+                    call SlowUnit(.c, .u, 25, 1)
+                    return true
+                endif
+            elseif .kind == VOLT then
+                if not ElemAlive(.c) then
+                    return true
+                endif
+                set .next = .next - DT
+                if .next <= 0.0001 then
+                    set .next = .next + 1.0
+                    call .ThreadPulse()
+                endif
+                if .ln != null then
+                    call MoveLightningEx(.ln, true, GetUnitX(.c), GetUnitY(.c), 60, GetUnitX(.u), GetUnitY(.u), 60)
+                endif
+            elseif .kind == COIL then
+                if not ElemAlive(.u2) then
+                    return true
+                endif
+                set dx = GetUnitX(.u) - GetUnitX(.u2)
+                set dy = GetUnitY(.u) - GetUnitY(.u2)
+                if dx * dx + dy * dy > ConstellationCoil_Break * ConstellationCoil_Break then
+                    call ElemHit(.c, .u, ConstellationCoil_ID, .dmg2, true, 0)
+                    call ElemHit(.c, .u2, ConstellationCoil_ID, .dmg2, true, 0)
+                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\Bolt\\BoltImpact.mdl", .u, "chest"))
+                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\Bolt\\BoltImpact.mdl", .u2, "chest"))
+                    return true
+                endif
+                call MoveLightningEx(.ln, true, GetUnitX(.u), GetUnitY(.u), 60, GetUnitX(.u2), GetUnitY(.u2), 60)
+            elseif .kind == SIREN then
+                set .next = .next - DT
+                if .next <= 0.0 then
+                    set .next = 0.25
+                    set take = RMinBJ(.dmg2, GetUnitState(.u, UNIT_STATE_MANA))
+                    if take > 0.0 then
+                        call SetMpCurrentQuiet(.u, -take)
+                        call SetMpCurrentQuiet(.c, take * SirenTear_Return / 100.0)
+                    endif
+                endif
+            endif
+            set v = null
+            set a1 = null
+            set b1 = null
+            return .left <= 0.0
+        endmethod
+
+        static method Tick takes nothing returns nothing
+            local integer i = 0
+            local thistype this
+            loop
+                exitwhen i >= count
+                set this = list[i]
+                if .update() then
+                    set count = count - 1
+                    set list[i] = list[count]
+                    call .finish()
+                else
+                    set i = i + 1
+                endif
+            endloop
+            if count == 0 then
+                call PauseTimer(clock)
+            endif
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            set tickCode = function thistype.Tick
+        endmethod
+    endstruct
+
+    // ---------------------------------------------------------------- casts
+    function ItemsElements_Cast takes unit c, unit td, real x, real y, integer id returns nothing
+        local ItemsElementsFx fx
+        local real life
+        local real cost
+        local real a
+        local real d
+        if id == BloodPactRingEvolved_Abi_ID then
+            call GearManaFloorStart(c, BloodPactRingEvolved_Duration, BloodPactRingEvolved_ManaFloor / 100.0)
+            call MyRemoveEff(AddSpecialEffectTarget("Abilities\\Spells\\Items\\AIma\\AImaTarget.mdl", c, "origin"), BloodPactRingEvolved_Duration)
+            return
+        endif
+        if id == BloodPactRing_Abi_ID then
+            set life = GetWidgetLife(c)
+            set cost = RMinBJ(BloodPactRing_Cost, life - 1.0)
+            if cost > 0.0 then
+                call SetWidgetLife(c, life - cost)
+                call SetMpCurrent(c, BloodPactRing_Mana)
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\DeathPact\\DeathPactTarget.mdl", c, "origin"))
+            endif
+            return
+        endif
+        // ---- single target: a projectile carries the first damage (Booster added once there)
+        if id == Emberbreaker_Abi_ID or id == LeviathanGrasp_Abi_ID or id == ThunderVerdict_Abi_ID or id == CinderFang_Abi_ID or id == VoltThread_Abi_ID or id == PhoenixSeal_Abi_ID or id == SirenTear_Abi_ID then
+            if not ElemValid(c, td) then
+                return
+            endif
+            if id == Emberbreaker_Abi_ID then
+                call ItemsElementsFx.Missile(Emberbreaker_ID, c, GetUnitX(c), GetUnitY(c), td, 1400, "war3mapImported\\wos_summon3missle.mdl", SacredGearBooster(c, Emberbreaker_Impact * ElemStr(c)))
+            elseif id == LeviathanGrasp_Abi_ID then
+                call ItemsElementsFx.Missile(LeviathanGrasp_ID, c, GetUnitX(c), GetUnitY(c), td, 1300, "war3mapimported\\wos_EF_AZ_Leviathan_G1.mdl", SacredGearBooster(c, LeviathanGrasp_Impact * ElemStr(c)))
+            elseif id == ThunderVerdict_Abi_ID then
+                set fx = ItemsElementsFx.Add(ItemsElementsFx.STRIKES, ThunderVerdict_ID, c, td, 2.0)
+                set fx.dmg = SacredGearBooster(c, ThunderVerdict_Damage * ElemStr(c)) / 3.0
+                set fx.next = 0.10
+            elseif id == CinderFang_Abi_ID then
+                call ItemsElementsFx.Missile(CinderFang_ID, c, GetUnitX(c), GetUnitY(c), td, 2400, "Abilities\\Weapons\\PhoenixMissile\\Phoenix_Missile.mdl", SacredGearBooster(c, CinderFang_Impact * ElemAgi(c)))
+            elseif id == VoltThread_Abi_ID then
+                call ItemsElementsFx.Missile(VoltThread_ID, c, GetUnitX(c), GetUnitY(c), td, 2000, "war3mapImported\\wos_obr08 (166).mdx", SacredGearBooster(c, VoltThread_Damage * ElemAgi(c)))
+            elseif id == PhoenixSeal_Abi_ID then
+                call ItemsElementsFx.Missile(PhoenixSeal_ID, c, GetUnitX(c), GetUnitY(c), td, 1000, "war3mapImported\\wos_Windwalk Fire2.mdl", SacredGearBooster(c, PhoenixSeal_Impact * ElemInt(c)))
+            else
+                call ItemsElementsFx.Missile(SirenTear_ID, c, GetUnitX(c), GetUnitY(c), td, 1100, "Abilities\\Weapons\\SeaElementalMissile\\SeaElementalMissile.mdl", SacredGearBooster(c, SirenTear_Damage * ElemInt(c)))
+            endif
+            return
+        endif
+        // ---- area: delayed blasts, pulses, sweeps
+        if id == LeviathanAnchor_Abi_ID then
+            set fx = ItemsElementsFx.Add(ItemsElementsFx.ANCHOR, LeviathanAnchor_ID, c, null, 2.1)
+            set fx.dmg = SacredGearBooster(c, LeviathanAnchor_Damage * ElemStr(c)) / 3.0
+            set fx.e = EffectSpawn("war3mapimported\\wos_EF_AZ_Leviathan_G2.mdl", x, y, 0, 1, 0.9, 1200)
+            set fx.dmg2 = BlzGetLocalSpecialEffectZ(fx.e) - 1200.0
+            set fx.next = 0.6
+            call BlzSetSpecialEffectPitch(fx.e, -0.5 * bj_PI)
+        elseif id == ThunderBastion_Abi_ID then
+            set fx = ItemsElementsFx.Add(ItemsElementsFx.STORM, ThunderBastion_ID, c, null, 1.9)
+            set fx.dmg = SacredGearBooster(c, ThunderBastion_Damage * ElemStr(c)) / 4.0
+            set fx.step = 0.5
+            set fx.next = 0.2
+            set fx.g = CreateGroup()
+            set fx.e = AddSpecialEffect("Abilities\\Spells\\Human\\ManaFlare\\ManaFlareTarget.mdl", x, y)
+            call BlzSetSpecialEffectScale(fx.e, 1.25)
+        elseif id == CrimsonScripture_Abi_ID then
+            set fx = ItemsElementsFx.Add(ItemsElementsFx.RUNE, CrimsonScripture_ID, c, null, 2.3)
+            set fx.dmg = SacredGearBooster(c, CrimsonScripture_Damage * ElemInt(c))
+            set fx.dmg2 = CrimsonScripture_Ground * ElemInt(c) / 3.0
+            set fx.e = AddSpecialEffect("Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeTarget.mdl", x, y)
+        elseif id == ConstellationCoil_Abi_ID then
+            set a = Atan2(y - GetUnitY(c), x - GetUnitX(c))
+            set fx = ItemsElementsFx.Add(ItemsElementsFx.COILSHOT, ConstellationCoil_ID, c, null, 2.0)
+            set fx.dmg = SacredGearBooster(c, ConstellationCoil_Damage * ElemInt(c))
+            set fx.next = ConstellationCoil_Range
+            set fx.vx = Cos(a)
+            set fx.vy = Sin(a)
+            set fx.g = CreateGroup()
+            set x = GetUnitX(c)
+            set y = GetUnitY(c)
+            set fx.e = EffectSpawn(ConstellationCoil_ProjectileModel, x, y, a * bj_RADTODEG, 1, ConstellationCoil_ProjectileScale, 100)
+        elseif id == AshenCrossfire_Abi_ID or id == MirrorTide_Abi_ID then
+            set a = Atan2(y - GetUnitY(c), x - GetUnitX(c))
+            set d = SquareRoot((x - GetUnitX(c)) * (x - GetUnitX(c)) + (y - GetUnitY(c)) * (y - GetUnitY(c)))
+            if id == AshenCrossfire_Abi_ID then
+                set fx = ItemsElementsFx.Add(ItemsElementsFx.ASHEN, AshenCrossfire_ID, c, null, 4.0)
+                set fx.dmg = SacredGearBooster(c, AshenCrossfire_Damage * ElemAgi(c))
+                set fx.dmg2 = AshenCrossfire_Return * ElemAgi(c)
+                set fx.next = RMinBJ(RMaxBJ(d + AshenCrossfire_Aoe * 0.5, 300.0), 1000.0)
+                set fx.g2 = CreateGroup()
+                set fx.e = EffectSpawn(AshenCrossfire_ProjectileModel, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, AshenCrossfire_ProjectileScale, AshenCrossfire_ProjectileHeight)
+                set fx.e2 = EffectSpawn(AshenCrossfire_ProjectileModel, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, AshenCrossfire_ProjectileScale, AshenCrossfire_ProjectileHeight)
+                set fx.e3 = EffectSpawn(AshenCrossfire_ProjectileModel, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, AshenCrossfire_ProjectileScale, AshenCrossfire_ProjectileHeight)
+            else
+                set fx = ItemsElementsFx.Add(ItemsElementsFx.WAVE, MirrorTide_ID, c, null, 4.0)
+                set fx.dmg = SacredGearBooster(c, MirrorTide_Damage * ElemAgi(c))
+                set fx.next = MirrorTide_Range
+                set fx.tx = GetUnitX(c) + Cos(a) * fx.next
+                set fx.ty = GetUnitY(c) + Sin(a) * fx.next
+                set fx.e = EffectSpawn(MirrorTide_ProjectileModel, GetUnitX(c), GetUnitY(c), a * bj_RADTODEG, 1, MirrorTide_ProjectileScale, 0)
+            endif
+            set fx.vx = Cos(a)
+            set fx.vy = Sin(a)
+            set fx.g = CreateGroup()
+            set x = GetUnitX(c)
+            set y = GetUnitY(c)
+        else
+            return
+        endif
+        set fx.x = x
+        set fx.y = y
+    endfunction
+
+    // ---------------------------------------------------------------- reactions
+    // Applied damage (DmgSys). Follow-ups are spell damage, so they never re-enter the attack
+    // branches; enemy -> owner reactions need td == owner and spend their mark / charge first.
+    function ItemsElements_OnDamage takes unit c, unit td, real dmg, boolean isAttack returns nothing
+        local ItemsElementsFx fx
+        local unit v
+        local unit near = null
+        local real best = 99999999.0
+        local real d
+        local real now
+        if ItemsElementsFx.count == 0 or dmg <= 0.0 or c == null or td == null or c == td then
+            return
+        endif
+        // Enemy hits the owner.
+        set fx = ItemsElementsFx.Find(ItemsElementsFx.EMBER, td, c)
+        if fx != 0 then
+            set fx.left = 0.0
+            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", c, "chest"))
+            call ElemHit(td, c, Emberbreaker_ID, fx.dmg2, true, 0)
+        endif
+        set fx = ItemsElementsFx.Find(ItemsElementsFx.BASTION, td, null)
+        if fx != 0 and fx.charges > 0 and IsUnitEnemy(c, GetOwningPlayer(td)) and SpellBool(c) then
+            set now = TimerGetElapsed(HealRegenClock)
+            if now >= fx.step then
+                set fx.step = now + 0.8
+                set fx.charges = fx.charges - 1
+                if fx.charges == 0 then
+                    set fx.left = 0.0
+                endif
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\Bolt\\BoltImpact.mdl", c, "chest"))
+                call ElemHit(td, c, ThunderBastion_ID, fx.dmg2, true, 0)
+                call SlowUnit(td, c, 20, 1)
+            endif
+        endif
+        if not isAttack then
+            return
+        endif
+        // Owner's basic attacks.
+        set fx = ItemsElementsFx.Find(ItemsElementsFx.CINDER, c, td)
+        if fx != 0 then
+            set fx.left = 0.0
+            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", td, "chest"))
+            call ElemHit(c, td, CinderFang_ID, fx.dmg2, false, 0)
+        endif
+        set fx = ItemsElementsFx.Find(ItemsElementsFx.VOLT, c, td)
+        if fx != 0 then
+            set now = TimerGetElapsed(HealRegenClock)
+            if now >= fx.step + 0.4 then
+                set fx.step = now
+                set fx.charges = fx.charges + 1
+                if fx.charges >= 3 then
+                    set fx.left = 0.0
+                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Monsoon\\MonsoonBoltTarget.mdl", td, "origin"))
+                    call ElemHit(c, td, VoltThread_ID, fx.dmg2, true, 0)
+                    call SlowUnit(c, td, 20, 1)
+                endif
+            endif
+        endif
+        set fx = ItemsElementsFx.Find(ItemsElementsFx.MIRROR, c, null)
+        if fx != 0 and fx.charges > 0 and IsUnitInRangeXY(td, fx.x, fx.y, MirrorTide_Aoe) then
+            call GroupEnumUnitsInRange(ItemsElements_Group, fx.x, fx.y, MirrorTide_Aoe, NoDecor_Cond)
+            loop
+                set v = FirstOfGroup(ItemsElements_Group)
+                exitwhen v == null
+                call GroupRemoveUnit(ItemsElements_Group, v)
+                if v != td and ElemValid(c, v) then
+                    set d = (GetUnitX(v) - GetUnitX(td)) * (GetUnitX(v) - GetUnitX(td)) + (GetUnitY(v) - GetUnitY(td)) * (GetUnitY(v) - GetUnitY(td))
+                    if d < best then
+                        set best = d
+                        set near = v
+                    endif
+                endif
+            endloop
+            if near != null then
+                set fx.charges = 0
+                set fx.left = 0.0
+                // The reflected blade flies to its target (no instant hit).
+                call ItemsElementsFx.Missile(MirrorTide_ID, c, GetUnitX(td), GetUnitY(td), near, 1600, MirrorTide_ProjectileModel, fx.dmg2)
+            endif
+        endif
+        set v = null
+        set near = null
+    endfunction
+
+    // A hero ability cast by a Phoenix Seal target (CastCheck, real casts only).
+    function ItemsElements_OnHeroCast takes unit u returns nothing
+        local integer i = 0
+        local ItemsElementsFx fx
+        loop
+            exitwhen i >= ItemsElementsFx.count
+            set fx = ItemsElementsFx.list[i]
+            if fx.kind == ItemsElementsFx.PHOENIX and fx.u == u and fx.left > 0.0 then
+                set fx.left = 0.0
+                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", u, "chest"))
+                call ElemHit(fx.c, u, PhoenixSeal_ID, fx.dmg2, true, 0)
+            endif
+            set i = i + 1
+        endloop
+    endfunction
 
     endlibrary
 

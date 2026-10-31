@@ -119,7 +119,7 @@ class FollowupRuntime(unittest.TestCase):
             vm=JassState('globals\n'+constant+'\nendglobals\n'+code)
             caster=vm.unit(owner=0);target=vm.unit(owner=1);target.life=100.
             for buff in buffs[:stacks]:vm.add_ability(target,buff)
-            vm.g.update(LIBRARY_FrostnovaSpells=False,HellBlaze_HealCutPerStack=float(constant.rsplit('=',1)[1]),
+            vm.g.update(LIBRARY_FrostnovaSpells=False,HealTextQuiet=False,HealRegenTrack=False,SukunaFinger_Buff_ID='B058',HellBlaze_HealCutPerStack=float(constant.rsplit('=',1)[1]),
                 GetHealAmp=lambda u:0.,DarkHolyGrail_HpRegenReduce=30.,
                 GetPlayerId=lambda p:p,
                 IsUnitType=lambda *_:False,CheckCoordsInRect=lambda *_:True,

@@ -211,7 +211,7 @@ class HoverIntegration(unittest.TestCase):
             'BlzPixelToFrameX':lambda x:x,'BlzPixelToFrameY':lambda y:y,
             'BlzIsMouseButtonPressed':lambda b:False,'MOUSE_BUTTON_TYPE_RIGHT':'right',
             'AHUI_RequestCooldownPing':lambda *a:None,'AHUI_ReleaseCooldownPing':lambda *a:None,
-            'AHUI_CooldownPingCommandAt':lambda *a:-1,'AHUI_PingInputInside':{0:False},
+            'AHUI_CooldownPingCommandAt':lambda *a:-1,'AHUI_PingInputInside':{0:False},'AHUI_QBIntentHeld':{0:False},'QB_PreviewStep':defaultdict(lambda:-1),
             'AHUI_CooldownTooltipContains':lambda *a:False,
             'AHUI_GetSlotCenterX':lambda s:0.4,'AHUI_GetSlotCenterY':lambda s:0.04,
             'AHUI_RefreshTooltip':lambda *a:None,'AHUI_HideTooltip':lambda *a:self.hides.append(a),

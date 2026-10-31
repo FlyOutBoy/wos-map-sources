@@ -86,7 +86,7 @@ class HeroBalanceFollowup(unittest.TestCase):
                 self.assertIn('Takaoni',fields['atp1',level])
                 self.assertIn('Bushogoma cage',fields['aub1',level])
 
-    def test_bazz_tiers_and_every_damage_site_applies_fire_only_at_35(self):
+    def test_bazz_tiers_and_every_damage_site_applies_fire_from_fire_level(self):
         text=source('Heroes/BazzB.j');vm=JassState(text);hero=vm.unit(owner=0)
         cuts=[];vm.g['ReduceCooldown']=lambda *a:cuts.append(a)
         for level,amount in ((11,0.),(12,1.),(25,1.5),(35,2.)):
@@ -94,13 +94,14 @@ class HeroBalanceFollowup(unittest.TestCase):
             vm.run('BazzBPass_Start',(hero,vm.g['BazzBQ_ID']))
             self.assertEqual(4 if amount else 0,len(cuts))
             self.assertTrue(all(a[2]==amount and a[1]!=vm.g['BazzBQ_ID'] for a in cuts))
-        hits=re.findall(r'call dmgmag\(c, u, dmg\)\s+if GetHeroLevel\(c\) >= 35 then\s+call ErzaPassive\(c, u, 1\)\s+endif',text)
+        hits=re.findall(r'call dmgmag\(c, u, dmg\)\s+if GetHeroLevel\(c\) >= BazzB_FireLevel then\s+call ErzaPassive\(c, u, 1\)\s+endif',text)
         self.assertEqual(text.count('call dmgmag(c, u, dmg)'),len(hits))
         self.assertEqual(6,len(hits));self.assertEqual(1.2,vm.g['BazzBR_CastTime'])
         fire=[];code='function Hit takes nothing returns nothing\n'+hits[0]+'\nendfunction'
-        hit=JassState(code);hit.g.update(c=hero,u=hero,dmg=1.,dmgmag=lambda *_:None,ErzaPassive=lambda *a:fire.append(a))
-        hero.hero_level=34;hit.run('Hit');self.assertFalse(fire)
-        hero.hero_level=35;hit.run('Hit');self.assertEqual([(hero,hero,1)],fire)
+        hit=JassState(code);hit.g.update(c=hero,u=hero,dmg=1.,dmgmag=lambda *_:None,ErzaPassive=lambda *a:fire.append(a),BazzB_FireLevel=vm.g['BazzB_FireLevel'])
+        self.assertEqual(12,vm.g['BazzB_FireLevel'])
+        hero.hero_level=11;hit.run('Hit');self.assertFalse(fire)
+        hero.hero_level=12;hit.run('Hit');self.assertEqual([(hero,hero,1)],fire)
 
     def test_gojo_panel_changes_from_free_seconds_to_mana_percent(self):
         loop=source('Heroes/Gojo.j').split('method Loop_GojoE takes',1)[1]
@@ -114,7 +115,7 @@ class HeroBalanceFollowup(unittest.TestCase):
                     WUI_HeroProgress=lambda *a:calls.append(a),WUI_HeroProgressText=lambda *a:calls.append(a))
         vm.run('Display');self.assertEqual('Eternity: free time',calls[-1][2]);self.assertAlmostEqual(.03,calls[-1][3])
         vm.g['r']=2.;vm.run('Display')
-        self.assertEqual(('Eternity: mana',700.,1000.,False,'70.0% MP'),calls[-1][2:])
+        self.assertEqual(('Eternity: mana',700.,1000.,False,'70% MP'),calls[-1][2:])
 
     def test_object_cast_range_and_shiki_description_match_main_mechanics(self):
         objects=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))
@@ -247,10 +248,10 @@ class HeroBalanceFollowup(unittest.TestCase):
         self.assertEqual(10,len(rewards))  # The repeated scan must not reward consumed flames twice.
 
     def test_laxus_absorbs_lightning_before_any_reaction_or_dummy(self):
-        vm=JassState(re.sub(r'//[^\n]*','',source('Systems/DecorDestroy_and_Erza_Debuff.j')))
+        vm=JassState(re.sub(r'//[^\n]*','',source('Systems/DecorDestroy_and_Erza_Debuff.j')).replace("'I000'", str(int.from_bytes(b'I000','big'))).replace("'Izzz'", str(int.from_bytes(b'Izzz','big'))))
         hero=vm.unit(owner=1);hero.type='laxus';caster=vm.unit(owner=0)
         mana=[];cooldowns=[]
-        vm.g.update(GearDamageNextSource=0,DummyPlayer2=defaultdict(lambda:None),hs={},Player=lambda p:p,GetPlayerId=lambda p:p,
+        vm.g.update(GearDamageNextSource=0,DamageSourceBase=lambda x:x,ItemProcDamageDepth=0,DummyPlayer2=defaultdict(lambda:None),hs={},Player=lambda p:p,GetPlayerId=lambda p:p,
                     IsUnitVisible=lambda *_:True,Laxus_ID='laxus',LaxusG_ID='G',LaxusQ_ID='Q',LaxusQ2_ID='Q2',
                     Laxus_LightningManaRestore=120.,Laxus_LightningGReduceCD=1.,Laxus_LightningQReduceCD=1.,
                     SetMpCurrent=lambda *a:mana.append(a),ReduceCooldown=lambda *a:cooldowns.append(a),
@@ -402,9 +403,9 @@ class HeroBalanceFollowup(unittest.TestCase):
     def test_all_tooltip_registrations_have_separate_staggered_operation_budgets(self):
         text=source('WOS_Start/UniversalTooltips.j')
         jobs=dict(re.findall(r'(?m)^    function (WOS_UTB_Init_\w+) takes[^\n]*\n([\s\S]*?)^    endfunction',text))
-        self.assertEqual(490,len(jobs))
+        self.assertEqual(491,len(jobs))
         spell_jobs=[body for body in jobs.values() if 'call SpellData.' in body]
-        self.assertEqual(438,len(spell_jobs))
+        self.assertEqual(439,len(spell_jobs))
         for body in jobs.values():
             self.assertLessEqual(body.count('call SpellData.'),1)
             self.assertLessEqual(body.count('HeroData.create('),1)

@@ -94,7 +94,7 @@ class Pollers(unittest.TestCase):
 
     def cooldown(self):
         vm=JassState(source('ShowCD.j'));g=vm.g;self.local=0;self.slot=-1
-        g.update(Player=lambda p:p,GetLocalPlayer=lambda:self.local,AHUI_PingInputInside=defaultdict(bool),
+        g.update(Player=lambda p:p,GetLocalPlayer=lambda:self.local,AHUI_PingInputInside=defaultdict(bool),AHUI_QBIntentHeld=defaultdict(bool),QB_PreviewStep=defaultdict(lambda:-1),
                  AHUI_PingRmbHeld=defaultdict(bool),AHUI_CooldownPingCommandAt=lambda *a:self.slot,
                  BlzIsMouseButtonPressed=self.read,MOUSE_BUTTON_TYPE_RIGHT='right')
         def request(pid,x,y):

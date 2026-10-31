@@ -15,6 +15,9 @@ library AAADest uses GearSystems, EnvironmentRoundRules
         private integer SH_MURASAME_ACTIVE = StringHash("murasame active")
         // The Water buff lands a moment after the dummy cast: hits in the same instant read this mark.
         integer SH_WATER_PENDING = StringHash("water pending")
+        integer SH_ICD_KYOKA = StringHash("icd kyoka")
+        integer SH_ICD_KYOKA_STEAM = StringHash("icd kyoka steam")
+        integer SH_FIRE_END = StringHash("fire end") // game time the Fire debuff on a unit runs out
         private integer SH_MURASAME_LEFT = StringHash("murasame left")
         private integer SH_MURASAME_BONUS = StringHash("murasame bonus")
         private integer SH_ASHISOGI_ACTIVE = StringHash("ashisogi active")
@@ -116,6 +119,7 @@ library AAADest uses GearSystems, EnvironmentRoundRules
     endfunction
     private struct ErzaDebuffs
         integer damageSource
+        integer itemRefreshes // one item-driven refresh per uninterrupted non-Fire debuff
         private static timer t_ErzaPas = CreateTimer( )
         private static integer array m_ErzaPas
         private static integer MUI_ErzaPas = -1
@@ -416,65 +420,62 @@ library AAADest uses GearSystems, EnvironmentRoundRules
                 exitwhen i > MUI_ErzaPas
                 set this = m_ErzaPas[i]
                 set r = r + 0.1
-                // Murasame runs on its own tick counter; Ashisogi lives on its buff like
-                // Kurikara: each hit refreshes the curse, a dispel ends the poison.
+                // Murasame uses a tick counter; other instances end with their native buff.
                 if k2 == 10 then
                     set alive = GetWidgetLife(td) > 0.405 and LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) > 0
                 else
-                    set alive = GetUnitAbilityLevel(td, id) > 0
+                    set alive = GetWidgetLife(td) > 0.405 and GetUnitAbilityLevel(td, id) > 0
                 endif
-                if true then
-                    if alive then
-                        if r2 > 0.9 then
-                            set r2 = 0.1
-                            if dmg != 0 then
-                                if k2 == 6 then
-                                    call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_effect_yubanmeiqin_lightning_dianjishanghai.mdx", td, "chest"))
-                                endif
-                                call SaveInteger(hs, GetHandleId(c), SH_DMG_STOP_MAG, 1)
-                                call MyFlush(GetHandleId(c), SH_DMG_STOP_MAG, 0, 0.06)
-                                if k2 == 9 then
-                                    call DamageSource(damageSource)
-                                    call dmgmag2(c, td, dmg, "kurikara")
-
-                                elseif k2 == 10 then
-                                    // Bonus from attacks since the last tick lands on this tick.
-                                    set MurasameTrigger = true
-                                    call DamageSource(damageSource)
-                                    call dmgphys(c, td, dmg + LoadReal(hs, GetHandleId(td), SH_MURASAME_BONUS))
-                                    set MurasameTrigger = false
-                                    call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
-                                    call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) - 1)
-                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl",td,"chest"))
-                                elseif k2 == 11 then
-                                    set AshisogiTrigger = true
-                                    call DamageSource(damageSource)
-                                    call dmgphys(c, td, dmg)
-                                    set AshisogiTrigger = false
-                                    call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\PoisonSting\\PoisonStingTarget.mdl", td, "chest"))
-                                else
-                                    call DamageSource(damageSource)
-                                    call dmgmag(c, td, dmg)
-                                endif
-                            
-                        endif
-                        if (k2 == 2 or k2 == 6 ) then
-                            if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
-                                call SlowUnitErza(c, td, ErzaWater_Slow1)
-                            elseif GetUnitAbilityLevel(c, ErzaW_ID) == 2 then
-                                call SlowUnitErza(c, td, ErzaWater_Slow2)
-                            elseif GetUnitAbilityLevel(c, ErzaW_ID) == 3 then
-                                call SlowUnitErza(c, td, ErzaWater_Slow3)
-                            elseif GetUnitAbilityLevel(c, ErzaW_ID) == 4 then
-                                call SlowUnitErza(c, td, ErzaWater_Slow4)
-                            elseif GetUnitAbilityLevel(c, ErzaW_ID) == 5 then
-                                call SlowUnitErza(c, td, ErzaWater_Slow5)
-                            else
-                                call SlowUnitErza(c, td, ErzaWater_Slow1)
+                if alive then
+                    set r2 = r2 + 0.1
+                    if r2 >= 1.0 then
+                        set r2 = r2 - 1.0
+                        if dmg != 0 then
+                            if k2 == 6 then
+                                call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_effect_yubanmeiqin_lightning_dianjishanghai.mdx", td, "chest"))
                             endif
+                            call SaveInteger(hs, GetHandleId(c), SH_DMG_STOP_MAG, 1)
+                            call MyFlush(GetHandleId(c), SH_DMG_STOP_MAG, 0, 0.06)
+                            if k2 == 9 then
+                                call DamageSource(damageSource)
+                                call dmgmag2(c, td, dmg, "kurikara")
+
+                            elseif k2 == 10 then
+                                // Bonus from attacks since the last tick lands on this tick.
+                                set MurasameTrigger = true
+                                call DamageSource(damageSource)
+                                call dmgphys(c, td, dmg + LoadReal(hs, GetHandleId(td), SH_MURASAME_BONUS))
+                                set MurasameTrigger = false
+                                call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
+                                call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, LoadReal(hs, GetHandleId(td), SH_MURASAME_LEFT) - 1)
+                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl",td,"chest"))
+                            elseif k2 == 11 then
+                                set AshisogiTrigger = true
+                                call DamageSource(damageSource)
+                                call dmgphys(c, td, dmg)
+                                set AshisogiTrigger = false
+                                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Weapons\\PoisonSting\\PoisonStingTarget.mdl", td, "chest"))
+                            else
+                                call DamageSource(damageSource)
+                                call dmgmag(c, td, dmg)
+                            endif
+
                         endif
-                    else
-                        set r2 = r2 + 0.1
+                    endif
+                    if (k2 == 2 or k2 == 6 ) then
+                        if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
+                            call SlowUnitErza(c, td, ErzaWater_Slow1)
+                        elseif GetUnitAbilityLevel(c, ErzaW_ID) == 2 then
+                            call SlowUnitErza(c, td, ErzaWater_Slow2)
+                        elseif GetUnitAbilityLevel(c, ErzaW_ID) == 3 then
+                            call SlowUnitErza(c, td, ErzaWater_Slow3)
+                        elseif GetUnitAbilityLevel(c, ErzaW_ID) == 4 then
+                            call SlowUnitErza(c, td, ErzaWater_Slow4)
+                        elseif GetUnitAbilityLevel(c, ErzaW_ID) == 5 then
+                            call SlowUnitErza(c, td, ErzaWater_Slow5)
+                        else
+                            call SlowUnitErza(c, td, ErzaWater_Slow1)
+                        endif
                     endif
                 else
                     if k2 == 2 or k2 == 6 then
@@ -486,7 +487,7 @@ library AAADest uses GearSystems, EnvironmentRoundRules
                         if check2 == 1 then
                             call DamageSource(damageSource)
                             call dmgmag(c, td, 300)
-                            
+
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_RedMissile.mdl", GetUnitX(td), GetUnitY(td), 1, 1, 3, 50))
                             call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_by_wood_effect_yubanmeiqin_lightning_dianjishanghaired.mdx", td, "chest"))
                         else
@@ -496,20 +497,15 @@ library AAADest uses GearSystems, EnvironmentRoundRules
                     if k2 == 4 then
                         call UnitRemoveAbility(td, ErzaWape_DecreaseArmor_ID)
                     endif
-                    if k2 == 6 then
-                        call DestroyEffect(e2)
+                    call DestroyEffect(e2)
+                    call UnitRemoveAbility(td, id)
+                    if k2 == 10 then
+                        call SaveInteger(hs, GetHandleId(td), SH_MURASAME_ACTIVE, 0)
+                        call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, 0)
+                        call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
+                    elseif k2 == 11 then
+                        call SaveInteger(hs, GetHandleId(td), SH_ASHISOGI_ACTIVE, 0)
                     endif
-                    if k2 == 9 then
-
-elseif k2 == 10 then
-    call SaveInteger(hs, GetHandleId(td), SH_MURASAME_ACTIVE, 0)
-    call SaveReal(hs, GetHandleId(td), SH_MURASAME_LEFT, 0)
-    call SaveReal(hs, GetHandleId(td), SH_MURASAME_BONUS, 0)
-    call UnitRemoveAbility(td, 'B03C')
-elseif k2 == 11 then
-    call SaveInteger(hs, GetHandleId(td), SH_ASHISOGI_ACTIVE, 0)
-    call UnitRemoveAbility(td, AshisogiJizo_Buff_ID)
-endif
                     call DestroyEffect(e)
                     set c = null
                     set td = null
@@ -523,17 +519,67 @@ endif
                     endif
                     call destroy( )
                 endif
+                set i = i + 1
+            endloop
+        endmethod
+    // Item damage may refresh once; ability damage is unrestricted. Fire has no refresh cap.
+    public static method AllowApplication takes unit target, integer kind, boolean fromItem returns boolean
+        local integer i = 0
+        local thistype this
+        if not fromItem or kind == 1 then
+            return true
+        endif
+        loop
+            exitwhen i > MUI_ErzaPas
+            set this = m_ErzaPas[i]
+            if td == target and k2 == kind then
+                if itemRefreshes >= 1 then
+                    return false
+                endif
+                set itemRefreshes = itemRefreshes + 1
+                return true
+            endif
+            set i = i + 1
+        endloop
+        return true
+    endmethod
+    // Zanka no Tachi: a Fire re-application makes the running burn on td stronger.
+    public static method FireStack takes unit target, real amount returns nothing
+        local integer i = 0
+        local thistype this
+        loop
+            exitwhen i > MUI_ErzaPas
+            set this = m_ErzaPas[i]
+            if td == target and k2 == 1 then
+                set dmg = RMinBJ(dmg + amount, ZankaNoTachi_MaxDamage)
+                return
             endif
             set i = i + 1
         endloop
     endmethod
     public static method ErzaPas_Start takes unit NewC, unit NewTd , integer NewId, integer NewSource returns nothing
-        local thistype this = thistype.create( )
+        local thistype this
+        local integer i = 0
+        // One instance per target/kind; refreshing never duplicates its timer or visuals.
+        if NewId != 7 and NewId != 8 then
+            loop
+                exitwhen i > MUI_ErzaPas
+                set this = m_ErzaPas[i]
+                if td == NewTd and k2 == NewId then
+                    return
+                endif
+                set i = i + 1
+            endloop
+        endif
+        set this = thistype.create( )
         set MUI_ErzaPas = MUI_ErzaPas + 1
         set m_ErzaPas[MUI_ErzaPas] = this
         set c = NewC
         set td = NewTd
         set r = 0
+        set itemRefreshes = 0
+        set e = null
+        set e2 = null
         set x = GetUnitX(td)
         set y = GetUnitY(td)
         set dmg = 0
@@ -543,7 +589,12 @@ endif
         if NewId == 1 then
             set id = ErzaFire_ID
             set dmg = ErzaFire_DamageBase
+            if HasCachedItem(c, ZankaNoTachi_ID) > 0 then
+                set dmg = RMinBJ(ErzaFire_DamageBase + ZankaNoTachi_Stack, ZankaNoTachi_MaxDamage)
+            endif
             set e = AddSpecialEffectTarget("war3mapImported\\wos_BY_Wood_Effect_Order_MuZhiBenYing_Fir_Huo_DiMianss2.mdl", td, "origin")
+            // Narrower flames (the model is wider than a hero); height kept.
+            call BlzSetSpecialEffectMatrixScale(e, 0.65, 0.65, 1.0)
         elseif NewId == 2 then
             set e = AddSpecialEffectTarget("war3mapImported\\wos_laz (167).mdl", td, "origin")
             if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
@@ -572,6 +623,10 @@ endif
                 set e = AddSpecialEffectTarget("war3mapImported\\wos_Opdef (1005)2.mdl", td, "origin")
             endif
             set id = ErzaLightning_ID
+            // Koko Gonryo Rikyu: the Lightning debuff deals main-stat damage every second.
+            if HasCachedItem(c, KokoGonryo_ID) > 0 then
+                set dmg = GetMainStatValue(c, true) * KokoGonryo_Damage
+            endif
         elseif NewId == 4 then
             set id = ErzaWape_ID
             set e = AddSpecialEffectTarget("war3mapImported\\wos_steam.mdl", td, "origin")
@@ -588,12 +643,20 @@ endif
             // removed: wos_fire explosion-41.mdl is not imported
             if IsUnitEnemy(td, GetOwningPlayer(c)) then
                 call DamageSource(damageSource)
-                call NextDmg(c, td, ErzaOverload_Damage * GetMainStatValue(c, true), 0, 0.3)
-                call StunUnit(c, td, ErzaOverload_Stun)
+                if HasCachedItem(c, Tobiume_ID) > 0 then
+                    call NextDmg(c, td, ErzaOverload_Damage * Tobiume_DamageMult * GetMainStatValue(c, true), 0, 0.3)
+                    call StunUnit(c, td, ErzaOverload_Stun + Tobiume_Stun)
+                else
+                    call NextDmg(c, td, ErzaOverload_Damage * GetMainStatValue(c, true), 0, 0.3)
+                    call StunUnit(c, td, ErzaOverload_Stun)
+                endif
             endif
         elseif NewId == 6 then
             set id = ErzaElectrized_ID
             set dmg = GetMainStatValue(c, true) * ErzaElectrized_Damage
+            if HasCachedItem(c, Suzumebachi_ID) > 0 then
+                set dmg = dmg * Suzumebachi_DamageMult
+            endif
             set e2 = AddSpecialEffectTarget("war3mapImported\\wos_Opdef (1005)2.mdl", td, "origin")
             set e = AddSpecialEffectTarget("war3mapImported\\wos_laz (167).mdl", td, "origin")
             if GetUnitAbilityLevel(c, ErzaW_ID) == 1 then
@@ -633,9 +696,11 @@ function ErzaPassive takes unit c, unit u, integer level returns nothing // min 
 local integer i = GetPlayerId(GetOwningPlayer(u))
 local integer id
 local integer cancel = 0
-local integer damageSource = GearDamageNextSource
+local integer damageSource = DamageSourceBase(GearDamageNextSource)
+local boolean fromItem = (damageSource >= 'I000' and damageSource <= 'Izzz') or ItemProcDamageDepth > 0
 local unit d = DummyPlayer2[i]
 local integer skip = 0
+local real fireDur = 5.0
 set GearDamageNextSource = 0
 if level == 9 then
     set damageSource = 'I00W'
@@ -660,7 +725,7 @@ if GetUnitTypeId(u) == Laxus_ID and (level == 3 or level == 5 or level == 6 or l
     set d = null
     return
 endif
-if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NAOFUMI_SHIELD) == 0 then
+if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NAOFUMI_SHIELD) == 0 then
     if level >= 9 and level <= 11 then
         set d = DummyPlayer6[i]
     endif
@@ -707,11 +772,20 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
     if level > 0 and (level < 9 or level > 11) then
         set level = DebuffImmune_Start(u, level)
     endif
+    if level > 0 and not ErzaDebuffs.AllowApplication(u, level, fromItem) then
+        set d = null
+        return
+    endif
     if level > 0 then
         if GetUnitAbilityLevel(d, ErzaElemntalAbi_ID) == 0 and (level < 9 or level > 11) then
             call UnitAddAbility(d, ErzaElemntalAbi_ID)
         endif
         call SetUnitFacing(d, GAngle(d, u) * bj_RADTODEG)
+        // Kyoka Suigetsu: a lone Fire or Water becomes Steam at once. Sogyo no Kotowari keeps its Water
+        // (Water -> Lightning -> Electrized), so a holder of both only converts Fire.
+        if (level == 1 or level == 2) and HasCachedItem(c, KyokaSuigetsu_ID) > 0 and IsUnitEnemy(u, GetOwningPlayer(c)) and GetUnitAbilityLevel(u, ErzaFire_ID) == 0 and GetUnitAbilityLevel(u, ErzaWater_ID) == 0 and GetUnitAbilityLevel(u, ErzaLightning_ID) == 0 and GetUnitAbilityLevel(u, ErzaWape_ID) == 0 and not (level == 2 and IsItemInInventory(c, 'I01P') > 0) and IntegerCdKey(u, SH_ICD_KYOKA_STEAM, KyokaSuigetsu_SteamCD) then
+            set level = 4
+        endif
         if level == 1 then
             set id = ErzaFire_ID
             if GetUnitAbilityLevel(u, ErzaWater_ID) > 0 then
@@ -773,8 +847,25 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
         if (level < 9 or level > 11) and (GetUnitAbilityLevel(u, ErzaWape_ID) > 0 or GetUnitAbilityLevel(u, ErzaOverload_ID) > 0 or GetUnitAbilityLevel(u, ErzaElectrized_ID) > 0) then
             set cancel = 1
         endif
-        if level == 3 and GetUnitAbilityLevel(u, ErzaLightning_ID) > 0 then
-            set cancel = 1
+        // Zanka no Tachi: Fire always burns 7 sec; the first one already deals 70 per sec.
+        if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) == 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
+            set fireDur = 5.0 + ZankaNoTachi_Extend
+        endif
+        // Zanka no Tachi: Fire on a burning enemy strengthens the burn.
+        if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) > 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
+            call ErzaDebuffs.FireStack(u, ZankaNoTachi_Stack)
+            // ...the burn restarts at its full 7 sec (it never adds up).
+            set fireDur = 5.0 + ZankaNoTachi_Extend
+            // one burn per target: no extra effect per re-application
+        endif
+        // Kyoka Suigetsu: Fire or Water meeting Steam refreshes it and adds a burst.
+        if (level == 1 or level == 2) and skip == 0 and GetUnitAbilityLevel(u, ErzaWape_ID) > 0 and HasCachedItem(c, KyokaSuigetsu_ID) > 0 and IsUnitEnemy(u, GetOwningPlayer(c)) and IntegerCdKey(u, SH_ICD_KYOKA, KyokaSuigetsu_CD) and ErzaDebuffs.AllowApplication(u, 4, fromItem) then
+            call SetUnitAbilityLevel(d, ErzaElemntalAbi_ID, 4)
+            call IssueTargetOrder(d, "curse", u)
+            call SetUnitAbilityLevel(d, ErzaElemntalAbi_ID, level)
+            call DamageSource(KyokaSuigetsu_ID)
+            call NextDmg(c, u, KyokaSuigetsu_Bonus * GetMainStatValue(c, true), 0, 0.15)
+            call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_steam.mdl", u, "origin"))
         endif
         if level == 7 or level == 8 then
             set cancel = 0
@@ -792,6 +883,12 @@ if IsUnitIllusion(u) == false and IsUnitVisible(u, Player(i)) == true and LoadIn
             call ErzaDebuffs.ErzaPas_Start(c, u, level, damageSource)
         endif
         if cancel == 0 then
+            // Fire lasts 5 sec (Zanka no Tachi extends it); set on the caster dummy before the curse.
+            if level == 1 then
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_HERO, 0, fireDur)
+                call BlzSetAbilityRealLevelField(BlzGetUnitAbility(d, ErzaElemntalAbi_ID), ABILITY_RLF_DURATION_NORMAL, 0, fireDur)
+                call SaveReal(hs, GetHandleId(u), SH_FIRE_END, TimerGetElapsed(HealRegenClock) + fireDur)
+            endif
             if level == 2 or level == 6 then
                 call SaveInteger(hs, GetHandleId(u), SH_WATER_PENDING, 1)
                 call MyFlush(GetHandleId(u), SH_WATER_PENDING, 0, 0.3)

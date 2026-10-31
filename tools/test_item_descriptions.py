@@ -11,7 +11,7 @@ class ItemDescriptionsTest(unittest.TestCase):
         cls.audit = Audit()
 
     def test_catalog_parity_and_repeatability(self):
-        self.assertEqual(len(self.audit.items), 158)
+        self.assertEqual(len(self.audit.items), 196)
         self.assertEqual(self.audit.changes(), [])
         for identity in self.audit.items:
             expected = self.audit.expected(identity)
@@ -25,6 +25,12 @@ class ItemDescriptionsTest(unittest.TestCase):
         clone.values = {**clone.values, 'OkarunEggReduceCD': 17.5}
         clone.bodies = clone.reviewed_bodies()
         self.assertIn('17.5%', clone.expected('I011'))
+
+    def test_shared_element_rules_are_not_readded_to_items(self):
+        for identity in self.audit.items:
+            text = self.audit.expected(identity)
+            self.assertNotIn('Item damage can refresh a debuff once', text, identity)
+            self.assertNotIn('Elemental debuff and poison damage cannot trigger', text, identity)
 
     def test_native_hp_drives_jewel_stats(self):
         clone = copy.copy(self.audit)

@@ -155,12 +155,13 @@ library AlterSaberSpells uses GearSystems
         integer AlterSaberR_Regen4 = 'A04O'
         integer AlterSaberR_DurationBase = 12
         integer AlterSaberR_DurationStep = 2
+        real AlterSaberR_MorphTime = 0.25 // transformation (was 0.75 sec)
         unit array AlterSaberR_Dummy[12]
 //---------------RR ability-----------------------------------------------------
         integer AlterSaberRR_ID = 'A02D'
-        real AlterSaberRR_RootDurationBase = 1.5
+        real AlterSaberRR_RootDurationBase = 2.5
         real AlterSaberRR_Aoe = 900 // aoe of pundle
-        real AlterSaberRR_Time = 1.5 // how long pundle exist
+        real AlterSaberRR_Time = 3.5 // how long pundle exist
         real AlterSaberRR_DamageAgiBase = 4 // base damage
         real AlterSaberRR_DamageAgiStep = 0.5 // base damage
 //---------------T ability-----------------------------------------------------
@@ -1179,7 +1180,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                         call DebugUnit2(c)
                         set r = r + 0.03
                         set r = RoundReal(r, 3)
-                        if r == 0.75 then
+                        if r >= AlterSaberR_MorphTime then
                         if GetUnitAbilityLevel(c,AlterSaberR_ID) >= 3 then 
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberR_ID, false)
                             call UnitAddAbility(c, AlterSaberRR_ID)
@@ -1294,7 +1295,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
             endif
             set e = EffectSpawn("war3mapImported\\wos_LimitIndra-ORA.mdl", x, y, 1, 1, 3, 1)
             call BlzSetSpecialEffectAlpha(e, 0)
-            call ColorEffDummy4(e, 0., 255, 255, 255, 0.5)
+            call ColorEffDummy4(e, 0., 255, 255, 255, AlterSaberR_MorphTime)
             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERW_ID, 1)
             call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_AlterSaber_ALTERSABERE_ID, 1)
             call UnitAddAbility(c, AlterSaberR_Attack)

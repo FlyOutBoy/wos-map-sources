@@ -217,6 +217,7 @@ function AR_Render takes integer pid returns nothing
                 set itemIndex = found * 6 + itemSlot
                 if AR_ItemOwner[found] == hero and AR_CachedItem[itemIndex] != null and UnitItemInSlot(hero, itemSlot) == AR_CachedItem[itemIndex] then
                     set radius = ItemsSpells_GetItemPreviewRadius(GetItemTypeId(AR_CachedItem[itemIndex]), AR_ItemAbility[itemIndex])
+                    set reach = ItemsSpells_GetItemPreviewReach(GetItemTypeId(AR_CachedItem[itemIndex]), AR_ItemAbility[itemIndex])
                 endif
             endif
         else

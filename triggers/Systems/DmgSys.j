@@ -185,7 +185,7 @@ endif
         call UnitRemoveAbility(c, TakeshiW2_Buff_ID)
         call TakeshiW2_Act(c, td)
     endif
-    if GetUnitAbilityLevel(c, KiritoR_AS) > 0  then //and LoadInteger(hs, sourceOwnerHid, StringHash("r atk count")) < 13 then // Kirito R
+    if GetUnitAbilityLevel(c, KiritoR_AS) > 0 and not GearDamageAttackFollowup then //and LoadInteger(hs, sourceOwnerHid, StringHash("r atk count")) < 13 then // Kirito R
         call KiritoR_Attack(c, td, dmg)
     endif
     if GetUnitAbilityLevel(c, TsunaW_Buff_ID) > 0 then
@@ -284,12 +284,18 @@ endif
     if sourceId == Alucard_ID and LoadInteger(hs, sourceOwnerHid, SH_DmgSys_MORPH_R) == 0 then
         call DestroyEffect(EffectSpawn("war3mapImported\\wos_qqqqq.mdl", GetUnitX(td), GetUnitY(td), 0, 1, 1, 100))
     endif
+    static if LIBRARY_InoriSpells then
+        // Inori shoots Alucard's bullets (same hit flash); crystal shots shatter on their own.
+        if sourceId == Inori_ID and not InoriCrystalMode(c) then
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_qqqqq.mdl", GetUnitX(td), GetUnitY(td), 0, 1, 1, 100))
+        endif
+    endif
     if LoadInteger(hs, sourceHid, SH_DmgSys_RAIDEN_T) > 0 then
         set a = GetRandomReal(0, 359)
         call EUTU2(EffectSpawn("war3mapimported\\wos_ld2209 (199).mdl", x, y, a, 0.85, 2.5, 90), 0.36, 90, td)
         call EUTU2(EffectSpawn("war3mapimported\\wos_BY_Wood_Effect_Order_DanGe_Stf_DaJi_1_3Purple.mdl", x, y, a, 1.25, 2.15, 135), 0.36, 135, td)
         set i = GetRandomInt(1, 3)
-        call SetMpCurrent(c, RaidenT_AddManaPerHit / 100 * GetUnitState(c, UNIT_STATE_MAX_MANA))
+        call SetMpCurrentQuiet(c, RaidenT_AddManaPerHit / 100 * GetUnitState(c, UNIT_STATE_MAX_MANA))
         call StopSound(gg_snd_Hero_Raiden_T_Atk1, false, false)
         call StopSound(gg_snd_Hero_Raiden_T_Atk2, false, false)
         call StopSound(gg_snd_Hero_Raiden_T_Atk3, false, false)
@@ -322,7 +328,7 @@ endif
     return dmg
 endfunction
 function I02HReflect takes unit source, unit target, real dmg, integer typedmg returns nothing
-if I02H_ReflectActive or source == null or target == null or source == target or dmg <= 1.0 or GetWidgetLife(source) <= 0.405 then
+if I02H_ReflectActive or source == null or target == null or source == target or dmg <= 1.0 or GetWidgetLife(source) <= 0.405 or GetUnitAbilityLevel(source, 'B005') > 0 or LoadInteger(hs, GetHandleId(source), SH_DmgSys_NAOFUMI_SHIELD) == 1 then
 return
 endif
 set I02H_ReflectActive = true
@@ -330,11 +336,22 @@ if IntegerCdKey(target, SH_ICD_I02H_REFLECT_SFX,0.15) then
 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Opdef (571)2.mdx",source,"chest"))
 endif
 if typedmg == 1 then
-call DamageSource('I02H')
-call dmgmag(target,source,dmg*(YataMirror_ReversedDmg/100))
+// Mirror of Yata Evolved: 75% while its active buff lasts.
+if GetUnitAbilityLevel(target, YataMirrorEvolved_Buff_ID) > 0 then
+set dmg = dmg*(YataMirrorEvolved_ReflectActive/100)
 else
+set dmg = dmg*(YataMirror_ReversedDmg/100)
+endif
 call DamageSource('I02H')
-call dmgphys(target,source,dmg*(YataMirror_ReversedDmg/100))
+call dmgmag(target,source,dmg)
+else
+if GetUnitAbilityLevel(target, YataMirrorEvolved_Buff_ID) > 0 then
+set dmg = dmg*(YataMirrorEvolved_ReflectActive/100)
+else
+set dmg = dmg*(YataMirror_ReversedDmg/100)
+endif
+call DamageSource('I02H')
+call dmgphys(target,source,dmg)
 endif
 set I02H_ReflectActive = false
 endfunction
@@ -433,6 +450,17 @@ function Trig_DmgSys_Actions takes nothing returns nothing
         set typedmg = 0
     endif
         
+    // Reject protected attacks before any on-hit effects, marks, extra hits or mana changes.
+    static if LIBRARY_ItemsSpells then
+        if (eventIsAttack or typedmg == 0 or damageSourceId == 'A0BJ') and GetUnitAbilityLevel(td, Tekkai_Buff_ID) > 0 then
+            call BlzSetEventDamage(0.0)
+            set c = null
+            set td = null
+            set sourceOwner = null
+            set targetOwner = null
+            return
+        endif
+    endif
     static if LIBRARY_AinzSpells then
         // AinzW knights remember their attack target here (was one damage event per knight).
         if sourceId == AinzW_Unit_ID and eventIsAttack then
@@ -447,6 +475,12 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     call BlzStartUnitAbilityCooldown(c,'A0HT',1)
     endif
     if eventIsAttack and sourceId == Starrk_ID and LoadInteger(hs, sourceOwnerHid, SH_DmgSys_MORPH_E) == 1 then
+        // The native attack pays Samehada once; the piercing Cero hits are spell events.
+        static if LIBRARY_ItemsSpells then
+            if isEnemy and dmg > 0 then
+                call ItemsAnime_OnAttack(c, td)
+            endif
+        endif
         call StarrkE_Attack_Start(c, GetUnitX(td), GetUnitY(td))
         set dmg = 0
         else        
@@ -526,8 +560,9 @@ endif
     set dmg = ApplyFullDamageShield(c, td, dmg, 0.1, typedmg, DAMAGE_SHIELD_TYPE_ALL)
 endif
 
+// Laxus T / Mahoraga ult shields: a real hit size, so Lust Sin can pierce them.
 if LoadInteger(hs, targetHid, KEY_SHIELD) == 1 then
-    set dmg = ApplyFullDamageShield(c, td, dmg, 0.1, typedmg, DAMAGE_SHIELD_TYPE_ALL)
+    set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
 endif
 
     static if LIBRARY_FrostnovaSpells then
@@ -617,7 +652,7 @@ endif
     if GetUnitAbilityLevel(td, Erza3E_DamageImmune_ID) > 0 and not shieldPen then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
-        if not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
+        if ItemDamageCanProc(damageSourceId) and not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
        // Keep the real hit unchanged; split the final statistic after mitigation.
        set quincyShare = QuincyCross_DamageBase/RMaxBJ(0.0001,dmg+QuincyCross_DamageBase)
        set dmg = dmg + QuincyCross_DamageBase
@@ -635,10 +670,10 @@ endif
         set dmg = dmg * 1.07
     endif
     if dmg > 1 and GetUnitAbilityLevel(td, 'B01E') > 0 and sourceId == Alucard_ID then
-        call SetHpCurrent2(c, c, dmg * (AlucardT_Heal / 100))
+        call SetHpCurrent2Quiet(c, c, dmg * (AlucardT_Heal / 100))
     endif
     if dmg > 1 and GetUnitAbilityLevel(td, 'B01F') > 0 and sourceId == Alucard_ID then
-        call SetHpCurrent2(c, c, dmg * (AlucardT2_Heal / 100))
+        call SetHpCurrent2Quiet(c, c, dmg * (AlucardT2_Heal / 100))
     endif
     // Обычные резисты применяются к части урона, прошедшей ранние щиты.
     // Полные щиты внутри DamageBlock вызывают LustSin непосредственно.
@@ -659,9 +694,13 @@ endif
     set dmg = ApplyFullDamageShield(c, td, shieldInput, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
     endif
-      if dmg > 1 and isEnemy and HasCachedItem(c,'I040') > 0 and GetUnitAbilityLevel(c, 'A0HV') > 0 then // Philosopher's Stone: no damage threshold
-    // 15% of the final damage; no per-hit effect.
-    call SetHpCurrent2(c,c,dmg*0.15)
+      if dmg > 1 and isEnemy and ((HasCachedItem(c,'I040') > 0 and GetUnitAbilityLevel(c, 'A0HV') > 0) or HasCachedItem(c,PhilosopherEvolved_ID) > 0) then // Philosopher's Stone: no damage threshold
+    // Share of the final damage; no per-hit effect. Evolved active: +18% while buffed.
+    if GetUnitAbilityLevel(c, PhilosopherEvolved_Buff_ID) > 0 then
+    call SetHpCurrent2Quiet(c,c,dmg*(PhilosopherStone_Lifesteal+PhilosopherEvolved_BonusLifesteal)/100.0)
+    else
+    call SetHpCurrent2Quiet(c,c,dmg*PhilosopherStone_Lifesteal/100.0)
+    endif
     endif
     // Takeshi: Cambio gauge and Cambio extension use the final damage of his own abilities.
     if sourceId == Takeshi_ID and isEnemy and dmg > 1 and damageSourceId >= 'A000' and damageSourceId <= 'Azzz' then
@@ -670,12 +709,12 @@ endif
     // Neuvillette F (lv 12+): lifesteal against targets under a Water debuff.
     if sourceId == Neuvillette_ID and isEnemy and dmg > 1 and GetHeroLevel(c) >= NeuvilletteF_LifestealLevel and (GetUnitAbilityLevel(td, 'B009') > 0 or GetUnitAbilityLevel(td, 'B007') > 0 or GetUnitAbilityLevel(td, 'B00B') > 0 or LoadInteger(hs, targetHid, SH_WATER_PENDING) == 1) then
         if GetHeroLevel(c) >= 35 then
-            call SetHpCurrent2(c, c, dmg * (NeuvilletteF_Lifesteal35 / 100.0))
+            call SetHpCurrent2Quiet(c, c, dmg * (NeuvilletteF_Lifesteal35 / 100.0))
         else
-            call SetHpCurrent2(c, c, dmg * (NeuvilletteF_Lifesteal / 100.0))
+            call SetHpCurrent2Quiet(c, c, dmg * (NeuvilletteF_Lifesteal / 100.0))
         endif
     endif
-    if dmg>= DemonDwellerSword_MinDmg  and HasCachedItem(c,DemonDwellerSword_ID ) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DemonDwellerSword_Abi_CD_ID) == 0 and GetUnitAbilityLevel(c, DemonDwellerSword_Abi_CD_ID) > 0 then
+    if ItemDamageCanProc(damageSourceId) and dmg>= DemonDwellerSword_MinDmg  and HasCachedItem(c,DemonDwellerSword_ID ) > 0 and BlzGetUnitAbilityCooldownRemaining(c, DemonDwellerSword_Abi_CD_ID) == 0 and GetUnitAbilityLevel(c, DemonDwellerSword_Abi_CD_ID) > 0 then
     if typedmg == 1 then 
     call BuffUnit01(c,c,DemonDwellerSword_Abi_ID ,"innerfire",2)
     else
@@ -767,24 +806,25 @@ endif
             call SetUnitState(td, UNIT_STATE_LIFE, GetUnitState(td, UNIT_STATE_MAX_LIFE) * (KyorakuT_Dan1_MinHp / 100))
         endif
     endif
-    if IsUnitIllusion(c) == false and GetUnitAbilityLevel(td,DeathNote_Buff_ID)==0 and dmg>=DeathNote_MinDmg and (typedmg == 1 or typedmg == 2) and isEnemy and HasCachedItem(c, DeathNote_ID ) > 0  and BlzGetUnitAbilityCooldownRemaining(c, DeathNote_CD_ID ) == 0 and GetUnitAbilityLevel(c, DeathNote_CD_ID ) > 0 then
+    if ItemDamageCanProc(damageSourceId) and IsUnitIllusion(c) == false and GetUnitAbilityLevel(td,DeathNote_Buff_ID)==0 and dmg>=DeathNote_MinDmg and (typedmg == 1 or typedmg == 2) and isEnemy and HasCachedItem(c, DeathNote_ID ) > 0  and BlzGetUnitAbilityCooldownRemaining(c, DeathNote_CD_ID ) == 0 and GetUnitAbilityLevel(c, DeathNote_CD_ID ) > 0 then
         call BlzStartUnitAbilityCooldown(c, DeathNote_CD_ID , DeathNote_CD  )
         call DeathNote_Start(c,td,dmg)
     endif
-    if ItemProcDamageDepth == 0 then
+    if ItemDamageCanProc(damageSourceId) then
 
 
-    if dmg > 1 and GetUnitAbilityLevel(td, 'B008') > 0 and isEnemy and HasCachedItem(c, 'I02S') > 0 then
+    if damageSourceId != 'I02S' and dmg > 1 and GetUnitAbilityLevel(td, 'B008') > 0 and isEnemy and HasCachedItem(c, 'I02S') > 0 then
         call Tachikaze_Start(c, td)
     endif
 
     if typedmg == 1 then
         if KurikaraTrigger == false and isEnemy and HasCachedItem(c, 'I00W') > 0 and dmg >= Kurikara_MinDmg then
+            call DamageSource(damageSourceId)
             call KurikaraFlame(c, td)
         endif
     endif
     // Core Drill: ability damage (not attacks or item procs) stacks its own type.
-    if (typedmg == 1 or typedmg == 2) and not eventIsAttack and dmg > 1 and isEnemy and not IsUnitIllusion(c) and HasCachedItem(c, CoreDrill_ID) > 0 then
+    if ItemProcDamageDepth == 0 and not (damageSourceId >= 'I000' and damageSourceId <= 'Izzz') and (typedmg == 1 or typedmg == 2) and not eventIsAttack and dmg > 1 and isEnemy and not IsUnitIllusion(c) and HasCachedItem(c, CoreDrill_ID) > 0 then
         call CoreDrill_AddStack(c, typedmg)
     endif
 endif
@@ -792,11 +832,12 @@ endif
     if typedmg == 1 then
         
     else
-        if not MurasameTrigger and not AshisogiTrigger and isEnemy and dmg >= Earth_Power_MinDmg and HasCachedItem(c, 'I019') > 0 and IntegerCdKey(td, SH_ICD_DMG_STOP_PUNCH, Earth_Power_CD) then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
+        if ItemDamageCanProc(damageSourceId) and not MurasameTrigger and not AshisogiTrigger and isEnemy and dmg >= Earth_Power_MinDmg and HasCachedItem(c, 'I019') > 0 and IntegerCdKey(td, SH_ICD_DMG_STOP_PUNCH, Earth_Power_CD) then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
             call EarthPower(c, td)
         endif
         // Physical spells only; a tagged/scripted basic attack is still an attack.
-        if typedmg == 2 and not eventIsAttack and not AshisogiTrigger and not MurasameTrigger and damageSourceId != 0 and isEnemy and dmg >= AshisogiJizo_MinDmg and HasCachedItem(c, AshisogiJizo_ID) > 0 then
+        if typedmg == 2 and not eventIsAttack and not AshisogiTrigger and not MurasameTrigger and damageSourceId != 0 and ItemDamageCanProc(damageSourceId) and isEnemy and dmg >= AshisogiJizo_MinDmg and HasCachedItem(c, AshisogiJizo_ID) > 0 then
+            call DamageSource(damageSourceId)
             call AshisogiJizo_Poison(c, td)
         endif
     endif
@@ -811,9 +852,9 @@ if LaxusPicked and targetIsHero and not targetIsIllusion and targetId != Laxus_I
 endif
     
     if dmg > 1 and isEnemy and HasCachedItem(td, 'I045') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
-        call SetHpCurrent2(td, td,AvalonEvolved_HpRestore)
+        call SetHpCurrent2Quiet(td, td,AvalonEvolved_HpRestore)
         elseif dmg > 1 and isEnemy and HasCachedItem(td, 'I02K') > 0 then //and GetUnitAbilityLevel(td, 'B00F') == 0 then
-        call SetHpCurrent2(td, td,Avalon_HpRestore)
+        call SetHpCurrent2Quiet(td, td,Avalon_HpRestore)
 
     endif
     if dmg > 1 and isEnemy and HasCachedItem(td, HashiramaCells_ID) > 0 then
@@ -824,7 +865,7 @@ endif
         call BlzStartUnitAbilityCooldown(td, 'A0F4', GutsArmor_CD )
        call BuffUnit01(td,td,'A0F3',"innerfire",1)
     endif
-    if isEnemy and dmg>1 and GetUnitAbilityLevel(c, GutsArmor_Buff_ID) > 0 then
+    if ItemDamageCanProc(damageSourceId) and isEnemy and dmg>1 and GetUnitAbilityLevel(c, GutsArmor_Buff_ID) > 0 then
         call UnitRemoveAbility(c,GutsArmor_Buff_ID)
         call DamageSource('I02J')
         call NextDmg(c, td, GutsArmor_DamageBase  * GetHeroStr(c, true), 0, 0.05)
@@ -833,12 +874,12 @@ endif
     if dmg > 1 and GetUnitAbilityLevel(td, 'B018') > 0 and targetIsHero and not targetIsIllusion then
         call HarribelG2_Start(td, dmg)
     endif
-    if GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0 and targetIsHero and not targetIsIllusion and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
+    if InoriE_AuraResistance(td, false) > 0.0 and targetIsHero and not targetIsIllusion and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
         if dmg > InoriE_DmgCap then
             call InoriEPas_Start(td)
         endif
     endif
-    if dmg > InoriE_DmgCap and targetIsHero  and not targetIsIllusion  and GetUnitAbilityLevel(td, InoriE_Aura_ID) > 0  and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
+    if dmg > InoriE_DmgCap and targetIsHero  and not targetIsIllusion  and InoriE_AuraResistance(td, false) > 0.0  and LoadInteger(hs, targetHid, SH_DmgSys_MODE_T) == 0 then
     call InoriEPas_Start(td)
 endif
     if dmg > 1 and GetUnitAbilityLevel(td,'A0F9')>0  then
@@ -849,57 +890,91 @@ endif
     call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_Eff (134).mdl",td,"origin"))
     set dmg = dmg - 200
     endif
-    if typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
+    if ItemDamageCanProc(damageSourceId) and typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0FA') > 0  and SR2(c,td) <= ShikiKnife_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0FA') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0FA', ShikiKnife_CD )
         call DamageSource('I02P')
         call NextDmg(c, td, ShikiKnife_DmgBase +(ShikiKnife_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
-    if  typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
+    if ItemDamageCanProc(damageSourceId) and typedmg != 1 and isEnemy and GetUnitAbilityLevel(c, 'A0HY') > 0  and SR2(c,td) <= ShikiKnifeEvolved_RangeCheck  and BlzGetUnitAbilityCooldownRemaining(c, 'A0HY') == 0  then
         call BlzStartUnitAbilityCooldown(c, 'A0HY', ShikiKnifeEvolved_CD )
         call DamageSource('I042')
         call NextDmg(c, td, ShikiKnifeEvolved_DmgBase +(ShikiKnifeEvolved_DmgAgi  * GetHeroAgi(c, true)), 1, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_corpse explosion.mdl", td, "origin"))
     endif
-    if isEnemy and dmg >= RyijinJakka_MinDmg and GetUnitAbilityLevel(c, 'A080') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 then
-        call BlzStartUnitAbilityCooldown(c, 'A080', RyijinJakka_CD)
+    // Evolved elements refresh independently of explosion cooldowns.
+    // Element ticks cannot start item procs; an item explosion cannot trigger itself.
+    if ItemDamageCanProc(damageSourceId) then
+    if damageSourceId != 'I01Q' and isEnemy and dmg >= RyijinJakka_MinDmg and HasCachedItem(c, RyujinJakkaEvolved_ID) > 0 then
+        call DamageSource(damageSourceId)
+        call ErzaPassive(c, td, 1)
+    endif
+    if damageSourceId != 'I01X' and isEnemy and dmg >= Nejibana_MinDmg and HasCachedItem(c, NejibanaEvolved_ID) > 0 then
+        call DamageSource(damageSourceId)
+        call ErzaPassive(c, td, 2)
+    endif
+    if damageSourceId != 'I01Y' and isEnemy and dmg >= Gonryomaru_MinDmg and HasCachedItem(c, GonryomaruEvolved_ID) > 0 then
+        call DamageSource(damageSourceId)
+        call ErzaPassive(c, td, 3)
+    endif
+    if isEnemy and dmg >= RyijinJakka_MinDmg and damageSourceId != 'I01Q' and GetUnitAbilityLevel(c, 'A080') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A080') == 0 then
+        if HasCachedItem(c, RyujinJakkaEvolved_ID) > 0 then
+            call BlzStartUnitAbilityCooldown(c, 'A080', RyijinJakka_CD - ZanpakutoEvolved_CdReduce)
+        else
+            call BlzStartUnitAbilityCooldown(c, 'A080', RyijinJakka_CD)
+        endif
         call DamageSource('I01Q')
         call NextDmg(c, td, RyijinJakka_DamageBase * GetMainStatValue(c, true), 0, 0.05)
-        call DamageSource('I01Q')
-        call ErzaPassive(c, td, 1)
+        if HasCachedItem(c, RyujinJakkaEvolved_ID) == 0 then
+            call DamageSource(damageSourceId)
+            call ErzaPassive(c, td, 1)
+        endif
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_fire explosion.mdl", td, "chest"))
     endif
     if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0FD') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0FD') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0FD', 10)
-        call DamageSource('I02T')
+        call DamageSource(damageSourceId)
         call ErzaPassive(c, td, 3)
     endif
     if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0G1') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G1') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0G1', 10)
-        call DamageSource('I03F')
+        call DamageSource(damageSourceId)
         call ErzaPassive(c, td, 2)
     endif
     if isEnemy and dmg >= 1 and GetUnitAbilityLevel(c, 'A0G0') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A0G0') == 0 then
         call BlzStartUnitAbilityCooldown(c, 'A0G0', 10)
-        call DamageSource('I03E')
+        call DamageSource(damageSourceId)
         call ErzaPassive(c, td, 1)
     endif
-    if isEnemy and dmg >= Nejibana_MinDmg and GetUnitAbilityLevel(c, 'A09P') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A09P') == 0 then
-        call BlzStartUnitAbilityCooldown(c, 'A09P', Nejibana_CD)
-        call DamageSource('I01X')
-        call ErzaPassive(c, td, 2)
+    if isEnemy and dmg >= Nejibana_MinDmg and damageSourceId != 'I01X' and GetUnitAbilityLevel(c, 'A09P') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A09P') == 0 then
+        if HasCachedItem(c, NejibanaEvolved_ID) > 0 then
+            call BlzStartUnitAbilityCooldown(c, 'A09P', Nejibana_CD - ZanpakutoEvolved_CdReduce)
+        else
+            call BlzStartUnitAbilityCooldown(c, 'A09P', Nejibana_CD)
+        endif
+        if HasCachedItem(c, NejibanaEvolved_ID) == 0 then
+            call DamageSource(damageSourceId)
+            call ErzaPassive(c, td, 2)
+        endif
         call DamageSource('I01X')
         call NextDmg(c, td, Nejibana_DamageBase * GetMainStatValue(c, true), 0, 0.05)
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_waterexplosion.mdl", td, "chest"))
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_yc_shockwave_b.mdl", td, "chest"))
     endif
-    if isEnemy and dmg >= Gonryomaru_MinDmg and GetUnitAbilityLevel(c, 'A081') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A081') == 0 then
-        call BlzStartUnitAbilityCooldown(c, 'A081', Gonryomaru_CD)
+    if isEnemy and dmg >= Gonryomaru_MinDmg and damageSourceId != 'I01Y' and GetUnitAbilityLevel(c, 'A081') > 0 and BlzGetUnitAbilityCooldownRemaining(c, 'A081') == 0 then
+        if HasCachedItem(c, GonryomaruEvolved_ID) > 0 then
+            call BlzStartUnitAbilityCooldown(c, 'A081', Gonryomaru_CD - ZanpakutoEvolved_CdReduce)
+        else
+            call BlzStartUnitAbilityCooldown(c, 'A081', Gonryomaru_CD)
+        endif
         call DamageSource('I01Y')
         call NextDmg(c, td, Gonryomaru_DamageBase * GetMainStatValue(c, true), 0, 0.05)
-        call DamageSource('I01Y')
-        call ErzaPassive(c, td, 3)
+        if HasCachedItem(c, GonryomaruEvolved_ID) == 0 then
+            call DamageSource(damageSourceId)
+            call ErzaPassive(c, td, 3)
+        endif
         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_SasukeYh-41.mdl", td, "chest"))
+    endif
     endif
     if targetId == Tsuna_ID and dmg > 1 then
         if LoadInteger(hs, targetOwnerHid, KEY_ZERO_KAI) == 1 and not shieldPen then
@@ -928,6 +1003,15 @@ endif
    
    call SaveReal(hs,GetHandleId(td),SH_DmgSys_FRIEREN_F_DMG,hpblock1)
    endif
+    static if LIBRARY_ItemsSpells then
+        set dmg = ItemsAnime_FinalDamage(c, td, dmg, typedmg, eventIsAttack or damageSourceId == 'A0BJ')
+        if eventIsAttack and isEnemy and dmg > 0 then
+            call ItemsAnime_OnAttack(c, td)
+        endif
+    endif
+    static if LIBRARY_ItemsSpells then
+        call ItemsElements_OnDamage(c, td, dmg, eventIsAttack or damageSourceId == 'A0BJ')
+    endif
     set dmg = GearDamageRun(c, td, dmg, typedmg, 3)
     call CrocodileG_AppliedSpellHit(c,td,dmg,typedmg,eventIsAttack)
     if dmg != dmg_base then
@@ -939,7 +1023,7 @@ endif
     if damageSourceId == RimuruR3_ID and dmg > 0 and isEnemy and not IsUnitIllusion(c) then // rimuru R3 lifesteal
         call SetHpCurrent(c, dmg * (RimuruR3_Lifesteal / 100))
     endif
-    if not I02H_ReflectActive and dmg > 1.0 and c != null and c != td and HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range then
+    if not I02H_ReflectActive and dmg > 1.0 and c != null and c != td and ((HasCachedItem(td,'I02H') > 0 and SR2(c,td) < YataMirror_Range) or HasCachedItem(td,YataMirrorEvolved_ID) > 0) then
 call I02HReflect(c,td,dmg,typedmg)
 endif
     static if LIBRARY_DamageStats then

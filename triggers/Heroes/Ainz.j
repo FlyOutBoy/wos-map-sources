@@ -61,12 +61,13 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------Q ability (Explosive Land Mine)-------------------------------
         integer AinzQ_ID = 'A0FH'
-        real AinzQ_DamageIntBase = 1.25
+        real AinzQ_DamageIntBase = 1.05
         real AinzQ_DamageIntStep = 0.4
         real AinzQ_Damage2StaticBase = 100.0
         real AinzQ_Damage2StaticStep = 0.0
         real AinzQ_DamageAoe = 375.00
         real AinzQ_MineDuration = 40.00
+        real AinzQ2_MineDuration = 30.00 // ring mines (F -> Q2) expire 10 sec earlier
         real AinzQ_MineTriggerAoe = 375.00
         real AinzQ_MineMinDistance = 375.00
         real AinzQ_MineChainAoe = 425.00
@@ -77,7 +78,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 //---------------Q2 ability (Ring of Mines - F Chant)--------------------------
         integer AinzQ2_ID = 'A0FI'
         real AinzQ2_MineOffset = 500.00
-        integer AinzQ2_MineCount = 6
+        integer AinzQ2_MineCount = 5
         boolean AinzQ2_IsInvul = false
         real AinzQ2_CastTime = 0.00
         real AinzQ2_DecorDamage = 50.0
@@ -756,7 +757,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                             set scan = 0.00
                         endif
 
-                        if r >= AinzQ_MineDuration then
+                        if r >= AinzQ_MineDuration or (mineKind == MINE_KIND_Q2 and r >= AinzQ2_MineDuration) then
                             set active = false
                         elseif armed then
                             set scan = scan + 0.03

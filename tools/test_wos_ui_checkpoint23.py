@@ -23,7 +23,7 @@ def body(source, name):
 class Assets(unittest.TestCase):
     def test_cp23_textures_are_built_and_registered(self):
         self.assertTrue(set(CP23_NAMES) <= ASSET_NAMES)
-        for name in list(CP23_NAMES) + ['glyph-allycolor', 'slider-track-h']:
+        for name in list(CP23_NAMES) + ['glyph-allycolor', 'glyph-allycolor-1', 'glyph-allycolor-2', 'slider-track-h']:
             w, h, _ = png_tga.read_tga(ROOT / f'assets/UI/WOS/{name}.tga')
             self.assertGreater(w * h, 0, name)
 

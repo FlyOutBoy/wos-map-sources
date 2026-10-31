@@ -1875,7 +1875,7 @@ library AstaSpells initializer InitAstaSpells uses GearSystems
                             if c != u and SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
                                 set r5 = (GetUnitState(u, UNIT_STATE_MAX_MANA) * (AstaF_ManaSteal / 100.0)) / 4.0
                                 if r5 > 0.0 then
-                                    call SetMpCurrent(c, r5)
+                                    call SetMpCurrentQuiet(c, r5)
                                     call SetMpCurrent(u, -r5)
                                 endif
                             endif

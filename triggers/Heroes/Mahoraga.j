@@ -131,7 +131,8 @@ library MahoragaSpells uses GearSystems
         real MahoragaR_HealAgiBase = 4 // base number x Agi damage for 1 level
         real MahoragaR_HealAgiStep = 1 // additional number x Agi damage for each next level
        // real MahoragaR_HealBonusT = 30 //%
-        real MahoragaR_Duration = 1
+        real MahoragaR_Duration = 2
+        real MahoragaR_HealPeriod = 0.5 // heal ticks every 0.5 sec over the duration
 //---------------T ability-----------------------------------------------------
         integer MahoragaT_ID = 'A0CL'
         integer MahoragaT_Unit_ID = 'h022'
@@ -1646,7 +1647,7 @@ library MahoragaSpells uses GearSystems
         call MyFlush(GetHandleId(c),SH_DEBUFF_IMMUNE,0,MahoragaR_Duration)
         call DebuffClear(c)
         endif 
-        call HPS(c, c, hp, MahoragaR_Duration)
+        call HPSPeriod(c, c, hp, MahoragaR_Duration, MahoragaR_HealPeriod)
         call MyRemoveEff(AddSpecialEffectTarget("war3mapimported\\wos_a(rainbow)2.mdx", c, "chest"), MahoragaR_Duration)
         call MakeSound("war3mapimported\\Hero_Mahoraga_R")
         call MakeSound("war3mapimported\\Hero_Mahoraga_R2")

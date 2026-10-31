@@ -40,7 +40,7 @@ NAMES = [
     'ping-move', 'ping-attack', 'ping-danger', 'ping-help', 'ping-rally',
     'glyph-menu', 'glyph-stats', 'glyph-link', 'glyph-music', 'glyph-expand', 'glyph-collapse',
     'glyph-voice', 'glyph-keyboard', 'glyph-crown', 'toggle-on', 'toggle-off', 'flourish-l',
-    'flourish-r', 'discord', 'glyph-allycolor',
+    'flourish-r', 'discord', 'glyph-allycolor', 'glyph-allycolor-1', 'glyph-allycolor-2',
 ] + list(LOGOS)
 
 
@@ -226,16 +226,34 @@ def build_glyphs():
                           box(32, 53, 22, 3, 1.5)), 'glyph-crown')
 
 
+ALLY_RED, ALLY_BLUE = (232, 72, 60), (60, 110, 240)
+ALLY_TEAL, ALLY_YELLOW = (70, 200, 220), (240, 210, 90)
+
+
+def gem_paint(col, cy, half):
+    return lambda x, y: lerp(lerp(col, (255, 255, 255), 0.35), lerp(col, INK, 0.3), (y - cy + half) / (2 * half))
+
+
 def ally_color():
-    """Ally colours (Alt+A): three team-coloured gems inside a gold ring."""
+    """Ally colours (Alt+A), one element per GetAllyColorFilterState():
+    0 player colours (four-colour gem), 1 minimap only (two-tone square),
+    2 minimap + world (two-tone gem)."""
     n = 64
-    c = Canvas(n, n)
-    c.fill(ring(32, 32, 26, 3.6), INK, alpha=0.8)
-    c.fill(ring(32, 32, 26, 2.4), gold_paint(n))
-    for (cx, cy), color in (((32, 18), (232, 72, 60)), ((20, 40), (70, 200, 220)), ((44, 40), (240, 210, 90))):
-        c.fill(circle(cx, cy, 8.6), INK, alpha=0.85)
-        c.fill(circle(cx, cy, 7.0), lambda x, y, col=color: lerp(lerp(col, (255, 255, 255), 0.35), lerp(col, INK, 0.3), (y - cy + 7) / 14))
-    save(c, 'glyph-allycolor')
+    gem, tile = circle(32, 32, 15.5), box(32, 32, 14, 14, 3)
+    variants = (
+        ('glyph-allycolor', gem, [((0, 90), ALLY_RED), ((90, 180), ALLY_BLUE),
+                                  ((180, 270), ALLY_TEAL), ((270, 360), ALLY_YELLOW)]),
+        ('glyph-allycolor-1', tile, [((90, 270), ALLY_TEAL), ((-90, 90), ALLY_RED)]),
+        ('glyph-allycolor-2', gem, [((90, 270), ALLY_TEAL), ((-90, 90), ALLY_RED)]),
+    )
+    for name, shape, parts in variants:
+        c = Canvas(n, n)
+        c.fill(ring(32, 32, 26, 3.6), INK, alpha=0.8)
+        c.fill(ring(32, 32, 26, 2.4), gold_paint(n))
+        c.fill(offset(shape, 1.8), INK, alpha=0.85)
+        for (a0, a1), color in parts:
+            c.fill(intersect(shape, sector(32, 32, a0, a1)), gem_paint(color, 32, 15.5))
+        save(c, name)
 
 
 def toggles():

@@ -2616,8 +2616,8 @@ endloop
                     call MyRemoveAbility(c, StarkG_TimeStatAdd , Starrk_Pas6ID, 1)
                 endif
                 call Starrk_StackMeter.track(c)
-                call SetHpCurrent2(c, c, hp*scale)
-                call SetMpCurrent(c, mp*scale)
+                call SetHpCurrent2Quiet(c, c, hp*scale)
+                call SetMpCurrentQuiet(c, mp*scale)
                 call DestroyEffect(AddSpecialEffectTarget("war3mapimported\\wos_longskill_point_39.mdx", c, "origin"))
             endif
         endif

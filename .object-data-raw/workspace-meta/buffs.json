@@ -11141,6 +11141,1206 @@
         }
       }
     },
+    "B057": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 149,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 149,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 149,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 149,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B058": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 150,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 150,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 150,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 150,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B059": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 151,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 151,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 151,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 151,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05A": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 152,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 152,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 152,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 152,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05B": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 153,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 153,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 153,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 153,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05C": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 154,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 154,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 154,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 154,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05D": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 155,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 155,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 155,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 155,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05E": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 156,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 156,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 156,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 156,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B05F": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 157,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 157,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 157,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 157,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B060": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 158,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 158,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 158,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 158,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B061": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 159,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 159,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 159,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 159,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B062": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 160,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B063": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 161,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 161,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 161,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 161,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B064": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 162,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B065": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 163,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B066": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 164,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B067": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 165,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
+    "B068": {
+      "base_id": "BHds",
+      "name_source": null,
+      "fields": {
+        "tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 0
+          },
+          "field_id": "ftip",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "extended_tooltip": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 1
+          },
+          "field_id": "fube",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "icon": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 3
+          },
+          "field_id": "fart",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "target_art": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 2
+          },
+          "field_id": "ftat",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "editor_suffix": {
+          "source": {
+            "file": "war3mapSkin.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 4
+          },
+          "field_id": "fnsf",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        },
+        "race": {
+          "source": {
+            "file": "war3map.w3h",
+            "group": "custom_objects",
+            "object_index": 166,
+            "modification_index": 0
+          },
+          "field_id": "frac",
+          "type": "string",
+          "level": null,
+          "variation": null,
+          "data_pointer": null
+        }
+      }
+    },
     "B0F0": {
       "base_id": "Binf",
       "name_source": {

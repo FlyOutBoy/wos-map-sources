@@ -1535,7 +1535,7 @@ library HarribelSpells uses GearSystems
         endif
         if GetHeroLevel(c)>=12 and IsUnitType(c,UNIT_TYPE_DEAD) then 
         set heal = r * GetUnitState(c, UNIT_STATE_MAX_LIFE)
-        call SetHpCurrent2(c,c, heal)
+        call SetHpCurrent2Quiet(c,c, heal)
         call EUTU2(EffectSpawn("war3mapImported\\wos_effect_lv131.mdl", GetUnitX(c), GetUnitY(c), 1, 1, 1, 40), 0.6, 40, c)
         call MakeSound("war3mapImported\\Hero_Harribel_G2")
        endif

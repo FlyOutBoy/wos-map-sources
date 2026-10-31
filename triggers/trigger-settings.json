@@ -75,6 +75,8 @@
     "Systems/ItemEnter.j": true,
     "Systems/ItemLeave.j": true,
     "Items/Items.j": true,
+    "Items/ItemsAnime.j": false,
+    "Items/ItemsElements.j": false,
     "Heroes/Toji.j": true,
     "Heroes/Raiden.j": true,
     "Heroes/Frieren.j": true,

@@ -123,6 +123,10 @@ library KiritoSpells uses GearSystems
         real KiritoR_DamageAgiStep = 0.4 // additional number x Agi damage for each next level each strike
         real KiritoR_Damage2AgiBase = 3 // base number x Agi damage for each strike
         real KiritoR_Damage2AgiStep = 0.3 // additional number x Agi damage for each next level each strike
+        integer KiritoR_QuickHits = 2
+        integer KiritoR_StrongHits = 4
+        real KiritoR_QuickHitInterval = 0.15
+        real KiritoR_StrongHitInterval = 0.25
         real KiritoR_DamageDealtBonusFinal = 0 // additional amout of damage that trigger final strike in %, example kirito attack enemy cause 500 dmg, with 70% it additionaly deal 375 damage for final strike
         real KiritoR_StunDuration = 0.1 // from 0.1 to 3 sec
         real KiritoR_DurationBase = 10 // in seconds
@@ -948,7 +952,7 @@ library KiritoSpells uses GearSystems
             loop
                 exitwhen i > MUI_KiritoR2
                 set this = m_KiritoR2[i]
-                if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax then
+                if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax and check < KiritoR_StrongHits then
                     set r = r + 0.05
                     set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
@@ -957,8 +961,8 @@ library KiritoSpells uses GearSystems
                     call DebugUnit2(td)
                     call DebugUnit2(c)
                     call PosUnit(c, GetUnitX(td) - 160 * Cos(a), GetUnitY(td) - 160 * Sin(a))
-                    if r2 > 0.1 then
-                        set r2 = 0
+                    if r >= 0.05 + I2R(check) * KiritoR_StrongHitInterval then
+                        set check = check + 1
                         if GetRandomInt(1,2) == 2 then 
             call SetUnitAnimationByIndex(c, 14)
             else
@@ -988,7 +992,7 @@ library KiritoSpells uses GearSystems
                                 //    call UnitRemoveAbility(td, 'Avul')
                                 endif
                                 call DamageSource('A0D7')
-                                call dmgphys(c, u, dmg)
+                                call dmgphysattack(c, u, dmg)
                                 call StunUnit(c, u, KiritoR_StunDuration)
                                 if u == td then
                                   //  call UnitAddAbility(td, 'Avul')
@@ -1037,9 +1041,8 @@ library KiritoSpells uses GearSystems
             set r3 = 10
             set g = CreateGroup()
             set aoe = KiritoR_DamageAoe
-            //set dmg = NewDmg * (KiritoR_DamageDealtBonusFinal / 100)
-            set dmg = dmg + GetHeroAgi( c , true) * ( KiritoR_Damage2AgiBase + ( KiritoR_Damage2AgiStep * ( GetUnitAbilityLevel( c , KiritoR_ID) - 1 ) ) )
-            set dmg = dmg / 5
+            set dmg = NewDmg / I2R(KiritoR_StrongHits)
+            set check = 0
             call StartSpellUnit2(c)
             
             call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,1)
@@ -1063,7 +1066,7 @@ library KiritoSpells uses GearSystems
             loop
                 exitwhen i > MUI_KiritoR3
                 set this = m_KiritoR3[i]
-                if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax and check <3 then
+                if SpellBoolCaster(c) and SpellBoolCaster(td) and r <= rmax and check < KiritoR_QuickHits then
                     set r = r + 0.05
                     set r = RoundReal(r, 3)
                     set x = GetUnitX(td)
@@ -1071,7 +1074,7 @@ library KiritoSpells uses GearSystems
                     set a = GAngle(c, td)
                     call DebugUnit2(c)
                     call PosUnit(c, GetUnitX(td) - 160 * Cos(a), GetUnitY(td) - 160 * Sin(a))
-                    if r2 > 0.05 then
+                    if r >= 0.05 + I2R(check) * KiritoR_QuickHitInterval then
                         set r2 = 0
                         set check = check +1
        set atk = k3
@@ -1105,7 +1108,7 @@ library KiritoSpells uses GearSystems
         call SetUnitAnimation(c,"attack")
         call StunUnit(c, td, KiritoR_StunDuration)
         call DamageSource('A0D7')
-        call dmgphys(c, td, dmg)
+        call dmgphysattack(c, td, dmg)
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
         call DestroyEffect( AddSpecialEffectTarget("war3mapimported\\wos_A_[doft]hero_skeletonking_n2s_e_star.mdx", td, "chest"))
         set e = EffectSpawn("war3mapImported\\wos_zhanji-blue.mdl", x, y, random, 0.75, 1, 115)
@@ -1155,7 +1158,7 @@ library KiritoSpells uses GearSystems
             set r3 = 10
             set aoe = KiritoR_DamageAoe
             set dmg = NewDmg 
-            set dmg = dmg /3 
+            set dmg = dmg / I2R(KiritoR_QuickHits) 
             
             call SaveInteger(hs,GetHandleId(c),SH_ASTA_E,1)
             set k3 = LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_R_ATK_COUNT)
@@ -1493,7 +1496,7 @@ library KiritoSpells uses GearSystems
                     call BlzStartUnitAbilityCooldown(c, KiritoG_ID, KiritoG_Time)
                     if IsUnitType(c,UNIT_TYPE_DEAD)==false and GetUnitState(c, UNIT_STATE_LIFE) < GetUnitState(c, UNIT_STATE_MAX_LIFE) then
                         set r5 = GetHeroAgi(c, true)*KiritoG_Heal
-                        call SetHpCurrent2(c,c, r5)
+                        call SetHpCurrent2Quiet(c,c, r5)
                         call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_e_buffgreen2a.mdx", c, "origin"))
                     endif
                 else

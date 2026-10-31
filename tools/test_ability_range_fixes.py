@@ -67,7 +67,7 @@ class BindingConflicts(unittest.TestCase):
         s=(ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
         if 'function WUI_BindingConflict' not in s:s=bindings(s)
         self.vm=JassState(s);self.g=self.vm.g
-        self.g.update(WUI_HOTKEY_CHANNELS=6,WUI_SLOT_KEYS=13,WUI_HotkeyKey=defaultdict(lambda:None),
+        self.g.update(WUI_HOTKEY_CHANNELS=6,WUI_SLOT_KEYS=13,WUI_HotkeyKey=defaultdict(lambda:None),WUI_CAPTURE_COFFIN=15,WUI_CoffinKey=defaultdict(lambda:None),
             WUI_SlotKey=defaultdict(lambda:None),WUI_SlotKeyName=defaultdict(lambda:''),
             WUI_HOTKEY_SHOP=0,WUI_HOTKEY_PING=4,WUI_HOTKEY_EMOTE=1,WUI_HOTKEY_STATS=2,
             SubString=lambda s,a,b:s[a:b],I2S=str)

@@ -621,8 +621,8 @@
         "name": "Okarun Egg",
         "abilities": [
             {
-                "id": "A0G5",
-                "name": "Item INT + 30",
+                "id": "A00T",
+                "name": "Item INT + 25",
                 "base": "AIx1"
             }
         ],
@@ -704,8 +704,8 @@
                 "base": "AIx1"
             },
             {
-                "id": "A07X",
-                "name": "Item ALST + 10",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
             }
         ],
@@ -713,7 +713,7 @@
         "ability": "A06O",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1750.0
+        "fallback": 1600.0
     },
     {
         "item": "I016",
@@ -725,8 +725,8 @@
                 "base": "ANcl"
             },
             {
-                "id": "A00X",
-                "name": "Hero ALST + 10",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
             },
             {
@@ -1108,8 +1108,8 @@
                 "base": "ANcl"
             },
             {
-                "id": "A00X",
-                "name": "Hero ALST + 10",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
             },
             {
@@ -1145,8 +1145,8 @@
                 "base": "ANcl"
             },
             {
-                "id": "A00X",
-                "name": "Hero ALST + 10",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
             },
             {
@@ -1342,8 +1342,8 @@
                 "base": "ANcl"
             },
             {
-                "id": "A0G3",
-                "name": "Item Agi + 30",
+                "id": "A00R",
+                "name": "Item Agi + 25",
                 "base": "AIx1"
             }
         ],
@@ -1360,8 +1360,8 @@
                 "base": "ANcl"
             },
             {
-                "id": "A0G3",
-                "name": "Item Agi + 30",
+                "id": "A00R",
+                "name": "Item Agi + 25",
                 "base": "AIx1"
             }
         ],
@@ -1649,8 +1649,8 @@
                 "base": "AIx1"
             },
             {
-                "id": "A00X",
-                "name": "Hero ALST + 10",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
             }
         ],
@@ -2278,6 +2278,11 @@
                 "id": "A07Y",
                 "name": "Item ALST + 15",
                 "base": "AIx1"
+            },
+            {
+                "id": "A13F",
+                "name": "Chogurt Evolved Aura",
+                "base": "AUau"
             }
         ],
         "mode": "cast",
@@ -2509,9 +2514,8 @@
     {
         "item": "I046",
         "name": "Kusanagi",
-        "mode": "script",
-        "source": "triggers/Items/Items.j",
-        "expression": "Kusanagi_Aoe",
+        "mode": "cast",
+        "source": "object-data/abilities.json",
         "abilities": [
             {
                 "id": "A102",
@@ -2528,14 +2532,16 @@
                 "name": "Hero ALST + 15",
                 "base": "AIx1"
             }
-        ]
+        ],
+        "ability": "A102",
+        "field": "cast_range level 1",
+        "fallback": 1425.0
     },
     {
         "item": "I047",
         "name": "Kusanagi: Blaze Release",
-        "mode": "script",
-        "source": "triggers/Items/Items.j",
-        "expression": "Kusanagi_Aoe",
+        "mode": "cast",
+        "source": "object-data/abilities.json",
         "abilities": [
             {
                 "id": "A102",
@@ -2552,14 +2558,16 @@
                 "name": "Hero ALST + 20",
                 "base": "AIx1"
             }
-        ]
+        ],
+        "ability": "A102",
+        "field": "cast_range level 1",
+        "fallback": 1425.0
     },
     {
         "item": "I048",
         "name": "Kusanagi: Water Release",
-        "mode": "script",
-        "source": "triggers/Items/Items.j",
-        "expression": "Kusanagi_Aoe",
+        "mode": "cast",
+        "source": "object-data/abilities.json",
         "abilities": [
             {
                 "id": "A102",
@@ -2576,14 +2584,16 @@
                 "name": "Hero ALST + 20",
                 "base": "AIx1"
             }
-        ]
+        ],
+        "ability": "A102",
+        "field": "cast_range level 1",
+        "fallback": 1425.0
     },
     {
         "item": "I049",
         "name": "Chidori Kusanagi",
-        "mode": "script",
-        "source": "triggers/Items/Items.j",
-        "expression": "Kusanagi_Aoe",
+        "mode": "cast",
+        "source": "object-data/abilities.json",
         "abilities": [
             {
                 "id": "A102",
@@ -2600,7 +2610,10 @@
                 "name": "Hero ALST + 20",
                 "base": "AIx1"
             }
-        ]
+        ],
+        "ability": "A102",
+        "field": "cast_range level 1",
+        "fallback": 1425.0
     },
     {
         "item": "I04A",
@@ -2689,5 +2702,804 @@
         ],
         "mode": "none",
         "reason": "No independent caster-centred reach: stats and a self damage-stack passive."
+    },
+    {
+        "item": "I04F",
+        "name": "Armament Haki",
+        "abilities": [
+            {
+                "id": "A12E",
+                "name": "Item CD Armament Haki",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00X",
+                "name": "Hero ALST + 10",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I050",
+        "name": "Armament Haki Evolved",
+        "abilities": [
+            {
+                "id": "A12F",
+                "name": "Item CD Armament Haki Evolved",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I051",
+        "name": "Naofumi Shield Evolved",
+        "abilities": [
+            {
+                "id": "A02T",
+                "name": "Item Naofumi Shield",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I052",
+        "name": "Sukuna's Finger",
+        "abilities": [
+            {
+                "id": "A131",
+                "name": "Item Sukuna's Finger",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00U",
+                "name": "Item INT + 35",
+                "base": "AIx1"
+            },
+            {
+                "id": "A074",
+                "name": "Item Agi + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A01Y",
+                "name": "hp +500",
+                "base": "AIlf"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A131",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 900.0
+    },
+    {
+        "item": "I053",
+        "name": "Five Elements Seal",
+        "abilities": [
+            {
+                "id": "A133",
+                "name": "Item Five Elements Seal",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00R",
+                "name": "Item Agi + 25",
+                "base": "AIx1"
+            },
+            {
+                "id": "A071",
+                "name": "Item INT + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A133",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 900.0
+    },
+    {
+        "item": "I054",
+        "name": "Rokushiki: Tekkai",
+        "abilities": [
+            {
+                "id": "A135",
+                "name": "Item Rokushiki: Tekkai",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I055",
+        "name": "Samehada",
+        "abilities": [
+            {
+                "id": "A137",
+                "name": "Item Atk Samehada +45",
+                "base": "AItg"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I056",
+        "name": "Will of D.",
+        "abilities": [
+            {
+                "id": "A138",
+                "name": "Item CD Will of D.",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00R",
+                "name": "Item Agi + 25",
+                "base": "AIx1"
+            },
+            {
+                "id": "A01Y",
+                "name": "hp +500",
+                "base": "AIlf"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I057",
+        "name": "Kairoseki Cuffs",
+        "abilities": [
+            {
+                "id": "A13A",
+                "name": "Item Kairoseki Cuffs",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A13A",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 900.0
+    },
+    {
+        "item": "I058",
+        "name": "Hyorinmaru Ice Coffin",
+        "abilities": [
+            {
+                "id": "A13C",
+                "name": "Item Hyorinmaru Ice Coffin",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I059",
+        "name": "Return by Death",
+        "abilities": [
+            {
+                "id": "A13E",
+                "name": "Item Return by Death",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05A",
+        "name": "Fairy Tail Emblem Evolved",
+        "abilities": [
+            {
+                "id": "A04Y",
+                "name": "CD Fairy Tail Emblem",
+                "base": "ANcl"
+            },
+            {
+                "id": "A0D2",
+                "name": "mp",
+                "base": "AI2m"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05B",
+        "name": "Ryujin Jakka Evolved",
+        "abilities": [
+            {
+                "id": "A080",
+                "name": "CD Ryujin Jakka",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05C",
+        "name": "Nejibana Evolved",
+        "abilities": [
+            {
+                "id": "A09P",
+                "name": "CD Nejibana",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05D",
+        "name": "Gonryomaru Evolved",
+        "abilities": [
+            {
+                "id": "A081",
+                "name": "CD Gonryomaru",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05E",
+        "name": "Mirror of Yata Evolved",
+        "abilities": [
+            {
+                "id": "A140",
+                "name": "Item Mirror of Yata Evolved",
+                "base": "ANcl"
+            },
+            {
+                "id": "A04W",
+                "name": "Item STR +20",
+                "base": "AIx1"
+            },
+            {
+                "id": "A04S",
+                "name": "hp +1000",
+                "base": "AIlf"
+            },
+            {
+                "id": "A0G8",
+                "name": "mp",
+                "base": "AI2m"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I05F",
+        "name": "Philosopher's Stone Evolved",
+        "abilities": [
+            {
+                "id": "A142",
+                "name": "Item Philosopher's Stone Evolved",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Hero ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I060",
+        "name": "Emberbreaker",
+        "abilities": [
+            {
+                "id": "A145",
+                "name": "Item Emberbreaker",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A145",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I061",
+        "name": "Leviathan's Grasp",
+        "abilities": [
+            {
+                "id": "A146",
+                "name": "Item Leviathan's Grasp",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A146",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I062",
+        "name": "Leviathan's Anchor",
+        "abilities": [
+            {
+                "id": "A147",
+                "name": "Item Leviathan's Anchor",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A147",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I063",
+        "name": "Thunder Verdict",
+        "abilities": [
+            {
+                "id": "A148",
+                "name": "Item Thunder Verdict",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A148",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I064",
+        "name": "Thunder Bastion",
+        "abilities": [
+            {
+                "id": "A149",
+                "name": "Item Thunder Bastion",
+                "base": "ANcl"
+            },
+            {
+                "id": "A072",
+                "name": "Item STR + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A149",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I065",
+        "name": "Cinder Fang",
+        "abilities": [
+            {
+                "id": "A14A",
+                "name": "Item Cinder Fang",
+                "base": "ANcl"
+            },
+            {
+                "id": "A074",
+                "name": "Item Agi + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14A",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I066",
+        "name": "Ashen Crossfire",
+        "abilities": [
+            {
+                "id": "A14B",
+                "name": "Item Ashen Crossfire",
+                "base": "ANcl"
+            },
+            {
+                "id": "A074",
+                "name": "Item Agi + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14B",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I067",
+        "name": "Mirror Tide",
+        "abilities": [
+            {
+                "id": "A14C",
+                "name": "Item Mirror Tide",
+                "base": "ANcl"
+            },
+            {
+                "id": "A074",
+                "name": "Item Agi + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14C",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1600.0
+    },
+    {
+        "item": "I068",
+        "name": "Volt Thread",
+        "abilities": [
+            {
+                "id": "A14D",
+                "name": "Item Volt Thread",
+                "base": "ANcl"
+            },
+            {
+                "id": "A074",
+                "name": "Item Agi + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14D",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I069",
+        "name": "Phoenix Seal",
+        "abilities": [
+            {
+                "id": "A14E",
+                "name": "Item Phoenix Seal",
+                "base": "ANcl"
+            },
+            {
+                "id": "A075",
+                "name": "Item INT + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14E",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I06A",
+        "name": "Crimson Scripture",
+        "abilities": [
+            {
+                "id": "A14F",
+                "name": "Item Crimson Scripture",
+                "base": "ANcl"
+            },
+            {
+                "id": "A075",
+                "name": "Item INT + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A14F",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I06B",
+        "name": "Siren's Tear",
+        "abilities": [
+            {
+                "id": "A150",
+                "name": "Item Siren's Tear",
+                "base": "ANcl"
+            },
+            {
+                "id": "A075",
+                "name": "Item INT + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A150",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1400.0
+    },
+    {
+        "item": "I06C",
+        "name": "Constellation Coil",
+        "abilities": [
+            {
+                "id": "A151",
+                "name": "Item Constellation Coil",
+                "base": "ANcl"
+            },
+            {
+                "id": "A075",
+                "name": "Item INT + 10",
+                "base": "AIx1"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A151",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 1800.0
+    },
+    {
+        "item": "I06D",
+        "name": "Blood Pact Ring",
+        "abilities": [
+            {
+                "id": "A152",
+                "name": "Item Blood Pact Ring",
+                "base": "ANcl"
+            },
+            {
+                "id": "A06T",
+                "name": "Item STR +15",
+                "base": "AIx1"
+            },
+            {
+                "id": "A020",
+                "name": "hp +250",
+                "base": "AIlf"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I06E",
+        "name": "Zanka no Tachi",
+        "abilities": [
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I06F",
+        "name": "Kyoka Suigetsu",
+        "abilities": [
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I070",
+        "name": "Koko Gonryo Rikyu",
+        "abilities": [
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I071",
+        "name": "Tobiume",
+        "abilities": [
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I072",
+        "name": "Suzumebachi",
+        "abilities": [
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I073",
+        "name": "Blood Pact Ring Evolved",
+        "abilities": [
+            {
+                "id": "A154",
+                "name": "Item Blood Pact Ring Evolved",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00W",
+                "name": "Item ALST + 20",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "none",
+        "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
     }
 ]

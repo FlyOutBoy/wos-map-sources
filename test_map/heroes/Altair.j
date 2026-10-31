@@ -41,6 +41,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairQ_DamageStatic = 75.0
         real AltairQ_DamageStaticStep = 25.0
         real AltairQ_Aoe = 300.0
+        real AltairQ_Decor = 20.0
         real AltairQ_Stun = 0.5
         real AltairQ_DamageDelay = 0.15
         real AltairQ_SprayTime = 0.6
@@ -54,6 +55,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         // ==================== W: Third / Ninth Movement (Holopsicon) ====================
         integer AltairW_ID = 'A11F'
         real AltairW_Speed = 2000.0
+        real AltairW_Decor = 20.0
         real AltairW_ContactRange = 90.0
         real AltairW_MaxDashTime = 1.2
         real AltairW_Duration = 3.0 // ally block + heal over time, +1 sec per level
@@ -72,6 +74,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         // ==================== E: Outline Origin (Holopsicon) ====================
         integer AltairE_ID = 'A120'
         real AltairE_Aoe = 650.0
+        real AltairE_Decor = 30.0
         real AltairE_CooldownReduction = 5.0
         real AltairE_DamageIntBase = 1.5
         real AltairE_DamageIntStep = 0.4
@@ -88,27 +91,37 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         integer AltairR_MaxCopies = 24 // everything inside the marker is copied, up to this many
         real AltairR_Window = 30.0
         real AltairR_Cooldown = 16.0
-        real AltairR_DamageIntBase = 2.5
-        real AltairR_DamageIntStep = 0.5
+        // Impact damage = Intelligence x object factor (AltairDecor table: barrel 2, houses 3-4, train 8) + static.
         real AltairR_DamageStatic = 100.0
         real AltairR_DamageStaticStep = 50.0
         real AltairR_PathDamage = 0.35 // share of the impact damage dealt along the flight path
-        real AltairR_ThrowSpeed = 1600.0
-        real AltairR_PortalOpen = 0.15
-        real AltairR_ThrowStagger = 0.06 // one copy leaves the portal every 0.06 sec
-        real AltairR_PortalLife = 0.8
-        real AltairR_PortalHeight = 260.0
-        real AltairR_PortalScale = 1.6
-        real AltairR_PortalSpread = 110.0
-        real AltairR_ArcHeight = 120.0
+        real AltairR_AppearMin = 0.24 // each copy fades into the portal over a random 0.24-0.4 sec...
+        real AltairR_AppearMax = 0.4
+        real AltairR_PortalOpen = 0.4 // ...then the whole volley leaves at once
+        real AltairR_ThrowSpeed = 3200.0 // common volley speed
+        boolean AltairR_Debug = true // TEST: report how many copies a throw launched
+        real AltairR_SmashPeriod = 0.03 // enemies on the path are checked every tick
+        real AltairR_FlightRange = 1800.0 // copies fly along the cast line this far (+- random), then explode
+        real AltairR_FlightRangeRandom = 150.0
+        real AltairR_SpinSpeed = 3.0 // radians per second for tumbling light copies
+        real AltairR_DragStep = 14.0 // enemies inside a flying copy are dragged along this far per tick
+        real AltairR_DecorSmall = 20.0 // decor damage of light/medium copies (path and impact)
+        real AltairR_DecorHeavy = 100.0 // decor damage of houses, buildings, bus and trains
+        real AltairR_PortalLife = 0.9
+        real AltairR_PortalHeight = 300.0
+        real AltairR_PortalScale = 2.8
+        real AltairR_PortalBack = 160.0 // portal distance behind Altair
+        // Where copies may appear in the portal (and how far apart the lines may drift): never outside these.
+        real AltairR_PortalHalfWidth = 260.0 // sideways from the portal centre
+        real AltairR_PortalMinHeight = 160.0 // above the ground
+        real AltairR_PortalMaxHeight = 440.0
+        real AltairR_LineDrift = 1.35 // the line widens by this factor towards the end, clamped to the half width
+        real AltairR_HitPush = 140.0 // MUE knockback along the flight when a copy hits an enemy
+        real AltairR_HitPushTime = 0.3
         real AltairR_HeavyTilt = 0.12 // heavy copies (houses, bus, trains) glide level with a slight nose-down tilt
         real AltairR_OverloadStun = 0.5
         real AltairR_MaxStun = 1.5
         real AltairR_HydrantPush = 300.0
-        real AltairR_CopyScale = 0.18
-        real AltairR_CopyRadius = 120.0
-        real AltairR_CopyHeight = 260.0
-        real AltairR_CopyFlyTime = 0.45
         integer AltairR_TrainHeroLevel = 35
         integer AltairR_TrainDecorID = 'B017' // invisible blocker that follows the round-end train
         integer AltairR_TrainMetroID = 'h00G'
@@ -127,11 +140,15 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         private string array AltairDecorModel
         private real array AltairDecorScale
         private integer array AltairDecorWeight
+        private real array AltairDecorFactor
         private integer AltairDecorCount = 0
         private destructable array AltairRCandidate
         private real array AltairRCandidateDistance
         private integer AltairRCandidateCount = 0
         private integer AltairRThrowCounter = 0
+        // Decor destroyed by Factor Mimic, remembered for Outline Origin (ring of the last 128).
+        private destructable array AltairRTaken
+        private integer AltairRTakenNext = 0
         // Kinds: decor table index >= 0, train skins below zero.
         integer AltairR_KindMetro = -1
         integer AltairR_KindThomas = -2
@@ -139,6 +156,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         // ==================== T: Fate Reconstruction (Holopsicon) ====================
         integer AltairT_ID = 'A122'
         real AltairT_Aoe = 300.0
+        real AltairT_Decor = 50.0 // per second around the open portal
         real AltairT_EnterRadius = 140.0
         integer AltairT_MaxMembers = 4
         real AltairT_Duration = 20.0
@@ -169,6 +187,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairSQ_Range = 700.0
         real AltairSQ_Speed = 2400.0
         real AltairSQ_Width = 150.0
+        real AltairSQ_Decor = 20.0
         real AltairSQ_DamageIntBase = 1.0
         real AltairSQ_DamageIntStep = 0.2
         real AltairSQ_DamageAtk = 1.0
@@ -182,6 +201,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairSW_Range = 1000.0
         real AltairSW_Speed = 1800.0
         real AltairSW_Width = 110.0
+        real AltairSW_Decor = 20.0
         real AltairSW_DamageIntBase = 1.2
         real AltairSW_DamageIntStep = 0.3
         real AltairSW_DamageAtk = 0.8
@@ -196,6 +216,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairSE_Duration = 1.5
         real AltairSE_Period = 0.25
         real AltairSE_Aoe = 300.0
+        real AltairSE_Decor = 30.0
         real AltairSE_Radius = 190.0
         real AltairSE_Height = 60.0
         real AltairSE_SpinSpeed = 12.0 // radians per second
@@ -219,6 +240,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairSR_WallRadius = 120.0
         real AltairSR_SpinSpeed = 6.0
         real AltairSR_Period = 0.3
+        real AltairSR_Decor = 20.0
         real AltairSR_DamageInt = 0.15
         real AltairSR_DamageAtk = 0.1
 
@@ -233,6 +255,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real AltairST_DropHeight = 900.0
         real AltairST_DropSpeed = 2400.0
         real AltairST_ImpactAoe = 160.0
+        real AltairST_Decor = 50.0 // per second over the whole rain area
         real AltairST_DamageInt = 0.5
         real AltairST_DamageAtk = 0.3
 
@@ -275,11 +298,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         return GetHeroInt(hero, true)*intCoefficient + GetAttack(hero)*atkCoefficient
     endfunction
 
-    private function AltairDecor takes integer id, string model, real scale, integer weight returns nothing
+    private function AltairDecor takes integer id, string model, real scale, integer weight, real factor returns nothing
         set AltairDecorId[AltairDecorCount] = id
         set AltairDecorModel[AltairDecorCount] = model
         set AltairDecorScale[AltairDecorCount] = scale
         set AltairDecorWeight[AltairDecorCount] = weight
+        set AltairDecorFactor[AltairDecorCount] = factor
         set AltairDecorCount = AltairDecorCount + 1
     endfunction
 
@@ -319,6 +343,14 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             return 4
         endif
         return AltairDecorWeight[kind]
+    endfunction
+
+    // Intelligence factor of an impact: barrel 2, small houses 3, houses and buildings 4, train 8.
+    private function AltairKindFactor takes integer kind returns real
+        if kind < 0 then
+            return 8.0
+        endif
+        return AltairDecorFactor[kind]
     endfunction
 
     private function AltairKindDecorId takes integer kind returns integer
@@ -403,7 +435,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                                 call DestroyEffect(EffectSpawn(Altair_HitModel, GetUnitX(target), GetUnitY(target), 0.0, 1.0, 1.5, 76.0))
                             endif
                         endloop
-                        call DecorRemove(hero, nextX, nextY, width, damage)
+                        call DecorRemove(hero, nextX, nextY, width, AltairSW_Decor)
                     endif
                     set index = index + 1
                 endif
@@ -455,6 +487,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real shieldAngle
         integer refundAbility
         integer array voiceCycle[20]
+        real refreshTimer
 
         // Every cast plays its next line at once; each slot cycles its own variants.
         method Voice takes integer slot, string key, integer first, integer variants returns nothing
@@ -672,7 +705,11 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                         call SetToggle(false)
                     endif
                     call UpdateVisuals()
-                    call Refresh()
+                    set refreshTimer = refreshTimer + 0.03
+                    if refreshTimer >= 0.09 then
+                        set refreshTimer = 0.0
+                        call Refresh()
+                    endif
                     set index = index + 1
                 endif
             endloop
@@ -755,7 +792,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     call DestroyEffect(AddSpecialEffectTarget(AltairQ_HitModel, target, "chest"))
                 endif
             endloop
-            call DecorRemove(hero, targetX, targetY, AltairQ_Aoe, damage)
+            call DecorRemove(hero, targetX, targetY, AltairQ_Aoe, AltairQ_Decor)
+            call VisionTimed(GetOwningPlayer(hero), targetX, targetY, AltairQ_Aoe*1.6, 2.0)
             set dealt = true
         endmethod
 
@@ -917,6 +955,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                 call dmgmag(hero, target, GetHeroInt(hero, true)*(AltairW_DamageIntBase + AltairW_DamageIntStep*(level - 1)) + AltairW_DamageStatic + AltairW_DamageStaticStep*(level - 1))
             endif
             call DestroyEffect(EffectSpawn(Altair_SlashModel, x, y, GetUnitFacing(hero), 1.5, 0.8, 60.0))
+            call DecorRemove(hero, x, y, 200.0, AltairW_Decor)
+            call VisionTimed(GetOwningPlayer(hero), x, y, 500.0, 2.0)
         endmethod
 
         static method Loop takes nothing returns nothing
@@ -943,6 +983,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                             call SetUnitX(hero, GetUnitX(hero) + step*Cos(angle))
                             call SetUnitY(hero, GetUnitY(hero) + step*Sin(angle))
                         endif
+                        call DecorRemove(hero, GetUnitX(hero), GetUnitY(hero), 120.0, AltairW_Decor)
                         call SetUnitFacing(hero, angle*bj_RADTODEG)
                         set trailTimer = trailTimer + 0.03
                         if trailTimer >= 0.06 then
@@ -993,16 +1034,36 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
     endstruct
 
     // ==================== E: Outline Origin ====================
-    private function AltairE_RestoreDecor takes nothing returns nothing
-        local destructable decor = GetEnumDestructable()
-        local real dx = GetDestructableX(decor) - AltairEnumX
-        local real dy = GetDestructableY(decor) - AltairEnumY
-        if GetDestructableLife(decor) <= 0.405 and dx*dx + dy*dy <= AltairEnumRadius*AltairEnumRadius and AltairDecorIndex(GetDestructableTypeId(decor)) >= 0 then
+    // Train blockers, the shop base and Kyoraku's floor are system objects, never "restored".
+    private function AltairE_Restore takes destructable decor returns nothing
+        local real dx
+        local real dy
+        local integer id
+        if decor == null or GetDestructableLife(decor) > 0.405 then
+            return
+        endif
+        set id = GetDestructableTypeId(decor)
+        set dx = GetDestructableX(decor) - AltairEnumX
+        set dy = GetDestructableY(decor) - AltairEnumY
+        if id != 0 and id != AltairR_TrainDecorID and id != 'B016' and id != 'B018' and dx*dx + dy*dy <= AltairEnumRadius*AltairEnumRadius then
             call DestructableRestoreLife(decor, GetDestructableMaxLife(decor), true)
             call AltairFade(EffectSpawn(Altair_CircleModel, GetDestructableX(decor), GetDestructableY(decor), 0.0, 1.0, 0.6, 10.0))
             call AltairFade(EffectSpawn(AltairE_ClockModel, GetDestructableX(decor), GetDestructableY(decor), 0.0, 1.5, 0.8, 40.0))
         endif
-        set decor = null
+    endfunction
+
+    private function AltairE_RestoreDecor takes nothing returns nothing
+        call AltairE_Restore(GetEnumDestructable())
+    endfunction
+
+    // Everything Factor Mimic took inside the aura comes back, independently of the area scan.
+    private function AltairE_RestoreTaken takes nothing returns nothing
+        local integer slot = 0
+        loop
+            exitwhen slot >= 128
+            call AltairE_Restore(AltairRTaken[slot])
+            set slot = slot + 1
+        endloop
     endfunction
 
     private struct AltairE_KS
@@ -1057,8 +1118,11 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set AltairEnumX = x
             set AltairEnumY = y
             set AltairEnumRadius = AltairE_Aoe
+            call DecorRemove(hero, x, y, AltairE_Aoe, AltairE_Decor)
+            call VisionTimed(GetOwningPlayer(hero), x, y, AltairE_Aoe*1.4, 2.0)
             call SetRect(AltairEnumRect, x - AltairE_Aoe, y - AltairE_Aoe, x + AltairE_Aoe, y + AltairE_Aoe)
             call EnumDestructablesInRect(AltairEnumRect, null, function AltairE_RestoreDecor)
+            call AltairE_RestoreTaken()
             set sphere = null
         endmethod
 
@@ -1153,7 +1217,10 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         static integer count = 0
         unit hero
         effect art
-        group path
+        group path // shared by the whole volley (as Bambietta TQ): an enemy takes path damage once
+        real move
+        real travelled
+        real range
         integer kind
         integer level
         integer throwKey
@@ -1168,6 +1235,32 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real yaw
         real spin
         real damage
+        real speed
+        real flight // direction of travel (yaw differs for the backwards Metro model)
+        real smashTimer
+        integer smashCount
+        real endZ
+        real curX
+        real curY
+
+        method DecorDamage takes nothing returns real
+            if AltairKindWeight(kind) >= 3 then
+                return AltairR_DecorHeavy
+            endif
+            return AltairR_DecorSmall
+        endmethod
+
+        method Width takes nothing returns real
+            local integer weight = AltairKindWeight(kind)
+            if weight == 1 then
+                return 140.0
+            elseif weight == 2 then
+                return 190.0
+            elseif weight == 3 then
+                return 260.0
+            endif
+            return 360.0
+        endmethod
 
         method Impact takes nothing returns nothing
             local integer weight = AltairKindWeight(kind)
@@ -1218,65 +1311,80 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     endif
                 endif
             endloop
-            call DecorRemove(hero, targetX, targetY, aoe, hitDamage)
+            call DecorRemove(hero, targetX, targetY, aoe, DecorDamage())
+            call VisionTimed(GetOwningPlayer(hero), targetX, targetY, aoe*1.6, 2.0)
         endmethod
 
-        // Everything on the flight path is broken: decor and enemies (once per copy).
+        // Everything on the flight path is broken: decor, enemies hit once per copy and dragged along.
         method Smash takes real x, real y returns nothing
-            local real width = 80.0 + 40.0*AltairKindWeight(kind)
+            local real width = Width()
             local unit target
-            call DecorRemove(hero, x, y, width, damage)
+            if smashCount == 0 then
+                call DecorRemove(hero, x, y, width, DecorDamage())
+            endif
+            set smashCount = smashCount + 1
+            if smashCount >= 5 then
+                set smashCount = 0
+            endif
             call GroupEnumUnitsInRange(AltairGroup, x, y, width, NoDecor_Cond)
             loop
                 set target = FirstOfGroup(AltairGroup)
                 exitwhen target == null
                 call GroupRemoveUnit(AltairGroup, target)
-                if AltairIsEnemy(hero, target) and not IsUnitInGroup(target, path) then
-                    call GroupAddUnit(path, target)
-                    call DamageSource(AltairR_ID)
-                    call dmgphys(hero, target, damage*AltairR_PathDamage)
-                    call DestroyEffect(AddSpecialEffectTarget(Altair_HitModel, target, "chest"))
+                if AltairIsEnemy(hero, target) then
+                    if not IsUnitInGroup(target, path) then
+                        call GroupAddUnit(path, target)
+                        call DamageSource(AltairR_ID)
+                        call dmgphys(hero, target, damage*AltairR_PathDamage)
+                        call DestroyEffect(AddSpecialEffectTarget(Altair_HitModel, target, "chest"))
+                        call MUE(target, AltairR_HitPush, AltairR_HitPushTime, flight)
+                    endif
+                    call MoveUnit(target, AltairR_DragStep, flight)
                 endif
             endloop
+            set target = null
         endmethod
 
+        // Movement every 0.03 tick (cheap), path checks every 0.06 sec, decor on every 5th check.
         static method Loop takes nothing returns nothing
             local integer index = 0
             local thistype this
             local real progress
-            local real positionX
-            local real positionY
             local integer remainingCopies
             loop
                 exitwhen index >= count
                 set this = active[index]
                 if delay > 0.0 then
                     set delay = delay - 0.03
-                    if delay <= 0.0 then
-                        set art = AddSpecialEffect(AltairKindModel(kind), startX, startY)
-                        call BlzSetSpecialEffectScale(art, AltairKindScale(kind)*0.7)
-                        call BlzSetSpecialEffectZ(art, startZ)
-                        call DestroyEffect(EffectSpawn(Altair_SwitchModel, startX, startY, 0.0, 1.5, 0.7, startZ - AltairGroundZ(startX, startY)))
-                    endif
                     set index = index + 1
                 else
                     set elapsed = elapsed + 0.03
-                    set progress = RMinBJ(1.0, elapsed/duration)
-                    set positionX = startX + (targetX - startX)*progress
-                    set positionY = startY + (targetY - startY)*progress
-                    // Light and medium copies tumble; heavy ones fly flat, without spinning.
+                    set travelled = travelled + move
+                    set progress = RMinBJ(1.0, travelled/range)
+                    set curX = curX + move*Cos(flight)
+                    set curY = curY + move*Sin(flight)
+                    // Light and medium copies tumble slowly; heavy ones fly flat, without spinning.
                     if AltairKindWeight(kind) < 3 then
-                        set spin = spin + 0.22
+                        set spin = spin + AltairR_SpinSpeed*0.03
                     endif
-                    call BlzSetSpecialEffectPosition(art, positionX, positionY, startZ + (AltairGroundZ(targetX, targetY) - startZ)*progress + 4.0*AltairR_ArcHeight*progress*(1.0 - progress))
+                    call BlzSetSpecialEffectPosition(art, curX, curY, startZ + (endZ - startZ)*progress)
                     call BlzSetSpecialEffectOrientation(art, yaw, spin, 0.0)
-                    call Smash(positionX, positionY)
+                    set smashTimer = smashTimer + 0.03
+                    // Path checks and the impact deal damage (the whole DmgSys runs for every hit): each runs
+                    // in its own thread, so a big volley can never exhaust this loop's op limit and freeze copies.
+                    if smashTimer >= AltairR_SmashPeriod and progress < 1.0 then
+                        set smashTimer = 0.0
+                        call this.Smash.execute(curX, curY)
+                    endif
                     if progress >= 1.0 then
-                        call Impact()
-                        call DestroyEffect(art)
-                        call DestroyGroup(path)
+                        call this.Smash.execute(curX, curY)
+                        call this.Impact.execute()
+                        // Every copy fades out smoothly instead of popping.
+                        call ColorEffDummy3(art, 0.0, 255, 255, 255, 0.3)
                         set remainingCopies = LoadInteger(AltairTable, throwKey, 0) - 1
                         if remainingCopies <= 0 then
+                            // The last copy of the volley owns the shared group.
+                            call DestroyGroup(path)
                             call FlushChildHashtable(AltairTable, throwKey)
                         else
                             call SaveInteger(AltairTable, throwKey, 0, remainingCopies)
@@ -1295,7 +1403,17 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             endloop
         endmethod
 
-        static method Launch takes unit caster, integer copyKind, real fromX, real fromY, real fromZ, real positionX, real positionY, real delayTime, integer key returns nothing
+        // Heavier copies fly slower; each speed is random inside its weight band.
+        // The volley flies together: one common speed, heavy copies only slightly slower, small random spread.
+        static method Speed takes integer weight returns real
+            local real speed = AltairR_ThrowSpeed*GetRandomReal(0.92, 1.08)
+            if weight >= 3 then
+                set speed = speed*0.9
+            endif
+            return speed
+        endmethod
+
+        static method Launch takes unit caster, integer copyKind, real fromX, real fromY, real fromZ, real positionX, real positionY, real delayTime, integer key, group shared returns nothing
             local thistype this = allocate()
             local integer weight = AltairKindWeight(copyKind)
             set hero = caster
@@ -1309,8 +1427,16 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set targetY = positionY
             set delay = RMaxBJ(0.03, delayTime)
             set elapsed = 0.0
-            set duration = RMaxBJ(0.3, SquareRoot((targetX - startX)*(targetX - startX) + (targetY - startY)*(targetY - startY))/AltairR_ThrowSpeed)
-            set yaw = Atan2(targetY - startY, targetX - startX)
+            set speed = Speed(weight)
+            // Spread the copies' path work over different ticks.
+            set smashTimer = GetRandomReal(0.0, AltairR_SmashPeriod)
+            set smashCount = GetRandomInt(0, 4)
+            set endZ = AltairGroundZ(targetX, targetY)
+            set curX = startX
+            set curY = startY
+            set duration = RMaxBJ(0.2, SquareRoot((targetX - startX)*(targetX - startX) + (targetY - startY)*(targetY - startY))/speed)
+            set flight = Atan2(targetY - startY, targetX - startX)
+            set yaw = flight
             // The Metro model faces backwards (RoundEnd turns it by 180 degrees).
             if copyKind == AltairR_KindMetro then
                 set yaw = yaw + bj_PI
@@ -1322,16 +1448,18 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     set spin = -AltairR_HeavyTilt
                 endif
             endif
-            set art = null
-            set path = CreateGroup()
-            set damage = GetHeroInt(caster, true)*(AltairR_DamageIntBase + AltairR_DamageIntStep*(level - 1)) + AltairR_DamageStatic + AltairR_DamageStaticStep*(level - 1)
-            if weight == 2 then
-                set damage = damage*1.4
-            elseif weight == 3 then
-                set damage = damage*2.0
-            elseif weight == 4 then
-                set damage = damage*3.0
-            endif
+            set art = AddSpecialEffect(AltairKindModel(kind), startX, startY)
+            call BlzSetSpecialEffectScale(art, AltairKindScale(kind)*0.7)
+            call BlzSetSpecialEffectOrientation(art, yaw, spin, 0.0)
+            call BlzSetSpecialEffectZ(art, startZ)
+            // The copy materialises in the portal: alpha 0 -> 255 over a random 0.24-0.4 sec.
+            call ColorEffDummy4(art, 0.0, 255, 255, 255, GetRandomReal(AltairR_AppearMin, AltairR_AppearMax))
+            call DestroyEffect(EffectSpawn(Altair_SwitchModel, startX, startY, 0.0, 1.5, 0.7, startZ - AltairGroundZ(startX, startY)))
+            set path = shared
+            set range = RMaxBJ(1.0, SquareRoot((targetX - startX)*(targetX - startX) + (targetY - startY)*(targetY - startY)))
+            set move = speed*0.03
+            set travelled = 0.0
+            set damage = GetHeroInt(caster, true)*AltairKindFactor(copyKind) + AltairR_DamageStatic + AltairR_DamageStaticStep*(level - 1)
             set active[count] = this
             set count = count + 1
             call GearTimer03Acquire()
@@ -1344,42 +1472,9 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         unit hero
         integer stored
         integer array kind[24]
-        effect array copy[24]
-        real array fromX[24]
-        real array fromY[24]
         real window
-        real orbit
-        real absorbTime
-
-        method UpdateCopies takes nothing returns nothing
-            local integer slot = 0
-            local real angle
-            local real progress = RMinBJ(1.0, absorbTime/AltairR_CopyFlyTime)
-            local real positionX
-            local real positionY
-            loop
-                exitwhen slot >= stored
-                set angle = orbit + slot*2.0*bj_PI/stored
-                set positionX = GetUnitX(hero) + AltairR_CopyRadius*Cos(angle)
-                set positionY = GetUnitY(hero) + AltairR_CopyRadius*Sin(angle)
-                // Fresh copies fly from the destroyed object into the orbit.
-                set positionX = fromX[slot] + (positionX - fromX[slot])*progress
-                set positionY = fromY[slot] + (positionY - fromY[slot])*progress
-                call BlzSetSpecialEffectPosition(copy[slot], positionX, positionY, BlzGetUnitZ(hero) + AltairR_CopyHeight*progress + 40.0)
-                call BlzSetSpecialEffectYaw(copy[slot], angle)
-                set slot = slot + 1
-            endloop
-        endmethod
 
         method Release takes nothing returns nothing
-            local integer slot = 0
-            loop
-                exitwhen slot >= stored
-                call DestroyEffect(EffectSpawn(Altair_SwitchModel, BlzGetLocalSpecialEffectX(copy[slot]), BlzGetLocalSpecialEffectY(copy[slot]), 0.0, 1.5, 0.5, AltairR_CopyHeight))
-                call DestroyEffect(copy[slot])
-                set copy[slot] = null
-                set slot = slot + 1
-            endloop
             set stored = 0
             call RemoveSavedInteger(AltairTable, GetHandleId(hero), 2)
         endmethod
@@ -1391,8 +1486,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                 exitwhen index >= count
                 set this = active[index]
                 set window = window - 0.03
-                set orbit = orbit + 0.06
-                set absorbTime = absorbTime + 0.03
                 if stored == 0 or window <= 0.0 or not AltairAlive(hero) then
                     if stored > 0 then
                         call BlzStartUnitAbilityCooldown(hero, AltairR_ID, AltairR_Cooldown)
@@ -1404,7 +1497,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     call deallocate()
                     call GearTimer03Release()
                 else
-                    call UpdateCopies()
                     set index = index + 1
                 endif
             endloop
@@ -1434,8 +1526,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set hero = caster
             set stored = 0
             set window = AltairR_Window
-            set orbit = 0.0
-            set absorbTime = 0.0
             call SetUnitAnimation(hero, "spell")
             loop
                 exitwhen stored >= AltairR_MaxCopies or AltairRCandidateCount == 0
@@ -1463,13 +1553,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     // Destroyed decor returns on the round reset (DecorRestore) or by Outline Origin.
                     call AltairFade(EffectSpawn(Altair_CircleModel, decorX, decorY, 0.0, 1.5, 0.4 + 0.25*AltairKindWeight(kind[stored]), 8.0))
                     call AltairFade(EffectSpawnScale(Altair_RingModel, decorX, decorY, 0.0, 1.0, 0.3, 20.0, 0.3, 0.3, 1.5))
+                    call DestroyEffect(EffectSpawn(Altair_SwitchModel, decorX, decorY, 0.0, 1.5, 0.4 + 0.2*AltairKindWeight(kind[stored]), 20.0))
                     call KillDestructable(decor)
-                    set fromX[stored] = decorX
-                    set fromY[stored] = decorY
-                    set copy[stored] = AddSpecialEffect(AltairKindModel(kind[stored]), decorX, decorY)
-                    call BlzSetSpecialEffectScale(copy[stored], AltairKindScale(kind[stored])*AltairR_CopyScale)
-                    call BlzSetSpecialEffectColor(copy[stored], 120, 190, 255)
-                    call BlzSetSpecialEffectAlpha(copy[stored], 210)
+                    if id != AltairR_TrainDecorID then
+                        set AltairRTaken[AltairRTakenNext] = decor
+                        set AltairRTakenNext = ModuloInteger(AltairRTakenNext + 1, 128)
+                    endif
                     set stored = stored + 1
                 endif
                 set AltairRCandidateCount = AltairRCandidateCount - 1
@@ -1485,41 +1574,53 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set decor = null
             call SaveInteger(AltairTable, GetHandleId(hero), 2, this)
             call AltairState(LoadInteger(AltairTable, GetHandleId(hero), 0)).Voice(4, "R", 1, 1)
-            call UpdateCopies()
             set active[count] = this
             set count = count + 1
             call GearTimer03Acquire()
             return true
         endmethod
 
-        // A blue portal opens behind her; every copy leaves it at once towards the point.
+        // As Erza T-form R: a big portal opens behind her, every copy appears in it at once and they all fly together.
         method Throw takes real positionX, real positionY returns nothing
             local integer slot = 0
             local integer key
             local real angle = GAngle2(hero, positionX, positionY)
-            local real portalX = GetUnitX(hero) - 90.0*Cos(angle)
-            local real portalY = GetUnitY(hero) - 90.0*Sin(angle)
+            local real portalX = GetUnitX(hero) - AltairR_PortalBack*Cos(angle)
+            local real portalY = GetUnitY(hero) - AltairR_PortalBack*Sin(angle)
             local real portalZ = AltairGroundZ(portalX, portalY) + AltairR_PortalHeight
-            local real offset
+            local real side
+            local real back
+            local real range
+            local real drift
+            local group hits = CreateGroup()
             local effect portal = AltairPortal(portalX, portalY, AltairR_PortalHeight, angle, AltairR_PortalScale, 60, 150, 255)
-            call ColorEffDummy3(portal, AltairR_PortalLife + stored*AltairR_ThrowStagger, 255, 255, 255, 0.3)
-            call AltairFade(EffectSpawnScale(Altair_RingModel, portalX, portalY, 0.0, 1.0, 0.4, AltairR_PortalHeight, 0.3, 0.4, 2.5))
+            call ColorEffDummy3(portal, AltairR_PortalLife, 255, 255, 255, 0.3)
+            call AltairFade(EffectSpawnScale(Altair_RingModel, portalX, portalY, 0.0, 1.0, 0.4, AltairR_PortalHeight, 0.3, 0.4, 3.5))
             call AltairState(LoadInteger(AltairTable, GetHandleId(hero), 0)).Voice(5, "R", 2, 2)
             set AltairRThrowCounter = AltairRThrowCounter + 1
             // Negative parent keys cannot collide with unit handle ids.
             set key = -AltairRThrowCounter
             call SaveInteger(AltairTable, key, 0, stored)
+            call VisionTimed(GetOwningPlayer(hero), GetUnitX(hero) + AltairR_FlightRange*0.5*Cos(angle), GetUnitY(hero) + AltairR_FlightRange*0.5*Sin(angle), AltairR_FlightRange*0.6 + 300.0, 2.5)
+            if AltairR_Debug then
+                call DisplayTimedTextToPlayer(GetOwningPlayer(hero), 0.0, 0.0, 3.0, "Factor Mimic: " + I2S(stored) + " copies launched together")
+            endif
             call SetUnitFacing(hero, angle*bj_RADTODEG)
             call SetUnitAnimation(hero, "spell")
             loop
                 exitwhen slot >= stored
-                set offset = GetRandomReal(-AltairR_PortalSpread, AltairR_PortalSpread)
-                call AltairRMissile_KS.Launch(hero, kind[slot], portalX + offset*Cos(angle + bj_PI/2.0), portalY + offset*Sin(angle + bj_PI/2.0), portalZ, positionX + offset*0.6*Cos(angle + bj_PI/2.0), positionY + offset*0.6*Sin(angle + bj_PI/2.0), AltairR_PortalOpen + slot*AltairR_ThrowStagger, key)
+                // Even lanes across the portal with jitter, so copies never sit inside each other.
+                set side = -AltairR_PortalHalfWidth + (slot + GetRandomReal(0.2, 0.8))*2.0*AltairR_PortalHalfWidth/stored
+                set back = GetRandomReal(-60.0, 60.0)
+                set range = AltairR_FlightRange + GetRandomReal(-AltairR_FlightRangeRandom, AltairR_FlightRangeRandom)
+                set drift = RMaxBJ(-AltairR_PortalHalfWidth, RMinBJ(AltairR_PortalHalfWidth, side*AltairR_LineDrift))
+                call AltairRMissile_KS.Launch(hero, kind[slot], portalX + back*Cos(angle) + side*Cos(angle + bj_PI/2.0), portalY + back*Sin(angle) + side*Sin(angle + bj_PI/2.0), AltairGroundZ(portalX, portalY) + GetRandomReal(AltairR_PortalMinHeight, AltairR_PortalMaxHeight), GetUnitX(hero) + range*Cos(angle) + drift*Cos(angle + bj_PI/2.0), GetUnitY(hero) + range*Sin(angle) + drift*Sin(angle + bj_PI/2.0), AltairR_PortalOpen, key, hits)
                 set slot = slot + 1
             endloop
             call BlzStartUnitAbilityCooldown(hero, AltairR_ID, AltairR_Cooldown)
             call Release()
             set portal = null
+            set hits = null
         endmethod
 
         static method Start takes unit caster, real positionX, real positionY returns boolean
@@ -1550,6 +1651,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         group members
         group pulling
         integer memberCount
+        real decorTimer
 
         method CanEnter takes unit target returns boolean
             return target != hero and AltairAlive(target) and IsUnitType(target, UNIT_TYPE_HERO) and GetUnitAbilityLevel(target, 'Aloc') == 0 and not IsUnitInGroup(target, members) and not IsUnitInGroup(target, pulling) and not CheckCoordsInRect(realm, GetUnitX(target), GetUnitY(target))
@@ -1676,6 +1778,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             elseif relocated and BlzGetUnitAbilityCooldownRemaining(hero, AltairT_ID) < remaining then
                 call BlzStartUnitAbilityCooldown(hero, AltairT_ID, remaining + 0.1)
             endif
+            set decorTimer = decorTimer + 0.03
+            if decorTimer >= 1.0 then
+                set decorTimer = decorTimer - 1.0
+                call DecorRemove(hero, portalX, portalY, AltairT_Aoe, AltairT_Decor)
+                call VisionTimed(GetOwningPlayer(hero), portalX, portalY, AltairT_Aoe*2.0, 1.2)
+            endif
             call WUI_HeroProgress(hero, AltairT_ID, "Fate Reconstruction", remaining, total, true)
             set target = null
         endmethod
@@ -1754,6 +1862,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set relocated = false
             set memberCount = 0
             set pullTime = AltairT_PullTime
+            set decorTimer = 1.0
             set members = CreateGroup()
             set pulling = CreateGroup()
             set total = AltairT_Duration
@@ -1866,7 +1975,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                             call DestroyEffect(EffectSpawn(Altair_HitModel, GetUnitX(target), GetUnitY(target), 0.0, 1.0, 1.5, 76.0))
                         endif
                     endloop
-                    call DecorRemove(hero, nextX, nextY, AltairSQ_Width, damage)
+                    call DecorRemove(hero, nextX, nextY, AltairSQ_Width, AltairSQ_Decor)
                     set index = index + 1
                 endif
             endloop
@@ -1888,6 +1997,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             call SetUnitFacing(hero, angle*bj_RADTODEG)
             call SetUnitAnimation(hero, "attack")
             call DestroyEffect(EffectSpawn(AltairSQ_SlashModel, GetUnitX(hero) + 150.0*Cos(angle), GetUnitY(hero) + 150.0*Sin(angle), angle*bj_RADTODEG, 1.5, 1.0, 60.0))
+            call VisionTimed(GetOwningPlayer(hero), GetUnitX(hero) + AltairSQ_Range*0.5*Cos(angle), GetUnitY(hero) + AltairSQ_Range*0.5*Sin(angle), AltairSQ_Range*0.7, 1.5)
             set active[count] = this
             set count = count + 1
             call GearTimer03Acquire()
@@ -1905,6 +2015,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         call SetUnitFacing(hero, center*bj_RADTODEG)
         call SetUnitAnimation(hero, "spell")
         call DestroyEffect(EffectSpawn(AltairSW_GateModel, GetUnitX(hero), GetUnitY(hero), center*bj_RADTODEG, 1.0, 1.4, 90.0))
+        call VisionTimed(GetOwningPlayer(hero), GetUnitX(hero) + AltairSW_Range*0.5*Cos(center), GetUnitY(hero) + AltairSW_Range*0.5*Sin(center), AltairSW_Range*0.7, 2.0)
         loop
             exitwhen sword >= AltairSW_Swords
             set angle = center + (sword - (AltairSW_Swords - 1)*0.5)*AltairSW_Cone*bj_DEGTORAD/(AltairSW_Swords - 1)
@@ -1988,7 +2099,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                                 call DestroyEffect(AddSpecialEffectTarget(Altair_SwordHitModel, target, "chest"))
                             endif
                         endloop
-                        call DecorRemove(hero, GetUnitX(hero), GetUnitY(hero), AltairSE_Aoe, damage*power)
+                        call DecorRemove(hero, GetUnitX(hero), GetUnitY(hero), AltairSE_Aoe, AltairSE_Decor)
+                        call VisionTimed(GetOwningPlayer(hero), GetUnitX(hero), GetUnitY(hero), AltairSE_Aoe*1.6, 0.5)
                     endif
                     set index = index + 1
                 endif
@@ -2087,6 +2199,8 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     set tickTimer = tickTimer + 0.03
                     if tickTimer >= AltairSR_Period then
                         set tickTimer = tickTimer - AltairSR_Period
+                        call DecorRemove(hero, GetUnitX(hero), GetUnitY(hero), AltairSR_Radius + 60.0, AltairSR_Decor)
+                        call VisionTimed(GetOwningPlayer(hero), GetUnitX(hero), GetUnitY(hero), 600.0, 0.5)
                         call GroupEnumUnitsInRange(AltairGroup, GetUnitX(hero), GetUnitY(hero), AltairSR_Radius + 60.0, NoDecor_Cond)
                         loop
                             set target = FirstOfGroup(AltairGroup)
@@ -2175,7 +2289,6 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                             call DestroyEffect(AddSpecialEffectTarget(Altair_StampedeModel, target, "chest"))
                         endif
                     endloop
-                    call DecorRemove(hero, positionX, positionY, AltairST_ImpactAoe, damage)
                     set art = null
                     set hero = null
                     set count = count - 1
@@ -2218,6 +2331,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         real centerY
         real elapsed
         real spawnTimer
+        real decorTimer
         effect circle
 
         static method Loop takes nothing returns nothing
@@ -2242,6 +2356,12 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
                     call GearTimer03Release()
                 else
                     call SetFly(hero, AltairST_Height*RMinBJ(1.0, elapsed/AltairST_RiseTime))
+                    set decorTimer = decorTimer + 0.03
+                    if decorTimer >= 1.0 then
+                        set decorTimer = decorTimer - 1.0
+                        call DecorRemove(hero, centerX, centerY, AltairST_Aoe, AltairST_Decor)
+                        call VisionTimed(GetOwningPlayer(hero), centerX, centerY, AltairST_Aoe*1.4, 1.2)
+                    endif
                     set spawnTimer = spawnTimer + 0.03
                     loop
                         exitwhen spawnTimer < AltairST_SpawnPeriod
@@ -2265,6 +2385,7 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
             set centerY = GetUnitY(hero)
             set elapsed = 0.0
             set spawnTimer = 0.0
+            set decorTimer = 1.0
             set circle = EffectSpawn(AltairT_GroundModel, centerX, centerY, 0.0, 1.0, AltairST_Aoe/150.0, 5.0)
             call StartSpellUnit(hero)
             call SetUnitAnimation(hero, "spell")
@@ -2599,51 +2720,51 @@ library AltairSpells initializer InitAltairSpells uses GearSystems
         set AltairSwordAbility[5] = AltairSF_ID
         set AltairSwordAbility[6] = AltairSG_ID
         // Copyable decor (models/scales mirror object-data destructables; B016/B017/B018 excluded).
-        call AltairDecor('B000', "land_wos\\000_Trees1.mdl", 3.0, 2)
-        call AltairDecor('B001', "land_wos\\Wood Fence 1.mdl", 3.2, 1)
-        call AltairDecor('B002', "land_wos\\Wood Fence 2.mdl", 3.2, 1)
-        call AltairDecor('B003', "land_wos\\ironfencec1_2.mdl", 1.25, 1)
-        call AltairDecor('B004', "land_wos\\ironfencec1_1.mdl", 1.25, 1)
-        call AltairDecor('B005', "land_wos\\naruto_house1-1.mdl", 1.25, 3)
-        call AltairDecor('B006', "land_wos\\ironfencec.mdl", 2.0, 1)
-        call AltairDecor('B007', "land_wos\\000_Trees2.mdl", 3.0, 2)
-        call AltairDecor('B008', "land_wos\\Pack Targets 1.mdl", 0.8, 1)
-        call AltairDecor('B009', "land_wos\\000_Trees3.mdl", 3.0, 2)
-        call AltairDecor('B00A', "land_wos\\Poneglyph.mdl", 0.85, 2)
-        call AltairDecor('B00B', "land_wos\\naruto_house2.mdl", 1.25, 3)
-        call AltairDecor('B00C', "land_wos\\naruto_house3.mdl", 1.25, 3)
-        call AltairDecor('B00D', "land_wos\\naruto_house5-1.mdl", 1.5, 3)
-        call AltairDecor('B00E', "land_wos\\naruto_house5-2.mdl", 1.5, 3)
-        call AltairDecor('B00F', "land_wos\\000_Trees0.mdl", 3.0, 2)
-        call AltairDecor('B00G', "land_wos\\Wood Fence 4.mdl", 3.2, 1)
-        call AltairDecor('B00H', "land_wos\\Wood Fence 3.mdl", 3.2, 1)
-        call AltairDecor('B00I', "land_wos\\biwutai.mdl", 3.0, 2)
-        call AltairDecor('B00J', "land_wos\\city_abandonedbuilding_11.mdl", 5.0, 3)
-        call AltairDecor('B00K', "land_wos\\city_abandonedbuilding_13.mdl", 5.0, 3)
-        call AltairDecor('B00L', "land_wos\\city_abandonedbuilding_15.mdl", 4.5, 3)
-        call AltairDecor('B00M', "land_wos\\city_abandonedbuilding_17.mdl", 9.0, 3)
-        call AltairDecor('B00N', "land_wos\\city_abandonedbuilding_15_01.mdl", 4.5, 3)
-        call AltairDecor('B00O', "land_wos\\Barrel Explosive.mdl", 2.0, 1)
-        call AltairDecor('B00P', "land_wos\\Barrel.mdl", 2.0, 1)
-        call AltairDecor('B00Q', "land_wos\\Opdef17 (450).mdl", 2.4, 2)
-        call AltairDecor('B00R', "land_wos\\Pirate island house.mdl", 0.75, 2)
-        call AltairDecor('B00S', "land_wos\\ZS-798.mdl", 1.0, 1)
-        call AltairDecor('B00T', "land_wos\\ZS-804.mdl", 1.5, 1)
-        call AltairDecor('B00U', "land_wos\\DBObox2.mdl", 0.5, 1)
-        call AltairDecor('B00V', "land_wos\\DBORRbox.mdl", 0.8, 1)
-        call AltairDecor('B00W', "land_wos\\ArcheryRange.mdl", 2.0, 2)
-        call AltairDecor('B00X', "land_wos\\ZS-797.mdl", 1.25, 1)
-        call AltairDecor('B00Y', "land_wos\\ZS-796.mdl", 1.25, 1)
-        call AltairDecor('B00Z', "land_wos\\plastic table.mdl", 1.0, 1)
-        call AltairDecor('B010', "land_wos\\plastic chair.mdl", 0.95, 1)
-        call AltairDecor('B011', "land_wos\\huachi1.mdl", 1.25, 1)
-        call AltairDecor('B012', "land_wos\\huachi4.mdl", 1.1, 1)
-        call AltairDecor('B013', "land_wos\\File00006677.mdl", 1.5, 1)
-        call AltairDecor('B014', "land_wos\\ZS-129.mdl", 1.5, 3)
-        call AltairDecor('B015', "war3mapImported\\wos_Model Thomas.mdl", 1.0, 3)
-        call AltairDecor('B019', "war3mapImported\\wos_jiejin.mdl", 0.55, 1)
-        call AltairDecor('B01A', "war3mapImported\\Wos_InoriCrystall.mdl", 0.55, 1)
-        call AltairDecor('B01B', "land_wos\\city_abandonedbuilding_15_02.mdl", 4.5, 3)
+        call AltairDecor('B000', "land_wos\\000_Trees1.mdl", 3.0, 2, 2.5)
+        call AltairDecor('B001', "land_wos\\Wood Fence 1.mdl", 3.2, 1, 2.0)
+        call AltairDecor('B002', "land_wos\\Wood Fence 2.mdl", 3.2, 1, 2.0)
+        call AltairDecor('B003', "land_wos\\ironfencec1_2.mdl", 1.25, 1, 2.0)
+        call AltairDecor('B004', "land_wos\\ironfencec1_1.mdl", 1.25, 1, 2.0)
+        call AltairDecor('B005', "land_wos\\naruto_house1-1.mdl", 1.25, 3, 3.0)
+        call AltairDecor('B006', "land_wos\\ironfencec.mdl", 2.0, 1, 2.0)
+        call AltairDecor('B007', "land_wos\\000_Trees2.mdl", 3.0, 2, 2.5)
+        call AltairDecor('B008', "land_wos\\Pack Targets 1.mdl", 0.8, 1, 2.0)
+        call AltairDecor('B009', "land_wos\\000_Trees3.mdl", 3.0, 2, 2.5)
+        call AltairDecor('B00A', "land_wos\\Poneglyph.mdl", 0.85, 2, 2.5)
+        call AltairDecor('B00B', "land_wos\\naruto_house2.mdl", 1.25, 3, 3.0)
+        call AltairDecor('B00C', "land_wos\\naruto_house3.mdl", 1.25, 3, 3.0)
+        call AltairDecor('B00D', "land_wos\\naruto_house5-1.mdl", 1.5, 3, 4.0)
+        call AltairDecor('B00E', "land_wos\\naruto_house5-2.mdl", 1.5, 3, 4.0)
+        call AltairDecor('B00F', "land_wos\\000_Trees0.mdl", 3.0, 2, 2.5)
+        call AltairDecor('B00G', "land_wos\\Wood Fence 4.mdl", 3.2, 1, 2.0)
+        call AltairDecor('B00H', "land_wos\\Wood Fence 3.mdl", 3.2, 1, 2.0)
+        call AltairDecor('B00I', "land_wos\\biwutai.mdl", 3.0, 2, 2.5)
+        call AltairDecor('B00J', "land_wos\\city_abandonedbuilding_11.mdl", 5.0, 3, 4.0)
+        call AltairDecor('B00K', "land_wos\\city_abandonedbuilding_13.mdl", 5.0, 3, 4.0)
+        call AltairDecor('B00L', "land_wos\\city_abandonedbuilding_15.mdl", 4.5, 3, 4.0)
+        call AltairDecor('B00M', "land_wos\\city_abandonedbuilding_17.mdl", 9.0, 3, 5.0)
+        call AltairDecor('B00N', "land_wos\\city_abandonedbuilding_15_01.mdl", 4.5, 3, 4.0)
+        call AltairDecor('B00O', "land_wos\\Barrel Explosive.mdl", 2.0, 1, 2.0)
+        call AltairDecor('B00P', "land_wos\\Barrel.mdl", 2.0, 1, 2.0)
+        call AltairDecor('B00Q', "land_wos\\Opdef17 (450).mdl", 2.4, 2, 2.5)
+        call AltairDecor('B00R', "land_wos\\Pirate island house.mdl", 0.75, 2, 3.0)
+        call AltairDecor('B00S', "land_wos\\ZS-798.mdl", 1.0, 1, 2.0)
+        call AltairDecor('B00T', "land_wos\\ZS-804.mdl", 1.5, 1, 2.0)
+        call AltairDecor('B00U', "land_wos\\DBObox2.mdl", 0.5, 1, 2.0)
+        call AltairDecor('B00V', "land_wos\\DBORRbox.mdl", 0.8, 1, 2.0)
+        call AltairDecor('B00W', "land_wos\\ArcheryRange.mdl", 2.0, 2, 2.5)
+        call AltairDecor('B00X', "land_wos\\ZS-797.mdl", 1.25, 1, 2.0)
+        call AltairDecor('B00Y', "land_wos\\ZS-796.mdl", 1.25, 1, 2.0)
+        call AltairDecor('B00Z', "land_wos\\plastic table.mdl", 1.0, 1, 2.0)
+        call AltairDecor('B010', "land_wos\\plastic chair.mdl", 0.95, 1, 2.0)
+        call AltairDecor('B011', "land_wos\\huachi1.mdl", 1.25, 1, 2.0)
+        call AltairDecor('B012', "land_wos\\huachi4.mdl", 1.1, 1, 2.0)
+        call AltairDecor('B013', "land_wos\\File00006677.mdl", 1.5, 1, 2.0)
+        call AltairDecor('B014', "land_wos\\ZS-129.mdl", 1.5, 3, 4.0)
+        call AltairDecor('B015', "war3mapImported\\wos_Model Thomas.mdl", 1.0, 3, 4.0)
+        call AltairDecor('B019', "war3mapImported\\wos_jiejin.mdl", 0.55, 1, 2.0)
+        call AltairDecor('B01A', "war3mapImported\\Wos_InoriCrystall.mdl", 0.55, 1, 2.0)
+        call AltairDecor('B01B', "land_wos\\city_abandonedbuilding_15_02.mdl", 4.5, 3, 4.0)
         // Lazy listener registration in Altair_Register; no private timer.
     endfunction
 endlibrary

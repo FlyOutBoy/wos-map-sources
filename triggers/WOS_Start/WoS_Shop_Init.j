@@ -72,11 +72,18 @@ function ShopCatalogue_Define takes nothing returns nothing
     // ---------------- Strength ----------------------------------------------------
     call ShopCat(SHOP_TAB_STRENGTH,      'I005') // Tome of Strength +20
     call ShopCat(SHOP_TAB_STRENGTH,      'I02L') // Rhitta
+    call ShopCat(SHOP_TAB_STRENGTH,      Emberbreaker_ID) // Emberbreaker (fire, target)
+    call ShopCat(SHOP_TAB_STRENGTH,      LeviathanGrasp_ID) // Leviathan's Grasp (water, target)
+    call ShopCat(SHOP_TAB_STRENGTH,      LeviathanAnchor_ID) // Leviathan's Anchor (water, AOE)
+    call ShopCat(SHOP_TAB_STRENGTH,      ThunderVerdict_ID) // Thunder Verdict (lightning, target)
+    call ShopCat(SHOP_TAB_STRENGTH,      ThunderBastion_ID) // Thunder Bastion (lightning, AOE)
+    call ShopCat(SHOP_TAB_STRENGTH,      BloodPactRing_ID) // Blood Pact Ring
     call ShopCat(SHOP_TAB_STRENGTH,      'I02G') // Mera Mera no Mi
     call ShopCat(SHOP_TAB_STRENGTH,      'I01K') // Frozen Heart
     call ShopCat(SHOP_TAB_STRENGTH,      'I02J') // Guts Armor
     call ShopCat(SHOP_TAB_STRENGTH,      'I02H') // Mirror of Yata
     call ShopCat(SHOP_TAB_STRENGTH,      'I04A') // Hashirama Cells
+    call ShopCat(SHOP_TAB_STRENGTH,      YataMirrorEvolved_ID) // Mirror of Yata Evolved
     // ---------------- Agility -----------------------------------------------------
     call ShopCat(SHOP_TAB_AGILITY,       'I03D') // Tome of Agility +30
     call ShopCat(SHOP_TAB_AGILITY,       'I01I') // Sword of Dracule Mihawk
@@ -84,9 +91,15 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_AGILITY,       'I010') // Pochita
     call ShopCat(SHOP_TAB_AGILITY,       'I015') // Raijin's Wrath
     call ShopCat(SHOP_TAB_AGILITY,       'I016') // Shark Trail
+    call ShopCat(SHOP_TAB_AGILITY,       CinderFang_ID) // Cinder Fang (fire, target)
+    call ShopCat(SHOP_TAB_AGILITY,       AshenCrossfire_ID) // Ashen Crossfire (fire, AOE)
+    call ShopCat(SHOP_TAB_AGILITY,       MirrorTide_ID) // Mirror Tide (water, AOE)
+    call ShopCat(SHOP_TAB_AGILITY,       VoltThread_ID) // Volt Thread (lightning, target)
     call ShopCat(SHOP_TAB_AGILITY,       'I024') // Prison Realm (Active)
     call ShopCat(SHOP_TAB_AGILITY,       'I042') // Shiki Knife Evolved
     call ShopCat(SHOP_TAB_AGILITY,       'I04C') // Ashisogi Jizo
+    call ShopCat(SHOP_TAB_AGILITY,       WillOfD_ID) // Will of D.
+    call ShopCat(SHOP_TAB_AGILITY,       FiveElementsSeal_ID) // Five Elements Seal
     // ---------------- Intelligence ------------------------------------------------
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I03H') // Tome of Intelligence +30
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I00H') // Black Heart
@@ -94,7 +107,12 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I01C') // Gokon Tekko
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I01U') // Red Flower
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I01S') // Red Cup
+    call ShopCat(SHOP_TAB_INTELLIGENCE,  PhoenixSeal_ID) // Phoenix Seal (fire, target)
+    call ShopCat(SHOP_TAB_INTELLIGENCE,  CrimsonScripture_ID) // Crimson Scripture (fire, AOE)
+    call ShopCat(SHOP_TAB_INTELLIGENCE,  SirenTear_ID) // Siren's Tear (water, target)
+    call ShopCat(SHOP_TAB_INTELLIGENCE,  ConstellationCoil_ID) // Constellation Coil (lightning, AOE)
     call ShopCat(SHOP_TAB_INTELLIGENCE,  'I011') // Okarun Egg
+    call ShopCat(SHOP_TAB_INTELLIGENCE,  SukunaFinger_ID) // Sukuna's Finger
     // ---------------- Universal ---------------------------------------------------
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I01V') // Tusk Barrel
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I012') // Fairy Tail Emblem
@@ -115,6 +133,11 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I023') // Quincy Cross
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I02B') // Dark Holy Grail
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I00W') // Kurikara
+    call ShopCat(SHOP_TAB_UNIVERSAL,     ZankaNoTachi_ID) // Zanka no Tachi (Fire)
+    call ShopCat(SHOP_TAB_UNIVERSAL,     KyokaSuigetsu_ID) // Kyoka Suigetsu (Water / Steam)
+    call ShopCat(SHOP_TAB_UNIVERSAL,     KokoGonryo_ID) // Koko Gonryo Rikyu (Lightning)
+    call ShopCat(SHOP_TAB_UNIVERSAL,     Tobiume_ID) // Tobiume (Overload)
+    call ShopCat(SHOP_TAB_UNIVERSAL,     Suzumebachi_ID) // Suzumebachi (Electrized)
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I019') // Earth Power
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I01W') // Lust Sin Evolved
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I02E') // Wrath Sin
@@ -127,6 +150,14 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I044') // Death Note
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I04B') // Shun Shun Rikka
     call ShopCat(SHOP_TAB_UNIVERSAL,     'I04E') // Core Drill
+    call ShopCat(SHOP_TAB_UNIVERSAL,     Kairoseki_ID) // Kairoseki Cuffs
+    call ShopCat(SHOP_TAB_UNIVERSAL,     ReturnByDeath_ID) // Return by Death
+    call ShopCat(SHOP_TAB_UNIVERSAL,     FairyTailEvolved_ID) // Fairy Tail Emblem Evolved
+    call ShopCat(SHOP_TAB_UNIVERSAL,     PhilosopherEvolved_ID) // Philosopher's Stone Evolved
+    call ShopCat(SHOP_TAB_UNIVERSAL,     BloodPactRingEvolved_ID) // Blood Pact Ring Evolved
+    call ShopCat(SHOP_TAB_UNIVERSAL,     RyujinJakkaEvolved_ID) // Ryujin Jakka Evolved
+    call ShopCat(SHOP_TAB_UNIVERSAL,     NejibanaEvolved_ID) // Nejibana Evolved
+    call ShopCat(SHOP_TAB_UNIVERSAL,     GonryomaruEvolved_ID) // Gonryomaru Evolved
     // ---------------- Defensive ---------------------------------------------------
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00I') // Midnight Cloak
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00K') // Mizukage Hat
@@ -138,12 +169,17 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I013') // Black Clover
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I02N') // Susanoo Shield
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I045') // Avalon Evolved
+    call ShopCat(SHOP_TAB_DEFENSIVE,     ArmamentHaki_ID) // Armament Haki
+    call ShopCat(SHOP_TAB_DEFENSIVE,     ArmamentHakiEvolved_ID) // Armament Haki Evolved
+    call ShopCat(SHOP_TAB_DEFENSIVE,     Tekkai_ID) // Rokushiki: Tekkai
+    call ShopCat(SHOP_TAB_DEFENSIVE,     IceCoffin_ID) // Hyorinmaru Ice Coffin
     // Empty cells finish the 7-wide row: the items below start a row of their own.
     call ShopCat(SHOP_TAB_DEFENSIVE,     0)
     call ShopCat(SHOP_TAB_DEFENSIVE,     0)
     call ShopCat(SHOP_TAB_DEFENSIVE,     0)
     call ShopCat(SHOP_TAB_DEFENSIVE,     0)
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00Z') // Naofumi Shield
+    call ShopCat(SHOP_TAB_DEFENSIVE,     NaofumiShieldEvolved_ID) // Naofumi Shield Evolved
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I02A') // Turbo Neko
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00V') // Bunshin Scroll
     call ShopCat(SHOP_TAB_DEFENSIVE,     'I00M') // Cup of Tea
@@ -158,6 +194,7 @@ function ShopCatalogue_Define takes nothing returns nothing
     call ShopCat(SHOP_TAB_ATTACK,        'I047') // Kusanagi: Blaze Release
     call ShopCat(SHOP_TAB_ATTACK,        'I048') // Kusanagi: Water Release
     call ShopCat(SHOP_TAB_ATTACK,        'I049') // Chidori Kusanagi
+    call ShopCat(SHOP_TAB_ATTACK,        Samehada_ID) // Samehada
 endfunction
 
 // WoS Shop - audited/refactored version
@@ -170,6 +207,8 @@ endfunction
 globals
     constant real QB_ABILITY_CHAT_COOLDOWN = 5.00
     real array QB_AbilityChatNext
+    // Shift + RMB "I'm going to buy" notices (own short cooldown).
+    real array QB_BuyChatNext
     trigger FrameClick2 
     trigger FrameShopCheckbox
     trigger FrameCraftScroll
@@ -1706,8 +1745,36 @@ function ReduceCostRecursive takes unit u, integer id, integer cost, boolean rem
     return cost
 endfunction
 
+function ShopIsElementalKusanagi takes integer id returns boolean
+    return id == KusanagiFire_ID or id == KusanagiWater_ID or id == KusanagiElectro_ID
+endfunction
+
+// Element swap: a carried elemental Kusanagi pays for another element in full
+// (same price, so the swap is free); the old sword is taken when buying.
+function ShopKusanagiSwapCost takes unit u, integer cost, integer id, boolean remove returns integer
+    local integer slot = 0
+    local item it
+    loop
+        exitwhen slot >= 6
+        set it = UnitItemInSlot(u, slot)
+        if it != null and GetItemTypeId(it) != id and ShopIsElementalKusanagi(GetItemTypeId(it)) then
+            set cost = IMaxBJ(0, cost - GetItemValue(GetItemTypeId(it)))
+            if remove then
+                call ShopClearFullRefund(u, it)
+                call RemoveItem(it)
+            endif
+            set it = null
+            return cost
+        endif
+        set slot = slot + 1
+    endloop
+    set it = null
+    return -1
+endfunction
+
 function CheckItemsReduceCostCraft takes unit u, integer cost, integer id, boolean remove returns integer
     local integer slot = 0
+    local integer swapCost
     loop
         exitwhen slot >= 6
         set UsedSlot[slot] = false
@@ -1716,6 +1783,12 @@ function CheckItemsReduceCostCraft takes unit u, integer cost, integer id, boole
     if remove then
         set ShopCraftRefundCredit = 0
         set ShopCraftTeaCharges = 0
+    endif
+    if ShopIsElementalKusanagi(id) then
+        set swapCost = ShopKusanagiSwapCost(u, cost, id, remove)
+        if swapCost >= 0 then
+            return swapCost
+        endif
     endif
     return ReduceCostRecursive(u, id, cost, remove)
 endfunction
@@ -1840,13 +1913,35 @@ function CheckBanItems takes integer id, unit c returns boolean
     if CheckBanGroup(c, id, 'I03E', 'I03F','I02T' ) then
         return true
     endif
-    if CheckBanGroup(c, id, KusanagiFire_ID, KusanagiWater_ID, KusanagiElectro_ID) then // one elemental Kusanagi
+    // Elemental Kusanagi: buying another element swaps the carried one for free
+    // (CheckItemsReduceCostCraft); only the same element is banned.
+    if ShopIsElementalKusanagi(id) and IsItemInInventory(c, id) > 0 then
         return true
     endif
     if CheckBanGroup(c, id, 'I00J', 'I01M', 0) then
         return true
     endif
     if CheckBanGroup(c, id, 'I00R', 'I01L', 0) then
+        return true
+    endif
+    if CheckBanGroup(c, id, 'I00V', 'I02A', 0) then // Bunshin Scroll / Turbo Neko
+        return true
+    endif
+    // Evolved tiers: the base is a component of its Evolved (upgrade allowed); only
+    // the base cannot be bought next to its Evolved.
+    if (id == ArmamentHaki_ID and IsItemInInventory(c, ArmamentHakiEvolved_ID) > 0) or (id == 'I00Z' and IsItemInInventory(c, NaofumiShieldEvolved_ID) > 0) /*
+    */ or (id == 'I012' and IsItemInInventory(c, FairyTailEvolved_ID) > 0) or (id == 'I02H' and IsItemInInventory(c, YataMirrorEvolved_ID) > 0) /*
+    */ or (id == 'I040' and IsItemInInventory(c, PhilosopherEvolved_ID) > 0) or (id == BloodPactRing_ID and IsItemInInventory(c, BloodPactRingEvolved_ID) > 0) then
+        return true
+    endif
+    // One zanpakuto: a base and another type's Evolved never go together; base -> own Evolved upgrades.
+    if CheckBanGroup(c, id, RyujinJakkaEvolved_ID, NejibanaEvolved_ID, GonryomaruEvolved_ID) then
+        return true
+    endif
+    if CheckBanGroup(c, id, 'I01Q', NejibanaEvolved_ID, GonryomaruEvolved_ID) or CheckBanGroup(c, id, 'I01X', RyujinJakkaEvolved_ID, GonryomaruEvolved_ID) or CheckBanGroup(c, id, 'I01Y', RyujinJakkaEvolved_ID, NejibanaEvolved_ID) then
+        return true
+    endif
+    if (id == 'I01Q' and IsItemInInventory(c, RyujinJakkaEvolved_ID) > 0) or (id == 'I01X' and IsItemInInventory(c, NejibanaEvolved_ID) > 0) or (id == 'I01Y' and IsItemInInventory(c, GonryomaruEvolved_ID) > 0) then
         return true
     endif
     return false
@@ -1892,9 +1987,9 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I017', "I03I I03K")
     call RegisterCraft('I01L', "I036")
     call RegisterCraft('I01M', "I036")
-    call RegisterCraft('I01S', "I034 I014")
+    call RegisterCraft('I01S', "I01X I00A") // Red Cup: Nejibana + Tome of Intelligence +20
     call RegisterCraft('I01V', "I00G I014")
-    call RegisterCraft('I01U', "I033 I00P")
+    call RegisterCraft('I01U', "I01Y I00A") // Red Flower: Gonryomaru + Tome of Intelligence +20
     call RegisterCraft('I01P', "I033 I03F")
     call RegisterCraft('I01X', "I033 I03F")
     call RegisterCraft('I01Y', "I033 I02T")
@@ -1915,8 +2010,8 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I019', "I037")
     call RegisterCraft('I00T', "I030 I02P")
     call RegisterCraft('I013', "I00I I03B")
-    call RegisterCraft('I016', "I031 I034")
-    call RegisterCraft('I015', "I031 I02V")
+    call RegisterCraft('I016', "I01X I006") // Shark Trail: Nejibana + Tome of Agility +20
+    call RegisterCraft('I015', "I01Y I006") // Raijin's Wrath: Gonryomaru + Tome of Agility +20
     call RegisterCraft('I028', "I026 I027")
     call RegisterCraft('I00M', "I02R I031 I02V")
     call RegisterCraft('I00O', "I03K I007 I00N")
@@ -1925,15 +2020,40 @@ function InitCraftRecipes takes nothing returns nothing
     call RegisterCraft('I00L', "I00K I028")
     call RegisterCraft('I020', "I00K I039 I03I")
     call RegisterCraft('I00E', "I01J I007 I00N")
-    call RegisterCraft('I011', "I03J I02O I03G")
+    call RegisterCraft('I011', "I03J I02O")
+    // 2026-10-27 Evolved items: base + Pakkun +5.
+    call RegisterCraft(ArmamentHakiEvolved_ID, "I01J I04F") // Armament Haki
+    call RegisterCraft(NaofumiShieldEvolved_ID, "I01J I00Z")
+    call RegisterCraft(FairyTailEvolved_ID, "I01J I012")
+    // 2026-10-28 Evolved items: base + Pakkun +5.
+    call RegisterCraft(RyujinJakkaEvolved_ID, "I01J I01Q")
+    call RegisterCraft(NejibanaEvolved_ID, "I01J I01X")
+    call RegisterCraft(GonryomaruEvolved_ID, "I01J I01Y")
+    call RegisterCraft(YataMirrorEvolved_ID, "I01J I02H")
+    call RegisterCraft(PhilosopherEvolved_ID, "I01J I040")
+    call RegisterCraft(BloodPactRingEvolved_ID, "I01J I06D")
     call RegisterCraft('I00B', "I00I I02K")
-    call RegisterCraft('I024', "I03J I03D")
+    call RegisterCraft('I024', "I03J I03C") // Seal +15 + Tome of Agility +25
     call RegisterCraft('I00J', "I036")
     call RegisterCraft('I00R', "I036")
     call RegisterCraft('I00H', "I03Q I02V")
     call RegisterCraft('I02H', "I028 I02R")
     call RegisterCraft('I02J', "I02Y I034")
-    call RegisterCraft('I02L', "I005")
+    call RegisterCraft('I02L', "I01Q I005") // Rhitta: Ryujin Jakka + Tome of Strength +20
+    // 2026-10-28b elemental actives: element zanpakuto + the stat's +20 tome (like Rhitta / Shark Trail).
+    call RegisterCraft(Emberbreaker_ID, "I01Q I005")
+    call RegisterCraft(LeviathanGrasp_ID, "I01X I005")
+    call RegisterCraft(LeviathanAnchor_ID, "I01X I005")
+    call RegisterCraft(ThunderVerdict_ID, "I01Y I005")
+    call RegisterCraft(ThunderBastion_ID, "I01Y I005")
+    call RegisterCraft(CinderFang_ID, "I01Q I006")
+    call RegisterCraft(AshenCrossfire_ID, "I01Q I006")
+    call RegisterCraft(MirrorTide_ID, "I01X I006")
+    call RegisterCraft(VoltThread_ID, "I01Y I006")
+    call RegisterCraft(PhoenixSeal_ID, "I01Q I00A")
+    call RegisterCraft(CrimsonScripture_ID, "I01Q I00A")
+    call RegisterCraft(SirenTear_ID, "I01X I00A")
+    call RegisterCraft(ConstellationCoil_ID, "I01Y I00A")
     call RegisterCraft('I02M', "I036")
     call RegisterCraft('I02N', "I00I I02R I039")
     call RegisterCraft('I02S', "I033 I02T")
@@ -4950,6 +5070,17 @@ function QB_TeamChat takes player sender, string message returns nothing
     endif
 endfunction
 
+// Synced: Shift + RMB on a Quick Buy step (its final item) or a recipe tree item.
+function QB_AnnounceBuy takes player sender, integer itemId returns nothing
+    local integer pid = GetPlayerId(sender)
+    local real now = TimerGetElapsed(ShopClock)
+    if pid < 0 or pid >= 10 or not QB_Valid(itemId) or now < QB_BuyChatNext[pid] then
+        return
+    endif
+    set QB_BuyChatNext[pid] = now + 1.50
+    call QB_TeamChat(sender, "I'm going to buy |cffffffff" + GetObjectName(itemId) + "|r.")
+endfunction
+
 // Called only from the agreed versioned UI request. No ability handle lookup.
 function QB_AnnounceHeroCooldown takes player sender, integer commandSlot returns nothing
     local integer pid = GetPlayerId(sender)
@@ -5027,6 +5158,11 @@ function QB_OnSync takes nothing returns nothing
         endif
         return
     endif
+    // Recipe tree item (value = item id): no Quick Buy version involved.
+    if op == "I" then
+        call QB_AnnounceBuy(Player(pid), value)
+        return
+    endif
     if packetVersion != QB_Version[pid] then
         if op == "U" then
             set QB_Lock[pid] = 0
@@ -5049,6 +5185,12 @@ function QB_OnSync takes nothing returns nothing
         call StartSoundForPlayerBJ(Player(pid), QB_AddSound)
     elseif op == "V" and value >= 0 and value < QB_StepCount[pid] and Shop_Active[pid] and not QB_Awaiting[pid] then
         call QB_Inspect(pid, QB_Step[pid * QB_MAX_STEPS + value])
+    elseif op == "F" and value >= 0 and value < QB_StepCount[pid] and not QB_Awaiting[pid] then
+        // Final recipe of the goal this step belongs to: allies are told, the open shop shows it.
+        call QB_AnnounceBuy(Player(pid), QB_Target[pid * 6 + QB_Group[pid * QB_MAX_STEPS + value]])
+        if Shop_Active[pid] then
+            call QB_Inspect(pid, QB_Target[pid * 6 + QB_Group[pid * QB_MAX_STEPS + value]])
+        endif
     elseif op == "D" and value >= 0 and value < QB_StepCount[pid] then
         set goalIndex = QB_Group[pid * QB_MAX_STEPS + value]
         set node = QB_StepKey[pid * QB_MAX_STEPS + value]
@@ -5273,6 +5415,38 @@ endfunction
 
 // Right press/release; native item hover has no scripted events.
 // Called only for a pressed RMB, never for cursor ENTER/LEAVE.
+// Local hit test of the recipe tree (centre + related items) at unshifted shop coordinates.
+function ShopTreeHitId takes integer pid, real x, real y returns integer
+    local integer slot = 0
+    local integer index
+    local real half
+    local framehandle f
+    loop
+        exitwhen slot > SHOP_TREE_SLOTS
+        if slot < SHOP_TREE_SLOTS then
+            set f = FRAME_ShopItem[ShopTreeFrame(slot)]
+        else
+            set f = FRAME_ShopItem[42]
+        endif
+        if f != null then
+            set index = LoadInteger(Shop_Position, GetHandleId(f), 0)
+            if index > 0 and BlzFrameIsVisible(f) then
+                set half = BlzFrameGetWidth(f) * 0.50
+                if RAbsBJ(x - Shop_X[index]) <= half and RAbsBJ(y - Shop_Y[index]) <= half then
+                    set f = null
+                    if slot < SHOP_TREE_SLOTS then
+                        return ShopCraftSlotItem[pid * SHOP_TREE_SLOTS + slot]
+                    endif
+                    return ItemsCurrentItem_ID[pid]
+                endif
+            endif
+        endif
+        set slot = slot + 1
+    endloop
+    set f = null
+    return 0
+endfunction
+
 function QB_BeginRightDrag takes integer pid, real x, real y returns nothing
     local integer i = 0
     local integer k
@@ -5283,9 +5457,22 @@ function QB_BeginRightDrag takes integer pid, real x, real y returns nothing
     if not Shop_Active[pid] or not WUI_TopShown() or QB_DragFrom >= 0 or REC_DragFrom >= 0 or QB_Awaiting[pid] then
         return
     endif
+    // Shift + RMB on the recipe tree: tell allies about that item.
+    if AHUI_IsShiftHeld(pid) then
+        set k = ShopTreeHitId(pid, x, y)
+        if k != 0 then
+            call QB_Send("I", I2S(k))
+            return
+        endif
+    endif
     loop
         exitwhen i >= QB_ViewCount
         set k = QB_Page * QB_ViewCount + i
+        // Shift + RMB: show the final recipe this step builds (no drag).
+        if k < QB_StepCount[pid] and AHUI_IsShiftHeld(pid) and RAbsBJ(x - QB_SlotX(i)) <= QB_Size * 0.50 and RAbsBJ(y - QB_SlotY(i)) <= QB_Size * 0.50 then
+            call QB_Send("F", I2S(k))
+            return
+        endif
         if k < QB_StepCount[pid] and QB_StepCount[pid] > 1 and RAbsBJ(x - QB_SlotX(i)) <= QB_Size * 0.50 and RAbsBJ(y - QB_SlotY(i)) <= QB_Size * 0.50 then
             set QB_DragFrom = k
             set QB_DragTo = k
@@ -5596,7 +5783,7 @@ function QB_CreateUI takes nothing returns nothing
     call BlzFrameSetText(QB_Title, WUI_GOLD + "QUICK BUY|r")
     set QB_Hint = QB_Text("WOSQuickBuyDragHint", QB_Panel, 0.52)
     call Shop_Place(QB_Hint, QB_Left + QB_Width * 0.50, 0.126, (QB_Width - 0.046) / 0.52, 0.013 / 0.52)
-    call BlzFrameSetText(QB_Hint, WUI_TEXT + "Hold RMB: drag left / right / up / down|r")
+    call BlzFrameSetText(QB_Hint, WUI_TEXT + "Hold RMB: drag left / right / up / down. Shift + RMB: tell allies the final item|r")
     set QB_StateText = QB_Text("WOSQuickBuyState", QB_Panel, 0.60)
     call Shop_Place(QB_StateText, QB_Left + QB_Width * 0.50, 0.107, (QB_Width - 0.046) / 0.60, 0.010 / 0.60)
     set QB_StateIcon = QB_Decor("WOSQuickBuyStateIcon", QB_Panel, QB_TEXTURE + "gold.tga")
@@ -6317,11 +6504,12 @@ function ShopShowAutoBuyState takes boolean on returns nothing
     if FRAME_AutoBuyToggle == null then
         return
     endif
-    call WUI_SetButtonSelected(FRAME_AutoBuyToggle, on)
+    // White AUTOBUY over a green (on) / red (off) fill.
+    call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cffffffffAUTOBUY|r")
     if on then
-        call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cff7ee870AUTO ON|r")
+        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-on.tga")
     else
-        call WUI_SetButtonText(FRAME_AutoBuyToggle, "|cff8d96a3AUTO OFF|r")
+        call WUI_SetButtonFill(FRAME_AutoBuyToggle, "UI\\WOS\\autobuy-off.tga")
     endif
 endfunction
 
@@ -6995,8 +7183,8 @@ function WOS_CreateShopTabs takes nothing returns nothing
         call BlzTriggerRegisterFrameEvent(FrameShopCheckbox, FRAME_AutoBuyCheckbox, FRAMEEVENT_CHECKBOX_UNCHECKED)
         call TriggerAddAction(FrameShopCheckbox, function FrameShopCheckboxCheck)
         // Checkpoint 23: Autobuy toggle in the HUD inventory header (left of
-        // the INVENTORY title) - green "AUTO ON" / grey "AUTO OFF".
-        set FRAME_AutoBuyToggle = WUI_TextButton("WOSAutoBuyToggle", WUI_GetRoot(), "AUTO OFF", 0.040, 0.012)
+        // the INVENTORY title) - white AUTOBUY on a green (on) / red (off) fill.
+        set FRAME_AutoBuyToggle = WUI_TextButton("WOSAutoBuyToggle", WUI_GetRoot(), "AUTOBUY", 0.040, 0.012)
         call WUI_PlaceShift(FRAME_AutoBuyToggle, 0.6465, 0.0839, 0.036, 0.010)
         call WUI_SetButtonTextScale(FRAME_AutoBuyToggle, 0.62)
         call ShopShowAutoBuyState(false)

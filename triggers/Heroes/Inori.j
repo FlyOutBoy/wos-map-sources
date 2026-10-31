@@ -58,6 +58,23 @@ library InoriSpells uses GearSystems
     endfunction
 
     globals
+        // Ranged attack like Alucard: native homing bullets; in E (Void Absorption) and T2 the
+        // native missile is hidden and a small pitched crystal flies instead (InoriShot_KS).
+        string InoriAtk_Bullet = "war3mapimported\\wos_alucard bullet.mdl"
+        string InoriAtk_Crystal = "war3mapImported\\Wos_InoriCrystall.mdl"
+        real InoriAtk_CrystalScale = 0.30 // the T/W crystals are ~1.0
+        real InoriAtk_Speed = 1800 // = native missile speed (H017 ua1z)
+        real InoriAtk_LaunchDelay = 0.30 // attack start -> missile launch
+        // Rank 6 is selected automatically at level 25 with T1; it cannot be learned.
+        real InoriE_AuraRange = 1400
+        real InoriT2_AuraRange = 1400
+        integer InoriT2_Aura_ID = 'A153' // enemy aura of T2 (objects: tools/stage_2026_10_28b.py)
+        integer InoriT2_AuraBuff_ID = 'B062' // its visible debuff: -10% physical and magic resistance
+        real InoriT2_AuraResistDown = 10 // % more physical and magic damage taken near Inori in T2
+    endglobals
+
+
+    globals
         // Hashed once at map load (was StringHash(...) on every call).
         private integer SH_CANCEL_T = StringHash("cancel t")
         private integer SH_CURRENT_T = StringHash("current t")
@@ -71,6 +88,19 @@ library InoriSpells uses GearSystems
         private integer SH_PAS_CD = StringHash("pas cd")
         private integer SH_RAIDEN_TT_R = StringHash("raiden tt r")
     endglobals
+
+    function InoriCrystalMode takes unit c returns boolean
+        return LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 1 or LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 1
+    endfunction
+
+    // After every E / T2 change and skin swap (a skin swap restores the skin's missile art).
+    function InoriAttackArt takes unit c returns nothing
+        if InoriCrystalMode(c) then
+            call BlzSetUnitWeaponStringField(c, UNIT_WEAPON_SF_ATTACK_PROJECTILE_ART, 0, "")
+        else
+            call BlzSetUnitWeaponStringField(c, UNIT_WEAPON_SF_ATTACK_PROJECTILE_ART, 0, InoriAtk_Bullet)
+        endif
+    endfunction
     globals
         integer Inori_ID = 'H017'
         integer Inori2_ID = 'H018'
@@ -144,7 +174,12 @@ library InoriSpells uses GearSystems
         integer InoriEAlt_ID = 'A09T'
         integer InoriEAlt2_ID = 'A061'
         integer InoriEE_ID = 'A06U'
-        integer InoriE_Aura_ID = 'B00I'
+        integer InoriE_Aura_ID = 'B00I' // rank 5
+        integer InoriE_AuraRank1_ID = 'B064'
+        integer InoriE_AuraRank2_ID = 'B065'
+        integer InoriE_AuraRank3_ID = 'B066'
+        integer InoriE_AuraRank4_ID = 'B067'
+        integer InoriE_AuraRank6_ID = 'B068'
         integer InoriE_Regen1_ID = 'A06I'
         integer InoriE_Regen2_ID = 'A06J'
         integer InoriE_Regen3_ID = 'A06K'
@@ -220,6 +255,8 @@ library InoriSpells uses GearSystems
         
 //--------------------------------------Inori--------------------------------------------------------------
     endglobals
+
+
     
 
     function BuffUnitInori2 takes unit c, unit u, integer level returns nothing
@@ -318,7 +355,7 @@ library InoriSpells uses GearSystems
                                         if k2 == 0 then
                                             call DamageSource(src)
                                             call dmgmag(c, u, dmg)
-                                            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                                            if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                                                 set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                                                 if check3 < 4 then
                                                     call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
@@ -756,7 +793,7 @@ library InoriSpells uses GearSystems
                         if r2 > 0.21 then
                             set r2 = 0
                             call OkarunEggCd(c, InoriW_ID, BlzGetAbilityCooldown(InoriW_ID, GetUnitAbilityLevel(c, InoriW_ID) - 1))
-                            call SetHpCurrent2(c,td,r4)
+                            call SetHpCurrent2Quiet(c,td,r4)
                             set x = GetUnitX(c)
                             set y = GetUnitY(c)
                             call DestroyEffect(EffectSpawnColor("war3mapImported\\wos_BY_Wood_Eff_Ord_YeYe_Wid_KuoSan_3.mdl", x, y, GetRandomReal(0, 359), 1.15, 2.35, 1, 255, 255, 255, 90))
@@ -820,7 +857,7 @@ library InoriSpells uses GearSystems
                                 set r = 999999
                                 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", td, "chest"))
                                 if check == 1 then
-                                    if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                                    if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                                         set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                                         if check3 < 4 then
                                             call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
@@ -912,7 +949,7 @@ library InoriSpells uses GearSystems
                 set rmax = 99
                 set r4 = r4 / 29
                 set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
-                if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 then
+                if LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
                     set check3 = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                     if check3 < 4 then
                         call SaveInteger(hs, GetHandleId(c), SH_INORI_E, check3 + 1 )
@@ -1112,6 +1149,7 @@ library InoriSpells uses GearSystems
                 exitwhen i > MUI_InoriE
                 set this = m_InoriE[i]
                 if GetUnitTypeId(c) == check2 then
+                    call InoriE_UpdateAura(c)
                     if k3 == 0 then
                         set check = LoadInteger(hs, GetHandleId(c), SH_INORI_E)
                         set fk = GetUnitFacing(c) * bj_DEGTORAD
@@ -1172,6 +1210,7 @@ library InoriSpells uses GearSystems
                                 call MakeSound("war3mapimported\\Hero_Inori_E4")
                                 set e2 = AddSpecialEffectTarget("war3mapimported\\Wos_InoriCrystall_atch.mdx", c, "hand right")
                                 set e3 = AddSpecialEffectTarget("war3mapimported\\Wos_InoriCrystall_atch.mdx", c, "hand left")
+                                call InoriAttackArt(c)
                                 call UnitAddAbility(c, InoriE_Atk_ID)
                                 call AddSpellLevel(c, 'A01C', GetUnitAbilityLevel(c, InoriE_ID), true)
                                 call SetUnitAbilityLevel(c, InoriE_Atk_ID, GetUnitAbilityLevel(c, InoriE_ID))
@@ -1252,6 +1291,7 @@ library InoriSpells uses GearSystems
                             call MyFlush(GetHandleId(c), SH_PAS_CD, 0, PassiveCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1)))
                             call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
                             call SaveInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE, 0)
+                            call InoriAttackArt(c)
                                 call WUI_HeroProgress(c, InoriE_ID, "Void Absorption", 0.00, 0.00, true)
                             call DestroyEffect(e2)
                             call DestroyEffect(e3)
@@ -1409,7 +1449,7 @@ library InoriSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if IsUnitAlly(u, GetOwningPlayer(c)) then
-                                    call SetHpCurrent2(c,u, hh)
+                                    call SetHpCurrent2Quiet(c,u, hh)
                                     endif
                                 call GroupRemoveUnit(g, u)
                             endloop
@@ -2071,6 +2111,7 @@ library InoriSpells uses GearSystems
                                                         call DecorRemove(c, x, y, 800, 50)
                             call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                             call BlzSetUnitSkin(c, Inori2_ID)
+                            call InoriAttackArt(c)
                             call FixAura(c)
                             call ScaleEffDummy(e, 0.5, 3, 6)
                             call ScaleEffDummy(e2, 0.5, 1, 2.5)
@@ -2135,6 +2176,9 @@ library InoriSpells uses GearSystems
                     call ColorDummy4(c, 0, 255, 255, 255, 0.3)
                     call SaveInteger(hs, GetHandleId(c), SH_PAS_CD, 0)
                     call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 0)
+                    call InoriE_UpdateAura(c)
+                    call UnitRemoveAbility(c, InoriT2_Aura_ID)
+                    call InoriAttackArt(c)
                     call EUTU2_3(e, 0.3, 0, c)
                     if check == 0 then
                         call StopSpellUnit2(c)
@@ -2184,6 +2228,10 @@ library InoriSpells uses GearSystems
             set e2 = EffectSpawnScale("war3mapImported\\wos_GameBABY_qilongzhu_004.mdl", x, y, 0, 1.1, 1, 1, 0.8, 1, 1.65)
             call BlzPlaySpecialEffect(e2, ANIM_TYPE_BIRTH)
             call SaveInteger(hs, GetHandleId(c), SH_MODE_T, 1)
+            call InoriE_UpdateAura(c)
+            call UnitAddAbility(c, InoriT2_Aura_ID)
+            call BlzUnitHideAbility(c, InoriT2_Aura_ID, true)
+            call InoriAttackArt(c)
             call SetUnitAnimationByIndex(c, 8)
             call BlzSetAbilityIcon(Inori_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_T2.blp")
             call ColorDummy32(c, 0.3, 255, 255, 255, 1.02)
@@ -2328,6 +2376,7 @@ library InoriSpells uses GearSystems
         */ and GetUnitTypeId(inori) == Inori_ID /*
         */ and not IsUnitIllusion(inori) /*
         */ and GetHeroLevel(inori) >= 6 /*
+        */ and LoadInteger(hs, GetHandleId(inori), SH_MODE_T) == 0 /*
         */ and IsUnitAlly(inori, damagedOwner) then
             set dx = GetUnitX(inori) - x
             set dy = GetUnitY(inori) - y
@@ -2406,6 +2455,7 @@ endfunction
                 call SetPlayerAbilityAvailable(Player(k2), k, true)
                 call SetPlayerAbilityAvailable(Player(k2), InoriT_ID, false)
             endif
+            call InoriE_UpdateAura(Hero[k2])
             if GetLocalPlayer() == p then
                 call BlzFrameSetVisible(inori_frame_pas1[k2], false)
             endif
@@ -2584,6 +2634,7 @@ endfunction
         call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 1)
     endfunction
     function InoriT1_Start takes unit c returns nothing
+        call InoriE_UpdateAura(c)
         call InoriT_KS.InoriT_Start( c )
         if GetHeroLevel(c)>=35 then
     call SaveInteger(hs,GetHandleId(c),SH_INORI_R_CLEAR,1)
@@ -2598,6 +2649,95 @@ endfunction
     function InoriT3_Start takes unit c returns nothing
         call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 1)
     endfunction
+
+    // Scripted crystal shots (visual only; the hidden native missile deals the damage).
+    private struct InoriShot_KS extends array
+        static unit array src
+        static unit array dst
+        static effect array fx
+        static real array wait
+        static real array px
+        static real array py
+        static integer count = 0
+
+        static method Remove takes integer i returns nothing
+            if fx[i] != null then
+                call DestroyEffect(fx[i])
+            endif
+            set count = count - 1
+            set src[i] = src[count]
+            set dst[i] = dst[count]
+            set fx[i] = fx[count]
+            set wait[i] = wait[count]
+            set px[i] = px[count]
+            set py[i] = py[count]
+            set src[count] = null
+            set dst[count] = null
+            set fx[count] = null
+        endmethod
+
+        static method Loop takes nothing returns nothing
+            local integer i = 0
+            local real a
+            local real dx
+            local real dy
+            local real step = InoriAtk_Speed * 0.03
+            loop
+                exitwhen i >= count
+                if dst[i] == null or GetUnitTypeId(dst[i]) == 0 or IsUnitType(dst[i], UNIT_TYPE_DEAD) or src[i] == null then
+                    call Remove(i)
+                elseif fx[i] == null then
+                    set wait[i] = wait[i] - 0.03
+                    if wait[i] <= 0.0 then
+                        set a = Atan2(GetUnitY(dst[i]) - GetUnitY(src[i]), GetUnitX(dst[i]) - GetUnitX(src[i]))
+                        set px[i] = GetUnitX(src[i]) + 40.0 * Cos(a)
+                        set py[i] = GetUnitY(src[i]) + 40.0 * Sin(a)
+                        // The crystals of the model grow along -Z: pitch -90 lays them along the yaw.
+                        set fx[i] = EffectSpawn3(InoriAtk_Crystal, px[i], py[i], a * bj_RADTODEG, 1.5, InoriAtk_CrystalScale, 50, -90)
+                    endif
+                    set i = i + 1
+                else
+                    set dx = GetUnitX(dst[i]) - px[i]
+                    set dy = GetUnitY(dst[i]) - py[i]
+                    if dx * dx + dy * dy <= step * step then
+                        call Remove(i)
+                    else
+                        set a = Atan2(dy, dx)
+                        set px[i] = px[i] + step * Cos(a)
+                        set py[i] = py[i] + step * Sin(a)
+                        call BlzSetSpecialEffectX(fx[i], px[i])
+                        call BlzSetSpecialEffectY(fx[i], py[i])
+                        call BlzSetSpecialEffectYaw(fx[i], a)
+                        set i = i + 1
+                    endif
+                endif
+            endloop
+            if count == 0 then
+                call InoriTick_Off(8)
+            endif
+        endmethod
+
+        private static method OnAttacked takes nothing returns boolean
+            local unit c = GetAttacker()
+            if GetUnitTypeId(c) == Inori_ID and count < 64 and InoriCrystalMode(c) then
+                set src[count] = c
+                set dst[count] = GetTriggerUnit()
+                set fx[count] = null
+                set wait[count] = InoriAtk_LaunchDelay
+                set count = count + 1
+                call InoriTick_On(8)
+            endif
+            set c = null
+            return false
+        endmethod
+
+        private static method onInit takes nothing returns nothing
+            local trigger t = CreateTrigger()
+            call TriggerRegisterAnyUnitEventBJ(t, EVENT_PLAYER_UNIT_ATTACKED)
+            call TriggerAddCondition(t, Condition(function thistype.OnAttacked))
+            set t = null
+        endmethod
+    endstruct
 
     private struct InoriTick_Loop extends array
         static method Loop takes nothing returns nothing
@@ -2624,6 +2764,9 @@ endfunction
             endif
             if InoriTick_Active[7] then
                 call InoriT2_KS.Loop_InoriT2()
+            endif
+            if InoriTick_Active[8] then
+                call InoriShot_KS.Loop()
             endif
         endmethod
 

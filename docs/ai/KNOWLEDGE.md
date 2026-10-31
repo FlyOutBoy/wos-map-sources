@@ -352,6 +352,27 @@ Akainu T ends on fist count/.03 tick cadence; Inori W uses native Channel
 FOLLOW_THROUGH_TIME (read once during shared start, currently7.5), not99s.
 InoriW_GetHealTotal includes +2x INT at hero level35+ for the allied branch
 before the existing29-pulse split; enemy and active-E branches stay separate.
+Inori aura follow-up (2026-10-28): A09S remains five learnable levels; A061
+is a non-hero six-level service aura. InoriE_UpdateAura (Systems1, before
+LearnHeroSpells) selects rank 6 only at hero level25+, E rank5, T1/default
+selected and outside T2. Ultimate confirmation, learning, hero levels and the
+existing E tick keep it current. T2 choice restores rank5; active T2 calls
+SetPlayerAbilityAvailable plus BlzUnitDisableAbility(true,true) on A061,
+then restores both at cleanup. Do not dispatch this helper through evaluate
+from LearnHeroSpells: pick/frame paths must stay direct.
+stage_inori_aura.py assigns B064..B067 to ranks1..4, B00I to5, B068 to6.
+Native Had1 is zero: DamageBlock applies exact 1..5% physical /5% magic
+resistance, or10%/10% for rank6, using the highest present marker. This avoids
+native armor-rating conversion or double-counting. No global caster/boost
+flag may suppress another Inori aura. Instability checks accept all ranks
+and exclude Inori owners currently in T2.
+T2 A153/B062 has1400 radius (matching normal E) and10% physical+magic
+vulnerability; A153 itself is hidden while E2 A06D describes the aura and
+beams. UniversalTooltips registers E2 in its own staggered job491 and in
+HeroData extras. test_inori_aura.py executes selection, levels, exact damage,
+T2 start/cancel/restore, Instability exclusion and repeatable staging. Native
+aura propagation/linger and multiplayer still need Warcraft verification.
+
 New progress titles use cleaned object ability tooltips; long-title geometry
 is saved in MeterEdges real key6 and retained by WUI_RepinMeter.
 CP38 removes bespoke hero FRAME meters (including Erza4 E in DecorDestroy).
@@ -694,6 +715,84 @@ source after mitigation. No second damage event and no balance/HP logic change.
 This attribution convention distributes later flat reductions proportionally.
 Test_damage_stats covers mirrors, neutral attackers, F2 precision, Quincy shares,
 reset/load, snapshots, sorting and no hit-time strings/handles.
+
+
+Item debuff lifecycle / proc cycles (2026-10-28): Loop_Elemental must branch on
+`alive`, advance its per-second accumulator only while active, and destroy both
+owned effects on buff loss or death. An unconditional outer branch previously
+made cleanup unreachable. ErzaPas_Start deduplicates target + effect kind,
+including the native dummy delivery window; initialize both effect handles and
+itemRefreshes on every reused struct slot. Evolved zanpakuto must not remove the
+buff to refresh it or apply it twice on a hit whose explosion is also ready.
+
+Final refresh contract: Fire (including Zanka no Tachi) has no duration/refresh
+cap. Other shared elemental/poison debuffs allow one item-driven refresh after
+the initial application; ability damage may refresh indefinitely and does not
+reset the spent item allowance. Pass the original damageSourceId to ErzaPassive
+before its attribution is converted to the elemental/poison source; explicit
+item casts already supply their item rawcode. AllowApplication owns the budget;
+Kyoka's Steam refresh uses the Steam instance's budget as well. There is no
+blanket 10-second cap. Native expiry/dispels end the instance and its budget.
+
+ItemDamageCanProc in Systems2 rejects elemental/reaction tags -101..-111 and
+Kurikara/Ashisogi/Murasame periodic item sources, plus Mirror of Yata
+reflection I02H (so reflecting an elemental tick cannot restart the proc chain). DmgSys uses the snapshotted
+source for offensive item follow-ups, including Tachikaze, zanpakuto, Earth
+Power, Shiki Knife and Guts/Death Note. A zanpakuto explosion also rejects its
+own source. This keeps a Ryujin explosion -> Kurikara application legal while
+stopping burn/poison -> item -> burn/poison feedback. Never replace this with
+only a synchronous guard: deferred hits retain numeric source attribution.
+Blood Pact Ring Evolved (I073 / A154; stage_blood_pact_evolved.py) costs 7500,
+uses Ring I06D (2500) + Pakkun I01J, and grants A00W (+20 allstats). Its 5-sec
+25% mana floor uses GearManaFloorStart/Apply in Systems2, one lazily registered
+GearTimer03 listener for all affected units, and expires on death/round change.
+Apply also runs after SetMpCurrent and native ManaFix payment boundaries;
+GearManaScriptChange tracks the refill separately from native spell payment.
+Five Elements Seal blocks both the initial refill and subsequent floor refills.
+No per-unit timer or mana-cost bypass is introduced.
+
+Return by Death (I059 / A13E) is backed by positive Inner Fire buff A155 / B063
+(stage_return_by_death_buff.py). ReturnStart records a four-second deadline on
+HealRegenClock; ItemsAnimeEffect checks buff presence before the deadline branch.
+Kairoseki UnitRemoveBuffs(true, false) or another positive-buff dispel cancels
+the instance permanently. Finish removes the buff and both effects on success,
+cancellation, death, unit removal or round change. MyFrameBuffSlot follows buff
+loss. Native duration is 4.5 sec only to avoid racing native expiry; script
+owns the four-second return and cleanup. test_return_by_death.py executes
+deadline, Kairoseki, recast and cleanup paths; engine dispel rendering remains
+an in-game check.
+
+Samehada dispatch uses the native attack flag, independent of physical/magic
+classification. The original Starrk E attack calls Samehada once before launching
+Cero and zeroing native attack damage; piercing A0BJ hits no longer trigger it.
+Samehada rejects both illusion attackers and illusion targets, allies and active
+Tekkai targets. Tekkai rejects attack/native attack-type/A0BJ events at the start
+of DmgSys before any hero/item on-hit dispatch, mana drain or delayed extra-hit
+scheduling; ordinary spell damage continues normally. No item charges/cooldowns
+are consumed by these rejected hits. Tests execute the actual early gate,
+Starrk dispatch and Samehada implementation.
+Tsuchikage Hat Evolved snapshots floor(GetAttack(c)/100) additional bounces on
+cast, preserving its first hit, per-bounce damage falloff, slow and target search.
+Item descriptions and staging now state these contracts (2026-10-28).
+MAIN/STABLE publication passed: 5460-function parity, 7002 packed files, seven
+extracted payloads match the scenario and contain the updated code/descriptions.
+26 focused tests passed. Evidence: `_build/tekkai-samehada-main-build.log` and
+`_build/tekkai-samehada-main-result.json`. Prior STABLE/root snapshots backed up;
+final sync has zero binary/source differences. Game was not launched.
+Kirito R quick/strong
+packets use dmgphysattack: native attack=true, physical damage type retained,
+with GearDamageAttackFollowup restored around nested damage. AttackCheck skips
+KiritoR_Attack for those follow-ups, preventing recursive R packets. Quick:
+2 hits at .05/.20; strong: 4 at .05/.30/.55/.80; divide each packet total by its
+hit count. Strong start assigns NewDmg explicitly (never recycled struct dmg).
+Blood Pact icons retain actual Button Manager PNG exports before BLP encoding;
+its Evolved uses the existing project gold frame.
+
+Evidence: test_blood_pact_ring.py covers mana-floor lifetime/seal precedence,
+recipe/stats/prices, attack dispatch and actual Kirito tick counts/timing.
+Evidence: test_item_debuff_cycles.py executes lifecycle, budget, unlimited Fire,
+Evolved and source-gate paths with native mocks; test_ashisogi_poison.py and
+MAIN JassHelper/pjass compile. Warcraft rendering/multiplayer remain untested.
 
 ### Idle UI stalls and frame-only Z input — CP54, 2026-10-17
 
@@ -1621,3 +1720,181 @@ independent casters, timer fallbacks and the entire T windup. Both new suites,
 MAIN WCT/source and compiled/source parity passed; packed J/WCT/WTG hashes
 matched the saved scenario, and STABLE matched the verified build. Warcraft
 visual/multiplayer validation remains required.
+
+
+### BLP optimizer: gamma, alpha and compact limits (updated 2026-10-28)
+
+The external wos_FULL_AUTO_ONE_FILE.cmd uses Atlas-v5: default maximum side
+256, rare 512 exception, absolute maximum 512, proportional dimensions and no
+upscaling. Examples: 1024x512 -> 256x128 normally or 512x256 exceptionally;
+2048x4096 -> 128x256. Caller width/height cannot bypass the hard cap.
+The old v2/v3 return-to-original and unrestricted escalation contracts are
+superseded. A 512 exception requires >=50% solid alpha, substantial 256 detail
+error, >=30% improvement at 512 and a result <=200 KiB. Sparse animated effects
+stay at 256 except for the dense-frame atlas rule below. Compare codec errors against the properly resized reference,
+separately from unavoidable resolution loss; never retain 2048/4096 as success.
+
+blp-iio-plugin marks decoded samples as linear RGB; getRGB/drawImage previously
+applied an unwanted sRGB transfer before raw BLP encoding. Read raw components
+without gamma conversion. Filter premultiplied alpha and write straight RGBA.
+Preserve fully hidden RGB separately: losing it previously inflated RGB error
+and caused false escalation on water atlases. Validate all mip levels and use
+high quality for tiny mips. JPEG 85/92/97 is round-tripped; adaptive BLP1 palette
+with a separate exact 8-bit alpha plane is the bounded-size fallback and may
+also beat JPEG size. Record forced palette colour warnings rather than silently
+returning a large original. Standard Pillow's BLP1 decoder ignores separate
+palette alpha; independent validation must read that plane explicitly.
+
+The atlas-v5 state rechecks older outputs once; unchanged v5 outputs are skipped.
+When reprocessing wos_, use a neighbouring original without the prefix if present.
+Do not substitute an old database texture or remove input without verified backup.
+The embedded JS remains consumable by tools/prepare_frostnova_release_assets.py.
+Evidence: seven previous real textures plus three water atlases, alpha fixtures,
+horizontal/vertical aspect and no-upscale checks, oversized caller request,
+old-cache migration, independent BLP/JPEG decoding, verified backups, full CMD
+cycle and repeat-run hashes. Water: 2048 square -> 256 square, 4520733 -> 175942
+bytes; water1: 2048x4096 -> 128x256, 3408069 -> 88562 bytes. No engine validation.
+Source references: tools/build_kusanagi_effects.py, blp-iio-plugin
+JPEGMipmapProcessor/BLPWriter and the standalone script/report beside user files.
+BLP2 remains unsupported by this Java plugin; damaged inputs need originals.
+
+User refinement: dense animation sheets (e.g. water 8x8 = 64 frames) need 512,
+even with sparse alpha. At 256 each frame is only 32 pixels. Detect regular
+alpha islands along both axes: >=4 bands/axis, >=32 occupied cells, >=80%
+occupancy, <=15% spacing error and frame size <48 at 256. Preserve aspect
+(8x4 at 1024x512 -> 512x256); sparse/incomplete/small sheets remain 256. The
+opaque-detail exception's 200 KiB budget does not apply to dense atlases.
+Never upscale a small source to fake lost detail: match current outputHash
+against a previous report and verify sourceHash before reading its original
+from BLP_SOURCE_BACKUP. Read only scoped hash folders and input basenames.
+Water v5: original 2048 square -> 512 square, 4520733 -> 577159 bytes; not an
+upscale of v4's 256 result. Tests cover actual 8x8 and synthetic rectangular
+grids, sparse/opaque false positives, no upscaling, original recovery and
+repeat-run hashes. Other mip levels use >=92 quality, tiny ones >=97 so one
+bad mip need not raise the main image's quality. No in-game verification.
+
+
+### Classic MDX: inert PRE2 / Magos KP2R compatibility (2026-10-27)
+
+The external wos_FIX_MDX_PARTICLES.cmd repairs MDX 800 without changing version
+numbers. mr.war3_jdjj had one inert PRE2 node (91, parent 90), zero lifetime and
+emission, and a KP2R key at frame -20 with value 0. KP2R is a variation track;
+its presence or an old-editor error alone does not prove intentional protection.
+Remove only inert emitters by default (including zero animated emission), and
+preserve each removed emitter node as a HELP node with its ID, parent, transforms
+and pivot unchanged; clear the PRE2 node-type bit. This avoids skin/parent ID
+remapping and preserves child references. Geometry, materials, textures, sequences,
+bone animation and PIVT remain byte-identical. The optional --all-particles mode
+removes all PRE2 only; it intentionally removes live PRE2 effects too. Unknown
+layouts and non-800 versions fail safely; do not fake downconversion by editing VERS.
+
+Evidence: embedded tool checks and 8 isolated tests (live/animated emission,
+child references, no HELP, malformed data, version 1800, idempotence and existing
+output preservation). Magos War3 Model Editor v1.05 loaded the fixed model;
+user independently confirmed opening. In-game behaviour was not tested.
+Source: Retera ParticleEmitter2Chunk/ParticleEmitter2Variation and local model
+binary. The standalone CMD and MDX_FIX_README are beside the supplied model;
+the CMD also exists in Documents. Original model is left intact.
+
+### Elemental item visual source drift (2026-10-28)
+
+The configured scenario's compiled ItemsElements_Cast/update retained newer model
+choices than root war3map.j and triggers/Items/Items.j (Ember summon3missle,
+Leviathan G1, Ashen file00001323, storm longskill_point_10, Verdict leash
+WTW-whitethunder-Zi, Anchor ZarakiWCrack1/obr08). Read those narrow compiled
+functions to recover the affected visual choices; do not import stale WCT.
+Items.j now preserves those choices, uses Leviathan G2 for Anchor and shares
+Verdict's leash lightning with its three strikes. Anchor's single effect follows
+0.60/1.10/1.60-second impacts with rebound/pitch in the existing item clock, then
+is destroyed; the whirlpool still ends at 2.1 seconds. The actual-source lifecycle
+test checks three landings, preserved total damage, rebound and cleanup.
+This is source-only reconciliation, not a full compiled/source parity certificate
+or proof of native animation. Main build parity remains mandatory.
+
+Elemental follow-up (2026-10-28): Anchor initial drop/rebound peaks are now
+1200/720 above ground, with BlzSetSpecialEffectPitch on every motion tick;
+roll was the wrong requested axis. Targeted Grasp scale is 1 (half its previous
+2). Ember's projectile height is 170 (another +60); Cinder uses Phoenix_Missile
+at height 220 (+150), speeds 2400/2200 outbound/ricochet. Volt's projectile uses
+the weapon attachment from Erza3 Q (`wos_obr08 (166).mdx`) at height150.
+Crimson's eruption uses Frieren E `wos_yc_firebeam2.mdx`, scale.7/time scale2;
+Phoenix Seal's projectile uses `wos_Windwalk Fire2.mdl`.
+
+Volt's three-second mark pulses every second for.9x AGI magic damage to OTHER
+enemies in a300-radius capsule around the live caster-target segment, using a
+per-mark reusable group. The tethered target is explicitly excluded. The existing attack-charge reaction is preserved. Caster/target
+death stops the thread. Constellation's cast now launches a straight1800-range
+projectile (200 collision radius): one5.5x INT magic hit, Lightning and25% slow
+for2 seconds per enemy. The old stationary spiral is no longer cast. Item text
+and native targeting radius reflect the new mechanic.
+
+Ashen's `file00001323` ribbon used a Blend material over an opaque black airflow
+texture plus a near-black green tint. `build_ashen_crossfire_effect.py` makes the
+item-only `wos_AshenCrossfire.mdx` copy: additive ribbon material and orange BGR
+color; mesh, particles, sequences and textures are unchanged. The model is
+installed by the existing assets/effects pipeline. Ashen projectile height220
+is100 above its prior120. `test_elemental_item_followup.py` executes missile
+height/scale, capsule geometry/live endpoints, thread pulse cadence, one-hit
+lightning sweep, finite straight movement and binary material/color contracts.
+`test_item_debuff_cycles.py` checks the three pitch-driven Anchor landings.
+Native ribbon appearance and pitch rendering remain Warcraft QA.
+MAIN/STABLE rebuilt: 5462-function compiled/source parity PASS, 7003 archive
+files, 11 extracted script/object/model/import payloads match the scenario.
+40 focused tests PASS; final sync: zero binary/source differences. Evidence:
+`_build/elemental-visual-followup-main-build.log` and
+`_build/elemental-visual-followup-main-result.json`. Prior STABLE/root snapshots
+were backed up; the game was not launched.
+
+
+
+### Elemental cooldown families, mana tiers and cast budgets (2026-10-28)
+
+`tools/balance_active_items.py` owns54 active ability mana overrides (125/150/175)
+and23 Fire/Water/Lightning item family assignments, including old barrels and
+Kusanagi grades. Mode buttons pay125 too; Susanoo's passive shield proc costs150.
+New overrides must be staged via configure/normal object APIs, never by adding
+unsupported editable keys or hand-editing raw metadata. Item stage27/28/28b and
+the evolved Blood Pact generator preserve this policy. Item audit adds only a
+short `Shared CD: <element> items.` line, leaving the native mana display intact.
+
+Each family uses ONLY the native item `cooldown_group` / icid field, pointing to
+A145 (Fire), A146 (Water), or A148 (Lightning). The additional hero-owned hs
+expiry introduced in the first implementation ignored native cooldown resets:
+items looked ready after reset but CastCheck still rejected them. Removed that
+expiry, all ItemsElements shared-CD helpers, the CastCheck rejection/commit hooks
+and the pickup reapplication. Native cooldown/reset behavior is authoritative;
+do not reintroduce a second cooldown clock for these families.
+
+Own single-target damage of the18 core elemental actives is at most6x stat per
+cast, including every item follow-up; elemental reactions, hero modifiers and
+Sacred Gear remain external bonuses. Key sums: Ember4+1.25+.75; Grasp3.75+2.25;
+Verdict5.5+.5; Bastion5.25+3*.25; Cinder5+1; Mirror5.5+.5; Volt target5.5+.5;
+Phoenix3.75+1.75+.5; Crimson4+1.5+.5. Ashen's outbound/return hit sets are disjoint.
+Volt's other enemies can take3*.9; its primary target takes no thread-pulse damage.
+`test_elemental_item_balance.py` validates native family/mana parity and budgets,
+absence of reset-blocking script state, plain axe spawns and orange ribbon nodes.
+
+Projectile art is controlled by named constants next to MirrorTide globals in
+`triggers/Items/Items.j`: MirrorTide_ProjectileModel/Scale use wos_file00012198
+at0.66x for BOTH wave and counter-shot; AshenCrossfire_ProjectileModel uses the
+wos_mx-yx-tsw-a-1_fire copy; ConstellationCoil_ProjectileModel uses wos_tx28 and
+ConstellationCoil_Range is1800. `build_elemental_projectile_assets.py` accepts a
+source directory argument and stages the models plus required textures under
+assets/effects. Axe diffuse is unchanged; only blue surrounding effect textures
+-2/-3 are recolored red-orange with preserved alpha/brightness and separate paths.
+Both RIBB nodes (and any KRCO animation keys/tangents) are explicitly orange.
+Ashen axes use EffectSpawn, with no EffectSpawn3/pitch=-90 override; the previous
+override pointed the axe models in the wrong direction.
+This replaces the earlier file00001323 ribbon copy for Ashen. Project assets
+installation registers these files; personal source paths are not persisted.
+
+Publication evidence after the native-CD reset correction: compiled/source
+parity5462 functions PASS; archive7016 files.11 extracted payloads match the
+scenario; packed script has no custom family cooldown state, all three axe
+spawns use EffectSpawn and Mirror scale is.66. Packed item data retains23 native
+family icid assignments; both ribbon nodes in the packed axe are orange.
+38 focused tests pass; final sync has zero binary/source differences. STABLE/root
+snapshots were updated after backup. Evidence:
+`_build/native-element-cooldown-fix-main-build.log` and
+`_build/native-element-cooldown-fix-main-result.json`. Native reset behavior and
+visuals still need Warcraft verification; the game was not launched.

@@ -87,6 +87,13 @@ globals
 
     integer SH_CROCODILE_T_CHANNEL = StringHash("crocodile t channel")
     integer ItemProcDamageDepth = 0
+    boolean GearDamageAttackFollowup = false
+    private integer SH_MANA_FLOOR_END = StringHash("mana floor end")
+    private integer SH_MANA_FLOOR_FRACTION = StringHash("mana floor fraction")
+    private integer GearManaFloorCount = 0
+    private boolean GearManaFloorListenerOn = false
+    private unit array GearManaFloorUnit
+    private integer array GearManaFloorRound
 
     // Перед входом в DamageBlock значение копируется в его локальную переменную.
     // Это сохраняет совместимость старой сигнатуры DamageBlock с остальной картой.
@@ -296,6 +303,10 @@ function MakeSound takes string s returns nothing
         if GetUnitAbilityLevel(u, ShunShunRikka_Buff_ID) > 0 then
             set amp = amp + ShunShunRikka_HealAmp / 100.0
         endif
+        // Fairy Tail Emblem Evolved: +1% for Fairy Tail heroes.
+        if HasCachedItem(u, FairyTailEvolved_ID) > 0 and (GetUnitTypeId(u) == Natsu_ID or GetUnitTypeId(u) == Erza_ID or GetUnitTypeId(u) == Laxus_ID) then
+            set amp = amp + FairyTailEvolved_HeroHealAmp / 100.0
+        endif
         return amp
     endfunction
 
@@ -321,10 +332,14 @@ function MakeSound takes string s returns nothing
 
     // Sum of mana restoration amplifiers (SetMpCurrent and passive mana regen).
     function GetManaAmp takes unit u returns real
+        local real amp = 0.00
         if GetUnitAbilityLevel(u, FrozenHeart_Buff_ID) > 0 then
-            return FrozenHeart_ManaAmp / 100.0
+            set amp = amp + FrozenHeart_ManaAmp / 100.0
         endif
-        return 0.00
+        if HasCachedItem(u, FairyTailEvolved_ID) > 0 then
+            set amp = amp + FairyTailEvolved_ManaAmp / 100.0
+        endif
+        return amp
     endfunction
 
     function HealTT takes unit c,unit td, real r, real start_height returns nothing
@@ -424,6 +439,50 @@ function MakeSound takes string s returns nothing
     endif
     set t = null
     endfunction
+globals
+    // Periodic/per-hit restores show on the HP/MP bar only; one-off heals keep numbers.
+    boolean HealTextQuiet = false
+    // Tracked restores are summed per unit over ~1 s windows; GetHpRegen/GetMpRegen
+    // add the last window's rate to the +regen number shown on the bars.
+    boolean HealRegenTrack = false
+    timer HealRegenClock = CreateTimer()
+    integer SH_REGEN_HP_SUM = StringHash("regen hp sum")
+    integer SH_REGEN_HP_START = StringHash("regen hp start")
+    integer SH_REGEN_HP_SHOWN = StringHash("regen hp shown")
+    integer SH_REGEN_MP_SUM = StringHash("regen mp sum")
+    integer SH_REGEN_MP_START = StringHash("regen mp start")
+    integer SH_REGEN_MP_SHOWN = StringHash("regen mp shown")
+endglobals
+// Synchronized heal paths only (writes the shared hashtable).
+function HealRegenAdd takes unit u, integer kSum, integer kStart, integer kShown, real amount returns nothing
+    local integer h = GetHandleId(u)
+    local real now = TimerGetElapsed(HealRegenClock)
+    local real span = now - LoadReal(hs, h, kStart)
+    if span >= 0.95 then
+        if span < 2.00 then
+            call SaveReal(hs, h, kShown, LoadReal(hs, h, kSum) / span)
+        else
+            call SaveReal(hs, h, kShown, 0.00)
+        endif
+        call SaveReal(hs, h, kStart, now)
+        call SaveReal(hs, h, kSum, 0.00)
+    endif
+    call SaveReal(hs, h, kSum, LoadReal(hs, h, kSum) + amount)
+endfunction
+// Read-only: safe for the local stat panel.
+function HealRegenRate takes unit u, integer kSum, integer kStart, integer kShown returns real
+    local integer h = GetHandleId(u)
+    if TimerGetElapsed(HealRegenClock) - LoadReal(hs, h, kStart) >= 2.00 then
+        return 0.00
+    endif
+    return LoadReal(hs, h, kShown)
+endfunction
+function GetScriptHpRegen takes unit u returns real
+    return HealRegenRate(u, SH_REGEN_HP_SUM, SH_REGEN_HP_START, SH_REGEN_HP_SHOWN)
+endfunction
+function GetScriptMpRegen takes unit u returns real
+    return HealRegenRate(u, SH_REGEN_MP_SUM, SH_REGEN_MP_START, SH_REGEN_MP_SHOWN)
+endfunction
 function SetHpCurrent2 takes unit c,unit td, real r returns nothing
     local integer i = GetPlayerId(GetOwningPlayer(c))
     local real hp
@@ -440,13 +499,19 @@ function SetHpCurrent2 takes unit c,unit td, real r returns nothing
         set r = r *0.6
         endif
     set r = r * (1.00 - GetHellBlazeCut(td))
+    if r > 0 and GetUnitAbilityLevel(td, SukunaFinger_Buff_ID) > 0 then // Sukuna's Finger: no HP restoration
+        set r = 0
+    endif
     // РЎР‚Р ВµР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р С—РЎР‚Р С‘РЎР‚Р С•РЎРѓРЎвЂљ РІР‚вЂќ Р Р…Р Вµ Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎР‹РЎвЂ°Р ВµР С–Р С• HP
     set hp = RMinBJ(r, GetUnitState(td, UNIT_STATE_MAX_LIFE) - GetUnitState(td, UNIT_STATE_LIFE))
-    if CheckCoordsInRect(gg_rct_Base,GetUnitX(td),GetUnitY(td)) == false and hp> 0 then 
+    if not HealTextQuiet and CheckCoordsInRect(gg_rct_Base,GetUnitX(td),GetUnitY(td)) == false and hp> 0 then 
         call HealTT(c,td,hp,150)
     endif
     set PlayerHeal[i] = PlayerHeal[i] + R2I(hp)
     set PlayerHealAll[i] = PlayerHealAll[i] + R2I(hp)
+    if HealRegenTrack and r > 0 then
+        call HealRegenAdd(td, SH_REGEN_HP_SUM, SH_REGEN_HP_START, SH_REGEN_HP_SHOWN, r)
+    endif
     call SetUnitState(td, UNIT_STATE_LIFE, GetUnitState(td, UNIT_STATE_LIFE) + r)
 endfunction
 
@@ -455,6 +520,22 @@ function GearManaScriptChange takes unit c, real before returns nothing
     local integer h = GetHandleId(c)
     if LoadInteger(hs,h,SH_MANA_FIX_ACTIVE) > 0 then
         call SaveReal(hs,h,SH_MANA_FIX_SCRIPT_DELTA,LoadReal(hs,h,SH_MANA_FIX_SCRIPT_DELTA)+GetUnitState(c,UNIT_STATE_MANA)-before)
+    endif
+endfunction
+
+// A mana floor is restoration: Five Elements Seal overrides it, including the initial refill.
+function GearManaFloorApply takes unit c returns nothing
+    local integer h = GetHandleId(c)
+    local real before
+    local real floor
+    if c == null or GetWidgetLife(c) <= 0.405 or GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 or LoadReal(hs,h,SH_MANA_FLOOR_END) <= TimerGetElapsed(HealRegenClock) then
+        return
+    endif
+    set before = GetUnitState(c,UNIT_STATE_MANA)
+    set floor = GetUnitState(c,UNIT_STATE_MAX_MANA) * LoadReal(hs,h,SH_MANA_FLOOR_FRACTION)
+    if before < floor then
+        call SetUnitState(c,UNIT_STATE_MANA,floor)
+        call GearManaScriptChange(c,before)
     endif
 endfunction
 
@@ -467,14 +548,39 @@ function SetMpCurrent takes unit c, real r returns nothing
     if GetUnitAbilityLevel(c,'B00K')>0 then  // inori T virus
         set r = r *0.75
         endif
+    if r > 0 and GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 then // Five Elements Seal: no mana restoration
+        set r = 0
+    endif
     // РЎР‚Р ВµР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р С—РЎР‚Р С‘РЎР‚Р С•РЎРѓРЎвЂљ РІР‚вЂќ Р Р…Р Вµ Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎР‹РЎвЂ°Р ВµР в„– Р СР В°Р Р…РЎвЂ№
     set mp = RMinBJ(r, GetUnitState(c, UNIT_STATE_MAX_MANA) - GetUnitState(c, UNIT_STATE_MANA))
-    if CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and mp> 0  then 
+    if not HealTextQuiet and CheckCoordsInRect(gg_rct_Base,GetUnitX(c),GetUnitY(c)) == false and mp> 0  then 
         call HealMpTT(c,c,mp,150)
+    endif
+    if HealRegenTrack and r > 0 then
+        call HealRegenAdd(c, SH_REGEN_MP_SUM, SH_REGEN_MP_START, SH_REGEN_MP_SHOWN, r)
     endif
     call SetUnitState(c, UNIT_STATE_MANA, GetUnitState(c, UNIT_STATE_MANA) + r)
     call GearManaScriptChange(c,before)
+    call GearManaFloorApply(c)
 endfunction
+
+// Same heal (amp, cuts, heal stats) without the floating number.
+function SetHpCurrent2Quiet takes unit c, unit td, real r returns nothing
+    set HealTextQuiet = true
+    set HealRegenTrack = true
+    call SetHpCurrent2(c, td, r)
+    set HealRegenTrack = false
+    set HealTextQuiet = false
+endfunction
+
+function SetMpCurrentQuiet takes unit c, real r returns nothing
+    set HealTextQuiet = true
+    set HealRegenTrack = true
+    call SetMpCurrent(c, r)
+    set HealRegenTrack = false
+    set HealTextQuiet = false
+endfunction
+
 
     function EffVision takes effect e, unit c returns nothing
         local integer k = 0
@@ -766,6 +872,57 @@ function GearTimer10Release takes nothing returns nothing
         call PauseTimer(GearTimer10)
     endif
 endfunction
+private function GearManaFloorTick takes nothing returns boolean
+    local integer i = GearManaFloorCount - 1
+    local integer h
+    local unit u
+    loop
+        exitwhen i < 0
+        set u = GearManaFloorUnit[i]
+        set h = GetHandleId(u)
+        if GetUnitTypeId(u) == 0 or GetWidgetLife(u) <= 0.405 or GearManaFloorRound[i] != CurrentRound or LoadReal(hs,h,SH_MANA_FLOOR_END) <= TimerGetElapsed(HealRegenClock) then
+            call RemoveSavedReal(hs,h,SH_MANA_FLOOR_END)
+            call RemoveSavedReal(hs,h,SH_MANA_FLOOR_FRACTION)
+            set GearManaFloorCount = GearManaFloorCount - 1
+            set GearManaFloorUnit[i] = GearManaFloorUnit[GearManaFloorCount]
+            set GearManaFloorRound[i] = GearManaFloorRound[GearManaFloorCount]
+            set GearManaFloorUnit[GearManaFloorCount] = null
+            if GearManaFloorCount == 0 then
+                call GearTimer03Release()
+            endif
+        else
+            call GearManaFloorApply(u)
+        endif
+        set i = i - 1
+    endloop
+    set u = null
+    return false
+endfunction
+
+function GearManaFloorStart takes unit u, real duration, real fraction returns nothing
+    local integer i = 0
+    local integer h = GetHandleId(u)
+    loop
+        exitwhen i >= GearManaFloorCount or GearManaFloorUnit[i] == u
+        set i = i + 1
+    endloop
+    call SaveReal(hs,h,SH_MANA_FLOOR_END,TimerGetElapsed(HealRegenClock) + duration)
+    call SaveReal(hs,h,SH_MANA_FLOOR_FRACTION,fraction)
+    if i == GearManaFloorCount then
+        set GearManaFloorUnit[i] = u
+        set GearManaFloorCount = GearManaFloorCount + 1
+        if not GearManaFloorListenerOn then
+            set GearManaFloorListenerOn = true
+            call TriggerAddCondition(GearTimer03Listeners,Condition(function GearManaFloorTick))
+        endif
+        if GearManaFloorCount == 1 then
+            call GearTimer03Acquire()
+        endif
+    endif
+    set GearManaFloorRound[i] = CurrentRound
+    call GearManaFloorApply(u)
+endfunction
+
 private struct KS_Flush
     private static integer array m
     private static integer MUI = -1
@@ -1189,6 +1346,12 @@ endfunction
         endif
         return baseId
     endfunction
+    // Element/poison follow-ups must never feed the offensive item-proc chain.
+    // Numeric attribution survives NextDmg and periodic instances, unlike a synchronous flag.
+    function ItemDamageCanProc takes integer sourceId returns boolean
+        set sourceId = DamageSourceBase(sourceId)
+        return not (sourceId <= -101 and sourceId >= -111) and sourceId != 'I00W' and sourceId != 'I04C' and sourceId != 'I03Y' and sourceId != 'I02H'
+    endfunction
     function dmgmag takes unit c, unit td , real dmg returns nothing
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
@@ -1220,6 +1383,18 @@ endfunction
     if c != null and td != null and GetWidgetLife(td)>1 then 
     call UnitDamageTarget(c,td,dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)
     endif
+        set GearDamageActiveSource = previousSource
+    endfunction
+    function dmgphysattack takes unit c, unit td, real dmg returns nothing
+        local integer previousSource = GearDamageActiveSource
+        local boolean previousFollowup = GearDamageAttackFollowup
+        set GearDamageActiveSource = GearDamageNextSource
+        set GearDamageNextSource = 0
+        set GearDamageAttackFollowup = true
+        if c != null and td != null and GetWidgetLife(td) > 1 then
+            call UnitDamageTarget(c, td, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)
+        endif
+        set GearDamageAttackFollowup = previousFollowup
         set GearDamageActiveSource = previousSource
     endfunction
     function dmgatk takes unit c, unit td , real dmg returns nothing
@@ -2174,16 +2349,18 @@ endmethod
                 if check == 0 then
                     if r2 > r3 then
                         if r < rmax then
+                            // The colour is constant: apply it once, when the fade starts.
+                            if r == 0.0 then
+                                call BlzSetSpecialEffectColor(e, red_i, green_i, blue_i)
+                            endif
                             set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                             set check2 = check2 + R2I(r4)
                             if check2 > k then
                                 set check2 = k
                             endif
                             if b2 == true then
-                                call BlzSetSpecialEffectColor(e, red_i, green_i, blue_i)
                                 call BlzSetSpecialEffectAlpha(e, k - check2)
                             else
-                                call BlzSetSpecialEffectColor(e, red_i, green_i, blue_i)
                                 call BlzSetSpecialEffectAlpha(e, check2)
                             endif
                         else
@@ -2225,6 +2402,10 @@ endmethod
             set green_i = NewGreen
             set blue_i = NewBlue
             set red_i = NewRed
+            // A fade-in starts invisible, including during its prepare time (ColorEffDummy4 / 2 / 32).
+            if not CalcNegative and e != null then
+                call BlzSetSpecialEffectAlpha(e, 0)
+            endif
             if MUI_8 == 0 then
                 call GearTimer03Acquire()
             endif
@@ -3073,6 +3254,8 @@ else
         real r3
         real rmax
         integer check
+        boolean loud
+        real period
         unit td
         unit c
 
@@ -3085,7 +3268,7 @@ else
                 set this = m_19[i]
                 if r <= rmax  then
                     set r = I2R(R2I((r + 0.05) * 1000.0 + 0.5)) / 1000.0
-                    if r2>0.95 then 
+                    if r2 > period - 0.05 then 
                     set r2 = 0.05
                     if check == 0 then
                         if (GetUnitState(td,UNIT_STATE_LIFE)+r3)> GetUnitState(td,UNIT_STATE_MAX_LIFE)  then 
@@ -3093,11 +3276,13 @@ else
                         else
                         set rer = r3
                         endif
-                        if rer >0 then 
+                        if rer >0 and loud then
                         call SetHpCurrent2(c,td, r3)
+                        elseif rer >0 then
+                        call SetHpCurrent2Quiet(c,td, r3)
                         endif
                     else
-                        call SetMpCurrent(c, r3)
+                        call SetMpCurrentQuiet(c, r3)
                     endif
                         else
                         set r2 = r2 + 0.05
@@ -3117,6 +3302,17 @@ else
             endloop
         endmethod
 
+        public static method MarkLastLoud takes nothing returns nothing
+            set thistype(m_19[MUI_19]).loud = true
+        endmethod
+
+        // Shorter ticks keep the same total heal: amount per tick scales with the period.
+        public static method SetLastPeriod takes real p returns nothing
+            local thistype this = m_19[MUI_19]
+            set period = p
+            set r3 = r3 * p
+        endmethod
+
         public static method HPS_Start takes unit NewC,unit NewTd, integer NewCheck, real NewHeal, real NewMax returns nothing
             local thistype this = thistype.create()
             set MUI_19 = MUI_19 + 1
@@ -3125,6 +3321,8 @@ else
             set c = NewC
             set td = NewTd
             set r2 = 0
+            set loud = false
+            set period = 1.0
             set check = NewCheck
             set r3 = (NewHeal / (NewMax ))
             set rmax = NewMax
@@ -3683,6 +3881,7 @@ else
         integer k3
         integer count
         unit c
+        real drawn // last redrawn value: the bar / text repaint every 0.25 s, the clock stays 0.1 s
 
         public static method Loop_MyBuffTime takes nothing returns nothing
             local thistype this
@@ -3698,9 +3897,13 @@ else
                 if b2 then
                     if b == false or IsUnitPaused(c)== false then 
                     set r = I2R(R2I((r + 0.1) * 1000.0 + 0.5)) / 1000.0
+                    // Paused counters keep their value: no redraw of an unchanged buff.
+                    if r - drawn >= 0.249 or r >= rmax then
+                        set drawn = r
+                        call WUI_FrameSetValue(frame0_pas3[k2], r)
+                        call BlzFrameSetText(frame0_pas4[k2], R2SW(rmax+0.1-r,0,1))
                     endif
-                    call WUI_FrameSetValue(frame0_pas3[k2], r)
-                    call BlzFrameSetText(frame0_pas4[k2], "" + R2SW(rmax+0.1-r,0,1) + "|r")
+                    endif
                     if check != 0 then 
                     
                     endif
@@ -3736,6 +3939,7 @@ else
                 set this = m_28[i]
                 if c == caster and k3 == slot and check2 == 1 then
                     set r = 0.0
+                    set drawn = 0.0
                     set rmax = RMaxBJ(0.0, duration)
                     call WUI_FrameSetMinMaxValue(frame0_pas3[k2], 0.0, RMaxBJ(0.01, rmax))
                     call WUI_FrameSetValue(frame0_pas3[k2], 0.0)
@@ -3751,11 +3955,31 @@ else
         endmethod
 
         public static method MyBuffTime_Start takes unit NewC,integer NewId, real NewRmax, string NewS,boolean NewPauseCount, integer NewPlayerId, integer IgnoreBuff, integer NewSh, integer count  returns nothing
-            local thistype this = thistype.create()
+            local thistype this = 0
             local real tmp_x = 0
             local real tmp_y = 0
-            set MUI_28 = MUI_28 + 1
-            set m_28[MUI_28] = this
+            local integer slotKey = NewPlayerId
+            local integer i = 0
+            local boolean reused = false
+            if NewPlayerId == -1 then
+                set slotKey = GetPlayerId(GetOwningPlayer(NewC))
+            endif
+            set slotKey = slotKey + (count*24)+1
+            // A repeat on an occupied slot (W -> W2 windows, recasts) restarts that
+            // timer: one instance per frame, so an older one cannot hide the new bar.
+            loop
+                exitwhen i > MUI_28 or reused
+                if thistype(m_28[i]).k2 == slotKey then
+                    set this = m_28[i]
+                    set reused = true
+                endif
+                set i = i + 1
+            endloop
+            if not reused then
+                set this = thistype.create()
+                set MUI_28 = MUI_28 + 1
+                set m_28[MUI_28] = this
+            endif
             set c = NewC
             set id = NewId
             set s = NewS
@@ -3809,7 +4033,7 @@ else
                 call WUI_FrameSetMinMaxValue(frame0_pas3[k2], 0, rmax)
                 call WUI_FrameSetValue(frame0_pas2[k2], 100)
                 call WUI_FrameSetValue(frame0_pas3[k2], 0)
-                call BlzFrameSetText(frame0_pas4[k2], "" + R2SW(rmax,0,1) + "|r")
+                call BlzFrameSetText(frame0_pas4[k2], R2SW(rmax,0,1))
                 call BlzFrameSetTexture(frame0_pas2[k2], "ReplaceableTextures\\CommandButtons\\"+s+".blp", 0, false)
                 call BlzFrameSetTexture(frame0_pas3[k2], "ReplaceableTextures\\CommandButtonsDisabled\\DIS"+s+".blp", 0, false)
                 
@@ -3817,10 +4041,15 @@ else
                     call BlzFrameSetEnable(frame0_pas2[k2],false)
                     call BlzFrameSetEnable(frame0_pas3[k2],false)
                     call BlzFrameSetEnable(frame0_pas4[k2],false)
-                call WUI_RegisterBuff(frame0_pas1[k2], frame0_pas4[k2], k, "GearBuff:" + I2S(k2))
-                call WUI_RefreshDocks()
+                // A restarted slot is already registered and placed; the 0.10 s
+                // dock tick handles the rest, so only a new icon relayouts at once.
+                if not reused then
+                    call WUI_RegisterBuff(frame0_pas1[k2], frame0_pas4[k2], k, "GearBuff:" + I2S(k2))
+                    call WUI_RefreshDocks()
+                endif
                 set r = 0
-            if MUI_28 == 0 then
+                set drawn = 0
+            if not reused and MUI_28 == 0 then
                 call GearTimer10Acquire()
             endif
         endmethod
@@ -4820,6 +5049,16 @@ endfunction
     function HPS takes unit c,unit td, real heal, real max returns nothing
         call KS_HealOverTime.HPS_Start(c,td, 0, heal, max)
     endfunction
+    // Heal over time with floating numbers and no regen tracking (active items such as Angel's Blessing).
+    function HPSLoud takes unit c,unit td, real heal, real max returns nothing
+        call KS_HealOverTime.HPS_Start(c,td, 0, heal, max)
+        call KS_HealOverTime.MarkLastLoud()
+    endfunction
+    // Quiet heal over time with ticks every `period` sec (same total heal).
+    function HPSPeriod takes unit c,unit td, real heal, real max, real period returns nothing
+        call KS_HealOverTime.HPS_Start(c,td, 0, heal, max)
+        call KS_HealOverTime.SetLastPeriod(period)
+    endfunction
     function MPS takes unit c, real heal, real max returns nothing
         call KS_HealOverTime.HPS_Start(c,c, 1, heal, max)
     endfunction
@@ -4882,6 +5121,9 @@ endfunction
             if GetUnitAbilityLevel(u, FrostnovaE_HealCutBuffID) > 0 then
                 set m = m * (1.0-FrostnovaE_HealCut)
             endif
+        endif
+        if GetUnitAbilityLevel(u, SukunaFinger_Buff_ID) > 0 then // Sukuna's Finger: regeneration -100%
+            set m = 0.00
         endif
         return m
     endfunction
@@ -5333,6 +5575,8 @@ private function InitGearSystems2 takes nothing returns nothing
     set GearTimer03Callback = function GearTimer03Loop
     set GearTimer05Callback = function GearTimer05Loop
     set GearTimer10Callback = function GearTimer10Loop
+    // Game clock of the scripted regen windows (started here, never from a local block).
+    call TimerStart(HealRegenClock, 100000000.0, false, null)
     set GearTimer03Users = 0
     set GearTimer05Users = 0
     set GearTimer10Users = 0

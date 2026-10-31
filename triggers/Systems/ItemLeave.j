@@ -37,13 +37,13 @@ function Trig_ItemLeave_Actions takes nothing returns nothing
         call AddHpRegen(c, 5, false)
     endif
     if id == 'I024' then
-        call AddHpRegen(c, 20, false)
+        call AddHpRegen(c, 15, false)
     endif
     if id == 'I025' then
-        call AddHpRegen(c, 20, false)
+        call AddHpRegen(c, 15, false)
     endif
     if id == 'I011' then
-        call AddHpRegen(c, 20, false)
+        call AddHpRegen(c, 15, false)
     endif
     if id == 'I00G' then
         call AddMpRegen(c, 1, false)
@@ -77,8 +77,13 @@ function Trig_ItemLeave_Actions takes nothing returns nothing
     if id == 'I018' then
         call AddMpRegen(c, 4, false)
     endif
+    if id == Tekkai_ID then
+        call AddHpRegen(c, Tekkai_HpRegen, false)
+    endif
     if id == 'I00E' then
         call AddSpellLevel(c, 'A01C', 10, false)
+        call AddHpRegen(c, Incursio_HpRegen, false)
+        call AddMpRegen(c, Incursio_MpRegen, false)
     endif
     if id == 'I007' then
         call AddSpellLevel(c, 'A01C', 5, false)

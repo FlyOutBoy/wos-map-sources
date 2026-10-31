@@ -1234,7 +1234,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         if r < rmax then
                             call WUI_HeroProgress(c, GojoE_ID, "Eternity: free time", rmax - r, rmax, true)
                         else
-                            call WUI_HeroProgressText(c, GojoE_ID, "Eternity: mana", GetUnitState(c, UNIT_STATE_MANA), RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)), false, R2SW(100.00 * GetUnitState(c, UNIT_STATE_MANA) / RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)), 0, 1) + "% MP")
+                            call WUI_HeroProgressText(c, GojoE_ID, "Eternity: mana", GetUnitState(c, UNIT_STATE_MANA), RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)), false, I2S(R2I(100.00 * GetUnitState(c, UNIT_STATE_MANA) / RMaxBJ(1.00, GetUnitState(c, UNIT_STATE_MAX_MANA)) + 0.5)) + "% MP")
                         endif
                     else
                         if rmax - r >= 0 then
@@ -1813,7 +1813,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         endif
                     endif
                     if r > 0.69 and r < 1.34 then
-                        if r7 > 0.06 then
+                        if r7 > 0.12 then
                             set r7 = 0
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_m2 (573).mdx", x1, y1, 0.45, 1, 1.45, 1 ))
                         else
@@ -1821,10 +1821,10 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         endif
                     endif
                     if r > 0.39 and r < 3.72 then
-                        if r4 > 0.12 then
+                        if r4 > 0.21 then
                             set r4 = 0
                             set k = 0
-                            // One bolt per pulse: each bolt plays a 2 s death, two kept ~45 alive.
+                            // One bolt per pulse every 0.24 s: each bolt plays a 2 s death (~8 alive).
                             loop
                                 exitwhen k == 1
                                 set kr2 = GetRandomReal(450, 950)
@@ -1953,7 +1953,8 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                         if CheckCoordsInRect(gg_rct_Arena, GetEffX(e3) + move * Cos(a), GetEffY(e3) + move * Sin(a)) then
                             call MoveEff2(e3, move, a)
                         endif
-                        if r3 > 0.06 then
+                        // Bolt (2 s death) + opm (664): every 0.18 s, ~11 bolts alive.
+                        if r3 > 0.15 then
                             set r3 = 0
                             set k = 0
                             loop
@@ -1968,7 +1969,7 @@ library GojoSpells initializer InitGojoSpells uses GearSystems
                             set r3 = r3 + 0.03
                         endif
                         // opdef (100)11: 16 emitters (~370 alpha-blended particles, width up to 1000).
-                        if r2 > 0.27 then
+                        if r2 > 0.39 then
                             set r2 = 0
                             call ColorEffDummy3(EffectSpawn("war3mapImported\\wos_opdef (100)11.mdl", GetEffX(e3), GetEffY(e3), GetRandomReal(0, 359), 1, 0.3, 0), 0.35, 255, 255, 255, 0.75)
                         else

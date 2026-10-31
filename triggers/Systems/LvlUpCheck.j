@@ -383,6 +383,7 @@ if Laxus_ID == id then
     call UnitMakeAbilityPermanent(c,true,InoriEAlt_ID)
     call SetPlayerAbilityAvailable(GetOwningPlayer(c),InoriEAlt_ID,false)
     endif
+    call InoriE_UpdateAura(c)
     endif
     endif
     if Akainu_ID == id and GetUnitAbilityLevel(c,AkainuF_ID) == 0 then 

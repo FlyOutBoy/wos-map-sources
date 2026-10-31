@@ -2620,7 +2620,7 @@ library TsunaSpells uses GearSystems
                     if r3 > 0 then
                         call MakeSound("war3mapimported\\Hero_Tsuna_G4")
                         call MakeSound("war3mapimported\\Hero_Tsuna_G5")
-                        call SetMpCurrent(c, r3 * (TsunaG_DamagetoMana / 100))
+                        call SetMpCurrentQuiet(c, r3 * (TsunaG_DamagetoMana / 100))
                     endif
                     call StopSpellUnit2(c)
                     set c = null

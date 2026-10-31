@@ -94,7 +94,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
         real CrocodileW_DamageAgi = 0.75
         integer CrocodileW_Slow = 30
         real CrocodileW_ComboDamageAgi = 2.0
-        real CrocodileW_ComboStun = 1.5
+        real CrocodileW_ComboStun = 1.5 // from CrocodileW_ComboFullLevel
+        real CrocodileW_ComboStunEarly = 0.7 // before that level
+        real CrocodileW_ComboPullSpeedEarly = 1800.0 // cap of the combo pull before that level (~430 range)
+        integer CrocodileW_ComboFullLevel = 25
         integer CrocodileW_ManaBurnHits = 4
         integer CrocodileW_Animation = 10
 
@@ -1134,7 +1137,11 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                     call Crocodile_SpellDamage(c,u,GetHeroAgi(c,true)*CrocodileW_ComboDamageAgi,manaKey)
                     call Crocodile_ApplySharedMark(c,u)
                     call GroupAddUnit(pullGroup,u)
-                    call StunUnit(c,u,CrocodileW_ComboStun)
+                    if GetHeroLevel(c) >= CrocodileW_ComboFullLevel then
+                        call StunUnit(c,u,CrocodileW_ComboStun)
+                    else
+                        call StunUnit(c,u,CrocodileW_ComboStunEarly)
+                    endif
                 endif
             endloop
             set u = null
@@ -1219,8 +1226,10 @@ library CrocodileSpells initializer InitCrocodileSpells uses GearSystems, GearSy
                                 // Linear depth and a stronger rim keep the outer pull useful.
                                 set depth = RMaxBJ(0.0,1.0-distance/RMaxBJ(1.0,radius))
                                 set pullSpeed = CrocodileW_PullSpeed*(CrocodileW_EdgePullMultiplier+(1.0-CrocodileW_EdgePullMultiplier)*depth)
-                                if comboPullTime > 0.0 then
+                                if comboPullTime > 0.0 and GetHeroLevel(c) >= CrocodileW_ComboFullLevel then
                                     set pullSpeed = RMaxBJ(pullSpeed,distance/RMaxBJ(CrocodilePeriod,comboPullTime))
+                                elseif comboPullTime > 0.0 then
+                                    set pullSpeed = RMaxBJ(pullSpeed,RMinBJ(CrocodileW_ComboPullSpeedEarly,distance/RMaxBJ(CrocodilePeriod,comboPullTime)))
                                 endif
                                 call MoveUnit(u,RMinBJ(pullSpeed*CrocodilePeriod,distance),Atan2(y-GetUnitY(u),x-GetUnitX(u)))
                             endif
@@ -2608,6 +2617,9 @@ endmethod
                 endif
                 set patch = following
             endloop
+            if t2Pending and not channelActive then
+                call SaveBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL, false)
+            endif
             set t2Pending = false
             set patchHead = 0
             set growthHead = 0
@@ -2987,6 +2999,7 @@ endmethod
             call ground.CrocodileT_EndChannel()
             set ground.animationApplied = false
             set ground.t2Pending = true
+            call SaveBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL, true)
             set ground.t2Time = -TimerGetElapsed(GearTimer03)
             set ground.t2PauseHeld = true
             call SaveInteger(CrocodileTable,GetHandleId(c),CrocodileT_PhaseKey,1)
@@ -3426,7 +3439,8 @@ endstruct
 
     function CrocodileT_IsChanneling takes unit c returns boolean
         local CrocodileT_Struct ground = LoadInteger(CrocodileTable,GetHandleId(c),CrocodileT_DataKey)
-        return ground != 0 and ground.channelActive and not ground.endNow and SpellBoolCaster(c) and not IsUnitIllusion(c)
+        // The T2 cast (until detonation) keeps the same resistance as the T channel.
+        return ground != 0 and (ground.channelActive or ground.t2Pending) and not ground.endNow and SpellBoolCaster(c) and not IsUnitIllusion(c)
     endfunction
 
     private struct CrocodileG_Struct

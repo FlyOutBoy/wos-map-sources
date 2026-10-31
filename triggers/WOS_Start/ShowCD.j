@@ -1678,6 +1678,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     local string iconPath = null
     local string charge = ""
     local boolean ownHero = GetOwningPlayer(AHUI_SelectedHero[pid]) == Player(pid)
+    local boolean silenced = WUI_UnitSilenced(AHUI_SelectedHero[pid])
 
     if GetLocalPlayer() != Player(pid) then
         return
@@ -1703,7 +1704,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         // Checkpoint 24: the stock button is used only when it really sits in
         // this slot's command-card cell; skills placed elsewhere (Gojo F,
         // Inori G...) are drawn here, otherwise the slot stayed empty.
-        if (abilityId == 0 or (level > 0 and (slot < AHUI_SLOT_F or (BlzGetAbilityPosX(abilityId) == AHUI_GetSlotX(slot) and BlzGetAbilityPosY(abilityId) == AHUI_GetSlotY(slot))))) and not IsUnitType(AHUI_SelectedHero[pid], UNIT_TYPE_DEAD) and not WUI_NativeCommandsHidden() and not WUI_IsHotkeyEditing() and WUI_SlotKeyLabel(pid, slot) == "" and not IsUnitPaused(AHUI_SelectedHero[pid]) then
+        if (abilityId == 0 or (level > 0 and (slot < AHUI_SLOT_F or (BlzGetAbilityPosX(abilityId) == AHUI_GetSlotX(slot) and BlzGetAbilityPosY(abilityId) == AHUI_GetSlotY(slot))))) and not IsUnitType(AHUI_SelectedHero[pid], UNIT_TYPE_DEAD) and not WUI_NativeCommandsHidden() and not WUI_IsHotkeyEditing() and WUI_SlotKeyLabel(pid, slot) == "" and not IsUnitPaused(AHUI_SelectedHero[pid]) and not silenced then
             if slot >= AHUI_SLOT_F and AHUI_RenderedAbility[index] == -2 and abilityId != 0 and level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], GetOwningPlayer(AHUI_SelectedHero[pid]), abilityId) then
                 // Same F/G key badge over the live stock button as on the last
                 // refresh: no hide + re-show of the whole slot every 0.25 s.
@@ -1784,9 +1785,8 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     set AHUI_SlotVisible[index] = true
     call AHUI_ShowPart(index, 0, AHUI_Root[index], true)
     call AHUI_ShowPart(index, 1, AHUI_Icon[index], true)
-    // Checkpoint 28: a paused hero (own, ally or enemy) keeps its skills on
-    // screen through this UI, each marked PAUSED.
-    call WUI_Show(AHUI_PausedText[index], IsUnitPaused(AHUI_SelectedHero[pid]))
+    // Pause and silence share the passive chains; expiry/dispels restore the native row.
+    call WUI_Show(AHUI_PausedText[index], IsUnitPaused(AHUI_SelectedHero[pid]) or (silenced and level > 0))
     if ownHero then
         call WUI_SetText(AHUI_KeyText[index], "|cffffffff" + WUI_SlotShownKey(pid, slot) + "|r")
     else
@@ -2178,11 +2178,39 @@ globals
     // Synced Left Shift state: cooldown chat pings need Shift + RMB.
     private boolean array AHUI_ShiftHeld
     private trigger AHUI_ShiftTrigger = null
+    private boolean array AHUI_QBIntentHeld
 endglobals
+
+// Shift + RMB on a Quick Buy preview (empty inventory cell): allies learn its final item
+// (synced "F" with the locally shown step; validated by QB_OnSync).
+private function AHUI_PollQuickBuyIntent takes integer pid, real x, real y returns nothing
+    local integer i = 0
+    local integer hit = -1
+    // Geometry first: RMB is sampled only over a shown preview cell.
+    loop
+        exitwhen i >= 6 or hit >= 0
+        if QB_PreviewStep[i] >= 0 and RAbsBJ(x - WUI_ItemX(i)) <= WUI_ITEM_SIZE * 0.50 and RAbsBJ(y - WUI_ItemY(i)) <= WUI_ITEM_SIZE * 0.50 then
+            set hit = i
+        endif
+        set i = i + 1
+    endloop
+    if hit < 0 or not BlzIsMouseButtonPressed(MOUSE_BUTTON_TYPE_RIGHT) then
+        set AHUI_QBIntentHeld[pid] = false
+        return
+    endif
+    if AHUI_QBIntentHeld[pid] or not AHUI_ShiftHeld[pid] or QB_Hero[pid] == 0 or QB_Preview[hit] == null or not BlzFrameIsVisible(QB_Preview[hit]) then
+        return
+    endif
+    set AHUI_QBIntentHeld[pid] = true
+    set QB_LocalSequence = QB_LocalSequence + 1
+    call BlzSendSyncData(QB_SYNC, "F," + I2S(QB_Hero[pid]) + "," + I2S(QB_Version[pid]) + "," + I2S(QB_LocalSequence) + "," + I2S(QB_PreviewStep[hit]))
+endfunction
+
 private function AHUI_PollCooldownMouse takes integer pid, real x, real y returns nothing
     if GetLocalPlayer() != Player(pid) then
         return
     endif
+    call AHUI_PollQuickBuyIntent(pid, x, y)
     if AHUI_CooldownPingCommandAt(pid, x, y) < 0 then
         set AHUI_PingInputInside[pid] = false
         call AHUI_ReleaseCooldownPing(pid)
@@ -2769,6 +2797,11 @@ private function AHUI_OnShiftKey takes nothing returns nothing
     set AHUI_ShiftHeld[GetPlayerId(GetTriggerPlayer())] = BlzGetTriggerPlayerIsKeyDown()
 endfunction
 
+// Synced Shift state (shop: Shift + RMB on a Quick Buy slot shows its final recipe).
+function AHUI_IsShiftHeld takes integer pid returns boolean
+    return pid >= 0 and pid < 10 and AHUI_ShiftHeld[pid]
+endfunction
+
 // F1 while the own hero is dead: a corpse cannot be selected, so the panel shows
 // the hero as if it were selected (descriptions, levels). Live heroes keep stock F1.
 private function AHUI_OnDeadHeroKey takes nothing returns nothing
@@ -2810,6 +2843,8 @@ private function AHUI_InitEvents takes nothing returns nothing
                 exitwhen metaKey > 15
                 call BlzTriggerRegisterPlayerKeyEvent(AHUI_ShiftTrigger, Player(pid), OSKEY_LSHIFT, metaKey, true)
                 call BlzTriggerRegisterPlayerKeyEvent(AHUI_ShiftTrigger, Player(pid), OSKEY_LSHIFT, metaKey, false)
+                call BlzTriggerRegisterPlayerKeyEvent(AHUI_ShiftTrigger, Player(pid), OSKEY_RSHIFT, metaKey, true)
+                call BlzTriggerRegisterPlayerKeyEvent(AHUI_ShiftTrigger, Player(pid), OSKEY_RSHIFT, metaKey, false)
                 set metaKey = metaKey + 1
             endloop
             call BlzTriggerRegisterPlayerKeyEvent(AHUI_DeadHeroKey, Player(pid), OSKEY_F1, 0, true)

@@ -2999,6 +2999,20 @@ wide resolutions, changing HUD columns/selection, cast a unit-target skill on
 self via portrait, paused/invisible presentation and level-plate camera/voice.
 
 
+Silence HUD follow-up (2026-10-28): WUI_UnitSilenced reads the actual BNsi
+buff delivered by SilenceUnit. UNITSTAT_Render uses its existing readable-unit
+guard to set a centered, enlarged Silence texture with transparent background
+(no dark strip); bottom INVIS and portrait alpha remain independent. Both labels
+are passive BACKDROPs created
+synchronously by WUI_BindNativePortrait. Hiding the portrait hides both.
+ShowCD reuses its paused custom row and skill-chains overlay while silenced;
+normal native commands return after both pause and silence end. Native input,
+ability availability and gameplay are untouched; enemy cooldown privacy stays.
+build_silence_label.py creates silence-label.tga; the existing builder/installer
+include it. Six new source-execution/asset tests PASS, existing vote/invis and
+HUD suites PASS; the Rimuru G fixture failure reproduces with pre-change
+ShowCD. Compile/dispatch PASS. Actual Warcraft rendering remains unverified.
+
 ## CP70 — full-inventory Mastery, pause sale and team awards (2026-10-20)
 
 WoS_Shop_Init ShopInstantStatPurchase / ShopDeliverPurchase directly grant
@@ -3145,3 +3159,21 @@ result.json,baseline.txt,hero-tests.txt}. No game launch.
 MAIN publication complete: parity5306 functions PASS,6735 packed files,10 checked
 payloads equal MAIN, STABLE/root snapshots updated after backup. Final sync check
 reports0 binary/source differences. SHA256 and backup path are in result.json.
+
+## CP74 — compact elemental item help (2026-10-28, MAIN published)
+
+Shared refresh/proc rules moved out of item descriptions: Elements row 4 explains
+item refresh once per debuff versus unlimited ability/Fire refresh; Element Combos
+row 4 explains poison/debuff proc exclusion and explosion self-proc exclusion.
+Existing four-row panels, handles and local presentation ownership are unchanged.
+`check_item_descriptions.py` strips the old shared paragraphs on repeat runs.
+Compile and item text/range/lifecycle tests validate sources; native layout and
+Anchor bounce rendering still require Warcraft III. MAIN/STABLE rebuilt and published.
+
+MAIN publication verified: compiled/source parity 5460 functions; 7002 packed files;
+8 extracted gameplay/object/model payloads match the scenario byte for byte.
+Packed script includes G2, the Ember projectile, Verdict lightning, 1600 Mirror
+range and compact help; packed item text excludes the shared long paragraphs.
+STABLE updated after backup; final sync check: 0 binary/source differences.
+Evidence: `_build/element-items-main-{build.log,result.json}` and
+`_build/element-items-payload-hashes.json`. Game was not launched.

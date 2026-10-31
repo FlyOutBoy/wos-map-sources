@@ -48,6 +48,12 @@ call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I03U')))
 call UnitAddItemById(c,'I00T')
 endif
 endif*/
+static if LIBRARY_ItemsSpells then
+    call ItemsAnime_Cast(c, td, x, y, id)
+endif
+static if LIBRARY_ItemsSpells then
+    call ItemsElements_Cast(c, td, x, y, id)
+endif
 if id == 'A0BZ' then 
 if IsItemInInventory(c,'I024')>0 then 
 call RemoveItem(UnitItemInSlot(c,IsItemInInventory3(c,'I024')))
@@ -85,7 +91,7 @@ call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_manaimpact.mdl",
 endif
 // --- Heal Angel ---
 if id == 'A02U' then
-call HPS(c,c,(GetUnitState(c, UNIT_STATE_MAX_LIFE) * (AngelBlessing_Heal/100)),3)
+call HPSLoud(c,c,(GetUnitState(c, UNIT_STATE_MAX_LIFE) * (AngelBlessing_Heal/100)),3)
 //call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) + (GetUnitState(c, UNIT_STATE_MAX_LIFE) * 0.15))
 call MyRemoveEff(AddSpecialEffectTarget("war3mapImported\\wos_jntx-guangzhuyellow.mdl",c,"origin"),3)
 endif
@@ -186,11 +192,15 @@ call SetHpCurrent(c,GetUnitState(c,UNIT_STATE_MAX_LIFE)*0.025)
 call BlzStartUnitAbilityCooldown(c,'A05H',2.5)
 call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Undead\\VampiricAura\\VampiricAuraTarget.mdl",c,"origin"))
 endif*/
-if HasCachedItem(c,'I012')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A04Y')==0 and GetUnitState(c, UNIT_STATE_MANA) <= GetUnitState(c, UNIT_STATE_MAX_MANA) * 0.95 then
+if (HasCachedItem(c,'I012')>0 or HasCachedItem(c,FairyTailEvolved_ID)>0) and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A04Y')==0 and GetUnitState(c, UNIT_STATE_MANA) <= GetUnitState(c, UNIT_STATE_MAX_MANA) * 0.95 then
 call DestroyEffect(AddSpecialEffectTarget("war3mapImported\\wos_az_siwenpf1_w1.mdl",c,"origin"))
 set r1 = FairyTailEmblem_ManaRestoreStatic + (GetUnitState(c,UNIT_STATE_MAX_MANA)*(FairyTailEmblem_ManaRestorePercent/100))
 call SetMpCurrent(c,r1)
+if HasCachedItem(c,FairyTailEvolved_ID)>0 then
+call SetHpCurrent2(c,c,FairyTailEmblem_HpRestoreStatic + GetUnitState(c,UNIT_STATE_MAX_LIFE)*FairyTailEvolved_HpRestorePercent/100)
+else
 call SetHpCurrent2(c,c,FairyTailEmblem_HpRestoreStatic)
+endif
 call BlzStartUnitAbilityCooldown(c,'A04Y',FairyTailEmblem_CD )
 endif   
 if HasCachedItem(c,'I00H')>0 and BlzGetUnitAbilityCooldown(c,id,GetUnitAbilityLevel(c,id)-1)>=3  and BlzGetUnitAbilityCooldownRemaining(c,'A01I')==0  then

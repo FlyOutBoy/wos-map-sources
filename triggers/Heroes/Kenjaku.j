@@ -284,7 +284,7 @@ library KenjakuSpells uses GearSystems
                     set .r = RoundReal(.r, 3)
                     if .r2 >= .r3 then
                         set .r2 = 0
-                        call SetHpCurrent2(c,c, dmg)
+                        call SetHpCurrent2Quiet(c,c, dmg)
                     else
                         set .r2 = .r2 + 0.03
                     endif
