@@ -18,6 +18,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         integer Frieren_ID = 'H02H'
 //---------------Q ability-----------------------------------------------------
         integer FrierenQ_ID = 'A0GK'
+        real FrierenQ_CastTime = 0.75
         integer FrierenQ2_ID = 'A0GL'
         integer FrierenQ3_ID = 'A0GM'
         real FrierenQ_DamageIntBase = 1 // base number x Str damage for 1 level
@@ -58,6 +59,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real FrierenW_Stun = 0.5
 //---------------E ability-----------------------------------------------------
         integer FrierenE_ID = 'A0GP'
+        integer FrierenE_Columns = 6
         real FrierenE_DamageIntBase = 1 // base number x Str damage for 1 level
         real FrierenE_DamageIntStep = 0.2 // additional number x Str damage for each next level
         real FrierenTE_DamageIncrease = 1 // additional number x Str damage for each next level
@@ -88,9 +90,13 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real FrierenT_Stun = 1
 //---------------T2 ability-----------------------------------------------------
         integer FrierenT2_ID = 'A0GT'
+        real FrierenT2_CastTime = 0.54
+        real FrierenT2_GrowTime = 0.84
         real FrierenT2_DamageIntBase = 8 // base number x Str damage for 1 level
         real FrierenT2_DamageAoe = 600
-        real FrierenT2_Range = 2000.00
+        real FrierenT2_Range = 2200
+        real FrierenT2_TravelDistance = 1800
+        real FrierenT2_MergeRadius = 360
         integer FrierenT2_Slow = 60
         integer FrierenT2_SlowDuration = 1
 //---------------G ability-----------------------------------------------------
@@ -261,10 +267,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                             endif
                         endif
                         call DebugUnit2(c)
-                        if r == 0.6 then
+                        if r == FrierenQ_CastTime then
                             call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_by_wood_bashenan_juqi_2_2.mdl", GetUnitX(c) + r5 * Cos(a), GetUnitY(c) + r5 * Sin(a), 0, 1, 2.5, 255, 255, 255, 255, 255))
                         endif
-                        if r >= 0.6 then
+                        if r >= FrierenQ_CastTime then
                             call StopSpellUnit2(c)
                             set check = 1
                             if FrierenCloneCheck(c) then
@@ -1128,6 +1134,10 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real rmax
         real aoe
         real dmg
+        real sizeMultiplier
+        real orbVisualMultiplier
+        real lightningVisualMultiplier
+        real ambientInterval
         integer k
         public static method Loop_FrierenW2 takes nothing returns nothing
             local integer this
@@ -1139,22 +1149,22 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             loop
                 exitwhen i > MUI_FrierenW2
                 set this = m_FrierenW2[i]
-                if SpellBoolCaster(c) and r < rmax and travelled < limit then
+                if SpellBoolCaster(c) and r < rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r5 = I2R(R2I((r5 + 0.03) * 1000.0 + 0.5)) / 1000.0
                     set r6 = RoundReal(r6 + 0.03, 3)
-                    set rr1 = RMinBJ(move, limit - travelled)
-                    set travelled = travelled + rr1
-                    set x = x + rr1 * Cos(a)
-                    set y = y + rr1 * Sin(a)
+                    set rr1 = RMinBJ(1.0, r / 0.75)
+                    set aoe = FrierenW2_DamageAoe * sizeMultiplier * (0.35 + 0.65 * rr1)
+                    call BlzSetSpecialEffectScale(e, (0.01 + 2.44 * rr1) * orbVisualMultiplier)
                     call BlzSetSpecialEffectPosition(e, x, y, 265)
                     set k = 0
                     loop
                         exitwhen k == 6
-                        call BlzSetSpecialEffectPosition(ee[k], x + 50 * Cos(k * 60 * bj_DEGTORAD), y + 50 * Sin(k * 60 * bj_DEGTORAD), 225)
+                        call BlzSetSpecialEffectPosition(ee[k], x + 50 * sizeMultiplier * Cos(k * 60 * bj_DEGTORAD), y + 50 * sizeMultiplier * Sin(k * 60 * bj_DEGTORAD), 225)
+                        call BlzSetSpecialEffectScale(ee[k], (0.25 + 0.5 * rr1) * lightningVisualMultiplier)
                         call BlzSetSpecialEffectYaw(ee[k], a2 + 60 * k * bj_DEGTORAD)
                         set k = k + 1
                     endloop
@@ -1164,29 +1174,29 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         set r2 = 0.00
                         call VisionTimed(GetOwningPlayer(c), x, y, aoe, 1)
                     endif
-                    if r3 > 0.09 then
+                    if r3 >= ambientInterval then
                         set r3 = 0
-                        set rr1 = GetRandomReal(125, 455)
+                        set rr1 = GetRandomReal(125, 455) * aoe / FrierenW2_DamageAoe
                         set rr2 = GetRandomReal(0, 359) * bj_DEGTORAD
                         set x1 = x + rr1 * Cos(rr2)
                         set y1 = y + rr1 * Sin(rr2)
                         if GetRandomInt(1, 2) == 1 then
-                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-trlightning2.mdl", x1, y1, GetRandomReal(0, 359), 1, 1, 0))
+                            call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-trlightning2.mdl", x1, y1, GetRandomReal(0, 359), 1, lightningVisualMultiplier, 0))
                         endif
-                        set rr1 = GetRandomReal(125, 455)
+                        set rr1 = GetRandomReal(125, 455) * aoe / FrierenW2_DamageAoe
                         set rr2 = GetRandomReal(0, 359) * bj_DEGTORAD
                         set x1 = x + rr1 * Cos(rr2)
                         set y1 = y + rr1 * Sin(rr2)
-                        call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_sdmikotopurple.mdx", x1, y1, GetRandomReal(0, 359), 1, 2, 0), 0.3, 255, 255, 255, 0.3)
-                          //  call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", x, y, GetRandomReal(0, 359), 1, 1.1, 0), 0.3, 255, 255, 255, 0.3)
+                        call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_sdmikotopurple.mdx", x1, y1, GetRandomReal(0, 359), 1, 2 * lightningVisualMultiplier, 0), 0.3, 255, 255, 255, 0.3)
+                          //  call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", x, y, GetRandomReal(0, 359), 1, 1.1 * lightningVisualMultiplier, 0), 0.3, 255, 255, 255, 0.3)
                     endif
                     if r4 > 0.3 then
                         set r4 = 0
-                        set rr1 = GetRandomReal(125, 455)
+                        set rr1 = GetRandomReal(125, 455) * aoe / FrierenW2_DamageAoe
                         set rr2 = GetRandomReal(0, 359) * bj_DEGTORAD
                         set x1 = x + rr1 * Cos(rr2)
                         set y1 = y + rr1 * Sin(rr2)
-                        call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", x1, y1, GetRandomReal(0, 359), 1, 1.1, 0), 0.3, 255, 255, 255, 0.3)
+                        call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", x1, y1, GetRandomReal(0, 359), 1, 1.1 * lightningVisualMultiplier, 0), 0.3, 255, 255, 255, 0.3)
                     //call BlzPlaySpecialEffect(e2,ANIM_TYPE_BIRTH)2
                     //call BlzPlaySpecialEffect(e4,ANIM_TYPE_DEATH)
                    //call EffectSpawn2("war3mapimported\\wos_Naruto_Effect_DaiTu_ShenWei.mdl", x, y, GetRandomReal(0, 359), 0.65, 3, 275,0.5)
@@ -1213,8 +1223,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                                 call ErzaPassive(c,u,3)
                                 endif
                                 call GroupAddUnit(g2, u)
-                                call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 1.1, 0), 0.3, 255, 255, 255, 0.3)
-                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-trlightning2.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 2, 0))
+                                call ColorEffDummy3(EffectSpawn("war3mapimported\\wos_[1]AtomicThunder.mdx", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 1.1 * lightningVisualMultiplier, 0), 0.3, 255, 255, 255, 0.3)
+                                call DestroyEffect(EffectSpawn("war3mapImported\\wos_mei-trlightning2.mdl", GetUnitX(u), GetUnitY(u), GetRandomReal(0, 359), 1, 2 * lightningVisualMultiplier, 0))
                             endif
                             call GroupRemoveUnit(g, u)
                         endloop
@@ -1250,7 +1260,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 set i = i + 1
             endloop
         endmethod
-        public static method FrierenW2_Start takes unit NewC, unit owner, real NewX, real NewY returns nothing
+        public static method FrierenW2_Start takes unit NewC, unit owner, real NewX, real NewY, boolean withClone returns nothing
             local thistype this
             if NewC == null then
                 return
@@ -1259,6 +1269,16 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set MUI_FrierenW2 = MUI_FrierenW2 + 1
             set m_FrierenW2[MUI_FrierenW2] = this
             set c = NewC
+            set sizeMultiplier = 1.0
+            set orbVisualMultiplier = 1.0
+            set lightningVisualMultiplier = 1.0
+            set ambientInterval = 0.12
+            if withClone then
+                set sizeMultiplier = 2.0
+                set orbVisualMultiplier = 1.7
+                set lightningVisualMultiplier = 0.8
+                set ambientInterval = 0.21
+            endif
             set x = NewX
             set y = NewY
             set r = 0.00
@@ -1277,10 +1297,14 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set g2 = CreateGroup()
             set u = null
             set dmg = FrierenW2_Damage2StaticBase+ (GetInt(c) * FrierenW2_DamageIntBase)
+            if withClone then
+                set dmg = dmg * (1.0 + FrierenR_CloneDamageMultiplier2 / 100.0)
+            endif
             set a = GAngle2(c, x, y)
             set a2 = GAngle2(c, x, y)
-            set x = GetUnitX(c) + 1 * Cos(a)
-            set y = GetUnitY(c) + 1 * Sin(a)
+            // The orb stays at the selected point, including a clone cast.
+            set x = NewX
+            set y = NewY
             set limit = FrierenRayLimit(x, y, a, GetUnitX(owner), GetUnitY(owner), FrierenW2_Range)
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex(c, 21)
@@ -1288,9 +1312,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set k = 0
             loop
                 exitwhen k == 6
-                set ee[k] = EffectSpawn("war3mapimported\\wos_krk (1849)6.mdx", x + 50 * Cos(k * 60 * bj_DEGTORAD), y + 50 * Sin(k * 60 * bj_DEGTORAD), k * 60, 0.65, 0.75, 225)
+                set ee[k] = EffectSpawn("war3mapimported\\wos_krk (1849)6.mdx", x + 50 * sizeMultiplier * Cos(k * 60 * bj_DEGTORAD), y + 50 * sizeMultiplier * Sin(k * 60 * bj_DEGTORAD), k * 60, 0.65, 0.75, 225)
                 set k = k + 1
-                call ScaleEffDummy(e, 0.75, 0.01, 2.45)
             endloop
             if FrierenCloneCheck(c) then
                 call MakeSound("war3mapimported\\Hero_Frieren_W4")
@@ -1338,7 +1361,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 call WUI_HeroProgress(c, FrierenE_ID, "Hellfire: Vollzanbel", rmax - r, rmax, true)
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if r3 >= 0.42 then
+                    if r3 >= 0.42 and k < FrierenE_Columns then
                         set r3 = 0.03
                         set td = null
 // Сначала ищем ещё не задетую цель вокруг Фрирен.
@@ -1360,7 +1383,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         else
                             set tries = 0
                             loop
-                                set r6 = GetRandomReal(0, 360) * bj_DEGTORAD
+                                set r6 = (I2R(k) * (360.0 / I2R(FrierenE_Columns)) + GetRandomReal(-15, 15)) * bj_DEGTORAD
                                 if check2 == 1 then
                                     set r5 = GetRandomReal(355, 665)
                                 else
@@ -1467,7 +1490,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set g = CreateGroup()
             set u = null
             set k = 0
-            set rmax = 3.5
+            set rmax = 0.42 * I2R(FrierenE_Columns)
             if FrierenCloneCheck(c) then
                 call MakeSound("war3mapimported\\Hero_Frieren_E")
                 call NextSound("war3mapimported\\Hero_Frieren_E3", 0.51)
@@ -1962,6 +1985,17 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         private static integer array m_FrierenT2
         private static integer MUI_FrierenT2 = -1
         unit c
+        thistype partner
+        boolean merged
+        boolean silent
+        integer mergePhase
+        unit owner
+        real mergeX
+        real mergeY
+        real mergeStartX
+        real mergeStartY
+        real mergeTime
+        integer mergeBursts
         unit u
         group g
         effect e
@@ -1983,34 +2017,155 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
         real aoe
         real dmg
         real dmg2
+        integer damagePulses
         integer k
+        // Convert only the clone fraction before combining into one real-caster hit.
+        static method SourceMultiplier takes unit caster returns real
+            if GetUnitTypeId(caster) == FrierenTR_unitid then
+                return FrierenR_CloneDamageMultiplier2 / 100.0
+            elseif GetUnitTypeId(caster) == Frieren_ID and IsUnitIllusion(caster) then
+                return FrierenR_CloneDamageMultiplier1 / 100.0
+            endif
+            return 1.0
+        endmethod
+
+        method Burst takes real amount, real damageRadius, real pullRadius returns nothing
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (597)red.mdx", x, y, GetRandomReal(0, 359), 2, 1.45, 0))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, a * bj_RADTODEG + 180, 1, 6.35 * scale, 1))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1, 1.65 * scale, 1))
+            call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y , a * bj_RADTODEG + 180, 1.25, 4.85 * scale, 125, 0))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_ZarakiWCrack1.mdl", x, y, GetRandomReal(0, 359), 1.25, 2 * scale, 5))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1, 3.25 * scale, 200))
+                  //  call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-RSFX-4.mdl", x, y, a * bj_RADTODEG + 90, 0.5, 3*scale, 1))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_yz-leimitx13.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 5 * scale, 1))
+            call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 4 * scale, 1))
+            call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl" , x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 2.475 * scale, 125))
+            call DecorRemove(c, x, y, pullRadius, 50)
+            call GroupClear(g)
+            call GroupEnumUnitsInRange(g, x, y, pullRadius, NoDecor_Cond)
+            loop
+                set u = FirstOfGroup(g)
+                exitwhen u == null
+                if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                    if SR3(u, x, y) <= damageRadius then
+                        call DamageSource('A0GT')
+                        call dmgmag(c, u, amount)
+                        call SlowUnit(c, u, FrierenT2_Slow, FrierenT2_SlowDuration)
+                    endif
+                    call MUE(u, RMinBJ(500.0, SR3(u, x, y)), 0.3, GAngle2(u, x, y))
+                endif
+                call GroupRemoveUnit(g, u)
+            endloop
+        endmethod
+
+        method BeginMerge takes nothing returns nothing
+            local thistype primary = this
+            local thistype secondary = partner
+            local real mx = (x + partner.x) * 0.5
+            local real my = (y + partner.y) * 0.5
+            if c != owner then
+                set primary = partner
+                set secondary = this
+            endif
+            set primary.dmg2 = (primary.dmg2 + primary.dmg * (6 - primary.damagePulses)) * SourceMultiplier(primary.c) + (secondary.dmg2 + secondary.dmg * (6 - secondary.damagePulses)) * SourceMultiplier(secondary.c)
+            set primary.c = primary.owner
+            set secondary.dmg2 = 0.0
+            set primary.dmg = 0.0
+            set secondary.dmg = 0.0
+            set primary.damagePulses = 6
+            set secondary.damagePulses = 6
+            set primary.merged = true
+            set secondary.merged = true
+            set primary.silent = false
+            set secondary.silent = true
+            set primary.mergePhase = 1
+            set secondary.mergePhase = 1
+            set primary.mergeX = mx
+            set primary.mergeY = my
+            set secondary.mergeX = mx
+            set secondary.mergeY = my
+            set primary.mergeStartX = primary.x
+            set primary.mergeStartY = primary.y
+            set secondary.mergeStartX = secondary.x
+            set secondary.mergeStartY = secondary.y
+            set primary.mergeTime = 0.0
+            set secondary.mergeTime = 0.0
+            set primary.partner = 0
+            set secondary.partner = 0
+        endmethod
+
         public static method Loop_FrierenT2 takes nothing returns nothing
             local integer this
             local integer i = 0
             local real rr
+            local real gap
+            local boolean finished
             loop
                 exitwhen i > MUI_FrierenT2
                 set this = m_FrierenT2[i]
-                if SpellBoolCaster(c) and r < rmax and k < 10 and travelled < limit then
+                set finished = false
+                if mergePhase == 1 then
+                    set mergeTime = mergeTime + 0.03
+                    set rr = RMinBJ(1.0, mergeTime / 0.18)
+                    set x = mergeStartX + (mergeX - mergeStartX) * rr
+                    set y = mergeStartY + (mergeY - mergeStartY) * rr
+                    call BlzSetSpecialEffectPosition(e, x, y, 265)
+                    call BlzSetSpecialEffectPosition(e2, x, y, 265)
+                    call BlzSetSpecialEffectPosition(e3, x, y, 265)
+                    if mergeTime + 0.000001 >= 0.18 then
+                        if silent then
+                            set finished = true
+                        else
+                            set mergePhase = 2
+                            set mergeTime = 0.0
+                            set mergeBursts = 0
+                        endif
+                    endif
+                elseif mergePhase == 2 then
+                    set mergeTime = mergeTime + 0.03
+                    set rr = RMinBJ(1.0, mergeTime / 0.5)
+                    call BlzSetSpecialEffectScale(e, (0.01 + 1.74 * RMinBJ(1.0, r / FrierenT2_GrowTime)) * (1.0 - rr) + 2.625 * rr)
+                    call BlzSetSpecialEffectScale(e2, (0.01 + 2.24 * RMinBJ(1.0, r / FrierenT2_GrowTime)) * (1.0 - rr) + 3.375 * rr)
+                    call BlzSetSpecialEffectScale(e3, (0.01 + 3.34 * RMinBJ(1.0, r / FrierenT2_GrowTime)) * (1.0 - rr) + 5.025 * rr)
+                    if mergeBursts < 4 and mergeTime + 0.000001 >= 0.5 + 0.4 * mergeBursts then
+                        call Burst(dmg2 * 0.25, aoe + 400, (aoe + 400) * 1.25)
+                        set mergeBursts = mergeBursts + 1
+                    endif
+                    if mergeBursts >= 4 then
+                        set finished = true
+                    endif
+                elseif SpellBoolCaster(c) and r < rmax and travelled < limit then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if IsTerrainPathable(x,y,PATHING_TYPE_FLYABILITY)== false then 
-                    set rr = RMinBJ(move, limit - travelled)
-                    set travelled = travelled + rr
-                    set x = x + rr * Cos(a)
-                    set y = y + rr * Sin(a)
+                    if r >= FrierenT2_CastTime then
+                        set r2 = I2R(R2I((r2 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        set r3 = I2R(R2I((r3 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        set r4 = I2R(R2I((r4 + 0.03) * 1000.0 + 0.5)) / 1000.0
+                        if IsTerrainPathable(x,y,PATHING_TYPE_FLYABILITY)== false then 
+                        set rr = RMinBJ(move, limit - travelled)
+                        set travelled = travelled + rr
+                        set x = x + rr * Cos(a)
+                        set y = y + rr * Sin(a)
+                        endif
                     endif
                     if r == 0.9 then
                  //   call BlzPlaySpecialEffect(e,ANIM_TYPE_STAND)
+                    endif
+                    set rr = RMinBJ(1.0, r / FrierenT2_GrowTime)
+                    call BlzSetSpecialEffectScale(e, 0.01 + 1.74 * rr)
+                    call BlzSetSpecialEffectScale(e2, 0.01 + 2.24 * rr)
+                    call BlzSetSpecialEffectScale(e3, 0.01 + 3.34 * rr)
+                    if partner != 0 and r >= FrierenT2_CastTime and partner.r >= FrierenT2_CastTime and partner.mergePhase == 0 then
+                        set gap = SquareRoot((x-partner.x)*(x-partner.x)+(y-partner.y)*(y-partner.y))
+                        if gap <= FrierenT2_MergeRadius then
+                            call BeginMerge()
+                        endif
                     endif
                     call BlzSetSpecialEffectPosition(e, x, y, 265)
                     call BlzSetSpecialEffectPosition(e2, x, y, 265)
                     call BlzSetSpecialEffectPosition(e3, x, y, 265)
                     set a2 = a2 + 4 * bj_DEGTORAD
                     call BlzSetSpecialEffectYaw(e, a2)
-                    if r2 >= 0.15 then
+                    if mergePhase == 0 and r >= FrierenT2_CastTime and k < 10 and r2 >= 0.15 then
                         set r2 = 0.00
                         set k = k + 1
                         call DecorRemove(c, x, y, aoe * 1.25, 50)
@@ -2035,7 +2190,8 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                     else
                         set r4 = r4 + 0.03
                     endif
-                    if r3 >= 0.3 then
+                    if mergePhase == 0 and r >= FrierenT2_CastTime and damagePulses < 6 and r3 >= 0.3 then
+                        set damagePulses = damagePulses + 1
                         set r3 = 0.00
                         call GroupClear(g)
                         call GroupEnumUnitsInRange(g, x, y, aoe, NoDecor_Cond)
@@ -2055,35 +2211,23 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                         endif
                     endif
                 else
-                    //call StopSpellUnit2(c)
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (597)red.mdx", x, y, GetRandomReal(0, 359), 2, 1.45, 0))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_1hongse_2red.mdl", x, y, a * bj_RADTODEG + 180, 1, 6.35 * scale, 1))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_by_wood_effect_order_dange_yueyun_2withoutred.mdl", x, y, a * bj_RADTODEG, 1, 1.65 * scale, 1))
-                    call DestroyEffect(EffectSpawn3("war3mapImported\\wos_YC_Shockwave_b_red.mdl", x, y , a * bj_RADTODEG + 180, 1.25, 4.85 * scale, 125, 0))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_ZarakiWCrack1.mdl", x, y, GetRandomReal(0, 359), 1.25, 2 * scale, 5))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-Hit-red.mdl", x, y, a * bj_RADTODEG, 1, 3.25 * scale, 200))
-                  //  call DestroyEffect(EffectSpawn("war3mapimported\\wos_Satsu-RSFX-4.mdl", x, y, a * bj_RADTODEG + 90, 0.5, 3*scale, 1))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_yz-leimitx13.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 5 * scale, 1))
-                    call DestroyEffect(EffectSpawn("war3mapimported\\wos_AZ_TS_TZRed.mdl", x, y, a * bj_RADTODEG + 90, 2.5, 4 * scale, 1))
-                    call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashred.mdl" , x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 2.475 * scale, 125))
-                    call GroupClear(g)
-                    call GroupEnumUnitsInRange(g, x, y, aoe + 400, NoDecor_Cond)
-                    loop
-                        set u = FirstOfGroup(g)
-                        exitwhen u == null
-                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                            call DamageSource('A0GT')
-                            call dmgmag(c, u, dmg2)
-                            call SlowUnit(c,u,FrierenT2_Slow,FrierenT2_SlowDuration)
-                        endif
-                        call GroupRemoveUnit(g, u)
-                    endloop
+                    set finished = true
+                endif
+                if finished then
+                    if not silent and mergePhase == 0 then
+                    call Burst(dmg2, aoe + 400, aoe + 400)
+                    endif
                     call DestroyEffect(e)
                     call DestroyEffect(e2)
                     call DestroyEffect(e3)
                     call DestroyGroup(g)
                     set g = null
+                    if partner != 0 then
+                        set partner.partner = 0
+                        set partner = 0
+                    endif
                     set c = null
+                    set owner = null
                     set u = null
                     set e = null
                     set e2 = null
@@ -2100,26 +2244,34 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
                 set i = i + 1
             endloop
         endmethod
-        public static method FrierenT2_Start takes unit NewC, unit owner, real NewX, real NewY returns nothing
+        public static method FrierenT2_Start takes unit NewC, unit NewOwner, real NewX, real NewY returns thistype
             local thistype this
             if NewC == null then
-                return
+                return 0
             endif
             set this = thistype.create()
             set MUI_FrierenT2 = MUI_FrierenT2 + 1
             set m_FrierenT2[MUI_FrierenT2] = this
             set c = NewC
+            set partner = 0
+            set merged = false
+            set silent = false
+            set mergePhase = 0
+            set owner = NewOwner
+            set mergeTime = 0.0
+            set mergeBursts = 0
             set x = NewX
             set y = NewY
             set r = 0.00
             set r2 = 0.3
             set r3 = 0.3
             set scale = 0.85
-            set rmax = 3.5
+            set rmax = 3.5 + FrierenT2_CastTime
             set aoe = FrierenT2_DamageAoe
+            set damagePulses = 0
             set k = 0
             set move = 30
-            set travelled = 1.00
+            set travelled = 0.00
             set g = CreateGroup()
             set u = null
             set r4 = 10
@@ -2132,16 +2284,14 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             set a2 = GAngle2(c, x, y)
             set x = GetUnitX(c) + 1 * Cos(a)
             set y = GetUnitY(c) + 1 * Sin(a)
-            set limit = FrierenRayLimit(x, y, a, GetUnitX(owner), GetUnitY(owner), FrierenT2_Range)
+            set limit = FrierenT2_TravelDistance
             call BlzSetUnitFacingEx(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex(c, 21)
-            set e = null // mei-tsfx-1.mdl is not imported
+            set e = EffectSpawn("war3mapimported\\wos_afbcoyrighthdcec.mdl", x, y, GetRandomReal(0, 359), 1.15, 0.01, 265)
             set e2 = EffectSpawn("war3mapimported\\wos_Naruto_Effect_DaiTu_ShenWei.mdl", x, y, GetRandomReal(0, 359), 0.65, 2.5, 275)
             set e3 = EffectSpawn("war3mapimported\\wos_Satsu-RSFX-10.mdl", x, y, GetRandomReal(0, 359), 0.65, 3.75, 275)
-            call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_afbcoyrighthdcec.mdl", x + 150 * Cos(a), y + 150 * Sin(a), GetRandomReal(0, 359), 1.15, 3.25, 255, 255, 255, 255, 255))
-            call ScaleEffDummy(e, 0.75, 0.01, 1.75)
-            call ScaleEffDummy(e2, 0.75, 0.01, 2.25)
-            call ScaleEffDummy(e3, 0.75, 0.01, 3.35)
+            call BlzSetSpecialEffectScale(e2, 0.01)
+            call BlzSetSpecialEffectScale(e3, 0.01)
             call VisionTimed(GetOwningPlayer(c), x, y, aoe, rmax)
             if FrierenCloneCheck(c) then
                 call MakeSound("war3mapimported\\Hero_Frieren_TT1")
@@ -2150,6 +2300,7 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
             if MUI_FrierenT2 == 0 then
                 call FrierenTimer03Acquire()
             endif
+            return this
         endmethod
     endstruct
     private struct FrierenSpells_G
@@ -2390,9 +2541,11 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endfunction
     function FrierenW2_Start takes unit c, real x, real y returns nothing
         local unit illusion = FrierenR_GetIllusion(c)
-        call FrierenSpells_W2.FrierenW2_Start(c, c, x, y)
-        if illusion != null and SR2(c,illusion)<=FrierenR_CloneRangeCast then
-            call FrierenSpells_W2.FrierenW2_Start(illusion, c, x, y)
+        local boolean withClone = illusion != null and SR2(c,illusion)<=FrierenR_CloneRangeCast
+        call FrierenSpells_W2.FrierenW2_Start(c, c, x, y, withClone)
+        if withClone then
+            call BlzSetUnitFacingEx(illusion, GAngle2(illusion, x, y) * bj_RADTODEG)
+            call SetUnitAnimationByIndex(illusion, 21)
         endif
         set illusion = null
     endfunction
@@ -2421,9 +2574,14 @@ library FrierenSpells initializer InitFrierenSpells uses GearSystems
     endfunction
     function FrierenT2_Start takes unit c, real x, real y returns nothing
         local unit illusion = FrierenR_GetIllusion(c)
-        call FrierenSpells_T2.FrierenT2_Start(c, c, x, y)
+        local FrierenSpells_T2 first = FrierenSpells_T2.FrierenT2_Start(c, c, x, y)
+        local FrierenSpells_T2 second
         if illusion != null and SR2(c,illusion)<=FrierenR_CloneRangeCast then
-            call FrierenSpells_T2.FrierenT2_Start(illusion, c, x, y)
+            set second = FrierenSpells_T2.FrierenT2_Start(illusion, c, x, y)
+            if first != 0 and second != 0 then
+                set first.partner = second
+                set second.partner = first
+            endif
         endif
         set illusion = null
     endfunction

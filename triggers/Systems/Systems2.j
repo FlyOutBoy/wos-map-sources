@@ -1,5 +1,10 @@
 library GearSystems2 initializer InitGearSystems2 uses TasAbilityChargeBox, WOSUI
     globals
+        private timer GearSpellPauseClock = CreateTimer()
+        private integer GearSpellPauseCount = 0
+        private integer SH_SPELL_EX_PAUSE_OWNERS = StringHash("spell ex pause owners")
+        private unit array GearSpellPauseUnits
+        private boolean array GearSpellPauseExtended
         constant real HellBlaze_HealCutPerStack = 5.5
         // VisionTimed dedupe: projectiles called it every 0.03 s, keeping ~60 live fog
         // modifiers per ability. One shared game clock; last reveal per player.
@@ -499,7 +504,7 @@ function SetHpCurrent2 takes unit c,unit td, real r returns nothing
         set r = r *0.6
         endif
     set r = r * (1.00 - GetHellBlazeCut(td))
-    if r > 0 and GetUnitAbilityLevel(td, SukunaFinger_Buff_ID) > 0 then // Sukuna's Finger: no HP restoration
+    if r > 0 and (GetUnitAbilityLevel(td, SukunaFinger_Buff_ID) > 0 or GetUnitAbilityLevel(td, CinderFang_Buff_ID) > 0) then // Sukuna's Finger: no HP restoration
         set r = 0
     endif
     // РЎР‚Р ВµР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р С—РЎР‚Р С‘РЎР‚Р С•РЎРѓРЎвЂљ РІР‚вЂќ Р Р…Р Вµ Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎР‹РЎвЂ°Р ВµР С–Р С• HP
@@ -528,7 +533,7 @@ function GearManaFloorApply takes unit c returns nothing
     local integer h = GetHandleId(c)
     local real before
     local real floor
-    if c == null or GetWidgetLife(c) <= 0.405 or GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 or LoadReal(hs,h,SH_MANA_FLOOR_END) <= TimerGetElapsed(HealRegenClock) then
+    if c == null or GetWidgetLife(c) <= 0.405 or (GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 or GetUnitAbilityLevel(c, CinderFang_Buff_ID) > 0) or LoadReal(hs,h,SH_MANA_FLOOR_END) <= TimerGetElapsed(HealRegenClock) then
         return
     endif
     set before = GetUnitState(c,UNIT_STATE_MANA)
@@ -548,7 +553,7 @@ function SetMpCurrent takes unit c, real r returns nothing
     if GetUnitAbilityLevel(c,'B00K')>0 then  // inori T virus
         set r = r *0.75
         endif
-    if r > 0 and GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 then // Five Elements Seal: no mana restoration
+    if r > 0 and (GetUnitAbilityLevel(c, FiveElementsSeal_Buff_ID) > 0 or GetUnitAbilityLevel(c, CinderFang_Buff_ID) > 0) then // Five Elements Seal: no mana restoration
         set r = 0
     endif
     // РЎР‚Р ВµР В°Р В»РЎРЉР Р…РЎвЂ№Р в„– Р С—РЎР‚Р С‘РЎР‚Р С•РЎРѓРЎвЂљ РІР‚вЂќ Р Р…Р Вµ Р В±Р С•Р В»РЎРЉРЎв‚¬Р Вµ Р Р…Р ВµР Т‘Р С•РЎРѓРЎвЂљР В°РЎР‹РЎвЂ°Р ВµР в„– Р СР В°Р Р…РЎвЂ№
@@ -1207,21 +1212,125 @@ function MyFlushReal takes integer id, integer childid, integer value, real r re
     call KS_FlushReal.Start(id, childid, value, r)
 endfunction
 
+    // A pause inside an instant spell event can strand the engine's cast state.
+    // One shared one-shot queue runs after that event; stop/end can cancel it.
+    function GearCancelSpellPause takes unit c returns boolean
+        local integer i = 0
+        loop
+            exitwhen i >= GearSpellPauseCount
+            if GearSpellPauseUnits[i] == c then
+                set GearSpellPauseCount = GearSpellPauseCount - 1
+                set GearSpellPauseUnits[i] = GearSpellPauseUnits[GearSpellPauseCount]
+                set GearSpellPauseExtended[i] = GearSpellPauseExtended[GearSpellPauseCount]
+                set GearSpellPauseUnits[GearSpellPauseCount] = null
+                if GearSpellPauseCount == 0 then
+                    call PauseTimer(GearSpellPauseClock)
+                endif
+                return true
+            endif
+            set i = i + 1
+        endloop
+        return false
+    endfunction
+
+    private function GearApplySpellPauses takes nothing returns nothing
+        local unit c
+        local boolean extended
+        loop
+            exitwhen GearSpellPauseCount == 0
+            set GearSpellPauseCount = GearSpellPauseCount - 1
+            set c = GearSpellPauseUnits[GearSpellPauseCount]
+            set extended = GearSpellPauseExtended[GearSpellPauseCount]
+            set GearSpellPauseUnits[GearSpellPauseCount] = null
+            if c != null and GetUnitTypeId(c) != 0 and not IsUnitType(c, UNIT_TYPE_DEAD) then
+                if extended then
+                    call SaveInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS, LoadInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS) + 1)
+                    call BlzPauseUnitEx(c, true)
+                else
+                    call PauseUnit(c, true)
+                endif
+            endif
+        endloop
+        set c = null
+    endfunction
+
+    function GearPauseSpellStart takes unit c, boolean extended returns nothing
+        local integer i = 0
+        local eventid castEventId = GetTriggerEventId()
+        if c == null then
+            return
+        endif
+        if castEventId == EVENT_PLAYER_UNIT_SPELL_EFFECT or castEventId == EVENT_PLAYER_UNIT_SPELL_CAST or castEventId == EVENT_PLAYER_UNIT_SPELL_CHANNEL or castEventId == EVENT_UNIT_SPELL_EFFECT or castEventId == EVENT_UNIT_SPELL_CAST or castEventId == EVENT_UNIT_SPELL_CHANNEL then
+            loop
+                exitwhen i >= GearSpellPauseCount
+                if GearSpellPauseUnits[i] == c then
+                    // Same-frame start/debug calls must not stack native stuns.
+                    set GearSpellPauseExtended[i] = extended
+                    return
+                endif
+                set i = i + 1
+            endloop
+            set GearSpellPauseUnits[GearSpellPauseCount] = c
+            set GearSpellPauseExtended[GearSpellPauseCount] = extended
+            set GearSpellPauseCount = GearSpellPauseCount + 1
+            if GearSpellPauseCount == 1 then
+                call TimerStart(GearSpellPauseClock, 0.01, false, function GearApplySpellPauses)
+            endif
+        else
+            call GearCancelSpellPause(c)
+            if extended then
+                call SaveInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS, LoadInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS) + 1)
+                call BlzPauseUnitEx(c, true)
+            else
+                call PauseUnit(c, true)
+            endif
+        endif
+        set castEventId = null
+    endfunction
+
+    function GearStopSpellPause takes unit c, boolean extended returns nothing
+        local boolean pending = GearCancelSpellPause(c)
+        local integer owners
+        if extended then
+            if not pending then
+                set owners = LoadInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS)
+                if owners > 0 then
+                    call SaveInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS, owners - 1)
+                    call BlzPauseUnitEx(c, false)
+                endif
+            endif
+        else
+            call PauseUnit(c, false)
+        endif
+    endfunction
+
+    // Ordinary Channel casts pause before their animation is selected.
+    // Only Ice Coffin uses the deferred instant-event queue above.
+    function GearPauseSpellImmediate takes unit c, boolean extended returns nothing
+        call GearCancelSpellPause(c)
+        if extended then
+            call SaveInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS, LoadInteger(hs, GetHandleId(c), SH_SPELL_EX_PAUSE_OWNERS) + 1)
+            call BlzPauseUnitEx(c, true)
+        else
+            call PauseUnit(c, true)
+        endif
+    endfunction
+
     function StartSpellUnit takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call UnitAddAbility(c, 'Avul')
-        call PauseUnit(c, true)
+        call GearPauseSpellImmediate(c, false)
     endfunction
     function StartSpellUnit2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
-        call PauseUnit(c, true)
+        call GearPauseSpellImmediate(c, false)
     endfunction
     function StartSpellUnit2_2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
-        call BlzPauseUnitEx(c, true)
+        call GearPauseSpellImmediate(c, true)
     endfunction
     // After a hero's spell the owner keeps only that hero selected (summons, clicked
     // targets and other units leave the selection). Untouched when already sole.
@@ -1253,7 +1362,7 @@ endfunction
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
         call UnitRemoveAbility(c, 'Avul')
-        call PauseUnit(c, false)
+        call GearStopSpellPause(c, false)
         call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
         call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
         call GearSelectOnlyHero(c)
@@ -1261,7 +1370,7 @@ endfunction
     function StopSpellUnit2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
-        call PauseUnit(c, false)
+        call GearStopSpellPause(c, false)
         call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
         call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
         call GearSelectOnlyHero(c)
@@ -1269,11 +1378,30 @@ endfunction
     function StopSpellUnit2_2 takes unit c returns nothing
         call IssueImmediateOrder(c, "stop")
         call SetUnitTimeScale(c, 1)
-        call BlzPauseUnitEx(c, false)
+        call GearStopSpellPause(c, true)
         call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
         call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay )
         call GearSelectOnlyHero(c)
     endfunction
+    // For queued instant buttons: preserve the order through their scripted windup.
+    function StartSpellUnitQueued takes unit c, boolean invulnerable returns nothing
+        call SetUnitTimeScale(c, 1)
+        if invulnerable then
+            call UnitAddAbility(c, 'Avul')
+        endif
+        call GearPauseSpellStart(c, false)
+    endfunction
+    function StopSpellUnitQueued takes unit c, boolean invulnerable returns nothing
+        call SetUnitTimeScale(c, 1)
+        if invulnerable then
+            call UnitRemoveAbility(c, 'Avul')
+        endif
+        call GearStopSpellPause(c, false)
+        call SaveInteger(hs,GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,1)
+        call MyFlush(GetHandleId(GetOwningPlayer(c)),SH_AHK_PIDOR,0,ahk_delay)
+        call GearSelectOnlyHero(c)
+    endfunction
+
     function SpeedToLevel takes real r returns integer
     local real min = 0.05
     local real step = 0.05
@@ -1352,11 +1480,15 @@ endfunction
         set sourceId = DamageSourceBase(sourceId)
         return not (sourceId <= -101 and sourceId >= -111) and sourceId != 'I00W' and sourceId != 'I04C' and sourceId != 'I03Y' and sourceId != 'I02H'
     endfunction
+    // Same-hit flat amplification is safe for elemental ticks; it schedules no new hit.
+    function ItemDamageCanReceiveQuincy takes integer sourceId returns boolean
+        return true // Same-hit amplification accepts every damage source, including item ticks/reflections.
+    endfunction
     function dmgmag takes unit c, unit td , real dmg returns nothing
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
-    if c != null and td != null and GetWidgetLife(td)>1 then 
+    if c != null and td != null and GetWidgetLife(td)>0.405 then 
     call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_MAGIC, DAMAGE_TYPE_NORMAL, null)
     endif
         set GearDamageActiveSource = previousSource
@@ -1365,7 +1497,7 @@ endfunction
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
-    if c != null and td != null and GetWidgetLife(td)>1 then 
+    if c != null and td != null and GetWidgetLife(td)>0.405 then 
     if s == "kurikara" then 
     set KurikaraTrigger = true 
     endif
@@ -1380,7 +1512,7 @@ endfunction
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
-    if c != null and td != null and GetWidgetLife(td)>1 then 
+    if c != null and td != null and GetWidgetLife(td)>0.405 then 
     call UnitDamageTarget(c,td,dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)
     endif
         set GearDamageActiveSource = previousSource
@@ -1391,7 +1523,7 @@ endfunction
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
         set GearDamageAttackFollowup = true
-        if c != null and td != null and GetWidgetLife(td) > 1 then
+        if c != null and td != null and GetWidgetLife(td) > 0.405 then
             call UnitDamageTarget(c, td, dmg, true, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_FIRE, null)
         endif
         set GearDamageAttackFollowup = previousFollowup
@@ -1401,7 +1533,7 @@ endfunction
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
-    if c != null and td != null and GetWidgetLife(td)>1 then 
+    if c != null and td != null and GetWidgetLife(td)>0.405 then 
     call UnitDamageTarget(c,td,dmg, true, false, ATTACK_TYPE_MELEE, DAMAGE_TYPE_NORMAL, null)
     endif
         set GearDamageActiveSource = previousSource
@@ -1410,7 +1542,7 @@ endfunction
         local integer previousSource = GearDamageActiveSource
         set GearDamageActiveSource = GearDamageNextSource
         set GearDamageNextSource = 0
-        if c != null and td != null and GetWidgetLife(td)>1 then 
+        if c != null and td != null and GetWidgetLife(td)>0.405 then 
         call UnitDamageTarget(c, td, dmg, false, false, ATTACK_TYPE_NORMAL, DAMAGE_TYPE_UNIVERSAL, null)
    endif
         set GearDamageActiveSource = previousSource
@@ -5122,7 +5254,7 @@ endfunction
                 set m = m * (1.0-FrostnovaE_HealCut)
             endif
         endif
-        if GetUnitAbilityLevel(u, SukunaFinger_Buff_ID) > 0 then // Sukuna's Finger: regeneration -100%
+        if (GetUnitAbilityLevel(u, SukunaFinger_Buff_ID) > 0 or GetUnitAbilityLevel(u, CinderFang_Buff_ID) > 0) then // Sukuna's Finger: regeneration -100%
             set m = 0.00
         endif
         return m

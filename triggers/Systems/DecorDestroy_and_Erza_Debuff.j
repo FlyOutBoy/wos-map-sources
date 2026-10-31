@@ -29,7 +29,7 @@ library AAADest uses GearSystems, EnvironmentRoundRules
         integer ErzaWater_ID = 'B007'
         integer ErzaLightning_ID = 'B008'
         integer ErzaWape_ID = 'B009'
-        real ErzaWape_IncreaseDmg = 10 // increase physical taken dmg by target with wape debuff by 8% ( 8 = 8%)
+        real ErzaWape_IncreaseDmg = 12 // % additional physical damage taken while Steam is active
         integer ErzaWape_DecreaseArmor_ID = 'A04T'
         integer ErzaOverload_ID = 'B00A'
         integer ErzaElectrized_ID = 'B00B'
@@ -700,7 +700,7 @@ local integer damageSource = DamageSourceBase(GearDamageNextSource)
 local boolean fromItem = (damageSource >= 'I000' and damageSource <= 'Izzz') or ItemProcDamageDepth > 0
 local unit d = DummyPlayer2[i]
 local integer skip = 0
-local real fireDur = 5.0
+local real fireDur = 4.0
 set GearDamageNextSource = 0
 if level == 9 then
     set damageSource = 'I00W'
@@ -849,14 +849,18 @@ if IsUnitVisible(u, Player(i)) == true and LoadInteger(hs, GetHandleId(u), SH_NA
         endif
         // Zanka no Tachi: Fire always burns 7 sec; the first one already deals 70 per sec.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) == 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
-            set fireDur = 5.0 + ZankaNoTachi_Extend
+            set fireDur = 4.0 + ZankaNoTachi_Extend
         endif
         // Zanka no Tachi: Fire on a burning enemy strengthens the burn.
         if level == 1 and skip == 0 and GetUnitAbilityLevel(u, ErzaFire_ID) > 0 and HasCachedItem(c, ZankaNoTachi_ID) > 0 then
             call ErzaDebuffs.FireStack(u, ZankaNoTachi_Stack)
             // ...the burn restarts at its full 7 sec (it never adds up).
-            set fireDur = 5.0 + ZankaNoTachi_Extend
+            set fireDur = 4.0 + ZankaNoTachi_Extend
             // one burn per target: no extra effect per re-application
+        endif
+        // Attribution belongs to the resolved reaction, including Water + Raiden E.
+        if level >= 1 and level <= 8 then
+            set damageSource = -100-level
         endif
         // Kyoka Suigetsu: Fire or Water meeting Steam refreshes it and adds a burst.
         if (level == 1 or level == 2) and skip == 0 and GetUnitAbilityLevel(u, ErzaWape_ID) > 0 and HasCachedItem(c, KyokaSuigetsu_ID) > 0 and IsUnitEnemy(u, GetOwningPlayer(c)) and IntegerCdKey(u, SH_ICD_KYOKA, KyokaSuigetsu_CD) and ErzaDebuffs.AllowApplication(u, 4, fromItem) then

@@ -24,6 +24,23 @@ function BuffUnitOnce takes unit c, unit u, integer id,integer level, string ord
                 call IssueTargetOrder(castitem1[i], order, u)
             endif
         endfunction
+// Short shared vision for every real item cast, before item-specific dispatch.
+// Reveals terrain to the caster's side without detecting invisible units.
+function ItemActiveVision takes unit c, unit td, real x, real y, ability ab returns nothing
+    local real radius = RMaxBJ(750.0, 1.5 * BlzGetAbilityRealLevelField(ab, ABILITY_RLF_AREA_OF_EFFECT, IMaxBJ(0, GetUnitAbilityLevel(c, GetSpellAbilityId()) - 1)))
+    // The instant foundation has zero native area; the ally heal still has one.
+    if GetSpellAbilityId() == 'A10D' then
+        set radius = RMaxBJ(radius, HashiramaCells_AllyAoe * 1.5)
+    endif
+    if td != null then
+        set x = GetUnitX(td)
+        set y = GetUnitY(td)
+    elseif x == 0.0 and y == 0.0 and BlzGetAbilityIntegerLevelField(ab, ABILITY_ILF_TARGET_TYPE, 0) < 2 then
+        set x = GetUnitX(c)
+        set y = GetUnitY(c)
+    endif
+    call VisionTimed(GetOwningPlayer(c), x, y, radius, 2.0)
+endfunction
 function ItemsCast takes unit c, unit td, real x,real y, integer id returns nothing
 local real r = 0
 local real x1 = 0
@@ -33,6 +50,11 @@ local real cd
 local real r1 = 0
 local integer i = GetPlayerId(GetOwningPlayer(c))
 local real a = GAngle2(c,x,y)
+// Native instant buttons have zero area; give item actives explicit cast vision.
+if BlzGetAbilityBooleanField(GetSpellAbility(), ABILITY_BF_ITEM_ABILITY) then
+    call ItemActiveVision(c, td, x, y, GetSpellAbility())
+    call DecorRemove(c, GetUnitX(c), GetUnitY(c), 150.0, ItemActive_DecorDamage)
+endif
 set SacredGearBooster_CastAbil = id
 set SacredGearBooster_Proc = false
 if GetUnitAbilityLevel(c,'B00D')>0 then 
@@ -111,6 +133,9 @@ if id == Rhitta_ID then
 call Rhitta_Start(c,x,y)
 endif
 if id == Kusanagi_Abi_ID then
+if HasCachedItem(c, KusanagiFire_ID) > 0 or HasCachedItem(c, KusanagiWater_ID) > 0 or HasCachedItem(c, KusanagiElectro_ID) > 0 then
+call BlzStartUnitAbilityCooldown(c, id, KusanagiGrade_Cooldown)
+endif
 call Kusanagi_Start(c,x,y)
 endif
 if id == HashiramaCells_Abi_ID then

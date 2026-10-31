@@ -107,6 +107,11 @@ def validate_frame_resources(asset_root):
         if not name.endswith('.fdf'):
             continue
         source = (asset_root / name).read_text(encoding='utf-8-sig')
+        # ControlStyle belongs to regular controls. SIMPLEBUTTON uses textures /
+        # UseHighlight; this invalid token aborted WOSControls in War3Log.
+        for block in re.findall(r'Frame "SIMPLEBUTTON"[^{}]*\{([^{}]*)\}', source):
+            if re.search(r'\bControlStyle\b', block):
+                raise ValueError(f'{name}: ControlStyle is invalid for SIMPLEBUTTON')
         for axis, token in re.findall(r'FontJustification([HV])\s+(\w+)\s*,', source):
             allowed = {'JUSTIFYLEFT', 'JUSTIFYCENTER', 'JUSTIFYRIGHT'} if axis == 'H' else {'JUSTIFYTOP', 'JUSTIFYMIDDLE', 'JUSTIFYBOTTOM'}
             if token not in allowed:

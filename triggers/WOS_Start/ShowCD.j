@@ -1,4 +1,4 @@
-library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI, TasAbilityChargeBox, AbilityRangePreview
+library AllyHeroAbilityUI initializer InitAllyHeroAbilityUI requires GearSystems, WOSUI, TasAbilityChargeBox, AbilityRangePreview, TooltipBuilder
     globals
         // Hashed once at map load (was StringHash(...) on every call).
         private integer SH_MODE_R = StringHash("mode r")
@@ -34,6 +34,7 @@ private hashtable AHUI_AbilityAvailability = InitHashtable()
 // Дополнительно учитываем скрытие/disable конкретной ability юнита.
 private hashtable AHUI_UnitAbilityHidden = InitHashtable()
 private hashtable AHUI_UnitAbilityDisabled = InitHashtable()
+private hashtable AHUI_UnitAbilityDisableHidden = InitHashtable()
 endglobals
 
 globals
@@ -71,8 +72,8 @@ globals
     private integer array AHUI_TooltipAge
     private constant real AHUI_ICON_SIZE = WUI_ICON_SIZE
     private constant real AHUI_COOLDOWN_TEXT_SCALE = 1.15
-    // Compact tooltip column (was 0.300, which spanned most of the HUD).
-    private constant real AHUI_TOOLTIP_WIDTH = 0.236
+    // Tooltip geometry matches the native box after its engine SIMPLEFRAME scale.
+    private constant real AHUI_TOOLTIP_WIDTH = 0.286
     // Checkpoint 26b: compact tooltip over the level pips.
     private constant real AHUI_PIP_TOOLTIP_WIDTH = 0.200
     private constant real AHUI_COMMAND_X0 = 0.6375
@@ -191,10 +192,14 @@ hook BlzUnitHideAbility AHUI_OnBlzUnitHideAbility
 private function AHUI_OnBlzUnitDisableAbility takes unit whichUnit, integer abilityId, boolean disabled, boolean hideUI returns nothing
     if whichUnit != null and abilityId != 0 then
         call SaveBoolean(AHUI_UnitAbilityDisabled, GetHandleId(whichUnit), abilityId, disabled)
+        call SaveBoolean(AHUI_UnitAbilityDisableHidden, GetHandleId(whichUnit), abilityId, disabled and hideUI)
     endif
 endfunction
 
 hook BlzUnitDisableAbility AHUI_OnBlzUnitDisableAbility
+
+
+
 
 
 private function AHUI_IsAbilityAvailable takes player owner, integer abilityId returns boolean
@@ -229,7 +234,7 @@ private function AHUI_RequirementLocked takes unit hero, integer abilityId retur
     return false
 endfunction
 
-private function AHUI_IsActiveSlotCandidate takes unit whichHero, player owner, integer abilityId returns boolean
+private function AHUI_IsVisibleSlotCandidate takes unit whichHero, player owner, integer abilityId returns boolean
     if whichHero == null or owner == null or abilityId == 0 then
         return false
     endif
@@ -246,11 +251,15 @@ private function AHUI_IsActiveSlotCandidate takes unit whichHero, player owner, 
         return false
     endif
 
-    if LoadBoolean(AHUI_UnitAbilityDisabled, GetHandleId(whichHero), abilityId) then
+    if LoadBoolean(AHUI_UnitAbilityDisableHidden, GetHandleId(whichHero), abilityId) then
         return false
     endif
 
     return true
+endfunction
+
+private function AHUI_IsActiveSlotCandidate takes unit whichHero, player owner, integer abilityId returns boolean
+    return AHUI_IsVisibleSlotCandidate(whichHero, owner, abilityId) and not LoadBoolean(AHUI_UnitAbilityDisabled, GetHandleId(whichHero), abilityId)
 endfunction
 private function AHUI_EnableTooltips takes nothing returns nothing
     set AHUI_TooltipsReady = true
@@ -324,6 +333,14 @@ private function AHUI_GetKeyText takes integer slot returns string
     return "G"
 endfunction
 
+// The rank-6 aura keeps its native delivery base; all E variants share the learned passive timer.
+private function AHUI_AbilityCooldownRemaining takes unit whichHero, integer abilityId returns real
+    if abilityId == InoriEAlt2_ID or abilityId == InoriEAlt_ID then
+        return BlzGetUnitAbilityCooldownRemaining(whichHero, InoriE_ID)
+    endif
+    return BlzGetUnitAbilityCooldownRemaining(whichHero, abilityId)
+endfunction
+
 private function AHUI_ClearResolvedAbilities takes nothing returns nothing
     local integer slot = 0
 
@@ -378,7 +395,7 @@ private function AHUI_AddHeroAbility takes unit whichHero, integer slot, integer
     set currentActive = AHUI_IsActiveSlotCandidate(whichHero, owner, currentId)
 
     if AHUI_AllowCooldownRead then
-        set remaining = BlzGetUnitAbilityCooldownRemaining(whichHero, abilityId)
+        set remaining = AHUI_AbilityCooldownRemaining(whichHero, abilityId)
     endif
 
     // Проверяем SwapAbility marker.
@@ -395,6 +412,9 @@ private function AHUI_AddHeroAbility takes unit whichHero, integer slot, integer
         set AHUI_CurrentAbility[slot] = abilityId
 
     elseif candidateActive and remaining > 0.05 then
+        set AHUI_CurrentAbility[slot] = abilityId
+    elseif AHUI_IsVisibleSlotCandidate(whichHero, owner, abilityId) and not AHUI_IsVisibleSlotCandidate(whichHero, owner, currentId) then
+        // An explicitly disabled visible variant still owns its dimmed icon.
         set AHUI_CurrentAbility[slot] = abilityId
     endif
 
@@ -717,6 +737,14 @@ private function AHUI_ConfigureHeroAbilities takes unit whichHero returns nothin
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, InoriEAlt2_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, InoriEE_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_E, InoriE2_ID)
+        if AHUI_IsActiveSlotCandidate(whichHero, GetOwningPlayer(whichHero), InoriE2_ID) then
+            call AHUI_SetActiveHeroAbility(whichHero, AHUI_SLOT_E, InoriE2_ID)
+        elseif AHUI_IsActiveSlotCandidate(whichHero, GetOwningPlayer(whichHero), InoriEE_ID) then
+            call AHUI_SetActiveHeroAbility(whichHero, AHUI_SLOT_E, InoriEE_ID)
+        elseif AHUI_IsActiveSlotCandidate(whichHero, GetOwningPlayer(whichHero), InoriEAlt2_ID) then
+            // The actual aura owns rank 6 and remains readable during E form.
+            call AHUI_SetActiveHeroAbility(whichHero, AHUI_SLOT_E, InoriEAlt2_ID)
+        endif
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, InoriR_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, InoriER_ID)
         call AHUI_AddHeroAbility(whichHero, AHUI_SLOT_R, InoriR2_ID)
@@ -888,6 +916,12 @@ endfunction
 // tools/build_ability_level_table.py after editing abilities.
 private function AHUI_InitLevelTable takes nothing returns nothing
     // BEGIN GENERATED ABILITY LEVELS (tools/build_ability_level_table.py)
+    call AHUI_SetLevelInfo('A116', 5, 1, 4)
+    call AHUI_SetLevelInfo('A117', 5, 1, 4)
+    call AHUI_SetLevelInfo('A118', 5, 6, 4)
+    call AHUI_SetLevelInfo('A119', 5, 10, 4)
+    call AHUI_SetLevelInfo('A11A', 1, 25, 3)
+    call AHUI_SetLevelInfo('A11B', 1, 1, 3)
     call AHUI_SetLevelInfo('A0I7', 5, 1, 4)
     call AHUI_SetLevelInfo('A0I8', 5, 1, 4)
     call AHUI_SetLevelInfo('A0I9', 5, 6, 4)
@@ -941,17 +975,16 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A052', 5, 6, 4)
     call AHUI_SetLevelInfo('A058', 5, 6, 4)
     call AHUI_SetLevelInfo('A114', 5, 6, 4)
-    call AHUI_SetLevelInfo('A113', 1, 10, 0)
     call AHUI_SetLevelInfo('A053', 5, 10, 4)
     call AHUI_SetLevelInfo('A054', 1, 25, 0)
     call AHUI_SetLevelInfo('A05D', 1, 1, 0)
     call AHUI_SetLevelInfo('A05A', 1, 1, 0)
     call AHUI_SetLevelInfo('A05B', 1, 1, 0)
     call AHUI_SetLevelInfo('A05C', 1, 1, 0)
-    call AHUI_SetLevelInfo('A059', 1, 25, 0)
     call AHUI_SetLevelInfo('A05E', 1, 25, 0)
     call AHUI_SetLevelInfo('A055', 1, 1, 0)
     call AHUI_SetLevelInfo('A0DY', 1, 25, 0)
+    call AHUI_SetLevelInfo('A059', 1, 25, 0)
     call AHUI_SetLevelInfo('A08M', 5, 1, 4)
     call AHUI_SetLevelInfo('A08N', 5, 1, 4)
     call AHUI_SetLevelInfo('A08O', 5, 6, 4)
@@ -1133,7 +1166,7 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A06A', 1, 1, 4)
     call AHUI_SetLevelInfo('A09S', 5, 6, 4)
     call AHUI_SetLevelInfo('A09T', 1, 1, 0)
-    call AHUI_SetLevelInfo('A061', 5, 6, 0)
+    call AHUI_SetLevelInfo('A061', 6, 6, 0)
     call AHUI_SetLevelInfo('A06U', 5, 6, 3)
     call AHUI_SetLevelInfo('A06D', 1, 1, 4)
     call AHUI_SetLevelInfo('A062', 5, 10, 4)
@@ -1152,7 +1185,7 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A07C', 1, 1, 0)
     call AHUI_SetLevelInfo('A082', 5, 1, 4)
     call AHUI_SetLevelInfo('A08C', 1, 1, 4)
-    call AHUI_SetLevelInfo('A083', 5, 1, 0)
+    call AHUI_SetLevelInfo('A083', 5, 1, 4)
     call AHUI_SetLevelInfo('A084', 5, 1, 4)
     call AHUI_SetLevelInfo('A08D', 1, 1, 4)
     call AHUI_SetLevelInfo('A085', 5, 6, 4)
@@ -1180,10 +1213,10 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A092', 5, 10, 4)
     call AHUI_SetLevelInfo('A098', 1, 1, 4)
     call AHUI_SetLevelInfo('A08W', 1, 25, 0)
-    call AHUI_SetLevelInfo('A08X', 2, 1, 0)
-    call AHUI_SetLevelInfo('A099', 1, 1, 0)
     call AHUI_SetLevelInfo('A08Y', 1, 1, 0)
     call AHUI_SetLevelInfo('A09A', 1, 1, 0)
+    call AHUI_SetLevelInfo('A08X', 2, 1, 0)
+    call AHUI_SetLevelInfo('A099', 1, 1, 0)
     call AHUI_SetLevelInfo('A09D', 5, 1, 4)
     call AHUI_SetLevelInfo('A09E', 1, 1, 4)
     call AHUI_SetLevelInfo('A09F', 5, 1, 4)
@@ -1215,6 +1248,7 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A0A2', 1, 1, 0)
     call AHUI_SetLevelInfo('A0A9', 1, 1, 0)
     call AHUI_SetLevelInfo('A0AI', 1, 1, 0)
+    call AHUI_SetLevelInfo('A113', 1, 10, 0)
     call AHUI_SetLevelInfo('A0C0', 5, 1, 4)
     call AHUI_SetLevelInfo('A0C1', 5, 1, 4)
     call AHUI_SetLevelInfo('A0C2', 5, 1, 4)
@@ -1279,12 +1313,6 @@ private function AHUI_InitLevelTable takes nothing returns nothing
     call AHUI_SetLevelInfo('A0HM', 1, 25, 3)
     call AHUI_SetLevelInfo('A0HN', 1, 1, 0)
     call AHUI_SetLevelInfo('A0HO', 1, 1, 0)
-    call AHUI_SetLevelInfo('A116', 5, 1, 4)
-    call AHUI_SetLevelInfo('A117', 5, 1, 4)
-    call AHUI_SetLevelInfo('A118', 5, 6, 4)
-    call AHUI_SetLevelInfo('A119', 5, 10, 4)
-    call AHUI_SetLevelInfo('A11A', 1, 25, 3)
-    call AHUI_SetLevelInfo('A11B', 1, 1, 3)
     // END GENERATED ABILITY LEVELS
 endfunction
 
@@ -1372,7 +1400,7 @@ private function AHUI_TryLearn takes unit hero, integer slot returns nothing
     set AHUI_AllowCooldownRead = false
     call AHUI_ConfigureHeroAbilities(hero)
     set abilityId = AHUI_BaseAbility[slot]
-    if AHUI_CurrentAbility[slot] != abilityId and GetUnitTypeId(hero) != Rimuru_ID then
+    if AHUI_CurrentAbility[slot] != abilityId and GetUnitTypeId(hero) != Rimuru_ID and not (GetUnitTypeId(hero) == Inori_ID and slot == AHUI_SLOT_E) then
         return
     endif
     if AHUI_CanLearn(hero, abilityId) then
@@ -1386,6 +1414,12 @@ private function AHUI_OnLearnClick takes nothing returns nothing
     local integer pid = GetPlayerId(whichPlayer)
     local integer slot = 0
     local unit hero = Hero[pid]
+    local integer mouseX = 0
+    local integer mouseY = 0
+    if GetLocalPlayer() == whichPlayer then
+        set mouseX = BlzGetMouseScreenPosX()
+        set mouseY = BlzGetMouseScreenPosY()
+    endif
     if hero != null and GetOwningPlayer(hero) == whichPlayer then
         loop
             exitwhen slot >= AHUI_LEARN_SLOTS
@@ -1397,9 +1431,12 @@ private function AHUI_OnLearnClick takes nothing returns nothing
         endloop
     endif
     set clicked = null
-    set whichPlayer = null
     set hero = null
     call WUI_ResetClickedButtonFocus()
+    if GetLocalPlayer() == whichPlayer then
+        call BlzSetMousePos(mouseX, mouseY)
+    endif
+    set whichPlayer = null
 endfunction
 
 private function AHUI_HideLearning takes nothing returns nothing
@@ -1456,7 +1493,7 @@ private function AHUI_RefreshLearning takes integer pid returns nothing
             set abilityId = AHUI_CurrentAbility[slot]
         elseif AHUI_CurrentAbility[slot] != 0 and AHUI_CurrentAbility[slot] != abilityId then
             // A temporary replacement occupies the slot: no learning until it returns.
-            set replaced = true
+            set replaced = not (GetUnitTypeId(hero) == Inori_ID and slot == AHUI_SLOT_E)
         endif
         set level = 0
         set maximum = 0
@@ -1704,7 +1741,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         // Checkpoint 24: the stock button is used only when it really sits in
         // this slot's command-card cell; skills placed elsewhere (Gojo F,
         // Inori G...) are drawn here, otherwise the slot stayed empty.
-        if (abilityId == 0 or (level > 0 and (slot < AHUI_SLOT_F or (BlzGetAbilityPosX(abilityId) == AHUI_GetSlotX(slot) and BlzGetAbilityPosY(abilityId) == AHUI_GetSlotY(slot))))) and not IsUnitType(AHUI_SelectedHero[pid], UNIT_TYPE_DEAD) and not WUI_NativeCommandsHidden() and not WUI_IsHotkeyEditing() and WUI_SlotKeyLabel(pid, slot) == "" and not IsUnitPaused(AHUI_SelectedHero[pid]) and not silenced then
+        if (abilityId == 0 or (level > 0 and (slot < AHUI_SLOT_F or (BlzGetAbilityPosX(abilityId) == AHUI_GetSlotX(slot) and BlzGetAbilityPosY(abilityId) == AHUI_GetSlotY(slot))))) and not IsUnitType(AHUI_SelectedHero[pid], UNIT_TYPE_DEAD) and not WUI_NativeCommandsHidden() and not WUI_IsHotkeyEditing() and WUI_SlotKeyLabel(pid, slot) == "" and not IsUnitPaused(AHUI_SelectedHero[pid]) and not silenced and abilityId != InoriEAlt2_ID and not LoadBoolean(AHUI_UnitAbilityDisabled, GetHandleId(AHUI_SelectedHero[pid]), abilityId) then
             if slot >= AHUI_SLOT_F and AHUI_RenderedAbility[index] == -2 and abilityId != 0 and level > 0 and AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], GetOwningPlayer(AHUI_SelectedHero[pid]), abilityId) then
                 // Same F/G key badge over the live stock button as on the last
                 // refresh: no hide + re-show of the whole slot every 0.25 s.
@@ -1767,7 +1804,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
     endif
     // A learned skill the owner cannot use right now (SetPlayerAbilityAvailable false /
     // disabled, e.g. Erza's blocked base Q-R) is drawn as DISBTN, as the owner sees it.
-    if level > 0 and not AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], GetOwningPlayer(AHUI_SelectedHero[pid]), abilityId) then
+    if level > 0 and (not AHUI_IsActiveSlotCandidate(AHUI_SelectedHero[pid], GetOwningPlayer(AHUI_SelectedHero[pid]), abilityId) or LoadBoolean(AHUI_UnitAbilityDisabled, GetHandleId(AHUI_SelectedHero[pid]), abilityId)) then
         set level = 0
     endif
     set iconPath = BlzGetAbilityIcon(abilityId)
@@ -1835,7 +1872,7 @@ private function AHUI_RefreshSlot takes integer pid, integer slot returns nothin
         set iconPath = null
         return
     endif
-    set remaining = BlzGetUnitAbilityCooldownRemaining(AHUI_SelectedHero[pid], abilityId)
+    set remaining = AHUI_AbilityCooldownRemaining(AHUI_SelectedHero[pid], abilityId)
     if remaining > 0.05 then
         if AHUI_CooldownPeak[index] <= 0.05 or remaining > AHUI_LastRemaining[index] + 0.15 then
             set AHUI_CooldownPeak[index] = remaining
@@ -1882,6 +1919,7 @@ private function AHUI_RefreshTooltip takes integer pid returns nothing
     local string description = null
     local integer manaCost = 0
 local real textHeight = 0.0
+local real titleHeight = 0.0
 local real boxHeight = 0.0
 local real width = AHUI_TOOLTIP_WIDTH
 local boolean hasMana = false
@@ -1909,6 +1947,9 @@ local boolean buildText = true
     endif
 
     set abilityId = AHUI_CurrentAbility[slot]
+    if AHUI_HoverPips[pid] and GetUnitTypeId(AHUI_SelectedHero[pid]) == Inori_ID and slot == AHUI_SLOT_E then
+        set abilityId = AHUI_BaseAbility[slot]
+    endif
     if abilityId == 0 then
         call AHUI_HideTooltip(pid)
         return
@@ -1949,10 +1990,10 @@ if slot < AHUI_LEARN_SLOTS and AHUI_IsLearnableSkill(AHUI_BaseAbility[slot]) the
         set description = AHUI_LevelSchedule(AHUI_SelectedHero[pid], AHUI_BaseAbility[slot])
         // Checkpoint 26: say plainly that the strip itself is the upgrade button.
         if AHUI_SelectedHero[pid] == Hero[pid] then
-            if AHUI_CurrentAbility[slot] != AHUI_BaseAbility[slot] and GetUnitTypeId(AHUI_SelectedHero[pid]) != Rimuru_ID then
+            if AHUI_CurrentAbility[slot] != AHUI_BaseAbility[slot] and GetUnitTypeId(AHUI_SelectedHero[pid]) != Rimuru_ID and not (GetUnitTypeId(AHUI_SelectedHero[pid]) == Inori_ID and slot == AHUI_SLOT_E) then
                 // Replacement shown: learning waits for the base skill.
             elseif AHUI_CanLearn(AHUI_SelectedHero[pid], AHUI_BaseAbility[slot]) then
-                set description = description + "|n|cff7ee870Click here to upgrade this ability|r |cff9aa0a8(skill points: " + I2S(GetHeroSkillPoints(AHUI_SelectedHero[pid])) + ")|r"
+                set description = description + "|n|cff7ee870Click the level strip below the ability to upgrade|r |cff9aa0a8(skill points: " + I2S(GetHeroSkillPoints(AHUI_SelectedHero[pid])) + ")|r"
             elseif GetHeroSkillPoints(AHUI_SelectedHero[pid]) > 0 then
                 set description = description + "|n|cff9aa0a8Skill points: " + I2S(GetHeroSkillPoints(AHUI_SelectedHero[pid])) + " - this ability cannot be upgraded at the current hero level.|r"
             endif
@@ -1960,6 +2001,9 @@ if slot < AHUI_LEARN_SLOTS and AHUI_IsLearnableSkill(AHUI_BaseAbility[slot]) the
         set manaCost = 0
     else
         set description = description + "|n|n" + AHUI_LevelSchedule(AHUI_SelectedHero[pid], AHUI_BaseAbility[slot])
+        if AHUI_SelectedHero[pid] == Hero[pid] and AHUI_CanLearn(AHUI_SelectedHero[pid], AHUI_BaseAbility[slot]) and (AHUI_CurrentAbility[slot] == AHUI_BaseAbility[slot] or GetUnitTypeId(AHUI_SelectedHero[pid]) == Rimuru_ID or (GetUnitTypeId(AHUI_SelectedHero[pid]) == Inori_ID and slot == AHUI_SLOT_E)) then
+            set description = description + "|n|cff7ee870To upgrade, click the level strip below the ability.|r"
+        endif
     endif
 endif
 
@@ -1968,7 +2012,11 @@ if AHUI_SelectedHero[pid] == Hero[pid] and GetOwningPlayer(Hero[pid]) == Player(
 endif
 
 // Flame Dash [Level 5] (Q)
-set title = title + " (" + AHUI_GetKeyText(slot) + ")"
+if AHUI_SelectedHero[pid] == Hero[pid] and GetOwningPlayer(Hero[pid]) == Player(pid) then
+    set title = title + " (|cffffcc00" + WUI_SlotShownKey(pid, slot) + "|r)"
+else
+    set title = title + " (|cffffcc00" + AHUI_GetKeyText(slot) + "|r)"
+endif
 
     set AHUI_TCHero[cacheIndex] = AHUI_SelectedHero[pid]
     set AHUI_TCAbility[cacheIndex] = abilityId
@@ -1993,77 +2041,43 @@ set title = title + " (" + AHUI_GetKeyText(slot) + ")"
     set AHUI_TipShown[pid] = cacheIndex + 1
     set AHUI_TipShownMana[pid] = manaCost
 
-// Checkpoint 26b: the pip-strip tooltip is compact and sized to its text;
-// its title is centred on the whole box (the title frame is scaled .90, so
-// its size is divided by the scale and it hangs from the box's TOP centre).
+// Visually align with the native Ubertooltip; its SIMPLEFRAME has a different scale.
 if AHUI_HoverPips[pid] then
     set width = AHUI_PIP_TOOLTIP_WIDTH
-    call BlzFrameClearAllPoints(AHUI_TooltipTitle[pid])
-    call BlzFrameSetPoint(AHUI_TooltipTitle[pid], FRAMEPOINT_TOP, AHUI_TooltipRoot[pid], FRAMEPOINT_TOP, 0.000, -0.008 / 0.90)
-    call BlzFrameSetSize(AHUI_TooltipTitle[pid], (width - 0.016) / 0.90, 0.014 / 0.90)
-    call BlzFrameSetTextAlignment(AHUI_TooltipTitle[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
 else
     set width = AHUI_TOOLTIP_WIDTH
-    call BlzFrameClearAllPoints(AHUI_TooltipTitle[pid])
-    call BlzFrameSetPoint(AHUI_TooltipTitle[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.009)
-    call BlzFrameSetSize(AHUI_TooltipTitle[pid], AHUI_TOOLTIP_WIDTH - 0.022, 0.020)
-    call BlzFrameSetTextAlignment(AHUI_TooltipTitle[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
 endif
+call BlzFrameClearAllPoints(AHUI_TooltipTitle[pid])
+call BlzFrameSetPoint(AHUI_TooltipTitle[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -0.005)
+call BlzFrameSetSize(AHUI_TooltipTitle[pid], width - 0.012, 0.0)
 call BlzFrameSetText(AHUI_TooltipTitle[pid], title)
+set titleHeight = RMaxBJ(0.015, BlzFrameGetHeight(AHUI_TooltipTitle[pid]))
 call BlzFrameSetText(AHUI_TooltipText[pid], description)
-
-// ВАЖНО: пересчитываем layout текста (compact column, not the HUD width)
-call BlzFrameSetSize(AHUI_TooltipText[pid], width - 0.022, 0.0)
-
+call BlzFrameSetSize(AHUI_TooltipText[pid], width - 0.012, 0.0)
 set hasMana = manaCost > 0
-
+call BlzFrameSetVisible(AHUI_TooltipManaIcon[pid], hasMana)
+call BlzFrameSetVisible(AHUI_TooltipManaText[pid], hasMana)
+call BlzFrameSetVisible(AHUI_TooltipSeparator[pid], not AHUI_HoverPips[pid])
+call BlzFrameClearAllPoints(AHUI_TooltipSeparator[pid])
+call BlzFrameSetSize(AHUI_TooltipSeparator[pid], width - 0.012, 0.0006)
+call BlzFrameClearAllPoints(AHUI_TooltipText[pid])
 if hasMana then
+    call BlzFrameClearAllPoints(AHUI_TooltipManaIcon[pid])
+    call BlzFrameSetPoint(AHUI_TooltipManaIcon[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -titleHeight - 0.007)
     call BlzFrameSetText(AHUI_TooltipManaText[pid], "|cffffcc00" + I2S(manaCost) + "|r")
-
-    // Показываем mana + separator
-    call BlzFrameSetVisible(AHUI_TooltipManaIcon[pid], true)
-    call BlzFrameSetVisible(AHUI_TooltipManaText[pid], true)
-    call BlzFrameSetVisible(AHUI_TooltipSeparator[pid], true)
-
-    // Текст начинается НИЖЕ separator
-    call BlzFrameClearAllPoints(AHUI_TooltipText[pid])
-    call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.054)
+    call BlzFrameSetPoint(AHUI_TooltipSeparator[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -titleHeight - 0.022)
+    call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -titleHeight - 0.029)
+    set boxHeight = titleHeight + 0.035
 else
-    call BlzFrameSetVisible(AHUI_TooltipManaIcon[pid], false)
-    call BlzFrameSetVisible(AHUI_TooltipManaText[pid], false)
-    call BlzFrameSetVisible(AHUI_TooltipSeparator[pid], false)
-
-    call BlzFrameClearAllPoints(AHUI_TooltipText[pid])
-    if AHUI_HoverPips[pid] then
-        call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.026)
-    else
-        call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.032)
-    endif
+    call BlzFrameSetPoint(AHUI_TooltipSeparator[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -titleHeight - 0.007)
+    call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -titleHeight - 0.014)
+    set boxHeight = titleHeight + 0.020
 endif
-
 set textHeight = BlzFrameGetHeight(AHUI_TooltipText[pid])
-
-if hasMana then
-    set boxHeight = textHeight + 0.067
-elseif AHUI_HoverPips[pid] then
-    set boxHeight = textHeight + 0.034
-else
-    set boxHeight = textHeight + 0.042
-endif
-
-if AHUI_HoverPips[pid] then
-    if boxHeight < 0.042 then
-        set boxHeight = 0.042
-    endif
-elseif boxHeight < 0.080 then
-    set boxHeight = 0.080
-endif
-
+set boxHeight = RMaxBJ(0.055, textHeight + boxHeight)
 call BlzFrameSetSize(AHUI_TooltipRoot[pid], width, boxHeight)
-
-// Позиция окна: над наведённой кнопкой, в пределах корпуса HUD.
 call BlzFrameClearAllPoints(AHUI_TooltipRoot[pid])
-call BlzFrameSetAbsPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOM, RMinBJ(RMaxBJ(WUI_AbilityX(slot), WUI_CHASSIS_LEFT + width * 0.50), WUI_CHASSIS_RIGHT - width * 0.50), WUI_CHASSIS_TOP + 0.024)
+call BlzFrameSetAbsPoint(AHUI_TooltipRoot[pid], FRAMEPOINT_BOTTOMRIGHT, WUI_CHASSIS_RIGHT + WUI_HudShift - 0.030, WUI_CHASSIS_TOP + 0.070)
 
 // Показываем tooltip
 call BlzFrameSetVisible(AHUI_TooltipBackdrop[pid], true)
@@ -2439,6 +2453,7 @@ private function AHUI_Periodic takes nothing returns nothing
     if AHUI_SeenHudRevision != WUI_HudRevision then
         set AHUI_SeenHudRevision = WUI_HudRevision
         call AHUI_ApplyShift()
+        set AHUI_TipShown[pid] = 0
     endif
     if refreshAbilities then
         call AR_Reconcile()
@@ -2634,6 +2649,7 @@ private function AHUI_CreateSlotFrames takes nothing returns nothing
             set AHUI_KeyText[index] = BlzCreateFrameByType("TEXT", "AHUIKeyText", AHUI_Root[index], "", index)
             set AHUI_ChargeText[index] = TasAbilityChargeBox_CreatePortraitLabel(AHUI_Root[index])
             set AHUI_ChargeBox[index] = BlzFrameGetParent(AHUI_ChargeText[index])
+            call BlzFrameSetLevel(AHUI_ChargeBox[index], 112)
             call BlzFrameSetLevel(AHUI_ChargeText[index], 113)
             call BlzFrameSetVisible(AHUI_ChargeBox[index], false)
             call BlzFrameClearAllPoints(AHUI_KeyText[index])
@@ -2667,36 +2683,35 @@ private function AHUI_CreateTooltipFrames takes nothing returns nothing
         call BlzFrameSetEnable(AHUI_TooltipRoot[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipRoot[pid], false)
 
-        // Shared graphite surface; existing tooltip content and sizing are retained.
-        set AHUI_TooltipBackdrop[pid] = WUI_Window("WOSAbilityTooltip", AHUI_TooltipRoot[pid], 0, pid)
+        // Stock skin keys resolve the same background/border/font as native tooltips.
+        set AHUI_TooltipBackdrop[pid] = BlzCreateFrame("WOSNativeTooltipBackdrop", AHUI_TooltipRoot[pid], 0, pid)
         call BlzFrameSetAllPoints(AHUI_TooltipBackdrop[pid], AHUI_TooltipRoot[pid])
         call BlzFrameSetLevel(AHUI_TooltipBackdrop[pid], 1001)
         call BlzFrameSetEnable(AHUI_TooltipBackdrop[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipBackdrop[pid], false)
 
         // TITLE
-        set AHUI_TooltipTitle[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipTitle", AHUI_TooltipRoot[pid], "", pid)
+        set AHUI_TooltipTitle[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipTitle", AHUI_TooltipRoot[pid], "WOSNativeTooltipTitleTemplate", pid)
         call BlzFrameSetSize(AHUI_TooltipTitle[pid], AHUI_TOOLTIP_WIDTH - 0.022, 0.020)
         call BlzFrameSetPoint(AHUI_TooltipTitle[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.009)
         call BlzFrameSetTextAlignment(AHUI_TooltipTitle[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-        call BlzFrameSetScale(AHUI_TooltipTitle[pid], 0.90)
         call BlzFrameSetLevel(AHUI_TooltipTitle[pid], 1002)
         call BlzFrameSetEnable(AHUI_TooltipTitle[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipTitle[pid], false)
 
         // MANA ICON
         set AHUI_TooltipManaIcon[pid] = BlzCreateFrameByType("BACKDROP", "AHUITooltipManaIcon", AHUI_TooltipRoot[pid], "", pid)
-call BlzFrameSetSize(AHUI_TooltipManaIcon[pid], 0.015, 0.015)
-call BlzFrameSetPoint(AHUI_TooltipManaIcon[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.027)
+call BlzFrameSetSize(AHUI_TooltipManaIcon[pid], 0.010, 0.010)
+call BlzFrameSetPoint(AHUI_TooltipManaIcon[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.006, -0.022)
 call BlzFrameSetTexture(AHUI_TooltipManaIcon[pid], "UI\\Widgets\\ToolTips\\Human\\ToolTipManaIcon.blp", 0, false)
         call BlzFrameSetLevel(AHUI_TooltipManaIcon[pid], 1002)
         call BlzFrameSetEnable(AHUI_TooltipManaIcon[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipManaIcon[pid], false)
 
         // MANA VALUE
-        set AHUI_TooltipManaText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipManaText", AHUI_TooltipRoot[pid], "", pid)
+        set AHUI_TooltipManaText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipManaText", AHUI_TooltipRoot[pid], "WOSNativeTooltipTextTemplate", pid)
         call BlzFrameSetSize(AHUI_TooltipManaText[pid], 0.250, 0.014)
-        call BlzFrameSetPoint(AHUI_TooltipManaText[pid], FRAMEPOINT_LEFT, AHUI_TooltipManaIcon[pid], FRAMEPOINT_RIGHT, 0.005, 0.0)
+        call BlzFrameSetPoint(AHUI_TooltipManaText[pid], FRAMEPOINT_LEFT, AHUI_TooltipManaIcon[pid], FRAMEPOINT_RIGHT, 0.004, 0.0)
         call BlzFrameSetTextAlignment(AHUI_TooltipManaText[pid], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
         call BlzFrameSetLevel(AHUI_TooltipManaText[pid], 1002)
         call BlzFrameSetEnable(AHUI_TooltipManaText[pid], false)
@@ -2712,10 +2727,10 @@ call BlzFrameSetEnable(AHUI_TooltipSeparator[pid], false)
 call BlzFrameSetVisible(AHUI_TooltipSeparator[pid], false)
         
         // DESCRIPTION + TooltipBuilder content
-        set AHUI_TooltipText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipText", AHUI_TooltipRoot[pid], "", pid)
+        set AHUI_TooltipText[pid] = BlzCreateFrameByType("TEXT", "AHUITooltipText", AHUI_TooltipRoot[pid], "WOSNativeTooltipTextTemplate", pid)
         call BlzFrameSetSize(AHUI_TooltipText[pid], AHUI_TOOLTIP_WIDTH - 0.022, 0.0)
         call BlzFrameSetPoint(AHUI_TooltipText[pid], FRAMEPOINT_TOPLEFT, AHUI_TooltipRoot[pid], FRAMEPOINT_TOPLEFT, 0.011, -0.050)
-        call BlzFrameSetTextAlignment(AHUI_TooltipText[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+        call BlzFrameSetTextAlignment(AHUI_TooltipText[pid], TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
         call BlzFrameSetLevel(AHUI_TooltipText[pid], 1002)
         call BlzFrameSetEnable(AHUI_TooltipText[pid], false)
         call BlzFrameSetVisible(AHUI_TooltipText[pid], false)

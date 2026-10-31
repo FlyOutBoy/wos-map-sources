@@ -136,7 +136,7 @@ class Performance(unittest.TestCase):
             GetObjectName=lambda i:(metadata.append(('name',i)),'Item')[1],
             BlzGetAbilityIcon=lambda i:(metadata.append(('icon',i)),'icon')[1],
             I2S=str,R2I=int,RefundPercent=50,ShopPricePlateWidth=lambda c:.02,ShopGetItemTooltipWidth=lambda s:.1,
-            QB_InventorySize=.03,RMinBJ=min,WUI_TEXT='',
+            QB_InventorySize=.03,RMinBJ=min,WUI_TEXT='',ShopSetItemTooltipHeader=lambda *_:None,
             BlzFrameSetText=lambda *a:None,BlzFrameSetSize=lambda *a:None,
             BlzFrameSetEnable=lambda *a:None,BlzFrameSetTexture=lambda *a:None,BlzFrameSetVisible=lambda *a:None)
         for n in ['FRAME_ShopInventoryTooltipBox','FRAME_ShopInventoryItemName','FRAME_ShopInventoryTooltipText',

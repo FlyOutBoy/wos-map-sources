@@ -3177,3 +3177,261 @@ range and compact help; packed item text excludes the shared long paragraphs.
 STABLE updated after backup; final sync check: 0 binary/source differences.
 Evidence: `_build/element-items-main-{build.log,result.json}` and
 `_build/element-items-payload-hashes.json`. Game was not launched.
+
+
+CP74 follow-up (2026-10-29): shop description and hover headings prefix nonzero
+mana through the generated ShopItemManaCost/ShopItemDisplayName pure functions.
+No new frames or gameplay reads from local templates. Hyorinmaru key assignment
+sets the existing trigger-scoped key-down latch before registration; key-up clears
+it, so only a subsequent press can cast. WUI_IsCoffinCapturing also blocks the
+old key while capture is active. Element Combos shows the actual .3x Electrized
+tick and the narrow Quincy/Koko-Tachikaze exceptions to the general proc rule.
+Source/input tests pass; native frame layout and key event ordering need in-game
+verification. See test_item_shop_followup.py and Knowledge's item follow-up.
+
+Follow-up MAIN/STABLE publication passed source parity (5467 functions),111 focused
+tests and final zero-difference sync. Twelve packed payloads match the scenario.
+Evidence: _build/items-shop-followup-main-{build.log,result.json}. No game launch.
+
+## CP75 — item descriptions, native marks and local HUD stability (2026-10-29)
+
+The shop description panel extends to the bottom of the inventory/quick-buy area;
+eight lines at 48 visible characters use a left-aligned 0.0095 font and a gutter
+before the slider. Nonzero mana has its own cached ToolTipManaIcon and number,
+left of the title. Catalogue/inventory hover headings use the same separate mana
+frames. All new frames are allocated in the shared bootstrap; local rendering
+only changes existing handles. TooltipBuilder exports shared body width/font
+constants (0.270/0.0105), and Game Info uses a wider 0.238 panel with 0.009 body text.
+
+UNITSTAT_OnModeClick synchronizes the player's preference but only the clicking
+client reapplies its geometry and gold layout. Remote clicks and unchanged saved-settings echoes no longer reset
+anchors or wait for the next gold revision tick. Focus cleanup preserves the
+local mouse position; the learn handler captures it before SelectHeroSkill.
+Inori E learning/pips use A09S even when a service aura or active replacement is
+shown. BlzUnitHideAbility replaces global availability disabling for E, so native
+research remains available; unlearned E cannot accumulate Instability.
+Tsuna W's generated unlock schedule reads its actual 1/5/9/13/17 requirements.
+DamageStats strips inline title color codes before removing the native [Level 1]
+suffix, then appends the actual level. The optimized 12-source summary cap remains.
+
+Elemental marks are native dispellable buffs with item artwork, staged by
+stage_elemental_marks.py with IDs reserved across MAIN and TEST. Mark removal
+cancels callbacks and VFX, not only the status icon. Cinder regen suppression uses
+additive native offsets, refreshed at 0.25 sec and restored on cleanup; the HUD and
+scripted HP/MP restoration respect the seal. Thread ticks retain a finite segment,
+exclude the primary target from 0.9x line damage and give it a separate 0.3x tick.
+Mirror marks follow their victims and accept hero spells as well as attacks;
+item/element follow-ups cannot recursively trigger them.
+
+Native instant foundations are staged by stage_instant_foundations.py: Berserk
+for items and one hero slot, Battle Roar/Roar for coexisting hero slots. The latter
+are queue-instant (resume the old order after the native cast), not zero-animation
+Berserk equivalents. All ranks, unlock steps, costs, hotkeys and descriptions are
+retained. Bambietta W keeps its scripted windup/invulnerability using queued pause
+helpers; Toji F no longer reissues a replacement move order. Channel-dependent and
+noninstant scripted abilities retain their native foundations.
+
+MAIN builds install Misc.IntRegenBonus from Systems1.int_mpregen via
+install_gameplay_constants.py, so the engine and HUD both use 0.15. This installer
+changes only that gameplay constant and backs up the previous native file.
+Source checks do not establish native cursor, animation or multiplayer behavior;
+Warcraft acceptance remains necessary.
+
+Round purchase follow-up: ShopCanPurchase is the shared transaction gate for
+manual purchases, FAST BUY, BuyAuto/BuyAutoLimited and QB_BuyWhole. Combat is
+blocked in every normal mode; TestMode explicitly permits combat purchases and
+Quick Buy outside base. Existing half-second scheduling disables the normal-mode
+buy/FAST BUY controls. The opening forced purchase runs before CondArena becomes
+1, while deferred acknowledgements cannot grant a combat purchase exception.
+New-round initialization resets TestPrimaryDeadTicks.
+
+Top portraits restore cached artwork on public death/revival changes even when
+the enemy is unseen, without reading hidden type/vitals. Living HP fill has a 2%
+visual minimum so Will of D.'s 1-HP survivor is distinguishable from a corpse;
+actual HP is unchanged. Shared damage helpers accept life > 0.405, so spells can
+damage a 1-HP survivor when protection expires. Patriot's revival cleanup only
+announces/kills an existing living hero; an earlier death still clears stance,
+VFX and timer ownership without a duplicate kill. Evidence:
+test_round_purchase_survival.py and test_wos_ui.py (mocked native behavior).
+
+CP75 publication: MAIN built with 112 enabled sources, 5485 matching compiled
+functions and 7016 packed files. The final archive's 14 extracted payloads match
+the scenario byte-for-byte, including native objects, Misc and four custom item
+effects. Native checks cover 27 item ranges (Shiki Knife 2100), 48 instant
+foundations, 11 item marks and the 5000-gold evolved ring. The focused suite passed
+246 tests; the known pre-existing Rimuru Black Flame fixture remains excluded.
+The top-HUD suite also passed 23 tests with one existing skip. This does not
+establish in-game rendering, cursor behavior or multiplayer acceptance.
+
+WOS2_MAIN_STABLE.w3x was replaced from the checked archive with a recoverable
+backup; root generated J/WCT/WTG were refreshed from the same scenario.
+SHA-256: 41bd8e8773ff4c7ad31b5d89fc27893dbf36f54f1e6fc5a93ef56e7ae299d9f1.
+Details: _build/item-followup-main-result.json and item-followup-final-sync.log.
+
+## CP76 — startup tooltip generation and string allocation (2026-10-29)
+
+The pre-mode regression had an added six-pass TooltipCleanText pipeline. Five
+replacement passes rebuilt every unchanged string byte by byte; a sixth removed
+zero terms. The same learn-text builder repeated this for each research rank.
+TooltipCleanText now scans once, copies changed spans only, and returns unchanged
+input directly. TooltipBuilder retains its normalized buffer until content changes;
+all rank writes/get/item paths share it. Lore coloring, native newline cleanup and
+placeholder replacement also append spans instead of every character prefix.
+Plain templates without <L:...> reuse a single ParseLevelTags result for all ranks.
+
+SpellData.create and chained setDecor/setSecondDamage/setCdAfterDuration/
+setCooldownFrom now queue one initial render after the registration job finishes,
+so final metadata is known before all ranks are written. 382 base registrations
+previously produced 474 initial renders; they now produce 382. The former hidden
+damage-preview dummy was unused by combat evaluation and is now the shared native
+field probe. Adding/removing one ability replaces 474 create/remove unit pairs.
+Alternate form metadata remains separate and does not overwrite base initial tips.
+Runtime setters still refresh immediately after UTB_InitComplete.
+
+The public WOS_UTB_FlushInitialTips ExecuteFunc name must exactly match its compiled
+function; a private library function would be mangled. The flush has its own budget,
+and runs before the startup-complete gate opens. Existing staggered jobs remain.
+
+Evidence: test_tooltip_startup_performance.py, test_common_performance.py,
+test_iframe_tooltips.py and the tooltip queue regression; 281 focused tests passed.
+One known old Rimuru Black Flame fixture is excluded. Five before/after scenarios
+produced 40 identical final tooltips, including six ranks and chained properties.
+On six existing descriptions plus two boundary samples (6165 characters), cleanup
+substring reads fell from 79829 to 9725, concatenations from 36846 to 10, and the
+sum of concatenated lengths from 18410978 to 220. These measure mocked script work,
+not Warcraft wall-clock time. Reports: _build/startup-tooltip-performance.json and
+_build/startup-initial-text-parity.json. Engine startup remains to be timed in game.
+
+CP76 publication: MAIN/STABLE updated after compiled/source parity passed (5489
+functions, 7016 archive files). All 491 registration job names remain; the public
+flush resolves in compiled JASS and initial render creates no units. Packed code,
+objects, effects and WTS match the scenario. Existing World Editor object changes
+were safely rebased by the standard workflow and verified unchanged against the
+pre-build scenario backup; performance edits did not discard them. Native item,
+description and Will of D. tests also passed after that rebase (19 checks).
+Final sync: 0 binary changes / 0 source differences. Result and backups:
+_build/startup-hang-main-result.json. STABLE SHA-256: a2a02e0641f5238b404c0092a4b74b621f0c25ed22ae3fa33e6d19580cd7ba07.
+No Warcraft startup wall-clock or native freeze reproduction was performed.
+
+## CP77 — tooltip visibility, native appearance and ally colors (2026-10-29)
+
+The video shows overlapping shop helper labels (recommended add/remove, Fast Buy,
+Fast Sell, hotkey), not chat messages. WUI_TooltipBox now returns an empty normal
+FRAME containing the backdrop; tooltip binding and visibility apply to that gate.
+Toolbar helpers hide it before assigning labels, QB hides its gate before text
+creation, and the shop window starts hidden. Inset uses explicitly show their background after construction. No hover event callbacks, timer, runtime allocation or text polling added.
+
+War3Log.txt at 19:46:32 reported WOSControls.fdf line 361: ControlStyle invalid for
+SIMPLEBUTTON. Removed that property from WOSQBHUDRemove; its Normal/Pushed/Disabled
+textures and UseHighlight remain. Asset validation now rejects this exact error.
+Later duplicate-definition messages occurred on repeated WorldEditTestMap starts;
+the source still loads the shared TOC once, without a retry loop.
+
+Retail CASC inspected read-only: UI/FrameDef/FrameDef.toc, UI/FrameDef/UI/CommandBar.fdf,
+ConsoleUI.fdf, and UI/war3skins.txt. The command FDF defines button cells; the native
+Ubertooltip is engine-owned. Custom FDF uses the same ToolTipBackground, ToolTipBorder
+and MasterFont keys, with blending, left alignment and a shadow. AHUI now uses a
+0.286-wide column. The visual follow-up below corrects the native/normal-frame
+scale difference in its bottom-right HUD anchor, including local HudShift.
+Dynamic title height keeps wrapped names clear of mana/body; HUD revision invalidates
+only shown layout. Requirements, rank progression, descriptions, mana, and cooldown
+report hint remain. Existing text cache is unchanged. Reference for the empty-parent
+visibility pattern: https://www.hiveworkshop.com/threads/ui-frames-and-tooltips.316665/ .
+
+Every client sets SetAllyColorFilterState(2) once after controls are created: this is
+Mode 3. The existing watcher follows later Alt+A changes; it never forces the setting.
+
+Checks: MAIN compile/dispatch audit pass; 405 focused checks passed. Five preexisting
+fixtures are excluded: Rimuru Black Flame plus three explicit-object-field assumptions
+following the earlier World Editor rebase, and the old mastery purchase fixture.
+The last four were reproduced using the pre-CP77 sources (_build/check-native-tooltip-baseline.py).
+Object sync reports no binary changes. Frame rendering and native hover acceptance
+still need an in-game check; mocked visibility verifies the hierarchy, not the engine.
+
+CP77 published: MAIN/STABLE updated; 5489 functions pass compiled/source parity.
+Packed FDF/TOC match project assets; native objects, WTS and checked effects match
+CP76. The archive retains all previous entries and includes 13 additional existing
+project effect assets. Final sync: 0 binary changes / 0 source differences.
+Report: _build/native-tooltip-main-result.json. STABLE SHA-256: 8ce1f2e4386e327cf9542e7673bfd2193785b4c0590df6a1052e6f84295b02d8.
+
+CP77 visual follow-up: screenshots confirm the native appearance but show the
+custom box slightly wider/larger and its lower edge roughly 110 px lower at 1152 px
+image height. AHUI width .300 -> .286; FDF body font .012 -> .011, title .013 -> .012.
+The normal FRAME bottom-right uses right inset .030 and top offset .070 instead of
+.004/.010: the native SIMPLEFRAME is scaled, so matching raw coordinates was not
+matching rendered coordinates. Only custom tooltip layout changes; content stays.
+
+Two empty startup boxes match the two DamageStats Game-tab tooltip dimensions.
+Their gates now inherit the tab/window hierarchy instead of the always-visible WUI
+root. WUI_TooltipBox starts hidden before any backdrop is allocated; its sole inset
+caller in selected stats explicitly shows the art. Engine hover can still show normal
+tooltips; hidden statistics windows cannot expose their children. No timer added.
+Checks: test_native_tooltip_ui exercises hidden-at-allocation and hidden-window
+ancestor gating; the native visual correction still needs in-game acceptance.
+
+Visual-follow-up validation: MAIN compile/dispatch pass; 118 focused tests run,
+117 passed and one existing skip. Two unrelated fixtures are excluded (old Rimuru
+preview, and a CP14 VM fixture that cannot parse the preexisting MAIN static-if).
+Game objects remain byte-identical. Publication report: _build/tooltip-size-main-result.json.
+
+Visual follow-up published to MAIN/STABLE; final sync is 0 binary changes / 0 source differences.
+STABLE SHA-256: 80709a1d578465db8e2ca1e5ea2d31ab0ac104787c400caf8045eee4f7123315. In-game visual acceptance remains pending.
+
+CP77 title follow-up: the next user comparison still showed a larger title and a
+white custom hotkey. Title MasterFont .012 -> .011 (same as the body); the shortcut
+character is wrapped in gold ffffcc00 with white parentheses. Own-hero previews use
+WUI_SlotShownKey so remapped keys match the badge; other heroes keep their default
+slot key. Both icon and level-strip upgrade hints explicitly name the clickable
+level strip below the ability. Rank/unlock requirements and cooldown reporting stay.
+MAIN compile/dispatch passed; 119 focused tests run, one existing skip and the same
+two preexisting fixtures excluded. Report: _build/tooltip-title-main-result.json.
+
+CP77 instant-button follow-up (2026-10-30): rebased buttons require explicit
+native normal/activated/research XY, even though AHUI assigns logical slots.
+The object-stage presentation pass derives them from AHUI's existing mapping;
+Laxus F/G and Bambietta W no longer inherit Berserk/Channel default cells.
+Inori's four-stack A06U explicitly wins over service aura candidates in E.
+Shop gold plate widened.066->.092 and shifted left.030, numeric width.040->.066
+(before scale normalization). Changes preserve owner/local-frame boundaries;
+no new UI polling, frame creation loops or tooltip initialization jobs.
+
+
+CP77 property follow-up (2026-10-30): Range has one shared owner (addRange),
+including Inori/Natsu/Frieren Q, Crocodile Q, Laxus Q2 and Erza Lightning T.
+Plain mechanic property labels receive the existing gold without changing values;
+native fallback text follows the same contract. Iframe notices distinguish cast
+and active phases in one row; Asta W alt no longer repeats Radius. Frostnova R's
+static Winter's Scar sits below the LoreOnly boundary to avoid live repetition.
+No frame ownership, hover input, polling or startup scheduling changes.
+
+CP77 property follow-up published to MAIN/STABLE with the item editor grouping.
+50 focused checks pass; compile/dispatch and5499-function parity pass; final
+object/source sync is zero. Native fallback label edits are restricted to actual
+mechanic labels, preserving lore on hidden skin ranks as well. Warcraft visual,
+fog and command acceptance remain separate from these checks.
+
+CP77 disabled-command follow-up (2026-10-31): AHUI tracks hideUI separately from
+disabled state. A visible disabled replacement can own its dimmed slot without
+becoming an active input candidate (Harribel E2 during W). Inori E resolves the
+actual aura A061/rank6, four-stack A06U, or T2 A06D; the internal aura is drawn
+by the existing overlay instead of requesting a missing native command cell.
+Five-rank learn pips remain sourced from A09S. No new frames, timers or local
+handle allocation. Regression coverage: test_ally_hero_ability_ui and
+test_inori_aura; in-game appearance still requires Warcraft QA.
+
+CP77 counter follow-up (2026-10-31): A061 rank5/rank6 uses the full Inori E
+passive tooltip. The custom charge panel is level112 (text113), above the
+ability icon101, so Instability stays readable on the actual displayed aura.
+The existing TasBox state getter already maps all E variants; no duplicate
+counter source or additional polling was introduced. Native hide/disable calls
+in the hero run on transitions rather than every readiness/charge tick.
+
+Inori E follow-up (2026-10-31): portrait counters use TasBox BOX_SIZE (0.0135)
+instead of 0.0168. A061/A09T display the actual learned A09S cooldown through
+AHUI_AbilityCooldownRemaining; the armor-aura native base remains unchanged.
+Regression: test_ally_hero_ability_ui live rank-6 cooldown and expiry.
+
+Music Hide UI follow-up (2026-10-31): exclusive-window transitions and player
+close/init now respect WUI_TopVisible/WUI_TopShown when restoring the Music
+launcher. Previously the unconditional show resurrected it after round-end
+statistics. Regression: test_wos_ui_top_input (local/remote, hidden/shown).

@@ -29,8 +29,8 @@
       "enabled": true,
       "run_on_map_init": true,
       "path": "Map_Header.j",
-      "source_bytes": 589,
-      "sha256": "373beb608d500cf0272b07ff76889e84ff3c18cbd29f07b90743e44c21367715",
+      "source_bytes": 768,
+      "sha256": "776d16ef51f3f720e6ef9c1702e25fb0f4992165a1900d39cbd38a5e64a5683b",
       "declarations": {
         "libraries": [
           "EnvironmentRoundRules"
@@ -148,8 +148,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/ShowCD.j",
-      "source_bytes": 144114,
-      "sha256": "81dc05b8cc58cd5f47eb732e9d51ef106a50fd90be03c5c1c7fab4b0b6e6cfcb",
+      "source_bytes": 146721,
+      "sha256": "92d18fc0a7384c8067f7f1dd82845968db5942dc69e7ed95884584b7946bb212",
       "declarations": {
         "libraries": [
           "AllyHeroAbilityUI"
@@ -179,6 +179,11 @@
           "name": "AbilityRangePreview",
           "optional": false,
           "keyword": "requires"
+        },
+        {
+          "name": "TooltipBuilder",
+          "optional": false,
+          "keyword": "requires"
         }
       ]
     },
@@ -196,8 +201,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/TooltipBuilder.j",
-      "source_bytes": 9765,
-      "sha256": "50b708e891d1a3da0d1a99218fd7143efa269ea703e02903d09a8be2bed82d8c",
+      "source_bytes": 14224,
+      "sha256": "6595dc6c1bc2ef5a6e723a59c9a7a7ac5e920a8e1852968c808e4b4a7b8a57bf",
       "declarations": {
         "libraries": [
           "TooltipBuilder"
@@ -225,8 +230,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/UniversalTooltips.j",
-      "source_bytes": 362709,
-      "sha256": "5cb68929cad35fc590ca2adec1740db2e5cba927f6836a87c7fb922b55af44c5",
+      "source_bytes": 366672,
+      "sha256": "3d569f2d5fcfcedfe7ac49d2967267400d32595a3f5c111def54a76929a11402",
       "declarations": {
         "libraries": [
           "AAUniversalTooltips"
@@ -314,8 +319,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DefaultArmorChangeStable_Copy.j",
-      "source_bytes": 58192,
-      "sha256": "f82fee097bdf7edc0ae6e95a9cfb8c5185cf55c8a9c585d58d2eb9af255010f0",
+      "source_bytes": 58328,
+      "sha256": "9d3946dea137db9d00b5974a446049eaf2c35bdaa3493232b89a44f5cd016128",
       "declarations": {
         "libraries": [
           "HeroUnitPanelStats"
@@ -437,8 +442,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/MusicPlayer.j",
-      "source_bytes": 71809,
-      "sha256": "3e84abe1cfcbbb3e70a2d98237f09bf5507fc97319e0eaa05bdbbf213cdfffa8",
+      "source_bytes": 71838,
+      "sha256": "1c9a78b3c5e0a3909a7b06e61f5f413da010301febe2e43cf890a33f25805fa5",
       "declarations": {
         "libraries": [
           "LocalMp3Player"
@@ -646,8 +651,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Shop_Init.j",
-      "source_bytes": 328293,
-      "sha256": "99fe92b5b2d3c2e36a3ee3474944eb83aca5b0efce843208e94210b5487eb771",
+      "source_bytes": 338067,
+      "sha256": "f7ccea6fd122fb2e32c3241ddc2006fd528884f33091895e38a50e7f7c3a489b",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -671,8 +676,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Pick_Init.j",
-      "source_bytes": 307265,
-      "sha256": "0c96bd24ccb6d47aee4e0e6a57f5d89d8129a094e48bbc7441416cebca6a96cf",
+      "source_bytes": 309950,
+      "sha256": "86911750cc12af5a449de5f44eabcd736a8b27ebfb96000ab7654a33cecddd66",
       "declarations": {
         "libraries": [
           "WOSPickBans"
@@ -809,8 +814,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WoS_Hero_Icons_Init.j",
-      "source_bytes": 120895,
-      "sha256": "0aeccc26153935b6fbc95b5661282d24eb0508253921e0f715a4f24aae6e90b5",
+      "source_bytes": 121578,
+      "sha256": "0f712a063bac19f0cbca871a0c7d876e37d8c06bca6f4338b937f6dd9100c6d4",
       "declarations": {
         "libraries": [
           "heroicon"
@@ -938,8 +943,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/WOSUI.j",
-      "source_bytes": 293908,
-      "sha256": "13f127dfd02767dc88e18812be232ed9e4c80286697807910fb352b88847e131",
+      "source_bytes": 295308,
+      "sha256": "2be3097a9e6d79351336d36e4bc9818c8940765fe425cfa1c25ad2ab8fd47bc2",
       "declarations": {
         "libraries": [
           "WOSUI"
@@ -1102,8 +1107,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "WOS_Start/DamageStats.j",
-      "source_bytes": 109020,
-      "sha256": "96798500b4eae0abb80c92843e328d79c5480f86b8d57c2680d8e762bfc16313",
+      "source_bytes": 109728,
+      "sha256": "40ba6f850f49e7d5ee1b89dedc038d77ccd46f07ed8bec3eba959a1587b61d7a",
       "declarations": {
         "libraries": [
           "DamageStats"
@@ -1145,8 +1150,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Round_End/RoundEnd.j",
-      "source_bytes": 31694,
-      "sha256": "ae075bcdba74e3f3799e4abbde3b089a49906109a8e4cc31eb9c63d25c331d64",
+      "source_bytes": 31765,
+      "sha256": "4e9e7e3d152cc46e0e2eefb54e34ecaaa4c6e53f1d9ed3325290df9c9b911a7b",
       "declarations": {
         "libraries": [
           "RoundSpells"
@@ -1190,8 +1195,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/CastAItems.j",
-      "source_bytes": 12951,
-      "sha256": "facaef4888597c76f2d7da7fc24f2d87d62ebd36968321be4818919ae4101852",
+      "source_bytes": 14422,
+      "sha256": "7c32cb58965142afc81e67c16ac810df7faf81961d81082abe0dad6417e17400",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -1215,8 +1220,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/TasBox.j",
-      "source_bytes": 16157,
-      "sha256": "9a16e09a6c1adcdea6f7f5eb6785bd670babd480999764dfca4f65cc0d74e69e",
+      "source_bytes": 16161,
+      "sha256": "f46eba4d2027a3c1373dc5e09eee8ba30318362a3f527922f00099e0ef44983b",
       "declarations": {
         "libraries": [
           "TasAbilityChargeBox"
@@ -1328,8 +1333,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DecorDestroy_and_Erza_Debuff.j",
-      "source_bytes": 77402,
-      "sha256": "9c85dfe4094693d0298931fe3c70f6d246eabb40b8370b0a7872aa5df02cb6e9",
+      "source_bytes": 77575,
+      "sha256": "ce0bb01c0ec6558995d42d4c3c216c01d8e8e152a5ec39fd5f7809cf348523f1",
       "declarations": {
         "libraries": [
           "AAADest"
@@ -1368,8 +1373,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems1.j",
-      "source_bytes": 167834,
-      "sha256": "8bbcad6d81088baf9b35032341ef949574eb4a6b9ff45a21a58bf26238a5b531",
+      "source_bytes": 169800,
+      "sha256": "b6e1963499d38a5ea57062b6a818567ea889ddb27ee5bac35f3a87a20c0d4bf0",
       "declarations": {
         "libraries": [
           "GearSystems"
@@ -1401,8 +1406,8 @@
       "initially_off": false,
       "run_on_map_init": true,
       "path": "Systems/Systems2.j",
-      "source_bytes": 235548,
-      "sha256": "8d11055941440eef830031e12b48dcc32665b0524683a86fbec4120cb24d6d7e",
+      "source_bytes": 241997,
+      "sha256": "b97c1f197c9bf7b65bbcfae269ef2d357b49d39c3bbc90e496ec15ac056a86f8",
       "declarations": {
         "libraries": [
           "GearSystems2"
@@ -1473,8 +1478,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/DmgSys.j",
-      "source_bytes": 58674,
-      "sha256": "a44db442a753bf967e9ac9cf927680a31c21edd62047d0bbcf4fb27440c9e90d",
+      "source_bytes": 59017,
+      "sha256": "ef80d7152ba4603198a49f76acbe31bdaf940cebbaa7fe67d8416436efcc6df8",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -2061,8 +2066,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ButtonPressed.j",
-      "source_bytes": 7664,
-      "sha256": "ddb64ecf3d94a62076356bd697fdf5a281c920005e44e9430948ea8c7d66e8f6",
+      "source_bytes": 7550,
+      "sha256": "7bbe824b3899bca6e70a312c5756731ce10029c66e21bc2cb2b7e2e173336e41",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -2161,8 +2166,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/EnterRegion.j",
-      "source_bytes": 6663,
-      "sha256": "fa9abfa0cd2f8096b46a5b65fe198229d3f04566cccc7efdb286c0ad55e14d5c",
+      "source_bytes": 9735,
+      "sha256": "4ceb91364b483022a198bf05f4fd7449df75136787db3431c15fc0012f241293",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -2261,8 +2266,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Systems/ItemEnter.j",
-      "source_bytes": 8258,
-      "sha256": "6c610ceefc183f67e45a1eee106d5df8b895fc67e608231b8f3e6c2cbcb800a5",
+      "source_bytes": 9328,
+      "sha256": "e8165de6e0308b4d31489d3eea74deefa7c39584b24e0a1cc70ef8853f40b6bc",
       "declarations": {
         "libraries": [],
         "scopes": [],
@@ -2311,8 +2316,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Items/Items.j",
-      "source_bytes": 254218,
-      "sha256": "e6fb7f166fecd6fd1c92613b31e2bf5cd8220ff0ae3208b47b6922b433272a88",
+      "source_bytes": 278034,
+      "sha256": "6324696ca00ece5095ecef2162787d16ec8315c35302828b03d160d46b3e0a23",
       "declarations": {
         "libraries": [
           "ItemsSpells"
@@ -2420,8 +2425,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Toji.j",
-      "source_bytes": 111825,
-      "sha256": "d4cc47c1896d79b875f2c2073e4124570cd2f82eb5a0984931ba9c824804bd4a",
+      "source_bytes": 111641,
+      "sha256": "c61d9e2234354f72c84f63776869755f6f22d56c647efdf9dee3f4c14c7ef8d4",
       "declarations": {
         "libraries": [
           "TojiSpells"
@@ -2462,8 +2467,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Raiden.j",
-      "source_bytes": 118243,
-      "sha256": "f0041d8427ad764ebe9cfc3cd5cebc7539b334b088bbebe6dc9429591e00d1d1",
+      "source_bytes": 119987,
+      "sha256": "95a4fc4d796173f08335b7ec64b7502d388ea8197154151d459ed4bf2b3eabe8",
       "declarations": {
         "libraries": [
           "RaidenSpells"
@@ -2507,8 +2512,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Frieren.j",
-      "source_bytes": 122797,
-      "sha256": "20d2b06358cc866e656ab2f6feb1b22a25467e3ab060205ac207c1e65e4c77d0",
+      "source_bytes": 130625,
+      "sha256": "6124c5377df31aafb4df469b3febd2e3ad08712c1bac8175515aeba6d5e32644",
       "declarations": {
         "libraries": [
           "FrierenSpells"
@@ -2555,8 +2560,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Ainz.j",
-      "source_bytes": 162683,
-      "sha256": "b34622fb2521bb8b0df3d687288a7ac71af5213b289ed4893d1db5c6162b17a8",
+      "source_bytes": 163116,
+      "sha256": "3f6dee1cd30507b3d2346651065bc524a19187f6700bf74d5885128b0579b65e",
       "declarations": {
         "libraries": [
           "AinzSpells"
@@ -2650,8 +2655,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Brandish.j",
-      "source_bytes": 59023,
-      "sha256": "2e72a760acabdacd98749d7066b6b82b812a60454a2832cf3a97aa34ab51aea3",
+      "source_bytes": 59050,
+      "sha256": "8ae6fc41392295630d06c36bb2c13b5b68575e614bacbf79af6a13a4eccfe22f",
       "declarations": {
         "libraries": [
           "BrandishSpells"
@@ -2692,8 +2697,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Patriot.j",
-      "source_bytes": 96142,
-      "sha256": "a2289473d2c1689cbdf81ec2811110eaf6cbb790a83074c5047fa10fcd7f3dbc",
+      "source_bytes": 97650,
+      "sha256": "0d59fe36baf3c1f8553b38c6779d3b52619fed0c9aec8ab4888e033316d19209",
       "declarations": {
         "libraries": [
           "PatriotSpells"
@@ -2814,8 +2819,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Bambietta.j",
-      "source_bytes": 108950,
-      "sha256": "8ab620396af029b56971435c12affe10ece6b8feb8bef7b1bb6cd3b0d17a9081",
+      "source_bytes": 109331,
+      "sha256": "bbd39579f869f718c5a3056d51f3359ac26416e295d71175de4d94e8dbb39a48",
       "declarations": {
         "libraries": [
           "BambiettaSpells"
@@ -2895,8 +2900,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Alucard.j",
-      "source_bytes": 106871,
-      "sha256": "67800635ac36bd85b82c83046de27c260a4e2e1e4532566bdd2ca5365a666370",
+      "source_bytes": 106888,
+      "sha256": "8b55a2e9ad41712d8c8ad9c2a887444e79cf72e1ce0b0cc526dd12e2b6673f09",
       "declarations": {
         "libraries": [
           "AlucardSpells"
@@ -2937,8 +2942,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Starrk.j",
-      "source_bytes": 148560,
-      "sha256": "42c0afa46b8ae2d91c2135f2c5c6aafb76764174e5104ffd376cbbb7953a4fdc",
+      "source_bytes": 149047,
+      "sha256": "abbc781ca8617b3650b9a0eab69c1cf9055729e91f159dc3152d44777ced4d78",
       "declarations": {
         "libraries": [
           "StarrkSpells"
@@ -3022,8 +3027,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Barragan.j",
-      "source_bytes": 89582,
-      "sha256": "d3a970debd17b15ddd6f1bf128a03c2b785af0563726de5fffeeace78a16bb7f",
+      "source_bytes": 89912,
+      "sha256": "c0ff4c4550549f99708295dc4c2471baba92c9a1a1ae89a76edca49c45f5ab3c",
       "declarations": {
         "libraries": [
           "BarraganSpells"
@@ -3105,8 +3110,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Harribel.j",
-      "source_bytes": 78274,
-      "sha256": "1a372b63175df4979dd68ef23cd3ea239c7b9e556d620658d117fff1ea00a05d",
+      "source_bytes": 79777,
+      "sha256": "ba214d8656b00c649b551d6b2af1039d3c8c4020f941ff805b7ae12a5936cd33",
       "declarations": {
         "libraries": [
           "HarribelSpells"
@@ -3149,8 +3154,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Tsuna.j",
-      "source_bytes": 163155,
-      "sha256": "61bcfd09204005547f43b5bf11f411d5cf625f66472d3b289c63522e6dd61d67",
+      "source_bytes": 163502,
+      "sha256": "341182cc31f65e65aa84248010703c0ec4fb839366f84ac17bfe608c086e9e8e",
       "declarations": {
         "libraries": [
           "TsunaSpells"
@@ -3339,8 +3344,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Neuvillette.j",
-      "source_bytes": 45544,
-      "sha256": "7c591baf28de8630798eb748f7ad43fd01eaa1c7c23243d2b87dbfa42dfcc533",
+      "source_bytes": 45620,
+      "sha256": "407682839fa4a606c62fd81f1c5cdaa68d0c00b098187d9d4b45106a409ff322",
       "declarations": {
         "libraries": [
           "NeuvilletteSpells"
@@ -3421,7 +3426,7 @@
       "run_on_map_init": false,
       "path": "Heroes/Akainu.j",
       "source_bytes": 51624,
-      "sha256": "507d344624c9225816edfc326757a8c82bdcadba7fde15337deb7a80212b6f7f",
+      "sha256": "e55f64bad72bcc9d583cc20221b7b0271878a1e98d96698b92a943205e92f482",
       "declarations": {
         "libraries": [
           "AkainuSpells"
@@ -3461,8 +3466,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Inori.j",
-      "source_bytes": 149632,
-      "sha256": "3618bbd68365cf7791fafcd7da5e6ff4c6cc1778f0cd0e8333d3f0a4e4b887fd",
+      "source_bytes": 151219,
+      "sha256": "77e96e0f0aefabd9a120b182e74bb7f34b386e68ded3e8ebe6eca7c67efd5e91",
       "declarations": {
         "libraries": [
           "InoriSpells"
@@ -3557,8 +3562,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/AlterSaber.j",
-      "source_bytes": 95714,
-      "sha256": "574ed0d7fb2dc783c3930932be27756258746728a4e2ddec6ea234cb4636cf4b",
+      "source_bytes": 96433,
+      "sha256": "40c1c5576a09d512c58d36fe4e89685d842c70632b8d2fa1ed8fe785e30ec244",
       "declarations": {
         "libraries": [
           "AlterSaberSpells"
@@ -3833,8 +3838,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaE.j",
-      "source_bytes": 46693,
-      "sha256": "24268a507833ea4cd8578581c36c0f1b3b8a9104dc6e8160546df5a58852b3a4",
+      "source_bytes": 46907,
+      "sha256": "896c7ffd63f83a391d9029c33abd647e4b086320fde9dd09949fe1f3db35a132",
       "declarations": {
         "libraries": [
           "ErzaESpells"
@@ -3923,8 +3928,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaT.j",
-      "source_bytes": 99243,
-      "sha256": "091673e73c81ef1af4fa1024bbb693ff44d8e8381d2dce6b4774e38c979c3a1f",
+      "source_bytes": 99518,
+      "sha256": "dea2804332cd77d7fb456465653a0c07b79cde9de287f1167b0f9614251fd802",
       "declarations": {
         "libraries": [
           "ErzaTSpells"
@@ -4051,8 +4056,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Erza/ErzaBase.j",
-      "source_bytes": 32671,
-      "sha256": "329853534f8bb3de54c68607b089249b78f68081c8d13ed639b2443ec1e47e5e",
+      "source_bytes": 32716,
+      "sha256": "f05f8079f4f64cac18bbdebb1b52a59bc6cf32a0a23bc7bfe125f04db46b8ffc",
       "declarations": {
         "libraries": [
           "ErzaBase"
@@ -4089,8 +4094,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Milim.j",
-      "source_bytes": 96525,
-      "sha256": "d8abaa1c93a34460160cd016c6b12b5657bf9a1ce1c8a4b3b0cbd27f6031d76d",
+      "source_bytes": 96531,
+      "sha256": "55d844e713b7441f69023669bf3a458ee63b75c549f5c431d12483d233b7584e",
       "declarations": {
         "libraries": [
           "MilimSpells"
@@ -4199,8 +4204,8 @@
       "initially_off": false,
       "run_on_map_init": false,
       "path": "Heroes/Frostnova.j",
-      "source_bytes": 90820,
-      "sha256": "45cc572b4732fb0cd8f5b255f60e1ef83b7e733cfbf5bec36ec6d8af5d4e0277",
+      "source_bytes": 91087,
+      "sha256": "755c1b6b0a34711f46c76cfd0b57af87c506cdb1b89ed202f01c093fa1754759",
       "declarations": {
         "libraries": [
           "FrostnovaSpells"

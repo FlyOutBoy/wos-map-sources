@@ -626,7 +626,7 @@ private function LMP_SetVisible takes player whichPlayer, boolean flag returns n
         call BlzFrameSetVisible(lmpSeek, flag)
         call BlzFrameSetVisible(lmpSeekBlocker, flag)
         call BlzFrameSetVisible(lmpVolumeSlider, flag)
-        call BlzFrameSetVisible(lmpOpenButton, not flag)
+        call BlzFrameSetVisible(lmpOpenButton, not flag and WUI_TopShown())
     endif
 
     if flag then
@@ -1600,7 +1600,7 @@ private function LMP_CreateFrames takes nothing returns nothing
     call BlzFrameSetVisible(lmpSeekBlocker, false)
     call BlzFrameSetVisible(lmpVolumeSlider, false)
     // После полного создания музыкального UI показываем кнопку открытия.
-    call BlzFrameSetVisible(lmpOpenButton, true)
+    call BlzFrameSetVisible(lmpOpenButton, WUI_TopShown())
     call BlzFrameSetVisible(lmpLinkButton, true)
     call WUI_ReleaseGhost(0)
 

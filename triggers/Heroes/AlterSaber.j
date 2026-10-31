@@ -155,11 +155,11 @@ library AlterSaberSpells uses GearSystems
         integer AlterSaberR_Regen4 = 'A04O'
         integer AlterSaberR_DurationBase = 12
         integer AlterSaberR_DurationStep = 2
-        real AlterSaberR_MorphTime = 0.25 // transformation (was 0.75 sec)
+        real AlterSaberR_MorphTime = 0.4 // transformation (was 0.75 sec)
         unit array AlterSaberR_Dummy[12]
 //---------------RR ability-----------------------------------------------------
         integer AlterSaberRR_ID = 'A02D'
-        real AlterSaberRR_RootDurationBase = 2.5
+        real AlterSaberRR_RootDurationBase = 2.0
         real AlterSaberRR_Aoe = 900 // aoe of pundle
         real AlterSaberRR_Time = 3.5 // how long pundle exist
         real AlterSaberRR_DamageAgiBase = 4 // base damage
@@ -174,9 +174,9 @@ library AlterSaberSpells uses GearSystems
         integer AlterSaberF_Active_ID = 'A115'
         integer SH_ALTERSABER_F_ACTIVE = StringHash("alter saber f active")
         real AlterSaberF_DamageFromCurrentMana = 5 // % current mana as bonus damage per atk, always (On and Off)
-        real AlterSaberF_ManaBurnBase = 5 // On: % current mana burned per atk
-        real AlterSaberF_ManaBurnMorph = 3 // On, R form: % current mana burned per atk
-        real AlterSaberF_BurnDamageMultiplier = 2 // On: burned mana x this as extra damage
+        real AlterSaberF_ManaBurnBase = 9 // On: % current mana burned per atk
+        real AlterSaberF_ManaBurnMorph = 9 // On, R form: % current mana burned per atk
+        real AlterSaberF_BurnDamageMultiplier = 1 // On: burned mana x this as extra damage
 //---------------G ability-----------------------------------------------------
         integer AlterSaberG_ID = 'A02F'
         real AlterSaberG_DamageAgiBase = 1 // base number x Agi damage for 1 level
@@ -1156,6 +1156,17 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
         endmethod
     endstruct
 
+    function AlterSaber_ShareWCooldown takes unit c returns nothing
+        local real remaining
+        if GetUnitAbilityLevel(c, AlterSaberW_ID) > 0 and GetUnitAbilityLevel(c, AlterSaberW2_ID) > 0 then
+            set remaining = RMaxBJ(BlzGetUnitAbilityCooldownRemaining(c, AlterSaberW_ID), BlzGetUnitAbilityCooldownRemaining(c, AlterSaberW2_ID))
+            if remaining > 0 then
+                call BlzStartUnitAbilityCooldown(c, AlterSaberW_ID, remaining)
+                call BlzStartUnitAbilityCooldown(c, AlterSaberW2_ID, remaining)
+            endif
+        endif
+    endfunction
+
     private struct AlterSaberR_KS
         private static integer array m_AlterSaberR
         private static integer MUI_AlterSaberR = -1
@@ -1175,6 +1186,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
             loop
                 exitwhen i > MUI_AlterSaberR
                 set this = m_AlterSaberR[i]
+                call AlterSaber_ShareWCooldown(c)
                 if SpellBoolCaster(c) and r <= rmax and CheckCoordsInRect(gg_rct_Base, GetUnitX(c), GetUnitY(c)) == false then
                     if check == 0 then
                         call DebugUnit2(c)
@@ -1190,7 +1202,8 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberW_ID, false)
                             call UnitAddAbility(c, AlterSaberW2_ID)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), AlterSaberW2_ID, true)
-                            call SetUnitAbilityLevel(c, AlterSaberW2_ID, GetUnitAbilityLevel(c, AlterSaberR_ID))
+                            call SetUnitAbilityLevel(c, AlterSaberW2_ID, GetUnitAbilityLevel(c, AlterSaberW_ID))
+                            call AlterSaber_ShareWCooldown(c)
                             call DecorRemove(c, x, y, 800, 50)
                             call VisionTimed(GetOwningPlayer(c), x , y, 1500, 2)
                             call MakeSound("war3mapimported\\Hero_AlterSaber_W3")
@@ -1628,7 +1641,7 @@ call MyFlush(GetHandleId(c),SH_SABER_W_CD,0,time)
         call AlterSaberF_Toggle(c) // F starts switched On
     endfunction
 
-    // Always: X% current mana as damage. On: also burns Y% current mana (less in R form) for x2 of it.
+    // Always: X% current mana as damage. On: burns 9% current mana for equal extra damage in either form.
     function AlterSaberF_Attack takes unit c, boolean morph returns real
         local real burn = AlterSaberF_ManaBurnBase
         local real mana = GetUnitState(c, UNIT_STATE_MANA)

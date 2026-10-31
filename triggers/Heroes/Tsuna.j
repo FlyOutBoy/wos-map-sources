@@ -235,6 +235,7 @@ library TsunaSpells uses GearSystems
         integer TsunaT_SlowDuration = 2
         real TsunaT_Root = 0.0
         real TsunaT_SilenceDuration = 0.0
+        real TsunaT_ReleaseTime = 0.54 // 0.36 sec earlier; starts at 50% power
         real TsunaT_ChargeTimeFull = 1.20            // Полное время зарядки до 100% (сек)
         real TsunaT_OverchargeTime = 4.00            // Время удержания до перегрузки на Lv. 35 (сек)
         real TsunaT_OverchargeDmgPct = 125.0         // Процент урона при перегрузке на Lv. 35 (%)
@@ -1709,8 +1710,10 @@ library TsunaSpells uses GearSystems
     
     function TsunaT_DisplayCharge takes real elapsed, boolean canOvercharge returns real
         local real fullAt = 0.30 + TsunaT_ChargeTimeFull
-        if elapsed <= fullAt then
-            return RMaxBJ(0.00, RMinBJ(100.00, (elapsed - 0.30) / RMaxBJ(0.01, TsunaT_ChargeTimeFull) * 100.00))
+        if elapsed <= TsunaT_ReleaseTime then
+            return RMaxBJ(0.00, 50.00 * (elapsed - 0.30) / (TsunaT_ReleaseTime - 0.30))
+        elseif elapsed <= fullAt then
+            return 50.00 + 50.00 * (elapsed - TsunaT_ReleaseTime) / (fullAt - TsunaT_ReleaseTime)
         endif
         if not canOvercharge then
             return 100.00
@@ -1829,7 +1832,7 @@ library TsunaSpells uses GearSystems
                             // Damage and display share every percentage, including partial overcharge.
                             set chargePct = TsunaT_DisplayCharge(r, GetHeroLevel(c) >= 35)
                             set check2 = R2I(chargePct + 0.5)
-                            if check2 >= 50 then
+                            if r >= TsunaT_ReleaseTime then
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaT2_ID, true)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), TsunaT_ID, false)
                                 call UnitAddAbility(c, TsunaT2_ID)
@@ -1880,6 +1883,8 @@ library TsunaSpells uses GearSystems
                             if check2>= 120 then 
                             call BlzStartUnitAbilityCooldown(c,TsunaT_ID,BlzGetUnitAbilityCooldownRemaining(c,TsunaT_ID)*(I2R(check2) / 100))
                             endif
+                            set chargePct = RMaxBJ(50.0, chargePct)
+                            set check2 = IMaxBJ(50, check2)
                             // Partial overcharge is continuous; ordinary charge keeps legacy rounding.
                             if chargePct > 100.00 then
                                 set dmg = dmg * (chargePct / 100.00)

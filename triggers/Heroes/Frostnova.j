@@ -22,6 +22,7 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
         real FrostnovaTQ_SpeedMultiplier = 1.15
         real FrostnovaQ_DecorDamage = 20.0
         real FrostnovaQ_Aoe = 150.0
+        real FrostnovaQ_UseCooldown = 0.55 // personal between-shot interval: 0.25 + 0.30
         real FrostnovaQ_Recharge = 17.0
         real FrostnovaQ_RechargeStep = -1.0
         real FrostnovaQ_Stun = 0.1
@@ -403,14 +404,13 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
                 if not FrostnovaAlive(hero) or GetUnitTypeId(hero) == 0 then
                     set winterRemaining = 0.0
                 endif
-                // Any recovered charge, including an early grant, makes Q ready.
-                if SpellStacksGet(hero) > previousQCharges then
-                    set qCastDelay = 0.0
-                endif
-                // A delayed spell callback may reapply cooldown after the charge UI.
-                // Retain the shared between-throw pause, but never a refill cooldown.
-                if SpellStacksGet(hero) > 0 and qCastDelay <= 0.0001 and BlzGetUnitAbilityCooldownRemaining(hero, FrostnovaQ_ID) > 0.0 then
-                    call BlzEndUnitAbilityCooldown(hero, FrostnovaQ_ID)
+                // A recovered charge never bypasses the personal between-shot delay.
+                if SpellStacksGet(hero) > 0 then
+                    if qCastDelay <= 0.0001 then
+                        call BlzEndUnitAbilityCooldown(hero, FrostnovaQ_ID)
+                    elseif RAbsBJ(BlzGetUnitAbilityCooldownRemaining(hero, FrostnovaQ_ID) - qCastDelay) > 0.04 then
+                        call BlzStartUnitAbilityCooldown(hero, FrostnovaQ_ID, qCastDelay)
+                    endif
                 endif
                 set previousQCharges = SpellStacksGet(hero)
                 call UpdateShards()
@@ -758,12 +758,16 @@ library FrostnovaSpells initializer InitFrostnovaSpells uses GearSystems, AAADes
                 return false
             endif
             call state.UpdateShards()
+            if state.qCastDelay > 0.0001 then
+                call MyAddMana(caster, I2R(BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(caster, FrostnovaQ_ID), ABILITY_ILF_MANA_COST, GetUnitAbilityLevel(caster, FrostnovaQ_ID)-1)), 0.03)
+                return false
+            endif
             set slot = SpellStacksGet(caster) - 1
             if not SpellStacksTryUse(caster) then
                 call MyAddMana(caster, I2R(BlzGetAbilityIntegerLevelField(BlzGetUnitAbility(caster, FrostnovaQ_ID), ABILITY_ILF_MANA_COST, GetUnitAbilityLevel(caster, FrostnovaQ_ID)-1)), 0.03)
                 return false
             endif
-            set state.qCastDelay = KS_SpellStacks.STACK_USE_COOLDOWN + 0.03
+            set state.qCastDelay = FrostnovaQ_UseCooldown + 0.03
             set state.previousQCharges = SpellStacksGet(caster)
             // Seed the empty-pool cooldown before the shared 0.05 tick can
             // mistake the engine's pending cooldown write for a free charge.

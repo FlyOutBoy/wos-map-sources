@@ -10,6 +10,100 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AllyAbilityUI(unittest.TestCase):
+    def test_disabled_visible_harribel_e2_keeps_dimmed_icon_and_restores(self):
+        g=self.vm.g;self.c.owner=0;self.c.type=g['Harribel_ID']
+        base,variant=g['HarribelE_ID'],g['HarribelE2_ID']
+        self.c.abilities={base:{'level':5,'remaining':0},variant:{'level':5,'remaining':0}}
+        self.vm.run('AHUI_OnSetPlayerAbilityAvailable',(0,base,False))
+        self.vm.run('AHUI_OnBlzUnitDisableAbility',(self.c,variant,True,False))
+        self.refresh();self.assertEqual(variant,g['AHUI_CurrentAbility'][2])
+        self.assertFalse(g['AHUI_NativeCommandShown'][2]);self.assertTrue(self.value('AHUI_Icon',2,'visible'))
+        self.assertFalse(self.vm.run('AHUI_IsActiveSlotCandidate',(self.c,0,variant)))
+        self.vm.run('AHUI_OnBlzUnitDisableAbility',(self.c,variant,False,False))
+        self.refresh();self.assertEqual(variant,g['AHUI_CurrentAbility'][2]);self.assertTrue(g['AHUI_NativeCommandShown'][2])
+
+    def test_inori_current_aura_badge_reads_live_stacks_on_ranks_five_and_six(self):
+        g=self.vm.g;self.c.owner=0;self.c.type=g['Inori_ID'];self.c.hero_level=35
+        base,aura=g['InoriE_ID'],g['InoriEAlt2_ID']
+        self.c.abilities={base:{'level':5,'remaining':0},aura:{'level':6,'remaining':0}}
+        text=(ROOT/'triggers/Systems/TasBox.j').read_text(encoding='utf-8-sig')
+        body=text.split('      static if LIBRARY_InoriSpells then',1)[1].split('      static if LIBRARY_RaidenSpells then',1)[0]
+        body=body.rsplit('      endif',1)[0]
+        counter=JassState('function ReadStack takes unit u, integer spellCode returns string\nlocal integer stacks = 0\nlocal integer hid = GetHandleId(u)\n'+body+'\nreturn ""\nendfunction')
+        counter.g.update({k:g[k] for k in ('InoriE_ID','InoriEAlt_ID','InoriEAlt2_ID','InoriEE_ID','InoriE2_ID')})
+        counter.g.update(hs=g['hs'],SH_INORI_E='Inori E',SH_INORI_E_ACTIVE='Inori E Active')
+        g['TasAbilityChargeBox_GetValue']=lambda u,a:counter.run('ReadStack',(u,a))
+        for rank in (5,6):
+            self.c.abilities[aura]['level']=rank
+            for count in (1,2,3):
+                g['hs'][id(self.c),'Inori E']=count;self.refresh()
+                self.assertEqual(str(count),self.value('AHUI_ChargeText',2,'text'))
+                self.assertTrue(self.value('AHUI_ChargeBox',2,'visible'))
+        g['hs'][id(self.c),'Inori E Active']=1;self.refresh()
+        self.assertFalse(self.value('AHUI_ChargeBox',2,'visible'))
+
+    def test_inori_improved_aura_uses_the_base_e_cooldown(self):
+        g=self.vm.g;self.c.owner=0;self.c.type=g['Inori_ID'];self.c.hero_level=35
+        base,aura=g['InoriE_ID'],g['InoriEAlt2_ID']
+        self.c.abilities={base:{'level':5,'remaining':18.},aura:{'level':6,'remaining':0.}}
+        self.refresh()
+        self.assertEqual(aura,g['AHUI_CurrentAbility'][2])
+        self.assertTrue(self.value('AHUI_CooldownText',2,'visible'))
+        self.assertIn('18',self.value('AHUI_CooldownText',2,'text'))
+        self.c.abilities[base]['remaining']=0.
+        g['AHUI_CooldownTicks'][2]=0;self.refresh()
+        self.assertFalse(self.value('AHUI_CooldownText',2,'visible'))
+
+    def test_inori_aura_actual_rank_stays_readable_in_base_and_e_forms(self):
+        g=self.vm.g;self.c.owner=0;self.c.type=g['Inori_ID'];self.c.hero_level=35
+        base,aura,active=g['InoriE_ID'],g['InoriEAlt2_ID'],g['InoriEE_ID']
+        self.c.abilities={base:{'level':5,'remaining':0},aura:{'level':6,'remaining':0}}
+        self.refresh();self.assertEqual(aura,g['AHUI_CurrentAbility'][2]);self.assertTrue(self.value('AHUI_Icon',2,'visible'));self.assertFalse(g['AHUI_NativeCommandShown'][2])
+        self.vm.run('AHUI_OnBlzUnitHideAbility',(self.c,base,True))
+        self.c.abilities[aura]['level']=5
+        self.refresh();self.assertEqual(aura,g['AHUI_CurrentAbility'][2]);self.assertTrue(self.value('AHUI_Icon',2,'visible'))
+        self.c.abilities[active]={'level':5,'remaining':0}
+        self.refresh();self.assertEqual(active,g['AHUI_CurrentAbility'][2])
+
+    def test_preview_title_has_gold_actual_key_and_upgrade_hint_points_below_icon(self):
+        g = self.vm.g
+        self.c.owner = 0
+        self.c.hero_level = 10
+        self.c.skill_points = 1
+        g['Hero'][0] = self.c
+        del self.c.abilities[g['CrocodileW_ID']]
+        g['WUI_SlotShownKey'] = lambda pid, slot: 'Z'
+        self.refresh()
+        self.assertTrue(self.hover_tooltip(1))
+        self.assertTrue(self.value('AHUI_TooltipTitle', 0, 'text').endswith('(|cffffcc00Z|r)'))
+        self.assertIn('click the level strip below the ability', self.value('AHUI_TooltipText', 0, 'text'))
+        g['AHUI_HoverPips'][0] = True
+        self.vm.run('AHUI_RefreshTooltip', (0,))
+        self.assertIn('Click the level strip below the ability', self.value('AHUI_TooltipText', 0, 'text'))
+        self.assertNotIn('Click here', self.value('AHUI_TooltipText', 0, 'text'))
+
+    def test_custom_tip_shares_native_anchor_and_long_titles_leave_room_for_mana(self):
+        self.allies.clear()
+        self.refresh()
+        g = self.vm.g
+        points = []
+        g['AHUI_HoveredSlot'][0] = 0
+        g['WUI_HudShift'] = -.08
+        g['BlzFrameSetAbsPoint'] = lambda *args: points.append(args)
+        title_frame = g['AHUI_TooltipTitle'][0]
+        g['BlzFrameGetHeight'] = lambda f: .035 if f == title_frame else .10
+        g['BlzFrameSetPoint'] = lambda *args: points.append(args)
+        self.vm.run('AHUI_RefreshTooltip', (0,))
+        root = g['AHUI_TooltipRoot'][0]
+        anchor = next(p for p in points if p[0] == root)
+        self.assertEqual('br', anchor[1])
+        self.assertAlmostEqual(.720, anchor[2])
+        self.assertAlmostEqual(.164, anchor[3])
+        body = next(p for p in points if p[0] == g['AHUI_TooltipText'][0])
+        self.assertAlmostEqual(-.064, body[-1])
+        self.assertAlmostEqual(.170, self.value('AHUI_TooltipRoot', 0, 'size')[1])
+        self.assertTrue(self.value('AHUI_TooltipManaIcon', 0, 'visible'))
+
     def test_silence_chains_replace_owned_native_commands_and_clear_on_dispel(self):
         self.c.owner = self.viewer
         self.refresh()
@@ -134,6 +228,25 @@ class AllyAbilityUI(unittest.TestCase):
             self.refresh()
             self.assertEqual(base,g['AHUI_CurrentAbility'][2])
 
+    def test_inori_e_can_be_learned_late_with_aura_or_active_replacement_showing(self):
+        g=self.vm.g
+        self.c.owner=0;self.c.type=g['Inori_ID'];self.c.hero_level=18;self.c.skill_points=1
+        g['Hero'][0]=self.c
+        learned=[];g['SelectHeroSkill']=lambda u,a:learned.append(a)
+        for alternate in (g['InoriEAlt_ID'],g['InoriEE_ID'],g['InoriE2_ID']):
+            with self.subTest(alternate=alternate):
+                self.c.abilities={alternate:{'level':1,'remaining':0}}
+                self.vm.run('AHUI_OnBlzUnitHideAbility',(self.c,g['InoriE_ID'],True))
+                self.vm.run('AHUI_TryLearn',(self.c,2))
+                self.assertEqual(g['InoriE_ID'],learned[-1])
+                self.vm.run('AHUI_RefreshLearning',(0,))
+                self.assertEqual(5,g['AHUI_PipMax'][2])
+                self.assertTrue(self.value('AHUI_LearnButton',2,'visible'))
+        self.assertEqual([6,10,14,18,22],[self.vm.run('AHUI_RequiredHeroLevel',(g['InoriE_ID'],n)) for n in range(1,6)])
+        self.c.abilities[g['InoriE_ID']]={'level':4,'remaining':0}
+        before=len(learned);self.vm.run('AHUI_TryLearn',(self.c,2))
+        self.assertEqual(before,len(learned))
+
     def setUp(self):
         source = (ROOT/'triggers/WOS_Start/ShowCD.j').read_text(encoding='utf-8-sig')
         wui = (ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig')
@@ -161,6 +274,9 @@ class AllyAbilityUI(unittest.TestCase):
             return f
         g['BlzGetAbilityPosX'] = pos('X')
         g['BlzGetAbilityPosY'] = pos('Y')
+        builder = (ROOT/'triggers/WOS_Start/TooltipBuilder.j').read_text(encoding='utf-8-sig')
+        for name, value in re.findall(r'constant real (TOOLTIP_\w+) = ([0-9.]+)', builder):
+            g[name] = float(value)
         for kind,name,value in re.findall(r'(?m)^\s*(?:private )?(?:constant )?(integer|real|boolean|string) (\w+) = (.*)',source):
             g[name] = eval(value.split('//')[0].strip().replace('false','False').replace('true','True'),{},g)
         for kind,name in re.findall(r'(?m)^\s*private (\w+) array (\w+)',source):
@@ -175,7 +291,7 @@ class AllyAbilityUI(unittest.TestCase):
                 g[name] = value
         g.update({
             'WUI_COMMAND_X':0.354,'WUI_COMMAND_STEP':0.040,'WUI_HUD_Y':0.044,
-            'AHUI_AbilityAvailability':{},'AHUI_UnitAbilityHidden':{},'AHUI_UnitAbilityDisabled':{},'hs':{},
+            'AHUI_AbilityAvailability':{},'AHUI_UnitAbilityHidden':{},'AHUI_UnitAbilityDisabled':{},'AHUI_UnitAbilityDisableHidden':{},'hs':{},
             'AHUI_TooltipsReady':True,'AHUI_AllowCooldownRead':False,'TooltipTextRevision':0,'WUI_SettingsRevision':0,
             'AHUI_GameUI':'game','AHUI_ConsoleBackdrop':'console',
             'bj_MAX_PLAYER_SLOTS':24,'Player':lambda i:i,'GetPlayerId':lambda p:p,
@@ -219,7 +335,7 @@ class AllyAbilityUI(unittest.TestCase):
             # Checkpoint 21: object-data level table and unlock labels.
             'AHUI_LevelData':{},'HaveSavedInteger':lambda h,k,c:(k,c) in h,
             'WUI_SetText':lambda f,v:self.frame(f,'text',v),
-            'WUI_CHASSIS_LEFT':0.160,'WUI_CHASSIS_RIGHT':0.830,'WUI_CHASSIS_TOP':0.094,
+            'WUI_HudShift':0.0,'WUI_CHASSIS_LEFT':0.160,'WUI_CHASSIS_RIGHT':0.830,'WUI_CHASSIS_TOP':0.094,
             'FRAMEPOINT_BOTTOM':'b',
         })
         self.vm.run('AHUI_InitLevelTable')

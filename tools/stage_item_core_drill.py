@@ -1,7 +1,7 @@
 """Stage the Core Drill item (Gurren Lagann) in MAIN object data (idempotent).
 
 Universal item: +20 allstats, 7500 gold (Pakkun +20 + 4000). Physical or magic
-ability damage grants a stack of that type (+5% damage of the same type, up to
+ability damage grants a stack of that type (+4.25% damage of the same type, up to
 5 stacks). Each type shows its own buff on the holder: a dummy casts a copy of
 the Black Clover Inner Fire (A07D) at the stack level, with zeroed bonuses, so
 the previous level's buff can be removed. Only object JSON/raw/metadata are
@@ -20,8 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 IDS_PATH = ROOT / "object-data/items-core-drill-id.json"
 ICON = "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrill.blp"
 TITLE = "Core Drill"
+BONUS_PER_STACK = 4.25
 TIP = ("+20 allstats\nPassive: Dealing physical or magic damage with abilities grants a stack of that damage "
-       "type. Each stack increases your damage of the same type by 5% (up to 5 stacks, +25%). Physical and "
+       "type. Each stack increases your damage of the same type by 4.25% (up to 5 stacks, +21.25%). Physical and "
        "magic stacks are separate and shown as their own buffs.\nDuration: 4 sec, refreshed by each new stack.")
 STACKS = 5
 DURATION = 4.0
@@ -106,12 +107,12 @@ def stage():
         if skin is not None:
             for n in range(1, STACKS + 1):
                 set_field(skin, "atp1", f"Core Drill: {title} {n}/{STACKS}", "string", n)
-                set_field(skin, "aub1", f"+{5 * n}% {word} ability damage.", "string", n)
+                set_field(skin, "aub1", f"+{BONUS_PER_STACK * n:g}% {word} ability damage.", "string", n)
             set_field(skin, "aart", BUFF_ICON.format(key), "string", 0)
         for n in range(1, STACKS + 1):
             buff = obj("buffs", f"CoreDrill{key}Buff{n}", skin=True)
             for field, value in (("ftip", f"Core Drill: {title} ({n}/{STACKS})"),
-                                 ("fube", f"+{5 * n}% {word} ability damage. Each {word} ability hit adds a stack "
+                                 ("fube", f"+{BONUS_PER_STACK * n:g}% {word} ability damage. Each {word} ability hit adds a stack "
                                           f"and refreshes it ({DURATION:g} sec)."),
                                  ("fart", BUFF_ICON.format(key)), ("ftat", ""), ("fnam", f"Core Drill {title} {n}"),
                                  ("fnsf", "")):
@@ -127,5 +128,32 @@ def stage():
     print(json.dumps(ids))
 
 
+def stage_bonus():
+    """Update only live bonus presentation; preserve item stats, recipe and other metadata."""
+    from normalize_tooltip_text import save
+    docs, _ = objects.prepare_documents(ROOT/'object-data', ROOT/'.object-data-raw')
+    ids = json.loads(IDS_PATH.read_text())
+    for doc in docs:
+        if doc['kind'] not in ('abilities', 'buffs'):
+            continue
+        index = {objects.object_id(o): o for o in doc['custom_objects']}
+        for key, title, word in TYPES:
+            if doc['kind'] == 'abilities':
+                for n in range(1, STACKS+1):
+                    set_field(index[ids[f'CoreDrill{key}Abi']], 'aub1', f'+{BONUS_PER_STACK*n:g}% {word} ability damage.', 'string', n)
+            else:
+                for n in range(1, STACKS+1):
+                    set_field(index[ids[f'CoreDrill{key}Buff{n}']], 'fube', f'+{BONUS_PER_STACK*n:g}% {word} ability damage. Each {word} ability hit adds a stack and refreshes it ({DURATION:g} sec).', leveled=False)
+        raw.encode_object_file(doc, doc['source_file'])
+        save(ROOT/'.object-data-raw'/raw.OUTPUT_NAMES[doc['source_file']], doc)
+    for kind, (view, meta) in objects.views_from_raw(docs, ROOT/'libs/common.j').items():
+        if kind in ('abilities', 'buffs'):
+            save(ROOT/'object-data'/objects.CATEGORY_FILES[kind], view)
+            save(ROOT/'.object-data-raw/workspace-meta'/objects.CATEGORY_FILES[kind], meta)
+
 if __name__ == "__main__":
-    stage()
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--bonus-only', action='store_true')
+    args = parser.parse_args()
+    stage_bonus() if args.bonus_only else stage()

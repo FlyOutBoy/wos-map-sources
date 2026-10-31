@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3h",
-  "source_sha256": "e310a9717ae7cd5ff9de619b2eb3dc5ea38d89487f5162e485a125a6db923081",
+  "source_sha256": "9c3f6a7e82dc4cd99cfc6912dca69d6e8f6d419c623b018a673c713da58b5cf8",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -3777,7 +3777,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B04D",
+            "hex": "42303444"
+          }
+        }
+      ],
       "display_name": "Core Drill Physical 1"
     },
     {
@@ -3792,7 +3808,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B04E",
+            "hex": "42303445"
+          }
+        }
+      ],
       "display_name": "Core Drill Physical 2"
     },
     {
@@ -3807,7 +3839,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B04F",
+            "hex": "42303446"
+          }
+        }
+      ],
       "display_name": "Core Drill Physical 3"
     },
     {
@@ -3822,7 +3870,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B050",
+            "hex": "42303530"
+          }
+        }
+      ],
       "display_name": "Core Drill Physical 4"
     },
     {
@@ -3837,7 +3901,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B051",
+            "hex": "42303531"
+          }
+        }
+      ],
       "display_name": "Core Drill Physical 5"
     },
     {
@@ -3852,7 +3932,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B052",
+            "hex": "42303532"
+          }
+        }
+      ],
       "display_name": "Core Drill Magic 1"
     },
     {
@@ -3867,7 +3963,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B053",
+            "hex": "42303533"
+          }
+        }
+      ],
       "display_name": "Core Drill Magic 2"
     },
     {
@@ -3882,7 +3994,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B054",
+            "hex": "42303534"
+          }
+        }
+      ],
       "display_name": "Core Drill Magic 3"
     },
     {
@@ -3897,7 +4025,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B055",
+            "hex": "42303535"
+          }
+        }
+      ],
       "display_name": "Core Drill Magic 4"
     },
     {
@@ -3912,7 +4056,23 @@
       "v3_unknown": [
         0
       ],
-      "modifications": [],
+      "modifications": [
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+          },
+          "sanity_check": {
+            "text": "B056",
+            "hex": "42303536"
+          }
+        }
+      ],
       "display_name": "Core Drill Magic 5"
     },
     {
@@ -4294,6 +4454,277 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B069",
+        "hex": "42303639"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Emberbreaker"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06A",
+        "hex": "42303641"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Thunder Verdict"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06B",
+        "hex": "42303642"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Thunder Bastion"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06C",
+        "hex": "42303643"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Cinder Fang"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06D",
+        "hex": "42303644"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Mirror Tide"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06E",
+        "hex": "42303645"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Volt Thread"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06F",
+        "hex": "42303646"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Phoenix Seal"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B070",
+        "hex": "42303730"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Siren's Tear"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B071",
+        "hex": "42303731"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Constellation Coil"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B072",
+        "hex": "42303732"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Emberbreaker"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B073",
+        "hex": "42303733"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [],
+      "display_name": "Phoenix Seal"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B074",
+        "hex": "42303734"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Heaven Severed"
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Heaven Severed"
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled."
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp"
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
           }
         }
       ],

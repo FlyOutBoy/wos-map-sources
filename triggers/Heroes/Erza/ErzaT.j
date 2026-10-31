@@ -647,6 +647,11 @@ library ErzaTSpells uses GearSystems
         endmethod
     endstruct
 
+    globals
+        real Erza5E_CastTime = 0.54
+        real Erza5R_CastTime = 0.39
+    endglobals
+
     private struct Erza5E_KS
         private static integer array m_ErzaE
         private static integer MUI_ErzaE = -1
@@ -681,7 +686,7 @@ library ErzaTSpells uses GearSystems
                     set x = GetUnitX(c)
                     set y = GetUnitY(c)
                     if r == 0.45 then
-                        call SetUnitTimeScale(c, 0.65)
+                        call SetUnitTimeScale(c, 0.65 * 0.45 / Erza5E_CastTime)
                         call SetUnitAnimationByIndex(c, 14)
                         if r2 > 0.08 then
                             set r2 = 0
@@ -692,7 +697,7 @@ library ErzaTSpells uses GearSystems
                             set r2 = r2 + 0.03
                         endif
                     endif
-                    if r > 0.45 then
+                    if r > Erza5E_CastTime then
                     if r< rmax then 
                     set a = GAngle2(c,x1,y1)
                     endif
@@ -843,12 +848,12 @@ library ErzaTSpells uses GearSystems
             set aoe = Erza5E_DamageAoe
             set a = GAngle2( c , x, y ) // Angle Between points
             set k3 = 7
-            set rmax = 0.48+ k3*0.03
+            set rmax = Erza5E_CastTime + 0.03 + k3*0.03
             set move = SR3(c, x, y) / k3
             call MakeSound("war3mapImported\\Hero_Erza5_E3")
             call SetUnitFacing(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex( c , 6)
-            call SetUnitTimeScale( c , 1)
+            call SetUnitTimeScale( c , 0.45 / Erza5E_CastTime)
             call VisionTimed(GetOwningPlayer(c), x, y, 750, 6)
             if MUI_ErzaE == 0 then
                 call ErzaTTick_On(2)
@@ -1040,6 +1045,7 @@ library ErzaTSpells uses GearSystems
                     if r == 1.8 then
                         call MakeSound("war3mapImported\\Hero_Erza_R3")
                     endif
+                    if r > Erza5R_CastTime then
                     if r3 > 0.03 then
                         set r3 = 0
                         call Erza5R2_KS.ErzaR2_Start(c, GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), check2, check3)
@@ -1077,6 +1083,7 @@ library ErzaTSpells uses GearSystems
                         endloop
                     else
                         set r2 = r2 + 0.03
+                    endif
                     endif
                 else
                     call StopSpellUnit2(c)
@@ -1136,7 +1143,7 @@ library ErzaTSpells uses GearSystems
                 call MakeSound("war3mapImported\\Hero_Erza5_R02")
             endif
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800, 4)
-            set rmax = 2.1
+            set rmax = 2.1 + Erza5R_CastTime
             call SetUnitFacingTimed(c, a * bj_RADTODEG, 0 )
             call SetUnitAnimationByIndex(c, 9)
             

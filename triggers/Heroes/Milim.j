@@ -131,8 +131,8 @@ library MilimSpells uses GearSystems, WOSUI
         integer MilimT2_ID = 'A0HM' //
         real MilimT2_ThresholdAgiBonus = 1.00 // +Agi x per passive (G) threshold reached
         real MilimT2_DamageAgiBase = 12 // overall
-        real MilimT2_DamageAoe = 500 // 
-        integer MilimT2_Slow = 40 // Caused slow %
+        real MilimT2_DamageAoe = 550 // 
+        integer MilimT2_Slow = 90 // Caused slow %
         integer MilimT2_SlowDuration = 2 // slow time 2, 3, 4 sec only
         real MilimT2_ChargeTime = 2.00
     real MilimT2_BeamDuration = 1.50
@@ -627,9 +627,9 @@ endstruct
                     call BlzSetSpecialEffectPosition(e2,x,y,0)
                     call BlzSetSpecialEffectPosition(e3,x,y,0)
                     if r == 0.45 then 
-                    set e = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
-                set e2 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
-                set e3 = EffectSpawn("war3mapImported\\wos_file00001145.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                    set e = EffectSpawn("war3mapImported\\wos_MilimW2_Silent.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                set e2 = EffectSpawn("war3mapImported\\wos_MilimW2_Silent.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
+                set e3 = EffectSpawn("war3mapImported\\wos_MilimW2_Silent.mdl",GetUnitX(c),GetUnitY(c),GetRandomReal(0,359),1,2,1)
                 call MakeSound("war3mapimported\\Hero_Milim_W2 2")
                 elseif r == 0.5 then
                 call EffectSpawn2("war3mapimported\\wos_JY-Shio_Super_Saiyan_JN_Zi.mdx", GetUnitX(c), GetUnitY(c), GetRandomReal(0, 359), 1, 9, 70, 2)

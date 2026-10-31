@@ -29,7 +29,7 @@ class IframeTooltips(unittest.TestCase):
 
     def test_notice_follows_description_and_bonus_before_blank_stat_separator(self):
         vm=self.vm;builder=vm.structs['TooltipBuilder'].create()
-        builder.buffer='';builder.hasStats=False
+        builder.buffer='';builder.normalizedBuffer='';builder.hasStats=False
         builder.addDescription('Base description.')
         bonus='Details.'+vm.run('T_Bonus',("Winter's Scar",'Empowered details.'))
         builder.addBonus(bonus)
@@ -43,7 +43,7 @@ class IframeTooltips(unittest.TestCase):
 
     def test_all_three_generation_paths_filter_notices_before_damage(self):
         source=(ROOT/'triggers/WOS_Start/UniversalTooltips.j').read_text('utf-8-sig')
-        starts=[m.start() for m in re.finditer(r'call builder.addDescription\(FilterIframe',source)]
+        starts=[m.start() for m in re.finditer(r'call builder.addDescription\((?:FilterIframe|descBody)',source)]
         self.assertEqual(3,len(starts))
         for start in starts:
             body=source[start:source.index('call builder.addMechanic',start)]

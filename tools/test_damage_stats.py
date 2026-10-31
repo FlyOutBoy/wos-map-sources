@@ -20,6 +20,7 @@ class DamageStats(unittest.TestCase):
         # literals as strings. Negative source tests must keep that distinction.
         text=text.replace('sourceId <= -1000000','NegativeAtMost(sourceId,-1000000)')
         text=text.replace('sourceId <= -101','NegativeAtMost(sourceId,-101)')
+        text=text.replace('sourceId <= 0','NegativeAtMost(sourceId,0)')
         self.vm = JassState(text)
         # Hits are buffered until the synced 5 s fold; tests read the buckets right away.
         run=self.vm.run
@@ -346,6 +347,21 @@ class DamageStats(unittest.TestCase):
     def test_ability_uses_its_visible_title_and_item_uses_its_item_name(self):
         self.assertEqual('Burning Finger',self.runj('DS_SourceName','A001'))
         self.assertEqual('Source I001',self.runj('DS_SourceName','I001'))
+
+    def test_coloured_native_rank_is_removed_before_current_rank_caption(self):
+        g=self.vm.g
+        g.update(Hero={0:'hero'},GetUnitAbilityLevel=lambda *_:5)
+        for title in ['Pulse Shot [Level 1]', 'Pulse Shot [|cffffcc00Level 1|r]',
+                      '|cffffcc00Pulse Shot|r [|cffffcc00Level 1|r]',
+                      'Pulse Shot |cffffcc00[Level 1]|r']:
+            with self.subTest(title=title):
+                g['DS_Keys'].clear()
+                g['BlzGetAbilityTooltip']=lambda *_,v=title:v
+                name=self.runj('DS_SourceName','A001')
+                self.assertEqual('Pulse Shot',name)
+                caption=name+self.runj('DS_LevelCaption','A001',0)
+                self.assertEqual(1,caption.count('[Level'))
+                self.assertIn('[Level 5]',caption)
 
     def test_opening_a_previously_hidden_view_redraws_even_without_new_hits(self):
         self.hit();self.visible['large']=True

@@ -70,7 +70,7 @@ library InoriSpells uses GearSystems
         real InoriT2_AuraRange = 1400
         integer InoriT2_Aura_ID = 'A153' // enemy aura of T2 (objects: tools/stage_2026_10_28b.py)
         integer InoriT2_AuraBuff_ID = 'B062' // its visible debuff: -10% physical and magic resistance
-        real InoriT2_AuraResistDown = 10 // % more physical and magic damage taken near Inori in T2
+        real InoriT2_AuraResistDown = 10 // percentage points of resistance removed in T2, capped at zero
     endglobals
 
 
@@ -82,6 +82,7 @@ library InoriSpells uses GearSystems
         private integer SH_E_ACTIVATED2 = StringHash("e activated2")
         private integer SH_INORI_E = StringHash("Inori E")
         private integer SH_INORI_E_ACTIVE = StringHash("Inori E Active")
+        private integer SH_INORI_E_HIDDEN = StringHash("inori base E hidden")
         private integer SH_INORI_R_CLEAR = StringHash("inori r clear")
         private integer SH_MODE_F = StringHash("mode f")
         private integer SH_MODE_T = StringHash("mode t")
@@ -96,8 +97,10 @@ library InoriSpells uses GearSystems
     // After every E / T2 change and skin swap (a skin swap restores the skin's missile art).
     function InoriAttackArt takes unit c returns nothing
         if InoriCrystalMode(c) then
+            call BlzSetUnitAttackCooldown(c, 1.8, 0)
             call BlzSetUnitWeaponStringField(c, UNIT_WEAPON_SF_ATTACK_PROJECTILE_ART, 0, "")
         else
+            call BlzSetUnitAttackCooldown(c, 2.0, 0)
             call BlzSetUnitWeaponStringField(c, UNIT_WEAPON_SF_ATTACK_PROJECTILE_ART, 0, InoriAtk_Bullet)
         endif
     endfunction
@@ -297,6 +300,7 @@ library InoriSpells uses GearSystems
         unit u
         real dmg
         integer check
+        integer fqPulses
         integer check2
         integer check3
         real aoe
@@ -442,7 +446,8 @@ library InoriSpells uses GearSystems
                         endif
                         if r >= 0.45 then
                             call BlzSetSpecialEffectPosition(e, GetUnitX(c) + 90 * Cos(a), GetUnitY(c) + 90 * Sin(a), 100)
-                            if r2 >= 0.27 then
+                            if fqPulses < 5 and r + 0.0001 >= 0.45 + I2R(fqPulses) * 0.24 then
+                                set fqPulses = fqPulses + 1
                                 call GroupClear(g2)
                                 set r2 = 0
                                 set k = 0
@@ -523,6 +528,7 @@ library InoriSpells uses GearSystems
             set move = 0
             set r6 = 0
             set r7 = InoriQ_Range + InoriQ_RangeADD*(GetUnitAbilityLevel(c,InoriQ_ID)-1) + (GetHeroInt(c, true)*1)
+            set fqPulses = 0
             set check2 = 0
             set check3 = 0
             set k2 = 0
@@ -548,7 +554,7 @@ library InoriSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Inori_EQ")
             elseif LoadInteger(hs, GetHandleId(c), SH_MODE_F) == 1 then
                 set check2 = 2
-                set rmax = 1.95
+                set rmax = 1.45
                 call StartSpellUnit(c)
                 set dmg = GetHeroInt( c , true) * ( InoriFQ_DamageIntBase + ( InoriFQ_DamageIntStep * ( GetUnitAbilityLevel( c , InoriQ_ID) - 1 ) ) )
                 set dmg = dmg + InoriFQ_Damage2StaticBase + ( InoriFQ_Damage2StaticStep * ( GetUnitAbilityLevel( c , InoriQ_ID) - 1 ) )
@@ -1125,6 +1131,13 @@ library InoriSpells uses GearSystems
         endmethod
     endstruct
 
+    private function InoriE_SetBaseHidden takes unit c, boolean hidden returns nothing
+        if LoadBoolean(hs, GetHandleId(c), SH_INORI_E_HIDDEN) != hidden then
+            call SaveBoolean(hs, GetHandleId(c), SH_INORI_E_HIDDEN, hidden)
+            call BlzUnitHideAbility(c, InoriE_ID, hidden)
+        endif
+    endfunction
+
     private struct InoriE_KS
         private static integer array m_InoriE
         private static integer MUI_InoriE = -1
@@ -1169,6 +1182,7 @@ library InoriSpells uses GearSystems
                                 call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 0)
                                 call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 0)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
+                                call InoriE_SetBaseHidden(c, false)
                             endif
                         elseif check == 1 and check != check3 then
                             set fk = 1
@@ -1179,7 +1193,7 @@ library InoriSpells uses GearSystems
                         elseif check == 3 and check != check3 then
                             set fk = 1
                             set check3 = 3
-                        elseif check == 4 and check != check3 then
+                        elseif check >= 4 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 and LoadInteger(hs, GetHandleId(c), SH_PAS_CD) == 0 and LoadInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE) == 0 then
                             set check3 = 5
                             if LoadInteger(hs, GetHandleId(c), SH_E_ACTIVATED2) == 0 then
                                 call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 1)
@@ -1187,16 +1201,22 @@ library InoriSpells uses GearSystems
                             else
                                 set fk = 0
                             endif
-                            if GetUnitAbilityLevel(c, InoriEE_ID) == 0 and LoadInteger(hs, GetHandleId(c), SH_MODE_T) == 0 then
+                            if fk == 1 or GetUnitAbilityLevel(c, InoriEE_ID) == 0 then
+                                // Removing the ready button resets native hide/disable counters once per readiness cycle.
+                                call UnitRemoveAbility(c, InoriEE_ID)
                                 call UnitAddAbility(c, InoriEE_ID)
-                                call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, false)
+                                call SetUnitAbilityLevel(c, InoriEE_ID, IMinBJ(5, GetUnitAbilityLevel(c, InoriE_ID)))
                             endif
+                            // Reconcile an existing button too: add/remove and T2 can leave it hidden.
+                            call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriEE_ID, true)
+                            call InoriE_SetBaseHidden(c, true)
                             if k3 == 0 and LoadInteger(hs, GetHandleId(c), SH_E_ACTIVATED) == 1 then
                                 set k3 = 1
                                 call UnitRemoveAbility(c, InoriEE_ID)
                                 call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
                                 call SaveInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE, 1)
                                 call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
+                                call InoriE_SetBaseHidden(c, false)
                                 call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED, 0)
                                 set r = 0
                                 set k = GetRandomInt(1, 3)
@@ -1288,6 +1308,7 @@ library InoriSpells uses GearSystems
                             call SaveInteger(hs, GetHandleId(c), SH_E_ACTIVATED2, 0)
                             call SaveInteger(hs, GetHandleId(c), SH_PAS_CD, 1)
                             call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
+                                call InoriE_SetBaseHidden(c, false)
                             call MyFlush(GetHandleId(c), SH_PAS_CD, 0, PassiveCD_Start(c, InoriE_ID, InoriE_CDBase - (InoriE_CDReduce * GetUnitAbilityLevel(c, InoriE_ID) - 1)))
                             call SaveInteger(hs, GetHandleId(c), SH_INORI_E, 0)
                             call SaveInteger(hs, GetHandleId(c), SH_INORI_E_ACTIVE, 0)
@@ -2105,7 +2126,7 @@ library InoriSpells uses GearSystems
                             call SetPlayerAbilityAvailable(Player(k2), InoriQ2_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriW_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriW2_ID, false)
-                            call SetPlayerAbilityAvailable(Player(k2), InoriE_ID, false)
+                            call InoriE_SetBaseHidden(c, true)
                             call SetPlayerAbilityAvailable(Player(k2), InoriR_ID, false)
                             call SetPlayerAbilityAvailable(Player(k2), InoriT2_ID, false)
                                                         call DecorRemove(c, x, y, 800, 50)
@@ -2159,6 +2180,7 @@ library InoriSpells uses GearSystems
                     call FixAura(c)
                     call UnitRemoveAbility(c,InoriEE_ID)
                     call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriE_ID, true)
+                                call InoriE_SetBaseHidden(c, false)
                     call BlzEndUnitAbilityCooldown(c, InoriE_ID)
                     call SaveInteger(hs, GetHandleId(c), SH_CANCEL_T, 0)
                     call BlzSetAbilityIcon(Inori_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Inori_Icon.blp")
@@ -2376,6 +2398,7 @@ library InoriSpells uses GearSystems
         */ and GetUnitTypeId(inori) == Inori_ID /*
         */ and not IsUnitIllusion(inori) /*
         */ and GetHeroLevel(inori) >= 6 /*
+        */ and GetUnitAbilityLevel(inori, InoriE_ID) > 0 /*
         */ and LoadInteger(hs, GetHandleId(inori), SH_MODE_T) == 0 /*
         */ and IsUnitAlly(inori, damagedOwner) then
             set dx = GetUnitX(inori) - x

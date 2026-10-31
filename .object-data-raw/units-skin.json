@@ -19685,6 +19685,57 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "ustp",
+            "hex": "75737470"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.8
+          },
+          "sanity_check": {
+            "text": "H021",
+            "hex": "48303231"
+          },
+          "level": 0,
+          "data_pointer": 0
+        },
+        {
+          "field": {
+            "text": "uagp",
+            "hex": "75616770"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 2.1
+          },
+          "sanity_check": {
+            "text": "H021",
+            "hex": "48303231"
+          },
+          "level": 0,
+          "data_pointer": 0
+        },
+        {
+          "field": {
+            "text": "uinp",
+            "hex": "75696E70"
+          },
+          "field_name": "",
+          "type": "unreal",
+          "data": {
+            "value": 1.65
+          },
+          "sanity_check": {
+            "text": "H021",
+            "hex": "48303231"
+          },
+          "level": 0,
+          "data_pointer": 0
         }
       ],
       "display_name": "Mahoraga"

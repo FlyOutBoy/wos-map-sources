@@ -707,6 +707,10 @@ library ErzaESpells uses GearSystems, ErzaTSpells
         endmethod
     endstruct
 
+    globals
+        real Erza3T_CastTime = 0.9
+    endglobals
+
     private struct Erza3T_KS
         private static integer array m_ErzaT
         private static integer MUI_ErzaT = -1
@@ -740,10 +744,11 @@ library ErzaESpells uses GearSystems, ErzaTSpells
                 exitwhen i > MUI_ErzaT
                 set this = m_ErzaT[i]
                 if SpellBoolCaster(c) and r <= rmax then
-                    set r = r + 0.03
+                    set r = RoundReal(r + 0.03, 3)
                     if check == 0 then
                         call DebugUnit2(c)
-                        if r == 0.81 then
+                        if r == Erza3T_CastTime - 0.21 then
+                            call SetUnitTimeScale(c, 0.5)
                             call SetUnitAnimationByIndex(c, 2)
                         endif
                         if r == 0.3 then
@@ -760,7 +765,7 @@ library ErzaESpells uses GearSystems, ErzaTSpells
                         else
                             set r2 = r2 + 0.03
                         endif
-                        if r >= 1.02 then
+                        if r >= Erza3T_CastTime then
                             call StopSpellUnit2(c)
                             set check = 1
                             call MakeSound("war3mapimported\\HeroStarrk_Q3")
@@ -898,8 +903,8 @@ library ErzaESpells uses GearSystems, ErzaTSpells
             set dmg = GetHeroAgi( c , true) * ( Erza3T_DamageAgiBase )
             set e2 = AddSpecialEffectTarget("war3mapimported\\wos_BY_Wood_Effect_Order_DanGe_Stf_XuLi_1_1.mdx", c, "weapon")
             call SetUnitFacing( c , a * bj_RADTODEG)
-            set rmax = 1.02
-            call SetUnitTimeScale( c , 0.5)
+            set rmax = Erza3T_CastTime
+            call SetUnitTimeScale( c , 0.5 * 0.81 / (Erza3T_CastTime - 0.21))
             call SetUnitAnimationByIndex( c , 1)
             call MakeSound("war3mapImported\\Hero_Erza3_T")
             if MUI_ErzaT == 0 then

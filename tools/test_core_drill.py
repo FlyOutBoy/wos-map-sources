@@ -1,4 +1,4 @@
-"""Core Drill (I04E): same-type ability damage stacks, +5% per stack, 5 max, 4 sec."""
+"""Core Drill (I04E): same-type ability damage stacks, +4.25% per stack, 5 max, 4 sec."""
 from pathlib import Path
 import re
 import unittest
@@ -40,6 +40,34 @@ class CoreDrill(unittest.TestCase):
     def test_no_stacks_before_any_damage(self):
         self.assertEqual(0, self.stacks(2))
         self.assertEqual(0, self.stacks(1))
+
+    def test_real_damage_dispatch_allows_item_and_elemental_ticks_outside_proc_guard(self):
+        text = (ROOT/'triggers/Systems/DmgSys.j').read_text(encoding='utf-8-sig')
+        marker = text.index('    // Each non-attack physical/magic damage event')
+        start = text.rfind('    if ItemDamageCanProc(damageSourceId) then', 0, marker)
+        end = text.index('    endif', marker)+len('    endif')
+        code = text[start:end]
+        vm = JassState('function Event takes nothing returns nothing\n'+code+'\nendfunction')
+        clone = [False]
+        vm.g.update(c=7, td=8, CoreDrill_ID='core', Kurikara_MinDmg=200,
+                    ItemProcDamageDepth=1, KurikaraTrigger=True,
+                    ItemDamageCanProc=lambda _: False, HasCachedItem=lambda *_: 1,
+                    IsUnitIllusion=lambda _: clone[0], isEnemy=True, eventIsAttack=False,
+                    dmg=0.5, typedmg=1,
+                    CoreDrill_AddStack=lambda c, kind: self.vm.run('CoreDrill_AddStack', (c, kind)))
+        for identity, kind in [('I00W', 1), ('I04C', 2), ('I03Y', 2), (-101, 1), (-103, 1), (-106, 1)]:
+            vm.g.update(damageSourceId=identity, typedmg=kind)
+            vm.run('Event')
+        self.assertEqual(4, self.stacks(1))
+        self.assertEqual(2, self.stacks(2))
+        for field, value in [('eventIsAttack', True), ('isEnemy', False), ('dmg', 0.)]:
+            before = len(self.shown)
+            old = vm.g[field]; vm.g[field] = value
+            vm.run('Event'); vm.g[field] = old
+            self.assertEqual(before, len(self.shown), field)
+        clone[0] = True
+        before = len(self.shown); vm.run('Event')
+        self.assertEqual(before, len(self.shown))
 
     def test_types_stack_separately_and_cap_at_five(self):
         for _ in range(7):
@@ -120,6 +148,22 @@ class CoreDrill(unittest.TestCase):
         self.assertIn('stacks * CoreDrill_BonusPerStack / 100.0', body)
         dmg = (ROOT / 'triggers/Systems/DmgSys.j').read_text(encoding='utf-8-sig')
         self.assertRegex(dmg, r'not eventIsAttack[^\n]*HasCachedItem\(c, CoreDrill_ID\)[^\n]*\n\s*call CoreDrill_AddStack\(c, typedmg\)')
+
+    def test_live_bonus_is_four_point_two_five_and_five_stacks_give_twenty_one_point_two_five(self):
+        import json
+        items = (ROOT/'triggers/Items/Items.j').read_text(encoding='utf-8-sig')
+        bonus = float(re.search(r'real CoreDrill_BonusPerStack = ([\d.]+)', items)[1])
+        self.assertEqual(4.25, bonus)
+        source = (ROOT/'triggers/Systems/Systems1.j').read_text(encoding='utf-8-sig')
+        block = source.split('// Core Drill: live stacks', 1)[1].split('\n', 1)[1].split('// Mahoraga T:', 1)[0]
+        vm = JassState('function BonusHit takes real dmg, integer typedmg returns real\nlocal integer stacks\n'+block+'\nreturn dmg\nendfunction')
+        vm.g.update(c=7, CoreDrill_ID='core', CoreDrill_BonusPerStack=bonus, HasCachedItem=lambda *_:1)
+        for count, expected in ((0,100.),(1,104.25),(5,121.25)):
+            vm.g['CoreDrill_GetStacks'] = lambda *_:count
+            for kind in (1,2): self.assertAlmostEqual(expected, vm.run('BonusHit',(100.,kind)))
+            self.assertEqual(100., vm.run('BonusHit',(100.,0)))
+        buffs = json.loads((ROOT/'object-data/buffs.json').read_text(encoding='utf-8-sig'))
+        for identity in ('B051','B056'): self.assertIn('+21.25%', buffs[identity]['extended_tooltip'])
 
 
 if __name__ == '__main__':

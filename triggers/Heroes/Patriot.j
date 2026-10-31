@@ -112,7 +112,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
         real PatriotR_RangeBase = 1300.0
         real PatriotR_RangeStep = 50.0
         real PatriotR_PushDuration = 0.30
-        real PatriotR_DamageAgiBase = 4.0
+        real PatriotR_DamageAgiBase = 3.0
         real PatriotR_DamageAgiStep = 1.0
         real PatriotR2_DamageAgiBase = 0.50
         real PatriotR2_DamageAgiStep = 0.25
@@ -914,8 +914,11 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
 
                 if remove then
                     if c != null and GetUnitTypeId(c) != 0 then
-                        call PlayersMsg(GetPlayerVisualColorString(Player(id)) + GetPlayerName(Player(id)) + "|r killed " + GetPlayerVisualColorString(Player(id2)) + GetPlayerName(Player(id2)) + "|r", 2)
-                        call KillUnit(c)
+                        // An early death already owns its kill message and credit.
+                        if not IsUnitType(c, UNIT_TYPE_DEAD) and GetWidgetLife(c) > 0.405 then
+                            call PlayersMsg(GetPlayerVisualColorString(Player(id)) + GetPlayerName(Player(id)) + "|r killed " + GetPlayerVisualColorString(Player(id2)) + GetPlayerName(Player(id2)) + "|r", 2)
+                            call KillUnit(c)
+                        endif
                             call WUI_HeroProgress(c, PatriotE_ID, "Perseverance Stance", 0.00, 0.00, true)
                         call SaveInteger(hs, GetHandleId(c), SH_PATRIOT_EE, 0)
                         call Patriot_SetStance(c, false)
@@ -1026,6 +1029,9 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                                 set r = 0.0
                                 set r2 = 255.0
                                 set rmax = PatriotR_Duration
+                                if GetHeroLevel(c) < 35 then
+                                    set remove = true
+                                endif
                                 set check = 1
                                 call SaveReal(hs, GetHandleId(c), SH_R_X, x1)
                                 call SaveReal(hs, GetHandleId(c), SH_R_Y, y1)
@@ -1298,6 +1304,26 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     call SaveReal(hs, GetHandleId(c), SH_T_X, x)
                     call SaveReal(hs, GetHandleId(c), SH_T_Y, y)
+
+                    // Like Kenjaku R: scan well outside the barrier, remember every
+                    // entrant, then return captured units even after a blink out.
+                    call GroupClear(g)
+                    call GroupEnumUnitsInRange(g, x, y, 10000.0, NoDecor_Cond)
+                    loop
+                        set u = FirstOfGroup(g)
+                        exitwhen u == null
+                        set distance = SR3(u, x, y)
+                        if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
+                            if distance <= aoe and not IsUnitInGroup(u, g2) then
+                                call GroupAddUnit(g2, u)
+                            endif
+                            if IsUnitInGroup(u, g2) and distance > aoe - PatriotT_EdgeInset then
+                                call PosUnit(u, x + (aoe - PatriotT_EdgeInset) * Cos(GAngle3(x, y, u)), y + (aoe - PatriotT_EdgeInset) * Sin(GAngle3(x, y, u)))
+                            endif
+                        endif
+                        call GroupRemoveUnit(g, u)
+                    endloop
+
 
                     if r > PatriotT_CastTime then
                         if r2 > 0.95 then
@@ -1734,7 +1760,7 @@ library PatriotSpells initializer InitPatriotSpells uses GearSystems
             call MakeSound("war3mapimported\\Hero_Patriot_T2 1")
             call MakeSound("war3mapimported\\Hero_Patriot_T2 2")
             set dmg = GetHeroAgi(c, true) * PatriotT2_DamageAgiBase
-            set move = 150.0
+            set move = 112.5
             set fly = 2400.0
             call MouseOn(GetOwningPlayer(c))
             set MouseX[GetPlayerId(GetOwningPlayer(c))] = x

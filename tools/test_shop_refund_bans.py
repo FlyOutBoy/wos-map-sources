@@ -29,7 +29,7 @@ class RefundWindow(unittest.TestCase):
         self.gold = defaultdict(int)
         self.g = g = self.vm.g
         g.update(ShopRefundData={}, ShopClock='clock', Refund100Time=15.0, RefundPercent=85,
-                 TimerGetElapsed=lambda _: self.now, GetHandleId=lambda u: u['uid'],
+                 TimerGetElapsed=lambda _: self.now, GetHandleId=lambda u: u['uid'] if isinstance(u, dict) and 'uid' in u else id(u),
                  UnitItemInSlot=lambda u, s: u['inv'][s],
                  GetItemTypeId=lambda it: self.types.get(it, 0),
                  UnitHasItem=lambda u, it: it in u['inv'],
@@ -37,6 +37,9 @@ class RefundWindow(unittest.TestCase):
                  SaveItemHandle=lambda t, u, k, it: t.update({(u, k): it}),
                  RemoveSavedHandle=lambda t, u, k: t.pop((u, k), None),
                  GetOwningPlayer=lambda u: u['owner'],
+                 GetWidgetLife=lambda u: u.get('life',100.),
+                 GetUnitTypeId=lambda u: u.get('type',1) if u else 0,
+                 UNIT_TYPE_DEAD='dead', IsUnitType=lambda u,_:u.get('dead',False),
                  GetItemValue=lambda kind: self.prices[kind],
                  IsItemInInventory3=lambda u, kind: next((i for i, it in enumerate(u['inv'])
                      if it is not None and self.types[it] == kind), -1),

@@ -334,7 +334,7 @@ private function UNITSTAT_AttributeHelp takes unit hero, integer index returns s
         set total = GetHeroAgi(hero, true)
         set base = GetHeroAgi(hero, false)
         set title = "|cff7cd67cAGILITY|r"
-        set benefit = "|nPer 1 Agility:|nAttack speed: +" + R2SW(100.0 * agi_as, 0, 2) + "%|nMove speed: +" + R2SW(UNITSTAT_MS_PER_AGI, 0, 2) + "|nArmor: +" + R2SW(WOS_ARMOR_PER_AGI, 0, 2) + "|nPhysical resistance from armor:|n+" + R2SW(UNITSTAT_ArmorResistancePerAgi(hero), 0, 3) + " percentage points|n(at current armor)"
+        set benefit = "|nPer 1 Agility:|nAttack speed: +" + R2SW(100.0 * agi_as, 0, 2) + "%|nMove speed: +" + R2SW(UNITSTAT_MS_PER_AGI, 0, 2) + "|nArmor: +" + R2SW(WOS_ARMOR_PER_AGI, 0, 2) + "|nPhysical resistance from armor:|n+" + R2SW(UNITSTAT_ArmorResistancePerAgi(hero), 0, 3) + "%|n(at current armor)"
     else
         set total = GetHeroInt(hero, true)
         set base = GetHeroInt(hero, false)
@@ -515,9 +515,11 @@ private function UNITSTAT_OnModeClick takes nothing returns nothing
     local integer pid = GetPlayerId(GetTriggerPlayer())
     set WUI_HudModeOf[pid] = ModuloInteger(WUI_HudModeOf[pid], 3) + 1
     set WUI_ModeTouched[pid] = true
-    set WUI_HudMode = WUI_HudModeOf[GetPlayerId(GetLocalPlayer())]
-    // Preserve S_MODE: every client reapplies its mode and runs the shift hooks.
-    call UNITSTAT_ApplyMode()
+    if GetLocalPlayer() == GetTriggerPlayer() then
+        set WUI_HudMode = WUI_HudModeOf[pid]
+        call UNITSTAT_ApplyMode()
+        call UNITSTAT_LayoutGold()
+    endif
     call WUI_ResetClickedButtonFocus()
 endfunction
 
@@ -626,6 +628,7 @@ endfunction
 // voice, auto-selection mirror and local HUD mode.
 function UNITSTAT_ApplySaved takes nothing returns nothing
     local integer i = 0
+    local integer previousMode = WUI_HudMode
     loop
         exitwhen i >= bj_MAX_PLAYER_SLOTS
         set UNITSTAT_VoiceOn[i] = not WUI_VoiceOff[i]
@@ -638,8 +641,9 @@ function UNITSTAT_ApplySaved takes nothing returns nothing
         call WUI_SetToggleState(UNITSTAT_VoiceToggle, UNITSTAT_VoiceOn[GetPlayerId(GetLocalPlayer())])
     endif
     set WUI_HudMode = WUI_HudModeOf[GetPlayerId(GetLocalPlayer())]
-    if UNITSTAT_ModeButton != null then
+    if UNITSTAT_ModeButton != null and previousMode != WUI_HudMode then
         call UNITSTAT_ApplyMode()
+        call UNITSTAT_LayoutGold()
     endif
 endfunction
 
@@ -1113,6 +1117,7 @@ private function UNITSTAT_CreateUI takes nothing returns nothing
     // Checkpoint 23: same drawn-edge tooltip box as every other tooltip.
     set back = WUI_TooltipBox(UNITSTAT_Tooltip, 0.225, 0.104)
     call BlzFrameSetAllPoints(back, UNITSTAT_Tooltip)
+    call BlzFrameSetVisible(back, true)
     call BlzFrameSetTexture(UNITSTAT_Tooltip, WUI_EMPTY_TEXTURE, 0, true)
     set UNITSTAT_TooltipText = UNITSTAT_Text("WOSStatTooltipText", UNITSTAT_Tooltip, 0.246, 0.179, 0.208)
     call BlzFrameSetSize(UNITSTAT_TooltipText, 0.208, 0.090)

@@ -472,6 +472,24 @@ endfunction
 private function DS_StripLevel takes string text returns string
     local integer n = StringLength(text)
     local integer i = 0
+    local string plain = ""
+    local string pair
+    // Native titles may colour the word inside [Level ...]. Normalize first.
+    loop
+        exitwhen i >= n
+        set pair = SubString(text,i,i+2)
+        if (pair == "|c" or pair == "|C") and i+10 <= n then
+            set i = i+10
+        elseif pair == "|r" or pair == "|R" then
+            set i = i+2
+        else
+            set plain = plain+SubString(text,i,i+1)
+            set i = i+1
+        endif
+    endloop
+    set text = plain
+    set n = StringLength(text)
+    set i = 0
     loop
         exitwhen i+6 > n
         if SubString(text,i,i+6) == "[Level" then
@@ -1978,7 +1996,9 @@ endfunction
 
 // Engine tooltip under a tab; returns its text frame (filled by DS_RefreshGameTips).
 private function DS_CreateGameTip takes framehandle owner returns framehandle
-    local framehandle box = WUI_TooltipBox(WUI_GetRoot(),0.170,0.052)
+    // Keep the tooltip under its hidden statistics window as well as the
+    // engine hover gate; it must not surface while tabs are being initialized.
+    local framehandle box = WUI_TooltipBox(owner,0.170,0.052)
     local framehandle text = BlzCreateFrameByType("TEXT","DamageStatsGameTip",box,"",0)
     call BlzFrameSetPoint(box,FRAMEPOINT_TOPLEFT,owner,FRAMEPOINT_BOTTOMLEFT,0.000,-0.004)
     call BlzFrameSetAllPoints(text,box)

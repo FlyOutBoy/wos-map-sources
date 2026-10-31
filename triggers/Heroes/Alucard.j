@@ -1276,11 +1276,11 @@ library AlucardSpells uses GearSystems
                         endif   
                         endif
                     elseif check == 1 then
-                        if r == 0.3 then
+                        if r == 0.45 then
                             call BlzSetSpecialEffectTimeScale(e, 1)
                         endif
                         call DebugUnit2(c)
-                        if r > 0.33 then
+                        if r > 0.48 then
                             set scale = scale + 0.07
                             if scale2 < scale * 0.88 then
                                 set scale2 = scale2 + 0.12
@@ -1436,7 +1436,7 @@ library AlucardSpells uses GearSystems
             call SetUnitFacing(c, a * bj_RADTODEG)
             set scale = 0.75
             if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_R) == 1 then
-                set rmax = 1.5
+                set rmax = 1.65
                 set move = 5
                 call StartSpellUnit2(c)
                 set k2 = 0
@@ -1771,7 +1771,7 @@ library AlucardSpells uses GearSystems
                     set r = r + 0.05
                     set r = RoundReal(r, 3)
                     call DebugUnit2(c)
-                    if r < 2.05 then
+                    if r >= 0 and r < 2.05 then
                         call SetUnitState(c, UNIT_STATE_LIFE, GetUnitState(c, UNIT_STATE_LIFE) - r6)
                     endif
                     if r == 1. or r == 1.5 or r == 2 or r == 2.5 then
@@ -1858,7 +1858,7 @@ library AlucardSpells uses GearSystems
             set c = NewC
             set x = GetUnitX(c)
             set y = GetUnitY(c)
-            set r = 0
+            set r = -0.25
             set g = CreateGroup()
             set g2 = CreateGroup()
             set dmg = AlucardT2_DamageAgiBase*GetHeroAgi(c,true)

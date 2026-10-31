@@ -1849,9 +1849,47 @@ were backed up; the game was not launched.
 
 ### Elemental cooldown families, mana tiers and cast budgets (2026-10-28)
 
-`tools/balance_active_items.py` owns54 active ability mana overrides (125/150/175)
+Current duration contract (2026-10-31): A03T elemental/reaction ranks1-8 last4s;
+Fire's per-dummy duration override starts at4s and Zanka extends it to6s.
+Kurikara A0DZ and Ashisogi A110 also last4s. Native and runtime overrides must agree.
+Toji's Agility-item exception belongs to RefreshItemCache: enumerate every
+ability on each Purchasable-class item and call BlzSetUnitAbilityManaCost for
+that carrier only. Never edit the global ability object to make these free.
+The item class is the canonical Agility catalogue class (stage_item_editor_classes).
+Hero wave regression tests cover this, per-target TTW lightning deadlines,
+continuous Burner charge, Inori's preserved five FQ hits, and barrier re-entry.
+Current item follow-up: Mirror Tide marks last4s, hold4 charges and throttle
+random-enemy water missiles to0.1s within800; the missile uses the stock Water
+Elemental attack model at scale2. Anchor remembers first-contact victims in g2;
+its shared per-target DISARM instance locks Aatk for2s and finish restores it,
+including caster removal/death cleanup. Ashen uses separate outbound/return
+hit sets without excluding outbound victims from return. Coil pulls its caught
+group until0.3s after first contact, then switches to the four stationary ticks.
+Tests: test_element_wave, test_fire_item_effects.
+
+Frieren T2 now travels1800 units after0.54s preparation; effects reach full size
+at0.84s. Only the two instances paired by the same cast can merge within360 units.
+They converge to their shared midpoint over0.18s. The real-caster instance owns
+four shared bursts, first after0.5s of smooth growth and then every0.4s; the
+secondary only cleans up after convergence. Each burst spends one quarter of
+the combined remaining budget and pulls within1.25 times its damage radius. The combined
+budget is each source's (dmg2 + dmg*(6-damagePulses)) times its clone multiplier,
+matching DmgSys before the real-caster bursts. Already-spent ticks are not
+repeated. All detonations pull enemies inward. Partner links clear before
+convergence/deallocation so recycled struct ids cannot detonate unrelated casts.
+TW with a nearby clone creates one carrier, scales damage by the configured
+clone percentage and doubles radius/lightning reach. Its visual orb scales1.7
+instead of2, lightning scales0.8 instead of2, and ambient VFX spawn every0.21s
+instead of0.12s, independently of gameplay radius. Clone damage percentages
+in R/TW tooltips come from Frieren globals. Collision cash-out and TW radius/
+damage are executed by test_element_wave; native effects still need game QA.
+
+`tools/balance_active_items.py` owns54 active ability mana overrides (0/80/125/150/175)
 and23 Fire/Water/Lightning item family assignments, including old barrels and
-Kusanagi grades. Mode buttons pay125 too; Susanoo's passive shield proc costs150.
+Kusanagi grades. Utility actives, Slime modes and Bunshin cost0. Damage actives
+cost125-175, Shiki Knife Evolved costs80, Return by Death costs125. Susanoo's
+passive shield proc retains105. Shop title mana and family classification are
+generated pure functions in WoS_Shop_Init.j; --fix updates those functions too.
 New overrides must be staged via configure/normal object APIs, never by adding
 unsupported editable keys or hand-editing raw metadata. Item stage27/28/28b and
 the evolved Blood Pact generator preserve this policy. Item audit adds only a
@@ -1865,12 +1903,15 @@ expiry, all ItemsElements shared-CD helpers, the CastCheck rejection/commit hook
 and the pickup reapplication. Native cooldown/reset behavior is authoritative;
 do not reintroduce a second cooldown clock for these families.
 
-Own single-target damage of the18 core elemental actives is at most6x stat per
-cast, including every item follow-up; elemental reactions, hero modifiers and
-Sacred Gear remain external bonuses. Key sums: Ember4+1.25+.75; Grasp3.75+2.25;
-Verdict5.5+.5; Bastion5.25+3*.25; Cinder5+1; Mirror5.5+.5; Volt target5.5+.5;
-Phoenix3.75+1.75+.5; Crimson4+1.5+.5. Ashen's outbound/return hit sets are disjoint.
-Volt's other enemies can take3*.9; its primary target takes no thread-pulse damage.
+Own damage of the18 core elemental actives is at most5x stat per target per cast,
+including every item follow-up; Shark Trail and Red Flower retain6x and fly25%
+faster. Elemental reactions, hero modifiers and Sacred Gear remain external.
+Ember3.5+1+.5; Grasp3.25+1.75; Verdict4.5+.5; Bastion4.25+3*.25; Cinder4+1;
+Mirror/Volt4.5+.5; Phoenix3.25+1.25+.5; Crimson3+1.75+.25. Ashen's outbound and
+return hit sets remain disjoint. Volt's other enemies can take3*.9, excluding
+the primary target. Damage-active native cast distances are1600, except Shiki
+Knife Evolved at2100; fixed projectile travel/preview globals follow them.
+Raijin's blast/native area is450.
 `test_elemental_item_balance.py` validates native family/mana parity and budgets,
 absence of reset-blocking script state, plain axe spawns and orange ribbon nodes.
 
@@ -1878,7 +1919,7 @@ Projectile art is controlled by named constants next to MirrorTide globals in
 `triggers/Items/Items.j`: MirrorTide_ProjectileModel/Scale use wos_file00012198
 at0.66x for BOTH wave and counter-shot; AshenCrossfire_ProjectileModel uses the
 wos_mx-yx-tsw-a-1_fire copy; ConstellationCoil_ProjectileModel uses wos_tx28 and
-ConstellationCoil_Range is1800. `build_elemental_projectile_assets.py` accepts a
+CP75 restores Constellation projectile travel to1800 and hit width to250; native click range remains1600. `build_elemental_projectile_assets.py` accepts a
 source directory argument and stages the models plus required textures under
 assets/effects. Axe diffuse is unchanged; only blue surrounding effect textures
 -2/-3 are recolored red-orange with preserved alpha/brightness and separate paths.
@@ -1898,3 +1939,575 @@ snapshots were updated after backup. Evidence:
 `_build/native-element-cooldown-fix-main-build.log` and
 `_build/native-element-cooldown-fix-main-result.json`. Native reset behavior and
 visuals still need Warcraft verification; the game was not launched.
+
+
+### Item reactions, recipes and input follow-up (2026-10-29)
+
+Inverted Spear of Heaven (2026-10-30): I074 / active A161 / curse A162 /
+buff B074; objects and Bazz-B W/E/R cooldowns are staged by
+tools/stage_inverted_spear.py. The Universal recipe is Pakkun +10 (I034) +
+Pakkun +5 (I01J), with a 4500 combine cost (7500 total), +15 allstats,
+20 sec active CD, 800 cast range. A timed ItemsAnimeEffect.KIND_SPEAR instance
+owns a five-second target deadline. Dispel can remove the native icon only;
+the deadline remains authoritative for damage and the shared 0.1s item ticker
+restores the icon. Refresh reuses the instance; death/expiry clear it.
+DamageBlock ignores 50% of positive total physical/magic resistance before
+ApplyGearSystemFullShields. The pure helper factors Crocodile's channel and
+Frostnova E reductions through their existing combat/HUD positions so combined
+resistance is halved once; neither shield consumption nor invulnerability is
+bypassed. Negative resistance is not amplified by this effect. Tests:
+test_inverted_spear plus shared item lifetime/vision/range and resistance UI
+suites. Anime-frame attribution/crop are kept beside the source image and in
+build_item_icons.py. Warcraft visual/input acceptance remains separate.
+
+Elemental ban checks exempt only inventory slots consumed by the incoming recipe
+(2026-10-30, Funny Barrel -> Tusk Barrel). ShopPlanCraftSlots mirrors recursive
+recipe selection, including duplicate-slot accounting, without pricing or item
+removal: these checks also run in local shop rendering. Extra same-element items
+still block buying. Executable coverage: test_item_shop_followup; refunds remain
+covered by test_shop_refund_bans.
+
+Hero re-entry follow-up (2026-10-30): Ainz W resets the old charge lifetime-pause
+and W3-ready flags at each fresh summon and clears the pause on teardown. Its
+first summon uses a one-shot state rather than r == 0.03, which could respawn
+knights every tick when the timer was paused there. Original W cooldown upkeep
+is preserved. Inori E reconciles the existing activation rawcode's availability,
+unit disable and hidden state at four stacks, independently of the stack-change
+marker; previously only adding a missing rawcode restored those properties.
+Production-loop tests cover a stale Ainz charge pause and three Inori E cycles,
+including an existing hidden/disabled activation button. These reproduce state
+paths, not native game input or the user's exact match.
+
+World Editor normalization on 2026-10-30 removed explicit empty/zero/default
+overrides without changing surviving field values. A workflow rebase faithfully
+imports these deletions too. Restore intentional stock-art/bonus/slot overrides
+from the last verified packed objects via the object codec, checking all surviving
+values before restoration; rerun neutral/presentation and editor-class checks.
+Do not infer that a successful rebase preserved raw-only explicit overrides.
+
+Reaction attribution previously used the input element before resolving Water +
+Lightning, recording Electrized as Water/Lightning. ErzaPassive now assigns its
+-100-level tag after reactions resolve. Quincy uses a dedicated same-hit-safe
+predicate for all sources (2026-10-30: including Kurikara, Ashisogi Jizo,
+other periodic item damage and reflections), with no minimum/maximum positive-hit
+threshold or enemy-only gate; no new damage event is scheduled,
+and the existing quincyShare statistics split remains authoritative. Offensive
+proc exclusion remains intact except Tachikaze explicitly accepts Koko's -103
+Lightning tick. Poison/reflection exclusions and explosion self-proc guards stay.
+Raiden E still dispatches A002 (including TE/TTE) and applies Lightning; Nejibana
+retains its200 final-damage threshold and2x main-stat proc. Reaction tests execute
+Water + that Lightning, all five Electrized ticks, and dealt/taken Quincy totals.
+
+Siren drains min(2.5 INT,20% target max mana) across8 ticks. Its .25-second timer
+now preserves remainder on the .03-second update, fixing the missing eighth tick.
+Samehada restores/drains5%; Naofumi Evolved blocks30 passively/100 actively;
+Stone healing against nonhero targets is halved. Stat resistance coefficients
+are .15 per AGI/INT (+25% versus .12); native armor per AGI remains .1.
+Return by Death uses its original wos_hmr-guanghuan and wos_watchaura4 models.
+Anchor no longer spawns the tornado and pulls at240/sec. Okarun Q cooldowns are
+20/19/18/17/16. No hidden elemental cooldown clock has been introduced.
+
+InitCraftRecipes includes all15 previously componentless new items. Every
+purchase path rechecks CheckBanItems: one active from each native elemental
+cooldown family, including auto-buy and whole assembly. Kusanagi element swaps
+remain available when the resulting family is free. Shop headings show nonzero
+mana before the item name. Hyorinmaru capture latches the assignment key in the
+existing trigger-scoped WUI_InputState until key-up; capture itself cannot cast.
+
+Evidence: test_item_shop_followup.py executes recipe affordability/cycles, all529
+family pairs, purchase rejection without payment, reaction/Quincy attribution,
+Koko/Tachikaze, eight Siren ticks, and assignment/release/next-press input. Existing
+item balance, descriptions, range, debuff, Samehada, Return and damage-stat suites
+also pass. Legacy test_quickbuy_fix4 has the same4 failures/10 errors against the
+staged pre-change source and this source (missing old fixture natives and stale
+expectations); evidence is _build/quickbuy-prechange-baseline.log. Native visuals,
+input dispatch and multiplayer still require Warcraft III acceptance.
+
+Publication: MAIN and WOS2_MAIN_STABLE.w3x rebuilt; parity5467 functions PASS,
+7016 packed files. Twelve extracted script/object/model payloads match MAIN;
+54 mana overrides,23 icid families,27 native damage cast distances verified.
+All111 focused tests pass; final sync reports0 binary/source differences.
+Previous STABLE/root snapshots were backed up before replacement. Evidence:
+_build/items-shop-followup-main-{build.log,result.json},
+_build/items-shop-followup-focused-tests.log and
+_build/items-shop-followup-final-sync.log. Warcraft was not launched.
+
+### Native item cast distance field types (2026-10-29)
+
+The active-item balance staging mistakenly changed 27 native aran records from
+unreal (binary type2) to real (type1). Editable JSON still showed1400 and old
+value-only tests passed, while the user observed zero cast reach in Warcraft.
+Raijin aare had the same type regression. Native distance/area overrides must
+use unreal even though BlzGetAbilityRealLevelField is the runtime getter.
+balance_active_items.configure now stages correct types and1600 cast distance,
+except Shiki Knife Evolved at2100. Its checker also detects type regressions
+with unchanged numeric values. Fixed travel distances, item ring fallbacks and
+descriptions follow those values; passive Shiki reach remains650.
+
+Point-directed skillshots A06Q/A09L/A09N/A0HY/A14B/A14C/A151 clear only the
+Channel Targeting Image bit (Ncl3 & ~2). Actual hit widths/native areas and
+other Channel flags remain intact; point-centred blasts keep their cursor discs.
+The elemental balance suite serializes and reparses w3a, asserting native types,
+distances, marker flags and Raijin area. Warcraft input/rendering still needs
+in-game acceptance; binary checks alone do not establish live engine behavior.
+
+Publication:48 focused tests and MAIN compile pass; compiled/source parity5467
+functions and7016-file archive pass. Seven extracted native/script payloads
+match MAIN; all27 packed aran records use unreal and the expected1600/2100
+values, with no skin range overrides. STABLE and root snapshots updated after
+backup. Evidence: _build/item-cast-range-fix-main-build.log and
+_build/item-cast-range-fix-main-result.json. Game was not launched.
+
+### Item marks, instant orders and recovery contracts (2026-10-29, CP75)
+
+Conditional elemental effects previously lived only in ItemsElementsFx records,
+so dispelling the visible element did not remove retaliation/thread/ricochet logic.
+Their native mark buffs now own validity (HasMark and periodic removal detection).
+Ember/Phoenix burns have separate dispellable buffs. Cinder stays for three seconds
+after its one bonus hit; native regen is cancelled with additive offsets and
+restored without overwriting stat changes acquired during the seal. Systems1's
+HUD/regen amp and Systems2's restore/mana-floor paths also honor the Cinder buff.
+Mark IDs are in elemental-marks-ids.json; the allocator must reserve TEST JSON/J
+IDs as well as MAIN. Altair's A11E..A128 service IDs remain untouched.
+
+Instant order references: Hive threads 292477 and 260836 distinguish truly instant
+Berserk from queue-instant Battle Roar/Roar and confirm duplicate Berserk conflicts
+on hero slots. stage_instant_foundations.py preserves generic metadata and every
+rank while removing Channel-only fields. Do not rebase native Mirror Image items
+or order-dependent/channelled hero actions blindly. Item abilities explicitly use
+aite=1/aher=0, independently of hero order families. Bambietta's scripted pause
+uses Start/StopSpellUnitQueued; Toji F relies on Berserk instead of a move replay.
+
+Core Drill non-attack stacks are outside ItemDamageCanProc: that guard still blocks
+offensive item recursion, but periodic item/element hits may grant Core stacks.
+Inori T2 subtracts resistance points after Ainz's reduction and caps only its own
+contribution at zero resistance. Both HUD and actual mitigation share this path.
+Inori E service aura rank 6 is not a learnable sixth level; AHUI uses base A09S's
+five-level schedule even while another E occupies its slot. AHUI resolves the
+actual A061 aura rank for its readable icon (including E form), A06U at four
+stacks, or A06D during T2. Disabled-visible and hidden abilities are distinct;
+Harribel E2 remains a DISBTN during W and only an active candidate accepts input.
+Native disable/hide functions are counters, not boolean setters: Harribel EW
+locks E2 once at start, never each tick, and balances the lock on cleanup.
+InoriE_SetBaseHidden writes only on transitions; readiness reconstructs a stale
+EE button once per cycle instead of repeatedly enabling/unhiding it. Aura
+initialization does not issue an unmatched enable. The displayed A061 tooltip
+contains the full passive; its custom counter panel is level112 above the
+level101 icon, with text113. Its size now uses the native TasBox BOX_SIZE
+(0.0135); AHUI_AbilityCooldownRemaining reads the learned A09S timer for A061
+and A09T so aura rank swaps retain the real E cooldown without changing the
+native aura delivery base. Regression: test_merge_followup,
+test_inori_aura and the actual TasBox-to-AHUI live-stack test. The allied E aura and
+Instability are disabled while E remains unlearned.
+
+Game Info/shop/tooltip layout, local gold ownership and native mouse preservation
+are documented at RESUME CP75. Integer mana regen is not an object-data ability:
+MAIN packaging must run install_gameplay_constants.py to keep Misc.IntRegenBonus
+identical to Systems1.int_mpregen (0.15). Elemental skillshot cursor discs remain
+off; Constellation has a 1600 click range, 1800 travel and 250 hit half-width.
+Evidence: test_elemental_marks_followup.py, test_item_ui_resistance.py,
+test_inori_aura.py, test_core_drill.py and test_damage_stats.py. Engine rendering,
+manual order retention and multiplayer still need in-game verification.
+
+Round purchase follow-up: ShopCanPurchase is the shared transaction gate for
+manual purchases, FAST BUY, BuyAuto/BuyAutoLimited and QB_BuyWhole. Combat is
+blocked in every normal mode; TestMode explicitly permits combat purchases and
+Quick Buy outside base. Existing half-second scheduling disables the normal-mode
+buy/FAST BUY controls. The opening forced purchase runs before CondArena becomes
+1, while deferred acknowledgements cannot grant a combat purchase exception.
+New-round initialization resets TestPrimaryDeadTicks.
+
+Top portraits restore cached artwork on public death/revival changes even when
+the enemy is unseen, without reading hidden type/vitals. Living HP fill has a 2%
+visual minimum so Will of D.'s 1-HP survivor is distinguishable from a corpse;
+actual HP is unchanged. Shared damage helpers accept life > 0.405, so spells can
+damage a 1-HP survivor when protection expires. Patriot's revival cleanup only
+announces/kills an existing living hero; an earlier death still clears stance,
+VFX and timer ownership without a duplicate kill. Evidence:
+test_round_purchase_survival.py and test_wos_ui.py (mocked native behavior).
+
+CP75 MAIN/STABLE publication passed compiled/source parity (5485 functions),
+packed/native field checks and 246 focused tests. The old Rimuru Black Flame
+fixture is excluded, not repaired by this task. Archive/result pointers and
+remaining Warcraft acceptance limits are recorded in RESUME CP75. Final project
+sync reports no binary changes or source differences.
+
+Will of D. follow-up (2026-10-29): cooldown is 180 sec in Items.j, native A138,
+the staging generator and item text. Protection is bound to positive buff B05B;
+the shared ItemsAnimeEffect clock owns its VFX and cancels the saved deadline
+on dispel/expiry/death. A 0.20 sec initial grace permits native dummy application;
+Kairoseki clears the deadline immediately even inside that window, so a late buff
+cannot rearm protection. This ends the damage floor, without an artificial kill.
+Round-end cooldown reset remains. Evidence: test_will_of_d.py (6 cases) and
+test_return_by_death.py (5 regression cases); native behavior still needs game QA.
+
+Will of D. follow-up published to MAIN/STABLE: 11 focused tests passed; native
+180-sec cooldown and both packed item descriptions verified, including skin
+overrides. Final sync: 0 binary changes / 0 source differences. Result:
+_build/will-of-d-main-result.json; SHA-256 c3d56e669a619cdab3d08ce64546d0ccd589a5e846708e6eaaed4e3a88f6e0cb.
+
+### Tooltip startup string-allocation regression (2026-10-29, CP76)
+
+Cause: runtime cleanup rebuilt each description in six character-wise passes,
+repeated it for every research rank, and chained SpellData setters rebuilt all
+initial tips before final metadata was available. This magnified native string
+allocation before WUI_StartupEnd. The optimized contract is one changed-span pass,
+one normalization per builder content, one final render per registration job,
+and one reused hidden native-field probe. Constant templates share their parsed
+result across ranks; tagged templates keep distinct rank results. Existing native
+tooltip write comparisons and dynamic hero/form updates remain.
+
+WOS_UTB_FlushInitialTips must remain public because ExecuteFunc resolves its literal
+compiled name. Alternate forms skip initial global-tip writes; runtime setters
+refresh immediately. Evidence and mocked before/after measurements are in RESUME
+CP76 and test_tooltip_startup_performance.py. Static checks do not confirm Warcraft
+load time or reproduce the reported native freeze; verify the rebuilt map in game.
+
+CP76 publication: MAIN/STABLE updated after compiled/source parity passed (5489
+functions, 7016 archive files). All 491 registration job names remain; the public
+flush resolves in compiled JASS and initial render creates no units. Packed code,
+objects, effects and WTS match the scenario. Existing World Editor object changes
+were safely rebased by the standard workflow and verified unchanged against the
+pre-build scenario backup; performance edits did not discard them. Native item,
+description and Will of D. tests also passed after that rebase (19 checks).
+Final sync: 0 binary changes / 0 source differences. Result and backups:
+_build/startup-hang-main-result.json. STABLE SHA-256: a2a02e0641f5238b404c0092a4b74b621f0c25ed22ae3fa33e6d19580cd7ba07.
+No Warcraft startup wall-clock or native freeze reproduction was performed.
+
+### Shop helper text spill and native tooltip styling (2026-10-29, CP77)
+
+Cause/evidence: user video shows all helper labels, not chat. War3Log.txt at
+19:46:32 identifies invalid ControlStyle on the WOSQBHUDRemove SIMPLEBUTTON,
+which aborts shared FDF parsing. Subsequent map starts log duplicate definitions.
+Solution: remove the regular-control property (keep UseHighlight/textures), validate
+it before asset installation, and bind engine tooltips to an empty FRAME containing
+all backdrop/text descendants. WUI_TooltipBox returns that normal FRAME already hidden before art allocation.
+The stats inset explicitly shows its art; tooltip callers keep the hidden default.
+Do not replace this gate with a BACKDROP directly: tooltips outside 4:3 can deform
+without moving/hiding their children consistently. No hover event dispatch added.
+
+Native appearance comes from ToolTipBackground/ToolTipBorder/MasterFont in retail
+UI/war3skins.txt, not a stock tooltip layout copied from CommandBar.fdf (only buttons).
+ShowCD FDF templates use those keys, blended background, left text and shadow.
+User visual comparison exposed native SIMPLEFRAME scaling: custom normal-frame
+geometry now uses WUI_CHASSIS_RIGHT + WUI_HudShift - .030,
+WUI_CHASSIS_TOP + .070, width .286, body/title fonts .011/.011. DamageStats Game-tab
+tooltips also inherit their hidden owner/window, preventing empty startup boxes. Wrapped title height and HUD revision invalidate layout;
+text cache, level requirements and mana content remain. Default ally color Mode 3 is
+native value 2, applied once; Alt+A must remain free to change it afterwards.
+
+Source/checks: CP77, test_native_tooltip_ui.py, test_ally_hero_ability_ui.py,
+install_wos_ui_assets.validate_frame_resources; 405 focused checks, MAIN compile
+and no binary object changes. Existing unrelated fixture failures documented in CP77.
+Visual acceptance remains in-game. Empty-root reference:
+https://www.hiveworkshop.com/threads/ui-frames-and-tooltips.316665/ .
+
+### Ground-hero unstuck probe (2026-10-29)
+
+Systems/EnterRegion.j checks the ten Hero slots (plus distinct TestUnit/TestAllyUnit
+in TestMode) every 2 seconds. No chat/range message is emitted. It repairs an invalid
+current centre, not a lack of movement: playable-area bounds, walkability and one
+reused hidden invulnerable item probe detect obstruction (item displacement >16).
+Only a blocked centre triggers the bounded search: rings 64..1536 by 64, 16 rays per
+ring. A destination must pass the centre plus four diagonal points at +/-24. First
+valid point wins; SetUnitX/Y preserves orders. Null/removed/dead/hidden/paused/flying,
+fly-height >50 and active spell-p units are skipped. The ordinary path needs only a
+centre probe; no per-tick item/unit/group allocations. Source tests:
+test_elemental_marks_followup.OrdersAndUnstuck and MAIN compiler/dispatch audit.
+
+### Elemental item effect carriers and return snapshots (2026-10-29)
+
+Items.j ItemsElementsFx.SEALCAST (12) owns Phoenix Seal's sword. It follows target
+XY while pending, descends from +1500 at scale .5 / initial time scale .08, adds .03 speed each tick
+and calls Arrive once at the first tick >=.30 sec. Invalid
+pending targets cancel. Burn is spread over six .5-sec ticks; hero-cast reaction
+is 2 INT. The shared .03 clock owns cleanup, including the extra Ashen trail handles.
+
+Crimson preparation lasts .44 sec (AiSi_DaYanJieYanDi_2 at .5 speed, scale1.995),
+then hits once for 4 INT and pulses six times at .20-sec intervals, 4 INT total.
+The last pulse owns completion, avoiding a floating-point expiry dropping damage.
+Firebeam time scale1.12 with proportionally stretched fade. Ember's firefly pair
+uses existing EUTU2 ownership.
+
+Ashen's three pitched EffectSpawn3 models use wos_file00000526_orange, scale2,
+height160, pitch-90, facing+90, speed1540. Each has a Windwalk Fire2 trail. At the
+outbound endpoint capture caster XY into tx/ty; return interpolates each outer tip
+to that snapshot. Distinct hit groups preserve outbound/return damage rules.
+Mirror grows from radius350 to525 by mid-flight, scale.66 to.99. Any applied hit
+>100 can spend its dispellable mark's charge, regardless of source/caster. It
+launches from the marked unit to its nearest ally valid as the item's enemy;
+once/sec, max3, clones allowed. Enumeration uses the mark's own group so a nested
+damage callback cannot clear the active AoE iteration's shared group.
+
+Coil flies1800, pushes hits60, then stays at its endpoint for2sec. Its visual and
+radius grow to2.5x with fading; four half-second pulses each deal1 INT, apply
+Lightning/slow and break scenery. Random lightning effects spawn only on pulses,
+not every frame. The krk trail is owned alongside the main model.
+
+Anchor uses the item-only G2 NoSpray copy (tools/build_anchor_item_effect.py),
+preserving the hero model. The old embedded emitter and Zaraki crack effect stay
+removed; requested CrushingWave attachment plus Harribel214/blue-morph water are
+separate. Three2.25 STR impacts share .60/1.20/1.80 deadlines. Smoothstep tilt
+alternates pitch0->PI/2->-PI/2->PI/2, sin-squared rebound height gives zero landing slope.
+
+Return by Death uses PosUnit (SetUnitX/Y via bounded pathable steps), preserving
+orders; deadline5sec. Native A155 adur/ahdu are5.25sec, staged by
+stage_return_buff_duration.py so the dispellable buff outlasts that deadline.
+Ice Coffin uses the retained custom wos_icecoffin model.
+
+The reported intermittent solo order/pathing issue concerns TakeshiF_Start (UI G,
+style switch), not Cambio G. Its switch has no pause or periodic order replay;
+Incursio's MUE only displaces for.3sec. Do not claim a reproduced root cause or
+add a stop/reissue watchdog: those would themselves break order preservation.
+Relevant first-hand reports: Hive threads302685 (frequent order/path scheduling),
+270085 (item-slot orders),163683 (instant abilities). Engine acceptance remains
+in-game; fixtures do not emulate native pathfinding or animation rendering.
+
+Checks: test_fire_item_effects.py, elemental follow-up, debuff cycles, mark
+fixtures, round-purchase and item-description checks; MAIN compile/dispatch.
+
+Published MAIN/STABLE: _build/elemental-v2-main-result.json. MAIN compile and
+compiled/source parity pass (5489 functions); 57 focused execution checks pass
+(three previously documented stale fixtures excluded). Packed model payloads
+match scenario inputs; native field audit allows exactly27 requested changes.
+Final sync:0 binary changes /0 source differences. No in-game VFX/pathing claim.
+
+2026-10-30 follow-up: Anchor landing Z is terrain+50; each pulse slows40%.
+Thunderclap ground impacts accompany water. On the third impact ColorEffDummy3
+owns the .5-sec fade; clear .e before carrier cleanup to avoid double destruction.
+Demon-Dweller A0HX adur/ahdu are4sec at both ranks; Suzumebachi I072 costs6000.
+Element passive texts in check_item_descriptions read source multipliers (bonus
+percent = (multiplier-1)*100), not stale hardcoded values.
+
+Published follow-up: _build/oct30-main-result.json. Crimson ground damage is
+six .2-sec pulses (4 INT total over1.2sec); initial4 INT and .44sec preparation
+remain. MAIN/STABLE packed parity and57 focused checks pass; native audit allows
+35 requested fields only. Final sync0 binary/0 source differences; game visuals
+were not exercised.
+
+### Shared spell pause deferral and instant cast state (2026-10-30)
+
+Observed report: input can remain blocked after an instant item/hero cast, including
+Ice Coffin and Takeshi styles/abilities. All55 Absk/ANbr/Aroa native foundations
+already have adur/ahdu .01 at every rank; shortening them again is not the fix.
+A matching first-hand engine report describes PauseUnit inside Berserk's spell
+event stranding control: https://www.hiveworkshop.com/threads/paused-unit-invisibility.352993/ .
+The initial global deferral was rolled back after in-game animation regressions:
+ordinary StartSpellUnit/2/2_2 now stop and pause synchronously before the caller
+sets its animation. GearPauseSpellImmediate retains extended-pause ownership.
+DebugUnit/2 again pause synchronously. Only Ice Coffin uses GearPauseSpellStart's
+shared .01sec one-shot queue, outside player/unit CAST/CHANNEL/EFFECT events.
+Legacy queued helper functions remain for compatibility, with no hero callers;
+Bambietta W again uses ordinary Start/StopSpellUnit pairs on Channel.
+GearCancelSpellPause removes pending work before it can strand a finished spell.
+GearStopSpellPause releases only an actually applied extended pause owner, with
+no native unpause after cancelled/dead pending starts and no extra decrements
+from duplicate cleanup. Other engine stuns are not cleared. Ice Coffin shares the
+same mechanism, guards its ownership with armed, cancels on round end and still
+keeps its original2sec protection. Direct actor PauseUnit calls audited in other
+hero start functions use Channel (Barragan/DarkShiki/Kyoraku/Milim/Starrk); dummy,
+pick/death and tooltip-probe pauses retain their purpose. Do not add global
+unpause loops or reset native stun counters to repair a single spell.
+
+Source: Systems2 shared helpers, Systems1 DebugUnit, ItemsAnimeEffect/CoffinStart.
+Execution checks: test_spell_pause_lifecycle.py (same-event cancellation, duplicate
+keys, ordinary/extended ownership, expiry, external stuns, per-unit spell events).
+This establishes the unsafe ordering was removed, not an in-engine reproduction.
+
+Ashen weapon height220, separate trail height160. Anchor impact centres move0/-80/+80 along cast direction; the model starts at
+-PI pitch, then lands at-PI/2,+PI/2,-PI/2, terrain+125 every.6sec.
+Phoenix calls Arrive once, sets speed2 then DestroyEffect, nulls handle before
+carrier finish. Tests verify no duplicate impact/destruction.
+
+Ranged base intervals staged idempotently by tools/stage_ranged_attack_timing.py:
+H002/H018/H01Z/H020/H02E/H02H=1.8sec, H017=2sec; Inori H017/H018 base damage10 in both forms.
+These are the seven permanent ranged hero/form objects, excluding Hblm menu unit
+and summons; temporary range extensions keep the hero's own attack timing.
+
+Publication: _build/pause-main-result.json. MAIN compiled/source parity5493
+functions,68 focused checks pass (three previously documented stale fixtures
+excluded). Packed source/effects match scenario; exactly9 unit values change,
+native types and all other object files are unchanged. Final sync0 binary/0
+source differences. First pending request arms the shared timer; additional units
+join that batch without postponing it. Engine reproduction remains unconfirmed.
+
+### Test repick round completion (2026-10-30)
+
+A removed primary Hero was excluded from TestUnit_PrimaryDefeated, leaving zero
+primary participants while the test enemy remained in combat. Missing/removed
+human primary heroes now count as immediately defeated; ordinary deaths keep
+the existing four-check/three-full-second revival grace. TestUnit_EndRoundForRepick
+runs after primary removal in both the test replace-picker branch and Repick.
+In TestMode combat only, it sets TestRepickRoundEndPending and schedules a zero-delay tick of
+IntroStart1, using the existing PrepareStart round-end teleport/reset/cleanup branch. The flag
+forces that branch even if other primary heroes remain, and is cleared when the
+round ends. No separate enemy teleport/round-reset implementation or extra timer.
+The zero-delay callback restores IntroStart1 to its normal1sec periodic cadence
+before running round cleanup. This avoids ExecuteFunc in the frame call graph.
+Source/test: WoS_Pick_Init; TestRepickRound in test_elemental_marks_followup.py.
+
+Anchor's initial model height is terrain+1325, pitch-PI. Smoothstep descent to125
+and-PI/2 lasts.6sec; then rebounds to450 above terrain, centres80 back and80 forward, pitches
++PI/2 then-PI/2. Damage/drag and impact visuals share the moving centre. Existing
+3x2.25STR,40% slow,water/ground impacts and final.5sec fade remain.
+
+Published: _build/anchor-repick-main-result.json. MAIN/STABLE parity5494
+functions,73 focused checks, UI dispatch0 errors. Native audit allows4 Anchor
+text fields only; other objects and WTS unchanged. Final sync0 binary/0 source
+differences. Wait for workflow process completion (MPQ Pack OK), not merely the
+earlier JassHelper BUILD OK, before extracting/comparing the output archive.
+In-game animation acceptance remains pending.
+
+2026-10-30 ranged/anchor adjustment: repeat anchor arcs now peak at terrain+450
+(125 landing plus325 sine-squared lift), preserving.6sec timing and tilt/centres.
+Base damage: Frostnova/Ainz/Frieren10, Inori both forms10, Alucard both forms20
+unchanged. stage_ranged_attack_timing.BASE_DAMAGE stores final values so restaging
+cannot repeatedly subtract10. Existing attack intervals are retained.
+
+Published ranged/anchor adjustment: _build/ranged-anchor-main-result.json.73
+focused checks pass, including450 peak/125 landing. Native audit allows exactly
+5 base-damage values and preserves native types/other objects. Packed MAIN/STABLE
+parity passes; final sync0 binary/0 source differences.
+
+### Paused Channel foundations and anchor pivot correction (2026-10-30)
+
+Correction after user review: only a pause immediately on button activation
+requires Channel. A later counterattack or triggered pause is a separate action
+and must not rebase the activation button. The broad eight-button migration was
+reverted for seven buttons to their exact previous native objects: Alter Saber E
+A029 and Takeshi W2 A090 use their previous ANbr conflict fallbacks; Kyoraku R
+A053, Tsuna W A083, Takeshi defensive Q A093, Rimuru2 Q A0A3 and Mahoraga E2 A0CI
+use Absk. Only Bambietta W A0DF stays Channel (immediate scripted windup pause).
+Takeshi Q2 A08Z was already Channel. Ice Coffin A13C remains Berserk with its
+separate deferred pause/ownership guard. All seven native objects, including
+ranks, mana, unlocks, icons and descriptions, were restored exactly from the
+pre-migration packed map. Subsequent explicit exception: Erza F A030 (form exit)
+uses Channel with spellshield order and an explicit stop in ErzaF_Start, because
+continuing movement on exit caused gameplay bugs. PAUSED_CHANNELS contains A0DF
+and A030; stock art, buffs and sound are empty and F remains at (1,1).
+Regression checks distinguish these exceptions from delayed counterattacks.
+
+Neuvillette R owns Avul only during preparation: StartSpellUnit at activation,
+DebugUnit while check==0, remove Avul on beam launch, then DebugUnit2 and
+StopSpellUnit2. Interrupted preparation uses StopSpellUnit to release Avul.
+Charge and beam effects each go once to ColorEffDummy3 (fade plus destroy);
+never DestroyEffect before handing the same effect to that fade owner. Hand
+attachments are destroyed directly. test_combat_cast_followup executes launch,
+death before/after launch, single effect cleanup and Frieren Q's 0.75s timing.
+
+Anchor visual correction after in-game feedback: use the original, unmodified
+war3mapImported/wos_EF_AZ_Leviathan_G2.mdx, including its attached PRE2 water
+emitter. NoSpray is no longer referenced by gameplay; do not regenerate or patch
+the original model. There is no second detached CrushingWave water effect.
+All motion is trigger-only: first.6sec fall is250+1800*(1-t*t), starting2050;
+subsequent.6sec rebounds are250+2600*t*(1-t), peaking900. Pitch interpolates
+-PI to-PI/2, then-PI/2 to+PI/2, then back, with smoothstep; it adds no height
+correction. Centres remain0/-80/+80 and ground/water impact bursts remain.
+Keep three2.25STR hits,40% slow and final.5sec fade. Actual scaled mesh vertices
+clear terrain by at least50 in execution checks. The original embedded water
+moves/rotates with the model automatically; do not recreate a stationary puddle.
+Tests validate three impacts, original water emitter, trajectory and cleanup.
+Compilation/static execution do not establish visual acceptance in Warcraft.
+
+### Instant button presentation and effect coordinate follow-up (2026-10-30)
+
+Rebasing did not override base button coordinates and every stock presentation
+field: inherited Berserk/Roar positions collided with other HUD cells, despite
+the explicit AHUI logical slots being correct. stage_instant_foundations.py
+--presentation-only clears native art, attachments, sounds, animation names,
+buff/effect lists at every rank and sets normal/activated/research coordinates
+from the existing AHUI slot table. Normal/custom icons and gameplay text remain.
+Laxus F is explicitly placed beside G; Bambietta W remains Channel at(1,2).
+
+Inori A06U uses Aroa, coexists with F Absk and G ANbr, and is mutually exclusive
+with the T2 cancel A06E. At four stacks the added button is ranked, enabled and
+unhidden; AHUI explicitly prioritizes it over still-live service aura candidates.
+InoriAttackArt updates the native attack interval too: crystal1.8/base2.0, because
+BlzSetUnitSkin alone does not apply the skin object's weapon gameplay values.
+S cancellation latches are driven by active spell flags without a raw type gate;
+both key-down and key-up are registered, with idempotent writes. No stop order is
+required from a paused native command card to end the timed spell.
+
+AnchorGround is one shared Location. Anchor startup samples terrain directly;
+it never reads back a newly created effect's height and subtracts2050. The whole
+X/Y/Z position is applied together every tick, after computing the trajectory.
+Height does not depend on current rendering or individual X/Y setters. Original
+G2 mesh and attached water remain unchanged. A regression test uses terrain432
+and makes any same-thread effect-Z getter fail; startup must be2482.
+
+Milim's wos_file00001145.mdx embeds EVTS SNDxAHFS and SNDxAHFT. The dedicated
+wos_MilimW2_Silent.mdx copy removes only that EVTS chunk; every other chunk and
+the shared original are preserved. Generator: build_milim_w2_effect.py.
+Shop gold plate is.092 wide, shifted left.030; numeric text gains matching width.
+Checks: test_instant_button_presentation, spell pause/fire/item tests, selected
+AllyAbilityUI form/cooldown/learning checks and check_wos_ui compile/dispatch.
+Visual/audio/input acceptance in Warcraft remains separate from these checks.
+
+Instant native neutrality follow-up (2026-10-30): all55 custom Absk/ANbr/Aroa
+buttons explicitly set atar=enemies and aare=0 at every rank in BOTH main and
+skin objects. Native Absk bsk1/2/3 are zero. ANbr's damage is Nbr1, not Roa1:
+zero Nbr1 and Roa2..7 on ANbr; zero Roa1..7 on Aroa. Roa2/5/6/7 are integers,
+other bonuses are unreal. Inherited Nbr1 had survived the earlier Roa1-only fix.
+configure_neutral is shared by regular and presentation staging; --neutral-only
+applies just these fields without rebasing or changing text, levels, costs or CD.
+test_instant_button_presentation validates all ranks in each native layer and
+idempotence, including the distinct ANbr/Aroa damage field IDs.
+
+
+Hero order / item vision follow-up (2026-10-30): hero_ability_orders.py audits
+34 hero AHUI groups / 397 registered buttons (354 active,43 service/passive).
+Channel Ncl6 is checked across every rank; fixed native orders are derived from
+Absk/ANbr/Aroa, not editable order-string text. Cross-slot collisions fail, except
+Inori A06U/A06E: EE is removed before cancel is added; cancel is disabled before
+SH_MODE_T=0 permits EE again. Same-slot form replacements remain grouped.
+Order rebase must preserve inherited native defaults too. Retail AbilityData.slk
+has Absk cooldown30/mana0 versus Aroa cooldown0/mana100; ANbr is hero1/levels4,
+cost50/CD25 by default. configure_order_bases retains effective main+skin values
+without rebuilding level/cost metadata from missing convenient-view properties.
+ItemActiveVision runs inside the real item-ability gate before both dispatchers:
+750 minimum radius,1.5x native area if larger,2sec; unit target uses current position,
+instant uses caster, Channel point(0,0) stays valid. No detection/order changes.
+TooltipGoldMechanics colors plain property labels; unchanged text returns its
+input. Range belongs to addRange (six extra manual copies removed). Combined
+cast/active Iframe notices keep both phase values; Asta W alt has one Radius.
+Frostnova R's static Winter's Scar is below the LoreOnly stats boundary, retaining
+native fallback information while avoiding duplicate live bonuses.
+Checks: test_hero_orders_vision_tooltips, test_instant_button_presentation,
+test_spell_pause_lifecycle, test_tooltip_startup_performance and check_wos_ui.
+Engine input, fog and visual acceptance still require Warcraft.
+
+
+Item editor families (2026-10-30): stage_item_editor_classes.py derives classes
+from ShopCatalogue_Define, retaining uncatalogued component classes and stat
+tomes in Base. Existing family mapping: STR=Miscellaneous,AGI=Purchasable,
+INT=Campaign,Universal=Permanent,Base=Charged,Defensive=Artifact,Attack=PowerUp.
+Non-Base tabs win for cross-listed Katana. All196 items explicitly set icla in
+main and skin;33 move between families. Only classification changes, not ipow,
+prices, abilities or item stats. No production GetItemType/class logic was found.
+Run this pass after item generators; test_item_editor_classes catches drift and
+asserts every other native field survives a complete re-sort unchanged.
+
+Reviewed command changes: A093 Yamamoto defensive Q, A03M Erza Samurai G and
+A0DY Kyoraku skip use Aroa; their other instant slots keep separate foundations.
+Channel Ncl6: A03L clusterrockets,A03O acidbomb,A113 charm,A0FS grabtree,
+A0A0 ancestralspirit. Native field IDs/costs survive in both object layers.
+Publication passed50 focused tests, MAIN compile/dispatch,5499-function parity
+and packed native/payload scope checks; MAIN/STABLE updated. Final sync is zero.
+
+Active vision area follow-up (2026-10-30): all60 active primary ability IDs are
+executed through the real ItemsCast gate in test_item_trail_vision_train. Cast
+radius is max(750,1.5*native area), with Hashirama's script-only700 ally area
+explicitly retained despite its zero-area instant foundation. No true sight.
+ItemsElementsFx.Update refreshes visible projectile/ground areas every0.15sec
+for0.30sec, using remaining lifetime modulo150ms; no per-effect timer added.
+Each Ashen shuriken reveals its own outbound/return position; COILSHOT reveals
+both flight and the whole growing2sec spin using its current Width*scale*1.5.
+RUNE reveals preparation and ground phase. Anchor,wave,storm,target missiles and
+seal follow their current positions. Pulse reveals max(750,1.5*radius) for0.6sec.
+The two legacy moving-item vision sites use the same radius rule.
+Train constants are owned by EnvironmentRoundRules in Map_Header.j and shared
+by RoundEnd and Game Info: impact275,explosion475,+125 per next completed round.
+This is the old formula plus75*effective round for BOTH hits; training stays R1.
+Checks: test_item_trail_vision_train, fire/elemental/item/pause regressions,
+the full60-item native gate audit and check_wos_ui. Engine fog/render acceptance
+remains separate from mocks and compilation.

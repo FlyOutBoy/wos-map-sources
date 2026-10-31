@@ -6,6 +6,11 @@ globals
     boolean TransferClearMax         = false
 endglobals
 library EnvironmentRoundRules
+globals
+    constant integer TRAIN_PUSH_BASE_DAMAGE = 275
+    constant integer TRAIN_EXPLOSION_BASE_DAMAGE = 475
+    constant integer TRAIN_DAMAGE_PER_ROUND = 125
+endglobals
 
 // Training phase restarts are not completed match rounds.
 // Shared by actual decor/train damage and its Game Info snapshot.

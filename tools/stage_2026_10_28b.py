@@ -84,16 +84,16 @@ ELEMENTAL = [
 ZANPAKUTO_UNIVERSAL = [
     ("Zanka", "Zanka no Tachi", "ZankaNoTachi",
      "Passive: Your Fire burns for 7 sec at 70 damage per second. Re-applying it adds +40 per second "
-     "(up to 300) and restarts the 7 sec."),
+     "(up to 240) and restarts the 7 sec."),
     ("Kyoka", "Kyoka Suigetsu", "KyokaSuigetsu",
      "Passive: Your Fire or Water turns into Steam (3 sec per target; with Sogyo no Kotowari only Fire). Fire or Water "
-     "on Steam refreshes it and deals 0.6x main stat damage. Steam: +8% physical damage from you."),
+     "on Steam refreshes it and deals 0.6x main stat damage. Steam: +24% physical damage from you in total (12% normally)."),
     ("Koko", "Koko Gonryo Rikyu", "KokoGonryoRikyu",
-     "Passive: Your Lightning debuff also deals 0.2x main stat magic damage every second while it lasts."),
+     "Passive: Your Lightning debuff also deals 0.5x main stat magic damage every second while it lasts."),
     ("Tobiume", "Tobiume", "Tobiume",
-     "Passive: Your Overload (Fire + Lightning) deals 100% more damage and stuns 0.4 sec longer."),
+     "Passive: Your Overload (Fire + Lightning) deals 175% more damage and stuns 0.4 sec longer."),
     ("Suzume", "Suzumebachi", "Suzumebachi",
-     "Passive: Your Electrized (Water + Lightning) deals 80% more damage every second."),
+     "Passive: Your Electrized (Water + Lightning) deals 125% more damage every second."),
 ]
 PACT_TIP = ("+15 str\n+250 hp\nActive: Sacrifices 400 HP (cannot kill you) to restore 400 mana.\nCooldown: 12 sec.")
 
@@ -222,7 +222,7 @@ def stage():
 
     for label, title, icon, text in ZANPAKUTO_UNIVERSAL:
         clone("items", ids[label + "Item"], "I01P")
-        item(ids[label + "Item"], "A00M", 5500, ids[label + "Item"], title, "+15 allstats\n" + text, "BTNItem_" + icon, 0)
+        item(ids[label + "Item"], "A00M", 6000 if label == "Suzume" else 5500, ids[label + "Item"], title, "+15 allstats\n" + text, "BTNItem_" + icon, 0)
 
     active_balance.configure(documents)
     for document in documents:

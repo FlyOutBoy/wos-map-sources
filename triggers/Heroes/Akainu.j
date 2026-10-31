@@ -31,7 +31,7 @@ library AkainuSpells initializer InitAkainuSpells uses GearSystems
         real AkainuW_Damage2StaticBase = 200.00
         real AkainuW_Damage2StaticStep = 0.00
         real AkainuW_DamageAoe = 650.00
-        real AkainuW_DamageAoePunch = 400.00
+        real AkainuW_DamageAoePunch = 500.00
         integer AkainuW_Slow = 20
         integer AkainuW_Duration = 1
         real AkainuW_MaxDuration = 2.10

@@ -596,8 +596,8 @@ library RoundSpells uses GearSystems, EnvironmentRoundRules, optional DamageStat
             set des1 = CreateDestructable('B017', GetUnitX(d), GetUnitY(d), 0, 0.01, 0)
             set des2 = CreateDestructable('B017', GetUnitX(d2), GetUnitY(d2), 0, 0.01, 0)
             set rmax = 10
-            set dmg = 200.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 50.00
-            set dmg2 = 400.00 + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * 50.00
+            set dmg = TRAIN_PUSH_BASE_DAMAGE + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * TRAIN_DAMAGE_PER_ROUND
+            set dmg2 = TRAIN_EXPLOSION_BASE_DAMAGE + IMaxBJ(0, GetEnvironmentRoundNumber() - 1) * TRAIN_DAMAGE_PER_ROUND
             set aoe = 275
             call PlayersMsg("|c00FF0303Author:|r Train coming.", 3)
             if MUI_RoundTrain == 0 then

@@ -10,8 +10,8 @@ from integrate_crocodile_main_objects import allocate, clone_object, set_field
 
 ROOT = Path(__file__).resolve().parents[1]
 IDS_PATH = ROOT / 'object-data/blood-pact-evolved-ids.json'
-TIP = ('+20 allstats\nActive: For 5 sec, restores mana to at least 25% of maximum and prevents it from '
-       'falling below that value. Five Elements Seal blocks this restoration and protection.\nCooldown: 12 sec.')
+TIP = ('+15 allstats\n+250 mp\nActive: For 5 sec, restores mana to at least 25% of maximum and prevents it from '
+       'falling below that value. Five Elements Seal blocks this restoration and protection.\nCooldown: 20 sec.')
 ICON = 'ReplaceableTextures\\CommandButtons\\BTNItem_BloodPactRingEvolved.blp'
 
 
@@ -42,13 +42,13 @@ def configure(documents, ids, strings):
 
     item, active = ids['item'], ids['active']
     field('items', 'I06D', 'igol', 2500, 'int')
-    for key, value, kind in [('iabi', active+',A00W', 'string'), ('igol', 7500, 'int'),
+    for key, value, kind in [('iabi', active+',A00M,A0CQ', 'string'), ('igol', 5000, 'int'),
                              ('icid', active, 'string'), ('iusa', 1, 'int')]:
         field('items', item, key, value, kind)
     for key, value in dict(unam='Blood Pact Ring Evolved', utip='Blood Pact Ring Evolved',
                            utub=TIP, ides=TIP, iico=ICON).items():
         field('items', item, key, value, skin=True)
-    for key, value, kind in [('acdn', 12., 'unreal'), ('amcs', MANA_COSTS[ids['active']], 'int'), ('aran', 0., 'unreal')]:
+    for key, value, kind in [('acdn', 20., 'unreal'), ('amcs', MANA_COSTS[ids['active']], 'int'), ('aran', 0., 'unreal')]:
         field('abilities', active, key, value, kind, level=1)
     for key, value in dict(anam='Item Blood Pact Ring Evolved', aart=ICON, arar=ICON,
                            aret='Blood Pact Ring Evolved', arut=TIP,

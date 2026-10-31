@@ -38,8 +38,10 @@ class LevelTable(unittest.TestCase):
         self.assertIn('BlzTriggerRegisterFrameEvent(AHUI_LearnTrigger, AHUI_LearnButton[slot], FRAMEEVENT_CONTROL_CLICK)', self.source)
 
     def test_tooltip_is_a_compact_column(self):
-        width = float(re.search(r'AHUI_TOOLTIP_WIDTH = ([0-9.]+)', self.source)[1])
-        self.assertLess(width, 0.25)
+        builder = read('TooltipBuilder.j')
+        width = float(re.search(r'TOOLTIP_BODY_WIDTH = ([0-9.]+)', builder)[1])
+        self.assertIn('AHUI_TOOLTIP_WIDTH = 0.286', self.source)
+        self.assertLessEqual(width, 0.28)
         wui = read('WOSUI.j')
         self.assertIn('FRAMEPOINT_BOTTOMRIGHT, 0.598, 0.150', wui)
 

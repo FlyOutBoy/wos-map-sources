@@ -5,6 +5,32 @@ function debugcditem takes integer i returns boolean
 return i == 'I012' or i == 'I01P' or i == 'I01O' or i == 'I01Q' or i == 'I00M' or i == 'I00X' or i == 'I00L' or i == 'I01I' or i == 'I00H' or i == 'I020' or i == 'I023' or i == 'I024'
 endfunction
 
+// Item class Purchasable is the project's Agility catalogue class.
+// Change only the carrier's ability instance; never the global object mana cost.
+function Toji_FreeAgilityItem takes unit u, item it returns nothing
+    local integer aid
+    local integer rank
+    local integer index = 0
+    local ability ab = null
+    static if LIBRARY_TojiSpells then
+        if GetUnitTypeId(u) == Toji_ID and GetItemType(it) == ITEM_TYPE_PURCHASABLE then
+            loop
+                set ab = BlzGetItemAbilityByIndex(it, index)
+                exitwhen ab == null
+                set aid = BlzGetAbilityId(ab)
+                set rank = 0
+                loop
+                    exitwhen rank >= IMaxBJ(1, BlzGetAbilityIntegerField(ab, ABILITY_IF_LEVELS))
+                    call BlzSetUnitAbilityManaCost(u, aid, rank, 0)
+                    set rank = rank + 1
+                endloop
+                set index = index + 1
+            endloop
+        endif
+    endif
+    set ab = null
+endfunction
+
 function RefreshItemCache takes unit u returns nothing
     local integer unitHid = GetHandleId(u)
     local integer slot = 0
@@ -20,6 +46,7 @@ function RefreshItemCache takes unit u returns nothing
 
         if it != null then
             call SaveBoolean(ItemCache,unitHid,GetItemTypeId(it),true)
+            call Toji_FreeAgilityItem(u, it)
         endif
 
         set slot = slot + 1

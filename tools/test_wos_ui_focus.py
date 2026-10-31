@@ -249,7 +249,7 @@ class FocusAudit(unittest.TestCase):
                     self.assertRegex(body[:early.start()].rstrip(), r"call WUI_(?:ReleaseClickFocus|ResetClickedButtonFocus)\(\)$")
                 # At the ordinary exit only intentional link-focus transfer / restart may follow.
                 tail = re.split(r"call WUI_(?:ReleaseClickFocus|ResetClickedButtonFocus)\(\)", body)[-1]
-                self.assertNotRegex(tail, r"\bcall (?!BlzFrameSetFocus|RestartGame)\w+\(")
+                self.assertNotRegex(tail, r"\bcall (?!BlzFrameSetFocus|BlzSetMousePos|RestartGame)\w+\(")
 
     def test_cleanup_is_not_used_by_editboxes_or_slider_only_handlers(self):
         sources, functions, _ = inventory()

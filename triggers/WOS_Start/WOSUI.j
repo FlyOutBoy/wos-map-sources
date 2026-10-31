@@ -261,7 +261,8 @@ globals
     // vertically centred on the icon (they used to drift apart).
     constant integer WUI_INFO_ROWS = 4
     constant integer WUI_INFO_PAGES = 4
-    constant real WUI_INFO_HEIGHT = 0.212
+    constant real WUI_INFO_HEIGHT = 0.256
+    constant real WUI_INFO_WIDTH = 0.238
     // Pick / ban feed in the top-left corner (newest on top).
     constant integer WUI_FEED_LINES = 6
     private framehandle array WUI_FeedText
@@ -296,7 +297,7 @@ globals
     private framehandle WUI_AllyColor = null
     // Glyph variant per GetAllyColorFilterState(): the top gem changes with the mode.
     private framehandle WUI_AllyColorGlyph = null
-    private integer WUI_AllyColorState = 0
+    private integer WUI_AllyColorState = -1
     // Checkpoint 22: per-slot custom hotkeys (0..6 skills, 7..12 items).
     constant integer WUI_SLOT_KEYS = 13
     constant real WUI_TOGGLE_X = 0.2885
@@ -537,11 +538,16 @@ endfunction
 function WUI_ResetClickedButtonFocus takes nothing returns nothing
     local framehandle frame = BlzGetTriggerFrame()
     local frameeventtype ev = BlzGetTriggerFrameEvent()
+    local integer mouseX
+    local integer mouseY
     if frame != null and GetLocalPlayer() == GetTriggerPlayer() then
         if ev == FRAMEEVENT_CONTROL_CLICK or ev == FRAMEEVENT_CHECKBOX_CHECKED or ev == FRAMEEVENT_CHECKBOX_UNCHECKED then
             if BlzFrameGetEnable(frame) then
+                set mouseX = BlzGetMouseScreenPosX()
+                set mouseY = BlzGetMouseScreenPosY()
                 call BlzFrameSetEnable(frame, false)
                 call BlzFrameSetEnable(frame, true)
+                call BlzSetMousePos(mouseX, mouseY)
             endif
         endif
     endif
@@ -1026,15 +1032,14 @@ function WUI_LayoutRightColumn takes nothing returns nothing
         endif
     endif
     if WUI_InfoPanel != null then
-        // Side by side only while the Menu dropdown is open (no room below
-        // it); otherwise Game Info stacks under the test commands.
-        if testOpen and WUI_MenuOpen then
-            call WUI_Place(WUI_InfoPanel, leftX, leftY - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
+        // The larger help text sits beside open test commands to stay above the HUD.
+        if testOpen then
+            call WUI_Place(WUI_InfoPanel, leftX - (WUI_INFO_WIDTH - 0.180) * 0.5, leftY - WUI_INFO_HEIGHT * 0.5, WUI_INFO_WIDTH, WUI_INFO_HEIGHT)
             if WUI_InfoOpen then
                 set leftY = leftY - WUI_INFO_HEIGHT
             endif
         else
-            call WUI_Place(WUI_InfoPanel, x, y - WUI_INFO_HEIGHT * 0.5, 0.180, WUI_INFO_HEIGHT)
+            call WUI_Place(WUI_InfoPanel, x - (WUI_INFO_WIDTH - 0.180) * 0.5, y - WUI_INFO_HEIGHT * 0.5, WUI_INFO_WIDTH, WUI_INFO_HEIGHT)
             if WUI_InfoOpen then
                 set y = y - WUI_INFO_HEIGHT
             endif
@@ -2259,24 +2264,27 @@ function WUI_SetText takes framehandle frame, string value returns nothing
     endif
 endfunction
 
-// Call only while creating frames synchronously, before local visibility changes.
-// Checkpoint 23: tooltip box with a drawn edge (WOSControls.fdf
-// WOSTooltipBox); plain panel + border only without the definitions.
+// A plain FRAME owns tooltip visibility. Keep all art/text below this gate;
+// a tooltip BACKDROP itself can be clipped/malformed outside the 4:3 area.
+// Shared creation only. Starts hidden before any art is allocated.
+// Inset-panel callers must explicitly show it after construction.
 function WUI_TooltipBox takes framehandle parent, real width, real height returns framehandle
-    local framehandle box = null
+    local framehandle box = BlzCreateFrameByType("FRAME", "WOSTooltipRoot", parent, "", 0)
+    local framehandle surface = null
+    call BlzFrameSetVisible(box, false)
     if WUI_FrameDefinitionsReady then
         set WUI_TooltipCount = WUI_TooltipCount + 1
-        set box = BlzCreateFrame("WOSTooltipBox", parent, 0, 6000 + WUI_TooltipCount)
+        set surface = BlzCreateFrame("WOSTooltipBox", box, 0, 6000 + WUI_TooltipCount)
     endif
-    if box == null then
-        set box = WUI_Panel("WOSToolbarTooltip", parent, width, height)
-        call WUI_Border("WOSToolbarTooltipBorder", box)
+    if surface == null then
+        set surface = WUI_Panel("WOSToolbarTooltip", box, width, height)
+        call WUI_Border("WOSToolbarTooltipBorder", surface)
     endif
     call BlzFrameSetSize(box, width, height)
+    call BlzFrameSetAllPoints(surface, box)
+    call BlzFrameSetEnable(surface, false)
     call BlzFrameSetEnable(box, false)
-    // Checkpoint 28: a tooltip box never takes the mouse (it used to cover the
-    // inventory row and keep the Autobuy tooltip open over the items).
-    call BlzFrameSetEnable(box, false)
+    set surface = null
     return box
 endfunction
 
@@ -2285,6 +2293,7 @@ function WUI_TooltipSized takes framehandle owner, string label, real width, rea
     local framehandle text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)
     local framehandle edge = null
     call BlzFrameSetPoint(box, FRAMEPOINT_BOTTOMRIGHT, owner, FRAMEPOINT_TOPRIGHT, 0.00, offset)
+    call BlzFrameSetVisible(box, false)
     call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
     call BlzFrameSetSize(text, (width - 2.00 * padX) / 0.66, (height - 2.00 * padY) / 0.66)
     call BlzFrameSetScale(text, 0.66)
@@ -2304,6 +2313,7 @@ function WUI_TooltipBelowSized takes framehandle owner, string label, real width
     local framehandle text = BlzCreateFrameByType("TEXT", "WOSToolbarTooltipText", box, "", 0)
     local framehandle edge = null
     call BlzFrameSetPoint(box, FRAMEPOINT_TOPRIGHT, owner, FRAMEPOINT_BOTTOMRIGHT, 0.00, -offset)
+    call BlzFrameSetVisible(box, false)
     call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
     call BlzFrameSetSize(text, (width - 2.00 * padX) / 0.66, (height - 2.00 * padY) / 0.66)
     call BlzFrameSetScale(text, 0.66)
@@ -2352,6 +2362,7 @@ function WUI_TooltipBelowEx takes framehandle owner, string label, boolean leftw
     else
         call BlzFrameSetPoint(box, FRAMEPOINT_TOPLEFT, owner, FRAMEPOINT_BOTTOMLEFT, 0.00, -0.010)
     endif
+    call BlzFrameSetVisible(box, false)
     call BlzFrameSetPoint(text, FRAMEPOINT_CENTER, box, FRAMEPOINT_CENTER, 0.00, 0.00)
     call BlzFrameSetSize(text, (width - 0.012) / 0.66, (height - 0.008) / 0.66)
     call BlzFrameSetScale(text, 0.66)
@@ -4437,6 +4448,10 @@ function WUI_SetCoffinKey takes player p, string label, boolean announce returns
     return true
 endfunction
 
+function WUI_IsCoffinCapturing takes integer pid returns boolean
+    return pid >= 0 and pid < 16 and WUI_CoffinCapturing[pid]
+endfunction
+
 // Synced: the key pressed after CHANGE on the Ice Coffin item. Backspace = slot digit.
 private function WUI_OnCoffinCapture takes nothing returns nothing
     local player p = GetTriggerPlayer()
@@ -4446,6 +4461,8 @@ private function WUI_OnCoffinCapture takes nothing returns nothing
     local string name = ""
     call DisableTrigger(GetTriggeringTrigger())
     if pid >= 0 and pid < 16 and WUI_CoffinCapturing[pid] then
+        // Consume assignment until key-up, even if registration dispatches this same event.
+        call SaveBoolean(WUI_InputState, GetHandleId(WUI_CoffinKeyTrigger), pid*256+GetHandleId(key), true)
         set WUI_CoffinCapturing[pid] = false
         if key == OSKEY_BACKSPACE then
             call WUI_SetCoffinKey(p, "", true)
@@ -5634,10 +5651,10 @@ private function WUI_InfoShowPage takes nothing returns nothing
         call WUI_InfoRow(3, "UI\\WOS\\toolbar-chat.tga", "Debuff refresh", "Items: one refresh per debuff. Abilities and Fire: unlimited.")
     elseif WUI_InfoPage == 1 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "ELEMENT COMBOS|r")
-        call WUI_InfoRow(0, WUI_InfoSourceIcon(-104), "Vape (Water + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, +10% physical damage taken for 8 s.")
+        call WUI_InfoRow(0, WUI_InfoSourceIcon(-104), "Vape (Water + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, +" + R2SW(ErzaWape_IncreaseDmg, 0, 0) + "% physical damage taken for 8 s.")
         call WUI_InfoRow(1, WUI_InfoSourceIcon(-105), "Overload (Lightning + Fire)  |cff7caefa[MAGIC]|r", "1.5 x main stat magic damage, 1.25 s stun (2.5 s lockout).")
-        call WUI_InfoRow(2, WUI_InfoSourceIcon(-106), "Electrized (Lightning + Water)  |cff7caefa[MAGIC]|r", "10% slow, 0.4 x main stat magic damage per second for 5 s.")
-        call WUI_InfoRow(3, "ReplaceableTextures\\CommandButtons\\BTNElem_Fire.blp", "Item effects", "Debuffs/poison do not trigger offensive items. Explosions cannot trigger themselves.")
+        call WUI_InfoRow(2, WUI_InfoSourceIcon(-106), "Electrized (Lightning + Water)  |cff7caefa[MAGIC]|r", "10% slow, 0.3 x main stat magic damage per second for 5 s.")
+        call WUI_InfoRow(3, "ReplaceableTextures\\CommandButtons\\BTNElem_Fire.blp", "Item effects", "Debuffs/poison cannot chain items. Exceptions: Quincy bonus and Core Drill stacks; Koko Lightning triggers Tachikaze. No self-procs.")
     elseif WUI_InfoPage == 2 then
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "DESTRUCTIBLE DECOR|r")
         call WUI_InfoRow(0, WUI_InfoSourceIcon(-11), "Red barrel  |cff7caefa[MAGIC]|r", "100 base magic damage in 350 range; +25 each next round. Sets the ground on fire." + WUI_InfoCurrentDamage(100, 25))
@@ -5646,9 +5663,9 @@ private function WUI_InfoShowPage takes nothing returns nothing
         call WUI_InfoRow(3, WUI_InfoSourceIcon(-17), "Hydrant", "0 base magic damage; +25 each next round. Knockback in 350 range; applies Water." + WUI_InfoCurrentDamage(0, 25))
     else
         call BlzFrameSetText(WUI_InfoTitle, WUI_GOLD + "ROUND END|r")
-        call WUI_InfoRow(0, WUI_InfoSourceIcon(-12), "Train  |cffd58cff[PURE]|r", "200 base pure push damage; +50 each next round. Every 60s; 30s during round end." + WUI_InfoCurrentDamage(200, 50))
-        call WUI_InfoRow(1, WUI_InfoSourceIcon(-12), "Train wreck  |cffd58cff[PURE]|r", "400 base pure explosion damage in 650 range; +50 each next round." + WUI_InfoCurrentDamage(400, 50))
-        call WUI_InfoRow(2, WUI_InfoSourceIcon(-14), "Time limit  |cffd58cff[PURE]|r", "Outside the circle: 1% target max HP per second; +0.5 percentage points each second, up to 15%.")
+        call WUI_InfoRow(0, WUI_InfoSourceIcon(-12), "Train  |cffd58cff[PURE]|r", I2S(TRAIN_PUSH_BASE_DAMAGE) + " base pure push damage; +" + I2S(TRAIN_DAMAGE_PER_ROUND) + " each next round. Every 60s; 30s during round end." + WUI_InfoCurrentDamage(TRAIN_PUSH_BASE_DAMAGE, TRAIN_DAMAGE_PER_ROUND))
+        call WUI_InfoRow(1, WUI_InfoSourceIcon(-12), "Train wreck  |cffd58cff[PURE]|r", I2S(TRAIN_EXPLOSION_BASE_DAMAGE) + " base pure explosion damage in 650 range; +" + I2S(TRAIN_DAMAGE_PER_ROUND) + " each next round." + WUI_InfoCurrentDamage(TRAIN_EXPLOSION_BASE_DAMAGE, TRAIN_DAMAGE_PER_ROUND))
+        call WUI_InfoRow(2, WUI_InfoSourceIcon(-14), "Time limit  |cffd58cff[PURE]|r", "Outside the circle: 1% target max HP per second; +0.5% each second, up to 15%.")
         call WUI_InfoRow(3, "UI\\WOS\\vote-ff.tga", "-ff  |cffd5b876SURRENDER|r", "Type -ff in chat: YES to your team's surrender vote, or start one (same as the white flag).")
     endif
     call BlzFrameSetText(WUI_InfoPageLabel, WUI_GOLD + I2S(WUI_InfoPage + 1) + " / " + I2S(WUI_INFO_PAGES) + "|r")
@@ -5782,7 +5799,7 @@ private function WUI_CreateGameInfo takes nothing returns nothing
     call WUI_TooltipBelowLeft(WUI_InfoButton, "|cffd5b876GAME INFO|r|nElements, destructible decor and round end.")
     set WUI_InfoPanel = BlzCreateFrameByType("BUTTON", "WOSGameInfoPanel", WUI_Root, "", 0)
     call WUI_RegisterPassiveFocus(WUI_InfoPanel)
-    call WUI_Place(WUI_InfoPanel, x, 0.430, 0.180, WUI_INFO_HEIGHT)
+    call WUI_Place(WUI_InfoPanel, x - (WUI_INFO_WIDTH - 0.180) * 0.5, 0.410, WUI_INFO_WIDTH, WUI_INFO_HEIGHT)
     call BlzFrameSetLevel(WUI_InfoPanel, 20)
     set part = BlzCreateFrameByType("BACKDROP", "WOSGameInfoBack", WUI_InfoPanel, "", 0)
     call BlzFrameSetAllPoints(part, WUI_InfoPanel)
@@ -5791,22 +5808,22 @@ private function WUI_CreateGameInfo takes nothing returns nothing
     call WUI_MinimalEdge(WUI_InfoPanel)
     set WUI_InfoTitle = BlzCreateFrameByType("TEXT", "WOSGameInfoTitle", WUI_InfoPanel, "", 0)
     call BlzFrameSetPoint(WUI_InfoTitle, FRAMEPOINT_TOP, WUI_InfoPanel, FRAMEPOINT_TOP, 0.00, -0.006)
-    call BlzFrameSetSize(WUI_InfoTitle, 0.160 / 0.80, 0.012 / 0.80)
-    call BlzFrameSetScale(WUI_InfoTitle, 0.80)
+    call BlzFrameSetSize(WUI_InfoTitle, WUI_INFO_WIDTH - 0.020, 0.016)
+    call BlzFrameSetFont(WUI_InfoTitle, "Fonts\\FRIZQT__.TTF", 0.0105, 0)
     call BlzFrameSetTextAlignment(WUI_InfoTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
     call BlzFrameSetEnable(WUI_InfoTitle, false)
     loop
         exitwhen i >= WUI_INFO_ROWS
         set WUI_InfoIcon[i] = BlzCreateFrameByType("BACKDROP", "WOSGameInfoIcon", WUI_InfoPanel, "", i)
-        call BlzFrameSetPoint(WUI_InfoIcon[i], FRAMEPOINT_LEFT, WUI_InfoPanel, FRAMEPOINT_TOPLEFT, 0.008, -0.044 - I2R(i) * 0.040)
-        call BlzFrameSetSize(WUI_InfoIcon[i], 0.022, 0.022)
+        call BlzFrameSetPoint(WUI_InfoIcon[i], FRAMEPOINT_LEFT, WUI_InfoPanel, FRAMEPOINT_TOPLEFT, 0.008, -0.048 - I2R(i) * 0.052)
+        call BlzFrameSetSize(WUI_InfoIcon[i], 0.024, 0.024)
         call BlzFrameSetEnable(WUI_InfoIcon[i], false)
         // Text block centred on its icon: name on the first line, the
         // description below (up to two more lines).
         set WUI_InfoText[i] = BlzCreateFrameByType("TEXT", "WOSGameInfoText", WUI_InfoPanel, "", i)
         call BlzFrameSetPoint(WUI_InfoText[i], FRAMEPOINT_LEFT, WUI_InfoIcon[i], FRAMEPOINT_RIGHT, 0.005, 0.0)
-        call BlzFrameSetSize(WUI_InfoText[i], 0.138 / 0.62, 0.038 / 0.62)
-        call BlzFrameSetScale(WUI_InfoText[i], 0.62)
+        call BlzFrameSetSize(WUI_InfoText[i], WUI_INFO_WIDTH - 0.043, 0.049)
+        call BlzFrameSetFont(WUI_InfoText[i], "Fonts\\FRIZQT__.TTF", 0.009, 0)
         call BlzFrameSetTextAlignment(WUI_InfoText[i], TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_LEFT)
         call BlzFrameSetEnable(WUI_InfoText[i], false)
         set i = i + 1
@@ -6046,6 +6063,9 @@ private function WUI_Bootstrap takes nothing returns nothing
     call BlzFrameSetVisible(WUI_TopActionOwner, WUI_TopVisible)
     call WUI_CreateTestHelp()
     call WUI_CreateControls()
+    // Native values are zero-based: 2 is the game's ally color Mode 3.
+    call SetAllyColorFilterState(2)
+    call WUI_WatchAllyColor()
     call WUI_CreateRestart()
     call WUI_CreateFeed()
     call WUI_CreateGameInfo()
@@ -6161,7 +6181,7 @@ function WUI_EnterExclusiveWindow takes integer kind, player viewer returns noth
             call BlzFrameSetVisible(WUI_WindowPart[5], false)
             call BlzFrameSetVisible(WUI_WindowPart[6], false)
             call BlzFrameSetVisible(WUI_WindowPart[7], false)
-            call BlzFrameSetVisible(WUI_WindowPart[8], true)
+            call BlzFrameSetVisible(WUI_WindowPart[8], WUI_TopVisible)
         endif
         if kind != 3 and WUI_WindowPart[9] != null then
             call BlzFrameSetVisible(WUI_WindowPart[9], false)

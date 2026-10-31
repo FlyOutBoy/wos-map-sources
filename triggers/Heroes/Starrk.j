@@ -94,6 +94,9 @@ library StarrkSpells uses GearSystems
         integer Starrk_Pas6ID = 'A0BW'
 //---------------Q ability-----------------------------------------------------
         integer StarrkQ_ID = 'A0BH'
+        real StarrkQ_CastTime = 0.72
+        real StarrkEQ_CastTime = 0.78
+        real StarrkTQ_CastTime = 0.15
         real StarrkQ_DamageAgiBase = 1 // base number x Int damage for 1 level
         real StarrkQ_DamageAgiStep = 1 // additional number x Int damage for each next level
         real StarrkQ_Damage2StaticBase = 150 // base static damage for 1 level
@@ -148,6 +151,7 @@ library StarrkSpells uses GearSystems
         real StarrkR_StunDuration = 0 // in seconds
         real StarrkR_TargetHeight = 600 // max height
         real StarrkR_DamageAoe = 250 // cero aoe damage at the end
+        real StarrkR2_CastTime = 0.54
         real StarrkR2_DamageAgiBase = 2.7 // base number x Int damage per 1 second
         real StarrkR2_DamageAgiStep = 0.3 // additional number x Int damage for each next level per second
         real StarrkR2_DamageAoe = 475
@@ -392,7 +396,7 @@ library StarrkSpells uses GearSystems
                     if k2 == 0 then // 0 - normal spell, 1 - morph spell, 2( only for q) enchaned with T morph spell
                         if check == 0 then
                             call DebugUnit2(c)
-                            if r >= 0.6 then
+                            if r >= StarrkQ_CastTime then
                                 call SetUnitTimeScale( c , 1)
                                 call PauseUnit( c , false)
                                 set check = 1
@@ -651,7 +655,7 @@ library StarrkSpells uses GearSystems
                         call DestroyEffect( e2 )
                     endif
                     call SetUnitTimeScale( c , 1)
-                    if r <= 0.57 - 0.06 * k2 then
+                    if check == 0 then
                         call PauseUnit( c , false)
                     endif
                     call DestroyGroup( g )
@@ -713,7 +717,7 @@ library StarrkSpells uses GearSystems
                 call MyRemoveEff(e2, 0.63)
                 call SetUnitFacing( c , a * bj_RADTODEG)
                 set rmax = 2
-                call SetUnitTimeScale( c , 0.75)
+                call SetUnitTimeScale( c , 0.75 * 0.60 / StarrkQ_CastTime)
                 call SetUnitAnimationByIndex( c , 12)
                 call MakeSound("war3mapimported\\Hero_Starrk_Q")
                 call MakeSound("war3mapimported\\Hero_Starrk_Q2")
@@ -721,8 +725,8 @@ library StarrkSpells uses GearSystems
                 set e = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand left")
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", c, "hand right")
                 set k2 = 1
-                set rmax = 0.66
-                call SetUnitTimeScale( c , 1)
+                set rmax = StarrkEQ_CastTime
+                call SetUnitTimeScale( c , 0.66 / StarrkEQ_CastTime)
                 call SetUnitAnimationByIndex( c , 3)
                 if GetRandomInt(1, 2) == 1 or LoadInteger(hs, GetHandleId(c), SH_BAN_SOUND_Q) == 1 then
                     call MakeSound("war3mapimported\\Hero_Starrk_EQ")
@@ -731,7 +735,8 @@ library StarrkSpells uses GearSystems
                 endif
             else
                 set k2 = 2
-                set rmax = 0.03
+                set rmax = StarrkTQ_CastTime
+                call SetUnitTimeScale(c, 0.03 / StarrkTQ_CastTime)
                 call SaveInteger(hs, GetHandleId(c), SH_STARRK_T_ACTION, 1)
                 call MakeSound("war3mapimported\\Hero_Starrk_TQ")
             endif
@@ -1615,16 +1620,12 @@ library StarrkSpells uses GearSystems
                         //call MakeSound("war3mapimported\\Hero_Starrk_R3")
                         set k3 = 1
                     endif
-                    if r > 0. and r < 0.15 then
-                        if r2 > 0.03 then
-                            set ra1 = GetRandomReal(0, 465)
-                            set dk = GetRandomReal(0.3, 0.45)
-                            set r2 = 0
-                            call EffectSpawn2("war3mapimported\\wos_xtyball2.mdl", (GetUnitX(c) + 155 * Cos(a)) + ra1 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) + 155 * Sin(a)) + ra1 * Sin(a + 90 * bj_DEGTORAD), 0, 1.15, dk, GetRandomReal(40, 405), 0.3 - r)
-                            call EffectSpawn2("war3mapimported\\wos_xtyball2.mdl", (GetUnitX(c) + 155 * Cos(a)) + ra1 * Cos(a - 90 * bj_DEGTORAD), (GetUnitY(c) + 155 * Sin(a)) + ra1 * Sin(a - 90 * bj_DEGTORAD), 0, 1.15, dk, GetRandomReal(40, 405), 0.3 - r)
-                        else
-                            set r2 = r2 + 0.02
-                        endif
+                    // Stratified cross-section: one pair per tick, random position inside each band.
+                    if r > 0.0 and r < StarrkR2_CastTime then
+                        set ra1 = 465.0 * (ModuloInteger(R2I(r / 0.03 + 0.5) - 1, 7) + GetRandomReal(0.0, 1.0)) / 7.0
+                        set dk = GetRandomReal(0.3, 0.45)
+                        call EffectSpawn2("war3mapimported\\wos_xtyball2.mdl", (GetUnitX(c) + 155 * Cos(a)) + ra1 * Cos(a + 90 * bj_DEGTORAD), (GetUnitY(c) + 155 * Sin(a)) + ra1 * Sin(a + 90 * bj_DEGTORAD), 0, 1.15, dk, GetRandomReal(40, 405), StarrkR2_CastTime - r)
+                        call EffectSpawn2("war3mapimported\\wos_xtyball2.mdl", (GetUnitX(c) + 155 * Cos(a)) + ra1 * Cos(a - 90 * bj_DEGTORAD), (GetUnitY(c) + 155 * Sin(a)) + ra1 * Sin(a - 90 * bj_DEGTORAD), 0, 1.15, dk, GetRandomReal(40, 405), StarrkR2_CastTime - r)
                     endif
                     if r == 0.03 then
                     //call UnitRemoveAbility(c,'Avul')
@@ -1634,7 +1635,11 @@ library StarrkSpells uses GearSystems
                         set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
                         set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
                     endif
-                    if r > 0 then
+                    if r == StarrkR2_CastTime then
+                        set r2 = 10
+                        set r3 = 10
+                    endif
+                    if r >= StarrkR2_CastTime then
                         set targetA = GAngle2(c, GetMouseX(GetOwningPlayer(c)), GetMouseY(GetOwningPlayer(c)))
                         set diff = targetA - a
                         if diff > bj_PI then
@@ -1761,7 +1766,7 @@ library StarrkSpells uses GearSystems
             set a = GAngle2( c , x, y ) // Angle Between points
             call MakeSound("war3mapimported\\Hero_Starrk_R1")
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800, 4)
-            set rmax =   3
+            set rmax = 3 + StarrkR2_CastTime
             set r7 = StarrkR2_InvulPerLvlAdd* ( GetUnitAbilityLevel( c , StarrkR_ID) - 1 )
             set check2 = 0
             set e = AddSpecialEffectTarget("war3mapimported\\wos_aurapartblue.mdx", c, "origin")

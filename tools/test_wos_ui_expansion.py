@@ -11,17 +11,25 @@ class Expansion(unittest.TestCase):
   vm=load_source('DefaultArmorChangeStable_Copy.j');calls=[]
   vm.g.update(GetLocalPlayer=lambda:pid,GetTriggerPlayer=lambda:self.actor,I2S=str,ModuloInteger=lambda a,b:a%b,
    WUI_HudModeOf=defaultdict(lambda:2,{0:1,1:3}),WUI_SetHud=lambda s,l:calls.append((s,l)),WUI_SetToggleGlyph=lambda *_:None,
-   BlzFrameSetVisible=lambda *_:None,BlzFrameSetEnable=lambda *_:None)
+   BlzFrameSetVisible=lambda *_:None,BlzFrameSetEnable=lambda *_:None,UNITSTAT_LayoutGold=lambda:None)
+  vm.g['WUI_HudMode']=vm.g['WUI_HudModeOf'][pid]
   for i in range(8,18):vm.g['UNITSTAT_WidgetWidth'][i]=.04
   return vm,calls
- def test_independent_modes_120_interleaved_events_same_shift_invocation_count(self):
+ def test_independent_modes_only_clicking_client_repositions_gold(self):
   a,ac=self.mode(0);b,bc=self.mode(1);expected=[1,3]
   for i in range(120):
    self.actor=i%2;expected[self.actor]=expected[self.actor]%3+1
    for vm in [a,b]:vm.run('UNITSTAT_OnModeClick')
    self.assertEqual(dict(a.g['WUI_HudModeOf']),dict(b.g['WUI_HudModeOf']))
    self.assertEqual((a.g['WUI_HudMode'],b.g['WUI_HudMode']),tuple(expected))
-  self.assertEqual(len(ac),120);self.assertEqual(len(bc),120)
+  self.assertEqual(len(ac),60);self.assertEqual(len(bc),60)
+ def test_saved_settings_echo_does_not_reposition_unchanged_local_mode(self):
+  vm,calls=self.mode(0)
+  vm.g.update(bj_MAX_PLAYER_SLOTS=24,UNITSTAT_VoiceOn=defaultdict(bool),WUI_VoiceOff=defaultdict(bool),
+   WUI_AutoSelectHero=defaultdict(bool),UNITSTAT_SetAutoSelect=lambda *_:None,UNITSTAT_VoiceToggle=None,UNITSTAT_ModeButton='mode')
+  vm.run('UNITSTAT_ApplySaved');self.assertEqual([],calls)
+  vm.g['WUI_HudModeOf'][1]=2;vm.run('UNITSTAT_ApplySaved');self.assertEqual([],calls)
+  vm.g['WUI_HudModeOf'][0]=2;vm.run('UNITSTAT_ApplySaved');self.assertEqual(1,len(calls))
  def clients(self):
   fixture=MultiplayerFrames();fixture._testMethodName='runTest'
   return [fixture.client(i) for i in [0,1]]

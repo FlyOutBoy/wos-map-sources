@@ -343,7 +343,7 @@ class FrostnovaTests(unittest.TestCase):
             previous=p.height
         self.assertAlmostEqual(150,p.height)
 
-    def test_early_charge_grant_ends_q_cooldown_even_with_an_existing_charge(self):
+    def test_early_charge_grant_keeps_the_between_shot_delay(self):
         self.c.abilities[self.vm.g['FrostnovaQ_ID']]['level']=3
         self.vm.run('Frostnova_Register',(self.c,))
         self.vm.run('FrostnovaQ_Start',(self.c,1200,0));self.ticks(1)
@@ -351,6 +351,8 @@ class FrostnovaTests(unittest.TestCase):
         self.vm.run('SpellStacksAdd',(self.c,1))
         self.ticks(1)
         self.assertEqual(4,self.charges())
+        self.assertGreater(self.c.cooldown,0)
+        self.ticks(20)
         self.assertEqual(0,self.c.cooldown)
 
     def test_low_charge_rises_to_flight_height_and_q_receives_the_extra_ten_percent_speed(self):
@@ -459,15 +461,20 @@ class FrostnovaTests(unittest.TestCase):
         self.assertEqual(0,self.c.cooldown)
         self.assertGreater(self.state().scar,0)
 
-    def test_q_is_ready_while_charges_remain_and_waits_only_when_empty(self):
+    def test_q_enforces_longer_between_shot_delay_before_consuming_another_charge(self):
         self.vm.run('FrostnovaQ_Start', (self.c, 1200, 0))
         self.assertEqual(1, self.charges())
-        self.ticks(1)
-        self.assertEqual(.25, self.c.cooldown)
+        self.ticks(2)
+        self.assertGreater(self.c.cooldown,.25)
+        self.vm.run('FrostnovaQ_Start', (self.c, 1200, 0))
+        self.assertEqual(1, self.charges())
+        self.ticks(20)
         self.vm.run('FrostnovaQ_Start', (self.c, 1200, 0))
         self.assertEqual(0, self.charges())
         self.ticks(1)
-        self.assertEqual(self.vm.g['FrostnovaQ_Recharge'], self.c.cooldown)
+        # Recharge has already progressed while the first shard was on cooldown.
+        self.assertGreater(self.c.cooldown,self.vm.g['FrostnovaQ_Recharge']-1.0)
+        self.assertLessEqual(self.c.cooldown,self.vm.g['FrostnovaQ_Recharge'])
         self.ticks(math.ceil(self.vm.g['FrostnovaQ_Recharge']/.03))
         self.assertEqual(1, self.charges())
         self.assertEqual(0.0, self.c.cooldown)

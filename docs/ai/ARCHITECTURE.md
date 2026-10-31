@@ -51,7 +51,10 @@ trigger execution/context copying. Current MAIN has no external subscribers.
 TooltipBuilder prints damage formulas only, never evaluated combat totals.
 SPELL_EFFECT no longer requests full hero descriptions; the5-second poll and
 item/level/skill/form events own updates. Native tooltip writes compare text
-first. DamageStats retains immediate numeric collection; automatic presentation
+first. CP76 queues one initial render after each complete SpellData registration,
+reuses a shared native-field probe, and normalizes each builder content once.
+ExecuteFunc targets public WOS_UTB_FlushInitialTips; retain the staggered startup
+gate and separate rank/form data. DamageStats retains immediate numeric collection; automatic presentation
 is5-second, while open/page/roster changes bypass that gate.
 | Карьера, локальный сейв, экспорт матча | `triggers/WOS_Start/SaveLoad.j`: `SaveSystem_Init`, `SaveSystem_InitLoad`, `SaveSystem_NormalizeNickname`; `Save2.j`; `UI_CAREER.j`: `WCS_UpdateHome` | [существующий разбор SaveLoad](../SAVELOAD_CHANGELOG_2026-10-09.md) |
 | Музыка, счёт, пинги | `triggers/WOS_Start/MusicPlayer.j`, `Scoreboard.j`, `TeamMapPings.j` | UI-контракты и профильные `tools/test_*.py` |

@@ -65,12 +65,12 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
         integer NeuvilletteT_ID = 'A07V'
         real NeuvilletteT_DamageIntBase = 1.70
         real NeuvilletteT_DamageAoe = 1250.0
-        integer NeuvilletteT_PillarsCount = 10
+        integer NeuvilletteT_PillarsCount = 8
         real NeuvilletteT_DamageAoePillar = 775.0
         real NeuvilletteT_ReduceRCd_Sec = 15.0
         integer NeuvilletteT_Slow = 60
         integer NeuvilletteT_Duration = 2
-        real NeuvilletteT_CastDuration = 1.30
+        real NeuvilletteT_CastDuration = 1.45
         boolean NeuvilletteT_IsInvul = true
         real NeuvilletteT_DecorDamage = 100.0
 
@@ -605,7 +605,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                     set remove = true
                 elseif SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if NeuvilletteR_IsInvul then
+                    if NeuvilletteR_IsInvul and check == 0 then
                         call DebugUnit(c)
                     else
                         call DebugUnit2(c)
@@ -623,6 +623,9 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                             call MakeSound("war3mapimported\\Hero_Neuvillette_R2")
                         endif
                         if r >= NeuvilletteR_CastTime then
+                            if NeuvilletteR_IsInvul then
+                                call UnitRemoveAbility(c, 'Avul')
+                            endif
                             set check = 1
                             set r = 0.0
                             set rmax = NeuvilletteR_Duration
@@ -719,9 +722,6 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                 endif
 
                 if remove then
-                    if e != null then
-                        call DestroyEffect(e)
-                    endif
                     if e3 != null then
                         call DestroyEffect(e3)
                     endif
@@ -736,7 +736,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                         call ColorEffDummy3(e2, 0, 255, 255, 255, 0.3)
                     endif
                     if c != null and GetUnitTypeId(c) != 0 then
-                        if NeuvilletteR_IsInvul then
+                        if NeuvilletteR_IsInvul and check == 0 then
                             call StopSpellUnit(c)
                         else
                             call StopSpellUnit2(c)
@@ -886,7 +886,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
                     endif
 
                     // Автоматизированный спавн столбов строго по лимиту NeuvilletteT_PillarsCount
-                    if r > 0.40 and pillarsSpawned < NeuvilletteT_PillarsCount then
+                    if r > 0.70 and pillarsSpawned < NeuvilletteT_PillarsCount then
                         if r2 >= 0.15 then
                             set r2 = 0.0
                             set k = 0
@@ -996,7 +996,7 @@ library NeuvilletteSpells initializer InitNeuvilletteSpells uses GearSystems
 
             // Автоматический расчет длительности поддержания под количество волн спавна
             set waves = (NeuvilletteT_PillarsCount + 1) / 2
-            set rmax = 0.40 + (I2R(waves) * 0.15) + 0.15
+            set rmax = 0.70 + (I2R(waves) * 0.15) + 0.15
 
             set aoe = NeuvilletteT_DamageAoe
             set dmg = GetHeroInt(c, true) * NeuvilletteT_DamageIntBase

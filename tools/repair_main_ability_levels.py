@@ -81,7 +81,8 @@ def tooltip_vm():
     for _ in range(12):
         unresolved = []
         for name,value in pending:
-            value = re.split(r'//(?=(?:[^"\\]|\\.)*$)',value)[0].strip()
+            # Quoted words in a trailing comment must not hide a numeric global.
+            value = re.match(r'(?:"(?:\\.|[^"\\])*"|[^"/]|/(?!/))*',value)[0].strip()
             try:
                 vm.g[name] = eval(expression(value),{'__builtins__':{}},vm.g)
             except (NameError,TypeError,SyntaxError,AttributeError):

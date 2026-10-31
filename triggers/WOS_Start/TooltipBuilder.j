@@ -2,6 +2,8 @@ library TooltipBuilder
 
     globals
         integer TooltipTextRevision = 0
+        constant real TOOLTIP_BODY_FONT_SIZE = 0.0105
+        constant real TOOLTIP_BODY_WIDTH = 0.270
         // Базовые цвета
         private constant string C_TITLE   = "|cffffcc00"
         private constant string C_LORE    = "|cffcccccc"
@@ -16,13 +18,106 @@ library TooltipBuilder
         private constant string C_DECOR   = "|cffcc9966" // Светло-коричневый (Урон по декорациям)
     endglobals
 
+    // One scan, copy only changed spans. An unchanged tooltip returns its input.
+    function TooltipCleanText takes string text returns string
+        local integer i = 0
+        local integer n = StringLength(text)
+        local integer start = 0
+        local integer skip
+        local string result = ""
+        local string replacement
+        local string after
+        loop
+            exitwhen i >= n
+            set skip = 0
+            if SubString(text, i, i + 1) == " " then
+                set replacement = "%"
+                if SubString(text, i, i + 4) == " + 0" or SubString(text, i, i + 4) == " - 0" then
+                    set after = SubString(text, i + 4, i + 5)
+                    if after == "" or after == " " or after == "|" or after == ")" or after == "," then
+                        set skip = 4
+                        set replacement = ""
+                    endif
+                elseif SubString(text, i, i + 18) == " percentage points" then
+                    set skip = 18
+                elseif SubString(text, i, i + 17) == " percentage point" then
+                    set skip = 17
+                elseif SubString(text, i, i + 8) == " percent" then
+                    set after = SubString(text, i + 8, i + 10)
+                    if i + 8 == n or SubString(after, 0, 1) == " " or SubString(after, 0, 1) == "." or after == "|n" then
+                        set skip = 8
+                    endif
+                endif
+            endif
+            if skip > 0 then
+                set result = result + SubString(text, start, i) + replacement
+                set i = i + skip
+                set start = i
+            else
+                set i = i + 1
+            endif
+        endloop
+        if start == 0 then
+            return text
+        endif
+        return result + SubString(text, start, n)
+    endfunction
+
+    // Property labels authored as plain mechanics use the same gold as addRange.
+    function TooltipGoldMechanicLine takes string text returns string
+        local integer i = 0
+        local integer size = StringLength(text)
+        if SubString(text, 0, 2) == "|c" or SubString(text, 0, 1) == "[" then
+            return text
+        endif
+        loop
+            exitwhen i >= size or i > 40
+            if SubString(text, i, i + 1) == ":" then
+                return "|cffffcc00" + SubString(text, 0, i + 1) + "|r" + SubString(text, i + 1, size)
+            endif
+            set i = i + 1
+        endloop
+        return text
+    endfunction
+
+    function TooltipGoldMechanics takes string text returns string
+        local integer i = 0
+        local integer start = 0
+        local integer copied = 0
+        local integer size = StringLength(text)
+        local string result = ""
+        local string line
+        local string colored
+        loop
+            exitwhen i > size
+            if i == size or SubString(text, i, i + 2) == "|n" then
+                set line = SubString(text, start, i)
+                set colored = TooltipGoldMechanicLine(line)
+                if colored != line then
+                    set result = result + SubString(text, copied, start) + colored
+                    set copied = i
+                endif
+                set i = i + 2
+                set start = i
+            else
+                set i = i + 1
+            endif
+        endloop
+        if copied == 0 then
+            return text
+        endif
+        return result + SubString(text, copied, size)
+    endfunction
+
     struct TooltipBuilder
         private string buffer
+        private string normalizedBuffer
         private boolean hasStats
 
         static method create takes nothing returns thistype
             local thistype this = thistype.allocate()
             set this.buffer = ""
+            set this.normalizedBuffer = ""
             set this.hasStats = false
             return this
         endmethod
@@ -30,6 +125,7 @@ library TooltipBuilder
         // Lore colour for free text; inline coloured labels resume it after their |r.
         private static method lore takes string text returns string
             local integer i = 0
+            local integer start = 0
             local integer len = StringLength(text)
             local string res = ""
             local string pair
@@ -40,14 +136,17 @@ library TooltipBuilder
                 exitwhen i >= len
                 set pair = SubString(text, i, i + 2)
                 if pair == "|r" or pair == "|R" then
-                    set res = res + "|r" + C_LORE
+                    set res = res + SubString(text, start, i) + "|r" + C_LORE
                     set i = i + 2
+                    set start = i
                 else
-                    set res = res + SubString(text, i, i + 1)
                     set i = i + 1
                 endif
             endloop
-            return C_LORE + res + C_RESET
+            if start == 0 then
+                return C_LORE + text + C_RESET
+            endif
+            return C_LORE + res + SubString(text, start, len) + C_RESET
         endmethod
 
         method addTitle takes string title returns thistype
@@ -164,6 +263,7 @@ library TooltipBuilder
 
         method addMechanic takes string text returns thistype
             local integer len
+            set text = TooltipGoldMechanics(text)
             if (text != "" and text != null) then
                 call this.checkFirstStat()
                 set len = StringLength(text)
@@ -216,7 +316,15 @@ library TooltipBuilder
             return this
         endmethod
 
+        private method normalize takes nothing returns nothing
+            if this.buffer != this.normalizedBuffer then
+                set this.buffer = TooltipCleanText(this.buffer)
+                set this.normalizedBuffer = this.buffer
+            endif
+        endmethod
+
         method applyToAbility takes integer abilCode, integer level returns nothing
+            call this.normalize()
             if BlzGetAbilityExtendedTooltip(abilCode, level - 1) != this.buffer then
                 call BlzSetAbilityExtendedTooltip(abilCode, this.buffer, level - 1)
                 set TooltipTextRevision = TooltipTextRevision + 1
@@ -224,6 +332,7 @@ library TooltipBuilder
         endmethod
         
         method applyToAbilityLearn takes integer abilCode, integer level returns nothing
+            call this.normalize()
             if BlzGetAbilityResearchExtendedTooltip(abilCode, level - 1) != this.buffer then
                 call BlzSetAbilityResearchExtendedTooltip(abilCode, this.buffer, level - 1)
                 set TooltipTextRevision = TooltipTextRevision + 1
@@ -231,16 +340,19 @@ library TooltipBuilder
         endmethod
 
         method applyToItem takes item it returns nothing
+            call this.normalize()
             if BlzGetItemExtendedTooltip(it) != this.buffer then
                 call BlzSetItemExtendedTooltip(it, this.buffer)
             endif
         endmethod
 
         method get takes nothing returns string
+            call this.normalize()
             return this.buffer
         endmethod
 
         method destroy takes nothing returns nothing
+            set this.normalizedBuffer = null
             set this.buffer = null
             call this.deallocate()
         endmethod

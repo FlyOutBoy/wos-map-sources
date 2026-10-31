@@ -61,7 +61,7 @@ endglobals
         real decor_y 
         real decor_aoe 
         real str_hpregen = 0.2
-        real int_mpregen = 0.2    
+        real int_mpregen = 0.15    
         real agi_as = 0.007 
         real agi_ms = 0.6 // war3mapMisc AgiMoveBonus
         real agi_def = 0.1
@@ -82,13 +82,13 @@ endglobals
         real ARMOR_EFFECTIVENESS_PERCENT = 105.0
         // Resistances (all in one place):
         // WOS_ARMOR_PER_AGI    - armor the engine gives per Agility point (gameplay constant);
-        // WOS_PHYS_RES_PER_AGI - armor counted per Agility for physical resistance (+20%);
+        // WOS_PHYS_RES_PER_AGI - armor counted per Agility for physical resistance (+50% over native armor);
         // WOS_MAG_RES_PER_INT  - armor-equivalent per Intelligence for magic resistance.
         // Both use the armor formula: effective = value x ARMOR_EFFECTIVENESS_PERCENT / 100,
         // resistance = effective / (100 + effective).
         real WOS_ARMOR_PER_AGI = 0.1
-        real WOS_PHYS_RES_PER_AGI = 0.12
-        real WOS_MAG_RES_PER_INT = 0.12
+        real WOS_PHYS_RES_PER_AGI = 0.15
+        real WOS_MAG_RES_PER_INT = 0.15
 
         integer LetterCheck = 7
         rect REC     
@@ -647,8 +647,13 @@ endfunction
             return amount
         endif
         set amount = amount * (1.0 - InoriE_AuraResistance(u, damageType == 1) / 100.0)
-        if GetUnitAbilityLevel(u, InoriT2_AuraBuff_ID) > 0 then
-            set amount = amount * (1.0 + InoriT2_AuraResistDown / 100.0)
+        return amount
+    endfunction
+
+    // Flat percentage-point shred after Ainz; it cannot turn resistance negative.
+    function InoriT2_ApplyResistDown takes unit u, real amount, real baseAmount returns real
+        if amount < baseAmount and GetUnitAbilityLevel(u, InoriT2_AuraBuff_ID) > 0 then
+            return RMinBJ(baseAmount, amount + baseAmount * InoriT2_AuraResistDown / 100.0)
         endif
         return amount
     endfunction
@@ -656,7 +661,7 @@ endfunction
     function InoriE_UpdateAura takes unit c returns nothing
         local integer rank = IMinBJ(5, GetUnitAbilityLevel(c, InoriE_ID))
         local integer hid = GetHandleId(c)
-        local boolean disabled = LoadInteger(hs, hid, SH_INORI_AURA_MODE_T) == 1
+        local boolean disabled = LoadInteger(hs, hid, SH_INORI_AURA_MODE_T) == 1 or rank == 0
         if rank > 0 then
             if not disabled and rank == 5 and GetHeroLevel(c) >= 25 and LoadInteger(hs, hid, SH_INORI_AURA_CURRENT_T) != InoriT2_ID then
                 set rank = 6
@@ -666,9 +671,11 @@ endfunction
             endif
         endif
         if not HaveSavedBoolean(hs, hid, SH_INORI_AURA_DISABLED) or LoadBoolean(hs, hid, SH_INORI_AURA_DISABLED) != disabled then
-            call SaveBoolean(hs, hid, SH_INORI_AURA_DISABLED, disabled)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), InoriEAlt2_ID, not disabled)
-            call BlzUnitDisableAbility(c, InoriEAlt2_ID, disabled, disabled)
+            if disabled or HaveSavedBoolean(hs, hid, SH_INORI_AURA_DISABLED) then
+                call BlzUnitDisableAbility(c, InoriEAlt2_ID, disabled, disabled)
+            endif
+            call SaveBoolean(hs, hid, SH_INORI_AURA_DISABLED, disabled)
         endif
     endfunction
 
@@ -1254,6 +1261,9 @@ return result
 endfunction
 // Displayed/total regen: heal amplifiers (Ainz F, Shun Shun Rikka) also boost passive regen.
 function GetHpRegen takes unit c returns real
+ if GetUnitAbilityLevel(c,CinderFang_Buff_ID) > 0 then
+  return 0.00
+ endif
 // Scripted restores (Elixir, HPS items, lifesteal, hero heals) are already amplified.
 return GetHpRegenBase(c) * RMaxBJ(0.00, GetHealMultiplier(c)) + GetScriptHpRegen(c) // amps and all heal cuts (Grail, Inori T, Kirito T, Rimuru Q...)
 endfunction
@@ -1267,6 +1277,9 @@ function GetMpRegenBase takes unit c returns real
  return GetMpRegenNative(c)
 endfunction
 function GetMpRegen takes unit c returns real
+ if GetUnitAbilityLevel(c,CinderFang_Buff_ID) > 0 then
+  return 0.00
+ endif
  if GetUnitAbilityLevel(c,FiveElementsSeal_Buff_ID) > 0 then // Five Elements Seal: no mana regeneration
   return 0.00
  endif
@@ -1284,6 +1297,9 @@ private function HealAmp_Apply takes unit u returns nothing
     local real amp
     local real r
     if u == null or GetWidgetLife(u) <= 0.405 then
+        return
+    endif
+    if GetUnitAbilityLevel(u,CinderFang_Buff_ID) > 0 then
         return
     endif
     // Net multiplier on passive regen: amplifiers minus Hell Blaze stacks.
@@ -2875,6 +2891,37 @@ endif
     return dmg
 endfunction
 
+private function HeroChannelDamageFactor takes unit c returns real
+    static if LIBRARY_CrocodileSpells then
+        if GetUnitTypeId(c) == Crocodile_ID and LoadBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL) and GetWidgetLife(c) > 0.405 and not IsUnitIllusion(c) then
+            if GetHeroLevel(c) >= CrocodileT_DamageReductionHeroLevel then
+                return 1.0 - CrocodileT_DamageReduction35
+            endif
+            return 1.0 - CrocodileT_DamageReduction
+        endif
+    endif
+    return 1.0
+endfunction
+
+function InvertedSpear_IsActive takes unit u returns boolean
+    return LoadReal(hs, GetHandleId(u), SH_INVERTED_SPEAR_END) > TimerGetElapsed(HealRegenClock)
+endfunction
+
+// Pure resistance math; channel reductions are factored back out at their original sites.
+function InvertedSpear_IgnoreResistance takes real baseAmount, real resistedAmount, real outsideFactor returns real
+    local real factor
+    if baseAmount <= 0.0 then
+        return resistedAmount
+    endif
+    set outsideFactor = RMaxBJ(0.0001, outsideFactor)
+    set factor = resistedAmount / baseAmount * outsideFactor
+    if factor < 1.0 then
+        set factor = factor + (1.0 - factor) * InvertedSpear_ResistanceIgnore / 100.0
+        return baseAmount * factor / outsideFactor
+    endif
+    return resistedAmount
+endfunction
+
 function DamageBlock takes unit c, unit td, real dmg, integer typedmg, boolean test returns real
     local real dmgbase = dmg
     // Копия защищена от вложенных событий урона, которые могут изменить global.
@@ -3230,6 +3277,7 @@ endif
                 set dmg = dmgbase * (value + (AinzT_ResistReduce/100))
             endif
     endif
+    set dmg = InoriT2_ApplyResistDown(td, dmg, dmgbase)
     endif
 
     // Р СљР В°Р С–Р С‘РЎвЂЎР ВµРЎРѓР С”Р В°РЎРЏ Р Р†Р ВµРЎвЂљР С”Р В°
@@ -3375,6 +3423,7 @@ endif
                 set dmg = dmgbase * (value + (AinzT_ResistReduce/100))
             endif
     endif
+    set dmg = InoriT2_ApplyResistDown(td, dmg, dmgbase)
     endif
    
     // Erza G2
@@ -3393,6 +3442,15 @@ endif
     
     // Native aura buffs carry the rank; percentage resistance applies to both damage families.
     set dmg = InoriE_ApplyAuraResistance(td, dmg, typedmg)
+    if InvertedSpear_IsActive(td) then
+        set value = HeroChannelDamageFactor(td)
+        static if LIBRARY_FrostnovaSpells then
+            if GetUnitAbilityLevel(td, FrostnovaE_ResistBuffID) > 0 then
+                set value = value * (1.0 - FrostnovaE_Resist)
+            endif
+        endif
+        set dmg = InvertedSpear_IgnoreResistance(dmgbase, dmg, value)
+    endif
 
     set dmg = ApplyGearSystemFullShields(c, td, dmg, shieldTriggerDmg, typedmg, test)
 
@@ -3401,17 +3459,6 @@ endif
     return dmg
 endfunction
 
-private function HeroChannelDamageFactor takes unit c returns real
-    static if LIBRARY_CrocodileSpells then
-        if GetUnitTypeId(c) == Crocodile_ID and LoadBoolean(hs, GetHandleId(c), SH_CROCODILE_T_CHANNEL) and GetWidgetLife(c) > 0.405 and not IsUnitIllusion(c) then
-            if GetHeroLevel(c) >= CrocodileT_DamageReductionHeroLevel then
-                return 1.0 - CrocodileT_DamageReduction35
-            endif
-            return 1.0 - CrocodileT_DamageReduction
-        endif
-    endif
-    return 1.0
-endfunction
 
 function GetPhysRes takes unit c returns real
 local real result = 0

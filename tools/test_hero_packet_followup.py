@@ -59,21 +59,21 @@ class HeroPacket(unittest.TestCase):
         game=source('Heroes/DarkShiki.j').split('    private struct DarkShikiT_KS',1)[1].split('    endstruct',1)[0]
         self.assertEqual(2,game.count('GetUnitX(c) + DarkShikiT_ProjectileOffset * Cos(a)'))
 
-    def test_saber_f_always_current_mana_and_on_burn_double(self):
+    def test_saber_f_always_current_mana_and_on_burn_equal(self):
         vm=JassState(functions(source('Heroes/AlterSaber.j'),'AlterSaberF_Initialize','AlterSaberF_Toggle','AlterSaberF_Attack'))
         hero=vm.unit(owner=0);hero.mana=1000.;vm.add_ability(hero,'F')
         vm.g.update(hs={},SH_ALTERSABER_F_ACTIVE='saber f',AlterSaberF_ID='F',AlterSaberF_Active_ID='Fon',
-                    AlterSaberF_DamageFromCurrentMana=5.,AlterSaberF_ManaBurnBase=5.,AlterSaberF_ManaBurnMorph=3.,
-                    AlterSaberF_BurnDamageMultiplier=2.,UNIT_STATE_MANA='mana',
+                    AlterSaberF_DamageFromCurrentMana=5.,AlterSaberF_ManaBurnBase=9.,AlterSaberF_ManaBurnMorph=9.,
+                    AlterSaberF_BurnDamageMultiplier=1.,UNIT_STATE_MANA='mana',
                     GetUnitState=lambda u,k:getattr(u,k),SetUnitState=lambda u,k,v:setattr(u,k,v),
                     UnitMakeAbilityPermanent=lambda *_:None,SetPlayerAbilityAvailable=lambda *_:None)
-        for morph,burn in ((False,50.),(True,30.)):
+        for morph,burn in ((False,90.),(True,90.)):
             hero.mana=1000.
             self.assertEqual(50.,vm.run('AlterSaberF_Attack',(hero,morph)))
             self.assertEqual(1000.,hero.mana)
             vm.run('AlterSaberF_Toggle',(hero,))
             self.assertEqual('Fon',vm.g['hs'][id(0),'AHUI swap F'])
-            self.assertAlmostEqual(50.+2*burn,vm.run('AlterSaberF_Attack',(hero,morph)))
+            self.assertAlmostEqual(50.+burn,vm.run('AlterSaberF_Attack',(hero,morph)))
             self.assertAlmostEqual(1000.-burn,hero.mana)
             vm.run('AlterSaberF_Toggle',(hero,))
             self.assertEqual(0,vm.g['hs'][id(0),'AHUI swap F'])

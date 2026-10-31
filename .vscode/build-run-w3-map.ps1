@@ -225,6 +225,8 @@ try {
                 & python (Join-Path $workspaceRoot 'tools\install_wos_ui_assets.py') --map $originalMap
                 if ($LASTEXITCODE -ne 0) { throw 'Shared UI asset installation failed' }
             }
+            & python (Join-Path $workspaceRoot 'tools\install_gameplay_constants.py') --map $originalMap
+            if ($LASTEXITCODE -ne 0) { throw 'Native gameplay constant installation failed' }
             # Item icons and effect copies kept prebuilt in assets/ (see tools/install_project_assets.py).
             & python (Join-Path $workspaceRoot 'tools\install_project_assets.py') --map $originalMap
             if ($LASTEXITCODE -ne 0) { throw 'Project asset installation failed' }

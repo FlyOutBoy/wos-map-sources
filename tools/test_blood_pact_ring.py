@@ -30,7 +30,7 @@ class BloodPactRing(unittest.TestCase):
                     GearManaFloorListenerOn=False, GearManaFloorUnit=defaultdict(lambda: None),
                     GearManaFloorRound=defaultdict(int), GetManaAmp=lambda *_: 0.,
                     SetUnitState=lambda u, key, value: setattr(u, key, value),
-                    HealTextQuiet=True, HealRegenTrack=False, FiveElementsSeal_Buff_ID='seal',
+                    HealTextQuiet=True, HealRegenTrack=False, FiveElementsSeal_Buff_ID='seal', CinderFang_Buff_ID='cinder',
                     SH_MANA_FIX_ACTIVE='mana fix slot', SH_MANA_FIX_SCRIPT_DELTA='mana fix script delta')
         u = vm.unit(owner=0); u.max_mana = 1000.; u.mana = 10.
         return vm, u
@@ -99,8 +99,8 @@ class BloodPactRing(unittest.TestCase):
         self.assertEqual(before, json.dumps(docs, sort_keys=True))
         items = json.loads((ROOT/'object-data/items.json').read_text(encoding='utf-8-sig'))
         self.assertEqual(2500, items['I06D']['gold_cost'])
-        self.assertEqual(7500, items[ids['item']]['gold_cost'])
-        self.assertEqual(ids['active']+',A00W', items[ids['item']]['abilities'])
+        self.assertEqual(5000, items[ids['item']]['gold_cost'])
+        self.assertEqual(ids['active']+',A00M,A0CQ', items[ids['item']]['abilities'])
         self.assertIn('RegisterCraft(BloodPactRingEvolved_ID, "I01J I06D")', source('WOS_Start/WoS_Shop_Init.j'))
         self.assertIn('ShopCat(SHOP_TAB_UNIVERSAL,     BloodPactRingEvolved_ID)', source('WOS_Start/WoS_Shop_Init.j'))
 

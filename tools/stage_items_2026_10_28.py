@@ -49,7 +49,7 @@ YATA_EVO = ("+20 str\n+1000 hp\n+500 mp\nPassive: Reflects 30% of damage taken f
             "Active: For 4 sec, reflects 75% of damage taken.\nCooldown: 35 sec.")
 PHIL_EVO = ("+20 allstats\nPassive: Dealing damage to enemies restores HP equal to 18% of the damage dealt.\n"
             "Active: For 3 sec, restores an additional 18% of the damage dealt.\nCooldown: 25 sec.")
-SEAL = ("+25 agi\n+15 int\nActive: Seals an enemy hero for 7 sec with two seals. The mana seal "
+SEAL = ("+25 agi\n+15 int\nActive: Seals an enemy hero for 9 sec with two seals. The mana seal "
         "|cffff0000cannot be dispelled|r: mana regeneration and mana restoration -100%. If the second seal is removed "
         "or the hero casts an ability, it is silenced for 2 sec (once).\nCooldown: 30 sec.")
 
@@ -157,8 +157,8 @@ def stage():
     seal_curse["modifications"] = [m for m in seal_curse["modifications"] if m.get("level", 0) <= 1]
     set_field(seal_curse, "alev", 1, "int", 0)
     data(i["SealSilenceCurse"], "abuf", i["SealSilenceBuff"], "string")
-    data(i["SealSilenceCurse"], "adur", 7.0, "unreal")
-    data(i["SealSilenceCurse"], "ahdu", 7.0, "unreal")
+    data(i["SealSilenceCurse"], "adur", 9.0, "unreal")
+    data(i["SealSilenceCurse"], "ahdu", 9.0, "unreal")
     skin_text("abilities", i["SealSilenceCurse"], anam="Five Elements Seal: Silence (debuff)", aart=ICON.format("FiveElementsSeal"))
     skin_text("buffs", i["SealSilenceBuff"], ftip="Five Elements Seal: Lock",
               fube="Removing this seal or casting an ability silences for 2 sec.", fart=ICON.format("FiveElementsSeal"))

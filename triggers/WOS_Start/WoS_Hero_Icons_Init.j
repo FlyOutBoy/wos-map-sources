@@ -299,6 +299,17 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         elseif canInspect then
             call BlzFrameSetAlpha(StatusHpBar[i], 255)
         endif
+        // Public death/revival updates the cached portrait even outside vision.
+        // Do not query a hidden living enemy's current hero type or vitals.
+        if StatusSlotInitialized[i] and StatusLastDead[i] != dead then
+            set icon = FRAME_StatusHeroStringIcon[i]
+            if dead then
+                call BlzFrameSetTexture(FRAME_StatusHeroBack[i], ConvertBTNtoDISBTN(icon), 0, false)
+            else
+                call BlzFrameSetTexture(FRAME_StatusHeroBack[i], icon, 0, false)
+            endif
+            set StatusLastDead[i] = dead
+        endif
         if not canInspect then
             // Checkpoint 27e: an unseen enemy keeps a normal icon; only its
             // HP / MP bars are hidden (alpha on the slot also re-showed Back2).
@@ -318,7 +329,8 @@ library heroicon requires LocalMp3Player, AAINIT, GearSystems, WOSUI
         if dead then
             set hp = 0.00
         else
-            set hp = 100.00 * GetWidgetLife(u) / RMaxBJ(1.00, I2R(BlzGetUnitMaxHP(u)))
+            // Keep a visible sliver for a living 1-HP survivor (Will of D.).
+            set hp = RMaxBJ(2.00, 100.00 * GetWidgetLife(u) / RMaxBJ(1.00, I2R(BlzGetUnitMaxHP(u))))
         endif
         set mp = 100.00 * GetUnitState(u, UNIT_STATE_MANA) / RMaxBJ(1.00, I2R(BlzGetUnitMaxMana(u)))
         if hp != StatusLastHpPercent[i] then

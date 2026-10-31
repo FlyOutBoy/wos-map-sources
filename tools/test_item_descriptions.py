@@ -11,7 +11,7 @@ class ItemDescriptionsTest(unittest.TestCase):
         cls.audit = Audit()
 
     def test_catalog_parity_and_repeatability(self):
-        self.assertEqual(len(self.audit.items), 196)
+        self.assertEqual(len(self.audit.items), 197)
         self.assertEqual(self.audit.changes(), [])
         for identity in self.audit.items:
             expected = self.audit.expected(identity)

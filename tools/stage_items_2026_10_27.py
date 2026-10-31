@@ -63,23 +63,22 @@ TIPS = {
     "NaofumiEvo": ("+20 allstats\nPassive: Blocks 40 damage from every hit.\nActive: Removes all debuffs and reduces "
                    "damage taken by 10% while active; the flat block rises to 100. The duration is extended while the "
                    "hero is paused.\nDuration: 5 sec.\nCooldown: 24 sec."),
-    "Sukuna": ("+35 int\n+10 agi\n+500 hp\nActive: Curses an enemy hero for 7 sec: it cannot restore HP (healing and "
+    "Sukuna": ("+35 int\n+10 agi\n+500 hp\nActive: Curses an enemy hero for 9 sec: it cannot restore HP (healing and "
                "HP regeneration -100%) and is slowed by 15%. |cffff0000Cannot be dispelled|r; reapplied if removed.\n"
                "Cooldown: 30 sec."),
-    "Seal": ("+25 agi\n+15 int\nActive: Seals an enemy hero for 7 sec: its mana regeneration and mana restoration are "
+    "Seal": ("+25 agi\n+15 int\nActive: Seals an enemy hero for 9 sec: its mana regeneration and mana restoration are "
              "reduced by 100%. If the seal is removed early or the hero casts an ability while sealed, it is "
              "silenced for 2 sec.\nCooldown: 25 sec."),
     "Tekkai": ("+15 allstats\n+30 hp regen\nActive: Hardens the body: blocks basic attack damage and all on-hit effects for 4 sec.\n"
                "Cooldown: 25 sec."),
     "Samehada": ("+45 atk\n+10 allstats\nPassive: Each attack restores 4% of your max MP and drains 4% of the target's "
                  "max MP. Does not work with or against clones. Starrk: triggers on the attack that fires Cero, not on Cero hits."),
-    "Will": ("+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage cannot lower your HP below 1 for 3 sec (the timer keeps "
-             "running while paused).\nCooldown: 600 sec; reset once at the end of every round."),
+    "Will": '+10 str\n+25 agi\n+500 hp\nPassive: Lethal damage leaves you at 1 HP and prevents damage from lowering HP below 1 for 3 sec. Dispellable: removing the buff (including Kairoseki Cuffs) ends protection.\nCooldown: 180 sec; resets at the end of each round.',
     "Kairoseki": ("+15 allstats\nActive: Removes all positive buffs from an enemy hero and reduces the damage it deals "
                   "by 18% for 4 sec.\nCooldown: 20 sec."),
     "Coffin": ("+15 allstats\nActive: Seals the hero in ice for 2 sec: paused and invulnerable.\nCooldown: 45 sec."),
     "Recall": ("+15 allstats\nActive: Applies a dispellable buff and remembers your position. After 4 sec you return only if the buff remains. Removing the buff cancels the return.\nCooldown: 25 sec."),
-    "FairyEvo": ("+20 allstats\n+200 mp\nPassive: +20% mana regeneration and mana restoration.\nCasting an ability with a "
+    "FairyEvo": ("+20 allstats\n+200 mp\nPassive: +15% mana regeneration and mana restoration.\nCasting an ability with a "
                  "cooldown of at least 3 sec while at 95% mana or less restores 250 + 18% of max MP and 350 + 4% of max "
                  "HP.\nFairy Tail heroes (Natsu, Erza, Laxus): +1% HP restoration.\nCooldown: 18 sec."),
 }
@@ -155,7 +154,7 @@ def stage():
             ("SukunaActive", 30.0, 75, 900.0, ENEMY_HERO), ("SealActive", 25.0, 75, 900.0, ENEMY_HERO),
             ("KairosekiActive", 20.0, 75, 900.0, ENEMY_HERO), ("TekkaiActive", 25.0, 50, 0.0, None),
             ("CoffinActive", 45.0, 0, 0.0, None), ("RecallActive", 25.0, 50, 0.0, None),
-            ("HakiCD", 15.0, 0, 0.0, None), ("HakiEvoCD", 15.0, 0, 0.0, None), ("WillCD", 600.0, 0, 0.0, None)):
+            ("HakiCD", 15.0, 0, 0.0, None), ("HakiEvoCD", 15.0, 0, 0.0, None), ("WillCD", 180.0, 0, 0.0, None)):
         data(i[label], "acdn", cooldown, "unreal")
         data(i[label], "amcs", mana, "int")
         data(i[label], "aran", cast_range, "unreal")
@@ -173,8 +172,8 @@ def stage():
 
     # Enemy debuffs: curse copies (no miss), shown buff, durations of the item effect.
     for curse, buff, title, tip, icon, duration in (
-            ("SukunaCurse", "SukunaBuff", "Sukuna's Curse", "Cannot restore HP (healing and HP regeneration -100%); slowed by 15%.", "SukunaFinger", 7.0),
-            ("SealCurse", "SealBuff", "Five Elements Seal", "Mana regeneration and restoration -100%. Removing the seal or casting an ability silences for 2 sec.", "FiveElementsSeal", 7.0),
+            ("SukunaCurse", "SukunaBuff", "Sukuna's Curse", "Cannot restore HP (healing and HP regeneration -100%); slowed by 15%.", "SukunaFinger", 9.0),
+            ("SealCurse", "SealBuff", "Five Elements Seal", "Mana regeneration and restoration -100%. Removing the seal or casting an ability silences for 2 sec.", "FiveElementsSeal", 9.0),
             ("KairosekiCurse", "KairosekiBuff", "Kairoseki", "Deals 18% less damage.", "Kairoseki", 4.0)):
         ability = obj("abilities", i[curse])  # one level: the Ashisogi copy carries 9 unused ranks
         ability["modifications"] = [m for m in ability["modifications"] if m.get("level", 0) <= 1]
@@ -188,7 +187,7 @@ def stage():
     for abil, buff, title, tip, icon, duration in (
             ("HakiEvoBuffAbi", "HakiEvoBuff", "Armament Haki", "Immune to debuffs.", "ArmamentHakiEvolved", 3.0),
             ("TekkaiBuffAbi", "TekkaiBuff", "Tekkai", "Blocks basic attack damage and all on-hit effects.", "Tekkai", 4.0),
-            ("WillBuffAbi", "WillBuff", "Will of D.", "HP cannot drop below 1.", "WillOfD", 3.0),
+            ("WillBuffAbi", "WillBuff", "Will of D.", "HP cannot drop below 1. Dispelling this buff ends protection.", "WillOfD", 3.0),
             ("CoffinBuffAbi", "CoffinBuff", "Ice Coffin", "Sealed in ice: paused and invulnerable.", "IceCoffin", 2.0)):
         data(i[abil], "abuf", i[buff], "string")
         data(i[abil], "adur", duration, "unreal")

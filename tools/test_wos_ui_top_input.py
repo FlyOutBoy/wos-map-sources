@@ -33,4 +33,24 @@ class TopInput(unittest.TestCase):
   self.assertIn(('BlzFrameSetScale',(g['WUI_MenuLabel'],g['WUI_TOP_ROW_TEXT'])),f.calls)
   self.assertIn(('BlzFrameSetTexture',(g['WUI_MenuBack'],g['WUI_FILL_SELECTED'],0,True)),f.calls)
   f.vm.run('WUI_ShowTopControls',(True,));self.assertFalse(v[g['WUI_MenuBack']]);self.assertFalse(v[g['WUI_MenuCompactStyle']]);self.assertTrue(v[g['WUI_MenuIcon']])
+ def test_exclusive_window_transitions_respect_hidden_music_button(self):
+  for hidden in (False,True):
+   for local in (0,1):
+    vm=ui.load_source('WOSUI.j');visible={'music':False}
+    vm.g.update(GetLocalPlayer=lambda:local,BlzFrameSetVisible=lambda f,v:visible.update({f:v}),WUI_TopVisible=not hidden)
+    vm.g['WUI_WindowPart'][4]='player';vm.g['WUI_WindowPart'][8]='music'
+    for kind in (1,-1,0,3):
+     vm.run('WUI_EnterExclusiveWindow',(kind,0))
+     self.assertEqual(local==0 and not hidden,visible['music'])
+ def test_closing_music_player_does_not_restore_hidden_top_button(self):
+  from test_crocodile import JassState
+  text=(ROOT/'triggers/WOS_Start/MusicPlayer.j').read_text(encoding='utf-8-sig')
+  body=re.search(r'private function LMP_SetVisible takes.*?endfunction',text,re.S)[0]
+  for hidden in (False,True):
+   vm=JassState(body);visible={}
+   vm.g.update(lmpVisible={},GetPlayerId=lambda p:p,GetLocalPlayer=lambda:0,
+    lmpPanel='panel',lmpSeek='seek',lmpSeekBlocker='blocker',lmpVolumeSlider='slider',lmpOpenButton='music',
+    WUI_TopShown=lambda:not hidden,BlzFrameSetVisible=lambda f,v:visible.update({f:v}))
+   vm.run('LMP_SetVisible',(0,False));self.assertEqual(not hidden,visible['music'])
+
 if __name__=='__main__':unittest.main()

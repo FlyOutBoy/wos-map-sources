@@ -18,6 +18,7 @@ def load_source(filename):
     source = source.replace('static if LIBRARY_DamageStats then','if LIBRARY_DamageStats then')
     source = source.replace('static if LIBRARY_WOSTestNativeUI then','if LIBRARY_WOSTestNativeUI then')
     vm = JassState(source)
+    vm.g.setdefault('CondArena', 0)
     vm.g.setdefault('LIBRARY_DamageStats', False)
     vm.g.setdefault('LIBRARY_WOSTestNativeUI', False)
     shared=(ROOT/'triggers/WOS_Start/WOSUI.j').read_text(encoding='utf-8-sig').split('// CP44_SHARED_UI:',1)[1].split('// CP44_SHARED_UI_END',1)[0]
@@ -38,6 +39,11 @@ def load_source(filename):
     vm.g.setdefault('WUI_GetTopActionOwner', lambda: 'top-actions')
     vm.g.setdefault('WUI_TopShown', lambda: True)
     vm.g.setdefault('WUI_RegisterRangeCover', lambda *_: None)
+    vm.g.setdefault('BlzFrameSetFont', lambda *_: None)
+    vm.g.setdefault('LoadFrameHandle', lambda table, key, child: table.get((key, child)))
+    vm.g.setdefault('BlzFrameGetHeight', lambda _: 0.014)
+    vm.g.setdefault('WUI_Place', lambda *_: None)
+    vm.g.setdefault('FRAMEPOINT_TOPLEFT', 'TOPLEFT')
     # Hero meters redraw at most every 0.10 s of WUI_InputClock: every fixture read
     # advances game time, so behavioural tests see each call land.
     clock = [0.0]
@@ -51,6 +57,9 @@ def load_source(filename):
     vm.g.setdefault('LoadStr', lambda table, key, child: table.get((key, child, 's'), ''))
     # Shop: round-gated Scroll of Mastery and refund credit of consumed components.
     if filename == 'WoS_Shop_Init.j':
+        vm.g.setdefault('ShopManaFrames', {})
+        vm.g.setdefault('FRAME_ShopDescriptionManaIcon', None)
+        vm.g.setdefault('FRAME_ShopDescriptionManaText', None)
         vm.g.update(ScrollOfMastery_ID=-404, ScrollOfMastery_Round=15, ShopCraftRefundCredit=0, ShopCraftTeaCharges=0)
         # Item rawcode globals (Kusanagi element swap, 2026-10-27 bans/recipes) as the VM spells literals.
         for items_file in ('Items/Items.j', 'Items/ItemsAnime.j'):
@@ -131,6 +140,9 @@ def load_source(filename):
     vm.g.setdefault('BlzPixelToFrameY', lambda value: value)
     # Checkpoint 27: string natives used by the TEST COMMANDS line scroller.
     vm.g.setdefault('StringLength', len)
+    vm.g.setdefault('WUI_AllyColorState', -1)
+    vm.g.setdefault('SetAllyColorFilterState', lambda state: vm.g.update(native_ally_color=state))
+    vm.g.setdefault('GetAllyColorFilterState', lambda: vm.g.get('native_ally_color', 0))
     vm.g.setdefault('CurrentRound', 1)
     vm.g.setdefault('BlzFrameGetValue', lambda *_: 0.0)
     # WUI_SliderSet: a slider value is a number, never a frame name.
@@ -165,6 +177,9 @@ def load_source(filename):
         vm.g.setdefault('WUI_RegisterTopControl', lambda *_: None)
         vm.g.setdefault('WUI_RegisterMinimapPart', lambda *_: None)
         vm.g.setdefault('WUI_TooltipSized', lambda *_: None)
+    vm.g.setdefault('BlzGetMouseScreenPosX', lambda: 0)
+    vm.g.setdefault('BlzGetMouseScreenPosY', lambda: 0)
+    vm.g.setdefault('BlzSetMousePos', lambda *args: None)
     return vm
 
 

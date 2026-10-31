@@ -62,7 +62,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         real BambiettaTQ_DamageAoe2 = 450.0
         real BambiettaTQ_RangeBase = 1400.0
         real BambiettaTQ_RangeStep = 100.0
-        real BambiettaTQ_CastTime = 0.51
+        real BambiettaTQ_CastTime = 0.66
         real BambiettaTQ_DecorDamage = 20.0
         real BambiettaTQ_ExplosionDecorDamage = 30.0
 
@@ -99,11 +99,13 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         real BambiettaE_RangeStep = 120.0
         integer BambiettaE_Slow = 30
         integer BambiettaE_SlowDuration = 2
-        real BambiettaE_CastTime = 0.60
+        real BambiettaE_CastTime = 0.72
         real BambiettaE_DecorDamage = 30.0
         real BambiettaE_ExplosionDecorDamage = 50.0
 
 //---------------TE ability (Vollstandig: Shell Barrage)-----------------------
+        integer BambiettaTE_Shells = 20
+        real BambiettaTE_DamageDivisor = 14.0 // preserve damage per shell
         real BambiettaTE_DamageAgiBase = 4.0
         real BambiettaTE_DamageAgiStep = 1.0
         real BambiettaTE_DamageAoe = 400.0
@@ -521,7 +523,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 set this = m_BambiettaTQ[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if r < 0.51 then
+                    if r < BambiettaTQ_CastTime then
                         if BambiettaTQ_IsInvul then
                             call DebugUnit(c)
                         else
@@ -529,10 +531,10 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         endif
                     endif
                     if r == 0.21 or r == 0.27 or r == 0.33 then
-                        call MyRemoveEff(EffectSpawnScale("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLired.mdx", GetUnitX(c) + 120 * Cos(a + k * 72 * bj_DEGTORAD), GetUnitY(c) + 120 * Sin(a + k * 72 * bj_DEGTORAD), 0, 2, 0.01, 150, 0.15, 0.01, 3), 0.51 - r)
+                        call MyRemoveEff(EffectSpawnScale("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLired.mdx", GetUnitX(c) + 120 * Cos(a + k * 72 * bj_DEGTORAD), GetUnitY(c) + 120 * Sin(a + k * 72 * bj_DEGTORAD), 0, 2, 0.01, 150, 0.15, 0.01, 3), BambiettaTQ_CastTime - r)
                         set k = k + 1
                     endif
-                    if r == 0.51 then
+                    if r == BambiettaTQ_CastTime then
                         if BambiettaTQ_IsInvul then
                             call StopSpellUnit(c)
                         else
@@ -548,7 +550,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 else
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
-                    if r < 0.51 then
+                    if r < BambiettaTQ_CastTime then
                         if BambiettaTQ_IsInvul then
                             call StopSpellUnit(c)
                         else
@@ -600,7 +602,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             else
                 call SetUnitAnimationByIndex(c, 7)
             endif
-            call SetUnitTimeScale(c, 0.75)
+            call SetUnitTimeScale(c, 0.75 * 0.51 / BambiettaTQ_CastTime)
             if GetRandomInt(1, 2) == 1 then
                 call MakeSound("war3mapimported\\Hero_Bambietta_TQ")
             else
@@ -766,7 +768,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 set this = m_BambiettaW[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if r < 0.51 then
+                    if r < 0.63 then
                         if BambiettaW_IsInvul then
                             call DebugUnit(c)
                         else
@@ -793,7 +795,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 else
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
-                    if r < 0.51 then
+                    if r < 0.63 then
                         if BambiettaW_IsInvul then
                             call StopSpellUnit(c)
                         else
@@ -1050,6 +1052,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         private static integer MUI_BambiettaTE2 = -1
         private static integer array m_BambiettaTE
         private static integer MUI_BambiettaTE = -1
+        integer shellsFired
         unit c
         real x
         real y
@@ -1216,7 +1219,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 set this = m_BambiettaE[i]
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
-                    if r < 0.6 then
+                    if r < BambiettaE_CastTime then
                         if BambiettaE_IsInvul then
                             call DebugUnit(c)
                         else
@@ -1235,9 +1238,9 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             set y1 = GetUnitY(c) + 300 * Sin(a + 90 * bj_DEGTORAD)
                         endif
                         set k = k + 1
-                        call MyRemoveEff(EffectSpawnScale("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", x1 - 150 * Cos(a), y1 - 150 * Sin(a), 0, 1, 0.01, 150, 0.15, 0.01, 5), 0.6 - r)
+                        call MyRemoveEff(EffectSpawnScale("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiblue.mdx", x1 - 150 * Cos(a), y1 - 150 * Sin(a), 0, 1, 0.01, 150, 0.15, 0.01, 5), BambiettaE_CastTime - r)
                     endif
-                    if r == 0.6 then
+                    if r == BambiettaE_CastTime then
                         call MakeSound("war3mapimported\\Hero_Bambietta_E3")
                         if BambiettaE_IsInvul then
                             call StopSpellUnit(c)
@@ -1251,7 +1254,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 else
                     call SetUnitTimeScale(c, 1)
                     call DestroyGroup(g)
-                    if r < 0.6 then
+                    if r < BambiettaE_CastTime then
                         if BambiettaE_IsInvul then
                             call StopSpellUnit(c)
                         else
@@ -1300,7 +1303,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set a = GAngle2(c, x, y)
             set rmax = 1.5
             call SetUnitAnimationByIndex(c, 2)
-            call SetUnitTimeScale(c, 1.5)
+            call SetUnitTimeScale(c, 1.5 * 0.60 / BambiettaE_CastTime)
             set k = GetRandomInt(1, 3)
             if k == 1 then
                 call MakeSound("war3mapimported\\Hero_Bambietta_E")
@@ -1425,7 +1428,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set aoe = BambiettaE_DamageAoe
             set aoe2 = BambiettaE_DamageAoe2
             set dmg = GetHeroAgi(c, true) * (BambiettaTE_DamageAgiBase + (BambiettaTE_DamageAgiStep * (GetUnitAbilityLevel(c, BambiettaE_ID) - 1)))
-            set dmg = dmg / 14
+            set dmg = dmg / BambiettaTE_DamageDivisor
             set rmax = 2.9
             set r4 = GetRandomReal(0, 0.12)
             set k3 = NewK
@@ -1468,18 +1471,14 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                     if r == 0.63 then
                         call SetUnitTimeScale(c, 0.2)
                     endif
-                    if r > BambiettaTE_CastTime then
-                        if r2 > 0.09 then
-                            set r2 = 0
-                            set k = 0
+                    if r > BambiettaTE_CastTime and shellsFired < BambiettaTE_Shells then
+                        if r + 0.000001 >= BambiettaTE_CastTime + BambiettaTE_Duration * I2R(shellsFired) / I2R(BambiettaTE_Shells) then
                             if IntegerCdKey(c, SH_ICD_SOUND_E, 1.5) then
                                 call MakeSound("war3mapimported\\Hero_Bambietta_TE2")
                             endif
-                            set k3 = GetRandomInt(1, 2)
                             call BambiettaTE2_Start(c, GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), null, 0)
                             call BambiettaTE2_Start(c, GetUnitX(c) + 100 * Cos(a), GetUnitY(c) + 100 * Sin(a), null, 1)
-                        else
-                            set r2 = r2 + 0.03
+                            set shellsFired = shellsFired + 2
                         endif
                     endif
                 else
@@ -1513,6 +1512,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set MUI_BambiettaTE = MUI_BambiettaTE + 1
             set m_BambiettaTE[MUI_BambiettaTE] = this
             set c = NewC
+            set shellsFired = 0
             set x = NewX
             set y = NewY
             set r = 0
@@ -1691,6 +1691,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
         public static method Loop_BambiettaTR takes nothing returns nothing
             local integer this
             local integer i = 0
+            local real effectScale = BambiettaR_DamageAoe / BambiettaTR_DamageAoe
             loop
                 exitwhen i > MUI_BambiettaTR
                 set this = m_BambiettaTR[i]
@@ -1705,15 +1706,15 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                         call MakeSound("war3mapimported\\Hero_Bambietta_TR2")
                     endif
                     if r == 0.63 then
-                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashRed.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 2.475, 225))
+                        call DestroyEffect(EffectSpawn("war3mapImported\\wos_YC_CrossFlashRed.mdl", x + 25 * Cos(a), y + 25 * Sin(a), 1, 1.15, 2.475 * effectScale, 225))
                     endif
                     if r == BambiettaTR_CastTime then
                         set x = GetUnitX(c)
                         set y = GetUnitY(c)
                         call SetUnitTimeScale(c, 0.2)
                         call DecorRemove(c, x, y, aoe, BambiettaTR_DecorDamage)
-                        call EffectSpawn2("war3mapimported\\wos_chushou_by_wood_effect_huozhu_black.mdx", x, y, a * bj_RADTODEG, 1.25, 1.85, 1, 0.65)
-                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (513)red.mdl", x, y, GetRandomReal(0, 359), 0.5, 1.55, 15))
+                        call EffectSpawn2("war3mapimported\\wos_chushou_by_wood_effect_huozhu_black.mdx", x, y, a * bj_RADTODEG, 1.25, 1.85 * effectScale, 1, 0.65)
+                        call DestroyEffect(EffectSpawn("war3mapimported\\wos_OPm (513)red.mdl", x, y, GetRandomReal(0, 359), 0.5, 1.55 * effectScale, 15))
                         set k = 0
                         loop
                             exitwhen k == 5
@@ -1722,8 +1723,8 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                             else
                                 set scale = GetRandomReal(2.5, 4.5)
                             endif
-                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_m3 (460).mdl", x, y, GetRandomReal(0, 359), 1.5, scale, 350 * k))
-                            call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_tx-ha-chongfeng2.mdl", x - 500 * Cos(60 * k * bj_DEGTORAD), y - 500 * Sin(60 * k * bj_DEGTORAD), 60 * k, GetRandomReal(0.5, 0.75), 10.5, 10, 255, 255, 255, 65))
+                            call DestroyEffect(EffectSpawn("war3mapimported\\wos_m3 (460).mdl", x, y, GetRandomReal(0, 359), 1.5, scale * effectScale, 350 * k))
+                            call DestroyEffect(EffectSpawnColor("war3mapimported\\wos_tx-ha-chongfeng2.mdl", x - 500 * Cos(60 * k * bj_DEGTORAD), y - 500 * Sin(60 * k * bj_DEGTORAD), 60 * k, GetRandomReal(0.5, 0.75), 10.5 * effectScale, 10, 255, 255, 255, 65))
                             set k = k + 1
                         endloop
                     endif
@@ -2109,11 +2110,10 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
                 if SpellBoolCaster(c) and r <= rmax then
                     set r = I2R(R2I((r + 0.03) * 1000.0 + 0.5)) / 1000.0
                     if r < 0.9 then
-                        if BambiettaT2_IsInvul then
-                            call DebugUnit(c)
-                        else
-                            call DebugUnit2(c)
-                        endif
+                        call DebugUnit2(c)
+                    endif
+                    if r >= 0.9 and BambiettaT2_IsInvul then
+                        call UnitAddAbility(c, 'Avul')
                     endif
                     if r > 0.72 then
                         if GetMouseX(GetOwningPlayer(c)) != x1 then
@@ -2189,11 +2189,7 @@ library BambiettaSpells initializer InitBambiettaSpells uses GearSystems
             set r3 = 0
             set r5 = 0
             set e = null
-            if BambiettaT2_IsInvul then
-                call StartSpellUnit(c)
-            else
-                call StartSpellUnit2(c)
-            endif
+            call StartSpellUnit2(c)
             set k = 0
             set u = null
             set g = null

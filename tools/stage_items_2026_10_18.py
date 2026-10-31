@@ -191,7 +191,7 @@ def stage():
     # Ally auras: no native bonuses, only a positive buff read by code.
     for aura, buff, title, tip, icon in (
         ("ShunAura", "ShunBuff", "Shun Shun Rikka", "Receives 18% more HP regeneration and healing; stuns last 0.5 sec shorter.", "ShunShunRikka"),
-        ("FrozenAura", "FrozenBuff", "Frozen Heart Blessing", "Receives 20% more mana regeneration and mana restoration.", "Frozen_Heart"),
+        ("FrozenAura", "FrozenBuff", "Frozen Heart Blessing", "Receives 15% more mana regeneration and mana restoration.", "Frozen_Heart"),
     ):
         data(i[aura], "Uau1", 0.0, "unreal", 1, 1)
         data(i[aura], "Uau2", 0.0, "unreal", 1, 2)

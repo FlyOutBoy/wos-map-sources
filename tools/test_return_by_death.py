@@ -20,12 +20,13 @@ class ReturnByDeath(unittest.TestCase):
         # Expand vJASS's implicit instance-member syntax for the native-mock interpreter.
         vm = JassState(re.sub(r'(?<![\w.\]])\.(?=[A-Za-z_])', 'this.', struct+'\n'+funcs))
         ns = vm.structs['ItemsAnimeEffect']
-        ns.statics.update(KIND_SUKUNA=1, KIND_SEAL=2, KIND_COFFIN=3, KIND_RETURN=4,
+        ns.statics.update(KIND_SUKUNA=1, KIND_SEAL=2, KIND_COFFIN=3, KIND_RETURN=4, KIND_WILL=5, KIND_SPEAR=6,
                           list={}, count=0, clock=None)
-        vm.g.update(CurrentRound=1, HealRegenClock=None, ReturnByDeath_Delay=4.,
+        vm.g.update(hs={}, SH_WILL_OF_D_END='will end', CurrentRound=1, HealRegenClock=None, ReturnByDeath_Delay=4.,
                     ReturnByDeath_BuffAbi_ID='return ability', ReturnByDeath_Buff_ID='return buff',
                     ReturnByDeath_FrameSlot=5, TimerStart=lambda *_: None, PauseTimer=lambda *_: None,
-                    AddSpecialEffect=vm.effect,
+                    AddSpecialEffect=vm.effect, EffectSpawn=vm.effect,
+                    BlzSetSpecialEffectTimeScale=lambda *_: None,
                     IsUnitType=lambda u, _: u.life <= 0.,
                     BuffUnit01=lambda c, u, *_: vm.add_ability(u, 'return buff'),
                     MyFrameBuffSlot=lambda *_: None, MakeSound=lambda *_: None,
@@ -38,6 +39,7 @@ class ReturnByDeath(unittest.TestCase):
             u.x, u.y = x, y
 
         vm.g['SetUnitPosition'] = move
+        vm.g['PosUnit'] = move
         vm.g['UnitRemoveBuffs'] = lambda u, positive, negative: vm.remove_ability(u, 'return buff') if positive else None
         return vm, ns, vm.unit(owner=0, x=100., y=200.), moves
 

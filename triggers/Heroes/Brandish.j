@@ -107,7 +107,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
         real BrandishT_DamageAoe = 1250.0
         real BrandishT_Stun = 1
         real BrandishT_ScaleIncrease = 500.0
-        real BrandishT_CastTime = 1.20
+        real BrandishT_CastTime = 1.5
         real BrandishT_Duration = 0.30
         real BrandishT_Lv35Duration = 5.30
         boolean BrandishT_IsInvul = true
@@ -910,11 +910,11 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
                     else
                         set r8 = aoe
                     endif
-                    if r == 0.70 then
+                    if r == 0.90 then
                         set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiGreen.mdx", c, "hand right")
                         call MakeSound("war3mapimported\\Hero_Brandish_T2")
                         call SetUnitAnimationByIndex(c, 9)
-                        call SetUnitTimeScale(c, 0.50)
+                        call SetUnitTimeScale(c, 0.50 * 0.50 / 0.60)
                     endif
                     if r == BrandishT_CastTime then
                         set x = GetUnitX(c) + 150.0 * Cos(a)
@@ -1068,7 +1068,7 @@ library BrandishSpells initializer InitBrandishSpells uses GearSystems
             call VisionTimed(GetOwningPlayer(c), GetUnitX(c), GetUnitY(c), 1800.0, 4.0)
             call SaveInteger(hs, GetHandleId(c), SH_T, 1)
             call SetUnitFacingTimed(c, a * bj_RADTODEG, 0.0)
-            call SetUnitTimeScale(c, 2.0)
+            call SetUnitTimeScale(c, 2.0 * 0.70 / 0.90)
             if MUI_BrandishT == 0 then
                 call BrandishTimer05Acquire()
             endif

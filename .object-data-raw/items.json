@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3map.w3t",
-  "source_sha256": "51a867b64df716eae91dafd8beb44d36dd8fea2920ca85f3289b71550e1b4c89",
+  "source_sha256": "a0766b12b0f808dee41af274781c4275c51f3a090b1d0ec40936a9263002eb88",
   "kind": "items",
   "record_mode": "simple",
   "format_version": 3,
@@ -62,14 +62,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I000",
+            "hex": "49303030"
           }
         }
       ],
@@ -129,14 +126,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I003",
+            "hex": "49303033"
           }
         }
       ],
@@ -196,14 +190,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I004",
+            "hex": "49303034"
           }
         }
       ],
@@ -263,14 +254,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I007",
+            "hex": "49303037"
           }
         }
       ],
@@ -330,14 +318,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I008",
+            "hex": "49303038"
           }
         }
       ],
@@ -397,14 +382,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I009",
+            "hex": "49303039"
           }
         }
       ],
@@ -464,14 +446,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I001",
+            "hex": "49303031"
           }
         }
       ],
@@ -531,14 +510,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I002",
+            "hex": "49303032"
           }
         }
       ],
@@ -613,14 +589,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I005",
+            "hex": "49303035"
           }
         }
       ],
@@ -695,14 +668,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I006",
+            "hex": "49303036"
           }
         }
       ],
@@ -777,14 +747,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00A",
+            "hex": "49303041"
           }
         }
       ],
@@ -859,14 +826,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00B",
+            "hex": "49303042"
           }
         }
       ],
@@ -926,14 +890,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00C",
+            "hex": "49303043"
           }
         }
       ],
@@ -993,14 +954,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00D",
+            "hex": "49303044"
           }
         }
       ],
@@ -1060,14 +1018,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00E",
+            "hex": "49303045"
           }
         },
         {
@@ -1160,14 +1115,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00F",
+            "hex": "49303046"
           }
         }
       ],
@@ -1227,14 +1179,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00G",
+            "hex": "49303047"
           }
         },
         {
@@ -1245,7 +1194,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -1339,14 +1291,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00H",
+            "hex": "49303048"
           }
         },
         {
@@ -1424,14 +1373,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00I",
+            "hex": "49303049"
           }
         }
       ],
@@ -1500,6 +1446,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I00J",
+            "hex": "4930304A"
+          }
         }
       ],
       "display_name": "Kansho and Bakuya"
@@ -1558,14 +1519,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00K",
+            "hex": "4930304B"
           }
         }
       ],
@@ -1625,14 +1583,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00L",
+            "hex": "4930304C"
           }
         },
         {
@@ -1749,6 +1704,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I00M",
+            "hex": "4930304D"
+          }
         }
       ],
       "display_name": "Cup of Tea"
@@ -1807,14 +1777,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00N",
+            "hex": "4930304E"
           }
         }
       ],
@@ -1874,14 +1841,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00O",
+            "hex": "4930304F"
           }
         },
         {
@@ -1989,14 +1953,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00P",
+            "hex": "49303050"
           }
         }
       ],
@@ -2074,14 +2035,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00Q",
+            "hex": "49303051"
           }
         }
       ],
@@ -2165,6 +2123,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I00R",
+            "hex": "49303052"
+          }
         }
       ],
       "display_name": "Kazekage Hat"
@@ -2223,14 +2196,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00S",
+            "hex": "49303053"
           }
         },
         {
@@ -2323,14 +2293,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00T",
+            "hex": "49303054"
           }
         },
         {
@@ -2423,14 +2390,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00U",
+            "hex": "49303055"
           }
         },
         {
@@ -2547,6 +2511,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I00V",
+            "hex": "49303056"
+          }
         }
       ],
       "display_name": "Bunshin Scroll"
@@ -2614,6 +2593,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I00W",
+            "hex": "49303057"
+          }
         }
       ],
       "display_name": "Kurikara"
@@ -2672,14 +2666,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I00X",
+            "hex": "49303058"
           }
         },
         {
@@ -2781,6 +2772,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I00Y",
+            "hex": "49303059"
+          }
         }
       ],
       "display_name": "Angel's Blessing"
@@ -2863,6 +2869,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I00Z",
+            "hex": "4930305A"
+          }
         }
       ],
       "display_name": "Naofumi Shield"
@@ -2921,14 +2942,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I010",
+            "hex": "49303130"
           }
         },
         {
@@ -3021,14 +3039,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I011",
+            "hex": "49303131"
           }
         },
         {
@@ -3115,6 +3130,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I012",
+            "hex": "49303132"
+          }
         }
       ],
       "display_name": "Fairy Tail Emblem"
@@ -3173,14 +3203,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I013",
+            "hex": "49303133"
           }
         },
         {
@@ -3258,14 +3285,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I014",
+            "hex": "49303134"
           }
         },
         {
@@ -3358,7 +3382,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -3388,14 +3415,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I015",
+            "hex": "49303135"
           }
         }
       ],
@@ -3455,14 +3479,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I016",
+            "hex": "49303136"
           }
         },
         {
@@ -3473,7 +3494,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -3552,14 +3576,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I017",
+            "hex": "49303137"
           }
         },
         {
@@ -3652,14 +3673,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I018",
+            "hex": "49303138"
           }
         }
       ],
@@ -3727,6 +3745,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I019",
+            "hex": "49303139"
           }
         }
       ],
@@ -3801,14 +3834,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01A",
+            "hex": "49303141"
           }
         }
       ],
@@ -3883,14 +3913,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01B",
+            "hex": "49303142"
           }
         },
         {
@@ -3983,14 +4010,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01C",
+            "hex": "49303143"
           }
         },
         {
@@ -4083,14 +4107,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01D",
+            "hex": "49303144"
           }
         }
       ],
@@ -4150,14 +4171,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01E",
+            "hex": "49303145"
           }
         }
       ],
@@ -4232,14 +4250,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01F",
+            "hex": "49303146"
           }
         }
       ],
@@ -4314,14 +4329,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01G",
+            "hex": "49303147"
           }
         }
       ],
@@ -4396,14 +4408,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01H",
+            "hex": "49303148"
           }
         }
       ],
@@ -4463,14 +4472,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01I",
+            "hex": "49303149"
           }
         },
         {
@@ -4548,14 +4554,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01J",
+            "hex": "4930314A"
           }
         }
       ],
@@ -4630,14 +4633,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01K",
+            "hex": "4930314B"
           }
         },
         {
@@ -4724,6 +4724,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01L",
+            "hex": "4930314C"
+          }
         }
       ],
       "display_name": "True Zangetsu"
@@ -4806,6 +4821,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01M",
+            "hex": "4930314D"
+          }
         }
       ],
       "display_name": "Nichirin Sword Whip"
@@ -4864,14 +4894,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01N",
+            "hex": "4930314E"
           }
         },
         {
@@ -4973,6 +5000,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01O",
+            "hex": "4930314F"
+          }
         }
       ],
       "display_name": "Lust Sin"
@@ -5039,6 +5081,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01P",
+            "hex": "49303150"
           }
         }
       ],
@@ -5107,6 +5164,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01Q",
+            "hex": "49303151"
+          }
         }
       ],
       "display_name": "Ryujin Jakka"
@@ -5165,14 +5237,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01R",
+            "hex": "49303152"
           }
         }
       ],
@@ -5232,7 +5301,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -5262,14 +5334,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01S",
+            "hex": "49303153"
           }
         }
       ],
@@ -5329,14 +5398,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01T",
+            "hex": "49303154"
           }
         }
       ],
@@ -5396,14 +5462,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01U",
+            "hex": "49303155"
           }
         },
         {
@@ -5414,7 +5477,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -5493,7 +5559,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -5513,6 +5582,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01V",
+            "hex": "49303156"
           }
         }
       ],
@@ -5611,6 +5695,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01W",
+            "hex": "49303157"
+          }
         }
       ],
       "display_name": "Lust Sin Evolved"
@@ -5677,6 +5776,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01X",
+            "hex": "49303158"
           }
         }
       ],
@@ -5745,6 +5859,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I01Y",
+            "hex": "49303159"
+          }
         }
       ],
       "display_name": "Gonryomaru"
@@ -5803,14 +5932,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I01Z",
+            "hex": "4930315A"
           }
         }
       ],
@@ -5885,14 +6011,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I020",
+            "hex": "49303230"
           }
         },
         {
@@ -5978,6 +6101,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I021",
+            "hex": "49303231"
           }
         }
       ],
@@ -6070,14 +6208,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I022",
+            "hex": "49303232"
           }
         }
       ],
@@ -6145,6 +6280,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I023",
+            "hex": "49303233"
           }
         }
       ],
@@ -6219,14 +6369,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I024",
+            "hex": "49303234"
           }
         },
         {
@@ -6334,14 +6481,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I025",
+            "hex": "49303235"
           }
         },
         {
@@ -6434,14 +6578,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I026",
+            "hex": "49303236"
           }
         }
       ],
@@ -6501,14 +6642,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I027",
+            "hex": "49303237"
           }
         }
       ],
@@ -6568,14 +6706,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I028",
+            "hex": "49303238"
           }
         }
       ],
@@ -6635,14 +6770,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I029",
+            "hex": "49303239"
           }
         }
       ],
@@ -6726,6 +6858,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I02A",
+            "hex": "49303241"
+          }
         }
       ],
       "display_name": "Turbo Neko"
@@ -6792,6 +6939,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02B",
+            "hex": "49303242"
           }
         }
       ],
@@ -6875,6 +7037,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PowerUp"
+          },
+          "sanity_check": {
+            "text": "I02C",
+            "hex": "49303243"
+          }
         }
       ],
       "display_name": "Tsuchikage Hat Evolved"
@@ -6941,6 +7118,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02D",
+            "hex": "49303244"
           }
         }
       ],
@@ -7024,6 +7216,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02E",
+            "hex": "49303245"
+          }
         }
       ],
       "display_name": "Wrath Sin"
@@ -7090,6 +7297,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02F",
+            "hex": "49303246"
           }
         }
       ],
@@ -7164,14 +7386,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02G",
+            "hex": "49303247"
           }
         }
       ],
@@ -7246,14 +7465,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02H",
+            "hex": "49303248"
           }
         }
       ],
@@ -7313,14 +7529,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02I",
+            "hex": "49303249"
           }
         }
       ],
@@ -7395,14 +7608,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02J",
+            "hex": "4930324A"
           }
         },
         {
@@ -7480,14 +7690,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02K",
+            "hex": "4930324B"
           }
         }
       ],
@@ -7562,14 +7769,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02L",
+            "hex": "4930324C"
           }
         },
         {
@@ -7580,7 +7784,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -7668,6 +7875,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02M",
+            "hex": "4930324D"
+          }
         }
       ],
       "display_name": "Sacred Gear Booster"
@@ -7726,14 +7948,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02N",
+            "hex": "4930324E"
           }
         },
         {
@@ -7826,14 +8045,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02O",
+            "hex": "4930324F"
           }
         },
         {
@@ -7911,14 +8127,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02P",
+            "hex": "49303250"
           }
         },
         {
@@ -8011,14 +8224,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Artifact",
-            "_original_value": "Artifact",
-            "_encoding": "utf-8",
-            "_raw_base64": "QXJ0aWZhY3Q="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02Q",
+            "hex": "49303251"
           }
         }
       ],
@@ -8093,14 +8303,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02R",
+            "hex": "49303252"
           }
         },
         {
@@ -8187,6 +8394,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I02S",
+            "hex": "49303253"
+          }
         }
       ],
       "display_name": "Tachikaze"
@@ -8245,14 +8467,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02T",
+            "hex": "49303254"
           }
         },
         {
@@ -8360,14 +8579,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02U",
+            "hex": "49303255"
           }
         }
       ],
@@ -8442,14 +8658,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02V",
+            "hex": "49303256"
           }
         }
       ],
@@ -8524,14 +8737,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02W",
+            "hex": "49303257"
           }
         }
       ],
@@ -8606,14 +8816,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02X",
+            "hex": "49303258"
           }
         }
       ],
@@ -8688,14 +8895,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02Y",
+            "hex": "49303259"
           }
         }
       ],
@@ -8770,14 +8974,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I02Z",
+            "hex": "4930325A"
           }
         }
       ],
@@ -8852,14 +9053,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I030",
+            "hex": "49303330"
           }
         }
       ],
@@ -8934,14 +9132,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I031",
+            "hex": "49303331"
           }
         }
       ],
@@ -9016,14 +9211,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I032",
+            "hex": "49303332"
           }
         }
       ],
@@ -9083,14 +9275,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I033",
+            "hex": "49303333"
           }
         }
       ],
@@ -9150,14 +9339,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I034",
+            "hex": "49303334"
           }
         }
       ],
@@ -9217,14 +9403,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I035",
+            "hex": "49303335"
           }
         }
       ],
@@ -9284,14 +9467,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I036",
+            "hex": "49303336"
           }
         }
       ],
@@ -9351,14 +9531,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I037",
+            "hex": "49303337"
           }
         }
       ],
@@ -9418,14 +9595,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I038",
+            "hex": "49303338"
           }
         }
       ],
@@ -9485,14 +9659,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I039",
+            "hex": "49303339"
           }
         }
       ],
@@ -9552,14 +9723,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03A",
+            "hex": "49303341"
           }
         }
       ],
@@ -9619,14 +9787,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03B",
+            "hex": "49303342"
           }
         }
       ],
@@ -9701,14 +9866,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03C",
+            "hex": "49303343"
           }
         }
       ],
@@ -9783,14 +9945,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03D",
+            "hex": "49303344"
           }
         }
       ],
@@ -9850,14 +10009,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03E",
+            "hex": "49303345"
           }
         },
         {
@@ -9950,14 +10106,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03F",
+            "hex": "49303346"
           }
         },
         {
@@ -10065,14 +10218,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03G",
+            "hex": "49303347"
           }
         }
       ],
@@ -10147,14 +10297,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03H",
+            "hex": "49303348"
           }
         }
       ],
@@ -10214,14 +10361,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03I",
+            "hex": "49303349"
           }
         }
       ],
@@ -10281,14 +10425,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03J",
+            "hex": "4930334A"
           }
         }
       ],
@@ -10348,14 +10489,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03K",
+            "hex": "4930334B"
           }
         }
       ],
@@ -10415,14 +10553,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03L",
+            "hex": "4930334C"
           }
         }
       ],
@@ -10482,14 +10617,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03M",
+            "hex": "4930334D"
           }
         }
       ],
@@ -10549,14 +10681,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03N",
+            "hex": "4930334E"
           }
         }
       ],
@@ -10616,14 +10745,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03O",
+            "hex": "4930334F"
           }
         }
       ],
@@ -10683,14 +10809,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03P",
+            "hex": "49303350"
           }
         }
       ],
@@ -10750,14 +10873,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03Q",
+            "hex": "49303351"
           }
         }
       ],
@@ -10817,14 +10937,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03R",
+            "hex": "49303352"
           }
         }
       ],
@@ -10884,14 +11001,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03S",
+            "hex": "49303353"
           }
         }
       ],
@@ -10960,6 +11074,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I03T",
+            "hex": "49303354"
+          }
         }
       ],
       "display_name": "Hogyoku"
@@ -11012,24 +11141,6 @@
         },
         {
           "field": {
-            "text": "icla",
-            "hex": "69636C61"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "iusa",
             "hex": "69757361"
           },
@@ -11055,6 +11166,21 @@
             "_original_value": "A06R",
             "_encoding": "utf-8",
             "_raw_base64": "QTA2Ug=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
           },
           "sanity_check": {
             "text": "",
@@ -11127,24 +11253,6 @@
         },
         {
           "field": {
-            "text": "icla",
-            "hex": "69636C61"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "icid",
             "hex": "69636964"
           },
@@ -11170,6 +11278,21 @@
           "type": "int",
           "data": {
             "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
           },
           "sanity_check": {
             "text": "",
@@ -11257,6 +11380,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I03W",
+            "hex": "49303357"
+          }
         }
       ],
       "display_name": "Sakura Sesshou"
@@ -11323,6 +11461,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PowerUp"
+          },
+          "sanity_check": {
+            "text": "I03X",
+            "hex": "49303358"
           }
         }
       ],
@@ -11391,6 +11544,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PowerUp"
+          },
+          "sanity_check": {
+            "text": "I03Y",
+            "hex": "49303359"
+          }
         }
       ],
       "display_name": "Murasame"
@@ -11449,14 +11617,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I03Z",
+            "hex": "4930335A"
           }
         }
       ],
@@ -11525,6 +11690,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I040",
+            "hex": "49303430"
+          }
         }
       ],
       "display_name": "Philosopher's Stone"
@@ -11592,6 +11772,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I041",
+            "hex": "49303431"
+          }
         }
       ],
       "display_name": "Demon-Dweller Sword"
@@ -11650,14 +11845,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I042",
+            "hex": "49303432"
           }
         },
         {
@@ -11789,6 +11981,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I043",
+            "hex": "49303433"
+          }
         }
       ],
       "display_name": "Cup of Tea Evolved"
@@ -11856,6 +12063,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I044",
+            "hex": "49303434"
+          }
         }
       ],
       "display_name": "Death Note"
@@ -11914,14 +12136,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Charged",
-            "_original_value": "Charged",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2hhcmdlZA=="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I045",
+            "hex": "49303435"
           }
         }
       ],
@@ -11996,14 +12215,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I046",
+            "hex": "49303436"
           }
         },
         {
@@ -12111,14 +12327,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I047",
+            "hex": "49303437"
           }
         },
         {
@@ -12129,7 +12342,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -12223,14 +12439,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I048",
+            "hex": "49303438"
           }
         },
         {
@@ -12241,7 +12454,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -12335,14 +12551,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "PowerUp"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I049",
+            "hex": "49303439"
           }
         },
         {
@@ -12353,7 +12566,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -12447,14 +12663,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I04A",
+            "hex": "49303441"
           }
         },
         {
@@ -12556,6 +12769,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I04B",
+            "hex": "49303442"
+          }
         }
       ],
       "display_name": "Shun Shun Rikka"
@@ -12581,10 +12809,7 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A074,A00X",
-            "_original_value": "A074,A00X",
-            "_encoding": "utf-8",
-            "_raw_base64": "QTA3NCxBMDBY"
+            "value": "A073,A00X"
           },
           "sanity_check": {
             "text": "",
@@ -12622,6 +12847,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable"
+          },
+          "sanity_check": {
+            "text": "I04C",
+            "hex": "49303443"
           }
         }
       ],
@@ -12696,14 +12936,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Charged"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I04D",
+            "hex": "49303444"
           }
         }
       ],
@@ -12772,6 +13009,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I04E",
+            "hex": "49303445"
+          }
         }
       ],
       "display_name": "Core Drill"
@@ -12839,6 +13091,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I04F",
+            "hex": "49303446"
+          }
         }
       ],
       "display_name": "Armament Haki"
@@ -12905,6 +13172,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Artifact"
+          },
+          "sanity_check": {
+            "text": "I050",
+            "hex": "49303530"
           }
         }
       ],
@@ -12979,14 +13261,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I051",
+            "hex": "49303531"
           }
         },
         {
@@ -13094,14 +13373,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I052",
+            "hex": "49303532"
           }
         },
         {
@@ -13209,14 +13485,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I053",
+            "hex": "49303533"
           }
         },
         {
@@ -13324,14 +13597,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I054",
+            "hex": "49303534"
           }
         },
         {
@@ -13433,6 +13703,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "PowerUp"
+          },
+          "sanity_check": {
+            "text": "I055",
+            "hex": "49303535"
+          }
         }
       ],
       "display_name": "Samehada"
@@ -13499,6 +13784,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Purchasable"
+          },
+          "sanity_check": {
+            "text": "I056",
+            "hex": "49303536"
           }
         }
       ],
@@ -13567,24 +13867,6 @@
         },
         {
           "field": {
-            "text": "icla",
-            "hex": "69636C61"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "icid",
             "hex": "69636964"
           },
@@ -13610,6 +13892,21 @@
           "type": "int",
           "data": {
             "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
           },
           "sanity_check": {
             "text": "",
@@ -13688,14 +13985,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Artifact"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I058",
+            "hex": "49303538"
           }
         },
         {
@@ -13797,24 +14091,6 @@
         },
         {
           "field": {
-            "text": "icla",
-            "hex": "69636C61"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
             "text": "icid",
             "hex": "69636964"
           },
@@ -13840,6 +14116,21 @@
           "type": "int",
           "data": {
             "value": 1
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
           },
           "sanity_check": {
             "text": "",
@@ -13912,6 +14203,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I05A",
+            "hex": "49303541"
+          }
         }
       ],
       "display_name": "Fairy Tail Emblem Evolved"
@@ -13978,6 +14284,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I05B",
+            "hex": "49303542"
           }
         }
       ],
@@ -14046,6 +14367,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I05C",
+            "hex": "49303543"
+          }
         }
       ],
       "display_name": "Nejibana Evolved"
@@ -14112,6 +14448,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I05D",
+            "hex": "49303544"
           }
         }
       ],
@@ -14186,14 +14537,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I05E",
+            "hex": "49303545"
           }
         },
         {
@@ -14310,6 +14658,21 @@
             "text": "I05F",
             "hex": "49303546"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I05F",
+            "hex": "49303546"
+          }
         }
       ],
       "display_name": "Philosopher's Stone Evolved"
@@ -14383,14 +14746,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I060",
+            "hex": "49303630"
           }
         },
         {
@@ -14401,7 +14761,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -14495,14 +14858,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I061",
+            "hex": "49303631"
           }
         },
         {
@@ -14513,7 +14873,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -14607,14 +14970,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I062",
+            "hex": "49303632"
           }
         },
         {
@@ -14625,7 +14985,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -14719,14 +15082,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I063",
+            "hex": "49303633"
           }
         },
         {
@@ -14737,7 +15097,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -14831,14 +15194,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I064",
+            "hex": "49303634"
           }
         },
         {
@@ -14849,7 +15209,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -14928,14 +15291,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I065",
+            "hex": "49303635"
           }
         },
         {
@@ -14946,7 +15306,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -15025,14 +15388,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I066",
+            "hex": "49303636"
           }
         },
         {
@@ -15043,7 +15403,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -15122,14 +15485,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I067",
+            "hex": "49303637"
           }
         },
         {
@@ -15140,7 +15500,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -15219,14 +15582,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Purchasable",
-            "_original_value": "Purchasable",
-            "_encoding": "utf-8",
-            "_raw_base64": "UHVyY2hhc2FibGU="
+            "value": "Purchasable"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I068",
+            "hex": "49303638"
           }
         },
         {
@@ -15237,7 +15597,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -15316,14 +15679,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I069",
+            "hex": "49303639"
           }
         },
         {
@@ -15334,7 +15694,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -15413,14 +15776,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I06A",
+            "hex": "49303641"
           }
         },
         {
@@ -15431,7 +15791,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A145"
+            "value": "A145",
+            "_original_value": "A145",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0NQ=="
           },
           "sanity_check": {
             "text": "",
@@ -15510,14 +15873,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I06B",
+            "hex": "49303642"
           }
         },
         {
@@ -15528,7 +15888,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A146"
+            "value": "A146",
+            "_original_value": "A146",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0Ng=="
           },
           "sanity_check": {
             "text": "",
@@ -15607,14 +15970,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Campaign",
-            "_original_value": "Campaign",
-            "_encoding": "utf-8",
-            "_raw_base64": "Q2FtcGFpZ24="
+            "value": "Campaign"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I06C",
+            "hex": "49303643"
           }
         },
         {
@@ -15625,7 +15985,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A148"
+            "value": "A148",
+            "_original_value": "A148",
+            "_encoding": "utf-8",
+            "_raw_base64": "QTE0OA=="
           },
           "sanity_check": {
             "text": "",
@@ -15719,14 +16082,11 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": "Miscellaneous"
           },
           "sanity_check": {
-            "text": "",
-            "hex": "00000000"
+            "text": "I06D",
+            "hex": "49303644"
           }
         },
         {
@@ -15828,6 +16188,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I06E",
+            "hex": "49303645"
+          }
         }
       ],
       "display_name": "Zanka no Tachi"
@@ -15894,6 +16269,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I06F",
+            "hex": "49303646"
           }
         }
       ],
@@ -15962,6 +16352,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I070",
+            "hex": "49303730"
+          }
         }
       ],
       "display_name": "Koko Gonryo Rikyu"
@@ -16029,6 +16434,21 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I071",
+            "hex": "49303731"
+          }
         }
       ],
       "display_name": "Tobiume"
@@ -16072,7 +16492,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 5500
+            "value": 6000
           },
           "sanity_check": {
             "text": "",
@@ -16095,6 +16515,21 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I072",
+            "hex": "49303732"
           }
         }
       ],
@@ -16121,10 +16556,10 @@
           "field_name": "",
           "type": "string",
           "data": {
-            "value": "A154,A00W",
-            "_original_value": "A154,A00W",
+            "value": "A154,A00M,A0CQ",
+            "_original_value": "A154,A00M,A0CQ",
             "_encoding": "utf-8",
-            "_raw_base64": "QTE1NCxBMDBX"
+            "_raw_base64": "QTE1NCxBMDBNLEEwQ1E="
           },
           "sanity_check": {
             "text": "",
@@ -16154,25 +16589,7 @@
           "field_name": "",
           "type": "int",
           "data": {
-            "value": 7500
-          },
-          "sanity_check": {
-            "text": "",
-            "hex": "00000000"
-          }
-        },
-        {
-          "field": {
-            "text": "icla",
-            "hex": "69636C61"
-          },
-          "field_name": "",
-          "type": "string",
-          "data": {
-            "value": "Miscellaneous",
-            "_original_value": "Miscellaneous",
-            "_encoding": "utf-8",
-            "_raw_base64": "TWlzY2VsbGFuZW91cw=="
+            "value": 5000
           },
           "sanity_check": {
             "text": "",
@@ -16211,9 +16628,220 @@
             "text": "",
             "hex": "00000000"
           }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
         }
       ],
       "display_name": "Blood Pact Ring Evolved"
+    },
+    {
+      "old_id": {
+        "text": "rde1",
+        "hex": "72646531"
+      },
+      "new_id": {
+        "text": "I074",
+        "hex": "49303734"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "iabi",
+            "hex": "69616269"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A161,A00M"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "igol",
+            "hex": "69676F6C"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 7500
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icid",
+            "hex": "69636964"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "A161"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "icla",
+            "hex": "69636C61"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Permanent"
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "ilum",
+            "hex": "696C756D"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "ipow",
+            "hex": "69706F77"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 0
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "unam",
+            "hex": "756E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Inverted Spear of Heaven"
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "utip",
+            "hex": "75746970"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Inverted Spear of Heaven"
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "utub",
+            "hex": "75747562"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+15 allstats\nActive: For 9 sec, ignores 50% of the target enemy's physical and magic resistance. The debuff cannot be dispelled. Does not bypass shields or invulnerability.\nCast range: 800\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "ides",
+            "hex": "69646573"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "+15 allstats\nActive: For 9 sec, ignores 50% of the target enemy's physical and magic resistance. The debuff cannot be dispelled. Does not bypass shields or invulnerability.\nCast range: 800\nCooldown: 20 sec."
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "iico",
+            "hex": "6969636F"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp"
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        },
+        {
+          "field": {
+            "text": "iusa",
+            "hex": "69757361"
+          },
+          "field_name": "",
+          "type": "int",
+          "data": {
+            "value": 1
+          },
+          "sanity_check": {
+            "text": "I074",
+            "hex": "49303734"
+          }
+        }
+      ],
+      "display_name": "Kyoka Suigetsu"
     }
   ]
 }

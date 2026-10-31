@@ -1,0 +1,132 @@
+**War of Souls 2 — 0.34d → 0.34e | 1/8**
+**Heroes and core balance**
+
+- **Agility / Intelligence resistance scaling:** armor-equivalent coefficient **0.12 → 0.15**. Resistance still follows the armor formula; this is not a flat 25% damage reduction.
+- **Mana regeneration per INT:** **0.20 → 0.15 MP/sec**.
+- **Frostnova, Inori, Ainz and Frieren:** base attack damage **20 → 10**; base attack interval **+0.3 sec**. Frostnova, Inori T2, Ainz and Frieren: **1.5 → 1.8 sec**; base Inori: **1.7 → 2 sec**.
+- **Alucard, both forms:** base attack interval **1.5 → 1.8 sec**.
+- **Okarun Q:** cooldown **18/17/16/15/14 → 20/19/18/17/16 sec**.
+- **Bambietta W:** initial protected phase **0.51 → 0.63 sec**.
+- **Inori T2:** enemies taking 10% more damage → removes **10 percentage points of physical/magic resistance**, without reducing resistance below zero.
+- **Inori E:** fixed aura benefits before learning E, ability visibility during transformations and upgrading E while its alternate button is shown.
+- **Patriot E:** removed duplicate kill messages when the hero had already died.
+- **Toji F:** preserves the current order and queued commands instead of issuing a replacement movement order.
+- **Instant abilities:** reworked activation and overlapping pauses to address interrupted orders and heroes remaining stuck after casts.
+- **Stuck heroes:** added automatic relocation from invalid terrain to a nearby walkable position.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 2/8**
+**Active items and utility**
+
+- **Elemental inventory limit:** shared cooldowns alone → **only one active item per element**. Fire, Water and Lightning can still be combined with each other.
+- **Mana costs:** utility, defensive and mode-switching actives now cost **0 MP**. This includes Incursio, Naofumi Shield, Prison Realm, Eul, Hashirama Cells, Sukuna's Finger, Five Elements Seal, Tekkai, Kairoseki, Ice Coffin, Blood Pact Rings and evolved Yata/Philosopher actives.
+- **Return by Death:** mana **175 → 125**; return delay **4 → 5 sec**. Updated return marker and teleport positioning.
+- **Shiki Knife Evolved:** mana **125 → 80**.
+- **Targeted damaging actives:** cast range standardized to **1600** where previously 1100–1500; Constellation Coil cast range **1800 → 1600**, projectile travel remains 1800.
+- **Rock Lee Weight:** wind travel **1100 → 1600**. **Red Cup:** travel **1820 → 1600**. **Tusk Barrel:** travel **1800 → 1600**.
+- **Red Cup / Rhitta:** damage **5.5 → 5 × main stat**.
+- **Raijin's Wrath:** damage **5.5 → 5 × main stat**; radius **600 → 450**.
+- **Shark Trail / Red Flower:** projectile speed **1900 → 2375 / 2400 → 3000**.
+- **Will of D.:** cooldown **600 → 180 sec**. Protection now ends when its buff is dispelled, including by Kairoseki Cuffs.
+- **Ice Coffin:** fixed overlapping pauses and round-end cleanup; assigning its hotkey no longer also activates it. Added a custom ice-coffin effect.
+- **Active items:** added damage to destructible scenery around activation and along affected projectiles/areas.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 3/8**
+**Strength elemental items**
+
+- **Emberbreaker:** impact remains **4 × STR**. Additional burn **1.25 × STR over 2 sec → 3 × STR over 4 sec**; retaliation **0.75 → 1 × STR**. Added dispellable burn/retaliation marks and updated fire effects.
+- **Leviathan's Grasp:** impact **3.75 → 3.25 × STR**; squeeze **2.25 → 1.75 × STR**. Healing **15% → 30% of actual damage dealt**; removed the **1.2 × STR** healing cap.
+- **Leviathan's Anchor:** total damage **5.75 → 6.75 × STR**. Three impacts now land every **0.6 sec**, with centres at the cast point, 80 units behind and 80 ahead. Pull speed **190 → 240 units/sec**; slow **15% → 40%**. Water applies on every impact. Reworked the falling-anchor effect.
+- **Thunder Verdict:** main damage **5.5 → 4.5 × STR**; moving beyond the tether adds **0.5 → 1 × STR**. The tether mark can now be dispelled.
+- **Thunder Bastion:** storm damage **5.25 → 3.25 × STR**; damage per counter **0.25 → 0.75 × STR**. Counter charges can now be dispelled.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 4/8**
+**Agility elemental items**
+
+- **Cinder Fang:** first hit **5 → 4 × AGI**; **1 → up to 3 ricochets**, each dealing **2.5 × AGI**, without revisiting targets. Follow-up damage **1 → 1.5 × AGI**, triggered by your next attack **or hero ability hit**. Each struck target receives a **3-sec block on HP/MP regeneration and restoration**. Its mark can be dispelled.
+- **Ashen Crossfire:** outgoing damage **5.5 → 4.5 × AGI**; return damage **3.8 → 3.3 × AGI**. Outward travel **300–1000 → 1800 units**; speed **1100 → 1540**. Shuriken return towards your position when they turn around. Added new shuriken models and fire trails.
+- **Mirror Tide:** wave damage **5.5 → 4 × AGI**; fixed hit radius **300 → growing 350–525**. A stationary mirror triggered by your next attack → a **3-sec dispellable mark on each enemy hit**. Damage hits above **100** launch a **0.5 × AGI** ricochet at the nearest allied unit of that target within 600: **once/sec, up to 3 times**. Clones are valid ricochet targets.
+- **Volt Thread:** initial damage **5.5 → 3 × AGI**; link duration **3 → 5 sec**. Added **0.3 × AGI/sec** to the linked target; line damage to other enemies remains **0.9 × AGI/sec**. Third-attack bonus **0.5 → 1 × AGI**. Dispelling the mark breaks the link; triggering the attack bonus no longer ends it early.
+- **Offensive follow-ups:** item damage and elemental ticks cannot trigger the Cinder Fang attack/ability mark; Volt Thread's charge bonus remains attack-based.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 5/8**
+**Intelligence elemental items**
+
+- **Phoenix Seal:** homing fire projectile → falling seal with a **0.3-sec delay**. Impact **3.75 → 3.25 × INT**; additional burn **1.75 × INT over 2 sec → 1.25 × INT over 3 sec**. Punishment for casting a hero ability **0.5 → 2 × INT**. Burn and cast-punishment marks can be dispelled.
+- **Crimson Scripture:** eruption delay **0.8 → 0.44 sec**. Initial damage remains **4 × INT**. Ground damage **1.5 × INT over 1.5 sec → 4 × INT over 1.2 sec**, delivered in **6 pulses instead of 3**. Removed the extra eruption damage against already-burning targets. Updated the eruption effect.
+- **Siren's Tear:** impact **6 → 5 × INT**. Mana-drain cap **8% → 20% of target max MP**, still limited to **2.5 × INT**, whichever is lower. Mana returned to you **60% → 30% of drained mana**. Drain mark can now be dispelled.
+- **Constellation Coil:** travelling hit **5.5 → 4.5 × INT**; path radius **200 → 250**. Added a **60-unit push**. Instead of disappearing at maximum travel distance, the projectile spins for **2 sec**, dealing **1 × INT every 0.5 sec** and applying Lightning within an expanding **250–625 radius**.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 6/8**
+**Passive items and combinations**
+
+- **Earth Power:** damage **2 → 2.5 × main stat**.
+- **Tachikaze:** damage **0.8 → 1 × main stat**; Koko Gonryo Rikyu's Lightning ticks can now trigger it.
+- **Koko Gonryo Rikyu:** Lightning damage **0.2 → 0.5 × main stat/sec**.
+- **Zanka no Tachi:** maximum Fire damage **300 → 240/sec**.
+- **Tobiume:** Overload bonus **+100% → +175%**.
+- **Suzumebachi:** Electrized bonus **+80% → +125%**; price **5500 → 6000 gold**.
+- **True Zangetsu / Nichirin Sword Whip:** resistance reduction **16 → 18 percentage points**; debuff duration **7 → 10 sec**.
+- **Frozen Heart / Fairy Tail Emblem Evolved:** mana regeneration/restoration amplification **20% → 15%**.
+- **Samehada:** mana restored and drained per attack **4% → 5%** of the respective maximum MP.
+- **Naofumi Shield Evolved:** passive block **40 → 30 damage per hit**; active block remains 100.
+- **Susanoo Shield:** activation mana **150 → 105**.
+- **Philosopher's Stone, both versions:** full healing from creeps → **50% healing from creeps**.
+- **Core Drill:** ability damage only → also gains stacks from **item damage, poison, burns and elemental ticks**. Attacks and illusions remain excluded.
+- **Quincy Cross:** its +45 damage now also applies to elemental debuff damage.
+- **Blood Pact Ring Evolved:** price **7500 → 5000 gold**; **+20 all stats → +15 all stats and +250 MP**; cooldown **12 → 20 sec**.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 7/8**
+**Item recipes**
+
+**New component recipes:**
+- **Armament Haki:** Katana + Pakkun +5.
+- **Sukuna's Finger:** Elixir of Life + Tome of Intelligence +20 + Necklace +500.
+- **Five Elements Seal:** Hokage Hat + Pakkun +15.
+- **Rokushiki: Tekkai:** Sea God Shield + Seal +15.
+- **Samehada:** Katana + Pakkun +15.
+- **Will of D.:** Avalon + Tome of Agility +25 + Necklace +500.
+- **Kairoseki Cuffs:** Hokage Hat + Sea God Shield.
+- **Hyorinmaru Ice Coffin:** Frozen Heart + Pakkun +15.
+- **Return by Death:** Future Diary + Pakkun +5.
+- **Blood Pact Ring:** Tome of Strength +10 + Necklace +500.
+- **Zanka no Tachi / Tobiume:** Piro Slime + Pakkun +15.
+- **Kyoka Suigetsu:** Future Diary + Pakkun +15.
+- **Koko Gonryo Rikyu:** Electro Slime + Pakkun +15.
+- **Suzumebachi:** Hydro Slime + Pakkun +15.
+
+- **Quincy Cross:** component **Pakkun +12 → Pakkun +20**.
+
+---
+
+**War of Souls 2 — 0.34d → 0.34e | 8/8**
+**Shop, interface and fixes**
+
+- **Combat purchases:** closed loopholes in manual buying, Quick Buy, crafting and Autobuy. Purchases are restricted to preparation; Test Mode keeps combat purchases.
+- **Opening Autobuy:** moved purchases before combat begins, preventing delayed first-round purchases during combat.
+- **Shop descriptions:** **4 → 8 visible lines**, larger reading area and left-aligned text. Added mana icons and costs to item headers/tooltips.
+- **Ability tooltips:** wider, consistently formatted text; fixed missing details, unwanted level tags and tooltips appearing while their windows are hidden.
+- **Learning abilities:** clicking upgrade buttons preserves cursor position; corrected ability-rank tracking, including Inori E.
+- **HUD:** fixed unnecessary layout resets when applying saved settings; ally-colour mode now starts in **Mode 3**.
+- **Hero portraits:** death/revival updates remain visible outside vision. Living heroes at 1 HP retain a visible health-bar sliver.
+- **Game Info:** enlarged the panel and text for readability.
+- **Elemental damage statistics:** damage is credited to the resolved reaction, including Water interacting with Raiden E.
+- **Test Mode:** surviving test summons/allies no longer keep combat running after all primary player heroes die; repicking during combat ends the active round.
+- **Startup:** reduced repeated tooltip processing during initialization.
+
+- Active items now briefly reveal their area of use.
+- Fixed conflicting hero ability commands, including Yamamoto's defensive Q and style switch, Erza's armor abilities and Kyoraku's Bankai controls.
+
+- Active item vision now covers at least 1.5x the effect area, with a 750 minimum radius. Moving shurikens, growing lightning fields and ground fire keep their area revealed while active.
+- Train impact damage increased from 200 to 275 and explosion damage from 400 to 475. Both now gain 125 damage per additional round, up from 50.

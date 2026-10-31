@@ -240,7 +240,7 @@
         "ability": "A00Z",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1300.0
+        "fallback": 1600.0
     },
     {
         "item": "I00H",
@@ -400,7 +400,7 @@
         "ability": "A01Z",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1100.0
+        "fallback": 1600.0
     },
     {
         "item": "I00Q",
@@ -452,7 +452,7 @@
         "ability": "A02G",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I00T",
@@ -569,7 +569,7 @@
             {
                 "id": "A02U",
                 "name": "Item Angel's Blessing",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A04S",
@@ -587,7 +587,7 @@
             {
                 "id": "A02T",
                 "name": "Item Naofumi Shield",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00M",
@@ -739,7 +739,7 @@
         "ability": "A06P",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I017",
@@ -1029,7 +1029,7 @@
         "ability": "A076",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1100.0
+        "fallback": 1600.0
     },
     {
         "item": "I01O",
@@ -1159,7 +1159,7 @@
         "ability": "A09M",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I01V",
@@ -1303,7 +1303,7 @@
             {
                 "id": "A0AL",
                 "name": "Item Future Diary",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00X",
@@ -1339,7 +1339,7 @@
             {
                 "id": "A0BZ",
                 "name": "CD Prison Realm",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00R",
@@ -1357,7 +1357,7 @@
             {
                 "id": "A0BZ",
                 "name": "CD Prison Realm",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00R",
@@ -1496,7 +1496,7 @@
         "ability": "A0DD",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I02D",
@@ -1518,7 +1518,7 @@
             {
                 "id": "A0E4",
                 "name": "Item Wrath Sin",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00W",
@@ -1658,7 +1658,7 @@
         "ability": "A0F5",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I02M",
@@ -1804,7 +1804,7 @@
             {
                 "id": "A0FD",
                 "name": "CD Orb Lightning",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A04P",
@@ -2097,7 +2097,7 @@
             {
                 "id": "A0G0",
                 "name": "CD Orb Fire",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A04P",
@@ -2115,7 +2115,7 @@
             {
                 "id": "A0G1",
                 "name": "CD Orb Water",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A04P",
@@ -2535,7 +2535,7 @@
         ],
         "ability": "A102",
         "field": "cast_range level 1",
-        "fallback": 1425.0
+        "fallback": 1600.0
     },
     {
         "item": "I047",
@@ -2561,7 +2561,7 @@
         ],
         "ability": "A102",
         "field": "cast_range level 1",
-        "fallback": 1425.0
+        "fallback": 1600.0
     },
     {
         "item": "I048",
@@ -2587,7 +2587,7 @@
         ],
         "ability": "A102",
         "field": "cast_range level 1",
-        "fallback": 1425.0
+        "fallback": 1600.0
     },
     {
         "item": "I049",
@@ -2613,7 +2613,7 @@
         ],
         "ability": "A102",
         "field": "cast_range level 1",
-        "fallback": 1425.0
+        "fallback": 1600.0
     },
     {
         "item": "I04A",
@@ -2625,7 +2625,7 @@
             {
                 "id": "A10D",
                 "name": "Item Hashirama Cells",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A06T",
@@ -2746,7 +2746,7 @@
             {
                 "id": "A02T",
                 "name": "Item Naofumi Shield",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00W",
@@ -2821,7 +2821,7 @@
             {
                 "id": "A135",
                 "name": "Item Rokushiki: Tekkai",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00M",
@@ -2906,7 +2906,7 @@
             {
                 "id": "A13C",
                 "name": "Item Hyorinmaru Ice Coffin",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00M",
@@ -2924,7 +2924,7 @@
             {
                 "id": "A13E",
                 "name": "Item Return by Death",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00M",
@@ -3019,7 +3019,7 @@
             {
                 "id": "A140",
                 "name": "Item Mirror of Yata Evolved",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A04W",
@@ -3047,7 +3047,7 @@
             {
                 "id": "A142",
                 "name": "Item Philosopher's Stone Evolved",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A00W",
@@ -3082,7 +3082,7 @@
         "ability": "A145",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I061",
@@ -3108,7 +3108,7 @@
         "ability": "A146",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I062",
@@ -3134,7 +3134,7 @@
         "ability": "A147",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I063",
@@ -3160,7 +3160,7 @@
         "ability": "A148",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I064",
@@ -3186,7 +3186,7 @@
         "ability": "A149",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I065",
@@ -3212,7 +3212,7 @@
         "ability": "A14A",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I066",
@@ -3238,7 +3238,7 @@
         "ability": "A14B",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I067",
@@ -3290,7 +3290,7 @@
         "ability": "A14D",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I069",
@@ -3316,7 +3316,7 @@
         "ability": "A14E",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I06A",
@@ -3342,7 +3342,7 @@
         "ability": "A14F",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I06B",
@@ -3368,7 +3368,7 @@
         "ability": "A150",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1400.0
+        "fallback": 1600.0
     },
     {
         "item": "I06C",
@@ -3394,7 +3394,7 @@
         "ability": "A151",
         "source": "object-data/abilities.json",
         "field": "cast_range level 1",
-        "fallback": 1800.0
+        "fallback": 1600.0
     },
     {
         "item": "I06D",
@@ -3403,7 +3403,7 @@
             {
                 "id": "A152",
                 "name": "Item Blood Pact Ring",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
                 "id": "A06T",
@@ -3491,15 +3491,41 @@
             {
                 "id": "A154",
                 "name": "Item Blood Pact Ring Evolved",
-                "base": "ANcl"
+                "base": "Absk"
             },
             {
-                "id": "A00W",
-                "name": "Item ALST + 20",
+                "id": "A00M",
+                "name": "Hero ALST + 15",
                 "base": "AIx1"
+            },
+            {
+                "id": "A0CQ",
+                "name": "mp",
+                "base": "AI2m"
             }
         ],
         "mode": "none",
         "reason": "No independent caster-centred reach: stats, self buff/heal, cooldown carrier, or a proc centred on its struck target."
+    },
+    {
+        "item": "I074",
+        "name": "Inverted Spear of Heaven",
+        "abilities": [
+            {
+                "id": "A161",
+                "name": "Item Inverted Spear of Heaven",
+                "base": "ANcl"
+            },
+            {
+                "id": "A00M",
+                "name": "Hero ALST + 15",
+                "base": "AIx1"
+            }
+        ],
+        "mode": "cast",
+        "ability": "A161",
+        "source": "object-data/abilities.json",
+        "field": "cast_range level 1",
+        "fallback": 800.0
     }
 ]

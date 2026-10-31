@@ -1,0 +1,51 @@
+Anime WoS2 0.34f
+
+- Steam now increases physical damage taken by 12%; Kyoka Suigetsu raises the total bonus to 24%.
+- Bazz-B W, E and R cooldowns reduced by 2 seconds at every level.
+- Core Drill damage bonus reduced from 5% to 4.25% per stack (maximum 25% -> 21.25%).
+- Added Inverted Spear of Heaven to Universal items: 7500 gold, +15 all stats. Its active ignores 50% of an enemy's physical and magic resistance for 9 seconds and cannot be dispelled. Cooldown: 20 seconds. Recipe: Pakkun +10, Pakkun +5 and 4500 gold.
+- Sakura Sesshou cooldown increased from 15 to 20 seconds; Angel's Blessing no longer costs mana.
+- Sukuna's Finger and Five Elements Seal now last 9 seconds. Sacred Gear Booster now reduces item cooldowns by 4 seconds.
+- Starrk's Cero Metralleta now has a 0.42-second windup. Neuvillette R grants invulnerability only before the beam starts.
+- Erza now stops when leaving an armor form. Frieren Q cast time increased to 0.75 seconds.
+- Akainu W punch radius increased from 400 to 500.
+- Frieren E now summons 6 pillars with adjusted spacing. W cast range reduced by 100.
+- Frieren TW now creates a stationary orb at the target point, with growing lightning and damage radius. T2 gains 200 range, a 0.42-second windup and 0.66-second effect growth.
+- Erza ET cast time reduced to 0.81 seconds. TR swords start 0.39 seconds later while retaining their active duration. TE cast time increased by 0.09 seconds.
+- All Espada Cero windups increased by 0.12 seconds, with matching animation speed. Barragan TQ gains another 0.09 seconds of windup; EG poison base damage reduced by 10 at every tier.
+- Frostnova Q interval between throws increased from 0.25 to 0.55 seconds.
+- Neuvillette T pillars appear 0.3 seconds later; pillar count reduced from 10 to 8.
+- Raiden T now grants +50 attack damage; T2 removes this bonus. TTW lightning can damage each target only once per second. TQ and TTQ now share a 1650-unit dash range; R aiming moves 15% slower.
+- Base elemental debuffs and reactions now last 4 seconds. Kurikara and Ashisogi Jizo remain at 5 seconds. Ashisogi Jizo damage increased to 0.6x Agility per tick; Zanka no Tachi Fire now lasts 6 seconds.
+- Ainz mines now last 28 seconds. Their damage scales evenly from 1x to 2.5x INT across five ranks. TQ and TR cast times increased by 0.12 and 0.15 seconds.
+- Mahoraga growth changed to 1.8 Strength, 2.1 Agility and 1.65 Intelligence per level.
+- Patriot T now traps enemies that enter its area and returns escape attempts. R damage reduced by 1x Agility; lingering soldiers now require level 35. T2 aiming marker moves 25% slower.
+- Toji can use every Agility-class item without mana.
+- Alter Saber R windup increased by 0.15 seconds; R2 root reduced by 0.5 seconds. W and RW share cooldown duration and remaining cooldown across form changes.
+- Alucard RE windup increased by 0.15 seconds; T2 gains an additional 0.25-second preparation.
+- Brandish T windup increased by 0.3 seconds, with a slower matching animation.
+- Tsuna can release X-Burner at 0.54 seconds instead of 0.90, starting at 50% power and smoothly reaching 100% at 1.50 seconds.
+- Inori FQ duration reduced by 0.5 seconds while preserving all five damage pulses.
+- Bambietta TT is vulnerable during takeoff and becomes invulnerable once airborne.
+- Harribel E2 is disabled during W. At level 35, charged EW gains up to 4x Agility bonus damage. R slashes and effects begin 0.33 seconds later while retaining invulnerability.
+- Funny Barrel explosion damage increased to 175 + 2x main stat.
+- Harribel E2 stays visible but unavailable during W. Inori's E aura remains readable in its upgraded rank and E form.
+- Starrk ER preparation effects now persist until the first shot. Bambietta E windup is 0.72 sec; TQ windup is 0.66 sec. Erza ET windup is 0.9 sec.
+- Frieren T2 windup is 0.54 sec and travel ends at 1800 units. Paired black holes detonate on convergence, including all remaining damage ticks. Effects finish growing 0.3 sec after movement begins.
+- Frieren TW with a nearby clone creates one orb with 60% more damage, double radius and lightning reach.
+- Kurikara and Ashisogi Jizo debuffs last 4 sec. Ashisogi Jizo grants 15 Agility.
+- Leviathan's Grasp cooldown reduced by 5 sec and pull increased by 100. Leviathan's Anchor disarms each enemy for 2 sec on first contact.
+- Thunder Verdict escape damage increased to 3x STR. Thunder Bastion deals 5x STR over four faster pulses; counters last 5 sec.
+- Ashen Crossfire flies 15% faster and can hit each enemy on both passes; return damage increased to 3.5x AGI.
+- Mirror Tide marks last 4 sec and trigger up to four 1.5x AGI water ricochets to random enemies within 800 range, with a 0.1 sec trigger interval.
+- Volt Thread deals 4x AGI on impact, 1.25x AGI/sec along the thread, 0.65x AGI/sec to its target, and 2x AGI on the third attack.
+- Cinder Fang uses the fire windwalk effect and blocks HP/MP restoration on every hit target for 3.5 sec.
+- Phoenix Seal cooldown reduced by 4 sec. Siren's Tear flies twice as fast, drains 3.5x INT mana and restores exactly the amount drained.
+- Crimson Scripture preparation is 0.6 sec. Constellation Coil drags enemies along, then starts spinning 0.3 sec after its first hit.
+- Harribel Hirviendo reliably becomes available again after EW; repeated ability-lock accumulation is fixed.
+- Starrk ER windup increased by another 0.12 sec to 0.54 sec.
+- Bambietta TR effects are smaller while its damage area stays unchanged. TE now fires exactly 20 shells with the original damage per shell.
+- Inori's upgraded E aura displays its Instability stacks. Repeated readiness updates no longer accumulate native hide counters.
+- Frieren paired T2 black holes merge within 360 units, converge to one point and release all remaining damage through four shared explosions. Detonations pull enemies inward.
+- Siren's Tear drains up to 3x INT mana and returns 75% of the amount actually drained.
+- Frieren merged T2 black holes grow for 0.5 sec, then explode four times at 0.4 sec intervals, pulling enemies from 25% beyond the explosion radius. Clone-enhanced TW has smaller, less frequent lightning effects.

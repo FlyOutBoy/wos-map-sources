@@ -24,9 +24,9 @@ def functions(text, *names):
 class InoriAura(unittest.TestCase):
     def fixture(self, extra=''):
         system = source('Systems/Systems1.j')
-        text = functions(system, 'InoriE_AuraResistance', 'InoriE_ApplyAuraResistance', 'InoriE_UpdateAura')
+        text = functions(system, 'InoriE_AuraResistance', 'InoriE_ApplyAuraResistance', 'InoriT2_ApplyResistDown', 'InoriE_UpdateAura')
         hero = source('Heroes/Inori.j')
-        text = re.sub(r'/\*.*?\*/', '', text+'\n'+extra, flags=re.S)
+        text = re.sub(r'/\*.*?\*/', '', text+'\n'+functions(hero, 'InoriE_SetBaseHidden')+'\n'+extra, flags=re.S)
         vm = JassState(re.sub(r'(?<![\w.\]])\.(?=[A-Za-z_])', 'this.', text))
         for name, value in re.findall(r'\binteger (Inori\w*_ID)\s*=\s*\'([^\']+)\'', hero):
             vm.g[name] = value
@@ -35,13 +35,18 @@ class InoriAura(unittest.TestCase):
         available, disabled = {}, {}
         vm.g.update(hs={}, SH_INORI_AURA_DISABLED='aura disabled', SH_INORI_AURA_MODE_T='mode t',
                     SH_INORI_AURA_CURRENT_T='current t', SH_MODE_T='mode t', SH_CURRENT_T='current t',
-                    SH_CANCEL_T='cancel t', SH_PAS_CD='pas cd', SH_INORI_E='Inori E',
+                    SH_CANCEL_T='cancel t', SH_PAS_CD='pas cd', SH_INORI_E='Inori E', SH_INORI_E_HIDDEN='inori base E hidden',
                     IMinBJ=min, HaveSavedBoolean=lambda h, k, c: (k, c) in h,
                     GetPlayerId=lambda p: p, Player=lambda p: p,
                     GetHeroLevel=lambda u: u.hero_level,
                     SetPlayerAbilityAvailable=lambda p, a, v: available.update({(p, a): v}),
                     BlzUnitDisableAbility=lambda u, a, d, h: disabled.update({(id(u), a): (d, h)}),
                     SetUnitAbilityLevel=lambda u, a, v: u.abilities[a].update(level=v) if a in u.abilities else None)
+        remove = vm.g['UnitRemoveAbility']
+        def remove_and_reset(u,a):
+            remove(u,a)
+            disabled[id(u),a] = (False,False)
+        vm.g['UnitRemoveAbility'] = remove_and_reset
         c = vm.unit(owner=0)
         c.hero_level = 24
         c.type = vm.g['Inori_ID']
@@ -109,8 +114,11 @@ class InoriAura(unittest.TestCase):
         vm.g['hs'][id(c), 'mode t'] = 1
         vm.run('InoriE_UpdateAura', (c,))
         for damage_type in (0, 1, 2):
-            self.assertAlmostEqual(110., vm.run('InoriE_ApplyAuraResistance', (enemy, 100., damage_type)))
+            self.assertAlmostEqual(100., vm.run('InoriE_ApplyAuraResistance', (enemy, 100., damage_type)))
             self.assertAlmostEqual(90., vm.run('InoriE_ApplyAuraResistance', (boosted_ally, 100., damage_type)))
+        for amount, expected in ((50., 60.), (80., 90.), (95., 100.), (100., 100.)):
+            self.assertAlmostEqual(expected, vm.run('InoriT2_ApplyResistDown', (enemy, amount, 100.)))
+        self.assertAlmostEqual(80., vm.run('InoriT2_ApplyResistDown', (boosted_ally, 80., 100.)))
 
     def test_unlearned_e_does_not_receive_service_rank6(self):
         vm, c, _, _ = self.fixture()
@@ -118,6 +126,26 @@ class InoriAura(unittest.TestCase):
         vm.remove_ability(c, vm.g['InoriE_ID'])
         vm.run('InoriE_UpdateAura', (c,))
         self.assertNotEqual(6, self.rank(vm, c))
+
+    def test_enemy_resistance_shred_runs_after_ainz_in_both_real_damage_branches(self):
+        text = source('Systems/Systems1.j')
+        cursor = text.index('function DamageBlock')
+        for kind in ('physical', 'magic'):
+            start = text.index('if GetUnitAbilityLevel(td, AinzT_Debuff_ID)', cursor)
+            end = text.index('set dmg = InoriT2_ApplyResistDown(td, dmg, dmgbase)', start)
+            end = text.index('\n', end)
+            cursor = end
+            extra = ('function AfterAinz takes unit td, real dmg, real dmgbase returns real\nlocal real value\n' +
+                     text[start:end]+'\nreturn dmg\nendfunction')
+            vm, _, _, _ = self.fixture(extra)
+            vm.g.update(AinzT_Debuff_ID='ainz', AinzT_ResistReduce=30.)
+            enemy = vm.unit(owner=1)
+            vm.add_ability(enemy, vm.g['InoriT2_AuraBuff_ID'])
+            self.assertEqual(60., vm.run('AfterAinz', (enemy, 50., 100.)), kind)
+            self.assertEqual(100., vm.run('AfterAinz', (enemy, 95., 100.)), kind)
+            vm.add_ability(enemy, 'ainz')
+            self.assertEqual(90., vm.run('AfterAinz', (enemy, 50., 100.)), kind)
+            self.assertEqual(100., vm.run('AfterAinz', (enemy, 95., 100.)), kind)
 
     def test_actual_ultimate_selection_updates_aura_immediately(self):
         vm, c, _, _ = self.fixture(functions(source('Heroes/Inori.j'), 'OnClickInori'))
@@ -150,6 +178,54 @@ class InoriAura(unittest.TestCase):
         vm.g['hs'][id(c), 'mode t'] = 0
         vm.run('InoriEPas_Start', (ally,))
         self.assertEqual(1, vm.g['hs'][id(c), 'Inori E'])
+
+    def test_e_repeats_and_repairs_a_present_but_hidden_disabled_ready_button(self):
+        hero = source('Heroes/Inori.j')
+        struct = re.search(r'    private struct InoriE_KS\b.*?    endstruct', hero, re.S)[0]
+        vm, c, available, disabled = self.fixture(struct+'\n'+functions(hero, 'InoriEE_Start'))
+        ns = vm.structs['InoriE_KS']
+        ns.statics.update(MUI_InoriE=-1, m_InoriE={})
+        hidden = {}
+        for name in ('InoriTick10_On', 'InoriTick10_Off', 'MakeSound', 'InoriAttackArt',
+                     'AddSpellLevel', 'WUI_HeroProgress', 'MyFlush'):
+            vm.g[name] = lambda *_: None
+        vm.g.update(SH_INORI_E_ACTIVE='Inori E Active', SH_E_ACTIVATED='e activated',
+                    SH_E_ACTIVATED2='e activated2', PassiveCD_Start=lambda *_: 22.,
+                    IsUnitPaused=lambda _: False, RoundReal=lambda a, b: round(a, b),
+                    GetUnitCurrentOrder=lambda _: 0, OrderId=lambda _: 1,
+                    BlzUnitHideAbility=lambda u, a, h: hidden.update({a: h}))
+        remove = vm.g['UnitRemoveAbility']
+        def remove_ready(u,a):
+            remove(u,a)
+            hidden[a] = False
+        vm.g['UnitRemoveAbility'] = remove_ready
+        vm.run('InoriE_Start', (c,))
+        fx = ns.m_InoriE[0]
+        for cycle in range(3):
+            if cycle:
+                # Existing rawcode with stale presentation state must recover too.
+                vm.add_ability(c, vm.g['InoriEE_ID'])
+                available[c.owner, vm.g['InoriEE_ID']] = False
+                disabled[id(c), vm.g['InoriEE_ID']] = (True, True)
+                hidden[vm.g['InoriEE_ID']] = True
+                fx.check3 = 4  # An old transition marker must not suppress reconciliation.
+            vm.g['hs'][id(c), 'Inori E'] = 4
+            vm.run('Loop_InoriE')
+            self.assertTrue(available[c.owner, vm.g['InoriEE_ID']])
+            self.assertEqual((False, False), disabled[id(c), vm.g['InoriEE_ID']])
+            self.assertFalse(hidden[vm.g['InoriEE_ID']])
+            self.assertTrue(hidden[vm.g['InoriE_ID']])
+            vm.run('InoriEE_Start', (c,))
+            vm.run('Loop_InoriE')
+            self.assertEqual(1, fx.k3)
+            self.assertEqual(1, vm.g['hs'][id(c), 'Inori E Active'])
+            fx.r = fx.rmax
+            vm.run('Loop_InoriE')
+            self.assertEqual(0, fx.k3)
+            self.assertEqual(0, vm.g['hs'][id(c), 'Inori E Active'])
+            self.assertFalse(hidden[vm.g['InoriE_ID']])
+            self.assertEqual(1, vm.g['hs'][id(c), 'pas cd'])
+            vm.g['hs'][id(c), 'pas cd'] = 0  # Fire the existing cooldown's expiry callback.
 
     def test_actual_t2_start_and_cancel_disable_and_restore_ally_aura(self):
         hero = source('Heroes/Inori.j')

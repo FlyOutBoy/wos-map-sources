@@ -19,7 +19,7 @@ E_TIP = ('Aura (1400 radius): Grants allied units 1/2/3/4/5% physical resistance
          'When allied heroes in the aura take at least 250 damage, Inori gains Instability. '
          'At 4 stacks, Void Absorption becomes available.')
 E2_TIP = ('While Mana Ascension (T2) is active, enemies within 1400 radius lose 10% physical resistance '
-          'and 10% magic resistance. The allied E aura and Instability passive are disabled.\n'
+          'and 10% magic resistance, without reducing either below 0%. The allied E aura and Instability passive are disabled.\n'
           'Every 0.5 sec, an Apocalypse beam strikes a random point within 2500 range around Inori, '
           'dealing Intelligence x 2.5 magic damage.')
 
@@ -68,7 +68,8 @@ def configure(documents, ids, strings):
             field('abilities', 'A061', key, value, type, level, pointer)
         tip = f'Allies within 1400 radius gain {phys}% physical resistance and {magic}% magic resistance.'
         field('abilities', 'A061', 'atp1', 'Void Aura' + (' (T1)' if level == 6 else ''), level=level, skin=True)
-        field('abilities', 'A061', 'aub1', tip, level=level, skin=True)
+        aura_tip = tip + '\nPassive: When allied heroes within the aura take at least 250 damage, gain Instability (up to 4 stacks). At 4 stacks, Void Absorption becomes available: consumes the stacks to upgrade basic abilities and gain HP regeneration for 8 sec. Instability cannot be gained during Void Absorption or its cooldown.\nWith T1 selected at hero level 25, the aura becomes rank 6 (10% physical and magic resistance). Selecting T2 restores rank 5; during T2 the allied aura and Instability are disabled.'
+        field('abilities', 'A061', 'aub1', aura_tip, level=level, skin=True)
         field('buffs', buff, 'ftip', 'Void Aura' + (' (T1)' if level == 6 else ''), skin=True)
         field('buffs', buff, 'fube', tip, skin=True)
     for level in range(1, 6):
@@ -79,7 +80,7 @@ def configure(documents, ids, strings):
     field('abilities', 'A153', 'atp1', 'Mana Ascension Aura', level=1, skin=True)
     field('abilities', 'A153', 'aub1', E2_TIP, level=1, skin=True)
     field('abilities', 'A153', 'arut', E2_TIP, skin=True)
-    field('buffs', 'B062', 'fube', 'Nearby Inori in T2: -10% physical resistance and -10% magic resistance.', skin=True)
+    field('buffs', 'B062', 'fube', 'Nearby Inori in T2: -10% physical resistance and -10% magic resistance; minimum 0%.', skin=True)
     field('abilities', 'A06D', 'aub1', E2_TIP, level=1, skin=True)
     field('abilities', 'A06D', 'arut', E2_TIP, skin=True)
 

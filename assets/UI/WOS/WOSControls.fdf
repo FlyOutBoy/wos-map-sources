@@ -121,13 +121,13 @@ Frame "EDITBOX" "WOSEditBox" {
 Frame "BACKDROP" "WOSTooltipBox" {
     Width 0.170,
     Height 0.040,
+    DecorateFileNames,
     BackdropTileBackground,
-    BackdropBackground "UI\WOS\panel.tga",
+    BackdropBackground "ToolTipBackground",
     BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
-    BackdropCornerSize 0.010,
-    BackdropBackgroundSize 0.128,
-    BackdropBackgroundInsets 0.003 0.003 0.003 0.003,
-    BackdropEdgeFile "UI\WOS\tooltip-edge.tga",
+    BackdropCornerSize 0.008,
+    BackdropBackgroundInsets 0.0022 0.0022 0.0022 0.0022,
+    BackdropEdgeFile "ToolTipBorder",
     BackdropBlendAll,
 }
 
@@ -358,7 +358,6 @@ Texture "WOSQBHUDRemoveActive" { File "UI\WOS\QuickBuy\qb-hud-remove-active.tga"
 Texture "WOSQBHUDRemoveDisabled" { File "UI\WOS\QuickBuy\qb-hud-remove-disabled.tga", AlphaMode "BLEND", }
 Texture "WOSQBHUDRemoveHover" { File "UI\WOS\QuickBuy\qb-hud-remove-hover.tga", AlphaMode "ADD", }
 Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {
-    ControlStyle "AUTOTRACK|HIGHLIGHTONMOUSEOVER",
     Width 0.014,
     Height 0.00525,
     NormalTexture "WOSQBHUDRemoveNormal",
@@ -367,3 +366,24 @@ Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {
     UseHighlight "WOSQBHUDRemoveHover",
 }
 
+
+// Ubertooltip appearance uses the native skin, not the opaque WOS panel.
+// UI/war3skins.txt supplies these keys; the built-in Ubertooltip is engine-owned.
+Frame "BACKDROP" "WOSNativeTooltipBackdrop" INHERITS "WOSTooltipBox" {
+}
+
+Frame "TEXT" "WOSNativeTooltipTextTemplate" {
+    DecorateFileNames,
+    LayerStyle "IGNORETRACKEVENTS",
+    FrameFont "MasterFont", 0.011, "",
+    FontColor 1.0 1.0 1.0 1.0,
+    FontShadowColor 0.0 0.0 0.0 0.9,
+    FontShadowOffset 0.001 -0.001,
+    FontJustificationH JUSTIFYLEFT,
+    FontJustificationV JUSTIFYTOP,
+}
+
+Frame "TEXT" "WOSNativeTooltipTitleTemplate" INHERITS "WOSNativeTooltipTextTemplate" {
+    DecorateFileNames,
+    FrameFont "MasterFont", 0.011, "",
+}

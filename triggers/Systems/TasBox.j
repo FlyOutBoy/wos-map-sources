@@ -44,7 +44,7 @@ library TasAbilityChargeBox requires WOSUI, optional FrameLoader
    // A portrait is not a SIMPLEFRAME: keep the same font/material without
    // reparenting a native texture across the two frame families.
    public function CreatePortraitLabel takes framehandle portrait returns framehandle
-      local framehandle box = WUI_Panel("TasPortraitChargeBox", portrait, 0.0168, 0.0168)
+      local framehandle box = WUI_Panel("TasPortraitChargeBox", portrait, BOX_SIZE, BOX_SIZE)
       local framehandle text = BlzCreateFrameByType("TEXT", "TasPortraitChargeText", box, "", 0)
       local framehandle edge = WUI_Border("TasPortraitChargeEdge", box)
       call BlzFrameSetEnable(box, false)

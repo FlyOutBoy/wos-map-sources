@@ -152,9 +152,9 @@ library BarraganSpells uses GearSystems
         integer BarraganG3_ID = 'A0BE'
         integer BarraganG4_ID = 'A0BF'
         real BarraganG_DamageIntBase = 2 // base number x STR , damage that would be dealt for whole time
-        real BarraganG_Damage2Static_6 = 30 // base static damage, damage that would be dealt for whole time
-        real BarraganG_Damage2Static_25 = 40 // base static damage, damage that would be dealt for whole time
-        real BarraganG_Damage2Static_35 = 50 // base static damage, damage that would be dealt for whole time
+        real BarraganG_Damage2Static_6 = 20 // base static damage, damage that would be dealt for whole time
+        real BarraganG_Damage2Static_25 = 30 // base static damage, damage that would be dealt for whole time
+        real BarraganG_Damage2Static_35 = 40 // base static damage, damage that would be dealt for whole time
         real BarraganG_DamageDuration = 3 // duration in seconds of passive burning
         real BarraganG_DamagePeriodic = 1 // set time to periodic damage per seconds, example: 0.5 - passive will dealt damage 6 times, if duration 3 and this 0.5 each second target take damage 2 times, if this 0.25 - 4 times and total damage times increase to 12
         integer BarraganG_AbilityEnchantLevelGain = 35 // write here a number of level afther reaching that he would add a 1x stack of passive burning to his Q and W
@@ -176,6 +176,12 @@ library BarraganSpells uses GearSystems
     endfunction
     
     // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
+    globals
+        real BarraganQ_CastTime = 0.69
+        real BarraganEQ_CastTime = 0.63
+        real BarraganTQ_CastTime = 0.72
+    endglobals
+
     private struct HeroSpells_Q
         private static integer array m_BarraganQ
         private static integer MUI_BarraganQ = -1
@@ -216,7 +222,7 @@ library BarraganSpells uses GearSystems
                     set r = r + 0.03
                     if k2 == 0 then // 0 - normal spell, 1 - morph spell, 2( only for q) enchaned with T morph spell
                         if check == 0 then
-                            if r >= 0.57 then
+                            if r >= BarraganQ_CastTime then
                                 call StopSpellUnit2(c)
                                 call DestroyEffect(e2)
                                 set check = 1
@@ -281,7 +287,7 @@ library BarraganSpells uses GearSystems
                         endif
                     elseif k2 == 1 then
                         if check == 0 then
-                            if r >= 0.51 then
+                            if r >= BarraganEQ_CastTime then
                                 call StopSpellUnit2(c)
                                 call DestroyEffect(e2)
                                 set check = 1
@@ -345,7 +351,7 @@ library BarraganSpells uses GearSystems
                         endif
                     elseif k2 == 2 then
                         if check == 0 then
-                            if r >= 0.51 then
+                            if r >= BarraganTQ_CastTime then
                                 call StopSpellUnit2(c)
                                 call DestroyEffect(e2)
                                 set check = 1
@@ -360,7 +366,7 @@ library BarraganSpells uses GearSystems
                                 set move = 140
                                 set r4 = 0
                                 set r2 = 0
-                                set rmax = 0.66
+                                set rmax = BarraganEQ_CastTime + 0.096
                                 set r3 = 0
                                 set r = 0
                             endif
@@ -415,7 +421,7 @@ library BarraganSpells uses GearSystems
                     call DestroyEffect( e )
                     call DestroyEffect( e2 )
                     call SetUnitTimeScale( c , 1)
-                    if r <= 0.57 - 0.06 * k2 then
+                    if check == 0 and k2 != 2 then
                         call StopSpellUnit2(c)
                     endif
                     if k2 == 2 then                     
@@ -478,7 +484,7 @@ library BarraganSpells uses GearSystems
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiRed.mdx", c, "hand left")
                 call SetUnitFacing( c , a * bj_RADTODEG)
                 set rmax = 3
-                call SetUnitTimeScale( c , 0.75)
+                call SetUnitTimeScale( c , 0.75 * 0.57 / BarraganQ_CastTime)
                 call SetUnitAnimationByIndex( c , 12)
                 if GetRandomInt(1, 2) == 1 then
                     call MakeSound("war3mapimported\\Hero_Barragan_Q")
@@ -488,8 +494,8 @@ library BarraganSpells uses GearSystems
             elseif LoadInteger(hs, GetHandleId(c), SH_BARRAGAN_T) == 0 then
                 set e2 = AddSpecialEffectTarget("war3mapimported\\wos_ChuShou_BY_Wood_Effect_Glow_GuiPaiQiGong_XuLiPurple.mdx", c, "hand left")
                 set k2 = 1
-                set rmax = 0.6
-                call SetUnitTimeScale( c , 1.75)
+                set rmax = BarraganEQ_CastTime + 0.09
+                call SetUnitTimeScale( c , 1.75 * 0.51 / BarraganEQ_CastTime)
                 call SetUnitAnimationByIndex( c , 4)
                 if GetRandomInt(1, 2) == 1 then
                     call MakeSound("war3mapimported\\Hero_Barragan_EQ")
@@ -501,7 +507,7 @@ library BarraganSpells uses GearSystems
                 set k2 = 2
                 set rmax = 3
             call StartSpellUnit(c)
-                call SetUnitTimeScale( c , 0.75)
+                call SetUnitTimeScale( c , 0.75 * 0.51 / BarraganTQ_CastTime)
                 call SetUnitAnimationByIndex( c , 9)
                 if GetRandomInt(1, 2) == 1 then
                     call MakeSound("war3mapimported\\Hero_Barragan_ETQ")

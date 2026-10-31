@@ -39552,6 +39552,19 @@
           "variation": null,
           "data_pointer": null
         },
+        "agility_per_level data 0": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 74,
+            "modification_index": 16
+          },
+          "field_id": "uagp",
+          "type": "unreal",
+          "level": 0,
+          "variation": null,
+          "data_pointer": 0
+        },
         "animation_run_speed": {
           "source": {
             "file": "war3map.w3u",
@@ -39616,6 +39629,19 @@
           "level": null,
           "variation": null,
           "data_pointer": null
+        },
+        "intelligence_per_level data 0": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 74,
+            "modification_index": 17
+          },
+          "field_id": "uinp",
+          "type": "unreal",
+          "level": 0,
+          "variation": null,
+          "data_pointer": 0
         },
         "mana_regeneration": {
           "source": {
@@ -39694,6 +39720,19 @@
           "level": null,
           "variation": null,
           "data_pointer": null
+        },
+        "strength_per_level data 0": {
+          "source": {
+            "file": "war3mapSkin.w3u",
+            "group": "custom_objects",
+            "object_index": 74,
+            "modification_index": 15
+          },
+          "field_id": "ustp",
+          "type": "unreal",
+          "level": 0,
+          "variation": null,
+          "data_pointer": 0
         },
         "turn_rate": {
           "source": {

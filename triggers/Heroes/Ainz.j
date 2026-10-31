@@ -61,13 +61,13 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
 
 //---------------Q ability (Explosive Land Mine)-------------------------------
         integer AinzQ_ID = 'A0FH'
-        real AinzQ_DamageIntBase = 1.05
-        real AinzQ_DamageIntStep = 0.4
+        real AinzQ_DamageIntBase = 1.0
+        real AinzQ_DamageIntStep = 0.375
         real AinzQ_Damage2StaticBase = 100.0
         real AinzQ_Damage2StaticStep = 0.0
         real AinzQ_DamageAoe = 375.00
-        real AinzQ_MineDuration = 40.00
-        real AinzQ2_MineDuration = 30.00 // ring mines (F -> Q2) expire 10 sec earlier
+        real AinzQ_MineDuration = 28.0
+        real AinzQ2_MineDuration = 28.0 // both mine variants last 28 seconds
         real AinzQ_MineTriggerAoe = 375.00
         real AinzQ_MineMinDistance = 375.00
         real AinzQ_MineChainAoe = 425.00
@@ -102,7 +102,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         real AinzTQ_EffectPeriod = 0.15
         boolean AinzTQ_SideApproachOnBounce = false
         boolean AinzTQ_IsInvul = false
-        real AinzTQ_CastTime = 0.36
+        real AinzTQ_CastTime = 0.48
         real AinzTQ_DecorDamage = 50.0
 
 //---------------W ability (Summon Death Knight)-------------------------------
@@ -230,7 +230,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
         real AinzTR_HitWidth = 110.00
         real AinzTR_EffectPeriod = 0.12
         boolean AinzTR_IsInvul = false
-        real AinzTR_CastTime = 0.51
+        real AinzTR_CastTime = 0.66
         real AinzTR_DecorDamage = 100.0
 
 //---------------T ability (The Goal of All Life is Death)---------------------
@@ -1314,7 +1314,8 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     endif
                     set r = RoundReal(r, 3)
 
-                    if r == 0.03 then
+                    if check == 0 and r >= 0.03 then
+                        set check = 1 // Spawn exactly once, even if a charge pauses the lifetime timer.
                         set k = 0
                         loop
                             exitwhen k == count
@@ -1461,6 +1462,7 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
                     endif
                 else
                     call AinzFinishSwap(c, AinzW_ID)
+                    call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 0)
                         call WUI_HeroProgress(c, AinzW_ID, "Knights Time Left", 0.00, 0.00, true)
 
                     call MakeSound("war3mapimported\\Hero_Ainz_W4")
@@ -1511,6 +1513,9 @@ library AinzSpells initializer InitAinzSpells uses GearSystems
             set m_AinzW[MUI_AinzW] = this
             set c = NewC
             call AinzSwapPatch(c, AinzW_ID, 0)
+            // A previous charge can have left its lifetime pause set after interruption.
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_TIMER_PAUSE, 0)
+            call SaveInteger(hs, GetHandleId(c), SH_AINZW_W3_READY, 0)
             set x = GetUnitX(c)
             set y = GetUnitY(c)
             set r = 0

@@ -92,7 +92,7 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
             endif
 
         elseif but == OSKEY_S then
-            if heroTypeId == Tomioka_ID and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TOMIOKA_F_INVUL) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TOMIOKA_ESC) == 0 then
+            if LoadInteger(hs, playerHandleId, SH_ButtonPressed_TOMIOKA_F_INVUL) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TOMIOKA_ESC) == 0 then
                 call SaveInteger(hs, playerHandleId, SH_ButtonPressed_TOMIOKA_ESC, 1)
             endif
             if LoadInteger(hs, heroHandleId, SH_ButtonPressed_INVUL) == 1 and LoadInteger(hs, heroHandleId, SH_ButtonPressed_ESC) == 0 then
@@ -101,13 +101,13 @@ function Trig_ButtonPressed_Actions takes nothing returns nothing
             if LoadInteger(hs, heroHandleId, SH_ButtonPressed_CAST_R) == 1 and LoadInteger(hs, heroHandleId, SH_ButtonPressed_STOP_R) == 0 then
                 call SaveInteger(hs, heroHandleId, SH_ButtonPressed_STOP_R, 1)
             endif
-            if heroTypeId == Tsuna_ID and LoadInteger(hs, playerHandleId, SH_ButtonPressed_ZERO_KAI) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TSUNA_ESC) == 0 then
+            if LoadInteger(hs, playerHandleId, SH_ButtonPressed_ZERO_KAI) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TSUNA_ESC) == 0 then
                 call SaveInteger(hs, playerHandleId, SH_ButtonPressed_TSUNA_ESC, 1)
             endif
-            if heroTypeId == Takeshi_ID and LoadInteger(hs, playerHandleId, SH_ButtonPressed_YAMAMOTO_FR) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TAKESHI_ESC) == 0 then
+            if LoadInteger(hs, playerHandleId, SH_ButtonPressed_YAMAMOTO_FR) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_TAKESHI_ESC) == 0 then
                 call SaveInteger(hs, playerHandleId, SH_ButtonPressed_TAKESHI_ESC, 1)
             endif
-            if heroTypeId == Kyoraku_ID and LoadInteger(hs, playerHandleId, SH_ButtonPressed_W_ACTIVE) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_KYORAKU_ESC) == 0 then
+            if LoadInteger(hs, playerHandleId, SH_ButtonPressed_W_ACTIVE) == 1 and LoadInteger(hs, playerHandleId, SH_ButtonPressed_KYORAKU_ESC) == 0 then
                 call SaveInteger(hs, playerHandleId, SH_ButtonPressed_KYORAKU_ESC, 1)
             endif
 

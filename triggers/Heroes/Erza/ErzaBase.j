@@ -248,6 +248,7 @@ library ErzaBase uses GearSystems, ErzaQSpells
         local real hp = GetUnitState(c, UNIT_STATE_LIFE) / GetUnitState(c, UNIT_STATE_MAX_LIFE)
         local real cd
         local integer check = 0
+        call IssueImmediateOrder(c, "stop")
         if GetUnitAbilityLevel(c, ErzaG2_ID) > 0 then
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), ErzaG2_ID, true)
             call SetPlayerAbilityAvailable(GetOwningPlayer(c), ErzaG_ID, false)

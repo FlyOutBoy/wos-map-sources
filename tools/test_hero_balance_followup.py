@@ -16,6 +16,36 @@ def source(path):
 
 
 class HeroBalanceFollowup(unittest.TestCase):
+    def test_ainz_w_recovers_stale_charge_pause_and_spawns_once_when_paused(self):
+        s=source('Heroes/Ainz.j')
+        part=re.search(r'    private struct AinzW_KS\b.*?    endstruct',s,re.S)[0]
+        vm=JassState(re.sub(r'\bdd\[', 'this.dd[', part));c=vm.unit(owner=0);c.facing=0
+        vm.add_ability(c,'A0FK')
+        vm.g.update(hs={},knightAcquireTrig='acquire trigger',AinzW_ID='A0FK',AinzW2_ID='A0FL',AinzW3_ID='A0FM',AinzW_Unit_ID='knight',
+         SH_AINZW_TIMER_PAUSE='pause',SH_AINZW_W3_READY='ready',SH_AINZW_CASTER='caster',SH_AINZW_TARGET='target',SH_KNIGHT_GROUP='group',SH_MODE_T='mode t',SH_KNIGHT_ULT='ult',
+         AinzW_SummonHpBase=400,AinzW_SummonHpStep=400,AinzW_Duration=20.,gg_rct_Base='base',CheckCoordsInRect=lambda *_:False,
+         AinzSwapPatch=lambda *_:None,AinzFinishSwap=lambda *_:None,Player=lambda p:p,GetPlayerId=lambda p:p,SetUnitAbilityLevel=lambda *a:None,SetPlayerAbilityAvailable=lambda *_:None,
+         SaveUnitHandle=lambda *a:None,SaveGroupHandle=lambda *a:None,GetUnitFacing=lambda _:0.,BlzSetUnitFacingEx=lambda *a:None,
+         MakeSound=lambda *_:None,VisionTimed=lambda *_:None,AinzTimer03Acquire=lambda:None,Ainz_RestoreOrder=lambda *_:None,
+         BlzSetUnitMaxHP=lambda *a:None,SetHpCurrent=lambda *a:None,TriggerRegisterUnitEvent=lambda *a:None,
+         SetScale=lambda *a:None,SetUnitVertexColor=lambda *a:None,ColorDummy4=lambda *a:None,EffectSpawn2=lambda *a:None,
+         EVENT_UNIT_ACQUIRED_TARGET='acquire',WUI_HeroProgress=lambda *a:None,BlzStartUnitAbilityCooldown=lambda *a:None,
+         BlzGetAbilityCooldown=lambda *a:10.,GroupEnumUnitsOfPlayer=lambda *a:None)
+        spawned=[]
+        def create(p,uid,x,y,a):
+         u=vm.unit(owner=p,x=x,y=y);spawned.append(u);return u
+        vm.g['CreateUnit']=create
+        ns=vm.structs['AinzW_KS'];ns.statics.update(MUI_AinzW=-1,m_AinzW={})
+        vm.g['hs'][id(c),'pause']=1;vm.g['hs'][id(c),'ready']=1
+        vm.run('AinzW_Start',(c,));fx=ns.m_AinzW[0];fx.dd=defaultdict(lambda:None)
+        self.assertEqual(0, vm.g['hs'][id(c),'pause'])
+        self.assertEqual(0, vm.g['hs'][id(c),'ready'])
+        vm.run('Loop_AinzW')
+        self.assertEqual(1, len(spawned))
+        vm.g['hs'][id(c),'pause']=1
+        vm.run('Loop_AinzW')
+        self.assertEqual(1, len(spawned))
+
     def test_takaoni_flies_past_cage_but_both_slashes_stay_at_its_center(self):
         text=source('Heroes/Kyoraku.j')
         declarations='\n'.join(re.findall(r'(?m)^        (?:integer|real) KyorakuE(?:4_\w+|_ID|_DamageAoe) = [^\n]+',text))
@@ -361,10 +391,10 @@ class HeroBalanceFollowup(unittest.TestCase):
         g['dmgmag']=lambda c,u,d:hits.append((u,d))
         for cast in range(2):
             before=len(hits)
-            vm.run('FrierenW2_Start',(hero,hero,10000.,0.))
+            vm.run('FrierenW2_Start',(hero,hero,10000.,0.,False))
             data=vm.structs['FrierenSpells_W2'].m_FrierenW2[0]
-            self.assertAlmostEqual(25.5,data.move)
-            for _ in range(110):
+            self.assertEqual((10000.,0.), (data.x,data.y))
+            for _ in range(150):
                 if not data.alive:break
                 enemy.x=data.x;enemy.y=data.y;friend.x=data.x;friend.y=data.y
                 vm.run('Loop_FrierenW2')
@@ -378,34 +408,34 @@ class HeroBalanceFollowup(unittest.TestCase):
     def test_frieren_native_targeting_and_current_scripted_travel_limits(self):
         obj=json.loads((ROOT/'object-data/abilities.json').read_text(encoding='utf-8-sig'))
         vm,_,_=self.frieren_fixture()
-        self.assertEqual(1800.,vm.g['FrierenW2_Range']);self.assertEqual(2000.,vm.g['FrierenT2_Range'])
+        self.assertEqual(1800.,vm.g['FrierenW2_Range']);self.assertEqual(2200.,vm.g['FrierenT2_Range'])
         # Native point targeting remains 2000; TW's scripted travel is capped at 1800.
-        for raw in ('A0GO','A0GT'):
-            self.assertEqual(2000.,obj[raw]['cast_range level 1'])
+        self.assertEqual(2000.,obj['A0GO']['cast_range level 1'])
+        self.assertEqual(2200.,obj['A0GT']['cast_range level 1'])
         builder=source('WOS_Start/UniversalTooltips.j')
         self.assertIn('return FrierenW2_Range',builder)
         self.assertIn('return FrierenT2_Range',builder)
         self.assertIn('FrierenW2_Damage2StaticBase, 0.0',builder)
 
-    def test_frieren_t2_last_step_stops_at_2000_before_cleanup(self):
+    def test_frieren_t2_last_step_stops_at_1800_after_windup_before_cleanup(self):
         vm,hero,_=self.frieren_fixture()
         data=vm.structs['FrierenSpells_T2'].create()
-        for k,v in dict(c=hero,x=1995.,y=0.,travelled=1995.,limit=2000.,move=30.,a=0.,rmax=2.5,aoe=600.,g=vm.create_group(),e=vm.effect('test'),e2=vm.effect('test'),e3=vm.effect('test'),scale=.85).items():setattr(data,k,v)
+        for k,v in dict(c=hero,partner=0,merged=False,silent=False,mergePhase=0,x=1795.,y=0.,r=.54,travelled=1795.,limit=1800.,move=30.,a=0.,rmax=2.5,aoe=600.,g=vm.create_group(),e=vm.effect('test'),e2=vm.effect('test'),e3=vm.effect('test'),scale=.85).items():setattr(data,k,v)
         data.deallocate=lambda *_:setattr(data,'alive',False)
         vm.structs['FrierenSpells_T2'].statics.update(MUI_FrierenT2=0,m_FrierenT2={0:data})
         vm.g.update(IsTerrainPathable=lambda *_:False,SlowUnit=lambda *_:None)
         vm.run('Loop_FrierenT2')
-        self.assertEqual(2000.,data.travelled)
-        self.assertEqual(2000.,data.x)
+        self.assertEqual(1800.,data.travelled)
+        self.assertEqual(1800.,data.x)
         vm.run('Loop_FrierenT2')
         self.assertFalse(data.alive)
 
     def test_all_tooltip_registrations_have_separate_staggered_operation_budgets(self):
         text=source('WOS_Start/UniversalTooltips.j')
         jobs=dict(re.findall(r'(?m)^    function (WOS_UTB_Init_\w+) takes[^\n]*\n([\s\S]*?)^    endfunction',text))
-        self.assertEqual(491,len(jobs))
+        self.assertEqual(492,len(jobs))
         spell_jobs=[body for body in jobs.values() if 'call SpellData.' in body]
-        self.assertEqual(439,len(spell_jobs))
+        self.assertEqual(440,len(spell_jobs))
         for body in jobs.values():
             self.assertLessEqual(body.count('call SpellData.'),1)
             self.assertLessEqual(body.count('HeroData.create('),1)
@@ -415,7 +445,7 @@ class HeroBalanceFollowup(unittest.TestCase):
         vm=JassState(queue);called=[];destroyed=[]
         rearmed=[]
         vm.g.update(UTB_InitJobs={},UTB_InitJobCount=0,UTB_InitJobIndex=1,UTB_InitComplete=False,UTB_INIT_BATCH=2,UTB_INIT_PERIOD=.01,WUI_StartupEnd=lambda:None,
-                    ExecuteFunc=lambda name:called.append(name),GetExpiredTimer=lambda:'timer',DestroyTimer=destroyed.append,
+                    ExecuteFunc=lambda name:called.append(name) if name != 'WOS_UTB_FlushInitialTips' else None,GetExpiredTimer=lambda:'timer',DestroyTimer=destroyed.append,
                     TimerStart=lambda *a:rearmed.append(a[1:3]))
         vm.run('InitTooltipQueue')
         steps=(len(jobs)+1)//2

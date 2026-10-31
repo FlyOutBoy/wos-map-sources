@@ -2211,10 +2211,7 @@ library TojiSpells initializer InitTojiSpells uses GearSystems
                 call MakeSoundLocal("war3mapimported\\Hero_Toji_F2", owner)
             endif
 
-            // Если герой был на бегу — мгновенно продолжаем бег без остановки
-            if isMoving then
-                call IssuePointOrder(NewC, "move", Toji_LastOrderX[pid], Toji_LastOrderY[pid])
-            endif
+            // Berserk preserves the existing order and its queue; no replacement move order.
 
             set owner = null
         endmethod

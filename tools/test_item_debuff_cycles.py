@@ -25,15 +25,17 @@ class ItemDebuffCycles(unittest.TestCase):
         body = text.split('elseif .kind == ANCHOR then', 1)[1].split('elseif .kind == STORM or .kind == SPIRAL then', 1)[0]
         body = re.sub(r'(?<![\w])\.([A-Za-z]\w*)', r'this.\1', body)
         vm = JassState('function AnchorTick takes nothing returns boolean\n'
-                       'local real d\nset this.left = this.left - DT\n' + body + '\nendfunction')
+                       'local real d\nlocal real a\nlocal real take\nlocal real px\nlocal real py\nlocal real best\nset this.left = this.left - DT\n' + body + '\nendfunction')
         impacts = []
-        vm.g.update(DT=.03, LeviathanAnchor_Aoe=500., LeviathanAnchor_PullSpeed=190.,
+        vm.g.update(showVision=True,DT=.03, LeviathanAnchor_Aoe=500., LeviathanAnchor_PullSpeed=190.,
                     IntegerTertiaryOp=lambda condition, a, b: a if condition else b,
+                    BlzGetLocalSpecialEffectZ=lambda e:e.z,
+                    BlzSetSpecialEffectPosition=lambda e,x,y,z:(setattr(e,"x",x),setattr(e,"y",y),setattr(e,"z",z)),
                     BlzSetSpecialEffectZ=lambda e, z: setattr(e, 'z', z),
                     BlzSetSpecialEffectPitch=lambda e, r: setattr(e, 'pitch', r),
-                    ElemFx=lambda *_: None)
-        fx = SimpleNamespace(left=2.1, step=0., charges=0, next=.6, dmg2=50.,
-                             dmg=575./3., x=0., y=0., e=vm.effect('anchor'), e2=None,
+                    ElemFx=lambda *_: None,ColorEffDummy3=lambda *_:None)
+        fx = SimpleNamespace(c=vm.unit(),left=2.1, step=0., charges=0, next=.6, dmg2=50.,
+                             dmg=575./3., x=0., y=0., tx=0.,ty=0.,vx=1.,vy=0., e=vm.effect('anchor'), e2=vm.effect('water'),
                              Drag=lambda *_: None)
         fx.Pulse = lambda *args: impacts.append((fx.step, fx.e.z, fx.e.pitch, args[1]))
         rebounds = []
@@ -44,12 +46,12 @@ class ItemDebuffCycles(unittest.TestCase):
             if done:
                 break
         self.assertEqual(3, len(impacts))
-        for impact, planned in zip(impacts, (.6, 1.1, 1.6)):
+        for impact, planned in zip(impacts, (.6, 1.2, 1.8)):
             self.assertGreaterEqual(impact[0] + 1e-9, planned)
             self.assertLessEqual(impact[0], planned + .03)
-            self.assertEqual((50., 0.), impact[1:3])
+            self.assertAlmostEqual(300.,impact[1])
         self.assertAlmostEqual(575., sum(p[3] for p in impacts))
-        self.assertTrue(any(z > 350. and pitch < -.5 for z, pitch in rebounds))
+        self.assertTrue(any(z > 350. and pitch > .5 for z, pitch in rebounds))
         self.assertIsNone(fx.e)
         self.assertTrue(done)
 

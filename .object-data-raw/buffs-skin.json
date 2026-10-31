@@ -2,7 +2,7 @@
   "_format": "warcraft-3-object-data-json-v1",
   "_instructions_ru": "Редактируйте data.value или resolved_value, level и data_pointer. Поля с '_' и sanity_check сохраняйте без изменений.",
   "source_file": "war3mapSkin.w3h",
-  "source_sha256": "1c2ed462dc7db731f30805d03b1d06ffda115dc4c2b8f27df33362d4d834c328",
+  "source_sha256": "c0f708eb59641ae743042b06950c87b76e9b47ed8ffe2ab26e70e2ad006b3440",
   "kind": "buffs",
   "record_mode": "simple",
   "format_version": 3,
@@ -1068,7 +1068,7 @@
             "_original_value": "TRIGSTR_8586",
             "_encoding": "utf-8",
             "_raw_base64": "VFJJR1NUUl84NTg2",
-            "resolved_value": "unit take additional physical damage by 9%",
+            "resolved_value": "Takes 12% additional physical damage. Physical damage from a Kyoka Suigetsu wielder deals 24% additional physical damage instead.",
             "_original_resolved_value": "unit take additional physical damage by 9%"
           },
           "sanity_check": {
@@ -1690,12 +1690,7 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_7206",
-            "_original_value": "TRIGSTR_7206",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl83MjA2",
-            "resolved_value": "Kurikara Flame",
-            "_original_resolved_value": "Kurikara Flame"
+            "value": "Kurikara Flame"
           },
           "sanity_check": {
             "text": "",
@@ -1710,12 +1705,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3249",
-            "_original_value": "TRIGSTR_3249",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMjQ5",
-            "resolved_value": "Unit burns",
-            "_original_resolved_value": "Unit burns"
+            "value": "Unit burns"
           },
           "sanity_check": {
             "text": "",
@@ -13946,12 +13936,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1949",
-            "_original_value": "TRIGSTR_1949",
+            "value": "TRIGSTR_10218",
+            "_original_value": "TRIGSTR_10218",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTQ5",
-            "resolved_value": "Receives 20% more mana regeneration and mana restoration.",
-            "_original_resolved_value": "Receives 20% more mana regeneration and mana restoration."
+            "_raw_base64": "VFJJR1NUUl8xMDIxOA==",
+            "resolved_value": "Receives 15% more mana regeneration and mana restoration.",
+            "_original_resolved_value": "Receives 15% more mana regeneration and mana restoration."
           },
           "sanity_check": {
             "text": "",
@@ -14018,12 +14008,7 @@
           "field_name": "Tooltip / Подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_1950",
-            "_original_value": "TRIGSTR_1950",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8xOTUw",
-            "resolved_value": "Ashisogi Jizo",
-            "_original_resolved_value": "Ashisogi Jizo"
+            "value": "Ashisogi Jizo"
           },
           "sanity_check": {
             "text": "",
@@ -14038,12 +14023,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2855",
-            "_original_value": "TRIGSTR_2855",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yODU1",
-            "resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
-            "_original_resolved_value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled."
+            "value": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 4 sec. Can be dispelled."
           },
           "sanity_check": {
             "text": "",
@@ -15982,12 +15962,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_2857",
-            "_original_value": "TRIGSTR_2857",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8yODU3",
-            "resolved_value": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16094,12 +16069,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3023",
-            "_original_value": "TRIGSTR_3023",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMDIz",
-            "resolved_value": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16206,12 +16176,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3104",
-            "_original_value": "TRIGSTR_3104",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMTA0",
-            "resolved_value": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16318,12 +16283,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3228",
-            "_original_value": "TRIGSTR_3228",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMjI4",
-            "resolved_value": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16430,12 +16390,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3332",
-            "_original_value": "TRIGSTR_3332",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zMzMy",
-            "resolved_value": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16542,12 +16497,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3534",
-            "_original_value": "TRIGSTR_3534",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNTM0",
-            "resolved_value": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16654,12 +16604,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3614",
-            "_original_value": "TRIGSTR_3614",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjE0",
-            "resolved_value": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16766,12 +16711,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_3660",
-            "_original_value": "TRIGSTR_3660",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl8zNjYw",
-            "resolved_value": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16878,12 +16818,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_5714",
-            "_original_value": "TRIGSTR_5714",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl81NzE0",
-            "resolved_value": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -16990,12 +16925,7 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_6248",
-            "_original_value": "TRIGSTR_6248",
-            "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl82MjQ4",
-            "resolved_value": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
-            "_original_resolved_value": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
+            "value": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec)."
           },
           "sanity_check": {
             "text": "",
@@ -17378,12 +17308,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8754",
-            "_original_value": "TRIGSTR_8754",
+            "value": "TRIGSTR_10219",
+            "_original_value": "TRIGSTR_10219",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzU0",
+            "_raw_base64": "VFJJR1NUUl8xMDIxOQ==",
             "resolved_value": "Blocks basic attack damage and all on-hit effects.",
-            "_original_resolved_value": "Blocks all damage from basic attacks."
+            "_original_resolved_value": "Blocks basic attack damage and all on-hit effects."
           },
           "sanity_check": {
             "text": "",
@@ -17470,12 +17400,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_8758",
-            "_original_value": "TRIGSTR_8758",
+            "value": "TRIGSTR_10220",
+            "_original_value": "TRIGSTR_10220",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl84NzU4",
-            "resolved_value": "HP cannot drop below 1.",
-            "_original_resolved_value": "HP cannot drop below 1."
+            "_raw_base64": "VFJJR1NUUl8xMDIyMA==",
+            "resolved_value": "HP cannot drop below 1. Dispelling this buff ends protection.",
+            "_original_resolved_value": "HP cannot drop below 1. Dispelling this buff ends protection."
           },
           "sanity_check": {
             "text": "",
@@ -18226,12 +18156,12 @@
           "field_name": "Extended tooltip / Полная подсказка",
           "type": "string",
           "data": {
-            "value": "TRIGSTR_9261",
-            "_original_value": "TRIGSTR_9261",
+            "value": "TRIGSTR_6718",
+            "_original_value": "TRIGSTR_6718",
             "_encoding": "utf-8",
-            "_raw_base64": "VFJJR1NUUl85MjYx",
-            "resolved_value": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return.",
-            "_original_resolved_value": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return."
+            "_raw_base64": "VFJJR1NUUl82NzE4",
+            "resolved_value": "Returns to the marked position after 5 sec. Removing this positive buff cancels the return.",
+            "_original_resolved_value": "Returns to the marked position after 5 sec. Removing this positive buff cancels the return."
           },
           "sanity_check": {
             "text": "",
@@ -18832,6 +18762,1344 @@
           "sanity_check": {
             "text": "",
             "hex": "00000000"
+          }
+        }
+      ],
+      "display_name": ""
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B069",
+        "hex": "42303639"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10221",
+            "_original_value": "TRIGSTR_10221",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyMQ==",
+            "resolved_value": "Emberbreaker",
+            "_original_resolved_value": "Emberbreaker"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10222",
+            "_original_value": "TRIGSTR_10222",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyMg==",
+            "resolved_value": "Damage to the caster triggers retaliation. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Damage to the caster triggers retaliation. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0VtYmVyYnJlYWtlci5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10223",
+            "_original_value": "TRIGSTR_10223",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyMw==",
+            "resolved_value": "Emberbreaker",
+            "_original_resolved_value": "Emberbreaker"
+          },
+          "sanity_check": {
+            "text": "B069",
+            "hex": "42303639"
+          }
+        }
+      ],
+      "display_name": "Emberbreaker"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06A",
+        "hex": "42303641"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10224",
+            "_original_value": "TRIGSTR_10224",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyNA==",
+            "resolved_value": "Thunder Verdict",
+            "_original_resolved_value": "Thunder Verdict"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10225",
+            "_original_value": "TRIGSTR_10225",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyNQ==",
+            "resolved_value": "Moving 500 from the first strike triggers extra damage. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Moving 500 from the first strike triggers extra damage. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderVerdict.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderVerdict.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1RodW5kZXJWZXJkaWN0LmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10226",
+            "_original_value": "TRIGSTR_10226",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyNg==",
+            "resolved_value": "Thunder Verdict",
+            "_original_resolved_value": "Thunder Verdict"
+          },
+          "sanity_check": {
+            "text": "B06A",
+            "hex": "42303641"
+          }
+        }
+      ],
+      "display_name": "Thunder Verdict"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06B",
+        "hex": "42303642"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10227",
+            "_original_value": "TRIGSTR_10227",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyNw==",
+            "resolved_value": "Thunder Bastion",
+            "_original_resolved_value": "Thunder Bastion"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10228",
+            "_original_value": "TRIGSTR_10228",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyOA==",
+            "resolved_value": "Incoming hits consume Static Counter charges. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Incoming hits consume Static Counter charges. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderBastion.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderBastion.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1RodW5kZXJCYXN0aW9uLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10229",
+            "_original_value": "TRIGSTR_10229",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIyOQ==",
+            "resolved_value": "Thunder Bastion",
+            "_original_resolved_value": "Thunder Bastion"
+          },
+          "sanity_check": {
+            "text": "B06B",
+            "hex": "42303642"
+          }
+        }
+      ],
+      "display_name": "Thunder Bastion"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06C",
+        "hex": "42303643"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10230",
+            "_original_value": "TRIGSTR_10230",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzMA==",
+            "resolved_value": "Cinder Fang",
+            "_original_resolved_value": "Cinder Fang"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10231",
+            "_original_value": "TRIGSTR_10231",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzMQ==",
+            "resolved_value": "HP and mana restoration are blocked; the caster's next hit deals bonus damage. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "HP and mana restoration are blocked; the caster's next hit deals bonus damage. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_CinderFang.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_CinderFang.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NpbmRlckZhbmcuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10232",
+            "_original_value": "TRIGSTR_10232",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzMg==",
+            "resolved_value": "Cinder Fang",
+            "_original_resolved_value": "Cinder Fang"
+          },
+          "sanity_check": {
+            "text": "B06C",
+            "hex": "42303643"
+          }
+        }
+      ],
+      "display_name": "Cinder Fang"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06D",
+        "hex": "42303644"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10233",
+            "_original_value": "TRIGSTR_10233",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzMw==",
+            "resolved_value": "Mirror Tide",
+            "_original_resolved_value": "Mirror Tide"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10235",
+            "_original_value": "TRIGSTR_10235",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzNQ==",
+            "resolved_value": "The caster's hits reflect a projectile to another enemy, once per second. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "The caster's hits reflect a projectile to another enemy, once per second. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorTide.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorTide.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX01pcnJvclRpZGUuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10236",
+            "_original_value": "TRIGSTR_10236",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzNg==",
+            "resolved_value": "Mirror Tide",
+            "_original_resolved_value": "Mirror Tide"
+          },
+          "sanity_check": {
+            "text": "B06D",
+            "hex": "42303644"
+          }
+        }
+      ],
+      "display_name": "Mirror Tide"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06E",
+        "hex": "42303645"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10239",
+            "_original_value": "TRIGSTR_10239",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDIzOQ==",
+            "resolved_value": "Volt Thread",
+            "_original_resolved_value": "Volt Thread"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10240",
+            "_original_value": "TRIGSTR_10240",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0MA==",
+            "resolved_value": "Lightning thread: periodic damage and Static Needle charges. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Lightning thread: periodic damage and Static Needle charges. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_VoltThread.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_VoltThread.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1ZvbHRUaHJlYWQuYmxw"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10241",
+            "_original_value": "TRIGSTR_10241",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0MQ==",
+            "resolved_value": "Volt Thread",
+            "_original_resolved_value": "Volt Thread"
+          },
+          "sanity_check": {
+            "text": "B06E",
+            "hex": "42303645"
+          }
+        }
+      ],
+      "display_name": "Volt Thread"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B06F",
+        "hex": "42303646"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10242",
+            "_original_value": "TRIGSTR_10242",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0Mg==",
+            "resolved_value": "Phoenix Seal",
+            "_original_resolved_value": "Phoenix Seal"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10243",
+            "_original_value": "TRIGSTR_10243",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0Mw==",
+            "resolved_value": "Casting a hero ability triggers an explosion. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Casting a hero ability triggers an explosion. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1Bob2VuaXhTZWFsLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10244",
+            "_original_value": "TRIGSTR_10244",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0NA==",
+            "resolved_value": "Phoenix Seal",
+            "_original_resolved_value": "Phoenix Seal"
+          },
+          "sanity_check": {
+            "text": "B06F",
+            "hex": "42303646"
+          }
+        }
+      ],
+      "display_name": "Phoenix Seal"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B070",
+        "hex": "42303730"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10245",
+            "_original_value": "TRIGSTR_10245",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0NQ==",
+            "resolved_value": "Siren's Tear",
+            "_original_resolved_value": "Siren's Tear"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10246",
+            "_original_value": "TRIGSTR_10246",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0Ng==",
+            "resolved_value": "Mana is drained and returned to the caster. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Mana is drained and returned to the caster. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_SirenTear.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_SirenTear.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1NpcmVuVGVhci5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10247",
+            "_original_value": "TRIGSTR_10247",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0Nw==",
+            "resolved_value": "Siren's Tear",
+            "_original_resolved_value": "Siren's Tear"
+          },
+          "sanity_check": {
+            "text": "B070",
+            "hex": "42303730"
+          }
+        }
+      ],
+      "display_name": "Siren's Tear"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B071",
+        "hex": "42303731"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10248",
+            "_original_value": "TRIGSTR_10248",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0OA==",
+            "resolved_value": "Constellation Coil",
+            "_original_resolved_value": "Constellation Coil"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10249",
+            "_original_value": "TRIGSTR_10249",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI0OQ==",
+            "resolved_value": "Separating the linked targets triggers extra damage. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Separating the linked targets triggers extra damage. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_ConstellationCoil.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_ConstellationCoil.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0NvbnN0ZWxsYXRpb25Db2lsLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10250",
+            "_original_value": "TRIGSTR_10250",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1MA==",
+            "resolved_value": "Constellation Coil",
+            "_original_resolved_value": "Constellation Coil"
+          },
+          "sanity_check": {
+            "text": "B071",
+            "hex": "42303731"
+          }
+        }
+      ],
+      "display_name": "Constellation Coil"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B072",
+        "hex": "42303732"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10251",
+            "_original_value": "TRIGSTR_10251",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1MQ==",
+            "resolved_value": "Emberbreaker",
+            "_original_resolved_value": "Emberbreaker"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10252",
+            "_original_value": "TRIGSTR_10252",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1Mg==",
+            "resolved_value": "Burns for 4 seconds. Dispel to end the damage. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Burns for 4 seconds. Dispel to end the damage. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX0VtYmVyYnJlYWtlci5ibHA="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10253",
+            "_original_value": "TRIGSTR_10253",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1Mw==",
+            "resolved_value": "Emberbreaker",
+            "_original_resolved_value": "Emberbreaker"
+          },
+          "sanity_check": {
+            "text": "B072",
+            "hex": "42303732"
+          }
+        }
+      ],
+      "display_name": "Emberbreaker"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B073",
+        "hex": "42303733"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10254",
+            "_original_value": "TRIGSTR_10254",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1NA==",
+            "resolved_value": "Phoenix Seal",
+            "_original_resolved_value": "Phoenix Seal"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10255",
+            "_original_value": "TRIGSTR_10255",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1NQ==",
+            "resolved_value": "Burning. Dispel to end the damage. Dispelling this buff cancels the effect.",
+            "_original_resolved_value": "Burning. Dispel to end the damage. Dispelling this buff cancels the effect."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "",
+            "_original_value": "",
+            "_encoding": "utf-8",
+            "_raw_base64": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+            "_original_value": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+            "_encoding": "utf-8",
+            "_raw_base64": "UmVwbGFjZWFibGVUZXh0dXJlc1xDb21tYW5kQnV0dG9uc1xCVE5JdGVtX1Bob2VuaXhTZWFsLmJscA=="
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "Name / Имя",
+          "type": "string",
+          "data": {
+            "value": "TRIGSTR_10256",
+            "_original_value": "TRIGSTR_10256",
+            "_encoding": "utf-8",
+            "_raw_base64": "VFJJR1NUUl8xMDI1Ng==",
+            "resolved_value": "Phoenix Seal",
+            "_original_resolved_value": "Phoenix Seal"
+          },
+          "sanity_check": {
+            "text": "B073",
+            "hex": "42303733"
+          }
+        }
+      ],
+      "display_name": "Phoenix Seal"
+    },
+    {
+      "old_id": {
+        "text": "BHds",
+        "hex": "42486473"
+      },
+      "new_id": {
+        "text": "B074",
+        "hex": "42303734"
+      },
+      "v3_unknown": [
+        0
+      ],
+      "modifications": [
+        {
+          "field": {
+            "text": "ftip",
+            "hex": "66746970"
+          },
+          "field_name": "Tooltip / Подсказка",
+          "type": "string",
+          "data": {
+            "value": "Heaven Severed"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fube",
+            "hex": "66756265"
+          },
+          "field_name": "Extended tooltip / Полная подсказка",
+          "type": "string",
+          "data": {
+            "value": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled."
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "ftat",
+            "hex": "66746174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fart",
+            "hex": "66617274"
+          },
+          "field_name": "Icon / Иконка",
+          "type": "string",
+          "data": {
+            "value": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp"
+          },
+          "sanity_check": {
+            "text": "",
+            "hex": "00000000"
+          }
+        },
+        {
+          "field": {
+            "text": "fnam",
+            "hex": "666E616D"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": "Heaven Severed"
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
+          }
+        },
+        {
+          "field": {
+            "text": "feat",
+            "hex": "66656174"
+          },
+          "field_name": "",
+          "type": "string",
+          "data": {
+            "value": ""
+          },
+          "sanity_check": {
+            "text": "B074",
+            "hex": "42303734"
           }
         }
       ],

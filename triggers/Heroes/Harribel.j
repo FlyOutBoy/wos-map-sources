@@ -142,6 +142,8 @@ library HarribelSpells uses GearSystems
         real Harribel_Pas_RestoreHp3 = 10 // how much she restore hp when ally die in % of max hp, 10 = 10% of max hp resrtores when ally hero die
 //---------------Q ability-----------------------------------------------------
         integer HarribelQ_ID = 'A0AM'
+        real HarribelQ_CastTime = 0.69
+        real HarribelEQ_CastTime = 0.81
         real HarribelQ_DamageAgiBase = 1 // base number x Agi damage for 1 level
         real HarribelQ_DamageAgiStep = 1 // additional number x Agi damage for each next level
         real HarribelQ_Damage2StaticBase = 150 // base static damage for 1 level
@@ -344,7 +346,7 @@ library HarribelSpells uses GearSystems
                         endloop
                         call DecorRemove(c,x,y,aoe+50,40)
                     endif
-                    if r < 0.42 then
+                    if r < r7 then
                     call StopSpellUnit2(c)
                     endif
                     call DestroyGroup(g)
@@ -391,17 +393,17 @@ library HarribelSpells uses GearSystems
             if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then
                 call MakeSound("war3mapImported\\Hero_Harribel_Q")
                 call SetUnitAnimationByIndex( c , 1)
-                call SetUnitTimeScale( c , 0.42)
-                set r7 = 0.57
+                call SetUnitTimeScale( c , 0.42 * 0.57 / HarribelQ_CastTime)
+                set r7 = HarribelQ_CastTime
             set move = (HarribelQ_RangeBase+ (HarribelQ_RangeStep * (GetUnitAbilityLevel(c, HarribelQ_ID) - 1))) / 16
             else
-            set r7 = 0.69
+            set r7 = HarribelEQ_CastTime
             set move = HarribelQ_RangeBase / 17
                 set check = 1
                 set scale = 3.1
                 call MakeSound("war3mapImported\\Hero_Harribel_EQ")
                 call SetUnitAnimationByIndex( c , 2)
-                call SetUnitTimeScale( c , 0.21)
+                call SetUnitTimeScale( c , 0.21 * 0.69 / HarribelEQ_CastTime)
             endif            
             set rmax = r7+0.51
             call SetUnitFacing(c, a * bj_RADTODEG)
@@ -414,6 +416,18 @@ library HarribelSpells uses GearSystems
     endstruct
 
     // Invulnerability: this spell contains a StartSpellUnit/Avul phase.
+    globals
+        real HarribelEW_ChargeBonus35 = 4.0
+        real HarribelR_CastDelay = 0.33
+    endglobals
+    function HarribelEW_ChargedDamage takes unit c, real baseDamage, real elapsed returns real
+        local real maximum = 2.0
+        if GetHeroLevel(c) >= 35 then
+            set maximum = HarribelEW_ChargeBonus35
+        endif
+        return baseDamage + GetHeroAgi(c, true) * maximum * RMinBJ(1.0, elapsed / HarribelEW_MaxCastDuration)
+    endfunction
+
     private struct HarribelSpells_W
         private static integer array m_HarribelW
         private static integer MUI_HarribelW = -1
@@ -428,6 +442,7 @@ library HarribelSpells uses GearSystems
         real r5
         group g
         unit u
+        real chargeBase
         real dmg
         integer check
         real aoe
@@ -456,6 +471,7 @@ library HarribelSpells uses GearSystems
                     set a = GAngle(c, td)
                     call SetUnitFacing(c, a * bj_RADTODEG)
                     if check == 1 and r4 > rmax then
+                        set dmg = HarribelEW_ChargedDamage(c, chargeBase, r)
                         if r == 0.51 then
                             call SetUnitTimeScale(c, 0)
                         endif
@@ -478,7 +494,6 @@ library HarribelSpells uses GearSystems
                         endif
                         if r5 > 0.93 then
                             set r5 = 0
-                            set dmg = dmg + GetHeroAgi(c, true) * HarribelEW_DamageAgiBonus
                             call DestroyEffect(EffectSpawn("war3mapImported\\wos_obr08 (214).mdx", x, y, GetRandomReal(0, 359), 0.5, 1.4, 1))
                         else
                             set r5 = r5 + 0.03
@@ -547,6 +562,9 @@ library HarribelSpells uses GearSystems
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_ZarakiWCrack1.mdx", x, y, GetRandomReal(0, 359), 1.25, 1.5, 0))
                         call DestroyEffect(EffectSpawn("war3mapImported\\wos_OPm (513)yellow.mdl", x, y, GetRandomReal(0, 359), 1, 0.9, 1))
                     endif
+                    if GetUnitAbilityLevel(c, HarribelE2_ID) > 0 then
+                        call BlzUnitDisableAbility(c, HarribelE2_ID, false, false)
+                    endif
                     call SaveInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL, 0)                    
                     call SetUnitTimeScale( c , 1)
                     call DestroyGroup(g)
@@ -571,6 +589,9 @@ library HarribelSpells uses GearSystems
             set MUI_HarribelW = MUI_HarribelW + 1
             set m_HarribelW[ MUI_HarribelW] = this
             set c = NewC
+            if GetUnitAbilityLevel(c, HarribelE2_ID) > 0 then
+                call BlzUnitDisableAbility(c, HarribelE2_ID, true, false)
+            endif
             set src = HarribelW_ID
             if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) != 0 then
                 set src = DamageSourceVariant(HarribelW_ID, 1, "EW")
@@ -584,6 +605,7 @@ library HarribelSpells uses GearSystems
             set a = GAngle( c , td ) // Angle Between points
             set dmg = GetHeroAgi( c , true) * ( HarribelW_DamageAgiBase + ( HarribelW_DamageAgiStep * ( GetUnitAbilityLevel( c , HarribelW_ID) - 1 ) ) )
             set dmg = dmg+ HarribelW_Damage2StaticBase + (HarribelW_Damage2StaticStep * (GetUnitAbilityLevel(c, HarribelW_ID) - 1))
+            set chargeBase = dmg
             set rmax = 4.12
             call SetUnitFacing(c, a * bj_RADTODEG)
             if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_MORPH_E) == 0 then            
@@ -680,6 +702,9 @@ library HarribelSpells uses GearSystems
                             call UnitAddAbility(c,HarribelE_Atk_ID)
                             call SetUnitAbilityLevel(c, HarribelE_Atk_ID, GetUnitAbilityLevel(c, HarribelE_ID))
                             call UnitAddAbility(c, HarribelE2_ID)
+                            if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL) == 1 then
+                                call BlzUnitDisableAbility(c, HarribelE2_ID, true, false)
+                            endif
                             if GetUnitAbilityLevel(c,HarribelE_ID)== 1 then 
                             call UnitAddAbility(c,HarribelE_Regen1_ID)
                             elseif GetUnitAbilityLevel(c,HarribelE_ID)== 2 then
@@ -933,6 +958,7 @@ library HarribelSpells uses GearSystems
                     set r = r + 0.03
                     call DebugUnit(c)
                     set r = RoundReal(r, 3)
+                    if r >= HarribelR_CastDelay then
                     if r2 > 0.21 then
                         set r2 = 0
                         call DecorRemove(c,x,y,aoe,50)
@@ -972,6 +998,7 @@ library HarribelSpells uses GearSystems
                     else
                         set r3 = r3 + 0.03
                     endif
+                    endif
                 else
                     call StopSpellUnit(c)
                     call DestroyGroup(g)
@@ -1002,6 +1029,7 @@ library HarribelSpells uses GearSystems
             set x = GetUnitX(c)
             set y = GetUnitY(c)
             set check = 0
+            set r3 = 0
             set r2 = 10
             set g = CreateGroup()
             set g2 = CreateGroup()
@@ -1010,7 +1038,7 @@ library HarribelSpells uses GearSystems
             set a = GAngle2( c , x, y ) // Angle Between points
             call MakeSound("war3mapImported\\Hero_Harribel_R")
             set dmg = GetHeroAgi( c , true) * ( HarribelR_DamageAgiBase + ( HarribelR_DamageAgiStep * ( GetUnitAbilityLevel( c , HarribelR_ID) - 1 ) ) )
-            set rmax = 1.02
+            set rmax = 1.02 + HarribelR_CastDelay
             call SetUnitFacing(c, a * bj_RADTODEG)
             call SetUnitAnimationByIndex( c , 9)
             call SetUnitTimeScale( c , 0.8)
@@ -1486,6 +1514,9 @@ library HarribelSpells uses GearSystems
         endif
     endfunction
     function HarribelE2_Start takes unit c returns nothing
+        if LoadInteger(hs, GetHandleId(GetOwningPlayer(c)), SH_W_SKILL) == 1 then
+            return
+        endif
             call HarribelSpells_E.HarribelE2_Start( c)
     endfunction
     function HarribelR_Start takes unit c returns nothing

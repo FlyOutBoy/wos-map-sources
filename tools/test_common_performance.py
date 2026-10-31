@@ -131,13 +131,14 @@ class CommonPerformance(unittest.TestCase):
         values={};writes=[]
         def put(kind,key,text):
             values[kind,key]=text;writes.append((kind,key,text))
-        vm.g.update(TooltipTextRevision=0,BlzGetAbilityExtendedTooltip=lambda a,l:values.get(('spell',(a,l)),''),
+        vm.g.update(StringLength=lambda s:len(s or ''),SubString=lambda s,a,b:(s or '')[int(a):int(b)],
+            TooltipTextRevision=0,BlzGetAbilityExtendedTooltip=lambda a,l:values.get(('spell',(a,l)),''),
             BlzSetAbilityExtendedTooltip=lambda a,t,l:put('spell',(a,l),t),
             BlzGetAbilityResearchExtendedTooltip=lambda a,l:values.get(('learn',(a,l)),''),
             BlzSetAbilityResearchExtendedTooltip=lambda a,t,l:put('learn',(a,l),t),
             BlzGetItemExtendedTooltip=lambda i:values.get(('item',i),''),
             BlzSetItemExtendedTooltip=lambda i,t:put('item',i,t))
-        data=vm.structs['TooltipBuilder'].create();data.buffer='same description'
+        data=vm.structs['TooltipBuilder'].create();data.buffer='same description';data.normalizedBuffer=''
         for _ in range(100):
             data.applyToAbility('spell',1);data.applyToAbilityLearn('spell',1);data.applyToItem('item')
         self.assertEqual(3,len(writes))

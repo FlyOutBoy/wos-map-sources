@@ -410,6 +410,7 @@ function Trig_DmgSys_Actions takes nothing returns nothing
     local integer appliedInteger
     local real dmg_base = dmg
     local real quincyShare = 0.0
+    local real stoneHealFactor = 1.0
     local real hpblock1
     local real shieldInput = 0.0
     local real random1
@@ -652,7 +653,7 @@ endif
     if GetUnitAbilityLevel(td, Erza3E_DamageImmune_ID) > 0 and not shieldPen then
         set dmg = ApplyFullDamageShield(c, td, dmg, penetrationTrigger, typedmg, DAMAGE_SHIELD_TYPE_ALL)
     endif
-        if ItemDamageCanProc(damageSourceId) and not QuincyCrossDamageActive and dmg > 1 and isEnemy and dmg < QuincyCross_MaxDmg and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
+        if ItemDamageCanReceiveQuincy(damageSourceId) and dmg > 0 and HasCachedItem(c, QuincyCross_Item_ID) > 0 then
        // Keep the real hit unchanged; split the final statistic after mitigation.
        set quincyShare = QuincyCross_DamageBase/RMaxBJ(0.0001,dmg+QuincyCross_DamageBase)
        set dmg = dmg + QuincyCross_DamageBase
@@ -695,11 +696,15 @@ endif
     endif
     endif
       if dmg > 1 and isEnemy and ((HasCachedItem(c,'I040') > 0 and GetUnitAbilityLevel(c, 'A0HV') > 0) or HasCachedItem(c,PhilosopherEvolved_ID) > 0) then // Philosopher's Stone: no damage threshold
+    // Creeps restore half as much for both base and evolved Stone.
+    if not IsUnitType(td, UNIT_TYPE_HERO) then
+        set stoneHealFactor = 0.5
+    endif
     // Share of the final damage; no per-hit effect. Evolved active: +18% while buffed.
     if GetUnitAbilityLevel(c, PhilosopherEvolved_Buff_ID) > 0 then
-    call SetHpCurrent2Quiet(c,c,dmg*(PhilosopherStone_Lifesteal+PhilosopherEvolved_BonusLifesteal)/100.0)
+    call SetHpCurrent2Quiet(c,c,stoneHealFactor*dmg*(PhilosopherStone_Lifesteal+PhilosopherEvolved_BonusLifesteal)/100.0)
     else
-    call SetHpCurrent2Quiet(c,c,dmg*PhilosopherStone_Lifesteal/100.0)
+    call SetHpCurrent2Quiet(c,c,stoneHealFactor*dmg*PhilosopherStone_Lifesteal/100.0)
     endif
     endif
     // Takeshi: Cambio gauge and Cambio extension use the final damage of his own abilities.
@@ -810,12 +815,11 @@ endif
         call BlzStartUnitAbilityCooldown(c, DeathNote_CD_ID , DeathNote_CD  )
         call DeathNote_Start(c,td,dmg)
     endif
-    if ItemDamageCanProc(damageSourceId) then
-
-
-    if damageSourceId != 'I02S' and dmg > 1 and GetUnitAbilityLevel(td, 'B008') > 0 and isEnemy and HasCachedItem(c, 'I02S') > 0 then
+    // Koko's Lightning ticks can trigger Tachikaze; its own follow-up still cannot.
+    if (ItemDamageCanProc(damageSourceId) or DamageSourceBase(damageSourceId) == -103) and damageSourceId != 'I02S' and dmg > 1 and GetUnitAbilityLevel(td, 'B008') > 0 and isEnemy and HasCachedItem(c, 'I02S') > 0 then
         call Tachikaze_Start(c, td)
     endif
+    if ItemDamageCanProc(damageSourceId) then
 
     if typedmg == 1 then
         if KurikaraTrigger == false and isEnemy and HasCachedItem(c, 'I00W') > 0 and dmg >= Kurikara_MinDmg then
@@ -823,11 +827,12 @@ endif
             call KurikaraFlame(c, td)
         endif
     endif
-    // Core Drill: ability damage (not attacks or item procs) stacks its own type.
-    if ItemProcDamageDepth == 0 and not (damageSourceId >= 'I000' and damageSourceId <= 'Izzz') and (typedmg == 1 or typedmg == 2) and not eventIsAttack and dmg > 1 and isEnemy and not IsUnitIllusion(c) and HasCachedItem(c, CoreDrill_ID) > 0 then
+endif
+    // Each non-attack physical/magic damage event can stack Core Drill, including
+    // item poison/burn and elemental ticks. Adding the buff deals no extra damage.
+    if (typedmg == 1 or typedmg == 2) and not eventIsAttack and dmg > 0 and isEnemy and not IsUnitIllusion(c) and HasCachedItem(c, CoreDrill_ID) > 0 then
         call CoreDrill_AddStack(c, typedmg)
     endif
-endif
     
     if typedmg == 1 then
         
@@ -1010,7 +1015,7 @@ endif
         endif
     endif
     static if LIBRARY_ItemsSpells then
-        call ItemsElements_OnDamage(c, td, dmg, eventIsAttack or damageSourceId == 'A0BJ')
+        call ItemsElements_OnDamage(c, td, dmg, eventIsAttack or damageSourceId == 'A0BJ', damageSourceId)
     endif
     set dmg = GearDamageRun(c, td, dmg, typedmg, 3)
     call CrocodileG_AppliedSpellHit(c,td,dmg,typedmg,eventIsAttack)

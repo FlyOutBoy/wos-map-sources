@@ -216,7 +216,7 @@ library RaidenSpells uses GearSystems
         real RaidenTT_AddDuration = 15.00
         real RaidenTT_RemoveCd = 10.00
         real RaidenTT_AttackRangeBonus = 80.0 // attack range bonus while T2 (True God) is active
-        integer RaidenT_AdditionalDmg = 150
+        integer RaidenT_AdditionalDmg = 50
         boolean RaidenT_IsInvul = false
         boolean RaidenTT_IsInvul = false
 
@@ -276,6 +276,10 @@ library RaidenSpells uses GearSystems
         call SaveInteger(hs, GetHandleId(c), SH_ATK_COUNT, atk)
     endfunction
 
+    globals
+        real RaidenTQ_Range = 1650.0
+    endglobals
+
     private struct RaidenQ_KS
         private static integer array m_RaidenQ
         private static integer MUI_RaidenQ = -1
@@ -299,6 +303,7 @@ library RaidenSpells uses GearSystems
         integer check
         integer check2
         real aoe
+        real dashTravelled
         real move
         real r
         effect e
@@ -444,7 +449,9 @@ library RaidenSpells uses GearSystems
                         if r >= r_prepare then
                             set x = GetUnitX(c) + 50 * Cos(a)
                             set y = GetUnitY(c) + 50 * Sin(a)
-                            call MoveUnit(c, move, a)
+                            set r5 = RMinBJ(move, RMaxBJ(0, RaidenTQ_Range - dashTravelled))
+                            call MoveUnit(c, r5, a)
+                            set dashTravelled = dashTravelled + r5
                             if r3 > 0.12 then
                                 set r3 = 0
                                 set r5 = GetRandomReal(150, 400)
@@ -498,7 +505,9 @@ library RaidenSpells uses GearSystems
                         if r >= r_prepare then
                             set x = GetUnitX(c) + 50 * Cos(a)
                             set y = GetUnitY(c) + 50 * Sin(a)
-                            call MoveUnit(c, move, a)
+                            set r5 = RMinBJ(move, RMaxBJ(0, RaidenTQ_Range - dashTravelled))
+                            call MoveUnit(c, r5, a)
+                            set dashTravelled = dashTravelled + r5
                             if r3 > 0.12 then
                                 set r3 = 0
                                 set r5 = GetRandomReal(150, 400)
@@ -583,6 +592,7 @@ library RaidenSpells uses GearSystems
             set k2 = 0
             set check = 0
             call DebugUnit2(c)
+            set dashTravelled = 0
             set move = 60
             set sr = SR3(c, x, y)
             if sr < RaidenQ_MinMove then
@@ -623,7 +633,7 @@ library RaidenSpells uses GearSystems
                 call MakeSound("war3mapimported\\Hero_Raiden_TT_Q_1")
                 set dmg = dmg + GetHeroAgi(c, true) * RaidenTTQ_DamageAgiBonus
             elseif k2 == 1 then
-                set move = 90
+                set move = RaidenTQ_Range / 15.0
                 set scale = 6.3
                 set r_prepare = RaidenQ_CastTime + 0.27
                 set rmax = r_prepare + 0.45
@@ -853,6 +863,11 @@ library RaidenSpells uses GearSystems
         endmethod
     endstruct
 
+    globals
+        private hashtable RaidenTTWHits = InitHashtable()
+        real RaidenTTW_HitInterval = 1.0
+    endglobals
+
     private struct RaidenTW_KS
         private static integer array m_RaidenTW
         private static integer MUI_RaidenTW = -1
@@ -1034,8 +1049,11 @@ library RaidenSpells uses GearSystems
                                     set u = FirstOfGroup(g)
                                     exitwhen u == null
                                     if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                                        call DamageSource(src)
+                                        if TimerGetElapsed(HealRegenClock) >= LoadReal(RaidenTTWHits, this, GetHandleId(u)) then
+                                            call DamageSource(src)
+                                        call SaveReal(RaidenTTWHits, this, GetHandleId(u), TimerGetElapsed(HealRegenClock) + RaidenTTW_HitInterval)
                                         call dmgmag(c, u, dmg)
+                                    endif
                                     endif
                                     call GroupRemoveUnit(g, u)
                                 endloop
@@ -1059,8 +1077,11 @@ library RaidenSpells uses GearSystems
                                 set u = FirstOfGroup(g)
                                 exitwhen u == null
                                 if SpellBool(u) and IsUnitEnemy(u, GetOwningPlayer(c)) then
-                                    call DamageSource(src)
-                                    call dmgmag(c, u, dmg_arena)
+                                    if TimerGetElapsed(HealRegenClock) >= LoadReal(RaidenTTWHits, this, GetHandleId(u)) then
+                                        call DamageSource(src)
+                                        call SaveReal(RaidenTTWHits, this, GetHandleId(u), TimerGetElapsed(HealRegenClock) + RaidenTTW_HitInterval)
+                                        call dmgmag(c, u, dmg_arena)
+                                    endif
                                 endif
                                 call GroupRemoveUnit(g, u)
                             endloop
@@ -1108,6 +1129,7 @@ library RaidenSpells uses GearSystems
                     if MUI_RaidenTW == -1 then
                         call RaidenTick_Off(2)
                     endif
+                    call FlushChildHashtable(RaidenTTWHits, this)
                     call deallocate(this)
                 endif
                 set i = i + 1
@@ -1118,6 +1140,7 @@ library RaidenSpells uses GearSystems
             local thistype this = thistype.create()
             set MUI_RaidenTW = MUI_RaidenTW + 1
             set m_RaidenTW[MUI_RaidenTW] = this
+            call FlushChildHashtable(RaidenTTWHits, this)
             set c = NewC
             set r = 0
             set g = CreateGroup()
@@ -1762,7 +1785,7 @@ library RaidenSpells uses GearSystems
 
             if k2 == 2 then
                 set dmg = dmg + GetHeroAgi(c, true) * RaidenTTR_DamageAgiBonus
-                set move = 150
+                set move = 127.5
                 call MouseOn(GetOwningPlayer(c))
                 set MouseX[GetPlayerId(GetOwningPlayer(c))] = x
                 set MouseY[GetPlayerId(GetOwningPlayer(c))] = y
@@ -1875,6 +1898,7 @@ library RaidenSpells uses GearSystems
                     elseif check == 1 then
                         if k3 == 0 and LoadInteger(hs, GetHandleId(c), SH_RAIDEN_T2) == 1 then
                             set k3 = 1
+                            call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0, BlzGetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0) - RaidenT_AdditionalDmg)
                             set rmax = rmax + RaidenTT_AddDuration
                             call SetUnitRange(c, BlzGetUnitWeaponRealField(c, UNIT_WEAPON_RF_ATTACK_RANGE, 0) + RaidenTT_AttackRangeBonus)
                         endif
@@ -1903,7 +1927,9 @@ library RaidenSpells uses GearSystems
                             call BlzSetUnitSkin(c, Raiden_ID)
                         endif
                         call BlzSetAbilityIcon(Raiden_ID, "ReplaceableTextures\\CommandButtons\\BTNHero_Raiden_Icon.blp")
-                        call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0, check2)
+                        if k3 == 0 then
+                            call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0, BlzGetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_DAMAGE_BASE, 0) - RaidenT_AdditionalDmg)
+                        endif
                         call AddUnitAnimationProperties(c, "alternate", false)
                         call BlzSetUnitWeaponIntegerField(c, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, 0, 6)
                         call FixAura(c)

@@ -84,7 +84,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Wape Stack",
-    "extended_tooltip": "unit take additional physical damage by 9%",
+    "extended_tooltip": "Takes 12% additional physical damage. Physical damage from a Kyoka Suigetsu wielder deals 24% additional physical damage instead.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNElem_Wape.blp",
     "target_art": "war3mapImported\\wos_steam.mdx",
     "race": "nightelf"
@@ -1156,7 +1156,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Frozen Heart Blessing",
-    "extended_tooltip": "Receives 20% more mana regeneration and mana restoration.",
+    "extended_tooltip": "Receives 15% more mana regeneration and mana restoration.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Frozen_Heart.blp",
     "target_art": ""
   },
@@ -1164,7 +1164,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Ashisogi Jizo",
-    "extended_tooltip": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 5 sec. Can be dispelled.",
+    "extended_tooltip": "Poisoned: takes 0.5x the attacker's Agility physical damage every second for 4 sec. Can be dispelled.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_AshisogiJizo.blp",
     "target_art": ""
   },
@@ -1273,7 +1273,8 @@
     "name": "Core Drill Physical 1",
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (1/5)",
-    "extended_tooltip": "+5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+4.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1281,7 +1282,8 @@
     "name": "Core Drill Physical 2",
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (2/5)",
-    "extended_tooltip": "+10% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+8.5% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1289,7 +1291,8 @@
     "name": "Core Drill Physical 3",
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (3/5)",
-    "extended_tooltip": "+15% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+12.75% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1297,7 +1300,8 @@
     "name": "Core Drill Physical 4",
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (4/5)",
-    "extended_tooltip": "+20% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+17% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1305,7 +1309,8 @@
     "name": "Core Drill Physical 5",
     "base_id": "BHds",
     "tooltip": "Core Drill: Physical (5/5)",
-    "extended_tooltip": "+25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+21.25% physical ability damage. Each physical ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillPhys.blp",
     "target_art": ""
   },
@@ -1313,7 +1318,8 @@
     "name": "Core Drill Magic 1",
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (1/5)",
-    "extended_tooltip": "+5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+4.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1321,7 +1327,8 @@
     "name": "Core Drill Magic 2",
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (2/5)",
-    "extended_tooltip": "+10% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+8.5% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1329,7 +1336,8 @@
     "name": "Core Drill Magic 3",
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (3/5)",
-    "extended_tooltip": "+15% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+12.75% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1337,7 +1345,8 @@
     "name": "Core Drill Magic 4",
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (4/5)",
-    "extended_tooltip": "+20% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+17% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1345,7 +1354,8 @@
     "name": "Core Drill Magic 5",
     "base_id": "BHds",
     "tooltip": "Core Drill: Magic (5/5)",
-    "extended_tooltip": "+25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
+    "extended_tooltip [fube]": "+21.25% magic ability damage. Each magic ability hit adds a stack and refreshes it (4 sec).",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CoreDrillMag.blp",
     "target_art": ""
   },
@@ -1385,7 +1395,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Will of D.",
-    "extended_tooltip": "HP cannot drop below 1.",
+    "extended_tooltip": "HP cannot drop below 1. Dispelling this buff ends protection.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_WillOfD.blp",
     "target_art": ""
   },
@@ -1451,7 +1461,7 @@
     "name": "",
     "base_id": "BHds",
     "tooltip": "Return by Death",
-    "extended_tooltip": "Returns to the marked position after 4 sec. Removing this positive buff cancels the return.",
+    "extended_tooltip": "Returns to the marked position after 5 sec. Removing this positive buff cancels the return.",
     "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ReturnByDeath.blp",
     "target_art": ""
   },
@@ -1504,6 +1514,109 @@
     "target_art": "Abilities\\Spells\\Other\\GeneralAuraTarget\\GeneralAuraTarget.mdl",
     "editor_suffix": "Inori",
     "race": "orc"
+  },
+  "B069": {
+    "name": "Emberbreaker",
+    "base_id": "BHds",
+    "tooltip": "Emberbreaker",
+    "extended_tooltip": "Damage to the caster triggers retaliation. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+    "target_art": ""
+  },
+  "B06A": {
+    "name": "Thunder Verdict",
+    "base_id": "BHds",
+    "tooltip": "Thunder Verdict",
+    "extended_tooltip": "Moving 500 from the first strike triggers extra damage. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderVerdict.blp",
+    "target_art": ""
+  },
+  "B06B": {
+    "name": "Thunder Bastion",
+    "base_id": "BHds",
+    "tooltip": "Thunder Bastion",
+    "extended_tooltip": "Incoming hits consume Static Counter charges. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ThunderBastion.blp",
+    "target_art": ""
+  },
+  "B06C": {
+    "name": "Cinder Fang",
+    "base_id": "BHds",
+    "tooltip": "Cinder Fang",
+    "extended_tooltip": "HP and mana restoration are blocked; the caster's next hit deals bonus damage. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_CinderFang.blp",
+    "target_art": ""
+  },
+  "B06D": {
+    "name": "Mirror Tide",
+    "base_id": "BHds",
+    "tooltip": "Mirror Tide",
+    "extended_tooltip": "The caster's hits reflect a projectile to another enemy, once per second. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_MirrorTide.blp",
+    "target_art": ""
+  },
+  "B06E": {
+    "name": "Volt Thread",
+    "base_id": "BHds",
+    "tooltip": "Volt Thread",
+    "extended_tooltip": "Lightning thread: periodic damage and Static Needle charges. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_VoltThread.blp",
+    "target_art": ""
+  },
+  "B06F": {
+    "name": "Phoenix Seal",
+    "base_id": "BHds",
+    "tooltip": "Phoenix Seal",
+    "extended_tooltip": "Casting a hero ability triggers an explosion. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+    "target_art": ""
+  },
+  "B070": {
+    "name": "Siren's Tear",
+    "base_id": "BHds",
+    "tooltip": "Siren's Tear",
+    "extended_tooltip": "Mana is drained and returned to the caster. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_SirenTear.blp",
+    "target_art": ""
+  },
+  "B071": {
+    "name": "Constellation Coil",
+    "base_id": "BHds",
+    "tooltip": "Constellation Coil",
+    "extended_tooltip": "Separating the linked targets triggers extra damage. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_ConstellationCoil.blp",
+    "target_art": ""
+  },
+  "B072": {
+    "name": "Emberbreaker",
+    "base_id": "BHds",
+    "tooltip": "Emberbreaker",
+    "extended_tooltip": "Burns for 4 seconds. Dispel to end the damage. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_Emberbreaker.blp",
+    "target_art": ""
+  },
+  "B073": {
+    "name": "Phoenix Seal",
+    "base_id": "BHds",
+    "tooltip": "Phoenix Seal",
+    "extended_tooltip": "Burning. Dispel to end the damage. Dispelling this buff cancels the effect.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_PhoenixSeal.blp",
+    "target_art": ""
+  },
+  "B074": {
+    "name": "Heaven Severed",
+    "base_id": "BHds",
+    "tooltip": "Heaven Severed",
+    "tooltip [ftip]": "Heaven Severed",
+    "extended_tooltip": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
+    "extended_tooltip [fube]": "50% of physical and magic resistance is ignored for 9 sec. Cannot be dispelled.",
+    "icon": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
+    "icon [fart]": "ReplaceableTextures\\CommandButtons\\BTNItem_InvertedSpear.blp",
+    "target_art": "",
+    "target_art [ftat]": "",
+    "name [fnam]": "Heaven Severed",
+    "field_feat": "",
+    "field_feat [feat]": ""
   },
   "B0F0": {
     "name": "Frostnova E - Frozen Shelter",

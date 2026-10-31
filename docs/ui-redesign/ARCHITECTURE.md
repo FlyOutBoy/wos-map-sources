@@ -1233,3 +1233,16 @@ and disables BAN only for each locked owner. StartBanPhase hides the notice. Dup
 sender-specific feedback. BAN now uses the same event-owner focus reset as
 CONFIRM/RANDOM. Captain Draft retains its own validation/turn ownership.
 Engine mouse hit testing and multiplayer acceptance are still required.
+
+### CP77 tooltip container contract
+
+WUI_TooltipBox returns a normal FRAME visibility gate, with background as its child.
+It starts hidden before art allocation; inset callers explicitly show it. Hover
+callers attach that root once via BlzFrameSetTooltip. DamageStats Game-tab roots
+inherit the tab/window to remain hidden during startup and when statistics closes. Never attach its backdrop child or
+reparent native SIMPLEFRAME tooltips into this hierarchy. Shared FDF templates use
+native skin keys; regular ControlStyle is forbidden on SIMPLEBUTTON. AHUI windows
+visually match the native HUD bottom-right and local shift (normal FRAME coordinates
+need .030 right inset / .070 top offset to account for native SIMPLEFRAME scale), retain level requirements,
+and reuse cached content. Ally color native state 2 (Mode 3) is a one-time client
+default, never a continuously enforced setting. See RESUME CP77 for engine evidence.

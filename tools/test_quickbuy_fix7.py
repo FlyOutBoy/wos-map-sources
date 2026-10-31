@@ -22,5 +22,5 @@ class Fix7(prior.Fix6):
   self.vm.run('REC_Render');calls.clear();self.vm.run('REC_Render');self.assertFalse([f for f in calls if isinstance(f,tuple) and f[0] in ['FRAME_ShopItem','REC_Remove']]);g['ItemsFrameCurrentPage_ID'][0]=1;self.vm.run('REC_Render');self.assertTrue(state[g['FRAME_ShopItem'][34]])
  def test_rec_minus_mirrors_plus_inside_anchor_and_hud_hover_style(self):
   s=(ui.ROOT/'triggers/WOS_Start/WoS_Shop_Init.j').read_text(encoding='utf-8');self.assertIn('FRAMEPOINT_TOPLEFT, FRAME_ShopItem[i], FRAMEPOINT_TOPLEFT, 0.001, -0.001',s);self.assertIn('WUI_ItemY(i) - 0.0175, 0.014, 0.00525',s)
-  f=(ui.ROOT/'assets/UI/WOS/WOSControls.fdf').read_text(encoding='utf-8').split('Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {',1)[1].split('}',1)[0];self.assertIn('AUTOTRACK|HIGHLIGHTONMOUSEOVER',f);self.assertIn('UseHighlight "WOSQBHUDRemoveHover"',f)
+  f=(ui.ROOT/'assets/UI/WOS/WOSControls.fdf').read_text(encoding='utf-8').split('Frame "SIMPLEBUTTON" "WOSQBHUDRemove" {',1)[1].split('}',1)[0];self.assertNotIn('ControlStyle',f);self.assertIn('UseHighlight "WOSQBHUDRemoveHover"',f)
 if __name__=='__main__':unittest.main()

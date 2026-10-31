@@ -51,6 +51,9 @@ endglobals
 globals
 integer RoundJustStarted = 0
 integer PrepJustStarted = 0
+boolean TestRepickRoundEndPending = false
+code TestRepickRoundEndAction = null
+integer array TestPrimaryDeadTicks
     integer PlayerCountValue = 0
     integer Round1Started = 0
     unit array Hero
@@ -1974,6 +1977,14 @@ call BlzFrameSetVisible(EmojiToggle, true)
         
     endif
 endfunction
+// Repick removes the primary hero before the picker opens; finish active combat now.
+function TestUnit_EndRoundForRepick takes nothing returns nothing
+    if TestMode and CondArena == 1 and END1 == 0 then
+        set TestRepickRoundEndPending = true
+        call TimerStart(IntroStart1, 0.0, false, TestRepickRoundEndAction)
+    endif
+endfunction
+
 function Repick takes player p returns nothing
     local integer i = 0
     local integer k = GetRandomInt(0, 9)
@@ -2006,6 +2017,7 @@ function Repick takes player p returns nothing
     call WUI_ReleaseHeroMeters(pid)
     call RemoveUnit(Hero[pid])
     set Hero[pid] = null
+    call TestUnit_EndRoundForRepick()
     set level_id[pid] = 0
     call AddGold(p, R2I(AddRandom / 2), false)
     call RandomPick(p)
@@ -3005,6 +3017,7 @@ function OnClick takes nothing returns nothing
                 set Hero[pid] = null
                 set level_id[pid] = 0
             endif
+            call TestUnit_EndRoundForRepick()
             if GetLocalPlayer() == Player(pid) then
                 call BlzFrameSetVisible(FRAME_MAIN, true)
                 call BlzFrameSetVisible(FRAME_StatusHeroMain, false)
@@ -5002,6 +5015,37 @@ function PickChat_Sync takes boolean active returns nothing
     call PickChat_Apply()
 endfunction
 
+// Test summons/shared-control allies never keep a round alive after all human heroes die.
+function TestUnit_PrimaryDefeated takes nothing returns boolean
+    local integer i = 0
+    local integer primary = 0
+    local integer waiting = 0
+    local unit u
+    loop
+        exitwhen i >= 10
+        set u = Hero[i]
+        if IsActivePlayerSlot(i) and GetPlayerController(Player(i)) == MAP_CONTROL_USER and (u == null or (u != TestUnit and u != TestAllyUnit)) and Leave[i] == 0 then
+            set primary = primary+1
+            if u == null or GetUnitTypeId(u) == 0 then
+                // A removed primary cannot revive; no death grace is needed.
+                set TestPrimaryDeadTicks[i] = 4
+            elseif IsUnitType(u, UNIT_TYPE_DEAD) or GetWidgetLife(u) <= 0.405 then
+                set TestPrimaryDeadTicks[i] = TestPrimaryDeadTicks[i]+1
+            else
+                set TestPrimaryDeadTicks[i] = 0
+            endif
+            if TestPrimaryDeadTicks[i] < 4 then
+                set waiting = waiting+1
+            endif
+        else
+            set TestPrimaryDeadTicks[i] = 0
+        endif
+        set i = i+1
+    endloop
+    set u = null
+    return primary > 0 and waiting == 0
+endfunction
+
 function PrepareStart takes nothing returns nothing
     local timer t = GetExpiredTimer()
     local integer i = 0
@@ -5021,6 +5065,10 @@ function PrepareStart takes nothing returns nothing
     local integer borrower
     local integer timeLeft
     local integer reward = 0
+    if TestRepickRoundEndPending then
+        // The zero-delay repick tick reuses this timer; resume its normal cadence.
+        call TimerStart(IntroStart1, 1.0, true, function PrepareStart)
+    endif
     call PickChat_Sync(RandomAllPlayers == 0)
     // The Dota-style captain draft is a self-contained pre-game state machine.
     // Tick it once per second and do not let the legacy picker consume the
@@ -5205,6 +5253,17 @@ endif
                 set i = i + 1
             endloop
             if TimeMove == TimeRound then
+                // Finish the opening purchase before combat closes the shop.
+                if firstroundinit == 0 then
+                    set Round1Started = 1
+                    call ShopForceFirstRoundAutoBuy()
+                endif
+                set i = 0
+                loop
+                    exitwhen i == 10
+                    set TestPrimaryDeadTicks[i] = 0
+                    set i = i + 1
+                endloop
                 set RoundJustStarted = 1
                 set CondArena = 1
                 call WUI_GameInfoRoundStart()
@@ -5215,7 +5274,6 @@ endif
                 if firstroundinit == 1 then
                     set Round1Started = 1
                     set CaptainDraftPreRoundUnlimitedSwap = false
-call ShopForceFirstRoundAutoBuy()
                     call PauseTimer(FrameCapTimer2)
                 endif
                 if (Time_RoundEnd - (Time_RoundEnd/60)*60) < 10 then
@@ -5374,7 +5432,7 @@ endif
                 set WOS_ForfeitTeam = 0
             else
             if TestMode == true then
-                if k1 == 0 then
+                if TestRepickRoundEndPending or TestUnit_PrimaryDefeated() then
                     set k = 1
                 endif
             else
@@ -5433,6 +5491,7 @@ endif
                 call SukunaEnd()
             endif
             if TimeMove == Time_RoundEnd or k == 1 then
+                set TestRepickRoundEndPending = false
                 set PrepJustStarted = 1
                 set CondArena = 0
                 set TimeMove = 1
@@ -5695,6 +5754,7 @@ function initmapstart takes nothing returns nothing
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_T, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_F, 0, false )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_K, 0, false )
+        call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_S, 0, true )
         call BlzTriggerRegisterPlayerKeyEvent( gg_trg_ButtonPressed, Player(i), OSKEY_S, 0, false )
         // F1 has no ButtonPressed branch: no extra synced event on hero select.
         // F3 / F4 are rebindable hotkeys of the statistics window (Scoreboard.j).
@@ -5725,6 +5785,7 @@ function initmapstart takes nothing returns nothing
         set i = i + 1
     endloop
     set IntroStart1 = CreateTimer()
+    set TestRepickRoundEndAction = function PrepareStart
     call TimerStart(IntroStart1, 1, true, function PrepareStart)
     //set Hero[6] =  CreateUnit(Player(6),'Hpal',GetRectCenterX(gg_rct_Arena),GetRectCenterY(gg_rct_Arena),1)
 endfunction

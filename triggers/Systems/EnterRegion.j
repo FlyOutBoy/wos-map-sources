@@ -151,6 +151,81 @@ endif
 set c = null
 endfunction
 
+globals
+    integer HeroUnstuckCastKey = StringHash("spell p")
+    item HeroUnstuckProbe = null
+    timer HeroUnstuckTimer = CreateTimer()
+endglobals
+
+function HeroUnstuck_Point takes real x, real y returns boolean
+    local boolean valid
+    if x <= GetRectMinX(bj_mapInitialPlayableArea)+32.0 or x >= GetRectMaxX(bj_mapInitialPlayableArea)-32.0 or y <= GetRectMinY(bj_mapInitialPlayableArea)+32.0 or y >= GetRectMaxY(bj_mapInitialPlayableArea)-32.0 or IsTerrainPathable(x,y,PATHING_TYPE_WALKABILITY) then
+        return false
+    endif
+    call SetItemVisible(HeroUnstuckProbe,true)
+    call SetItemPosition(HeroUnstuckProbe,x,y)
+    set valid = RAbsBJ(GetItemX(HeroUnstuckProbe)-x) <= 16.0 and RAbsBJ(GetItemY(HeroUnstuckProbe)-y) <= 16.0
+    call SetItemVisible(HeroUnstuckProbe,false)
+    return valid
+endfunction
+
+function HeroUnstuck_Free takes real x, real y returns boolean
+    return HeroUnstuck_Point(x,y) and HeroUnstuck_Point(x+24.0,y+24.0) and HeroUnstuck_Point(x-24.0,y+24.0) and HeroUnstuck_Point(x+24.0,y-24.0) and HeroUnstuck_Point(x-24.0,y-24.0)
+endfunction
+
+function HeroUnstuck_Unit takes unit u returns nothing
+    local real x
+    local real y
+    local real radius = 64.0
+    local real angle
+    local real nx
+    local real ny
+    local integer ray
+    if u == null or GetUnitTypeId(u) == 0 or GetWidgetLife(u) <= 0.405 or IsUnitHidden(u) or IsUnitPaused(u) or IsUnitType(u,UNIT_TYPE_FLYING) or GetUnitFlyHeight(u) > 50.0 or LoadInteger(hs,GetHandleId(u),HeroUnstuckCastKey) > 0 then
+        return
+    endif
+    set x = GetUnitX(u)
+    set y = GetUnitY(u)
+    // A hero at an ordinary wall/another unit is fine; only an invalid centre is repaired.
+    if HeroUnstuck_Point(x,y) then
+        return
+    endif
+    loop
+        exitwhen radius > 1536.0
+        set ray = 0
+        loop
+            exitwhen ray >= 16
+            set angle = I2R(ray)*bj_PI/8.0
+            set nx = x+radius*Cos(angle)
+            set ny = y+radius*Sin(angle)
+            if HeroUnstuck_Free(nx,ny) then
+                call SetUnitX(u,nx)
+                call SetUnitY(u,ny)
+                return
+            endif
+            set ray = ray+1
+        endloop
+        set radius = radius+64.0
+    endloop
+endfunction
+
+function HeroUnstuck_Tick takes nothing returns nothing
+    local integer i = 0
+    loop
+        exitwhen i >= 10
+        call HeroUnstuck_Unit(Hero[i])
+        set i = i+1
+    endloop
+    if TestMode then
+        if TestUnit != null and TestUnit != Hero[TestUnitPlayerId] then
+            call HeroUnstuck_Unit(TestUnit)
+        endif
+        if TestAllyUnit != null and TestAllyUnit != Hero[TestAllyUnitPlayerId] then
+            call HeroUnstuck_Unit(TestAllyUnit)
+        endif
+    endif
+endfunction
+
 //===========================================================================
 function InitTrig_EnterRegion takes nothing returns nothing
 local trigger t1 = CreateTrigger(  )
@@ -158,6 +233,10 @@ local trigger ar1 = CreateTrigger(  )
 local trigger ar2 = CreateTrigger(  )
 local trigger ar3 = CreateTrigger(  )
 local trigger ar4 = CreateTrigger(  )
+set HeroUnstuckProbe = CreateItem('wolg',GetRectCenterX(gg_rct_Caster),GetRectCenterY(gg_rct_Caster))
+call SetItemVisible(HeroUnstuckProbe,false)
+call SetItemInvulnerable(HeroUnstuckProbe,true)
+call TimerStart(HeroUnstuckTimer,2.0,true,function HeroUnstuck_Tick)
 call TriggerRegisterEnterRectSimple( ar1, gg_rct_SpeedTop1 )
 call TriggerRegisterEnterRectSimple( ar1, gg_rct_SpeedTop2 )
     call TriggerAddCondition( ar1, Condition( function Trig_EnterRegion_Conditions ) )

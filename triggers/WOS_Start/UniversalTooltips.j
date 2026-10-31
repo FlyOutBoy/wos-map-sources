@@ -18,7 +18,7 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         private hashtable HT_TIMERS = null
         private constant string NL = "|n"
 
-        private unit TOOLTIP_DAMAGE_TARGET = null
+        private unit TOOLTIP_FIELD_PROBE = null
         private unit array WATCHED_HERO
         private timer POLL_TIMER = null
         // 483 independent jobs, UTB_INIT_BATCH per step, at most one step per frame.
@@ -28,6 +28,8 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         private integer UTB_InitJobCount = 0
         private integer UTB_InitJobIndex = 1
         private boolean UTB_InitComplete = false
+        private integer array UTB_PendingTips
+        private integer UTB_PendingCount = 0
 
         private constant integer POLL_KEY_TYPE     = -101
         private constant integer POLL_KEY_STR      = -102
@@ -279,6 +281,14 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
         return "|cffffcc00Cast Time:|r " + FormatReal(val) + " sec|n"
     endfunction
 
+    // Keep cast and active protection distinct without printing Iframe twice.
+    public function T_CastDurationAuto takes real castTime, boolean castInvul, real duration, boolean activeInvul returns string
+        if castInvul and activeInvul and castTime > 0.0 and duration > 0.0 then
+            return T_CastAuto(castTime, false) + T_DurAuto(duration, false) + T_PropS("Iframe", FormatReal(castTime) + " sec (cast), " + FormatReal(duration) + " sec (active)")
+        endif
+        return T_CastAuto(castTime, castInvul) + T_DurAuto(duration, activeInvul)
+    endfunction
+
     public function T_InvulAuto takes real val, boolean isInvul returns string
         if not isInvul or val == 0 then 
             return "" 
@@ -382,71 +392,89 @@ library AAUniversalTooltips initializer Init requires GearSystems, TooltipBuilde
             return ""
         endif
         set key = StringHash(src)
+        // A template without level tags has the same result for every rank.
+        set result = LoadStr(HT_DESC, key, 0)
+        if result == src then
+            return src
+        endif
         set result = LoadStr(HT_DESC, key, lvl)
         if result == null then
             set result = ResolveLevelTags(src, lvl)
-            call SaveStr(HT_DESC, key, lvl, result)
+            if result == src then
+                call SaveStr(HT_DESC, key, 0, result)
+            else
+                call SaveStr(HT_DESC, key, lvl, result)
+            endif
         endif
         return result
     endfunction
 
     private function StringReplace takes string src, string oldStr, string newStr returns string
+        local integer i = 0
+        local integer start = 0
         local integer len = StringLength(src)
         local integer oldLen = StringLength(oldStr)
-        local integer i = 0
-        local string res = ""
-        
-        if oldLen == 0 or len == 0 then
+        local string result = ""
+        if oldLen == 0 then
             return src
         endif
-        
         loop
             exitwhen i > len - oldLen
             if SubString(src, i, i + oldLen) == oldStr then
-                set res = res + newStr
+                set result = result + SubString(src, start, i) + newStr
                 set i = i + oldLen
+                set start = i
             else
-                set res = res + SubString(src, i, i + 1)
                 set i = i + 1
             endif
         endloop
-        
-        set res = res + SubString(src, i, len)
-        return res
+        if start == 0 then
+            return src
+        endif
+        return result + SubString(src, start, len)
     endfunction
 
     private function NormalizeDesc takes string s returns string
         local integer len = StringLength(s)
         local integer i = 0
+        local integer start = 0
+        local integer endPos
         local string res = ""
-        local string c = ""
-        
+        local string c
+        if s == null or s == "" then
+            return ""
+        endif
         loop
             exitwhen i >= len
             set c = SubString(s, i, i + 1)
-            if c == "\n" then
-                set res = res + "|n"
-            elseif c != "\r" then
-                set res = res + c
+            if c == "\n" or c == "\r" then
+                set res = res + SubString(s, start, i)
+                if c == "\n" then
+                    set res = res + "|n"
+                endif
+                set start = i + 1
             endif
             set i = i + 1
         endloop
-        
-        set s = res
-        set len = StringLength(s)
+        if start != 0 then
+            set s = res + SubString(s, start, len)
+            set len = StringLength(s)
+        endif
+        set endPos = len
         loop
-            exitwhen len == 0
-            if SubString(s, len - 1, len) == " " then
-                set s = SubString(s, 0, len - 1)
-                set len = len - 1
-            elseif len >= 2 and SubString(s, len - 2, len) == "|n" then
-                set s = SubString(s, 0, len - 2)
-                set len = len - 2
+            exitwhen endPos == 0
+            if SubString(s, endPos - 1, endPos) == " " then
+                set endPos = endPos - 1
+            elseif endPos >= 2 and SubString(s, endPos - 2, endPos) == "|n" then
+                set endPos = endPos - 2
             else
                 exitwhen true
             endif
         endloop
-        return s
+        if endPos == len then
+            return s
+        endif
+        return SubString(s, 0, endPos)
     endfunction
 
     private function LoreOnly takes string text returns string
@@ -700,6 +728,8 @@ function ARules_GetCastRange takes unit hero, integer abilId, ability ab, intege
         return DarkShikiQ_RangeBase + DarkShikiQ_RangeStep * (level - 1)
     elseif abilId == FrostnovaR_ID then
         return FrostnovaR_Range
+    elseif abilId == RaidenQ_ID and LoadInteger(hs, uid, StringHash("raiden t")) > 0 then
+        return RaidenTQ_Range
     elseif abilId == FrierenW2_ID then
         return FrierenW2_Range
     elseif abilId == FrierenT2_ID then
@@ -946,6 +976,7 @@ endfunction
         integer cdFrom = 0
         boolean previewChannel = false
         boolean previewDirected = false
+        boolean initialTipsQueued = false
 
         method setPreviewDirected takes nothing returns thistype
             set this.previewDirected = true
@@ -971,29 +1002,42 @@ endfunction
             set this.statStep2 = sStep
             set this.staticBase2 = stBase
             set this.staticStep2 = stStep
-            call this.SetInitialTips()
+            call this.QueueInitialTips()
             return this
         endmethod
 
         method setDecor takes string d returns thistype
             set this.decor = d
-            call this.SetInitialTips()
+            call this.QueueInitialTips()
             return this
         endmethod
 
         method setCdAfterDuration takes boolean flag returns thistype
             set this.cdAfterDur = flag
-            call this.SetInitialTips()
+            call this.QueueInitialTips()
             return this
         endmethod
 
         method setCooldownFrom takes integer abilId returns thistype
             set this.cdFrom = abilId
-            call this.SetInitialTips()
+            call this.QueueInitialTips()
             return this
         endmethod
 
-        private method SetInitialTips takes nothing returns nothing
+        private method QueueInitialTips takes nothing returns nothing
+            if this.formId != 0 then
+                return
+            endif
+            if UTB_InitComplete then
+                call this.SetInitialTips()
+            elseif not this.initialTipsQueued then
+                set this.initialTipsQueued = true
+                set UTB_PendingTips[UTB_PendingCount] = this
+                set UTB_PendingCount = UTB_PendingCount + 1
+            endif
+        endmethod
+
+        method SetInitialTips takes nothing returns nothing
             local string mechanic
             local string bonus
             local string desc
@@ -1001,6 +1045,8 @@ endfunction
             local integer i = 1
             local unit dummy
             local ability ab
+            local string descBody
+            local string descIframe
             local string bns
 
             if this.formId != 0 then
@@ -1008,7 +1054,9 @@ endfunction
             endif
 
             set desc = GetDesc(this.abilId)
-            set dummy = CreateUnit(Player(15), 'hfoo', 0, 0, 0)
+            set descBody = FilterIframe(desc, false)
+            set descIframe = FilterIframe(desc, true)
+            set dummy = TOOLTIP_FIELD_PROBE
             set bns = this.bonus
 
             if (this.bMult1 != 0.0) then
@@ -1025,9 +1073,9 @@ endfunction
             set builder = TooltipBuilder.create()
             set mechanic = ParseLevelTags(this.mecha, 0)
             set bonus = ParseLevelTags(bns, 0)
-            call builder.addDescription(FilterIframe(desc, false))
+            call builder.addDescription(descBody)
             call builder.addBonus(FilterIframe(bonus, false))
-            call builder.addIframe(FilterIframe(desc, true))
+            call builder.addIframe(descIframe)
             call builder.addIframe(FilterIframe(bonus, true))
             call builder.addIframe(FilterIframe(mechanic, true))
             if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
@@ -1062,9 +1110,9 @@ endfunction
                 set builder = TooltipBuilder.create()
                 set mechanic = ParseLevelTags(this.mecha, i)
                 set bonus = ParseLevelTags(bns, i)
-                call builder.addDescription(FilterIframe(desc, false))
+                call builder.addDescription(descBody)
                 call builder.addBonus(FilterIframe(bonus, false))
-                call builder.addIframe(FilterIframe(desc, true))
+                call builder.addIframe(descIframe)
                 call builder.addIframe(FilterIframe(bonus, true))
                 call builder.addIframe(FilterIframe(mechanic, true))
                 if (this.statBase != 0 or this.statStep != 0 or this.staticBase != 0 or this.staticStep != 0) then
@@ -1089,7 +1137,7 @@ endfunction
                 set i = i + 1
             endloop
 
-            call RemoveUnit(dummy)
+            call UnitRemoveAbility(dummy, this.abilId)
             set dummy = null
             set ab = null
         endmethod
@@ -1122,7 +1170,7 @@ endfunction
 
             call SaveInteger(HT_DATA, abilId, 0, this)
             call CaptureDesc(abilId)
-            call this.SetInitialTips()
+            call this.QueueInitialTips()
             return this
         endmethod
         
@@ -2048,7 +2096,7 @@ endif
     function WOS_UTB_Init_001_CrocodileQ_ID takes nothing returns nothing
 
         // Crocodile: MAIN abilities A0I7-A0IE; Q/W/E/R have five levels.
-        call SpellData.create(CrocodileQ_ID, 5, 1, 2, CrocodileQ_DamageAgiBase, CrocodileQ_DamageAgiStep, CrocodileQ_DamageStatic, 0.0, T_Rad(CrocodileQ_Aoe) + T_Prop("Range", CrocodileQ_Distance) + T_Slow(I2R(CrocodileQ_Slow), 2.0) + T_Dur("Sand Mark", CrocodileSand_Duration) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("W Combo", "Detonates quicksand for extra damage and stun.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(CrocodileQ_ID, 5, 1, 2, CrocodileQ_DamageAgiBase, CrocodileQ_DamageAgiStep, CrocodileQ_DamageStatic, 0.0, T_Rad(CrocodileQ_Aoe) + T_Slow(I2R(CrocodileQ_Slow), 2.0) + T_Dur("Sand Mark", CrocodileSand_Duration) + T_Dur("Ground Sand", CrocodileSand_GroundDuration) + T_PropS("Ground Sand Slow", FormatInt(CrocodileSand_Slow) + "% / " + FormatInt(CrocodileSand_SlowLevel25) + "% / " + FormatInt(CrocodileSand_SlowLevel35) + "% at Hero Lv. 1 / " + FormatInt(CrocodileSand_SecondSlowHeroLevel) + " / " + FormatInt(CrocodileSand_ThirdSlowHeroLevel) + "; applies to all ground sand"), T_Bonus("W Combo", "Detonates quicksand for extra damage and stun.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_002_CrocodileW_ID takes nothing returns nothing
@@ -2150,7 +2198,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_023_AinzG_ID takes nothing returns nothing
-        call SpellData.create(AinzG_ID, 1, 2, 3, AinzG_DamageIntBase, AinzG_DamageIntStep, 0.0, 0.0, T_Rad(AinzG_Aoe) + T_CastAuto(AinzG_PrepareTime, AinzG_IsInvul) + T_DurAuto(AinzG_Duration, AinzG_IsInvul) + T_Prop("Pulses", AinzG_DamageCount) + T_Dur("Pulse Interval", AinzG_DamagePeriod), "").setDecor(T_Decor(AinzG_DecorDamage)).setPreviewChannel()
+        call SpellData.create(AinzG_ID, 1, 2, 3, AinzG_DamageIntBase, AinzG_DamageIntStep, 0.0, 0.0, T_Rad(AinzG_Aoe) + T_CastDurationAuto(AinzG_PrepareTime, AinzG_IsInvul, AinzG_Duration, AinzG_IsInvul) + T_Prop("Pulses", AinzG_DamageCount) + T_Dur("Pulse Interval", AinzG_DamagePeriod), "").setDecor(T_Decor(AinzG_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_024_AinzQ2_ID takes nothing returns nothing
@@ -2237,7 +2285,7 @@ endif
     function WOS_UTB_Init_041_LaxusQ2_ID takes nothing returns nothing
 
         // --- ДОПОЛНИТЕЛЬНЫЕ СПОСОБНОСТИ ФОРМЫ 0 ---
-        call SpellData.create(LaxusQ2_ID, 5, 2, 1, LaxusQ_DamageStrBase, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Prop("Range", LaxusQ_Range2) + T_Element(LaxusQ2_Debuff), T_Bonus("Dragon Slayer Mode", "Replaces Lightning Strike during transformation") + T_Bonus("Red Lightning Mode (Lv. 35)", "Deals additional +Str x " + FormatReal(LaxusGQ2_DamageStrBonus) + " damage")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(LaxusQ2_ID, 5, 2, 1, LaxusQ_DamageStrBase, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Element(LaxusQ2_Debuff), T_Bonus("Dragon Slayer Mode", "Replaces Lightning Strike during transformation") + T_Bonus("Red Lightning Mode (Lv. 35)", "Deals additional +Str x " + FormatReal(LaxusGQ2_DamageStrBonus) + " damage")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_042_LaxusW2_ID takes nothing returns nothing
@@ -2247,7 +2295,7 @@ endif
     function WOS_UTB_Init_043_LaxusQ2_ID takes nothing returns nothing
 
         // --- ФОРМА 1 (LIGHTNING DRAGON SLAYER MODE - MODE G) ---
-        call SpellData.createAlt(LaxusQ2_ID, 1, 5, 2, 1, LaxusQ_DamageStrBase, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Prop("Range", LaxusQ_Range2) + T_Element(LaxusQ2_Debuff), T_Bonus("Form", "|cff9933ffDragon Slayer Mode|r") + T_Bonus("Red Lightning Mode (Lv. 35)", "Gains additional +Str x " + FormatReal(LaxusGQ2_DamageStrBonus) + " damage")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(LaxusQ2_ID, 1, 5, 2, 1, LaxusQ_DamageStrBase, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Element(LaxusQ2_Debuff), T_Bonus("Form", "|cff9933ffDragon Slayer Mode|r") + T_Bonus("Red Lightning Mode (Lv. 35)", "Gains additional +Str x " + FormatReal(LaxusGQ2_DamageStrBonus) + " damage")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_044_LaxusW_ID takes nothing returns nothing
@@ -2273,7 +2321,7 @@ endif
     function WOS_UTB_Init_049_LaxusQ2_ID takes nothing returns nothing
 
         // --- ФОРМА 2 (RED LIGHTNING DRAGON MODE - LV. 35) ---
-        call SpellData.createAlt(LaxusQ2_ID, 2, 5, 2, 1, LaxusQ_DamageStrBase + LaxusGQ2_DamageStrBonus, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Prop("Range", LaxusQ_Range2) + T_Element(LaxusQ2_Debuff), T_Bonus("Form", "|cffFF0000Red Lightning Mode|r") + T_Bonus("Red Dragon Core", "Infused with Red Lightning; maximum roar power unlocked")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(LaxusQ2_ID, 2, 5, 2, 1, LaxusQ_DamageStrBase + LaxusGQ2_DamageStrBonus, LaxusQ_DamageStrStep, LaxusQ_Damage2StaticBase, LaxusQ_Damage2StaticStep, T_RadExp(LaxusQ2_DamageAoe, LaxusQ2_DamageAoe2) + T_CastAuto(LaxusQ2_CastTime, LaxusQ2_IsInvul) + T_Element(LaxusQ2_Debuff), T_Bonus("Form", "|cffFF0000Red Lightning Mode|r") + T_Bonus("Red Dragon Core", "Infused with Red Lightning; maximum roar power unlocked")).setDecor(T_DecorExp(LaxusQ2_DecorDamage, LaxusQ2_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_050_LaxusW_ID takes nothing returns nothing
@@ -2366,7 +2414,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_068_PatriotR_ID takes nothing returns nothing
-        call SpellData.create(PatriotR_ID, 5, 1, 2, PatriotR_DamageAgiBase, PatriotR_DamageAgiStep, 0.0, 0.0, T_Rad(PatriotR_DamageAoe) + T_PropS("March Range", "<L:" + FormatInt(PatriotR_RangeBase) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 2) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 3) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 4) + ">") + T_CastAuto(PatriotR_CastTime, PatriotR_IsInvul) + T_DurAuto(PatriotR_Duration, PatriotR_IsInvul), T_Bonus("Phalanx Wall", "Soldiers plant shields at destination for " + FormatReal(PatriotR_Duration) + " sec, dealing Agility x <L:" + FormatReal(PatriotR2_DamageAgiBase) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 2) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 3) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 4) + "> damage (4 ticks)") + T_Bonus("Ruination Stance (E)", "March reverses direction: soldiers spawn at max range and pull enemies toward Patriot") + T_Bonus("Spear Trigger (Q)", "Hit with Q to instantly trigger the standing phase")).setDecor(T_Decor(PatriotR_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(PatriotR_ID, 5, 1, 2, PatriotR_DamageAgiBase, PatriotR_DamageAgiStep, 0.0, 0.0, T_Rad(PatriotR_DamageAoe) + T_PropS("March Range", "<L:" + FormatInt(PatriotR_RangeBase) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 2) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 3) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 4) + ">") + T_CastDurationAuto(PatriotR_CastTime, PatriotR_IsInvul, PatriotR_Duration, PatriotR_IsInvul), T_Bonus("Phalanx Wall", "Soldiers plant shields at destination for " + FormatReal(PatriotR_Duration) + " sec, dealing Agility x <L:" + FormatReal(PatriotR2_DamageAgiBase) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 2) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 3) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 4) + "> damage (4 ticks)") + T_Bonus("Ruination Stance (E)", "March reverses direction: soldiers spawn at max range and pull enemies toward Patriot") + T_Bonus("Spear Trigger (Q)", "Hit with Q to instantly trigger the standing phase")).setDecor(T_Decor(PatriotR_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_069_PatriotT_ID takes nothing returns nothing
@@ -2384,7 +2432,7 @@ endif
     function WOS_UTB_Init_072_PatriotT2_ID takes nothing returns nothing
 
         // --- СПОСОБНОСТИ СТОЙКИ СОКРУШЕНИЯ (СВОИ ID В РЕДАКТОРЕ) ---
-        call SpellData.createSimple(PatriotT2_ID, 1, 1, 2, PatriotT2_DamageAgiBase, 0.0, T_Rad(PatriotT2_DamageAoe) + T_CastAuto(PatriotT2_CastTime, PatriotT2_IsInvul) + T_DurAuto(PatriotT2_Duration, false), T_Bonus("Form", "|cff9933ffRuination Stance|r") + T_Bonus("Catastrophic Strike", "Aims up to 1.5 sec before launching spear into orbit, crushing target location")).setDecor(T_Decor(PatriotT2_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(PatriotT2_ID, 1, 1, 2, PatriotT2_DamageAgiBase, 0.0, T_Rad(PatriotT2_DamageAoe) + T_CastDurationAuto(PatriotT2_CastTime, PatriotT2_IsInvul, PatriotT2_Duration, false), T_Bonus("Form", "|cff9933ffRuination Stance|r") + T_Bonus("Catastrophic Strike", "Aims up to 1.5 sec before launching spear into orbit, crushing target location")).setDecor(T_Decor(PatriotT2_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_073_PatriotF2_ID takes nothing returns nothing
@@ -2402,7 +2450,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_076_PatriotR_ID takes nothing returns nothing
-        call SpellData.createAlt(PatriotR_ID, 1, 5, 1, 2, PatriotR_DamageAgiBase, PatriotR_DamageAgiStep, 0.0, 0.0, T_Rad(PatriotR_DamageAoe) + T_PropS("March Range", "<L:" + FormatInt(PatriotR_RangeBase) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 2) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 3) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 4) + ">") + T_CastAuto(PatriotR_CastTime, PatriotR_IsInvul) + T_DurAuto(PatriotR_Duration, PatriotR_IsInvul), T_Bonus("Form", "|cff9933ffRuination Stance|r") + T_Bonus("Reverse Pull", "Phalanx spawns at target location and marches inward, pulling enemies across full distance") + T_Bonus("Phalanx Wall", "Soldiers plant shields for " + FormatReal(PatriotR_Duration) + " sec, dealing Agility x <L:" + FormatReal(PatriotR2_DamageAgiBase) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 2) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 3) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 4) + "> damage (4 ticks)")).setDecor(T_Decor(PatriotR_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(PatriotR_ID, 1, 5, 1, 2, PatriotR_DamageAgiBase, PatriotR_DamageAgiStep, 0.0, 0.0, T_Rad(PatriotR_DamageAoe) + T_PropS("March Range", "<L:" + FormatInt(PatriotR_RangeBase) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 2) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 3) + "/" + FormatInt(PatriotR_RangeBase + PatriotR_RangeStep * 4) + ">") + T_CastDurationAuto(PatriotR_CastTime, PatriotR_IsInvul, PatriotR_Duration, PatriotR_IsInvul), T_Bonus("Form", "|cff9933ffRuination Stance|r") + T_Bonus("Reverse Pull", "Phalanx spawns at target location and marches inward, pulling enemies across full distance") + T_Bonus("Phalanx Wall", "Soldiers plant shields for " + FormatReal(PatriotR_Duration) + " sec, dealing Agility x <L:" + FormatReal(PatriotR2_DamageAgiBase) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 2) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 3) + "/" + FormatReal(PatriotR2_DamageAgiBase + PatriotR2_DamageAgiStep * 4) + "> damage (4 ticks)")).setDecor(T_Decor(PatriotR_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_077_PatriotQ_ID takes nothing returns nothing
@@ -2412,7 +2460,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_078_PatriotT2_ID takes nothing returns nothing
-        call SpellData.createAlt(PatriotT2_ID, 2, 1, 1, 2, PatriotT2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(PatriotT2_DamageAoe) + T_CastAuto(PatriotT2_CastTime, PatriotT2_IsInvul) + T_DurAuto(PatriotT2_Duration, false), T_Bonus("Form", "|cffFF0000Perseverance Stance|r") + T_Bonus("Catastrophic Strike", "Final devastating spear throw at target coordinate")).setDecor(T_Decor(PatriotT2_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(PatriotT2_ID, 2, 1, 1, 2, PatriotT2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(PatriotT2_DamageAoe) + T_CastDurationAuto(PatriotT2_CastTime, PatriotT2_IsInvul, PatriotT2_Duration, false), T_Bonus("Form", "|cffFF0000Perseverance Stance|r") + T_Bonus("Catastrophic Strike", "Final devastating spear throw at target coordinate")).setDecor(T_Decor(PatriotT2_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_079_Patriot_ID takes nothing returns nothing
@@ -2547,7 +2595,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_106_AlucardT2_ID takes nothing returns nothing
-        call SpellData.createSimple(AlucardT2_ID, 1, 1, 2, AlucardT2_DamageAgiBase, 0.0, T_Rad(AlucardT2_DamageAoe) + "(Expands by " + I2S(R2I(AlucardT2_DamageAoeStep)) + " x4)|nHP Cost: " + FormatReal(AlucardT2_HpCost) + "% Current HP|nLesser Approval: " + FormatReal(AlucardT_Duration / 2) + " sec, +" + FormatReal(AlucardT_AdditionalDamageToTarget * (AlucardT2_PercentageCrumwell / 100)) + "% Dmg Amp, " + FormatReal(AlucardT2_Heal) + "% Lifesteal", "").setPreviewChannel()
+        call SpellData.createSimple(AlucardT2_ID, 1, 1, 2, AlucardT2_DamageAgiBase, 0.0, T_Rad(AlucardT2_DamageAoe) + T_Cast(0.25) + "(Expands by " + I2S(R2I(AlucardT2_DamageAoeStep)) + " x4)|nHP Cost: " + FormatReal(AlucardT2_HpCost) + "% Current HP|nLesser Approval: " + FormatReal(AlucardT_Duration / 2) + " sec, +" + FormatReal(AlucardT_AdditionalDamageToTarget * (AlucardT2_PercentageCrumwell / 100)) + "% Dmg Amp, " + FormatReal(AlucardT2_Heal) + "% Lifesteal", "").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_107_Alucard_ID takes nothing returns nothing
@@ -2566,7 +2614,7 @@ endif
         // ===================================
         // 11. Старрк (Starrk_ID) -> Ловкость (2)
         // ===================================
-        call SpellData.create(StarrkQ_ID, 5, 2, 2, StarrkQ_DamageAgiBase, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkQ_DamageAoe), "") .setPreviewChannel().setPreviewDirected()
+        call SpellData.create(StarrkQ_ID, 5, 2, 2, StarrkQ_DamageAgiBase, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkQ_DamageAoe) + T_Cast(StarrkQ_CastTime), "") .setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_110_StarrkW_ID takes nothing returns nothing
@@ -2595,7 +2643,7 @@ endif
 
     function WOS_UTB_Init_116_StarrkQ_ID takes nothing returns nothing
 
-        call SpellData.createAlt(StarrkQ_ID, 1, 5, 2, 2, StarrkQ_DamageAgiBase + StarrkQ_DamageMorphIntImprove, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkQ_DamageAoe * StarrkEQ_AoeMultiplier) + T_Push(StarrkEQ_PushDistance), T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(StarrkQ_ID, 1, 5, 2, 2, StarrkQ_DamageAgiBase + StarrkQ_DamageMorphIntImprove, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkQ_DamageAoe * StarrkEQ_AoeMultiplier) + T_Cast(StarrkEQ_CastTime) + T_Push(StarrkEQ_PushDistance), T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_117_StarrkW_ID takes nothing returns nothing
@@ -2604,7 +2652,7 @@ endif
 
     function WOS_UTB_Init_118_StarrkQ_ID takes nothing returns nothing
         
-        call SpellData.createAlt(StarrkQ_ID, 2, 5, 2, 2, StarrkQ_DamageAgiBase + StarrkQ_DamageMorphIntImprove + StarrkQ_DamageTIntImprove, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkTQ_Aoe) + T_Stun(StarrkTQ_Stun), T_Bonus("Form", "|cffFF0000Wolf State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(StarrkQ_ID, 2, 5, 2, 2, StarrkQ_DamageAgiBase + StarrkQ_DamageMorphIntImprove + StarrkQ_DamageTIntImprove, StarrkQ_DamageAgiStep, StarrkQ_Damage2StaticBase, StarrkQ_Damage2StaticStep, T_Rad(StarrkTQ_Aoe) + T_Cast(StarrkTQ_CastTime) + T_Stun(StarrkTQ_Stun), T_Bonus("Form", "|cffFF0000Wolf State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_119_StarrkW_ID takes nothing returns nothing
@@ -2617,7 +2665,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_121_StarrkR2_ID takes nothing returns nothing
-        call SpellData.createSimple(StarrkR2_ID, 5, 2, 2, StarrkR2_DamageAgiBase, StarrkR2_DamageAgiStep, T_Rad(StarrkR2_DamageAoe) + T_Dur("Duration", 3.2) + T_Slow(StarrkR2_Slow, StarrkR2_SlowDuration), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(StarrkR2_ID, 5, 2, 2, StarrkR2_DamageAgiBase, StarrkR2_DamageAgiStep, T_Rad(StarrkR2_DamageAoe) + T_Cast(StarrkR2_CastTime) + T_Dur("Duration", 3.0) + T_Slow(StarrkR2_Slow, StarrkR2_SlowDuration), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_122_StarrkT2_ID takes nothing returns nothing
@@ -2739,7 +2787,7 @@ endif
         // ===================================
         // 13. Барраган (Barragan_ID) -> Интеллект (3)
         // ===================================
-        call SpellData.create(BarraganQ_ID, 5, 2, 3, BarraganQ_DamageIntBase, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe), T_Bonus("Lv. 35", "Applies Senescencia (G) passive")).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(BarraganQ_ID, 5, 2, 3, BarraganQ_DamageIntBase, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe) + T_Cast(BarraganQ_CastTime), T_Bonus("Lv. 35", "Applies Senescencia (G) passive")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_147_BarraganW_ID takes nothing returns nothing
@@ -2776,11 +2824,11 @@ endif
 
     function WOS_UTB_Init_155_BarraganQ_ID takes nothing returns nothing
         
-        call SpellData.createAlt(BarraganQ_ID, 1, 5, 2, 3, BarraganQ_DamageIntBase + BarraganQ_DamageMorphIntImprove, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe) + T_Prop("Bonus Range", BarraganEQ_RangeAdd), T_Bonus("Lv. 35", "Applies Senescencia (G) passive|n") + T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(BarraganQ_ID, 1, 5, 2, 3, BarraganQ_DamageIntBase + BarraganQ_DamageMorphIntImprove, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe) + T_Cast(BarraganEQ_CastTime) + T_Prop("Bonus Range", BarraganEQ_RangeAdd), T_Bonus("Lv. 35", "Applies Senescencia (G) passive|n") + T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_156_BarraganQ_ID takes nothing returns nothing
-        call SpellData.createAlt(BarraganQ_ID, 2, 5, 2, 3, BarraganQ_DamageIntBase + BarraganQ_DamageMorphIntImprove + BarraganQ_DamageTIntImprove, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe) + T_Stun(BarraganETQ_Stun) + T_Prop("Bonus Range", BarraganEQ_RangeAdd), T_Bonus("Lv. 35", "Applies Senescencia (G) passive|n") + T_Bonus("Form", "|cffFF0000Enhanced Release State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(BarraganQ_ID, 2, 5, 2, 3, BarraganQ_DamageIntBase + BarraganQ_DamageMorphIntImprove + BarraganQ_DamageTIntImprove, BarraganQ_DamageIntStep, BarraganQ_Damage2StaticBase, BarraganQ_Damage2StaticStep, T_Rad(BarraganQ_DamageAoe) + T_Cast(BarraganTQ_CastTime) + T_Stun(BarraganETQ_Stun) + T_Prop("Bonus Range", BarraganEQ_RangeAdd), T_Bonus("Lv. 35", "Applies Senescencia (G) passive|n") + T_Bonus("Form", "|cffFF0000Enhanced Release State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_157_BarraganW_ID takes nothing returns nothing
@@ -2872,7 +2920,7 @@ endif
         // ===================================
         // 15. Тия Харрибел (Harribel_ID) -> Ловкость (2)
         // ===================================
-        call SpellData.create(HarribelQ_ID, 5, 2, 2, HarribelQ_DamageAgiBase, HarribelQ_DamageAgiStep, HarribelQ_Damage2StaticBase, HarribelQ_Damage2StaticStep, T_Rad(HarribelQ_DamageAoe), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.create(HarribelQ_ID, 5, 2, 2, HarribelQ_DamageAgiBase, HarribelQ_DamageAgiStep, HarribelQ_Damage2StaticBase, HarribelQ_Damage2StaticStep, T_Rad(HarribelQ_DamageAoe) + T_Cast(HarribelQ_CastTime), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_176_HarribelW_ID takes nothing returns nothing
@@ -2884,7 +2932,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_178_HarribelR_ID takes nothing returns nothing
-        call SpellData.createSimple(HarribelR_ID, 5, 1, 2, HarribelR_DamageAgiBase, HarribelR_DamageAgiStep, T_Rad(HarribelR_DamageAoe), "").setPreviewChannel()
+        call SpellData.createSimple(HarribelR_ID, 5, 1, 2, HarribelR_DamageAgiBase, HarribelR_DamageAgiStep, T_Rad(HarribelR_DamageAoe) + T_Cast(HarribelR_CastDelay), "").setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_179_HarribelT_ID takes nothing returns nothing
@@ -2897,11 +2945,11 @@ endif
 
     function WOS_UTB_Init_181_HarribelQ_ID takes nothing returns nothing
         
-        call SpellData.createAlt(HarribelQ_ID, 1, 5, 2, 2, HarribelQ_DamageAgiBase, HarribelQ_DamageAgiStep, HarribelQ_Damage2StaticBase, HarribelQ_Damage2StaticStep, T_Rad(HarribelEQ_AoeFinal), T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(HarribelQ_ID, 1, 5, 2, 2, HarribelQ_DamageAgiBase, HarribelQ_DamageAgiStep, HarribelQ_Damage2StaticBase, HarribelQ_Damage2StaticStep, T_Rad(HarribelEQ_AoeFinal) + T_Cast(HarribelEQ_CastTime), T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_182_HarribelW_ID takes nothing returns nothing
-        call SpellData.createAlt(HarribelW_ID, 1, 5, 1, 2, HarribelW_DamageAgiBase, HarribelW_DamageAgiStep, HarribelW_Damage2StaticBase, HarribelW_Damage2StaticStep, T_Rad(HarribelEW_DamageAoe) + T_Stun(HarribelW_StunDuration) + "Bonus Damage: Agility x" + FormatReal(HarribelEW_DamageAgiBonus) + " per tick (Max 3 sec)", T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(HarribelW_ID, 1, 5, 1, 2, HarribelW_DamageAgiBase, HarribelW_DamageAgiStep, HarribelW_Damage2StaticBase, HarribelW_Damage2StaticStep, T_Rad(HarribelEW_DamageAoe) + T_Stun(HarribelW_StunDuration) + T_PropS("Max Charge Bonus", "2x Agility; 4x at Hero Lv. 35") + T_Dur("Max Charge Time", HarribelEW_MaxCastDuration), T_Bonus("Form", "|cffFF0000Release State|r")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_183_HarribelE2_ID takes nothing returns nothing
@@ -2950,7 +2998,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_192_TsunaT_ID takes nothing returns nothing
-        call SpellData.createSimple(TsunaT_ID, 1, 2, 2, TsunaT_DamageAgiBase, 0.0, T_Rad(TsunaT_DamageAoe) + T_Cast(TsunaT_ChargeTimeFull) + T_DurationInvul(TsunaT_Duration) + T_Slow(I2R(TsunaT_Slow), I2R(TsunaT_SlowDuration)) + T_Prop("Strikes", I2R(TsunaT_Ticks)), T_Bonus("Lv. 35", "Damage grows with each charge percent above 100%, up to " + FormatInt(TsunaT_OverchargeDmgPct) + "% after " + FormatReal(TsunaT_OverchargeTime) + " sec")).setDecor(T_Decor(TsunaT_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(TsunaT_ID, 1, 2, 2, TsunaT_DamageAgiBase, 0.0, T_Rad(TsunaT_DamageAoe) + T_Dur("Earliest Release", TsunaT_ReleaseTime) + T_PropS("Release Power", "50% minimum; 100% at 1.5 sec") + T_DurationInvul(TsunaT_Duration) + T_Slow(I2R(TsunaT_Slow), I2R(TsunaT_SlowDuration)) + T_Prop("Strikes", I2R(TsunaT_Ticks)), T_Bonus("Lv. 35", "Damage grows with each charge% above 100%, up to " + FormatInt(TsunaT_OverchargeDmgPct) + "% after " + FormatReal(TsunaT_OverchargeTime) + " sec")).setDecor(T_Decor(TsunaT_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_193_TsunaF_ID takes nothing returns nothing
@@ -2984,7 +3032,7 @@ endif
 
     function WOS_UTB_Init_199_TsunaT3_ID takes nothing returns nothing
         // GT: заряжаемый луч с процентом эффектов формы и контролем цели.
-        call SpellData.createAlt(TsunaT3_ID, 1, 1, 2, 2, TsunaT2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaT2_DamageAoe) + T_CastInvul(1.5) + T_DurationInvul(1.8) + T_Silence(TsunaT2_SilenceDuration) + T_Slow(I2R(TsunaT2_Slow), I2R(TsunaT2_SlowDuration)) + T_Prop("Strikes", 13), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(100.0)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(TsunaT3_ID, 1, 1, 2, 2, TsunaT2_DamageAgiBase, 0.0, 0.0, 0.0, T_Rad(TsunaT2_DamageAoe) + T_CastDurationAuto(1.5, true, 1.8, true) + T_Silence(TsunaT2_SilenceDuration) + T_Slow(I2R(TsunaT2_Slow), I2R(TsunaT2_SlowDuration)) + T_Prop("Strikes", 13), T_Bonus("Form", "|cffFF6600Vongola Gear|r")).setDecor(T_Decor(100.0)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_200_TsunaG2_ID takes nothing returns nothing
@@ -3178,7 +3226,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_241_BazzBT_ID takes nothing returns nothing
-        call SpellData.createSimple(BazzBT_ID, 1, 2, 2, BazzBT_DamageAgiBase, 0.0, T_Rad(BazzBT_DamageAoe) + T_Push(BazzBT_Push) + T_CastAuto(BazzBT_CastTime, BazzBT_IsInvul) + T_DurAuto(BazzBT_Duration, BazzBT_IsInvul), "").setDecor(T_Decor(BazzBT_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(BazzBT_ID, 1, 2, 2, BazzBT_DamageAgiBase, 0.0, T_Rad(BazzBT_DamageAoe) + T_Push(BazzBT_Push) + T_CastDurationAuto(BazzBT_CastTime, BazzBT_IsInvul, BazzBT_Duration, BazzBT_IsInvul), "").setDecor(T_Decor(BazzBT_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_242_BazzBG_ID takes nothing returns nothing
@@ -3209,11 +3257,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_247_NeuvilletteR_ID takes nothing returns nothing
-        call SpellData.createSimple(NeuvilletteR_ID, 5, 2, 3, NeuvilletteR_DamageIntBase, NeuvilletteR_DamageIntStep, T_Rad(NeuvilletteR_DamageAoe) + T_CastAuto(NeuvilletteR_CastTime, NeuvilletteR_IsInvul) + T_DurAuto(NeuvilletteR_Duration, NeuvilletteR_IsInvul) + T_Dur("Damage Interval", NeuvilletteR_DamageInterval) + T_Push(NeuvilletteR_PushRange), T_Bonus("Lv. 35", "Applies Water debuff")).setDecor(T_Decor(NeuvilletteR_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(NeuvilletteR_ID, 5, 2, 3, NeuvilletteR_DamageIntBase, NeuvilletteR_DamageIntStep, T_Rad(NeuvilletteR_DamageAoe) + T_CastDurationAuto(NeuvilletteR_CastTime, NeuvilletteR_IsInvul, NeuvilletteR_Duration, false) + T_Dur("Damage Interval", NeuvilletteR_DamageInterval) + T_Push(NeuvilletteR_PushRange), T_Bonus("Lv. 35", "Applies Water debuff")).setDecor(T_Decor(NeuvilletteR_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_248_NeuvilletteT_ID takes nothing returns nothing
-        call SpellData.createSimple(NeuvilletteT_ID, 1, 2, 3, NeuvilletteT_DamageIntBase, 0.0, T_Prop("Pillars", NeuvilletteT_PillarsCount) + T_Prop("Pillar Radius", NeuvilletteT_DamageAoePillar) + T_Prop("Search Area", NeuvilletteT_DamageAoe) + T_DurAuto(NeuvilletteT_Duration, NeuvilletteT_IsInvul) + T_Slow(NeuvilletteT_Slow, NeuvilletteT_Duration) + T_PropS("R CD Reduction", FormatInt(NeuvilletteT_ReduceRCd_Sec) + " sec") + T_Element(2), "").setDecor(T_Decor(NeuvilletteT_DecorDamage)).setPreviewChannel()
+        call SpellData.createSimple(NeuvilletteT_ID, 1, 2, 3, NeuvilletteT_DamageIntBase, 0.0, T_Prop("Pillars", NeuvilletteT_PillarsCount) + T_Cast(0.70) + T_Prop("Pillar Radius", NeuvilletteT_DamageAoePillar) + T_Prop("Search Area", NeuvilletteT_DamageAoe) + T_DurAuto(NeuvilletteT_Duration, NeuvilletteT_IsInvul) + T_Slow(NeuvilletteT_Slow, NeuvilletteT_Duration) + T_PropS("R CD Reduction", FormatInt(NeuvilletteT_ReduceRCd_Sec) + " sec") + T_Element(2), "").setDecor(T_Decor(NeuvilletteT_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_249_NeuvilletteF_ID takes nothing returns nothing
@@ -3265,7 +3313,7 @@ endif
         // ===================================
         // 23. Инори (Inori_ID) -> Интеллект (3)
         // ===================================
-        call SpellData.create(InoriQ_ID, 5, 2, 3, InoriQ_DamageIntBase, InoriQ_DamageIntStep, InoriQ_Damage2StaticBase, InoriQ_Damage2StaticStep, T_Rad(InoriQ_DamageAoe) + "Range: <L:" + I2S(R2I(InoriQ_Range)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*2)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*3)) + "/" + I2S(R2I(InoriQ_Range+InoriQ_RangeADD*4)) + "> + Intelligence x 1", "").setPreviewChannel().setPreviewDirected()
+        call SpellData.create(InoriQ_ID, 5, 2, 3, InoriQ_DamageIntBase, InoriQ_DamageIntStep, InoriQ_Damage2StaticBase, InoriQ_Damage2StaticStep, T_Rad(InoriQ_DamageAoe), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_259_InoriW_ID takes nothing returns nothing
@@ -3281,7 +3329,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_262_InoriT_ID takes nothing returns nothing
-        call SpellData.createSimple(InoriT_ID, 1, 2, 3, InoriT_DamageIntBase, 0.0, T_Rad(InoriT_DamageAoe) + "(Max " + I2S(R2I(InoriT_DamageMaxAoe)) + ")|n" + T_Root(InoriT_RootTime), "").setPreviewChannel()
+        call SpellData.createSimple(InoriT_ID, 1, 2, 3, InoriT_DamageIntBase, 0.0, T_Rad(InoriT_DamageAoe) + "(Max " + I2S(R2I(InoriT_DamageMaxAoe)) + ")|n" + T_Root(InoriT_RootTime), T_Bonus("Lv. 25, T1 selected", "The allied E aura grants 10% physical and 10% magic resistance. Instability stacks remain available.")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_263_InoriF_ID takes nothing returns nothing
@@ -3293,7 +3341,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_265_InoriT2_ID takes nothing returns nothing
-        call SpellData.createSimple(InoriT2_ID, 1, 2, 3, InoriT2_DamageIntBase, 0.0, T_Prop("Beam Radius", InoriT2_DamageAoeBeam) + T_Dur("Duration", InoriT2_Duration), "").setPreviewChannel()
+        call SpellData.createSimple(InoriT2_ID, 1, 2, 3, InoriT2_DamageIntBase, 0.0, T_Prop("Beam Radius", InoriT2_DamageAoeBeam) + T_Dur("Duration", InoriT2_Duration), T_Bonus("Enemy Aura", "Enemies within " + I2S(R2I(InoriE_AuraRange)) + " range lose " + FormatReal(InoriT2_AuraResistDown) + "% physical and magic resistance, capped at zero. The allied E aura and Instability are disabled during this form.")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_266_InoriQ2_ID takes nothing returns nothing
@@ -3429,7 +3477,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_295_AlterSaberG_ID takes nothing returns nothing
-        call SpellData.create(AlterSaberG_ID, 5, 2, 2, AlterSaberG_DamageAgiBase, AlterSaberG_DamageAgiStep, AlterSaberG_Damage2StaticBase, AlterSaberG_Damage2StaticStep, "Cooldown: <L:" + I2S(R2I(AlterSaberG_CD_Base)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step*2)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step*3)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step*4)) + "> sec", "")
+        call SpellData.create(AlterSaberG_ID, 3, 2, 2, AlterSaberG_DamageAgiBase, AlterSaberG_DamageAgiStep, AlterSaberG_Damage2StaticBase, AlterSaberG_Damage2StaticStep, "Cooldown: <L:" + I2S(R2I(AlterSaberG_CD_Base)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step)) + "/" + I2S(R2I(AlterSaberG_CD_Base-AlterSaberG_CD_Step*2)) + "> sec", "")
     endfunction
 
     function WOS_UTB_Init_296_AlterSaberW2_ID takes nothing returns nothing
@@ -3472,11 +3520,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_304_RaidenT_ID takes nothing returns nothing
-        call SpellData.createUtility(RaidenT_ID, 1, T_CastAuto(RaidenT_CastTime, RaidenT_IsInvul) + T_DurAuto(RaidenT_Duration, RaidenT_IsInvul) + T_Dur("Cooldown Reduction (W/E/R)", RaidenTT_RemoveCd) + T_Prop("Bonus Attack Damage", RaidenT_AdditionalDmg) + T_PropS("Bonus Attack Speed", "+30%") + T_PropS("Mana Restore Per Hit", FormatReal(RaidenT_AddManaPerHit) + "% Max Mana"), T_Bonus("Morph", "Converts attacks to Magic, enhances basic abilities") + T_Bonus("Requirement (TT)", "Unlocks True God Ascension at Hero Level 35")).setPreviewChannel()
+        call SpellData.createUtility(RaidenT_ID, 1, T_CastDurationAuto(RaidenT_CastTime, RaidenT_IsInvul, RaidenT_Duration, RaidenT_IsInvul) + T_Dur("Cooldown Reduction (W/E/R)", RaidenTT_RemoveCd) + T_Prop("Bonus Attack Damage", RaidenT_AdditionalDmg) + T_PropS("Bonus Attack Speed", "+30%") + T_PropS("Mana Restore Per Hit", FormatReal(RaidenT_AddManaPerHit) + "% Max Mana"), T_Bonus("Morph", "Converts attacks to Magic, enhances basic abilities") + T_Bonus("Requirement (TT)", "Unlocks True God Ascension at Hero Level 35")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_305_RaidenTT_ID takes nothing returns nothing
-        call SpellData.createUtility(RaidenTT_ID, 1, T_CastAuto(RaidenTT_CastTime, RaidenTT_IsInvul) + T_Dur("Duration Bonus", RaidenTT_AddDuration) + T_PropS("Q Cooldown", "Instantly resets to 0 sec") + T_Dur("Cooldown Reduction (W/E/R)", RaidenTT_RemoveCd) + "Attack Range: +" + I2S(R2I(RaidenTT_AttackRangeBonus)) + "|n", T_Bonus("True God", "Extends Morph, resets Q cooldown and ascends abilities to God tier")).setPreviewChannel()
+        call SpellData.createUtility(RaidenTT_ID, 1, T_CastAuto(RaidenTT_CastTime, RaidenTT_IsInvul) + T_Dur("Duration Bonus", RaidenTT_AddDuration) + T_PropS("Q Cooldown", "Instantly resets to 0 sec") + T_Dur("Cooldown Reduction (W/E/R)", RaidenTT_RemoveCd) + "Attack Range: +" + I2S(R2I(RaidenTT_AttackRangeBonus)) + "|n", T_Bonus("True God", "Removes T's +50 attack damage. Extends Morph, resets Q cooldown and ascends abilities to God tier")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_306_RaidenF_ID takes nothing returns nothing
@@ -3497,7 +3545,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_310_RaidenE_ID takes nothing returns nothing
-        call SpellData.createAlt(RaidenE_ID, 1, 5, 2, 2, RaidenE_DamageAgiBase + RaidenTE_DamageAgiBonus, RaidenE_DamageAgiStep, RaidenE_Damage2StaticBase, RaidenE_Damage2StaticStep, T_Rad(RaidenTE_DamageAoe) + T_CastAuto(RaidenE_CastTime, RaidenE_IsInvul) + T_DurAuto(RaidenTE_Duration, true) + T_Slow(RaidenE_Slow, RaidenE_Duration), T_Bonus("Form", "|cff9933ffMusou Form|r") + T_Bonus("Morph (TT)", "Replaces with a massive dimensional wave (+Agility x " + FormatReal(RaidenTTE_DamageAgiBonus - RaidenTE_DamageAgiBonus) + " Dmg) revealing 3000 range")).setDecor(T_Decor(RaidenTE_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(RaidenE_ID, 1, 5, 2, 2, RaidenE_DamageAgiBase + RaidenTE_DamageAgiBonus, RaidenE_DamageAgiStep, RaidenE_Damage2StaticBase, RaidenE_Damage2StaticStep, T_Rad(RaidenTE_DamageAoe) + T_CastDurationAuto(RaidenE_CastTime, RaidenE_IsInvul, RaidenTE_Duration, true) + T_Slow(RaidenE_Slow, RaidenE_Duration), T_Bonus("Form", "|cff9933ffMusou Form|r") + T_Bonus("Morph (TT)", "Replaces with a massive dimensional wave (+Agility x " + FormatReal(RaidenTTE_DamageAgiBonus - RaidenTE_DamageAgiBonus) + " Dmg) revealing 3000 range")).setDecor(T_Decor(RaidenTE_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_311_RaidenR_ID takes nothing returns nothing
@@ -3547,7 +3595,7 @@ endif
         // ===================================
         // 27. Нацу (Natsu_ID) -> Ловкость (2)
         // ===================================
-        call SpellData.create(NatsuQ_ID, 5, 2, 2, NatsuQ_DamageAgiBase, NatsuQ_DamageAgiStep, NatsuQ_Damage2StaticBase, NatsuQ_Damage2StaticStep, T_Rad(NatsuQ_DamageAoe) + "Range: " + I2S(R2I(NatsuQ_Range)) + " / " + I2S(R2I(NatsuQ_Range2)) + " / " + I2S(R2I(NatsuQ_Range3)), T_Bonus("Raienryuu", "+ Agility x " + FormatReal(NatsuGQ_DamageAgiBonus) + " Damage|nEnhanced Roar: + Agility x " + FormatReal(NatsuGQ2_DamageAgiBonus) + " Damage")).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(NatsuQ_ID, 5, 2, 2, NatsuQ_DamageAgiBase, NatsuQ_DamageAgiStep, NatsuQ_Damage2StaticBase, NatsuQ_Damage2StaticStep, T_Rad(NatsuQ_DamageAoe), T_Bonus("Raienryuu", "+ Agility x " + FormatReal(NatsuGQ_DamageAgiBonus) + " Damage|nEnhanced Roar: + Agility x " + FormatReal(NatsuGQ2_DamageAgiBonus) + " Damage")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_321_NatsuW_ID takes nothing returns nothing
@@ -3686,7 +3734,7 @@ endif
         // ===================================
         // 30. Фрирен (Frieren_ID) -> Интеллект (3)
         // ===================================
-        call SpellData.create(FrierenQ_ID, 5, 2, 3, FrierenQ_DamageIntBase, FrierenQ_DamageIntStep, FrierenQ_Damage2StaticBase, FrierenQ_Damage2StaticStep, T_Rad(FrierenQ_DamageAoe) + "Range: <L:" + I2S(R2I(FrierenQ_RangeBase)) + "/" + I2S(R2I(FrierenQ_RangeBase+FrierenQ_RangeStep)) + "/" + I2S(R2I(FrierenQ_RangeBase+FrierenQ_RangeStep*2)) + "/" + I2S(R2I(FrierenQ_RangeBase+FrierenQ_RangeStep*3)) + "/" + I2S(R2I(FrierenQ_RangeBase+FrierenQ_RangeStep*4)) + ">", T_Bonus("Morph (T)", "Replaced by Enhanced Zoltraak (Radius " + I2S(R2I(FrierenQ3_DamageAoe)) + ", Int x " + FormatReal(FrierenQ3_DamageIntBase) + " Damage)")).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(FrierenQ_ID, 5, 2, 3, FrierenQ_DamageIntBase, FrierenQ_DamageIntStep, FrierenQ_Damage2StaticBase, FrierenQ_Damage2StaticStep, T_Rad(FrierenQ_DamageAoe) + T_Cast(FrierenQ_CastTime), T_Bonus("Morph (T)", "Replaced by Enhanced Zoltraak (Radius " + I2S(R2I(FrierenQ3_DamageAoe)) + ", Int x " + FormatReal(FrierenQ3_DamageIntBase) + " Damage)")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_351_FrierenW_ID takes nothing returns nothing
@@ -3694,11 +3742,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_352_FrierenE_ID takes nothing returns nothing
-        call SpellData.create(FrierenE_ID, 5, 2, 3, FrierenE_DamageIntBase, FrierenE_DamageIntStep, FrierenE_Damage2StaticBase, FrierenE_Damage2StaticStep, T_Prop("Pillar Radius", FrierenE_DamageAoe) + "Pillars Count: 8|nSpawn Distance: 275 - 455|n" + T_Slow(FrierenE_Slow, FrierenE_Duration), T_Bonus("Morph (T)", "Spawn Distance 355 - 665, Pillar Radius increased by " + I2S(R2I(FrierenTE_DamageAoeIncrease)) + "% and deals + Int x " + FormatReal(FrierenTE_DamageIncrease) + " Damage")).setPreviewChannel()
+        call SpellData.create(FrierenE_ID, 5, 2, 3, FrierenE_DamageIntBase, FrierenE_DamageIntStep, FrierenE_Damage2StaticBase, FrierenE_Damage2StaticStep, T_Prop("Pillar Radius", FrierenE_DamageAoe) + T_Prop("Pillars", I2R(FrierenE_Columns)) + "Spawn Distance: 275 - 455|n" + T_Slow(FrierenE_Slow, FrierenE_Duration), T_Bonus("Morph (T)", "Spawn Distance 355 - 665, Pillar Radius increased by " + I2S(R2I(FrierenTE_DamageAoeIncrease)) + "% and deals + Int x " + FormatReal(FrierenTE_DamageIncrease) + " Damage")).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_353_FrierenR_ID takes nothing returns nothing
-        call SpellData.createUtility(FrierenR_ID, 5, "Duration: 8 sec|n" + T_Prop("Cast Range", FrierenR_CloneRangeCast) + "Creates an illusion of Frieren that mirrors your spellcasts", T_Bonus("Morph (T)", "Replaced by a Golem drop (Radius " + I2S(R2I(FrierenTR_DamageAoe)) + ", Stun " + FormatReal(FrierenTR_Stun) + " sec, Golem Duration: " + FormatReal(FrierenTR_Duration) + " sec, Int x " + FormatReal(FrierenTR_DamageIntBase) + " Damage)")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createUtility(FrierenR_ID, 5, "Duration: 8 sec|n" + T_Prop("Cast Range", FrierenR_CloneRangeCast) + "Creates an illusion of Frieren that mirrors your spellcasts|nClone Damage: " + FormatReal(FrierenR_CloneDamageMultiplier1) + "%|nHeight of Magic Clone Damage: " + FormatReal(FrierenR_CloneDamageMultiplier2) + "%", T_Bonus("Morph (T)", "Replaced by a Golem drop (Radius " + I2S(R2I(FrierenTR_DamageAoe)) + ", Stun " + FormatReal(FrierenTR_Stun) + " sec, Golem Duration: " + FormatReal(FrierenTR_Duration) + " sec, Int x " + FormatReal(FrierenTR_DamageIntBase) + " Damage)")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_354_FrierenT_ID takes nothing returns nothing
@@ -3722,11 +3770,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_359_FrierenW2_ID takes nothing returns nothing
-        call SpellData.create(FrierenW2_ID, 5, 2, 3, FrierenW2_DamageIntBase, 0.0, FrierenW2_Damage2StaticBase, 0.0, T_Rad(FrierenW2_DamageAoe) + T_PropS("Hits per target", "Up to " + I2S(FrierenW2_MaxHits)), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.create(FrierenW2_ID, 5, 2, 3, FrierenW2_DamageIntBase, 0.0, FrierenW2_Damage2StaticBase, 0.0, T_Rad(FrierenW2_DamageAoe) + T_Dur("Orb Growth", 0.75) + "Stationary orb at the target point; lightning and damage area grow with it.|n" + T_PropS("Hits per target", "Up to " + I2S(FrierenW2_MaxHits)), T_Bonus("With Clone", "Creates one orb: +" + FormatReal(FrierenR_CloneDamageMultiplier2) + "% damage, double radius and lightning reach")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_360_FrierenT2_ID takes nothing returns nothing
-        call SpellData.createSimple(FrierenT2_ID, 1, 2, 3, FrierenT2_DamageIntBase, 0.0, T_Rad(FrierenT2_DamageAoe) + T_Slow(FrierenT2_Slow, FrierenT2_SlowDuration), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(FrierenT2_ID, 1, 2, 3, FrierenT2_DamageIntBase, 0.0, T_Rad(FrierenT2_DamageAoe) + T_Cast(FrierenT2_CastTime) + T_Dur("Effect Growth", FrierenT2_GrowTime) + T_Slow(FrierenT2_Slow, FrierenT2_SlowDuration), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_361_FrierenTF_ID takes nothing returns nothing
@@ -3771,7 +3819,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_369_TojiG_ID takes nothing returns nothing
-        call SpellData.create(TojiG_ID, 1, 1, 2, TojiG_DamageAgiBase, TojiG_DamageAgiStep, TojiG_DamageStaticBase, TojiG_DamageStaticStep, T_Prop("Hit Radius", TojiG_DamageAoe+25.0) + T_CastAuto(TojiG_CastTime, TojiG_IsInvul) + T_Stun(TojiG_StunTime) + T_Dur("Max Flight Time", TojiG_MaxFlightTime), T_Bonus("Cursed Tool Mark", "Applies Mark (10 sec). Each subsequent ability hit on the target adds +1 stack (Max 5)|nEach stack amplifies ability damage by +" + FormatReal(TojiG_DamageIncreasePerStack) + "%") + T_Bonus("Lv. 35 Grade", "Reduces all abilities cooldown by " + FormatReal(TojiG_CdReduce) + "%")).setDecor(T_Decor(TojiG_DecorDamage))
+        call SpellData.create(TojiG_ID, 1, 1, 2, TojiG_DamageAgiBase, TojiG_DamageAgiStep, TojiG_DamageStaticBase, TojiG_DamageStaticStep, T_Prop("Hit Radius", TojiG_DamageAoe+25.0) + T_CastAuto(TojiG_CastTime, TojiG_IsInvul) + T_Stun(TojiG_StunTime) + T_Dur("Max Flight Time", TojiG_MaxFlightTime), T_Bonus("Cursed Tool Mark", "Applies Mark (10 sec). Each subsequent ability hit on the target adds +1 stack (Max 5)|nEach stack amplifies ability damage by +" + FormatReal(TojiG_DamageIncreasePerStack) + "%") + T_Bonus("Lv. 35 Grade", "Reduces all abilities cooldown by " + FormatReal(TojiG_CdReduce) + "%") + T_Bonus("Agility Items", "Active items from the Agility class cost no mana for Toji")).setDecor(T_Decor(TojiG_DecorDamage))
     endfunction
 
     function WOS_UTB_Init_370_TojiQ2_ID takes nothing returns nothing
@@ -3788,7 +3836,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_373_TojiG2_ID takes nothing returns nothing
-        call SpellData.create(TojiG2_ID, 1, 1, 2, TojiG_DamageAgiBase, TojiG_DamageAgiStep, TojiG_DamageStaticBase, TojiG_DamageStaticStep, T_Prop("Hit Radius", TojiG_DamageAoe+25.0) + T_CastAuto(TojiG_CastTime, TojiG_IsInvul) + T_Stun(TojiG_StunTime) + T_Dur("Max Flight Time", TojiG_MaxFlightTime), T_Bonus("Cursed Tool Mark", "Applies Mark (10 sec). Each subsequent ability hit on the target adds +1 stack (Max 5)|nEach stack amplifies ability damage by +" + FormatReal(TojiG_DamageIncreasePerStack) + "%") + T_Bonus("Lv. 35 Grade", "Reduces all abilities cooldown by " + FormatReal(TojiG_CdReduce) + "%")).setDecor(T_Decor(TojiG_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(TojiG2_ID, 1, 1, 2, TojiG_DamageAgiBase, TojiG_DamageAgiStep, TojiG_DamageStaticBase, TojiG_DamageStaticStep, T_Prop("Hit Radius", TojiG_DamageAoe+25.0) + T_CastAuto(TojiG_CastTime, TojiG_IsInvul) + T_Stun(TojiG_StunTime) + T_Dur("Max Flight Time", TojiG_MaxFlightTime), T_Bonus("Cursed Tool Mark", "Applies Mark (10 sec). Each subsequent ability hit on the target adds +1 stack (Max 5)|nEach stack amplifies ability damage by +" + FormatReal(TojiG_DamageIncreasePerStack) + "%") + T_Bonus("Lv. 35 Grade", "Reduces all abilities cooldown by " + FormatReal(TojiG_CdReduce) + "%") + T_Bonus("Agility Items", "Active items from the Agility class cost no mana for Toji")).setDecor(T_Decor(TojiG_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_374_Toji_ID takes nothing returns nothing
@@ -3945,7 +3993,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_406_Erza3T_ID takes nothing returns nothing
-        call SpellData.createSimple(Erza3T_ID, 1, 2, 2, Erza3T_DamageAgiBase, 0.0, T_Rad(Erza3T_DamageAoe) + T_Prop("Range", Erza3T_Range) + T_Stun(Erza3T_Stun) + T_Push(Erza3T_PushDistance), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(Erza3T_ID, 1, 2, 2, Erza3T_DamageAgiBase, 0.0, T_Rad(Erza3T_DamageAoe) + T_Cast(Erza3T_CastTime) + T_Stun(Erza3T_Stun) + T_Push(Erza3T_PushDistance), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_407_Erza4Q_ID takes nothing returns nothing
@@ -3985,11 +4033,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_415_Erza5E_ID takes nothing returns nothing
-        call SpellData.createSimple(Erza5E_ID, 1, 2, 2, Erza5E_DamageAgiBase, 0.0, T_Rad(Erza5E_DamageAoe), T_Bonus("Nakagami Shield", "Grants Damage Immunity.")).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(Erza5E_ID, 1, 2, 2, Erza5E_DamageAgiBase, 0.0, T_Rad(Erza5E_DamageAoe) + T_Cast(Erza5E_CastTime), T_Bonus("Nakagami Shield", "Grants Damage Immunity.")).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_416_Erza5R_ID takes nothing returns nothing
-        call SpellData.createSimple(Erza5R_ID, 1, 2, 2, Erza5R_DamageAgiBase, 0.0, T_Rad(Erza5R_DamageAoe), "").setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(Erza5R_ID, 1, 2, 2, Erza5R_DamageAgiBase, 0.0, T_Rad(Erza5R_DamageAoe) + T_Cast(Erza5R_CastTime) + T_Dur("Sword Barrage", 2.1), "").setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_417_Erza5T_ID takes nothing returns nothing
@@ -4062,11 +4110,11 @@ endif
         // XX. Аста (Asta_ID) -> Ловкость (2)
         // ===========================================================================
         // --- БАЗОВАЯ ФОРМА (Form 0) ---
-        call SpellData.create(AstaQ_ID, 5, 1, 2, AstaQ_DamageAgiBase, AstaQ_DamageAgiStep, AstaQ_Damage2StaticBase, AstaQ_Damage2StaticStep, T_Prop("Projectile Range", AstaQ_RangeBase) + T_RadExp(AstaQ_DamageAoe, AstaQ_DamageAoe2) + T_CastAuto(AstaQ_CastTime, AstaQ_IsInvul) + T_DurAuto(AstaQ_Duration, AstaQ_IsInvul) + T_Push(150), T_Bonus("Demon Form (T)", "Increases AoE by +" + FormatInt(AstaTQ_AoeBonus) + "% and amplifies damage (+Agility x " + FormatReal(AstaTQ_DmgBonus) + ")") + T_Bonus("Lv. 5 Mastery", "Replaced by Double Slash (Q2) for " + FormatReal(AstaQ_TimeSwap) + " sec after cast")).setDecor(T_DecorExp(AstaQ_DecorDamage, AstaQ_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AstaQ_ID, 5, 1, 2, AstaQ_DamageAgiBase, AstaQ_DamageAgiStep, AstaQ_Damage2StaticBase, AstaQ_Damage2StaticStep, T_Prop("Projectile Range", AstaQ_RangeBase) + T_RadExp(AstaQ_DamageAoe, AstaQ_DamageAoe2) + T_CastDurationAuto(AstaQ_CastTime, AstaQ_IsInvul, AstaQ_Duration, AstaQ_IsInvul) + T_Push(150), T_Bonus("Demon Form (T)", "Increases AoE by +" + FormatInt(AstaTQ_AoeBonus) + "% and amplifies damage (+Agility x " + FormatReal(AstaTQ_DmgBonus) + ")") + T_Bonus("Lv. 5 Mastery", "Replaced by Double Slash (Q2) for " + FormatReal(AstaQ_TimeSwap) + " sec after cast")).setDecor(T_DecorExp(AstaQ_DecorDamage, AstaQ_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_431_AstaW_ID takes nothing returns nothing
-        call SpellData.create(AstaW_ID, 5, 1, 2, AstaW_DamageAgiBase, AstaW_DamageAgiStep, AstaW_Damage2StaticBase, AstaW_Damage2StaticStep, T_PropS("Dash Range", "<L:" + FormatInt(AstaW_RangeBase) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*2) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*3) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*4) + ">") + T_Rad(AstaW_DamageAoe) + T_CastAuto(AstaW_CastTime, AstaW_IsInvul) + T_DurAuto(AstaW_Duration, AstaW_IsInvul) + T_Push(AstaW_PushRange), T_Bonus("Demon Form (T)", "Amplifies damage (+Agility x " + FormatReal(AstaTW_DmgBonus) + ") and triggers an explosive slam in " + FormatInt(AstaW_DamageAoe2) + " AoE on completion") + T_Bonus("Lv. 5 Mastery", "Replaced by Black Hurricane (W2) for " + FormatReal(AstaW_TimeSwap) + " sec after cast")).setDecor(T_Decor(AstaW_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AstaW_ID, 5, 1, 2, AstaW_DamageAgiBase, AstaW_DamageAgiStep, AstaW_Damage2StaticBase, AstaW_Damage2StaticStep, T_PropS("Dash Range", "<L:" + FormatInt(AstaW_RangeBase) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*2) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*3) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*4) + ">") + T_Rad(AstaW_DamageAoe) + T_CastDurationAuto(AstaW_CastTime, AstaW_IsInvul, AstaW_Duration, AstaW_IsInvul) + T_Push(AstaW_PushRange), T_Bonus("Demon Form (T)", "Amplifies damage (+Agility x " + FormatReal(AstaTW_DmgBonus) + ") and triggers an explosive slam in " + FormatInt(AstaW_DamageAoe2) + " AoE on completion") + T_Bonus("Lv. 5 Mastery", "Replaced by Black Hurricane (W2) for " + FormatReal(AstaW_TimeSwap) + " sec after cast")).setDecor(T_Decor(AstaW_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_432_AstaE_ID takes nothing returns nothing
@@ -4074,7 +4122,7 @@ endif
     endfunction
 
     function WOS_UTB_Init_433_AstaR_ID takes nothing returns nothing
-        call SpellData.create(AstaR_ID, 5, 1, 2, AstaR_DamageAgiBase, AstaR_DamageAgiStep, 0.0, 0.0, T_Rad(AstaR_DamageAoe) + T_CastAuto(AstaR_CastTime, AstaR_IsInvul) + T_DurAuto(AstaR_Duration, AstaR_IsInvul) + T_Push(AstaR_PushRange), T_Bonus("Demon Form (T)", "Replaced by Black Divider Strike (R2)")).setDecor(T_Decor(AstaR_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AstaR_ID, 5, 1, 2, AstaR_DamageAgiBase, AstaR_DamageAgiStep, 0.0, 0.0, T_Rad(AstaR_DamageAoe) + T_CastDurationAuto(AstaR_CastTime, AstaR_IsInvul, AstaR_Duration, AstaR_IsInvul) + T_Push(AstaR_PushRange), T_Bonus("Demon Form (T)", "Replaced by Black Divider Strike (R2)")).setDecor(T_Decor(AstaR_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_434_AstaT_ID takes nothing returns nothing
@@ -4092,11 +4140,11 @@ endif
     function WOS_UTB_Init_437_AstaQ2_ID takes nothing returns nothing
 
         // --- ВТОРИЧНЫЕ СПОСОБНОСТИ (Form 0) ---
-        call SpellData.create(AstaQ2_ID, 5, 1, 2, AstaQ2_DamageAgiBase, AstaQ2_DamageAgiStep, AstaQ2_Damage2StaticBase, AstaQ2_Damage2StaticStep, T_Prop("Projectile Range", AstaQ2_RangeBase) + T_RadExp(AstaQ2_DamageAoe, AstaQ2_DamageAoe2) + T_Prop("Strikes", 2) + T_CastAuto(AstaQ2_CastTime, AstaQ2_IsInvul) + T_DurAuto(AstaQ2_Duration, AstaQ2_IsInvul) + T_Push(150), T_Bonus("Demon Form (T)", "Increases AoE by +" + FormatInt(AstaTQ_AoeBonus) + "% and amplifies damage (+Agility x " + FormatReal(AstaTQ_DmgBonus) + ")")).setDecor(T_DecorExp(AstaQ2_DecorDamage, AstaQ2_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AstaQ2_ID, 5, 1, 2, AstaQ2_DamageAgiBase, AstaQ2_DamageAgiStep, AstaQ2_Damage2StaticBase, AstaQ2_Damage2StaticStep, T_Prop("Projectile Range", AstaQ2_RangeBase) + T_RadExp(AstaQ2_DamageAoe, AstaQ2_DamageAoe2) + T_Prop("Strikes", 2) + T_CastDurationAuto(AstaQ2_CastTime, AstaQ2_IsInvul, AstaQ2_Duration, AstaQ2_IsInvul) + T_Push(150), T_Bonus("Demon Form (T)", "Increases AoE by +" + FormatInt(AstaTQ_AoeBonus) + "% and amplifies damage (+Agility x " + FormatReal(AstaTQ_DmgBonus) + ")")).setDecor(T_DecorExp(AstaQ2_DecorDamage, AstaQ2_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_438_AstaW2_ID takes nothing returns nothing
-        call SpellData.create(AstaW2_ID, 5, 1, 2, AstaW2_DamageAgiBase, AstaW2_DamageAgiStep, AstaW2_Damage2StaticBase, AstaW2_Damage2StaticStep, T_Rad(AstaW2_DamageAoe) + T_CastAuto(AstaW2_CastTime, AstaW2_IsInvul) + T_DurAuto(AstaW2_Duration, AstaW2_IsInvul) + T_Stun(AstaW2_Stun) + T_Push(400), T_Bonus("Demon Form (T)", "Amplifies damage (+Agility x " + FormatReal(AstaTW_DmgBonus) + ")")).setDecor(T_Decor(AstaW2_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(AstaW2_ID, 5, 1, 2, AstaW2_DamageAgiBase, AstaW2_DamageAgiStep, AstaW2_Damage2StaticBase, AstaW2_Damage2StaticStep, T_Rad(AstaW2_DamageAoe) + T_CastDurationAuto(AstaW2_CastTime, AstaW2_IsInvul, AstaW2_Duration, AstaW2_IsInvul) + T_Stun(AstaW2_Stun) + T_Push(400), T_Bonus("Demon Form (T)", "Amplifies damage (+Agility x " + FormatReal(AstaTW_DmgBonus) + ")")).setDecor(T_Decor(AstaW2_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_439_AstaR2_ID takes nothing returns nothing
@@ -4110,19 +4158,19 @@ endif
     function WOS_UTB_Init_441_AstaQ_ID takes nothing returns nothing
 
         // --- ДЕМОНИЧЕСКАЯ ФОРМА (Form 1) ---
-        call SpellData.createAlt(AstaQ_ID, 1, 5, 1, 2, AstaQ_DamageAgiBase + AstaTQ_DmgBonus, AstaQ_DamageAgiStep, AstaQ_Damage2StaticBase, AstaQ_Damage2StaticStep, T_Prop("Projectile Range", AstaQ_RangeBase) + T_RadExp(AstaQ_DamageAoe * (1.0 + AstaTQ_AoeBonus / 100.0), AstaQ_DamageAoe2 * (1.0 + AstaTQ_AoeBonus / 100.0)) + T_CastAuto(AstaQ_CastTime, AstaQ_IsInvul) + T_DurAuto(AstaQ_Duration, AstaQ_IsInvul) + T_Push(150), T_Bonus("Form", "|cff9933ffDemon Form|r") + T_Bonus("Lv. 5 Mastery", "Replaced by Double Slash (Q2) for " + FormatReal(AstaQ_TimeSwap) + " sec after cast")).setDecor(T_DecorExp(AstaQ_DecorDamage, AstaQ_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(AstaQ_ID, 1, 5, 1, 2, AstaQ_DamageAgiBase + AstaTQ_DmgBonus, AstaQ_DamageAgiStep, AstaQ_Damage2StaticBase, AstaQ_Damage2StaticStep, T_Prop("Projectile Range", AstaQ_RangeBase) + T_RadExp(AstaQ_DamageAoe * (1.0 + AstaTQ_AoeBonus / 100.0), AstaQ_DamageAoe2 * (1.0 + AstaTQ_AoeBonus / 100.0)) + T_CastDurationAuto(AstaQ_CastTime, AstaQ_IsInvul, AstaQ_Duration, AstaQ_IsInvul) + T_Push(150), T_Bonus("Form", "|cff9933ffDemon Form|r") + T_Bonus("Lv. 5 Mastery", "Replaced by Double Slash (Q2) for " + FormatReal(AstaQ_TimeSwap) + " sec after cast")).setDecor(T_DecorExp(AstaQ_DecorDamage, AstaQ_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_442_AstaQ2_ID takes nothing returns nothing
-        call SpellData.createAlt(AstaQ2_ID, 1, 5, 1, 2, AstaQ2_DamageAgiBase + AstaTQ_DmgBonus, AstaQ2_DamageAgiStep, AstaQ2_Damage2StaticBase, AstaQ2_Damage2StaticStep, T_Prop("Projectile Range", AstaQ2_RangeBase) + T_RadExp(AstaQ2_DamageAoe * (1.0 + AstaTQ_AoeBonus / 100.0), AstaQ2_DamageAoe2 * (1.0 + AstaTQ_AoeBonus / 100.0)) + T_Prop("Strikes", 2) + T_CastAuto(AstaQ2_CastTime, AstaQ2_IsInvul) + T_DurAuto(AstaQ2_Duration, AstaQ2_IsInvul) + T_Push(150), T_Bonus("Form", "|cff9933ffDemon Form|r")).setDecor(T_DecorExp(AstaQ2_DecorDamage, AstaQ2_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(AstaQ2_ID, 1, 5, 1, 2, AstaQ2_DamageAgiBase + AstaTQ_DmgBonus, AstaQ2_DamageAgiStep, AstaQ2_Damage2StaticBase, AstaQ2_Damage2StaticStep, T_Prop("Projectile Range", AstaQ2_RangeBase) + T_RadExp(AstaQ2_DamageAoe * (1.0 + AstaTQ_AoeBonus / 100.0), AstaQ2_DamageAoe2 * (1.0 + AstaTQ_AoeBonus / 100.0)) + T_Prop("Strikes", 2) + T_CastDurationAuto(AstaQ2_CastTime, AstaQ2_IsInvul, AstaQ2_Duration, AstaQ2_IsInvul) + T_Push(150), T_Bonus("Form", "|cff9933ffDemon Form|r")).setDecor(T_DecorExp(AstaQ2_DecorDamage, AstaQ2_DecorExpDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_443_AstaW_ID takes nothing returns nothing
-        call SpellData.createAlt(AstaW_ID, 1, 5, 1, 2, AstaW_DamageAgiBase + AstaTW_DmgBonus, AstaW_DamageAgiStep, AstaW_Damage2StaticBase, AstaW_Damage2StaticStep, T_PropS("Dash Range", "<L:" + FormatInt(AstaW_RangeBase) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*2) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*3) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*4) + ">") + T_Rad(AstaW_DamageAoe) + T_RadExp(AstaW_DamageAoe, AstaW_DamageAoe2) + T_CastAuto(AstaW_CastTime, AstaW_IsInvul) + T_DurAuto(AstaW_Duration, AstaW_IsInvul) + T_Push(AstaW_PushRange), T_Bonus("Form", "|cff9933ffDemon Form|r") + T_Bonus("Cataclysm Slam", "Explodes in " + FormatInt(AstaW_DamageAoe2) + " AoE on completion, pinning primary target") + T_Bonus("Lv. 5 Mastery", "Replaced by Black Hurricane (W2) for " + FormatReal(AstaW_TimeSwap) + " sec after cast")).setDecor(T_Decor(AstaW_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(AstaW_ID, 1, 5, 1, 2, AstaW_DamageAgiBase + AstaTW_DmgBonus, AstaW_DamageAgiStep, AstaW_Damage2StaticBase, AstaW_Damage2StaticStep, T_PropS("Dash Range", "<L:" + FormatInt(AstaW_RangeBase) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*2) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*3) + "/" + FormatInt(AstaW_RangeBase+AstaW_RangeStep*4) + ">") + T_RadExp(AstaW_DamageAoe, AstaW_DamageAoe2) + T_CastDurationAuto(AstaW_CastTime, AstaW_IsInvul, AstaW_Duration, AstaW_IsInvul) + T_Push(AstaW_PushRange), T_Bonus("Form", "|cff9933ffDemon Form|r") + T_Bonus("Cataclysm Slam", "Explodes in " + FormatInt(AstaW_DamageAoe2) + " AoE on completion, pinning primary target") + T_Bonus("Lv. 5 Mastery", "Replaced by Black Hurricane (W2) for " + FormatReal(AstaW_TimeSwap) + " sec after cast")).setDecor(T_Decor(AstaW_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_444_AstaW2_ID takes nothing returns nothing
-        call SpellData.createAlt(AstaW2_ID, 1, 5, 1, 2, AstaW2_DamageAgiBase + AstaTW_DmgBonus, AstaW2_DamageAgiStep, AstaW2_Damage2StaticBase, AstaW2_Damage2StaticStep, T_Rad(AstaW2_DamageAoe) + T_CastAuto(AstaW2_CastTime, AstaW2_IsInvul) + T_DurAuto(AstaW2_Duration, AstaW2_IsInvul) + T_Stun(AstaW2_Stun) + T_Push(400), T_Bonus("Form", "|cff9933ffDemon Form|r")).setDecor(T_Decor(AstaW2_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(AstaW2_ID, 1, 5, 1, 2, AstaW2_DamageAgiBase + AstaTW_DmgBonus, AstaW2_DamageAgiStep, AstaW2_Damage2StaticBase, AstaW2_Damage2StaticStep, T_Rad(AstaW2_DamageAoe) + T_CastDurationAuto(AstaW2_CastTime, AstaW2_IsInvul, AstaW2_Duration, AstaW2_IsInvul) + T_Stun(AstaW2_Stun) + T_Push(400), T_Bonus("Form", "|cff9933ffDemon Form|r")).setDecor(T_Decor(AstaW2_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_445_AstaE_ID takes nothing returns nothing
@@ -4241,11 +4289,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_469_BambiettaE_ID takes nothing returns nothing
-        call SpellData.createSimple(BambiettaE_ID, 5, 2, 2, BambiettaE_DamageAgiBase, BambiettaE_DamageAgiStep, T_RadExp(BambiettaE_DamageAoe, BambiettaE_DamageAoe2) + T_CastAuto(BambiettaE_CastTime, BambiettaE_IsInvul) + T_Slow(I2R(BambiettaE_Slow), I2R(BambiettaE_SlowDuration)) + T_Prop("Shells", 3), T_Bonus("Vollstandig (T)", "Fires a rapid barrage of 14 mini-bombs (+Agility x " + FormatInt(BambiettaTE_DamageAgiBase - BambiettaE_DamageAgiBase) + ") with micro-stun")).setDecor(T_DecorExp(BambiettaE_DecorDamage, BambiettaE_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createSimple(BambiettaE_ID, 5, 2, 2, BambiettaE_DamageAgiBase, BambiettaE_DamageAgiStep, T_RadExp(BambiettaE_DamageAoe, BambiettaE_DamageAoe2) + T_CastAuto(BambiettaE_CastTime, BambiettaE_IsInvul) + T_Slow(I2R(BambiettaE_Slow), I2R(BambiettaE_SlowDuration)) + T_Prop("Shells", 3), T_Bonus("Vollstandig (T)", "Fires " + I2S(BambiettaTE_Shells) + " mini-bombs with micro-stun")).setDecor(T_DecorExp(BambiettaE_DecorDamage, BambiettaE_ExplosionDecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_470_BambiettaR_ID takes nothing returns nothing
-        call SpellData.createSimple(BambiettaR_ID, 5, 2, 2, BambiettaR_DamageAgiBase, BambiettaR_DamageAgiStep, T_Rad(BambiettaR_DamageAoe) + T_CastAuto(BambiettaR_CastTime, BambiettaR_IsInvul) + T_DurAuto(BambiettaR_Duration, BambiettaR_IsInvul) + T_Push(BambiettaR_PushRange), T_Bonus("Vollstandig (T)", "Increases damage (+Agility x " + FormatInt(BambiettaTR_DamageAgiBase - BambiettaR_DamageAgiBase) + "), Radius (" + FormatInt(BambiettaTR_DamageAoe) + ") and Knockback (" + FormatInt(BambiettaTR_PushRange) + ")")).setDecor(T_Decor(BambiettaR_DecorDamage)).setPreviewChannel()
+        call SpellData.createSimple(BambiettaR_ID, 5, 2, 2, BambiettaR_DamageAgiBase, BambiettaR_DamageAgiStep, T_Rad(BambiettaR_DamageAoe) + T_CastDurationAuto(BambiettaR_CastTime, BambiettaR_IsInvul, BambiettaR_Duration, BambiettaR_IsInvul) + T_Push(BambiettaR_PushRange), T_Bonus("Vollstandig (T)", "Increases damage (+Agility x " + FormatInt(BambiettaTR_DamageAgiBase - BambiettaR_DamageAgiBase) + "), Radius (" + FormatInt(BambiettaTR_DamageAoe) + ") and Knockback (" + FormatInt(BambiettaTR_PushRange) + ")")).setDecor(T_Decor(BambiettaR_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_471_BambiettaT_ID takes nothing returns nothing
@@ -4263,19 +4311,19 @@ endif
     endfunction
 
     function WOS_UTB_Init_474_BambiettaW_ID takes nothing returns nothing
-        call SpellData.createAlt(BambiettaW_ID, 1, 5, 2, 2, BambiettaTW_DamageAgiBase, BambiettaTW_DamageAgiStep, BambiettaW_Damage2StaticBase, BambiettaW_Damage2StaticStep, T_RadExp(BambiettaTW_DamageAoe, BambiettaTW_DamageAoe2) + T_CastAuto(BambiettaTW_CastTime, BambiettaTW_IsInvul) + T_DurAuto(BambiettaTW_Duration, BambiettaTW_IsInvul), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTW_DecorDamage)).setPreviewChannel()
+        call SpellData.createAlt(BambiettaW_ID, 1, 5, 2, 2, BambiettaTW_DamageAgiBase, BambiettaTW_DamageAgiStep, BambiettaW_Damage2StaticBase, BambiettaW_Damage2StaticStep, T_RadExp(BambiettaTW_DamageAoe, BambiettaTW_DamageAoe2) + T_CastDurationAuto(BambiettaTW_CastTime, BambiettaTW_IsInvul, BambiettaTW_Duration, BambiettaTW_IsInvul), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTW_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_475_BambiettaE_ID takes nothing returns nothing
-        call SpellData.createAlt(BambiettaE_ID, 1, 5, 2, 2, BambiettaTE_DamageAgiBase, BambiettaTE_DamageAgiStep, 0.0, 0.0, T_Rad(BambiettaTE_DamageAoe) + T_CastAuto(BambiettaTE_CastTime, BambiettaTE_IsInvul) + T_DurAuto(BambiettaTE_Duration, BambiettaTE_IsInvul) + T_Stun(BambiettaTE_Stun) + T_Slow(I2R(BambiettaE_Slow), I2R(BambiettaE_SlowDuration)) + T_Prop("Shells", 14), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTE_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.createAlt(BambiettaE_ID, 1, 5, 2, 2, BambiettaTE_DamageAgiBase * I2R(BambiettaTE_Shells) / BambiettaTE_DamageDivisor, BambiettaTE_DamageAgiStep * I2R(BambiettaTE_Shells) / BambiettaTE_DamageDivisor, 0.0, 0.0, T_Rad(BambiettaTE_DamageAoe) + T_CastDurationAuto(BambiettaTE_CastTime, BambiettaTE_IsInvul, BambiettaTE_Duration, BambiettaTE_IsInvul) + T_Stun(BambiettaTE_Stun) + T_Slow(I2R(BambiettaE_Slow), I2R(BambiettaE_SlowDuration)) + T_Prop("Shells", I2R(BambiettaTE_Shells)), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTE_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_476_BambiettaR_ID takes nothing returns nothing
-        call SpellData.createAlt(BambiettaR_ID, 1, 5, 2, 2, BambiettaTR_DamageAgiBase, BambiettaTR_DamageAgiStep, 0.0, 0.0, T_Rad(BambiettaTR_DamageAoe) + T_CastAuto(BambiettaTR_CastTime, BambiettaTR_IsInvul) + T_DurAuto(BambiettaTR_Duration, BambiettaTR_IsInvul) + T_Push(BambiettaTR_PushRange), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTR_DecorDamage)).setPreviewChannel()
+        call SpellData.createAlt(BambiettaR_ID, 1, 5, 2, 2, BambiettaTR_DamageAgiBase, BambiettaTR_DamageAgiStep, 0.0, 0.0, T_Rad(BambiettaTR_DamageAoe) + T_CastDurationAuto(BambiettaTR_CastTime, BambiettaTR_IsInvul, BambiettaTR_Duration, BambiettaTR_IsInvul) + T_Push(BambiettaTR_PushRange), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTR_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_477_BambiettaT2_ID takes nothing returns nothing
-        call SpellData.createSimple(BambiettaT2_ID, 1, 2, 2, BambiettaTT_DamageAgiBase, 0.0, T_RadExp(BambiettaTT_DamageAoe, BambiettaTT_DamageAoe2) + T_DurAuto(BambiettaTT_Duration, BambiettaT2_IsInvul) + T_Prop("Explosions", 21), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTT_DecorDamage)).setPreviewChannel()
+        call SpellData.createSimple(BambiettaT2_ID, 1, 2, 2, BambiettaTT_DamageAgiBase, 0.0, T_RadExp(BambiettaTT_DamageAoe, BambiettaTT_DamageAoe2) + T_Dur("Duration", BambiettaTT_Duration) + "Vulnerable during takeoff; invulnerable from 0.9 sec until landing.|n" + T_Prop("Explosions", 21), T_Bonus("Form", "|cffFF0000Vollstandig Form|r")).setDecor(T_Decor(BambiettaTT_DecorDamage)).setPreviewChannel()
     endfunction
 
     function WOS_UTB_Init_478_Bambietta_ID takes nothing returns nothing
@@ -4309,7 +4357,7 @@ endif
 
     // One job per ability: a single Frostnova job exceeded the op limit and skipped T/F/HeroData.
     function WOS_UTB_Init_484_FrostnovaQ_ID takes nothing returns nothing
-        call SpellData.create(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, FrostnovaQ_DamageStatic, 0.0, T_Rad(FrostnovaQ_Aoe) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_PropS("Recharge", "<L:17/16/15/14/13> sec"), T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "Pierces enemies, +" + I2S(R2I((FrostnovaTQ_SpeedMultiplier - 1.0) * 100.0 + 0.5)) + "% speed.")).setDecor(T_Decor(FrostnovaQ_DecorDamage)).setPreviewChannel().setPreviewDirected()
+        call SpellData.create(FrostnovaQ_ID, 5, 2, 3, FrostnovaQ_DamageIntBase, FrostnovaQ_DamageIntStep, FrostnovaQ_DamageStatic, 0.0, T_Rad(FrostnovaQ_Aoe) + T_Dur("Between Throws", FrostnovaQ_UseCooldown) + T_Stun(FrostnovaQ_Stun) + T_PropS("Charges", "2/2/4/4/6") + T_PropS("Recharge", "<L:17/16/15/14/13> sec"), T_Bonus("Hero Lv. 35", "+150 range.") + T_Bonus("Winter's Scar", "Pierces enemies, +" + I2S(R2I((FrostnovaTQ_SpeedMultiplier - 1.0) * 100.0 + 0.5)) + "% speed.")).setDecor(T_Decor(FrostnovaQ_DecorDamage)).setPreviewChannel().setPreviewDirected()
     endfunction
 
     function WOS_UTB_Init_485_FrostnovaW_ID takes nothing returns nothing
@@ -4338,7 +4386,11 @@ endif
     endfunction
 
     function WOS_UTB_Init_491_InoriE2_ID takes nothing returns nothing
-        call SpellData.createUtility(InoriE2_ID, 1, "T2 enemy aura: -" + FormatReal(InoriT2_AuraResistDown) + "% physical resistance and -" + FormatReal(InoriT2_AuraResistDown) + "% magic resistance|n" + T_Rad(InoriT2_AuraRange) + "The allied E aura and Instability passive are disabled|nEvery 0.5 sec, an Apocalypse beam hits a random point within " + I2S(R2I(InoriT_CrystalMaxRange)) + " range: Intelligence x " + FormatReal(InoriT2_DamageIntBase) + " magic damage", "")
+        call SpellData.createUtility(InoriE2_ID, 1, "T2 enemy aura: -" + FormatReal(InoriT2_AuraResistDown) + "% physical resistance and -" + FormatReal(InoriT2_AuraResistDown) + "% magic resistance (minimum 0)|n" + T_Rad(InoriT2_AuraRange) + "The allied E aura and Instability passive are disabled|nEvery 0.5 sec, an Apocalypse beam hits a random point within " + I2S(R2I(InoriT_CrystalMaxRange)) + " range: Intelligence x " + FormatReal(InoriT2_DamageIntBase) + " magic damage", "")
+    endfunction
+
+    function WOS_UTB_Init_492_FrierenTR_ID takes nothing returns nothing
+        call SpellData.createAlt(FrierenR_ID, 1, 5, 1, 3, FrierenTR_DamageIntBase, 0.0, 0.0, 0.0, T_Rad(FrierenTR_DamageAoe) + T_Stun(FrierenTR_Stun) + T_Dur("Golem Duration", FrierenTR_Duration), "Drops a golem at the target point. Impact deals physical damage and stuns enemies. The golem remains as a summon; it does not mirror Frieren's spells.").setPreviewChannel().setPreviewDirected()
     endfunction
 
     private function InitTooltipQueue takes nothing returns nothing
@@ -4833,8 +4885,21 @@ endif
         set UTB_InitJobs[489] = "WOS_UTB_Init_489_FrostnovaF_ID"
         set UTB_InitJobs[490] = "WOS_UTB_Init_490_Frostnova"
         set UTB_InitJobs[491] = "WOS_UTB_Init_491_InoriE2_ID"
-        set UTB_InitJobCount = 491
+        set UTB_InitJobs[492] = "WOS_UTB_Init_492_FrierenTR_ID"
+        set UTB_InitJobCount = 492
         set UTB_InitJobIndex = 1
+    endfunction
+
+    function WOS_UTB_FlushInitialTips takes nothing returns nothing
+        local SpellData data
+        loop
+            exitwhen UTB_PendingCount == 0
+            set UTB_PendingCount = UTB_PendingCount - 1
+            set data = UTB_PendingTips[UTB_PendingCount]
+            set UTB_PendingTips[UTB_PendingCount] = 0
+            set data.initialTipsQueued = false
+            call data.SetInitialTips()
+        endloop
     endfunction
 
     private function InitTooltipStep takes nothing returns nothing
@@ -4843,6 +4908,7 @@ endif
             exitwhen batch >= UTB_INIT_BATCH or UTB_InitJobIndex > UTB_InitJobCount
             // ExecuteFunc gives each ability/form a fresh operation budget.
             call ExecuteFunc(UTB_InitJobs[UTB_InitJobIndex])
+            call ExecuteFunc("WOS_UTB_FlushInitialTips")
             set UTB_InitJobs[UTB_InitJobIndex] = null
             set UTB_InitJobIndex = UTB_InitJobIndex + 1
             set batch = batch + 1
@@ -4871,9 +4937,9 @@ endif
         
         call InitTooltipFrameFix()
 
-        set TOOLTIP_DAMAGE_TARGET = CreateUnit(Player(15), 'hfoo', 0.0, 0.0, 0.0)
-        call ShowUnit(TOOLTIP_DAMAGE_TARGET, false)
-        call PauseUnit(TOOLTIP_DAMAGE_TARGET, true)
+        set TOOLTIP_FIELD_PROBE = CreateUnit(Player(15), 'hfoo', 0.0, 0.0, 0.0)
+        call ShowUnit(TOOLTIP_FIELD_PROBE, false)
+        call PauseUnit(TOOLTIP_FIELD_PROBE, true)
         
         call InitTooltipQueue()
         call WUI_StartupBegin()

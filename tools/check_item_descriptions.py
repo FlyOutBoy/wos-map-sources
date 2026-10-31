@@ -133,28 +133,52 @@ class Audit:
             + f"Field duration: {v('Chogurt_Duration')} sec.\n"
             + f"Physical resistance/protection buff: {n('A0G2','ahdu',2 if evolved else 1)} sec; movement buff: {n('A00D','ahdu',5)} sec.\n"
             + f"Cooldown: {n('A06R','acdn')} sec.")
-        return {
-            'I00W': f"Passive: Dealing {v('Kurikara_MinDmg')} or more magic damage sets the enemy on fire, dealing {v('Kurikara_MaxManaDmg')}% of your max mana as magic damage every second. New hits refresh the burn without stacking it.\nDuration: 5 sec.",
+        bodies = {
+            'I00W': f"Passive: Dealing {v('Kurikara_MinDmg')} or more magic damage sets the enemy on fire, dealing {v('Kurikara_MaxManaDmg')}% of your max mana as magic damage every second. New hits refresh the burn without stacking it.\nDuration: {v('Kurikara_Duration')} sec.",
             'I00B': 'Passive: Reduces incoming physical damage by 11% and grants 11 magic resistance. Each hit also restores HP equal to 10% of the incoming damage over 5 sec.',
             'I011': f"Passive |cffff0000(Intelligence heroes only)|r: Reduces ability cooldowns by {v('OkarunEggReduceCD')}% after use.",
             'I012': f"Passive: Casting an ability with a cooldown of at least 3 sec while at 95% mana or less restores {v('FairyTailEmblem_ManaRestoreStatic')} + {v('FairyTailEmblem_ManaRestorePercent')}% of max MP and {v('FairyTailEmblem_HpRestoreStatic')} HP.\nCooldown: {v('FairyTailEmblem_CD')} sec.",
+            'I05A': f"Passive: +{v('FairyTailEvolved_ManaAmp')}% mana regeneration and mana restoration.\nCasting an ability with a cooldown of at least 3 sec while at 95% mana or less restores {v('FairyTailEmblem_ManaRestoreStatic')} + {v('FairyTailEmblem_ManaRestorePercent')}% of max MP and {v('FairyTailEmblem_HpRestoreStatic')} + {v('FairyTailEvolved_HpRestorePercent')}% of max HP.\nFairy Tail heroes (Natsu, Erza, Laxus): +{v('FairyTailEvolved_HeroHealAmp')}% HP restoration.\nCooldown: {v('FairyTailEmblem_CD')} sec.",
             'I013': f"Passive: Taking magic or physical ability damage grants a stack. Each stack grants +{n('A07D','Inf2')} physical resistance and +4 magic resistance and {v('BlackClover_StackReduce')}% damage reduction.\nMax stacks: 6.\nDuration: {n('A07D','ahdu')} sec.",
             'I017': chogurt(False), 'I03U': chogurt(True),
             'I019': f"Passive: Dealing at least {v('Earth_Power_MinDmg')} physical damage summons an earth hand that strikes after a short delay, dealing {v('Earth_Power_DamageBase')}x main stat physical damage.\nCooldown: {v('Earth_Power_CD')} sec per target.",
             'I01K': f"Passive: Each decoration you destroy restores {v('FrozenHeart_hp')} HP and {v('FrozenHeart_mp')} MP. After {v('FrozenHeart_stack')} uses, restoration goes on cooldown. Does not stack with Hungry Sin.\nEnemies within {n('A07M','aare')} range are slowed by 25%. Your ability casts deal 50 damage to decorations within 650 range.\nAura: You and allies within {n('A10F','aare')} range receive {v('FrozenHeart_ManaAmp')}% more mana regeneration and mana restoration.\nCooldown: {v('FrozenHeart_cd')} sec.",
-            'I01L': f"Passive: Your attacks and magic ability damage apply a debuff that lowers the target's magic resistance by {v('TrueZangetsu_Decrease')} percentage points.\nDuration: {n('A07L','ahdu')} sec.",
-            'I01M': f"Passive: Your attacks and physical ability damage apply a debuff that lowers the target's physical resistance by {v('Nichirin_Decrease')} percentage points.\nDuration: {n('A01H','ahdu',2)} sec.",
+            'I01L': f"Passive: Your attacks and magic ability damage apply a debuff that lowers the target's magic resistance by {v('TrueZangetsu_Decrease')}%.\nDuration: {n('A07L','ahdu')} sec.",
+            'I04E': f"Passive: Physical and magic damage from abilities, items and periodic effects grants a stack of that damage type. Attacks and clones do not grant stacks.\nEach stack: +{v('CoreDrill_BonusPerStack')}% damage of its type; up to {v('CoreDrill_MaxStacks')} stacks.\nDuration: {v('CoreDrill_Duration')} sec, refreshed by further hits of that type.",
+            'I01M': f"Passive: Your attacks and physical ability damage apply a debuff that lowers the target's physical resistance by {v('Nichirin_Decrease')}%.\nDuration: {n('A01H','ahdu',2)} sec.",
             'I01P': f"Passive: Applying Water also applies Lightning and, if the stat bonus is not already active, grants +15 allstats for 10 sec. The bonus does not stack or refresh while active.\nCooldown: {v('SogyoNoKotowari_CD')} sec per target.",
             'I021': f"Aura: Allies within {n('A09X','aare')} range gain 15% movement speed. During combat, affected allied heroes restore {v('HolyGrail_HpRegen')} HP and {v('HolyGrail_MpRegen')} MP per second.",
             'I02B': f"Aura: Allies within {n('A0CY','aare')} range gain 20% movement speed. During combat, affected allied heroes restore {v('DarkHolyGrail_HpRegen')} HP and {v('DarkHolyGrail_MpRegen')} MP per second. Enemies in the same area receive {v('DarkHolyGrail_HpRegenReduce')}% less active healing.",
             'I02N': f"Passive: Accumulates damage taken while ready. After accumulating {v('SusanooShield_TresholdDamage')} damage, spends {v('SusanooShield_Manacost')} MP to grant a full damage shield for {n('A0F6','ahdu')} sec. If mana is insufficient, keeps the accumulated amount until a later hit can trigger it.\nCooldown: {v('SusanooShield_CD')} sec.",
             'I02O': f"Passive: During combat, restores {v('ElixirOfLife_HpRegen')} HP per second while ready. Taking damage interrupts this restoration for {v('ElixirOfLife_CD')} sec.",
-            'I041': f"Passive: Dealing at least {v('DemonDwellerSword_MinDmg')} physical or magic damage grants +{v('DemonDwellerSword_Bonus')}% damage of the opposite type.\nDuration: 3 sec.\nCooldown: {v('DemonDwellerSword_CD')} sec.",
+            'I041': f"Passive: Dealing at least {v('DemonDwellerSword_MinDmg')} physical or magic damage grants +{v('DemonDwellerSword_Bonus')}% damage of the opposite type.\nDuration: {n('A0HX','ahdu')} sec.\nCooldown: {v('DemonDwellerSword_CD')} sec.",
             'I042': f"Active: Throws a knife dealing {v('ShikiKnifeEvolved_DmgAgi')}x ({v('ShikiKnifeEvolved_DmgBase')} + {v('ShikiKnifeEvolved_DmgAgi')}x Agility) attack damage on hit; it can also trigger the passive when ready.\nPassive: Dealing physical damage to an enemy within {v('ShikiKnifeEvolved_RangeCheck')} range deals an additional {v('ShikiKnifeEvolved_DmgBase')} + {v('ShikiKnifeEvolved_DmgAgi')}x Agility physical damage.\nCooldown: Active {n('A0HY','acdn')} sec, Passive {v('ShikiKnifeEvolved_CD')} sec.",
             'I068': f"Active: Fires a lightning needle: {v('VoltThread_Damage')}x Agility magic damage and Lightning. For 3 sec, other enemies within {v('VoltThread_LineRadius')} of the thread between you and the target take {v('VoltThread_LineDamage')}x Agility magic damage every second. Your attacks on the target add Static Needle charges (once per 0.4 sec); at 3 charges it takes {v('VoltThread_Bonus')}x Agility magic damage and a 20% slow for 1 sec.\nCooldown: 20 sec.",
             'I06C': f"Active: Fires a lightning projectile in a straight line up to {v('ConstellationCoil_Range')} range. Each enemy within {v('ConstellationCoil_Width')} of its path is hit once for {v('ConstellationCoil_Damage')}x Intelligence magic damage, receives Lightning and a {v('ConstellationCoil_Slow')}% slow for {v('ConstellationCoil_SlowDuration')} sec.\nCooldown: 20 sec.",
             'I04D': f"Consumed on purchase: permanently grants +2 Strength, +2 Agility and +2 Intelligence.\nDoes not take an inventory slot.\nAvailable from round {v('ScrollOfMastery_Round')}.",
         }
+
+        bodies.update({
+            'I060': f"Active: {v('Emberbreaker_Impact')}x STR physical damage, Fire and a {v('Emberbreaker_Knock')}-unit push. Burns for {v('Emberbreaker_Burn')}x STR magic damage over 4 sec.\nFor 3 sec, the target's first hit on you deals {v('Emberbreaker_Retaliate')}x STR magic damage back. Both marks can be dispelled.\nCooldown: {n('A145','acdn')} sec.",
+            'I061': f"Active: {v('LeviathanGrasp_Impact')}x STR physical damage and Water. Pulls the target {v('LeviathanGrasp_Pull')} units towards you over 0.5 sec, then deals {v('LeviathanGrasp_Squeeze')}x STR physical damage.\nHeals you for {v('LeviathanGrasp_Heal')}% of damage dealt, with no cap.\nCooldown: {n('A146','acdn')} sec.",
+            'I06E': f"Passive: Your Fire burns for 6 sec at 70 damage per second. Re-applying it adds +{v('ZankaNoTachi_Stack')} per second (up to {v('ZankaNoTachi_MaxDamage')}) and restarts the 6 sec.",
+            'I070': f"Passive: Your Lightning debuff also deals {v('KokoGonryo_Damage')}x main stat magic damage every second while it lasts. Can trigger Tachikaze.",
+            'I071': f"Passive: Your Overload (Fire + Lightning) deals {number((self.value('Tobiume_DamageMult')-1)*100)}% more damage and stuns {v('Tobiume_Stun')} sec longer.",
+            'I072': f"Passive: Your Electrized (Water + Lightning) deals {number((self.value('Suzumebachi_DamageMult')-1)*100)}% more damage every second.",
+            'I059': f"Active: Remembers your position. After {v('ReturnByDeath_Delay')} sec, returns you there while preserving your current order, only if its dispellable buff remains. Removing the buff cancels the return.\nCooldown: {n('A13E','acdn')} sec.",
+            'I062': f"Active: 3 impacts, one every 0.6 sec, each deal 2.25x STR physical damage within {v('LeviathanAnchor_Aoe')} range and apply Water. Impact centres: cast point, 80 units behind, 80 ahead. Between impacts, pulls enemies {v('LeviathanAnchor_PullSpeed')} units/sec; slows by 40%. Each enemy is disarmed for 2 sec on its first impact.\nCooldown: {n('A147','acdn')} sec.",
+            'I063': f"Active: 3 strikes over 0.7 sec deal {v('ThunderVerdict_Damage')}x STR magic damage and Lightning.\nMoving {v('ThunderVerdict_Leash')} units from the first strike within 3 sec deals {v('ThunderVerdict_Bonus')}x STR magic damage and slows by 25% for 1 sec. Dispellable mark.\nCooldown: {n('A148','acdn')} sec.",
+            'I064': f"Active: 4 pulses over 1.4 sec deal {v('ThunderBastion_Damage')}x STR magic damage in {v('ThunderBastion_Aoe')} range and apply Lightning.\nEach hero hit grants 1 counter for 5 sec (max 3). Incoming hits trigger {v('ThunderBastion_Counter')}x STR magic damage and a 20% slow for 1 sec; once per 0.8 sec. Counters can be dispelled.\nCooldown: {n('A149','acdn')} sec.",
+            'I065': f"Active: {v('CinderFang_Impact')}x AGI physical damage and Fire, then up to 3 ricochets for {v('CinderFang_Ricochet')}x AGI each.\nTargets cannot restore HP or MP for 3.5 sec. Your next attack or ability hit adds {v('CinderFang_Bonus')}x AGI physical damage. Dispellable mark.\nCooldown: {n('A14A','acdn')} sec.",
+            'I066': f"Active: 3 fire shuriken fly {v('AshenCrossfire_Range')} units and return. Each enemy takes {v('AshenCrossfire_Damage')}x AGI physical damage and Fire on the way out, then {v('AshenCrossfire_Return')}x AGI on return. Each enemy can be hit once in each direction.\nCooldown: {n('A14B','acdn')} sec.",
+            'I067': f"Active: A growing wave (350-525 radius) deals {v('MirrorTide_Damage')}x AGI physical damage, applies Water and pushes enemies {v('MirrorTide_Push')} units.\nFor 4 sec, any damage hit above 100 on a marked target fires a {v('MirrorTide_Reflect')}x AGI physical ricochet at a random nearby enemy within 800 range; once per 0.1 sec, max 4. Clones are valid targets. Dispellable mark.\nCooldown: {n('A14C','acdn')} sec.",
+            'I068': f"Active: {v('VoltThread_Damage')}x AGI magic damage and Lightning. Links you to the target for {v('VoltThread_Duration')} sec.\nEvery second: {v('VoltThread_TargetDamage')}x AGI to the target; {v('VoltThread_LineDamage')}x AGI to other enemies within {v('VoltThread_LineRadius')} of the thread. Your third attack adds {v('VoltThread_Bonus')}x AGI and a 20% slow for 1 sec. Dispel the mark to break the thread.\nCooldown: {n('A14D','acdn')} sec.",
+            'I069': f"Active: After 0.3 sec, {v('PhoenixSeal_Impact')}x INT magic damage and Fire; burns for {v('PhoenixSeal_Burn')}x INT over 3 sec.\nCasting a hero ability within 3 sec triggers {v('PhoenixSeal_Bonus')}x INT magic damage. Both marks can be dispelled.\nCooldown: {n('A14E','acdn')} sec.",
+            'I06A': f"Active: After {v('CrimsonScripture_Prepare')} sec, a rune erupts in {v('CrimsonScripture_Aoe')} range for {v('CrimsonScripture_Damage')}x INT magic damage and Fire. The ground deals {v('CrimsonScripture_Ground')}x INT over 1.2 sec in 6 pulses.\nCooldown: {n('A14F','acdn')} sec.",
+            'I06B': f"Active: {v('SirenTear_Damage')}x INT magic damage and Water. Drains {v('SirenTear_IntCap')}x INT mana over 2 sec, limited by remaining mana. Restores {v('SirenTear_Return')}% of the mana actually drained. Dispellable mark.\nCooldown: {n('A150','acdn')} sec.",
+            'I06C': f"Active: A projectile flies {v('ConstellationCoil_Range')} units. Each enemy within {v('ConstellationCoil_Width')} of its path takes {v('ConstellationCoil_Damage')}x INT magic damage once, receives Lightning, is dragged along and slowed by {v('ConstellationCoil_Slow')}% for {v('ConstellationCoil_SlowDuration')} sec. After the first hit, flies another 0.3 sec (up to max range), then spins for 2 sec: 1x INT magic damage every 0.5 sec and Lightning in an expanding 250-625 radius.\nCooldown: {n('A151','acdn')} sec.",
+        })
+        return bodies
 
     def expected(self, identity):
         original = self.items[identity]['extended_tooltip']
@@ -183,6 +207,22 @@ class Audit:
             body = body.replace('slows the first target', 'slows each target')
             body = re.sub(r'bounces up to [\d.]+ times',
                           "bounces once per " + self.v('TsuchikageHatEvolve_AttackPerBounce') + " ATK (rounded down, counted on cast)", body)
+        if identity in ('I040', 'I05F') and 'Healing from creeps is reduced by 50%.' not in body:
+            body += '\nHealing from creeps is reduced by 50%.'
+        if identity == 'I023' and 'Includes elemental debuff damage.' not in body:
+            body += ' Includes elemental debuff damage.'
+        if identity in ('I047', 'I048', 'I049'):
+            body = re.sub(r'Cooldown: [\d.]+ sec', 'Cooldown: ' + self.v('KusanagiGrade_Cooldown') + ' sec', body)
+        if identity == 'I06F':
+            total = number(self.values['ErzaWape_IncreaseDmg'] + self.values['KyokaSuigetsu_SteamBonus'])
+            body = re.sub(r'Steam: \+[\d.]+% physical damage from you(?: in total \([\d.]+% normally\))?\.',
+                          'Steam: +' + total + '% physical damage from you in total (' + self.v('ErzaWape_IncreaseDmg') + '% normally).', body)
+        if identity == 'I070' and 'Can trigger Tachikaze.' not in body:
+            body += ' Can trigger Tachikaze.'
+        if identity in ('I046', 'I047', 'I048', 'I049'):
+            body = re.sub(r'Cast range: [\d.]+', 'Cast range: ' + self.n('A102', 'aran'), body)
+        if identity == 'I01N':
+            body = re.sub(r'\(range: [\d.]+\)', '(range: ' + self.n('A076', 'aran') + ')', body)
         if identity == 'I065':
             body = body.replace('Throws a burning blade:', 'Launches a phoenix projectile:')
         if identity == 'I069':
@@ -207,7 +247,7 @@ class Audit:
             body = body.replace('water mirror (450 range)', f"water mirror ({self.v('MirrorTide_Aoe')} range)")
         body = '\n'.join(line for line in body.splitlines() if not line.startswith('Shared CD:'))
         if identity in ELEMENT_ITEMS:
-            body += '\nShared CD: ' + ELEMENT_ITEMS[identity] + ' items.'
+            body += '\nShared CD: ' + ELEMENT_ITEMS[identity] + ' items. Only one active per element.'
         return '\n'.join(self.header(identity, original)+([body] if body else []))
 
     def numeric_rules(self):
@@ -218,6 +258,15 @@ class Audit:
         def add(ids, pattern, variable):
             for identity in ids.split():
                 rules.setdefault(identity, []).append((pattern.replace('#', q), variable))
+        add('I051', r'Blocks # damage', 'NaofumiShieldEvolved_Block')
+        add('I055', r'restores #% of your', 'Samehada_ManaRestore')
+        add('I055', r'drains #% of the target', 'Samehada_ManaDrain')
+        add('I062', r'deals #x Strength physical', 'LeviathanAnchor_Damage')
+        add('I066', r'deal #x Agility physical', 'AshenCrossfire_Damage')
+        add('I066', r'way back #x Agility', 'AshenCrossfire_Return')
+        add('I06B', r'orb: #x Intelligence', 'SirenTear_Damage')
+        add('I06B', r'up to #x Intelligence', 'SirenTear_IntCap')
+        add('I06B', r'or #% of the target', 'SirenTear_MaxMpCap')
         add('I060', r'deals #x Strength physical', 'Emberbreaker_Impact')
         add('I060', r'for #x Strength over', 'Emberbreaker_Burn')
         add('I060', r'takes #x Strength magic damage back', 'Emberbreaker_Retaliate')
@@ -234,7 +283,8 @@ class Audit:
         add('I069', r'for #x Intelligence over', 'PhoenixSeal_Burn')
         add('I069', r'explodes for #x Intelligence', 'PhoenixSeal_Bonus')
         add('I06A', r'take #x Intelligence more', 'CrimsonScripture_Burning')
-        add('I00G', r'dealing # magic damage', 'FunnyBarrel_Damage')
+        add('I00G', r'dealing # \+', 'FunnyBarrel_Damage')
+        add('I00G', r'\+ #x main stat magic damage', 'FunnyBarrel_DamageStat')
         add('I00G', r'for # damage per second', 'ErzaFire_DamageBase')
         add('I00J', r'Ignores #% of', 'KanshoandBakuya_Decrease')
         add('I00R', r'Ignores #% of', 'KazekageHat_Decrease')
@@ -315,6 +365,7 @@ class Audit:
         add('I03W', r'within # \(', 'SakuraSesshou_Aoe')
         add('I03W', r'dealing #x main stat', 'SakuraSesshou_Damage')
         add('I03W', r'Duration: # sec', 'SakuraSesshou_Duration')
+        add('I03W', r'Cooldown: # sec', str(self.native('A0HE', 'acdn')))
         add('I03Y', r'bleed for # sec', 'Murasame_Duration')
         add('I03Y', r'dealing #x ATK', 'Murasame_AttackDamage')
         add('I043', r'Cooldown: # sec', 'CupOfTeaEvolved_CD')
@@ -335,6 +386,8 @@ class Audit:
         add('I04C', r'Dealing # or more', 'AshisogiJizo_MinDmg')
         add('I04C', r'dealing #x Agility', 'AshisogiJizo_DamageAgi')
         add('I04C', r'for # sec', 'AshisogiJizo_Duration')
+        for iid in ('I060 I061 I062 I063 I064 I065 I066 I067 I068 I069 I06A I06B I06C').split():
+            rules.pop(iid, None)
         return rules
 
     def changes(self):
